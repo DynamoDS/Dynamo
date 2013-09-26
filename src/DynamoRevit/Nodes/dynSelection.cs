@@ -267,6 +267,40 @@ namespace Dynamo.Nodes
                 DynamoLogger.Instance.Log(e);
             }
         }
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("selectionBaseId", SelectedElement.UniqueId);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                string id = helper.ReadString("selectionBaseId");
+                Element saved = null;
+                try
+                {
+                    saved = dynRevitSettings.Doc.Document.GetElement(id); // FamilyInstance;
+                }
+                catch
+                {
+                    DynamoLogger.Instance.Log("Unable to find element with ID: " + id);
+                }
+                SelectedElement = saved;
+            }
+        }
+
+        #endregion
     }
 
     [IsInteractive(true)]
@@ -299,6 +333,38 @@ namespace Dynamo.Nodes
                 DynamoLogger.Instance.Log(e);
             }
         }
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                string atr = _reference.ConvertToStableRepresentation(dynRevitSettings.Doc.Document);
+                helper.SetAttribute("refId", atr);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                string refId = helper.ReadString("refId");
+                try
+                {
+                    _reference = Reference.ParseFromStableRepresentation(dynRevitSettings.Doc.Document, refId);
+                    if (_reference != null)
+                        SelectedElement = dynRevitSettings.Doc.Document.GetElement(_reference.ElementId);
+                }
+                catch { }
+            }
+        }
+
+        #endregion
     }
 
     [IsInteractive(true)]
@@ -514,6 +580,53 @@ namespace Dynamo.Nodes
                 }
             }
         }
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlDocument xmlDoc = element.OwnerDocument;
+                if (SelectedElements != null)
+                {
+                    foreach (Element selectedElement in SelectedElements)
+                    {
+                        XmlElement outEl = xmlDoc.CreateElement("instance");
+                        outEl.SetAttribute("id", selectedElement.UniqueId);
+                        element.AppendChild(outEl);
+                    }
+                }
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlNodeList instanceNodes = element.SelectNodes("instance");
+                foreach (XmlNode subNode in instanceNodes)
+                {
+                    Element saved = null;
+                    var id = subNode.Attributes[0].Value;
+                    try
+                    {
+                        saved = dynRevitSettings.Doc.Document.GetElement(id);
+                    }
+                    catch
+                    {
+                        DynamoLogger.Instance.Log("Unable to find element with ID: " + id);
+                    }
+                    if (SelectedElements == null)
+                        SelectedElements = new List<Element>();
+                    SelectedElements.Add(saved);
+                }
+            }
+        }
+
+        #endregion
     }
 
     [NodeName("Select Family Instance")]
@@ -1433,5 +1546,37 @@ namespace Dynamo.Nodes
             }
             catch { }
         }
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("refXYZparam0", _param0.ToString(CultureInfo.InvariantCulture));
+                helper.SetAttribute("refXYZparam1", _param1.ToString(CultureInfo.InvariantCulture));
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                try
+                {
+                    _param0 = helper.ReadDouble("refXYZparam0");
+                    _param1 = helper.ReadDouble("refXYZparam1");
+                    old_refXyz = _reference;
+                    _init = true;
+                }
+                catch { }
+            }
+        }
+
+        #endregion
     }
 }

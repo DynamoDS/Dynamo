@@ -322,6 +322,47 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            XmlDocument xmlDoc = element.OwnerDocument;
+            foreach (var inport in InPortData)
+            {
+                XmlElement input = xmlDoc.CreateElement("Input");
+                input.SetAttribute("name", inport.NickName);
+                element.AppendChild(input);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+            
+            if (context == SaveContext.Undo)
+            {
+                int currLength = InPortData.Count;
+                XmlNodeList inNodes = element.SelectNodes("Input");
+                int nextLength = inNodes.Count;
+                if (nextLength > currLength)
+                {
+                    for (; currLength < nextLength; currLength++)
+                    {
+                        XmlNode subNode = inNodes.Item(currLength) ;
+                        string nickName = subNode.Attributes["name"].Value;
+                        InPortData.Add(new PortData(nickName, "", typeof(object)));
+                    }
+                }
+                else if (nextLength < currLength)
+                    InPortData.RemoveRange(nextLength, currLength - nextLength);
+
+                RegisterAllPorts();
+            }
+        }
+
+        #endregion
+
         protected override void OnEvaluate()
         {
             base.OnEvaluate();
@@ -1703,6 +1744,31 @@ namespace Dynamo.Nodes
             base.LoadNode(nodeElement);
             processTextForNewInputs();
         }
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("value", Value);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+            processTextForNewInputs();
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                Value = helper.ReadString("value");
+            }
+        }
+
+        #endregion
 
         private void processTextForNewInputs()
         {
@@ -3268,6 +3334,30 @@ namespace Dynamo.Nodes
             nodeElement.AppendChild(outEl);
         }
 
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("doubleValue", Value);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                Value = helper.ReadDouble("doubleValue");
+            }
+        }
+
+        #endregion
+
         protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
         {
             return builder.Build(this, inputs);
@@ -3285,6 +3375,30 @@ namespace Dynamo.Nodes
         {
             return builder.Build(this, inputs);
         }
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("boolValue", Value);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                Value = helper.ReadBoolean("boolValue");
+            }
+        }
+
+        #endregion
     }
 
     public abstract partial class String : BasicInteractive<string>
@@ -3304,6 +3418,30 @@ namespace Dynamo.Nodes
             return builder.Build(this, inputs);
             
         }
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("stringValue", Value);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                Value = helper.ReadString("stringValue");
+            }
+        }
+
+        #endregion
     }
 
     #endregion
@@ -3386,6 +3524,32 @@ namespace Dynamo.Nodes
             }
         }
 
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("doubleInputValue", Value);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                this.Value = helper.ReadString("doubleInputValue");
+            }
+        }
+
+        #endregion
         public static List<IDoubleSequence> ParseValue(string text, char[] seps, List<string> identifiers, ConversionDelegate convertToken)
         {
             var idSet = new HashSet<string>(identifiers);
@@ -3938,6 +4102,32 @@ namespace Dynamo.Nodes
                 }
             }
         }
+
+        #region Serialization/Deserialization Methods
+        
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called.
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("min", Min);
+                helper.SetAttribute("max", Max);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called.
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                Min = helper.ReadDouble("min"); 
+                Max = helper.ReadDouble("max");
+            }
+        }
+
+        #endregion
     }
 
     [NodeName("Boolean")]
@@ -4080,6 +4270,30 @@ namespace Dynamo.Nodes
         {
             return builder.Build(this, inputs);
         }
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("value", Value);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                Value = helper.ReadString("value");
+            }
+        }
+
+        #endregion
     }
 
     #endregion
@@ -4467,6 +4681,30 @@ namespace Dynamo.Nodes
             }
             catch { }
         }
+
+        #region Serialization/Deserialization methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("dropDownBaseIndex", SelectedIndex);
+            }
+        }
+
+        protected override void  DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                SelectedIndex = helper.ReadInteger("dropDownBaseIndex");
+            }
+        }
+
+        #endregion
 
         public virtual void PopulateItems()
         {

@@ -252,6 +252,42 @@ namespace Dynamo.Nodes
                 SelectedIndex = index;
             }
         }
+
+        #region Serialization/Deserialization methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                if (this.storedId != null)
+                {
+                    XmlElementHelper helper = new XmlElementHelper(element);
+                    helper.SetAttribute("familyValue", this.storedId.IntegerValue);
+                }
+                
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                var doc = dynRevitSettings.Doc.Document;
+                XmlElementHelper helper = new XmlElementHelper(element);
+                int id = 0;
+                try
+                {
+                    id = helper.ReadInteger("familyValue");
+                }
+                catch { return; }
+                this.storedId = new ElementId(id);
+                this.element = doc.GetElement(this.storedId);
+            }
+        }
+
+        #endregion
     }
 
     #region Disabled ParameterMapper

@@ -2035,6 +2035,32 @@ namespace Dynamo.Nodes
             catch { }
         }
 
+        #region Serialization/Deserialization methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("boolOpIndex", this.combo.SelectedIndex);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                if(combo!=null)
+                    this.combo.SelectedIndex = helper.ReadInteger("boolOpIndex");
+            }
+        }
+
+        #endregion
+
         private void PopulateComboBox()
         {
 

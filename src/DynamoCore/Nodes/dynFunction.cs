@@ -244,49 +244,8 @@ namespace Dynamo
                     if (subNode.Name.Equals("ID"))
                     {
                         Symbol = subNode.Attributes[0].Value;
-
-                        Guid funcId;
-                        Guid.TryParse(Symbol, out funcId);
-
-                        // if the dyf does not exist on the search path...
-                        if (!dynSettings.Controller.CustomNodeManager.Contains(funcId))
-                        {
-                            var manager = dynSettings.Controller.CustomNodeManager;
-
-                            // if there is a node with this name, use it instead
-                            if (manager.Contains(this.NickName))
-                            {
-                                var guid = manager.GetGuidFromName(this.NickName);
-                                this.Symbol = guid.ToString();
-                                continue;
-                            }
-
-                            var proxyDef = new FunctionDefinition(funcId)
-                            {
-                                Workspace =
-                                    new FuncWorkspace(
-                                        NickName, BuiltinNodeCategories.SCRIPTING_CUSTOMNODES)
-                                    {
-                                        FilePath = null
-                                    }
-                            };
-
-                            SetInputs(new List<string>());
-                            SetOutputs(new List<string>());
-                            RegisterAllPorts();
-                            State = ElementState.ERROR;
-
-                            var userMsg = "Failed to load custom node: " + NickName +
-                                           ".  Replacing with proxy custom node.";
-
-                            DynamoLogger.Instance.Log(userMsg);
-
-                            // tell custom node loader, but don't provide path, forcing user to resave explicitly
-                            dynSettings.Controller.CustomNodeManager.SetFunctionDefinition(funcId, proxyDef);
-                            Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funcId);
-                            ArgumentLacing = LacingStrategy.Disabled;
+                        if(!VerifySymbol())
                             return;
-                        }
                     }
                 }
 
@@ -365,6 +324,157 @@ namespace Dynamo
                 }
 
                 Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funId);
+            }
+
+            #region Serialization/Deserialization methods
+
+            protected override void SerializeCore(XmlElement element, SaveContext context)
+            {
+                base.SerializeCore(element, context); //Base implementation must be called
+                if (context == SaveContext.Undo)
+                {
+                    XmlElementHelper helper = new XmlElementHelper(element);
+                    helper.SetAttribute("functionId",Symbol);
+                    helper.SetAttribute("functionName", NickName);
+                    helper.SetAttribute("functionDesc", Description);
+
+                    XmlDocument xmlDoc = element.OwnerDocument;
+                    foreach (var input in InPortData.Select(x => x.NickName))
+                    {
+                        var inputEl = xmlDoc.CreateElement("functionInput");
+                        inputEl.SetAttribute("inputValue", input);
+                        element.AppendChild(inputEl);
+                    }
+
+                    foreach (var input in OutPortData.Select(x => x.NickName))
+                    {
+                        var outputEl = xmlDoc.CreateElement("functionOutput");
+                        outputEl.SetAttribute("outputValue", input);
+                        element.AppendChild(outputEl);
+                    }
+                }
+            }
+
+            protected override void DeserializeCore(XmlElement element, SaveContext context)
+            {
+                base.DeserializeCore(element, context); //Base implementation must be called
+
+                if (context == SaveContext.Undo)
+                {
+                    XmlElementHelper helper = new XmlElementHelper(element);
+                    NickName = helper.ReadString("functionName");
+                    
+                    Symbol = helper.ReadString("functionId");
+                    if (!VerifySymbol())
+                        return;
+                    XmlNodeList inNodes = element.SelectNodes("functionInput");
+                    XmlNodeList outNodes = element.SelectNodes("functionOutput");
+                    int i = 0;
+                    foreach (XmlNode inputNode in inNodes)
+                    {
+                        string name = inputNode.Attributes[0].Value;
+                        var data = new PortData(name, "Input #" + (i + 1), typeof(object));
+                        if (InPortData.Count > i)
+                            InPortData[i] = data;
+                        else
+                            InPortData.Add(data);
+                        i++;
+                    }
+                    i = 0;
+                    foreach (XmlNode outputNode in outNodes)
+                    {
+                        string name = outputNode.Attributes[0].Value;
+                        var data = new PortData(name, "Output #" + (i + 1), typeof(object));
+                        if (OutPortData.Count > i)
+                            OutPortData[i] = data;
+                        else
+                            OutPortData.Add(data);
+                        i++;
+                    }
+
+                    //Added it the same way as LoadNode. But unsure of when 'Output' ChildNodes will
+                    //be added to element. As of now I dont think it is added during serialize
+                    #region Legacy output support
+                    foreach (XmlNode subNode in element.ChildNodes)
+                    {
+                        if (subNode.Name.Equals("Output"))
+                        {
+                            var data = new PortData(subNode.Attributes[0].Value, "function output", typeof(object));
+
+                            if (OutPortData.Any())
+                                OutPortData[0] = data;
+                            else
+                                OutPortData.Add(data);
+                        }
+                    }
+                    #endregion
+
+
+                    RegisterAllPorts();
+
+                    Guid funId;
+                    try
+                    {
+                        funId = Guid.Parse(Symbol);
+                    }
+                    catch
+                    {
+                        funId = GuidUtility.Create(GuidUtility.UrlNamespace, NickName);
+                        Symbol = funId.ToString();
+                    }
+
+                    Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funId);
+                    Description = helper.ReadString("functionDesc");
+                }
+            }
+
+            #endregion
+
+            private bool VerifySymbol()
+            {
+                Guid funcId;
+                Guid.TryParse(Symbol, out funcId);
+
+                // if the dyf does not exist on the search path...
+                if (!dynSettings.Controller.CustomNodeManager.Contains(funcId))
+                {
+                    var manager = dynSettings.Controller.CustomNodeManager;
+
+                    // if there is a node with this name, use it instead
+                    if (manager.Contains(this.NickName))
+                    {
+                        var guid = manager.GetGuidFromName(this.NickName);
+                        this.Symbol = guid.ToString();
+                        return true;
+                    }
+
+                    var proxyDef = new FunctionDefinition(funcId)
+                    {
+                        Workspace =
+                            new FuncWorkspace(
+                                NickName, BuiltinNodeCategories.SCRIPTING_CUSTOMNODES)
+                            {
+                                FilePath = null
+                            }
+                    };
+
+                    SetInputs(new List<string>());
+                    SetOutputs(new List<string>());
+                    RegisterAllPorts();
+                    State = ElementState.ERROR;
+
+                    var userMsg = "Failed to load custom node: " + NickName +
+                                   ".  Replacing with proxy custom node.";
+
+                    DynamoLogger.Instance.Log(userMsg);
+
+                    // tell custom node loader, but don't provide path, forcing user to resave explicitly
+                    dynSettings.Controller.CustomNodeManager.SetFunctionDefinition(funcId, proxyDef);
+                    Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funcId);
+                    ArgumentLacing = LacingStrategy.Disabled;
+                    return false;
+                }
+                return true;
             }
 
             public override void Evaluate(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
@@ -460,6 +570,30 @@ namespace Dynamo
 
                 ArgumentLacing = LacingStrategy.Disabled;
             }
+
+            #region Serialization/Deserialization methods
+
+            protected override void SerializeCore(XmlElement element, SaveContext context)
+            {
+                base.SerializeCore(element, context); //Base implementation must be called
+                if (context == SaveContext.Undo)
+                {
+                    XmlElementHelper helper = new XmlElementHelper(element);
+                    helper.SetAttribute("outputValue", Symbol);
+                }
+            }
+
+            protected override void DeserializeCore(XmlElement element, SaveContext context)
+            {
+                base.SerializeCore(element, context); //Base implementation must be called
+                if (context == SaveContext.Undo)
+                {
+                    XmlElementHelper helper = new XmlElementHelper(element);
+                    Symbol = helper.ReadString("outputValue");
+                }
+            }
+
+            #endregion
         }
 
         [NodeName("Output")]
@@ -521,6 +655,30 @@ namespace Dynamo
 
                 ArgumentLacing = LacingStrategy.Disabled;
             }
+
+            #region Serialization/Deserialization methods
+
+            protected override void SerializeCore(XmlElement element, SaveContext context)
+            {
+                base.SerializeCore(element, context); //Base implementation must be called
+                if (context == SaveContext.Undo)
+                {
+                    XmlElementHelper helper = new XmlElementHelper(element);
+                    helper.SetAttribute("symbolValue" , InputSymbol);
+                }
+            }
+
+            protected override void DeserializeCore(XmlElement element, SaveContext context)
+            {
+                base.SerializeCore(element, context); //Base implementation must be called
+                if (context == SaveContext.Undo)
+                {
+                    XmlElementHelper helper = new XmlElementHelper(element);
+                    InputSymbol = helper.ReadString("symbolValue");
+                }
+            }
+
+            #endregion
         }
 
         #region Disabled Anonymous Function Node
