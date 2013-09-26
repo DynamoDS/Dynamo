@@ -11,6 +11,7 @@ using UserControl = System.Windows.Controls.UserControl;
 using System.Windows.Media;
 using Dynamo.Utilities;
 using DynamoCommands = Dynamo.UI.Commands.DynamoCommands;
+using System.Windows.Media.Imaging;
 
 //Copyright © Autodesk, Inc. 2012. All rights reserved.
 //
@@ -156,7 +157,7 @@ namespace Dynamo.Search
             //else
             //{
             //    dynSettings.Controller.DynamoViewModel.OnSidebarClosed(this, EventArgs.Empty);
-            //    this.Visibility = Visibility.Collapsed;
+            //   this.Visibility = Visibility.Collapsed;
             //}
             dynSettings.Controller.DynamoViewModel.OnSidebarClosed(this, EventArgs.Empty);
         }
@@ -167,6 +168,11 @@ namespace Dynamo.Search
             Label lb = (Label)(g.Children[0]);
             var bc = new BrushConverter();
             lb.Foreground = (Brush)bc.ConvertFromString("#cccccc");
+            Image collapsestate = (Image)g.Children[1];
+            var collapsestateSource = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/collapsestate_hover.png");
+            BitmapImage bmi = new BitmapImage(collapsestateSource);
+            RotateTransform rotateTransform = new RotateTransform(-90, 16, 16);
+            collapsestate.Source = new BitmapImage(collapsestateSource);
         }
 
         private void buttonGrid_MouseLeave(object sender, MouseEventArgs e)
@@ -175,6 +181,9 @@ namespace Dynamo.Search
             Label lb = (Label)(g.Children[0]);
             var bc = new BrushConverter();
             lb.Foreground = (Brush)bc.ConvertFromString("#aaaaaa");
+            Image collapsestate = (Image)g.Children[1];
+            var collapsestateSource = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/collapsestate_normal.png");
+            collapsestate.Source = new BitmapImage(collapsestateSource);
         }
     }
 } ;
