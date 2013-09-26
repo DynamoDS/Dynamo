@@ -18,6 +18,7 @@ namespace Dynamo
             var toUpdate = Visualizations.Values.ToList().Where(x => x.RequiresUpdate == true);
 
             Debug.WriteLine(string.Format("{0} visualizations to update", toUpdate.Count()));
+            Debug.WriteLine(string.Format("Updating visualizations on thread {0}.", System.Threading.Thread.CurrentThread.ManagedThreadId));
 
             foreach (var n in toUpdate)
             {
