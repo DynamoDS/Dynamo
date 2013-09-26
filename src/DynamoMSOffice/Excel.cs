@@ -125,7 +125,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Open Excel Workbook")]
-    [NodeCategory(BuiltinNodeCategories.IO_FILE)]
+    [NodeCategory("Input/Output.Office.Excel")]
     [NodeDescription("Opens an Excel file and returns the Workbook inside.  If the filename does not exist, returns null.")]
     public class ReadExcelFile : FileReaderBase
     {
@@ -160,7 +160,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Get Worksheets From Excel Workbook")]
-    [NodeCategory(BuiltinNodeCategories.IO_FILE)]
+    [NodeCategory("Input/Output.Office.Excel")]
     [NodeDescription("Get the list of Worksheets from an Excel Workbook.")]
     public class GetWorksheetsFromExcelWorkbook : NodeWithOneOutput
     {
@@ -183,7 +183,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Get Excel Worksheet By Name")]
-    [NodeCategory(BuiltinNodeCategories.IO_FILE)]
+    [NodeCategory("Input/Output.Office.Excel")]
     [NodeDescription("Gets the first Worksheet in an Excel Workbook with the given name.")]
     public class GetExcelWorksheetByName : NodeWithOneOutput
     {
@@ -208,7 +208,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Get Data From Excel Worksheet")]
-    [NodeCategory(BuiltinNodeCategories.IO_FILE)]
+    [NodeCategory("Input/Output.Office.Excel")]
     [NodeDescription("Get the non-empty range of Cell data from an Excel Worksheet.")]
     public class GetDataFromExcelWorksheet : NodeWithOneOutput
     {
@@ -270,7 +270,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Write Data To Excel Worksheet")]
-    [NodeCategory(BuiltinNodeCategories.IO_FILE)]
+    [NodeCategory("Input/Output.Office.Excel")]
     [NodeDescription("Write data to a Cell of an Excel Worksheet.")]
     public class WriteDataToExcelWorksheet : NodeWithOneOutput
     {
@@ -386,7 +386,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Add Excel Worksheet To Workbook")]
-    [NodeCategory(BuiltinNodeCategories.IO_FILE)]
+    [NodeCategory("Input/Output.Office.Excel")]
     [NodeDescription("Add a new Worksheet to a Workbook with a given name.")]
     public class AddExcelWorksheetToWorkbook : NodeWithOneOutput
     {
@@ -415,7 +415,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("New Excel Workbook")]
-    [NodeCategory(BuiltinNodeCategories.IO_FILE)]
+    [NodeCategory("Input/Output.Office.Excel")]
     [NodeDescription("Create a new Excel Workbook object.")]
     public class NewExcelWorkbook : NodeWithOneOutput
     {
@@ -435,7 +435,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Save Excel Workbook As")]
-    [NodeCategory(BuiltinNodeCategories.IO_FILE)]
+    [NodeCategory("Input/Output.Office.Excel")]
     [NodeDescription("Write an Excel Workbook to a file with the given filename.")]
     public class SaveAsExcelWorkbook : NodeWithOneOutput
     {
