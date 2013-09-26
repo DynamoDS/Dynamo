@@ -204,11 +204,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public string CommandFilePath
-        {
-            get { return commandFilePath; }
-        }
-
         public bool RunEnabled
         {
             get { return runEnabled; }
