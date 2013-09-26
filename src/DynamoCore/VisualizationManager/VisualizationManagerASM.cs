@@ -111,6 +111,10 @@ namespace Dynamo
 
                     rd.Meshes.Add(new Mesh3D(vertices, indices_front));
                     rd.Meshes.Add(new Mesh3D(vertices, indices_back));
+
+                    //set this flag to avoid processing again
+                    //if not necessary
+                    n.RequiresUpdate = false;
                 }
             }
             

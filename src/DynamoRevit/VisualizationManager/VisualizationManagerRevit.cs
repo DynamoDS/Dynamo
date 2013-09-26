@@ -60,6 +60,10 @@ namespace Dynamo
                         //TODO: GeometryKeeper
                     }
                 }
+
+                //set this flag to avoid processing again
+                //if not necessary
+                n.RequiresUpdate = false;
             }
 
             OnVisualizationUpdateComplete(this, EventArgs.Empty);

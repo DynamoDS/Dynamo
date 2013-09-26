@@ -126,7 +126,9 @@ namespace Dynamo
         }
 
         /// <summary>
-        /// Marks a visualization as requiring an update and clears its geometry collection.
+        /// When a node enters it's evaluation, it is flagged for requiring update.
+        /// We dump the geometry collection and the render descption.
+        /// This ensures that, if the node errors, it will render nothing.
         /// </summary>
         /// <param name="node">The node whose visualization will be updated.</param>
         public void MarkForUpdate(NodeModel node)
@@ -134,6 +136,7 @@ namespace Dynamo
             var v = Visualizations[node.GUID.ToString()];
             v.RequiresUpdate = true;
             v.Geometry.Clear();
+            v.Description.Clear();
         }
 
         /// <summary>
