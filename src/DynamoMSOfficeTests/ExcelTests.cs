@@ -1,469 +1,469 @@
-﻿//using System;
-//using System.IO;
-//using System.Linq;
-//using Dynamo;
-//using Dynamo.Nodes;
-//using Dynamo.Tests;
-//using Dynamo.Utilities;
-//using NUnit.Framework;
+﻿using System;
+using System.IO;
+using System.Linq;
+using Dynamo;
+using Dynamo.Nodes;
+using Dynamo.Tests;
+using Dynamo.Utilities;
+using NUnit.Framework;
 
-//namespace DynamoMSOfficeTests
-//{
-//    [TestFixture]
-//    public class ExcelTests : DynamoUnitTest
-//    {
-//        [SetUp]
-//        public override void Init()
-//        {
-//            base.Init();
-//            // hide the excel window for tests
-//            ExcelInterop.ShowOnStartup = false;
-//        }
+namespace DynamoMSOfficeTests
+{
+    [TestFixture]
+    public class ExcelTests : DynamoUnitTest
+    {
+        [SetUp]
+        public override void Init()
+        {
+            base.Init();
+            // hide the excel window for tests
+            ExcelInterop.ShowOnStartup = false;
+        }
 
-//        [TearDown]
-//        public override void Cleanup()
-//        {
-//            // suppress SaveAs by using this method
-//            ExcelInterop.TryQuitAndCleanupWithoutSaving();
-//            base.Cleanup();
-//        }
+        [TearDown]
+        public override void Cleanup()
+        {
+            // suppress SaveAs by using this method
+            ExcelInterop.TryQuitAndCleanupWithoutSaving();
+            base.Cleanup();
+        }
 
-//        #region COM
+        #region COM
 
-//        [Test]
-//        public void ExcelAppIsClosedOnCleanup()
-//        {
-//            Assert.Inconclusive("Has trouble with sequential unit tests.  Does work with single unit test, though.");
-//            //Assert.IsFalse(ExcelInterop.IsExcelProcessRunning);
-//            //Assert.IsFalse(ExcelInterop.HasExcelReference);
-//            //var app = ExcelInterop.ExcelApp;
-//            //Assert.IsTrue(ExcelInterop.IsExcelProcessRunning);
-//            //Assert.IsTrue(ExcelInterop.HasExcelReference);
-//            //Controller.DynamoModel.OnCleanup(null);
-//            //Thread.Sleep(100); 
-//            //Assert.IsFalse( ExcelInterop.IsExcelProcessRunning );
-//            //Assert.IsFalse(ExcelInterop.HasExcelReference);
-//        }
+        [Test]
+        public void ExcelAppIsClosedOnCleanup()
+        {
+            Assert.Inconclusive("Has trouble with sequential unit tests.  Does work with single unit test, though.");
+            //Assert.IsFalse(ExcelInterop.IsExcelProcessRunning);
+            //Assert.IsFalse(ExcelInterop.HasExcelReference);
+            //var app = ExcelInterop.ExcelApp;
+            //Assert.IsTrue(ExcelInterop.IsExcelProcessRunning);
+            //Assert.IsTrue(ExcelInterop.HasExcelReference);
+            //Controller.DynamoModel.OnCleanup(null);
+            //Thread.Sleep(100); 
+            //Assert.IsFalse( ExcelInterop.IsExcelProcessRunning );
+            //Assert.IsFalse(ExcelInterop.HasExcelReference);
+        }
 
-//        #endregion
+        #endregion
 
-//        #region Reading
+        #region Reading
 
-//        //[Test]
-//        //public void CanGetLargeWorkbook()
-//        //{
+        //[Test]
+        //public void CanGetLargeWorkbook()
+        //{
 
-//        //    string openPath = Path.Combine(GetTestDirectory(), @"core\excel\Hammersmith.dyn");
-//        //    Controller.DynamoModel.Open(openPath);
+        //    string openPath = Path.Combine(GetTestDirectory(), @"core\excel\Hammersmith.dyn");
+        //    Controller.DynamoModel.Open(openPath);
 
-//        //    Assert.AreEqual(36, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+        //    Assert.AreEqual(36, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
-//        //    var filename = (StringFilename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<StringFilename>();
+        //    var filename = (StringFilename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<StringFilename>();
 
-//        //    // remap the filename as Excel requires an absolute path
-//        //    filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
+        //    // remap the filename as Excel requires an absolute path
+        //    filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
 
-//        //    //var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+        //    //var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
 
-//        //    dynSettings.Controller.RunExpression(null);
+        //    dynSettings.Controller.RunExpression(null);
 
-//        //    //Assert.IsTrue(watch.OldValue.IsContainer);
+        //    //Assert.IsTrue(watch.OldValue.IsContainer);
 
-//        //}
+        //}
 
 
-//        [Test]
-//        public void CanGetWorksheets()
-//        {
+        [Test]
+        public void CanGetWorksheets()
+        {
 
-//            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\WorksheetsFromFile.dyn");
-//            Controller.DynamoModel.Open(openPath);
+            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\WorksheetsFromFile.dyn");
+            Controller.DynamoModel.Open(openPath);
 
-//            Assert.AreEqual(4, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+            Assert.AreEqual(4, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
-//            var filename = (StringFilename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<StringFilename>();
+            var filename = (StringFilename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<StringFilename>();
 
-//            // remap the filename as Excel requires an absolute path
-//            filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
 
-//            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
 
-//            dynSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
 
-//            Assert.IsTrue(watch.OldValue.IsList);
-//            var list = watch.OldValue.GetListFromFSchemeValue();
+            Assert.IsTrue(watch.OldValue.IsList);
+            var list = watch.OldValue.GetListFromFSchemeValue();
 
-//            Assert.AreEqual(3, list.Count());
+            Assert.AreEqual(3, list.Count());
 
-//        }
+        }
 
-//        [Test]
-//        public void CanGetWorksheetByNameWithValidInput()
-//        {
+        [Test]
+        public void CanGetWorksheetByNameWithValidInput()
+        {
 
-//            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\WorksheetByName_ValidInput.dyn");
-//            Controller.DynamoModel.Open(openPath);
+            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\WorksheetByName_ValidInput.dyn");
+            Controller.DynamoModel.Open(openPath);
 
-//            Assert.AreEqual(5, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+            Assert.AreEqual(5, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
-//            var filename = (StringFilename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<StringFilename>();
+            var filename = (StringFilename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<StringFilename>();
 
-//            // remap the filename as Excel requires an absolute path
-//            filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
 
-//            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
 
-//            dynSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
 
-//            Assert.IsTrue(watch.OldValue.IsContainer);
+            Assert.IsTrue(watch.OldValue.IsContainer);
 
-//        }
+        }
 
-//        [Test]
-//        public void ReturnNullOnGetWorksheetByNameWithInvalidInput()
-//        {
+        [Test]
+        public void ReturnNullOnGetWorksheetByNameWithInvalidInput()
+        {
 
-//            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\WorksheetByName_InvalidInput.dyn");
-//            Controller.DynamoModel.Open(openPath);
+            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\WorksheetByName_InvalidInput.dyn");
+            Controller.DynamoModel.Open(openPath);
 
-//            Assert.AreEqual(5, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+            Assert.AreEqual(5, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
-//            var filename = (StringFilename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<StringFilename>();
+            var filename = (StringFilename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<StringFilename>();
 
-//            // remap the filename as Excel requires an absolute path
-//            filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
 
-//            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
 
-//            dynSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
 
-//            Assert.IsTrue(watch.OldValue.IsContainer);
-//            Assert.IsNull( ((FScheme.Value.Container) watch.OldValue).Item );
-//        }
+            Assert.IsTrue(watch.OldValue.IsContainer);
+            Assert.IsNull(((FScheme.Value.Container)watch.OldValue).Item);
+        }
 
-//        [Test]
-//        public void CanReadWorksheetWithSingleColumnOfNumbers()
-//        {
-       
-//            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\DataFromFile_ascending.dyn");
-//            Controller.DynamoModel.Open(openPath);
+        [Test]
+        public void CanReadWorksheetWithSingleColumnOfNumbers()
+        {
 
-//            Assert.AreEqual(6, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\DataFromFile_ascending.dyn");
+            Controller.DynamoModel.Open(openPath);
 
-//            var filename = (StringFilename) Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<StringFilename>();
+            Assert.AreEqual(6, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
-//            // remap the filename as Excel requires an absolute path
-//            filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
+            var filename = (StringFilename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<StringFilename>();
 
-//            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
 
-//            dynSettings.Controller.RunExpression(null);
+            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
 
-//            Assert.IsTrue(watch.OldValue.IsList);
-//            var list = watch.OldValue.GetListFromFSchemeValue();
+            dynSettings.Controller.RunExpression(null);
 
-//            Assert.AreEqual(16, list.Count());
+            Assert.IsTrue(watch.OldValue.IsList);
+            var list = watch.OldValue.GetListFromFSchemeValue();
 
-//            // contents of first workbook is ascending array of numbers starting at 1
-//            var counter = 1;
-//            for (var i = 0; i < 16; i++)
-//            {
-//                // get data returns 2d array
-//                Assert.IsTrue(list[i].IsList);
-//                var rowList = list[i].GetListFromFSchemeValue();
-//                Assert.AreEqual(1, rowList.Count());
-//                Assert.AreEqual(counter++, rowList[0].GetDoubleFromFSchemeValue());
-//            }
+            Assert.AreEqual(16, list.Count());
 
-//        }
+            // contents of first workbook is ascending array of numbers starting at 1
+            var counter = 1;
+            for (var i = 0; i < 16; i++)
+            {
+                // get data returns 2d array
+                Assert.IsTrue(list[i].IsList);
+                var rowList = list[i].GetListFromFSchemeValue();
+                Assert.AreEqual(1, rowList.Count());
+                Assert.AreEqual(counter++, rowList[0].GetDoubleFromFSchemeValue());
+            }
 
-//        [Test]
-//        public void CanReadMultiDimensionalWorksheet()
-//        {
+        }
 
-//            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\DataFromFile_2Dimensional.dyn");
-//            Controller.DynamoModel.Open(openPath);
+        [Test]
+        public void CanReadMultiDimensionalWorksheet()
+        {
 
-//            Assert.AreEqual(6, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\DataFromFile_2Dimensional.dyn");
+            Controller.DynamoModel.Open(openPath);
 
-//            var filename = (StringFilename) Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<StringFilename>();
+            Assert.AreEqual(6, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
-//            // remap the filename as Excel requires an absolute path
-//            filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
+            var filename = (StringFilename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<StringFilename>();
 
-//            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
 
-//            dynSettings.Controller.RunExpression(null);
+            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
 
-//            Assert.IsTrue(watch.OldValue.IsList);
-//            var list = watch.OldValue.GetListFromFSchemeValue();
+            dynSettings.Controller.RunExpression(null);
 
-//            Assert.AreEqual(18, list.Count());
+            Assert.IsTrue(watch.OldValue.IsList);
+            var list = watch.OldValue.GetListFromFSchemeValue();
 
-//            // 18 x 3 array of numbers
-//            for (var i = 0; i < 16; i++)
-//            {
-//                // get data returns 2d array
-//                Assert.IsTrue(list[i].IsList);
-//                var rowList = list[i].GetListFromFSchemeValue();
-//                Assert.AreEqual(3, rowList.Count());
+            Assert.AreEqual(18, list.Count());
 
-//                for (var j = 0; j < 3; j++)
-//                {
-//                    Assert.IsTrue(rowList[j].IsNumber);
-//                }
-                
-//            }
-            
-//        }
+            // 18 x 3 array of numbers
+            for (var i = 0; i < 16; i++)
+            {
+                // get data returns 2d array
+                Assert.IsTrue(list[i].IsList);
+                var rowList = list[i].GetListFromFSchemeValue();
+                Assert.AreEqual(3, rowList.Count());
 
-//        [Test]
-//        public void CanReadWorksheetWithEmptyCellInUsedRange()
-//        {
-//            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\DataFromFile_missingCell.dyn");
-//            Controller.DynamoModel.Open(openPath);
+                for (var j = 0; j < 3; j++)
+                {
+                    Assert.IsTrue(rowList[j].IsNumber);
+                }
 
-//            Assert.AreEqual(6, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+            }
 
-//            var filename = (StringFilename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<StringFilename>();
+        }
 
-//            // remap the filename as Excel requires an absolute path
-//            filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
+        [Test]
+        public void CanReadWorksheetWithEmptyCellInUsedRange()
+        {
+            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\DataFromFile_missingCell.dyn");
+            Controller.DynamoModel.Open(openPath);
 
-//            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            Assert.AreEqual(6, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
-//            dynSettings.Controller.RunExpression(null);
+            var filename = (StringFilename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<StringFilename>();
 
-//            Assert.IsTrue(watch.OldValue.IsList);
-//            var list = watch.OldValue.GetListFromFSchemeValue();
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
 
-//            Assert.AreEqual(4, list.Count());
+            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
 
-//            // single column - 1, "word", 2, 3, "palabra"
-//            Assert.IsTrue(list[0].IsList);
-//            var rowList = list[0].GetListFromFSchemeValue();
-//            Assert.AreEqual("a", rowList[0].getStringFromFSchemeValue());
+            dynSettings.Controller.RunExpression(null);
 
-//            Assert.IsTrue(list[1].IsList);
-//            rowList = list[1].GetListFromFSchemeValue();
-//            Assert.IsTrue(rowList[0].IsContainer);
-//            Assert.IsNull(((FScheme.Value.Container)rowList[0]).Item);
+            Assert.IsTrue(watch.OldValue.IsList);
+            var list = watch.OldValue.GetListFromFSchemeValue();
 
-//            Assert.IsTrue(list[2].IsList);
-//            rowList = list[2].GetListFromFSchemeValue();
-//            Assert.AreEqual("cell is", rowList[0].getStringFromFSchemeValue());
+            Assert.AreEqual(4, list.Count());
 
-//            Assert.IsTrue(list[3].IsList);
-//            rowList = list[3].GetListFromFSchemeValue();
-//            Assert.AreEqual("missing", rowList[0].getStringFromFSchemeValue());
-//        }
+            // single column - 1, "word", 2, 3, "palabra"
+            Assert.IsTrue(list[0].IsList);
+            var rowList = list[0].GetListFromFSchemeValue();
+            Assert.AreEqual("a", rowList[0].getStringFromFSchemeValue());
 
-//        [Test]
-//        public void CanReadWorksheetWithMixedNumbersAndStrings()
-//        {
+            Assert.IsTrue(list[1].IsList);
+            rowList = list[1].GetListFromFSchemeValue();
+            Assert.IsTrue(rowList[0].IsContainer);
+            Assert.IsNull(((FScheme.Value.Container)rowList[0]).Item);
 
-//            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\DataFromFile_mixedNumbersAndStrings.dyn");
-//            Controller.DynamoModel.Open(openPath);
+            Assert.IsTrue(list[2].IsList);
+            rowList = list[2].GetListFromFSchemeValue();
+            Assert.AreEqual("cell is", rowList[0].getStringFromFSchemeValue());
 
-//            Assert.AreEqual(6, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+            Assert.IsTrue(list[3].IsList);
+            rowList = list[3].GetListFromFSchemeValue();
+            Assert.AreEqual("missing", rowList[0].getStringFromFSchemeValue());
+        }
 
-//            var filename = (StringFilename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<StringFilename>();
+        [Test]
+        public void CanReadWorksheetWithMixedNumbersAndStrings()
+        {
 
-//            // remap the filename as Excel requires an absolute path
-//            filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
+            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\DataFromFile_mixedNumbersAndStrings.dyn");
+            Controller.DynamoModel.Open(openPath);
 
-//            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            Assert.AreEqual(6, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
-//            dynSettings.Controller.RunExpression(null);
+            var filename = (StringFilename)Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<StringFilename>();
 
-//            Assert.IsTrue(watch.OldValue.IsList);
-//            var list = watch.OldValue.GetListFromFSchemeValue();
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", GetTestDirectory());
 
-//            Assert.AreEqual(5, list.Count());
+            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
 
-//            // single column - 1, "word", 2, 3, "palabra"
-//            Assert.IsTrue(list[0].IsList);
-//            var rowList = list[0].GetListFromFSchemeValue();
-//            Assert.AreEqual(1, rowList[0].GetDoubleFromFSchemeValue());
+            dynSettings.Controller.RunExpression(null);
 
-//            Assert.IsTrue(list[1].IsList);
-//            rowList = list[1].GetListFromFSchemeValue();
-//            Assert.AreEqual("word", rowList[0].getStringFromFSchemeValue());
+            Assert.IsTrue(watch.OldValue.IsList);
+            var list = watch.OldValue.GetListFromFSchemeValue();
 
-//            Assert.IsTrue(list[2].IsList);
-//            rowList = list[2].GetListFromFSchemeValue();
-//            Assert.AreEqual(2, rowList[0].GetDoubleFromFSchemeValue());
+            Assert.AreEqual(5, list.Count());
 
-//            Assert.IsTrue(list[3].IsList);
-//            rowList = list[3].GetListFromFSchemeValue();
-//            Assert.AreEqual(3, rowList[0].GetDoubleFromFSchemeValue());
+            // single column - 1, "word", 2, 3, "palabra"
+            Assert.IsTrue(list[0].IsList);
+            var rowList = list[0].GetListFromFSchemeValue();
+            Assert.AreEqual(1, rowList[0].GetDoubleFromFSchemeValue());
 
-//            Assert.IsTrue(list[4].IsList);
-//            rowList = list[4].GetListFromFSchemeValue();
-//            Assert.AreEqual("palabra", rowList[0].getStringFromFSchemeValue());
-            
-//        }
+            Assert.IsTrue(list[1].IsList);
+            rowList = list[1].GetListFromFSchemeValue();
+            Assert.AreEqual("word", rowList[0].getStringFromFSchemeValue());
 
-//        #endregion
+            Assert.IsTrue(list[2].IsList);
+            rowList = list[2].GetListFromFSchemeValue();
+            Assert.AreEqual(2, rowList[0].GetDoubleFromFSchemeValue());
 
-//        #region Writing
+            Assert.IsTrue(list[3].IsList);
+            rowList = list[3].GetListFromFSchemeValue();
+            Assert.AreEqual(3, rowList[0].GetDoubleFromFSchemeValue());
 
-//        [Test]
-//        public void CanWrite1DDataOfMixedTypesToExcelWorksheet()
-//        {
-//            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\NewWorkbook_AddMixed1DData.dyn");
-//            Controller.DynamoModel.Open(openPath);
-//            Assert.AreEqual(12, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
-//            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
-//            Controller.RunExpression(null);
+            Assert.IsTrue(list[4].IsList);
+            rowList = list[4].GetListFromFSchemeValue();
+            Assert.AreEqual("palabra", rowList[0].getStringFromFSchemeValue());
 
-//            Assert.IsTrue(watch.OldValue.IsList);
-//            var list = watch.OldValue.GetListFromFSchemeValue();
+        }
 
-//            Assert.AreEqual(5, list.Count());
+        #endregion
 
-//            // single column - 1, "word", 2, 3, "palabra"
-//            Assert.IsTrue(list[0].IsList);
-//            var rowList = list[0].GetListFromFSchemeValue();
-//            Assert.AreEqual("doodle", rowList[0].getStringFromFSchemeValue());
+        #region Writing
 
-//            Assert.IsTrue(list[1].IsList);
-//            rowList = list[1].GetListFromFSchemeValue();
-//            Assert.AreEqual(0, rowList[0].GetDoubleFromFSchemeValue());
+        [Test]
+        public void CanWrite1DDataOfMixedTypesToExcelWorksheet()
+        {
+            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\NewWorkbook_AddMixed1DData.dyn");
+            Controller.DynamoModel.Open(openPath);
+            Assert.AreEqual(12, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            Controller.RunExpression(null);
 
-//            Assert.IsTrue(list[2].IsList);
-//            rowList = list[2].GetListFromFSchemeValue();
-//            Assert.AreEqual(21029, rowList[0].GetDoubleFromFSchemeValue());
+            Assert.IsTrue(watch.OldValue.IsList);
+            var list = watch.OldValue.GetListFromFSchemeValue();
 
-//            Assert.IsTrue(list[3].IsList);
-//            rowList = list[3].GetListFromFSchemeValue();
-//            Assert.IsTrue(rowList[0].IsContainer);
-//            Assert.IsNull(((FScheme.Value.Container)rowList[0]).Item);
+            Assert.AreEqual(5, list.Count());
 
-//            Assert.IsTrue(list[4].IsList);
-//            rowList = list[4].GetListFromFSchemeValue();
-//            Assert.AreEqual(-90, rowList[0].GetDoubleFromFSchemeValue());
+            // single column - 1, "word", 2, 3, "palabra"
+            Assert.IsTrue(list[0].IsList);
+            var rowList = list[0].GetListFromFSchemeValue();
+            Assert.AreEqual("doodle", rowList[0].getStringFromFSchemeValue());
 
-//        }
+            Assert.IsTrue(list[1].IsList);
+            rowList = list[1].GetListFromFSchemeValue();
+            Assert.AreEqual(0, rowList[0].GetDoubleFromFSchemeValue());
 
-//        [Test]
-//        public void CanCreateNewWorksheetInNewWorkbook()
-//        {
-//            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\NewWorkbook_AddWorksheet.dyn");
-//            Controller.DynamoModel.Open(openPath);
-//            Assert.AreEqual(5, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
-//            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
-//            Controller.RunExpression(null);
-//            Assert.IsTrue(watch.OldValue.IsContainer);
-//        }
+            Assert.IsTrue(list[2].IsList);
+            rowList = list[2].GetListFromFSchemeValue();
+            Assert.AreEqual(21029, rowList[0].GetDoubleFromFSchemeValue());
 
-//        [Test]
-//        public void CanAddSingleItemToExcelWorksheet()
-//        {
-//            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\NewWorkbook_AddSingleItemData.dyn");
-//            Controller.DynamoModel.Open(openPath);
-//            Assert.AreEqual(8, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
-//            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
-//            Controller.RunExpression(null);
-//            Assert.IsTrue(watch.OldValue.IsList);
-//            var list = watch.OldValue.GetListFromFSchemeValue();
+            Assert.IsTrue(list[3].IsList);
+            rowList = list[3].GetListFromFSchemeValue();
+            Assert.IsTrue(rowList[0].IsContainer);
+            Assert.IsNull(((FScheme.Value.Container)rowList[0]).Item);
 
-//            Assert.AreEqual(1, list.Count());
+            Assert.IsTrue(list[4].IsList);
+            rowList = list[4].GetListFromFSchemeValue();
+            Assert.AreEqual(-90, rowList[0].GetDoubleFromFSchemeValue());
 
-//            // get data returns 2d array
-//            Assert.IsTrue(list[0].IsList);
-//            var rowList = list[0].GetListFromFSchemeValue();
-//            Assert.AreEqual(1, rowList.Count());
-//            Assert.AreEqual(100.0, rowList[0].GetDoubleFromFSchemeValue());
-//        }
+        }
 
-//        [Test]
-//        public void CanAdd1DListToExcelWorksheet()
-//        {
-//            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\NewWorkbook_Add1DListData.dyn");
-//            Controller.DynamoModel.Open(openPath);
-//            Assert.AreEqual(8, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
-//            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
-//            Controller.RunExpression(null);
-//            Assert.IsTrue(watch.OldValue.IsList);
-//            var list = watch.OldValue.GetListFromFSchemeValue();
+        [Test]
+        public void CanCreateNewWorksheetInNewWorkbook()
+        {
+            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\NewWorkbook_AddWorksheet.dyn");
+            Controller.DynamoModel.Open(openPath);
+            Assert.AreEqual(5, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            Controller.RunExpression(null);
+            Assert.IsTrue(watch.OldValue.IsContainer);
+        }
 
-//            Assert.AreEqual(101, list.Count());
+        [Test]
+        public void CanAddSingleItemToExcelWorksheet()
+        {
+            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\NewWorkbook_AddSingleItemData.dyn");
+            Controller.DynamoModel.Open(openPath);
+            Assert.AreEqual(8, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            Controller.RunExpression(null);
+            Assert.IsTrue(watch.OldValue.IsList);
+            var list = watch.OldValue.GetListFromFSchemeValue();
 
-//            // contents of first workbook is ascending array of numbers starting at 1
-//            var counter = 0;
-//            for (var i = 0; i < 101; i++)
-//            {
-//                // get data returns 2d array
-//                Assert.IsTrue(list[i].IsList);
-//                var rowList = list[i].GetListFromFSchemeValue();
-//                Assert.AreEqual(1, rowList.Count());
-//                Assert.AreEqual(counter++, rowList[0].GetDoubleFromFSchemeValue());
-//            }
+            Assert.AreEqual(1, list.Count());
 
-//        }
+            // get data returns 2d array
+            Assert.IsTrue(list[0].IsList);
+            var rowList = list[0].GetListFromFSchemeValue();
+            Assert.AreEqual(1, rowList.Count());
+            Assert.AreEqual(100.0, rowList[0].GetDoubleFromFSchemeValue());
+        }
 
-//        [Test]
-//        public void CanAdd2DListToExcelWorksheet()
-//        {
-//            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\NewWorkbook_Add2DListData.dyn");
-//            Controller.DynamoModel.Open(openPath);
-//            Assert.AreEqual(10, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
-//            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
-//            Controller.RunExpression(null);
+        [Test]
+        public void CanAdd1DListToExcelWorksheet()
+        {
+            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\NewWorkbook_Add1DListData.dyn");
+            Controller.DynamoModel.Open(openPath);
+            Assert.AreEqual(8, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            Controller.RunExpression(null);
+            Assert.IsTrue(watch.OldValue.IsList);
+            var list = watch.OldValue.GetListFromFSchemeValue();
 
-//            Assert.IsTrue(watch.OldValue.IsList);
-//            var list = watch.OldValue.GetListFromFSchemeValue();
+            Assert.AreEqual(101, list.Count());
 
-//            // 101 x 5 - each column is 0..100
-//            Assert.AreEqual(101, list.Count());
+            // contents of first workbook is ascending array of numbers starting at 1
+            var counter = 0;
+            for (var i = 0; i < 101; i++)
+            {
+                // get data returns 2d array
+                Assert.IsTrue(list[i].IsList);
+                var rowList = list[i].GetListFromFSchemeValue();
+                Assert.AreEqual(1, rowList.Count());
+                Assert.AreEqual(counter++, rowList[0].GetDoubleFromFSchemeValue());
+            }
 
-//            // contents of first workbook is ascending array of numbers starting at 1
-//            var counter = 0;
-//            for (var i = 0; i < 101; i++)
-//            {
-//                // get data returns 2d array
-//                Assert.IsTrue(list[i].IsList);
-//                var rowList = list[i].GetListFromFSchemeValue();
-//                Assert.AreEqual(5, rowList.Count());
-//                rowList.ToList().ForEach(x => Assert.AreEqual(counter, x.GetDoubleFromFSchemeValue()));
-//                counter++;
-//            }
+        }
 
-//        }
+        [Test]
+        public void CanAdd2DListToExcelWorksheet()
+        {
+            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\NewWorkbook_Add2DListData.dyn");
+            Controller.DynamoModel.Open(openPath);
+            Assert.AreEqual(10, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            Controller.RunExpression(null);
 
-//        [Test]
-//        public void CanCreateNewWorkbook()
-//        {
-//            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\NewWorkbook.dyn");
-//            Controller.DynamoModel.Open(openPath);
-//            Assert.AreEqual(2, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
-//            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
-//            Controller.RunExpression(null);
-//            Assert.IsTrue(watch.OldValue.IsContainer);
-//        }
+            Assert.IsTrue(watch.OldValue.IsList);
+            var list = watch.OldValue.GetListFromFSchemeValue();
 
-//        #endregion
+            // 101 x 5 - each column is 0..100
+            Assert.AreEqual(101, list.Count());
 
-//        #region Saving
+            // contents of first workbook is ascending array of numbers starting at 1
+            var counter = 0;
+            for (var i = 0; i < 101; i++)
+            {
+                // get data returns 2d array
+                Assert.IsTrue(list[i].IsList);
+                var rowList = list[i].GetListFromFSchemeValue();
+                Assert.AreEqual(5, rowList.Count());
+                rowList.ToList().ForEach(x => Assert.AreEqual(counter, x.GetDoubleFromFSchemeValue()));
+                counter++;
+            }
 
-//        [Test]
-//        public void CanSaveAsWorksheet()
-//        {
-//            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\NewWorkbook_SaveAs.dyn");
-//            Controller.DynamoModel.Open(openPath);
+        }
 
-//            var filePath = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".xlsx";
-//            var stringNode = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.String>();
+        [Test]
+        public void CanCreateNewWorkbook()
+        {
+            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\NewWorkbook.dyn");
+            Controller.DynamoModel.Open(openPath);
+            Assert.AreEqual(2, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+            var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+            Controller.RunExpression(null);
+            Assert.IsTrue(watch.OldValue.IsContainer);
+        }
 
-//            stringNode.Value = filePath;
+        #endregion
 
-//            Controller.RunExpression(null);
+        #region Saving
 
-//            Assert.IsTrue(File.Exists(filePath));
-//        }
+        [Test]
+        public void CanSaveAsWorksheet()
+        {
+            string openPath = Path.Combine(GetTestDirectory(), @"core\excel\NewWorkbook_SaveAs.dyn");
+            Controller.DynamoModel.Open(openPath);
 
-//        #endregion
+            var filePath = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".xlsx";
+            var stringNode = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.String>();
 
-//    }
-//}
+            stringNode.Value = filePath;
+
+            Controller.RunExpression(null);
+
+            Assert.IsTrue(File.Exists(filePath));
+        }
+
+        #endregion
+
+    }
+}
