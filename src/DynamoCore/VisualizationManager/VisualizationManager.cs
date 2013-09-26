@@ -43,18 +43,33 @@ namespace Dynamo
         /// An event triggered on the completion of visualization update.
         /// </summary>
         public event EventHandler VisualizationUpdateComplete;
-        public virtual void OnVisualizationUpdateComplete(object sender, EventArgs e)
-        {
-            if (VisualizationUpdateComplete != null)
-                VisualizationUpdateComplete(sender, e);
-        }
-
+        
         #endregion
 
-        public VisualizationManager()
+        protected VisualizationManager()
         {
             dynSettings.Controller.DynamoModel.NodeAdded += new NodeHandler(DynamoModel_NodeAdded);
             dynSettings.Controller.DynamoModel.NodeDeleted += new NodeHandler(DynamoModel_NodeDeleted);
+            dynSettings.Controller.DynamoModel.ConnectorDeleted += new ConnectorHandler(DynamoModel_ConnectorDeleted);
+        }
+
+        /// <summary>
+        /// Handler for the model's ConnectorDeleted event. Clears the visualization for
+        /// the node at the 'end' of the connector.
+        /// </summary>
+        /// <param name="connector"></param>
+        void DynamoModel_ConnectorDeleted(ConnectorModel connector)
+        {
+            if (connector.End.Owner is IDrawable)
+            {
+                if (Visualizations.ContainsKey(connector.End.Owner.GUID.ToString()))
+                {
+                    Visualizations.Remove(connector.End.Owner.GUID.ToString());
+                }
+
+                //tell the watches that they require re-binding.
+                OnVisualizationUpdateComplete(this, EventArgs.Empty);
+            }
         }
 
         /// <summary>
@@ -133,6 +148,12 @@ namespace Dynamo
         /// <param name="node">The node whose visualization will be updated.</param>
         public void MarkForUpdate(NodeModel node)
         {
+            //re-register the node if this call is coming from a place
+            //where the node got dropped from visualization but then
+            //was re-added
+            if(!visualizations.ContainsKey(node.GUID.ToString()))
+                RegisterForVisualization(node);
+
             var v = Visualizations[node.GUID.ToString()];
             v.RequiresUpdate = true;
             v.Geometry.Clear();
@@ -251,6 +272,16 @@ namespace Dynamo
 
             return new Mesh3D(positions, triangleIndices);
         }
-        
+
+        /// <summary>
+        /// Called when the update of visualizations is complete.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public virtual void OnVisualizationUpdateComplete(object sender, EventArgs e)
+        {
+            if (VisualizationUpdateComplete != null)
+                VisualizationUpdateComplete(sender, e);
+        }
     }
 }

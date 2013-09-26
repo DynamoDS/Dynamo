@@ -80,8 +80,39 @@ namespace Dynamo.Tests
         {
             //test to ensure that when nodes are disconnected 
             //their associated geometry is removed
+            var model = dynSettings.Controller.DynamoModel;
+            var viz = dynSettings.Controller.VisualizationManager;
 
-            Assert.Inconclusive("Finish me!");
+            string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points_line.dyn");
+            model.Open(openPath);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            //ensure the correct representations
+
+            //look at the data in the visualization manager
+            //ensure that the number of IDrawable nodes
+            //and the number of entries in the Dictionary match
+            var drawables = model.Nodes.Where(x => x is IDrawable);
+            var points = viz.Visualizations.SelectMany(x => x.Value.Description.Points);
+            var lines = viz.Visualizations.SelectMany(x => x.Value.Description.Lines);
+            Assert.AreEqual(drawables.Count(), viz.Visualizations.Count);
+
+            Assert.AreEqual(7,points.Count());
+            Assert.AreEqual(6, lines.Count()/2);
+
+            //delete a conector coming into the lines node
+            var lineNode = model.Nodes.First(x => x is LineNode);
+            var connector = model.CurrentWorkspace.Connectors.First(x => x.End.Owner == lineNode);
+            model.Delete(connector);
+
+            //ensure that the visualization no longer contains
+            //the renderables for the line node
+            points = viz.Visualizations.SelectMany(x => x.Value.Description.Points);
+            lines = viz.Visualizations.SelectMany(x => x.Value.Description.Lines);
+            Assert.AreEqual(7, points.Count());
+            Assert.AreEqual(0, lines.Count());
         }
 
         [Test]

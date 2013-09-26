@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
@@ -380,8 +381,6 @@ namespace Dynamo.Nodes
     [NodeSearchable(false)]
     public class LineNode : GraphicItemNode
     {
-        private Line _line = null;
-
         public LineNode()
         {
             InPortData.Add(new PortData("Start", "Start Point", typeof(Value.Container)));
@@ -393,14 +392,20 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            Point sp = (Point)((Value.Container)args[0]).Item;
-            Point ep = (Point)((Value.Container)args[1]).Item;
+            var sp = (Point)((Value.Container)args[0]).Item;
+            var ep = (Point)((Value.Container)args[1]).Item;
 
-            _line = Line.by_start_point_end_point(sp, ep);
+            //if the line is zero length
+            if (sp.distance_to(ep) < 0.00001)
+            {
+                return Value.NewContainer(null);
+            }
+
+            var line = Line.by_start_point_end_point(sp, ep);
             
-            VisualizationGeometry.Add(_line);
+            VisualizationGeometry.Add(line);
 
-            return Value.NewContainer(_line);
+            return Value.NewContainer(line);
         }
     }
 
