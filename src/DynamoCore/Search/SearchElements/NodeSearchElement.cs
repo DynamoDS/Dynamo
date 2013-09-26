@@ -198,7 +198,7 @@ namespace Dynamo.Search.SearchElements
             }
 
             System.Guid guid = System.Guid.NewGuid();
-            dynSettings.Controller.DynamoModel.CurrentWorkspace.ExecuteCommand(
+            dynSettings.Controller.DynamoViewModel.ExecuteCommand(
                 new CreateNodeCommand(guid, name, 0, 0, true, true));
 
             // select node

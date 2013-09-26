@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
-using Dynamo.Models;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
 
 namespace Dynamo.Core.Automation
 {
@@ -12,7 +12,7 @@ namespace Dynamo.Core.Automation
     /// This is the base class of all recordable commands. It provides the 
     /// contract between a UI event handler (e.g. delegate command method or 
     /// a button event handler) and the actual command handler in the 
-    /// WorkspaceModel. It is mandatory for each RecordableCommand-derived 
+    /// DynamoViewModel. It is mandatory for each RecordableCommand-derived 
     /// class to be serializable to/deserializable from an XmlElement.
     /// </summary>
     /// 
@@ -22,14 +22,14 @@ namespace Dynamo.Core.Automation
 
         /// <summary>
         /// Call this method to execute a RecordableCommand. A RecordableCommand 
-        /// must be executed in the context of an existing WorkspaceModel.
+        /// must be executed in the context of an existing DynamoViewModel.
         /// </summary>
-        /// <param name="workspace">The workspace this RecordableCommand is 
-        /// targeting.</param>
+        /// <param name="dynamoViewModel">The DynamoViewModel object this 
+        /// RecordableCommand is targeting.</param>
         /// 
-        internal void Execute(WorkspaceModel workspace)
+        internal void Execute(DynamoViewModel dynamoViewModel)
         {
-            this.ExecuteCore(workspace);
+            this.ExecuteCore(dynamoViewModel);
         }
 
         /// <summary>
@@ -81,13 +81,13 @@ namespace Dynamo.Core.Automation
         /// <summary>
         /// Derived classes must implement this method to perform the actual
         /// command execution. A typical implementation of this method involves
-        /// calling a corresponding method on WorkspaceModel by passing itself 
+        /// calling a corresponding method on DynamoViewModel by passing itself
         /// as the only argument.
         /// </summary>
-        /// <param name="workspace">The WorkspaceModel object on which this 
-        /// command should be executed.</param>
+        /// <param name="dynamoViewModel">The DynamoViewModel object on which 
+        /// this command should be executed.</param>
         /// 
-        protected abstract void ExecuteCore(WorkspaceModel workspace);
+        protected abstract void ExecuteCore(DynamoViewModel dynamoViewModel);
 
         /// <summary>
         /// Derived classes must implement this method to serialize all relevant
@@ -146,9 +146,9 @@ namespace Dynamo.Core.Automation
 
         #region Protected Overridable Methods
 
-        protected override void ExecuteCore(WorkspaceModel workspace)
+        protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
         {
-            workspace.CreateNodeImpl(this);
+            dynamoViewModel.CreateNodeImpl(this);
         }
 
         protected override void SerializeCore(XmlElement element)
