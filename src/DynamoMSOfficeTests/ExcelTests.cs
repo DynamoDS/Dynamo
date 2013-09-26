@@ -123,7 +123,6 @@ namespace DynamoMSOfficeTests
         [Test]
         public void ThrowExceptionOnGetWorksheetByNameWithInvalidInput()
         {
-
             string openPath = Path.Combine(GetTestDirectory(), @"core\excel\WorksheetByName_InvalidInput.dyn");
             Controller.DynamoModel.Open(openPath);
 
@@ -137,10 +136,7 @@ namespace DynamoMSOfficeTests
             var getWorksheet = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<GetExcelWorksheetByName>();
             var readFile = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<ReadExcelFile>();
 
-            Assert.Throws<AssertionException>(() =>
-            {
-                dynSettings.Controller.RunExpression(null);
-            });
+            Assert.Throws<AssertionException>(() => Controller.RunExpression(null));
 
             Assert.IsTrue(readFile.OldValue.IsContainer);
             Assert.IsNull(getWorksheet.OldValue);

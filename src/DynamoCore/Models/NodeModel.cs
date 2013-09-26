@@ -1499,7 +1499,7 @@ namespace Dynamo.Models
             OnDispatchedToUI(this, new UIDispatcherEventArgs(a));
         }
 
-        public static string BuildValueString(Value eIn, int currentListIndex, int maxListIndex, int currentDepth, int maxDepth)
+        public static string PrintValue(Value eIn, int currentListIndex, int maxListIndex, int currentDepth, int maxDepth)
         {
             if (eIn == null)
                 return "<null>";
@@ -1508,7 +1508,7 @@ namespace Dynamo.Models
 
             if (maxDepth == currentDepth || currentListIndex == maxListIndex)
             {
-                accString += "...\n";
+                accString += "...";
                 return accString;
             }
 
@@ -1516,7 +1516,7 @@ namespace Dynamo.Models
             {
                 var str = (eIn as Value.Container).Item != null
                     ? (eIn as Value.Container).Item.ToString()
-                    : "null";
+                    : "<empty>";
 
                 accString += str;
             }
@@ -1526,17 +1526,25 @@ namespace Dynamo.Models
             }
             else if (eIn.IsList)
             {
-                accString += "List\n";
-
+                accString += "List";
+                
                 var list = (eIn as Value.List).Item;
 
+                // when children will be at maxDepth, just do 1
+                if (currentDepth + 1 == maxDepth)
+                {
+                    maxListIndex = 0;
+                }
+
                 // build all elements of sub list
-                accString = 
-                    list.Select((x, i) => new {Element = x, Index = i})
-                        .TakeWhile(e => e.Index <= maxListIndex)
-                        .Aggregate(
-                            accString, 
-                            (current, e) => current + BuildValueString(e.Element, e.Index, maxListIndex, currentDepth + 1, maxDepth));
+                accString =
+                   list.Select((x, i) => new { Element = x, Index = i })
+                       .TakeWhile(e => e.Index <= maxListIndex)
+                       .Aggregate(
+                           accString,
+                           (current, e) => current + "\n" + PrintValue(e.Element, e.Index, maxListIndex, currentDepth + 1, maxDepth));
+
+               
             }
             else if (eIn.IsNumber)
             {
@@ -1550,8 +1558,6 @@ namespace Dynamo.Models
             {
                 accString += "<" + (eIn as Value.Symbol).Item + ">";
             }
-
-            accString += "\n";
 
             return accString;
         }
