@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Dynamo.Connectors;
 using Dynamo.FSchemeInterop;
 using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Microsoft.Office.Interop.Excel;
@@ -21,9 +23,15 @@ namespace Dynamo.Nodes
         {
             get
             {
-                _excelApp = RegisterAndGetApp();
+                _excelApp = _excelApp ?? RegisterAndGetApp();
                 return _excelApp;
             }
+        }
+
+        public static bool _showOnStartup = true;
+        public static bool ShowOnStartup { 
+            get { return _showOnStartup; } 
+            set { _showOnStartup = value; } 
         }
 
         public static Application RegisterAndGetApp()
@@ -45,16 +53,73 @@ namespace Dynamo.Nodes
 
             dynSettings.Controller.DynamoModel.CleaningUp += DynamoModelOnCleaningUp;
 
-            excel.Visible = true;
+            excel.Visible = ShowOnStartup;
 
             return excel;
         }
 
+        /// <summary>
+        /// Check if the excel process is running
+        /// </summary>
+        public static bool IsExcelProcessRunning
+        {
+            get
+            {
+                return Process.GetProcessesByName("EXCEL").Length != 0;
+            }
+        }
+
+        /// <summary>
+        /// Check if this object holds a reference to Excel
+        /// </summary>
+        public static bool HasExcelReference
+        {
+            get { return _excelApp != null; }
+        }
+
+        /// <summary>
+        /// Close all Excel workbooks without saving, removing any references to the 
+        /// excel app and perform garbage collection
+        /// </summary>
+        public static void TryQuitAndCleanupWithoutSaving()
+        {
+            if (_excelApp != null)
+            {
+                _excelApp.Workbooks.Cast<Workbook>().ToList().ForEach((wb) => wb.Close(false));
+                _excelApp.Quit();
+                while (Marshal.ReleaseComObject(_excelApp) > 0)
+                {
+
+                }
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                _excelApp = null;
+            }
+        }
+
+        /// <summary>
+        /// Close all Excel workbooks and provide SaveAs dialog if needed.  Also, perform
+        /// garbage collection and remove references to Excel App
+        /// </summary>
+        public static void TryQuitAndCleanup()
+        {
+            if (_excelApp != null)
+            {
+                _excelApp.Workbooks.Cast<Workbook>().ToList().ForEach((wb) => wb.Close(true));
+                _excelApp.Quit();
+                while (Marshal.ReleaseComObject(_excelApp) > 0)
+                {
+
+                }
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                _excelApp = null;
+            }
+        }
+
         private static void DynamoModelOnCleaningUp(object sender, EventArgs eventArgs)
         {
-            _excelApp.Workbooks.Cast<Workbook>().ToList().ForEach((wb) => wb.Close());
-            _excelApp.Quit();
-            Marshal.ReleaseComObject(_excelApp);
+            TryQuitAndCleanup();
         }
 
     }
@@ -75,8 +140,8 @@ namespace Dynamo.Nodes
         {
             storedPath = ((FScheme.Value.String)args[0]).Item;
 
-            var workbookOpen =
-                ExcelInterop.ExcelApp.Workbooks.Cast<Microsoft.Office.Interop.Excel.Workbook>().FirstOrDefault(e => e.FullName == storedPath);
+            var workbookOpen = 
+                ExcelInterop.ExcelApp.Workbooks.Cast<Workbook>().FirstOrDefault(e => e.FullName == storedPath);
 
             if (workbookOpen != null)
             {
@@ -109,8 +174,8 @@ namespace Dynamo.Nodes
 
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
-            var workbook = (Microsoft.Office.Interop.Excel.Workbook)((FScheme.Value.Container)args[0]).Item;
-            var l = workbook.Worksheets.Cast<Microsoft.Office.Interop.Excel.Worksheet>().Select(FScheme.Value.NewContainer);
+            var workbook = (Workbook)((FScheme.Value.Container)args[0]).Item;
+            var l = workbook.Worksheets.Cast<Worksheet>().Select(FScheme.Value.NewContainer);
 
             return FScheme.Value.NewList(Utils.SequenceToFSharpList(l));
         }
@@ -159,31 +224,47 @@ namespace Dynamo.Nodes
         {
             var worksheet = (Microsoft.Office.Interop.Excel.Worksheet)((FScheme.Value.Container)args[0]).Item;
 
-            Microsoft.Office.Interop.Excel.Range range = worksheet.UsedRange;
-            
-            int rows = range.Rows.Count;
-            int cols = range.Columns.Count;
-
+            var vals = worksheet.UsedRange.get_Value();
             var rowData = new List<FScheme.Value>();
 
+            // rowData can potentially return a single value rather than an array
+            if (!(vals is object[,]))
+            {
+                var row = new List<FScheme.Value>() { TryParseCell(vals) };
+                rowData.Add(FScheme.Value.NewList(Utils.SequenceToFSharpList(row)));
+                return FScheme.Value.NewList(Utils.SequenceToFSharpList(rowData));
+            }
+
+            int rows = vals.GetLength(0);
+            int cols = vals.GetLength(1);
+
+            // transform into 2d FScheme.Value array
             for (int r = 1; r <= rows; r++)
             {
                 var row = new List<FScheme.Value>();
 
                 for (int c = 1; c <= cols; c++)
                 {
-                    // try parsing the numbers as doubles
-                    // if that doesn't work, send out their string rep.
-                    double val;
-                    row.Add(double.TryParse(range.Cells[r, c].Value2.ToString(), out val)
-                                ? FScheme.Value.NewNumber(val)
-                                : FScheme.Value.NewString(range.Cells[r, c].Value2.ToString()));
+                    row.Add(TryParseCell(vals[r, c]));
                 }
 
                 rowData.Add(FScheme.Value.NewList(Utils.SequenceToFSharpList(row)));
             }
 
             return FScheme.Value.NewList(Utils.SequenceToFSharpList(rowData));
+        }
+
+        public static FScheme.Value TryParseCell(object element)
+        {
+            if (element == null )
+            {
+                return FScheme.Value.NewContainer(null);
+            }
+                
+            double val;
+            return double.TryParse(element.ToString(), out val)
+                ? FScheme.Value.NewNumber(val)
+                : FScheme.Value.NewString(element.ToString());
         }
 
     }
@@ -197,67 +278,106 @@ namespace Dynamo.Nodes
         public WriteDataToExcelWorksheet()
         {
             InPortData.Add(new PortData("worksheet", "The Excel Worksheet to write to.", typeof(FScheme.Value.Container)));
-            InPortData.Add(new PortData("start row", "Row index to insert data.", typeof(FScheme.Value.Number)));
-            InPortData.Add(new PortData("start column", "Column index to insert data.", typeof(FScheme.Value.Number)));
-            InPortData.Add(new PortData("data", "A list of data to add.", typeof(FScheme.Value.List)));
+            InPortData.Add(new PortData("start row", "Row index to insert data.", typeof(FScheme.Value.Number), FScheme.Value.NewNumber(0)));
+            InPortData.Add(new PortData("start column", "Column index to insert data.", typeof(FScheme.Value.Number), FScheme.Value.NewNumber(0)));
+            InPortData.Add(new PortData("data", "A single item, a 1d list, or a 2d list to write to the worksheet", typeof(FScheme.Value.List)));
 
             OutPortData.Add(new PortData("worksheet", "The modified excel worksheet", typeof(FScheme.Value.Container)));
 
             RegisterAllPorts();
         }
 
-        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+        public List<List<FScheme.Value>> ConvertTo2DList(FScheme.Value v)
         {
-            var worksheet = (Microsoft.Office.Interop.Excel.Worksheet)((FScheme.Value.Container)args[0]).Item;
-            var rowStart = (int)Math.Round(((FScheme.Value.Number)args[1]).Item);
-            var colStart = (int)Math.Round(((FScheme.Value.Number)args[2]).Item);
-            //object data;
+            if (v.IsList)
+            {
+                return ((FScheme.Value.List)v).Item.Select(ConvertRow).ToList();
+            }
 
-            if(!args[3].IsList)
-                throw new Exception("A list of data must be provided to set a range in Excel.");
+            var list = new List<List<FScheme.Value>>();
+            list.Add(ConvertRow(v));
+            return list;
+        }
 
-            // assume a list of lists
-            // get the dimension of the first object
-
-            var data = ((FScheme.Value.List) args[3]).Item;
-            var rowCount = data.Count();
-            var colCount = 0;
-
-            if (!data[0].IsList)
-                colCount = 1;
+        public static List<FScheme.Value> ConvertRow(FScheme.Value v)
+        {
+            if (v.IsString || v.IsNumber)
+            {
+                return new List<FScheme.Value>() {v};
+            }
+            else if (v.IsList)
+            {
+                return ((FScheme.Value.List) v).Item.Select(ConvertAsAtom).ToList();
+            }
             else
             {
-                var firstList = ((FScheme.Value.List)data[0]).Item;
-                colCount = firstList.Count();
+                return new List<FScheme.Value>() {ConvertAsAtom(v)};
             }
-            
-            var rangeData = new object[rowCount,colCount];
-            for (int i = 0; i < rowCount; i++)
-            {
-                var row = ((FScheme.Value.List)data[i]).Item;
+        }
 
-                for (int j = 0; j < colCount; j++)
+        public static FScheme.Value ConvertAsAtom(FScheme.Value v)
+        {
+            if (v == null)
+            {
+                return FScheme.Value.NewString("");
+            } 
+            else if (v.IsString || v.IsNumber)
+            {
+                return v;
+            }
+            else
+            {
+                return FScheme.Value.NewString(v.ToString());
+            }
+        }
+
+        public static void GetObjectList(List<List<FScheme.Value>> input, out object[,] output, out int numRows,
+                                   out int numCols)
+        {
+            numRows = input.Count;
+            numCols = input.Select(x => x.Count).Max();
+            output = new object[numRows, numCols];
+            for (int i = 0; i < numRows; i++)
+            {
+                for (int j = 0; j < numCols; j++)
                 {
-                    if (row[j] is FScheme.Value.String)
+                    if (j >= input[i].Count )
                     {
-                        rangeData[i, j] = ((FScheme.Value.String)row[j]).Item;
+                        output[i, j] = "";
                     }
-                    else if (row[j] is FScheme.Value.Number)
+                    else if (input[i][j] is FScheme.Value.String)
                     {
-                        rangeData[i, j] = ((FScheme.Value.Number) row[j]).Item;
+                        output[i, j] = ((FScheme.Value.String)input[i][j]).Item;
                     }
-                    else
+                    else if (input[i][j] is FScheme.Value.Number)
                     {
-                        // it's not a string or a number, we don't know what
-                        // to do with it.
-                        rangeData[i, j] = "";
+                        output[i, j] = ((FScheme.Value.Number)input[i][j]).Item;
                     }
                 }
             }
+        }
 
-            var range = worksheet.Range[worksheet.Cells[rowStart, colStart], worksheet.Cells[rowStart + rowCount-1, colStart + colCount-1]];
+        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+        {
+            var worksheet = (Worksheet)((FScheme.Value.Container)args[0]).Item;
 
-            //worksheet.Cells[row, col] = data;
+            // clear existing elements for dynamic update
+            var usedRange = worksheet.UsedRange;
+            usedRange.Cells.ClearContents();
+
+            // excel does not use zero based indexing (ugh)
+            // I would like to hide this from the user, though.
+            var rowStart = Math.Max(1, (int) Math.Round(((FScheme.Value.Number) args[1]).Item) + 1);
+            var colStart = Math.Max(1, (int) Math.Round(((FScheme.Value.Number) args[2]).Item) + 1);
+
+            var data = ConvertTo2DList(args[3]);
+            object[,] rangeData;
+            int rowCount, colCount;
+            GetObjectList(data, out rangeData, out rowCount, out colCount);
+
+            var c1 = (Excel.Range)worksheet.Cells[rowStart, colStart];
+            var c2 = (Excel.Range)worksheet.Cells[rowStart + rowCount - 1, colStart + colCount - 1];
+            var range = worksheet.get_Range(c1, c2);
             range.Value = rangeData;
 
             return FScheme.Value.NewContainer(worksheet);
@@ -283,7 +403,7 @@ namespace Dynamo.Nodes
 
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
-            var wb = (Microsoft.Office.Interop.Excel.Workbook)((FScheme.Value.Container)args[0]).Item;
+            var wb = (Workbook)((FScheme.Value.Container)args[0]).Item;
             var name = ((FScheme.Value.String)args[1]).Item;
 
             var worksheet = wb.Worksheets.Add();
