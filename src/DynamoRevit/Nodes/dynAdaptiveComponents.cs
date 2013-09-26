@@ -7,7 +7,7 @@ using Dynamo.Models;
 using Dynamo.Utilities;
 
 using Microsoft.FSharp.Collections;
-
+using RevitServices;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.Revit;
 
@@ -39,7 +39,7 @@ namespace Dynamo.Nodes
             {
                 //mutate
                 //...we attempt to fetch it from the document...
-                if (dynUtils.TryGetElement(Elements[0], out ac))
+                if (dynRevitSettings.Doc.Document.TryGetElement(Elements[0], out ac))
                 {
                     ac.Symbol = fs;
                 }
@@ -116,7 +116,7 @@ namespace Dynamo.Nodes
             {
                 //mutate
                 //...we attempt to fetch it from the document...
-                if (dynUtils.TryGetElement(this.Elements[0], out ac))
+                if (dynRevitSettings.Doc.Document.TryGetElement(this.Elements[0], out ac))
                 {
                     ac.Symbol = fs;
                 }
@@ -194,7 +194,7 @@ namespace Dynamo.Nodes
             if (Elements.Any())
             {
                 //...we attempt to fetch it from the document...
-                if (dynUtils.TryGetElement(this.Elements[0], out ac))
+                if (dynRevitSettings.Doc.Document.TryGetElement(this.Elements[0], out ac))
                 {
                     ac.Symbol = fs;
                 }

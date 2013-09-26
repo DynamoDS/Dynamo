@@ -22,6 +22,7 @@ using Dynamo.Connectors;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
+using RevitServices;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
 using Dynamo.Revit;
@@ -66,7 +67,7 @@ namespace Dynamo.Nodes
 
             if (this.Elements.Any())
             {
-                if (dynUtils.TryGetElement(this.Elements[0], out mc))
+                if (dynRevitSettings.Doc.Document.TryGetElement(this.Elements[0], out mc))
                 {
                     mc.SketchPlane = sp;
 
@@ -134,7 +135,7 @@ namespace Dynamo.Nodes
 
             if (this.Elements.Any())
             {
-                if (dynUtils.TryGetElement(this.Elements[0], out mc))
+                if (dynRevitSettings.Doc.Document.TryGetElement(this.Elements[0], out mc))
                 {
                     mc.SketchPlane = sp;
 
@@ -205,7 +206,7 @@ namespace Dynamo.Nodes
             //Standard logic for updating an old result, if it exists.
             if (this.Elements.Any())
             {
-                if (dynUtils.TryGetElement(this.Elements[0], out c))
+                if (dynRevitSettings.Doc.Document.TryGetElement(this.Elements[0], out c))
                 {
                     c.SetPoints(refPtArr);
                 }
@@ -258,7 +259,7 @@ namespace Dynamo.Nodes
             if (this.Elements.Any())
             {
                 //...try to get the first one...
-                if (dynUtils.TryGetElement(this.Elements[0], out c))
+                if (dynRevitSettings.Doc.Document.TryGetElement(this.Elements[0], out c))
                 {
                     //..and if we do, update it's position.
                     ReferencePointArray existingPts = c.GetPoints();
@@ -462,7 +463,7 @@ namespace Dynamo.Nodes
 
             ModelNurbSpline c;
 
-            if (Elements.Any() && dynUtils.TryGetElement(Elements[0], out c))
+            if (Elements.Any() && dynRevitSettings.Doc.Document.TryGetElement(Elements[0], out c))
             {
                 c.GeometryCurve = ns;
             }

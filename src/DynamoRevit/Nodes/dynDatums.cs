@@ -21,6 +21,7 @@ using Dynamo.Connectors;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
+using RevitServices;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
 using Dynamo.Revit;
@@ -49,14 +50,9 @@ namespace Dynamo.Nodes
 
             if (this.Elements.Any())
             {
-                if (dynUtils.TryGetElement(this.Elements[0], out lev))
+                if (dynRevitSettings.Doc.Document.TryGetElement(this.Elements[0], out lev))
                 {
                     lev.Elevation = h;
-<<<<<<< HEAD
-
-=======
-                    lev.Name = name;
->>>>>>> d46c60b... cleaned up TryGetElement code
                 }
                 else
                 {
@@ -118,7 +114,7 @@ namespace Dynamo.Nodes
                           if (this.Elements.Count > count)
                           {
                               //...we attempt to fetch it from the document...
-                              if (dynUtils.TryGetElement(this.Elements[count], out refPlane))
+                              if (dynRevitSettings.Doc.Document.TryGetElement(this.Elements[count], out refPlane))
                               {
                                   //...and if we're successful, update it's position (well for now make a new one with the same name)... 
                                   string name = refPlane.Name;
@@ -228,7 +224,7 @@ namespace Dynamo.Nodes
 
                 if (this.Elements.Any())
                 {
-                    if (dynUtils.TryGetElement(this.Elements[0], out refPlane))
+                    if (dynRevitSettings.Doc.Document.TryGetElement(this.Elements[0], out refPlane))
                     {
                         //...and if we're successful, update it's position (well for now make a new one with the same name)... 
                         name = refPlane.Name;
@@ -375,7 +371,7 @@ namespace Dynamo.Nodes
                           if (this.Elements.Count > count)
                           {
                               //...we attempt to fetch it from the document...
-                              if (dynUtils.TryGetElement(this.Elements[count], out grid))
+                              if (dynRevitSettings.Doc.Document.TryGetElement(this.Elements[count], out grid))
                               {
                                   //...and if we're successful, update it's position... 
                                   //grid.Curve = (Curve)((Value.Container)x).Item; // these are all readonly, how to modify exising grid then?
@@ -451,7 +447,7 @@ namespace Dynamo.Nodes
 
                 if (this.Elements.Any())
                 {
-                    if (dynUtils.TryGetElement(this.Elements[0], out grid))
+                    if (dynRevitSettings.Doc.Document.TryGetElement(this.Elements[0], out grid))
                     {
                         grid = this.UIDocument.Document.Create.NewGrid(c);
 

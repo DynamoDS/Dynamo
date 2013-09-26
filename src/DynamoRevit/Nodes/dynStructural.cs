@@ -10,6 +10,7 @@ using Dynamo.Models;
 using Dynamo.Revit;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
+using RevitServices;
 using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Nodes
@@ -118,7 +119,7 @@ namespace Dynamo.Nodes
                 FamilyInstance instance = null;
                 if (this.Elements.Count > count)
                 {
-                    if (dynUtils.TryGetElement(this.Elements[count], out instance))
+                    if (dynRevitSettings.Doc.Document.TryGetElement(this.Elements[count], out instance))
                     {
                         if (instance.Symbol != symbol)
                             instance.Symbol = symbol;

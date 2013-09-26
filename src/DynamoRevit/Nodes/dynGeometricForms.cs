@@ -7,6 +7,7 @@ using Dynamo.Connectors;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
+using RevitServices;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
 using Dynamo.Revit;
@@ -206,7 +207,7 @@ namespace Dynamo.Nodes
             {
                 Form oldF;
                 //is this same element?
-                if (dynUtils.TryGetElement(this.Elements[0], out oldF))
+                if (dynRevitSettings.Doc.Document.TryGetElement(this.Elements[0], out oldF))
                 {
                     if (oldF.IsSolid == isSolid  &&
                         _preferSurfaceForOneLoop == isSurface 
@@ -227,7 +228,7 @@ namespace Dynamo.Nodes
             else if (this._formId != ElementId.InvalidElementId)
             {
                 Form oldF;
-                if (dynUtils.TryGetElement(this._formId, out oldF))
+                if (dynRevitSettings.Doc.Document.TryGetElement(this._formId, out oldF))
                 {
                     if (oldF.IsSolid == isSolid 
                         && _preferSurfaceForOneLoop == isSurface 
