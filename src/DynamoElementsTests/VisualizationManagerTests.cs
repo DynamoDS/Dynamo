@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using NUnit.Framework;
@@ -126,7 +125,21 @@ namespace Dynamo.Tests
         [Test]
         public void CanVisualizeASMSurfaces()
         {
-            Assert.Inconclusive("Finish me!");
+            //test to ensure that when nodes are disconnected 
+            //their associated geometry is removed
+            var model = dynSettings.Controller.DynamoModel;
+            var viz = dynSettings.Controller.VisualizationManager;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_loft.dyn");
+            model.Open(openPath);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            var drawables = model.Nodes.Where(x => x is IDrawable);
+            var meshes = viz.Visualizations.SelectMany(x => x.Value.Description.Meshes);
+            Assert.AreEqual(drawables.Count(), viz.Visualizations.Count);
+            Assert.AreEqual(1, meshes.Count());
         }
 
         [Test]
