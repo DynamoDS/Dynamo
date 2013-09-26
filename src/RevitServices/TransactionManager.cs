@@ -99,7 +99,7 @@ namespace RevitServices
                     _trans.Commit();
                     RaiseTransactionCommitted();
                 }
-                _trans = null;
+                //_trans = null;
             }
         }
 
@@ -115,7 +115,7 @@ namespace RevitServices
                     _trans.RollBack();
                     RaiseTransactionCancelled();
                 }
-                _trans = null;
+                //_trans = null;
             }
         }
 
