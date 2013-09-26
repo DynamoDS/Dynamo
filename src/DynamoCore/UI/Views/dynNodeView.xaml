@@ -27,7 +27,7 @@
     </UserControl.Resources>
     
     <UserControl.ToolTip>
-        <Grid Width ="Auto" MaxWidth="235" MaxHeight="200" Height="Auto">
+        <Grid Width ="Auto" MaxWidth="235"  Height="Auto">
             <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
             <!-- Errors -->

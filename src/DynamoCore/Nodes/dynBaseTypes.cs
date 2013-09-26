@@ -4240,7 +4240,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return Value.NewString(NodeModel.BuildValueString(args[0],0,10000,0, 25));
+            return Value.NewString(NodeModel.PrintValue(args[0],0,10000,0, 25));
         }
 
         protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
