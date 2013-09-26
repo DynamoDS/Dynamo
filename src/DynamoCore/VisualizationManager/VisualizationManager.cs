@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reactive.Linq;
+using System.Diagnostics;
 using System.Windows.Media.Media3D;
 using System.Linq;
 using Dynamo.Models;
@@ -140,7 +140,51 @@ namespace Dynamo
             v.Geometry.Clear();
         }
 
-        public static List<string> GetUpstreamIDrawableIds(Dictionary<int, Tuple<int, NodeModel>> inputs)
+        /// <summary>
+        /// Aggregates all upstream geometry for the given node.
+        /// </summary>
+        /// <param name="node">The node whose upstream geometry you need.</param>
+        /// <returns>A render description containing all upstream geometry.</returns>
+        public RenderDescription RenderUpstream(NodeModel node)
+        {
+            var watch = new Stopwatch();
+            watch.Start();
+
+            var drawables = GetUpstreamIDrawableIds(node.Inputs);
+            
+            var ids = from viz in dynSettings.Controller.VisualizationManager.Visualizations
+                      where drawables.Contains(viz.Key)
+                      select viz;
+
+            var rd = new RenderDescription();
+
+            var keyValuePairs = ids as KeyValuePair<string, Visualization>[] ?? ids.ToArray();
+
+            var pts = keyValuePairs.SelectMany(x => x.Value.Description.Points);
+            var lines = keyValuePairs.SelectMany(x => x.Value.Description.Lines);
+            var meshes = keyValuePairs.SelectMany(x => x.Value.Description.Meshes).ToList();
+            var xs = keyValuePairs.SelectMany(x => x.Value.Description.XAxisPoints);
+            var ys = keyValuePairs.SelectMany(x => x.Value.Description.YAxisPoints);
+            var zs = keyValuePairs.SelectMany(x => x.Value.Description.ZAxisPoints);
+            rd.Points.AddRange(pts);
+            rd.Lines.AddRange(lines);
+            rd.Meshes.AddRange(meshes);
+            rd.XAxisPoints.AddRange(xs);
+            rd.YAxisPoints.AddRange(ys);
+            rd.ZAxisPoints.AddRange(zs);
+
+            watch.Stop();
+            Debug.WriteLine(string.Format("{0} ellapsed for aggregating geometry for watch.", watch.Elapsed));
+
+            return rd;
+        }
+
+        /// <summary>
+        /// Gathers the Ids of the upstream drawable nodes.
+        /// </summary>
+        /// <param name="inputs">A dictionary describing the inputs on the node.</param>
+        /// <returns>A collection of strings.</returns>
+        private List<string> GetUpstreamIDrawableIds(Dictionary<int, Tuple<int, NodeModel>> inputs)
         {
             var drawables = new List<string>();
 
@@ -176,6 +220,37 @@ namespace Dynamo
             }
 
             return drawables;
+        }
+
+        /// <summary>
+        /// A utility method for merging multiple meshes into one.
+        /// </summary>
+        /// <param name="meshes"></param>
+        /// <returns></returns>
+        public static Mesh3D MergeMeshes(List<Mesh3D> meshes)
+        {
+            if (meshes.Count == 0)
+                return null;
+
+            var positions = new List<Point3D>();
+            var triangleIndices = new List<int>();
+
+            int offset = 0;
+            foreach (Mesh3D m in meshes)
+            {
+                positions.AddRange(m.Vertices);
+
+                foreach (int[] face in m.Faces)
+                {
+                    triangleIndices.Add(face[0] + offset);
+                    triangleIndices.Add(face[1] + offset);
+                    triangleIndices.Add(face[2] + offset);
+                }
+
+                offset = positions.Count;
+            }
+
+            return new Mesh3D(positions, triangleIndices);
         }
         
     }

@@ -17,16 +17,10 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Linq;
-using System.Diagnostics;
-
 using Dynamo.Controls;
 using Dynamo.Models;
-using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
-using HelixToolkit.Wpf;
-using System.Windows.Media.Media3D;
 
 namespace Dynamo.Nodes
 {
@@ -36,17 +30,17 @@ namespace Dynamo.Nodes
     [AlsoKnownAs("Dynamo.Nodes.dyn3DPreview", "Dynamo.Nodes.3DPreview")]
     public partial class Watch3D : NodeWithOneOutput
     {
-        private PointsVisual3D _points;
-        private LinesVisual3D _lines;
-        private List<MeshVisual3D> _meshes = new List<MeshVisual3D>();
-        RenderDescription _renderDescription = new RenderDescription();
+        //private PointsVisual3D _points;
+        //private LinesVisual3D _lines;
+        //private List<MeshVisual3D> _meshes = new List<MeshVisual3D>();
+        //RenderDescription _renderDescription = new RenderDescription();
 
-        public Point3DCollection Points { get; set; }
-        public Point3DCollection Lines { get; set; }
-        public List<Mesh3D> Meshes { get; set; }
+        //public Point3DCollection Points { get; set; }
+        //public Point3DCollection Lines { get; set; }
+        //public List<Mesh3D> Meshes { get; set; }
 
         List<System.Windows.Media.Color> colors = new List<System.Windows.Media.Color>();
-        
+
         private bool _requiresRedraw = false;
         private bool _isRendering = false;
 
@@ -58,43 +52,13 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
 
             ArgumentLacing = LacingStrategy.Disabled;
-
-            dynSettings.Controller.VisualizationManager.VisualizationUpdateComplete += new EventHandler(VisualizationManager_VisualizationUpdateComplete);
         }
 
-        void VisualizationManager_VisualizationUpdateComplete(object sender, EventArgs e)
-        {
-            var watch = new Stopwatch();
-            watch.Start();
-
-            //when the visualization update is complete, rebind geometry
-            //in this watch to collections of geometry composed from upstream
-            //geometry
-            _renderDescription.Clear();
-
-            var drawables = VisualizationManager.GetUpstreamIDrawableIds(Inputs);
-            var ids = from viz in dynSettings.Controller.VisualizationManager.Visualizations
-                      where drawables.Contains(viz.Key)
-                      select viz;
-
-            //aggregate all the render descriptions into one for this node.
-            var keyValuePairs = ids as KeyValuePair<string, Visualization>[] ?? ids.ToArray();
-            _renderDescription.Points.AddRange(keyValuePairs.SelectMany(x => x.Value.Description.Points));
-            _renderDescription.Lines.AddRange(keyValuePairs.SelectMany(x => x.Value.Description.Lines));
-            _renderDescription.Meshes.AddRange(keyValuePairs.SelectMany(x => x.Value.Description.Meshes));
-            _renderDescription.XAxisPoints.AddRange(keyValuePairs.SelectMany(x => x.Value.Description.XAxisPoints));
-            _renderDescription.YAxisPoints.AddRange(keyValuePairs.SelectMany(x => x.Value.Description.YAxisPoints));
-            _renderDescription.ZAxisPoints.AddRange(keyValuePairs.SelectMany(x => x.Value.Description.ZAxisPoints));
-
-            watch.Stop();
-            Debug.WriteLine(string.Format("{0} ellapsed for aggregating geometry for watch.", watch.Elapsed));
-        }
-
-        MeshVisual3D MakeMeshVisual3D(Mesh3D mesh)
-        {
-            MeshVisual3D vismesh = new MeshVisual3D { Content = new GeometryModel3D { Geometry = mesh.ToMeshGeometry3D(), Material = Materials.White } };
-            return vismesh;
-        }
+        //MeshVisual3D MakeMeshVisual3D(Mesh3D mesh)
+        //{
+        //    MeshVisual3D vismesh = new MeshVisual3D { Content = new GeometryModel3D { Geometry = mesh.ToMeshGeometry3D(), Material = Materials.White } };
+        //    return vismesh;
+        //}
 
         public override Value Evaluate(FSharpList<Value> args)
         {
@@ -123,23 +87,23 @@ namespace Dynamo.Nodes
             //add a 3D viewport to the input grid
             //http://helixtoolkit.codeplex.com/wikipage?title=HelixViewport3D&referringTitle=Documentation
             _watchView = new WatchView();
-            _watchView.watch_view.DataContext = this;
+            _watchView.DataContext = this;
 
-            RenderOptions.SetEdgeMode(_watchView, EdgeMode.Unspecified);
+            //RenderOptions.SetEdgeMode(_watchView, EdgeMode.Unspecified);
 
-            Points = new Point3DCollection();
-            Lines = new Point3DCollection();
+            //Points = new Point3DCollection();
+            //Lines = new Point3DCollection();
 
-            _points = new PointsVisual3D { Color = Colors.Red, Size = 6 };
-            _lines = new LinesVisual3D { Color = Colors.Blue, Thickness = 1 };
+            //_points = new PointsVisual3D { Color = Colors.Red, Size = 6 };
+            //_lines = new LinesVisual3D { Color = Colors.Blue, Thickness = 1 };
 
-            _points.Points = Points;
-            _lines.Points = Lines;
+            //_points.Points = Points;
+            //_lines.Points = Lines;
 
-            _watchView.watch_view.Children.Add(_lines);
-            _watchView.watch_view.Children.Add(_points);
+            //_watchView.watch_view.Children.Add(_lines);
+            //_watchView.watch_view.Children.Add(_points);
 
-            _watchView.watch_view.Children.Add(new DefaultLights());
+            //_watchView.watch_view.Children.Add(new DefaultLights());
 
             _watchView.Width = 400;
             _watchView.Height = 300;
@@ -178,47 +142,47 @@ namespace Dynamo.Nodes
 
             _isRendering = true;
 
-            Points = null;
-            Lines = null;
-            _lines.Points = null;
-            _points.Points = null;
+            //Points = null;
+            //Lines = null;
+            //_lines.Points = null;
+            //_points.Points = null;
 
-            Points = new Point3DCollection();
-            Lines = new Point3DCollection();
-            Meshes = new List<Mesh3D>();
+            //Points = new Point3DCollection();
+            //Lines = new Point3DCollection();
+            //Meshes = new List<Mesh3D>();
 
-            foreach (Point3D p in _renderDescription.Points)
-            {
-                Points.Add(p);
-            }
+            //foreach (Point3D p in _renderDescription.Points)
+            //{
+            //    Points.Add(p);
+            //}
 
-            foreach (Point3D p in _renderDescription.Lines)
-            {
-                Lines.Add(p);
-            }
+            //foreach (Point3D p in _renderDescription.Lines)
+            //{
+            //    Lines.Add(p);
+            //}
 
-            foreach (Mesh3D mesh in _renderDescription.Meshes)
-            {
-                Meshes.Add(mesh);
-            }
+            //foreach (Mesh3D mesh in _renderDescription.Meshes)
+            //{
+            //    Meshes.Add(mesh);
+            //}
 
-            _lines.Points = Lines;
-            _points.Points = Points;
+            //_lines.Points = Lines;
+            //_points.Points = Points;
 
-            // remove old meshes from the renderer
-            foreach (MeshVisual3D mesh in _meshes)
-            {
-                _watchView.watch_view.Children.Remove(mesh);
-            }
+            //// remove old meshes from the renderer
+            //foreach (MeshVisual3D mesh in _meshes)
+            //{
+            //    _watchView.watch_view.Children.Remove(mesh);
+            //}
 
-            _meshes.Clear();
+            //_meshes.Clear();
 
-            foreach (Mesh3D mesh in Meshes)
-            {
-                MeshVisual3D vismesh = MakeMeshVisual3D(mesh);
-                _watchView.watch_view.Children.Add(vismesh);
-                _meshes.Add(vismesh);
-            }
+            //foreach (Mesh3D mesh in Meshes)
+            //{
+            //    MeshVisual3D vismesh = MakeMeshVisual3D(mesh);
+            //    _watchView.watch_view.Children.Add(vismesh);
+            //    _meshes.Add(vismesh);
+            //}
 
             _requiresRedraw = false;
             _isRendering = false;
