@@ -27,6 +27,7 @@ namespace Dynamo.Models
     public delegate void FunctionNamePromptRequestHandler(object sender, FunctionNamePromptEventArgs e);
     public delegate void CleanupHandler(object sender, EventArgs e);
     public delegate void NodeHandler(NodeModel node);
+    public delegate void ConnectorHandler(ConnectorModel connector);
     public delegate void WorkspaceHandler(WorkspaceModel model);
 
     #region Helper types
@@ -181,6 +182,16 @@ namespace Dynamo.Models
         /// Event called when a node is deleted
         /// </summary>
         public event NodeHandler NodeDeleted;
+
+        /// <summary>
+        /// Event called when a connector is added.
+        /// </summary>
+        public event ConnectorHandler ConnectorAdded;
+
+        /// <summary>
+        /// Event called when a connector is deleted.
+        /// </summary>
+        public event ConnectorHandler ConnectorDeleted;
 
         public WorkspaceModel CurrentWorkspace
         {
@@ -538,19 +549,6 @@ namespace Dynamo.Models
         //}
 
         /// <summary>
-        /// Called when a node is added to a workspace
-        /// </summary>
-        /// <param name="node"></param>
-        /// <param name="ws"></param>
-        private void OnNodeAdded(NodeModel node)
-        {
-            if (NodeAdded != null && node != null)
-            {
-                NodeAdded(node);
-            }
-        }
-
-        /// <summary>
         ///     Create a build-in node from a type object in a given workspace.
         /// </summary>
         /// <param name="elementType"> The Type object from which the node can be activated </param>
@@ -834,16 +832,17 @@ namespace Dynamo.Models
                     var newConnector = ConnectorModel.Make(start, end,
                                                         startIndex, endIndex, portType);
 
-                    Stopwatch addTimer = new Stopwatch();
-                    addTimer.Start();
+                    //Stopwatch addTimer = new Stopwatch();
+                    //addTimer.Start();
                     if (newConnector != null)
                         CurrentWorkspace.Connectors.Add(newConnector);
-                    addTimer.Stop();
-                    Debug.WriteLine(string.Format("{0} elapsed for add connector to collection.", addTimer.Elapsed));
+                    //addTimer.Stop();
+                    //Debug.WriteLine(string.Format("{0} elapsed for add connector to collection.", addTimer.Elapsed));
 
+                    OnConnectorAdded(newConnector);
                 }
 
-                DynamoLogger.Instance.Log(string.Format("{0} ellapsed for loading connectors.", sw.Elapsed - previousElapsed));
+                //DynamoLogger.Instance.Log(string.Format("{0} ellapsed for loading connectors.", sw.Elapsed - previousElapsed));
                 previousElapsed = sw.Elapsed;
 
                 #region instantiate notes
@@ -1565,6 +1564,18 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// Called when a node is added to a workspace
+        /// </summary>
+        /// <param name="node"></param>
+        private void OnNodeAdded(NodeModel node)
+        {
+            if (NodeAdded != null && node != null)
+            {
+                NodeAdded(node);
+            }
+        }
+
+        /// <summary>
         /// Called when a node is deleted
         /// </summary>
         /// <param name="node"></param>
@@ -1573,6 +1584,30 @@ namespace Dynamo.Models
             if (NodeDeleted != null)
             {
                 NodeDeleted(node);
+            }
+        }
+
+        /// <summary>
+        /// Called when a connector is added.
+        /// </summary>
+        /// <param name="connector"></param>
+        private void OnConnectorAdded(ConnectorModel connector)
+        {
+            if (ConnectorAdded != null)
+            {
+                ConnectorAdded(connector);
+            }
+        }
+
+        /// <summary>
+        /// Called when a connector is deleted.
+        /// </summary>
+        /// <param name="connector"></param>
+        internal void OnConnectorDeleted(ConnectorModel connector)
+        {
+            if (ConnectorDeleted != null)
+            {
+                ConnectorDeleted(connector);
             }
         }
 
@@ -1708,6 +1743,8 @@ namespace Dynamo.Models
                 selection.Remove(model); // Remove from selection set.
                 if (model is NodeModel)
                     OnNodeDeleted(model as NodeModel);
+                if(model is ConnectorModel)
+                    OnConnectorDeleted(model as ConnectorModel);
             }
         }
 
@@ -1742,6 +1779,8 @@ namespace Dynamo.Models
 
                 if (c != null)
                     CurrentWorkspace.Connectors.Add(c);
+
+                OnConnectorAdded(c);
 
                 return c;
             }

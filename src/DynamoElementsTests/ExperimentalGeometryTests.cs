@@ -54,6 +54,18 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void DoesNotBarfOnZeroLengthLine()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\GeometryTestFiles\ZeroLengthLine.dyn");
+            model.Open(openPath);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+        }
+
+        [Test]
         public void CircleTest()
         {
             var model = dynSettings.Controller.DynamoModel;
