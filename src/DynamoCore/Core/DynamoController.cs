@@ -63,12 +63,18 @@ namespace Dynamo
 
         private bool testing = false;
 
+        protected VisualizationManager visualizationManager;
+
         public CustomNodeManager CustomNodeManager { get; internal set; }
         public SearchViewModel SearchViewModel { get; internal set; }
         public DynamoViewModel DynamoViewModel { get; internal set; }
         public DynamoModel DynamoModel { get; set; }
         public Dispatcher UIDispatcher { get; set; }
-        public VisualizationManager VisualizationManager { get; protected set; }
+
+        public virtual VisualizationManager VisualizationManager
+        {
+            get { return visualizationManager ?? (visualizationManager = new VisualizationManagerASM()); }
+        }
 
         /// <summary>
         /// Testing flag is used to defer calls to run in the idle thread
@@ -231,9 +237,6 @@ namespace Dynamo
             {
                 DynamoLogger.Instance.Log("All Tests Passed. Core library loaded OK.");
             }
-
-            VisualizationManager = new VisualizationManagerASM();
-
         }
 
         #endregion
