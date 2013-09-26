@@ -266,6 +266,8 @@ namespace Dynamo
             NodeSubmittedForRendering += new EventHandler(Controller_NodeSubmittedForRendering);
             NodeRemovedFromRendering += new EventHandler(Controller_NodeRemovedFromRendering);
 
+            // Kick start the automation run, if possible.
+            this.DynamoViewModel.BeginCommandPlayback();
         }
 
         #endregion

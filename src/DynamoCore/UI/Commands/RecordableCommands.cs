@@ -67,8 +67,8 @@ namespace Dynamo.Core.Automation
         {
             switch (element.Name)
             {
-                case "Dynamo.Core.CreateNodeCommand":
-                    return CreateNodeCommand.Deserialize(element);
+                case "Dynamo.Core.Automation.CreateNodeCommand":
+                    return CreateNodeCommand.DeserializeCore(element);
             }
 
             throw new ArgumentException("element");

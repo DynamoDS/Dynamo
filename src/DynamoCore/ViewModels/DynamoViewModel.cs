@@ -8,7 +8,6 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
-using System.Xml;
 using Dynamo.Core.Automation;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -103,7 +102,6 @@ namespace Dynamo.ViewModels
         private DynamoModel _model;        
         private Point transformOrigin;
         private DynamoController controller;
-        private string commandFilePath;
         private bool runEnabled = true;
         protected bool canRunDynamically = true;
         protected bool debug = false;
@@ -898,31 +896,6 @@ namespace Dynamo.ViewModels
         {
             return this.CurrentSpaceViewModel.AlignSelectedCommand.CanExecute(param);
         }
-
-        #region Automation Related Methods
-
-        private void SaveRecordedCommands(object parameters)
-        {
-            XmlDocument document = new XmlDocument();
-            XmlElement commandRoot = document.CreateElement("Commands");
-            document.AppendChild(commandRoot);
-
-            foreach (RecordableCommand command in recordedCommands)
-                commandRoot.AppendChild(command.Serialize(document));
-
-            string format = "Commands-{0:yyyyMMdd-hhmmss}.xml";
-            string xmlFileName = string.Format(format, DateTime.Now);
-            string xmlFilePath = Path.Combine(Path.GetTempPath(), xmlFileName);
-
-            document.Save(xmlFilePath);
-        }
-
-        private bool CanSaveRecordedCommands(object parameters)
-        {
-            return (null != recordedCommands && (recordedCommands.Count > 0));
-        }
-
-        #endregion
 
         /// <summary>
         /// Resets the offset and the zoom for a view
