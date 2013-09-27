@@ -1141,6 +1141,7 @@ namespace Dynamo.ViewModels
             _model.CurrentWorkspace.Y = pt.Y;
 
             CurrentSpaceViewModel.OnCurrentOffsetChanged(this, new PointEventArgs(pt));
+            CurrentSpaceViewModel.ResetFitViewToggleCommand.Execute(parameter);
         }
 
         internal bool CanPan(object parameter)
