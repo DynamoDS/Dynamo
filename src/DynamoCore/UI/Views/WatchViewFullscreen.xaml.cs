@@ -124,15 +124,17 @@ namespace Dynamo.Controls
             //dynSettings.Controller.RequestsRedraw += new System.EventHandler(Controller_RequestsRedraw);
             //dynSettings.Controller.RunCompleted += new DynamoController.RunCompletedHandler(Controller_RunCompleted);
 
-            dynSettings.Controller.VisualizationManager.VisualizationUpdateComplete += new EventHandler(VisualizationManager_VisualizationUpdateComplete);
+            //check this for null so the designer can load the preview
+            if(dynSettings.Controller != null)
+                dynSettings.Controller.VisualizationManager.VisualizationUpdateComplete += new EventHandler(VisualizationManager_VisualizationUpdateComplete);
 
             _vm = DataContext as Watch3DFullscreenViewModel;
         }
 
         void VisualizationManager_VisualizationUpdateComplete(object sender, EventArgs e)
         {
-            if (!_vm.ParentWorkspace.IsCurrentSpace)
-                return;
+            //if (!_vm.ParentWorkspace.IsCurrentSpace)
+            //    return;
 
             if (!dynSettings.Controller.DynamoViewModel.FullscreenWatchShowing)
                 return;

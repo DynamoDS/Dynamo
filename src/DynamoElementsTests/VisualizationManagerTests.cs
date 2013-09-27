@@ -119,7 +119,7 @@ namespace Dynamo.Tests
         [Test]
         public void NothingIsVisualizedWhenThereIsNothingToVisualize()
         {
-            
+            Assert.Inconclusive("Finish me.");
         }
 
         [Test]
