@@ -89,7 +89,6 @@ namespace Dynamo.Controls
             ViewModel.RequestsSelection += new EventHandler(ViewModel_RequestsSelection);
 
             ViewModel.NodeLogic.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(NodeLogic_PropertyChanged);
-            InitializeErrorBubble();
         }
 
         void NodeLogic_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -196,15 +195,6 @@ namespace Dynamo.Controls
             el.UpdateLayout();
         }
 
-        private void InitializeErrorBubble()
-        {
-            PopupViewModel errorBubbleViewModel = new PopupViewModel();
-            PopupView errorBubble = new PopupView { DataContext = errorBubbleViewModel };
-            this.errorGrid.Children.Add(errorBubble);
-            errorBubbleViewModel.UpdateView(errorBubble);
-            ViewModel.UpdateErrorBubbleViewModelCommand.Execute(errorBubbleViewModel);
-        }
-
         private void topControl_Loaded(object sender, RoutedEventArgs e)
         {
 
@@ -274,7 +264,7 @@ namespace Dynamo.Controls
             double actualWidth = textBlock.ActualWidth * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
             double actualHeight = textBlock.ActualHeight * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
             Point pointToScreen_BotRight = new Point(pointToScreen_TopLeft.X + actualWidth, pointToScreen_TopLeft.Y + actualHeight);
-            ViewModel.ShowTooltipCommand.Execute(new PopupDataPacket(PopupViewModel.Style.NodeTooltip, pointToScreen_TopLeft, pointToScreen_BotRight, tooltipContent, PopupViewModel.Direction.Bottom));
+            ViewModel.ShowTooltipCommand.Execute(new PopupDataPacket(PopupViewModel.Style.NodeTooltip, pointToScreen_TopLeft, pointToScreen_BotRight, tooltipContent, PopupViewModel.Direction.Bottom, Guid.Empty));
         }
 
         private void NickNameBlock_OnMouseLeave(object sender, MouseEventArgs e)
@@ -290,7 +280,7 @@ namespace Dynamo.Controls
             double actualWidth = inputPort.ActualWidth * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
             double actualHeight = inputPort.ActualHeight * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
             Point pointToScreen_BotRight = new Point(pointToScreen_TopLeft.X + actualWidth, pointToScreen_TopLeft.Y + actualHeight);
-            ViewModel.ShowTooltipCommand.Execute(new PopupDataPacket(PopupViewModel.Style.NodeTooltip, pointToScreen_TopLeft, pointToScreen_BotRight, content, PopupViewModel.Direction.Right));
+            ViewModel.ShowTooltipCommand.Execute(new PopupDataPacket(PopupViewModel.Style.NodeTooltip, pointToScreen_TopLeft, pointToScreen_BotRight, content, PopupViewModel.Direction.Right, Guid.Empty));
         }
 
         private void InputPort_OnMouseLeave(object sender, MouseEventArgs e)
@@ -311,7 +301,7 @@ namespace Dynamo.Controls
             double actualWidth = outputPort.ActualWidth * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
             double actualHeight = outputPort.ActualHeight * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
             Point pointToScreen_BotRight = new Point(pointToScreen_TopLeft.X + actualWidth, pointToScreen_TopLeft.Y + actualHeight);
-            ViewModel.ShowTooltipCommand.Execute(new PopupDataPacket(PopupViewModel.Style.NodeTooltip, pointToScreen_TopLeft, pointToScreen_BotRight, content, PopupViewModel.Direction.Left));
+            ViewModel.ShowTooltipCommand.Execute(new PopupDataPacket(PopupViewModel.Style.NodeTooltip, pointToScreen_TopLeft, pointToScreen_BotRight, content, PopupViewModel.Direction.Left, Guid.Empty));
         }
 
         private void OutputPort_OnMouseLeave(object sender, MouseEventArgs e)

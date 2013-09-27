@@ -159,7 +159,7 @@ namespace Dynamo.Search
             Point pointToScreen_TopLeft = treeViewItem.PointToScreen(new Point(0, 0));
             Point pointToScreen_BotRight = new Point(pointToScreen_TopLeft.X + treeViewItem.ActualWidth, pointToScreen_TopLeft.Y + treeViewItem.ActualHeight);
             string popupContent = nodeSearchElement.Name + "\n" + nodeSearchElement.Description;
-            PopupDataPacket data = new PopupDataPacket(PopupViewModel.Style.LibraryItemPreview, pointToScreen_TopLeft, pointToScreen_BotRight, popupContent, PopupViewModel.Direction.Left);
+            PopupDataPacket data = new PopupDataPacket(PopupViewModel.Style.LibraryItemPreview, pointToScreen_TopLeft, pointToScreen_BotRight, popupContent, PopupViewModel.Direction.Left, Guid.Empty);
             DynamoCommands.ShowLibItemPopupCommand.Execute(data);
         }
 

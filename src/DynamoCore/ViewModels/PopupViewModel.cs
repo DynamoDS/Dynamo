@@ -37,6 +37,16 @@ namespace Dynamo.ViewModels
 
         #region Properties
 
+        public double ZIndex
+        {
+            get
+            {
+                return 5;
+            }
+        }
+
+        public Guid TargetGUID { get; set; }
+
         private Style _popupStyle;
         public Style PopupStyle
         {
@@ -94,12 +104,6 @@ namespace Dynamo.ViewModels
             set { _maxWidth = value; RaisePropertyChanged("MaxWidth"); }
         }
 
-        private bool _isInUse;
-        public bool IsInUse
-        {
-            get { return _isInUse; }
-            private set { _isInUse = value; }
-        }
         private double _opacity = 0;
         public double Opacity
         {
@@ -210,7 +214,7 @@ namespace Dynamo.ViewModels
 
         private bool CanUpdatePopup(object parameter)
         {
-            return !IsInUse;
+            return true;
         }
 
         private void FadeIn(object parameter)
@@ -684,14 +688,17 @@ namespace Dynamo.ViewModels
         public Point PointToScreen_BotRight;
         public string Text;
         public PopupViewModel.Direction ConnectingDirection;
+        public Guid TargetGUID;
 
-        public PopupDataPacket(PopupViewModel.Style style, Point pointToScreen_TopLeft, Point pointToScreen_BotRight, string text, PopupViewModel.Direction connectingDirection)
+        public PopupDataPacket(PopupViewModel.Style style, Point pointToScreen_TopLeft, Point pointToScreen_BotRight, 
+            string text, PopupViewModel.Direction connectingDirection, Guid targetGUID)
         {
             Style = style;
             PointToScreen_TopLeft = pointToScreen_TopLeft;
             PointToScreen_BotRight = pointToScreen_BotRight;
             Text = text;
             ConnectingDirection = connectingDirection;
+            TargetGUID = targetGUID;
         }
     }
 }
