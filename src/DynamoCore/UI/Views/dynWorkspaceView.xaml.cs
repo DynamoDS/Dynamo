@@ -13,6 +13,7 @@ using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.UI;
 
 namespace Dynamo.Views
 {
@@ -532,6 +533,14 @@ namespace Dynamo.Views
                     } 
                 });
         }
+
+        #region State Machine Related Methods
+
+        internal void HandleStateTransition(StateMachine.State prev, StateMachine.State curr)
+        {
+        }
+
+        #endregion
 
         private void DrawGrid()
         {
