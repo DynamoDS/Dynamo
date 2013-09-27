@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using System.Windows.Media.Media3D;
 using Autodesk.Revit.DB;
 using Dynamo.Nodes;
@@ -117,12 +118,7 @@ namespace Dynamo
             if (face == null)
                 return;
 
-            Mesh3D[] meshes = RevitMeshToHelixMesh(face.Triangulate(0.2));
-
-            foreach (Mesh3D mesh in meshes)
-            {
-                rd.Meshes.Add(mesh);
-            }
+            rd.Meshes.Add(RevitMeshToHelixMesh(face.Triangulate(0.2)));
         }
 
         private void DrawForm(object obj, RenderDescription rd)
@@ -287,12 +283,18 @@ namespace Dynamo
             if (face == null)
                 return;
 
-            var mesh = new Mesh3D();
-            mesh.Vertices.Add(face.Vertices[1].ToPoint3D());
-            mesh.Vertices.Add(face.Vertices[0].ToPoint3D());
-            mesh.Vertices.Add(face.Vertices[2].ToPoint3D());
-            mesh.AddFace(new int[3] { mesh.Vertices.Count - 1, mesh.Vertices.Count - 2, mesh.Vertices.Count - 3 });
-            rd.Meshes.Add(mesh);
+            var builder = new MeshBuilder();
+
+            builder.Positions.Add(face.Vertices[1].ToPoint3D());
+            builder.Positions.Add(face.Vertices[0].ToPoint3D());
+            builder.Positions.Add(face.Vertices[2].ToPoint3D());
+            builder.TriangleIndices.Add(builder.Positions.Count-1);
+            builder.TriangleIndices.Add(builder.Positions.Count - 2);
+            builder.TriangleIndices.Add(builder.Positions.Count-3);
+            builder.TextureCoordinates.Add(new System.Windows.Point(0, 0));
+            builder.TextureCoordinates.Add(new System.Windows.Point(0, 0));
+            builder.TextureCoordinates.Add(new System.Windows.Point(0, 0));
+            rd.Meshes.Add(builder.ToMesh(true));
         }
 
         private void DrawParticleSystem(object obj, RenderDescription rd)
@@ -338,27 +340,35 @@ namespace Dynamo
             }
         }
 
-        private static Mesh3D[] RevitMeshToHelixMesh(Mesh rmesh)
+        private static MeshGeometry3D RevitMeshToHelixMesh(Mesh rmesh)
         {
-            var indicesFront = new List<int>();
-            var indicesBack = new List<int>();
-            var vertices = new List<Point3D>();
+            var builder = new MeshBuilder();
 
             for (int i = 0; i < rmesh.NumTriangles; ++i)
             {
                 MeshTriangle tri = rmesh.get_Triangle(i);
 
+                //calculate the face normal by
+                //getting the cross product of two edges
+                var a = tri.get_Vertex(0);
+                var b = tri.get_Vertex(1);
+                var c = tri.get_Vertex(2);
+                var e1 = b - a;
+                var e2 = c - a;
+                var normXYZ = e1.CrossProduct(e2).Normalize();
+                var norm = new Vector3D(normXYZ.X, normXYZ.Y, normXYZ.Z);
+
                 for (int k = 0; k < 3; ++k)
                 {
-                    Point3D newPoint = RevitPointToWindowsPoint(tri.get_Vertex(k));
+                    var newPoint = RevitPointToWindowsPoint(tri.get_Vertex(k));
 
                     bool newPointExists = false;
-                    for (int l = 0; l < vertices.Count; ++l)
+                    for (int l = 0; l < builder.Positions.Count; ++l)
                     {
-                        Point3D p = vertices[l];
+                        Point3D p = builder.Positions[l];
                         if ((p.X == newPoint.X) && (p.Y == newPoint.Y) && (p.Z == newPoint.Z))
                         {
-                            indicesFront.Add(l);
+                            builder.TriangleIndices.Add(l);
                             newPointExists = true;
                             break;
                         }
@@ -367,26 +377,14 @@ namespace Dynamo
                     if (newPointExists)
                         continue;
 
-                    indicesFront.Add(vertices.Count);
-                    vertices.Add(newPoint);
-                }
-
-                int a = indicesFront[indicesFront.Count - 3];
-                int b = indicesFront[indicesFront.Count - 2];
-                int c = indicesFront[indicesFront.Count - 1];
-
-                indicesBack.Add(c);
-                indicesBack.Add(b);
-                indicesBack.Add(a);
+                    builder.Positions.Add(newPoint);
+                    builder.TextureCoordinates.Add(new System.Windows.Point(0,0));
+                    builder.TriangleIndices.Add(builder.Positions.Count);
+                    builder.Normals.Add(norm);
+                } 
             }
 
-            var meshes = new List<Mesh3D>
-            {
-                new Mesh3D(vertices, indicesFront),
-                new Mesh3D(vertices, indicesBack)
-            };
-
-            return meshes.ToArray();
+            return builder.ToMesh(true);
         }
 
         private static Point3D RevitPointToWindowsPoint(XYZ xyz)

@@ -23,7 +23,7 @@ namespace Dynamo
         /// <summary>
         /// A collection of mesh objects to be used for rendering
         /// </summary>
-        public List<Mesh3D> Meshes { get; internal set; }
+        public List<MeshGeometry3D> Meshes { get; internal set; }
 
         /// <summary>
         /// A collection of Point objects used to render the x axes of transforms
@@ -44,7 +44,7 @@ namespace Dynamo
         {
             Points = new List<Point3D>();
             Lines = new List<Point3D>();
-            Meshes = new List<Mesh3D>();
+            Meshes = new List<MeshGeometry3D>();
             XAxisPoints = new List<Point3D>();
             YAxisPoints = new List<Point3D>();
             ZAxisPoints = new List<Point3D>();

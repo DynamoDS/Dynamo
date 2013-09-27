@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Media.Media3D;
@@ -27,6 +26,8 @@ namespace Dynamo
 
                 foreach (var geom in n.Geometry)
                 {
+                    var builder = new MeshBuilder();
+
                     var g = geom as GraphicItem;
                     if (g == null)
                         continue;
@@ -48,7 +49,7 @@ namespace Dynamo
                     {
                         for (int i = 0; i < num_verts; ++i)
                         {
-                            Point3D p = new Point3D(
+                            var p = new Point3D(
                                 line_strip_vertices[counter],
                                 line_strip_vertices[counter + 1],
                                 line_strip_vertices[counter + 2]);
@@ -65,10 +66,7 @@ namespace Dynamo
                     }
 
                     FloatList triangle_vertices = g.triangle_vertices_threadsafe();
-
-                    List<int> indices_front = new List<int>();
-                    List<int> indices_back = new List<int>();
-                    List<Point3D> vertices = new List<Point3D>();
+                    FloatList triangle_normals = g.triangle_normals_threadsafe();
 
                     for (int i = 0; i < triangle_vertices.Count/9; ++i)
                     {
@@ -77,17 +75,22 @@ namespace Dynamo
 
                             int index = i*9 + k*3;
 
-                            Point3D new_point = new Point3D(triangle_vertices[index],
+                            var new_point = new Point3D(triangle_vertices[index],
                                                             triangle_vertices[index + 1],
                                                             triangle_vertices[index + 2]);
 
+                            var normal = new Vector3D(triangle_normals[index],
+                                                            triangle_normals[index + 1],
+                                                            triangle_normals[index + 2]);
+
                             bool new_point_exists = false;
-                            for (int l = 0; l < vertices.Count; ++l)
+                            for (int l = 0; l < builder.Positions.Count; ++l)
                             {
-                                Point3D p = vertices[l];
+                                Point3D p = builder.Positions[l];
                                 if ((p.X == new_point.X) && (p.Y == new_point.Y) && (p.Z == new_point.Z))
                                 {
-                                    indices_front.Add(l);
+                                    //indices_front.Add(l);
+                                    builder.TriangleIndices.Add(l);
                                     new_point_exists = true;
                                     break;
                                 }
@@ -96,21 +99,23 @@ namespace Dynamo
                             if (new_point_exists)
                                 continue;
 
-                            indices_front.Add(vertices.Count);
-                            vertices.Add(new_point);
+                            builder.TriangleIndices.Add(builder.Positions.Count);
+                            builder.Normals.Add(normal);
+                            builder.Positions.Add(new_point);
+                            builder.TextureCoordinates.Add(new System.Windows.Point(0,0));
                         }
 
-                        int a = indices_front[indices_front.Count - 3];
-                        int b = indices_front[indices_front.Count - 2];
-                        int c = indices_front[indices_front.Count - 1];
+                        //int a = builder.TriangleIndices[indices_front.Count - 3];
+                        //int b = builder.TriangleIndices[indices_front.Count - 2];
+                        //int c = builder.TriangleIndices[indices_front.Count - 1];
 
-                        indices_back.Add(c);
-                        indices_back.Add(b);
-                        indices_back.Add(a);
+                        //builder.TriangleIndices.Add(c);
+                        //builder.TriangleIndices.Add(b);
+                        //builder.TriangleIndices.Add(a);
+
                     }
 
-                    rd.Meshes.Add(new Mesh3D(vertices, indices_front));
-                    rd.Meshes.Add(new Mesh3D(vertices, indices_back));
+                    rd.Meshes.Add(builder.ToMesh(true));
 
                     //set this flag to avoid processing again
                     //if not necessary
