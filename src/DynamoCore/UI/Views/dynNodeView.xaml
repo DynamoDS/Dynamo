@@ -207,8 +207,8 @@
                 Name="elementCanvas" 
                 Grid.Row="0" Grid.RowSpan="2" Grid.Column="0">
 
-                <Rectangle Canvas.Left="8" Canvas.Top="8" Canvas.ZIndex="1"  Width="{Binding ElementName=grid, Path=ActualWidth}"
-                       Height="{Binding ElementName=grid, Path=ActualHeight}"
+                <Rectangle Canvas.Left="8" Canvas.Top="8" Canvas.ZIndex="1"  Width="{Binding ElementName=topControl, Path=ActualWidth}"
+                       Height="{Binding ElementName=topControl, Path=ActualHeight}"
                        Name="customNodeRectangle2" 
                        Stroke="DarkGray" 
                        StrokeThickness="2" StrokeDashArray="4,1"
@@ -227,8 +227,8 @@
                        Visibility="{Binding Path=IsCustomFunction, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}">
             </Rectangle>-->
 
-                <Rectangle Width="{Binding ElementName=grid, Path=ActualWidth}"
-                       Height="{Binding ElementName=grid, Path=ActualHeight}"
+                <Rectangle Width="{Binding ElementName=topControl, Path=ActualWidth}"
+                       Height="{Binding ElementName=topControl, Path=ActualHeight}"
                        Name="elementRectangle" 
                        Stroke="{Binding Path=IsSelected, Converter={StaticResource BooleanToBrushConverter}, Mode=OneWay}" 
                        StrokeThickness="2"
