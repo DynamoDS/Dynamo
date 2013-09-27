@@ -22,22 +22,29 @@ namespace Dynamo.Controls
     /// </summary>
     public partial class PopupView : UserControl
     {
-        private PopupViewModel _viewModel;
-
-        public PopupView(PopupViewModel viewmodel)
+        public PopupView()
         {
             InitializeComponent();
-            DataContext = _viewModel = viewmodel;
+        }
+
+        private PopupViewModel GetViewModel()
+        {
+            if (this.DataContext is PopupViewModel)
+                return this.DataContext as PopupViewModel;
+            else
+                return null;
         }
 
         private void FadeInPopupWindow()
         {
-            _viewModel.FadeInCommand.Execute(null);
+            PopupViewModel viewModel = GetViewModel();
+            viewModel.FadeInCommand.Execute(null);
         }
 
         private void FadeOutPopupWindow()
         {
-            _viewModel.FadeOutCommand.Execute(null);
+            PopupViewModel viewModel = GetViewModel();
+            viewModel.FadeOutCommand.Execute(null);
         }
 
         private void Popup_MouseEnter(object sender, MouseEventArgs e)
