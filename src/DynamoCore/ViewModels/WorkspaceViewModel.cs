@@ -991,6 +991,7 @@ namespace Dynamo.ViewModels
         {
             PopupDataPacket data = (PopupDataPacket)parameter;
             PopupViewModel errorBubbleViewModel = new PopupViewModel();
+            Errors.Add(errorBubbleViewModel);
             errorBubbleViewModel.UpdatePopupCommand.Execute(data);
             errorBubbleViewModel.SetAlwaysVisibleCommand.Execute(true);
             errorBubbleViewModel.FadeInCommand.Execute(null);
