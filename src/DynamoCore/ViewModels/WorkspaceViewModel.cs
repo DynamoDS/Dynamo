@@ -813,6 +813,7 @@ namespace Dynamo.ViewModels
         private void ZoomIn(object o)
         {
             OnRequestZoomToViewportCenter(this, new ZoomEventArgs(_zoomIncrement));
+            ResetFitViewToggle(o);
         }
 
         private bool CanZoomIn(object o)
@@ -823,6 +824,7 @@ namespace Dynamo.ViewModels
         private void ZoomOut(object o)
         {
             OnRequestZoomToViewportCenter(this, new ZoomEventArgs(-_zoomIncrement));
+            ResetFitViewToggle(o);
         }
 
         private bool CanZoomOut(object o)
@@ -840,7 +842,7 @@ namespace Dynamo.ViewModels
 
         private void SetZoom(object zoom)
         {
-            _model.Zoom = Convert.ToDouble(zoom); ;
+            _model.Zoom = Convert.ToDouble(zoom);
         }
 
         private bool CanSetZoom(object zoom)
@@ -848,7 +850,7 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        private bool _fitViewActualZoomToggle = true;
+        private bool _fitViewActualZoomToggle = false;
         private void FitView(object o)
         {
             // Get the offset and focus width & height (zoom if 100%)
@@ -888,6 +890,16 @@ namespace Dynamo.ViewModels
         }
 
         private bool CanFitView(object o)
+        {
+            return true;
+        }
+
+        private void ResetFitViewToggle(object o)
+        {
+            _fitViewActualZoomToggle = false;
+        }
+
+        private bool CanResetFitViewToggle(object o)
         {
             return true;
         }
