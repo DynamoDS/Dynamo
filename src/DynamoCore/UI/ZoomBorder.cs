@@ -12,6 +12,7 @@ using Microsoft.Practices.Prism.ViewModel;
 using System.Windows.Resources;
 using System;
 using System.Windows.Shapes;
+using Dynamo.Core;
 
 namespace Dynamo.Controls
 {
@@ -271,15 +272,15 @@ namespace Dynamo.Controls
         {
             GridSpacingProperty = DependencyProperty.Register(
                 "GridSpacing", typeof(int), typeof(EndlessGrid),
-                new PropertyMetadata(100));
+                new PropertyMetadata(Configurations.GridSpacing));
 
             GridThicknessProperty = DependencyProperty.Register(
                 "GridThickness", typeof(int), typeof(EndlessGrid),
-                new PropertyMetadata(2));
+                new PropertyMetadata(Configurations.GridThickness));
 
             GridLineColorProperty = DependencyProperty.Register(
                 "GridLineColor", typeof(Color), typeof(EndlessGrid),
-                new PropertyMetadata(Color.FromArgb(255, 232, 232, 232)));
+                new PropertyMetadata(Configurations.GridLineColor));
         }
 
         #endregion
@@ -306,20 +307,20 @@ namespace Dynamo.Controls
 
         #endregion
 
-        #region Private Properties
+        #region Protected Properties
 
-        protected int _offset;
-        protected FrameworkElement ViewingRegion;
-        protected TranslateTransform _viewingTranslate;
-        protected double _viewingZoom;
-        protected double _viewingWidth;
-        protected double _viewingHeight;
+        protected int offset;
+        protected FrameworkElement viewingRegion;
+        protected TranslateTransform viewingTranslate;
+        protected double viewingZoom;
+        protected double viewingWidth;
+        protected double viewingHeight;
 
         #endregion
 
         public EndlessGrid(FrameworkElement viewingRegion)
         {
-            this.ViewingRegion = viewingRegion;
+            this.viewingRegion = viewingRegion;
             this.RenderTransform = new TranslateTransform();
             
             this.Loaded += EndlessGrid_Loaded;
@@ -327,8 +328,8 @@ namespace Dynamo.Controls
 
         public void TranslateAndZoomChanged(TranslateTransform actualTranslate, double zoom)
         {
-            _viewingTranslate = actualTranslate;
-            _viewingZoom = zoom;
+            viewingTranslate = actualTranslate;
+            viewingZoom = zoom;
 
             RecalculateGridPosition();
         }
@@ -340,12 +341,12 @@ namespace Dynamo.Controls
             DisplayRegion_SizeChanged(null, null);
 
             CreateGrid();
-            this.ViewingRegion.SizeChanged += DisplayRegion_SizeChanged;
+            this.viewingRegion.SizeChanged += DisplayRegion_SizeChanged;
         }
 
         private void DisplayRegion_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            ViewingSizeChanged(ViewingRegion.ActualWidth, ViewingRegion.ActualHeight);
+            ViewingSizeChanged(viewingRegion.ActualWidth, viewingRegion.ActualHeight);
         }
 
         #endregion
@@ -358,14 +359,14 @@ namespace Dynamo.Controls
 
             Background = new SolidColorBrush(Colors.Transparent);
 
-            _offset = (int)Math.Ceiling(GridSpacing * 2 / WorkspaceModel.ZOOM_MINIMUM);
+            offset = (int)Math.Ceiling(GridSpacing * 2 / WorkspaceModel.ZOOM_MINIMUM);
 
-            this.Width = _viewingWidth / WorkspaceModel.ZOOM_MINIMUM + _offset * 2;
-            this.Height = _viewingHeight / WorkspaceModel.ZOOM_MINIMUM + _offset * 2;
+            this.Width = viewingWidth / WorkspaceModel.ZOOM_MINIMUM + offset * 2;
+            this.Height = viewingHeight / WorkspaceModel.ZOOM_MINIMUM + offset * 2;
 
             TranslateTransform tt = (this.RenderTransform as TranslateTransform);
-            tt.X = -_offset;
-            tt.Y = -_offset;
+            tt.X = -offset;
+            tt.Y = -offset;
 
             // Draw Vertical Grid Lines
             for (double i = 0; i < this.Width; i += GridSpacing)
@@ -401,18 +402,18 @@ namespace Dynamo.Controls
         protected void RecalculateGridPosition()
         {
             TranslateTransform tt = (this.RenderTransform as TranslateTransform);
-            if (_viewingZoom != 0)
+            if (viewingZoom != 0)
             {
-                double scaledGridSpacing = GridSpacing * _viewingZoom;
-                tt.X = -_offset - ((int)(_viewingTranslate.X / scaledGridSpacing)) * GridSpacing;
-                tt.Y = -_offset - ((int)(_viewingTranslate.Y / scaledGridSpacing)) * GridSpacing;
+                double scaledGridSpacing = GridSpacing * viewingZoom;
+                tt.X = -offset - ((int)(viewingTranslate.X / scaledGridSpacing)) * GridSpacing;
+                tt.Y = -offset - ((int)(viewingTranslate.Y / scaledGridSpacing)) * GridSpacing;
             }
         }
 
-        protected void ViewingSizeChanged(double viewingWidth, double viewingHeight)
+        protected void ViewingSizeChanged(double viewWidth, double viewHeight)
         {
-            _viewingWidth = viewingWidth;
-            _viewingHeight = viewingHeight;
+            viewingWidth = viewWidth;
+            viewingHeight = viewHeight;
 
             CreateGrid();
             RecalculateGridPosition();

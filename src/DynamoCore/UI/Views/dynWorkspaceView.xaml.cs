@@ -60,8 +60,6 @@ namespace Dynamo.Views
             // Add EndlessGrid
             endlessGrid = new EndlessGrid(outerCanvas);
             selectionCanvas.Children.Add(endlessGrid);
-            Canvas.SetZIndex(endlessGrid, -1);
-            Dynamo.Controls.DragCanvas.SetCanBeDragged(endlessGrid, false);
             zoomBorder.EndlessGrid = endlessGrid; // Register with ZoomBorder
 
             // EndlessGrid Toggle On/Off Binding
