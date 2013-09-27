@@ -117,6 +117,12 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void BackgroundPreviewDrawsOnOpen()
+        {
+            Assert.Inconclusive("Finish me!");
+        }
+        
+        [Test]
         public void CanVisualizeASMSolids()
         {
             Assert.Inconclusive("Finish me!");

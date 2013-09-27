@@ -23,6 +23,7 @@
                     <ModelVisual3D.Content>
                         <!--<GeometryModel3D Geometry="{Binding HelixMesh}" Material="{Binding Path=HelixMeshMaterial}"/>-->
                         <GeometryModel3D Geometry="{Binding HelixMesh}">
+                            <!--A box for testing-->
                             <!--<GeometryModel3D.Geometry>
                                 <MeshGeometry3D 
                                       Positions="-1 -1 0  1 -1 0  -1 1 0  1 1 0"
@@ -37,6 +38,13 @@
                                     </DiffuseMaterial.Brush>
                                 </DiffuseMaterial>
                             </GeometryModel3D.Material>
+                            <GeometryModel3D.BackMaterial>
+                                <DiffuseMaterial>
+                                    <DiffuseMaterial.Brush>
+                                        <SolidColorBrush Color="Cyan" Opacity="0.3"/>
+                                    </DiffuseMaterial.Brush>
+                                </DiffuseMaterial>
+                            </GeometryModel3D.BackMaterial>
                         </GeometryModel3D>
                     </ModelVisual3D.Content>
                 </ModelVisual3D>
