@@ -54,7 +54,7 @@ namespace Dynamo.Controls
         private dynNodeView draggedNode;
 #pragma warning restore 649
         private DynamoViewModel _vm;
-        private Stopwatch _timer;        
+        private Stopwatch _timer;
 
         public bool ConsoleShowing
         {
@@ -79,7 +79,7 @@ namespace Dynamo.Controls
         public DynamoView()
         {
             _timer = new Stopwatch();
-            _timer.Start();            
+            _timer.Start();
 
             InitializeComponent();
             InitializeShortcutBar();
@@ -87,7 +87,7 @@ namespace Dynamo.Controls
             this.Loaded += dynBench_Activated;
 
             //setup popup for library items tooltip
-            PopupView popup = new PopupView(dynSettings.Controller.PopupViewmodel);
+            PopupView popup = new PopupView { DataContext = dynSettings.Controller.PopupViewmodel };
             dynSettings.Controller.PopupViewmodel.UpdateView(popup);
             popupGrid.Children.Add(popup);
         }
@@ -176,7 +176,7 @@ namespace Dynamo.Controls
 
             #region Search initialization
 
-            var search = new SearchView {DataContext = dynSettings.Controller.SearchViewModel};
+            var search = new SearchView { DataContext = dynSettings.Controller.SearchViewModel };
             sidebarGrid.Children.Add(search);
             dynSettings.Controller.SearchViewModel.Visible = true;
 
@@ -201,7 +201,7 @@ namespace Dynamo.Controls
 
             dynSettings.Controller.ClipBoard.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(ClipBoard_CollectionChanged);
         }
-        
+
         private PackageManagerPublishView _pubPkgView;
         void _vm_RequestRequestPackageManagerPublish(PublishPackageViewModel model)
         {
@@ -210,7 +210,7 @@ namespace Dynamo.Controls
                 _pubPkgView = new PackageManagerPublishView(model);
                 _pubPkgView.Closed += (sender, args) => _pubPkgView = null;
                 _pubPkgView.Show();
-               
+
                 if (_pubPkgView.IsLoaded && this.IsLoaded) _pubPkgView.Owner = this;
             }
 
@@ -227,9 +227,9 @@ namespace Dynamo.Controls
                 _searchPkgsView.Closed += (sender, args) => _searchPkgsView = null;
                 _searchPkgsView.Show();
 
-                 if (_searchPkgsView.IsLoaded && this.IsLoaded) _searchPkgsView.Owner = this;
+                if (_searchPkgsView.IsLoaded && this.IsLoaded) _searchPkgsView.Owner = this;
             }
-             _searchPkgsView.Focus();
+            _searchPkgsView.Focus();
         }
 
         private InstalledPackagesView _installedPkgsView;
@@ -241,7 +241,7 @@ namespace Dynamo.Controls
                 _installedPkgsView.Closed += (sender, args) => _installedPkgsView = null;
                 _installedPkgsView.Show();
 
-                if (_installedPkgsView.IsLoaded && this.IsLoaded)  _installedPkgsView.Owner = this;
+                if (_installedPkgsView.IsLoaded && this.IsLoaded) _installedPkgsView.Owner = this;
             }
             _installedPkgsView.Focus();
         }
@@ -342,9 +342,9 @@ namespace Dynamo.Controls
                     height = Math.Max(n.Y + n.Height, height);
                 }
 
-                var rtb = new RenderTargetBitmap( Math.Max(1, (int)width),
-                                                  Math.Max(1, (int)height), 
-                                                  96, 
+                var rtb = new RenderTargetBitmap(Math.Max(1, (int)width),
+                                                  Math.Max(1, (int)height),
+                                                  96,
                                                   96,
                                                   System.Windows.Media.PixelFormats.Default);
 
@@ -608,11 +608,11 @@ namespace Dynamo.Controls
                 dynSettings.Controller.DynamoViewModel.QueueLoad(path);
             else
             {
-                if(dynSettings.Controller.DynamoModel.CanGoHome(null))
+                if (dynSettings.Controller.DynamoModel.CanGoHome(null))
                     dynSettings.Controller.DynamoModel.Home(null);
 
                 _vm.OpenCommand.Execute(path);
             }
         }
-    }    
+    }
 }

@@ -199,7 +199,7 @@ namespace Dynamo.Controls
         private void InitializeErrorBubble()
         {
             PopupViewModel errorBubbleViewModel = new PopupViewModel();
-            PopupView errorBubble = new PopupView(errorBubbleViewModel);
+            PopupView errorBubble = new PopupView { DataContext = errorBubbleViewModel };
             this.errorGrid.Children.Add(errorBubble);
             errorBubbleViewModel.UpdateView(errorBubble);
             ViewModel.UpdateErrorBubbleViewModelCommand.Execute(errorBubbleViewModel);
