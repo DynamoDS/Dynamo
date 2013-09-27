@@ -134,7 +134,7 @@ namespace Dynamo.Views
         {
             var sw = new Stopwatch();
             sw.Start();
-            DrawGrid();
+            //DrawGrid();
             sw.Stop();
             DynamoLogger.Instance.Log(string.Format("{0} elapsed for drawing grid.", sw.Elapsed));
         }
