@@ -17,8 +17,6 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -33,7 +31,6 @@ using Dynamo.Search;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using DynamoCommands = Dynamo.UI.Commands.DynamoCommands;
 using String = System.String;
 
 namespace Dynamo.Controls
