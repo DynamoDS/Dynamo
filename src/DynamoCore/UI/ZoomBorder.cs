@@ -148,6 +148,10 @@ namespace Dynamo.Controls
                 Point mousePosition = e.GetPosition(child);
                 WorkspaceViewModel vm = DataContext as WorkspaceViewModel;
                 vm.OnRequestZoomToViewportPoint(this, new ZoomEventArgs(zoom, mousePosition));
+
+                // Reset Fit View Toggle
+                if ( vm.ResetFitViewToggleCommand.CanExecute(null) )
+                    vm.ResetFitViewToggleCommand.Execute(null);
             }
         }
 
@@ -216,6 +220,11 @@ namespace Dynamo.Controls
                     Vector v = start - e.GetPosition(this);
                     tt.X = origin.X - v.X;
                     tt.Y = origin.Y - v.Y;
+
+                    // Reset Fit View Toggle
+                    WorkspaceViewModel vm = DataContext as WorkspaceViewModel;
+                    if (vm.ResetFitViewToggleCommand.CanExecute(null))
+                        vm.ResetFitViewToggleCommand.Execute(null);
                 }
             }
         }
