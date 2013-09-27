@@ -2,65 +2,55 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Windows.Media.Media3D;
 using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
 using NUnit.Framework;
 
-namespace Dynamo.Tests
+namespace Dynamo.Tests.UI
 {
     [TestFixture, RequiresSTA]
-    class VisualizationManagerUITests
+    public class VisualizationManagerUITests : DynamoTestUI
     {
-        private static DynamoController controller;
-        private static DynamoViewModel vm;
-        private static DynamoView ui;
-
-        protected string ExecutingDirectory { get; set; }
-
-        #region SetUp & TearDown
-
-        [SetUp, RequiresSTA]
+        [SetUp]
         public void Start()
         {
-            ExecutingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.CurrentDomain_AssemblyResolve;
 
-            controller = DynamoController.MakeSandbox();
+            Controller = DynamoController.MakeSandbox();
 
             //create the view
-            ui = new DynamoView();
-            ui.DataContext = controller.DynamoViewModel;
-            vm = controller.DynamoViewModel;
-            controller.UIDispatcher = ui.Dispatcher;
-            ui.Show();
+            Ui = new DynamoView();
+            Ui.DataContext = Controller.DynamoViewModel;
+            Vm = Controller.DynamoViewModel;
+            Controller.UIDispatcher = Ui.Dispatcher;
+            Ui.Show();
 
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+
+            string tempPath = Path.GetTempPath();
+            TempFolder = Path.Combine(tempPath, "dynamoTmp");
+
+            if (!Directory.Exists(TempFolder))
+            {
+                Directory.CreateDirectory(TempFolder);
+            }
+            else
+            {
+                EmptyTempFolder();
+            }
         }
 
-        [TearDown, RequiresSTA]
+        [TearDown]
         public void Exit()
         {
-            if (ui.IsLoaded)
-                ui.Close();
+            if (Ui.IsLoaded)
+                Ui.Close();
         }
 
-        #endregion
-
-        #region utility methods
-
-        public string GetTestDirectory()
-        {
-            var directory = new DirectoryInfo(ExecutingDirectory);
-            return Path.Combine(directory.Parent.Parent.Parent.FullName, "test");
-        }
-
-        #endregion
-
-        [Test, RequiresSTA]
+        [Test]
         public void VisualizationInSyncWithPreviewUpstream()
         {
             var model = dynSettings.Controller.DynamoModel;
