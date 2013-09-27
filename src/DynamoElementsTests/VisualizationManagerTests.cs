@@ -139,6 +139,18 @@ namespace Dynamo.Tests
         }
         
         [Test]
+        public void VisualizationInSyncWithPreview()
+        {
+            Assert.Inconclusive("Finish me.");
+        }
+
+        [Test]
+        public void VisualizationInSyncWithPreviewUpstream()
+        {
+            Assert.Inconclusive("Finish me.");
+        }
+
+        [Test]
         public void CanVisualizeASMSolids()
         {
             Assert.Inconclusive("Finish me!");
@@ -152,7 +164,7 @@ namespace Dynamo.Tests
             var model = dynSettings.Controller.DynamoModel;
             var viz = dynSettings.Controller.VisualizationManager;
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_loft.dyn");
+            string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_cuboid.dyn");
             model.Open(openPath);
 
             // run the expression
@@ -167,7 +179,26 @@ namespace Dynamo.Tests
         [Test]
         public void CanVisualizeASMCoordinateSystems()
         {
-            Assert.Inconclusive("Finish me!");
+            //test to ensure that when nodes are disconnected 
+            //their associated geometry is removed
+            var model = dynSettings.Controller.DynamoModel;
+            var viz = dynSettings.Controller.VisualizationManager;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_coordinateSystem.dyn");
+            model.Open(openPath);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            var drawables = model.Nodes.Where(x => x is IDrawable);
+            var xs = viz.Visualizations.SelectMany(x => x.Value.Description.XAxisPoints);
+            var ys = viz.Visualizations.SelectMany(x => x.Value.Description.YAxisPoints);
+            var zs = viz.Visualizations.SelectMany(x => x.Value.Description.ZAxisPoints);
+
+            Assert.AreEqual(drawables.Count(), viz.Visualizations.Count);
+            Assert.AreEqual(2, xs.Count());
+            Assert.AreEqual(2, ys.Count());
+            Assert.AreEqual(2, zs.Count());
         }
 
         [Test]

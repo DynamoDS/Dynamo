@@ -26,8 +26,6 @@ namespace Dynamo
 
                 foreach (var geom in n.Geometry)
                 {
-                    var builder = new MeshBuilder();
-
                     var g = geom as GraphicItem;
                     if (g == null)
                         continue;
@@ -110,6 +108,8 @@ namespace Dynamo
 
                         #region draw surface
 
+                        var builder = new MeshBuilder();
+
                         FloatList triangle_vertices = g.triangle_vertices_threadsafe();
                         FloatList triangle_normals = g.triangle_normals_threadsafe();
 
@@ -151,7 +151,9 @@ namespace Dynamo
                             }
                         }
 
-                        rd.Meshes.Add(builder.ToMesh(true));
+                        //don't add empty meshes
+                        if(builder.Positions.Count > 0)
+                            rd.Meshes.Add(builder.ToMesh(true));
 
                         #endregion
                     }
