@@ -192,5 +192,23 @@ namespace Dynamo.Tests
             //      make sure any connectors attached to removed ports were deleted
             Assert.Inconclusive();
         }
+
+        /// <summary>
+        /// Can use SaveAs to get a new custom node
+        /// </summary>
+        [Test] public void SaveAsDoesNotDuplicateCustomNodeInSearch()
+        {
+            Assert.Inconclusive();
+        }
+
+        /// <summary>
+        /// Can use SaveAs to get a new custom node
+        /// </summary>
+        [Test]
+        public void SaveAsResultsInNewFunctionIdButMaintainsOriginal()
+        {
+            Assert.Inconclusive();
+        }
+
     }
 }
