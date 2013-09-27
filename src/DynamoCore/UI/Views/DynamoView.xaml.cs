@@ -22,6 +22,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Diagnostics;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Nodes.Prompts;
@@ -83,7 +84,7 @@ namespace Dynamo.Controls
 
         void vm_RequestLayoutUpdate(object sender, EventArgs e)
         {
-            UpdateLayout();
+            Dispatcher.Invoke(new Action(UpdateLayout), DispatcherPriority.Render, null);
         }
 
         private void dynBench_Activated(object sender, EventArgs e)

@@ -163,6 +163,14 @@ namespace Dynamo
                     UpdateVisualizations();
                 }
             }
+            else if (e.PropertyName == "IsUpstreamVisible")
+            {
+                //just call for an update
+                //the gatherupstream method when called by
+                //the watch will filter the visualiations for
+                //upstream visibility.
+                UpdateVisualizations();
+            }
         }
 
         /// <summary>
@@ -228,6 +236,8 @@ namespace Dynamo
             var v = Visualizations[node.GUID.ToString()];
             
             //don't set for update if it's not visible
+            //the node's evaluate will fill the geometry collection
+            //but not visualizations will be calculated for the node
             if(node.IsVisible)
                 v.RequiresUpdate = true;
 
@@ -292,9 +302,6 @@ namespace Dynamo
 
                 NodeModel node = pair.Value.Item2;
                 var drawable = node as IDrawable;
-
-                //if (node.IsVisible && drawable != null)
-                //    drawables.Add(node.GUID.ToString());
 
                 if(drawable != null)
                     drawables.Add(node.GUID.ToString());

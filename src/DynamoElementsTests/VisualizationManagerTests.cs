@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Windows.Media.Media3D;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using NUnit.Framework;
@@ -208,12 +210,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(7, pointCount);
             Assert.AreEqual(12, lineCount);
             Assert.AreEqual(0, meshCount);
-        }
-
-        [Test]
-        public void VisualizationInSyncWithPreviewUpstream()
-        {
-            Assert.Inconclusive("Finish me.");
         }
 
         [Test]

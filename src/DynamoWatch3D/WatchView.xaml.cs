@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Windows.Media.Media3D;
 using Dynamo.Models;
 using Dynamo.Nodes;
