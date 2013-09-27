@@ -210,6 +210,11 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public bool ShowsVisibilityToggles
+        {
+            get { return nodeLogic is IDrawable; }
+        }
+
         #endregion
 
         #region events
