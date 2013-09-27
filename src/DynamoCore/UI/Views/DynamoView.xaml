@@ -312,16 +312,16 @@
                     <MenuItem Header="_Exit" Command="{Binding ExitCommand}"  Name="exit" InputGestureText="Alt+F4" Focusable="False"/> -->
         
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-              Grid.Row="1" Grid.Column="2" Margin="0,35,0,0">
-                <Canvas Name="backgroundCanvas" 
-                     Margin="0,0,0,0" 
+              Grid.Row="1" Grid.Column="2" Background="#222">
+            <Canvas Name="backgroundCanvas" 
+                     Margin="0,35,0,0"
                      ClipToBounds="True" 
                      IsHitTestVisible="{Binding ShouldBeHitTestVisible}">
                 <Canvas.Background>
                     <SolidColorBrush Color="{Binding IsHomeSpace, Converter={StaticResource WorkspaceBackgroundColorConverter}}" />
                 </Canvas.Background>
             </Canvas>
-            <controls:WatchViewFullscreen  
+            <controls:WatchViewFullscreen Margin="0,35,0,0"
                 Visibility="{Binding FullscreenWatchShowing, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}">
 
             </controls:WatchViewFullscreen>
