@@ -85,6 +85,15 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public event EventHandler SidebarClosed;
+        public virtual void OnSidebarClosed(Object sender, EventArgs e)
+        {
+            if (SidebarClosed != null)
+            {
+                SidebarClosed(this, e);
+            }
+        }
+
         public event WorkspaceSaveEventHandler RequestUserSaveWorkflow;
         public virtual void OnRequestUserSaveWorkflow(Object sender, WorkspaceSaveEventArgs e)
         {
