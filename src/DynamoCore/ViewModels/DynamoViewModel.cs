@@ -328,13 +328,6 @@ namespace Dynamo.ViewModels
                 fullscreenWatchShowing = value;
                 RaisePropertyChanged("FullscreenWatchShowing");
 
-                // NOTE: I couldn't get the binding to work in the XAML so
-                //       this is a temporary hack
-                //foreach (WorkspaceViewModel workspace in dynSettings.Controller.DynamoViewModel.Workspaces)
-                //{
-                //    workspace.FullscreenChanged();
-                //}
-
                 if (!fullscreenWatchShowing && canNavigateBackground)
                     CanNavigateBackground = false;
             }
