@@ -117,9 +117,25 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void NothingIsVisualizedWhenThereIsNothingToVisualize()
+        {
+            
+        }
+
+        [Test]
         public void BackgroundPreviewDrawsOnOpen()
         {
-            Assert.Inconclusive("Finish me!");
+            var model = dynSettings.Controller.DynamoModel;
+            var viz = dynSettings.Controller.VisualizationManager;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points.dyn");
+            model.Open(openPath);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            //graphics will have been updated at this point
+            //enabled the background preview and ensure that it 
         }
         
         [Test]

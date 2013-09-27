@@ -149,22 +149,12 @@ namespace Dynamo
                                 builder.Positions.Add(new_point);
                                 builder.TextureCoordinates.Add(new System.Windows.Point(0, 0));
                             }
-
-                            //int a = builder.TriangleIndices[indices_front.Count - 3];
-                            //int b = builder.TriangleIndices[indices_front.Count - 2];
-                            //int c = builder.TriangleIndices[indices_front.Count - 1];
-
-                            //builder.TriangleIndices.Add(c);
-                            //builder.TriangleIndices.Add(b);
-                            //builder.TriangleIndices.Add(a);
-
                         }
 
                         rd.Meshes.Add(builder.ToMesh(true));
 
                         #endregion
                     }
-                    
 
                     //set this flag to avoid processing again
                     //if not necessary

@@ -486,9 +486,9 @@ namespace Dynamo
             CancelTransaction();
         }
 
-        protected override void OnEvaluationCompleted()
+        protected override void OnEvaluationCompleted(object sender, EventArgs e)
         {
-            base.OnEvaluationCompleted();
+            base.OnEvaluationCompleted(sender, e);
 
             //Cleanup Delegate
             Action cleanup = delegate

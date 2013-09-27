@@ -143,6 +143,11 @@ namespace Dynamo
         #region events
 
         /// <summary>
+        /// An event triggered when evaluation completes.
+        /// </summary>
+        public event EventHandler EvaluationCompleted;
+
+        /// <summary>
         /// An event which requests that a node be selected
         /// </summary>
         public event NodeEventHandler RequestNodeSelect;
@@ -466,7 +471,7 @@ namespace Dynamo
                     throw new Exception(ex.Message);
             }
 
-            OnEvaluationCompleted();
+            OnEvaluationCompleted(this, EventArgs.Empty);
         }
 
         protected virtual void OnRunCancelled(bool error)
@@ -476,9 +481,15 @@ namespace Dynamo
                 dynSettings.FunctionWasEvaluated.Clear();
         }
 
-        protected virtual void OnEvaluationCompleted()
+        /// <summary>
+        /// Called when evaluation completes.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected virtual void OnEvaluationCompleted(object sender, EventArgs e)
         {
-            dynSettings.Controller.VisualizationManager.UpdateVisualizations();
+            if (EvaluationCompleted != null)
+                EvaluationCompleted(sender, e);
         }
 
     #endregion
