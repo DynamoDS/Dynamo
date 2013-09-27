@@ -361,14 +361,13 @@ namespace Dynamo
                 for (int k = 0; k < 3; ++k)
                 {
                     var newPoint = RevitPointToWindowsPoint(tri.get_Vertex(k));
-
+                    
                     bool newPointExists = false;
                     for (int l = 0; l < builder.Positions.Count; ++l)
                     {
                         Point3D p = builder.Positions[l];
                         if ((p.X == newPoint.X) && (p.Y == newPoint.Y) && (p.Z == newPoint.Z))
                         {
-                            builder.TriangleIndices.Add(l);
                             newPointExists = true;
                             break;
                         }
@@ -379,9 +378,12 @@ namespace Dynamo
 
                     builder.Positions.Add(newPoint);
                     builder.TextureCoordinates.Add(new System.Windows.Point(0,0));
-                    builder.TriangleIndices.Add(builder.Positions.Count);
                     builder.Normals.Add(norm);
-                } 
+                }
+
+                builder.TriangleIndices.Add((int)tri.get_Index(0));
+                builder.TriangleIndices.Add((int)tri.get_Index(1));
+                builder.TriangleIndices.Add((int)tri.get_Index(2));
             }
 
             return builder.ToMesh(true);
