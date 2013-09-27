@@ -124,7 +124,45 @@ namespace Dynamo
         void DynamoModel_NodeAdded(NodeModel node)
         {
             if (node is IDrawable)
+            {
+                node.PropertyChanged += node_PropertyChanged;
                 RegisterForVisualization(node);
+            }  
+        }
+
+        /// <summary>
+        /// Handler for a node model's property changed event
+        /// </summary>
+        /// <remarks>Used to observe changes in the nodes visualization state.
+        /// </remarks>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void node_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "IsVisible")
+            {
+                var node = sender as NodeModel;
+
+                if (node == null)
+                    return;
+
+                if (Visualizations.ContainsKey(node.GUID.ToString()))
+                {
+                    Visualization viz = Visualizations[node.GUID.ToString()];
+
+                    if (!node.IsVisible)
+                    {
+                        //clear the render description
+                        viz.Description.Clear();
+                    }
+                    if (node.IsVisible)
+                    {
+                        viz.RequiresUpdate = true;
+                    }
+
+                    UpdateVisualizations();
+                }
+            }
         }
 
         /// <summary>
@@ -137,8 +175,8 @@ namespace Dynamo
             //add a key in the dictionary
             if (!Visualizations.ContainsKey(node.GUID.ToString()))
             {
-                var viz = new Visualization();
-                Visualizations.Add(node.GUID.ToString(), new Visualization());
+                var viz = new Visualization {RequiresUpdate = true};
+                Visualizations.Add(node.GUID.ToString(), viz);
             }
         }
 
@@ -188,7 +226,13 @@ namespace Dynamo
                 RegisterForVisualization(node);
 
             var v = Visualizations[node.GUID.ToString()];
-            v.RequiresUpdate = true;
+            
+            //don't set for update if it's not visible
+            if(node.IsVisible)
+                v.RequiresUpdate = true;
+
+            //clear the gometry collection and the render description
+            //the geometry collection will be filled during update.
             v.Geometry.Clear();
             v.Description.Clear();
         }
@@ -249,7 +293,10 @@ namespace Dynamo
                 NodeModel node = pair.Value.Item2;
                 var drawable = node as IDrawable;
 
-                if (node.IsVisible && drawable != null)
+                //if (node.IsVisible && drawable != null)
+                //    drawables.Add(node.GUID.ToString());
+
+                if(drawable != null)
                     drawables.Add(node.GUID.ToString());
 
                 if (node.IsUpstreamVisible)
@@ -323,6 +370,33 @@ namespace Dynamo
         {
             if (VisualizationUpdateComplete != null)
                 VisualizationUpdateComplete(sender, e);
+        }
+
+        /// <summary>
+        /// Helper method to total the current visualizations.
+        /// </summary>
+        /// <param name="pointCount"></param>
+        /// <param name="lineCount"></param>
+        /// <param name="meshCount"></param>
+        /// <param name="xCount"></param>
+        /// <param name="yCount"></param>
+        /// <param name="zCount"></param>
+        public void GetVisualizationCounts(
+            out int pointCount, out int lineCount, out int meshCount, out int xCount, out int yCount, out int zCount)
+        {
+            var points = Visualizations.SelectMany(x => x.Value.Description.Points);
+            var lines = Visualizations.SelectMany(x => x.Value.Description.Lines);
+            var meshes = Visualizations.SelectMany(x => x.Value.Description.Meshes);
+            var xs = Visualizations.SelectMany(x => x.Value.Description.XAxisPoints);
+            var ys = Visualizations.SelectMany(x => x.Value.Description.YAxisPoints);
+            var zs = Visualizations.SelectMany(x => x.Value.Description.ZAxisPoints);
+
+            pointCount = points.Count();
+            lineCount = lines.Count();
+            meshCount = meshes.Count();
+            xCount = xs.Count();
+            yCount = ys.Count();
+            zCount = zs.Count();
         }
     }
 }

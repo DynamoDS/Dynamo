@@ -119,7 +119,21 @@ namespace Dynamo.Tests
         [Test]
         public void NothingIsVisualizedWhenThereIsNothingToVisualize()
         {
-            Assert.Inconclusive("Finish me.");
+            var viz = dynSettings.Controller.VisualizationManager;
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            int pointCount, lineCount, meshCount, xCount, yCount, zCount;
+            viz.GetVisualizationCounts(
+                out pointCount, out lineCount, out meshCount, out xCount, out yCount, out zCount);
+
+            Assert.AreEqual(0, pointCount);
+            Assert.AreEqual(0, lineCount);
+            Assert.AreEqual(0, meshCount);
+            Assert.AreEqual(0, xCount);
+            Assert.AreEqual(0, yCount);
+            Assert.AreEqual(0, zCount);
         }
 
         [Test]
@@ -141,7 +155,59 @@ namespace Dynamo.Tests
         [Test]
         public void VisualizationInSyncWithPreview()
         {
-            Assert.Inconclusive("Finish me.");
+            var model = dynSettings.Controller.DynamoModel;
+            var viz = dynSettings.Controller.VisualizationManager;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points_line.dyn");
+            model.Open(openPath);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            //we start with all previews disabled
+            //the graph is two points feeding into a line
+
+            //ensure that visulations match our expectations
+            int pointCount, lineCount, meshCount, xCount, yCount, zCount;
+            viz.GetVisualizationCounts(
+                out pointCount, out lineCount, out meshCount, out xCount, out yCount, out zCount);
+
+            Assert.AreEqual(7, pointCount);
+            Assert.AreEqual(12, lineCount);
+            Assert.AreEqual(0, meshCount);
+
+            //now flip off the preview on one of the points
+            //and ensure that the visualization updates without re-running
+            var p1 = model.Nodes.First(x => x is Point3DNode && x.GUID.ToString() == "354ddfd4-76dc-4dca-a622-bac6418393cb");
+            p1.IsVisible = false;
+
+            viz.GetVisualizationCounts(
+                out pointCount, out lineCount, out meshCount, out xCount, out yCount, out zCount);
+
+            Assert.AreEqual(1, pointCount);
+            Assert.AreEqual(12, lineCount);
+            Assert.AreEqual(0, meshCount);
+
+            //flip off the lines node
+            var l1 = model.Nodes.First(x => x is LineNode);
+            l1.IsVisible = false;
+
+            viz.GetVisualizationCounts(
+                out pointCount, out lineCount, out meshCount, out xCount, out yCount, out zCount);
+
+            Assert.AreEqual(1, pointCount);
+            Assert.AreEqual(0, lineCount);
+            Assert.AreEqual(0, meshCount);
+
+            //flip those back on and ensure the visualization returns
+            p1.IsVisible = true;
+            l1.IsVisible = true;
+            viz.GetVisualizationCounts(
+                out pointCount, out lineCount, out meshCount, out xCount, out yCount, out zCount);
+
+            Assert.AreEqual(7, pointCount);
+            Assert.AreEqual(12, lineCount);
+            Assert.AreEqual(0, meshCount);
         }
 
         [Test]
