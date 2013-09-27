@@ -21,6 +21,7 @@ using Dynamo.Connectors;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
+using RevitServices;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
 using Dynamo.Revit;
@@ -49,12 +50,9 @@ namespace Dynamo.Nodes
 
             if (this.Elements.Any())
             {
-                Element e;
-                if (dynUtils.TryGetElement(this.Elements[0], typeof(Autodesk.Revit.DB.Level), out e))
+                if (dynRevitSettings.Doc.Document.TryGetElement(this.Elements[0], out lev))
                 {
-                    lev = e as Autodesk.Revit.DB.Level;
                     lev.Elevation = h;
-
                 }
                 else
                 {
@@ -112,17 +110,14 @@ namespace Dynamo.Nodes
                           Line line;
                           XYZ bubbleEnd;
                           XYZ freeEnd;
-                          string name;
                           //...if we already have elements made by this node in a previous run...
                           if (this.Elements.Count > count)
                           {
-                              Element e;
                               //...we attempt to fetch it from the document...
-                              if (dynUtils.TryGetElement(this.Elements[count],typeof(Autodesk.Revit.DB.ReferencePlane), out e))
+                              if (dynRevitSettings.Doc.Document.TryGetElement(this.Elements[count], out refPlane))
                               {
                                   //...and if we're successful, update it's position (well for now make a new one with the same name)... 
-                                  refPlane = e as Autodesk.Revit.DB.ReferencePlane;
-                                  name = refPlane.Name;
+                                  string name = refPlane.Name;
                                   this.UIDocument.Document.Delete(refPlane.Id);//delete old one for now
 
                                   //refPlane.Reference = (Line)((Value.Container)x).Item;// these are all readonly, how to modify exising grid then?
@@ -137,17 +132,14 @@ namespace Dynamo.Nodes
                                         bubbleEnd,
                                         freeEnd,
                                         XYZ.BasisZ,
-                                        this.UIDocument.ActiveView
-                                    )
+                                        this.UIDocument.ActiveView)
                                     : this.UIDocument.Document.Create.NewReferencePlane(
                                         bubbleEnd,
                                         freeEnd,
                                         XYZ.BasisZ,
-                                        this.UIDocument.ActiveView
-                                    );
+                                        this.UIDocument.ActiveView);
+
                                   refPlane.Name = name;
-
-
                               }
                               else
                               {
@@ -188,15 +180,13 @@ namespace Dynamo.Nodes
                                     bubbleEnd,
                                     freeEnd,
                                     XYZ.BasisZ,
-                                    this.UIDocument.ActiveView
-
-                                )
+                                    this.UIDocument.ActiveView)
                                 : this.UIDocument.Document.Create.NewReferencePlane(
                                     bubbleEnd,
                                     freeEnd,
                                     XYZ.BasisZ,
-                                    this.UIDocument.ActiveView
-                                    );
+                                    this.UIDocument.ActiveView);
+
                               //...and store it in the element list for future runs.
                               this.Elements.Add(refPlane.Id);
 
@@ -234,12 +224,9 @@ namespace Dynamo.Nodes
 
                 if (this.Elements.Any())
                 {
-                    Element e;
-                    if (dynUtils.TryGetElement(this.Elements[0],typeof(Autodesk.Revit.DB.ReferencePlane), out e))
+                    if (dynRevitSettings.Doc.Document.TryGetElement(this.Elements[0], out refPlane))
                     {
-                        
                         //...and if we're successful, update it's position (well for now make a new one with the same name)... 
-                        refPlane = e as Autodesk.Revit.DB.ReferencePlane;
                         name = refPlane.Name;
 
                         XYZ oldBubbleEnd = refPlane.BubbleEnd;
@@ -383,12 +370,10 @@ namespace Dynamo.Nodes
                           //...if we already have elements made by this node in a previous run...
                           if (this.Elements.Count > count)
                           {
-                              Element e;
                               //...we attempt to fetch it from the document...
-                              if (dynUtils.TryGetElement(this.Elements[count],typeof(Grid), out e))
+                              if (dynRevitSettings.Doc.Document.TryGetElement(this.Elements[count], out grid))
                               {
                                   //...and if we're successful, update it's position... 
-                                  grid = e as Grid;
                                   //grid.Curve = (Curve)((Value.Container)x).Item; // these are all readonly, how to modify exising grid then?
                                   //MDJ TODO - figure out how to move grid or use document.Create.NewGrid(geomLine)
                                   // hack - make a new one for now
@@ -462,10 +447,8 @@ namespace Dynamo.Nodes
 
                 if (this.Elements.Any())
                 {
-                    Element e;
-                    if (dynUtils.TryGetElement(this.Elements[0],typeof(Grid), out e))
+                    if (dynRevitSettings.Doc.Document.TryGetElement(this.Elements[0], out grid))
                     {
-                        grid = e as Grid;
                         grid = this.UIDocument.Document.Create.NewGrid(c);
 
                     }

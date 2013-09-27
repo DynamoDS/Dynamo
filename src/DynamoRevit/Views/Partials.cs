@@ -8,6 +8,7 @@ using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
+using RevitServices;
 
 namespace Dynamo.Revit
 {
@@ -43,7 +44,7 @@ namespace Dynamo.Revit
             foreach (var id in AllElements)
             {
                 Element el;
-                if (dynUtils.TryGetElement(id, typeof (Element), out el))
+                if (dynRevitSettings.Doc.Document.TryGetElement(id, out el))
                 {
                     existingElements.Add(el);
                 }

@@ -11,6 +11,7 @@ using Dynamo.Models;
 using Microsoft.FSharp.Collections;
 
 using Dynamo.Utilities;
+using RevitServices;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.Connectors;
 using Dynamo.Controls;
@@ -89,7 +90,7 @@ namespace Dynamo.Revit
                 foreach (var id in run)
                 {
                     Element e;
-                    if (dynUtils.TryGetElement(id,typeof(object), out e))
+                    if (dynRevitSettings.Doc.Document.TryGetElement(id, out e))
                     {
                         var elementStore = xmlDoc.CreateElement("Element");
                         elementStore.InnerText = e.UniqueId;
@@ -491,7 +492,7 @@ namespace Dynamo.Revit
             {
                 #region no debug
 
-                if (controller.TransMode == TransactionMode.Manual && !controller.IsTransactionActive())
+                if (controller.TransMode == TransactionMode.Manual && !controller.TransactionManager.TransactionActive)
                 {
                     throw new Exception("A Revit transaction is required in order evaluate this element.");
                 }
