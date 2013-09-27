@@ -31,91 +31,140 @@ namespace Dynamo
                     var g = geom as GraphicItem;
                     if (g == null)
                         continue;
-
-                    FloatList point_vertices = g.point_vertices_threadsafe();
-
-                    for (int i = 0; i < point_vertices.Count; i += 3)
+                    
+                    if (g is CoordinateSystem)
                     {
-                        rd.Points.Add(new Point3D(point_vertices[i],
-                                               point_vertices[i + 1], point_vertices[i + 2]));
-                    }
+                        var line_strip_vertices = g.line_strip_vertices_threadsafe();
 
-                    SizeTList num_line_strip_vertices = g.num_line_strip_vertices_threadsafe();
-                    FloatList line_strip_vertices = g.line_strip_vertices_threadsafe();
-
-                    int counter = 0;
-
-                    foreach (uint num_verts in num_line_strip_vertices)
-                    {
-                        for (int i = 0; i < num_verts; ++i)
+                        for (int i = 0; i < line_strip_vertices.Count; i+=6)
                         {
-                            var p = new Point3D(
-                                line_strip_vertices[counter],
-                                line_strip_vertices[counter + 1],
-                                line_strip_vertices[counter + 2]);
+                            var p1 = new Point3D(
+                                line_strip_vertices[i],
+                                line_strip_vertices[i + 1],
+                                line_strip_vertices[i + 2]);
 
-                            rd.Lines.Add(p);
+                            var p2 = new Point3D(
+                                line_strip_vertices[i+3],
+                                line_strip_vertices[i + 4],
+                                line_strip_vertices[i + 5]);
 
-                            counter += 3;
-
-                            if (i == 0 || i == num_verts - 1)
-                                continue;
-
-                            rd.Lines.Add(p);
+                            if (i < 6)
+                            {
+                                rd.XAxisPoints.Add(p1);
+                                rd.XAxisPoints.Add(p2);
+                            }
+                            else if (i >= 6 && i < 12)
+                            {
+                                rd.YAxisPoints.Add(p1);
+                                rd.YAxisPoints.Add(p2);
+                            }
+                            else
+                            {
+                                rd.ZAxisPoints.Add(p1);
+                                rd.ZAxisPoints.Add(p2);
+                            } 
                         }
                     }
-
-                    FloatList triangle_vertices = g.triangle_vertices_threadsafe();
-                    FloatList triangle_normals = g.triangle_normals_threadsafe();
-
-                    for (int i = 0; i < triangle_vertices.Count/9; ++i)
+                    else
                     {
-                        for (int k = 0; k < 3; ++k)
+                        #region draw points
+
+                        var point_vertices = g.point_vertices_threadsafe();
+
+                        for (int i = 0; i < point_vertices.Count; i += 3)
                         {
+                            rd.Points.Add(new Point3D(point_vertices[i],
+                                                   point_vertices[i + 1], point_vertices[i + 2]));
+                        }
 
-                            int index = i*9 + k*3;
+                        #endregion
 
-                            var new_point = new Point3D(triangle_vertices[index],
-                                                            triangle_vertices[index + 1],
-                                                            triangle_vertices[index + 2]);
+                        #region draw lines
 
-                            var normal = new Vector3D(triangle_normals[index],
-                                                            triangle_normals[index + 1],
-                                                            triangle_normals[index + 2]);
+                        SizeTList num_line_strip_vertices = g.num_line_strip_vertices_threadsafe();
+                        FloatList line_strip_vertices = g.line_strip_vertices_threadsafe();
 
-                            bool new_point_exists = false;
-                            for (int l = 0; l < builder.Positions.Count; ++l)
+                        int counter = 0;
+
+                        foreach (uint num_verts in num_line_strip_vertices)
+                        {
+                            for (int i = 0; i < num_verts; ++i)
                             {
-                                Point3D p = builder.Positions[l];
-                                if ((p.X == new_point.X) && (p.Y == new_point.Y) && (p.Z == new_point.Z))
+                                var p = new Point3D(
+                                    line_strip_vertices[counter],
+                                    line_strip_vertices[counter + 1],
+                                    line_strip_vertices[counter + 2]);
+
+                                rd.Lines.Add(p);
+
+                                counter += 3;
+
+                                if (i == 0 || i == num_verts - 1)
+                                    continue;
+
+                                rd.Lines.Add(p);
+                            }
+                        }
+
+                        #endregion
+
+                        #region draw surface
+
+                        FloatList triangle_vertices = g.triangle_vertices_threadsafe();
+                        FloatList triangle_normals = g.triangle_normals_threadsafe();
+
+                        for (int i = 0; i < triangle_vertices.Count / 9; ++i)
+                        {
+                            for (int k = 0; k < 3; ++k)
+                            {
+
+                                int index = i * 9 + k * 3;
+
+                                var new_point = new Point3D(triangle_vertices[index],
+                                                                triangle_vertices[index + 1],
+                                                                triangle_vertices[index + 2]);
+
+                                var normal = new Vector3D(triangle_normals[index],
+                                                                triangle_normals[index + 1],
+                                                                triangle_normals[index + 2]);
+
+                                bool new_point_exists = false;
+                                for (int l = 0; l < builder.Positions.Count; ++l)
                                 {
-                                    //indices_front.Add(l);
-                                    builder.TriangleIndices.Add(l);
-                                    new_point_exists = true;
-                                    break;
+                                    Point3D p = builder.Positions[l];
+                                    if ((p.X == new_point.X) && (p.Y == new_point.Y) && (p.Z == new_point.Z))
+                                    {
+                                        //indices_front.Add(l);
+                                        builder.TriangleIndices.Add(l);
+                                        new_point_exists = true;
+                                        break;
+                                    }
                                 }
+
+                                if (new_point_exists)
+                                    continue;
+
+                                builder.TriangleIndices.Add(builder.Positions.Count);
+                                builder.Normals.Add(normal);
+                                builder.Positions.Add(new_point);
+                                builder.TextureCoordinates.Add(new System.Windows.Point(0, 0));
                             }
 
-                            if (new_point_exists)
-                                continue;
+                            //int a = builder.TriangleIndices[indices_front.Count - 3];
+                            //int b = builder.TriangleIndices[indices_front.Count - 2];
+                            //int c = builder.TriangleIndices[indices_front.Count - 1];
 
-                            builder.TriangleIndices.Add(builder.Positions.Count);
-                            builder.Normals.Add(normal);
-                            builder.Positions.Add(new_point);
-                            builder.TextureCoordinates.Add(new System.Windows.Point(0,0));
+                            //builder.TriangleIndices.Add(c);
+                            //builder.TriangleIndices.Add(b);
+                            //builder.TriangleIndices.Add(a);
+
                         }
 
-                        //int a = builder.TriangleIndices[indices_front.Count - 3];
-                        //int b = builder.TriangleIndices[indices_front.Count - 2];
-                        //int c = builder.TriangleIndices[indices_front.Count - 1];
+                        rd.Meshes.Add(builder.ToMesh(true));
 
-                        //builder.TriangleIndices.Add(c);
-                        //builder.TriangleIndices.Add(b);
-                        //builder.TriangleIndices.Add(a);
-
+                        #endregion
                     }
-
-                    rd.Meshes.Add(builder.ToMesh(true));
+                    
 
                     //set this flag to avoid processing again
                     //if not necessary
