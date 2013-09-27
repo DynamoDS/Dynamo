@@ -277,6 +277,130 @@ namespace Dynamo.Tests
             Assert.AreEqual(WorkspaceModel.ZOOM_MINIMUM, workspaceModel.Zoom);
         }
 
+        [Test, RequiresSTA]
+        [Category("DynamoUI")]
+        public void ZoomInOutStressTest()
+        {
+            WorkspaceModel workspaceModel = vm.CurrentSpaceViewModel._model;
+            WorkspaceViewModel workspaceVM = vm.CurrentSpaceViewModel;
+
+            // Zoom in and out repeatly
+            for (int i = 0; i < 100; i++)
+            {
+                for (int stepIn = 0; stepIn < 30; stepIn++)
+                {
+                    if (vm.ZoomInCommand.CanExecute(null))
+                    {
+                        vm.ZoomInCommand.Execute(null);
+                        Console.WriteLine("Zoom in " + stepIn);
+                    }
+                }
+                for (int stepOut = 0; stepOut < 30; stepOut++)
+                {
+                    if (vm.ZoomOutCommand.CanExecute(null))
+                    {
+                        vm.ZoomOutCommand.Execute(null);
+                        Console.WriteLine("Zoom out " + stepOut);
+                    }
+                }
+            }
+
+            // Doesn't crash the system
+            Assert.True(true);
+        }
+
+        #endregion
+
+        #region Pan Left, Right, Top, Down Canvas
+
+        [Test, RequiresSTA]
+        [Category("DynamoUI")]
+        public void CanPanLeft()
+        {
+            WorkspaceModel workspaceModel = vm.CurrentSpaceViewModel._model;
+            WorkspaceViewModel workspaceVM = vm.CurrentSpaceViewModel;
+
+            int numOfPanTested = 100;
+            double posX = workspaceModel.X;
+            double posY = workspaceModel.Y;
+
+            // Pan left repeatly
+            for (int i = 0; i < numOfPanTested; i++)
+            {
+                if (vm.PanCommand.CanExecute("Left"))
+                    vm.PanCommand.Execute("Left");
+            }
+
+            Assert.Greater(workspaceModel.X, posX);
+            Assert.AreEqual(workspaceModel.Y, posY);
+        }
+
+        [Test, RequiresSTA]
+        [Category("DynamoUI")]
+        public void CanPanRight()
+        {
+            WorkspaceModel workspaceModel = vm.CurrentSpaceViewModel._model;
+            WorkspaceViewModel workspaceVM = vm.CurrentSpaceViewModel;
+
+            int numOfPanTested = 100;
+            double posX = workspaceModel.X;
+            double posY = workspaceModel.Y;
+
+            // Pan left repeatly
+            for (int i = 0; i < numOfPanTested; i++)
+            {
+                if (vm.PanCommand.CanExecute("Right"))
+                    vm.PanCommand.Execute("Right");
+            }
+
+            Assert.Greater(posX, workspaceModel.X);
+            Assert.AreEqual(workspaceModel.Y, posY);
+        }
+
+        [Test, RequiresSTA]
+        [Category("DynamoUI")]
+        public void CanPanUp()
+        {
+            WorkspaceModel workspaceModel = vm.CurrentSpaceViewModel._model;
+            WorkspaceViewModel workspaceVM = vm.CurrentSpaceViewModel;
+
+            int numOfPanTested = 100;
+            double posX = workspaceModel.X;
+            double posY = workspaceModel.Y;
+
+            // Pan left repeatly
+            for (int i = 0; i < numOfPanTested; i++)
+            {
+                if (vm.PanCommand.CanExecute("Up"))
+                    vm.PanCommand.Execute("Up");
+            }
+
+            Assert.AreEqual(posX, workspaceModel.X);
+            Assert.Greater(workspaceModel.Y, posY);
+        }
+
+        [Test, RequiresSTA]
+        [Category("DynamoUI")]
+        public void CanPanDown()
+        {
+            WorkspaceModel workspaceModel = vm.CurrentSpaceViewModel._model;
+            WorkspaceViewModel workspaceVM = vm.CurrentSpaceViewModel;
+
+            int numOfPanTested = 100;
+            double posX = workspaceModel.X;
+            double posY = workspaceModel.Y;
+
+            // Pan left repeatly
+            for (int i = 0; i < numOfPanTested; i++)
+            {
+                if (vm.PanCommand.CanExecute("Down"))
+                    vm.PanCommand.Execute("Down");
+            }
+
+            Assert.AreEqual(posX, workspaceModel.X);
+            Assert.Greater(posY, workspaceModel.Y);
+        }
+
         #endregion
 
         #region Fit to View
