@@ -45,7 +45,6 @@ namespace Dynamo.ViewModels
         public NodeModel NodeModel { get { return nodeLogic; } private set { nodeLogic = value; } }
 
         private bool isFullyConnected = false;
-        private PopupViewModel errorBubbleViewModel;
         #endregion
 
         #region public members
@@ -350,19 +349,9 @@ namespace Dynamo.ViewModels
 
         private void UpdateErrorBubble()
         {
-            if (errorBubbleViewModel == null)
-                return;
-            errorBubbleViewModel.SetAlwaysVisibleCommand.Execute(false);
-            errorBubbleViewModel.InstantCollapseCommand.Execute(null);
-            if (!string.IsNullOrEmpty(NodeModel.ToolTipText))
-            {
-                Point topLeft = new Point(NodeModel.X, NodeModel.Y);
-                Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
-                PopupDataPacket data = new PopupDataPacket(PopupViewModel.Style.Error, topLeft, botRight, NodeModel.ToolTipText, PopupViewModel.Direction.Bottom); 
-                errorBubbleViewModel.UpdatePopupCommand.Execute(data);
-                errorBubbleViewModel.SetAlwaysVisibleCommand.Execute(true);
-                errorBubbleViewModel.FadeInCommand.Execute(null);
-            }
+            Point topLeft = new Point(NodeModel.X, NodeModel.Y);
+            Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
+            PopupDataPacket data = new PopupDataPacket(PopupViewModel.Style.Error, topLeft, botRight, NodeModel.ToolTipText, PopupViewModel.Direction.Bottom, NodeModel.GUID);
         }
 
         private void ShowHelp(object parameter)
@@ -649,15 +638,6 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        private void UpdateErrorBubbleViewModel(object parameter)
-        {
-            this.errorBubbleViewModel = parameter as PopupViewModel;
-        }
-
-        private bool CanUpdateErrorBubbleViewModel(object parameter)
-        {
-            return true;
-        }
     }
 
     public class NodeHelpEventArgs : EventArgs

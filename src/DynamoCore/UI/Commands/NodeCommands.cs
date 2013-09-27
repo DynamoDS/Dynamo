@@ -19,8 +19,6 @@ namespace Dynamo.ViewModels
         private DelegateCommand _showTooltipCommand;
         private DelegateCommand _fadeOutTooltipCommand;
         private DelegateCommand _collapseTooltipCommand;
-        private DelegateCommand _updateErrorBubbleViewModelCommannd;
-
 
         public DelegateCommand RenameCommand
         {
@@ -191,16 +189,6 @@ namespace Dynamo.ViewModels
                 if (_collapseTooltipCommand == null)
                     _collapseTooltipCommand = new DelegateCommand(CollapseTooltip, CanCollapseTooltip);
                 return _collapseTooltipCommand;
-            }
-        }
-
-        public DelegateCommand UpdateErrorBubbleViewModelCommand
-        {
-            get
-            {
-                if (_updateErrorBubbleViewModelCommannd == null)
-                    _updateErrorBubbleViewModelCommannd = new DelegateCommand(UpdateErrorBubbleViewModel, CanUpdateErrorBubbleViewModel);
-                return _updateErrorBubbleViewModelCommannd;
             }
         }
     }

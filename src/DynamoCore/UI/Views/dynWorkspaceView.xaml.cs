@@ -55,7 +55,6 @@ namespace Dynamo.Views
             Canvas.SetZIndex(zoomAndPanControl, 8000);
             zoomAndPanControl.Focusable = false;
             outerCanvas.Children.Add(zoomAndPanControl);
-
             Debug.WriteLine("Workspace loaded.");
             DynamoSelection.Instance.Selection.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
         }

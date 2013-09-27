@@ -19,6 +19,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand _alignSelectedCommand;
         private DelegateCommand _findNodesFromSelectionCommand;
         private DelegateCommand _selectAllCommand;
+        private DelegateCommand _updateErrorBubbleCommand;
 
         public DelegateCommand SelectAllCommand
         {
@@ -178,6 +179,15 @@ namespace Dynamo.ViewModels
                     _findNodesFromSelectionCommand = new DelegateCommand(FindNodesFromSelection, CanFindNodesFromSelection);
 
                 return _findNodesFromSelectionCommand;
+            }
+        }
+
+        public DelegateCommand UpdateErrorBubbleCommand
+        {
+            get { 
+                if (_updateErrorBubbleCommand == null)
+                    _updateErrorBubbleCommand = new DelegateCommand(UpdateErrorBubble, CanUpdateErrorBubble);
+                return _updateErrorBubbleCommand; 
             }
         }
     }

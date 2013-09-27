@@ -10,6 +10,7 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Dynamo.Controls;
 
 namespace Dynamo.ViewModels
 {
@@ -19,9 +20,9 @@ namespace Dynamo.ViewModels
     public delegate void ViewEventHandler(object sender, EventArgs e);
     public delegate void ZoomEventHandler(object sender, EventArgs e);
     public delegate void ViewModelAdditionEventHandler(object sender, ViewModelEventArgs e);
-    public delegate void WorkspacePropertyEditHandler(WorkspaceModel workspace );
+    public delegate void WorkspacePropertyEditHandler(WorkspaceModel workspace);
 
-    public partial class WorkspaceViewModel: ViewModelBase
+    public partial class WorkspaceViewModel : ViewModelBase
     {
         #region Properties and Fields
 
@@ -137,7 +138,7 @@ namespace Dynamo.ViewModels
             if (StopDragging != null)
                 StopDragging(this, e);
         }
-        
+
         public virtual void OnRequestCenterViewOnElement(object sender, ModelEventArgs e)
         {
             if (RequestCenterViewOnElement != null)
@@ -179,11 +180,13 @@ namespace Dynamo.ViewModels
         private ObservableCollection<Watch3DFullscreenViewModel> _watches = new ObservableCollection<Watch3DFullscreenViewModel>();
         ObservableCollection<NodeViewModel> _nodes = new ObservableCollection<NodeViewModel>();
         ObservableCollection<NoteViewModel> _notes = new ObservableCollection<NoteViewModel>();
+        ObservableCollection<PopupViewModel> _errors = new ObservableCollection<PopupViewModel>();
 
         public ObservableCollection<ConnectorViewModel> Connectors
         {
             get { return _connectors; }
-            set { 
+            set
+            {
                 _connectors = value;
                 RaisePropertyChanged("Connectors");
             }
@@ -205,6 +208,11 @@ namespace Dynamo.ViewModels
                 _notes = value;
                 RaisePropertyChanged("Notes");
             }
+        }
+        public ObservableCollection<PopupViewModel> Errors
+        {
+            get { return _errors; }
+            set { _errors = value; RaisePropertyChanged("Errors"); }
         }
 
         public string Name
@@ -252,12 +260,12 @@ namespace Dynamo.ViewModels
                 {
                     WorkspaceElements.Add(value);
                     activeConnector = value;
-                }    
+                }
                 else
                 {
                     WorkspaceElements.Remove(activeConnector);
                 }
-                
+
                 RaisePropertyChanged("ActiveConnector");
             }
         }
@@ -296,8 +304,8 @@ namespace Dynamo.ViewModels
         public bool WatchEscapeIsDown
         {
             get { return _watchEscapeIsDown; }
-            set 
-            { 
+            set
+            {
                 _watchEscapeIsDown = value;
                 RaisePropertyChanged("WatchEscapeIsDown");
                 RaisePropertyChanged("ShouldBeHitTestVisible");
@@ -344,7 +352,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public Action FindNodesFromElements{ get; set; }
+        public Action FindNodesFromElements { get; set; }
 
         #endregion
 
@@ -361,6 +369,9 @@ namespace Dynamo.ViewModels
 
             var notesColl = new CollectionContainer { Collection = Notes };
             _workspaceElements.Add(notesColl);
+
+            var errorsColl = new CollectionContainer { Collection = Errors };
+            _workspaceElements.Add(errorsColl);
 
             //respond to collection changes on the model by creating new view models
             //currently, view models are added for notes and nodes
@@ -380,7 +391,7 @@ namespace Dynamo.ViewModels
 
         void Connectors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            switch(e.Action)
+            switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
                     foreach (var item in e.NewItems)
@@ -436,9 +447,9 @@ namespace Dynamo.ViewModels
                         {
                             var node = item as NodeModel;
                             _nodes.Add(new NodeViewModel(node));
-                            
+
                             //submit the node for rendering
-                            if(node is IDrawable)
+                            if (node is IDrawable)
                                 dynSettings.Controller.OnNodeSubmittedForRendering(node, EventArgs.Empty);
                         }
                     }
@@ -621,7 +632,7 @@ namespace Dynamo.ViewModels
 
                 var yMin = GetSelectionMinY();
                 var yMax = GetSelectionMaxTopY();
-                var spacing = (yMax - yMin)/(DynamoSelection.Instance.Selection.Count - 1);
+                var spacing = (yMax - yMin) / (DynamoSelection.Instance.Selection.Count - 1);
                 int count = 0;
 
                 DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
@@ -676,7 +687,7 @@ namespace Dynamo.ViewModels
 
         private void Hide(object parameters)
         {
-            if ( !this.Model.HasUnsavedChanges|| dynSettings.Controller.DynamoViewModel.AskUserToSaveWorkspaceOrCancel(this.Model))
+            if (!this.Model.HasUnsavedChanges || dynSettings.Controller.DynamoViewModel.AskUserToSaveWorkspaceOrCancel(this.Model))
             {
                 dynSettings.Controller.DynamoViewModel.Model.HideWorkspace(this._model);
             }
@@ -762,7 +773,7 @@ namespace Dynamo.ViewModels
         private bool CanCrossSelect(object parameters)
         {
             return true;
-        } 
+        }
 
         private void SetCurrentOffset(object parameter)
         {
@@ -976,6 +987,20 @@ namespace Dynamo.ViewModels
             return false;
         }
 
+        private void UpdateErrorBubble (object parameter)
+        {
+            PopupDataPacket data = (PopupDataPacket)parameter;
+            PopupViewModel errorBubbleViewModel = new PopupViewModel();
+            errorBubbleViewModel.UpdatePopupCommand.Execute(data);
+            errorBubbleViewModel.SetAlwaysVisibleCommand.Execute(true);
+            errorBubbleViewModel.FadeInCommand.Execute(null);
+        }
+
+        private bool CanUpdateErrorBubble(object parameter)
+        {
+            return true;
+        }
+
         /// <summary>
         ///     Collapse a set of nodes in the current workspace.  Has the side effects of prompting the user
         ///     first in order to obtain the name and category for the new node, 
@@ -994,7 +1019,7 @@ namespace Dynamo.ViewModels
         }
     }
 
-    public class ViewModelEventArgs:EventArgs
+    public class ViewModelEventArgs : EventArgs
     {
         public NodeViewModel ViewModel { get; set; }
         public ViewModelEventArgs(NodeViewModel vm)

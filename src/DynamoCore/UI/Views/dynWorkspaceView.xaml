@@ -89,6 +89,11 @@
                             <DataTemplate DataType="{x:Type viewModels:ConnectorViewModel}">
                                 <views:dynConnectorView></views:dynConnectorView>
                             </DataTemplate>
+                            
+                            <DataTemplate DataType="{x:Type viewModels:PopupViewModel}">
+                                <controls:PopupView></controls:PopupView>
+                            </DataTemplate>
+                            
                         </ItemsControl.Resources>
                         
                         <ItemsControl.ItemsPanel>
