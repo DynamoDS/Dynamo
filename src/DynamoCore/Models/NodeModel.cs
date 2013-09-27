@@ -106,6 +106,9 @@ namespace Dynamo.Models
             get { return this is Function; }
         }
 
+        /// <summary>
+        /// Returns whether the node is to be included in visualizations.
+        /// </summary>
         public bool IsVisible
         {
             get 
@@ -120,6 +123,10 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        /// Returns whether the node aggregates its upstream connections
+        /// for visualizations.
+        /// </summary>
         public bool IsUpstreamVisible
         {
             get 

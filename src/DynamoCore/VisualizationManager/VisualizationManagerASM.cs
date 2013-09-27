@@ -12,8 +12,6 @@ namespace Dynamo
         public override void UpdateVisualizations()
         {
             //only update those nodes which have been flagged for update
-            //they are flagged when their eval_internal is hit
-
             var toUpdate = Visualizations.Values.ToList().Where(x => x.RequiresUpdate == true);
 
             Debug.WriteLine(string.Format("{0} visualizations to update", toUpdate.Count()));

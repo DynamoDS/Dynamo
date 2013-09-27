@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows;
 using System.Windows.Media.Media3D;
 using Autodesk.Revit.DB;
 using Dynamo.Nodes;
@@ -18,8 +17,6 @@ namespace Dynamo
         public override void UpdateVisualizations()
         {
             //only update those nodes which have been flagged for update
-            //they are flagged when their eval_internal is hit
-
             var toUpdate = Visualizations.Values.ToList().Where(x => x.RequiresUpdate == true);
 
             foreach (var n in toUpdate)
