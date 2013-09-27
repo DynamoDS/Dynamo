@@ -35,7 +35,7 @@ namespace Dynamo.Controls
         public List<Point3D> _xAxisCache = new List<Point3D>();
         public List<Point3D> _yAxisCache = new List<Point3D>();
         public List<Point3D> _zAxisCache = new List<Point3D>();
-        public Mesh3D _meshCache = new Mesh3D();
+        public MeshGeometry3D _meshCache = new MeshGeometry3D();
 
         public Material HelixMeshMaterial
         {
@@ -92,7 +92,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public Mesh3D HelixMesh
+        public MeshGeometry3D HelixMesh
         {
             get { return _meshCache; }
             set

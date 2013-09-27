@@ -247,30 +247,51 @@ namespace Dynamo
         /// </summary>
         /// <param name="meshes"></param>
         /// <returns></returns>
-        public static Mesh3D MergeMeshes(List<Mesh3D> meshes)
+        public static MeshGeometry3D MergeMeshes(List<MeshGeometry3D> meshes)
         {
             if (meshes.Count == 0)
                 return null;
 
-            var positions = new List<Point3D>();
-            var triangleIndices = new List<int>();
+            //var positions = new List<Point3D>();
+            //var triangleIndices = new List<int>();
 
             int offset = 0;
-            foreach (Mesh3D m in meshes)
+
+            var builder = new MeshBuilder();
+
+            foreach (MeshGeometry3D m in meshes)
             {
-                positions.AddRange(m.Vertices);
+                //positions.AddRange(m.Vertices);
 
-                foreach (int[] face in m.Faces)
+                //foreach (int[] face in m.Faces)
+                //{
+                //    triangleIndices.Add(face[0] + offset);
+                //    triangleIndices.Add(face[1] + offset);
+                //    triangleIndices.Add(face[2] + offset);
+                //}
+
+                foreach (var pos in m.Positions)
                 {
-                    triangleIndices.Add(face[0] + offset);
-                    triangleIndices.Add(face[1] + offset);
-                    triangleIndices.Add(face[2] + offset);
+                    builder.Positions.Add(pos);
                 }
-
-                offset = positions.Count;
+                foreach (var index in m.TriangleIndices)
+                {
+                    builder.TriangleIndices.Add(index + offset);
+                }
+                foreach (var norm in m.Normals)
+                {
+                    builder.Normals.Add(norm);
+                }
+                foreach (var tc in m.TextureCoordinates)
+                {
+                    builder.TextureCoordinates.Add(tc);
+                }
+                //offset = positions.Count;
+                offset += m.Positions.Count;
             }
 
-            return new Mesh3D(positions, triangleIndices);
+            //return new Mesh3D(positions, triangleIndices);
+            return builder.ToMesh(false);
         }
 
         /// <summary>
