@@ -11,7 +11,7 @@ using NUnit.Framework;
 
 namespace Dynamo.Tests.UI
 {
-    [TestFixture, RequiresSTA]
+    [TestFixture]
     public class VisualizationManagerUITests : DynamoTestUI
     {
         [SetUp]
