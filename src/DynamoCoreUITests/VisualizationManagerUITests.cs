@@ -63,7 +63,7 @@ namespace Dynamo.Tests.UI
 
             // run the expression
             dynSettings.Controller.RunExpression(null);
-            Thread.Sleep(500);
+            Thread.Sleep(1000);
 
             //we start with all previews disabled
             //the graph is two points feeding into a line
