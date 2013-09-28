@@ -243,7 +243,7 @@ namespace DynamoMSOfficeTests
             // single column - 1, "word", 2, 3, "palabra"
             Assert.IsTrue(list[0].IsList);
             var rowList = list[0].GetListFromFSchemeValue();
-            Assert.AreEqual("a", rowList[0].getStringFromFSchemeValue());
+            Assert.AreEqual("a", rowList[0].GetStringFromFSchemeValue());
 
             Assert.IsTrue(list[1].IsList);
             rowList = list[1].GetListFromFSchemeValue();
@@ -252,11 +252,11 @@ namespace DynamoMSOfficeTests
 
             Assert.IsTrue(list[2].IsList);
             rowList = list[2].GetListFromFSchemeValue();
-            Assert.AreEqual("cell is", rowList[0].getStringFromFSchemeValue());
+            Assert.AreEqual("cell is", rowList[0].GetStringFromFSchemeValue());
 
             Assert.IsTrue(list[3].IsList);
             rowList = list[3].GetListFromFSchemeValue();
-            Assert.AreEqual("missing", rowList[0].getStringFromFSchemeValue());
+            Assert.AreEqual("missing", rowList[0].GetStringFromFSchemeValue());
         }
 
         [Test]
@@ -289,7 +289,7 @@ namespace DynamoMSOfficeTests
 
             Assert.IsTrue(list[1].IsList);
             rowList = list[1].GetListFromFSchemeValue();
-            Assert.AreEqual("word", rowList[0].getStringFromFSchemeValue());
+            Assert.AreEqual("word", rowList[0].GetStringFromFSchemeValue());
 
             Assert.IsTrue(list[2].IsList);
             rowList = list[2].GetListFromFSchemeValue();
@@ -301,7 +301,7 @@ namespace DynamoMSOfficeTests
 
             Assert.IsTrue(list[4].IsList);
             rowList = list[4].GetListFromFSchemeValue();
-            Assert.AreEqual("palabra", rowList[0].getStringFromFSchemeValue());
+            Assert.AreEqual("palabra", rowList[0].GetStringFromFSchemeValue());
 
         }
 
@@ -326,7 +326,7 @@ namespace DynamoMSOfficeTests
             // single column - 1, "word", 2, 3, "palabra"
             Assert.IsTrue(list[0].IsList);
             var rowList = list[0].GetListFromFSchemeValue();
-            Assert.AreEqual("doodle", rowList[0].getStringFromFSchemeValue());
+            Assert.AreEqual("doodle", rowList[0].GetStringFromFSchemeValue());
 
             Assert.IsTrue(list[1].IsList);
             rowList = list[1].GetListFromFSchemeValue();
