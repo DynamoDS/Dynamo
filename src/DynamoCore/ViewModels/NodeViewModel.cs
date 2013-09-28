@@ -117,7 +117,7 @@ namespace Dynamo.ViewModels
                 {
                     return "Not available in custom nodes";
                 }
-                return NodeModel.PrintValue(nodeLogic.OldValue, 0, 2, 0, 3);
+                return NodeModel.PrintValue(nodeLogic.OldValue, 0, 3, 0, 3);
             }
         }
 
