@@ -36,7 +36,10 @@ namespace Dynamo.Controls
         public List<Point3D> _yAxisCache = new List<Point3D>();
         public List<Point3D> _zAxisCache = new List<Point3D>();
         public MeshGeometry3D _meshCache = new MeshGeometry3D();
-
+        public List<Point3D> _pointsCacheSelected = new List<Point3D>();
+        public List<Point3D> _linesCacheSelected = new List<Point3D>();
+        public MeshGeometry3D _meshCacheSelected = new MeshGeometry3D();
+ 
         public Material HelixMeshMaterial
         {
             get { return Materials.White; }
@@ -99,6 +102,36 @@ namespace Dynamo.Controls
             {
                 _meshCache = value;
                 NotifyPropertyChanged("HelixMesh");
+            }
+        }
+
+        public List<Point3D> HelixPointsSelected
+        {
+            get { return _pointsCacheSelected; }
+            set
+            {
+                _pointsCacheSelected = value;
+                NotifyPropertyChanged("HelixPointsSelected");
+            }
+        }
+
+        public List<Point3D> HelixLinesSelected
+        {
+            get { return _linesCacheSelected; }
+            set
+            {
+                _linesCacheSelected = value;
+                NotifyPropertyChanged("HelixLinesSelected");
+            }
+        }
+
+        public MeshGeometry3D HelixMeshSelected
+        {
+            get { return _meshCacheSelected; }
+            set
+            {
+                _meshCacheSelected = value;
+                NotifyPropertyChanged("HelixMeshSelected");
             }
         }
 
@@ -173,10 +206,13 @@ namespace Dynamo.Controls
 
             HelixPoints = vizManager.Visualizations.Values.SelectMany(x => x.Description.Points).ToList();
             HelixLines = vizManager.Visualizations.Values.SelectMany(x => x.Description.Lines).ToList();
+            HelixPointsSelected = vizManager.Visualizations.Values.SelectMany(x => x.Description.SelectedPoints).ToList();
+            HelixLinesSelected = vizManager.Visualizations.Values.SelectMany(x => x.Description.SelectedLines).ToList();
             HelixXAxes = vizManager.Visualizations.Values.SelectMany(x => x.Description.XAxisPoints).ToList();
             HelixYAxes = vizManager.Visualizations.Values.SelectMany(x => x.Description.YAxisPoints).ToList();
             HelixZAxes = vizManager.Visualizations.Values.SelectMany(x => x.Description.ZAxisPoints).ToList();
             HelixMesh = VisualizationManager.MergeMeshes(vizManager.Visualizations.Values.SelectMany(x => x.Description.Meshes).ToList());
+            HelixMeshSelected = VisualizationManager.MergeMeshes(vizManager.Visualizations.Values.SelectMany(x => x.Description.SelectedMeshes).ToList());
         }
 
         protected void mi_Click(object sender, RoutedEventArgs e)

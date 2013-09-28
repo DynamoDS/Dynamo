@@ -5,6 +5,7 @@ using System.Windows.Media.Media3D;
 using System.Linq;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Selection;
 using Dynamo.Utilities;
 using HelixToolkit.Wpf;
 using Microsoft.Practices.Prism.ViewModel;
@@ -54,6 +55,61 @@ namespace Dynamo
             dynSettings.Controller.EvaluationCompleted += new EventHandler(Controller_EvaluationCompleted);
             dynSettings.Controller.DynamoViewModel.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(DynamoViewModel_PropertyChanged);
             dynSettings.Controller.RequestsRedraw += new EventHandler(Controller_RequestsRedraw);
+            DynamoSelection.Instance.Selection.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
+        }
+
+        void Selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            //When the selection changes we move renderables from collection
+            //to another. For example, if items are added, we take the visualizations
+            //from the normal collections and we add them to the selected visualization.
+            //When an item is removed from the selection, we put it back in the normal collection
+            if (e.NewItems != null)
+            {
+                foreach (object item in e.NewItems)
+                {
+                    var node = item as NodeModel;
+                    if (item == null)
+                        continue;
+
+                    if (Visualizations.ContainsKey(node.GUID.ToString()))
+                    {
+                        //move points, lines, and meshes to selection visuals
+                        var viz = Visualizations[node.GUID.ToString()];
+                        viz.Description.SelectedPoints.AddRange(viz.Description.Points);
+                        viz.Description.Points.Clear();
+                        viz.Description.SelectedLines.AddRange(viz.Description.Lines);
+                        viz.Description.Lines.Clear();
+                        viz.Description.SelectedMeshes.AddRange(viz.Description.Meshes);
+                        viz.Description.Meshes.Clear();
+                    }
+                } 
+            }
+
+            if (e.OldItems != null)
+            {
+                foreach (object item in e.OldItems)
+                {
+                    var node = item as NodeModel;
+                    if (item == null)
+                        continue;
+
+                    if (Visualizations.ContainsKey(node.GUID.ToString()))
+                    {
+                        //move points, lines, and meshes
+                        var viz = Visualizations[node.GUID.ToString()];
+                        viz.Description.Points.AddRange(viz.Description.SelectedPoints);
+                        viz.Description.SelectedPoints.Clear();
+                        viz.Description.Lines.AddRange(viz.Description.SelectedLines);
+                        viz.Description.SelectedLines.Clear();
+                        viz.Description.Meshes.AddRange(viz.Description.SelectedMeshes);
+                        viz.Description.SelectedMeshes.Clear();
+                    }
+                } 
+            }
+            
+
+            OnVisualizationUpdateComplete(this, EventArgs.Empty);
         }
 
         void Controller_RequestsRedraw(object sender, EventArgs e)

@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows.Media.Media3D;
 using Autodesk.LibG;
+using Dynamo.Models;
+using Dynamo.Selection;
 using HelixToolkit.Wpf;
 
 namespace Dynamo
@@ -16,6 +18,12 @@ namespace Dynamo
 
             Debug.WriteLine(string.Format("{0} visualizations to update", toUpdate.Count()));
             Debug.WriteLine(string.Format("Updating visualizations on thread {0}.", System.Threading.Thread.CurrentThread.ManagedThreadId));
+
+            var selIds =
+                DynamoSelection.Instance.Selection.Where(x => x is NodeModel)
+                               .Select(x => ((NodeModel) x).GUID.ToString());
+
+            var selected = Visualizations.Where(x => selIds.Contains(x.Key)).Select(x => x.Value);
 
             foreach (var n in toUpdate)
             {
@@ -67,10 +75,20 @@ namespace Dynamo
 
                         var point_vertices = g.point_vertices_threadsafe();
 
+                        var selArray = selected as Visualization[] ?? selected.ToArray();
+
                         for (int i = 0; i < point_vertices.Count; i += 3)
                         {
-                            rd.Points.Add(new Point3D(point_vertices[i],
+                            if (selArray.Contains(n))
+                            {
+                                rd.SelectedPoints.Add(new Point3D(point_vertices[i],
                                                    point_vertices[i + 1], point_vertices[i + 2]));
+                            }
+                            else
+                            {
+                                rd.Points.Add(new Point3D(point_vertices[i],
+                                                   point_vertices[i + 1], point_vertices[i + 2]));
+                            }
                         }
 
                         #endregion
@@ -91,14 +109,28 @@ namespace Dynamo
                                     line_strip_vertices[counter + 1],
                                     line_strip_vertices[counter + 2]);
 
-                                rd.Lines.Add(p);
+                                if (selArray.Contains(n))
+                                {
+                                    rd.SelectedLines.Add(p);
+                                }
+                                else
+                                {
+                                    rd.Lines.Add(p);
+                                }
 
                                 counter += 3;
 
                                 if (i == 0 || i == num_verts - 1)
                                     continue;
 
-                                rd.Lines.Add(p);
+                                if (selArray.Contains(n))
+                                {
+                                    rd.SelectedLines.Add(p);
+                                }
+                                else
+                                {
+                                    rd.Lines.Add(p);
+                                }
                             }
                         }
 
@@ -150,9 +182,18 @@ namespace Dynamo
                         }
 
                         //don't add empty meshes
-                        if(builder.Positions.Count > 0)
-                            rd.Meshes.Add(builder.ToMesh(true));
-
+                        if (builder.Positions.Count > 0)
+                        {
+                            if (selArray.Contains(n))
+                            {
+                                rd.SelectedMeshes.Add(builder.ToMesh(true));
+                            }
+                            else
+                            {
+                                rd.Meshes.Add(builder.ToMesh(true));
+                            }
+                        }
+                            
                         #endregion
                     }
 

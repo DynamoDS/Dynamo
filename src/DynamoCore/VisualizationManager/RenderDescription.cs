@@ -11,6 +11,21 @@ namespace Dynamo
     public class RenderDescription
     {
         /// <summary>
+        /// A collection of Point objects to be used for rendering points as selected.
+        /// </summary>
+        public List<Point3D> SelectedPoints { get; internal set; }
+ 
+        /// <summary>
+        /// A collection of Point objects to be used for rendering lines as selected.
+        /// </summary>
+        public List<Point3D> SelectedLines { get; internal set; }
+
+        /// <summary>
+        /// A collection of mesh objects to be used for rendering as selected.
+        /// </summary>
+        public List<MeshGeometry3D> SelectedMeshes { get; internal set; }
+ 
+        /// <summary>
         /// A collection of Point objects used to render points
         /// </summary>
         public List<Point3D> Points { get; internal set; }
@@ -48,6 +63,10 @@ namespace Dynamo
             XAxisPoints = new List<Point3D>();
             YAxisPoints = new List<Point3D>();
             ZAxisPoints = new List<Point3D>();
+
+            SelectedPoints = new List<Point3D>();
+            SelectedLines = new List<Point3D>();
+            SelectedMeshes = new List<MeshGeometry3D>();
         }
 
         public void Clear()
