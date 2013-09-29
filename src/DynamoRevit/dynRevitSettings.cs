@@ -14,36 +14,6 @@ namespace Dynamo.Utilities
 {
     class dynUtils
     {
-        
-        private static ElementId _testid;
-        /// <summary>
-        /// Utility function to determine if an Element of the given ID exists in the document.
-        /// </summary>
-        /// <returns>True if exists, false otherwise.</returns>
-        public static bool TryGetElement(ElementId id, Type t, out Element e)
-        {
-            try
-            {
-                e = dynRevitSettings.Doc.Document.GetElement(id);
-                if (e != null && t.IsInstanceOfType(e))
-                {
-                    _testid = e.Id;
-                    return true;
-                }
-                else
-                {
-                    e = null;
-                    return false;
-                }
-            }
-            catch
-            {
-                e = null;
-                return false;
-            }
-        }
-
-
         /// <summary>
         /// Makes a new generic IEnumerable instance out of a non-generic one.
         /// </summary>
