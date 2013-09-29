@@ -329,12 +329,19 @@ namespace Dynamo
             var xs = keyValuePairs.SelectMany(x => x.Value.Description.XAxisPoints).ToList();
             var ys = keyValuePairs.SelectMany(x => x.Value.Description.YAxisPoints).ToList();
             var zs = keyValuePairs.SelectMany(x => x.Value.Description.ZAxisPoints).ToList();
+            var pts_sel = keyValuePairs.SelectMany(x => x.Value.Description.SelectedPoints).ToList();
+            var lines_sel = keyValuePairs.SelectMany(x => x.Value.Description.SelectedLines).ToList();
+            var mesh_sel = keyValuePairs.SelectMany(x => x.Value.Description.SelectedMeshes).ToList();
+
             rd.Points.AddRange(pts);
             rd.Lines.AddRange(lines);
             rd.Meshes.AddRange(meshes);
             rd.XAxisPoints.AddRange(xs);
             rd.YAxisPoints.AddRange(ys);
             rd.ZAxisPoints.AddRange(zs);
+            rd.SelectedPoints.AddRange(pts_sel);
+            rd.SelectedLines.AddRange(lines_sel);
+            rd.SelectedMeshes.AddRange(mesh_sel);
 
             watch.Stop();
             Debug.WriteLine(string.Format("{0} ellapsed for aggregating geometry for watch.", watch.Elapsed));

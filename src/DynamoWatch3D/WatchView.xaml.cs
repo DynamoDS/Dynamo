@@ -34,6 +34,9 @@ namespace Dynamo.Controls
         public List<Point3D> _yAxisCache = new List<Point3D>();
         public List<Point3D> _zAxisCache = new List<Point3D>();
         public MeshGeometry3D _meshCache = new MeshGeometry3D();
+        public List<Point3D> _pointsCacheSelected = new List<Point3D>();
+        public List<Point3D> _linesCacheSelected = new List<Point3D>();
+        public MeshGeometry3D _meshCacheSelected = new MeshGeometry3D();
 
         public System.Windows.Media.Media3D.Material HelixMeshMaterial
         {
@@ -99,7 +102,37 @@ namespace Dynamo.Controls
                 NotifyPropertyChanged("HelixMesh");
             }
         }
-        
+
+        public List<Point3D> HelixPointsSelected
+        {
+            get { return _pointsCacheSelected; }
+            set
+            {
+                _pointsCacheSelected = value;
+                NotifyPropertyChanged("HelixPointsSelected");
+            }
+        }
+
+        public List<Point3D> HelixLinesSelected
+        {
+            get { return _linesCacheSelected; }
+            set
+            {
+                _linesCacheSelected = value;
+                NotifyPropertyChanged("HelixLinesSelected");
+            }
+        }
+
+        public MeshGeometry3D HelixMeshSelected
+        {
+            get { return _meshCacheSelected; }
+            set
+            {
+                _meshCacheSelected = value;
+                NotifyPropertyChanged("HelixMeshSelected");
+            }
+        }
+
         public WatchView()
         {
             InitializeComponent();
@@ -141,6 +174,9 @@ namespace Dynamo.Controls
             HelixXAxes = null;
             HelixYAxes = null;
             HelixZAxes = null;
+            HelixPointsSelected = null;
+            HelixLinesSelected = null;
+            HelixMeshSelected = null;
 
             HelixPoints = rd.Points;
             HelixLines = rd.Lines;
@@ -148,7 +184,9 @@ namespace Dynamo.Controls
             HelixXAxes = rd.XAxisPoints;
             HelixYAxes = rd.YAxisPoints;
             HelixZAxes = rd.ZAxisPoints;
-
+            HelixPointsSelected = rd.SelectedPoints;
+            HelixLinesSelected = rd.SelectedLines;
+            HelixMeshSelected = VisualizationManager.MergeMeshes(rd.SelectedMeshes);
         }
 
         void view_PreviewMouseRightButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
