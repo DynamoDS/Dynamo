@@ -180,7 +180,7 @@ namespace Dynamo.ViewModels
             Opacity = 0;
             PopupStyle = Style.None;
 
-            InitiateContentCollection();
+            InitializeContentCollection();
         }
 
         #endregion
@@ -252,9 +252,9 @@ namespace Dynamo.ViewModels
         private void UpdateContent(string text)
         {
             ItemDescription = text;
-            ContentCollection.Clear();
             TextBox textBox = GetStyledTextBox(ItemDescription);
-            ContentCollection.Add(textBox);
+            (ContentCollection[0] as StackPanel).Children.Clear();
+            (ContentCollection[0] as StackPanel).Children.Add(textBox);
         }
 
         private void UpdatePosition(Point topLeft, Point botRight)
@@ -314,6 +314,12 @@ namespace Dynamo.ViewModels
                 case Style.None:
                     break;
             }
+        }
+
+        private void InitializeContentCollection()
+        {
+            StackPanel stackPanel = new StackPanel();
+            this.ContentCollection.Add(stackPanel);
         }
 
         private Thickness GetMargin_LibraryItemPreview(Point topLeft, Point botRight)
@@ -451,6 +457,7 @@ namespace Dynamo.ViewModels
             textBox.Foreground = TextForeground;
             textBox.FontWeight = TextFontWeight;
             textBox.FontSize = TextFontSize;
+            textBox.Margin = ContentMargin;
             return textBox;
         }
 
@@ -486,8 +493,6 @@ namespace Dynamo.ViewModels
         {
             ContentCollection[0].Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
             PointCollection pointCollection = new PointCollection();
-            Grid container = VisualTreeHelper.GetParent(_view) as Grid;
-            container = VisualTreeHelper.GetParent(container) as Grid;
 
             if (topLeft.Y - ContentCollection[0].DesiredSize.Height >= 40)
             {
@@ -500,10 +505,11 @@ namespace Dynamo.ViewModels
                 pointCollection.Add(new Point((ContentCollection[0].DesiredSize.Width / 2) + 6, ContentCollection[0].DesiredSize.Height - 6));
                 pointCollection.Add(new Point(ContentCollection[0].DesiredSize.Width, ContentCollection[0].DesiredSize.Height - 6));
             }
-            else if (botRight.X + ContentCollection[0].DesiredSize.Width <= container.ActualWidth)
+            else if (botRight.X + ContentCollection[0].DesiredSize.Width <= dynSettings.Controller.DynamoViewModel.WorkspaceActualWidth)
             {
                 _limitedDirection = Direction.Top;
                 ContentMargin = new Thickness(11, 5, 5, 5);
+                UpdateContent(ItemDescription);
                 ContentCollection[0].Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
 
                 pointCollection.Add(new Point(ContentCollection[0].DesiredSize.Width, 0));
@@ -516,6 +522,7 @@ namespace Dynamo.ViewModels
             {
                 _limitedDirection = Direction.TopRight;
                 ContentMargin = new Thickness(5, 5, 11, 5);
+                UpdateContent(ItemDescription);
                 ContentCollection[0].Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
 
                 pointCollection.Add(new Point(ContentCollection[0].DesiredSize.Width, 0));
@@ -532,13 +539,12 @@ namespace Dynamo.ViewModels
         {
             ContentCollection[0].Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
             PointCollection pointCollection = new PointCollection();
-            Grid container = VisualTreeHelper.GetParent(_view) as Grid;
-            container = VisualTreeHelper.GetParent(container) as Grid;
 
-            if (botRight.X + ContentCollection[0].DesiredSize.Width > container.ActualWidth)
+            if (botRight.X + ContentCollection[0].DesiredSize.Width > dynSettings.Controller.DynamoViewModel.WorkspaceActualWidth)
             {
                 _limitedDirection = Direction.Right;
                 ContentMargin = new Thickness(5, 5, 11, 5);
+                UpdateContent(ItemDescription);
                 pointCollection = GetFramePoints_NodeTooltipConnectRight(topLeft, botRight);
             }
             else
@@ -563,6 +569,7 @@ namespace Dynamo.ViewModels
             {
                 _limitedDirection = Direction.Left;
                 ContentMargin = new Thickness(11, 5, 5, 5);
+                UpdateContent(ItemDescription);
                 pointCollection = GetFramePoints_NodeTooltipConnectLeft(topLeft, botRight);
             }
             else
@@ -595,8 +602,6 @@ namespace Dynamo.ViewModels
         private void MakeFitInView()
         {
             ContentCollection[0].Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-            Grid container = VisualTreeHelper.GetParent(_view) as Grid;
-            container = VisualTreeHelper.GetParent(container) as Grid;
             //top
             if (Margin.Top < 30)
             {
@@ -612,17 +617,17 @@ namespace Dynamo.ViewModels
                 this.Margin = newMargin;
             }
             //botton
-            if (Margin.Top + ContentCollection[0].DesiredSize.Height > container.ActualHeight)
+            if (Margin.Top + ContentCollection[0].DesiredSize.Height > dynSettings.Controller.DynamoViewModel.WorkspaceActualHeight)
             {
                 Thickness newMargin = Margin;
-                newMargin.Top = container.ActualHeight - ContentCollection[0].DesiredSize.Height;
+                newMargin.Top = dynSettings.Controller.DynamoViewModel.WorkspaceActualHeight - ContentCollection[0].DesiredSize.Height;
                 Margin = newMargin;
             }
             //right
-            if (Margin.Left + ContentCollection[0].DesiredSize.Width > container.ActualWidth)
+            if (Margin.Left + ContentCollection[0].DesiredSize.Width > dynSettings.Controller.DynamoViewModel.WorkspaceActualWidth)
             {
                 Thickness newMargin = Margin;
-                newMargin.Left = container.ActualWidth - ContentCollection[0].DesiredSize.Width;
+                newMargin.Left = dynSettings.Controller.DynamoViewModel.WorkspaceActualWidth - ContentCollection[0].DesiredSize.Width;
                 Margin = newMargin;
             }
 
