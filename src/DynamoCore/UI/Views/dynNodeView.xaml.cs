@@ -260,11 +260,12 @@ namespace Dynamo.Controls
         {
             TextBlock textBlock = sender as TextBlock;
             string tooltipContent = ViewModel.NickName + '\n' + ViewModel.Description;
-            Point pointToScreen_TopLeft = textBlock.PointToScreen(new Point(0, 0));
+            UIElement containingWorkspace = WPF.FindUpVisualTree<TabControl>(this);
+            Point topLeft = textBlock.TranslatePoint(new Point(0, 0), containingWorkspace);
             double actualWidth = textBlock.ActualWidth * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
             double actualHeight = textBlock.ActualHeight * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
-            Point pointToScreen_BotRight = new Point(pointToScreen_TopLeft.X + actualWidth, pointToScreen_TopLeft.Y + actualHeight);
-            ViewModel.ShowTooltipCommand.Execute(new PopupDataPacket(PopupViewModel.Style.NodeTooltip, pointToScreen_TopLeft, pointToScreen_BotRight, tooltipContent, PopupViewModel.Direction.Bottom, Guid.Empty));
+            Point botRight = new Point(topLeft.X + actualWidth, topLeft.Y + actualHeight);
+            ViewModel.ShowTooltipCommand.Execute(new PopupDataPacket(PopupViewModel.Style.NodeTooltip, topLeft, botRight, tooltipContent, PopupViewModel.Direction.Bottom, Guid.Empty));
         }
 
         private void NickNameBlock_OnMouseLeave(object sender, MouseEventArgs e)
@@ -276,11 +277,12 @@ namespace Dynamo.Controls
         {
             ContentPresenter inputPort = sender as ContentPresenter;
             string content = (inputPort.Content as PortViewModel).ToolTipContent;
-            Point pointToScreen_TopLeft = inputPort.PointToScreen(new Point(0, 0));
+            UIElement containingWorkspace = WPF.FindUpVisualTree<TabControl>(this);
+            Point topLeft = inputPort.TranslatePoint(new Point(0, 0), containingWorkspace);
             double actualWidth = inputPort.ActualWidth * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
             double actualHeight = inputPort.ActualHeight * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
-            Point pointToScreen_BotRight = new Point(pointToScreen_TopLeft.X + actualWidth, pointToScreen_TopLeft.Y + actualHeight);
-            ViewModel.ShowTooltipCommand.Execute(new PopupDataPacket(PopupViewModel.Style.NodeTooltip, pointToScreen_TopLeft, pointToScreen_BotRight, content, PopupViewModel.Direction.Right, Guid.Empty));
+            Point botRight = new Point(topLeft.X + actualWidth, topLeft.Y + actualHeight);
+            ViewModel.ShowTooltipCommand.Execute(new PopupDataPacket(PopupViewModel.Style.NodeTooltip, topLeft, botRight, content, PopupViewModel.Direction.Right, Guid.Empty));
         }
 
         private void InputPort_OnMouseLeave(object sender, MouseEventArgs e)
@@ -297,11 +299,12 @@ namespace Dynamo.Controls
         {
             ContentPresenter outputPort = sender as ContentPresenter;
             string content = (outputPort.Content as PortViewModel).ToolTipContent;
-            Point pointToScreen_TopLeft = outputPort.PointToScreen(new Point(0, 0));
+            UIElement containingWorkspace = WPF.FindUpVisualTree<TabControl>(this);
+            Point topLeft = outputPort.TranslatePoint(new Point(0, 0), containingWorkspace);
             double actualWidth = outputPort.ActualWidth * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
             double actualHeight = outputPort.ActualHeight * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
-            Point pointToScreen_BotRight = new Point(pointToScreen_TopLeft.X + actualWidth, pointToScreen_TopLeft.Y + actualHeight);
-            ViewModel.ShowTooltipCommand.Execute(new PopupDataPacket(PopupViewModel.Style.NodeTooltip, pointToScreen_TopLeft, pointToScreen_BotRight, content, PopupViewModel.Direction.Left, Guid.Empty));
+            Point botRight = new Point(topLeft.X + actualWidth, topLeft.Y + actualHeight);
+            ViewModel.ShowTooltipCommand.Execute(new PopupDataPacket(PopupViewModel.Style.NodeTooltip, topLeft, botRight, content, PopupViewModel.Direction.Left, Guid.Empty));
         }
 
         private void OutputPort_OnMouseLeave(object sender, MouseEventArgs e)

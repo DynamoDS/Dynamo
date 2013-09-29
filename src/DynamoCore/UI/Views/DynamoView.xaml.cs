@@ -37,6 +37,7 @@ using DynamoCommands = Dynamo.UI.Commands.DynamoCommands;
 using String = System.String;
 using System.Collections.ObjectModel;
 using Dynamo.UI.Commands;
+using System.Windows.Data;
 using Dynamo.UI.Controls;
 
 namespace Dynamo.Controls
@@ -88,7 +89,6 @@ namespace Dynamo.Controls
 
             //setup popup for library items tooltip
             PopupView popup = new PopupView { DataContext = dynSettings.Controller.PopupViewmodel };
-            dynSettings.Controller.PopupViewmodel.UpdateView(popup);
             popupGrid.Children.Add(popup);
         }
 
@@ -613,6 +613,14 @@ namespace Dynamo.Controls
 
                 _vm.OpenCommand.Execute(path);
             }
+        }
+
+        private void Workspace_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (this._vm == null)
+                return;
+            this._vm.WorkspaceActualHeight = border.ActualHeight;
+            this._vm.WorkspaceActualWidth = border.ActualWidth;
         }
     }
 }

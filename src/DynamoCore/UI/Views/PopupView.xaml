@@ -18,7 +18,24 @@
         <Polygon Name="backgroundPolygon" Fill="{Binding Path=FrameFill}" Stroke="{Binding Path=FrameStrokeColor}" 
                  StrokeThickness="{Binding Path=FrameStrokeThickness}" Points="{Binding Path=FramePoints}">
         </Polygon>
-        <StackPanel Name="contentContainer" MaxWidth="{Binding Path=MaxWidth}" Orientation="Vertical" Background="Transparent" Margin="{Binding Path=ContentMargin}">
-        </StackPanel>
+
+        <ItemsControl ItemsSource="{Binding Path=ContentCollection}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid IsItemsHost="True" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            
+            <ItemsControl.ItemContainerStyle>
+                <Style TargetType="{x:Type StackPanel}">
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+            
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type StackPanel}">
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        
     </Grid>
 </UserControl>
