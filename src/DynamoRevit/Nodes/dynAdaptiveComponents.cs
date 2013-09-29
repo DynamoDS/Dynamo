@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Autodesk.Revit.DB;
 using Dynamo.Models;
 using Dynamo.Utilities;
 
 using Microsoft.FSharp.Collections;
-
+using RevitServices;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.Revit;
 
@@ -29,19 +30,17 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             FSharpList<Value> pts = ((Value.List)args[0]).Item;
-            FamilySymbol fs = (FamilySymbol)((Value.Container)args[1]).Item;
+            var fs = (FamilySymbol)((Value.Container)args[1]).Item;
 
-            FamilyInstance ac = null;
+            FamilyInstance ac;
 
             //if the adapative component already exists, then move the points
             if (Elements.Any())
             {
                 //mutate
-                Element e;
                 //...we attempt to fetch it from the document...
-                if (dynUtils.TryGetElement(this.Elements[0], typeof(FamilyInstance), out e))
+                if (dynRevitSettings.Doc.Document.TryGetElement(Elements[0], out ac))
                 {
-                    ac = e as FamilyInstance;
                     ac.Symbol = fs;
                 }
                 else
@@ -61,8 +60,7 @@ namespace Dynamo.Nodes
             if (ac == null)
                 throw new Exception("An adaptive component could not be found or created.");
 
-            IList<ElementId> placePointIds = new List<ElementId>();
-            placePointIds = AdaptiveComponentInstanceUtils.GetInstancePlacementPointElementRefIds(ac);
+            IList<ElementId> placePointIds = AdaptiveComponentInstanceUtils.GetInstancePlacementPointElementRefIds(ac);
 
             if (placePointIds.Count() != pts.Count())
                 throw new Exception("The input list of points does not have the same number of values required by the adaptive component.");
@@ -71,8 +69,8 @@ namespace Dynamo.Nodes
             int i = 0;
             foreach (ElementId id in placePointIds)
             {
-                ReferencePoint point = dynRevitSettings.Doc.Document.GetElement(id) as ReferencePoint;
-                XYZ pt = (XYZ)((Value.Container)pts.ElementAt(i)).Item;
+                var point = dynRevitSettings.Doc.Document.GetElement(id) as ReferencePoint;
+                var pt = (XYZ)((Value.Container)pts.ElementAt(i)).Item;
                 point.Position = pt;
                 i++;
             }
@@ -117,11 +115,9 @@ namespace Dynamo.Nodes
             if (Elements.Any())
             {
                 //mutate
-                Element e;
                 //...we attempt to fetch it from the document...
-                if (dynUtils.TryGetElement(this.Elements[0], typeof(FamilyInstance), out e))
+                if (dynRevitSettings.Doc.Document.TryGetElement(this.Elements[0], out ac))
                 {
-                    ac = e as FamilyInstance;
                     ac.Symbol = fs;
                 }
                 else
@@ -197,12 +193,9 @@ namespace Dynamo.Nodes
             //if the adapative component already exists, then move the points
             if (Elements.Any())
             {
-                //mutate
-                Element e;
                 //...we attempt to fetch it from the document...
-                if (dynUtils.TryGetElement(this.Elements[0], typeof(FamilyInstance), out e))
+                if (dynRevitSettings.Doc.Document.TryGetElement(this.Elements[0], out ac))
                 {
-                    ac = e as FamilyInstance;
                     ac.Symbol = fs;
                 }
                 else

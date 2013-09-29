@@ -16,6 +16,7 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Greg;
+using RevitServices;
 using Transaction = Dynamo.Nodes.Transaction;
 using Value = Dynamo.FScheme.Value;
 
@@ -54,6 +55,11 @@ namespace Dynamo
             //allow the showing of elements in context
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.CanFindNodesFromElements = true;
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.FindNodesFromElements = FindNodesFromSelection;
+
+            TransactionManager = new TransactionManager();
+            TransactionManager.TransactionCommitted += TransactionManager_TransactionCommitted;
+            TransactionManager.TransactionCancelled += TransactionManager_TransactionCancelled;
+            TransactionManager.FailuresRaised += TransactionManager_FailuresRaised;
         }
 
         /// <summary>
@@ -185,9 +191,9 @@ namespace Dynamo
                    new Func<SubTransaction>(
                       delegate
                       {
-                          if (!dynRevitSettings.Controller.IsTransactionActive())
+                          if (!TransactionManager.TransactionActive)
                           {
-                              dynRevitSettings.Controller.InitTransaction();
+                              TransactionManager.StartTransaction(dynRevitSettings.Doc.Document);
                           }
                           return new SubTransaction(dynRevitSettings.Doc.Document);
                       }));
@@ -269,42 +275,9 @@ namespace Dynamo
 
         Value newEval(bool dirty, string script, dynamic bindings)
         {
-            bool transactionRunning = Transaction != null && Transaction.GetStatus() == TransactionStatus.Started;
-
-            Value result = null;
-
-            if (dynRevitSettings.Controller.InIdleThread)
-                result = _oldPyEval(dirty, script, bindings);
-            else
-            {
-                result = IdlePromise<Value>.ExecuteOnIdle(
-                   () => _oldPyEval(dirty, script, bindings));
-            }
-
-            if (transactionRunning)
-            {
-                if (!IsTransactionActive())
-                {
-                    InitTransaction();
-                }
-                else
-                {
-                    var ts = Transaction.GetStatus();
-                    if (ts != TransactionStatus.Started)
-                    {
-                        if (ts != TransactionStatus.RolledBack)
-                            CancelTransaction();
-                        InitTransaction();
-                    }
-                }
-            }
-            else if (DynamoViewModel.RunInDebug)
-            {
-                if (IsTransactionActive())
-                    EndTransaction();
-            }
-
-            return result;
+            return dynRevitSettings.Controller.InIdleThread 
+                ? _oldPyEval(dirty, script, bindings) 
+                : IdlePromise<Value>.ExecuteOnIdle(() => _oldPyEval(dirty, script, bindings));
         }
         #endregion
 
@@ -328,10 +301,7 @@ namespace Dynamo
                 var element = value as Element;
                 var id = element.Id;
 
-                node.Clicked += delegate
-                {
-                    dynRevitSettings.Doc.ShowElements(element);
-                };
+                node.Clicked += () => dynRevitSettings.Doc.ShowElements(element);
 
                 node.Link = id.IntegerValue.ToString(CultureInfo.InvariantCulture);
             }
@@ -339,6 +309,8 @@ namespace Dynamo
             #endregion
         }
         #endregion
+
+        #region Element Persistence Management
 
         public bool InIdleThread;
 
@@ -410,53 +382,44 @@ namespace Dynamo
             _transElements.Add(id);
         }
 
-        private Autodesk.Revit.DB.Transaction _trans;
-        public void InitTransaction()
-        {
-            if (_trans == null || _trans.GetStatus() != TransactionStatus.Started)
-            {
-                _trans = new Autodesk.Revit.DB.Transaction(dynRevitSettings.Doc.Document, "Dynamo Script");
-                _trans.Start();
+        #endregion
 
-                FailureHandlingOptions failOpt = _trans.GetFailureHandlingOptions();
-                failOpt.SetFailuresPreprocessor(new DynamoWarningPrinter());
-                _trans.SetFailureHandlingOptions(failOpt);
+        #region Revit Transaction Management
+
+        public TransactionManager TransactionManager { get; private set; }
+
+        void TransactionManager_TransactionCancelled()
+        {
+            Updater.RollBack(_transElements);
+            _transElements.Clear();
+            _transDelElements.Clear();
+        }
+
+        void TransactionManager_TransactionCommitted()
+        {
+            _transElements.Clear();
+            CommitDeletions();
+            _transDelElements.Clear();
+        }
+
+        void TransactionManager_FailuresRaised(FailuresAccessor failuresAccessor)
+        {
+            var failList = failuresAccessor.GetFailureMessages();
+
+            var query = from fail in failList
+                        let severity = fail.GetSeverity()
+                        where severity == FailureSeverity.Warning
+                        select fail;
+
+            foreach (var fail in query)
+            {
+                DynamoLogger.Instance.Log(
+                    "!! Warning: " + fail.GetDescriptionText());
+                failuresAccessor.DeleteWarning(fail);
             }
         }
 
-        public Autodesk.Revit.DB.Transaction Transaction { get { return _trans; } }
-
-        public void EndTransaction()
-        {
-            if (_trans != null)
-            {
-                if (_trans.GetStatus() == TransactionStatus.Started)
-                {
-                    _trans.Commit();
-                    _transElements.Clear();
-                    CommitDeletions();
-                    _transDelElements.Clear();
-                }
-                _trans = null;
-            }
-        }
-
-        public void CancelTransaction()
-        {
-            if (_trans != null)
-            {
-                _trans.RollBack();
-                _trans = null;
-                Updater.RollBack(_transElements);
-                _transElements.Clear();
-                _transDelElements.Clear();
-            }
-        }
-
-        public bool IsTransactionActive()
-        {
-            return _trans != null;
-        }
+        #endregion
 
         private TransactionMode _transMode;
         public TransactionMode TransMode
@@ -476,7 +439,7 @@ namespace Dynamo
         {
             base.OnRunCancelled(error);
 
-            CancelTransaction();
+            TransactionManager.CancelTransaction();
         }
 
         protected override void OnEvaluationCompleted()
@@ -488,7 +451,9 @@ namespace Dynamo
             {
                 //TODO: perhaps this should occur inside of ResetRuns in the event that
                 //      there is nothing to be deleted?
-                InitTransaction(); //Initialize a transaction (if one hasn't been aleady)
+
+                //Initialize a transaction (if one hasn't been aleady)
+                TransactionManager.StartTransaction(dynRevitSettings.Doc.Document);
 
                 //Reset all elements
                 var query = dynSettings.Controller.DynamoModel.AllNodes
@@ -498,10 +463,11 @@ namespace Dynamo
                     element.ResetRuns();
 
                 //////
-                /* FOR NON-DEBUG RUNS, THIS IS THE ACTUAL END POINT FOR DYNAMO TRANSACTION */
+                // FOR NON-DEBUG RUNS, THIS IS THE ACTUAL 
+                // END POINT FOR THE DYNAMO TRANSACTION
                 //////
 
-                EndTransaction(); //Close global transaction.
+                TransactionManager.CommitTransaction(); //Close global transaction.
             };
 
             //If we're in a debug run or not already in the idle thread, then run the Cleanup Delegate
@@ -522,8 +488,6 @@ namespace Dynamo
 
         protected override void Run(List<NodeModel> topElements, FScheme.Expression runningExpression)
         {
-            var model = (DynamoRevitViewModel)DynamoViewModel;
-
             //If we are not running in debug...
             if (!DynamoViewModel.RunInDebug)
             {
@@ -570,6 +534,21 @@ namespace Dynamo
                 base.Run(topElements, runningExpression);
             }
         }
+
+        public void InitTransaction()
+        {
+            TransactionManager.StartTransaction(dynRevitSettings.Doc.Document);
+        }
+
+        public void EndTransaction()
+        {
+            TransactionManager.CommitTransaction();
+        }
+
+        public void CancelTransaction()
+        {
+            TransactionManager.CancelTransaction();
+        }
     }
 
     public enum TransactionMode
@@ -577,27 +556,5 @@ namespace Dynamo
         Debug,
         Manual,
         Automatic
-    }
-
-    public class DynamoWarningPrinter : IFailuresPreprocessor
-    {
-        public FailureProcessingResult PreprocessFailures(FailuresAccessor failuresAccessor)
-        {
-            var failList = failuresAccessor.GetFailureMessages();
-
-            var query = from fail in failList
-                        let severity = fail.GetSeverity()
-                        where severity == FailureSeverity.Warning
-                        select fail;
-
-            foreach (var fail in query)
-            {
-                DynamoLogger.Instance.Log(
-                    "!! Warning: " + fail.GetDescriptionText());
-                failuresAccessor.DeleteWarning(fail);
-            }
-
-            return FailureProcessingResult.Continue;
-        }
     }
 }

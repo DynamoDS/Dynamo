@@ -9,6 +9,7 @@ using Dynamo.Utilities;
 using Dynamo.Revit;
 using System.Xml;
 using Autodesk.Revit.DB;
+using RevitServices;
 
 namespace Dynamo.Nodes
 {
@@ -49,7 +50,7 @@ namespace Dynamo.Nodes
                     foreach (var id in run)
                     {
                         Element e;
-                        if (dynUtils.TryGetElement(id, typeof(object), out e))
+                        if (dynRevitSettings.Doc.Document.TryGetElement(id, out e))
                         {
                             var elementStore = xmlDoc.CreateElement("Element");
                             elementStore.InnerText = e.UniqueId;
