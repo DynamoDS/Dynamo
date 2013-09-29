@@ -203,6 +203,9 @@ namespace Dynamo.Controls
             HelixXAxes = null;
             HelixYAxes = null;
             HelixZAxes = null;
+            HelixPointsSelected = null;
+            HelixLinesSelected = null;
+            HelixMeshSelected = null;
 
             HelixPoints = vizManager.Visualizations.Values.SelectMany(x => x.Description.Points).ToList();
             HelixLines = vizManager.Visualizations.Values.SelectMany(x => x.Description.Lines).ToList();
