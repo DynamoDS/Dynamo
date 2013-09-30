@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Autodesk.LibG;
 using Autodesk.Revit.DB;
 using Dynamo.Controls;
 using Dynamo.Models;
@@ -261,14 +262,9 @@ namespace Dynamo
             {
                 var drawable = ((Value.Container)val).Item;
 
-                if(drawable is XYZ)
+                //support drawing XYZs geometry objects or LibG graphic items
+                if(drawable is XYZ || drawable is GeometryObject || drawable is GraphicItem )
                 {
-                    //RevitTransactionNode.DrawXYZ(drawable);
-                    VisualizationManager.Visualizations[id].Geometry.Add(drawable);
-                }
-                else if (drawable is GeometryObject)
-                {
-                    //RevitTransactionNode.DrawGeometryObject(drawable);
                     VisualizationManager.Visualizations[id].Geometry.Add(drawable);
                 }
             }

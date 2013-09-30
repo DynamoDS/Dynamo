@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media.Media3D;
+using Autodesk.LibG;
 using Autodesk.Revit.DB;
+using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Selection;
 using HelixToolkit.Wpf;
 using Curve = Autodesk.Revit.DB.Curve;
 using Solid = Autodesk.Revit.DB.Solid;
@@ -18,6 +21,12 @@ namespace Dynamo
         {
             //only update those nodes which have been flagged for update
             var toUpdate = Visualizations.Values.ToList().Where(x => x.RequiresUpdate == true);
+
+            var selIds =
+                DynamoSelection.Instance.Selection.Where(x => x is NodeModel)
+                               .Select(x => ((NodeModel)x).GUID.ToString());
+
+            var selected = Visualizations.Where(x => selIds.Contains(x.Key)).Select(x => x.Value);
 
             foreach (var n in toUpdate)
             {
@@ -56,6 +65,11 @@ namespace Dynamo
                         //If GeometryKeeper is available,
                         //send geometry.
                         //TODO: GeometryKeeper
+                    }
+                    else if (obj is GraphicItem)
+                    {
+                        //support drawing ASM visuals
+                        VisualizationManagerASM.DrawLibGGraphicItem((GraphicItem)obj, rd, selected, n);
                     }
                 }
 
