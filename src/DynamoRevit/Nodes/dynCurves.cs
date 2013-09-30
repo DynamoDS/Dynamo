@@ -1089,7 +1089,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Thicken Curve")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
-    [NodeDescription("Creates Curve Loop by thickening curve")]
+    [NodeDescription("Creates Curve Loop by thickening a curve")]
     public class ThickenCurveLoop : CurveBase
     {
         public ThickenCurveLoop()
@@ -1122,7 +1122,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Curve Loop List")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
-    [NodeDescription("Creates list of curves in the Curve Loop")]
+    [NodeDescription("Extract a list of curves in the Curve Loop")]
     public class ListCurveLoop : RevitTransactionNodeWithOneOutput
     {
         public ListCurveLoop()
@@ -1161,7 +1161,7 @@ namespace Dynamo.Nodes
     {
         public OffsetCrv()
         {
-            InPortData.Add(new PortData("Curve", "Curve to thicken, could not be closed.", typeof(Value.Container)));
+            InPortData.Add(new PortData("Curve", "Curve to offest, cannot be closed.", typeof(Value.Container)));
             InPortData.Add(new PortData("Offset", "Offset value.", typeof(Value.Number)));
             InPortData.Add(new PortData("Normal", "The normal vector to the plane used for offset.", typeof(Value.Number)));
             OutPortData.Add(new PortData("Curve", "Curve which is the result of offset.", typeof(Value.Container)));
