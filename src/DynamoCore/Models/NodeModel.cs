@@ -1499,7 +1499,7 @@ namespace Dynamo.Models
             OnDispatchedToUI(this, new UIDispatcherEventArgs(a));
         }
 
-        public static string PrintValue(Value eIn, int currentListIndex, int maxListIndex, int currentDepth, int maxDepth)
+        public static string PrintValue(Value eIn, int currentListIndex, int maxListIndex, int currentDepth, int maxDepth, int maxStringLength = 20)
         {
             if (eIn == null)
                 return "<null>";
@@ -1552,7 +1552,14 @@ namespace Dynamo.Models
             }
             else if (eIn.IsString)
             {
-                accString += "\"" + (eIn as Value.String).Item + "\"";
+                var str = (eIn as Value.String).Item;
+
+                if (str.Length > 20)
+                {
+                    str = str.Substring(0, 20) + "...";
+                }
+
+                accString += "\"" + str + "\"";
             }
             else if (eIn.IsSymbol)
             {
