@@ -75,7 +75,7 @@ namespace Dynamo.Nodes
 
             string dll_dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\dll";
 
-            if (!assemblies.Any(x => x.FullName.Contains("LibG")))
+            if (!assemblies.Any(x => x.FullName.Contains("LibGNet")))
             {
                 //LibG could not be found, possibly because we haven't used a node
                 //that requires it yet. Let's load it...
