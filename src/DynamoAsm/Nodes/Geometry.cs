@@ -1006,11 +1006,11 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Point at Parameter on Surface.")]
     [NodeSearchable(false)]
-    public class PointAtUVParameterNode : GraphicItemNode
+    public class PointAtUvParameterNode : GraphicItemNode
     {
         Point _point = null;
 
-        public PointAtUVParameterNode()
+        public PointAtUvParameterNode()
         {
             InPortData.Add(new PortData("Surface", "Surface to evaluate", typeof(Value.Container)));
             InPortData.Add(new PortData("U", "Parameter from 0 to 1", typeof(Value.Number)));
@@ -1040,11 +1040,11 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Normal at Parameter on Surface.")]
     [NodeSearchable(false)]
-    public class NormalAtUVParameterNode : LibGNode
+    public class NormalAtUvParameterNode : LibGNode
     {
         Vector _vector = null;
 
-        public NormalAtUVParameterNode()
+        public NormalAtUvParameterNode()
         {
             InPortData.Add(new PortData("Surface", "Surface to evaluate", typeof(Value.Container)));
             InPortData.Add(new PortData("U", "Parameter from 0 to 1", typeof(Value.Number)));
