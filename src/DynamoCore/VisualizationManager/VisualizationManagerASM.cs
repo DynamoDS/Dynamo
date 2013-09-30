@@ -26,6 +26,9 @@ namespace Dynamo
 
             var selected = Visualizations.Where(x => selIds.Contains(x.Key)).Select(x => x.Value);
 
+            var sw = new Stopwatch();
+            sw.Start();
+
             foreach (var n in toUpdate)
             {
                 var rd = n.Description;
@@ -44,6 +47,9 @@ namespace Dynamo
                     n.RequiresUpdate = false;
                 }
             }
+
+            sw.Stop();
+            Debug.WriteLine(string.Format("{0} elapsed for generating visualizations.", sw.Elapsed));
             
             OnVisualizationUpdateComplete(this, EventArgs.Empty);
         }
@@ -175,21 +181,21 @@ namespace Dynamo
                                                   triangle_normals[index + 1],
                                                   triangle_normals[index + 2]);
 
-                        bool new_point_exists = false;
-                        for (int l = 0; l < builder.Positions.Count; ++l)
-                        {
-                            Point3D p = builder.Positions[l];
-                            if ((p.X == new_point.X) && (p.Y == new_point.Y) && (p.Z == new_point.Z))
-                            {
-                                //indices_front.Add(l);
-                                builder.TriangleIndices.Add(l);
-                                new_point_exists = true;
-                                break;
-                            }
-                        }
+                        //bool new_point_exists = false;
+                        //for (int l = 0; l < builder.Positions.Count; ++l)
+                        //{
+                        //    Point3D p = builder.Positions[l];
+                        //    if ((p.X == new_point.X) && (p.Y == new_point.Y) && (p.Z == new_point.Z))
+                        //    {
+                        //        //indices_front.Add(l);
+                        //        builder.TriangleIndices.Add(l);
+                        //        new_point_exists = true;
+                        //        break;
+                        //    }
+                        //}
 
-                        if (new_point_exists)
-                            continue;
+                        //if (new_point_exists)
+                        //    continue;
 
                         builder.TriangleIndices.Add(builder.Positions.Count);
                         builder.Normals.Add(normal);

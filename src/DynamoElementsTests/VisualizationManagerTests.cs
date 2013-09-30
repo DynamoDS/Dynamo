@@ -334,5 +334,30 @@ namespace Dynamo.Tests
             //ensure that we have no visualizations
             Assert.AreEqual(viz.Visualizations.Count, 0);
         }
+    
+        [Test]
+        public void VisualizationsAreCreatedForCustomNodes()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            var viz = dynSettings.Controller.VisualizationManager;
+
+            Assert.IsTrue(
+                Controller.CustomNodeManager.AddFileToPath(Path.Combine(GetTestDirectory(), "Points.dyf"))
+                != null);
+            string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_customNode.dyn");
+            model.Open(openPath);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            //ensure that we have some visualizations
+            Assert.Greater(viz.Visualizations.Count, 0);
+
+            //now clear the workspace
+            model.Clear(null);
+
+            //ensure that we have no visualizations
+            Assert.AreEqual(viz.Visualizations.Count, 0);
+        }
     }
 }
