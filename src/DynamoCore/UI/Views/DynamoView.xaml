@@ -240,7 +240,7 @@
                         </MenuItem>    
 
                         <MenuItem Header="{Binding Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
-                              Command="{Binding ToggleConsoleShowingCommand}" InputGestureText="Ctrl+Shift+Up"/>
+                              Command="{Binding ToggleConsoleShowingCommand}" InputGestureText="Ctrl + Shift + Up"/>
 
                         <MenuItem Header="_Connectors" Name="connectorMenu">
                             <MenuItem Focusable="False" Header="_Connector Type" IsEnabled="True">
