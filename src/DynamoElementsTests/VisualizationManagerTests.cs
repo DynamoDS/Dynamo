@@ -304,13 +304,13 @@ namespace Dynamo.Tests
         [Test]
         public void VisualizationIsDeletedWhenNodeIsRemoved()
         {
-            
+            Assert.Inconclusive("Finish me!");
         }
 
         [Test]
         public void VisualizationIsUpdatedWhenPreviewStateIsChanged()
         {
-            
+            Assert.Inconclusive("Finish me!");
         }
     }
 }
