@@ -367,7 +367,7 @@ namespace Dynamo.ViewModels
             {
                 Point topLeft = new Point(NodeModel.X, NodeModel.Y);
                 Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
-                PopupDataPacket data = new PopupDataPacket(InfoBubbleViewModel.Style.Error, topLeft, botRight, NodeModel.ToolTipText, InfoBubbleViewModel.Direction.Bottom, NodeModel.GUID);
+                InfoBubbleDataPacket data = new InfoBubbleDataPacket(InfoBubbleViewModel.Style.Error, topLeft, botRight, NodeModel.ToolTipText, InfoBubbleViewModel.Direction.Bottom, NodeModel.GUID);
                 dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.Invoke((new Action(() =>
                 {
                     this.ErrorBubble.UpdateContentCommand.Execute(data);
@@ -381,7 +381,7 @@ namespace Dynamo.ViewModels
         {
             Point topLeft = new Point(NodeModel.X, NodeModel.Y);
             Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
-            PopupDataPacket data = new PopupDataPacket();
+            InfoBubbleDataPacket data = new InfoBubbleDataPacket();
             data.TopLeft = topLeft;
             data.BotRight = botRight;
             this.ErrorBubble.UpdatePositionCommand.Execute(data);
@@ -643,7 +643,7 @@ namespace Dynamo.ViewModels
 
         private void ShowTooltip(object parameter)
         {
-            dynSettings.Controller.DynamoViewModel.ShowPopup(parameter);
+            dynSettings.Controller.DynamoViewModel.ShowInfoBubble(parameter);
         }
 
         private bool CanShowTooltip(object parameter)
@@ -653,7 +653,7 @@ namespace Dynamo.ViewModels
 
         private void FadeOutTooltip(object parameter)
         {
-            dynSettings.Controller.DynamoViewModel.HidePopup(parameter);
+            dynSettings.Controller.DynamoViewModel.HideInfoBubble(parameter);
         }
 
         private bool CanFadeOutTooltip(object parameter)
@@ -663,7 +663,7 @@ namespace Dynamo.ViewModels
 
         private void CollapseTooltip(object parameter)
         {
-            dynSettings.Controller.PopupViewmodel.InstantCollapseCommand.Execute(null);
+            dynSettings.Controller.InfoBubbleViewModel.InstantCollapseCommand.Execute(null);
         }
 
         private bool CanCollapseTooltip(object parameter)

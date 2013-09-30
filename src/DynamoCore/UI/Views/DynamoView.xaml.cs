@@ -87,9 +87,9 @@ namespace Dynamo.Controls
 
             this.Loaded += dynBench_Activated;
 
-            //setup popup for library items tooltip
-            InfoBubbleView popup = new InfoBubbleView { DataContext = dynSettings.Controller.PopupViewmodel };
-            popupGrid.Children.Add(popup);
+            //setup InfoBubble for library items tooltip
+            InfoBubbleView InfoBubble = new InfoBubbleView { DataContext = dynSettings.Controller.InfoBubbleViewModel };
+            InfoBubbleGrid.Children.Add(InfoBubble);
         }
 
         void InitializeShortcutBar()
