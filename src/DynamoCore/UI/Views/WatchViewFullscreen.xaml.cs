@@ -166,8 +166,8 @@ namespace Dynamo.Controls
 
         void VisualizationManager_VisualizationUpdateComplete(object sender, EventArgs e)
         {
-            //if (!_vm.ParentWorkspace.IsCurrentSpace)
-            //    return;
+            if (dynSettings.Controller == null)
+                return;
 
             if (!dynSettings.Controller.DynamoViewModel.FullscreenWatchShowing)
                 return;
