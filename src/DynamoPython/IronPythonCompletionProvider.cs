@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Dynamo;
+using Dynamo.Utilities;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using IronPython.Hosting;
 using IronPython.Runtime;
@@ -123,16 +124,11 @@ namespace DynamoPython
                 }
             }
 
-            string dll_dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\dll";
-
             if (!assemblies.Any(x => x.FullName.Contains("LibGNet")))
             {
-                //LibG could not be found, possibly because we haven't used a node
-                //that requires it yet. Let's load it...
-                string libGPath = Path.Combine(dll_dir, "LibGNet.dll");
-                var libG = Assembly.LoadFrom(libGPath);
+                AssemblyHelper.LoadLibG();
 
-                //refresh the collection of loaded assemblies
+                //refresh the assemblies collection
                 assemblies = AppDomain.CurrentDomain.GetAssemblies();
             }
 
