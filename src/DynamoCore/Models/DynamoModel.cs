@@ -174,24 +174,29 @@ namespace Dynamo.Models
         public event WorkspaceHandler WorkspaceHidden;
 
         /// <summary>
-        /// Event called when a node is added to a workspace
+        /// Event triggered when a node is added to a workspace
         /// </summary>
         public event NodeHandler NodeAdded;
 
         /// <summary>
-        /// Event called when a node is deleted
+        /// Event triggered when a node is deleted
         /// </summary>
         public event NodeHandler NodeDeleted;
 
         /// <summary>
-        /// Event called when a connector is added.
+        /// Event triggered when a connector is added.
         /// </summary>
         public event ConnectorHandler ConnectorAdded;
 
         /// <summary>
-        /// Event called when a connector is deleted.
+        /// Event triggered when a connector is deleted.
         /// </summary>
         public event ConnectorHandler ConnectorDeleted;
+
+        /// <summary>
+        /// Event triggered when the model is cleared.
+        /// </summary>
+        public event EventHandler ModelCleared;
 
         public WorkspaceModel CurrentWorkspace
         {
@@ -1612,6 +1617,17 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// Called when the model is cleared.
+        /// </summary>
+        internal void OnModelCleared()
+        {
+            if (ModelCleared != null)
+            {
+                ModelCleared(this, EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
         ///     Update a custom node after refactoring.  Updates search and all instances of the node.
         /// </summary>
         /// <param name="selectedNodes"> The function definition for the user-defined node </param>
@@ -1694,9 +1710,7 @@ namespace Dynamo.Models
             dynSettings.Controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
             dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
 
-            //clear the renderables
-            //dynSettings.Controller.RenderDescriptions.Clear();
-            dynSettings.Controller.OnRequestsRedraw(dynSettings.Controller, EventArgs.Empty);
+            OnModelCleared();
 
             dynSettings.Controller.IsUILocked = false;
         }

@@ -312,5 +312,27 @@ namespace Dynamo.Tests
         {
             Assert.Inconclusive("Finish me!");
         }
+
+        [Test]
+        public void VisualizationsAreClearedWhenWorkspaceIsCleared()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            var viz = dynSettings.Controller.VisualizationManager;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points.dyn");
+            model.Open(openPath);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            //ensure that we have some visualizations
+            Assert.Greater(viz.Visualizations.Count, 0);
+
+            //now clear the workspace
+            model.Clear(null);
+
+            //ensure that we have no visualizations
+            Assert.AreEqual(viz.Visualizations.Count, 0);
+        }
     }
 }
