@@ -212,7 +212,18 @@ namespace Dynamo.ViewModels
 
         public bool ShowsVisibilityToggles
         {
-            get { return nodeLogic is IDrawable; }
+            get
+            {
+                //if the node is a Function, show the visibility toggles
+                //if any of it's internal nodes is drawable.
+                if (nodeLogic is Function)
+                {
+                    var f = nodeLogic as Function;
+                    return f.Definition.Workspace.Nodes.Any(x => x is IDrawable);
+                }
+
+                return nodeLogic is IDrawable;
+            }
         }
 
         #endregion

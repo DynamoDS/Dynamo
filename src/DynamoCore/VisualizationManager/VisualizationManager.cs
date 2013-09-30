@@ -378,8 +378,8 @@ namespace Dynamo
 
                 if (node.IsUpstreamVisible)
                     drawables.AddRange(GetUpstreamIDrawableIds(node.Inputs));
-                else
-                    continue; // don't bother checking if function
+                //else
+                //    continue; // don't bother checking if function
 
                 //if the node is function then get all the 
                 //drawables inside that node. only do this if the
@@ -391,7 +391,13 @@ namespace Dynamo
                     IEnumerable<NodeModel> topElements = func.Definition.Workspace.GetTopMostNodes();
                     foreach (NodeModel innerNode in topElements)
                     {
-                        drawables.AddRange(GetUpstreamIDrawableIds(innerNode.Inputs));
+                        var drawableInner = innerNode as IDrawable;
+
+                        if (drawableInner != null)
+                            drawables.Add(innerNode.GUID.ToString());
+
+                        if (node.IsUpstreamVisible)
+                            drawables.AddRange(GetUpstreamIDrawableIds(innerNode.Inputs));
                     }
                 }
             }
