@@ -267,7 +267,7 @@ namespace Dynamo.Controls
             double actualWidth = textBlock.ActualWidth * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
             double actualHeight = textBlock.ActualHeight * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
             Point botRight = new Point(topLeft.X + actualWidth, topLeft.Y + actualHeight);
-            ViewModel.ShowTooltipCommand.Execute(new PopupDataPacket(PopupViewModel.Style.NodeTooltip, topLeft, botRight, tooltipContent, PopupViewModel.Direction.Bottom, Guid.Empty));
+            ViewModel.ShowTooltipCommand.Execute(new PopupDataPacket(InfoBubbleViewModel.Style.NodeTooltip, topLeft, botRight, tooltipContent, InfoBubbleViewModel.Direction.Bottom, Guid.Empty));
         }
 
         private void NickNameBlock_OnMouseLeave(object sender, MouseEventArgs e)
@@ -284,7 +284,7 @@ namespace Dynamo.Controls
             double actualWidth = inputPort.ActualWidth * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
             double actualHeight = inputPort.ActualHeight * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
             Point botRight = new Point(topLeft.X + actualWidth, topLeft.Y + actualHeight);
-            ViewModel.ShowTooltipCommand.Execute(new PopupDataPacket(PopupViewModel.Style.NodeTooltip, topLeft, botRight, content, PopupViewModel.Direction.Right, Guid.Empty));
+            ViewModel.ShowTooltipCommand.Execute(new PopupDataPacket(InfoBubbleViewModel.Style.NodeTooltip, topLeft, botRight, content, InfoBubbleViewModel.Direction.Right, Guid.Empty));
         }
 
         private void InputPort_OnMouseLeave(object sender, MouseEventArgs e)
@@ -306,7 +306,7 @@ namespace Dynamo.Controls
             double actualWidth = outputPort.ActualWidth * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
             double actualHeight = outputPort.ActualHeight * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
             Point botRight = new Point(topLeft.X + actualWidth, topLeft.Y + actualHeight);
-            ViewModel.ShowTooltipCommand.Execute(new PopupDataPacket(PopupViewModel.Style.NodeTooltip, topLeft, botRight, content, PopupViewModel.Direction.Left, Guid.Empty));
+            ViewModel.ShowTooltipCommand.Execute(new PopupDataPacket(InfoBubbleViewModel.Style.NodeTooltip, topLeft, botRight, content, InfoBubbleViewModel.Direction.Left, Guid.Empty));
         }
 
         private void OutputPort_OnMouseLeave(object sender, MouseEventArgs e)

@@ -88,7 +88,7 @@ namespace Dynamo.Controls
             this.Loaded += dynBench_Activated;
 
             //setup popup for library items tooltip
-            PopupView popup = new PopupView { DataContext = dynSettings.Controller.PopupViewmodel };
+            InfoBubbleView popup = new InfoBubbleView { DataContext = dynSettings.Controller.PopupViewmodel };
             popupGrid.Children.Add(popup);
         }
 
