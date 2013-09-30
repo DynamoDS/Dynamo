@@ -19,7 +19,10 @@
                  StrokeThickness="{Binding Path=FrameStrokeThickness}" Points="{Binding Path=FramePoints}">
         </Polygon>
 
-        <ItemsControl ItemsSource="{Binding Path=ContentCollection}">
+        <StackPanel Name="ContentContainer"> 
+        </StackPanel>
+        
+        <!--<ItemsControl ItemsSource="{Binding Path=ContentCollection}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <Grid IsItemsHost="True" />
@@ -35,7 +38,8 @@
                 <DataTemplate DataType="{x:Type StackPanel}">
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
-        </ItemsControl>
+        </ItemsControl>-->
         
+        <!--<Grid Background="Red" Width="200" Height="200"/>-->
     </Grid>
 </UserControl>

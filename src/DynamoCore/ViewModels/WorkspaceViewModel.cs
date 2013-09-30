@@ -387,6 +387,9 @@ namespace Dynamo.ViewModels
             Nodes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Nodes));
             Connectors_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Connectors));
             Notes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Notes));
+
+            PopupViewModel errorBubbleViewModel = new PopupViewModel();
+            Errors.Add(errorBubbleViewModel);
         }
 
         void Connectors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -990,6 +993,10 @@ namespace Dynamo.ViewModels
         private void UpdateErrorBubble (object parameter)
         {
             PopupDataPacket data = (PopupDataPacket)parameter;
+            if (string.IsNullOrEmpty(data.Text))
+            {
+                return;
+            }
             PopupViewModel errorBubbleViewModel = new PopupViewModel();
             Errors.Add(errorBubbleViewModel);
             errorBubbleViewModel.UpdatePopupCommand.Execute(data);
