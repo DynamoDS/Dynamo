@@ -338,22 +338,13 @@ namespace Dynamo.ViewModels
                 case "State":
                     RaisePropertyChanged("State");
                     break;
-                case "ToolTipText":
-                    UpdateErrorBubble();
-                    break;
                 //case "ArgumentLacing":
                 //    SetLacingTypeCommand.RaiseCanExecuteChanged();
                 //    break;
             }
         }
 
-        private void UpdateErrorBubble()
-        {
-            Point topLeft = new Point(NodeModel.X, NodeModel.Y);
-            Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
-            PopupDataPacket data = new PopupDataPacket(PopupViewModel.Style.Error, topLeft, botRight, NodeModel.ToolTipText, PopupViewModel.Direction.Bottom, NodeModel.GUID);
-            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.UpdateErrorBubbleCommand.Execute(data);
-        }
+        
 
         private void ShowHelp(object parameter)
         {
