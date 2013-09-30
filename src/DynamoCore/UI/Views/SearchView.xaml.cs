@@ -160,9 +160,9 @@ namespace Dynamo.Search
             Point topLeft = this.PointFromScreen(pointToScreen_TopLeft);
             Point pointToScreen_BotRight = new Point(pointToScreen_TopLeft.X + treeViewItem.ActualWidth, pointToScreen_TopLeft.Y + treeViewItem.ActualHeight);
             Point botRight = this.PointFromScreen(pointToScreen_BotRight);
-            string popupContent = nodeSearchElement.Name + "\n" + nodeSearchElement.Description;
-            PopupDataPacket data = new PopupDataPacket(InfoBubbleViewModel.Style.LibraryItemPreview, topLeft, botRight, popupContent, InfoBubbleViewModel.Direction.Left, Guid.Empty);
-            DynamoCommands.ShowLibItemPopupCommand.Execute(data);
+            string infoBubbleContent = nodeSearchElement.Name + "\n" + nodeSearchElement.Description;
+            InfoBubbleDataPacket data = new InfoBubbleDataPacket(InfoBubbleViewModel.Style.LibraryItemPreview, topLeft, botRight, infoBubbleContent, InfoBubbleViewModel.Direction.Left, Guid.Empty);
+            DynamoCommands.ShowLibItemInfoBubbleCommand.Execute(data);
         }
 
         private void LibraryItem_OnMouseLeave(object sender, MouseEventArgs e)
@@ -171,7 +171,7 @@ namespace Dynamo.Search
             NodeSearchElement nodeSearchElement = treeViewItem.Header as NodeSearchElement;
             if (nodeSearchElement == null)
                 return;
-            DynamoCommands.HideLibItemPopupCommand.Execute(null);
+            DynamoCommands.HideLibItemInfoBubbleCommand.Execute(null);
         }
     }
 }

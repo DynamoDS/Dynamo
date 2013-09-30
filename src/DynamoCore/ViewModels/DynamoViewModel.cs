@@ -1203,37 +1203,24 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        public void ShowPopup(object parameter)
+        public void ShowInfoBubble(object parameter)
         {
-            PopupDataPacket data = (PopupDataPacket)parameter;
-            //if (data.Style == PopupViewModel.Style.NodeTooltip)
-            //{
-            //    double canvasX = dynSettings.Controller.DynamoViewModel.CurrentSpace.X;
-            //    double canvasY = dynSettings.Controller.DynamoViewModel.CurrentSpace.Y;
-            //    double currentZoomLv = dynSettings.Controller.DynamoViewModel.CurrentSpace.Zoom;
-            //    double x = (data.TopLeft.X + canvasX) * currentZoomLv;
-            //    double y = (data.BotRight.Y + canvasY) * currentZoomLv;
-            //    double width = (data.BotRight.X - data.TopLeft.X) * currentZoomLv;
-            //    double height = (data.BotRight.Y - data.TopLeft.Y) * currentZoomLv;
-            //    Point topLeft = new Point(x, y);
-            //    Point botRight = new Point(x + width, y + height);
-            //    data = new PopupDataPacket(data.Style, topLeft, botRight, data.Text, data.ConnectingDirection, data.TargetGUID);
-            //}
-            controller.PopupViewmodel.UpdateContentCommand.Execute(data);
-            controller.PopupViewmodel.FadeInCommand.Execute(null);
+            InfoBubbleDataPacket data = (InfoBubbleDataPacket)parameter;
+            controller.InfoBubbleViewModel.UpdateContentCommand.Execute(data);
+            controller.InfoBubbleViewModel.FadeInCommand.Execute(null);
         }
 
-        internal bool CanShowPopup(object parameter)
+        internal bool CanShowInfoBubble(object parameter)
         {
             return true;
         }
 
-        public void HidePopup(object parameter)
+        public void HideInfoBubble(object parameter)
         {
-            controller.PopupViewmodel.FadeOutCommand.Execute(null);
+            controller.InfoBubbleViewModel.FadeOutCommand.Execute(null);
         }
 
-        internal bool CanHidePopup(object parameter)
+        internal bool CanHideInfoBubble(object parameter)
         {
             return true;
         }

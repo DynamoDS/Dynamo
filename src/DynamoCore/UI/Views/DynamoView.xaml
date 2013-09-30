@@ -547,7 +547,7 @@
                     </TabControl.ContentTemplate>
 
                 </TabControl>
-                <Grid Name="popupGrid" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                <Grid Name="InfoBubbleGrid" VerticalAlignment="Top" HorizontalAlignment="Left"/>
             </Grid>
 
         </Border>
