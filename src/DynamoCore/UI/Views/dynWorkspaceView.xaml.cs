@@ -22,8 +22,7 @@ namespace Dynamo.Views
     /// </summary>
     public partial class dynWorkspaceView : UserControl
     {
-        private bool isWindowSelecting;
-        private Point mouseDownPos;
+        // TODO(Ben): Remove this.
         private Dynamo.Controls.DragCanvas WorkBench = null;
         private ZoomAndPanControl zoomAndPanControl = null;
 
@@ -41,6 +40,7 @@ namespace Dynamo.Views
         public dynWorkspaceView()
         {
             InitializeComponent();
+            stateMachine = new StateMachine(this);
 
             selectionCanvas.Loaded += new RoutedEventHandler(selectionCanvas_Loaded);
             DataContextChanged += new DependencyPropertyChangedEventHandler(dynWorkspaceView_DataContextChanged);
@@ -343,157 +343,21 @@ namespace Dynamo.Views
 
         private void dynWorkspaceView_KeyUp(object sender, KeyEventArgs e)
         {
-
         }
 
-        private void DynWorkspaceView_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            WorkspaceViewModel vm = (DataContext as WorkspaceViewModel);
-
-            if (!(DataContext as WorkspaceViewModel).IsConnecting)
-            {
-                #region window selection
-
-                //WorkBench.ClearSelection();
-                DynamoSelection.Instance.ClearSelection();
-
-                //DEBUG WINDOW SELECTION
-                // Capture and track the mouse.
-                isWindowSelecting = true;
-                mouseDownPos = e.GetPosition(WorkBench);
-                //workBench.CaptureMouse();
-
-                // Initial placement of the drag selection box.         
-                Canvas.SetLeft(selectionBox, mouseDownPos.X);
-                Canvas.SetTop(selectionBox, mouseDownPos.Y);
-                selectionBox.Width = 0;
-                selectionBox.Height = 0;
-
-                // Make the drag selection box visible.
-                selectionBox.Visibility = Visibility.Visible;
-
-                #endregion
-            }
-
-            //if you click on the canvas and you're connecting
-            //then drop the connector, otherwise do nothing
-            if (vm != null)
-            {
-                if (vm.ActiveConnector != null)
-                {
-                    vm.IsConnecting = false;
-                    vm.ActiveConnector = null;
-                }
-            }
-
-            //if (editingName && !hoveringEditBox)
-            //{
-            //    DisableEditNameBox();
-            //}
-
-            dynSettings.ReturnFocusToSearch();
+            stateMachine.HandleLeftButtonDown(e);
         }
 
-        private void DynWorkspaceView_OnMouseUp(object sender, MouseButtonEventArgs e)
+        private void OnMouseRelease(object sender, MouseButtonEventArgs e)
         {
-            //Debug.WriteLine("Starting mouse up.");
-
-            WorkspaceViewModel vm = (DataContext as WorkspaceViewModel);
-
-            if (e.ChangedButton == MouseButton.Left)
-            {
-                //MVVM: this is in the bench, should it be here?
-                //beginNameEditClick = false;
-
-                if (isWindowSelecting)
-                {
-                    #region release window selection
-
-                    //DEBUG WINDOW SELECTION
-                    // Release the mouse capture and stop tracking it.
-                    isWindowSelecting = false;
-                    //workBench.ReleaseMouseCapture();
-
-                    // Hide the drag selection box.
-                    selectionBox.Visibility = Visibility.Collapsed;
-
-                    #endregion
-                }
-            }
+            stateMachine.HandleMouseRelease(e);
         }
 
-        private void DynWorkspaceView_OnMouseMove(object sender, MouseEventArgs e)
+        private void OnMouseMove(object sender, MouseEventArgs e)
         {
-            var vm = (DataContext as WorkspaceViewModel);
-
-            //Canvas.SetLeft(debugPt, e.GetPosition(dynSettings.Workbench).X - debugPt.Width/2);
-            //Canvas.SetTop(debugPt, e.GetPosition(dynSettings.Workbench).Y - debugPt.Height / 2);
-
-            //If we are currently connecting and there is an active connector,
-            //redraw it to match the new mouse coordinates.
-            if (vm.IsConnecting && vm.ActiveConnector != null)
-            {
-                vm.ActiveConnector.Redraw(e.GetPosition(WorkBench));
-            }
-
-            if (isWindowSelecting)
-            {
-                // When the mouse is held down, reposition the drag selection box.
-
-                Point mousePos = e.GetPosition(WorkBench);
-
-                if (mouseDownPos.X < mousePos.X)
-                {
-                    Canvas.SetLeft(selectionBox, mouseDownPos.X);
-                    selectionBox.Width = mousePos.X - mouseDownPos.X;
-                }
-                else
-                {
-                    Canvas.SetLeft(selectionBox, mousePos.X);
-                    selectionBox.Width = mouseDownPos.X - mousePos.X;
-                }
-
-                if (mouseDownPos.Y < mousePos.Y)
-                {
-                    Canvas.SetTop(selectionBox, mouseDownPos.Y);
-                    selectionBox.Height = mousePos.Y - mouseDownPos.Y;
-                }
-                else
-                {
-                    Canvas.SetTop(selectionBox, mousePos.Y);
-
-                    selectionBox.Height = mouseDownPos.Y - mousePos.Y;
-                }
-
-                //clear the selected elements
-                DynamoSelection.Instance.ClearSelection();
-
-                var rect =
-                    new Rect(
-                        Canvas.GetLeft(selectionBox),
-                        Canvas.GetTop(selectionBox),
-                        selectionBox.Width,
-                        selectionBox.Height);
-
-                if (mousePos.X > mouseDownPos.X)
-                {
-                    #region contain select
-
-                    selectionBox.StrokeDashArray = null;
-                    vm.ContainSelectCommand.Execute(rect);
-
-                    #endregion
-                }
-                else if (mousePos.X < mouseDownPos.X)
-                {
-                    #region crossing select
-
-                    selectionBox.StrokeDashArray = new DoubleCollection { 4 };
-                    vm.CrossSelectCommand.Execute(rect);
-
-                    #endregion
-                }
-            }
+            stateMachine.HandleMouseMove(e);
         }
 
         private void WorkBench_ContextMenuOpening(object sender, ContextMenuEventArgs e)
@@ -534,20 +398,8 @@ namespace Dynamo.Views
                 });
         }
 
-        #region State Machine Related Methods
-
-        internal void HandleStateTransition(StateMachine.State prev, StateMachine.State curr)
-        {
-        }
-
-        #endregion
-
         private void DrawGrid()
         {
-            //clear the canvas's children
-            //WorkBench.Children.Clear();
-            double gridSpacing = 100.0;
-
             selectionCanvas.UseLayoutRounding = true;
 
             // vertical canvas edge line
