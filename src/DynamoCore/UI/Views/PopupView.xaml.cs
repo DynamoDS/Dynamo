@@ -22,9 +22,46 @@ namespace Dynamo.Controls
     /// </summary>
     public partial class PopupView : UserControl
     {
+        public PopupViewModel ViewModel { get { return GetViewModel(); } }
+
         public PopupView()
         {
             InitializeComponent();
+            this.DataContextChanged += PopupView_DataContextChanged;
+        }
+
+        private void PopupView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            (DataContext as PopupViewModel).PropertyChanged += ViewModel_PropertyChanged;
+        }
+
+        private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "ItemDescription")
+            {
+                ContentContainer.Children.Clear();
+                TextBox textBox = GetStyledTextBox(ViewModel.ItemDescription);
+                ContentContainer.Children.Add(textBox);
+
+                ContentContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                ViewModel.EstimatedWidth = ContentContainer.DesiredSize.Width;
+                ViewModel.EstimatedHeight = ContentContainer.DesiredSize.Height;
+            }
+        }
+
+        private TextBox GetStyledTextBox(string text)
+        {
+            TextBox textBox = new TextBox();
+            textBox.TextWrapping = ViewModel.ContentWrapping;
+            textBox.Text = text;
+            textBox.IsReadOnly = true;
+            textBox.BorderThickness = new Thickness(0);
+            textBox.Background = Brushes.Transparent;
+            textBox.Foreground = ViewModel.TextForeground;
+            textBox.FontWeight = ViewModel.TextFontWeight;
+            textBox.FontSize = ViewModel.TextFontSize;
+            textBox.Margin = ViewModel.ContentMargin;
+            return textBox;
         }
 
         private PopupViewModel GetViewModel()

@@ -132,7 +132,7 @@
 
     </Window.InputBindings>
 
-    <Grid Name="mainGrid" FocusManager.IsFocusScope="True">
+    <Grid Name="mainGrid" FocusManager.IsFocusScope="True" PreviewMouseDown="Window_PreviewMouseDown" PreviewMouseUp="Window_PreviewMouseUp">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>

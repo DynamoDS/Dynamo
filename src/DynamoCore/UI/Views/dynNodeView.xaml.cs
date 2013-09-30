@@ -98,9 +98,6 @@ namespace Dynamo.Controls
                 case "ArgumentLacing":
                     ViewModel.SetLacingTypeCommand.RaiseCanExecuteChanged();
                     break;
-                case "ToolTipText":
-                    UpdateErrorBubble();
-                    break;
             }
         }
 
@@ -320,17 +317,6 @@ namespace Dynamo.Controls
         private void OutputPort_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             ViewModel.CollapseTooltipCommand.Execute(null);
-        }
-
-        private void UpdateErrorBubble()
-        {
-            if (dynSettings.Controller != null)
-            {
-                Point topLeft = new Point(ViewModel.NodeModel.X, ViewModel.NodeModel.Y);
-                Point botRight = new Point(ViewModel.NodeModel.X + ViewModel.NodeModel.Width, ViewModel.NodeModel.Y + ViewModel.NodeModel.Height);
-                PopupDataPacket data = new PopupDataPacket(PopupViewModel.Style.Error, topLeft, botRight, ViewModel.NodeModel.ToolTipText, PopupViewModel.Direction.Bottom, ViewModel.NodeModel.GUID);
-                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.UpdateErrorBubbleCommand.Execute(data);
-            }
         }
     }
 }

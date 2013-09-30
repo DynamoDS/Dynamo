@@ -74,6 +74,8 @@ namespace Dynamo.ViewModels
             get { return nodeLogic; }
         }
 
+        public PopupViewModel ErrorBubble { get; set; }
+
         public string ToolTipText
         {
             get { return nodeLogic.ToolTipText; }
@@ -325,9 +327,11 @@ namespace Dynamo.ViewModels
                     break;
                 case "X":
                     RaisePropertyChanged("Left");
+                    UpdateErrorBubblePosition(NodeModel.X, NodeModel.Y);
                     break;
                 case "Y":
                     RaisePropertyChanged("Top");
+                    UpdateErrorBubblePosition(NodeModel.X, NodeModel.Y);
                     break;
                 case "InteractionEnabled":
                     RaisePropertyChanged("IsInteractionEnabled");
@@ -338,13 +342,47 @@ namespace Dynamo.ViewModels
                 case "State":
                     RaisePropertyChanged("State");
                     break;
+                case "ToolTipText":
+                    UpdateErrorBubbleContent();
+                    break;
                 //case "ArgumentLacing":
                 //    SetLacingTypeCommand.RaiseCanExecuteChanged();
                 //    break;
             }
         }
 
-        
+        private void UpdateErrorBubbleContent()
+        {
+            if (this.ErrorBubble == null)
+                return;
+            if (string.IsNullOrEmpty(NodeModel.ToolTipText) && ErrorBubble.Opacity != 0)
+            {
+                ErrorBubble.SetAlwaysVisibleCommand.Execute(false);
+                ErrorBubble.FadeOutCommand.Execute(null);
+            }
+            else
+            {
+                Point topLeft = new Point(NodeModel.X, NodeModel.Y);
+                Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
+                PopupDataPacket data = new PopupDataPacket(PopupViewModel.Style.Error, topLeft, botRight, NodeModel.ToolTipText, PopupViewModel.Direction.Bottom, NodeModel.GUID);
+                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.Invoke((new Action(() =>
+                {
+                    this.ErrorBubble.UpdateContentCommand.Execute(data);
+                    this.ErrorBubble.SetAlwaysVisibleCommand.Execute(true);
+                    this.ErrorBubble.FadeInCommand.Execute(null);
+                })));
+            }
+        }
+
+        private void UpdateErrorBubblePosition(double x, double y)
+        {
+            Point topLeft = new Point(NodeModel.X, NodeModel.Y);
+            Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
+            PopupDataPacket data = new PopupDataPacket();
+            data.TopLeft = topLeft;
+            data.BotRight = botRight;
+            this.ErrorBubble.UpdatePositionCommand.Execute(data);
+        }
 
         private void ShowHelp(object parameter)
         {

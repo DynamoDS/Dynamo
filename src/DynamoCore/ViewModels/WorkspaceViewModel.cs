@@ -11,6 +11,7 @@ using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Controls;
+using System.Windows.Threading;
 
 namespace Dynamo.ViewModels
 {
@@ -29,6 +30,7 @@ namespace Dynamo.ViewModels
         public WorkspaceModel _model;
         private bool _isConnecting = false;
         private bool _canFindNodesFromElements = false;
+        public Dispatcher Dispatcher ;
 
         public event EventHandler StopDragging;
         public event PointEventHandler CurrentOffsetChanged;
@@ -387,9 +389,7 @@ namespace Dynamo.ViewModels
             Nodes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Nodes));
             Connectors_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Connectors));
             Notes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Notes));
-
-            PopupViewModel errorBubbleViewModel = new PopupViewModel();
-            Errors.Add(errorBubbleViewModel);
+            Dispatcher = System.Windows.Threading.Dispatcher.CurrentDispatcher;
         }
 
         void Connectors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -449,8 +449,11 @@ namespace Dynamo.ViewModels
                         if (item != null && item is NodeModel)
                         {
                             var node = item as NodeModel;
-                            _nodes.Add(new NodeViewModel(node));
-
+                            NodeViewModel nodeViewModel = new NodeViewModel(node);
+                            _nodes.Add(nodeViewModel);
+                            PopupViewModel errorBubble = new PopupViewModel(node.GUID);
+                            nodeViewModel.ErrorBubble = errorBubble;
+                            Errors.Add(errorBubble);
                             //submit the node for rendering
                             if (node is IDrawable)
                                 dynSettings.Controller.OnNodeSubmittedForRendering(node, EventArgs.Empty);
@@ -459,12 +462,15 @@ namespace Dynamo.ViewModels
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     _nodes.Clear();
+                    Errors.Clear();
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var item in e.OldItems)
                     {
                         var node = item as NodeModel;
-                        _nodes.Remove(_nodes.First(x => x.NodeLogic == item));
+                        NodeViewModel nodeViewModel = _nodes.First(x => x.NodeLogic == item);
+                        Errors.Remove(nodeViewModel.ErrorBubble);
+                        _nodes.Remove(nodeViewModel);
 
                         //remove the node from rendering
                         if (node is IDrawable)
@@ -988,25 +994,6 @@ namespace Dynamo.ViewModels
             if (FindNodesFromElements != null)
                 return true;
             return false;
-        }
-
-        private void UpdateErrorBubble (object parameter)
-        {
-            PopupDataPacket data = (PopupDataPacket)parameter;
-            if (string.IsNullOrEmpty(data.Text))
-            {
-                return;
-            }
-            PopupViewModel errorBubbleViewModel = new PopupViewModel();
-            Errors.Add(errorBubbleViewModel);
-            errorBubbleViewModel.UpdatePopupCommand.Execute(data);
-            errorBubbleViewModel.SetAlwaysVisibleCommand.Execute(true);
-            errorBubbleViewModel.FadeInCommand.Execute(null);
-        }
-
-        private bool CanUpdateErrorBubble(object parameter)
-        {
-            return true;
         }
 
         /// <summary>

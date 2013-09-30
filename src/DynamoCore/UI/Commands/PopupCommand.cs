@@ -4,19 +4,30 @@ namespace Dynamo.ViewModels
 {
     public partial class PopupViewModel : ViewModelBase
     {
-        private DelegateCommand _updatePopupCommand;
-        private DelegateCommand _fadeInCommand;
-        private DelegateCommand _fadeOutCommand;
-        private DelegateCommand _instanctCollapseCommand;
-        private DelegateCommand _setAlwaysVisibleCommand;
+        private DelegateCommand updateContentCommand;
+        private DelegateCommand updatePositionCommand;
+        private DelegateCommand fadeInCommand;
+        private DelegateCommand fadeOutCommand;
+        private DelegateCommand instanctCollapseCommand;
+        private DelegateCommand setAlwaysVisibleCommand;
 
-        public DelegateCommand UpdatePopupCommand
+        public DelegateCommand UpdateContentCommand
         {
             get
             {
-                if (_updatePopupCommand == null)
-                    _updatePopupCommand = new DelegateCommand(UpdatePopup, CanUpdatePopup);
-                return _updatePopupCommand;
+                if (updateContentCommand == null)
+                    updateContentCommand = new DelegateCommand(UpdatePopup, CanUpdatePopup);
+                return updateContentCommand;
+            }
+        }
+
+        public DelegateCommand UpdatePositionCommand
+        {
+            get
+            {
+                if (updatePositionCommand == null)
+                    updatePositionCommand = new DelegateCommand(UpdatePosition, CanUpdatePosition);
+                return updatePositionCommand;
             }
         }
 
@@ -24,9 +35,9 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (_fadeInCommand == null)
-                    _fadeInCommand = new DelegateCommand(FadeIn, CanFadeIn);
-                return _fadeInCommand;
+                if (fadeInCommand == null)
+                    fadeInCommand = new DelegateCommand(FadeIn, CanFadeIn);
+                return fadeInCommand;
             }
         }
 
@@ -34,9 +45,9 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (_fadeOutCommand == null)
-                    _fadeOutCommand = new DelegateCommand(FadeOut, CanFadeOut);
-                return _fadeOutCommand;
+                if (fadeOutCommand == null)
+                    fadeOutCommand = new DelegateCommand(FadeOut, CanFadeOut);
+                return fadeOutCommand;
             }
         }
 
@@ -44,9 +55,9 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (_instanctCollapseCommand == null)
-                    _instanctCollapseCommand = new DelegateCommand(InstantCollapse, CanInstantCollapse);
-                return _instanctCollapseCommand;
+                if (instanctCollapseCommand == null)
+                    instanctCollapseCommand = new DelegateCommand(InstantCollapse, CanInstantCollapse);
+                return instanctCollapseCommand;
             }
         }
 
@@ -54,11 +65,11 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (_setAlwaysVisibleCommand == null)
+                if (setAlwaysVisibleCommand == null)
                 {
-                    _setAlwaysVisibleCommand = new DelegateCommand(SetAlwaysVisible, CanSetAlwaysVisible);
+                    setAlwaysVisibleCommand = new DelegateCommand(SetAlwaysVisible, CanSetAlwaysVisible);
                 }
-                return _setAlwaysVisibleCommand;
+                return setAlwaysVisibleCommand;
             }
         }
     }
