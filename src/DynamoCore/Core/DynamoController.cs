@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Threading;
+using Autodesk.LibG;
 using Dynamo.DSEngine;
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
@@ -242,6 +243,8 @@ namespace Dynamo
             {
                 DynamoLogger.Instance.Log("All Tests Passed. Core library loaded OK.");
             }
+
+            AddPythonBindings();
         }
 
         #endregion
@@ -574,6 +577,73 @@ namespace Dynamo
         internal bool CanClearLog(object parameter)
         {
             return true;
+        }
+
+        public virtual void AddPythonBindings()
+        {
+            try
+            {
+                var assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+                Assembly ironPythonAssembly = null;
+
+                string path;
+
+                if (File.Exists(path = Path.Combine(assemblyPath, "DynamoPython.dll")))
+                {
+                    ironPythonAssembly = Assembly.LoadFrom(path);
+                }
+                else if (File.Exists(path = Path.Combine(assemblyPath, "Packages", "IronPython", "DynamoPython.dll")))
+                {
+                    ironPythonAssembly = Assembly.LoadFrom(path);
+                }
+
+                if (ironPythonAssembly == null)
+                    throw new Exception();
+
+                var pythonEngine = ironPythonAssembly.GetType("DynamoPython.PythonEngine");
+
+                var drawingField = pythonEngine.GetField("Drawing");
+                var drawDelegateType = ironPythonAssembly.GetType("DynamoPython.PythonEngine+DrawDelegate");
+                Delegate draw = Delegate.CreateDelegate(
+                    drawDelegateType,
+                    this,
+                    typeof(DynamoController)
+                        .GetMethod("DrawPython", BindingFlags.NonPublic | BindingFlags.Instance));
+
+                drawingField.SetValue(null, draw);
+
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+                Debug.WriteLine(e.StackTrace);
+            }
+        }
+
+        void DrawPython(FScheme.Value val, string id)
+        {
+            DrawContainers(val, id);
+        }
+
+        private void DrawContainers(FScheme.Value val, string id)
+        {
+            if (val.IsList)
+            {
+                foreach (FScheme.Value v in ((FScheme.Value.List)val).Item)
+                {
+                    DrawContainers(v, id);
+                }
+            }
+            if (val.IsContainer)
+            {
+                var drawable = ((FScheme.Value.Container)val).Item;
+
+                if (drawable is GraphicItem)
+                {
+                    VisualizationManager.Visualizations[id].Geometry.Add(drawable);
+                }
+            }
         }
     }
 

@@ -143,7 +143,7 @@ namespace Dynamo
         private delegate void LogDelegate(string msg);
         private delegate void SaveElementDelegate(Element e);
 
-        void AddPythonBindings()
+        public override void AddPythonBindings()
         {
             try
             {
