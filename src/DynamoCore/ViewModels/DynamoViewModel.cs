@@ -364,6 +364,8 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public bool IsMouseDown { get; set; }
+
         public ConnectorType ConnectorType
         {
             get { return dynSettings.Controller.ConnectorType; }
@@ -1217,7 +1219,7 @@ namespace Dynamo.ViewModels
             //    Point botRight = new Point(x + width, y + height);
             //    data = new PopupDataPacket(data.Style, topLeft, botRight, data.Text, data.ConnectingDirection, data.TargetGUID);
             //}
-            controller.PopupViewmodel.UpdatePopupCommand.Execute(data);
+            controller.PopupViewmodel.UpdateContentCommand.Execute(data);
             controller.PopupViewmodel.FadeInCommand.Execute(null);
         }
 

@@ -622,5 +622,15 @@ namespace Dynamo.Controls
             this._vm.WorkspaceActualHeight = border.ActualHeight;
             this._vm.WorkspaceActualWidth = border.ActualWidth;
         }
+
+        private void Window_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            _vm.IsMouseDown = true;
+        }
+
+        private void Window_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            _vm.IsMouseDown = false;
+        }
     }
 }
