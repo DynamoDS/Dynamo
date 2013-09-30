@@ -90,8 +90,8 @@
                                 <views:dynConnectorView></views:dynConnectorView>
                             </DataTemplate>
                             
-                            <DataTemplate DataType="{x:Type viewModels:PopupViewModel}">
-                                <controls:PopupView></controls:PopupView>
+                            <DataTemplate DataType="{x:Type viewModels:InfoBubbleViewModel}">
+                                <controls:InfoBubbleView></controls:InfoBubbleView>
                             </DataTemplate>
                             
                         </ItemsControl.Resources>

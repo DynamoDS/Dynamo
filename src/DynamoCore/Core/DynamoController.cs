@@ -71,7 +71,7 @@ namespace Dynamo
         public CustomNodeManager CustomNodeManager { get; internal set; }
         public SearchViewModel SearchViewModel { get; internal set; }
         public DynamoViewModel DynamoViewModel { get; internal set; }
-        public PopupViewModel PopupViewmodel { get; internal set; }
+        public InfoBubbleViewModel PopupViewmodel { get; internal set; }
         public DynamoModel DynamoModel { get; set; }
         public Dispatcher UIDispatcher { get; set; }
         
@@ -255,7 +255,7 @@ namespace Dynamo
             NodeRemovedFromRendering += new EventHandler(Controller_NodeRemovedFromRendering);
 
 
-            this.PopupViewmodel = new PopupViewModel();
+            this.PopupViewmodel = new InfoBubbleViewModel();
         }
 
         #endregion

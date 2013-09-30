@@ -74,7 +74,7 @@ namespace Dynamo.ViewModels
             get { return nodeLogic; }
         }
 
-        public PopupViewModel ErrorBubble { get; set; }
+        public InfoBubbleViewModel ErrorBubble { get; set; }
 
         public string ToolTipText
         {
@@ -355,16 +355,19 @@ namespace Dynamo.ViewModels
         {
             if (this.ErrorBubble == null)
                 return;
-            if (string.IsNullOrEmpty(NodeModel.ToolTipText) && ErrorBubble.Opacity != 0)
+            if (string.IsNullOrEmpty(NodeModel.ToolTipText))
             {
-                ErrorBubble.SetAlwaysVisibleCommand.Execute(false);
-                ErrorBubble.FadeOutCommand.Execute(null);
+                if (ErrorBubble.Opacity != 0)
+                {
+                    ErrorBubble.SetAlwaysVisibleCommand.Execute(false);
+                    ErrorBubble.FadeOutCommand.Execute(null);
+                }
             }
             else
             {
                 Point topLeft = new Point(NodeModel.X, NodeModel.Y);
                 Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
-                PopupDataPacket data = new PopupDataPacket(PopupViewModel.Style.Error, topLeft, botRight, NodeModel.ToolTipText, PopupViewModel.Direction.Bottom, NodeModel.GUID);
+                PopupDataPacket data = new PopupDataPacket(InfoBubbleViewModel.Style.Error, topLeft, botRight, NodeModel.ToolTipText, InfoBubbleViewModel.Direction.Bottom, NodeModel.GUID);
                 dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.Invoke((new Action(() =>
                 {
                     this.ErrorBubble.UpdateContentCommand.Execute(data);

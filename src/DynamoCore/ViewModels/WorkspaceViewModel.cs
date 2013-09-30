@@ -30,7 +30,7 @@ namespace Dynamo.ViewModels
         public WorkspaceModel _model;
         private bool _isConnecting = false;
         private bool _canFindNodesFromElements = false;
-        public Dispatcher Dispatcher ;
+        public Dispatcher Dispatcher;
 
         public event EventHandler StopDragging;
         public event PointEventHandler CurrentOffsetChanged;
@@ -182,7 +182,7 @@ namespace Dynamo.ViewModels
         private ObservableCollection<Watch3DFullscreenViewModel> _watches = new ObservableCollection<Watch3DFullscreenViewModel>();
         ObservableCollection<NodeViewModel> _nodes = new ObservableCollection<NodeViewModel>();
         ObservableCollection<NoteViewModel> _notes = new ObservableCollection<NoteViewModel>();
-        ObservableCollection<PopupViewModel> _errors = new ObservableCollection<PopupViewModel>();
+        ObservableCollection<InfoBubbleViewModel> _errors = new ObservableCollection<InfoBubbleViewModel>();
 
         public ObservableCollection<ConnectorViewModel> Connectors
         {
@@ -211,7 +211,7 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("Notes");
             }
         }
-        public ObservableCollection<PopupViewModel> Errors
+        public ObservableCollection<InfoBubbleViewModel> Errors
         {
             get { return _errors; }
             set { _errors = value; RaisePropertyChanged("Errors"); }
@@ -451,7 +451,7 @@ namespace Dynamo.ViewModels
                             var node = item as NodeModel;
                             NodeViewModel nodeViewModel = new NodeViewModel(node);
                             _nodes.Add(nodeViewModel);
-                            PopupViewModel errorBubble = new PopupViewModel(node.GUID);
+                            InfoBubbleViewModel errorBubble = new InfoBubbleViewModel(node.GUID);
                             nodeViewModel.ErrorBubble = errorBubble;
                             Errors.Add(errorBubble);
                             //submit the node for rendering
