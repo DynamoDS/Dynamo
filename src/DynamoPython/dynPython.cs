@@ -168,6 +168,9 @@ namespace Dynamo.Nodes
         {
             Value result = PythonEngine.Evaluator(dirty, script, makeBindings(args));
             lastEvalValue = result;
+
+            Draw();
+
             return result;
         }
 
