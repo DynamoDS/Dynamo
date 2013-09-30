@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Dynamo;
@@ -121,7 +122,20 @@ namespace DynamoPython
                     DynamoLogger.Instance.Log("Failed to load Revit types for autocomplete.  Python autocomplete will not see Autodesk namespace types.");
                 }
             }
-            
+
+            string dll_dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\dll";
+
+            if (!assemblies.Any(x => x.FullName.Contains("LibGNet")))
+            {
+                //LibG could not be found, possibly because we haven't used a node
+                //that requires it yet. Let's load it...
+                string libGPath = Path.Combine(dll_dir, "LibGNet.dll");
+                var libG = Assembly.LoadFrom(libGPath);
+
+                //refresh the collection of loaded assemblies
+                assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            }
+
             if (assemblies.Any(x => x.FullName.Contains("LibGNet")))
             {
                 try

@@ -264,7 +264,21 @@ namespace Dynamo.Tests
         [Test]
         public void CanVisualizeGeometryFromPython()
         {
-            Assert.Inconclusive("Finish me!");
+            //test to ensure that when nodes are disconnected 
+            //their associated geometry is removed
+            var model = dynSettings.Controller.DynamoModel;
+            var viz = dynSettings.Controller.VisualizationManager;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_python.dyn");
+            model.Open(openPath);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            var drawables = model.Nodes.Where(x => x is IDrawable);
+            var points = viz.Visualizations.SelectMany(x => x.Value.Description.Points);
+            Assert.AreEqual(drawables.Count(), viz.Visualizations.Count);
+            Assert.AreEqual(1, points.Count());
         }
 
         [Test]
