@@ -1554,9 +1554,9 @@ namespace Dynamo.Models
             {
                 var str = (eIn as Value.String).Item;
 
-                if (str.Length > 20)
+                if (str.Length > maxStringLength)
                 {
-                    str = str.Substring(0, 20) + "...";
+                    str = str.Substring(0, maxStringLength) + "...";
                 }
 
                 accString += "\"" + str + "\"";
