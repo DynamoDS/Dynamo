@@ -1548,7 +1548,10 @@ namespace Dynamo.Models
             }
             else if (eIn.IsNumber)
             {
-                accString += (eIn as Value.Number).Item.ToString();
+                var num = (eIn as Value.Number).Item;
+                var numStr = String.Format("{0:0.##}", num);
+
+                accString += numStr;
             }
             else if (eIn.IsString)
             {
