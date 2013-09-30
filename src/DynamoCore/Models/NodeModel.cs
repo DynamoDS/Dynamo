@@ -1530,6 +1530,11 @@ namespace Dynamo.Models
                 
                 var list = (eIn as Value.List).Item;
 
+                if (!list.Any())
+                {
+                    accString += " (empty)";
+                }
+
                 // when children will be at maxDepth, just do 1
                 if (currentDepth + 1 == maxDepth)
                 {
@@ -1549,9 +1554,8 @@ namespace Dynamo.Models
             else if (eIn.IsNumber)
             {
                 var num = (eIn as Value.Number).Item;
-                var numStr = String.Format("{0:0.##}", num);
-
-                accString += numStr;
+                var numFloat = (float) num;
+                accString += numFloat.ToString();
             }
             else if (eIn.IsString)
             {
