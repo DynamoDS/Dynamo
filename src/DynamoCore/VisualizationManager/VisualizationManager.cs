@@ -246,7 +246,7 @@ namespace Dynamo
             //add a key in the dictionary
             if (!Visualizations.ContainsKey(node.GUID.ToString()))
             {
-                var viz = new Visualization {RequiresUpdate = true};
+                var viz = new Visualization {RequiresUpdate = false};
                 Visualizations.Add(node.GUID.ToString(), viz);
             }
         }

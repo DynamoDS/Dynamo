@@ -19,8 +19,8 @@ namespace Dynamo.Tests
             model.Open(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
 
             // run the expression
             dynSettings.Controller.RunExpression(null);
@@ -57,8 +57,8 @@ namespace Dynamo.Tests
             model.Open(openPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
 
             // run the expression
             dynSettings.Controller.RunExpression(null);
@@ -227,7 +227,7 @@ namespace Dynamo.Tests
             var drawables = model.Nodes.Where(x => x is IDrawable);
             var meshes = viz.Visualizations.SelectMany(x => x.Value.Description.Meshes);
             Assert.AreEqual(drawables.Count(), viz.Visualizations.Count);
-            Assert.AreEqual(2, meshes.Count());
+            Assert.AreEqual(1, meshes.Count());
         }
 
         [Test]
@@ -342,7 +342,7 @@ namespace Dynamo.Tests
             var viz = dynSettings.Controller.VisualizationManager;
 
             Assert.IsTrue(
-                Controller.CustomNodeManager.AddFileToPath(Path.Combine(GetTestDirectory(), "Points.dyf"))
+                Controller.CustomNodeManager.AddFileToPath(Path.Combine(GetTestDirectory(), @"core\visualization\Points.dyf"))
                 != null);
             string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_customNode.dyn");
             model.Open(openPath);
@@ -352,12 +352,27 @@ namespace Dynamo.Tests
 
             //ensure that we have some visualizations
             Assert.Greater(viz.Visualizations.Count, 0);
+        }
+    
+        [Test]
+        public void HonorsPreviewSaveState()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            var viz = dynSettings.Controller.VisualizationManager;
 
-            //now clear the workspace
-            model.Clear(null);
+            string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points_line_noPreview.dyn");
+            model.Open(openPath);
 
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            //all nodes are set to not preview in the file
             //ensure that we have no visualizations
-            Assert.AreEqual(viz.Visualizations.Count, 0);
+            int pointCount, lineCount, meshCount, xCount, yCount, zCount;
+            viz.GetVisualizationCounts(
+                out pointCount, out lineCount, out meshCount, out xCount, out yCount, out zCount);
+
+            Assert.AreEqual(0, lineCount);
         }
     }
 }

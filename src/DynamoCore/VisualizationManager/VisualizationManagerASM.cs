@@ -50,12 +50,14 @@ namespace Dynamo
 
             sw.Stop();
             Debug.WriteLine(string.Format("{0} elapsed for generating visualizations.", sw.Elapsed));
-            
+            DynamoLogger.Instance.Log(string.Format("{0} elapsed for generating visualizations.", sw.Elapsed));
+
             OnVisualizationUpdateComplete(this, EventArgs.Empty);
         }
 
         public static void DrawLibGGraphicItem(GraphicItem g, RenderDescription rd, IEnumerable<Visualization> selected, Visualization n)
         {
+
             if (g is CoordinateSystem)
             {
                 #region draw coordinate systems
@@ -162,47 +164,32 @@ namespace Dynamo
 
                 #region draw surface
 
+                //var sw = new Stopwatch();
+                //sw.Start();
+
                 var builder = new MeshBuilder();
 
                 FloatList triangle_vertices = g.triangle_vertices_threadsafe();
                 FloatList triangle_normals = g.triangle_normals_threadsafe();
-
-                for (int i = 0; i < triangle_vertices.Count/9; ++i)
+                
+                for (int i = 0; i < triangle_vertices.Count; i+=3)
                 {
-                    for (int k = 0; k < 3; ++k)
-                    {
-                        int index = i*9 + k*3;
+                    var new_point = new Point3D(triangle_vertices[i],
+                                                triangle_vertices[i + 1],
+                                                triangle_vertices[i + 2]);
 
-                        var new_point = new Point3D(triangle_vertices[index],
-                                                    triangle_vertices[index + 1],
-                                                    triangle_vertices[index + 2]);
+                    var normal = new Vector3D(triangle_normals[i],
+                                                triangle_normals[i + 1],
+                                                triangle_normals[i + 2]);
 
-                        var normal = new Vector3D(triangle_normals[index],
-                                                  triangle_normals[index + 1],
-                                                  triangle_normals[index + 2]);
-
-                        //bool new_point_exists = false;
-                        //for (int l = 0; l < builder.Positions.Count; ++l)
-                        //{
-                        //    Point3D p = builder.Positions[l];
-                        //    if ((p.X == new_point.X) && (p.Y == new_point.Y) && (p.Z == new_point.Z))
-                        //    {
-                        //        //indices_front.Add(l);
-                        //        builder.TriangleIndices.Add(l);
-                        //        new_point_exists = true;
-                        //        break;
-                        //    }
-                        //}
-
-                        //if (new_point_exists)
-                        //    continue;
-
-                        builder.TriangleIndices.Add(builder.Positions.Count);
-                        builder.Normals.Add(normal);
-                        builder.Positions.Add(new_point);
-                        builder.TextureCoordinates.Add(new System.Windows.Point(0, 0));
-                    }
+                    builder.TriangleIndices.Add(builder.Positions.Count);
+                    builder.Normals.Add(normal);
+                    builder.Positions.Add(new_point);
+                    builder.TextureCoordinates.Add(new System.Windows.Point(0, 0));
                 }
+
+                //sw.Stop();
+                //Debug.WriteLine(string.Format("{0} elapsed for drawing geometry.", sw.Elapsed));
 
                 //don't add empty meshes
                 if (builder.Positions.Count > 0)
