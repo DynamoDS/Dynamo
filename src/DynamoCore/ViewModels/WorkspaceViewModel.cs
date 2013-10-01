@@ -183,6 +183,7 @@ namespace Dynamo.ViewModels
         ObservableCollection<NodeViewModel> _nodes = new ObservableCollection<NodeViewModel>();
         ObservableCollection<NoteViewModel> _notes = new ObservableCollection<NoteViewModel>();
         ObservableCollection<InfoBubbleViewModel> _errors = new ObservableCollection<InfoBubbleViewModel>();
+        ObservableCollection<InfoBubbleViewModel> preview = new ObservableCollection<InfoBubbleViewModel>();
 
         public ObservableCollection<ConnectorViewModel> Connectors
         {
@@ -215,6 +216,12 @@ namespace Dynamo.ViewModels
         {
             get { return _errors; }
             set { _errors = value; RaisePropertyChanged("Errors"); }
+        }
+
+        public ObservableCollection<InfoBubbleViewModel> Previews
+        {
+            get { return preview; }
+            set { preview = value; RaisePropertyChanged("Previews"); }
         }
 
         public string Name
@@ -375,6 +382,9 @@ namespace Dynamo.ViewModels
             var errorsColl = new CollectionContainer { Collection = Errors };
             _workspaceElements.Add(errorsColl);
 
+            var previewsColl = new CollectionContainer { Collection = Previews };
+            _workspaceElements.Add(previewsColl);
+
             //respond to collection changes on the model by creating new view models
             //currently, view models are added for notes and nodes
             //connector view models are added during connection
@@ -390,6 +400,8 @@ namespace Dynamo.ViewModels
             Connectors_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Connectors));
             Notes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Notes));
             Dispatcher = System.Windows.Threading.Dispatcher.CurrentDispatcher;
+
+            Previews.Add(new InfoBubbleViewModel());
         }
 
         void Connectors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -454,6 +466,9 @@ namespace Dynamo.ViewModels
                             InfoBubbleViewModel errorBubble = new InfoBubbleViewModel(node.GUID);
                             nodeViewModel.ErrorBubble = errorBubble;
                             Errors.Add(errorBubble);
+                            InfoBubbleViewModel previewBubble = new InfoBubbleViewModel(node.GUID);
+                            nodeViewModel.PreviewBubble = previewBubble;
+                            Previews.Add(previewBubble);
                             //submit the node for rendering
                             if (node is IDrawable)
                                 dynSettings.Controller.OnNodeSubmittedForRendering(node, EventArgs.Empty);
@@ -463,6 +478,7 @@ namespace Dynamo.ViewModels
                 case NotifyCollectionChangedAction.Reset:
                     _nodes.Clear();
                     Errors.Clear();
+                    Previews.Clear();
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var item in e.OldItems)
@@ -470,6 +486,7 @@ namespace Dynamo.ViewModels
                         var node = item as NodeModel;
                         NodeViewModel nodeViewModel = _nodes.First(x => x.NodeLogic == item);
                         Errors.Remove(nodeViewModel.ErrorBubble);
+                        Previews.Remove(nodeViewModel.PreviewBubble);
                         _nodes.Remove(nodeViewModel);
 
                         //remove the node from rendering
