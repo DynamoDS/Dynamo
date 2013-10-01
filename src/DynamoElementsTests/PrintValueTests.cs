@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Dynamo.FSchemeInterop;
 using Dynamo.Models;
+using Microsoft.FSharp.Collections;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -14,6 +15,22 @@ namespace Dynamo.Tests
 
         [Test]
         public void BuildValueStringIsCorrectForString()
+        {
+            var val = FScheme.Value.NewString("Lorem ipsum dolor sit amet, consectetur adipiscing elit. In sed nisl eget ante ullamcorper pellentesque.");
+            var res = NodeModel.PrintValue(val, 0, 2, 0, 2);
+            Assert.AreEqual("\"Lorem ipsum dolor si...\"", res);
+        }
+
+        [Test]
+        public void BuildValueStringIsCorrectForEmtpyList()
+        {
+            var val = FScheme.Value.NewList(new FSharpList<FScheme.Value>(null, null));
+            var res = NodeModel.PrintValue(val, 0, 2, 0, 2);
+            Assert.AreEqual("List (empty)", res);
+        }
+
+        [Test]
+        public void BuildValueStringIsCorrectForVeryLongString()
         {
             var val = FScheme.Value.NewString("Cool string");
             var res = NodeModel.PrintValue(val, 0, 2, 0, 2);
@@ -26,6 +43,14 @@ namespace Dynamo.Tests
             var val = FScheme.Value.NewNumber(-1.2328);
             var res = NodeModel.PrintValue(val, 0, 2, 0, 2);
             Assert.AreEqual("-1.2328", res);
+        }
+
+        [Test]
+        public void BuildValueStringIsCorrectForDoubleWithManyDecimalPoints()
+        {
+            var val = FScheme.Value.NewNumber(-1.232812983923);
+            var res = NodeModel.PrintValue(val, 0, 2, 0, 2);
+            Assert.AreEqual("-1.232813", res);
         }
 
         [Test]
