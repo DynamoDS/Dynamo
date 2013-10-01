@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Windows.Media.Media3D;
-using HelixToolkit.Wpf;
 
 namespace Dynamo
 {
@@ -13,7 +13,7 @@ namespace Dynamo
         /// <summary>
         /// A collection of Point objects to be used for rendering points as selected.
         /// </summary>
-        public List<Point3D> SelectedPoints { get; internal set; }
+        public List<Point3D> SelectedPoints{ get ; internal set;}
  
         /// <summary>
         /// A collection of Point objects to be used for rendering lines as selected.
@@ -77,6 +77,9 @@ namespace Dynamo
             XAxisPoints.Clear();
             YAxisPoints.Clear();
             ZAxisPoints.Clear();
+            SelectedPoints.Clear();
+            SelectedLines.Clear();
+            SelectedMeshes.Clear();
         }
     }
 }
