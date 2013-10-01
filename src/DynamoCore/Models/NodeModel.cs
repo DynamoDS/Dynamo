@@ -1506,7 +1506,7 @@ namespace Dynamo.Models
             OnDispatchedToUI(this, new UIDispatcherEventArgs(a));
         }
 
-        public static string PrintValue(Value eIn, int currentListIndex, int maxListIndex, int currentDepth, int maxDepth)
+        public static string PrintValue(Value eIn, int currentListIndex, int maxListIndex, int currentDepth, int maxDepth, int maxStringLength = 20)
         {
             if (eIn == null)
                 return "<null>";
@@ -1537,6 +1537,11 @@ namespace Dynamo.Models
                 
                 var list = (eIn as Value.List).Item;
 
+                if (!list.Any())
+                {
+                    accString += " (empty)";
+                }
+
                 // when children will be at maxDepth, just do 1
                 if (currentDepth + 1 == maxDepth)
                 {
@@ -1555,11 +1560,20 @@ namespace Dynamo.Models
             }
             else if (eIn.IsNumber)
             {
-                accString += (eIn as Value.Number).Item.ToString();
+                var num = (eIn as Value.Number).Item;
+                var numFloat = (float) num;
+                accString += numFloat.ToString();
             }
             else if (eIn.IsString)
             {
-                accString += "\"" + (eIn as Value.String).Item + "\"";
+                var str = (eIn as Value.String).Item;
+
+                if (str.Length > maxStringLength)
+                {
+                    str = str.Substring(0, maxStringLength) + "...";
+                }
+
+                accString += "\"" + str + "\"";
             }
             else if (eIn.IsSymbol)
             {

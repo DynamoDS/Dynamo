@@ -77,6 +77,15 @@ namespace Dynamo.Search
         /// <param name="e">Parameters describing the key push</param>
         public void KeyHandler(object sender, KeyEventArgs e)
         {
+            // ignore the key command if modifiers are present
+            if (e.KeyboardDevice.IsKeyDown(Key.LeftCtrl) || 
+                e.KeyboardDevice.IsKeyDown(Key.RightCtrl) || 
+                e.KeyboardDevice.IsKeyDown(Key.LeftAlt) || 
+                e.KeyboardDevice.IsKeyDown(Key.RightAlt))
+            {
+                return;
+            }
+
             if (e.Key == Key.Return)
             {
                 _viewModel.ExecuteSelected();
