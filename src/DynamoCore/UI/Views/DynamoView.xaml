@@ -132,7 +132,7 @@
 
     </Window.InputBindings>
 
-    <Grid Name="mainGrid" FocusManager.IsFocusScope="True">
+    <Grid Name="mainGrid" FocusManager.IsFocusScope="True" PreviewMouseDown="Window_PreviewMouseDown" PreviewMouseUp="Window_PreviewMouseUp">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -319,8 +319,9 @@
 
         <!--Workspace-->
         <Border Margin="0" BorderBrush="Black" BorderThickness="0" Name="border" 
-                Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="3" Background="#999">
-            
+                Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="3" Background="#999"
+                SizeChanged="Workspace_SizeChanged">
+            <Grid>
                 <TabControl ItemsSource="{Binding Workspaces}"
                             Name="WorkspaceTabs"
                             SelectedIndex="{Binding CurrentWorkspaceIndex}"
@@ -615,8 +616,9 @@
                     </TabControl.ContentTemplate>
 
                 </TabControl>
-            
-            
+                <Grid Name="InfoBubbleGrid" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+            </Grid>
+
         </Border>
         <StackPanel Grid.Row="2"
                     Grid.Column="2"
