@@ -79,6 +79,7 @@ namespace Dynamo.ViewModels
             private State currentState = State.None;
             private Point mouseDownPos = new Point();
             private WorkspaceViewModel owningWorkspace = null;
+            private List<DraggedNode> draggedNodes = new List<DraggedNode>();
 
             #endregion
 
@@ -158,7 +159,10 @@ namespace Dynamo.ViewModels
                     return true; // Mouse event handled.
                 }
                 else if (this.currentState == State.NodeReposition)
+                {
+                    draggedNodes.Clear();
                     this.currentState = State.None;
+                }
                 else if (this.currentState == State.DragSetup)
                     this.currentState = State.None;
 
@@ -167,24 +171,19 @@ namespace Dynamo.ViewModels
 
             internal bool HandleMouseMove(object sender, MouseEventArgs e)
             {
+                IInputElement element = sender as IInputElement;
+                Point mouseCursor = e.GetPosition(element);
+
                 if (this.currentState == State.Connection)
                 {
                     // If we are currently connecting and there is an active 
                     // connector, redraw it to match the new mouse coordinates.
                     // 
                     if (null != owningWorkspace.ActiveConnector)
-                    {
-                        IInputElement element = sender as IInputElement;
-                        Point mouse = e.GetPosition(element);
-                        owningWorkspace.ActiveConnector.Redraw(mouse);
-                    }
+                        owningWorkspace.ActiveConnector.Redraw(mouseCursor);
                 }
                 else if (this.currentState == State.WindowSelection)
                 {
-                    // When the mouse is held down, reposition the drag selection box.
-                    IInputElement element = sender as IInputElement;
-                    Point mousePos = e.GetPosition(element);
-
                     // TODO(Ben): Can we not only select those nodes that we 
                     // have not previously selected? Of course that requires 
                     // us to take deselection into consideration.
@@ -193,10 +192,11 @@ namespace Dynamo.ViewModels
                     // all nodes that fall within the selection window.
                     DynamoSelection.Instance.ClearSelection();
 
-                    double x = Math.Min(mouseDownPos.X, mousePos.X);
-                    double y = Math.Min(mouseDownPos.Y, mousePos.Y);
-                    double width = Math.Abs(mouseDownPos.X - mousePos.X);
-                    double height = Math.Abs(mousePos.Y - mouseDownPos.Y);
+                    // When the mouse is held down, reposition the drag selection box.
+                    double x = Math.Min(mouseDownPos.X, mouseCursor.X);
+                    double y = Math.Min(mouseDownPos.Y, mouseCursor.Y);
+                    double width = Math.Abs(mouseDownPos.X - mouseCursor.X);
+                    double height = Math.Abs(mouseCursor.Y - mouseDownPos.Y);
 
                     // We perform cross selection (i.e. select a node whenever 
                     // it touches the selection box as opposed to only select 
@@ -205,7 +205,7 @@ namespace Dynamo.ViewModels
                     // mouse position is smaller than the point mouse-down 
                     // happened).
                     // 
-                    bool isCrossSelection = mousePos.X < mouseDownPos.X;
+                    bool isCrossSelection = mouseCursor.X < mouseDownPos.X;
 
                     SelectionBoxUpdateArgs args = null;
                     args = new SelectionBoxUpdateArgs(x, y, width, height);
@@ -221,10 +221,26 @@ namespace Dynamo.ViewModels
                 }
                 else if (this.currentState == State.DragSetup)
                 {
+                    foreach (ISelectable selectable in DynamoSelection.Instance.Selection)
+                    {
+                        ILocatable locatable = selectable as ILocatable;
+                        if (null != locatable)
+                            draggedNodes.Add(new DraggedNode(locatable, mouseCursor));
+                    }
+
+                    if (draggedNodes.Count <= 0) // There is nothing to drag.
+                    {
+                        this.currentState = State.None;
+                        return false;
+                    }
+
                     this.currentState = State.NodeReposition;
+                    return true;
                 }
                 else if (this.currentState == State.NodeReposition)
                 {
+                    foreach (DraggedNode draggedNode in draggedNodes)
+                        draggedNode.Update(mouseCursor);
                 }
 
                 return false; // Mouse event not handled.
