@@ -61,6 +61,7 @@ namespace Dynamo.Controls
             textBox.FontWeight = ViewModel.TextFontWeight;
             textBox.FontSize = ViewModel.TextFontSize;
             textBox.Margin = ViewModel.ContentMargin;
+            textBox.MaxWidth = ViewModel.MaxWidth;
             return textBox;
         }
 
