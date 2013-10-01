@@ -808,17 +808,6 @@ namespace Dynamo.Controls
             // Set the behavior to return visuals at all z-order levels.
             return HitTestResultBehavior.Continue;
         }
-
-        static bool HasParentType(Type t, Type testType)
-        {
-            while (t != typeof(object))
-            {
-                t = t.BaseType;
-                if (t.Equals(testType))
-                    return true;
-            }
-            return false;
-        }
     }
 
     public class OffsetData
