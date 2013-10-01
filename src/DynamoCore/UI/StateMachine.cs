@@ -221,6 +221,7 @@ namespace Dynamo.ViewModels
                 }
                 else if (this.currentState == State.DragSetup)
                 {
+                    RecordNodesForUndo();
                     foreach (ISelectable selectable in DynamoSelection.Instance.Selection)
                     {
                         ILocatable locatable = selectable as ILocatable;
@@ -262,6 +263,25 @@ namespace Dynamo.ViewModels
                 }
 
                 return null;
+            }
+
+            private void RecordNodesForUndo()
+            {
+                // This is where we attempt to store all the models in undo recorder 
+                // before they are modified (i.e. being dragged around the canvas).
+                // Note that we only do this once when the first mouse-move occurs 
+                // after a mouse-down, because mouse-down can potentially be used 
+                // just to select a node (as opposed to moving the selected nodes), in 
+                // which case we don't want any of the nodes to be recorded for undo.
+                // 
+                List<ModelBase> models = DynamoSelection.Instance.Selection.
+                    Where((x) => (x is ModelBase)).Cast<ModelBase>().ToList<ModelBase>();
+
+                WorkspaceModel workspaceModel = owningWorkspace.Model;
+                workspaceModel.RecordModelsForModification(models);
+                DynamoController controller = Dynamo.Utilities.dynSettings.Controller;
+                controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+                controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
             }
 
             private void InitiateDragSequence()
