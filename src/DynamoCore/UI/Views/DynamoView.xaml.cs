@@ -39,6 +39,7 @@ using System.Collections.ObjectModel;
 using Dynamo.UI.Commands;
 using System.Windows.Data;
 using Dynamo.UI.Controls;
+using System.Windows.Media;
 
 namespace Dynamo.Controls
 {
@@ -190,6 +191,7 @@ namespace Dynamo.Controls
             //FUNCTION NAME PROMPT
             _vm.Model.RequestsFunctionNamePrompt += _vm_RequestsFunctionNamePrompt;
 
+            _vm.SidebarClosed += new EventHandler(_vm_SidebarClosed);
             _vm.RequestClose += new EventHandler(_vm_RequestClose);
             _vm.RequestSaveImage += new ImageSaveEventHandler(_vm_RequestSaveImage);
 
@@ -371,6 +373,11 @@ namespace Dynamo.Controls
         void _vm_RequestClose(object sender, EventArgs e)
         {
             Close();
+        }
+
+        void _vm_SidebarClosed(object sender, EventArgs e)
+        {
+            LibraryClicked(sender, e);
         }
 
         /// <summary>
@@ -615,6 +622,93 @@ namespace Dynamo.Controls
             }
         }
 
+		private void Button_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Grid g = (Grid)sender;
+            TextBlock tb = (TextBlock)(g.Children[1]);
+            var bc = new BrushConverter();
+            tb.Foreground = (Brush)bc.ConvertFrom("#cccccc");
+            Image collapseIcon = (Image)g.Children[0];
+            var imageUri = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/collapse_hover.png");
+
+            BitmapImage hover = new BitmapImage(imageUri);
+            // hover.Rotation = Rotation.Rotate180;
+
+            TransformedBitmap transform = new TransformedBitmap();
+            transform.BeginInit();
+            transform.Source = hover;
+            RotateTransform rt = new RotateTransform(180, 16, 16);
+            transform.Transform = rt;
+            transform.EndInit();
+
+            collapseIcon.Source = transform;
+        }
+
+		private void Button_Click(object sender, EventArgs e)
+        {
+            SearchView sv = (SearchView)this.sidebarGrid.Children[0];
+            if (sv.Visibility == Visibility.Collapsed)
+            {
+                //this.sidebarGrid.Width = restoreWidth;
+                sv.Width = double.NaN;
+                sv.HorizontalAlignment = HorizontalAlignment.Stretch;
+                sv.Height = double.NaN;
+                sv.VerticalAlignment = VerticalAlignment.Stretch;
+
+                this.mainGrid.ColumnDefinitions[0].Width = new System.Windows.GridLength(restoreWidth);
+                this.verticalSplitter.Visibility = Visibility.Visible;
+                sv.Visibility = Visibility.Visible;
+                this.sidebarGrid.Visibility = Visibility.Visible;
+                this.collapsedSidebar.Visibility = Visibility.Collapsed;
+            }
+            //SearchView sv = (SearchView)this.sidebarGrid.Children[0];
+            //sv.Width = double.NaN;
+            //this.sidebarGrid.Width = 250;
+            //this.collapsedSidebar.Visibility = Visibility.Collapsed;
+        }
+
+		private void Button_MouseLeave(object sender, MouseEventArgs e)
+        {
+            Grid g = (Grid)sender;
+            TextBlock tb = (TextBlock)(g.Children[1]);
+            var bc = new BrushConverter();
+            tb.Foreground = (Brush)bc.ConvertFromString("#aaaaaa");
+            Image collapseIcon = (Image)g.Children[0];
+
+            // Change the collapse icon and rotate
+            var imageUri = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/collapse_normal.png");
+            BitmapImage hover = new BitmapImage(imageUri);
+
+            TransformedBitmap transform = new TransformedBitmap();
+            transform.BeginInit();
+            transform.Source = hover;
+            RotateTransform rt = new RotateTransform(180, 16, 16);
+            transform.Transform = rt;
+            transform.EndInit();
+
+            collapseIcon.Source = transform;
+        }
+
+        private double restoreWidth = 0;
+
+        private void LibraryClicked(object sender, EventArgs e)
+        {
+            // this.sidebarGrid.Visibility = Visibility.Collapsed;
+            restoreWidth = this.sidebarGrid.ActualWidth;
+
+            // this.sidebarGrid.Width = 0;
+            this.mainGrid.ColumnDefinitions[0].Width = new System.Windows.GridLength(0.0);
+            this.verticalSplitter.Visibility = System.Windows.Visibility.Collapsed;
+            this.sidebarGrid.Visibility = System.Windows.Visibility.Collapsed;
+            
+            this.horizontalSplitter.Width = double.NaN;
+            SearchView sv = (SearchView)this.sidebarGrid.Children[0];
+            sv.Visibility = Visibility.Collapsed;
+
+            this.sidebarGrid.Visibility = Visibility.Collapsed;
+            this.collapsedSidebar.Visibility = Visibility.Visible;
+        }
+
         private void Workspace_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             if (this._vm == null)
@@ -626,11 +720,11 @@ namespace Dynamo.Controls
         private void Window_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             _vm.IsMouseDown = true;
-        }
+		}
 
         private void Window_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
             _vm.IsMouseDown = false;
-        }
+		}
     }
 }
