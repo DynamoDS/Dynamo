@@ -38,6 +38,25 @@ namespace Dynamo.ViewModels
 
         #endregion
 
+        class DraggedNode
+        {
+            double deltaX = 0, deltaY = 0;
+            ILocatable locatable = null;
+
+            internal DraggedNode(ILocatable locatable, Point mouseCursor)
+            {
+                this.locatable = locatable;
+                deltaX = mouseCursor.X - locatable.X;
+                deltaY = mouseCursor.Y - locatable.Y;
+            }
+
+            internal void Update(Point mouseCursor)
+            {
+                locatable.X = mouseCursor.X - deltaX;
+                locatable.Y = mouseCursor.Y - deltaY;
+            }
+        }
+
         /// <summary>
         /// The StateMachine class manages various states in the WorkspaceView 
         /// it belongs. The class is made nested private class because there are 
