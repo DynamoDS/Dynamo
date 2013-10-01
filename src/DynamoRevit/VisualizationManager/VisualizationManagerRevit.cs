@@ -357,7 +357,7 @@ namespace Dynamo
 
             for (int i = 0; i < rmesh.NumTriangles; ++i)
             {
-                MeshTriangle tri = rmesh.get_Triangle(i);
+                var tri = rmesh.get_Triangle(i);
 
                 //calculate the face normal by
                 //getting the cross product of two edges
@@ -369,32 +369,20 @@ namespace Dynamo
                 var normXYZ = e1.CrossProduct(e2).Normalize();
                 var norm = new Vector3D(normXYZ.X, normXYZ.Y, normXYZ.Z);
 
-                for (int k = 0; k < 3; ++k)
-                {
-                    var newPoint = RevitPointToWindowsPoint(tri.get_Vertex(k));
-                    
-                    bool newPointExists = false;
-                    for (int l = 0; l < builder.Positions.Count; ++l)
-                    {
-                        Point3D p = builder.Positions[l];
-                        if ((p.X == newPoint.X) && (p.Y == newPoint.Y) && (p.Z == newPoint.Z))
-                        {
-                            newPointExists = true;
-                            break;
-                        }
-                    }
+                builder.Positions.Add(RevitPointToWindowsPoint(a));
+                builder.TriangleIndices.Add(builder.Positions.Count-1);
+                builder.Positions.Add(RevitPointToWindowsPoint(b));
+                builder.TriangleIndices.Add(builder.Positions.Count-1);
+                builder.Positions.Add(RevitPointToWindowsPoint(c));
+                builder.TriangleIndices.Add(builder.Positions.Count-1);
 
-                    if (newPointExists)
-                        continue;
+                builder.TextureCoordinates.Add(new System.Windows.Point(0, 0));
+                builder.TextureCoordinates.Add(new System.Windows.Point(0, 0));
+                builder.TextureCoordinates.Add(new System.Windows.Point(0, 0));
 
-                    builder.Positions.Add(newPoint);
-                    builder.TextureCoordinates.Add(new System.Windows.Point(0,0));
-                    builder.Normals.Add(norm);
-                }
-
-                builder.TriangleIndices.Add((int)tri.get_Index(0));
-                builder.TriangleIndices.Add((int)tri.get_Index(1));
-                builder.TriangleIndices.Add((int)tri.get_Index(2));
+                builder.Normals.Add(norm);
+                builder.Normals.Add(norm);
+                builder.Normals.Add(norm);
             }
 
             return builder.ToMesh(true);
