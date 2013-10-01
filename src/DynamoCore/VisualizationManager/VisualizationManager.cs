@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Media.Media3D;
 using System.Linq;
@@ -279,7 +280,14 @@ namespace Dynamo
         /// </summary>
         public virtual void UpdateVisualizations()
         {
-            //override in child classes
+            var worker = new BackgroundWorker();
+            worker.DoWork += VisualizationUpdateThread;
+
+            worker.RunWorkerAsync();
+        }
+
+        protected virtual void VisualizationUpdateThread(object s, DoWorkEventArgs args)
+        {
         }
 
         /// <summary>
