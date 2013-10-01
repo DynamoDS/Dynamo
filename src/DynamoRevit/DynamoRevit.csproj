@@ -47,10 +47,6 @@
     <NoWarn>618</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DynamoRaaS, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\DynamoRaaS\DynamoRaaS.dll</HintPath>
-    </Reference>
     <Reference Include="FSharp.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Greg, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -62,10 +58,6 @@
     </Reference>
     <Reference Include="HelixToolkit.Wpf">
       <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
-    </Reference>
-    <Reference Include="JobMonitor, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\DynamoRaaS\JobMonitor.dll</HintPath>
     </Reference>
     <Reference Include="LibGNet, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
@@ -128,10 +120,6 @@
     <Reference Include="RevitRaaS, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\DynamoRaaS\RevitRaaS.dll</HintPath>
-    </Reference>
-    <Reference Include="SDF, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\DynamoRaaS\SDF.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
