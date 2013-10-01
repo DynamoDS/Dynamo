@@ -11,6 +11,8 @@ using UserControl = System.Windows.Controls.UserControl;
 using System.Windows.Media;
 using Dynamo.Utilities;
 using DynamoCommands = Dynamo.UI.Commands.DynamoCommands;
+using Dynamo.Search.SearchElements;
+using System.Collections.Generic;
 using System.Windows.Media.Imaging;
 
 //Copyright © Autodesk, Inc. 2012. All rights reserved.
@@ -149,7 +151,7 @@ namespace Dynamo.Search
             e.Handled = true;
         }
 
-        private void OnLibraryClick(object sender, RoutedEventArgs e)
+		private void OnLibraryClick(object sender, RoutedEventArgs e)
         {
             //this.Width = 5;
             //if (this.Visibility == Visibility.Collapsed)
@@ -185,5 +187,30 @@ namespace Dynamo.Search
             var collapsestateSource = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/collapsestate_normal.png");
             collapsestate.Source = new BitmapImage(collapsestateSource);
         }
+
+        private void LibraryItem_OnMouseEnter(object sender, MouseEventArgs e)
+        {
+            TreeViewItem treeViewItem = sender as TreeViewItem;
+            NodeSearchElement nodeSearchElement = treeViewItem.Header as NodeSearchElement;
+            if (nodeSearchElement == null)
+                return;
+
+            Point pointToScreen_TopLeft = treeViewItem.PointToScreen(new Point(0, 0));
+            Point topLeft = this.PointFromScreen(pointToScreen_TopLeft);
+            Point pointToScreen_BotRight = new Point(pointToScreen_TopLeft.X + treeViewItem.ActualWidth, pointToScreen_TopLeft.Y + treeViewItem.ActualHeight);
+            Point botRight = this.PointFromScreen(pointToScreen_BotRight);
+            string infoBubbleContent = nodeSearchElement.Name + "\n" + nodeSearchElement.Description;
+            InfoBubbleDataPacket data = new InfoBubbleDataPacket(InfoBubbleViewModel.Style.LibraryItemPreview, topLeft, botRight, infoBubbleContent, InfoBubbleViewModel.Direction.Left, Guid.Empty);
+            DynamoCommands.ShowLibItemInfoBubbleCommand.Execute(data);
+        }
+
+        private void LibraryItem_OnMouseLeave(object sender, MouseEventArgs e)
+        {
+            TreeViewItem treeViewItem = sender as TreeViewItem;
+            NodeSearchElement nodeSearchElement = treeViewItem.Header as NodeSearchElement;
+            if (nodeSearchElement == null)
+                return;
+            DynamoCommands.HideLibItemInfoBubbleCommand.Execute(null);
+        }
     }
-} ;
+}

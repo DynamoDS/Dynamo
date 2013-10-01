@@ -37,6 +37,7 @@ using DynamoCommands = Dynamo.UI.Commands.DynamoCommands;
 using String = System.String;
 using System.Collections.ObjectModel;
 using Dynamo.UI.Commands;
+using System.Windows.Data;
 using Dynamo.UI.Controls;
 using System.Windows.Media;
 
@@ -86,6 +87,10 @@ namespace Dynamo.Controls
             InitializeShortcutBar();
 
             this.Loaded += dynBench_Activated;
+
+            //setup InfoBubble for library items tooltip
+            InfoBubbleView InfoBubble = new InfoBubbleView { DataContext = dynSettings.Controller.InfoBubbleViewModel };
+            InfoBubbleGrid.Children.Add(InfoBubble);
         }
 
         void InitializeShortcutBar()
@@ -617,7 +622,7 @@ namespace Dynamo.Controls
             }
         }
 
-        private void Button_MouseEnter(object sender, MouseEventArgs e)
+		private void Button_MouseEnter(object sender, MouseEventArgs e)
         {
             Grid g = (Grid)sender;
             TextBlock tb = (TextBlock)(g.Children[1]);
@@ -639,7 +644,7 @@ namespace Dynamo.Controls
             collapseIcon.Source = transform;
         }
 
-        private void Button_Click(object sender, EventArgs e)
+		private void Button_Click(object sender, EventArgs e)
         {
             SearchView sv = (SearchView)this.sidebarGrid.Children[0];
             if (sv.Visibility == Visibility.Collapsed)
@@ -662,7 +667,7 @@ namespace Dynamo.Controls
             //this.collapsedSidebar.Visibility = Visibility.Collapsed;
         }
 
-        private void Button_MouseLeave(object sender, MouseEventArgs e)
+		private void Button_MouseLeave(object sender, MouseEventArgs e)
         {
             Grid g = (Grid)sender;
             TextBlock tb = (TextBlock)(g.Children[1]);
@@ -703,5 +708,23 @@ namespace Dynamo.Controls
             this.sidebarGrid.Visibility = Visibility.Collapsed;
             this.collapsedSidebar.Visibility = Visibility.Visible;
         }
+
+        private void Workspace_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (this._vm == null)
+                return;
+            this._vm.WorkspaceActualHeight = border.ActualHeight;
+            this._vm.WorkspaceActualWidth = border.ActualWidth;
+        }
+
+        private void Window_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            _vm.IsMouseDown = true;
+		}
+
+        private void Window_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            _vm.IsMouseDown = false;
+		}
     }
 }
