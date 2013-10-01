@@ -755,47 +755,6 @@ namespace Dynamo.Controls
             this.dragState = DragState.None;
         }
 
-        /// <summary>
-        /// Find the user control of type 'testType' by traversing the tree.
-        /// </summary>
-        /// <returns></returns>
-        public UIElement ElementClicked(DependencyObject depObj)  //, Type testType)
-        {
-            UIElement foundElement = null;
-
-            //walk up the tree to see whether the element is part of a port
-            //then get the port's parent object
-            while (depObj != null)
-            {
-                // If the current object is a UIElement which is a child of the
-                // Canvas, exit the loop and return it.
-                UIElement elem = depObj as UIElement;
-
-                if (elem != null)
-                {
-                    Type t = elem.GetType();
-
-                    //only hit test against visible elements
-                    //we want to avoid elements in other workspaces.
-                    if (elem is ISelectable && elem.Visibility == System.Windows.Visibility.Visible)
-                    {
-                        foundElement = elem;
-                        return foundElement;
-                    }
-                }
-
-                // VisualTreeHelper works with objects of type Visual or Visual3D.
-                // If the current object is not derived from Visual or Visual3D,
-                // then use the LogicalTreeHelper to find the parent element.
-                if (depObj is Visual)
-                    depObj = VisualTreeHelper.GetParent(depObj);
-                else
-                    depObj = LogicalTreeHelper.GetParent(depObj);
-            }
-
-            return foundElement;
-        }
-
         // Return the result of the hit test to the callback.
         public HitTestResultBehavior MyHitTestResult(HitTestResult result)
         {
