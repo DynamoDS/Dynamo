@@ -13,15 +13,7 @@ namespace Dynamo
 {
     public class VisualizationManagerASM : VisualizationManager
     {
-        public override void UpdateVisualizations()
-        {
-            var worker = new BackgroundWorker();
-            worker.DoWork += VisualizationUpdateThread;
-
-            worker.RunWorkerAsync();
-        }
-
-        protected virtual void VisualizationUpdateThread(object s, DoWorkEventArgs args)
+        protected override void VisualizationUpdateThread(object s, DoWorkEventArgs args)
         {
             //only update those nodes which have been flagged for update
             var toUpdate = Visualizations.Values.ToList().Where(x => x.RequiresUpdate == true);
