@@ -12,19 +12,34 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Views;
 
-namespace Dynamo.Views
+namespace Dynamo.ViewModels
 {
-    partial class dynWorkspaceView
+    partial class WorkspaceViewModel
     {
         #region State Machine Related Methods/Data Members
 
         private StateMachine stateMachine = null;
 
+        internal void HandleLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            stateMachine.HandleLeftButtonDown(sender, e);
+        }
+
+        internal void HandleMouseRelease(object sender, MouseButtonEventArgs e)
+        {
+            stateMachine.HandleMouseRelease(sender, e);
+        }
+
+        internal void HandleMouseMove(object sender, MouseEventArgs e)
+        {
+            stateMachine.HandleMouseMove(sender, e);
+        }
+
         #endregion
 
         /// <summary>
-        /// The StateMachine class manages various states in the WorkspaceView it 
-        /// belongs. The class is made nested private class because there are 
+        /// The StateMachine class manages various states in the WorkspaceView 
+        /// it belongs. The class is made nested private class because there are 
         /// things that we don't expose beyond WorkspaceView object, but should 
         /// still be readily accessible by the StateMachine class.
         /// </summary>
@@ -42,13 +57,13 @@ namespace Dynamo.Views
 
             private State currentState = State.None;
             private Point mouseDownPos = new Point();
-            private dynWorkspaceView owningWorkspace = null;
+            private WorkspaceViewModel owningWorkspace = null;
 
             #endregion
 
             #region Public Class Operational Methods
 
-            internal StateMachine(dynWorkspaceView owningWorkspace)
+            internal StateMachine(WorkspaceViewModel owningWorkspace)
             {
                 this.owningWorkspace = owningWorkspace;
             }
@@ -78,94 +93,69 @@ namespace Dynamo.Views
 
             #region User Input Event Handlers
 
-            internal void HandleLeftButtonDown(MouseButtonEventArgs e)
+            internal void HandleLeftButtonDown(object sender, MouseButtonEventArgs e)
             {
                 if (this.currentState == State.Connection)
                 {
                     // Clicking on the canvas while connecting simply cancels 
                     // the operation and drop the temporary connector.
                     this.currentState = State.None;
-                    object dataContext = owningWorkspace.DataContext;
-                    WorkspaceViewModel wvm = dataContext as WorkspaceViewModel;
-                    wvm.ActiveConnector = null;
+                    owningWorkspace.ActiveConnector = null;
                 }
                 else if (this.currentState != State.Connection)
                 {
                     DynamoSelection.Instance.ClearSelection();
 
                     // Record the mouse down position.
-                    mouseDownPos = e.GetPosition(owningWorkspace.WorkBench);
+                    IInputElement element = sender as IInputElement;
+                    mouseDownPos = e.GetPosition(element);
 
-                    // Initial placement of the drag selection box.         
-                    Rectangle selectionBox = owningWorkspace.selectionBox;
-                    Canvas.SetLeft(selectionBox, mouseDownPos.X);
-                    Canvas.SetTop(selectionBox, mouseDownPos.Y);
-                    selectionBox.Width = 0;
-                    selectionBox.Height = 0;
+                    // Update the selection box and make it visible 
+                    // but with an initial dimension of zero.
+                    SelectionBoxUpdateArgs args = null;
+                    args = new SelectionBoxUpdateArgs(mouseDownPos.X, mouseDownPos.Y, 0, 0);
+                    args.SetVisibility(Visibility.Visible);
 
-                    // Make the drag selection box visible.
-                    selectionBox.Visibility = Visibility.Visible;
+                    this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
                     this.currentState = State.WindowSelection;
                 }
 
                 dynSettings.ReturnFocusToSearch();
             }
 
-            internal void HandleMouseRelease(MouseButtonEventArgs e)
+            internal void HandleMouseRelease(object sender, MouseButtonEventArgs e)
             {
                 if (e.ChangedButton != MouseButton.Left)
                     return; // We only handle left mouse button for now.
 
                 if (this.currentState == State.WindowSelection)
                 {
-                    Rectangle selectionBox = owningWorkspace.selectionBox;
-                    selectionBox.Visibility = Visibility.Collapsed;
+                    SelectionBoxUpdateArgs args = null;
+                    args = new SelectionBoxUpdateArgs(Visibility.Collapsed);
+                    this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
                     this.currentState = State.None;
                 }
             }
 
-            internal void HandleMouseMove(MouseEventArgs e)
+            internal void HandleMouseMove(object sender, MouseEventArgs e)
             {
                 if (this.currentState == State.Connection)
                 {
                     // If we are currently connecting and there is an active 
                     // connector, redraw it to match the new mouse coordinates.
                     // 
-                    object dataContext = owningWorkspace.DataContext;
-                    var wvm = dataContext as WorkspaceViewModel;
-                    if (null != wvm.ActiveConnector)
-                        wvm.ActiveConnector.Redraw(e.GetPosition(owningWorkspace.WorkBench));
+                    if (null != owningWorkspace.ActiveConnector)
+                    {
+                        IInputElement element = sender as IInputElement;
+                        Point mouse = e.GetPosition(element);
+                        owningWorkspace.ActiveConnector.Redraw(mouse);
+                    }
                 }
                 else if (this.currentState == State.WindowSelection)
                 {
                     // When the mouse is held down, reposition the drag selection box.
-                    object dataContext = owningWorkspace.DataContext;
-                    var wvm = dataContext as WorkspaceViewModel;
-
-                    Point mousePos = e.GetPosition(owningWorkspace.WorkBench);
-                    Rectangle selectionBox = owningWorkspace.selectionBox;
-
-                    if (mouseDownPos.X < mousePos.X)
-                    {
-                        Canvas.SetLeft(selectionBox, mouseDownPos.X);
-                        selectionBox.Width = mousePos.X - mouseDownPos.X;
-                    }
-                    else
-                    {
-                        Canvas.SetLeft(selectionBox, mousePos.X);
-                        selectionBox.Width = mouseDownPos.X - mousePos.X;
-                    }
-
-                    if (mouseDownPos.Y < mousePos.Y)
-                    {
-                        Canvas.SetTop(selectionBox, mouseDownPos.Y);
-                        selectionBox.Height = mousePos.Y - mouseDownPos.Y;
-                    }
-                    else
-                    {
-                        Canvas.SetTop(selectionBox, mousePos.Y);
-                        selectionBox.Height = mouseDownPos.Y - mousePos.Y;
-                    }
+                    IInputElement element = sender as IInputElement;
+                    Point mousePos = e.GetPosition(element);
 
                     // TODO(Ben): Can we not only select those nodes that we 
                     // have not previously selected? Of course that requires 
@@ -175,21 +165,31 @@ namespace Dynamo.Views
                     // all nodes that fall within the selection window.
                     DynamoSelection.Instance.ClearSelection();
 
-                    var rect = new Rect(
-                        Canvas.GetLeft(selectionBox),
-                        Canvas.GetTop(selectionBox),
-                        selectionBox.Width, selectionBox.Height);
+                    double x = Math.Min(mouseDownPos.X, mousePos.X);
+                    double y = Math.Min(mouseDownPos.Y, mousePos.Y);
+                    double width = Math.Abs(mouseDownPos.X - mousePos.X);
+                    double height = Math.Abs(mousePos.Y - mouseDownPos.Y);
 
-                    if (mousePos.X > mouseDownPos.X)
-                    {
-                        selectionBox.StrokeDashArray = null;
-                        wvm.ContainSelectCommand.Execute(rect);
-                    }
-                    else if (mousePos.X < mouseDownPos.X)
-                    {
-                        selectionBox.StrokeDashArray = new DoubleCollection { 4 };
-                        wvm.CrossSelectCommand.Execute(rect);
-                    }
+                    // We perform cross selection (i.e. select a node whenever 
+                    // it touches the selection box as opposed to only select 
+                    // it when it is entirely within the selection box) when 
+                    // mouse moves in the opposite direction (i.e. the current 
+                    // mouse position is smaller than the point mouse-down 
+                    // happened).
+                    // 
+                    bool isCrossSelection = mousePos.X < mouseDownPos.X;
+
+                    SelectionBoxUpdateArgs args = null;
+                    args = new SelectionBoxUpdateArgs(x, y, width, height);
+                    args.SetSelectionMode(isCrossSelection);
+                    this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
+
+                    var rect = new Rect(x, y, width, height);
+
+                    if (isCrossSelection)
+                        owningWorkspace.CrossSelectCommand.Execute(rect);
+                    else
+                        owningWorkspace.ContainSelectCommand.Execute(rect);
                 }
                 else if (this.currentState == State.NodeReposition)
                 {

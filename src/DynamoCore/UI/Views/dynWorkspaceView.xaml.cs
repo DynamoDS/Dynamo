@@ -40,7 +40,6 @@ namespace Dynamo.Views
         public dynWorkspaceView()
         {
             InitializeComponent();
-            stateMachine = new StateMachine(this);
 
             selectionCanvas.Loaded += new RoutedEventHandler(selectionCanvas_Loaded);
             DataContextChanged += new DependencyPropertyChangedEventHandler(dynWorkspaceView_DataContextChanged);
@@ -85,6 +84,7 @@ namespace Dynamo.Views
             ViewModel.RequestAddViewToOuterCanvas += new ViewEventHandler(vm_RequestAddViewToOuterCanvas);
             ViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
             ViewModel.WorkspacePropertyEditRequested += VmOnWorkspacePropertyEditRequested;
+            ViewModel.RequestSelectionBoxUpdate += VmOnRequestSelectionBoxUpdate;
         }
 
         private void VmOnWorkspacePropertyEditRequested(WorkspaceModel workspace)
@@ -119,6 +119,32 @@ namespace Dynamo.Views
                 workspace.Category = args.Category;
                 // workspace.Author = "";
 
+            }
+        }
+
+        private void VmOnRequestSelectionBoxUpdate(object sender, SelectionBoxUpdateArgs e)
+        {
+            if (e.UpdatedProps.HasFlag(SelectionBoxUpdateArgs.UpdateFlags.Position))
+            {
+                Canvas.SetLeft(this.selectionBox, e.X);
+                Canvas.SetTop(this.selectionBox, e.Y);
+            }
+
+            if (e.UpdatedProps.HasFlag(SelectionBoxUpdateArgs.UpdateFlags.Dimension))
+            {
+                selectionBox.Width = e.Width;
+                selectionBox.Height = e.Height;
+            }
+
+            if (e.UpdatedProps.HasFlag(SelectionBoxUpdateArgs.UpdateFlags.Visibility))
+                selectionBox.Visibility = e.Visibility;
+
+            if (e.UpdatedProps.HasFlag(SelectionBoxUpdateArgs.UpdateFlags.Mode))
+            {
+                if (e.IsCrossSelection && (null == selectionBox.StrokeDashArray))
+                    selectionBox.StrokeDashArray = new DoubleCollection { 4 };
+                else if (!e.IsCrossSelection && (null != selectionBox.StrokeDashArray))
+                    selectionBox.StrokeDashArray = null;
             }
         }
 
@@ -347,17 +373,20 @@ namespace Dynamo.Views
 
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            stateMachine.HandleLeftButtonDown(e);
+            WorkspaceViewModel wvm = (DataContext as WorkspaceViewModel);
+            wvm.HandleLeftButtonDown(this.WorkBench, e);
         }
 
         private void OnMouseRelease(object sender, MouseButtonEventArgs e)
         {
-            stateMachine.HandleMouseRelease(e);
+            WorkspaceViewModel wvm = (DataContext as WorkspaceViewModel);
+            wvm.HandleMouseRelease(this.WorkBench, e);
         }
 
         private void OnMouseMove(object sender, MouseEventArgs e)
         {
-            stateMachine.HandleMouseMove(e);
+            WorkspaceViewModel wvm = (DataContext as WorkspaceViewModel);
+            wvm.HandleMouseMove(this.WorkBench, e);
         }
 
         private void WorkBench_ContextMenuOpening(object sender, ContextMenuEventArgs e)
