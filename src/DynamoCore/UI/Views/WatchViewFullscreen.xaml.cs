@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Media3D;
 using System.Linq;
+using System.Windows.Threading;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using HelixToolkit.Wpf;
@@ -29,15 +30,15 @@ namespace Dynamo.Controls
         Point _rightMousePoint;
         private Watch3DFullscreenViewModel _vm;
 
-        protected List<MeshVisual3D> _meshes = new List<MeshVisual3D>();
-        public List<Point3D> _pointsCache = new List<Point3D>();
-        public List<Point3D> _linesCache = new List<Point3D>();
-        public List<Point3D> _xAxisCache = new List<Point3D>();
-        public List<Point3D> _yAxisCache = new List<Point3D>();
-        public List<Point3D> _zAxisCache = new List<Point3D>();
+        protected ThreadSafeList<MeshVisual3D> _meshes = new ThreadSafeList<MeshVisual3D>();
+        public ThreadSafeList<Point3D> _pointsCache = new ThreadSafeList<Point3D>();
+        public ThreadSafeList<Point3D> _linesCache = new ThreadSafeList<Point3D>();
+        public ThreadSafeList<Point3D> _xAxisCache = new ThreadSafeList<Point3D>();
+        public ThreadSafeList<Point3D> _yAxisCache = new ThreadSafeList<Point3D>();
+        public ThreadSafeList<Point3D> _zAxisCache = new ThreadSafeList<Point3D>();
         public MeshGeometry3D _meshCache = new MeshGeometry3D();
-        public List<Point3D> _pointsCacheSelected = new List<Point3D>();
-        public List<Point3D> _linesCacheSelected = new List<Point3D>();
+        public ThreadSafeList<Point3D> _pointsCacheSelected = new ThreadSafeList<Point3D>();
+        public ThreadSafeList<Point3D> _linesCacheSelected = new ThreadSafeList<Point3D>();
         public MeshGeometry3D _meshCacheSelected = new MeshGeometry3D();
  
         public Material HelixMeshMaterial
@@ -45,7 +46,7 @@ namespace Dynamo.Controls
             get { return Materials.White; }
         }
 
-        public List<Point3D> HelixPoints
+        public ThreadSafeList<Point3D> HelixPoints
         {
             get { return _pointsCache; }
             set
@@ -55,7 +56,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public List<Point3D> HelixLines
+        public ThreadSafeList<Point3D> HelixLines
         {
             get { return _linesCache; }
             set
@@ -65,7 +66,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public List<Point3D> HelixXAxes
+        public ThreadSafeList<Point3D> HelixXAxes
         {
             get { return _xAxisCache; }
             set
@@ -75,7 +76,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public List<Point3D> HelixYAxes
+        public ThreadSafeList<Point3D> HelixYAxes
         {
             get { return _yAxisCache; }
             set
@@ -85,7 +86,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public List<Point3D> HelixZAxes
+        public ThreadSafeList<Point3D> HelixZAxes
         {
             get { return _zAxisCache; }
             set
@@ -105,7 +106,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public List<Point3D> HelixPointsSelected
+        public ThreadSafeList<Point3D> HelixPointsSelected
         {
             get { return _pointsCacheSelected; }
             set
@@ -115,7 +116,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public List<Point3D> HelixLinesSelected
+        public ThreadSafeList<Point3D> HelixLinesSelected
         {
             get { return _linesCacheSelected; }
             set
@@ -159,12 +160,12 @@ namespace Dynamo.Controls
 
             //check this for null so the designer can load the preview
             if(dynSettings.Controller != null)
-                dynSettings.Controller.VisualizationManager.VisualizationUpdateComplete += new EventHandler(VisualizationManager_VisualizationUpdateComplete);
+                dynSettings.Controller.VisualizationManager.VisualizationUpdateComplete += VisualizationManager_VisualizationUpdateComplete;
 
             _vm = DataContext as Watch3DFullscreenViewModel;
         }
 
-        void VisualizationManager_VisualizationUpdateComplete(object sender, EventArgs e)
+        void VisualizationManager_VisualizationUpdateComplete(object sender, VisualizationEventArgs e)
         {
             if (dynSettings.Controller == null)
                 return;
@@ -172,7 +173,7 @@ namespace Dynamo.Controls
             if (!dynSettings.Controller.DynamoViewModel.FullscreenWatchShowing)
                 return;
 
-            Dispatcher.Invoke(new Action(RenderDrawables));
+            Dispatcher.Invoke(new Action<RenderDescription>(RenderDrawables), new object[]{e.Description});
         }
 
         //void Controller_RunCompleted(object controller, bool success)
@@ -191,13 +192,10 @@ namespace Dynamo.Controls
         //    Dispatcher.Invoke(new Action(RenderDrawables));
         //}
 
-        private void RenderDrawables()
+        private void RenderDrawables(RenderDescription rd)
         {
             Debug.WriteLine(string.Format("Rendering full screen Watch3D on thread {0}.", System.Threading.Thread.CurrentThread.ManagedThreadId));
             
-            var vizManager = dynSettings.Controller.VisualizationManager;
-            var descriptions = vizManager.Visualizations.Values.Select(x => x.Description).ToList();
-
             HelixPoints = null;
             HelixLines = null;
             HelixMesh = null;
@@ -208,15 +206,15 @@ namespace Dynamo.Controls
             HelixLinesSelected = null;
             HelixMeshSelected = null;
 
-            HelixPoints = descriptions.SelectMany(x => x.Points).ToList();
-            HelixLines = descriptions.SelectMany(x => x.Lines).ToList();
-            HelixPointsSelected = descriptions.SelectMany(x => x.SelectedPoints).ToList();
-            HelixLinesSelected = descriptions.SelectMany(x => x.SelectedLines).ToList();
-            HelixXAxes = descriptions.SelectMany(x => x.XAxisPoints).ToList();
-            HelixYAxes = descriptions.SelectMany(x => x.YAxisPoints).ToList();
-            HelixZAxes = descriptions.SelectMany(x => x.ZAxisPoints).ToList();
-            HelixMesh = VisualizationManager.MergeMeshes(descriptions.SelectMany(x => x.Meshes).ToList());
-            HelixMeshSelected = VisualizationManager.MergeMeshes(descriptions.SelectMany(x => x.SelectedMeshes).ToList());
+            HelixPoints = rd.Points;
+            HelixLines = rd.Lines;
+            HelixPointsSelected = rd.SelectedPoints;
+            HelixLinesSelected = rd.SelectedLines;
+            HelixXAxes = rd.XAxisPoints;
+            HelixYAxes = rd.YAxisPoints;
+            HelixZAxes = rd.ZAxisPoints;
+            HelixMesh = VisualizationManager.MergeMeshes(rd.Meshes);
+            HelixMeshSelected = VisualizationManager.MergeMeshes(rd.SelectedMeshes);
         }
 
         protected void mi_Click(object sender, RoutedEventArgs e)

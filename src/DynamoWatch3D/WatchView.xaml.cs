@@ -26,16 +26,16 @@ namespace Dynamo.Controls
         }
 
         System.Windows.Point _rightMousePoint;
-        
-        protected List<MeshVisual3D> _meshes = new List<MeshVisual3D>();
-        public List<Point3D> _pointsCache = new List<Point3D>();
-        public List<Point3D> _linesCache = new List<Point3D>();
-        public List<Point3D> _xAxisCache = new List<Point3D>();
-        public List<Point3D> _yAxisCache = new List<Point3D>();
-        public List<Point3D> _zAxisCache = new List<Point3D>();
+
+        protected ThreadSafeList<MeshVisual3D> _meshes = new ThreadSafeList<MeshVisual3D>();
+        public ThreadSafeList<Point3D> _pointsCache = new ThreadSafeList<Point3D>();
+        public ThreadSafeList<Point3D> _linesCache = new ThreadSafeList<Point3D>();
+        public ThreadSafeList<Point3D> _xAxisCache = new ThreadSafeList<Point3D>();
+        public ThreadSafeList<Point3D> _yAxisCache = new ThreadSafeList<Point3D>();
+        public ThreadSafeList<Point3D> _zAxisCache = new ThreadSafeList<Point3D>();
         public MeshGeometry3D _meshCache = new MeshGeometry3D();
-        public List<Point3D> _pointsCacheSelected = new List<Point3D>();
-        public List<Point3D> _linesCacheSelected = new List<Point3D>();
+        public ThreadSafeList<Point3D> _pointsCacheSelected = new ThreadSafeList<Point3D>();
+        public ThreadSafeList<Point3D> _linesCacheSelected = new ThreadSafeList<Point3D>();
         public MeshGeometry3D _meshCacheSelected = new MeshGeometry3D();
 
         public System.Windows.Media.Media3D.Material HelixMeshMaterial
@@ -43,7 +43,7 @@ namespace Dynamo.Controls
             get { return Materials.White; }
         }
 
-        public List<Point3D> HelixPoints
+        public ThreadSafeList<Point3D> HelixPoints
         {
             get { return _pointsCache; }
             set
@@ -53,7 +53,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public List<Point3D> HelixLines
+        public ThreadSafeList<Point3D> HelixLines
         {
             get { return _linesCache; }
             set
@@ -63,7 +63,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public List<Point3D> HelixXAxes
+        public ThreadSafeList<Point3D> HelixXAxes
         {
             get { return _xAxisCache; }
             set
@@ -73,7 +73,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public List<Point3D> HelixYAxes
+        public ThreadSafeList<Point3D> HelixYAxes
         {
             get { return _yAxisCache; }
             set
@@ -83,7 +83,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public List<Point3D> HelixZAxes
+        public ThreadSafeList<Point3D> HelixZAxes
         {
             get { return _zAxisCache; }
             set
@@ -103,7 +103,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public List<Point3D> HelixPointsSelected
+        public ThreadSafeList<Point3D> HelixPointsSelected
         {
             get { return _pointsCacheSelected; }
             set
@@ -113,7 +113,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public List<Point3D> HelixLinesSelected
+        public ThreadSafeList<Point3D> HelixLinesSelected
         {
             get { return _linesCacheSelected; }
             set
@@ -149,15 +149,15 @@ namespace Dynamo.Controls
 
         void WatchView_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            dynSettings.Controller.VisualizationManager.VisualizationUpdateComplete += new EventHandler(VisualizationManager_VisualizationUpdateComplete);
+            dynSettings.Controller.VisualizationManager.VisualizationUpdateComplete += VisualizationManager_VisualizationUpdateComplete;
         }
 
-        void VisualizationManager_VisualizationUpdateComplete(object sender, EventArgs e)
+        void VisualizationManager_VisualizationUpdateComplete(object sender, VisualizationEventArgs e)
         {
-            Dispatcher.Invoke(new Action(RenderDrawables));
+            Dispatcher.Invoke(new Action<RenderDescription>(RenderDrawables), new object[]{e.Description});
         }
 
-        private void RenderDrawables()
+        private void RenderDrawables(RenderDescription description)
         {
             Debug.WriteLine(string.Format("Rendering Watch3D on thread {0}.", System.Threading.Thread.CurrentThread.ManagedThreadId));
 
