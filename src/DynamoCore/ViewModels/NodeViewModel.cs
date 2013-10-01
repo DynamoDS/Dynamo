@@ -278,16 +278,16 @@ namespace Dynamo.ViewModels
             //are initially registered
             SetupInitialPortViewModels();
 
-            dynSettings.Controller.RequestNodeSelect += new NodeEventHandler(Controller_RequestNodeSelect);
+            //dynSettings.Controller.RequestNodeSelect += new NodeEventHandler(Controller_RequestNodeSelect);
         }
 
-        void Controller_RequestNodeSelect(object sender, EventArgs e)
-        {
-            ModelBase n = (e as ModelEventArgs).Model;
+        //void Controller_RequestNodeSelect(object sender, EventArgs e)
+        //{
+        //    ModelBase n = (e as ModelEventArgs).Model;
 
-            DynamoSelection.Instance.ClearSelection();
-            DynamoSelection.Instance.Selection.Add(n);
-        }
+        //    DynamoSelection.Instance.ClearSelection();
+        //    DynamoSelection.Instance.Selection.Add(n);
+        //}
 
         #endregion
 

@@ -645,6 +645,14 @@ namespace Dynamo.ViewModels
                     if (!DynamoSelection.Instance.Selection.Contains(n))
                         DynamoSelection.Instance.Selection.Add(n);
                 }
+                else
+                {
+                    //if the node is not contained but is selected, unselect it 
+                    if (n.IsSelected)
+                    {
+                        DynamoSelection.Instance.Selection.Remove(n);
+                    }   
+                }
             }
 
             foreach (var n in Model.Notes)
@@ -659,6 +667,13 @@ namespace Dynamo.ViewModels
                 {
                     if (!DynamoSelection.Instance.Selection.Contains(n))
                         DynamoSelection.Instance.Selection.Add(n);
+                }
+                else
+                {
+                    if (n.IsSelected)
+                    {
+                        DynamoSelection.Instance.Selection.Remove(n);
+                    } 
                 }
             }
         }
@@ -683,6 +698,13 @@ namespace Dynamo.ViewModels
                     if (!DynamoSelection.Instance.Selection.Contains(n))
                         DynamoSelection.Instance.Selection.Add(n);
                 }
+                else
+                {
+                    if (n.IsSelected)
+                    {
+                        DynamoSelection.Instance.Selection.Remove(n);
+                    }
+                }
             }
 
             foreach (var n in Model.Notes)
@@ -695,6 +717,13 @@ namespace Dynamo.ViewModels
                 {
                     if (!DynamoSelection.Instance.Selection.Contains(n))
                         DynamoSelection.Instance.Selection.Add(n);
+                }
+                else
+                {
+                    if (n.IsSelected)
+                    {
+                        DynamoSelection.Instance.Selection.Remove(n);
+                    }
                 }
             }
         }
