@@ -53,7 +53,7 @@ namespace Dynamo
             Debug.WriteLine(string.Format("{0} elapsed for generating visualizations.", sw.Elapsed));
             DynamoLogger.Instance.Log(string.Format("{0} elapsed for generating visualizations.", sw.Elapsed));
 
-            OnVisualizationUpdateComplete(this, EventArgs.Empty);
+            OnVisualizationUpdateComplete(this, new VisualizationEventArgs(AggregateRenderDescriptions()));
         }
 
         public static void DrawLibGGraphicItem(GraphicItem g, RenderDescription rd, IEnumerable<Visualization> selected, Visualization n)
