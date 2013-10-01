@@ -85,6 +85,15 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public event EventHandler SidebarClosed;
+        public virtual void OnSidebarClosed(Object sender, EventArgs e)
+        {
+            if (SidebarClosed != null)
+            {
+                SidebarClosed(this, e);
+            }
+        }
+
         public event WorkspaceSaveEventHandler RequestUserSaveWorkflow;
         public virtual void OnRequestUserSaveWorkflow(Object sender, WorkspaceSaveEventArgs e)
         {
@@ -1146,6 +1155,7 @@ namespace Dynamo.ViewModels
             _model.CurrentWorkspace.Y = pt.Y;
 
             CurrentSpaceViewModel.OnCurrentOffsetChanged(this, new PointEventArgs(pt));
+            CurrentSpaceViewModel.ResetFitViewToggleCommand.Execute(parameter);
         }
 
         internal bool CanPan(object parameter)
