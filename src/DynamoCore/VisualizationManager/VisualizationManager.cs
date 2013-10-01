@@ -70,6 +70,8 @@ namespace Dynamo
 
         void Selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
+            int movedItems = 0;
+
             //When the selection changes we move renderables from collection
             //to another. For example, if items are added, we take the visualizations
             //from the normal collections and we add them to the selected visualization.
@@ -92,6 +94,8 @@ namespace Dynamo
                         viz.Description.Lines.Clear();
                         viz.Description.SelectedMeshes.AddRange(viz.Description.Meshes);
                         viz.Description.Meshes.Clear();
+
+                        movedItems++;
                     }
                 } 
             }
@@ -114,11 +118,16 @@ namespace Dynamo
                         viz.Description.SelectedLines.Clear();
                         viz.Description.Meshes.AddRange(viz.Description.SelectedMeshes);
                         viz.Description.SelectedMeshes.Clear();
+
+                        movedItems++;
                     }
                 } 
             }
             
-            OnVisualizationUpdateComplete(this, new VisualizationEventArgs(AggregateRenderDescriptions()));
+            //don't trigger an update if the changes in the selection
+            //had no effect on the current visualizations
+            if(movedItems > 0)
+                OnVisualizationUpdateComplete(this, new VisualizationEventArgs(AggregateRenderDescriptions()));
         }
 
         void Controller_RequestsRedraw(object sender, EventArgs e)
