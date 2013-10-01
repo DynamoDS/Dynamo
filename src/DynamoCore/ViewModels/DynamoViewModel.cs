@@ -21,7 +21,7 @@ namespace Dynamo.ViewModels
     public delegate void WorkspaceSaveEventHandler(object sender, WorkspaceSaveEventArgs e);
     public delegate void RequestPackagePublishDialogHandler(PublishPackageViewModel publishViewModel);
 
-    public class DynamoViewModel:ViewModelBase
+    public class DynamoViewModel : ViewModelBase
     {
         #region events
 
@@ -107,14 +107,14 @@ namespace Dynamo.ViewModels
 
         #region properties
 
-        private DynamoModel _model;        
+        private DynamoModel _model;
         private Point transformOrigin;
         private DynamoController controller;
         private bool runEnabled = true;
         protected bool canRunDynamically = true;
         protected bool debug = false;
         protected bool dynamicRun = false;
-        
+
         private bool fullscreenWatchShowing = false;
         private bool canNavigateBackground = false;
 
@@ -264,6 +264,9 @@ namespace Dynamo.ViewModels
             get { return _model.CurrentWorkspace; }
         }
 
+        public double WorkspaceActualHeight { get; set; }
+        public double WorkspaceActualWidth { get; set; }
+
         /// <summary>
         /// The index in the collection of workspaces of the current workspace.
         /// This property is bound to the SelectedIndex property in the workspaces tab control
@@ -295,8 +298,8 @@ namespace Dynamo.ViewModels
         public string EditName
         {
             get { return _model.editName; }
-            set 
-            { 
+            set
+            {
                 _model.editName = value;
                 RaisePropertyChanged("EditName");
             }
@@ -306,7 +309,7 @@ namespace Dynamo.ViewModels
         {
             get { return dynSettings.Controller.IsUILocked; }
         }
-        
+
         public bool FullscreenWatchShowing
         {
             get { return fullscreenWatchShowing; }
@@ -370,6 +373,8 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public bool IsMouseDown { get; set; }
+
         public ConnectorType ConnectorType
         {
             get { return dynSettings.Controller.ConnectorType; }
@@ -379,13 +384,13 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("ConnectorType");
             }
         }
-        
+
         #endregion
 
         public DynamoViewModel(DynamoController controller)
         {
             ConnectorType = ConnectorType.BEZIER;
-            
+
             //create the model
             _model = new DynamoModel();
             dynSettings.Controller.DynamoModel = _model;
@@ -421,7 +426,7 @@ namespace Dynamo.ViewModels
             NewHomeWorkspaceCommand = new DelegateCommand(MakeNewHomeWorkspace, CanMakeNewHomeWorkspace);
             GoToWorkspaceCommand = new DelegateCommand(GoToWorkspace, CanGoToWorkspace);
             DeleteCommand = new DelegateCommand(_model.Delete, _model.CanDelete);
-            ExitCommand = new DelegateCommand(Exit,CanExit);
+            ExitCommand = new DelegateCommand(Exit, CanExit);
             ToggleFullscreenWatchShowingCommand = new DelegateCommand(ToggleFullscreenWatchShowing, CanToggleFullscreenWatchShowing);
             ToggleCanNavigateBackgroundCommand = new DelegateCommand(ToggleCanNavigateBackground, CanToggleCanNavigateBackground);
             AlignSelectedCommand = new DelegateCommand(AlignSelected, CanAlignSelected); ;
@@ -499,7 +504,7 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("CurrentWorkspaceIndex");
                 RaisePropertyChanged("ViewingHomespace");
                 if (this.PublishCurrentWorkspaceCommand != null)
-                this.PublishCurrentWorkspaceCommand.RaiseCanExecuteChanged();
+                    this.PublishCurrentWorkspaceCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -533,7 +538,7 @@ namespace Dynamo.ViewModels
             };
 
             string ext, fltr;
-            if ( workspace == _model.HomeSpace )
+            if (workspace == _model.HomeSpace)
             {
                 ext = ".dyn";
                 fltr = "Dynamo Workspace (*.dyn)|*.dyn";
@@ -594,7 +599,7 @@ namespace Dynamo.ViewModels
         }
 
         public bool exitInvoked = false;
-        
+
         internal bool CanVisibilityBeToggled(object parameters)
         {
             return true;
@@ -697,7 +702,7 @@ namespace Dynamo.ViewModels
 
             WorkspaceModel newWs = symbol.Workspace;
 
-            if ( !this._model.Workspaces.Contains(newWs) )
+            if (!this._model.Workspaces.Contains(newWs))
                 this._model.Workspaces.Add(newWs);
 
             CurrentSpaceViewModel.OnStopDragging(this, EventArgs.Empty);
@@ -751,17 +756,17 @@ namespace Dynamo.ViewModels
                 }
             }
 
-            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestCenterViewOnElement(this, new ModelEventArgs(e,null));
-            
+            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestCenterViewOnElement(this, new ModelEventArgs(e, null));
+
         }
-        
+
         public void ShowSaveDialogIfNeededAndSaveResult(object parameter)
         {
             var vm = dynSettings.Controller.DynamoViewModel;
 
             if (vm.Model.CurrentWorkspace.FilePath != null)
             {
-                if(_model.CanSave(parameter))
+                if (_model.CanSave(parameter))
                     _model.Save(parameter);
             }
             else
@@ -804,7 +809,7 @@ namespace Dynamo.ViewModels
         {
             return true;
         }
-        
+
         public void ToggleCanNavigateBackground(object parameter)
         {
             if (!FullscreenWatchShowing)
@@ -923,7 +928,7 @@ namespace Dynamo.ViewModels
             if (!Model.HomeSpace.HasUnsavedChanges || AskUserToSaveWorkspaceOrCancel(this.Model.HomeSpace))
             {
                 Model.CurrentWorkspace = this.Model.HomeSpace;
-               
+
                 _model.Clear(null);
             }
         }
@@ -1204,6 +1209,28 @@ namespace Dynamo.ViewModels
         }
 
         internal bool CanEscape(object parameter)
+        {
+            return true;
+        }
+
+        public void ShowInfoBubble(object parameter)
+        {
+            InfoBubbleDataPacket data = (InfoBubbleDataPacket)parameter;
+            controller.InfoBubbleViewModel.UpdateContentCommand.Execute(data);
+            controller.InfoBubbleViewModel.FadeInCommand.Execute(null);
+        }
+
+        internal bool CanShowInfoBubble(object parameter)
+        {
+            return true;
+        }
+
+        public void HideInfoBubble(object parameter)
+        {
+            controller.InfoBubbleViewModel.FadeOutCommand.Execute(null);
+        }
+
+        internal bool CanHideInfoBubble(object parameter)
         {
             return true;
         }
