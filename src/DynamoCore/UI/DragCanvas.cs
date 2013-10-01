@@ -13,6 +13,7 @@ using System.Windows.Threading;
 using Dynamo.Models;
 using Dynamo.Selection;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;
+using Dynamo.ViewModels;
 
 namespace Dynamo.Controls
 {
@@ -319,6 +320,15 @@ namespace Dynamo.Controls
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
+            object dataContext = this.owningWorkspace.DataContext;
+            WorkspaceViewModel wvm = dataContext as WorkspaceViewModel;
+            if (wvm.HandleLeftButtonDown(this, e))
+            {
+                base.OnMouseLeftButtonDown(e);
+                e.Handled = true;
+            }
+
+#if false
             if (ignoreClick)
             {
                 ignoreClick = false;
@@ -367,12 +377,14 @@ namespace Dynamo.Controls
                 }
 
             }
+#endif
         }
 
         #endregion // OnPreviewMouseLeftButtonDown
 
         #region OnPreviewMouseMove
 
+#if false
         protected override void OnPreviewMouseMove(MouseEventArgs e)
         {
             base.OnPreviewMouseMove(e);
@@ -505,11 +517,13 @@ namespace Dynamo.Controls
             #endregion // Move Drag Element
 
         }
+#endif
 
         #endregion // OnPreviewMouseMove
 
         #region OnHostPreviewMouseUp
 
+#if false
         protected override void OnMouseUp(MouseButtonEventArgs e)
         {
             base.OnMouseUp(e);
@@ -557,7 +571,7 @@ namespace Dynamo.Controls
                 count++;
             }
         }
-
+#endif
 
         #endregion // OnHostPreviewMouseUp
 

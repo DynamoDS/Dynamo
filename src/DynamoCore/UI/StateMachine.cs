@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -20,19 +21,19 @@ namespace Dynamo.ViewModels
 
         private StateMachine stateMachine = null;
 
-        internal void HandleLeftButtonDown(object sender, MouseButtonEventArgs e)
+        internal bool HandleLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            stateMachine.HandleLeftButtonDown(sender, e);
+            return stateMachine.HandleLeftButtonDown(sender, e);
         }
 
-        internal void HandleMouseRelease(object sender, MouseButtonEventArgs e)
+        internal bool HandleMouseRelease(object sender, MouseButtonEventArgs e)
         {
-            stateMachine.HandleMouseRelease(sender, e);
+            return stateMachine.HandleMouseRelease(sender, e);
         }
 
-        internal void HandleMouseMove(object sender, MouseEventArgs e)
+        internal bool HandleMouseMove(object sender, MouseEventArgs e)
         {
-            stateMachine.HandleMouseMove(sender, e);
+            return stateMachine.HandleMouseMove(sender, e);
         }
 
         #endregion
@@ -51,6 +52,7 @@ namespace Dynamo.ViewModels
             {
                 None,
                 WindowSelection,
+                DragSetup,
                 NodeReposition,
                 Connection
             }
@@ -93,7 +95,7 @@ namespace Dynamo.ViewModels
 
             #region User Input Event Handlers
 
-            internal void HandleLeftButtonDown(object sender, MouseButtonEventArgs e)
+            internal bool HandleLeftButtonDown(object sender, MouseButtonEventArgs e)
             {
                 if (this.currentState == State.Connection)
                 {
@@ -101,32 +103,32 @@ namespace Dynamo.ViewModels
                     // the operation and drop the temporary connector.
                     this.currentState = State.None;
                     owningWorkspace.ActiveConnector = null;
+                    return true; // Mouse event handled.
                 }
-                else if (this.currentState != State.Connection)
+                else if (this.currentState == State.None)
                 {
-                    DynamoSelection.Instance.ClearSelection();
-
                     // Record the mouse down position.
                     IInputElement element = sender as IInputElement;
                     mouseDownPos = e.GetPosition(element);
 
-                    // Update the selection box and make it visible 
-                    // but with an initial dimension of zero.
-                    SelectionBoxUpdateArgs args = null;
-                    args = new SelectionBoxUpdateArgs(mouseDownPos.X, mouseDownPos.Y, 0, 0);
-                    args.SetVisibility(Visibility.Visible);
+                    // We'll see if there is any node being clicked on. If so, 
+                    // then the state machine should initiate a drag operation.
+                    if (null != GetSelectableFromPoint(mouseDownPos))
+                        InitiateDragSequence();
+                    else
+                        InitiateWindowSelectionSequence();
 
-                    this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
-                    this.currentState = State.WindowSelection;
+                    return true; // Mouse event handled.
                 }
 
                 dynSettings.ReturnFocusToSearch();
+                return false;
             }
 
-            internal void HandleMouseRelease(object sender, MouseButtonEventArgs e)
+            internal bool HandleMouseRelease(object sender, MouseButtonEventArgs e)
             {
                 if (e.ChangedButton != MouseButton.Left)
-                    return; // We only handle left mouse button for now.
+                    return false; // We only handle left mouse button for now.
 
                 if (this.currentState == State.WindowSelection)
                 {
@@ -134,10 +136,17 @@ namespace Dynamo.ViewModels
                     args = new SelectionBoxUpdateArgs(Visibility.Collapsed);
                     this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
                     this.currentState = State.None;
+                    return true; // Mouse event handled.
                 }
+                else if (this.currentState == State.NodeReposition)
+                    this.currentState = State.None;
+                else if (this.currentState == State.DragSetup)
+                    this.currentState = State.None;
+
+                return false; // Mouse event not handled.
             }
 
-            internal void HandleMouseMove(object sender, MouseEventArgs e)
+            internal bool HandleMouseMove(object sender, MouseEventArgs e)
             {
                 if (this.currentState == State.Connection)
                 {
@@ -191,14 +200,61 @@ namespace Dynamo.ViewModels
                     else
                         owningWorkspace.ContainSelectCommand.Execute(rect);
                 }
+                else if (this.currentState == State.DragSetup)
+                {
+                    this.currentState = State.NodeReposition;
+                }
                 else if (this.currentState == State.NodeReposition)
                 {
                 }
+
+                return false; // Mouse event not handled.
             }
 
             #endregion
 
             #region Private Class Helper Method
+
+            private ISelectable GetSelectableFromPoint(Point point)
+            {
+                foreach (ISelectable selectable in DynamoSelection.Instance.Selection)
+                {
+                    var locatable = selectable as ILocatable;
+                    if (locatable == null || (!locatable.Rect.Contains(point)))
+                        continue;
+
+                    return selectable;
+                }
+
+                return null;
+            }
+
+            private void InitiateDragSequence()
+            {
+                // The state machine must be in idle state.
+                if (this.currentState != State.None)
+                    throw new InvalidOperationException();
+
+                this.currentState = State.DragSetup;
+            }
+
+            private void InitiateWindowSelectionSequence()
+            {
+                // The state machine must be in idle state.
+                if (this.currentState != State.None)
+                    throw new InvalidOperationException();
+
+                DynamoSelection.Instance.ClearSelection();
+
+                // Update the selection box and make it visible 
+                // but with an initial dimension of zero.
+                SelectionBoxUpdateArgs args = null;
+                args = new SelectionBoxUpdateArgs(mouseDownPos.X, mouseDownPos.Y, 0, 0);
+                args.SetVisibility(Visibility.Visible);
+
+                this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
+                this.currentState = State.WindowSelection;
+            }
 
             #endregion
         }
