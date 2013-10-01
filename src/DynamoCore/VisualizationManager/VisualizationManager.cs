@@ -76,6 +76,28 @@ namespace Dynamo
             //to another. For example, if items are added, we take the visualizations
             //from the normal collections and we add them to the selected visualization.
             //When an item is removed from the selection, we put it back in the normal collection
+
+            //process removals - any node which has a visualization, is not in the selection collection
+            //and has some geometry in the selection visualization collections
+            var toRemove = Visualizations.Where(x => x.Value.Description.SelectedPoints.Count > 0 ||
+                                                     x.Value.Description.SelectedLines.Count > 0 ||
+                                                     x.Value.Description.SelectedMeshes.Count > 0)
+                                         .Where(
+                                             x =>
+                                             !DynamoSelection.Instance.Selection.Select(
+                                                 y => (y as NodeModel).GUID.ToString()).Contains(x.Key)).Select(x=>x.Value);
+            foreach (var viz in toRemove)
+            {
+                viz.Description.Points.AddRange(viz.Description.SelectedPoints);
+                viz.Description.SelectedPoints.Clear();
+                viz.Description.Lines.AddRange(viz.Description.SelectedLines);
+                viz.Description.SelectedLines.Clear();
+                viz.Description.Meshes.AddRange(viz.Description.SelectedMeshes);
+                viz.Description.SelectedMeshes.Clear();
+
+                movedItems++;
+            }
+
             if (e.NewItems != null)
             {
                 foreach (object item in e.NewItems)
@@ -94,30 +116,6 @@ namespace Dynamo
                         viz.Description.Lines.Clear();
                         viz.Description.SelectedMeshes.AddRange(viz.Description.Meshes);
                         viz.Description.Meshes.Clear();
-
-                        movedItems++;
-                    }
-                } 
-            }
-
-            if (e.OldItems != null)
-            {
-                foreach (object item in e.OldItems)
-                {
-                    var node = item as NodeModel;
-                    if (item == null)
-                        continue;
-
-                    if (Visualizations.ContainsKey(node.GUID.ToString()))
-                    {
-                        //move points, lines, and meshes
-                        var viz = Visualizations[node.GUID.ToString()];
-                        viz.Description.Points.AddRange(viz.Description.SelectedPoints);
-                        viz.Description.SelectedPoints.Clear();
-                        viz.Description.Lines.AddRange(viz.Description.SelectedLines);
-                        viz.Description.SelectedLines.Clear();
-                        viz.Description.Meshes.AddRange(viz.Description.SelectedMeshes);
-                        viz.Description.SelectedMeshes.Clear();
 
                         movedItems++;
                     }
