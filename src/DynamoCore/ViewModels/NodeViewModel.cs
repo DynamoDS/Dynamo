@@ -76,6 +76,8 @@ namespace Dynamo.ViewModels
 
         public InfoBubbleViewModel ErrorBubble { get; set; }
 
+        public InfoBubbleViewModel PreviewBubble { get; set; }
+
         public string ToolTipText
         {
             get { return nodeLogic.ToolTipText; }
@@ -355,6 +357,43 @@ namespace Dynamo.ViewModels
         {
             if (this.ErrorBubble == null)
                 return;
+            if (string.IsNullOrEmpty(NodeModel.OldValue.ToString()))
+            {
+                if (ErrorBubble.Opacity != 0)
+                {
+                    ErrorBubble.SetAlwaysVisibleCommand.Execute(false);
+                    ErrorBubble.FadeOutCommand.Execute(null);
+                }
+            }
+            else
+            {
+                Point topLeft = new Point(NodeModel.X, NodeModel.Y);
+                Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
+                InfoBubbleDataPacket data = new InfoBubbleDataPacket(InfoBubbleViewModel.Style.Error, topLeft, botRight, 
+                    NodeModel.OldValue.ToString(), InfoBubbleViewModel.Direction.Bottom, NodeModel.GUID);
+                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.Invoke((new Action(() =>
+                {
+                    this.ErrorBubble.UpdateContentCommand.Execute(data);
+                    this.ErrorBubble.SetAlwaysVisibleCommand.Execute(true);
+                    this.ErrorBubble.FadeInCommand.Execute(null);
+                })));
+            }
+        }
+
+        private void UpdateErrorBubblePosition(double x, double y)
+        {
+            Point topLeft = new Point(NodeModel.X, NodeModel.Y);
+            Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
+            InfoBubbleDataPacket data = new InfoBubbleDataPacket();
+            data.TopLeft = topLeft;
+            data.BotRight = botRight;
+            this.ErrorBubble.UpdatePositionCommand.Execute(data);
+        }
+
+        private void UpdatePreviewBubbleContent()
+        {
+            if (this.PreviewBubble == null)
+                return;
             if (string.IsNullOrEmpty(NodeModel.ToolTipText))
             {
                 if (ErrorBubble.Opacity != 0)
@@ -377,14 +416,14 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void UpdateErrorBubblePosition(double x, double y)
+        private void UpdatePreviewBubblePosition(double x, double y)
         {
             Point topLeft = new Point(NodeModel.X, NodeModel.Y);
             Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
             InfoBubbleDataPacket data = new InfoBubbleDataPacket();
             data.TopLeft = topLeft;
             data.BotRight = botRight;
-            this.ErrorBubble.UpdatePositionCommand.Execute(data);
+            this.PreviewBubble.UpdatePositionCommand.Execute(data);
         }
 
         private void ShowHelp(object parameter)

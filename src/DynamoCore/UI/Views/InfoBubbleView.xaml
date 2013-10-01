@@ -21,6 +21,5 @@
 
         <StackPanel Name="ContentContainer">
         </StackPanel>
-        
     </Grid>
 </UserControl>
