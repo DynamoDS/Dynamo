@@ -1157,7 +1157,7 @@ namespace Dynamo.Models
 
             //clear the selection so we can put the
             //paste contents in
-            DynamoSelection.Instance.Selection.RemoveAll();
+            DynamoSelection.Instance.Selection.Reset(new List<ISelectable>());
 
             var nodes = dynSettings.Controller.ClipBoard.OfType<NodeModel>();
 

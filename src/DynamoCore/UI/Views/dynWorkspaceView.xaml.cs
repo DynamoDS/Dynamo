@@ -465,7 +465,7 @@ namespace Dynamo.Views
                 }
 
                 //clear the selected elements
-                DynamoSelection.Instance.ClearSelection();
+                //DynamoSelection.Instance.ClearSelection();
 
                 var rect =
                     new Rect(

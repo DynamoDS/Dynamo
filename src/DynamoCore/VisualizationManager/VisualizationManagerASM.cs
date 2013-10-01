@@ -7,7 +7,9 @@ using System.Windows.Media.Media3D;
 using Autodesk.LibG;
 using Dynamo.Models;
 using Dynamo.Selection;
+using Dynamo.Services;
 using HelixToolkit.Wpf;
+using Newtonsoft.Json;
 
 namespace Dynamo
 {
@@ -53,7 +55,21 @@ namespace Dynamo
             Debug.WriteLine(string.Format("{0} elapsed for generating visualizations.", sw.Elapsed));
             DynamoLogger.Instance.Log(string.Format("{0} elapsed for generating visualizations.", sw.Elapsed));
 
-            OnVisualizationUpdateComplete(this, new VisualizationEventArgs(AggregateRenderDescriptions()));
+            //generate an aggregated render description to send to the UI
+            var aggRd = AggregateRenderDescriptions();
+
+            var renderDict = new Dictionary<string, int>();
+            renderDict["points"] = aggRd.Points.Count;
+            renderDict["line_segments"] = aggRd.Lines.Count/2;
+            renderDict["mesh_facets"] = aggRd.Meshes.Any()?
+                aggRd.Meshes.Select(x => x.TriangleIndices.Count / 3).Aggregate((a, b) => a + b): 0;
+
+            var renderData = JsonConvert.SerializeObject(renderDict);
+
+            InstrumentationLogger.LogInfo("Perf-Latency-RenderGeometryGeneration", renderData);
+
+            //notify the UI of visualization completion
+            OnVisualizationUpdateComplete(this, new VisualizationEventArgs(aggRd));
         }
 
         public static void DrawLibGGraphicItem(GraphicItem g, RenderDescription rd, IEnumerable<Visualization> selected, Visualization n)
