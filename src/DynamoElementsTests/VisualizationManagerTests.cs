@@ -7,7 +7,8 @@ using System.Linq;
 namespace Dynamo.Tests
 {
     [TestFixture]
-    class VisualizationManagerTests : DynamoUnitTest
+    class 
+        VisualizationManagerTests : DynamoUnitTest
     {
         [Test]
         public void CanVisualizeASMPoints()

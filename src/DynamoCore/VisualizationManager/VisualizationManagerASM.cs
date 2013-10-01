@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Media.Media3D;
@@ -14,6 +15,14 @@ namespace Dynamo
     {
         public override void UpdateVisualizations()
         {
+            var worker = new BackgroundWorker();
+            worker.DoWork += VisualizationUpdateThread;
+
+            worker.RunWorkerAsync();
+        }
+
+        protected virtual void VisualizationUpdateThread(object s, DoWorkEventArgs args)
+        {
             //only update those nodes which have been flagged for update
             var toUpdate = Visualizations.Values.ToList().Where(x => x.RequiresUpdate == true);
 
@@ -22,7 +31,7 @@ namespace Dynamo
 
             var selIds =
                 DynamoSelection.Instance.Selection.Where(x => x is NodeModel)
-                               .Select(x => ((NodeModel) x).GUID.ToString());
+                               .Select(x => ((NodeModel)x).GUID.ToString());
 
             var selected = Visualizations.Where(x => selIds.Contains(x.Key)).Select(x => x.Value);
 
@@ -34,12 +43,12 @@ namespace Dynamo
                 var rd = n.Description;
                 rd.Clear();
 
-                foreach (var geom in n.Geometry)
+                foreach (var geom in n.Geometry.ToList())
                 {
                     var g = geom as GraphicItem;
                     if (g == null)
                         continue;
-                    
+
                     DrawLibGGraphicItem(g, rd, selected, n);
 
                     //set this flag to avoid processing again
