@@ -21,6 +21,7 @@ namespace Dynamo.ViewModels
             LibraryItemPreview,
             NodeTooltip,
             Error,
+            Preview,
             None
         }
         public enum Direction
@@ -317,6 +318,9 @@ namespace Dynamo.ViewModels
                 case Style.Error:
                     SetStyle_Error();
                     break;
+                case Style.Preview:
+                    SetStyle_Preview();
+                    break;
                 case Style.None:
                     throw new ArgumentException("InfoWindow didn't have a style (456B24E0F400)");
             }
@@ -334,6 +338,9 @@ namespace Dynamo.ViewModels
                     break;
                 case Style.Error:
                     FramePoints = GetFramePoints_Error();
+                    break;
+                case Style.Preview:
+                    FramePoints = GetFramePoints_Preview();
                     break;
                 case Style.None:
                     break;
@@ -402,8 +409,16 @@ namespace Dynamo.ViewModels
             Thickness margin = new Thickness();
             double nodeWidth = botRight.X - topLeft.X;
             margin.Top = -(EstimatedHeight) + topLeft.Y;
-            if (EstimatedWidth > nodeWidth)
-                margin.Left = -((EstimatedWidth - nodeWidth) / 2) + topLeft.X;
+            margin.Left = -((EstimatedWidth - nodeWidth) / 2) + topLeft.X;
+            return margin;
+        }
+
+        private Thickness GetMargin_Preview(Point topLeft, Point botRight)
+        {
+            Thickness margin = new Thickness();
+            double nodeWidth = botRight.X - topLeft.X;
+            margin.Top = botRight.Y;
+            margin.Left = -((EstimatedWidth - nodeWidth) / 2) + topLeft.X;
             return margin;
         }
 
@@ -462,6 +477,21 @@ namespace Dynamo.ViewModels
             TextForeground = new SolidColorBrush(Color.FromRgb(190, 70, 70));
             ContentWrapping = TextWrapping.Wrap;
             ContentMargin = new Thickness(5, 5, 5, 12);
+        }
+
+        private void SetStyle_Preview()
+        {
+            FrameFill = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+            FrameStrokeThickness = 1;
+            FrameStrokeColor = new SolidColorBrush(Color.FromRgb(153, 153, 153));
+
+            MaxWidth = 300;
+
+            TextFontSize = 13;
+            TextFontWeight = FontWeights.Light;
+            TextForeground = new SolidColorBrush(Color.FromRgb(153, 153, 153));
+            ContentWrapping = TextWrapping.Wrap;
+            ContentMargin = new Thickness(5, 12, 5, 5);
         }
 
         private PointCollection GetFramePoints_LibraryItemPreview()
@@ -596,6 +626,18 @@ namespace Dynamo.ViewModels
             return pointCollection;
         }
 
+        private PointCollection GetFramePoints_Preview()
+        {
+            PointCollection pointCollection = new PointCollection();
+            pointCollection.Add(new Point(EstimatedWidth, 7));
+            pointCollection.Add(new Point(EstimatedWidth / 2 + 7, 7));
+            pointCollection.Add(new Point(EstimatedWidth / 2 - 7, 7));
+            pointCollection.Add(new Point(0, 7));
+            pointCollection.Add(new Point(0, EstimatedHeight));
+            pointCollection.Add(new Point(EstimatedWidth, EstimatedHeight));
+            return pointCollection;
+        }
+
         private void MakeFitInView()
         {
             //top
@@ -631,8 +673,8 @@ namespace Dynamo.ViewModels
 
         private void fadeInTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            if (Opacity <= 0.85)
-                Opacity += 0.85 / 10;
+            if (Opacity <= 0.95)
+                Opacity += 0.95 / 10;
             else
                 fadeInTimer.Stop();
         }
