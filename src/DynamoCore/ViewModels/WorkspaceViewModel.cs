@@ -18,6 +18,7 @@ namespace Dynamo.ViewModels
     public delegate void NoteEventHandler(object sender, EventArgs e);
     public delegate void ViewEventHandler(object sender, EventArgs e);
     public delegate void ZoomEventHandler(object sender, EventArgs e);
+    public delegate void SelectionEventHandler(object sender, SelectionBoxUpdateArgs e);
     public delegate void ViewModelAdditionEventHandler(object sender, ViewModelEventArgs e);
     public delegate void WorkspacePropertyEditHandler(WorkspaceModel workspace );
 
@@ -38,6 +39,7 @@ namespace Dynamo.ViewModels
         public event NodeEventHandler RequestCenterViewOnElement;
         public event NodeEventHandler RequestNodeCentered;
         public event ViewEventHandler RequestAddViewToOuterCanvas;
+        public event SelectionEventHandler RequestSelectionBoxUpdate;
         public event WorkspacePropertyEditHandler WorkspacePropertyEditRequested;
 
         private bool _watchEscapeIsDown = false;
@@ -136,6 +138,12 @@ namespace Dynamo.ViewModels
         {
             if (RequestAddViewToOuterCanvas != null)
                 RequestAddViewToOuterCanvas(this, e);
+        }
+
+        public virtual void OnRequestSelectionBoxUpdate(object sender, SelectionBoxUpdateArgs e)
+        {
+            if (RequestSelectionBoxUpdate != null)
+                RequestSelectionBoxUpdate(this, e);
         }
 
         public virtual void OnWorkspacePropertyEditRequested()
@@ -333,6 +341,7 @@ namespace Dynamo.ViewModels
         public WorkspaceViewModel(WorkspaceModel model, DynamoViewModel vm)
         {
             _model = model;
+            stateMachine = new StateMachine(this);
 
             //setup the composite collection
             var nodesColl = new CollectionContainer { Collection = Nodes };
