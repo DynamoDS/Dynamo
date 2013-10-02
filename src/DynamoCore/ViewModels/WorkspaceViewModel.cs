@@ -370,21 +370,20 @@ namespace Dynamo.ViewModels
             _model = model;
 
             //setup the composite collection
-            var nodesColl = new CollectionContainer { Collection = Nodes };
-            _workspaceElements.Add(nodesColl);
-
             var connColl = new CollectionContainer { Collection = Connectors };
             _workspaceElements.Add(connColl);
 
             var notesColl = new CollectionContainer { Collection = Notes };
             _workspaceElements.Add(notesColl);
 
-            var errorsColl = new CollectionContainer { Collection = Errors };
-            _workspaceElements.Add(errorsColl);
-
             var previewsColl = new CollectionContainer { Collection = Previews };
             _workspaceElements.Add(previewsColl);
 
+            var nodesColl = new CollectionContainer { Collection = Nodes };
+            _workspaceElements.Add(nodesColl);
+
+            var errorsColl = new CollectionContainer { Collection = Errors };
+            _workspaceElements.Add(errorsColl);
             //respond to collection changes on the model by creating new view models
             //currently, view models are added for notes and nodes
             //connector view models are added during connection

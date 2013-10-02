@@ -39,14 +39,25 @@ namespace Dynamo.Controls
         {
             if (e.PropertyName == "Content")
             {
-                ContentContainer.Children.Clear();
-                TextBox textBox = GetStyledTextBox(ViewModel.Content);
-                ContentContainer.Children.Add(textBox);
-
-                ContentContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-                ViewModel.EstimatedWidth = ContentContainer.DesiredSize.Width;
-                ViewModel.EstimatedHeight = ContentContainer.DesiredSize.Height;
+                UpdateContent();
             }
+        }
+
+        private void UpdateContent()
+        {
+            //The reason of changing the content from the code behind like this is due to a bug of WPF
+            //  The bug if when you set the max width of an existing text box and then try to get the 
+            //  expected size of it by using TextBox.Measure(..) method it will return the wrong value.
+            //  The only solution that I can come up for now is clean the StackPanel content and 
+            //  then add a new TextBox to it
+
+            ContentContainer.Children.Clear();
+            TextBox textBox = GetStyledTextBox(ViewModel.Content);
+            ContentContainer.Children.Add(textBox);
+
+            ContentContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            ViewModel.EstimatedWidth = ContentContainer.DesiredSize.Width;
+            ViewModel.EstimatedHeight = ContentContainer.DesiredSize.Height;
         }
 
         private TextBox GetStyledTextBox(string text)
