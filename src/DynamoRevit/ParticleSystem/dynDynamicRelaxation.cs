@@ -473,7 +473,7 @@ namespace Dynamo.Nodes
             //this is useful for when this node is used in an infinite
             //loop and you need to draw its contents
 
-            var viz = (Visualization)dynSettings.Controller.VisualizationManager.Visualizations.Where(x => x.Value.Geometry.Contains(partSys));
+            var viz = dynSettings.Controller.VisualizationManager.Visualizations.First(x => x.Value.Geometry.Contains(partSys)).Value;
             viz.RequiresUpdate = true;
 
             dynSettings.Controller.OnRequestsRedraw(this, EventArgs.Empty);

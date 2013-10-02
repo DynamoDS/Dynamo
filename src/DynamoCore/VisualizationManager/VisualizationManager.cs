@@ -557,7 +557,7 @@ namespace Dynamo
 
             InstrumentationLogger.LogInfo("Perf-Latency-RenderGeometryGeneration", renderData);
 
-            Debug.WriteLine(renderData);
+            //Debug.WriteLine(renderData);
         }
     }
 

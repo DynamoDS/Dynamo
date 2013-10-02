@@ -75,10 +75,6 @@ namespace Dynamo
                         //support drawing ASM visuals
                         VisualizationManagerASM.DrawLibGGraphicItem((GraphicItem)obj, rd, selected, n);
                     }
-                    else if (obj is ParticleSystem)
-                    {
-                        Debug.WriteLine("Drawing particle system.");
-                    }
                 }
 
                 //set this flag to avoid processing again
