@@ -196,8 +196,8 @@ limitations under the License.
       <DependentUpon>PackageManagerSearchView.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Prompts\CrashPrompt.xaml.cs" />
-    <Compile Include="UI\Prompts\dynEditWindow.xaml.cs">
-      <DependentUpon>dynEditWindow.xaml</DependentUpon>
+    <Compile Include="UI\Prompts\EditWindow.xaml.cs">
+      <DependentUpon>EditWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="UI\Prompts\FunctionNamePrompt.xaml.cs">
@@ -388,7 +388,7 @@ limitations under the License.
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Prompts\dynEditWindow.xaml">
+    <Page Include="UI\Prompts\EditWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

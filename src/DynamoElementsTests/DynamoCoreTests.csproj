@@ -63,7 +63,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Saving.cs" />
+    <Compile Include="WorkspaceSaving.cs" />
     <Compile Include="PrintValue.cs" />
     <Compile Include="CoreTests.cs" />
     <Compile Include="CoreDynTests.cs" />

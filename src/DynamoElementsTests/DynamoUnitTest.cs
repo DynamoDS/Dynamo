@@ -84,6 +84,15 @@ namespace Dynamo.Tests
             }
         }
 
+        /// <summary>
+        /// Gives a unique file name located in the temp folder
+        /// </summary>
+        /// <returns>String representing the path</returns>
+        public string GetNewFileNameOnTempPath(string fileExtension = "dyn")
+        {
+            return Path.Combine(TempFolder, Guid.NewGuid().ToString() + "." + fileExtension);
+        }
+
         #endregion
 
         #region utility methods
