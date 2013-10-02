@@ -80,7 +80,7 @@ namespace Dynamo.Models
                 }
 
 
-                return new WorkspaceHeader() { ID = id, Name = funName, X = cx, Y = cy, Zoom = zoom, FilePath = path };
+                return new WorkspaceHeader() { ID = id, Name = funName, X = cx, Y = cy, Zoom = zoom, FileName = path };
 
 
             }
@@ -102,7 +102,7 @@ namespace Dynamo.Models
         public double Zoom { get; set; }
         public string Name { get; set; }
         public string ID { get; set; }
-        public string FilePath { get; set; }
+        public string FileName { get; set; }
 
         public bool IsCustomNodeWorkspace()
         {
@@ -303,9 +303,9 @@ namespace Dynamo.Models
             }
 
             // if you've got the current space path, use it as the inital dir
-            if (!string.IsNullOrEmpty(vm.Model.CurrentWorkspace.FilePath))
+            if (!string.IsNullOrEmpty(vm.Model.CurrentWorkspace.FileName))
             {
-                var fi = new FileInfo(vm.Model.CurrentWorkspace.FilePath);
+                var fi = new FileInfo(vm.Model.CurrentWorkspace.FileName);
                 _fileDialog.InitialDirectory = fi.DirectoryName;
             }
             else // use the samples directory, if it exists
@@ -401,7 +401,7 @@ namespace Dynamo.Models
         {
             // load custom node
             var manager = dynSettings.Controller.CustomNodeManager;
-            var info = manager.AddFileToPath(workspaceHeader.FilePath);
+            var info = manager.AddFileToPath(workspaceHeader.FileName);
             var funcDef = manager.GetFunctionDefinition(info.Guid);
             var ws = funcDef.WorkspaceModel;
             ws.Zoom = workspaceHeader.Zoom;
@@ -880,7 +880,7 @@ namespace Dynamo.Models
 
                 #endregion
 
-                HomeSpace.FilePath = xmlPath;
+                HomeSpace.FileName = xmlPath;
 
                 DynamoLogger.Instance.Log(string.Format("{0} ellapsed for loading workspace.", sw.Elapsed));
             }
@@ -896,13 +896,13 @@ namespace Dynamo.Models
             return true;
         }
 
-        internal FunctionDefinition NewFunction(Guid id,
-                                        string name,
-                                        string category,
-                                        string description,
-                                        bool display,
-                                        double workspaceOffsetX = 0,
-                                        double workspaceOffsetY = 0)
+        public FunctionDefinition NewCustomNodeWorkspace(   Guid id,
+                                                            string name,
+                                                            string category,
+                                                            string description,
+                                                            bool makeCurrentWorkspace,
+                                                            double workspaceOffsetX = 0,
+                                                            double workspaceOffsetY = 0)
         {
 
             var workSpace = new CustomNodeWorkspaceModel(
@@ -923,7 +923,7 @@ namespace Dynamo.Models
 
             functionDefinition.Save(false, true);
 
-            if (display)
+            if (makeCurrentWorkspace)
             {
                 if (CurrentWorkspace != HomeSpace)
                 {
@@ -950,7 +950,7 @@ namespace Dynamo.Models
             // Get the internal nodes for the function
             var functionWorkspace = definition.WorkspaceModel;
 
-            string path = definition.WorkspaceModel.FilePath;
+            string path = definition.WorkspaceModel.FileName;
             // If asked to, write the definition to file
             if (writeDefinition && !String.IsNullOrEmpty(path))
             {
@@ -1316,7 +1316,7 @@ namespace Dynamo.Models
             if (args.Success)
             {
                 //NewFunction(Guid.NewGuid(), name, category, true);
-                NewFunction(Guid.NewGuid(), args.Name, args.Category, args.Description, true);
+                NewCustomNodeWorkspace(Guid.NewGuid(), args.Name, args.Category, args.Description, true);
             }
         }
 
@@ -1475,7 +1475,7 @@ namespace Dynamo.Models
 
         /// <summary>
         ///     Save the current workspace to a specific file path, if the path is null or empty, does nothing.
-        ///     If successful, the CurrentWorkspace.FilePath field is updated as a side effect
+        ///     If successful, the CurrentWorkspace.FileName field is updated as a side effect
         /// </summary>
         /// <param name="path">The path to save to</param>
         internal void SaveAs(string path)
@@ -1506,13 +1506,12 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        ///     Attempts to save an element, assuming that the CurrentWorkspace.FilePath 
-        ///     field is already  populated with a path has a filename associated with it. 
+        ///     Attempts to save an the current workspace. Assumes that workspace has already been saved.
         /// </summary>
         public void Save(object parameter)
         {
-            if (!String.IsNullOrEmpty(CurrentWorkspace.FilePath))
-                SaveAs(CurrentWorkspace.FilePath);
+            if (!String.IsNullOrEmpty(CurrentWorkspace.FileName))
+                SaveAs(CurrentWorkspace.FileName);
         }
 
         internal bool CanSave(object parameter)
@@ -1547,7 +1546,7 @@ namespace Dynamo.Models
             var def = dynSettings.Controller.CustomNodeManager.GetDefinitionFromWorkspace(CurrentWorkspace);
 
             //TODO: UI Refactor - Is this the right data for refactor?
-            var info = new CustomNodeInfo(def.FunctionId, editName, CurrentWorkspace.Category, CurrentWorkspace.Description, CurrentWorkspace.FilePath);
+            var info = new CustomNodeInfo(def.FunctionId, editName, CurrentWorkspace.Category, CurrentWorkspace.Description, CurrentWorkspace.FileName);
 
             dynSettings.Controller.SearchViewModel.Refactor(info);
 
@@ -1612,7 +1611,7 @@ namespace Dynamo.Models
             CleanWorkbench();
 
             //don't save the file path
-            CurrentWorkspace.FilePath = "";
+            CurrentWorkspace.FileName = "";
             CurrentWorkspace.HasUnsavedChanges = false;
 
             // Clear undo/redo stacks.

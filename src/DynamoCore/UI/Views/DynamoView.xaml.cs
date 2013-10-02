@@ -196,14 +196,14 @@ namespace Dynamo.Controls
             }
             else // homeworkspace
             {
-                if (string.IsNullOrEmpty(e.Workspace.FilePath))
+                if (string.IsNullOrEmpty(e.Workspace.FileName))
                 {
                     dialogText = "You have unsaved changes to the Home workspace." +
                                  "\n\n Would you like to save your changes?";
                 }
                 else
                 {
-                    dialogText = "You have unsaved changes to " + Path.GetFileName(e.Workspace.FilePath) +
+                    dialogText = "You have unsaved changes to " + Path.GetFileName(e.Workspace.FileName) +
                     "\n\n Would you like to save your changes?";
                 }
             }

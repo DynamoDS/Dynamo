@@ -757,7 +757,7 @@ namespace Dynamo.Utilities
                     : BuiltinNodeCategories.SCRIPTING_CUSTOMNODES, description, cx, cy)
                 {
                     WatchChanges = false,
-                    FilePath = xmlPath,
+                    FileName = xmlPath,
                     Zoom = zoom
                 };
 

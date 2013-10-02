@@ -267,7 +267,7 @@ namespace Dynamo.Nodes
                                     new CustomNodeWorkspaceModel(
                                         NickName, BuiltinNodeCategories.SCRIPTING_CUSTOMNODES)
                                     {
-                                        FilePath = null
+                                        FileName = null
                                     }
                             };
 

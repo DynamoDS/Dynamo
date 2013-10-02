@@ -22,13 +22,46 @@ namespace Dynamo.Models
 
         #region Properties
 
-        private string _filePath;
+        private string _fileName;
         private string _name;
         private double _height = 100;
         private double _width = 100;
         private double _x;
         private double _y;
         private double _zoom = 1.0;
+
+        public bool WatchChanges
+        {
+            set
+            {
+                if (value)
+                {
+
+                    Nodes.CollectionChanged += MarkUnsavedAndModified;
+                    Notes.CollectionChanged += MarkUnsaved;
+                    Connectors.CollectionChanged += MarkUnsavedAndModified;
+                }
+                else
+                {
+                    Nodes.CollectionChanged -= MarkUnsavedAndModified;
+                    Notes.CollectionChanged -= MarkUnsaved;
+                    Connectors.CollectionChanged -= MarkUnsavedAndModified;
+                }
+            }
+        }
+
+        public bool IsCurrentSpace
+        {
+            get { return _isCurrentSpace; }
+            set
+            {
+                _isCurrentSpace = value;
+                RaisePropertyChanged("IsCurrentSpace");
+            }
+        }
+
+        public event Action OnModified;
+
 
         private string _category = "";
         public string Category
@@ -122,13 +155,13 @@ namespace Dynamo.Models
 
         public ObservableCollection<NoteModel> Notes { get; internal set; }
 
-        public string FilePath
+        public string FileName
         {
-            get { return _filePath; }
+            get { return _fileName; }
             set
             {
-                _filePath = value;
-                RaisePropertyChanged("FilePath");
+                _fileName = value;
+                RaisePropertyChanged("FileName");
             }
         }
 
@@ -230,7 +263,7 @@ namespace Dynamo.Models
 
         internal Version WorkspaceVersion { get; set; }
 
-        #endregion
+        
         
         public delegate void WorkspaceSavedEvent(WorkspaceModel model);
         public event WorkspaceSavedEvent WorkspaceSaved;
@@ -261,6 +294,8 @@ namespace Dynamo.Models
             }
         }
 
+        #endregion
+
         protected WorkspaceModel(
             String name, IEnumerable<NodeModel> e, IEnumerable<ConnectorModel> c, double x, double y)
         {
@@ -280,37 +315,6 @@ namespace Dynamo.Models
             undoRecorder = new UndoRedoRecorder(this);
         }
 
-        public bool WatchChanges
-        {
-            set
-            {
-                if (value)
-                {
-                    
-                    Nodes.CollectionChanged += MarkUnsavedAndModified;
-                    Notes.CollectionChanged += MarkUnsaved;
-                    Connectors.CollectionChanged += MarkUnsavedAndModified;
-                }
-                else
-                {
-                    Nodes.CollectionChanged -= MarkUnsavedAndModified;
-                    Notes.CollectionChanged -= MarkUnsaved;
-                    Connectors.CollectionChanged -= MarkUnsavedAndModified;
-                }
-            }
-        }
-
-        public bool IsCurrentSpace
-        {
-            get { return _isCurrentSpace; }
-            set
-            {
-                _isCurrentSpace = value;
-                RaisePropertyChanged("IsCurrentSpace");
-            }
-        }
-
-        public event Action OnModified;
 
         public abstract void OnDisplayed();
 
@@ -329,7 +333,7 @@ namespace Dynamo.Models
                 return false;
             }
 
-            this.FilePath = path;
+            this.FileName = path;
             return true;
         }
 
@@ -338,7 +342,7 @@ namespace Dynamo.Models
         /// </summary>
         public virtual bool Save()
         {
-            return this.SaveAs(this.FilePath);
+            return this.SaveAs(this.FileName);
         }
 
         /// <summary>
@@ -670,9 +674,9 @@ namespace Dynamo.Models
             DynamoLogger.Instance.Log("Saving " + xmlPath + "...");
             try
             {
-                var xmlDoc = GetXmlDocFromWorkspace(workSpace, workSpace is HomeWorkspaceModel);
+                var xmlDoc = GetXml(workSpace, workSpace is HomeWorkspaceModel);
                 xmlDoc.Save(xmlPath);
-                workSpace.FilePath = xmlPath;
+                workSpace.FileName = xmlPath;
 
                 workSpace.OnWorkspaceSaved();
             }
@@ -694,7 +698,7 @@ namespace Dynamo.Models
         /// <param name="workSpace">The workspace</param>
         /// <param name="savingHomespace"></param>
         /// <returns>The generated xmldoc</returns>
-        public static XmlDocument GetXmlDocFromWorkspace(
+        public static XmlDocument GetXml(
             WorkspaceModel workSpace, bool savingHomespace)
         {
             try

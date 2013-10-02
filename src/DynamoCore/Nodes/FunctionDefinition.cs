@@ -78,7 +78,7 @@ namespace Dynamo.Nodes
             // Get the internal nodes for the function
             var functionWorkspace = this.WorkspaceModel;
 
-            string path = this.WorkspaceModel.FilePath;
+            string path = this.WorkspaceModel.FileName;
             // If asked to, write the definition to file
             if (writeDefinition && !System.String.IsNullOrEmpty(path))
             {

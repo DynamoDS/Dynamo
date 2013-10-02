@@ -566,7 +566,7 @@ namespace Dynamo.ViewModels
         /// <param name="workspace">The workspace for which to show the dialog</param>
         internal void ShowSaveDialogIfNeededAndSave(WorkspaceModel workspace)
         {
-            if (workspace.FilePath != null)
+            if (workspace.FileName != null)
             {
                 workspace.Save();
             }
@@ -745,7 +745,7 @@ namespace Dynamo.ViewModels
         {
             var vm = dynSettings.Controller.DynamoViewModel;
 
-            if (vm.Model.CurrentWorkspace.FilePath != null)
+            if (vm.Model.CurrentWorkspace.FileName != null)
             {
                 if(_model.CanSave(parameter))
                     _model.Save(parameter);
@@ -769,9 +769,9 @@ namespace Dynamo.ViewModels
             FileDialog _fileDialog = vm.GetSaveDialog(vm.Model.CurrentWorkspace);
 
             //if the xmlPath is not empty set the default directory
-            if (!string.IsNullOrEmpty(vm.Model.CurrentWorkspace.FilePath))
+            if (!string.IsNullOrEmpty(vm.Model.CurrentWorkspace.FileName))
             {
-                var fi = new FileInfo(vm.Model.CurrentWorkspace.FilePath);
+                var fi = new FileInfo(vm.Model.CurrentWorkspace.FileName);
                 _fileDialog.InitialDirectory = fi.DirectoryName;
                 _fileDialog.FileName = fi.Name;
             }
@@ -1005,9 +1005,9 @@ namespace Dynamo.ViewModels
             }
 
             // if you've got the current space path, use it as the inital dir
-            if (!string.IsNullOrEmpty(_model.CurrentWorkspace.FilePath))
+            if (!string.IsNullOrEmpty(_model.CurrentWorkspace.FileName))
             {
-                var fi = new FileInfo(_model.CurrentWorkspace.FilePath);
+                var fi = new FileInfo(_model.CurrentWorkspace.FileName);
                 _fileDialog.InitialDirectory = fi.DirectoryName;
             }
 
