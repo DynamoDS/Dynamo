@@ -469,10 +469,12 @@ namespace Dynamo.Views
 
             var bindingX = new Binding() 
             { 
-                Path = new PropertyPath("FullscreenWatchVisible"), 
+                Path = new PropertyPath("DataContext.FullscreenWatchShowing"), 
                 Converter = new InverseBoolToVisibilityConverter(),
                 Mode = BindingMode.OneWay,
             };
+            bindingX.RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(TabControl),1);
+
             xLine.SetBinding(UIElement.VisibilityProperty, bindingX);
             if (xLine2 != null)
             {
@@ -515,10 +517,12 @@ namespace Dynamo.Views
 
             var bindingY = new Binding()
             {
-                Path = new PropertyPath("FullscreenWatchVisible"),
+                Path = new PropertyPath("DataContext.FullscreenWatchShowing"),
                 Converter = new InverseBoolToVisibilityConverter(),
                 Mode = BindingMode.OneWay,
             };
+            bindingY.RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(TabControl), 1);
+
             yLine.SetBinding(UIElement.VisibilityProperty, bindingY);
             if (yLine2 != null)
             {

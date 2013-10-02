@@ -18,20 +18,16 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Autodesk.Revit.DB;
-using Dynamo.Connectors;
 using Dynamo.Controls;
 using Dynamo.FSchemeInterop;
 using Dynamo.Models;
-using Dynamo.Revit;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
-using System.Windows.Media.Media3D;
 
 namespace Dynamo.Nodes
 {
-
-    public abstract class ParticleSystemBase : NodeModel, IDrawable
+    public abstract class ParticleSystemBase : NodeModel , IDrawable
     {
         internal ParticleSystem ParticleSystem;
 
@@ -42,59 +38,19 @@ namespace Dynamo.Nodes
 
         void Controller_RequestsRedraw(object sender, EventArgs e)
         {
-            Draw();
+            VisualizationGeometry.Add(this);
         }
 
-        public RenderDescription RenderDescription
+        #region IDrawableInterface
+
+        public List<object> VisualizationGeometry
         {
-            get;
-            set;
-        }
-
-        public void Draw()
-        {
-            if (RenderDescription == null)
-                RenderDescription = new RenderDescription();
-
-            if (ParticleSystem == null)
-                return;
-
-            for (int i = 0; i < ParticleSystem.numberOfParticles(); i++)
+            get
             {
-                Particle p = ParticleSystem.getParticle(i);
-                XYZ pos = p.getPosition();
-                if (i < RenderDescription.points.Count())
-                {
-                    RenderDescription.points[i] = new Point3D(pos.X, pos.Y, pos.Z);
-                }
-                else
-                {
-                    var pt = new Point3D(pos.X, pos.Y, pos.Z);
-                    RenderDescription.points.Add(pt);
-                }
-            }
-
-            for (int i = 0; i < ParticleSystem.numberOfSprings(); i++)
-            {
-                ParticleSpring ps = ParticleSystem.getSpring(i);
-                XYZ pos1 = ps.getOneEnd().getPosition();
-                XYZ pos2 = ps.getTheOtherEnd().getPosition();
-
-                if (i * 2 + 1 < RenderDescription.lines.Count())
-                {
-                    RenderDescription.lines[i * 2] = new Point3D(pos1.X, pos1.Y, pos1.Z);
-                    RenderDescription.lines[i * 2 + 1] = new Point3D(pos2.X, pos2.Y, pos2.Z);
-                }
-                else
-                {
-                    var pt1 = new Point3D(pos1.X, pos1.Y, pos1.Z);
-                    var pt2 = new Point3D(pos2.X, pos2.Y, pos2.Z);
-
-                    RenderDescription.lines.Add(pt1);
-                    RenderDescription.lines.Add(pt2);
-                }
+                return dynSettings.Controller.VisualizationManager.Visualizations[this.GUID.ToString()].Geometry;
             }
         }
+        #endregion
     }
 
     [NodeName("Create Particle System")]

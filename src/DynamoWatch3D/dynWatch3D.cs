@@ -21,9 +21,6 @@ using Dynamo.Controls;
 using Dynamo.Models;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
-using HelixToolkit.Wpf;
-using System.Windows.Media.Media3D;
-using Dynamo.Utilities;
 
 namespace Dynamo.Nodes
 {
@@ -31,70 +28,25 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
     [NodeDescription("Shows a dynamic preview of geometry.")]
     [AlsoKnownAs("Dynamo.Nodes.dyn3DPreview", "Dynamo.Nodes.3DPreview")]
-    public partial class Watch3D : NodeWithOneOutput
+    public class Watch3D : NodeWithOneOutput
     {
-        private PointsVisual3D _points;
-        private LinesVisual3D _lines;
-        private List<MeshVisual3D> _meshes = new List<MeshVisual3D>();
-
-        public Point3DCollection Points { get; set; }
-        public Point3DCollection Lines { get; set; }
-        public List<Mesh3D> Meshes { get; set; }
-
-        List<System.Windows.Media.Color> colors = new List<System.Windows.Media.Color>();
-        
         private bool _requiresRedraw = false;
         private bool _isRendering = false;
+        WatchView _watchView;
+
+        public WatchView View
+        {
+            get { return _watchView; }
+        }
 
         public Watch3D()
         {
             InPortData.Add(new PortData("", "Incoming geometry objects.", typeof(object)));
             OutPortData.Add(new PortData("", "Watch contents, passed through", typeof(object)));
-            //OutPortData.Add(new PortData("meshes", "Helix3d Meshes", typeof(object)));
 
             RegisterAllPorts();
 
             ArgumentLacing = LacingStrategy.Disabled;
-        }
-
-        private void GetUpstreamIDrawable(List<IDrawable> drawables, Dictionary<int, Tuple<int, NodeModel>> inputs)
-        {
-            foreach (KeyValuePair<int, Tuple<int, NodeModel>> pair in inputs)
-            {
-                if (pair.Value == null)
-                    continue;
-
-                NodeModel node = pair.Value.Item2;
-                IDrawable drawable = node as IDrawable;
-
-                if (node.IsVisible && drawable != null)
-                    drawables.Add(drawable);
-
-                if (node.IsUpstreamVisible)
-                    GetUpstreamIDrawable(drawables, node.Inputs);
-                else
-                    continue; // don't bother checking if function
-
-                //if the node is function then get all the 
-                //drawables inside that node. only do this if the
-                //node's workspace is the home space to avoid infinite
-                //recursion in the case of custom nodes in custom nodes
-                if (node is Function && node.WorkSpace == dynSettings.Controller.DynamoModel.HomeSpace)
-                {
-                    Function func = (Function)node;
-                    IEnumerable<NodeModel> topElements = func.Definition.Workspace.GetTopMostNodes();
-                    foreach (NodeModel innerNode in topElements)
-                    {
-                        GetUpstreamIDrawable(drawables, innerNode.Inputs);
-                    }
-                }
-            }
-        }
-
-        MeshVisual3D MakeMeshVisual3D(Mesh3D mesh)
-        {
-            MeshVisual3D vismesh = new MeshVisual3D { Content = new GeometryModel3D { Geometry = mesh.ToMeshGeometry3D(), Material = Materials.White } };
-            return vismesh;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -105,8 +57,6 @@ namespace Dynamo.Nodes
 
             return input;
         }
-
-        WatchView _watchView;
 
         public override void SetupCustomUIElements(object ui)
         {
@@ -124,23 +74,7 @@ namespace Dynamo.Nodes
             //add a 3D viewport to the input grid
             //http://helixtoolkit.codeplex.com/wikipage?title=HelixViewport3D&referringTitle=Documentation
             _watchView = new WatchView();
-            _watchView.watch_view.DataContext = this;
-
-            RenderOptions.SetEdgeMode(_watchView, EdgeMode.Unspecified);
-
-            Points = new Point3DCollection();
-            Lines = new Point3DCollection();
-
-            _points = new PointsVisual3D { Color = Colors.Red, Size = 6 };
-            _lines = new LinesVisual3D { Color = Colors.Blue, Thickness = 1 };
-
-            _points.Points = Points;
-            _lines.Points = Lines;
-
-            _watchView.watch_view.Children.Add(_lines);
-            _watchView.watch_view.Children.Add(_points);
-
-            _watchView.watch_view.Children.Add(new DefaultLights());
+            _watchView.DataContext = this;
 
             _watchView.Width = 400;
             _watchView.Height = 300;
@@ -148,14 +82,12 @@ namespace Dynamo.Nodes
             System.Windows.Shapes.Rectangle backgroundRect = new System.Windows.Shapes.Rectangle();
             backgroundRect.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             backgroundRect.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
-            //backgroundRect.RadiusX = 10;
-            //backgroundRect.RadiusY = 10;
             backgroundRect.IsHitTestVisible = false;
-            BrushConverter bc = new BrushConverter();
-            Brush strokeBrush = (Brush)bc.ConvertFrom("#313131");
+            var bc = new BrushConverter();
+            var strokeBrush = (Brush)bc.ConvertFrom("#313131");
             backgroundRect.Stroke = strokeBrush;
             backgroundRect.StrokeThickness = 1;
-            SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(250, 250, 216));
+            var backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(250, 250, 216));
             backgroundRect.Fill = backgroundBrush;
 
             nodeUI.grid.Children.Add(backgroundRect);
@@ -178,59 +110,6 @@ namespace Dynamo.Nodes
                 return;
 
             _isRendering = true;
-
-            Points = null;
-            Lines = null;
-            _lines.Points = null;
-            _points.Points = null;
-
-            Points = new Point3DCollection();
-            Lines = new Point3DCollection();
-            Meshes = new List<Mesh3D>();
-
-            // a list of all the upstream IDrawable nodes
-            List<IDrawable> drawables = new List<IDrawable>();
-
-            GetUpstreamIDrawable(drawables, Inputs);
-
-            foreach (IDrawable d in drawables)
-            {
-                d.Draw();
-
-                foreach (Point3D p in d.RenderDescription.points)
-                {
-                    Points.Add(p);
-                }
-
-                foreach (Point3D p in d.RenderDescription.lines)
-                {
-                    Lines.Add(p);
-                }
-
-                foreach (Mesh3D mesh in d.RenderDescription.meshes)
-                {
-                    Meshes.Add(mesh);
-                }
-            }
-
-            _lines.Points = Lines;
-            _points.Points = Points;
-
-            // remove old meshes from the renderer
-            foreach (MeshVisual3D mesh in _meshes)
-            {
-                _watchView.watch_view.Children.Remove(mesh);
-            }
-
-            _meshes.Clear();
-
-            foreach (Mesh3D mesh in Meshes)
-            {
-                MeshVisual3D vismesh = MakeMeshVisual3D(mesh);
-                _watchView.watch_view.Children.Add(vismesh);
-                _meshes.Add(vismesh);
-            }
-
             _requiresRedraw = false;
             _isRendering = false;
         }
