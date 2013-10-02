@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using Dynamo.Nodes;
 using Dynamo.Utilities;
+using String = System.String;
 
 namespace Dynamo.Models
 {
@@ -47,6 +48,11 @@ namespace Dynamo.Models
         }
 
         #endregion
+
+        public FunctionDefinition FunctionDefinition
+        {
+            get { return dynSettings.Controller.CustomNodeManager.GetDefinitionFromWorkspace(this); }
+        }
 
         public override void Modified()
         {
