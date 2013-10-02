@@ -400,7 +400,7 @@ namespace Dynamo.Tests
 
             model.SaveAs(null);
 
-            Assert.IsNull(Controller.DynamoViewModel.CurrentSpace.FilePath);
+            Assert.IsNull(Controller.DynamoViewModel.CurrentSpace.FileName);
         }
 
         [Test]
@@ -422,7 +422,7 @@ namespace Dynamo.Tests
 
             model.Save(null);
 
-            Assert.IsNull(Controller.DynamoViewModel.CurrentSpace.FilePath);
+            Assert.IsNull(Controller.DynamoViewModel.CurrentSpace.FileName);
         }
 
 

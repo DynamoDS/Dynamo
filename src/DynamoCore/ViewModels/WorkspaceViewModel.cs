@@ -199,9 +199,9 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public string FilePath
+        public string FileName
         {
-            get { return _model.FilePath; }
+            get { return _model.FileName; }
         }
 
         public void FullscreenChanged()
@@ -466,8 +466,8 @@ namespace Dynamo.ViewModels
                 case "HasUnsavedChanges":
                     RaisePropertyChanged("HasUnsavedChanges");
                     break;
-                case "FilePath":
-                    RaisePropertyChanged("FilePath");
+                case "FileName":
+                    RaisePropertyChanged("FileName");
                     break;
             }
         }

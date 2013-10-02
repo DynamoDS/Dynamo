@@ -75,15 +75,18 @@ namespace Dynamo.Models
 
         public override bool SaveAs(string path)
         {
-            var def = dynSettings.Controller.CustomNodeManager.GetDefinitionFromWorkspace(this);
+            if (String.IsNullOrEmpty(path)) return false;
 
+            var def = dynSettings.Controller.CustomNodeManager.GetDefinitionFromWorkspace(this);
+            if (def == null) return false;
+            
             // check if FilePath and path differ and FilePath is not null
-            def.WorkspaceModel.FilePath = path;
+            def.WorkspaceModel.FileName = path;
 
             if (def != null)
             {
                 def.Save(true);
-                this.FilePath = path;
+                this.FileName = path;
             }
 
             return true;

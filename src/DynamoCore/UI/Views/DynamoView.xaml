@@ -497,7 +497,7 @@
 
                             </TextBlock>
 
-                                 <TextBlock Name="WorkspaceFileName" Text="{Binding Path=FilePath, Converter={StaticResource PathToFileNameConverter}}" Margin="5,2,10,0">
+                                 <TextBlock Name="WorkspaceFileName" Text="{Binding Path=FileName, Converter={StaticResource PathToFileNameConverter}}" Margin="5,2,10,0">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Style.Triggers>

@@ -538,7 +538,7 @@ namespace Dynamo.PackageManager
 
             // make sure workspaces are saved
             var unsavedWorkspaceNames =
-                workspaces.Where(ws => ws.HasUnsavedChanges || ws.FilePath == null).Select(ws => ws.Name).ToList();
+                workspaces.Where(ws => ws.HasUnsavedChanges || ws.FileName == null).Select(ws => ws.Name).ToList();
             if (unsavedWorkspaceNames.Any())
             {
                 throw new Exception("The following workspaces have not been saved " +
@@ -547,7 +547,7 @@ namespace Dynamo.PackageManager
 
             // omit files currently already under package control
             var files =
-                allFuncs.Select(f => f.WorkspaceModel.FilePath)
+                allFuncs.Select(f => f.WorkspaceModel.FileName)
                         .Where(p =>
                                 (dynSettings.PackageLoader.IsUnderPackageControl(p) &&
                                 dynSettings.PackageLoader.GetOwnerPackage(p).Name == this.Name) || !dynSettings.PackageLoader.IsUnderPackageControl(p));
@@ -568,7 +568,7 @@ namespace Dynamo.PackageManager
             // get all of dependencies from custom nodes and additional files
             var allFilePackages =
                 AllDependentFuncDefs()
-                    .Select(x => x.WorkspaceModel.FilePath)
+                    .Select(x => x.WorkspaceModel.FileName)
                     .Union( AdditionalFiles )
                     .Where(dynSettings.PackageLoader.IsUnderPackageControl)
                     .Select(dynSettings.PackageLoader.GetOwnerPackage)

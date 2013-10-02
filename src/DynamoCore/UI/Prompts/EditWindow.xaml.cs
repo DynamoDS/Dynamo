@@ -51,11 +51,6 @@ namespace Dynamo.UI.Prompts
             this.DialogResult = true;
         }
 
-        private void CancelClick(object sender, RoutedEventArgs e)
-        {
-            this.DialogResult = false;
-        }
-
         private void PreUpdateModel(object dataItem)
         {
             // Attempt get to the data-bound model (if there's any).
