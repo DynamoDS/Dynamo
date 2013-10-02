@@ -594,7 +594,7 @@ namespace Dynamo.Tests
             if (infoBubble.UpdateContentCommand.CanExecute(null))
             {
                 infoBubble.UpdateContentCommand.Execute(inputData_LibItem);
-                Assert.AreEqual(content, infoBubble.ItemDescription);
+                Assert.AreEqual(content, infoBubble.Content);
                 Assert.AreEqual(InfoBubbleViewModel.Style.LibraryItemPreview, infoBubble.InfoBubbleStyle);
                 Assert.AreEqual(InfoBubbleViewModel.Direction.Left, infoBubble.ConnectingDirection);
             }
@@ -612,7 +612,7 @@ namespace Dynamo.Tests
             if (infoBubble.UpdateContentCommand.CanExecute(null))
             {
                 infoBubble.UpdateContentCommand.Execute(inputData_NodeTooltip);
-                Assert.AreEqual(content, infoBubble.ItemDescription);
+                Assert.AreEqual(content, infoBubble.Content);
                 Assert.AreEqual(InfoBubbleViewModel.Style.NodeTooltip, infoBubble.InfoBubbleStyle);
                 Assert.AreEqual(InfoBubbleViewModel.Direction.Right, infoBubble.ConnectingDirection);
             }
@@ -630,7 +630,7 @@ namespace Dynamo.Tests
             if (infoBubble.UpdateContentCommand.CanExecute(null))
             {
                 infoBubble.UpdateContentCommand.Execute(inputData_ErrorBubble);
-                Assert.AreEqual(content, infoBubble.ItemDescription);
+                Assert.AreEqual(content, infoBubble.Content);
                 Assert.AreEqual(InfoBubbleViewModel.Style.Error, infoBubble.InfoBubbleStyle);
                 Assert.AreEqual(InfoBubbleViewModel.Direction.Bottom, infoBubble.ConnectingDirection);
             }

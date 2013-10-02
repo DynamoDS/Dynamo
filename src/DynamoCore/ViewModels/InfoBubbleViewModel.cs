@@ -144,11 +144,11 @@ namespace Dynamo.ViewModels
             get { return contentWrapping; }
             set { contentWrapping = value; RaisePropertyChanged("TextWrapping"); }
         }
-        private string itemDescription;
-        public string ItemDescription
+        private string content;
+        public string Content
         {
-            get { return itemDescription; }
-            set { itemDescription = value; RaisePropertyChanged("ItemDescription"); }
+            get { return content; }
+            set { content = value; RaisePropertyChanged("Content"); }
         }
 
         private Timer fadeInTimer;
@@ -282,7 +282,7 @@ namespace Dynamo.ViewModels
 
         private void UpdateContent(string text)
         {
-            ItemDescription = text;
+            Content = text;
         }
 
         private void UpdatePosition(Point topLeft, Point botRight)
@@ -544,7 +544,7 @@ namespace Dynamo.ViewModels
             {
                 limitedDirection = Direction.Top;
                 ContentMargin = new Thickness(11, 5, 5, 5);
-                UpdateContent(ItemDescription);
+                UpdateContent(Content);
 
                 pointCollection.Add(new Point(EstimatedWidth, 0));
                 pointCollection.Add(new Point(0, 0));
@@ -556,7 +556,7 @@ namespace Dynamo.ViewModels
             {
                 limitedDirection = Direction.TopRight;
                 ContentMargin = new Thickness(5, 5, 11, 5);
-                UpdateContent(ItemDescription);
+                UpdateContent(Content);
 
                 pointCollection.Add(new Point(EstimatedWidth, 0));
                 pointCollection.Add(new Point(0, 0));
@@ -576,7 +576,7 @@ namespace Dynamo.ViewModels
             {
                 limitedDirection = Direction.Right;
                 ContentMargin = new Thickness(5, 5, 11, 5);
-                UpdateContent(ItemDescription);
+                UpdateContent(Content);
                 pointCollection = GetFramePoints_NodeTooltipConnectRight(topLeft, botRight);
             }
             else
@@ -600,7 +600,7 @@ namespace Dynamo.ViewModels
             {
                 limitedDirection = Direction.Left;
                 ContentMargin = new Thickness(11, 5, 5, 5);
-                UpdateContent(ItemDescription);
+                UpdateContent(Content);
                 pointCollection = GetFramePoints_NodeTooltipConnectLeft(topLeft, botRight);
             }
             else

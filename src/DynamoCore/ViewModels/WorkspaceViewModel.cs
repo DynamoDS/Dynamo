@@ -400,8 +400,6 @@ namespace Dynamo.ViewModels
             Connectors_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Connectors));
             Notes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Notes));
             Dispatcher = System.Windows.Threading.Dispatcher.CurrentDispatcher;
-
-            Previews.Add(new InfoBubbleViewModel());
         }
 
         void Connectors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -462,12 +460,13 @@ namespace Dynamo.ViewModels
                         {
                             var node = item as NodeModel;
                             NodeViewModel nodeViewModel = new NodeViewModel(node);
-                            _nodes.Add(nodeViewModel);
+                            InfoBubbleViewModel previewBubble = new InfoBubbleViewModel(node.GUID);
                             InfoBubbleViewModel errorBubble = new InfoBubbleViewModel(node.GUID);
                             nodeViewModel.ErrorBubble = errorBubble;
-                            Errors.Add(errorBubble);
-                            InfoBubbleViewModel previewBubble = new InfoBubbleViewModel(node.GUID);
                             nodeViewModel.PreviewBubble = previewBubble;
+
+                            _nodes.Add(nodeViewModel);
+                            Errors.Add(errorBubble);
                             Previews.Add(previewBubble);
                             //submit the node for rendering
                             if (node is IDrawable)
@@ -485,9 +484,9 @@ namespace Dynamo.ViewModels
                     {
                         var node = item as NodeModel;
                         NodeViewModel nodeViewModel = _nodes.First(x => x.NodeLogic == item);
+                        _nodes.Remove(nodeViewModel);
                         Errors.Remove(nodeViewModel.ErrorBubble);
                         Previews.Remove(nodeViewModel.PreviewBubble);
-                        _nodes.Remove(nodeViewModel);
 
                         //remove the node from rendering
                         if (node is IDrawable)
