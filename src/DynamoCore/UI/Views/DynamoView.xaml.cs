@@ -38,6 +38,8 @@ using String = System.String;
 using System.Collections.ObjectModel;
 using Dynamo.UI.Commands;
 using Dynamo.UI.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 
 namespace Dynamo.Controls
 {
@@ -522,6 +524,8 @@ namespace Dynamo.Controls
                 var workspace_vm = _vm.Workspaces[workspace_index];
                 workspace_vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(workspace_vm.Model.X, workspace_vm.Model.Y)));
                 workspace_vm.OnZoomChanged(this, new ZoomEventArgs(workspace_vm.Zoom));
+
+                //ResizeWorkspaceTabs();
             }
         }
 
@@ -609,5 +613,53 @@ namespace Dynamo.Controls
                 _vm.OpenCommand.Execute(path);
             }
         }
-    }    
+
+        private void TabControlMenuItem_MouseLeftButtonUp(object sender, RoutedEventArgs e)
+        {
+            string selectedWVM = (string)((MenuItem)sender).Header;
+            WorkspaceTabs.SelectedIndex = GetWorkspaceIndex(selectedWVM);           
+            Console.WriteLine("SelectedIndex: " + selectedWVM);
+
+            BindingExpression be = ((MenuItem)sender).GetBindingExpression(MenuItem.HeaderProperty);
+            WorkspaceViewModel wsvm = (WorkspaceViewModel)be.DataItem;
+            Console.WriteLine("WSVM: " + wsvm.Name);
+
+            Console.WriteLine("WSIndex: " + _vm.Workspaces.IndexOf(wsvm));
+            //string tag = ((MenuItem)sender).Tag as string;
+            //Console.WriteLine("Tag: " + tag);
+        }
+
+        private int GetWorkspaceIndex(string workspaceName)
+        {
+            for (int i = 0; i < _vm.Workspaces.Count; i++)
+            {                
+                if (_vm.Workspaces[i].Name.Equals(workspaceName))
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
+        public CustomPopupPlacement[] PlacePopup(Size popupSize, Size targetSize, Point offset)
+        {
+            CustomPopupPlacement[] placements = new[] { new CustomPopupPlacement() };
+            placements[0].Point = new Point(targetSize.Width - popupSize.Width, targetSize.Height);
+            return placements;
+        }
+
+        private void ResizeWorkspaceTabs()
+        {
+            for (int i = 0; i < WorkspaceTabs.Items.Count; i++)
+            {
+                TabItem tab = (TabItem)WorkspaceTabs.ItemContainerGenerator.ContainerFromIndex(i);
+                if (tab != null)
+                {
+                    MultiBindingExpression myBinding = BindingOperations.GetMultiBindingExpression(tab, TabItem.WidthProperty);
+                    myBinding.UpdateTarget();
+                }
+            }
+        }
+    }
 }
