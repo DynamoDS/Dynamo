@@ -241,30 +241,18 @@ namespace Dynamo.ViewModels
         //}
 #endif
 
-        public void FullscreenChanged()
-        {
-            RaisePropertyChanged("FullscreenWatchVisible");
-
-            //don't re-run the expression just to update the watch
-            //just redraw it
-            //if (DynamoCommands.IsProcessingCommandQueue)
-            //    return;
-
-            //dynSettings.Controller.RunCommand( dynSettings.Controller.DynamoViewModel.RunExpressionCommand, null );
-            //dynSettings.Controller.DynamoViewModel.RunExpression(null);
-
-            dynSettings.Controller.OnRequestsRedraw(this, EventArgs.Empty);
-        }
-
-        public bool FullscreenWatchVisible
-        {
-            get { return dynSettings.Controller.DynamoViewModel.FullscreenWatchShowing; }
-        }
-
         public bool CanEditName
         {
             get { return _model != dynSettings.Controller.DynamoViewModel.Model.HomeSpace; }
         }
+
+#if false // TODO(Ben): Remove this after StateMachine has been fully tested.
+        public bool IsConnecting
+        {
+            get { return _isConnecting; }
+            set { _isConnecting = value; }
+        }
+#endif
 
         public bool IsCurrentSpace
         {
