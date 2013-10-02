@@ -43,7 +43,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return 5;
+                return 3;
             }
         }
         public Guid TargetGUID { get; set; }
