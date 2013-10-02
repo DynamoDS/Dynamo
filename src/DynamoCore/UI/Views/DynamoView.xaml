@@ -6,11 +6,12 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib" 
         xmlns:models="clr-namespace:Dynamo.Models"
         xmlns:controls="clr-namespace:Dynamo.Controls" xmlns:commands="clr-namespace:Dynamo.UI.Commands"        
+        xmlns:mwt="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
         x:Name="_this"
         Height="768" 
         Width="1024"
         Closing="WindowClosing" 
-        Closed="WindowClosed" 
+        Closed="WindowClosed"
         MinHeight="600" 
         MinWidth="800" 
         Title="Dynamo"
@@ -308,7 +309,8 @@
         </Border>
         
         <!--Shortcuts Toolbar-->
-        <Border Grid.Row="1"
+        <Border Name="shortcutBarBorder"
+                Grid.Row="1"
                 Grid.Column="0"
                 Grid.ColumnSpan="3"
                 Height="32"
@@ -339,18 +341,171 @@
                                             <RowDefinition Height="*" />
                                         </Grid.RowDefinitions>
                                         <Border BorderBrush="#FF3F4040"
-                                                BorderThickness="1,0,0,1">
-                                            <StackPanel x:Name="HeaderPanel"
-                                                      Grid.Row="0"
-                                                      Margin="0,-1,0,0"
-                                                      IsItemsHost="True"
-                                                      KeyboardNavigation.TabIndex="1"
-                                                      Background="Transparent"
-                                                      HorizontalAlignment="Left"
-                                                      VerticalAlignment="Center"
-                                                      ClipToBounds="False"
-                                                      MaxHeight="20"
-                                                        Orientation="Horizontal"/>
+                                                BorderThickness="1,0,0,1"
+                                                Grid.Row="0">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <ScrollViewer Grid.Column="0"
+                                                              Margin="0,-1,0,0"
+                                                              HorizontalScrollBarVisibility="Hidden"  
+                                                              VerticalScrollBarVisibility="Disabled">
+                                                    <TabPanel x:Name="HeaderPanel"                                                             
+                                                              IsItemsHost="True"
+                                                              KeyboardNavigation.TabIndex="1"
+                                                              Background="Transparent"/>
+                                                </ScrollViewer>
+                                                <Menu x:Name="TabControlMenu"  
+                                                      Grid.Column="1" 
+                                                      Background="Transparent">
+                                                    <Menu.Resources>
+                                                        <sys:Double x:Key="ButtonWidthAndHeight">19</sys:Double>
+                                                        <!-- Color of the border around the scrollbar-thumb -->
+                                                        <SolidColorBrush x:Key="LineButtonBorderBrush" Color="#FF8693BD"/>
+                                                        <!-- The color to be used when drawing the arrows on the scrollbar's line-buttons -->
+                                                        <SolidColorBrush x:Key="LineButtonBrush" Color="#FF14273D"/>
+                                                        <!-- The color to be used for painting the interior of the TabItem-menu's path -->
+                                                        <LinearGradientBrush x:Key="TabMenuButtonBrush" StartPoint="0,0" EndPoint="1,1">
+                                                            <GradientStop Offset="0" Color="White"/>
+                                                            <GradientStop Offset="1" Color="#F3F3E3"/>
+                                                        </LinearGradientBrush>
+                                                        <!-- The colors that will be used when assembling the brushes for the LineButtons-->
+                                                        <Color x:Key="LineButtonBackgroundColor_Bright">LightGoldenrodYellow</Color>
+                                                        <Color x:Key="LineButtonBackgroundColor_Dark">#FAEEB1</Color>
+                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1" x:Key="LineButtonBackgroundBrush">
+                                                            <GradientStop Offset="0.3" Color="{StaticResource LineButtonBackgroundColor_Bright}"/>
+                                                            <GradientStop Offset="0.4" Color="{StaticResource LineButtonBackgroundColor_Dark}"/>
+                                                            <GradientStop Offset="1" Color="{StaticResource LineButtonBackgroundColor_Bright}"/>
+                                                        </LinearGradientBrush>
+                                                        <!-- The color for the scrollbar's line-buttons when the mouse hovers over them -->
+                                                        <LinearGradientBrush x:Key="LineButtonHoverBrush" StartPoint="0.5,0" EndPoint="0.5,1">
+                                                            <GradientStop Color="#FFFFD5A0" Offset="0.3"/>
+                                                            <GradientStop Color="#FFFFA335" Offset="0.51"/>
+                                                            <GradientStop Color="#FFFFC14A" Offset="0.986"/>
+                                                        </LinearGradientBrush>
+                                                        <!-- The background color of the TabItems popup-menu -->
+                                                        <LinearGradientBrush x:Key="TabItemMenuBackcolor" StartPoint="0,0" EndPoint="1,1">
+                                                            <GradientStop Offset="0" Color="White"/>
+                                                            <GradientStop Offset="1" Color="#EEE"/>
+                                                        </LinearGradientBrush>
+                                                        <!-- Brushes used for styling TabItems (Foreground/Text) -->
+                                                        <SolidColorBrush x:Key="TabItem_TextBrush_Unselected" Color="#4971A3" />
+                                                        <SolidColorBrush x:Key="TabItem_TextBrush_Disabled" Color="#888" />
+                                                        <SolidColorBrush x:Key="TabItem_TextBrush_Hover" Color="#2D2C8A" />
+                                                        <SolidColorBrush x:Key="TabItem_TextBrush_Selected" Color="#0D3288" />
+
+                                                        <SolidColorBrush x:Key="MenuItem_ForegroundBrush" Color="#333"/>
+                                                        <SolidColorBrush x:Key="MenuItem_DisabledForegroundBrush" Color="#AAA"/>
+                                                        <SolidColorBrush x:Key="MenuItem_DisabledBackgroundBrush" Color="#1555"/>
+
+                                                        <Geometry x:Key="TabMenuButton">M0,1 H0,5 M7,8 L0,8 0,2 10,2 L10,5 M10,8 L10,10 8,10Z</Geometry>
+                                                        <Path x:Key="TabMenuButtonPath"
+                                                              Margin="2"
+                                                              Data="{StaticResource TabMenuButton}"
+                                                              Stroke="{StaticResource LineButtonBrush}" 
+                                                              Fill="{StaticResource TabMenuButtonBrush}"
+                                                              Stretch="Fill"
+                                                              VerticalAlignment="Center"
+                                                              HorizontalAlignment="Center"/>
+                                                        <Style x:Key="TabMenuButtonStyle" TargetType="{x:Type MenuItem}">
+                                                            <Setter Property="Focusable" Value="False"/>
+                                                            <Setter Property="Height" Value="{StaticResource ButtonWidthAndHeight}"/>
+                                                            <Setter Property="Width" Value="{StaticResource ButtonWidthAndHeight}"/>
+                                                            <Setter Property="Template">
+                                                                <Setter.Value>
+                                                                    <ControlTemplate TargetType="{x:Type MenuItem}">
+                                                                        <Border Name="ButtonBorder" Margin="1" 
+                                                                                BorderBrush="{StaticResource LineButtonBorderBrush}" 
+                                                                                Background="{StaticResource LineButtonBackgroundBrush}" 
+                                                                                CornerRadius="1" 
+                                                                                BorderThickness="1">
+                                                                            <Grid>
+                                                                                <ContentPresenter ContentSource="Header" 
+                                                                                                  Content="{StaticResource TabMenuButtonPath}"
+                                                                                                  HorizontalAlignment="Stretch"
+                                                                                                  VerticalAlignment="Stretch"/>
+                                                                                <Popup Name="Popup"
+                                                                                       Placement="Custom"
+                                                                                       CustomPopupPlacementCallback="PlacePopup"
+                                                                                       IsOpen="{TemplateBinding IsSubmenuOpen}"
+                                                                                       AllowsTransparency="True"
+                                                                                       Focusable="False"
+                                                                                       PopupAnimation="Fade">
+                                                                                    <mwt:SystemDropShadowChrome Color="#71000000" 
+                                                                                                                CornerRadius="1"
+                                                                                                                Margin="0,0,8,8"
+                                                                                                                SnapsToDevicePixels="True">
+                                                                                        <Border Name="SubmenuBorder"
+                                                                                                Margin="1"
+                                                                                                SnapsToDevicePixels="True"
+                                                                                                BorderBrush="{StaticResource LineButtonBorderBrush}" 
+                                                                                                Background="{StaticResource TabItemMenuBackcolor}" 
+                                                                                                CornerRadius="1" 
+                                                                                                BorderThickness="1">
+                                                                                            <StackPanel IsItemsHost="True" 
+                                                                                                        KeyboardNavigation.DirectionalNavigation="Cycle" />
+                                                                                        </Border>
+                                                                                    </mwt:SystemDropShadowChrome>
+                                                                                </Popup>
+                                                                            </Grid>
+                                                                        </Border>
+                                                                        <ControlTemplate.Triggers>
+                                                                            <Trigger Property="IsHighlighted" Value="true">
+                                                                                <Setter TargetName="ButtonBorder" Property="Background" 
+                                                                                        Value="{StaticResource LineButtonHoverBrush}" />
+                                                                            </Trigger>
+                                                                        </ControlTemplate.Triggers>
+                                                                    </ControlTemplate>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Style>
+                                                        <!-- The style for MenuItems that represent TabItems -->
+                                                        <Style x:Key="TabMenuItem" TargetType="{x:Type MenuItem}">                                                            
+                                                            <Style.Resources>
+                                                                <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                                                                                     StartPoint="0.5,0" EndPoint="0.5,1">
+                                                                    <GradientStop Color="#FFFFD5A0" Offset="0.3"/>
+                                                                    <GradientStop Color="#FFEFA335" Offset="0.51"/>
+                                                                    <GradientStop Color="#FFFFC14A" Offset="0.986"/>
+                                                                </LinearGradientBrush>
+                                                            </Style.Resources>
+
+                                                            <!-- This will help us bind to the Header of a TabItem -->
+                                                            <Setter Property="Header" Value="{Binding Path=Name}" />
+                                                            <Setter Property="Tag"
+                                                                    Value="{Binding Path=ItemsControl.AlterationIndex, RelativeSource={RelativeSource Mode=TemplatedParent}}" />
+
+                                                            <!--<Setter Property="IsEnabled" Value="{Binding Path=IsEnabled}" />
+
+                                                            <Setter Property="IsCheckable" Value="{Binding Path=IsEnabled}" />
+                                                            <Setter Property="IsChecked" Value="{Binding Path=IsSelected}" />-->
+                                                            <Setter Property="Foreground" Value="{StaticResource MenuItem_ForegroundBrush}"/>
+                                                            
+                                                            <EventSetter Event="Click" Handler="TabControlMenuItem_MouseLeftButtonUp"/>
+                                                            
+                                                            <Style.Triggers>
+                                                                <Trigger Property="IsHighlighted" Value="True">
+                                                                    <Setter Property="Foreground"
+                                                                            Value="{StaticResource TabItem_TextBrush_Selected}"/>
+                                                                </Trigger>
+                                                                <Trigger Property="IsEnabled" Value="False">
+                                                                    <Setter Property="Foreground" 
+                                                                            Value="{StaticResource MenuItem_DisabledForegroundBrush}"/>
+                                                                    <Setter Property="Background"
+                                                                            Value="{StaticResource MenuItem_DisabledBackgroundBrush}"/>
+                                                                </Trigger>
+                                                            </Style.Triggers>                                                            
+                                                        </Style>
+                                                    </Menu.Resources>
+                                                    <MenuItem Style="{StaticResource TabMenuButtonStyle}"
+                                                              ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type TabControl}},Path=Items}"
+                                                              ItemContainerStyle="{StaticResource TabMenuItem}"
+                                                              AlternationCount="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type TabControl}},Path=Items.Count}">
+                                                    </MenuItem>
+                                                </Menu>
+                                            </Grid>
                                         </Border>                                        
                                         <Border x:Name="Border"
                                                 Grid.Row="1"
@@ -363,45 +518,8 @@
                             </Setter.Value>
                         </Setter>
                     </Style>
-
-                    <Style TargetType="{x:Type TabItem}">
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type TabItem}">
-                                    <Grid Margin="0,0,0,0">
-                                        <Border Name="Border"
-                                                BorderBrush="#FF3F4040"
-                                                CornerRadius="0,0,0,0">
-                                            <Border.Style>
-                                                <Style TargetType="Border">
-                                                    <Style.Triggers>
-                                                        <!--<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="True">
-                                                            <Setter Property="Background" Value="{Binding IsHomeSpace, Converter={StaticResource WorkspaceBackgroundBrushConverter}}"/>
-                                                            <Setter Property="BorderThickness" Value="1,0,1,1"/>
-                                                        </DataTrigger>-->
-                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="False">
-                                                            <Setter Property="Background" Value="{StaticResource WorkspaceTabBorderSelectedFalse}"/>
-                                                            <Setter Property="BorderThickness" Value="0,1,1,0"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="True">
-                                                            <Setter Property="Background" Value="{StaticResource WorkspaceTabBorderSelectedTrue}"/>
-                                                            <Setter Property="BorderThickness" Value="0,0,1,0"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Border.Style>
-                                            <ContentPresenter x:Name="ContentSite"
-                                                              VerticalAlignment="Center"
-                                                              ContentSource="Header"
-                                                              HorizontalAlignment="Left"/>
-                                        </Border>
-                                    </Grid>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-
-                    <Style TargetType="{x:Type Button}" x:Key="CloseButtonStyle">                        
+                    
+                    <Style TargetType="{x:Type Button}" x:Key="CloseButtonStyle">
                         <Setter Property="OverridesDefaultStyle" Value="True"/>
                         <Setter Property="SnapsToDevicePixels" Value="true"/>
                         <Setter Property="VerticalAlignment" Value="Center" />
@@ -422,13 +540,89 @@
                                 </ControlTemplate>
                             </Setter.Value>
                         </Setter>
-                        <Style.Triggers>                            
+                        <Style.Triggers>
                             <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type models:HomeWorkspace}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
-                            </DataTrigger>                                  
+                            </DataTrigger>
                         </Style.Triggers>
                     </Style>
 
+                    <Style TargetType="{x:Type TabItem}">
+                        <Setter Property="MaxWidth"
+                                Value="200" />
+                        <Setter Property="Width">
+                            <Setter.Value>
+                                <MultiBinding Converter="{StaticResource TabSizeConverter}">
+                                    <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type TabControl}}" />
+                                    <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type TabControl}}"
+                                             Path="ActualWidth" />
+                                    <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type TabControl}}"
+                                             Path="Items.Count" />
+                                </MultiBinding>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type TabItem}">
+
+                                    <Border Name="Border"
+                                            BorderBrush="#FF3F4040"
+                                            CornerRadius="0,0,0,0">
+                                        <Border.Style>
+                                            <Style TargetType="Border">                                                
+                                                <Style.Triggers>
+                                                    <!--<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="True">
+                                                            <Setter Property="Background" Value="{Binding IsHomeSpace, Converter={StaticResource WorkspaceBackgroundBrushConverter}}"/>
+                                                            <Setter Property="BorderThickness" Value="1,0,1,1"/>
+                                                        </DataTrigger>-->
+                                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="False">
+                                                        <Setter Property="Background" Value="{StaticResource WorkspaceTabBorderSelectedFalse}"/>
+                                                        <Setter Property="BorderThickness" Value="0,1,1,0"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type TabItem}},Path=IsSelected}" Value="True">
+                                                        <Setter Property="Background" Value="{StaticResource WorkspaceTabBorderSelectedTrue}"/>
+                                                        <Setter Property="BorderThickness" Value="0,0,1,0"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <Grid Margin="0,0,0,0">                                            
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <ContentPresenter x:Name="ContentSite"
+                                                              Grid.Column="0"
+                                                              VerticalAlignment="Center"
+                                                              ContentSource="Header"
+                                                              HorizontalAlignment="Left"/>
+                                            <Button Style="{StaticResource CloseButtonStyle}" 
+                                                    Command="{Binding HideCommand}" 
+                                                    Grid.Column="1">
+                                                <Image Width="16" 
+                                                       Height="15">
+                                                    <Image.Style>
+                                                        <Style TargetType="{x:Type Image}">
+                                                            <Style.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="False">
+                                                                    <Setter Property="Source" Value="/DynamoCore;component/UI/Images/closetab_normal.png" />
+                                                                </Trigger>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter Property="Source" Value="/DynamoCore;component/UI/Images/closetab_hover.png" />
+                                                                </Trigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Image.Style>
+                                                </Image>
+                                            </Button>
+                                        </Grid>
+                                    </Border>
+
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                    
                 </TabControl.Resources>
 
                 <TabControl.ItemTemplate>
@@ -448,28 +642,8 @@
                             </Button.InputBindings>-->
 
                         <DockPanel Margin="8,0,5,0"
-                                   Height="20"
-                                   Width="200"
-                                   MaxWidth="200"
-                                   HorizontalAlignment="Stretch">
-
-                            <Button Style="{StaticResource CloseButtonStyle}" Command="{Binding HideCommand}" DockPanel.Dock="Right">
-                                <Image Width="16"
-                                       Height="15">
-                                    <Image.Style>
-                                        <Style TargetType="{x:Type Image}">
-                                            <Style.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="False">
-                                                    <Setter Property="Source" Value="/DynamoCore;component/UI/Images/closetab_normal.png" />
-                                                </Trigger>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Source" Value="/DynamoCore;component/UI/Images/closetab_hover.png" />
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Image.Style>
-                                </Image>
-                            </Button>
+                                   Height="20"                                   
+                                   HorizontalAlignment="Stretch">                            
                             
                             <TextBlock Name="WorkspaceName" Margin="0,2,0,0" DockPanel.Dock="Left">
                                 <TextBlock.Style>
@@ -523,13 +697,10 @@
                                         </Style.Triggers>
                                     </Style>
                                 </TextBlock.Style>
-
                             </TextBlock>
-
-                            
-
+                           
                         </DockPanel>
-
+                                               
                         <!--</Button>-->
 
                     </DataTemplate>

@@ -10,6 +10,7 @@ using Dynamo.Models;
 using System.Web;
 using Dynamo.ViewModels;
 using Dynamo.PackageManager;
+using System.Windows.Controls;
 
 namespace Dynamo.Controls
 {
@@ -1032,6 +1033,35 @@ namespace Dynamo.Controls
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
+        }
+    }
+
+    public class TabSizeConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {           
+            TabControl tabControl = values[0] as TabControl;
+            int tabControlMenuWidth = 20;
+            double tabControlActualWidth = tabControl.ActualWidth - tabControlMenuWidth; // Need to factor in tabControlMenu
+            int tabDefaultWidth = 200;
+
+            double width = tabControlActualWidth / tabControl.Items.Count;
+
+            if ((tabControlActualWidth - tabControl.Items.Count * tabDefaultWidth) >= 0)
+            {
+                width = tabDefaultWidth;
+            }
+
+            if (width > tabDefaultWidth)
+                width = tabDefaultWidth;
+            
+            //Subtract 1, otherwise we could overflow to two rows.
+            return (width <= tabControlMenuWidth) ? tabControlMenuWidth : (width - 1);
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
         }
     }
 }
