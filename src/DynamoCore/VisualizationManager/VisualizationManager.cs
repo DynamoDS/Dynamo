@@ -293,8 +293,8 @@ namespace Dynamo
 
             if(dynSettings.Controller.Testing)
                 VisualizationUpdateThread(null,null);
-
-            worker.RunWorkerAsync();
+            else
+                worker.RunWorkerAsync();
         }
 
         protected virtual void VisualizationUpdateThread(object s, DoWorkEventArgs args)
