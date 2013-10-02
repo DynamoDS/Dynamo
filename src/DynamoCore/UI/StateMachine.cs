@@ -43,19 +43,25 @@ namespace Dynamo.ViewModels
 
         #endregion
 
-        class DraggedNode
+        /// <summary>
+        /// Each instance of this class represents a node that is being dragged.
+        /// It keeps the offset of a node from the mouse cursor when a click 
+        /// event occurs, and it updates the node position based on the internal
+        /// offset values, and the updated mouse cursor position.
+        /// </summary>
+        public class DraggedNode
         {
             double deltaX = 0, deltaY = 0;
             ILocatable locatable = null;
 
-            internal DraggedNode(ILocatable locatable, Point mouseCursor)
+            public DraggedNode(ILocatable locatable, Point mouseCursor)
             {
                 this.locatable = locatable;
                 deltaX = mouseCursor.X - locatable.X;
                 deltaY = mouseCursor.Y - locatable.Y;
             }
 
-            internal void Update(Point mouseCursor)
+            public void Update(Point mouseCursor)
             {
                 locatable.X = mouseCursor.X - deltaX;
                 locatable.Y = mouseCursor.Y - deltaY;
@@ -63,10 +69,10 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// The StateMachine class manages various states in the WorkspaceView 
-        /// it belongs. The class is made nested private class because there are 
-        /// things that we don't expose beyond WorkspaceView object, but should 
-        /// still be readily accessible by the StateMachine class.
+        /// The StateMachine class manages states in the WorkspaceViewModel it 
+        /// belongs. The class is made nested private class because there are 
+        /// things that we don't expose beyond WorkspaceViewModel object, but 
+        /// should still be readily accessible by the StateMachine class.
         /// </summary>
         class StateMachine
         {
@@ -228,6 +234,15 @@ namespace Dynamo.ViewModels
                 }
                 else if (this.currentState == State.DragSetup)
                 {
+                    // This represents the first mouse-move event after the mouse-down
+                    // event. Note that a mouse-down event can either be followed by a
+                    // mouse-move event or simply a mouse-up event. That means having 
+                    // a click does not imply there will be a drag operation. That is 
+                    // the reason the first mouse-move event is used to signal the 
+                    // actual drag operation (as oppose to just click-and-release).
+                    // Here each node in the selection is being recorded for undo right
+                    // before they get updated by the drag operation.
+                    // 
                     RecordNodesForUndo();
                     foreach (ISelectable selectable in DynamoSelection.Instance.Selection)
                     {
@@ -267,22 +282,20 @@ namespace Dynamo.ViewModels
                 WorkspaceModel workspaceModel = dynamoViewModel.CurrentSpace;
                 WorkspaceViewModel workspaceViewModel = dynamoViewModel.CurrentSpaceViewModel;
 
-                // if this is a 
-                if (this.currentState != State.Connection)
+                if (this.currentState != State.Connection) // Not in a connection attempt...
                 {
-                    //test if port already has a connection if so grab it
-                    //and begin connecting to somewhere else
-                    //don't allow the grabbing of the start connector
+                    // Test if port already has a connection, if so grab it and begin connecting 
+                    // to somewhere else (we don't allow the grabbing of the start connector).
                     if (portModel.Connectors.Count > 0 && portModel.Connectors[0].Start != portModel)
                     {
-                        //define the new active connector
+                        // Define the new active connector
                         var c = new ConnectorViewModel(portModel.Connectors[0].Start);
                         this.SetActiveConnector(c);
                         this.currentState = State.Connection;
 
-                        //disconnect the connector model from its start and end ports
-                        //and remove it from the connectors collection. this will also
-                        //remove the view model
+                        // Disconnect the connector model from its start and end ports
+                        // and remove it from the connectors collection. This will also
+                        // remove the view model.
                         ConnectorModel connector = portModel.Connectors[0];
                         if (workspaceModel.Connectors.Contains(connector))
                         {
@@ -296,9 +309,9 @@ namespace Dynamo.ViewModels
                     {
                         try
                         {
-                            //Create a connector view model to begin drawing
-                            var c = new ConnectorViewModel(portModel);
-                            this.SetActiveConnector(c);
+                            // Create a connector view model to begin drawing
+                            var connector = new ConnectorViewModel(portModel);
+                            this.SetActiveConnector(connector);
                             this.currentState = State.Connection;
                         }
                         catch (Exception ex)
@@ -307,9 +320,9 @@ namespace Dynamo.ViewModels
                         }
                     }
                 }
-                else  // attempt to complete the connection
+                else  // Attempt to complete the connection
                 {
-                    //remove connector if one already exists
+                    // Remove connector if one already exists
                     if (portModel.Connectors.Count > 0 && portModel.PortType == PortType.INPUT)
                     {
                         var connToRemove = portModel.Connectors[0];
@@ -319,20 +332,23 @@ namespace Dynamo.ViewModels
                         startPort.Disconnect(connToRemove);
                     }
 
-                    // create the new connector model
+                    // Create the new connector model
                     var start = this.activeConnector.ActiveStartPort;
                     var end = portModel;
 
-                    ConnectorModel newConnectorModel;
-                    if (portModel.PortType == PortType.INPUT)
-                        newConnectorModel = ConnectorModel.Make(start.Owner, end.Owner, start.Index, end.Index, 0);
-                    else
+                    // We could either connect from an input port to an output port, or 
+                    // another way around (in which case we swap first and second ports).
+                    PortModel firstPort = start, second = end;
+                    if (portModel.PortType != PortType.INPUT)
                     {
-                        newConnectorModel = ConnectorModel.Make(end.Owner, start.Owner, end.Index, start.Index, 0);
+                        firstPort = end;
+                        second = start;
                     }
 
-                    // the connector is invalid
-                    if (newConnectorModel == null)
+                    ConnectorModel newConnectorModel = ConnectorModel.Make(
+                        firstPort.Owner, second.Owner, firstPort.Index, second.Index, 0);
+
+                    if (newConnectorModel == null) // The connector is invalid
                         return false;
 
                     // Add to the current workspace
