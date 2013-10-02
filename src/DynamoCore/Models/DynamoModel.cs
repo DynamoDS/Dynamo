@@ -921,7 +921,7 @@ namespace Dynamo.Models
                 WorkspaceModel = workSpace
             };
 
-            dynSettings.Controller.DynamoModel.SaveFunction(functionDefinition, false, true, true);
+            functionDefinition.Save(false, true);
 
             if (display)
             {
@@ -929,13 +929,94 @@ namespace Dynamo.Models
                 {
                     var def = dynSettings.Controller.CustomNodeManager.GetDefinitionFromWorkspace(CurrentWorkspace);
                     if (def != null)
-                        SaveFunction(def, false, true, true);
+                        def.Save(false, true);
                 }
 
                 CurrentWorkspace = workSpace;
             }
 
             return functionDefinition;
+        }
+
+        /// <summary>
+        ///     Save a function.  This includes writing to a file and compiling the 
+        ///     function and saving it to the FSchemeEnvironment
+        /// </summary>
+        public void SaveFunction(FunctionDefinition definition, bool writeDefinition = true, bool addToSearch = false, bool compileFunction = true)
+        {
+            if (definition == null)
+                return;
+
+            // Get the internal nodes for the function
+            var functionWorkspace = definition.WorkspaceModel;
+
+            string path = definition.WorkspaceModel.FilePath;
+            // If asked to, write the definition to file
+            if (writeDefinition && !String.IsNullOrEmpty(path))
+            {
+                //var pluginsPath = dynSettings.Controller.CustomNodeManager.GetDefaultSearchPath();
+
+                //if (!Directory.Exists(pluginsPath))
+                //    Directory.CreateDirectory(pluginsPath);
+
+                //path = Path.Combine(pluginsPath, dynSettings.FormatFileName(functionWorkspace.Name) + ".dyf");
+
+                WorkspaceModel.SaveWorkspace(path, functionWorkspace);
+            }
+
+            try
+            {
+                dynSettings.Controller.CustomNodeManager.AddFunctionDefinition(definition.FunctionId, definition);
+
+                if (addToSearch)
+                {
+                    dynSettings.Controller.SearchViewModel.Add(
+                        functionWorkspace.Name, 
+                        functionWorkspace.Category,
+                        functionWorkspace.Description, 
+                        definition.FunctionId);
+                }
+
+                var info = new CustomNodeInfo(definition.FunctionId, functionWorkspace.Name, functionWorkspace.Category,
+                    functionWorkspace.Description, path);
+                dynSettings.Controller.CustomNodeManager.SetNodeInfo(info);
+
+                #region Compile Function and update all nodes
+
+                IEnumerable<string> inputNames;
+                IEnumerable<string> outputNames;
+
+                var compiledFunction = CustomNodeManager.CompileFunction(definition, out inputNames, out outputNames);
+
+                if (compiledFunction == null)
+                    return;
+
+                dynSettings.Controller.FSchemeEnvironment.DefineSymbol(
+                    definition.FunctionId.ToString(),
+                    compiledFunction);
+
+                //Update existing function nodes which point to this function to match its changes
+                foreach (Function node in AllNodes.OfType<Function>().Where(el => el.Definition == definition))
+                {
+                    node.SetInputs(inputNames);
+                    node.SetOutputs(outputNames);
+                    node.RegisterAllPorts();
+                }
+
+                //Call OnSave for all saved elements
+                foreach (NodeModel el in functionWorkspace.Nodes)
+                    el.onSave();
+
+                #endregion
+
+            }
+            catch (Exception e)
+            {
+                DynamoLogger.Instance.Log("Error saving:" + e.GetType());
+                DynamoLogger.Instance.Log(e);
+            }
+
+
         }
 
         /// <summary>
@@ -1512,7 +1593,7 @@ namespace Dynamo.Models
 
             (CurrentWorkspace).Name = editName;
 
-            SaveFunction(def);
+            def.Save();
         }
 
         internal bool CanRefactorCustomNode(object parameter)
