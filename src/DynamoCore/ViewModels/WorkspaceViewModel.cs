@@ -40,8 +40,6 @@ namespace Dynamo.ViewModels
         public event ViewEventHandler RequestAddViewToOuterCanvas;
         public event WorkspacePropertyEditHandler WorkspacePropertyEditRequested;
 
-        private bool _watchEscapeIsDown = false;
-
         /// <summary>
         /// Convenience property
         /// </summary>
@@ -204,26 +202,6 @@ namespace Dynamo.ViewModels
             get { return _model.FilePath; }
         }
 
-        public void FullscreenChanged()
-        {
-            RaisePropertyChanged("FullscreenWatchVisible");
-
-            //don't re-run the expression just to update the watch
-            //just redraw it
-            //if (DynamoCommands.IsProcessingCommandQueue)
-            //    return;
-
-            //dynSettings.Controller.RunCommand( dynSettings.Controller.DynamoViewModel.RunExpressionCommand, null );
-            //dynSettings.Controller.DynamoViewModel.RunExpression(null);
-
-            dynSettings.Controller.OnRequestsRedraw(this, EventArgs.Empty);
-        }
-
-        public bool FullscreenWatchVisible
-        {
-            get { return dynSettings.Controller.DynamoViewModel.FullscreenWatchShowing; }
-        }
-
         private ConnectorViewModel activeConnector;
         public ConnectorViewModel ActiveConnector
         {
@@ -273,22 +251,6 @@ namespace Dynamo.ViewModels
         public bool IsHomeSpace
         {
             get { return _model == dynSettings.Controller.DynamoModel.HomeSpace; }
-        }
-
-        public bool WatchEscapeIsDown
-        {
-            get { return _watchEscapeIsDown; }
-            set 
-            { 
-                _watchEscapeIsDown = value;
-                RaisePropertyChanged("WatchEscapeIsDown");
-                RaisePropertyChanged("ShouldBeHitTestVisible");
-            }
-        }
-
-        public bool ShouldBeHitTestVisible
-        {
-            get { return !WatchEscapeIsDown; }
         }
 
         public bool HasUnsavedChanges
@@ -352,12 +314,18 @@ namespace Dynamo.ViewModels
             _model.Connectors.CollectionChanged += Connectors_CollectionChanged;
             _model.PropertyChanged += ModelPropertyChanged;
 
-            //DynamoSelection.Instance.Selection.CollectionChanged += NodeFromSelectionCanExecuteChanged;
-
             // sync collections
             Nodes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Nodes));
             Connectors_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Connectors));
             Notes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Notes));
+        }
+
+        void DynamoViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "ShouldBeHitTestVisible")
+            {
+                RaisePropertyChanged("ShouldBeHitTestVisible");
+            }
         }
 
         void Connectors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -418,10 +386,6 @@ namespace Dynamo.ViewModels
                         {
                             var node = item as NodeModel;
                             _nodes.Add(new NodeViewModel(node));
-                            
-                            //submit the node for rendering
-                            if(node is IDrawable)
-                                dynSettings.Controller.OnNodeSubmittedForRendering(node, EventArgs.Empty);
                         }
                     }
                     break;
@@ -433,10 +397,6 @@ namespace Dynamo.ViewModels
                     {
                         var node = item as NodeModel;
                         _nodes.Remove(_nodes.First(x => x.NodeLogic == item));
-
-                        //remove the node from rendering
-                        if (node is IDrawable)
-                            dynSettings.Controller.OnNodeRemovedFromRendering(node, EventArgs.Empty);
                     }
                     break;
             }
@@ -685,6 +645,14 @@ namespace Dynamo.ViewModels
                     if (!DynamoSelection.Instance.Selection.Contains(n))
                         DynamoSelection.Instance.Selection.Add(n);
                 }
+                else
+                {
+                    //if the node is not contained but is selected, unselect it 
+                    if (n.IsSelected)
+                    {
+                        DynamoSelection.Instance.Selection.Remove(n);
+                    }   
+                }
             }
 
             foreach (var n in Model.Notes)
@@ -699,6 +667,13 @@ namespace Dynamo.ViewModels
                 {
                     if (!DynamoSelection.Instance.Selection.Contains(n))
                         DynamoSelection.Instance.Selection.Add(n);
+                }
+                else
+                {
+                    if (n.IsSelected)
+                    {
+                        DynamoSelection.Instance.Selection.Remove(n);
+                    } 
                 }
             }
         }
@@ -723,6 +698,13 @@ namespace Dynamo.ViewModels
                     if (!DynamoSelection.Instance.Selection.Contains(n))
                         DynamoSelection.Instance.Selection.Add(n);
                 }
+                else
+                {
+                    if (n.IsSelected)
+                    {
+                        DynamoSelection.Instance.Selection.Remove(n);
+                    }
+                }
             }
 
             foreach (var n in Model.Notes)
@@ -735,6 +717,13 @@ namespace Dynamo.ViewModels
                 {
                     if (!DynamoSelection.Instance.Selection.Contains(n))
                         DynamoSelection.Instance.Selection.Add(n);
+                }
+                else
+                {
+                    if (n.IsSelected)
+                    {
+                        DynamoSelection.Instance.Selection.Remove(n);
+                    }
                 }
             }
         }

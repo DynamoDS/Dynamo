@@ -13,20 +13,17 @@
 //limitations under the License.
 
 using Autodesk.Revit.DB;
-
-using Dynamo.Connectors;
 using Dynamo.Models;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.Utilities;
-using System.Windows.Media.Media3D;
 
 namespace Dynamo.Nodes
 {
     [NodeName("Evaluate Normal")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_SURFACE)]
     [NodeDescription("Evaluate a point on a face to find the normal.")]
-    class NormalEvaluate: XyzBase
+    class NormalEvaluate: GeometryBase
     {
         public NormalEvaluate()
         {
@@ -53,7 +50,7 @@ namespace Dynamo.Nodes
                 norm = f.ComputeNormal(uv);
             }
 
-            pts.Add(norm);
+            VisualizationGeometry.Add(norm);
 
             return Value.NewContainer(norm);
         }
@@ -62,7 +59,7 @@ namespace Dynamo.Nodes
     [NodeName("Evaluate UV")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_SURFACE)]
     [NodeDescription("Evaluate a parameter(UV) on a face to find the XYZ location.")]
-    class XyzEvaluate : XyzBase
+    class XyzEvaluate : GeometryBase
     {
         public XyzEvaluate()
         {
@@ -89,7 +86,7 @@ namespace Dynamo.Nodes
                 face_point = f.Evaluate(param);
             }
 
-            pts.Add(face_point);
+            VisualizationGeometry.Add(face_point);
 
             return Value.NewContainer(face_point);
         }
@@ -98,7 +95,7 @@ namespace Dynamo.Nodes
     [NodeName("Compute Face Derivatives")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_SURFACE)]
     [NodeDescription("Returns a transform describing the face (f) at the parameter (uv).")]
-    public class ComputeFaceDerivatives : TransformBase
+    public class ComputeFaceDerivatives : GeometryBase
     {
         public ComputeFaceDerivatives()
         {
@@ -128,7 +125,7 @@ namespace Dynamo.Nodes
                 t.BasisY = t.BasisX.CrossProduct(t.BasisZ);
             }
 
-            transforms.Add(t);
+            VisualizationGeometry.Add(t);
 
             return Value.NewContainer(t);
         }
@@ -138,7 +135,7 @@ namespace Dynamo.Nodes
     [NodeName("Compute Curve Derivatives")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_SURFACE)]
     [NodeDescription("Returns a transform describing the face (f) at the parameter (uv).")]
-    public class ComputeCurveDerivatives : TransformBase
+    public class ComputeCurveDerivatives : GeometryBase
     {
         public ComputeCurveDerivatives()
         {
@@ -164,7 +161,7 @@ namespace Dynamo.Nodes
                 t.BasisY = t.BasisX.CrossProduct(t.BasisZ);
             }
 
-            transforms.Add(t);
+            VisualizationGeometry.Add(t);
 
             return Value.NewContainer(t);
         }

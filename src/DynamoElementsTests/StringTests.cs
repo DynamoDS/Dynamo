@@ -348,9 +348,9 @@ namespace Dynamo.Tests
             String expected3 = "tomorrow";
 
             FSharpList<FScheme.Value> splitedStrings = watch.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(expected1, splitedStrings[0].getStringFromFSchemeValue());
-            Assert.AreEqual(expected2, splitedStrings[1].getStringFromFSchemeValue());
-            Assert.AreEqual(expected3, splitedStrings[2].getStringFromFSchemeValue());
+            Assert.AreEqual(expected1, splitedStrings[0].GetStringFromFSchemeValue());
+            Assert.AreEqual(expected2, splitedStrings[1].GetStringFromFSchemeValue());
+            Assert.AreEqual(expected3, splitedStrings[2].GetStringFromFSchemeValue());
         }
 
         [Test]
@@ -367,8 +367,8 @@ namespace Dynamo.Tests
             String expected2 = "2";
 
             FSharpList<FScheme.Value> splitedStrings = watch.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(expected1, splitedStrings[0].getStringFromFSchemeValue());
-            Assert.AreEqual(expected2, splitedStrings[1].getStringFromFSchemeValue());
+            Assert.AreEqual(expected1, splitedStrings[0].GetStringFromFSchemeValue());
+            Assert.AreEqual(expected2, splitedStrings[1].GetStringFromFSchemeValue());
         }
 
         [Test]
@@ -398,8 +398,8 @@ namespace Dynamo.Tests
             String expected2 = "yesterday";
 
             FSharpList<FScheme.Value> splitedStrings = watch.GetValue(0).GetListFromFSchemeValue();
-            Assert.AreEqual(expected1, splitedStrings[0].getStringFromFSchemeValue());
-            Assert.AreEqual(expected2, splitedStrings[1].getStringFromFSchemeValue());
+            Assert.AreEqual(expected1, splitedStrings[0].GetStringFromFSchemeValue());
+            Assert.AreEqual(expected2, splitedStrings[1].GetStringFromFSchemeValue());
         }
 
         #endregion
@@ -647,8 +647,8 @@ namespace Dynamo.Tests
             var watch1 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("f72f6210-b32f-4dc4-9b2a-61f0144a0109");
             var watch2 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("77a8c84b-b5bb-46f1-a550-7b3d5441c0a1");
 
-            String actual1 = watch1.GetValue(0).getStringFromFSchemeValue();
-            String actual2 = watch2.GetValue(0).getStringFromFSchemeValue();
+            String actual1 = watch1.GetValue(0).GetStringFromFSchemeValue();
+            String actual2 = watch2.GetValue(0).GetStringFromFSchemeValue();
             
             String expected1 = "RAINY DAY";
             String expected2 = "rainy day";
@@ -705,8 +705,8 @@ namespace Dynamo.Tests
 
             FSharpList<FScheme.Value> resultList = watch.GetValue(0).GetListFromFSchemeValue();
 
-            String actual1 = resultList[0].getStringFromFSchemeValue();
-            String actual2 = resultList[1].getStringFromFSchemeValue();
+            String actual1 = resultList[0].GetStringFromFSchemeValue();
+            String actual2 = resultList[1].GetStringFromFSchemeValue();
 
             String expected1 = "1\n";
             String expected2 = "2\n";

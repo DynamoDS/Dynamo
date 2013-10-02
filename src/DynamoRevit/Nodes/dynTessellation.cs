@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media.Media3D;
 using Autodesk.Revit.DB;
-using Dynamo.Connectors;
 using Dynamo.Models;
 using Dynamo.Revit;
 using MIConvexHull;
@@ -17,7 +16,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Create a Voronoi tesselation on a face.")]
     public class VoronoiOnFace : RevitTransactionNodeWithOneOutput
     {
-        List<Line> _tessellationLines = new List<Line>();
+        readonly List<Line> _tessellationLines = new List<Line>();
 
         public VoronoiOnFace()
         {
@@ -86,23 +85,12 @@ namespace Dynamo.Nodes
                 return Value.NewList(result);
             }
 
-            return Value.NewList(result);
-        }
-
-        public override void Draw()
-        {
-            if (this.RenderDescription == null)
-                this.RenderDescription = new Nodes.RenderDescription();
-            else
-                this.RenderDescription.ClearAll();
-
-            foreach (Line l in _tessellationLines)
+            foreach (var l in _tessellationLines)
             {
-                RenderDescription.lines.Add(new Point3D(l.get_EndPoint(0).X, 
-                    l.get_EndPoint(0).Y, l.get_EndPoint(0).Z));
-                RenderDescription.lines.Add(new Point3D(l.get_EndPoint(1).X,
-                    l.get_EndPoint(1).Y, l.get_EndPoint(1).Z));
+                VisualizationGeometry.Add(l);
             }
+
+            return Value.NewList(result);
         }
     }
 
@@ -111,7 +99,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Create a Delaunay triangulation on a face.")]
     public class DelaunayOnFace : RevitTransactionNodeWithOneOutput
     {
-        List<Line> _tessellationLines = new List<Line>();
+        readonly List<Line> _tessellationLines = new List<Line>();
 
         public DelaunayOnFace()
         {
@@ -196,23 +184,12 @@ namespace Dynamo.Nodes
                 return Value.NewList(result);
             }
 
-            return Value.NewList(result);
-        }
-
-        public override void Draw()
-        {
-            if (this.RenderDescription == null)
-                this.RenderDescription = new Nodes.RenderDescription();
-            else
-                this.RenderDescription.ClearAll();
-
-            foreach (Line l in _tessellationLines)
+            foreach (var l in _tessellationLines)
             {
-                RenderDescription.lines.Add(new Point3D(l.get_EndPoint(0).X,
-                    l.get_EndPoint(0).Y, l.get_EndPoint(0).Z));
-                RenderDescription.lines.Add(new Point3D(l.get_EndPoint(1).X,
-                    l.get_EndPoint(1).Y, l.get_EndPoint(1).Z));
+                VisualizationGeometry.Add(l);
             }
+
+            return Value.NewList(result);
         }
     }
 
@@ -302,8 +279,9 @@ namespace Dynamo.Nodes
     [NodeDescription("Find the convex hull of a set of XYZs.")]
     public class ConvexHull3D : RevitTransactionNodeWithOneOutput
     {
-        List<Line> _tessellationLines = new List<Line>();
-        List<HelixToolkit.Wpf.Mesh3D> _tesselationMeshes = new List<HelixToolkit.Wpf.Mesh3D>();
+        readonly List<Line> _tessellationLines = new List<Line>();
+        //List<HelixToolkit.Wpf.Mesh3D> _tesselationMeshes = new List<HelixToolkit.Wpf.Mesh3D>();
+        List<TriangleFace> _triangleFaces = new List<TriangleFace>();
 
         public ConvexHull3D()
         {
@@ -336,18 +314,19 @@ namespace Dynamo.Nodes
                 var triResult = ConvexHull<Vertex3, TriangleFace>.Create(verts);
 
                 _tessellationLines.Clear();
-                _tesselationMeshes.Clear();
-                var mesh = new HelixToolkit.Wpf.Mesh3D();
+                //_tesselationMeshes.Clear();
+                //var mesh = new HelixToolkit.Wpf.Mesh3D();
 
                 // make edges
                 foreach (var face in triResult.Faces)
                 {
                     // form mesh
-                    mesh.Vertices.Add( face.Vertices[1].ToPoint3D() );
-                    mesh.Vertices.Add( face.Vertices[0].ToPoint3D() );
-                    mesh.Vertices.Add( face.Vertices[2].ToPoint3D() );
-                    mesh.AddFace( new int[3] { mesh.Vertices.Count-1, mesh.Vertices.Count-2, mesh.Vertices.Count-3 });
-                    _tesselationMeshes.Add(mesh);
+                    //mesh.Vertices.Add( face.Vertices[1].ToPoint3D() );
+                    //mesh.Vertices.Add( face.Vertices[0].ToPoint3D() );
+                    //mesh.Vertices.Add( face.Vertices[2].ToPoint3D() );
+                    //mesh.AddFace( new int[3] { mesh.Vertices.Count-1, mesh.Vertices.Count-2, mesh.Vertices.Count-3 });
+                    //_tesselationMeshes.Add(mesh);
+                    _triangleFaces.AddRange(triResult.Faces);
 
                     // form lines for use in dynamo or revit
                     var start1 = face.Vertices[0].ToXYZ();
@@ -384,28 +363,17 @@ namespace Dynamo.Nodes
                 return Value.NewList(result);
             }
 
+            foreach (var l in _tessellationLines)
+            {
+                VisualizationGeometry.Add(l);
+            }
+
+            foreach (var f in _triangleFaces)
+            {
+                VisualizationGeometry.Add(f);
+            }
+
             return Value.NewList(result);
-        }
-
-        public override void Draw()
-        {
-            if (this.RenderDescription == null)
-                this.RenderDescription = new Nodes.RenderDescription();
-            else
-                this.RenderDescription.ClearAll();
-
-            foreach (var mesh in _tesselationMeshes)
-            {
-                RenderDescription.meshes.Add(mesh);
-            }
-
-            foreach (Line l in _tessellationLines)
-            {
-                RenderDescription.lines.Add(new Point3D(l.get_EndPoint(0).X,
-                    l.get_EndPoint(0).Y, l.get_EndPoint(0).Z));
-                RenderDescription.lines.Add(new Point3D(l.get_EndPoint(1).X,
-                    l.get_EndPoint(1).Y, l.get_EndPoint(1).Z));
-            }
         }
     }
 
@@ -414,7 +382,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Create a 3d delaunay tesselation of XYZs.")]
     public class Delaunay3D : RevitTransactionNodeWithOneOutput
     {
-        List<Line> _tessellationLines = new List<Line>();
+        readonly List<Line> _tessellationLines = new List<Line>();
 
         public Delaunay3D()
         {
@@ -480,24 +448,14 @@ namespace Dynamo.Nodes
                 return Value.NewList(result);
             }
 
+            foreach (var l in _tessellationLines)
+            {
+                VisualizationGeometry.Add(l);
+            }
+
             return Value.NewList(result);
         }
 
-        public override void Draw()
-        {
-            if (this.RenderDescription == null)
-                this.RenderDescription = new Nodes.RenderDescription();
-            else
-                this.RenderDescription.ClearAll();
-
-            foreach (Line l in _tessellationLines)
-            {
-                RenderDescription.lines.Add(new Point3D(l.get_EndPoint(0).X,
-                    l.get_EndPoint(0).Y, l.get_EndPoint(0).Z));
-                RenderDescription.lines.Add(new Point3D(l.get_EndPoint(1).X,
-                    l.get_EndPoint(1).Y, l.get_EndPoint(1).Z));
-            }
-        }
     }
 
     public class Vertex2 : IVertex

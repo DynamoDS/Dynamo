@@ -209,7 +209,6 @@ namespace Dynamo.Applications
 
                     dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.Updater, typeof(DynamoRevitViewModel), context);
                         
-
                     dynamoView = new DynamoView { DataContext = dynamoController.DynamoViewModel };
                     dynamoController.UIDispatcher = dynamoView.Dispatcher;
 

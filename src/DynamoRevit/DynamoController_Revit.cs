@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Autodesk.LibG;
 using Autodesk.Revit.DB;
 using Dynamo.Controls;
 using Dynamo.Models;
@@ -29,6 +30,11 @@ namespace Dynamo
 
         public PredicateTraverser CheckManualTransaction { get; private set; }
         public PredicateTraverser CheckRequiresTransaction { get; private set; }
+
+        public override VisualizationManager VisualizationManager
+        {
+            get { return visualizationManager ?? (visualizationManager = new VisualizationManagerRevit()); }
+        }
 
         public DynamoController_Revit(FSchemeInterop.ExecutionEnvironment env, DynamoUpdater updater, Type viewModelType, string context)
             : base(env, viewModelType, context)
@@ -138,7 +144,7 @@ namespace Dynamo
         private delegate void LogDelegate(string msg);
         private delegate void SaveElementDelegate(Element e);
 
-        void AddPythonBindings()
+        public override void AddPythonBindings()
         {
             try
             {
@@ -238,31 +244,28 @@ namespace Dynamo
             }
         }
 
-        void DrawPython(Value val, RenderDescription rd)
+        void DrawPython(Value val, string id)
         {
-            DrawContainers(val, rd);
+            DrawContainers(val, id);
         }
 
-        private void DrawContainers(Value val, RenderDescription rd)
+        private void DrawContainers(Value val, string id)
         {
             if (val.IsList)
             {
                 foreach (Value v in ((Value.List)val).Item)
                 {
-                    DrawContainers(v, rd);
+                    DrawContainers(v, id);
                 }
             }
             if (val.IsContainer)
             {
                 var drawable = ((Value.Container)val).Item;
 
-                if(drawable is XYZ)
+                //support drawing XYZs geometry objects or LibG graphic items
+                if(drawable is XYZ || drawable is GeometryObject || drawable is GraphicItem )
                 {
-                    RevitTransactionNode.DrawXYZ(rd, drawable);
-                }
-                else if (drawable is GeometryObject)
-                {
-                    RevitTransactionNode.DrawGeometryObject(rd, drawable);
+                    VisualizationManager.Visualizations[id].Geometry.Add(drawable);
                 }
             }
         }
@@ -479,9 +482,9 @@ namespace Dynamo
             CancelTransaction();
         }
 
-        protected override void OnEvaluationCompleted()
+        protected override void OnEvaluationCompleted(object sender, EventArgs e)
         {
-            base.OnEvaluationCompleted();
+            base.OnEvaluationCompleted(sender, e);
 
             //Cleanup Delegate
             Action cleanup = delegate
@@ -512,6 +515,7 @@ namespace Dynamo
             }
             else
                 cleanup();
+
         }
 
         public override void ShutDown()

@@ -109,6 +109,7 @@ namespace Dynamo.ViewModels
 
         private bool fullscreenWatchShowing = false;
         private bool canNavigateBackground = false;
+        private bool _watchEscapeIsDown = false;
 
         public DelegateCommand OpenCommand { get; set; }
         public DelegateCommand ShowOpenDialogAndOpenResultCommand { get; set; }
@@ -296,7 +297,31 @@ namespace Dynamo.ViewModels
         {
             get { return dynSettings.Controller.IsUILocked; }
         }
-        
+
+        public bool WatchEscapeIsDown
+        {
+            get { return _watchEscapeIsDown; }
+            set
+            {
+                _watchEscapeIsDown = value;
+                RaisePropertyChanged("WatchEscapeIsDown");
+                RaisePropertyChanged("ShouldBeHitTestVisible");
+            }
+        }
+
+        public bool IsHomeSpace
+        {
+            get { return dynSettings.Controller.DynamoModel.CurrentWorkspace == dynSettings.Controller.DynamoModel.HomeSpace; }
+        }
+
+        public bool ShouldBeHitTestVisible
+        {
+            get
+            {
+                return !WatchEscapeIsDown;
+            }
+        }
+
         public bool FullscreenWatchShowing
         {
             get { return fullscreenWatchShowing; }
@@ -304,13 +329,6 @@ namespace Dynamo.ViewModels
             {
                 fullscreenWatchShowing = value;
                 RaisePropertyChanged("FullscreenWatchShowing");
-
-                // NOTE: I couldn't get the binding to work in the XAML so
-                //       this is a temporary hack
-                foreach (WorkspaceViewModel workspace in dynSettings.Controller.DynamoViewModel.Workspaces)
-                {
-                    workspace.FullscreenChanged();
-                }
 
                 if (!fullscreenWatchShowing && canNavigateBackground)
                     CanNavigateBackground = false;
@@ -329,7 +347,7 @@ namespace Dynamo.ViewModels
 
                 WorkspaceViewModel view_model = Workspaces[workspace_index];
 
-                view_model.WatchEscapeIsDown = value;
+                WatchEscapeIsDown = value;
             }
         }
 
@@ -502,6 +520,7 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("ViewingHomespace");
                 if (this.PublishCurrentWorkspaceCommand != null)
                 this.PublishCurrentWorkspaceCommand.RaiseCanExecuteChanged();
+                RaisePropertyChanged("IsHomeSpace");
             }
         }
 
@@ -831,20 +850,20 @@ namespace Dynamo.ViewModels
             if (FullscreenWatchShowing)
             {
                 //delete the watches
-                foreach (WorkspaceViewModel vm in dynSettings.Controller.DynamoViewModel.Workspaces)
-                {
-                    vm.Watch3DViewModels.Clear();
-                }
+                //foreach (WorkspaceViewModel vm in dynSettings.Controller.DynamoViewModel.Workspaces)
+                //{
+                //    vm.Watch3DViewModels.Clear();
+                //}
 
                 FullscreenWatchShowing = false;
             }
             else
             {
                 //construct a watch
-                foreach (WorkspaceViewModel vm in dynSettings.Controller.DynamoViewModel.Workspaces)
-                {
-                    vm.Watch3DViewModels.Add(new Watch3DFullscreenViewModel(vm));
-                }
+                //foreach (WorkspaceViewModel vm in dynSettings.Controller.DynamoViewModel.Workspaces)
+                //{
+                //    vm.Watch3DViewModels.Add(new Watch3DFullscreenViewModel(vm));
+                //}
 
                 //removed because we can reference the commands from here
                 //and also because this behavior was not great. instead we'll
@@ -857,7 +876,7 @@ namespace Dynamo.ViewModels
                 //dynSettings.Controller.RunCommand(dynSettings.Controller.DynamoViewModel.RunExpressionCommand, null);
                 //RunExpression(null);
 
-                dynSettings.Controller.OnRequestsRedraw(this, EventArgs.Empty);
+                //dynSettings.Controller.OnRequestsRedraw(this, EventArgs.Empty);
 
                 FullscreenWatchShowing = true;
             }

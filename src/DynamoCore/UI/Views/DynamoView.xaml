@@ -153,7 +153,7 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-
+        
         <Border BorderBrush="#FF3F4040"
                 BorderThickness="0,0,0,1"
                 Grid.Row="0"
@@ -236,14 +236,14 @@
                         </MenuItem>
 
                         <MenuItem Header="_Pan" Name="panMenu">
-                            <MenuItem  Header="Pan Left (Mouse wheel drag left)"  Command="{Binding PanCommand}" CommandParameter="Left" InputGestureText="Ctrl + Shift + Left"/>
-                            <MenuItem  Header="Pan Right (Mouse wheel drag right)" Command="{Binding PanCommand}"     CommandParameter="Right" InputGestureText="Ctrl + Shift + Right"/>
-                            <MenuItem  Header="Pan Up (Mouse wheel drag up)"  Command="{Binding PanCommand}" CommandParameter="Up" InputGestureText="Ctrl + Shift + Up"/>
-                            <MenuItem  Header="Pan Down (Mouse wheel drag down)" Command="{Binding PanCommand}" CommandParameter="Down" InputGestureText="Ctrl + Shift + Down"/>
+                            <MenuItem  Header="Pan Left (Mouse wheel drag left)"  Command="{Binding PanCommand}" CommandParameter="Left" InputGestureText="Ctrl + Alt + Left"/>
+                            <MenuItem  Header="Pan Right (Mouse wheel drag right)" Command="{Binding PanCommand}" CommandParameter="Right" InputGestureText="Ctrl + Alt + Right"/>
+                            <MenuItem  Header="Pan Up (Mouse wheel drag up)"  Command="{Binding PanCommand}" CommandParameter="Up" InputGestureText="Ctrl + Alt + Up"/>
+                            <MenuItem  Header="Pan Down (Mouse wheel drag down)" Command="{Binding PanCommand}" CommandParameter="Down" InputGestureText="Ctrl + Alt + Down"/>
                         </MenuItem>    
 
                         <MenuItem Header="{Binding Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
-                              Command="{Binding ToggleConsoleShowingCommand}" InputGestureText="Ctrl+Shift+Up"/>
+                              Command="{Binding ToggleConsoleShowingCommand}" InputGestureText="Ctrl + Shift + Up"/>
 
                         <MenuItem Header="_Connectors" Name="connectorMenu">
                             <MenuItem Focusable="False" Header="_Connector Type" IsEnabled="True">
@@ -313,9 +313,25 @@
                     </MenuItem>
                     <Separator />
                     <MenuItem Header="_Exit" Command="{Binding ExitCommand}"  Name="exit" InputGestureText="Alt+F4" Focusable="False"/> -->
+        
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+              Grid.Row="1" Grid.Column="2" Background="#222">
+            <Canvas Name="backgroundCanvas" 
+                     Margin="0,35,0,0"
+                     ClipToBounds="True" 
+                     IsHitTestVisible="{Binding ShouldBeHitTestVisible}">
+                <Canvas.Background>
+                    <SolidColorBrush Color="{Binding IsHomeSpace, Converter={StaticResource WorkspaceBackgroundColorConverter}}" />
+                </Canvas.Background>
+            </Canvas>
+            <controls:WatchViewFullscreen Margin="0,35,0,0"
+                Visibility="{Binding FullscreenWatchShowing, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}">
 
+            </controls:WatchViewFullscreen>
+        </Grid>
+        
         <Border Margin="0" BorderBrush="Black" BorderThickness="0" Name="border" 
-                Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="3" Background="#999">
+                Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="3">
             
             <TabControl ItemsSource="{Binding Workspaces}" Name="WorkspaceTabs" 
                         SelectedIndex="{Binding CurrentWorkspaceIndex}" Background="#222" Padding ="0" SelectionChanged="WorkspaceTabs_SelectionChanged">
