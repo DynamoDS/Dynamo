@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -7,9 +6,7 @@ using System.Windows.Media.Media3D;
 using Autodesk.LibG;
 using Dynamo.Models;
 using Dynamo.Selection;
-using Dynamo.Services;
 using HelixToolkit.Wpf;
-using Newtonsoft.Json;
 
 namespace Dynamo
 {
@@ -58,15 +55,7 @@ namespace Dynamo
             //generate an aggregated render description to send to the UI
             var aggRd = AggregateRenderDescriptions();
 
-            var renderDict = new Dictionary<string, int>();
-            renderDict["points"] = aggRd.Points.Count;
-            renderDict["line_segments"] = aggRd.Lines.Count/2;
-            renderDict["mesh_facets"] = aggRd.Meshes.Any()?
-                aggRd.Meshes.Select(x => x.TriangleIndices.Count / 3).Aggregate((a, b) => a + b): 0;
-
-            var renderData = JsonConvert.SerializeObject(renderDict);
-
-            InstrumentationLogger.LogInfo("Perf-Latency-RenderGeometryGeneration", renderData);
+            LogVisualizationUpdateData(aggRd, sw.Elapsed.ToString());
 
             //notify the UI of visualization completion
             OnVisualizationUpdateComplete(this, new VisualizationEventArgs(aggRd));
@@ -188,8 +177,8 @@ namespace Dynamo
 
                 var builder = new MeshBuilder();
 
-                FloatList triangle_vertices = g.triangle_vertices_threadsafe();
-                FloatList triangle_normals = g.triangle_normals_threadsafe();
+                FloatList triangle_vertices = g.triangle_vertices();    //.triangle_vertices_threadsafe();
+                FloatList triangle_normals = g.triangle_normals();  //.triangle_normals_threadsafe();
                 
                 for (int i = 0; i < triangle_vertices.Count; i+=3)
                 {
