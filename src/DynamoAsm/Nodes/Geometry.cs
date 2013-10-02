@@ -1,19 +1,10 @@
 ﻿using System;
-using System.Windows;
 using System.Collections.Generic;
 using Dynamo.Models;
+using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
-using System.Windows.Media;
-using System.Windows.Media.Media3D;
-
-using HelixToolkit.Wpf;
-
 using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
-using Dynamo.Connectors;
-using Dynamo.Utilities;
-using Dynamo.Controls;
-
 using Autodesk.LibG;
 using Geometry = Autodesk.LibG.Geometry;
 using Point = Autodesk.LibG.Point;
@@ -77,114 +68,13 @@ namespace Dynamo.Nodes
         }
     }
 
-    public abstract class GraphicItemNode : LibGNode, IDrawable, IClearable
+    public abstract class GraphicItemNode : LibGNode, IDrawable
     {
-        protected List<GraphicItem> _graphicItems = new List<GraphicItem>();
-        public RenderDescription RenderDescription { get; set; }
+        //protected List<GraphicItem> _graphicItems = new List<GraphicItem>();
 
-        public void Draw()
+        public List<object> VisualizationGeometry
         {
-            if (DynamoAsm.HasShutdown)
-                return;
-
-            if (this.RenderDescription == null)
-                this.RenderDescription = new RenderDescription();
-            else
-                this.RenderDescription.ClearAll();
-
-            foreach (GraphicItem g in _graphicItems)
-            {
-                FloatList point_vertices = g.point_vertices_threadsafe();
-
-                for (int i = 0; i < point_vertices.Count; i += 3)
-                {
-                    this.RenderDescription.points.Add(new Point3D(point_vertices[i],
-                        point_vertices[i + 1], point_vertices[i + 2]));
-                }
-
-                SizeTList num_line_strip_vertices = g.num_line_strip_vertices_threadsafe();
-                FloatList line_strip_vertices = g.line_strip_vertices_threadsafe();
-
-                int counter = 0;
-
-                foreach (uint num_verts in num_line_strip_vertices)
-                {
-                    for (int i = 0; i < num_verts; ++i)
-                    {
-                        Point3D p = new Point3D(
-                            line_strip_vertices[counter],
-                            line_strip_vertices[counter + 1],
-                            line_strip_vertices[counter + 2]);
-
-                        this.RenderDescription.lines.Add(p);
-
-                        counter += 3;
-
-                        if (i == 0 || i == num_verts - 1)
-                            continue;
-
-                        this.RenderDescription.lines.Add(p);
-                    }
-                }
-
-                FloatList triangle_vertices = g.triangle_vertices_threadsafe();
-
-                List<int> indices_front = new List<int>();
-                List<int> indices_back = new List<int>();
-                List<Point3D> vertices = new List<Point3D>();
-
-                for (int i = 0; i < triangle_vertices.Count / 9; ++i)
-                {
-                    for (int k = 0; k < 3; ++k)
-                    {
-
-                        int index = i * 9 + k * 3;
-
-                        Point3D new_point = new Point3D(triangle_vertices[index],
-                            triangle_vertices[index + 1],
-                            triangle_vertices[index + 2]);
-
-                        bool new_point_exists = false;
-                        for (int l = 0; l < vertices.Count; ++l)
-                        {
-                            Point3D p = vertices[l];
-                            if ((p.X == new_point.X) && (p.Y == new_point.Y) && (p.Z == new_point.Z))
-                            {
-                                indices_front.Add(l);
-                                new_point_exists = true;
-                                break;
-                            }
-                        }
-
-                        if (new_point_exists)
-                            continue;
-
-                        indices_front.Add(vertices.Count);
-                        vertices.Add(new_point);
-                    }
-
-                    int a = indices_front[indices_front.Count - 3];
-                    int b = indices_front[indices_front.Count - 2];
-                    int c = indices_front[indices_front.Count - 1];
-
-                    indices_back.Add(c);
-                    indices_back.Add(b);
-                    indices_back.Add(a);
-                }
-
-                this.RenderDescription.meshes.Add(new Mesh3D(vertices, indices_front));
-                this.RenderDescription.meshes.Add(new Mesh3D(vertices, indices_back));
-            }
-        }
-
-        public void ClearReferences()
-        {
-            foreach (GraphicItem g in _graphicItems)
-            {
-                GraphicItem.unpersist(g);
-            }
-
-            _graphicItems.Clear();
+            get { return dynSettings.Controller.VisualizationManager.Visualizations[this.GUID.ToString()].Geometry; }
         }
     }
 
@@ -254,7 +144,7 @@ namespace Dynamo.Nodes
 
             _point = Point.by_coordinates(x, y, z);
 
-            _graphicItems.Add(_point);
+            VisualizationGeometry.Add(_point);
 
             return Value.NewContainer(_point);
         }
@@ -477,7 +367,8 @@ namespace Dynamo.Nodes
             Vector y_axis = (Vector)((Value.Container)args[2]).Item;
 
             _cs = CoordinateSystem.by_origin_vectors(origin, x_axis, y_axis);
-            _graphicItems.Add(_cs);
+            
+            VisualizationGeometry.Add(_cs);
 
             return Value.NewContainer(_cs);
         }
@@ -490,8 +381,6 @@ namespace Dynamo.Nodes
     [NodeSearchable(false)]
     public class LineNode : GraphicItemNode
     {
-        private Line _line = null;
-
         public LineNode()
         {
             InPortData.Add(new PortData("Start", "Start Point", typeof(Value.Container)));
@@ -503,13 +392,20 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            Point sp = (Point)((Value.Container)args[0]).Item;
-            Point ep = (Point)((Value.Container)args[1]).Item;
+            var sp = (Point)((Value.Container)args[0]).Item;
+            var ep = (Point)((Value.Container)args[1]).Item;
 
-            _line = Line.by_start_point_end_point(sp, ep);
-            _graphicItems.Add(_line);
+            //if the line is zero length
+            if (sp.distance_to(ep) < 0.00001)
+            {
+                return Value.NewContainer(null);
+            }
 
-            return Value.NewContainer(_line);
+            var line = Line.by_start_point_end_point(sp, ep);
+            
+            VisualizationGeometry.Add(line);
+
+            return Value.NewContainer(line);
         }
     }
 
@@ -541,7 +437,7 @@ namespace Dynamo.Nodes
 
             _circle = Circle.by_center_point_radius_normal(cp, r, normal);
 
-            _graphicItems.Add(_circle);
+            VisualizationGeometry.Add(_circle);
 
             return Value.NewContainer(_circle);
         }
@@ -572,7 +468,8 @@ namespace Dynamo.Nodes
 
             _surface = crossSection.sweep_as_surface(pathCurve);
             GraphicItem.persist(_surface);
-            _graphicItems.Add(_surface);
+            
+            VisualizationGeometry.Add(_surface);
 
             return Value.NewContainer(_surface);
         }
@@ -603,7 +500,8 @@ namespace Dynamo.Nodes
 
             _solid = crossSection.sweep_as_solid(pathCurve);
             GraphicItem.persist(_solid);
-            _graphicItems.Add(_solid);
+            
+            VisualizationGeometry.Add(_solid);
 
             return Value.NewContainer(_solid);
         }
@@ -693,7 +591,7 @@ namespace Dynamo.Nodes
 
             if (graphicItem != null)
             {
-                _graphicItems.Add(graphicItem);
+                VisualizationGeometry.Add(graphicItem);
                 GraphicItem.persist(graphicItem);
             }
 
@@ -730,7 +628,8 @@ namespace Dynamo.Nodes
             }          
 
             _bsplinecurve = BSplineCurve.by_points(points);
-            _graphicItems.Add(_bsplinecurve);
+
+            VisualizationGeometry.Add(_bsplinecurve);
 
             return Value.NewContainer(_bsplinecurve);
         }
@@ -765,7 +664,8 @@ namespace Dynamo.Nodes
             }
 
             _bsplinecurve = BSplineCurve.by_points(points, true);
-            _graphicItems.Add(_bsplinecurve);
+
+            VisualizationGeometry.Add(_bsplinecurve);
 
             return Value.NewContainer(_bsplinecurve);
         }
@@ -800,7 +700,8 @@ namespace Dynamo.Nodes
             }
 
             _polygon = Polygon.by_vertices(points);
-            _graphicItems.Add(_polygon);
+
+            VisualizationGeometry.Add(_polygon);
 
             return Value.NewContainer(_polygon);
         }
@@ -835,7 +736,8 @@ namespace Dynamo.Nodes
             }
 
             _surface = Surface.loft_by_cross_sections(curves);
-            _graphicItems.Add(_surface);
+
+            VisualizationGeometry.Add(_surface);
 
             return Value.NewContainer(_surface);
         }
@@ -863,7 +765,7 @@ namespace Dynamo.Nodes
             GraphicItem item = input as GraphicItem;
 
             if (item != null)
-                _graphicItems.Add(item);
+                VisualizationGeometry.Add(item);
 
             return args[0];
         }
@@ -899,7 +801,8 @@ namespace Dynamo.Nodes
             }
 
             _surface = Surface.by_patch(curves);
-            _graphicItems.Add(_surface);
+
+            VisualizationGeometry.Add(_surface);
 
             return Value.NewContainer(_surface);
         }
@@ -933,7 +836,7 @@ namespace Dynamo.Nodes
             _surface = curve.extrude(dir, dist);
             GraphicItem.persist(_surface);
 
-            _graphicItems.Add(_surface);
+            VisualizationGeometry.Add(_surface);
 
             return Value.NewContainer(_surface);
         }
@@ -968,7 +871,7 @@ namespace Dynamo.Nodes
 
             _solid = Cuboid.by_lengths(cs, w, l, h);
 
-            _graphicItems.Add(_solid);
+            VisualizationGeometry.Add(_solid);
 
             return Value.NewContainer(_solid);
         }
@@ -999,7 +902,7 @@ namespace Dynamo.Nodes
 
             _plane = Plane.by_origin_normal(origin, normal);
 
-            _graphicItems.Add(_plane);
+            VisualizationGeometry.Add(_plane);
 
             return Value.NewContainer(_plane);
         }
@@ -1030,7 +933,8 @@ namespace Dynamo.Nodes
 
             _point = curve.point_at_parameter(param);
             GraphicItem.persist(_point);
-            _graphicItems.Add(_point);
+
+            VisualizationGeometry.Add(_point);
 
             return Value.NewContainer(_point);
         }
@@ -1061,7 +965,8 @@ namespace Dynamo.Nodes
 
             _point = curve.point_at_distance(dist);
             GraphicItem.persist(_point);
-            _graphicItems.Add(_point);
+
+            VisualizationGeometry.Add(_point);
 
             return Value.NewContainer(_point);
         }
@@ -1101,11 +1006,11 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Point at Parameter on Surface.")]
     [NodeSearchable(false)]
-    public class PointAtUVParameterNode : GraphicItemNode
+    public class PointAtUvParameterNode : GraphicItemNode
     {
         Point _point = null;
 
-        public PointAtUVParameterNode()
+        public PointAtUvParameterNode()
         {
             InPortData.Add(new PortData("Surface", "Surface to evaluate", typeof(Value.Container)));
             InPortData.Add(new PortData("U", "Parameter from 0 to 1", typeof(Value.Number)));
@@ -1124,7 +1029,7 @@ namespace Dynamo.Nodes
             _point = surf.point_at_parameter(u, v);
             GraphicItem.persist(_point);
 
-            _graphicItems.Add(_point);
+            VisualizationGeometry.Add(_point);
 
             return Value.NewContainer(_point);
         }
@@ -1135,11 +1040,11 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Normal at Parameter on Surface.")]
     [NodeSearchable(false)]
-    public class NormalAtUVParameterNode : LibGNode
+    public class NormalAtUvParameterNode : LibGNode
     {
         Vector _vector = null;
 
-        public NormalAtUVParameterNode()
+        public NormalAtUvParameterNode()
         {
             InPortData.Add(new PortData("Surface", "Surface to evaluate", typeof(Value.Container)));
             InPortData.Add(new PortData("U", "Parameter from 0 to 1", typeof(Value.Number)));
@@ -1187,7 +1092,7 @@ namespace Dynamo.Nodes
             _solid = surf.thicken(dist);
             GraphicItem.persist(_solid);
 
-            _graphicItems.Add(_solid);
+            VisualizationGeometry.Add(_solid);
 
             return Value.NewContainer(_solid);
         }
@@ -1234,7 +1139,8 @@ namespace Dynamo.Nodes
 
                 GraphicItem.persist(restored);
                 _result.Add(restored);
-                _graphicItems.Add(restored);
+
+                VisualizationGeometry.Add(restored);
             }
 
             if (_result.Count == 1)
@@ -1294,7 +1200,8 @@ namespace Dynamo.Nodes
             _result = RestoreProperType(result);
 
             GraphicItem.persist(_result);
-            _graphicItems.Add(_result);
+
+            VisualizationGeometry.Add(_result);
 
             return Value.NewContainer(_result); 
         }
@@ -1338,7 +1245,8 @@ namespace Dynamo.Nodes
                     continue;
 
                 GraphicItem.persist(item);
-                _graphicItems.Add(item);
+
+                VisualizationGeometry.Add(item);
             }
 
             List<Value> return_values = new List<Value>();

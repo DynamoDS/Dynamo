@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Threading;
+using Autodesk.LibG;
 using Dynamo.DSEngine;
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
@@ -52,11 +53,6 @@ namespace Dynamo
                 RaisePropertyChanged("IsUILocked");
             }
         }
-        private Dictionary<Guid, RenderDescription> _renderDescriptions = new Dictionary<Guid, RenderDescription>();
-        public Dictionary<Guid, RenderDescription> RenderDescriptions
-        {
-            get { return _renderDescriptions; }
-        }
 
         private readonly SortedDictionary<string, TypeLoadData> builtinTypesByNickname =
             new SortedDictionary<string, TypeLoadData>();
@@ -68,12 +64,19 @@ namespace Dynamo
 
         private bool testing = false;
 
+        protected VisualizationManager visualizationManager;
+
         public CustomNodeManager CustomNodeManager { get; internal set; }
         public SearchViewModel SearchViewModel { get; internal set; }
         public DynamoViewModel DynamoViewModel { get; internal set; }
         public DynamoModel DynamoModel { get; set; }
         public Dispatcher UIDispatcher { get; set; }
-        
+
+        public virtual VisualizationManager VisualizationManager
+        {
+            get { return visualizationManager ?? (visualizationManager = new VisualizationManagerASM()); }
+        }
+
         /// <summary>
         /// Testing flag is used to defer calls to run in the idle thread
         /// with the assumption that the entire test will be wrapped in an
@@ -141,6 +144,11 @@ namespace Dynamo
         #region events
 
         /// <summary>
+        /// An event triggered when evaluation completes.
+        /// </summary>
+        public event EventHandler EvaluationCompleted;
+
+        /// <summary>
         /// An event which requests that a node be selected
         /// </summary>
         public event NodeEventHandler RequestNodeSelect;
@@ -163,20 +171,6 @@ namespace Dynamo
         {
             if (RequestsRedraw != null)
                 RequestsRedraw(sender, e);
-        }
-
-        public event EventHandler NodeSubmittedForRendering;
-        public virtual void OnNodeSubmittedForRendering(object sender, EventArgs e)
-        {
-            if (NodeSubmittedForRendering != null)
-                NodeSubmittedForRendering(sender, e);
-        }
-
-        public event EventHandler NodeRemovedFromRendering;
-        public virtual void OnNodeRemovedFromRendering(object sender, EventArgs e)
-        {
-            if (NodeRemovedFromRendering != null)
-                NodeRemovedFromRendering(sender, e);
         }
 
         public event DispatchedToUIThreadHandler DispatchedToUI;
@@ -250,9 +244,7 @@ namespace Dynamo
                 DynamoLogger.Instance.Log("All Tests Passed. Core library loaded OK.");
             }
 
-            NodeSubmittedForRendering += new EventHandler(Controller_NodeSubmittedForRendering);
-            NodeRemovedFromRendering += new EventHandler(Controller_NodeRemovedFromRendering);
-
+            AddPythonBindings();
         }
 
         #endregion
@@ -283,7 +275,7 @@ namespace Dynamo
 
         public void RunExpression(bool showErrors = true)
         {
-            DynamoLogger.Instance.LogWarning("Running expression", WarningLevel.Mild);
+            //DynamoLogger.Instance.LogWarning("Running expression", WarningLevel.Mild);
 
             //If we're already running, do nothing.
             if (Running)
@@ -482,7 +474,7 @@ namespace Dynamo
                     throw new Exception(ex.Message);
             }
 
-            OnEvaluationCompleted();
+            OnEvaluationCompleted(this, EventArgs.Empty);
         }
 
         protected virtual void OnRunCancelled(bool error)
@@ -492,39 +484,15 @@ namespace Dynamo
                 dynSettings.FunctionWasEvaluated.Clear();
         }
 
-        protected virtual void OnEvaluationCompleted()
-        {
-        }
-
         /// <summary>
-        /// Callback for node being unregistered from rendering
+        /// Called when evaluation completes.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void Controller_NodeRemovedFromRendering(object sender, EventArgs e)
+        protected virtual void OnEvaluationCompleted(object sender, EventArgs e)
         {
-            var node = sender as NodeModel;
-            if (_renderDescriptions.ContainsKey(node.GUID))
-                _renderDescriptions.Remove(node.GUID);
-        }
-
-        /// <summary>
-        /// Callback for the node being registered for rendering.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void Controller_NodeSubmittedForRendering(object sender, EventArgs e)
-        {
-            var node = sender as NodeModel;
-            if (!_renderDescriptions.ContainsKey(node.GUID))
-            {
-                //don't allow an empty render description
-                IDrawable d = node as IDrawable;
-                if (d.RenderDescription == null)
-                    d.RenderDescription = new RenderDescription();
-                _renderDescriptions.Add(node.GUID, d.RenderDescription);
-            }
-
+            if (EvaluationCompleted != null)
+                EvaluationCompleted(sender, e);
         }
 
     #endregion
@@ -536,8 +504,7 @@ namespace Dynamo
 
         public void RequestClearDrawables()
         {
-            var drawables = DynamoModel.Nodes.Where(x => x is IDrawable);
-            drawables.ToList().ForEach(x=>((IDrawable)x).RenderDescription.ClearAll());
+            VisualizationManager.ClearVisualizations();
         }
 
         /// <summary>
@@ -610,6 +577,73 @@ namespace Dynamo
         internal bool CanClearLog(object parameter)
         {
             return true;
+        }
+
+        public virtual void AddPythonBindings()
+        {
+            try
+            {
+                var assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+                Assembly ironPythonAssembly = null;
+
+                string path;
+
+                if (File.Exists(path = Path.Combine(assemblyPath, "DynamoPython.dll")))
+                {
+                    ironPythonAssembly = Assembly.LoadFrom(path);
+                }
+                else if (File.Exists(path = Path.Combine(assemblyPath, "Packages", "IronPython", "DynamoPython.dll")))
+                {
+                    ironPythonAssembly = Assembly.LoadFrom(path);
+                }
+
+                if (ironPythonAssembly == null)
+                    throw new Exception();
+
+                var pythonEngine = ironPythonAssembly.GetType("DynamoPython.PythonEngine");
+
+                var drawingField = pythonEngine.GetField("Drawing");
+                var drawDelegateType = ironPythonAssembly.GetType("DynamoPython.PythonEngine+DrawDelegate");
+                Delegate draw = Delegate.CreateDelegate(
+                    drawDelegateType,
+                    this,
+                    typeof(DynamoController)
+                        .GetMethod("DrawPython", BindingFlags.NonPublic | BindingFlags.Instance));
+
+                drawingField.SetValue(null, draw);
+
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+                Debug.WriteLine(e.StackTrace);
+            }
+        }
+
+        void DrawPython(FScheme.Value val, string id)
+        {
+            DrawContainers(val, id);
+        }
+
+        private void DrawContainers(FScheme.Value val, string id)
+        {
+            if (val.IsList)
+            {
+                foreach (FScheme.Value v in ((FScheme.Value.List)val).Item)
+                {
+                    DrawContainers(v, id);
+                }
+            }
+            if (val.IsContainer)
+            {
+                var drawable = ((FScheme.Value.Container)val).Item;
+
+                if (drawable is GraphicItem)
+                {
+                    VisualizationManager.Visualizations[id].Geometry.Add(drawable);
+                }
+            }
         }
     }
 

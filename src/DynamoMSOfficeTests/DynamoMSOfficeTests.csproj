@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExcelTests.cs" />
+    <Compile Include="MSOfficeTestsSetup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -67,6 +68,10 @@
     <ProjectReference Include="..\DynamoMSOffice\DynamoMSOffice.csproj">
       <Project>{798656E4-733F-4ABC-8AF4-604412FC0BC0}</Project>
       <Name>DynamoMSOffice</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
+      <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
+      <Name>DynamoUtilities</Name>
     </ProjectReference>
     <ProjectReference Include="..\FScheme\FScheme.fsproj">
       <Project>{F0E5A3E5-BDD0-41AE-848E-DED9EFC5FA7F}</Project>
