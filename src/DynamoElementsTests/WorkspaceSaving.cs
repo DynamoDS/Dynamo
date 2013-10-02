@@ -273,12 +273,12 @@ namespace Dynamo
             Assert.AreEqual(newPath, Controller.DynamoModel.CurrentWorkspace.FileName);
             var saveAsTime = File.GetLastWriteTime(newPath);
 
+            Thread.Sleep(1);
             var resSave = Controller.DynamoModel.CurrentWorkspace.Save();
 
             Assert.IsTrue(resSave);
             Assert.IsTrue(File.Exists(newPath));
             Assert.AreEqual(newPath, Controller.DynamoModel.CurrentWorkspace.FileName);
-            Thread.Sleep(1);
             var saveTime = File.GetLastWriteTime(newPath);
 
             // assert the file has new update
@@ -309,7 +309,7 @@ namespace Dynamo
             Assert.AreEqual(newPath, def.WorkspaceModel.FileName);
             var saveAsTime = File.GetLastWriteTime(newPath);
 
-
+            Thread.Sleep(1);
             var resSave = def.WorkspaceModel.Save();
 
             Assert.IsTrue(resSave);
@@ -413,8 +413,8 @@ namespace Dynamo
             dynamoModel.CreateNode(new Dictionary<string, object>()
                 {
                     {"name", "Add" },
-                    {"x", 0 },
-                    {"y", 0 }
+                    {"x", 0.0 },
+                    {"y", 0.0 }
                 });
             Assert.IsTrue(Controller.DynamoModel.CurrentWorkspace.HasUnsavedChanges);
             Assert.AreEqual(1, Controller.DynamoModel.CurrentWorkspace.Nodes.Count);
@@ -446,8 +446,8 @@ namespace Dynamo
             dynamoModel.CreateNode(new Dictionary<string, object>()
                 {
                     {"name", "Add" },
-                    {"x", 0 },
-                    {"y", 0 }
+                    {"x", 0.0 },
+                    {"y", 0.0 }
                 });
 
             Assert.IsTrue(def.WorkspaceModel.HasUnsavedChanges);
