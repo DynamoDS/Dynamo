@@ -78,7 +78,6 @@ namespace Dynamo.Views
             ViewModel.RequestZoomToViewportCenter += new ZoomEventHandler(vm_ZoomAtViewportCenter);
             ViewModel.RequestZoomToViewportPoint += new ZoomEventHandler(vm_ZoomAtViewportPoint);
             ViewModel.RequestZoomToFitView += new ZoomEventHandler(vm_ZoomToFitView);
-            ViewModel.StopDragging += new EventHandler(vm_StopDragging);
             ViewModel.RequestCenterViewOnElement += new NodeEventHandler(CenterViewOnElement);
             ViewModel.RequestNodeCentered += new NodeEventHandler(vm_RequestNodeCentered);
             ViewModel.RequestAddViewToOuterCanvas += new ViewEventHandler(vm_RequestAddViewToOuterCanvas);
@@ -227,12 +226,6 @@ namespace Dynamo.Views
 
             node.X = dropPt.X;
             node.Y = dropPt.Y;
-        }
-
-        void vm_StopDragging(object sender, EventArgs e)
-        {
-            WorkBench.CancelDragOperation();
-            WorkBench.ignoreClick = true;
         }
 
         void zoomBorder_MouseMove(object sender, MouseEventArgs e)

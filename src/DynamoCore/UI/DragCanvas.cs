@@ -57,7 +57,6 @@ namespace Dynamo.Controls
         }
 
         private DragState dragState = DragState.None;
-#endif
 
         //true if user is making a connection between elements
         //MVVM: move isConnecting onto the DynamoViewModel
@@ -70,6 +69,7 @@ namespace Dynamo.Controls
 
         //true if we're ignoring clicks
         public bool ignoreClick;
+#endif
 
         // The owning workspace for this DragCanvas
         public Dynamo.Views.dynWorkspaceView owningWorkspace = null;
@@ -735,6 +735,7 @@ namespace Dynamo.Controls
 
         #endregion // Private Helpers
 
+#if false // TODO(Ben): Remove this after StateMachine has been fully tested.
         /// <summary>
         /// The WorkspaceView (i.e. the owner of this DragCanvas object) calls
         /// this method to mark the current drag operation as being "over". This 
@@ -742,8 +743,9 @@ namespace Dynamo.Controls
         /// </summary>
         internal void CancelDragOperation()
         {
-            // this.dragState = DragState.None;
+            this.dragState = DragState.None;
         }
+#endif
     }
 
 #if false // TODO(Ben): Remove this after StateMachine has been fully tested.
