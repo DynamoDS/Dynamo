@@ -26,22 +26,6 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <UserControl.ToolTip>
-        <Grid Width ="Auto" MaxWidth="235" MaxHeight="200" Height="Auto">
-            <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <!-- Last value -->
-
-                <TextBlock Name="tt_lastValueName" 
-                           VerticalAlignment="Top" Text="Current Value" FontSize="11" FontWeight="Bold" Margin="2, 7, 2, 2" 
-                           Visibility="{Binding Path=ToolTipText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}"/>
-                <TextBlock Name="tt_lastValue" TextWrapping="Wrap" 
-                           Text="{Binding Path=OldValue}"  FontSize="11" TextTrimming="WordEllipsis" Margin="2" 
-                           Visibility="{Binding Path=ToolTipText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}"/>
-
-            </StackPanel>
-        </Grid>
-    </UserControl.ToolTip>
-
     <Grid Name="grid" x:FieldModifier="public" Grid.Row="1" Canvas.ZIndex="3" Margin="0" Width="Auto" HorizontalAlignment="Left">
 
         <Grid.RowDefinitions>
