@@ -706,7 +706,7 @@ namespace Dynamo.ViewModels
             if ( !this._model.Workspaces.Contains(newWs) )
                 this._model.Workspaces.Add(newWs);
 
-            CurrentSpaceViewModel.OnStopDragging(this, EventArgs.Empty);
+            CurrentSpaceViewModel.CancelActiveState();
 
             _model.CurrentWorkspace = newWs;
             _model.CurrentWorkspace.OnDisplayed();

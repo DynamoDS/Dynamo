@@ -41,6 +41,11 @@ namespace Dynamo.ViewModels
             return stateMachine.HandlePortClicked(portViewModel);
         }
 
+        internal void CancelActiveState()
+        {
+            stateMachine.CancelActiveState();
+        }
+
         #endregion
 
         /// <summary>
@@ -87,6 +92,7 @@ namespace Dynamo.ViewModels
                 Connection
             }
 
+            private bool ignoreMouseClick = false;
             private State currentState = State.None;
             private Point mouseDownPos = new Point();
             private WorkspaceViewModel owningWorkspace = null;
@@ -103,24 +109,12 @@ namespace Dynamo.ViewModels
             }
 
             /// <summary>
-            /// The owning WorkspaceView calls this to cancel the current state,
-            /// if the current state matches the one specified in the "state" 
-            /// parameter.
+            /// The owning WorkspaceView calls this to cancel the current state
             /// </summary>
-            /// <param name="state">The state to cancel, if the state machine 
-            /// is in an internal state that matches this parameter, otherwise 
-            /// the internal state will not be changed.</param>
-            /// <returns>Returns true if the internal state has been 
-            /// successfully changed, or false otherwise.</returns>
-            /// 
-            internal bool CancelState(State state)
+            internal void CancelActiveState()
             {
-                // We only cancel the state if the specified state matches.
-                if (currentState == State.None || (currentState != state))
-                    return false;
-
                 currentState = State.None;
-                return true;
+                ignoreMouseClick = true;
             }
 
             #endregion
@@ -129,6 +123,12 @@ namespace Dynamo.ViewModels
 
             internal bool HandleLeftButtonDown(object sender, MouseButtonEventArgs e)
             {
+                if (false != ignoreMouseClick)
+                {
+                    ignoreMouseClick = false;
+                    return false;
+                }
+
                 bool eventHandled = false;
                 if (this.currentState == State.Connection)
                 {

@@ -29,7 +29,6 @@ namespace Dynamo.ViewModels
         public WorkspaceModel _model;
         private bool _canFindNodesFromElements = false;
 
-        public event EventHandler StopDragging;
         public event PointEventHandler CurrentOffsetChanged;
         public event ZoomEventHandler ZoomChanged;
         public event ZoomEventHandler RequestZoomToViewportCenter;
@@ -113,12 +112,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public virtual void OnStopDragging(object sender, EventArgs e)
-        {
-            if (StopDragging != null)
-                StopDragging(this, e);
-        }
-        
         public virtual void OnRequestCenterViewOnElement(object sender, ModelEventArgs e)
         {
             if (RequestCenterViewOnElement != null)
