@@ -30,6 +30,7 @@ namespace Dynamo.Controls
         // Stores a reference to the UIElement currently being dragged by the user.
         private ObservableCollection<OffsetData> offsets = new ObservableCollection<OffsetData>();
 
+#if false
         // Keeps track of where the mouse cursor was when a drag operation began.		
         private Point origCursorLocation;
 
@@ -57,6 +58,7 @@ namespace Dynamo.Controls
         }
 
         private DragState dragState = DragState.None;
+#endif
 
         //true if user is making a connection between elements
         //MVVM: move isConnecting onto the DynamoViewModel
@@ -149,30 +151,15 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         void selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Reset)
-            {
-                throw new Exception("To properly clean the selection, please use RemoveAll() instead.");
-            }
-
-            // call the select method on elements added to the collection
             if (e.NewItems != null)
             {
                 foreach (ISelectable sel in e.NewItems)
                 {
                     var n = sel as ILocatable;
-                    
+
                     if (n == null)
                         continue;
-                    //n.Select();
 
-                    //UIElement el = (UIElement)n;
-
-                    //double left = Canvas.GetLeft(el);
-                    //double right = Canvas.GetRight(el);
-                    //double top = Canvas.GetTop(el);
-                    //double bottom = Canvas.GetBottom(el);
-
-                    //MVVM: now storing element coordinates on models
                     double left = n.X;
                     double right = n.X + n.Width;
                     double top = n.Y;
@@ -184,27 +171,16 @@ namespace Dynamo.Controls
                     bool modTop = false;
                     double hOffset = ResolveOffset(left, right, out modLeft);
                     double vOffset = ResolveOffset(top, bottom, out modTop);
-                    OffsetData os = new OffsetData(hOffset, vOffset, modLeft, modTop, n);
+                    var os = new OffsetData(hOffset, vOffset, modLeft, modTop, n);
                     offsets.Add(os);
                 }
             }
 
-            if (e.OldItems != null)
+            //remove all ofset data where the node is no longer in the selection
+            var toRemove = offsets.Where(od => !DynamoSelection.Instance.Selection.Contains(od.Node)).ToList();
+            foreach (OffsetData od in toRemove)
             {
-                // call the deselect method on elements removed from the collection
-                foreach (ISelectable n in e.OldItems)
-                {
-                    //(n as ISelectable).Deselect();
-
-                    // remove the corresponding offsetdata object
-                    // for the element being removed
-                    List<OffsetData> toRemove = offsets.Where(od => od.Node == n).ToList();
-
-                    foreach (OffsetData od in toRemove)
-                    {
-                        offsets.Remove(od);
-                    }
-                }
+                offsets.Remove(od);
             }
         }
 
@@ -316,8 +292,6 @@ namespace Dynamo.Controls
 
         #region Overrides
 
-        #region OnMouseLeftButtonDown
-
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             object dataContext = this.owningWorkspace.DataContext;
@@ -327,8 +301,13 @@ namespace Dynamo.Controls
                 base.OnMouseLeftButtonDown(e);
                 e.Handled = true;
             }
+        }
 
 #if false
+        #region OnMouseLeftButtonDown
+
+        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        {
             if (ignoreClick)
             {
                 ignoreClick = false;
@@ -377,14 +356,12 @@ namespace Dynamo.Controls
                 }
 
             }
-#endif
         }
 
         #endregion // OnPreviewMouseLeftButtonDown
 
         #region OnPreviewMouseMove
 
-#if false
         protected override void OnPreviewMouseMove(MouseEventArgs e)
         {
             base.OnPreviewMouseMove(e);
@@ -419,7 +396,7 @@ namespace Dynamo.Controls
             // Get the position of the mouse cursor, relative to the Canvas.
             Point cursorLocation = e.GetPosition(this);
 
-            #region Calculate Offsets
+        #region Calculate Offsets
 
             int count = 0;
             foreach (ISelectable sel in DynamoSelection.Instance.Selection)
@@ -446,7 +423,7 @@ namespace Dynamo.Controls
 
             if (!this.AllowDragOutOfView)
             {
-                #region Verify Drag Element Location
+        #region Verify Drag Element Location
 
                 count = 0;
                 foreach (ISelectable sel in DynamoSelection.Instance.Selection)
@@ -485,7 +462,7 @@ namespace Dynamo.Controls
                 #endregion // Verify Drag Element Location
             }
 
-            #region Move Drag Element
+        #region Move Drag Element
             count = 0;
             this.Dispatcher.Invoke(new Action(
                   delegate
@@ -517,13 +494,11 @@ namespace Dynamo.Controls
             #endregion // Move Drag Element
 
         }
-#endif
 
         #endregion // OnPreviewMouseMove
 
         #region OnHostPreviewMouseUp
 
-#if false
         protected override void OnMouseUp(MouseButtonEventArgs e)
         {
             base.OnMouseUp(e);
@@ -571,9 +546,10 @@ namespace Dynamo.Controls
                 count++;
             }
         }
-#endif
+
 
         #endregion // OnHostPreviewMouseUp
+#endif
 
         #endregion // Host Event Handlers
 
@@ -766,7 +742,7 @@ namespace Dynamo.Controls
         /// </summary>
         internal void CancelDragOperation()
         {
-            this.dragState = DragState.None;
+            // this.dragState = DragState.None;
         }
     }
 

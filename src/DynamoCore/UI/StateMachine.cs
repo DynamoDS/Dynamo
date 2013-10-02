@@ -36,6 +36,11 @@ namespace Dynamo.ViewModels
             return stateMachine.HandleMouseMove(sender, e);
         }
 
+        internal bool HandlePortClicked(PortViewModel portViewModel)
+        {
+            return stateMachine.HandlePortClicked(portViewModel);
+        }
+
         #endregion
 
         class DraggedNode
@@ -79,6 +84,7 @@ namespace Dynamo.ViewModels
             private State currentState = State.None;
             private Point mouseDownPos = new Point();
             private WorkspaceViewModel owningWorkspace = null;
+            private ConnectorViewModel activeConnector = null;
             private List<DraggedNode> draggedNodes = new List<DraggedNode>();
 
             #endregion
@@ -122,7 +128,7 @@ namespace Dynamo.ViewModels
                     // Clicking on the canvas while connecting simply cancels 
                     // the operation and drop the temporary connector.
                     this.currentState = State.None;
-                    owningWorkspace.ActiveConnector = null;
+                    this.SetActiveConnector(null);
                     return true; // Mouse event handled.
                 }
                 else if (this.currentState == State.None)
@@ -179,8 +185,8 @@ namespace Dynamo.ViewModels
                     // If we are currently connecting and there is an active 
                     // connector, redraw it to match the new mouse coordinates.
                     // 
-                    if (null != owningWorkspace.ActiveConnector)
-                        owningWorkspace.ActiveConnector.Redraw(mouseCursor);
+                    if (null != this.activeConnector)
+                        this.activeConnector.Redraw(mouseCursor);
                 }
                 else if (this.currentState == State.WindowSelection)
                 {
@@ -247,6 +253,101 @@ namespace Dynamo.ViewModels
                 return false; // Mouse event not handled.
             }
 
+            internal bool HandlePortClicked(PortViewModel portViewModel)
+            {
+                // We only entertain port clicking when the current state is idle, 
+                // or when it is already having a connector being established.
+                if (currentState != State.None && (currentState != State.Connection))
+                    return false;
+
+                PortModel portModel = portViewModel.PortModel;
+
+                DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
+                WorkspaceModel workspaceModel = dynamoViewModel.CurrentSpace;
+                WorkspaceViewModel workspaceViewModel = dynamoViewModel.CurrentSpaceViewModel;
+
+                // if this is a 
+                if (this.currentState != State.Connection)
+                {
+                    //test if port already has a connection if so grab it
+                    //and begin connecting to somewhere else
+                    //don't allow the grabbing of the start connector
+                    if (portModel.Connectors.Count > 0 && portModel.Connectors[0].Start != portModel)
+                    {
+                        //define the new active connector
+                        var c = new ConnectorViewModel(portModel.Connectors[0].Start);
+                        this.SetActiveConnector(c);
+                        this.currentState = State.Connection;
+
+                        //disconnect the connector model from its start and end ports
+                        //and remove it from the connectors collection. this will also
+                        //remove the view model
+                        ConnectorModel connector = portModel.Connectors[0];
+                        if (workspaceModel.Connectors.Contains(connector))
+                        {
+                            List<ModelBase> models = new List<ModelBase>();
+                            models.Add(connector);
+                            workspaceModel.RecordAndDeleteModels(models);
+                            connector.NotifyConnectedPortsOfDeletion();
+                        }
+                    }
+                    else
+                    {
+                        try
+                        {
+                            //Create a connector view model to begin drawing
+                            var c = new ConnectorViewModel(portModel);
+                            this.SetActiveConnector(c);
+                            this.currentState = State.Connection;
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine(ex.Message);
+                        }
+                    }
+                }
+                else  // attempt to complete the connection
+                {
+                    //remove connector if one already exists
+                    if (portModel.Connectors.Count > 0 && portModel.PortType == PortType.INPUT)
+                    {
+                        var connToRemove = portModel.Connectors[0];
+                        workspaceModel.Connectors.Remove(connToRemove);
+                        portModel.Disconnect(connToRemove);
+                        var startPort = connToRemove.Start;
+                        startPort.Disconnect(connToRemove);
+                    }
+
+                    // create the new connector model
+                    var start = this.activeConnector.ActiveStartPort;
+                    var end = portModel;
+
+                    ConnectorModel newConnectorModel;
+                    if (portModel.PortType == PortType.INPUT)
+                        newConnectorModel = ConnectorModel.Make(start.Owner, end.Owner, start.Index, end.Index, 0);
+                    else
+                    {
+                        newConnectorModel = ConnectorModel.Make(end.Owner, start.Owner, end.Index, start.Index, 0);
+                    }
+
+                    // the connector is invalid
+                    if (newConnectorModel == null)
+                        return false;
+
+                    // Add to the current workspace
+                    workspaceModel.Connectors.Add(newConnectorModel);
+
+                    // Cleanup
+                    this.currentState = State.None;
+                    this.SetActiveConnector(null);
+
+                    // Record the creation of connector in the undo recorder.
+                    workspaceModel.RecordCreatedModel(newConnectorModel);
+                }
+
+                return true;
+            }
+
             #endregion
 
             #region Private Class Helper Method
@@ -309,6 +410,24 @@ namespace Dynamo.ViewModels
 
                 this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
                 this.currentState = State.WindowSelection;
+            }
+
+            private void SetActiveConnector(ConnectorViewModel connector)
+            {
+                if (null != connector)
+                {
+                    System.Diagnostics.Debug.Assert(null == activeConnector);
+                    owningWorkspace.WorkspaceElements.Add(connector);
+                    this.activeConnector = connector;
+                }
+                else
+                {
+                    System.Diagnostics.Debug.Assert(null != activeConnector);
+                    owningWorkspace.WorkspaceElements.Remove(activeConnector);
+                    this.activeConnector = null;
+                }
+
+                owningWorkspace.RaisePropertyChanged("ActiveConnector");
             }
 
             #endregion
