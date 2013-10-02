@@ -175,9 +175,11 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private double zIndex = 3;
         public double ZIndex
         {
-            get { return 3; }
+            get { return zIndex; }
+            set { zIndex = value; RaisePropertyChanged("ZIndex"); }
         }
 
         /// <summary>
@@ -343,6 +345,7 @@ namespace Dynamo.ViewModels
                     break;
                 case "IsSelected":
                     RaisePropertyChanged("IsSelected");
+                    UpdateZIndex();
                     break;
                 case "State":
                     RaisePropertyChanged("State");
@@ -353,6 +356,20 @@ namespace Dynamo.ViewModels
                 //case "ArgumentLacing":
                 //    SetLacingTypeCommand.RaiseCanExecuteChanged();
                 //    break;
+            }
+        }
+
+        private void UpdateZIndex()
+        {
+            if (this.IsSelected == true)
+            {
+                this.ZIndex = 4;
+                this.PreviewBubble.ZIndex = 4;
+            }
+            else
+            {
+                this.ZIndex = 3;
+                this.PreviewBubble.ZIndex = 3;
             }
         }
 

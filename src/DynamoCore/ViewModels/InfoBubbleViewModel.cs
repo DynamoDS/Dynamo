@@ -39,13 +39,13 @@ namespace Dynamo.ViewModels
 
         #region Properties
 
+        private double zIndex = 3;
         public double ZIndex
         {
-            get
-            {
-                return 3;
-            }
+            get { return zIndex; }
+            set { zIndex = value; RaisePropertyChanged("ZIndex"); }
         }
+
         public Guid TargetGUID { get; set; }
 
         private Style infoBubbleStyle;
@@ -168,6 +168,7 @@ namespace Dynamo.ViewModels
 
         public InfoBubbleViewModel()
         {
+            this.ZIndex = 3;
             fadeInTimer = new Timer(20);
             fadeInTimer.Elapsed += fadeInTimer_Elapsed;
             fadeInTimer.Enabled = true;
@@ -184,6 +185,8 @@ namespace Dynamo.ViewModels
 
         public InfoBubbleViewModel(Guid guid)
         {
+            this.ZIndex = 3;
+
             fadeInTimer = new Timer(20);
             fadeInTimer.Elapsed += fadeInTimer_Elapsed;
             fadeInTimer.Enabled = true;
