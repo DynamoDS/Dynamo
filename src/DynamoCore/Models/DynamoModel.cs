@@ -51,8 +51,16 @@ namespace Dynamo.Models
                 double zoom = 1.0;
                 string id = "";
 
+                var topNode = xmlDoc.GetElementsByTagName("Workspace");
+
+                // legacy support
+                if (topNode.Count == 0)
+                {
+                    topNode = xmlDoc.GetElementsByTagName("dynWorkspace");
+                }
+
                 // load the header
-                foreach (XmlNode node in xmlDoc.GetElementsByTagName("Workspace"))
+                foreach (XmlNode node in topNode)
                 {
                     foreach (XmlAttribute att in node.Attributes)
                     {
@@ -78,7 +86,6 @@ namespace Dynamo.Models
                 {
                     id = GuidUtility.Create(GuidUtility.UrlNamespace, funName).ToString();
                 }
-
 
                 return new WorkspaceHeader() { ID = id, Name = funName, X = cx, Y = cy, Zoom = zoom, FileName = path };
 
