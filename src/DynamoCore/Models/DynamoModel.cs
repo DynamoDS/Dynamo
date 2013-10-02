@@ -88,13 +88,7 @@ namespace Dynamo.Models
                     id = GuidUtility.Create(GuidUtility.UrlNamespace, funName).ToString();
                 }
 
-<<<<<<< HEAD
-
                 return new WorkspaceHeader() { ID = id, Name = funName, X = cx, Y = cy, Zoom = zoom, FilePath = path };
-=======
-                return new WorkspaceHeader() { ID = id, Name = funName, X = cx, Y = cy, Zoom = zoom, FileName = path };
->>>>>>> 253890f... Fix and unit tests for #535
-
 
             }
             catch (Exception ex)
