@@ -70,6 +70,8 @@ namespace Dynamo
 
             //notify the UI of visualization completion
             OnVisualizationUpdateComplete(this, new VisualizationEventArgs(aggRd));
+
+            isUpdating = false;
         }
 
         public static void DrawLibGGraphicItem(GraphicItem g, RenderDescription rd, IEnumerable<Visualization> selected, Visualization n)
