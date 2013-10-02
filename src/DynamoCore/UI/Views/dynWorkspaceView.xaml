@@ -8,6 +8,7 @@
              xmlns:nodes="clr-namespace:Dynamo.Nodes"
              xmlns:commands="clr-namespace:Dynamo.UI.Commands"
              xmlns:viewModels="clr-namespace:Dynamo.ViewModels" xmlns:dynamo="clr-namespace:Dynamo"
+             xmlns:utilities="clr-namespace:Dynamo.Utilities"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              MouseLeftButtonDown="DynWorkspaceView_OnMouseLeftButtonDown"
@@ -24,42 +25,15 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    
-    <!--<UserControl.Resources>
-        <controls:BoolToFullscreenWatchVisibilityConverter x:Key="BoolToFullscreenWatchVisibilityConverter"/>
-    </UserControl.Resources>-->
-        
-        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
-        <Canvas Name="backgroundCanvas" 
-                 Margin="0,0,0,0" 
-                 ClipToBounds="True" 
-                 Grid.Row="0" 
-                 Grid.Column="2"
-                 IsHitTestVisible="{Binding ShouldBeHitTestVisible}">
-            <Canvas.Background>
-                <SolidColorBrush Color="{Binding IsHomeSpace, Converter={StaticResource WorkspaceBackgroundColorConverter}}" />
-            </Canvas.Background>
-        </Canvas>
 
-         <ItemsControl ItemsSource="{Binding Watch3DViewModels}"
-            HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <!--OLD visibility code for full screen watch no longer required because we delete the watches-->
-            <!--HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-            Visibility="{Binding FullScreenWatchVisible,-->
-             
-            <ItemsControl.Resources>
-                <DataTemplate DataType="{x:Type viewModels:Watch3DFullscreenViewModel}">
-                    <controls:WatchViewFullscreen></controls:WatchViewFullscreen>
-                </DataTemplate>
-            </ItemsControl.Resources>
-        </ItemsControl>
-        
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
+
         <Canvas Name="outerCanvas" 
                  Margin="0,0,0,0" 
                  ClipToBounds="True" 
                  Grid.Row="0" 
                  Grid.Column="2"
-                 IsHitTestVisible="{Binding ShouldBeHitTestVisible}">
+                 IsHitTestVisible="{Binding Path=DataContext.ShouldBeHitTestVisible, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type TabControl}}}">
             
             <controls:ZoomBorder ClipToBounds="True" MouseWheel="zoomBorder_MouseWheel" BorderThickness="0"
                   MouseMove="zoomBorder_MouseMove" x:Name="zoomBorder">

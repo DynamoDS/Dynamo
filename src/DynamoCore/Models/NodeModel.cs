@@ -106,6 +106,9 @@ namespace Dynamo.Models
             get { return this is Function; }
         }
 
+        /// <summary>
+        /// Returns whether the node is to be included in visualizations.
+        /// </summary>
         public bool IsVisible
         {
             get 
@@ -120,6 +123,10 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        /// Returns whether the node aggregates its upstream connections
+        /// for visualizations.
+        /// </summary>
         public bool IsUpstreamVisible
         {
             get 
@@ -980,10 +987,10 @@ namespace Dynamo.Models
         
         protected virtual void __eval_internal(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
         {
-            //if this element maintains a collcection of references
-            //then clear the collection
-            if (this is IClearable)
-                (this as IClearable).ClearReferences();
+            if (this is IDrawable)
+            {
+                dynSettings.Controller.VisualizationManager.MarkForUpdate(this);
+            }
 
             var argSets = new List<FSharpList<FScheme.Value>>();
 
@@ -1078,10 +1085,10 @@ namespace Dynamo.Models
                 OnEvaluate();
             }
 
-            if (dynSettings.Controller.UIDispatcher != null && this is IDrawable)
-            {
-                dynSettings.Controller.UIDispatcher.Invoke(new Action(() => (this as IDrawable).Draw()));
-            }
+            //if (dynSettings.Controller.UIDispatcher != null && this is IDrawable)
+            //{
+            //    dynSettings.Controller.UIDispatcher.Invoke(new Action(() => (this as IDrawable).Draw()));
+            //}
         }
 
         protected virtual bool AcceptsListOfLists(Value value)
@@ -1499,7 +1506,7 @@ namespace Dynamo.Models
             OnDispatchedToUI(this, new UIDispatcherEventArgs(a));
         }
 
-        public static string PrintValue(Value eIn, int currentListIndex, int maxListIndex, int currentDepth, int maxDepth)
+        public static string PrintValue(Value eIn, int currentListIndex, int maxListIndex, int currentDepth, int maxDepth, int maxStringLength = 20)
         {
             if (eIn == null)
                 return "<null>";
@@ -1530,6 +1537,11 @@ namespace Dynamo.Models
                 
                 var list = (eIn as Value.List).Item;
 
+                if (!list.Any())
+                {
+                    accString += " (empty)";
+                }
+
                 // when children will be at maxDepth, just do 1
                 if (currentDepth + 1 == maxDepth)
                 {
@@ -1548,11 +1560,20 @@ namespace Dynamo.Models
             }
             else if (eIn.IsNumber)
             {
-                accString += (eIn as Value.Number).Item.ToString();
+                var num = (eIn as Value.Number).Item;
+                var numFloat = (float) num;
+                accString += numFloat.ToString();
             }
             else if (eIn.IsString)
             {
-                accString += "\"" + (eIn as Value.String).Item + "\"";
+                var str = (eIn as Value.String).Item;
+
+                if (str.Length > maxStringLength)
+                {
+                    str = str.Substring(0, maxStringLength) + "...";
+                }
+
+                accString += "\"" + str + "\"";
             }
             else if (eIn.IsSymbol)
             {

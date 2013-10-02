@@ -117,7 +117,7 @@ namespace Dynamo.ViewModels
                 {
                     return "Not available in custom nodes";
                 }
-                return NodeModel.PrintValue(nodeLogic.OldValue, 0, 2, 0, 3);
+                return NodeModel.PrintValue(nodeLogic.OldValue, 0, 3, 0, 3);
             }
         }
 
@@ -210,6 +210,22 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public bool ShowsVisibilityToggles
+        {
+            get
+            {
+                //if the node is a Function, show the visibility toggles
+                //if any of it's internal nodes is drawable.
+                if (nodeLogic is Function)
+                {
+                    var f = nodeLogic as Function;
+                    return f.Definition.Workspace.Nodes.Any(x => x is IDrawable);
+                }
+
+                return nodeLogic is IDrawable;
+            }
+        }
+
         #endregion
 
         #region events
@@ -262,16 +278,16 @@ namespace Dynamo.ViewModels
             //are initially registered
             SetupInitialPortViewModels();
 
-            dynSettings.Controller.RequestNodeSelect += new NodeEventHandler(Controller_RequestNodeSelect);
+            //dynSettings.Controller.RequestNodeSelect += new NodeEventHandler(Controller_RequestNodeSelect);
         }
 
-        void Controller_RequestNodeSelect(object sender, EventArgs e)
-        {
-            ModelBase n = (e as ModelEventArgs).Model;
+        //void Controller_RequestNodeSelect(object sender, EventArgs e)
+        //{
+        //    ModelBase n = (e as ModelEventArgs).Model;
 
-            DynamoSelection.Instance.ClearSelection();
-            DynamoSelection.Instance.Selection.Add(n);
-        }
+        //    DynamoSelection.Instance.ClearSelection();
+        //    DynamoSelection.Instance.Selection.Add(n);
+        //}
 
         #endregion
 

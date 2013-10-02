@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using Dynamo.Core.Automation;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using String = System.String;
@@ -205,7 +206,9 @@ namespace Dynamo.Search.SearchElements
             var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
             if (placedNode != null)
             {
-                dynSettings.Controller.OnRequestSelect(this, new ModelEventArgs(placedNode));
+                //dynSettings.Controller.OnRequestSelect(this, new ModelEventArgs(placedNode));
+                DynamoSelection.Instance.ClearSelection();
+                DynamoSelection.Instance.Selection.Add(placedNode);
             }
         }
 

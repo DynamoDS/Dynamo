@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using System.Windows.Media.Media3D;
 using System.Xml;
 
 using Autodesk.Revit.DB;
@@ -12,18 +11,13 @@ using Microsoft.FSharp.Collections;
 
 using Dynamo.Utilities;
 using Value = Dynamo.FScheme.Value;
-using Dynamo.Connectors;
-using Dynamo.Controls;
-using Dynamo.Nodes;
-
-using HelixToolkit.Wpf;
 
 namespace Dynamo.Revit
 {
-    public abstract partial class RevitTransactionNode : NodeModel, IDrawable
+    public abstract partial class RevitTransactionNode : NodeModel , IDrawable
     {
         protected object DrawableObject = null;
-        protected Func<object, RenderDescription> DrawMethod = null;
+        //protected Func<object, RenderDescription> DrawMethod = null;
 
         //private Type base_type = null;
 
@@ -63,8 +57,6 @@ namespace Dynamo.Revit
                 return elements.SelectMany(x => x);
             }
         }
-
-        public RenderDescription RenderDescription { get; set; }
 
         protected RevitTransactionNode()
         {
@@ -149,283 +141,6 @@ namespace Dynamo.Revit
             }
         }
 
-        #region Watch 3D Rendering
-
-        public virtual void Draw()
-        {
-            if (this.RenderDescription == null)
-                this.RenderDescription = new Nodes.RenderDescription();
-            else
-                this.RenderDescription.ClearAll();
-
-            var drawaableRevitElements = elements.SelectMany(x => x.Select(y => dynRevitSettings.Doc.Document.GetElement(y)));
-
-            Debug.WriteLine(string.Format("Drawing {0} elements of type : {1}", drawaableRevitElements.Count(),
-                                          this.GetType()));
-            
-            foreach (Element e in drawaableRevitElements)
-            {
-                Draw(this.RenderDescription, e);
-            }
-        }
-
-        public static void DrawUndrawable(RenderDescription description, object obj)
-        {
-            //TODO: write a message, throw an exception, draw a question mark
-        }
-
-        public static void DrawReferencePoint(RenderDescription description, object obj)
-        {
-            var point = obj as ReferencePoint;
-
-            if (point == null)
-                return;
-
-            description.points.Add(new Point3D(point.GetCoordinateSystem().Origin.X,
-                point.GetCoordinateSystem().Origin.Y,
-                point.GetCoordinateSystem().Origin.Z));
-        }
-
-        public static void DrawXYZ(RenderDescription description, object obj)
-        {
-            var point = obj as XYZ;
-            if (point == null)
-                return;
-
-            description.points.Add(new Point3D(point.X, point.Y, point.Z));
-        }
-
-        public static void DrawCurve(RenderDescription description, object obj)
-        {
-            var curve = obj as Curve;
-
-            if (curve == null)
-                return;
-
-            IList<XYZ> points = curve.Tessellate();
-
-            for (int i = 0; i < points.Count; ++i)
-            {
-                XYZ xyz = points[i];
-
-                description.lines.Add(new Point3D(xyz.X, xyz.Y, xyz.Z));
-
-                if (i == 0 || i == (points.Count - 1))
-                    continue;
-
-                description.lines.Add(new Point3D(xyz.X, xyz.Y, xyz.Z));
-            }
-        }
-
-        public static void DrawCurveElement(RenderDescription description, object obj)
-        {
-            var elem = obj as CurveElement;
-
-            if (elem == null)
-                return;
-
-            DrawCurve(description, elem.GeometryCurve);
-        }
-
-        public static void DrawSolid(RenderDescription description, object obj)
-        {
-            var solid = obj as Solid;
-
-            if (solid == null)
-                return;
-
-            foreach (Face f in solid.Faces)
-            {
-                DrawFace(description, f);
-            }
-
-            foreach (Edge edge in solid.Edges)
-            {
-                DrawCurve(description, edge.AsCurve());
-            }
-        }
-
-        public static Point3D RevitPointToWindowsPoint(XYZ xyz)
-        {
-            return new Point3D(xyz.X, xyz.Y, xyz.Z);
-        }
-
-        // must return an array to make mesh double sided
-        public static Mesh3D[] RevitMeshToHelixMesh(Mesh rmesh)
-        {
-            var indicesFront = new List<int>();
-            var indicesBack = new List<int>();
-            var vertices = new List<Point3D>();
-
-            for (int i = 0; i < rmesh.NumTriangles; ++i)
-            {
-                MeshTriangle tri = rmesh.get_Triangle(i);
-
-                for (int k = 0; k < 3; ++k)
-                {
-                    Point3D newPoint = RevitPointToWindowsPoint(tri.get_Vertex(k));
-
-                    bool newPointExists = false;
-                    for (int l = 0; l < vertices.Count; ++l)
-                    {
-                        Point3D p = vertices[l];
-                        if ((p.X == newPoint.X) && (p.Y == newPoint.Y) && (p.Z == newPoint.Z))
-                        {
-                            indicesFront.Add(l);
-                            newPointExists = true;
-                            break;
-                        }
-                    }
-
-                    if (newPointExists)
-                        continue;
-
-                    indicesFront.Add(vertices.Count);
-                    vertices.Add(newPoint);
-                }
-
-                int a = indicesFront[indicesFront.Count - 3];
-                int b = indicesFront[indicesFront.Count - 2];
-                int c = indicesFront[indicesFront.Count - 1];
-
-                indicesBack.Add(c);
-                indicesBack.Add(b);
-                indicesBack.Add(a);
-            }
-
-            var meshes = new List<Mesh3D>
-            {
-                new Mesh3D(vertices, indicesFront),
-                new Mesh3D(vertices, indicesBack)
-            };
-
-            return meshes.ToArray();
-        }
-
-        public static void DrawFace(RenderDescription description, object obj)
-        {
-            var face = obj as Face;
-
-            if (face == null)
-                return;
-
-            Mesh3D[] meshes = RevitMeshToHelixMesh(face.Triangulate(0.2));
-
-            foreach (Mesh3D mesh in meshes)
-            {
-                description.meshes.Add(mesh);
-            }
-        }
-
-        public static void DrawForm(RenderDescription description, object obj)
-        {
-            var form = obj as Form;
-
-            if (form == null)
-                return;
-
-            DrawGeometryElement(description, form.get_Geometry(new Options()));
-        }
-
-        public static void DrawGeometryElement(RenderDescription description, object obj)
-        {
-            try
-            {
-                var gelem = obj as GeometryElement;
-
-                foreach (GeometryObject go in gelem)
-                {
-                    DrawGeometryObject(description, go);
-                }
-            }
-            catch (Exception ex)
-            {
-                DynamoLogger.Instance.Log(ex.Message);
-                DynamoLogger.Instance.Log(ex.StackTrace);
-            }
-
-        }
-
-        // Why the if/else statements? Most dynRevitTransactionNode are created
-        // via a Python script. This keeps logic in the main C# code base.
-
-        public static void DrawGeometryObject(RenderDescription description, object obj)
-        {
-
-            if (obj == null)
-                return;
-
-            if (obj is XYZ)
-            {
-                DrawXYZ(description, obj);
-            }
-            if (obj is Curve)
-            {
-                DrawCurve(description, obj);
-            }
-            else if (obj is Solid)
-            {
-                DrawSolid(description, obj);
-            }
-            else if (obj is Face)
-            {
-                DrawFace(description, obj);
-            }
-            else
-            {
-                DrawUndrawable(description, obj);
-            }
-        }
-
-        // Elements can cantain many Geometry
-        public static void DrawElement(RenderDescription description, object obj)
-        {
-            if (obj == null)
-                return;
-
-            if (obj is CurveElement)
-            {
-                DrawCurveElement(description, obj);
-            }
-            else if (obj is ReferencePoint)
-            {
-                DrawReferencePoint(description, obj);
-            }
-            else if (obj is Form)
-            {
-                DrawForm(description, obj);
-            }
-            else if (obj is GeometryElement)
-            {
-                DrawGeometryElement(description, obj);
-            }
-            else if (obj is GeometryObject)
-            {
-                DrawGeometryObject(description, obj);
-            }
-            else
-            {
-                var elem = obj as Element;
-                if (elem != null)
-                {
-                    var o = new Options { DetailLevel = ViewDetailLevel.Medium };
-                    GeometryElement geom = elem.get_Geometry(o);
-
-                    if (geom != null)
-                    {
-                        DrawGeometryObject(description, geom);
-                    }
-                }
-            }
-        }
-
-        public void Draw(RenderDescription description, object obj)
-        {
-            DrawElement(description, obj);
-        }
-
-        #endregion
-        
         //TODO: Move handling of increments to wrappers for eval. Should never have to touch this in subclasses.
         /// <summary>
         /// Implementation detail, records how many times this Element has been executed during this run.
@@ -629,6 +344,26 @@ namespace Dynamo.Revit
             foreach (var els in elements)
                 els.RemoveAll(deleted.Contains);
         }
+
+        #region IDrawableInterface
+        public void RegisterForVisualization()
+        {
+            dynSettings.Controller.VisualizationManager.RegisterForVisualization(this);
+        }
+
+        public void UnregisterFromVisualization()
+        {
+            dynSettings.Controller.VisualizationManager.UnregisterFromVisualization(this);
+        }
+
+        public List<object> VisualizationGeometry
+        {
+            get
+            {
+                return dynSettings.Controller.VisualizationManager.Visualizations[this.GUID.ToString()].Geometry;
+            }
+        }
+        #endregion
     }
 
     public abstract class RevitTransactionNodeWithOneOutput : RevitTransactionNode
