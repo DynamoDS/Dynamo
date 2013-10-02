@@ -189,7 +189,7 @@ namespace Dynamo.Controls
         void _vm_RequestUserSaveWorkflow(object sender, WorkspaceSaveEventArgs e)
         {
             var dialogText = "";
-            if (e.Workspace is FuncWorkspace)
+            if (e.Workspace is CustomNodeWorkspaceModel)
             {
                 dialogText = "You have unsaved changes to custom node workspace: \"" + e.Workspace.Name +
                              "\"\n\n Would you like to save your changes?";

@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Windows;
 using System.Xml;
 using System.Globalization;
@@ -233,8 +231,9 @@ namespace Dynamo.Models
         internal Version WorkspaceVersion { get; set; }
 
         #endregion
-
+        
         public delegate void WorkspaceSavedEvent(WorkspaceModel model);
+        public event WorkspaceSavedEvent WorkspaceSaved;
 
         /// <summary>
         ///     Defines whether this is the current space in Dynamo
@@ -315,7 +314,32 @@ namespace Dynamo.Models
 
         public abstract void OnDisplayed();
 
-        public event WorkspaceSavedEvent WorkspaceSaved;
+        /// <summary>
+        ///     Save to a specific file path, if the path is null or empty, does nothing.
+        ///     If successful, the CurrentWorkspace.FilePath field is updated as a side effect
+        /// </summary>
+        /// <param name="path">The path to save to</param>
+        public virtual bool SaveAs(string path)
+        {
+            if (String.IsNullOrEmpty(path)) return false;
+
+            if (!WorkspaceModel.SaveWorkspace(path, this))
+            {
+                DynamoLogger.Instance.Log("Workbench could not be saved.");
+                return false;
+            }
+
+            this.FilePath = path;
+            return true;
+        }
+
+        /// <summary>
+        /// Save assuming that the Filepath attribute is set.
+        /// </summary>
+        public virtual bool Save()
+        {
+            return this.SaveAs(this.FilePath);
+        }
 
         /// <summary>
         ///     If there are observers for the save, notifies them
@@ -646,7 +670,7 @@ namespace Dynamo.Models
             DynamoLogger.Instance.Log("Saving " + xmlPath + "...");
             try
             {
-                var xmlDoc = GetXmlDocFromWorkspace(workSpace, workSpace is HomeWorkspace);
+                var xmlDoc = GetXmlDocFromWorkspace(workSpace, workSpace is HomeWorkspaceModel);
                 xmlDoc.Save(xmlPath);
                 workSpace.FilePath = xmlPath;
 
@@ -778,127 +802,5 @@ namespace Dynamo.Models
         }
 
         #endregion
-    }
-
-    internal static class WorkspaceHelpers
-    {
-        //public static Dictionary<string, dynNodeView> HiddenNodes =
-        //    new Dictionary<string, dynNodeView>();
-    }
-
-    public class FuncWorkspace : WorkspaceModel
-    {
-        #region Contructors
-
-        public FuncWorkspace()
-            : this("", "", "", new List<NodeModel>(), new List<ConnectorModel>(), 0, 0)
-        {
-        }
-
-        public FuncWorkspace(String name, String category)
-            : this(name, category, "",new List<NodeModel>(), new List<ConnectorModel>(), 0, 0)
-        {
-        }
-
-        public FuncWorkspace(String name, String category, string description, double x, double y)
-            : this(name, category, description, new List<NodeModel>(), new List<ConnectorModel>(), x, y)
-        {
-        }
-
-        public FuncWorkspace(
-            String name, String category, string description, IEnumerable<NodeModel> e, IEnumerable<ConnectorModel> c, double x, double y)
-            : base(name, e, c, x, y)
-        {
-            WatchChanges = true; 
-            HasUnsavedChanges = false;
-            Category = category;
-            Description = description;
-
-            PropertyChanged += OnPropertyChanged;
-        }
-
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
-        {
-            if (args.PropertyName == "Name" || args.PropertyName == "Category" || args.PropertyName == "Description")
-            {
-                this.HasUnsavedChanges = true;
-            }
-        }
-
-        #endregion
-
-        public override void Modified()
-        {
-            base.Modified();
-
-            //add a check if any loaded defs match this workspace
-            // unnecessary given the next lines --SJE
-            //if (dynSettings.Controller.CustomNodeManager.GetLoadedDefinitions().All(x => x.Workspace != this))
-            //    return;
-
-            var def =
-                dynSettings.Controller.CustomNodeManager
-                           .GetLoadedDefinitions()
-                           .FirstOrDefault(x => x.Workspace == this);
-
-            if (def == null) return;
-
-            def.RequiresRecalc = true;
-
-            try
-            {
-                dynSettings.Controller.DynamoModel.SaveFunction(def, false, true, true);
-            }
-            catch { }
-        }
-
-        public override void OnDisplayed()
-        {
-
-        }
-    }
-
-    public class HomeWorkspace : WorkspaceModel
-    {
-        public HomeWorkspace()
-            : this(new List<NodeModel>(), new List<ConnectorModel>(), 0, 0)
-        {
-        }
-
-        public HomeWorkspace(double x, double y)
-            : this(new List<NodeModel>(), new List<ConnectorModel>(), x, y)
-        {
-        }
-
-        public HomeWorkspace(IEnumerable<NodeModel> e, IEnumerable<ConnectorModel> c, double x, double y)
-            : base("Home", e, c, x, y)
-        {
-        }
-
-        public override void Modified()
-        {
-            base.Modified();
-
-            var controller = dynSettings.Controller;
-            if (dynSettings.Controller.DynamoViewModel.DynamicRunEnabled)
-            {
-                //DynamoLogger.Instance.Log("Running Dynamically");
-                if (!controller.Running)
-                {
-                    //DynamoLogger.Instance.Log("Nothing currently running, now running.");
-                    controller.RunExpression(false);
-                }
-                else
-                {
-                    //DynamoLogger.Instance.Log("Run in progress, cancelling then running.");
-                    controller.QueueRun();
-                }
-            }
-        }
-
-        public override void OnDisplayed()
-        {
-            //DynamoView bench = dynSettings.Bench; // ewwwy
-        }
     }
 }

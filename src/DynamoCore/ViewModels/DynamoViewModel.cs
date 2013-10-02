@@ -568,14 +568,14 @@ namespace Dynamo.ViewModels
         {
             if (workspace.FilePath != null)
             {
-                _model.SaveAs(workspace.FilePath, workspace);
+                workspace.Save();
             }
             else
             {
                 var fd = this.GetSaveDialog(workspace);
                 if (fd.ShowDialog() == DialogResult.OK)
                 {
-                    _model.SaveAs(fd.FileName, workspace);
+                    workspace.SaveAs(fd.FileName);
                 }
             }
         }
@@ -645,7 +645,7 @@ namespace Dynamo.ViewModels
                 return "";
 
             // Get the internal nodes for the function
-            WorkspaceModel functionWorkspace = definition.Workspace;
+            WorkspaceModel functionWorkspace = definition.WorkspaceModel;
 
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string pluginsPath = Path.Combine(directory, "definitions");
@@ -679,10 +679,10 @@ namespace Dynamo.ViewModels
                 throw new Exception("There is a null function definition for this node.");
             }
 
-            if (_model.CurrentWorkspace.Name.Equals(symbol.Workspace.Name))
+            if (_model.CurrentWorkspace.Name.Equals(symbol.WorkspaceModel.Name))
                 return;
 
-            WorkspaceModel newWs = symbol.Workspace;
+            WorkspaceModel newWs = symbol.WorkspaceModel;
 
             if ( !this._model.Workspaces.Contains(newWs) )
                 this._model.Workspaces.Add(newWs);
@@ -728,7 +728,7 @@ namespace Dynamo.ViewModels
                 {
                     foreach (FunctionDefinition funcDef in Controller.CustomNodeManager.GetLoadedDefinitions())
                     {
-                        if (funcDef.Workspace.Nodes.Contains(e))
+                        if (funcDef.WorkspaceModel.Nodes.Contains(e))
                         {
                             ViewCustomNodeWorkspace(funcDef);
                             break;
@@ -775,7 +775,7 @@ namespace Dynamo.ViewModels
                 _fileDialog.InitialDirectory = fi.DirectoryName;
                 _fileDialog.FileName = fi.Name;
             }
-            else if (vm.Model.CurrentWorkspace is FuncWorkspace && dynSettings.Controller.CustomNodeManager.SearchPath.Any())
+            else if (vm.Model.CurrentWorkspace is CustomNodeWorkspaceModel && dynSettings.Controller.CustomNodeManager.SearchPath.Any())
             {
                 _fileDialog.InitialDirectory = dynSettings.Controller.CustomNodeManager.SearchPath[0];
             }

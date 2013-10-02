@@ -82,7 +82,7 @@ namespace Dynamo.Nodes
                 if (node is Function && node.WorkSpace == dynSettings.Controller.DynamoModel.HomeSpace)
                 {
                     Function func = (Function)node;
-                    IEnumerable<NodeModel> topElements = func.Definition.Workspace.GetTopMostNodes();
+                    IEnumerable<NodeModel> topElements = func.Definition.WorkspaceModel.GetTopMostNodes();
                     foreach (NodeModel innerNode in topElements)
                     {
                         GetUpstreamIDrawable(drawables, innerNode.Inputs);
