@@ -2595,6 +2595,8 @@ namespace Dynamo.Nodes
         {
             OutPortData.Add(new PortData("2.71828...", "e", typeof(Value.Number)));
             RegisterAllPorts();
+
+            OldValue = Value.NewNumber(Math.E);
         }
 
         public override bool RequiresRecalc
@@ -2643,6 +2645,8 @@ namespace Dynamo.Nodes
         {
             OutPortData.Add(new PortData("3.14159...", "pi", typeof(Value.Number)));
             RegisterAllPorts();
+
+            OldValue = Value.NewNumber(Math.PI);
         }
 
         public override bool RequiresRecalc
@@ -2691,6 +2695,8 @@ namespace Dynamo.Nodes
         {
             OutPortData.Add(new PortData("3.14159...*2", "2*pi", typeof(Value.Number)));
             RegisterAllPorts();
+
+            OldValue = Value.NewNumber(Math.PI*2);
         }
 
         public override bool RequiresRecalc
