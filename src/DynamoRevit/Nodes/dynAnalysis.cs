@@ -11,7 +11,7 @@ using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Nodes
 {
-
+     
     [NodeName("Spatial Field Manager")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
     [NodeDescription("Gets or creates the spatial field manager on the active view.")]
@@ -32,18 +32,18 @@ namespace Dynamo.Nodes
             Autodesk.Revit.DB.Analysis.SpatialFieldManager sfm;
 
             sfm = Autodesk.Revit.DB.Analysis.SpatialFieldManager.GetSpatialFieldManager(dynRevitSettings.Doc.ActiveView);
-
+            
             if (sfm != null)
             {
                 dynRevitSettings.SpatialFieldManagerUpdated = sfm;
             }
             else
             {
-                sfm = Autodesk.Revit.DB.Analysis.SpatialFieldManager.CreateSpatialFieldManager(dynRevitSettings.Doc.ActiveView, (int)((Value.Number)args[0]).Item);
+                sfm = Autodesk.Revit.DB.Analysis.SpatialFieldManager.CreateSpatialFieldManager(dynRevitSettings.Doc.ActiveView, (int) ((Value.Number)args[0]).Item );
             }
 
             return Value.NewContainer(sfm);
-
+            
         }
     }
 
@@ -88,21 +88,19 @@ namespace Dynamo.Nodes
             {
                 var coloredSurfaceSettings = new AnalysisDisplayColoredSurfaceSettings();
                 coloredSurfaceSettings.ShowGridLines = false;
-
+               
                 var colorSettings = new AnalysisDisplayColorSettings();
                 var orange = new Color(255, 205, 0);
                 var purple = new Color(200, 0, 200);
                 colorSettings.MaxColor = orange;
                 colorSettings.MinColor = purple;
 
-                var legendSettings = new AnalysisDisplayLegendSettings
-                {
+                var legendSettings = new AnalysisDisplayLegendSettings{
                     NumberOfSteps = 10,
                     Rounding = 0.05,
                     ShowDataDescription = false,
-                    ShowLegend = true
-                };
-
+                    ShowLegend = true};
+                
 
                 var collector2 = new FilteredElementCollector(doc);
                 ICollection<Element> elementCollection = collector2.OfClass(typeof(TextNoteType)).ToElements();
@@ -280,7 +278,7 @@ namespace Dynamo.Nodes
                x => (UV)((Value.Container)x).Item
             );
             var samplePts = new FieldDomainPointsByUV(pts.ToList<UV>());
-
+            
             //unwrap the values
             IEnumerable<double> nvals = ((Value.List)args[0]).Item.Select(
                x => (double)((Value.Number)x).Item
@@ -289,7 +287,7 @@ namespace Dynamo.Nodes
             //for every sample location add a list
             //of valueatpoint objects. for now, we only
             //support one value per point
-            IList<ValueAtPoint> valList = nvals.Select(n => new ValueAtPoint(new List<double> { n })).ToList();
+            IList<ValueAtPoint> valList = nvals.Select(n => new ValueAtPoint(new List<double> {n})).ToList();
             var sampleValues = new FieldValues(valList);
 
             int schemaIndex = 0;
@@ -660,12 +658,12 @@ namespace Dynamo.Nodes
             Transform t = curve.ComputeDerivatives(0, true);
 
             XYZ x = t.BasisX.Normalize();
-            XYZ y = t.BasisX.IsAlmostEqualTo(XYZ.BasisZ) ?
-                t.BasisX.CrossProduct(XYZ.BasisY).Normalize() :
+            XYZ y = t.BasisX.IsAlmostEqualTo(XYZ.BasisZ) ? 
+                t.BasisX.CrossProduct(XYZ.BasisY).Normalize() : 
                 t.BasisX.CrossProduct(XYZ.BasisZ).Normalize();
             XYZ z = x.CrossProduct(y);
 
-            Autodesk.Revit.DB.Ellipse arc1 = dynRevitSettings.Revit.Application.Create.NewEllipse(t.Origin, .1, .1, y, z, -Math.PI, 0);
+            Autodesk.Revit.DB.Ellipse arc1 = dynRevitSettings.Revit.Application.Create.NewEllipse(t.Origin, .1, .1, y,z,-Math.PI, 0);
             Autodesk.Revit.DB.Ellipse arc2 = dynRevitSettings.Revit.Application.Create.NewEllipse(t.Origin, .1, .1, y, z, 0, Math.PI);
 
             var pathLoop = new Autodesk.Revit.DB.CurveLoop();
@@ -677,7 +675,7 @@ namespace Dynamo.Nodes
             double curveDomain = curve.get_EndParameter(1) - curve.get_EndParameter(0);
 
             int idx = -1;
-            var s = GeometryCreationUtilities.CreateSweptGeometry(pathLoop, 0, 0, new List<Autodesk.Revit.DB.CurveLoop> { profileLoop });
+            var s = GeometryCreationUtilities.CreateSweptGeometry(pathLoop, 0, 0, new List<Autodesk.Revit.DB.CurveLoop>{profileLoop});
             foreach (Face face in s.Faces)
             {
                 //divide the V domain by the number of incoming
@@ -699,13 +697,13 @@ namespace Dynamo.Nodes
                 //sampling points, AVF would draw the two surfaces as if there was a hard
                 //edge between them. this provides a better blend.
                 int count = 10;
-                for (int i = 0; i < count; i++)
+                for (int i = 0; i < count; i ++)
                 {
                     //get a UV point on the face
                     //find its XYZ location and project to 
                     //the underlying curve. find the value which corresponds
                     //to the location on the curve
-                    var uv = new UV(domain.Min.U, domain.Min.V + vSpan / count * (double)i);
+                    var uv = new UV(domain.Min.U, domain.Min.V + vSpan / count*(double) i);
                     var uv1 = new UV(domain.Max.U, domain.Min.V + vSpan / count * (double)i);
                     uvPts.Add(uv);
                     uvPts.Add(uv1);
@@ -723,7 +721,7 @@ namespace Dynamo.Nodes
                     var valueIndex = (int)Math.Floor(curveParam * (double)nvals.Count());
                     if (valueIndex >= nvals.Count())
                         valueIndex = nvals.Count() - 1;
-
+                    
                     //create list of values at this point - currently supporting only one
                     //var doubleList = new List<double> { nvals.ElementAt(i) };
                     var doubleList = new List<double> { nvals.ElementAt(valueIndex) };
@@ -762,14 +760,14 @@ namespace Dynamo.Nodes
     [NodeName("Ray Bounce")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_SURFACE)]
     [NodeDescription("Conduct a ray trace analysis from an origin and direction, providing the maximum number of bounces.")]
-    class RayBounce : RevitTransactionNode
+    class RayBounce:RevitTransactionNode
     {
         private Face currFace;
 
         private PortData intersections = new PortData("intersections", "The collection of intersection points.",
-                                                      typeof(Value.List));
+                                                      typeof (Value.List));
 
-        private PortData elements = new PortData("elements", "The elements intersected by the ray.", typeof(Value.List));
+        private PortData elements = new PortData("elements", "The elements intersected by the ray.", typeof (Value.List));
 
         public RayBounce()
         {
@@ -784,12 +782,12 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
+        public override void  Evaluate(FSharpList<Value> args, Dictionary<PortData,Value> outPuts)
         {
-            var origin = (XYZ)((Value.Container)args[0]).Item;
+            var origin = (XYZ) ((Value.Container) args[0]).Item;
             var direction = (XYZ)((Value.Container)args[1]).Item;
             var rayLimit = ((Value.Number)args[2]).Item;
-            var view = (View3D)((Value.Container)args[3]).Item;
+            var view = (View3D)((Value.Container) args[3]).Item;
 
             XYZ startpt = origin;
             int rayCount = 0;
