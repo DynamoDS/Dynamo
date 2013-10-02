@@ -64,6 +64,7 @@ namespace Dynamo
         }
 
         public static void DrawLibGGraphicItem(GraphicItem g, RenderDescription rd, IEnumerable<Visualization> selected, Visualization n)
+
         {
 
             if (g is CoordinateSystem)
@@ -177,9 +178,9 @@ namespace Dynamo
 
                 var builder = new MeshBuilder();
 
-                FloatList triangle_vertices = g.triangle_vertices();    //.triangle_vertices_threadsafe();
-                FloatList triangle_normals = g.triangle_normals();  //.triangle_normals_threadsafe();
-                
+                FloatList triangle_vertices = g.triangle_vertices_threadsafe();
+                FloatList triangle_normals = g.triangle_normals_threadsafe();
+            
                 for (int i = 0; i < triangle_vertices.Count; i+=3)
                 {
                     var new_point = new Point3D(triangle_vertices[i],
