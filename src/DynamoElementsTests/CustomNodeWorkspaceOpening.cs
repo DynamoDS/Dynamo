@@ -19,7 +19,7 @@ namespace Dynamo
             var examplePath = Path.Combine(GetTestDirectory(), @"core\combine", "Sequence2.dyf");
             model.Open(examplePath);
 
-            var nodeWorkspace = model.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel);
+            var nodeWorkspace = model.Workspaces.FirstOrDefault(x => x is FuncWorkspace);
             Assert.IsNotNull(nodeWorkspace);
             Assert.AreEqual( model.CurrentWorkspace.Name, "Sequence2");
         }

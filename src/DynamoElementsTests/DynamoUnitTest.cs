@@ -51,34 +51,5 @@ namespace Dynamo.Tests
                 Console.WriteLine(ex.StackTrace);
             }
         }
-<<<<<<< HEAD
-
-        public void EmptyTempFolder()
-        {
-            try
-            {
-                var directory = new DirectoryInfo(TempFolder);
-                foreach (FileInfo file in directory.GetFiles()) file.Delete();
-                foreach (DirectoryInfo subDirectory in directory.GetDirectories()) subDirectory.Delete(true);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-            }
-        }
-
-        #endregion
-
-        #region utility methods
-
-        public string GetTestDirectory()
-        {
-            var directory = new DirectoryInfo(ExecutingDirectory);
-            return Path.Combine(directory.Parent.Parent.Parent.FullName, "test");
-        }
-
-        #endregion
-=======
->>>>>>> 253890f... Fix and unit tests for #535
     }
 }
