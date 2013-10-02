@@ -379,6 +379,8 @@ namespace Dynamo.ViewModels
                 InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection, guid);
                 dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.Invoke((new Action(() =>
                 {
+                    if (!dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Errors.Contains(this.ErrorBubble))
+                        return;
                     this.ErrorBubble.UpdateContentCommand.Execute(data);
                     this.ErrorBubble.SetAlwaysVisibleCommand.Execute(true);
                     this.ErrorBubble.FadeInCommand.Execute(null);
@@ -400,7 +402,7 @@ namespace Dynamo.ViewModels
         {
             if (this.PreviewBubble == null)
                 return;
-            if (NodeModel.OldValue == null)
+            if (string.IsNullOrEmpty(this.OldValue))
             {
                 if (ErrorBubble.Opacity != 0)
                 {
@@ -413,12 +415,14 @@ namespace Dynamo.ViewModels
                 Point topLeft = new Point(NodeModel.X, NodeModel.Y);
                 Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
                 InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.Preview;
-                string content = NodeModel.OldValue.ToString();
+                string content = this.OldValue;
                 InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Top;
                 Guid guid = NodeModel.GUID;
                 InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection, guid);
                 dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.Invoke((new Action(() =>
                 {
+                    if (!dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Previews.Contains(this.PreviewBubble))
+                        return;
                     this.PreviewBubble.UpdateContentCommand.Execute(data);
                     this.PreviewBubble.SetAlwaysVisibleCommand.Execute(true);
                     this.PreviewBubble.FadeInCommand.Execute(null);

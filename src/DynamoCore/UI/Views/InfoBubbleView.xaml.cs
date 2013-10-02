@@ -37,10 +37,10 @@ namespace Dynamo.Controls
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "ItemDescription")
+            if (e.PropertyName == "Content")
             {
                 ContentContainer.Children.Clear();
-                TextBox textBox = GetStyledTextBox(ViewModel.ItemDescription);
+                TextBox textBox = GetStyledTextBox(ViewModel.Content);
                 ContentContainer.Children.Add(textBox);
 
                 ContentContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
