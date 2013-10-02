@@ -123,13 +123,14 @@ namespace Dynamo.ViewModels
 
             internal bool HandleLeftButtonDown(object sender, MouseButtonEventArgs e)
             {
+                bool eventHandled = false;
                 if (this.currentState == State.Connection)
                 {
                     // Clicking on the canvas while connecting simply cancels 
                     // the operation and drop the temporary connector.
                     this.currentState = State.None;
                     this.SetActiveConnector(null);
-                    return true; // Mouse event handled.
+                    eventHandled = true; // Mouse event handled.
                 }
                 else if (this.currentState == State.None)
                 {
@@ -144,11 +145,11 @@ namespace Dynamo.ViewModels
                     else
                         InitiateWindowSelectionSequence();
 
-                    return true; // Mouse event handled.
+                    eventHandled = true; // Mouse event handled.
                 }
 
                 dynSettings.ReturnFocusToSearch();
-                return false;
+                return eventHandled;
             }
 
             internal bool HandleMouseRelease(object sender, MouseButtonEventArgs e)

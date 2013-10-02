@@ -22,15 +22,14 @@ namespace Dynamo.Controls
     /// </summary>
     public class DragCanvas : Canvas
     {
-
-        private List<DependencyObject> hitResultsList = new List<DependencyObject>();
-
         #region Data
+
+#if false
+        private List<DependencyObject> hitResultsList = new List<DependencyObject>();
 
         // Stores a reference to the UIElement currently being dragged by the user.
         private ObservableCollection<OffsetData> offsets = new ObservableCollection<OffsetData>();
 
-#if false
         // Keeps track of where the mouse cursor was when a drag operation began.		
         private Point origCursorLocation;
 
@@ -132,7 +131,7 @@ namespace Dynamo.Controls
         }
 
         #endregion // Static Constructor
-
+#if false
         #region Constructor
 
         /// <summary>
@@ -185,7 +184,7 @@ namespace Dynamo.Controls
         }
 
         #endregion // Constructor
-
+#endif
         #region Interface
 
         #region AllowDragging
@@ -746,6 +745,7 @@ namespace Dynamo.Controls
         }
     }
 
+#if false
     public class OffsetData
     {
         public double OriginalHorizontalOffset
@@ -793,5 +793,5 @@ namespace Dynamo.Controls
             this.Node = node;
         }
     }
-
+#endif
 }
