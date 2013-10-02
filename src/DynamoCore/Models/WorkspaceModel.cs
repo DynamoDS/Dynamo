@@ -125,7 +125,7 @@ namespace Dynamo.Models
         public string FilePath
         {
             get { return _filePath; }
-            private set
+            set
             {
                 _filePath = value;
                 RaisePropertyChanged("FilePath");

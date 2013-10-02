@@ -737,7 +737,7 @@ namespace Dynamo.ViewModels
                 }
             }
 
-            DynamoViewModel dvm = dynSettings.Controller.DynamoViewModel;
+            var dvm = dynSettings.Controller.DynamoViewModel;
             dvm.CurrentSpaceViewModel.OnRequestCenterViewOnElement(this, new ModelEventArgs(e));
         }
         

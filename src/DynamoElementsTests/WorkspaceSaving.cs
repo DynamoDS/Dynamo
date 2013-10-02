@@ -1,21 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.Tests;
+using Dynamo.Utilities;
 using NUnit.Framework;
 
 namespace Dynamo
 {
     class WorkspaceSaving : DynamoUnitTest
     {
+
         [Test]
         public void HomeWorkspaceCanSaveAsNewFile()
         {
             // new home workspace
             // save as
-            // file exists
-            Assert.Fail();
+            // file exists  
+
+            var dynamoModel = Controller.DynamoModel;
+            Assert.IsNotNull( dynamoModel.CurrentWorkspace );
+            Assert.IsAssignableFrom( typeof(HomeWorkspaceModel), dynamoModel.CurrentWorkspace );
+
+            var newPath = this.GetNewFileNameOnTempPath("dyn");
+            var res = Controller.DynamoModel.CurrentWorkspace.SaveAs(newPath);
+
+            Assert.IsTrue(res);
+            Assert.IsTrue(File.Exists(newPath));
+
         }
 
         [Test]
@@ -24,7 +39,18 @@ namespace Dynamo
             // new custom node
             // save as
             // file exists
-            Assert.Fail();
+
+            var dynamoModel = Controller.DynamoModel;
+            
+            Assert.IsNotNull(dynamoModel.CurrentWorkspace);
+            Assert.IsAssignableFrom(typeof(HomeWorkspaceModel), dynamoModel.CurrentWorkspace);
+
+            var newPath = this.GetNewFileNameOnTempPath("dyn");
+            var res = Controller.DynamoModel.CurrentWorkspace.SaveAs(newPath);
+
+            Assert.IsTrue(res);
+            Assert.IsTrue(File.Exists(newPath));
+
         }
 
         [Test]
@@ -33,7 +59,18 @@ namespace Dynamo
             // open file
             // save as
             // file exists
-            Assert.Fail();
+
+            var model = Controller.DynamoModel;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
+
+            string openPath = Path.Combine(examplePath, "Add.dyn");
+            model.Open(openPath);
+
+            var newPath = this.GetNewFileNameOnTempPath("dyn");
+            var res = Controller.DynamoModel.CurrentWorkspace.SaveAs(newPath);
+
+            Assert.IsTrue(res);
+            Assert.IsTrue(File.Exists(newPath));
         }
 
         [Test]
@@ -42,7 +79,17 @@ namespace Dynamo
             // open file
             // save as
             // file exists
-            Assert.Fail();
+            var model = Controller.DynamoModel;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\combine");
+
+            var openPath = Path.Combine(examplePath, "Sequence2.dyn");
+            model.Open(openPath);
+
+            var newPath = this.GetNewFileNameOnTempPath("dyf");
+            var res = Controller.DynamoModel.CurrentWorkspace.SaveAs(newPath);
+
+            Assert.IsTrue(res);
+            Assert.IsTrue(File.Exists(newPath));
         }
 
         [Test]
@@ -192,6 +239,26 @@ namespace Dynamo
             // open custom node
             // SaveAs
             // custom node instance has new function id
+            // custom node instance is in environment
+            Assert.Fail();
+        }
+
+        [Test]
+        public void CustomNodeSaveAsAddsNewIdToEnvironment()
+        {
+            // open custom node
+            // SaveAs
+            // custom node instance has new function id
+            // function id is in environment
+            Assert.Fail();
+        }
+
+        [Test]
+        public void CustomNodeSaveAsCanBeUsedInWorkspaceAndExpressionRuns()
+        {
+            // open custom node
+            // SaveAs
+            // place custom node with new id, run expression and result is correct.
             Assert.Fail();
         }
 

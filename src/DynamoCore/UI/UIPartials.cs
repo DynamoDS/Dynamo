@@ -11,6 +11,7 @@ using System.Windows.Media.Imaging;
 using Dynamo.Connectors;
 using Dynamo.Controls;
 using Dynamo.Models;
+using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Nodes;
@@ -736,7 +737,7 @@ namespace Dynamo.Nodes
         public override void editWindowItem_Click(object sender, RoutedEventArgs e)
         {
 
-            var editWindow = new dynEditWindow {DataContext = this};
+            var editWindow = new EditWindow {DataContext = this};
 
             var bindingVal = new System.Windows.Data.Binding("Value")
             {
