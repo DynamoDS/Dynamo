@@ -148,12 +148,6 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         void selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Reset)
-            {
-                throw new Exception("To properly clean the selection, please use RemoveAll() instead.");
-            }
-
-            // call the select method on elements added to the collection
             if (e.NewItems != null)
             {
                 foreach (ISelectable sel in e.NewItems)
@@ -162,16 +156,7 @@ namespace Dynamo.Controls
                     
                     if (n == null)
                         continue;
-                    //n.Select();
 
-                    //UIElement el = (UIElement)n;
-
-                    //double left = Canvas.GetLeft(el);
-                    //double right = Canvas.GetRight(el);
-                    //double top = Canvas.GetTop(el);
-                    //double bottom = Canvas.GetBottom(el);
-
-                    //MVVM: now storing element coordinates on models
                     double left = n.X;
                     double right = n.X + n.Width;
                     double top = n.Y;
@@ -183,27 +168,16 @@ namespace Dynamo.Controls
                     bool modTop = false;
                     double hOffset = ResolveOffset(left, right, out modLeft);
                     double vOffset = ResolveOffset(top, bottom, out modTop);
-                    OffsetData os = new OffsetData(hOffset, vOffset, modLeft, modTop, n);
+                    var os = new OffsetData(hOffset, vOffset, modLeft, modTop, n);
                     offsets.Add(os);
                 }
             }
 
-            if (e.OldItems != null)
+            //remove all ofset data where the node is no longer in the selection
+            var toRemove = offsets.Where(od => !DynamoSelection.Instance.Selection.Contains(od.Node)).ToList();
+            foreach (OffsetData od in toRemove)
             {
-                // call the deselect method on elements removed from the collection
-                foreach (ISelectable n in e.OldItems)
-                {
-                    //(n as ISelectable).Deselect();
-
-                    // remove the corresponding offsetdata object
-                    // for the element being removed
-                    List<OffsetData> toRemove = offsets.Where(od => od.Node == n).ToList();
-
-                    foreach (OffsetData od in toRemove)
-                    {
-                        offsets.Remove(od);
-                    }
-                }
+                offsets.Remove(od);
             }
         }
 
