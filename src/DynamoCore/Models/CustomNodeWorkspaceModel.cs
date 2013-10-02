@@ -68,7 +68,7 @@ namespace Dynamo.Models
 
             try
             {
-                dynSettings.Controller.DynamoModel.SaveFunction(def, false, true, true);
+               def.Save(false, true);
             }
             catch { }
         }
@@ -82,7 +82,7 @@ namespace Dynamo.Models
 
             if (def != null)
             {
-                this.SaveFunction(def, true);
+                def.Save(true);
                 this.FilePath = path;
             }
 

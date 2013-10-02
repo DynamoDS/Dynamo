@@ -551,6 +551,4 @@ namespace Dynamo.Nodes
         //   }
         //}
         #endregion
-    }
-
 }

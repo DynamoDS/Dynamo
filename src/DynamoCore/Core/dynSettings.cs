@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using Dynamo.Nodes;
 using Dynamo.PackageManager;
 
 namespace Dynamo.Utilities
