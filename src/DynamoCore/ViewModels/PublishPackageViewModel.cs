@@ -20,12 +20,15 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
+using Dynamo.Nodes;
 using Dynamo.PackageManager.UI;
 using Dynamo.Utilities;
 using Greg.Requests;
 using Greg.Responses;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
+using Double = System.Double;
+using String = System.String;
 
 namespace Dynamo.PackageManager
 {
