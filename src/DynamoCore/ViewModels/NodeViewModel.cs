@@ -326,14 +326,17 @@ namespace Dynamo.ViewModels
                     break;
                 case "OldValue":
                     RaisePropertyChanged("OldValue");
+                    UpdatePreviewBubbleContent();
                     break;
                 case "X":
                     RaisePropertyChanged("Left");
                     UpdateErrorBubblePosition(NodeModel.X, NodeModel.Y);
+                    UpdatePreviewBubblePosition(NodeModel.X, NodeModel.Y);
                     break;
                 case "Y":
                     RaisePropertyChanged("Top");
                     UpdateErrorBubblePosition(NodeModel.X, NodeModel.Y);
+                    UpdatePreviewBubblePosition(NodeModel.X, NodeModel.Y);
                     break;
                 case "InteractionEnabled":
                     RaisePropertyChanged("IsInteractionEnabled");
@@ -357,7 +360,7 @@ namespace Dynamo.ViewModels
         {
             if (this.ErrorBubble == null)
                 return;
-            if (string.IsNullOrEmpty(NodeModel.OldValue.ToString()))
+            if (string.IsNullOrEmpty(NodeModel.ToolTipText))
             {
                 if (ErrorBubble.Opacity != 0)
                 {
@@ -369,8 +372,11 @@ namespace Dynamo.ViewModels
             {
                 Point topLeft = new Point(NodeModel.X, NodeModel.Y);
                 Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
-                InfoBubbleDataPacket data = new InfoBubbleDataPacket(InfoBubbleViewModel.Style.Error, topLeft, botRight, 
-                    NodeModel.OldValue.ToString(), InfoBubbleViewModel.Direction.Bottom, NodeModel.GUID);
+                InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.Error;
+                string content = NodeModel.ToolTipText;
+                InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Bottom;
+                Guid guid = NodeModel.GUID;
+                InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection, guid);
                 dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.Invoke((new Action(() =>
                 {
                     this.ErrorBubble.UpdateContentCommand.Execute(data);
@@ -394,24 +400,28 @@ namespace Dynamo.ViewModels
         {
             if (this.PreviewBubble == null)
                 return;
-            if (string.IsNullOrEmpty(NodeModel.ToolTipText))
+            if (NodeModel.OldValue == null)
             {
                 if (ErrorBubble.Opacity != 0)
                 {
-                    ErrorBubble.SetAlwaysVisibleCommand.Execute(false);
-                    ErrorBubble.FadeOutCommand.Execute(null);
+                    PreviewBubble.SetAlwaysVisibleCommand.Execute(false);
+                    PreviewBubble.FadeOutCommand.Execute(null);
                 }
             }
             else
             {
                 Point topLeft = new Point(NodeModel.X, NodeModel.Y);
                 Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
-                InfoBubbleDataPacket data = new InfoBubbleDataPacket(InfoBubbleViewModel.Style.Error, topLeft, botRight, NodeModel.ToolTipText, InfoBubbleViewModel.Direction.Bottom, NodeModel.GUID);
+                InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.Preview;
+                string content = NodeModel.OldValue.ToString();
+                InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Top;
+                Guid guid = NodeModel.GUID;
+                InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection, guid);
                 dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.Invoke((new Action(() =>
                 {
-                    this.ErrorBubble.UpdateContentCommand.Execute(data);
-                    this.ErrorBubble.SetAlwaysVisibleCommand.Execute(true);
-                    this.ErrorBubble.FadeInCommand.Execute(null);
+                    this.PreviewBubble.UpdateContentCommand.Execute(data);
+                    this.PreviewBubble.SetAlwaysVisibleCommand.Execute(true);
+                    this.PreviewBubble.FadeInCommand.Execute(null);
                 })));
             }
         }

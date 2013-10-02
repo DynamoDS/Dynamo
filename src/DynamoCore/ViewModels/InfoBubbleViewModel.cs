@@ -300,6 +300,9 @@ namespace Dynamo.ViewModels
                 case Style.Error:
                     Margin = GetMargin_Error(topLeft, botRight);
                     break;
+                case Style.Preview:
+                    Margin = GetMargin_Preview(topLeft, botRight);
+                    break;
             }
         }
 
@@ -631,6 +634,7 @@ namespace Dynamo.ViewModels
             PointCollection pointCollection = new PointCollection();
             pointCollection.Add(new Point(EstimatedWidth, 7));
             pointCollection.Add(new Point(EstimatedWidth / 2 + 7, 7));
+            pointCollection.Add(new Point(EstimatedWidth / 2, 0));
             pointCollection.Add(new Point(EstimatedWidth / 2 - 7, 7));
             pointCollection.Add(new Point(0, 7));
             pointCollection.Add(new Point(0, EstimatedHeight));
