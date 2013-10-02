@@ -531,7 +531,7 @@ namespace Dynamo.Utilities
                 def = this.loadedNodes[guid];
             }
 
-            WorkspaceModel ws = def.Workspace;
+            WorkspaceModel ws = def.WorkspaceModel;
 
             IEnumerable<string> inputs =
                 ws.Nodes.Where(e => e is Symbol)
@@ -674,7 +674,7 @@ namespace Dynamo.Utilities
         /// <returns>A valid function definition if the FunctionDefinition is already loaded, otherwise null. </returns>
         public FunctionDefinition GetDefinitionFromWorkspace(WorkspaceModel workspace)
         {
-            return this.loadedNodes.Values.FirstOrDefault((def) => def.Workspace == workspace);
+            return this.loadedNodes.Values.FirstOrDefault((def) => def.WorkspaceModel == workspace);
         }
 
         /// <summary>
@@ -751,7 +751,7 @@ namespace Dynamo.Utilities
                 //DynamoCommands.WriteToLogCmd.Execute("Loading node definition for \"" + funName + "\" from: " + xmlPath);
                 dynSettings.Controller.DynamoModel.WriteToLog("Loading node definition for \"" + funName + "\" from: " + xmlPath);
 
-                var ws = new FuncWorkspace(
+                var ws = new CustomNodeWorkspaceModel(
                     funName, category.Length > 0
                     ? category
                     : BuiltinNodeCategories.SCRIPTING_CUSTOMNODES, description, cx, cy)
@@ -763,7 +763,7 @@ namespace Dynamo.Utilities
 
                 def = new FunctionDefinition(Guid.Parse(id))
                 {
-                    Workspace = ws
+                    WorkspaceModel = ws
                 };
 
                 // load a dummy version, so any nodes depending on this node
@@ -1032,7 +1032,7 @@ namespace Dynamo.Utilities
                 return null;
 
             // Get the internal nodes for the function
-            WorkspaceModel functionWorkspace = definition.Workspace;
+            WorkspaceModel functionWorkspace = definition.WorkspaceModel;
 
             #region Find outputs
 

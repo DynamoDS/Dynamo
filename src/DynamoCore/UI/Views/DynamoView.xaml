@@ -410,7 +410,7 @@
                                             <Style TargetType="Canvas">
                                                 <Style.Triggers>
 
-                                                    <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type models:HomeWorkspace}">
+                                                    <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type models:HomeWorkspaceModel}">
                                                         <Setter Property="Visibility" Value="Collapsed"/>
                                                     </DataTrigger>
 
@@ -464,12 +464,12 @@
                                                 <Setter Property="Foreground" Value="#999"></Setter>
                                             </DataTrigger>
                                             
-                                            <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type models:HomeWorkspace}">
+                                            <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type models:HomeWorkspaceModel}">
                                                 <Setter Property="Text" Value="Home"/>
                                                 <Setter Property="FontWeight" Value="Bold"/>
                                             </DataTrigger>
                                             
-                                            <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type models:FuncWorkspace}">
+                                            <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type models:CustomNodeWorkspaceModel}">
                                                 <Setter Property="Text" Value="{Binding Name}"/>
                                             </DataTrigger>
                                             

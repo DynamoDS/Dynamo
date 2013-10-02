@@ -156,7 +156,7 @@ namespace Dynamo.Search.SearchElements
         {
             //ToggleDescriptionVisibilityCommand = new DelegateCommand(ToggleIsVisible);
             this.Node = dynSettings.Controller.DynamoModel.CreateNode(funcDef.FunctionId.ToString());
-            this._name = funcDef.Workspace.Name;
+            this._name = funcDef.WorkspaceModel.Name;
             this.Weight = 1.1;
             this.Keywords = "";
             this._description = "Custom Node";

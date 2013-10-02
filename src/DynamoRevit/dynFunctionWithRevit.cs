@@ -102,7 +102,7 @@ namespace Dynamo.Nodes
                             }
                         }
                     }
-                    var rNode = Definition.Workspace.Nodes.FirstOrDefault(x => x.GUID == nodeId) as RevitTransactionNode;
+                    var rNode = Definition.WorkspaceModel.Nodes.FirstOrDefault(x => x.GUID == nodeId) as RevitTransactionNode;
                     if (rNode != null)
                         rNode.RegisterAllElementsDeleteHook();
                 }

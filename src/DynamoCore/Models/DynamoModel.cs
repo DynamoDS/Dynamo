@@ -228,7 +228,7 @@ namespace Dynamo.Models
                 return Workspaces.Aggregate((IEnumerable<NodeModel>)new List<NodeModel>(), (a, x) => a.Concat(x.Nodes))
                     .Concat(dynSettings.Controller.CustomNodeManager.GetLoadedDefinitions().Aggregate(
                         (IEnumerable<NodeModel>)new List<NodeModel>(),
-                        (a, x) => a.Concat(x.Workspace.Nodes)
+                        (a, x) => a.Concat(x.WorkspaceModel.Nodes)
                         )
                     );
             }
@@ -403,7 +403,7 @@ namespace Dynamo.Models
             var manager = dynSettings.Controller.CustomNodeManager;
             var info = manager.AddFileToPath(workspaceHeader.FilePath);
             var funcDef = manager.GetFunctionDefinition(info.Guid);
-            var ws = funcDef.Workspace;
+            var ws = funcDef.WorkspaceModel;
             ws.Zoom = workspaceHeader.Zoom;
             ws.HasUnsavedChanges = false;
 
@@ -473,7 +473,7 @@ namespace Dynamo.Models
         /// <param name="workspace"></param>
         public void AddHomeWorkspace()
         {
-            var workspace = new HomeWorkspace()
+            var workspace = new HomeWorkspaceModel()
             {
                 WatchChanges = true
             };
@@ -905,7 +905,7 @@ namespace Dynamo.Models
                                         double workspaceOffsetY = 0)
         {
 
-            var workSpace = new FuncWorkspace(
+            var workSpace = new CustomNodeWorkspaceModel(
                 name, category, description, workspaceOffsetX, workspaceOffsetY)
             {
                 WatchChanges = true
@@ -918,7 +918,7 @@ namespace Dynamo.Models
 
             var functionDefinition = new FunctionDefinition(id)
             {
-                Workspace = workSpace
+                WorkspaceModel = workSpace
             };
 
             dynSettings.Controller.DynamoModel.SaveFunction(functionDefinition, false, true, true);
@@ -936,87 +936,6 @@ namespace Dynamo.Models
             }
 
             return functionDefinition;
-        }
-
-        /// <summary>
-        ///     Save a function.  This includes writing to a file and compiling the 
-        ///     function and saving it to the FSchemeEnvironment
-        /// </summary>
-        public void SaveFunction(FunctionDefinition definition, bool writeDefinition = true, bool addToSearch = false, bool compileFunction = true)
-        {
-            if (definition == null)
-                return;
-
-            // Get the internal nodes for the function
-            var functionWorkspace = definition.Workspace;
-
-            string path = definition.Workspace.FilePath;
-            // If asked to, write the definition to file
-            if (writeDefinition && !String.IsNullOrEmpty(path))
-            {
-                //var pluginsPath = dynSettings.Controller.CustomNodeManager.GetDefaultSearchPath();
-
-                //if (!Directory.Exists(pluginsPath))
-                //    Directory.CreateDirectory(pluginsPath);
-
-                //path = Path.Combine(pluginsPath, dynSettings.FormatFileName(functionWorkspace.Name) + ".dyf");
-
-                WorkspaceModel.SaveWorkspace(path, functionWorkspace);
-            }
-
-            try
-            {
-                dynSettings.Controller.CustomNodeManager.AddFunctionDefinition(definition.FunctionId, definition);
-
-                if (addToSearch)
-                {
-                    dynSettings.Controller.SearchViewModel.Add(
-                        functionWorkspace.Name, 
-                        functionWorkspace.Category,
-                        functionWorkspace.Description, 
-                        definition.FunctionId);
-                }
-
-                var info = new CustomNodeInfo(definition.FunctionId, functionWorkspace.Name, functionWorkspace.Category,
-                    functionWorkspace.Description, path);
-                dynSettings.Controller.CustomNodeManager.SetNodeInfo(info);
-
-                #region Compile Function and update all nodes
-
-                IEnumerable<string> inputNames;
-                IEnumerable<string> outputNames;
-
-                var compiledFunction = CustomNodeManager.CompileFunction(definition, out inputNames, out outputNames);
-
-                if (compiledFunction == null)
-                    return;
-
-                dynSettings.Controller.FSchemeEnvironment.DefineSymbol(
-                    definition.FunctionId.ToString(),
-                    compiledFunction);
-
-                //Update existing function nodes which point to this function to match its changes
-                foreach (Function node in AllNodes.OfType<Function>().Where(el => el.Definition == definition))
-                {
-                    node.SetInputs(inputNames);
-                    node.SetOutputs(outputNames);
-                    node.RegisterAllPorts();
-                }
-
-                //Call OnSave for all saved elements
-                foreach (NodeModel el in functionWorkspace.Nodes)
-                    el.onSave();
-
-                #endregion
-
-            }
-            catch (Exception e)
-            {
-                DynamoLogger.Instance.Log("Error saving:" + e.GetType());
-                DynamoLogger.Instance.Log(e);
-            }
-
-
         }
 
         /// <summary>
@@ -1351,7 +1270,7 @@ namespace Dynamo.Models
                 return null;
             }
 
-            if ((node is Symbol || node is Output) && CurrentWorkspace is HomeWorkspace)
+            if ((node is Symbol || node is Output) && CurrentWorkspace is HomeWorkspaceModel)
             {
                 dynSettings.Controller.DynamoModel.WriteToLog("Cannot place dynSymbol or dynOutput in HomeWorkspace");
                 return null;
@@ -1480,7 +1399,7 @@ namespace Dynamo.Models
         /// <param name="path">The path to save to</param>
         internal void SaveAs(string path)
         {
-            this.SaveAs(path, CurrentWorkspace);
+            CurrentWorkspace.SaveAs(path);
         }
 
         /// <summary>
@@ -1503,42 +1422,6 @@ namespace Dynamo.Models
                 return false;
 
             return true;
-        }
-
-        /// <summary>
-        ///     Save to a specific file path, if the path is null or empty, does nothing.
-        ///     If successful, the CurrentWorkspace.FilePath field is updated as a side effect
-        /// </summary>
-        /// <param name="path">The path to save to</param>
-        /// <param name="workspace">The workspace to save</param>
-        internal void SaveAs(string path, WorkspaceModel workspace)
-        {
-            if (!String.IsNullOrEmpty(path))
-            {
-                // if it's a custom node
-                if (workspace is FuncWorkspace)
-                {
-                    var def = dynSettings.Controller.CustomNodeManager.GetDefinitionFromWorkspace(workspace);
-                    def.Workspace.FilePath = path;
-
-                    if (def != null)
-                    {
-                        this.SaveFunction(def, true);
-                        workspace.FilePath = path;
-                    }
-                    return;
-                }
-
-                if (!WorkspaceModel.SaveWorkspace(path, workspace))
-                {
-                    DynamoLogger.Instance.Log("Workbench could not be saved.");
-                }
-                else
-                {
-                    workspace.FilePath = path;
-                }
-
-            }
         }
 
         /// <summary>
@@ -1599,7 +1482,7 @@ namespace Dynamo.Models
                         node.Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(Guid.Parse(node.Symbol));
                     }
 
-                    if (!node.Definition.Workspace.Name.Equals(CurrentWorkspace.Name))
+                    if (!node.Definition.WorkspaceModel.Name.Equals(CurrentWorkspace.Name))
                         continue;
 
                     //Rename nickname only if it's still referring to the old name

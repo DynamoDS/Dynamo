@@ -113,7 +113,7 @@ namespace Dynamo.ViewModels
         public string OldValue
         {
             get { 
-                if (this.nodeLogic.WorkSpace is FuncWorkspace)
+                if (this.nodeLogic.WorkSpace is CustomNodeWorkspaceModel)
                 {
                     return "Not available in custom nodes";
                 }

@@ -99,7 +99,7 @@ namespace Dynamo.PackageManager
 
         public bool IsUnderPackageControl(FunctionDefinition def)
         {
-            return IsUnderPackageControl(def.Workspace.FilePath);
+            return IsUnderPackageControl(def.WorkspaceModel.FilePath);
         }
 
         public bool IsUnderPackageControl(Type t)
@@ -119,7 +119,7 @@ namespace Dynamo.PackageManager
 
         public Package GetOwnerPackage(FunctionDefinition def)
         {
-            return GetOwnerPackage(def.Workspace.FilePath);
+            return GetOwnerPackage(def.WorkspaceModel.FilePath);
         }
 
         public Package GetOwnerPackage(string path)
