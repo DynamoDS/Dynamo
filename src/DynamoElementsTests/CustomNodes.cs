@@ -193,45 +193,6 @@ namespace Dynamo.Tests
             Assert.Inconclusive();
         }
 
-        #region SaveAs
-
-        [Test]
-        public void SaveAsSetsTheCustomNodeAsSaved()
-        {
-            Assert.Fail();
-        }
-
-        [Test]
-        public void SaveAsMaintainsOldCustomNodeInManagerAndAddsNewOne()
-        {
-            Assert.Fail();
-        }
-
-        [Test]
-        public void SaveAsAddsNewCustomNodeWithNewFunctionIdToCustomNodeManager()
-        {
-            Assert.Fail();
-        }
-
-        [Test] 
-        public void SaveAsAddsNewCustomNodeToSearch()
-        {
-            Assert.Fail();
-        }
-
-        [Test]
-        public void SaveAsExistingCustomNodesMapToOldFuncDef()
-        {
-            Assert.Fail();
-        }
-
-        [Test]
-        public void OpenWorkspaceHasFilenameChanged()
-        {
-            Assert.Fail();
-        }
-
-        #endregion
 
     }
 }
