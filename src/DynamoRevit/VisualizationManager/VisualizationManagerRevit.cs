@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Media.Media3D;
 using Autodesk.LibG;
@@ -27,6 +28,9 @@ namespace Dynamo
                                .Select(x => ((NodeModel)x).GUID.ToString());
 
             var selected = Visualizations.Where(x => selIds.Contains(x.Key)).Select(x => x.Value);
+
+            var sw = new Stopwatch();
+            sw.Start();
 
             foreach (var n in toUpdate)
             {
@@ -77,6 +81,13 @@ namespace Dynamo
                 //if not necessary
                 n.RequiresUpdate = false;
             }
+
+            sw.Stop();
+
+            //generate an aggregated render description to send to the UI
+            var aggRd = AggregateRenderDescriptions();
+
+            LogVisualizationUpdateData(aggRd, sw.Elapsed.ToString());
 
             OnVisualizationUpdateComplete(this, new VisualizationEventArgs(AggregateRenderDescriptions()));
         }

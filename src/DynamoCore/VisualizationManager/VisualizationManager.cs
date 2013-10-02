@@ -7,9 +7,11 @@ using System.Linq;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
+using Dynamo.Services;
 using Dynamo.Utilities;
 using HelixToolkit.Wpf;
 using Microsoft.Practices.Prism.ViewModel;
+using Newtonsoft.Json;
 
 namespace Dynamo
 {
@@ -528,6 +530,29 @@ namespace Dynamo
                 };
 
             return rd;
+        }
+
+        /// <summary>
+        /// Log visualization update timing and geometry data.
+        /// </summary>
+        /// <param name="rd">The aggregated render description for the model.</param>
+        /// <param name="ellapsedTime">The ellapsed time of visualization as a string.</param>
+        protected void LogVisualizationUpdateData(RenderDescription rd, string ellapsedTime)
+        {
+            var renderDict = new Dictionary<string, object>();
+            renderDict["points"] = rd.Points.Count;
+            renderDict["line_segments"] = rd.Lines.Count / 2;
+            renderDict["mesh_facets"] = rd.Meshes.Any()
+                                            ? rd.Meshes.Select(x => x.TriangleIndices.Count / 3).Aggregate((a, b) => a + b)
+                                            : 0;
+            renderDict["time"] = ellapsedTime;
+            renderDict["manager_type"] = this.GetType().ToString();
+
+            var renderData = JsonConvert.SerializeObject(renderDict);
+
+            InstrumentationLogger.LogInfo("Perf-Latency-RenderGeometryGeneration", renderData);
+
+            Debug.WriteLine(renderData);
         }
     }
 
