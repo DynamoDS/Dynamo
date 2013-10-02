@@ -14,6 +14,7 @@ using Dynamo.Utilities;
 using Dynamo.Selection;
 using Dynamo.ViewModels;
 using NUnit.Framework;
+using System.Windows;
 
 namespace Dynamo.Tests
 {
@@ -586,6 +587,30 @@ namespace Dynamo.Tests
                 model.AddToSelection(Controller.DynamoViewModel.Model.Nodes[i]);
                 Assert.AreEqual(numNodes, DynamoSelection.Instance.Selection.Count);
             }
+        }
+
+        [Test]
+        public void TestDraggedNode()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            var sumData = new Dictionary<string, object>();
+            sumData.Add("name", "Add");
+            model.CreateNode(sumData);
+            NodeModel locatable = Controller.DynamoViewModel.Model.Nodes[0];
+            locatable.X = 16;
+            locatable.Y = 32;
+
+            Point startPoint = new Point(8, 64);
+            var dn = new WorkspaceViewModel.DraggedNode(locatable, startPoint);
+
+            // Initial node position.
+            Assert.AreEqual(16, locatable.X);
+            Assert.AreEqual(32, locatable.Y);
+
+            // Move the mouse cursor to move node.
+            dn.Update(new Point(-8, 72));
+            Assert.AreEqual(0, locatable.X);
+            Assert.AreEqual(40, locatable.Y);
         }
 
         [Test]
