@@ -3813,8 +3813,8 @@ namespace Dynamo.Nodes
 
     [NodeName("Angle (deg.)")]
     [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
-    [NodeDescription("An angle in degrees. Outputs radians")
-    [NodeSearchTags("trigonometry", "angle", "degree")]]
+    [NodeDescription("An angle in degrees. Outputs radians")]
+    [NodeSearchTags("trigonometry", "angle", "degree")]
     public class AngleInput : DoubleInput
     {
         public override double Convert(double value)
