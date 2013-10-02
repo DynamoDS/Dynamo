@@ -27,7 +27,6 @@ namespace Dynamo.ViewModels
         #region Properties and Fields
 
         public WorkspaceModel _model;
-        private bool _isConnecting = false;
         private bool _canFindNodesFromElements = false;
 
         public event EventHandler StopDragging;
@@ -232,45 +231,9 @@ namespace Dynamo.ViewModels
             get { return dynSettings.Controller.DynamoViewModel.FullscreenWatchShowing; }
         }
 
-        private ConnectorViewModel activeConnector;
-        public ConnectorViewModel ActiveConnector
-        {
-            get { return activeConnector; }
-            set
-            {
-                if (value != null)
-                {
-                    WorkspaceElements.Add(value);
-                    activeConnector = value;
-                }    
-                else
-                {
-                    WorkspaceElements.Remove(activeConnector);
-                }
-                
-                RaisePropertyChanged("ActiveConnector");
-            }
-        }
-
-        //public bool EditNameVisibility
-        //{
-        //    get
-        //    {
-        //        if (_model != dynSettings.Controller.DynamoViewModel.Model.HomeSpace)
-        //            return true;
-        //        return false;
-        //    }
-        //}
-
         public bool CanEditName
         {
             get { return _model != dynSettings.Controller.DynamoViewModel.Model.HomeSpace; }
-        }
-
-        public bool IsConnecting
-        {
-            get { return _isConnecting; }
-            set { _isConnecting = value; }
         }
 
         public bool IsCurrentSpace
