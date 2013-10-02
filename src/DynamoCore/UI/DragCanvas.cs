@@ -24,7 +24,7 @@ namespace Dynamo.Controls
     {
         #region Data
 
-#if false
+#if false // TODO(Ben): Remove this after StateMachine has been fully tested.
         private List<DependencyObject> hitResultsList = new List<DependencyObject>();
 
         // Stores a reference to the UIElement currently being dragged by the user.
@@ -131,7 +131,8 @@ namespace Dynamo.Controls
         }
 
         #endregion // Static Constructor
-#if false
+
+#if false // TODO(Ben): Remove this after StateMachine has been fully tested.
         #region Constructor
 
         /// <summary>
@@ -302,7 +303,7 @@ namespace Dynamo.Controls
             }
         }
 
-#if false
+#if false // TODO(Ben): Remove this after StateMachine has been fully tested.
         #region OnMouseLeftButtonDown
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
@@ -418,7 +419,7 @@ namespace Dynamo.Controls
                 count++;
             }
 
-            #endregion // Calculate Offsets
+        #endregion // Calculate Offsets
 
             if (!this.AllowDragOutOfView)
             {
@@ -458,7 +459,7 @@ namespace Dynamo.Controls
                     count++;
                 }
 
-                #endregion // Verify Drag Element Location
+        #endregion // Verify Drag Element Location
             }
 
         #region Move Drag Element
@@ -490,7 +491,7 @@ namespace Dynamo.Controls
                       }
                   }
                ), DispatcherPriority.Render, null);
-            #endregion // Move Drag Element
+        #endregion // Move Drag Element
 
         }
 
@@ -745,7 +746,7 @@ namespace Dynamo.Controls
         }
     }
 
-#if false
+#if false // TODO(Ben): Remove this after StateMachine has been fully tested.
     public class OffsetData
     {
         public double OriginalHorizontalOffset

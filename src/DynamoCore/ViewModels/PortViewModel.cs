@@ -146,7 +146,7 @@ namespace Dynamo.ViewModels
             WorkspaceViewModel workspaceViewModel = dynamoViewModel.CurrentSpaceViewModel;
             workspaceViewModel.HandlePortClicked(this);
 
-#if false
+#if false // TODO(Ben): Remove this after StateMachine has been fully tested.
             DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
             WorkspaceModel workspaceModel = dynamoViewModel.CurrentSpace;
             WorkspaceViewModel workspaceViewModel = dynamoViewModel.CurrentSpaceViewModel;

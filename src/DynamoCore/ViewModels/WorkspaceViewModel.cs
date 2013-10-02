@@ -209,6 +209,38 @@ namespace Dynamo.ViewModels
             get { return _model.FilePath; }
         }
 
+#if false // TODO(Ben): Remove this after StateMachine has been fully tested.
+        private ConnectorViewModel activeConnector;
+        public ConnectorViewModel ActiveConnector
+        {
+            get { return activeConnector; }
+            set
+            {
+                if (value != null)
+                {
+                    WorkspaceElements.Add(value);
+                    activeConnector = value;
+                }    
+                else
+                {
+                    WorkspaceElements.Remove(activeConnector);
+                }
+                
+                RaisePropertyChanged("ActiveConnector");
+            }
+        }
+
+        //public bool EditNameVisibility
+        //{
+        //    get
+        //    {
+        //        if (_model != dynSettings.Controller.DynamoViewModel.Model.HomeSpace)
+        //            return true;
+        //        return false;
+        //    }
+        //}
+#endif
+
         public void FullscreenChanged()
         {
             RaisePropertyChanged("FullscreenWatchVisible");
