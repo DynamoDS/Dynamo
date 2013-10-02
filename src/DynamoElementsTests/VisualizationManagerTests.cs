@@ -203,6 +203,7 @@ namespace Dynamo.Tests
             //flip those back on and ensure the visualization returns
             p1.IsVisible = true;
             l1.IsVisible = true;
+
             viz.GetVisualizationCounts(
                 out pointCount, out lineCount, out meshCount, out xCount, out yCount, out zCount);
 
