@@ -107,7 +107,7 @@ namespace Dynamo
                 foreach (object item in e.NewItems)
                 {
                     var node = item as NodeModel;
-                    if (item == null)
+                    if (node == null)
                         continue;
 
                     if (Visualizations.ContainsKey(node.GUID.ToString()))
@@ -132,6 +132,11 @@ namespace Dynamo
                 OnVisualizationUpdateComplete(this, new VisualizationEventArgs(AggregateRenderDescriptions()));
         }
 
+        /// <summary>
+        /// Handler for the controller's RequestRedraw event.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void Controller_RequestsRedraw(object sender, EventArgs e)
         {
             UpdateVisualizations();
