@@ -26,6 +26,8 @@ namespace Dynamo
         private Dictionary<string, Visualization> visualizations 
             = new Dictionary<string, Visualization>();
 
+        protected bool isUpdating = false;
+
         #endregion
 
         #region public properties
@@ -288,13 +290,20 @@ namespace Dynamo
         /// </summary>
         public virtual void UpdateVisualizations()
         {
+            //don't update the visualizations
+            //if we're already updating.
+            if (isUpdating)
+                return;
+
+            isUpdating = true;
+
             var worker = new BackgroundWorker();
             worker.DoWork += VisualizationUpdateThread;
 
             if(dynSettings.Controller.Testing)
                 VisualizationUpdateThread(null,null);
-
-            worker.RunWorkerAsync();
+            else
+                worker.RunWorkerAsync();
         }
 
         protected virtual void VisualizationUpdateThread(object s, DoWorkEventArgs args)
