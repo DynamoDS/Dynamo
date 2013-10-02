@@ -68,6 +68,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="PrintValueTests.cs" />
+    <Compile Include="UnitTestBase.cs" />
+    <Compile Include="WorkspaceHeaderTests.cs" />
+    <Compile Include="CustomNodeWorkspaceOpening.cs" />
+    <Compile Include="WorkspaceSaving.cs" />
+    <Compile Include="PrintValue.cs" />
     <Compile Include="CoreTests.cs" />
     <Compile Include="CoreDynTests.cs" />
     <Compile Include="CustomNodeTests.cs" />

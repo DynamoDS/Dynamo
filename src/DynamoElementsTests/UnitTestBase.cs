@@ -1,57 +1,51 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Text;
 using Dynamo.FSchemeInterop;
 using Dynamo.ViewModels;
 using NUnit.Framework;
 
-namespace Dynamo.Tests
+namespace Dynamo
 {
-    public class DynamoUnitTest : UnitTestBase
+    public class UnitTestBase
     {
-        protected DynamoController Controller;
+
+        protected string ExecutingDirectory { get; set; }
+        protected string TempFolder { get; private set; }
 
         [SetUp]
-        public override void Init()
+        public virtual void Init()
         {
-            base.Init();
-            StartDynamo();
+            ExecutingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string tempPath = Path.GetTempPath();
+
+            TempFolder = Path.Combine(tempPath, "dynamoTmp");
+
+            if (!Directory.Exists(TempFolder))
+            {
+                Directory.CreateDirectory(TempFolder);
+            }
+            else
+            {
+                EmptyTempFolder();
+            }
         }
 
         [TearDown]
-        public override void Cleanup()
+        public virtual void Cleanup()
         {
             try
             {
-                DynamoLogger.Instance.FinishLogging();
-                Controller.ShutDown();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-            }
-
-            base.Cleanup();
-        }
-
-        private void StartDynamo()
-        {
-            try
-            {
-                DynamoLogger.Instance.StartLogging();
-
-                //create a new instance of the ViewModel
-                Controller = new DynamoController(new ExecutionEnvironment(), typeof(DynamoViewModel), Context.NONE)
-                {
-                    Testing = true
-                };
+                EmptyTempFolder();
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.StackTrace);
             }
         }
-<<<<<<< HEAD
 
         public void EmptyTempFolder()
         {
@@ -67,9 +61,10 @@ namespace Dynamo.Tests
             }
         }
 
-        #endregion
-
-        #region utility methods
+        public string GetNewFileNameOnTempPath(string fileExtension = "dyn")
+        {
+            return Path.Combine(TempFolder, Guid.NewGuid().ToString() + "." + fileExtension);
+        }
 
         public string GetTestDirectory()
         {
@@ -77,8 +72,5 @@ namespace Dynamo.Tests
             return Path.Combine(directory.Parent.Parent.Parent.FullName, "test");
         }
 
-        #endregion
-=======
->>>>>>> 253890f... Fix and unit tests for #535
     }
 }
