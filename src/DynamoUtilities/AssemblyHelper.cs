@@ -27,5 +27,18 @@ namespace Dynamo.Utilities
             var assembly = Assembly.GetCallingAssembly();
             return assembly.GetName().Version;
         }
+
+        public static Assembly LoadLibG()
+        {
+            var libG = Assembly.LoadFrom(GetLibGPath());
+            return libG;
+        }
+
+        public static string GetLibGPath()
+        {
+            string dll_dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\dll";
+            string libGPath = Path.Combine(dll_dir, "LibGNet.dll");
+            return libGPath;
+        }
     }
 }
