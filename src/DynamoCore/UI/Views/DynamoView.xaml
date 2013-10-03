@@ -825,6 +825,8 @@
             </Grid>
 
         </Border>
+        
+        <!--Collapsed Sidebar-->
         <StackPanel Grid.Row="2"
                     Grid.Column="2"
                     Orientation="Vertical"
@@ -840,7 +842,7 @@
                 <Button Click="Button_Click" Template="{DynamicResource BackgroundButton}">
                     <Button.Resources>
                         <ControlTemplate x:Key="BackgroundButton" TargetType="Button">
-                            <Border Name="border" BorderThickness="0" BorderBrush="Black" >
+                            <Border Name="border" BorderThickness="0" BorderBrush="Black" VerticalAlignment="Stretch" Padding="5,0,5,0">
                                 <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                             </Border>
                         </ControlTemplate>
@@ -850,12 +852,12 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <Image Grid.Column="1" Source="/DynamoCore;component/UI/Images/expand_normal.png" Visibility="Visible" Width="25" Height="25" RenderTransformOrigin="0.5, 0.5">
+                        <Image Grid.Column="1" Source="/DynamoCore;component/UI/Images/expand_normal.png" Visibility="Visible" Width="20" Height="20" RenderTransformOrigin="0.5, 0.5">
                             <Image.RenderTransform>
                                 <RotateTransform Angle="90"/>
                             </Image.RenderTransform>
                         </Image>
-                        <TextBlock Grid.Column="0" VerticalAlignment="Center" Foreground="#aaaaaa" FontSize="13" FontWeight="SemiBold" Margin="5 0 5 0" >
+                        <TextBlock Grid.Column="0" VerticalAlignment="Stretch" Foreground="#aaaaaa" FontWeight="SemiBold" Margin="5 0 5 0" >
                             Library
                         </TextBlock>
                     </Grid>
@@ -964,11 +966,11 @@
                           Grid.Row="2"
                           Grid.RowSpan="2"
                           Height="Auto"
-                          Width="2"
+                          Width="1"
                           Name="verticalSplitter"
                           HorizontalAlignment="Stretch" 
                           VerticalAlignment="Stretch" 
-                          Margin="0" Background="#232323"/>
+                          Margin="0" Background="Transparent"/>
 
     </Grid>
     

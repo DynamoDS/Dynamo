@@ -42,7 +42,8 @@
                             BorderThickness="0"
                             BorderBrush="Black"
                             Background="{StaticResource WorkspaceBackgroundBrush}"
-                            Height="20">
+                            Height="20"
+                            Margin="0,0,-1,0">
                         <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
                     </Border>
                 </ControlTemplate>
@@ -96,7 +97,7 @@
             <TextBox Name="SearchTextBox"
                      KeyboardNavigation.TabIndex="0"
                      Foreground="WhiteSmoke"
-                     Background="Transparent" BorderThickness="0" FontSize ="12" Padding="16,12,5,8" Margin ="0"
+                     Background="Transparent" BorderThickness="0" FontSize ="12" Padding="15,12,5,8" Margin ="0"
                        IsEnabled="True" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Stretch" Text="{Binding Path=SearchText,Mode=TwoWay}" Grid.Column="1" MinWidth="280">
             </TextBox>
             
