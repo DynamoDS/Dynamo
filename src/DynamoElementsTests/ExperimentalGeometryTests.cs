@@ -488,8 +488,8 @@ namespace Dynamo.Tests
 
             Autodesk.LibG.Solid sweepedSolid = geometry1 as Autodesk.LibG.Solid;
             Assert.AreNotEqual(null, sweepedSolid);
-            Assert.AreEqual(194.26617152241661, sweepedSolid.area());
-            Assert.AreEqual(93.991683898354964, sweepedSolid.volume());
+            Assert.AreEqual(194.26617152241661, sweepedSolid.area(), 0.000000001);
+            Assert.AreEqual(93.991683898354964, sweepedSolid.volume(), 0.000000001);
             Assert.AreEqual(10.000000000000005, sweepedSolid.center_of_gravity().x());
 
         }
@@ -572,8 +572,8 @@ namespace Dynamo.Tests
 
             Autodesk.LibG.Solid translatedSolid = geometry1 as Autodesk.LibG.Solid;
             Assert.AreNotEqual(null, translatedSolid);
-            Assert.AreEqual(194.26617152241661, translatedSolid.area());
-            Assert.AreEqual(93.991683898354964, translatedSolid.volume());
+            Assert.AreEqual(194.26617152241661, translatedSolid.area(), 0.000000001);
+            Assert.AreEqual(93.991683898354964, translatedSolid.volume(), 0.000000001);
             Assert.AreEqual(10.000000000000005, translatedSolid.center_of_gravity().x());
 
 
@@ -584,8 +584,8 @@ namespace Dynamo.Tests
 
             Autodesk.LibG.Solid sweepedSolid = geometry2 as Autodesk.LibG.Solid;
             Assert.AreNotEqual(null, sweepedSolid);
-            Assert.AreEqual(194.26617152241661, sweepedSolid.area());
-            Assert.AreEqual(93.991683898354964, sweepedSolid.volume());
+            Assert.AreEqual(194.26617152241661, sweepedSolid.area(), 0.000000001);
+            Assert.AreEqual(93.991683898354964, sweepedSolid.volume(), 0.000000001);
             Assert.AreEqual(10.000000000000005, sweepedSolid.center_of_gravity().x());
 
         }
