@@ -417,7 +417,7 @@ namespace Dynamo.ViewModels
 
         private void UpdatePreviewBubbleContent()
         {
-            if (this.PreviewBubble == null)
+            if (this.PreviewBubble == null || this.NodeModel is Watch)
                 return;
             if (string.IsNullOrEmpty(this.OldValue))
             {
@@ -449,6 +449,8 @@ namespace Dynamo.ViewModels
 
         private void UpdatePreviewBubblePosition(double x, double y)
         {
+            if (this.PreviewBubble == null || this.NodeModel is Watch)
+                return;
             Point topLeft = new Point(NodeModel.X, NodeModel.Y);
             Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
             InfoBubbleDataPacket data = new InfoBubbleDataPacket();
