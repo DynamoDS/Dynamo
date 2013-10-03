@@ -5,6 +5,8 @@
     <!--http://www.colorspire.com/rgb-color-wheel/-->
     
     <!--Workspaces-->
+    <SolidColorBrush Color="#353535" x:Key="DynamoWindowBrush"/>
+    <SolidColorBrush Color="#232323" x:Key="WorkspaceBackgroundBrush"/>
     
     <Color x:Key="WorkspaceBackgroundHome">#F0F0F0</Color>
     <Color x:Key="WorkspaceBackgroundCustom">#FFFFDC</Color>

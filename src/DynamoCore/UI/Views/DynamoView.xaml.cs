@@ -689,7 +689,7 @@ namespace Dynamo.Controls
             TransformedBitmap transform = new TransformedBitmap();
             transform.BeginInit();
             transform.Source = hover;
-            RotateTransform rt = new RotateTransform(180, 16, 16);
+            RotateTransform rt = new RotateTransform(180, 0, 0);
             transform.Transform = rt;
             transform.EndInit();
 
@@ -734,7 +734,7 @@ namespace Dynamo.Controls
             TransformedBitmap transform = new TransformedBitmap();
             transform.BeginInit();
             transform.Source = hover;
-            RotateTransform rt = new RotateTransform(180, 16, 16);
+            RotateTransform rt = new RotateTransform(180, 0, 0);
             transform.Transform = rt;
             transform.EndInit();
 
