@@ -405,7 +405,7 @@ namespace Dynamo.Utilities
                 XYZ norm = null;
 
                 //keep old plane computations
-                if (p0.Z == p2.Z)
+                if (Math.Abs(p0.Z - p2.Z) < 0.0001)
                 {
                     norm = XYZ.BasisZ;
                 }
