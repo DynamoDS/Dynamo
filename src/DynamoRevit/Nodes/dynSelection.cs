@@ -489,7 +489,7 @@ namespace Dynamo.Nodes
             //Debug.WriteLine(pd.Object.GetType().ToString());
             if (SelectedElements != null)
             {
-                foreach (Element selectedElement in SelectedElements)
+                foreach (Element selectedElement in SelectedElements.Where(x => x != null))
                 {
                     XmlElement outEl = xmlDoc.CreateElement("instance");
                     outEl.SetAttribute("id", selectedElement.UniqueId);
