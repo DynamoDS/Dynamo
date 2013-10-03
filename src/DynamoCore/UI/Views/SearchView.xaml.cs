@@ -11,6 +11,9 @@ using UserControl = System.Windows.Controls.UserControl;
 using System.Windows.Media;
 using Dynamo.Utilities;
 using DynamoCommands = Dynamo.UI.Commands.DynamoCommands;
+using Dynamo.Search.SearchElements;
+using System.Collections.Generic;
+using System.Windows.Media.Imaging;
 
 //Copyright © Autodesk, Inc. 2012. All rights reserved.
 //
@@ -147,5 +150,67 @@ namespace Dynamo.Search
             scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
             e.Handled = true;
         }
+
+		private void OnLibraryClick(object sender, RoutedEventArgs e)
+        {
+            //this.Width = 5;
+            //if (this.Visibility == Visibility.Collapsed)
+            //    this.Visibility = Visibility.Visible;
+            //else
+            //{
+            //    dynSettings.Controller.DynamoViewModel.OnSidebarClosed(this, EventArgs.Empty);
+            //   this.Visibility = Visibility.Collapsed;
+            //}
+            dynSettings.Controller.DynamoViewModel.OnSidebarClosed(this, EventArgs.Empty);
+        }
+
+        private void Button_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Grid g = (Grid)sender;
+            Label lb = (Label)(g.Children[0]);
+            var bc = new BrushConverter();
+            lb.Foreground = (Brush)bc.ConvertFromString("#cccccc");
+            Image collapsestate = (Image)g.Children[1];
+            var collapsestateSource = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/collapsestate_hover.png");
+            BitmapImage bmi = new BitmapImage(collapsestateSource);
+            RotateTransform rotateTransform = new RotateTransform(-90, 16, 16);
+            collapsestate.Source = new BitmapImage(collapsestateSource);
+        }
+
+        private void buttonGrid_MouseLeave(object sender, MouseEventArgs e)
+        {
+            Grid g = (Grid)sender;
+            Label lb = (Label)(g.Children[0]);
+            var bc = new BrushConverter();
+            lb.Foreground = (Brush)bc.ConvertFromString("#aaaaaa");
+            Image collapsestate = (Image)g.Children[1];
+            var collapsestateSource = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/collapsestate_normal.png");
+            collapsestate.Source = new BitmapImage(collapsestateSource);
+        }
+
+        private void LibraryItem_OnMouseEnter(object sender, MouseEventArgs e)
+        {
+            TreeViewItem treeViewItem = sender as TreeViewItem;
+            NodeSearchElement nodeSearchElement = treeViewItem.Header as NodeSearchElement;
+            if (nodeSearchElement == null)
+                return;
+
+            Point pointToScreen_TopLeft = treeViewItem.PointToScreen(new Point(0, 0));
+            Point topLeft = this.PointFromScreen(pointToScreen_TopLeft);
+            Point pointToScreen_BotRight = new Point(pointToScreen_TopLeft.X + treeViewItem.ActualWidth, pointToScreen_TopLeft.Y + treeViewItem.ActualHeight);
+            Point botRight = this.PointFromScreen(pointToScreen_BotRight);
+            string infoBubbleContent = nodeSearchElement.Name + "\n" + nodeSearchElement.Description;
+            InfoBubbleDataPacket data = new InfoBubbleDataPacket(InfoBubbleViewModel.Style.LibraryItemPreview, topLeft, botRight, infoBubbleContent, InfoBubbleViewModel.Direction.Left, Guid.Empty);
+            DynamoCommands.ShowLibItemInfoBubbleCommand.Execute(data);
+        }
+
+        private void LibraryItem_OnMouseLeave(object sender, MouseEventArgs e)
+        {
+            TreeViewItem treeViewItem = sender as TreeViewItem;
+            NodeSearchElement nodeSearchElement = treeViewItem.Header as NodeSearchElement;
+            if (nodeSearchElement == null)
+                return;
+            DynamoCommands.HideLibItemInfoBubbleCommand.Execute(null);
+        }
     }
-} ;
+}
