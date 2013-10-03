@@ -174,16 +174,13 @@ namespace Dynamo
         /// <param name="connector"></param>
         void DynamoModel_ConnectorDeleted(ConnectorModel connector)
         {
-            if (connector.End.Owner is IDrawable)
+            if (Visualizations.ContainsKey(connector.End.Owner.GUID.ToString()))
             {
-                if (Visualizations.ContainsKey(connector.End.Owner.GUID.ToString()))
-                {
-                    Visualizations.Remove(connector.End.Owner.GUID.ToString());
-                }
+                Visualizations.Remove(connector.End.Owner.GUID.ToString());
 
                 //tell the watches that they require re-binding.
                 OnVisualizationUpdateComplete(this, new VisualizationEventArgs(AggregateRenderDescriptions()));
-            }
+            }  
         }
 
         /// <summary>
@@ -193,8 +190,7 @@ namespace Dynamo
         /// <param name="node"></param>
         void DynamoModel_NodeDeleted(NodeModel node)
         {
-            if (node is IDrawable)
-                UnregisterFromVisualization(node);
+            UnregisterFromVisualization(node);
         }
 
         /// <summary>
@@ -204,11 +200,7 @@ namespace Dynamo
         /// <param name="node"></param>
         void DynamoModel_NodeAdded(NodeModel node)
         {
-            if (node is IDrawable)
-            {
-                node.PropertyChanged += node_PropertyChanged;
-                RegisterForVisualization(node);
-            }  
+            RegisterForVisualization(node);
         }
 
         /// <summary>
@@ -261,12 +253,18 @@ namespace Dynamo
         /// <param name="id">The node to register for visualization</param>
         public virtual void RegisterForVisualization(NodeModel node)
         {
+            //don't register if it's not drawable
+            if (!(node is DrawableNode))
+                return;
+
             //add a key in the dictionary
             if (!Visualizations.ContainsKey(node.GUID.ToString()))
             {
                 var viz = new Visualization {RequiresUpdate = false};
                 Visualizations.Add(node.GUID.ToString(), viz);
             }
+
+            node.PropertyChanged += node_PropertyChanged;
         }
 
         /// <summary>
@@ -355,7 +353,7 @@ namespace Dynamo
             var watch = new Stopwatch();
             watch.Start();
 
-            var drawables = GetUpstreamIDrawableIds(node.Inputs);
+            var drawables = GetUpstreamDrawableIds(node.Inputs);
             
             var ids = from viz in dynSettings.Controller.VisualizationManager.Visualizations
                       where drawables.Contains(viz.Key)
@@ -396,7 +394,7 @@ namespace Dynamo
         /// </summary>
         /// <param name="inputs">A dictionary describing the inputs on the node.</param>
         /// <returns>A collection of strings.</returns>
-        private List<string> GetUpstreamIDrawableIds(Dictionary<int, Tuple<int, NodeModel>> inputs)
+        private List<string> GetUpstreamDrawableIds(Dictionary<int, Tuple<int, NodeModel>> inputs)
         {
             var drawables = new List<string>();
 
@@ -406,15 +404,12 @@ namespace Dynamo
                     continue;
 
                 NodeModel node = pair.Value.Item2;
-                var drawable = node as IDrawable;
 
-                if(drawable != null)
+                if(node is DrawableNode)
                     drawables.Add(node.GUID.ToString());
 
                 if (node.IsUpstreamVisible)
-                    drawables.AddRange(GetUpstreamIDrawableIds(node.Inputs));
-                //else
-                //    continue; // don't bother checking if function
+                    drawables.AddRange(GetUpstreamDrawableIds(node.Inputs));
 
                 //if the node is function then get all the 
                 //drawables inside that node. only do this if the
@@ -426,13 +421,13 @@ namespace Dynamo
                     IEnumerable<NodeModel> topElements = func.Definition.Workspace.GetTopMostNodes();
                     foreach (NodeModel innerNode in topElements)
                     {
-                        var drawableInner = innerNode as IDrawable;
+                        var drawableInner = innerNode as DrawableNode;
 
                         if (drawableInner != null)
                             drawables.Add(innerNode.GUID.ToString());
 
                         if (node.IsUpstreamVisible)
-                            drawables.AddRange(GetUpstreamIDrawableIds(innerNode.Inputs));
+                            drawables.AddRange(GetUpstreamDrawableIds(innerNode.Inputs));
                     }
                 }
             }

@@ -355,7 +355,7 @@ namespace Dynamo.Nodes
     //[NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_INTERSECT)]
     //[NodeDescription("Calculates the intersection of a face and a level.")]
     //[DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
-    //public class dynFaceLevelIntersection : dynRevitTransactionNode, IDrawable, IClearable
+    //public class dynFaceLevelIntersection : dynRevitTransactionNode
     //{
     //    public dynFaceLevelIntersection()
     //    {
@@ -423,37 +423,6 @@ namespace Dynamo.Nodes
 
     //        return Value.NewList(results);
     //    }
-
-    //    #region IDrawable Interface
-    //    protected List<Curve> curves = new List<Curve>();
-    //    public RenderDescription RenderDescription { get; set; }
-    //    public void Draw()
-    //    {
-    //        if (this.RenderDescription == null)
-    //            this.RenderDescription = new RenderDescription();
-    //        else
-    //            this.RenderDescription.ClearAll();
-
-    //        foreach (Curve crv in curves)
-    //        {
-    //            //convert the tessellated curve to a render description
-    //            IList<XYZ> curvePts = crv.Tessellate();
-    //            for (int i = 1; i < curvePts.Count; i++)
-    //            {
-    //                var a = curvePts[i - 1];
-    //                var b = curvePts[i];
-
-    //                RenderDescription.lines.Add(new Point3D(a.X, a.Y, a.Z));
-    //                RenderDescription.lines.Add(new Point3D(b.X, b.Y, b.Z));
-    //            }
-    //        }
-    //    }
-
-    //    public void ClearReferences()
-    //    {
-    //        curves.Clear();
-    //    }
-    //    #endregion
     //}
 
 }

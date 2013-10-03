@@ -34,7 +34,7 @@ using TextBox = System.Windows.Controls.TextBox;
 namespace Dynamo.Nodes
 {
     [IsInteractive(true)]
-    public abstract class SelectionBase : NodeWithOneOutput
+    public abstract class SelectionBase : DrawableNodeWithOneOutput
     {
         private bool _canSelect = true;
         protected string _selectButtonContent;
@@ -231,7 +231,7 @@ namespace Dynamo.Nodes
 
     }
 
-    public abstract class ElementSelectionBase : SelectionBase, IDrawable
+    public abstract class ElementSelectionBase : SelectionBase
     {
         protected Func<string, Element> _selectionAction;
 
@@ -269,22 +269,10 @@ namespace Dynamo.Nodes
 
             return Value.NewContainer(SelectedElement);
         }
-
-        #region IDrawableInterface
-
-        public List<object> VisualizationGeometry
-        {
-            get
-            {
-                return dynSettings.Controller.VisualizationManager.Visualizations[this.GUID.ToString()].Geometry;
-            }
-        }
-
-        #endregion
     }
 
     [IsInteractive(true)]
-    public abstract class ReferenceSelectionBase : SelectionBase, IDrawable
+    public abstract class ReferenceSelectionBase : SelectionBase
     {
         protected Func<string, Reference> _selectionAction;
         protected Reference _reference;
@@ -313,22 +301,10 @@ namespace Dynamo.Nodes
                 DynamoLogger.Instance.Log(e);
             }
         }
-
-        #region IDrawableInterface
-
-        public List<object> VisualizationGeometry
-        {
-            get
-            {
-                return dynSettings.Controller.VisualizationManager.Visualizations[this.GUID.ToString()].Geometry;
-            }
-        }
-
-        #endregion
     }
 
     [IsInteractive(true)]
-    public abstract class MultipleElementSelectionBase : NodeWithOneOutput, IDrawable
+    public abstract class MultipleElementSelectionBase : DrawableNodeWithOneOutput
     {
         private TextBlock _tb;
         private Button _selectButton;
@@ -545,18 +521,6 @@ namespace Dynamo.Nodes
                 }
             }
         }
-
-        #region IDrawableInterface
-
-        public List<object> VisualizationGeometry
-        {
-            get
-            {
-                return dynSettings.Controller.VisualizationManager.Visualizations[this.GUID.ToString()].Geometry;
-            }
-        }
-
-        #endregion
     }
 
     [NodeName("Select Family Instance")]

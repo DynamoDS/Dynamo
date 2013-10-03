@@ -22,7 +22,6 @@ using System.Windows.Input;
 using System.Xml;
 using Dynamo.Controls;
 using Dynamo.Models;
-using Dynamo.Utilities;
 using DynamoPython;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Highlighting;
@@ -38,7 +37,7 @@ namespace Dynamo.Nodes
     [NodeName("Python Script")]
     [NodeCategory(BuiltinNodeCategories.SCRIPTING_PYTHON)]
     [NodeDescription("Runs an embedded IronPython script")]
-    public class Python : NodeWithOneOutput, IDrawable
+    public class Python : DrawableNodeWithOneOutput
     {
         private bool dirty = true;
         private Value lastEvalValue;
@@ -277,18 +276,6 @@ namespace Dynamo.Nodes
             if(lastEvalValue != null)
                 PythonEngine.Drawing(lastEvalValue, this.GUID.ToString());
         }
-
-        #region IDrawableInterface
-
-        public List<object> VisualizationGeometry
-        {
-            get
-            {
-                return dynSettings.Controller.VisualizationManager.Visualizations[this.GUID.ToString()].Geometry;
-            }
-        }
-
-        #endregion
     }
 
     [NodeName("Python Script From String")]

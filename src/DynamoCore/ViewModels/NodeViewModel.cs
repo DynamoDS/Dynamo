@@ -219,10 +219,10 @@ namespace Dynamo.ViewModels
                 if (nodeLogic is Function)
                 {
                     var f = nodeLogic as Function;
-                    return f.Definition.Workspace.Nodes.Any(x => x is IDrawable);
+                    return f.Definition.Workspace.Nodes.Any(x => x is DrawableNode);
                 }
 
-                return nodeLogic is IDrawable;
+                return nodeLogic is DrawableNode;
             }
         }
 
