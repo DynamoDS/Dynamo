@@ -31,9 +31,69 @@ namespace Dynamo
         public PredicateTraverser CheckManualTransaction { get; private set; }
         public PredicateTraverser CheckRequiresTransaction { get; private set; }
 
+        private ElementId keeperId = ElementId.InvalidElementId;
+
+        /// <summary>
+        /// A visualization manager responsible for generating geometry for rendering.
+        /// </summary>
         public override VisualizationManager VisualizationManager
         {
-            get { return visualizationManager ?? (visualizationManager = new VisualizationManagerRevit()); }
+            get
+            {
+                if (visualizationManager == null)
+                {
+                    visualizationManager = new VisualizationManagerRevit();
+                    visualizationManager.VisualizationUpdateComplete += new VisualizationCompleteEventHandler(visualizationManager_VisualizationUpdateComplete);
+                }
+
+                return visualizationManager;
+            }
+        }
+
+        /// <summary>
+        /// Handler for the visualization manager's VisualizationUpdateComplete event.
+        /// Sends goemetry to the GeomKeeper, if available, for preview in Revit.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void visualizationManager_VisualizationUpdateComplete(object sender, VisualizationEventArgs e)
+        {
+            Type geometryElementType = typeof(GeometryElement);
+            MethodInfo[] geometryElementTypeMethods = geometryElementType.GetMethods(BindingFlags.Static | BindingFlags.Public);
+
+            var method = geometryElementTypeMethods.FirstOrDefault(x => x.Name == "SetForTransientDisplay");
+
+            if (method == null)
+            {
+                return;
+            }
+
+            IdlePromise.ExecuteOnIdle(
+                () =>
+                    {
+                        dynRevitSettings.Controller.InitTransaction();
+
+                        if (keeperId != ElementId.InvalidElementId)
+                        {
+                            dynRevitSettings.Doc.Document.Delete(keeperId);
+                            keeperId = ElementId.InvalidElementId;
+                        }
+
+                        var geoms = VisualizationManager.Visualizations.Values.SelectMany(x => x.Geometry).Where(x => x is GeometryObject).Cast<GeometryObject>().ToList();
+
+                        object[] argsM = new object[4];
+                        argsM[0] = dynRevitSettings.Doc.Document;
+                        argsM[1] = ElementId.InvalidElementId;
+                        argsM[2] = geoms;
+                        argsM[3] = ElementId.InvalidElementId;
+
+                        keeperId = (ElementId)method.Invoke(null, argsM);
+
+                        //keeperId = GeometryElement.SetForTransientDisplay(dynRevitSettings.Doc.Document, ElementId.InvalidElementId, geoms,
+                        //                                       ElementId.InvalidElementId);
+
+                        dynRevitSettings.Controller.EndTransaction();
+                    });
         }
 
         public DynamoController_Revit(FSchemeInterop.ExecutionEnvironment env, DynamoUpdater updater, Type viewModelType, string context)
