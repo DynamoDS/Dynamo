@@ -459,8 +459,8 @@ namespace Dynamo.ViewModels
                         {
                             var node = item as NodeModel;
                             NodeViewModel nodeViewModel = new NodeViewModel(node);
-                            InfoBubbleViewModel previewBubble = new InfoBubbleViewModel(node.GUID);
-                            InfoBubbleViewModel errorBubble = new InfoBubbleViewModel(node.GUID);
+                            InfoBubbleViewModel previewBubble = new InfoBubbleViewModel();
+                            InfoBubbleViewModel errorBubble = new InfoBubbleViewModel();
                             nodeViewModel.ErrorBubble = errorBubble;
                             nodeViewModel.PreviewBubble = previewBubble;
 
