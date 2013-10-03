@@ -6,7 +6,7 @@
     
     <!--Workspaces-->
     
-    <Color x:Key="WorkspaceBackgroundHome">#DCDCDC</Color>
+    <Color x:Key="WorkspaceBackgroundHome">#F0F0F0</Color>
     <Color x:Key="WorkspaceBackgroundCustom">#FFFFDC</Color>
     <SolidColorBrush Color="#BBBBBB" x:Key="WorkspaceTabHeaderActiveTextBrush"></SolidColorBrush>
     <SolidColorBrush Color="#777777" x:Key="WorkspaceTabHeaderInactiveTextBrush"></SolidColorBrush>
