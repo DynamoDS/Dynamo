@@ -68,6 +68,11 @@ namespace Dynamo
                 return;
             }
 
+            var styles = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            styles.OfClass(typeof (GraphicsStyle));
+
+            var gStyle = styles.ToElements().FirstOrDefault(x => x.Name == "Dynamo");
+
             IdlePromise.ExecuteOnIdle(
                 () =>
                     {
@@ -81,11 +86,14 @@ namespace Dynamo
 
                         var geoms = VisualizationManager.Visualizations.Values.SelectMany(x => x.Geometry).Where(x => x is GeometryObject).Cast<GeometryObject>().ToList();
 
-                        object[] argsM = new object[4];
+                        var argsM = new object[4];
                         argsM[0] = dynRevitSettings.Doc.Document;
                         argsM[1] = ElementId.InvalidElementId;
                         argsM[2] = geoms;
-                        argsM[3] = ElementId.InvalidElementId;
+                        if (gStyle != null)
+                            argsM[3] = gStyle.Id;
+                        else
+                            argsM[3] = ElementId.InvalidElementId;
 
                         keeperId = (ElementId)method.Invoke(null, argsM);
 
