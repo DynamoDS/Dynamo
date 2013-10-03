@@ -22,8 +22,6 @@ namespace Dynamo.ViewModels
             NodeTooltip,
             Error,
             Preview,
-            PreviewMinimized,
-            PreviewCondensed,
             None
         }
         public enum Direction
@@ -47,7 +45,7 @@ namespace Dynamo.ViewModels
             get { return zIndex; }
             set { zIndex = value; RaisePropertyChanged("ZIndex"); }
         }
-
+        public bool DefaultSettingIsMinimizedPreview = true;
         private Style infoBubbleStyle = Style.None;
         public Style InfoBubbleStyle
         {
@@ -144,6 +142,12 @@ namespace Dynamo.ViewModels
             get { return contentWrapping; }
             set { contentWrapping = value; RaisePropertyChanged("TextWrapping"); }
         }
+        private Visibility contentVisibility = Visibility.Visible;
+        public Visibility ContentVisibility
+        {
+            get { return contentVisibility; }
+            set { contentVisibility = value; RaisePropertyChanged("ContentVisibility"); }
+        }
         private string content = string.Empty;
         public string Content
         {
@@ -151,13 +155,12 @@ namespace Dynamo.ViewModels
             set { content = value; RaisePropertyChanged("Content"); }
         }
 
-        private string actualContent = string.Empty;
         private Timer fadeInTimer;
         private Timer fadeOutTimer;
         public Direction ConnectingDirection = Direction.None;
         private Direction limitedDirection = Direction.None;
-        private bool alwaysVisible =false;
-
+        private bool alwaysVisible = false;
+        
         #endregion
 
         #region Public Methods
@@ -256,8 +259,7 @@ namespace Dynamo.ViewModels
 
         private void UpdateContent(string text)
         {
-            actualContent = text;
-            Content = actualContent;
+            Content = text;
         }
 
         private void UpdatePosition(Point topLeft, Point botRight)
@@ -397,6 +399,9 @@ namespace Dynamo.ViewModels
             double nodeWidth = botRight.X - topLeft.X;
             margin.Top = botRight.Y;
             margin.Left = -((EstimatedWidth - nodeWidth) / 2) + topLeft.X;
+
+            if (DefaultSettingIsMinimizedPreview)
+                margin.Top -= 7;
             return margin;
         }
 
