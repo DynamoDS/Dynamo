@@ -17,7 +17,7 @@ namespace Dynamo.Nodes
     [NodeName("Curve Face Intersection")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_INTERSECT)]
     [NodeDescription("Calculates the intersection of a curve and a face.")]
-    public class CurveFaceIntersection : RevitTransactionNode //, IDrawable, IClearable
+    public class CurveFaceIntersection : RevitTransactionNode
     {
         private readonly PortData _resultPort = new PortData(
             "result", "The set comparison result.", typeof(Value.String));
@@ -217,7 +217,7 @@ namespace Dynamo.Nodes
     [NodeName("Curve Curve Intersection")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_INTERSECT)]
     [NodeDescription("Calculates the intersection of two curves.")]
-    public class CurveCurveIntersection : RevitTransactionNode //, IDrawable, IClearable
+    public class CurveCurveIntersection : RevitTransactionNode
     {
         private readonly PortData _resultPort = new PortData(
             "result", "The set comparison result.", typeof(Value.String));
@@ -287,7 +287,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_INTERSECT)]
     [NodeDescription("Calculates the intersection of two faces.")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
-    public class FaceFaceIntersection : RevitTransactionNode    //, IDrawable, IClearable
+    public class FaceFaceIntersection : RevitTransactionNode
     {
         private readonly PortData _resultPort = new PortData(
             "result", "The intersection result.", typeof(Value.String));
