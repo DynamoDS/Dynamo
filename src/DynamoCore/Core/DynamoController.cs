@@ -137,6 +137,8 @@ namespace Dynamo
             }
         }
 
+        public bool IsShowPreviewByDefault = false;
+
         #endregion
 
         #region events

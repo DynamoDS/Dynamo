@@ -200,7 +200,8 @@ namespace Dynamo.Search
             Point pointToScreen_BotRight = new Point(pointToScreen_TopLeft.X + treeViewItem.ActualWidth, pointToScreen_TopLeft.Y + treeViewItem.ActualHeight);
             Point botRight = this.PointFromScreen(pointToScreen_BotRight);
             string infoBubbleContent = nodeSearchElement.Name + "\n" + nodeSearchElement.Description;
-            InfoBubbleDataPacket data = new InfoBubbleDataPacket(InfoBubbleViewModel.Style.LibraryItemPreview, topLeft, botRight, infoBubbleContent, InfoBubbleViewModel.Direction.Left, Guid.Empty);
+            InfoBubbleDataPacket data = new InfoBubbleDataPacket(InfoBubbleViewModel.Style.LibraryItemPreview, topLeft, 
+                botRight, infoBubbleContent, InfoBubbleViewModel.Direction.Left);
             DynamoCommands.ShowLibItemInfoBubbleCommand.Execute(data);
         }
 
