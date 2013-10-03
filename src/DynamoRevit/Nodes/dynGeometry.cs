@@ -1366,6 +1366,7 @@ namespace Dynamo.Nodes
     [NodeName("Hermite Spline")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a geometric hermite spline.")]
+    [NodeSearchTags("curve through points", "interpolate", "spline")]
     public class HermiteSpline: GeometryBase
     {
         Autodesk.Revit.DB.HermiteSpline hs;
