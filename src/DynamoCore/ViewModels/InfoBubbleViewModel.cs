@@ -22,6 +22,8 @@ namespace Dynamo.ViewModels
             NodeTooltip,
             Error,
             Preview,
+            PreviewMinimized,
+            PreviewCondensed,
             None
         }
         public enum Direction
@@ -45,8 +47,6 @@ namespace Dynamo.ViewModels
             get { return zIndex; }
             set { zIndex = value; RaisePropertyChanged("ZIndex"); }
         }
-
-        public Guid TargetGUID { get; set; }
 
         private Style infoBubbleStyle = Style.None;
         public Style InfoBubbleStyle
@@ -144,13 +144,14 @@ namespace Dynamo.ViewModels
             get { return contentWrapping; }
             set { contentWrapping = value; RaisePropertyChanged("TextWrapping"); }
         }
-        private string content;
+        private string content = string.Empty;
         public string Content
         {
             get { return content; }
             set { content = value; RaisePropertyChanged("Content"); }
         }
 
+        private string actualContent = string.Empty;
         private Timer fadeInTimer;
         private Timer fadeOutTimer;
         public Direction ConnectingDirection = Direction.None;
@@ -170,19 +171,6 @@ namespace Dynamo.ViewModels
             fadeOutTimer = new Timer(20);
             fadeOutTimer.Elapsed += fadeOutTimer_Elapsed;
             fadeOutTimer.Enabled = true;
-        }
-
-        public InfoBubbleViewModel(Guid guid)
-        {
-            fadeInTimer = new Timer(20);
-            fadeInTimer.Elapsed += fadeInTimer_Elapsed;
-            fadeInTimer.Enabled = true;
-
-            fadeOutTimer = new Timer(20);
-            fadeOutTimer.Elapsed += fadeOutTimer_Elapsed;
-            fadeOutTimer.Enabled = true;
-
-            this.TargetGUID = guid;
         }
 
         #endregion
@@ -268,7 +256,8 @@ namespace Dynamo.ViewModels
 
         private void UpdateContent(string text)
         {
-            Content = text;
+            actualContent = text;
+            Content = actualContent;
         }
 
         private void UpdatePosition(Point topLeft, Point botRight)
