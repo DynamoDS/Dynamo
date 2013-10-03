@@ -364,12 +364,14 @@ namespace Dynamo.ViewModels
             if (this.IsSelected == true)
             {
                 this.ZIndex = 4;
-                this.PreviewBubble.ZIndex = 4;
+                if (dynSettings.Controller.IsShowPreviewByDefault)
+                    this.PreviewBubble.ZIndex = 4;
             }
             else
             {
                 this.ZIndex = 3;
-                this.PreviewBubble.ZIndex = 3;
+                if (dynSettings.Controller.IsShowPreviewByDefault)
+                    this.PreviewBubble.ZIndex = 3;
             }
         }
 
@@ -392,8 +394,7 @@ namespace Dynamo.ViewModels
                 InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.Error;
                 string content = NodeModel.ToolTipText;
                 InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Bottom;
-                Guid guid = NodeModel.GUID;
-                InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection, guid);
+                InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
                 dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.Invoke((new Action(() =>
                 {
                     if (!dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Errors.Contains(this.ErrorBubble))
@@ -417,34 +418,41 @@ namespace Dynamo.ViewModels
 
         private void UpdatePreviewBubbleContent()
         {
+            if (this.PreviewBubble == null || this.NodeModel is Watch || !dynSettings.Controller.IsShowPreviewByDefault)
+                return;
+            Point topLeft = new Point(NodeModel.X, NodeModel.Y);
+            Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
+            InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.Preview;
+            string content = this.OldValue;
+            InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Top;
+            InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
+            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.Invoke((new Action(() =>
+            {
+                if (!dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Previews.Contains(this.PreviewBubble))
+                    return;
+                this.PreviewBubble.UpdateContentCommand.Execute(data);
+                this.PreviewBubble.SetAlwaysVisibleCommand.Execute(true);
+                this.PreviewBubble.FadeInCommand.Execute(null);
+            })));
+        }
+
+        private void UpdatePreviewBubbleContent(string content)
+        {
             if (this.PreviewBubble == null || this.NodeModel is Watch)
                 return;
-            if (string.IsNullOrEmpty(this.OldValue))
+            Point topLeft = new Point(NodeModel.X, NodeModel.Y);
+            Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
+            InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.PreviewCondensed;
+            InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Top;
+            InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
+            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.Invoke((new Action(() =>
             {
-                if (ErrorBubble.Opacity != 0)
-                {
-                    PreviewBubble.SetAlwaysVisibleCommand.Execute(false);
-                    PreviewBubble.FadeOutCommand.Execute(null);
-                }
-            }
-            else
-            {
-                Point topLeft = new Point(NodeModel.X, NodeModel.Y);
-                Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
-                InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.Preview;
-                string content = this.OldValue;
-                InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Top;
-                Guid guid = NodeModel.GUID;
-                InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection, guid);
-                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.Invoke((new Action(() =>
-                {
-                    if (!dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Previews.Contains(this.PreviewBubble))
-                        return;
-                    this.PreviewBubble.UpdateContentCommand.Execute(data);
-                    this.PreviewBubble.SetAlwaysVisibleCommand.Execute(true);
-                    this.PreviewBubble.FadeInCommand.Execute(null);
-                })));
-            }
+                if (!dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Previews.Contains(this.PreviewBubble))
+                    return;
+                this.PreviewBubble.UpdateContentCommand.Execute(data);
+                this.PreviewBubble.SetAlwaysVisibleCommand.Execute(false);
+                this.PreviewBubble.FadeInCommand.Execute(null);
+            })));
         }
 
         private void UpdatePreviewBubblePosition(double x, double y)
@@ -743,6 +751,26 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        private void ShowPreview(object parameter)
+        {
+            UpdatePreviewBubbleContent((string)parameter);
+            this.PreviewBubble.ZIndex = 5;
+        }
+
+        private bool CanShowPreview(object parameter)
+        {
+            return true;
+        }
+
+        private void HidePreview(object parameter)
+        {
+            //this.PreviewBubble.FadeOutCommand.Execute(null);
+        }
+
+        private bool CanHidePreview(object parameter)
+        {
+            return true;
+        }
     }
 
     public class NodeHelpEventArgs : EventArgs

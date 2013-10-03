@@ -19,6 +19,8 @@ namespace Dynamo.ViewModels
         private DelegateCommand _showTooltipCommand;
         private DelegateCommand _fadeOutTooltipCommand;
         private DelegateCommand _collapseTooltipCommand;
+        private DelegateCommand showPreviewCommand;
+        private DelegateCommand hidePreviewCommand;
 
         public DelegateCommand RenameCommand
         {
@@ -189,6 +191,26 @@ namespace Dynamo.ViewModels
                 if (_collapseTooltipCommand == null)
                     _collapseTooltipCommand = new DelegateCommand(CollapseTooltip, CanCollapseTooltip);
                 return _collapseTooltipCommand;
+            }
+        }
+
+        public DelegateCommand ShowPreviewCommand
+        {
+            get
+            {
+                if (showPreviewCommand == null)
+                    showPreviewCommand = new DelegateCommand(ShowPreview, CanShowPreview);
+                return showPreviewCommand;
+            }
+        }
+
+        public DelegateCommand HidePreviewCommand
+        {
+            get
+            {
+                if (hidePreviewCommand == null)
+                    hidePreviewCommand = new DelegateCommand(HidePreview, CanHidePreview);
+                return hidePreviewCommand;
             }
         }
     }

@@ -267,7 +267,8 @@ namespace Dynamo.Controls
             double actualWidth = textBlock.ActualWidth * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
             double actualHeight = textBlock.ActualHeight * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
             Point botRight = new Point(topLeft.X + actualWidth, topLeft.Y + actualHeight);
-            ViewModel.ShowTooltipCommand.Execute(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.NodeTooltip, topLeft, botRight, tooltipContent, InfoBubbleViewModel.Direction.Bottom, Guid.Empty));
+            ViewModel.ShowTooltipCommand.Execute(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.NodeTooltip, topLeft,
+                botRight, tooltipContent, InfoBubbleViewModel.Direction.Bottom));
         }
 
         private void NickNameBlock_OnMouseLeave(object sender, MouseEventArgs e)
@@ -284,7 +285,8 @@ namespace Dynamo.Controls
             double actualWidth = inputPort.ActualWidth * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
             double actualHeight = inputPort.ActualHeight * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
             Point botRight = new Point(topLeft.X + actualWidth, topLeft.Y + actualHeight);
-            ViewModel.ShowTooltipCommand.Execute(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.NodeTooltip, topLeft, botRight, content, InfoBubbleViewModel.Direction.Right, Guid.Empty));
+            ViewModel.ShowTooltipCommand.Execute(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.NodeTooltip, topLeft,
+                botRight, content, InfoBubbleViewModel.Direction.Right));
         }
 
         private void InputPort_OnMouseLeave(object sender, MouseEventArgs e)
@@ -306,7 +308,8 @@ namespace Dynamo.Controls
             double actualWidth = outputPort.ActualWidth * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
             double actualHeight = outputPort.ActualHeight * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
             Point botRight = new Point(topLeft.X + actualWidth, topLeft.Y + actualHeight);
-            ViewModel.ShowTooltipCommand.Execute(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.NodeTooltip, topLeft, botRight, content, InfoBubbleViewModel.Direction.Left, Guid.Empty));
+            ViewModel.ShowTooltipCommand.Execute(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.NodeTooltip, topLeft,
+                botRight, content, InfoBubbleViewModel.Direction.Left));
         }
 
         private void OutputPort_OnMouseLeave(object sender, MouseEventArgs e)
@@ -317,6 +320,16 @@ namespace Dynamo.Controls
         private void OutputPort_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             ViewModel.CollapseTooltipCommand.Execute(null);
+        }
+
+        private void PreviewArrow_MouseEnter(object sender, MouseEventArgs e)
+        {
+            ViewModel.ShowPreviewCommand.Execute(ViewModel.OldValue);
+        }
+
+        private void PreviewArrow_MouseLeave(object sender, MouseEventArgs e)
+        {
+            ViewModel.HidePreviewCommand.Execute(null);
         }
     }
 }

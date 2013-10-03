@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media.Animation;
 using InfoBubbleViewModel = Dynamo.ViewModels.InfoBubbleViewModel;
+using Dynamo.ViewModels;
 
 namespace Dynamo.Controls
 {
@@ -106,6 +107,20 @@ namespace Dynamo.Controls
         {
             if (mainGrid.Opacity != 0)
                 FadeOutInfoBubble();
+        }
+
+        private void InfoBubble_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (ViewModel.Content == ViewModel.FullContent)
+                return;
+            string content = ViewModel.FullContent;
+            InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.Preview;
+            InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Top;
+            Point topLeft = ViewModel.TargetTopLeft;
+            Point botRight = ViewModel.TargetBotRight;
+            InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
+            this.ViewModel.UpdateContentCommand.Execute(data);
+            
         }
     }
 }

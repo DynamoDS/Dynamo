@@ -16,7 +16,8 @@
           Margin="{Binding Path=Margin}" Visibility="{Binding Path=Opacity, Converter={StaticResource OpacityToVisibilityConverter}}"
           MouseEnter="InfoBubble_MouseEnter" MouseLeave="InfoBubble_MouseLeave">
         <Polygon Name="backgroundPolygon" Fill="{Binding Path=FrameFill}" Stroke="{Binding Path=FrameStrokeColor}" 
-                 StrokeThickness="{Binding Path=FrameStrokeThickness}" Points="{Binding Path=FramePoints}">
+                 StrokeThickness="{Binding Path=FrameStrokeThickness}" Points="{Binding Path=FramePoints}"
+                 MouseDown="InfoBubble_PreviewMouseDown">
         </Polygon>
 
         <StackPanel Name="ContentContainer">

@@ -22,6 +22,7 @@ namespace Dynamo.ViewModels
             NodeTooltip,
             Error,
             Preview,
+            PreviewCondensed,
             None
         }
         public enum Direction
@@ -45,13 +46,13 @@ namespace Dynamo.ViewModels
             get { return zIndex; }
             set { zIndex = value; RaisePropertyChanged("ZIndex"); }
         }
-        public bool DefaultSettingIsMinimizedPreview = true;
         private Style infoBubbleStyle = Style.None;
         public Style InfoBubbleStyle
         {
             get { return infoBubbleStyle; }
             set { infoBubbleStyle = value; RaisePropertyChanged("InfoBubbleStyle"); }
         }
+        public string FullContent;
 
         public double EstimatedWidth;
         public double EstimatedHeight;
@@ -155,12 +156,15 @@ namespace Dynamo.ViewModels
             set { content = value; RaisePropertyChanged("Content"); }
         }
 
+        public Point TargetTopLeft;
+        public Point TargetBotRight;
+
         private Timer fadeInTimer;
         private Timer fadeOutTimer;
         public Direction ConnectingDirection = Direction.None;
         private Direction limitedDirection = Direction.None;
         private bool alwaysVisible = false;
-        
+
         #endregion
 
         #region Public Methods
@@ -182,9 +186,9 @@ namespace Dynamo.ViewModels
 
         private void UpdateInfoBubbleContent(object parameter)
         {
-            if (dynSettings.Controller.DynamoViewModel.IsMouseDown)
-                return;
             InfoBubbleDataPacket data = (InfoBubbleDataPacket)parameter;
+
+            SaveParameter(data.Text, data.TopLeft, data.BotRight, data.Style, data.ConnectingDirection);
             UpdateStyle(data.Style, data.ConnectingDirection);
             UpdateContent(data.Text);
             UpdateShape(data.TopLeft, data.BotRight);
@@ -259,7 +263,10 @@ namespace Dynamo.ViewModels
 
         private void UpdateContent(string text)
         {
-            Content = text;
+            if (this.infoBubbleStyle == Style.PreviewCondensed && text.Length > 20)
+                Content = text.Substring(0, 20) + "...";
+            else
+                Content = text;
         }
 
         private void UpdatePosition(Point topLeft, Point botRight)
@@ -278,6 +285,7 @@ namespace Dynamo.ViewModels
                     Margin = GetMargin_Error(topLeft, botRight);
                     break;
                 case Style.Preview:
+                case Style.PreviewCondensed:
                     Margin = GetMargin_Preview(topLeft, botRight);
                     break;
             }
@@ -285,8 +293,6 @@ namespace Dynamo.ViewModels
 
         private void UpdateStyle(InfoBubbleViewModel.Style style, Direction connectingDirection)
         {
-            InfoBubbleStyle = style;
-            this.ConnectingDirection = connectingDirection;
             switch (style)
             {
                 case Style.LibraryItemPreview:
@@ -299,6 +305,7 @@ namespace Dynamo.ViewModels
                     SetStyle_Error();
                     break;
                 case Style.Preview:
+                case Style.PreviewCondensed:
                     SetStyle_Preview();
                     break;
                 case Style.None:
@@ -320,6 +327,7 @@ namespace Dynamo.ViewModels
                     FramePoints = GetFramePoints_Error();
                     break;
                 case Style.Preview:
+                case Style.PreviewCondensed:
                     FramePoints = GetFramePoints_Preview();
                     break;
                 case Style.None:
@@ -400,7 +408,7 @@ namespace Dynamo.ViewModels
             margin.Top = botRight.Y;
             margin.Left = -((EstimatedWidth - nodeWidth) / 2) + topLeft.X;
 
-            if (DefaultSettingIsMinimizedPreview)
+            if (!dynSettings.Controller.IsShowPreviewByDefault)
                 margin.Top -= 7;
             return margin;
         }
@@ -655,6 +663,15 @@ namespace Dynamo.ViewModels
 
         }
 
+        private void SaveParameter(string content, Point topLeft, Point botRight, Style style, Direction connectingDirection)
+        {
+            this.FullContent = content;
+            this.TargetTopLeft = topLeft;
+            this.TargetBotRight = botRight;
+            this.InfoBubbleStyle = style;
+            this.ConnectingDirection = connectingDirection;
+        }
+
         private void fadeInTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             if (Opacity <= 0.95)
@@ -681,17 +698,15 @@ namespace Dynamo.ViewModels
         public Point BotRight;
         public string Text;
         public InfoBubbleViewModel.Direction ConnectingDirection;
-        public Guid TargetGUID;
 
         public InfoBubbleDataPacket(InfoBubbleViewModel.Style style, Point topLeft, Point botRight,
-            string text, InfoBubbleViewModel.Direction connectingDirection, Guid targetGUID)
+            string text, InfoBubbleViewModel.Direction connectingDirection)
         {
             Style = style;
             TopLeft = topLeft;
             BotRight = botRight;
             Text = text;
             ConnectingDirection = connectingDirection;
-            TargetGUID = targetGUID;
         }
     }
 }
