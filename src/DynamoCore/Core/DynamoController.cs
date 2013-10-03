@@ -137,7 +137,12 @@ namespace Dynamo
             }
         }
 
-        public bool IsShowPreviewByDefault = false;
+        private bool isShowPreViewByDefault = true;
+        public bool IsShowPreviewByDefault
+        {
+            get { return isShowPreViewByDefault;}
+            set { isShowPreViewByDefault = value; RaisePropertyChanged("IsShowPreviewByDefault"); }
+        }
 
         #endregion
 

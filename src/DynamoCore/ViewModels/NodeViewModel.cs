@@ -217,6 +217,11 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public bool IsPreviewInsetVisible
+        {
+            get { return !dynSettings.Controller.IsShowPreviewByDefault; }
+        }
+
         #endregion
 
         #region events
@@ -262,6 +267,7 @@ namespace Dynamo.ViewModels
 
             logic.PropertyChanged += logic_PropertyChanged;
             dynSettings.Controller.DynamoViewModel.Model.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Model_PropertyChanged);
+            dynSettings.Controller.PropertyChanged += Controller_PropertyChanged;
 
             //Do a one time setup of the initial ports on the node
             //we can not do this automatically because this constructor
@@ -359,18 +365,29 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private void Controller_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "IsShowPreviewByDefault":
+                    RaisePropertyChanged("IsPreviewInsetVisible");
+                    break;
+
+            }
+        }
+
         private void UpdateZIndex()
         {
             if (this.IsSelected == true)
             {
                 this.ZIndex = 4;
-                if (dynSettings.Controller.IsShowPreviewByDefault)
+                if (dynSettings.Controller != null && dynSettings.Controller.IsShowPreviewByDefault)
                     this.PreviewBubble.ZIndex = 4;
             }
             else
             {
                 this.ZIndex = 3;
-                if (dynSettings.Controller.IsShowPreviewByDefault)
+                if (dynSettings.Controller != null && dynSettings.Controller.IsShowPreviewByDefault)
                     this.PreviewBubble.ZIndex = 3;
             }
         }
@@ -753,8 +770,11 @@ namespace Dynamo.ViewModels
 
         private void ShowPreview(object parameter)
         {
-            UpdatePreviewBubbleContent((string)parameter);
-            this.PreviewBubble.ZIndex = 5;
+            if (!dynSettings.Controller.IsShowPreviewByDefault)
+            {
+                UpdatePreviewBubbleContent((string)parameter);
+                this.PreviewBubble.ZIndex = 5;
+            }
         }
 
         private bool CanShowPreview(object parameter)
