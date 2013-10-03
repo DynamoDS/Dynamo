@@ -48,7 +48,7 @@ namespace Dynamo.ViewModels
 
         public Guid TargetGUID { get; set; }
 
-        private Style infoBubbleStyle;
+        private Style infoBubbleStyle = Style.None;
         public Style InfoBubbleStyle
         {
             get { return infoBubbleStyle; }
@@ -153,14 +153,9 @@ namespace Dynamo.ViewModels
 
         private Timer fadeInTimer;
         private Timer fadeOutTimer;
-
-        public Direction ConnectingDirection
-        {
-            get;
-            set;
-        }
-        private Direction limitedDirection;
-        private bool alwaysVisible;
+        public Direction ConnectingDirection = Direction.None;
+        private Direction limitedDirection = Direction.None;
+        private bool alwaysVisible =false;
 
         #endregion
 
@@ -168,7 +163,6 @@ namespace Dynamo.ViewModels
 
         public InfoBubbleViewModel()
         {
-            this.ZIndex = 3;
             fadeInTimer = new Timer(20);
             fadeInTimer.Elapsed += fadeInTimer_Elapsed;
             fadeInTimer.Enabled = true;
@@ -176,17 +170,10 @@ namespace Dynamo.ViewModels
             fadeOutTimer = new Timer(20);
             fadeOutTimer.Elapsed += fadeOutTimer_Elapsed;
             fadeOutTimer.Enabled = true;
-
-            alwaysVisible = false;
-            limitedDirection = Direction.None;
-            Opacity = 0;
-            InfoBubbleStyle = Style.None;
         }
 
         public InfoBubbleViewModel(Guid guid)
         {
-            this.ZIndex = 3;
-
             fadeInTimer = new Timer(20);
             fadeInTimer.Elapsed += fadeInTimer_Elapsed;
             fadeInTimer.Enabled = true;
@@ -195,10 +182,6 @@ namespace Dynamo.ViewModels
             fadeOutTimer.Elapsed += fadeOutTimer_Elapsed;
             fadeOutTimer.Enabled = true;
 
-            alwaysVisible = false;
-            limitedDirection = Direction.None;
-            Opacity = 0;
-            InfoBubbleStyle = Style.None;
             this.TargetGUID = guid;
         }
 
