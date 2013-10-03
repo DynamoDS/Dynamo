@@ -122,7 +122,7 @@ namespace Dynamo.ViewModels
                 {
                     return "Not available in custom nodes";
                 }
-                return NodeModel.BuildValueString(nodeLogic.OldValue, 0, 3, 0, 2).TrimEnd('\n');
+                return NodeModel.BuildValueString(nodeLogic.OldValue, 0, 10000, 0, 25).TrimEnd('\n');
             }
         }
 
