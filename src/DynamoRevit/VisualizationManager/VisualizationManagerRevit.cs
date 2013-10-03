@@ -13,11 +13,13 @@ using Curve = Autodesk.Revit.DB.Curve;
 using Solid = Autodesk.Revit.DB.Solid;
 using Face = Autodesk.Revit.DB.Face;
 using Edge = Autodesk.Revit.DB.Edge;
+using PointCollection = System.Windows.Media.PointCollection;
 
 namespace Dynamo
 {
     class VisualizationManagerRevit : VisualizationManager
     {
+
         public override void UpdateVisualizations()
         {
             //only update those nodes which have been flagged for update
@@ -65,10 +67,6 @@ namespace Dynamo
                     {
                         //Draw Revit geometry
                         DrawGeometryObject(obj, rd);
-
-                        //If GeometryKeeper is available,
-                        //send geometry.
-                        //TODO: GeometryKeeper
                     }
                     else if (obj is GraphicItem)
                     {
@@ -140,7 +138,7 @@ namespace Dynamo
             if (face == null)
                 return;
 
-            rd.Meshes.Add(RevitMeshToHelixMesh(face.Triangulate(0.2)));
+            rd.Meshes.Add(RevitMeshToHelixMesh(face.Triangulate(0.1)));
         }
 
         private void DrawForm(object obj, RenderDescription rd)
@@ -365,6 +363,10 @@ namespace Dynamo
         private static MeshGeometry3D RevitMeshToHelixMesh(Mesh rmesh)
         {
             var builder = new MeshBuilder();
+            var points = new Point3DCollection();
+            var tex = new PointCollection();
+            var norms = new Vector3DCollection();
+            var tris = new List<int>();
 
             for (int i = 0; i < rmesh.NumTriangles; ++i)
             {
@@ -378,22 +380,47 @@ namespace Dynamo
                 var e1 = b - a;
                 var e2 = c - a;
                 var normXYZ = e1.CrossProduct(e2).Normalize();
-                var norm = new Vector3D(normXYZ.X, normXYZ.Y, normXYZ.Z);
+                var normal = new Vector3D(normXYZ.X, normXYZ.Y, normXYZ.Z);
 
-                builder.Positions.Add(RevitPointToWindowsPoint(a));
-                builder.TriangleIndices.Add(builder.Positions.Count-1);
-                builder.Positions.Add(RevitPointToWindowsPoint(b));
-                builder.TriangleIndices.Add(builder.Positions.Count-1);
-                builder.Positions.Add(RevitPointToWindowsPoint(c));
-                builder.TriangleIndices.Add(builder.Positions.Count-1);
+                for (int j = 0; j < 3; j++)
+                {
+                    var new_point = RevitPointToWindowsPoint(tri.get_Vertex(j));
 
-                builder.TextureCoordinates.Add(new System.Windows.Point(0, 0));
-                builder.TextureCoordinates.Add(new System.Windows.Point(0, 0));
-                builder.TextureCoordinates.Add(new System.Windows.Point(0, 0));
+                    //find a matching point
+                    //compare the angle between the normals
+                    //to discern a 'break' angle for adjacent faces
+                    //int foundIndex = -1;
+                    //for (int k = 0; k < points.Count; k++)
+                    //{
+                    //    var testPt = points[k];
+                    //    var testNorm = norms[k];
+                    //    var ang = Vector3D.AngleBetween(normal, testNorm);
 
-                builder.Normals.Add(norm);
-                builder.Normals.Add(norm);
-                builder.Normals.Add(norm);
+                    //    if (new_point.X == testPt.X &&
+                    //        new_point.Y == testPt.Y &&
+                    //        new_point.Z == testPt.Z &&
+                    //        ang > 90.0000)
+                    //    {
+                    //        foundIndex = k;
+                    //        //average the merged normals
+                    //        norms[k] = (testNorm + normal) / 2;
+                    //        break;
+                    //    }
+                    //}
+
+                    //if (foundIndex != -1)
+                    //{
+                    //    tris.Add(foundIndex);
+                    //    continue;
+                    //}
+
+                    tris.Add(points.Count);
+                    points.Add(new_point);
+                    norms.Add(normal);
+                    tex.Add(new System.Windows.Point(0, 0));
+                }
+
+                builder.Append(points, tris, norms, tex);
             }
 
             return builder.ToMesh(true);
