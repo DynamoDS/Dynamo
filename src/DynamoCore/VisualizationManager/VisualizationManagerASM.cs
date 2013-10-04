@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using Autodesk.LibG;
 using Dynamo.Models;
 using Dynamo.Selection;
-using Dynamo.Services;
 using HelixToolkit.Wpf;
-using Newtonsoft.Json;
 
 namespace Dynamo
 {
@@ -32,6 +30,8 @@ namespace Dynamo
             var sw = new Stopwatch();
             sw.Start();
 
+            int chunkCount = 0;
+
             foreach (var n in toUpdate)
             {
                 var rd = n.Description;
@@ -48,6 +48,14 @@ namespace Dynamo
                     //set this flag to avoid processing again
                     //if not necessary
                     n.RequiresUpdate = false;
+
+                    chunkCount++;
+                    if (chunkCount > 100)
+                    {
+                        var renderChunk = AggregateRenderDescriptions();
+                        OnVisualizationUpdateComplete(this, new VisualizationEventArgs(renderChunk));
+                        chunkCount = 0;
+                    }
                 }
             }
 
@@ -58,15 +66,7 @@ namespace Dynamo
             //generate an aggregated render description to send to the UI
             var aggRd = AggregateRenderDescriptions();
 
-            var renderDict = new Dictionary<string, int>();
-            renderDict["points"] = aggRd.Points.Count;
-            renderDict["line_segments"] = aggRd.Lines.Count/2;
-            renderDict["mesh_facets"] = aggRd.Meshes.Any()?
-                aggRd.Meshes.Select(x => x.TriangleIndices.Count / 3).Aggregate((a, b) => a + b): 0;
-
-            var renderData = JsonConvert.SerializeObject(renderDict);
-
-            InstrumentationLogger.LogInfo("Perf-Latency-RenderGeometryGeneration", renderData);
+            LogVisualizationUpdateData(aggRd, sw.Elapsed.ToString());
 
             //notify the UI of visualization completion
             OnVisualizationUpdateComplete(this, new VisualizationEventArgs(aggRd));
@@ -187,10 +187,14 @@ namespace Dynamo
                 //sw.Start();
 
                 var builder = new MeshBuilder();
+                var points = new Point3DCollection();
+                var tex = new PointCollection();
+                var norms = new Vector3DCollection();
+                var tris = new List<int>();
 
                 FloatList triangle_vertices = g.triangle_vertices_threadsafe();
                 FloatList triangle_normals = g.triangle_normals_threadsafe();
-                
+            
                 for (int i = 0; i < triangle_vertices.Count; i+=3)
                 {
                     var new_point = new Point3D(triangle_vertices[i],
@@ -201,11 +205,40 @@ namespace Dynamo
                                                 triangle_normals[i + 1],
                                                 triangle_normals[i + 2]);
 
-                    builder.TriangleIndices.Add(builder.Positions.Count);
-                    builder.Normals.Add(normal);
-                    builder.Positions.Add(new_point);
-                    builder.TextureCoordinates.Add(new System.Windows.Point(0, 0));
+                    //find a matching point
+                    //compare the angle between the normals
+                    //to discern a 'break' angle for adjacent faces
+                    //int foundIndex = -1;
+                    //for (int j = 0; j < points.Count; j++)
+                    //{
+                    //    var testPt = points[j];
+                    //    var testNorm = norms[j];
+                    //    var ang = Vector3D.AngleBetween(normal, testNorm);
+
+                    //    if (new_point.X == testPt.X &&
+                    //        new_point.Y == testPt.Y &&
+                    //        new_point.Z == testPt.Z &&
+                    //        ang > 90.0000)
+                    //    {
+                    //        foundIndex = j;
+                    //        break;
+                    //    }
+                    //}
+
+                    //if (foundIndex != -1)
+                    //{
+                    //    tris.Add(foundIndex);
+                    //    continue;
+                    //}
+                    
+                    tris.Add(points.Count);
+                    points.Add(new_point);
+                    norms.Add(normal);
+                    tex.Add(new System.Windows.Point(0,0));
                 }
+
+                //builder.AddTriangles(points, norms, tex);
+                builder.Append(points, tris, norms, tex);
 
                 //sw.Stop();
                 //Debug.WriteLine(string.Format("{0} elapsed for drawing geometry.", sw.Elapsed));
