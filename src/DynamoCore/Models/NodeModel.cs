@@ -987,11 +987,6 @@ namespace Dynamo.Models
         
         protected virtual void __eval_internal(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
         {
-            if (this is IDrawable)
-            {
-                dynSettings.Controller.VisualizationManager.MarkForUpdate(this);
-            }
-
             var argSets = new List<FSharpList<FScheme.Value>>();
 
             //create a zip of the incoming args and the port data
@@ -1084,11 +1079,6 @@ namespace Dynamo.Models
                 Evaluate(args, outPuts);
                 OnEvaluate();
             }
-
-            //if (dynSettings.Controller.UIDispatcher != null && this is IDrawable)
-            //{
-            //    dynSettings.Controller.UIDispatcher.Invoke(new Action(() => (this as IDrawable).Draw()));
-            //}
         }
 
         protected virtual bool AcceptsListOfLists(Value value)

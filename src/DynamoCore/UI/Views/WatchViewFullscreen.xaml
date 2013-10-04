@@ -57,14 +57,14 @@
                             <GeometryModel3D.Material>
                                 <DiffuseMaterial>
                                     <DiffuseMaterial.Brush>
-                                        <SolidColorBrush Color="WhiteSmoke" Opacity="0.3"/>
+                                        <SolidColorBrush Color="WhiteSmoke" Opacity="1"/>
                                     </DiffuseMaterial.Brush>
                                 </DiffuseMaterial>
                             </GeometryModel3D.Material>
                             <GeometryModel3D.BackMaterial>
                                 <DiffuseMaterial>
                                     <DiffuseMaterial.Brush>
-                                        <SolidColorBrush Color="WhiteSmoke" Opacity="0.3"/>
+                                        <SolidColorBrush Color="WhiteSmoke" Opacity="1"/>
                                     </DiffuseMaterial.Brush>
                                 </DiffuseMaterial>
                             </GeometryModel3D.BackMaterial>
@@ -77,14 +77,14 @@
                             <GeometryModel3D.Material>
                                 <DiffuseMaterial>
                                     <DiffuseMaterial.Brush>
-                                        <SolidColorBrush Color="Cyan" Opacity="0.3"/>
+                                        <SolidColorBrush Color="Cyan" Opacity="1"/>
                                     </DiffuseMaterial.Brush>
                                 </DiffuseMaterial>
                             </GeometryModel3D.Material>
                             <GeometryModel3D.BackMaterial>
                                 <DiffuseMaterial>
                                     <DiffuseMaterial.Brush>
-                                        <SolidColorBrush Color="Cyan" Opacity="0.3"/>
+                                        <SolidColorBrush Color="Cyan" Opacity="1"/>
                                     </DiffuseMaterial.Brush>
                                 </DiffuseMaterial>
                             </GeometryModel3D.BackMaterial>
