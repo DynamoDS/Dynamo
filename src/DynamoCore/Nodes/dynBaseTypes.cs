@@ -322,6 +322,50 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            XmlDocument xmlDoc = element.OwnerDocument;
+            foreach (var inport in InPortData)
+            {
+                XmlElement input = xmlDoc.CreateElement("Input");
+                input.SetAttribute("name", inport.NickName);
+                element.AppendChild(input);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+
+            if (context == SaveContext.Undo)
+            {
+                //Reads in the new number of ports required from the data stored in the Xml Element
+                //during Serialize (nextLength). Changes the current In Port Data to match the
+                //required size by adding or removing port data.
+                int currLength = InPortData.Count;
+                XmlNodeList inNodes = element.SelectNodes("Input");
+                int nextLength = inNodes.Count;
+                if (nextLength > currLength)
+                {
+                    for (; currLength < nextLength; currLength++)
+                    {
+                        XmlNode subNode = inNodes.Item(currLength);
+                        string nickName = subNode.Attributes["name"].Value;
+                        InPortData.Add(new PortData(nickName, "", typeof(object)));
+                    }
+                }
+                else if (nextLength < currLength)
+                    InPortData.RemoveRange(nextLength, currLength - nextLength);
+
+                RegisterAllPorts();
+            }
+        }
+
+        #endregion
+
         protected override void OnEvaluate()
         {
             base.OnEvaluate();
@@ -1704,6 +1748,31 @@ namespace Dynamo.Nodes
             processTextForNewInputs();
         }
 
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("value", Value);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+            processTextForNewInputs();
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                Value = helper.ReadString("value");
+            }
+        }
+
+        #endregion
+
         private void processTextForNewInputs()
         {
             var parameters = new List<string>();
@@ -2595,6 +2664,8 @@ namespace Dynamo.Nodes
         {
             OutPortData.Add(new PortData("2.71828...", "e", typeof(Value.Number)));
             RegisterAllPorts();
+
+            OldValue = Value.NewNumber(Math.E);
         }
 
         public override bool RequiresRecalc
@@ -2643,6 +2714,8 @@ namespace Dynamo.Nodes
         {
             OutPortData.Add(new PortData("3.14159...", "pi", typeof(Value.Number)));
             RegisterAllPorts();
+
+            OldValue = Value.NewNumber(Math.PI);
         }
 
         public override bool RequiresRecalc
@@ -2691,6 +2764,8 @@ namespace Dynamo.Nodes
         {
             OutPortData.Add(new PortData("3.14159...*2", "2*pi", typeof(Value.Number)));
             RegisterAllPorts();
+
+            OldValue = Value.NewNumber(Math.PI*2);
         }
 
         public override bool RequiresRecalc
@@ -3268,6 +3343,30 @@ namespace Dynamo.Nodes
             nodeElement.AppendChild(outEl);
         }
 
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("doubleValue", Value);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                Value = helper.ReadDouble("doubleValue");
+            }
+        }
+
+        #endregion
+
         protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
         {
             return builder.Build(this, inputs);
@@ -3285,6 +3384,30 @@ namespace Dynamo.Nodes
         {
             return builder.Build(this, inputs);
         }
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("boolValue", Value);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                Value = helper.ReadBoolean("boolValue");
+            }
+        }
+
+        #endregion
     }
 
     public abstract partial class String : BasicInteractive<string>
@@ -3304,6 +3427,30 @@ namespace Dynamo.Nodes
             return builder.Build(this, inputs);
             
         }
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("stringValue", Value);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                Value = helper.ReadString("stringValue");
+            }
+        }
+
+        #endregion
     }
 
     #endregion
@@ -3385,6 +3532,32 @@ namespace Dynamo.Nodes
                 Value = subNode.Attributes[0].Value;
             }
         }
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("doubleInputValue", Value);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                this.Value = helper.ReadString("doubleInputValue");
+            }
+        }
+
+        #endregion
 
         public static List<IDoubleSequence> ParseValue(string text, char[] seps, List<string> identifiers, ConversionDelegate convertToken)
         {
@@ -3811,9 +3984,10 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Angle(deg.)")]
+    [NodeName("Angle (deg.)")]
     [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
-    [NodeDescription("An angle in degrees.")]
+    [NodeDescription("An angle in degrees. Outputs radians")]
+    [NodeSearchTags("trigonometry", "angle", "degree")]
     public class AngleInput : DoubleInput
     {
         public override double Convert(double value)
@@ -3938,6 +4112,32 @@ namespace Dynamo.Nodes
                 }
             }
         }
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called.
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("min", Min);
+                helper.SetAttribute("max", Max);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called.
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                Min = helper.ReadDouble("min");
+                Max = helper.ReadDouble("max");
+            }
+        }
+
+        #endregion
     }
 
     [NodeName("Boolean")]
@@ -4080,6 +4280,30 @@ namespace Dynamo.Nodes
         {
             return builder.Build(this, inputs);
         }
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("value", Value);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                Value = helper.ReadString("value");
+            }
+        }
+
+        #endregion
     }
 
     #endregion
@@ -4257,7 +4481,7 @@ namespace Dynamo.Nodes
         public SplitString()
         {
             InPortData.Add(new PortData("str", "String to split", typeof(Value.String)));
-            InPortData.Add(new PortData("del", "Delimiter", typeof(Value.String)));
+            InPortData.Add(new PortData("del", "Delimiter", typeof(Value.String), Value.NewString("")));
             OutPortData.Add(new PortData("strs", "List of split strings", typeof(Value.List)));
 
             RegisterAllPorts();
@@ -4270,10 +4494,9 @@ namespace Dynamo.Nodes
 
             return Value.NewList(
                 Utils.SequenceToFSharpList(
-                    str.Split(new string[] { del }, StringSplitOptions.None)
-                       .Select(Value.NewString)
-                )
-            );
+                    del == ""
+                        ? str.ToCharArray().Select(c => Value.NewString(c.ToString()))
+                        : str.Split(new[] { del }, StringSplitOptions.None).Select(Value.NewString)));
         }
 
         protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)

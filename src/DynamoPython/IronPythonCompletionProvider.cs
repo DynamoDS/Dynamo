@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Dynamo;
+using Dynamo.Utilities;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using IronPython.Hosting;
 using IronPython.Runtime;
@@ -121,7 +123,15 @@ namespace DynamoPython
                     DynamoLogger.Instance.Log("Failed to load Revit types for autocomplete.  Python autocomplete will not see Autodesk namespace types.");
                 }
             }
-            
+
+            if (!assemblies.Any(x => x.FullName.Contains("LibGNet")))
+            {
+                AssemblyHelper.LoadLibG();
+
+                //refresh the assemblies collection
+                assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            }
+
             if (assemblies.Any(x => x.FullName.Contains("LibGNet")))
             {
                 try

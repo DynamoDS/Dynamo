@@ -106,6 +106,9 @@ namespace Dynamo.Models
             get { return this is Function; }
         }
 
+        /// <summary>
+        /// Returns whether the node is to be included in visualizations.
+        /// </summary>
         public bool IsVisible
         {
             get 
@@ -120,6 +123,10 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        /// Returns whether the node aggregates its upstream connections
+        /// for visualizations.
+        /// </summary>
         public bool IsUpstreamVisible
         {
             get 
@@ -980,11 +987,6 @@ namespace Dynamo.Models
         
         protected virtual void __eval_internal(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
         {
-            //if this element maintains a collcection of references
-            //then clear the collection
-            if (this is IClearable)
-                (this as IClearable).ClearReferences();
-
             var argSets = new List<FSharpList<FScheme.Value>>();
 
             //create a zip of the incoming args and the port data
@@ -1076,11 +1078,6 @@ namespace Dynamo.Models
             {
                 Evaluate(args, outPuts);
                 OnEvaluate();
-            }
-
-            if (dynSettings.Controller.UIDispatcher != null && this is IDrawable)
-            {
-                dynSettings.Controller.UIDispatcher.Invoke(new Action(() => (this as IDrawable).Draw()));
             }
         }
 

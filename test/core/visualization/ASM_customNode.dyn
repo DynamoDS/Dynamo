@@ -1,0 +1,24 @@
+<Workspace Version="0.7.0.22221" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="db6660f8-b8a7-4447-b91b-09cd774ec3db" nickname="Points" x="473" y="267.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="29a3cd04-d452-4c02-a0a6-1796527e008f" />
+      <Name value="Points" />
+      <Description value="" />
+      <Inputs>
+        <Input value="number of points" />
+      </Inputs>
+      <Outputs>
+        <Output value="xyz" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.DoubleSliderInput type="Dynamo.Nodes.DoubleSliderInput" guid="d615b2c1-c88c-4b3e-975c-6da26dee231e" nickname="Number Slider" x="71" y="296.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="9.78417266187051" min="0" max="20" />
+    </Dynamo.Nodes.DoubleSliderInput>
+    <Dynamo.Nodes.Watch3D type="Dynamo.Nodes.Watch3D" guid="fb3ea512-63f6-4e50-9cb2-344d1fc33b30" nickname="Watch 3D" x="769" y="189.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="db6660f8-b8a7-4447-b91b-09cd774ec3db" start_index="0" end="fb3ea512-63f6-4e50-9cb2-344d1fc33b30" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d615b2c1-c88c-4b3e-975c-6da26dee231e" start_index="0" end="db6660f8-b8a7-4447-b91b-09cd774ec3db" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
