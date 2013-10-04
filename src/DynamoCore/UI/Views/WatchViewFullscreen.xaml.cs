@@ -194,7 +194,7 @@ namespace Dynamo.Controls
 
         private void RenderDrawables(RenderDescription rd)
         {
-            Debug.WriteLine(string.Format("Rendering full screen Watch3D on thread {0}.", System.Threading.Thread.CurrentThread.ManagedThreadId));
+            //Debug.WriteLine(string.Format("Rendering full screen Watch3D on thread {0}.", System.Threading.Thread.CurrentThread.ManagedThreadId));
             
             HelixPoints = null;
             HelixLines = null;

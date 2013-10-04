@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -33,12 +34,7 @@ namespace Dynamo.Nodes
 
         internal ParticleSystemBase()
         {
-            dynSettings.Controller.RequestsRedraw += Controller_RequestsRedraw;
-        }
-
-        void Controller_RequestsRedraw(object sender, EventArgs e)
-        {
-            VisualizationGeometry.Add(this);
+            ParticleSystem = new ParticleSystem();
         }
 
         #region IDrawableInterface
@@ -50,6 +46,7 @@ namespace Dynamo.Nodes
                 return dynSettings.Controller.VisualizationManager.Visualizations[this.GUID.ToString()].Geometry;
             }
         }
+        
         #endregion
     }
 
@@ -95,9 +92,6 @@ namespace Dynamo.Nodes
             OutPortData.Add(_forcesPort);
 
             RegisterAllPorts();
-
-            ParticleSystem = new ParticleSystem();
-
         }
 
         void setupLineTest(int maxPartX, int maxPartY, double springDampening, double springRestLength, double springConstant, double mass)
@@ -284,6 +278,12 @@ namespace Dynamo.Nodes
                 UpdateSystem();
             }
 
+            if (!VisualizationGeometry.Contains(ParticleSystem))
+            {
+                Debug.WriteLine("Adding particle system to geometry collection.");
+                VisualizationGeometry.Add(ParticleSystem);
+            }
+
             outPuts[_psPort] = Value.NewContainer(ParticleSystem);
             outPuts[_forcesPort] = Value.NewList(Utils.SequenceToFSharpList(
                 ParticleSystem.Springs.Select(s => Value.NewNumber(s.getResidualForce()))));
@@ -371,8 +371,6 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("ps", "Particle System", typeof(Value.Container)));
             RegisterAllPorts();
-
-            ParticleSystem = new ParticleSystem();
         }
 
         void setupParticleSystem(Autodesk.Revit.DB.Face f, int uDiv, int vDiv, double springDampening, double springRestLength, double springConstant, double mass)
@@ -448,6 +446,9 @@ namespace Dynamo.Nodes
         private readonly PortData _vMaxPort = new PortData(
             "vMax", "Maximum nodal velocity.", typeof(Value.Number));
 
+        private Visualization _visualization;
+        private int _stepCount = 0;
+
         private readonly PortData _convergedPort = new PortData(
             "converged?",
             "Has the maximum nodal velocity dropped below the threshold set for the system?",
@@ -474,7 +475,20 @@ namespace Dynamo.Nodes
             //trigger an intermittent update on the controller
             //this is useful for when this node is used in an infinite
             //loop and you need to draw its contents
-            dynSettings.Controller.OnRequestsRedraw(this, EventArgs.Empty);
+
+            if (_visualization == null)
+            {
+                _visualization = dynSettings.Controller.VisualizationManager.Visualizations.First(x => x.Value.Geometry.Contains(partSys)).Value;
+            }
+
+            //throttle sending visualization updates.
+            _stepCount++;
+            if (_stepCount > 10)
+            {
+                _visualization.RequiresUpdate = true;
+                dynSettings.Controller.OnRequestsRedraw(this, EventArgs.Empty);
+                _stepCount = 0;
+            }
 
             outPuts[_vMaxPort] = Value.NewNumber(partSys.getMaxNodalVelocity());
             outPuts[_convergedPort] = Value.NewNumber(Convert.ToInt16(partSys.getConverged()));

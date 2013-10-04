@@ -172,14 +172,10 @@ namespace DynamoPython
                 {
                     AutocompletionInProgress = true;
 
-                    Dynamo.DynamoLogger.Instance.Log("GETTING COMPLETION DATA");
-
                     // is it a CLR type?
                     var type = TryGetType(name); 
                     if (type != null)
                     {
-                        Dynamo.DynamoLogger.Instance.Log("ENUMERATING TYPE");
-
                         items = EnumerateMembers(type, name);
                     }
                     // it's a variable?
@@ -210,37 +206,11 @@ namespace DynamoPython
                             }
                         }
 
-                        if (mem != null) 
-                        {
-                            if (mem is PythonModule) 
-                            {
-                                Dynamo.DynamoLogger.Instance.Log("Got PythonModule with is");
-                            }
-                            else if (mem.GetType() == typeof(PythonModule))
-                            {
-                                Dynamo.DynamoLogger.Instance.Log("Got PythonModule with GetType and typeof");
-                            }
-                            else
-                            {
-                                Dynamo.DynamoLogger.Instance.Log("Not a PythonModule");
-                                Dynamo.DynamoLogger.Instance.Log(mem.GetType().ToString());
-
-                                try
-                                {
-                                    var pm = (PythonModule) mem;
-                                }
-                                catch (Exception e)
-                                {
-                                    Dynamo.DynamoLogger.Instance.Log(e.ToString());
-                                }
-                            }
-
-                        }
                     }
                 }
                 catch
                 {
-                    Dynamo.DynamoLogger.Instance.Log("EXCEPTION: GETTING COMPLETION DATA");
+                    //Dynamo.DynamoLogger.Instance.Log("EXCEPTION: GETTING COMPLETION DATA");
                 }
                 AutocompletionInProgress = false;
             }
