@@ -4176,7 +4176,7 @@ namespace Dynamo.Nodes
         {
             get
             {
-                return HttpUtility.UrlDecode(base.Value);
+                return HttpUtility.HtmlDecode(base.Value);
             }
             set
             {
@@ -4217,6 +4217,19 @@ namespace Dynamo.Nodes
                     }
                 }
             }
+        }
+
+        [NodeMigration(from:"0.5.3.0")]
+        public static void Migrate_0530_to_0600(XmlNode nodeElement)
+        {
+            var query = from XmlNode subNode in nodeElement.ChildNodes
+                        where subNode.Name.Equals(typeof(string).FullName)
+                        from XmlAttribute attr in subNode.Attributes
+                        where attr.Name.Equals("value")
+                        select attr;
+
+            foreach (XmlAttribute attr in query)
+                attr.Value = HttpUtility.HtmlEncode(HttpUtility.UrlDecode(attr.Value));
         }
     }
 
