@@ -65,8 +65,18 @@ namespace Dynamo.Nodes
             //nodeUI.inputGrid.Children.Add(subButton);
             //System.Windows.Controls.Grid.SetColumn(subButton, 1);
 
-            addButton.Click += delegate { AddInput(); RegisterAllPorts(); };
-            subButton.Click += delegate { RemoveInput(); RegisterAllPorts(); };
+            addButton.Click += delegate 
+            {
+                this.WorkSpace.RecordModelForModification(this);
+                AddInput(); 
+                RegisterAllPorts(); 
+            };
+            subButton.Click += delegate 
+            {
+                this.WorkSpace.RecordModelForModification(this);
+                RemoveInput(); 
+                RegisterAllPorts(); 
+            };
         }
 
     }
