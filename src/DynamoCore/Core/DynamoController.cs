@@ -137,7 +137,7 @@ namespace Dynamo
             }
         }
 
-        private bool isShowPreViewByDefault = true;
+        private bool isShowPreViewByDefault = false;
         public bool IsShowPreviewByDefault
         {
             get { return isShowPreViewByDefault;}

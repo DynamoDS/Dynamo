@@ -75,6 +75,7 @@ namespace Dynamo.Controls
             textBox.FontSize = ViewModel.TextFontSize;
             textBox.Margin = ViewModel.ContentMargin;
             textBox.MaxWidth = ViewModel.MaxWidth;
+            textBox.PreviewMouseDown += InfoBubble_PreviewMouseDown;
             return textBox;
         }
 
