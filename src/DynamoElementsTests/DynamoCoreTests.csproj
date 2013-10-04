@@ -67,6 +67,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DynamoDefects.cs" />
     <Compile Include="PrintValueTests.cs" />
     <Compile Include="UnitTestBase.cs" />
     <Compile Include="WorkspaceHeaderTests.cs" />
