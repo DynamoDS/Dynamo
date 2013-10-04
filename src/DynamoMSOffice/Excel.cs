@@ -38,6 +38,11 @@ namespace Dynamo.Nodes
         {
             Application excel = null;
 
+            // get excel, throw exception if it is not
+            var officeType = Type.GetTypeFromProgID("Excel.Application");
+            if (officeType == null)
+                throw new Exception("Excel is not installed.");
+
             try
             {
                 excel = (Excel.Application)Marshal.GetActiveObject("Excel.Application");
@@ -45,7 +50,9 @@ namespace Dynamo.Nodes
             catch (COMException)
             {
             }
+
             if (excel == null) excel = new Microsoft.Office.Interop.Excel.Application();
+
             if (excel == null)
             {
                 throw new Exception("Excel could not be opened.");
@@ -126,7 +133,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Open Excel Workbook")]
     [NodeCategory("Input/Output.Office.Excel")]
-    [NodeDescription("Opens an Excel file and returns the Workbook inside.  If the filename does not exist, returns null.")]
+    [NodeDescription("Opens an Excel file and returns the Workbook inside.  If the filename does not exist, returns null.  \n\nThis node requires Microsoft Excel to be installed.")]
     public class ReadExcelFile : FileReaderBase
     {
 
@@ -161,7 +168,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Get Worksheets From Excel Workbook")]
     [NodeCategory("Input/Output.Office.Excel")]
-    [NodeDescription("Get the list of Worksheets from an Excel Workbook.")]
+    [NodeDescription("Get the list of Worksheets from an Excel Workbook.  \n\nThis node requires Microsoft Excel to be installed.")]
     public class GetWorksheetsFromExcelWorkbook : NodeWithOneOutput
     {
 
@@ -184,7 +191,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Get Excel Worksheet By Name")]
     [NodeCategory("Input/Output.Office.Excel")]
-    [NodeDescription("Gets the first Worksheet in an Excel Workbook with the given name.")]
+    [NodeDescription("Gets the first Worksheet in an Excel Workbook with the given name.  \n\nThis node requires Microsoft Excel to be installed.")]
     public class GetExcelWorksheetByName : NodeWithOneOutput
     {
 
@@ -214,7 +221,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Get Data From Excel Worksheet")]
     [NodeCategory("Input/Output.Office.Excel")]
-    [NodeDescription("Get the non-empty range of Cell data from an Excel Worksheet.")]
+    [NodeDescription("Get the non-empty range of Cell data from an Excel Worksheet.  \n\nThis node requires Microsoft Excel to be installed.")]
     public class GetDataFromExcelWorksheet : NodeWithOneOutput
     {
 
@@ -276,7 +283,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Write Data To Excel Worksheet")]
     [NodeCategory("Input/Output.Office.Excel")]
-    [NodeDescription("Write data to a Cell of an Excel Worksheet.")]
+    [NodeDescription("Write data to a Cell of an Excel Worksheet.  \n\nThis node requires Microsoft Excel to be installed.")]
     public class WriteDataToExcelWorksheet : NodeWithOneOutput
     {
 
@@ -392,7 +399,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Add Excel Worksheet To Workbook")]
     [NodeCategory("Input/Output.Office.Excel")]
-    [NodeDescription("Add a new Worksheet to a Workbook with a given name.")]
+    [NodeDescription("Add a new Worksheet to a Workbook with a given name.  \n\nThis node requires Microsoft Excel to be installed.")]
     public class AddExcelWorksheetToWorkbook : NodeWithOneOutput
     {
 
@@ -421,7 +428,7 @@ namespace Dynamo.Nodes
 
     [NodeName("New Excel Workbook")]
     [NodeCategory("Input/Output.Office.Excel")]
-    [NodeDescription("Create a new Excel Workbook object.")]
+    [NodeDescription("Create a new Excel Workbook object.  \n\nThis node requires Microsoft Excel to be installed.")]
     public class NewExcelWorkbook : NodeWithOneOutput
     {
 
@@ -441,7 +448,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Save Excel Workbook As")]
     [NodeCategory("Input/Output.Office.Excel")]
-    [NodeDescription("Write an Excel Workbook to a file with the given filename.")]
+    [NodeDescription("Write an Excel Workbook to a file with the given filename.  \n\nThis node requires Microsoft Excel to be installed.")]
     public class SaveAsExcelWorkbook : NodeWithOneOutput
     {
 

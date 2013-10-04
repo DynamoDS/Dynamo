@@ -8,7 +8,7 @@ using Dynamo.Tests;
 using Dynamo.Utilities;
 using NUnit.Framework;
 
-namespace DynamoMSOfficeTests
+namespace Dynamo.Tests
 {
     [TestFixture]
     public class ExcelTests : DynamoUnitTest
