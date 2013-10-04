@@ -265,7 +265,6 @@
                                 <Button Content="Find" Width="70" Name="id_butt" Click="Id_butt_OnClick"></Button>
                             </WrapPanel>
                         </MenuItem>
-                        <MenuItem Header="{Binding Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}" Command="{Binding ToggleConsoleShowingCommand}" InputGestureText="Ctrl + Alt + Up" Focusable="False"/>
                     </MenuItem>
 
                     <MenuItem Header="_Workspaces" Name="workspacesMenu" Focusable="False" ItemsSource="{Binding Source={x:Static utilities:dynSettings.CustomNodes}}">
