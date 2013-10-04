@@ -31,7 +31,8 @@ namespace Dynamo
             = new Dictionary<string, Visualization>();
 
         protected bool isUpdating = false;
-
+        private string _alternateContextName = "Host";
+        private bool _drawToAlternateContext = true;
         #endregion
 
         #region public properties
@@ -45,6 +46,55 @@ namespace Dynamo
             set { visualizations = value; }
         }
 
+        /// <summary>
+        /// Is another context available for drawing?
+        /// This property can be queried indirectly by the view to enable or disable
+        /// UI functionality based on whether an alternate drawing context is available.
+        /// </summary>
+        public bool AlternateDrawingContextAvailable { get; set; }
+
+        /// <summary>
+        /// Should we draw to the alternate context if it is available?
+        /// </summary>
+        public bool DrawToAlternateContext
+        {
+            get { return _drawToAlternateContext; }
+            set
+            {
+                if (value == false)
+                {
+                    //if the present value has us drawing to the alternate
+                    //context and we would like to stop doing so, we need 
+                    //to trigger an event requesting alternate contexts
+                    //to drop their visualizations
+                    if (_drawToAlternateContext)
+                    {
+                        _drawToAlternateContext = value;
+                        OnRequestAlternateContextClear(this, EventArgs.Empty);
+                    }
+                }
+                else
+                {
+                    //we would like to reenable drawing to an alternate context.
+                    //trigger the standard visualization complete event
+                    if (!_drawToAlternateContext)
+                    {
+                        _drawToAlternateContext = value;
+                        OnVisualizationUpdateComplete(this, new VisualizationEventArgs(AggregateRenderDescriptions()));
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Can be used to expose a name of the alternate context for use in the UI.
+        /// </summary>
+        public string AlternateContextName
+        {
+            get { return _alternateContextName; }
+            set { _alternateContextName = value; }
+        }
+
         #endregion
 
         #region events
@@ -53,7 +103,12 @@ namespace Dynamo
         /// An event triggered on the completion of visualization update.
         /// </summary>
         public event VisualizationCompleteEventHandler VisualizationUpdateComplete;
-        
+
+        /// <summary>
+        /// An event triggered when want any alternate drawing contexts to be cleared.
+        /// </summary>
+        public event EventHandler RequestAlternateContextClear;
+
         #endregion
 
         protected VisualizationManager()
@@ -62,10 +117,11 @@ namespace Dynamo
             dynSettings.Controller.DynamoModel.NodeDeleted += new NodeHandler(DynamoModel_NodeDeleted);
             dynSettings.Controller.DynamoModel.ConnectorDeleted += new ConnectorHandler(DynamoModel_ConnectorDeleted);
             dynSettings.Controller.EvaluationCompleted += new EventHandler(Controller_EvaluationCompleted);
-            dynSettings.Controller.DynamoViewModel.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(DynamoViewModel_PropertyChanged);
+            //dynSettings.Controller.DynamoViewModel.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(DynamoViewModel_PropertyChanged);
             dynSettings.Controller.RequestsRedraw += new EventHandler(Controller_RequestsRedraw);
             DynamoSelection.Instance.Selection.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
             dynSettings.Controller.DynamoModel.ModelCleared += new EventHandler(DynamoModel_ModelCleared);
+
         }
 
         void DynamoModel_ModelCleared(object sender, EventArgs e)
@@ -144,16 +200,16 @@ namespace Dynamo
             UpdateVisualizations();
         }
 
-        void DynamoViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "FullscreenWatchShowing")
-            {
-                if (dynSettings.Controller.DynamoViewModel.FullscreenWatchShowing == true)
-                {
-                    UpdateVisualizations();
-                }
-            }
-        }
+        //void DynamoViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        //{
+        //    if (e.PropertyName == "FullscreenWatchShowing")
+        //    {
+        //        if (dynSettings.Controller.DynamoViewModel.FullscreenWatchShowing == true)
+        //        {
+        //            UpdateVisualizations();
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// Handler for the controller's EvaluationCompleted event.
@@ -485,6 +541,17 @@ namespace Dynamo
         {
             if (VisualizationUpdateComplete != null)
                 VisualizationUpdateComplete(sender, e);
+        }
+
+        /// <summary>
+        /// Called when we would like to request the clearing of any alternate drawing contexts.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public virtual void OnRequestAlternateContextClear(object sender, EventArgs e)
+        {
+            if (RequestAlternateContextClear != null)
+                RequestAlternateContextClear(sender, e);
         }
 
         /// <summary>
