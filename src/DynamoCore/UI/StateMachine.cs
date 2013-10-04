@@ -56,11 +56,33 @@ namespace Dynamo.ViewModels
         /// </summary>
         public class DraggedNode
         {
+            // TODO(Ben): The DragCanvas.AllowDragOutOfView property will be 
+            // made obsolete when infinite canvas is integrated in the release
+            // branch. That is the point "DraggedNode.region" data member needs
+            // to be removed.
+            // 
+            Rect region = default(Rect);
+
             double deltaX = 0, deltaY = 0;
             ILocatable locatable = null;
 
-            public DraggedNode(ILocatable locatable, Point mouseCursor)
+            /// <summary>
+            /// Construct a DraggedNode for a given ILocatable object.
+            /// </summary>
+            /// <param name="locatable">The ILocatable (usually a node) that is 
+            /// associated with this DraggedNode object. During an update, the 
+            /// position of ILocatable will be updated based on the specified 
+            /// mouse position and the internal delta values.</param>
+            /// <param name="mouseCursor">The mouse cursor at the point this 
+            /// DraggedNode object is constructed. This is used to determine the 
+            /// offset of the ILocatable from the mouse cursor.</param>
+            /// <param name="region">The region within which the ILocatable can 
+            /// be moved. However, the movement of ILocatable will be limited by 
+            /// region and that it cannot be moved beyond the region.</param>
+            /// 
+            public DraggedNode(ILocatable locatable, Point mouseCursor, Rect region)
             {
+                this.region = region;
                 this.locatable = locatable;
                 deltaX = mouseCursor.X - locatable.X;
                 deltaY = mouseCursor.Y - locatable.Y;
@@ -68,8 +90,17 @@ namespace Dynamo.ViewModels
 
             public void Update(Point mouseCursor)
             {
-                locatable.X = mouseCursor.X - deltaX;
-                locatable.Y = mouseCursor.Y - deltaY;
+                // Make sure the nodes do not go beyond the region.
+                double x = mouseCursor.X - deltaX;
+                double y = mouseCursor.Y - deltaY;
+                locatable.X = ((x > region.X) ? x : region.X);
+                locatable.Y = ((y > region.Y) ? y : region.Y);
+
+                // Make sure the nodes do not go beyond the upper limits.
+                if ((locatable.X + locatable.Width) > region.Width)
+                    locatable.X = region.Width - locatable.Width;
+                if ((locatable.Y + locatable.Height) > region.Height)
+                    locatable.Y = region.Height - locatable.Height;
             }
         }
 
@@ -234,6 +265,14 @@ namespace Dynamo.ViewModels
                 }
                 else if (this.currentState == State.DragSetup)
                 {
+                    // Before the integration with infinite canvas work, we would 
+                    // prefer not to have the nodes move out of the canvas region.
+                    // Here at the beginning of a drag operation, we'll simply 
+                    // determine the region within which the nodes can move.
+                    // 
+                    var canvas = sender as Dynamo.Controls.DragCanvas;
+                    Rect region = new Rect(0, 0, canvas.ActualWidth, canvas.ActualHeight);
+
                     // This represents the first mouse-move event after the mouse-down
                     // event. Note that a mouse-down event can either be followed by a
                     // mouse-move event or simply a mouse-up event. That means having 
@@ -248,7 +287,7 @@ namespace Dynamo.ViewModels
                     {
                         ILocatable locatable = selectable as ILocatable;
                         if (null != locatable)
-                            draggedNodes.Add(new DraggedNode(locatable, mouseCursor));
+                            draggedNodes.Add(new DraggedNode(locatable, mouseCursor, region));
                     }
 
                     if (draggedNodes.Count <= 0) // There is nothing to drag.
