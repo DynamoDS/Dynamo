@@ -324,7 +324,9 @@ namespace Dynamo.Controls
 
         private void PreviewArrow_MouseEnter(object sender, MouseEventArgs e)
         {
-            ViewModel.ShowPreviewCommand.Execute(null);
+            UIElement uiElement = sender as UIElement;
+            if (uiElement.Visibility == System.Windows.Visibility.Visible)
+                ViewModel.ShowPreviewCommand.Execute(null);
         }
 
         private void PreviewArrow_MouseLeave(object sender, MouseEventArgs e)

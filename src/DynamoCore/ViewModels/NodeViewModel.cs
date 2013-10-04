@@ -334,18 +334,17 @@ namespace Dynamo.ViewModels
                     break;
                 case "OldValue":
                     RaisePropertyChanged("OldValue");
-                    if (dynSettings.Controller.IsShowPreviewByDefault)
-                        UpdatePreviewBubbleContent();
+                    UpdatePreviewBubbleContent();
                     break;
                 case "X":
                     RaisePropertyChanged("Left");
-                    UpdateErrorBubblePosition(NodeModel.X, NodeModel.Y);
-                    UpdatePreviewBubblePosition(NodeModel.X, NodeModel.Y);
+                    UpdateErrorBubblePosition();
+                    UpdatePreviewBubblePosition();
                     break;
                 case "Y":
                     RaisePropertyChanged("Top");
-                    UpdateErrorBubblePosition(NodeModel.X, NodeModel.Y);
-                    UpdatePreviewBubblePosition(NodeModel.X, NodeModel.Y);
+                    UpdateErrorBubblePosition();
+                    UpdatePreviewBubblePosition();
                     break;
                 case "InteractionEnabled":
                     RaisePropertyChanged("IsInteractionEnabled");
@@ -360,6 +359,17 @@ namespace Dynamo.ViewModels
                 case "ToolTipText":
                     UpdateErrorBubbleContent();
                     break;
+                case "Width":
+                    RaisePropertyChanged("Width");
+                    UpdateErrorBubblePosition();
+                    UpdatePreviewBubblePosition();
+                    break;
+                case "Height":
+                    RaisePropertyChanged("Height");
+                    UpdateErrorBubblePosition();
+                    UpdatePreviewBubblePosition();
+                    break;
+
                 //case "ArgumentLacing":
                 //    SetLacingTypeCommand.RaiseCanExecuteChanged();
                 //    break;
@@ -371,9 +381,26 @@ namespace Dynamo.ViewModels
             switch (e.PropertyName)
             {
                 case "IsShowPreviewByDefault":
-                    RaisePropertyChanged("IsPreviewInsetVisible");
+                    HandleDefaultShowPreviewChanged();
                     break;
+            }
+        }
 
+        private void HandleDefaultShowPreviewChanged()
+        {
+            RaisePropertyChanged("IsPreviewInsetVisible");
+            UpdatePreviewBubbleContent();
+            if (dynSettings.Controller.IsShowPreviewByDefault)
+            {
+                this.PreviewBubble.SetAlwaysVisibleCommand.Execute(true);
+                this.PreviewBubble.FadeInCommand.Execute(null);
+                this.PreviewBubble.ZIndex = 3;
+            }
+            else
+            {
+                this.PreviewBubble.SetAlwaysVisibleCommand.Execute(false);
+                this.PreviewBubble.FadeOutCommand.Execute(null);
+                this.PreviewBubble.ZIndex = 5;
             }
         }
 
@@ -424,7 +451,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void UpdateErrorBubblePosition(double x, double y)
+        private void UpdateErrorBubblePosition()
         {
             Point topLeft = new Point(NodeModel.X, NodeModel.Y);
             Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
@@ -452,16 +479,12 @@ namespace Dynamo.ViewModels
             //update preview bubble
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.Invoke((new Action(() =>
             {
-                if (!dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Previews.Contains(this.PreviewBubble))
-                    return;
-                this.PreviewBubble.UpdateContentCommand.Execute(data);
-                this.PreviewBubble.FadeInCommand.Execute(null);
-                if (dynSettings.Controller.IsShowPreviewByDefault)
-                    this.PreviewBubble.SetAlwaysVisibleCommand.Execute(true);
+                if (dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Previews.Contains(this.PreviewBubble))
+                    this.PreviewBubble.UpdateContentCommand.Execute(data);
             })));
         }
 
-        private void UpdatePreviewBubblePosition(double x, double y)
+        private void UpdatePreviewBubblePosition()
         {
             if (this.PreviewBubble == null || this.NodeModel is Watch)
                 return;
@@ -761,6 +784,7 @@ namespace Dynamo.ViewModels
         {
             UpdatePreviewBubbleContent();
             this.PreviewBubble.ZIndex = 5;
+            this.PreviewBubble.FadeInCommand.Execute(null);
         }
 
         private bool CanShowPreview(object parameter)
