@@ -72,6 +72,10 @@ limitations under the License.
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="LibGNet">
+      <HintPath>..\..\extern\DynamoAsm\LibGNet.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
     </Reference>
@@ -130,9 +134,9 @@ limitations under the License.
   <ItemGroup>
     <Compile Include="Core\UndoRedoRecorder.cs" />
     <Compile Include="DSEngine\AstBuilder.cs" />
-    <Compile Include="Interfaces\dynIDrawable.cs" />
     <Compile Include="Models\CustomNodeWorkspaceModel.cs" />
     <Compile Include="Models\HomeWorkspaceModel.cs" />
+    <Compile Include="Models\DrawableNode.cs" />
     <Compile Include="Nodes\dynDSFunction.cs" />
     <Compile Include="Models\Migration.cs" />
     <Compile Include="Nodes\FunctionDefinition.cs" />
@@ -309,6 +313,10 @@ limitations under the License.
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Search\SearchDictionary.cs" />
+    <Compile Include="VisualizationManager\RenderDescription.cs" />
+    <Compile Include="VisualizationManager\Visualization.cs" />
+    <Compile Include="VisualizationManager\VisualizationManager.cs" />
+    <Compile Include="VisualizationManager\VisualizationManagerASM.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

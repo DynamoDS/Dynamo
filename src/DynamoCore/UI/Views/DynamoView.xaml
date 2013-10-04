@@ -150,7 +150,7 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-
+        
         <Border BorderBrush="#FF3F4040"
                 BorderThickness="0,0,0,1"
                 Grid.Row="0"
@@ -310,9 +310,25 @@
                     </MenuItem>
                     <Separator />
                     <MenuItem Header="_Exit" Command="{Binding ExitCommand}"  Name="exit" InputGestureText="Alt+F4" Focusable="False"/> -->
+        
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+              Grid.Row="1" Grid.Column="2" Background="#222">
+            <Canvas Name="backgroundCanvas" 
+                     Margin="0,35,0,0"
+                     ClipToBounds="True" 
+                     IsHitTestVisible="{Binding ShouldBeHitTestVisible}">
+                <Canvas.Background>
+                    <SolidColorBrush Color="{Binding IsHomeSpace, Converter={StaticResource WorkspaceBackgroundColorConverter}}" />
+                </Canvas.Background>
+            </Canvas>
+            <controls:WatchViewFullscreen Margin="0,35,0,0"
+                Visibility="{Binding FullscreenWatchShowing, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}">
 
+            </controls:WatchViewFullscreen>
+        </Grid>
+        
         <Border Margin="0" BorderBrush="Black" BorderThickness="0" Name="border" 
-                Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="3" Background="#999">
+                Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="3">
             
             <TabControl ItemsSource="{Binding Workspaces}" Name="WorkspaceTabs" 
                         SelectedIndex="{Binding CurrentWorkspaceIndex}" Background="#222" Padding ="0" SelectionChanged="WorkspaceTabs_SelectionChanged">

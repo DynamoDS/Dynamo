@@ -27,6 +27,7 @@ namespace Dynamo.Models
     public delegate void FunctionNamePromptRequestHandler(object sender, FunctionNamePromptEventArgs e);
     public delegate void CleanupHandler(object sender, EventArgs e);
     public delegate void NodeHandler(NodeModel node);
+    public delegate void ConnectorHandler(ConnectorModel connector);
     public delegate void WorkspaceHandler(WorkspaceModel model);
 
     #region Helper types
@@ -88,7 +89,6 @@ namespace Dynamo.Models
                 }
 
                 return new WorkspaceHeader() { ID = id, Name = funName, X = cx, Y = cy, Zoom = zoom, FileName = path };
-
 
             }
             catch (Exception ex)
@@ -180,14 +180,29 @@ namespace Dynamo.Models
         public event WorkspaceHandler WorkspaceHidden;
 
         /// <summary>
-        /// Event called when a node is added to a workspace
+        /// Event triggered when a node is added to a workspace
         /// </summary>
         public event NodeHandler NodeAdded;
 
         /// <summary>
-        /// Event called when a node is deleted
+        /// Event triggered when a node is deleted
         /// </summary>
         public event NodeHandler NodeDeleted;
+
+        /// <summary>
+        /// Event triggered when a connector is added.
+        /// </summary>
+        public event ConnectorHandler ConnectorAdded;
+
+        /// <summary>
+        /// Event triggered when a connector is deleted.
+        /// </summary>
+        public event ConnectorHandler ConnectorDeleted;
+
+        /// <summary>
+        /// Event triggered when the model is cleared.
+        /// </summary>
+        public event EventHandler ModelCleared;
 
         public WorkspaceModel CurrentWorkspace
         {
@@ -516,46 +531,33 @@ namespace Dynamo.Models
         /// <param name="x"> The x coordinate where the dynNodeView will be placed </param>
         /// <param name="y"> The x coordinate where the dynNodeView will be placed</param>
         /// <returns> The newly instantiate dynNode</returns>
-        public NodeModel CreateInstanceAndAddNodeToWorkspace(Type elementType, string nickName, Guid guid,
-            double x, double y, WorkspaceModel ws, bool isVisible = true, bool isUpstreamVisible = true)    //Visibility vis = Visibility.Visible)
-        {
-            try
-            {
-                NodeModel node = CreateNodeInstance(elementType, nickName, guid);
+        //public NodeModel CreateInstanceAndAddNodeToWorkspace(Type elementType, string nickName, Guid guid,
+        //    double x, double y, WorkspaceModel ws, bool isVisible = true, bool isUpstreamVisible = true)    //Visibility vis = Visibility.Visible)
+        //{
+        //    try
+        //    {
+        //        NodeModel node = CreateNodeInstance(elementType, nickName, guid);
 
-                ws.Nodes.Add(node);
-                node.WorkSpace = ws;
+        //        ws.Nodes.Add(node);
+        //        node.WorkSpace = ws;
 
-                node.X = x;
-                node.Y = y;
+        //        node.X = x;
+        //        node.Y = y;
 
-                node.IsVisible = isVisible;
-                node.IsUpstreamVisible = isUpstreamVisible;
+        //        node.IsVisible = isVisible;
+        //        node.IsUpstreamVisible = isUpstreamVisible;
 
-                OnNodeAdded(node);
+        //        OnNodeAdded(node);
 
-                return node;
-            }
-            catch (Exception e)
-            {
-                DynamoLogger.Instance.Log("Could not create an instance of the selected type: " + elementType);
-                DynamoLogger.Instance.Log(e);
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Called when a node is added to a workspace
-        /// </summary>
-        /// <param name="node"></param>
-        /// <param name="ws"></param>
-        private void OnNodeAdded(NodeModel node)
-        {
-            if (NodeAdded != null && node != null)
-            {
-                NodeAdded(node);
-            }
-        }
+        //        return node;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        DynamoLogger.Instance.Log("Could not create an instance of the selected type: " + elementType);
+        //        DynamoLogger.Instance.Log(e);
+        //        return null;
+        //    }
+        //}
 
         /// <summary>
         ///     Create a build-in node from a type object in a given workspace.
@@ -638,10 +640,11 @@ namespace Dynamo.Models
             CleanWorkbench();
 
             //clear the renderables
-            dynSettings.Controller.RenderDescriptions.Clear();
-            dynSettings.Controller.OnRequestsRedraw(dynSettings.Controller, EventArgs.Empty);
+            //dynSettings.Controller.RenderDescriptions.Clear();
+            //dynSettings.Controller.OnRequestsRedraw(dynSettings.Controller, EventArgs.Empty);
+            dynSettings.Controller.VisualizationManager.ClearVisualizations();
 
-            Stopwatch sw = new Stopwatch();
+            var sw = new Stopwatch();
 
             try
             {
@@ -768,6 +771,8 @@ namespace Dynamo.Models
 
                     CurrentWorkspace.Nodes.Add(el);
 
+                    OnNodeAdded(el);
+
                     el.X = x;
                     el.Y = y;
 
@@ -838,16 +843,17 @@ namespace Dynamo.Models
                     var newConnector = ConnectorModel.Make(start, end,
                                                         startIndex, endIndex, portType);
 
-                    Stopwatch addTimer = new Stopwatch();
-                    addTimer.Start();
+                    //Stopwatch addTimer = new Stopwatch();
+                    //addTimer.Start();
                     if (newConnector != null)
                         CurrentWorkspace.Connectors.Add(newConnector);
-                    addTimer.Stop();
-                    Debug.WriteLine(string.Format("{0} elapsed for add connector to collection.", addTimer.Elapsed));
+                    //addTimer.Stop();
+                    //Debug.WriteLine(string.Format("{0} elapsed for add connector to collection.", addTimer.Elapsed));
 
+                    OnConnectorAdded(newConnector);
                 }
 
-                DynamoLogger.Instance.Log(string.Format("{0} ellapsed for loading connectors.", sw.Elapsed - previousElapsed));
+                //DynamoLogger.Instance.Log(string.Format("{0} ellapsed for loading connectors.", sw.Elapsed - previousElapsed));
                 previousElapsed = sw.Elapsed;
 
                 #region instantiate notes
@@ -1157,7 +1163,7 @@ namespace Dynamo.Models
 
             //clear the selection so we can put the
             //paste contents in
-            DynamoSelection.Instance.Selection.RemoveAll();
+            DynamoSelection.Instance.Selection.Reset(new List<ISelectable>());
 
             var nodes = dynSettings.Controller.ClipBoard.OfType<NodeModel>();
 
@@ -1532,6 +1538,18 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// Called when a node is added to a workspace
+        /// </summary>
+        /// <param name="node"></param>
+        private void OnNodeAdded(NodeModel node)
+        {
+            if (NodeAdded != null && node != null)
+            {
+                NodeAdded(node);
+            }
+        }
+
+        /// <summary>
         /// Called when a node is deleted
         /// </summary>
         /// <param name="node"></param>
@@ -1540,6 +1558,41 @@ namespace Dynamo.Models
             if (NodeDeleted != null)
             {
                 NodeDeleted(node);
+            }
+        }
+
+        /// <summary>
+        /// Called when a connector is added.
+        /// </summary>
+        /// <param name="connector"></param>
+        private void OnConnectorAdded(ConnectorModel connector)
+        {
+            if (ConnectorAdded != null)
+            {
+                ConnectorAdded(connector);
+            }
+        }
+
+        /// <summary>
+        /// Called when a connector is deleted.
+        /// </summary>
+        /// <param name="connector"></param>
+        internal void OnConnectorDeleted(ConnectorModel connector)
+        {
+            if (ConnectorDeleted != null)
+            {
+                ConnectorDeleted(connector);
+            }
+        }
+
+        /// <summary>
+        /// Called when the model is cleared.
+        /// </summary>
+        internal void OnModelCleared()
+        {
+            if (ModelCleared != null)
+            {
+                ModelCleared(this, EventArgs.Empty);
             }
         }
 
@@ -1626,9 +1679,7 @@ namespace Dynamo.Models
             dynSettings.Controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
             dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
 
-            //clear the renderables
-            dynSettings.Controller.RenderDescriptions.Clear();
-            dynSettings.Controller.OnRequestsRedraw(dynSettings.Controller, EventArgs.Empty);
+            OnModelCleared();
 
             dynSettings.Controller.IsUILocked = false;
         }
@@ -1675,6 +1726,8 @@ namespace Dynamo.Models
                 selection.Remove(model); // Remove from selection set.
                 if (model is NodeModel)
                     OnNodeDeleted(model as NodeModel);
+                if(model is ConnectorModel)
+                    OnConnectorDeleted(model as ConnectorModel);
             }
         }
 
@@ -1709,6 +1762,8 @@ namespace Dynamo.Models
 
                 if (c != null)
                     CurrentWorkspace.Connectors.Add(c);
+
+                OnConnectorAdded(c);
 
                 return c;
             }

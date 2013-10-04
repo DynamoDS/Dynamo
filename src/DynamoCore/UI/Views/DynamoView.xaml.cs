@@ -17,13 +17,12 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Diagnostics;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Nodes.Prompts;
@@ -33,7 +32,6 @@ using Dynamo.Search;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using DynamoCommands = Dynamo.UI.Commands.DynamoCommands;
 using String = System.String;
 
 namespace Dynamo.Controls
@@ -86,7 +84,7 @@ namespace Dynamo.Controls
 
         void vm_RequestLayoutUpdate(object sender, EventArgs e)
         {
-            UpdateLayout();
+            Dispatcher.Invoke(new Action(UpdateLayout), DispatcherPriority.Render, null);
         }
 
         private void dynBench_Activated(object sender, EventArgs e)
@@ -127,6 +125,7 @@ namespace Dynamo.Controls
             _vm.RequestUserSaveWorkflow += new WorkspaceSaveEventHandler(_vm_RequestUserSaveWorkflow);
 
             dynSettings.Controller.ClipBoard.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(ClipBoard_CollectionChanged);
+        
         }
         
         private PackageManagerPublishView _pubPkgView;
@@ -427,7 +426,7 @@ namespace Dynamo.Controls
 
             WorkspaceViewModel view_model = _vm.Workspaces[workspace_index];
 
-            view_model.WatchEscapeIsDown = true;
+            dynSettings.Controller.DynamoViewModel.WatchEscapeIsDown = true;
         }
 
         void DynamoView_KeyUp(object sender, KeyEventArgs e)
@@ -439,7 +438,7 @@ namespace Dynamo.Controls
 
             WorkspaceViewModel view_model = _vm.Workspaces[workspace_index];
 
-            view_model.WatchEscapeIsDown = false;
+            dynSettings.Controller.DynamoViewModel.WatchEscapeIsDown = false;
         }
 
         private void WorkspaceTabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
