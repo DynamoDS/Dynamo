@@ -767,7 +767,12 @@ namespace Dynamo.Models
 
                     NodeModel el = CreateNodeInstance(type, nickname, guid);
                     el.WorkSpace = CurrentWorkspace;
-                    el.Load(elNode);
+
+                    el.Load(
+                        elNode, 
+                        string.IsNullOrEmpty(version)
+                            ? new Version(0, 0, 0, 0) 
+                            : new Version(version));
 
                     CurrentWorkspace.Nodes.Add(el);
 
@@ -1377,7 +1382,7 @@ namespace Dynamo.Models
             //try to set the value on the node
             if (data.ContainsKey("data"))
             {
-                node.Load(data["data"] as XmlNode);
+                node.Load(data["data"] as XmlNode, HomeSpace.WorkspaceVersion);
             }
 
             //override the guid so we can store
@@ -1391,15 +1396,13 @@ namespace Dynamo.Models
                 node.GUID = Guid.NewGuid();
             }
 
-            bool transCoords = false;
-            if (data.ContainsKey("transformFromOuterCanvasCoordinates"))
-                transCoords = true;
+            bool transCoords = data.ContainsKey("transformFromOuterCanvasCoordinates");
 
-            ModelEventArgs args = null;
+            ModelEventArgs args;
             if (data.ContainsKey("x") && data.ContainsKey("y"))
             {
-                double x = ((double)data["x"]);
-                double y = ((double)data["y"]);
+                var x = ((double)data["x"]);
+                var y = ((double)data["y"]);
                 args = new ModelEventArgs(node, x, y, transCoords);
             }
             else

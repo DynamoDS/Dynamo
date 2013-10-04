@@ -703,6 +703,7 @@ namespace Dynamo.Utilities
                 double cx = 0;
                 double cy = 0;
                 string description = "";
+                string version = "";
 
                 double zoom = 1.0;
                 string id = "";
@@ -732,9 +733,9 @@ namespace Dynamo.Utilities
                         else if (att.Name.Equals("Description"))
                             description = att.Value;
                         else if (att.Name.Equals("ID"))
-                        {
                             id = att.Value;
-                        }
+                        else if (att.Name.Equals("Version"))
+                            version = att.Value;
                     }
                 }
 
@@ -860,42 +861,12 @@ namespace Dynamo.Utilities
                         return false;
 
                     el.DisableReporting();
-                    
-                    // moved this logic to LoadNode in dynFunction --SJE
 
-                    if (el is Function)
-                    {
-                        var fun = el as Function;
-                        // we've found a custom node, we need to attempt to load its guid.  
-                        // if it doesn't exist (i.e. its a legacy node), we need to assign it one,
-                        // deterministically
-                        //Guid funId;
-                        //try
-                        //{
-                        //    funId = Guid.Parse(fun.Symbol);
-                        //}
-                        //catch
-                        //{
-                        //    funId = GuidUtility.Create(GuidUtility.UrlNamespace, nicknameAttrib.Value);
-                        //    fun.Symbol = funId.ToString();
-                        //}
-
-                        // if it's not a recurisve node and it's not yet loaded, load it
-                        //if (funcDefGuid != funId && !this.loadedNodes.ContainsKey(funId))
-                        //{
-                        //    dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funId);
-                        //    fun.Definition = this.loadedNodes[funId];
-                        //}
-                        //else if (this.loadedNodes.ContainsKey(funId))
-                        //{
-                        //    fun.Definition = this.loadedNodes[funId];
-                        //}
-
-                    }
-
-                    el.Load(elNode); // has load definition in it, which we have not yet completed.
-                   
-                    
+                    el.Load(
+                        elNode,
+                        string.IsNullOrEmpty(version)
+                            ? new Version(0, 0, 0, 0) 
+                            : new Version(version));
                 }
 
                 #endregion
