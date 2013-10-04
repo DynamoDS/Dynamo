@@ -14,7 +14,7 @@ using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Revit
 {
-    public abstract partial class RevitTransactionNode : NodeModel , IDrawable
+    public abstract partial class RevitTransactionNode : DrawableNode
     {
         protected object DrawableObject = null;
         //protected Func<object, RenderDescription> DrawMethod = null;
@@ -345,25 +345,6 @@ namespace Dynamo.Revit
                 els.RemoveAll(deleted.Contains);
         }
 
-        #region IDrawableInterface
-        public void RegisterForVisualization()
-        {
-            dynSettings.Controller.VisualizationManager.RegisterForVisualization(this);
-        }
-
-        public void UnregisterFromVisualization()
-        {
-            dynSettings.Controller.VisualizationManager.UnregisterFromVisualization(this);
-        }
-
-        public List<object> VisualizationGeometry
-        {
-            get
-            {
-                return dynSettings.Controller.VisualizationManager.Visualizations[this.GUID.ToString()].Geometry;
-            }
-        }
-        #endregion
     }
 
     public abstract class RevitTransactionNodeWithOneOutput : RevitTransactionNode

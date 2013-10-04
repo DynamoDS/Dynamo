@@ -17,7 +17,6 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Windows.Controls; //for boolean option
 using System.Xml;              //for boolean option  
-using System.Windows.Media.Media3D;
 using System.Reflection;
 using Autodesk.Revit.DB;
 using Dynamo.Controls;
@@ -31,24 +30,12 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Nodes
 {
-    public abstract class GeometryBase : NodeWithOneOutput, IDrawable
+    public abstract class GeometryBase : DrawableNodeWithOneOutput
     {
         protected GeometryBase()
         {
             ArgumentLacing = LacingStrategy.Longest;
         }
-
-        #region IDrawableInterface
-
-        public List<object> VisualizationGeometry
-        {
-            get
-            {
-                return dynSettings.Controller.VisualizationManager.Visualizations[this.GUID.ToString()].Geometry;
-            }
-        }
-
-        #endregion
     }
 
     [NodeName("XYZ")]
@@ -1366,6 +1353,7 @@ namespace Dynamo.Nodes
     [NodeName("Hermite Spline")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a geometric hermite spline.")]
+    [NodeSearchTags("curve through points", "interpolate", "spline")]
     public class HermiteSpline: GeometryBase
     {
         Autodesk.Revit.DB.HermiteSpline hs;

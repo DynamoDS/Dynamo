@@ -8,6 +8,7 @@ using Dynamo.Models;
 using Microsoft.FSharp.Collections;
 using Dynamo.FSchemeInterop;
 using Value = Dynamo.FScheme.Value;
+using Dynamo.Utilities;
 
 using NCalc;
 
@@ -77,6 +78,31 @@ namespace Dynamo.Nodes
                 ? formStringNode.InnerText 
                 : nodeElement.InnerText;
         }
+
+        #region Serialization/Deserialization methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("formulaString", FormulaString);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                FormulaString = helper.ReadString("formulaString");
+            }
+        }
+
+        #endregion
 
         private static readonly HashSet<string> ReservedFuncNames = new HashSet<string> { 
             "abs", "acos", "asin", "atan", "ceiling", "cos",
