@@ -334,7 +334,8 @@ namespace Dynamo.ViewModels
                     break;
                 case "OldValue":
                     RaisePropertyChanged("OldValue");
-                    UpdatePreviewBubbleContent();
+                    if (dynSettings.Controller.IsShowPreviewByDefault)
+                        UpdatePreviewBubbleContent();
                     break;
                 case "X":
                     RaisePropertyChanged("Left");
@@ -435,40 +436,28 @@ namespace Dynamo.ViewModels
 
         private void UpdatePreviewBubbleContent()
         {
-            if (this.PreviewBubble == null || this.NodeModel is Watch || !dynSettings.Controller.IsShowPreviewByDefault)
+            if (this.PreviewBubble == null || this.NodeModel is Watch)
                 return;
+
+            //create data packet to send to preview bubble
+            InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.PreviewCondensed;
+            if (this.OldValue.Length < 40)
+                style = InfoBubbleViewModel.Style.Preview;
             Point topLeft = new Point(NodeModel.X, NodeModel.Y);
             Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
-            InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.Preview;
             string content = this.OldValue;
             InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Top;
             InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
-            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.Invoke((new Action(() =>
-            {
-                if (!dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Previews.Contains(this.PreviewBubble))
-                    return;
-                this.PreviewBubble.UpdateContentCommand.Execute(data);
-                this.PreviewBubble.SetAlwaysVisibleCommand.Execute(true);
-                this.PreviewBubble.FadeInCommand.Execute(null);
-            })));
-        }
 
-        private void UpdatePreviewBubbleContent(string content)
-        {
-            if (this.PreviewBubble == null || this.NodeModel is Watch)
-                return;
-            Point topLeft = new Point(NodeModel.X, NodeModel.Y);
-            Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
-            InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.PreviewCondensed;
-            InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Top;
-            InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
+            //update preview bubble
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.Invoke((new Action(() =>
             {
                 if (!dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Previews.Contains(this.PreviewBubble))
                     return;
                 this.PreviewBubble.UpdateContentCommand.Execute(data);
-                this.PreviewBubble.SetAlwaysVisibleCommand.Execute(false);
                 this.PreviewBubble.FadeInCommand.Execute(null);
+                if (dynSettings.Controller.IsShowPreviewByDefault)
+                    this.PreviewBubble.SetAlwaysVisibleCommand.Execute(true);
             })));
         }
 
@@ -770,11 +759,8 @@ namespace Dynamo.ViewModels
 
         private void ShowPreview(object parameter)
         {
-            if (!dynSettings.Controller.IsShowPreviewByDefault)
-            {
-                UpdatePreviewBubbleContent((string)parameter);
-                this.PreviewBubble.ZIndex = 5;
-            }
+            UpdatePreviewBubbleContent();
+            this.PreviewBubble.ZIndex = 5;
         }
 
         private bool CanShowPreview(object parameter)
