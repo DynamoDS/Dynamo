@@ -43,14 +43,14 @@ namespace Dynamo
                 {
                     visualizationManager = new VisualizationManagerRevit();
                     visualizationManager.VisualizationUpdateComplete += new VisualizationCompleteEventHandler(visualizationManager_VisualizationUpdateComplete);
-                    visualizationManager.RequestAlternateContextClear += new EventHandler(visualizationManager_RequestAlternateContextClear);
+                    visualizationManager.RequestAlternateContextClear += CleanupVisualizations;
                 }
 
                 return visualizationManager;
             }
         }
 
-        void visualizationManager_RequestAlternateContextClear(object sender, EventArgs e)
+        void CleanupVisualizations(object sender, EventArgs e)
         {
             IdlePromise.ExecuteOnIdle(
                 () =>
@@ -157,6 +157,8 @@ namespace Dynamo
             //allow the showing of elements in context
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.CanFindNodesFromElements = true;
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.FindNodesFromElements = FindNodesFromSelection;
+
+            dynSettings.Controller.DynamoModel.CleaningUp += CleanupVisualizations;
         }
 
         /// <summary>
@@ -617,6 +619,22 @@ namespace Dynamo
 
         public override void ShutDown()
         {
+            IdlePromise.ExecuteOnShutdown(
+                delegate
+                    {
+                        var transaction = new Autodesk.Revit.DB.Transaction(dynRevitSettings.Doc.Document, "Dynamo Script");
+                        transaction.Start();
+
+                        if (keeperId != ElementId.InvalidElementId)
+                        {
+                            dynRevitSettings.Doc.Document.Delete(keeperId);
+                            keeperId = ElementId.InvalidElementId;
+                        }
+
+                        transaction.Commit();
+                    }
+                );
+
             base.ShutDown();
             Updater.UnRegisterAllChangeHooks();
         }
