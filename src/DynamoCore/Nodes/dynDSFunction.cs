@@ -17,30 +17,20 @@ namespace Dynamo.Nodes
     /// </summary>
     public class DSFunctionDescritpion
     {
-        private string functionName = string.Empty;
-        private string displayName = string.Empty;
-        private List<string> argumentNames = new List<string>();
+        public string Name { get; private set; }
+        public string DisplayName { get; private set;}
+        public List<string> ArgumentNames { get; private set;}
+        public List<string> ReturnKeys { get; private set;}
 
-        public string Name
+        public DSFunctionDescritpion(string name, 
+                                    string displayName, 
+                                    List<string> argumentNames, 
+                                    List<string> returnKeys = null)
         {
-            get { return functionName; }
-        }
-
-        public string DisplayName
-        {
-            get { return displayName;  }
-        }
-        
-        public List<string> ArgumentNames
-        {
-            get { return argumentNames; }
-        }
-
-        public DSFunctionDescritpion(string name, string displayName, List<string> argumentNames)
-        {
-            this.functionName = name;
-            this.displayName = displayName;
-            this.argumentNames = argumentNames;
+            this.Name = name;
+            this.DisplayName = displayName;
+            this.ArgumentNames = argumentNames;
+            this.ReturnKeys = returnKeys;
         }
     }
 
@@ -54,27 +44,35 @@ namespace Dynamo.Nodes
     [NodeSearchableAttribute(false)]
     public class DSFunction : NodeModel
     {
-        private DSFunctionDescritpion functionData; 
-
         public string FunctionName
         {
-            get
-            {
-                return functionData.Name;
-            }
+            get;
+            private set;
         }
 
         public DSFunction(DSFunctionDescritpion functionData)
         {
-            this.functionData = functionData;
-
-            foreach (var arg in this.functionData.ArgumentNames)
+            this.FunctionName = functionData.Name;
+            
+            foreach (var arg in functionData.ArgumentNames)
             {
                 InPortData.Add(new PortData(arg, "parameter", typeof(object)));
             }
-            OutPortData.Add(new PortData("", "return value", typeof(object)));
-            RegisterAllPorts();
 
+            // Returns a dictionary
+            if (functionData.ReturnKeys != null && functionData.ReturnKeys.Count > 1)
+            {
+                foreach (var key in functionData.ReturnKeys)
+                {
+                    OutPortData.Add(new PortData(key, "return value", typeof(object)));
+                }
+            }
+            else
+            {
+                OutPortData.Add(new PortData("", "return value", typeof(object)));
+            }
+
+            RegisterAllPorts();
             NickName = functionData.DisplayName;
         }
 
