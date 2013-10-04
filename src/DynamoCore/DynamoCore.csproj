@@ -158,6 +158,7 @@ limitations under the License.
     <Compile Include="UI\Commands\DynamoCommands.cs" />
     <Compile Include="UI\Commands\RecordableCommands.cs" />
     <Compile Include="UI\DynamoTextBox.cs" />
+    <Compile Include="UI\StateMachine.cs" />
     <Compile Include="UI\Views\ZoomAndPanControl.xaml.cs">
       <DependentUpon>ZoomAndPanControl.xaml</DependentUpon>
     </Compile>
