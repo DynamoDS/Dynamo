@@ -117,7 +117,6 @@ namespace Dynamo
             dynSettings.Controller.DynamoModel.NodeDeleted += new NodeHandler(DynamoModel_NodeDeleted);
             dynSettings.Controller.DynamoModel.ConnectorDeleted += new ConnectorHandler(DynamoModel_ConnectorDeleted);
             dynSettings.Controller.EvaluationCompleted += new EventHandler(Controller_EvaluationCompleted);
-            //dynSettings.Controller.DynamoViewModel.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(DynamoViewModel_PropertyChanged);
             dynSettings.Controller.RequestsRedraw += new EventHandler(Controller_RequestsRedraw);
             DynamoSelection.Instance.Selection.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
             dynSettings.Controller.DynamoModel.ModelCleared += new EventHandler(DynamoModel_ModelCleared);
@@ -199,17 +198,6 @@ namespace Dynamo
         {
             UpdateVisualizations();
         }
-
-        //void DynamoViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        //{
-        //    if (e.PropertyName == "FullscreenWatchShowing")
-        //    {
-        //        if (dynSettings.Controller.DynamoViewModel.FullscreenWatchShowing == true)
-        //        {
-        //            UpdateVisualizations();
-        //        }
-        //    }
-        //}
 
         /// <summary>
         /// Handler for the controller's EvaluationCompleted event.
