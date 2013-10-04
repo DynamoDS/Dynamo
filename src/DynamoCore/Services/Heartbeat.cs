@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -48,15 +49,24 @@ namespace Dynamo.Services
 
             while (true)
             {
-                InstrumentationLogger.LogInfo("Heartbeat-Uptime-s", DateTime.Now.Subtract(startTime).TotalSeconds.ToString(CultureInfo.InvariantCulture));
+                try
+                {
 
-                String usage = PackFrequencyDict(ComputeNodeFrequencies());
-                String errors = PackFrequencyDict(ComputeErrorFrequencies());
+                    InstrumentationLogger.LogInfo("Heartbeat-Uptime-s",
+                                                  DateTime.Now.Subtract(startTime)
+                                                          .TotalSeconds.ToString(CultureInfo.InvariantCulture));
+
+                    String usage = PackFrequencyDict(ComputeNodeFrequencies());
+                    String errors = PackFrequencyDict(ComputeErrorFrequencies());
 
 
-                InstrumentationLogger.LogInfo("Node-usage", usage);
-                InstrumentationLogger.LogInfo("Nodes-with-errors", errors);
-
+                    InstrumentationLogger.LogInfo("Node-usage", usage);
+                    InstrumentationLogger.LogInfo("Nodes-with-errors", errors);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("Exception in Heartbeat " + e);
+                }
                 Thread.Sleep(HEARTBEAT_INTERVAL_MS);
 
 
@@ -88,7 +98,12 @@ namespace Dynamo.Services
 
         private Dictionary<String, int> ComputeNodeFrequencies()
         {
+
             Dictionary<String, int> ret = new Dictionary<string, int>();
+
+            if (dynSettings.Controller == null || dynSettings.Controller.DynamoModel == null ||
+                dynSettings.Controller.DynamoModel.AllNodes == null)
+                return ret;
 
             foreach (var node in dynSettings.Controller.DynamoModel.AllNodes)
             {
@@ -107,6 +122,10 @@ namespace Dynamo.Services
         {
             Dictionary<String, int> ret = new Dictionary<string, int>();
 
+            if (dynSettings.Controller == null || dynSettings.Controller.DynamoModel == null ||
+                dynSettings.Controller.DynamoModel.AllNodes == null)
+                return ret;
+
             foreach (var node in dynSettings.Controller.DynamoModel.AllNodes)
             {
                 if (node.State != ElementState.ERROR)
@@ -115,7 +134,7 @@ namespace Dynamo.Services
                 string fullName = node.GetType().FullName;
                 if (!ret.ContainsKey(fullName))
                     ret[fullName] = 0;
-
+                
                 int count = ret[fullName];
                 ret[fullName] = count + 1;
             }
