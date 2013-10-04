@@ -203,6 +203,7 @@ namespace Dynamo.ViewModels
         private void UpdatePosition(object parameter)
         {
             InfoBubbleDataPacket data = (InfoBubbleDataPacket)parameter;
+            SaveParameter(data.TopLeft, data.BotRight);
             UpdatePosition(data.TopLeft, data.BotRight);
         }
 
@@ -263,8 +264,8 @@ namespace Dynamo.ViewModels
 
         private void UpdateContent(string text)
         {
-            if (this.infoBubbleStyle == Style.PreviewCondensed && text.Length > 20)
-                Content = text.Substring(0, 20) + "...";
+            if (this.infoBubbleStyle == Style.PreviewCondensed && text.Length > 40)
+                Content = text.Substring(0, 40) + "...";
             else
                 Content = text;
         }
@@ -670,6 +671,12 @@ namespace Dynamo.ViewModels
             this.TargetBotRight = botRight;
             this.InfoBubbleStyle = style;
             this.ConnectingDirection = connectingDirection;
+        }
+
+        private void SaveParameter(Point topLeft, Point botRight)
+        {
+            this.TargetTopLeft = topLeft;
+            this.TargetBotRight = botRight;
         }
 
         private void fadeInTimer_Elapsed(object sender, ElapsedEventArgs e)

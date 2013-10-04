@@ -15,6 +15,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Media.Animation;
 using InfoBubbleViewModel = Dynamo.ViewModels.InfoBubbleViewModel;
 using Dynamo.ViewModels;
+using Dynamo.Utilities;
 
 namespace Dynamo.Controls
 {
@@ -77,6 +78,28 @@ namespace Dynamo.Controls
             return textBox;
         }
 
+        private void ShowPreviewBubbleFullContent()
+        {
+            string content = ViewModel.FullContent;
+            InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.Preview;
+            InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Top;
+            Point topLeft = ViewModel.TargetTopLeft;
+            Point botRight = ViewModel.TargetBotRight;
+            InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
+            this.ViewModel.UpdateContentCommand.Execute(data);
+        }
+
+        private void ShowPreviewBubbleCondensedContent()
+        {
+            string content = ViewModel.FullContent;
+            InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.PreviewCondensed;
+            InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Top;
+            Point topLeft = ViewModel.TargetTopLeft;
+            Point botRight = ViewModel.TargetBotRight;
+            InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
+            this.ViewModel.UpdateContentCommand.Execute(data);
+        }
+
         private InfoBubbleViewModel GetViewModel()
         {
             if (this.DataContext is InfoBubbleViewModel)
@@ -99,28 +122,37 @@ namespace Dynamo.Controls
 
         private void InfoBubble_MouseEnter(object sender, MouseEventArgs e)
         {
-            if (mainGrid.Opacity != 0)
+            if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.PreviewCondensed &&
+                dynSettings.Controller.IsShowPreviewByDefault)
+            {
+                ShowPreviewBubbleFullContent();
+            }
+            else
+            {
                 FadeInInfoBubble();
+            }
         }
 
         private void InfoBubble_MouseLeave(object sender, MouseEventArgs e)
         {
-            if (mainGrid.Opacity != 0)
+            if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Preview &&
+                dynSettings.Controller.IsShowPreviewByDefault)
+            {
+                ShowPreviewBubbleCondensedContent();
+            }
+            else
+            {
                 FadeOutInfoBubble();
+            }
         }
 
         private void InfoBubble_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (ViewModel.Content == ViewModel.FullContent)
-                return;
-            string content = ViewModel.FullContent;
-            InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.Preview;
-            InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Top;
-            Point topLeft = ViewModel.TargetTopLeft;
-            Point botRight = ViewModel.TargetBotRight;
-            InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
-            this.ViewModel.UpdateContentCommand.Execute(data);
-            
+            if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.PreviewCondensed &&
+                !dynSettings.Controller.IsShowPreviewByDefault)
+            {
+                ShowPreviewBubbleFullContent();
+            }
         }
     }
 }

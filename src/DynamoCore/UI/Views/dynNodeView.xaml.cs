@@ -324,12 +324,12 @@ namespace Dynamo.Controls
 
         private void PreviewArrow_MouseEnter(object sender, MouseEventArgs e)
         {
-            ViewModel.ShowPreviewCommand.Execute(ViewModel.OldValue);
+            ViewModel.ShowPreviewCommand.Execute(null);
         }
 
         private void PreviewArrow_MouseLeave(object sender, MouseEventArgs e)
         {
-            ViewModel.HidePreviewCommand.Execute(null);
+            //ViewModel.HidePreviewCommand.Execute(null);
         }
     }
 }
