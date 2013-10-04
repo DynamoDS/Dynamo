@@ -461,7 +461,7 @@ namespace Dynamo.Utilities
             //currentWorkspace.Nodes.Remove(collapsedNode);
 
             // save and load the definition from file
-            newNodeDefinition.Update(false, true, true);
+            newNodeDefinition.UpdateFromWorkspace(false, true, true);
             dynSettings.Controller.DynamoModel.Workspaces.Add(newNodeWorkspace);
             //var customNodeInfo = new CustomNodeInfo(newNodeDefinition.FunctionId, args.Name, args.Category, args.Description, null);
             //dynSettings.Controller.CustomNodeManager.AddFunctionDefinition(newNodeDefinition.FunctionId, newNodeDefinition);

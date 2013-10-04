@@ -232,7 +232,7 @@ namespace Dynamo.Nodes
                 this.FunctionId);
         }
 
-        public bool Update(bool writeDefinition = true, bool addToSearch = false, bool compileFunction = true)
+        public bool UpdateFromWorkspace(bool writeDefinition = true, bool addToSearch = false, bool compileFunction = true)
         {
 
             // Get the internal nodes for the function
@@ -266,18 +266,18 @@ namespace Dynamo.Nodes
                 this.CompileAndAddToEnvironment(dynSettings.Controller.FSchemeEnvironment, out inputNames, out outputNames);
 
                 //Update existing function nodes which point to this function to match its changes
-                foreach (var node in
-                        dynSettings.Controller.DynamoModel.AllNodes.OfType<Function>()
-                                   .Where(el => el.Definition == this))
-                {
-                    node.SetInputs(inputNames);
-                    node.SetOutputs(outputNames);
-                    node.RegisterAllPorts();
-                }
+                dynSettings.Controller.DynamoModel.AllNodes.OfType<Function>()
+                    .Where(el => el.Definition == this)
+                    .ToList()
+                    .ForEach( node =>
+                        {
+                            node.SetInputs(inputNames);
+                            node.SetOutputs(outputNames);
+                            node.RegisterAllPorts();
+                        });
 
                 //Call OnSave for all saved elements
-                foreach (NodeModel el in functionWorkspace.Nodes)
-                    el.onSave();
+               functionWorkspace.Nodes.ToList().ForEach(x=>x.onSave());
 
 
             }

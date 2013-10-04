@@ -74,7 +74,7 @@ namespace Dynamo.Models
 
             try
             {
-               def.Update(false, true);
+               def.UpdateFromWorkspace(false, true);
             }
             catch { }
         }
@@ -91,7 +91,7 @@ namespace Dynamo.Models
 
             if (def != null)
             {
-                def.Update(true);
+                def.UpdateFromWorkspace(true);
                 this.FileName = path;
             }
 
