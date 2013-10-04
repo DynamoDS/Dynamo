@@ -4481,7 +4481,7 @@ namespace Dynamo.Nodes
         public SplitString()
         {
             InPortData.Add(new PortData("str", "String to split", typeof(Value.String)));
-            InPortData.Add(new PortData("del", "Delimiter", typeof(Value.String)));
+            InPortData.Add(new PortData("del", "Delimiter", typeof(Value.String), Value.NewString("")));
             OutPortData.Add(new PortData("strs", "List of split strings", typeof(Value.List)));
 
             RegisterAllPorts();
@@ -4494,10 +4494,9 @@ namespace Dynamo.Nodes
 
             return Value.NewList(
                 Utils.SequenceToFSharpList(
-                    str.Split(new string[] { del }, StringSplitOptions.None)
-                       .Select(Value.NewString)
-                )
-            );
+                    del == ""
+                        ? str.ToCharArray().Select(c => Value.NewString(c.ToString()))
+                        : str.Split(new[] { del }, StringSplitOptions.None).Select(Value.NewString)));
         }
 
         protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
