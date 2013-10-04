@@ -159,7 +159,7 @@ namespace Dynamo.Controls
 
         private void RenderDrawables(RenderDescription description)
         {
-            Debug.WriteLine(string.Format("Rendering Watch3D on thread {0}.", System.Threading.Thread.CurrentThread.ManagedThreadId));
+            //Debug.WriteLine(string.Format("Rendering Watch3D on thread {0}.", System.Threading.Thread.CurrentThread.ManagedThreadId));
 
             //when the visualization update is complete, rebind geometry
             //in this watch to collections of geometry composed from upstream
