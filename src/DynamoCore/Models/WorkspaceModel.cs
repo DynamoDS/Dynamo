@@ -327,6 +327,14 @@ namespace Dynamo.Models
         {
             if (String.IsNullOrEmpty(path)) return false;
 
+
+            // create new functionId 
+
+
+
+
+
+
             if (!WorkspaceModel.SaveWorkspace(path, this))
             {
                 DynamoLogger.Instance.Log("Workbench could not be saved.");
@@ -334,6 +342,9 @@ namespace Dynamo.Models
             }
 
             this.FileName = path;
+
+
+
             return true;
         }
 

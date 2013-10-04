@@ -74,7 +74,7 @@ namespace Dynamo.Models
 
             try
             {
-               def.Save(false, true);
+               def.Update(false, true);
             }
             catch { }
         }
@@ -91,7 +91,7 @@ namespace Dynamo.Models
 
             if (def != null)
             {
-                def.Save(true);
+                def.Update(true);
                 this.FileName = path;
             }
 
