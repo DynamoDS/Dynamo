@@ -772,14 +772,41 @@ namespace Dynamo.Models
             List<AssociativeNode> inputAstNodes = new List<AssociativeNode>();
             for (int index = 0; index < InPortData.Count; ++index)
             {
-                Tuple<int, NodeModel> input;
-                if (!TryGetInput(index, out input))
+                Tuple<int, NodeModel> inputTuple;
+                if (!TryGetInput(index, out inputTuple))
                 {
                     inputAstNodes.Add(null);
                 }
                 else
                 {
-                    inputAstNodes.Add(input.Item2.CompileToAstNode(builder));
+                    int outputIndexOfInput = inputTuple.Item1;
+                    NodeModel inputModel = inputTuple.Item2;
+
+                    AssociativeNode inputNode = inputModel.CompileToAstNode(builder);
+                    // Multiple outputs from input node, so using a key to
+                    // indexing into the input
+                    if (inputModel.OutPortData.Count > 1)
+                    {
+                        PortData portData = inputModel.OutPortData[outputIndexOfInput];
+                        var indexingNode = new ProtoCore.AST.AssociativeAST.StringNode();
+                        if (!String.IsNullOrEmpty(portData.NickName))
+                        {
+                            indexingNode.value = portData.NickName;
+                        }
+                        else
+                        {
+                            indexingNode.value = outputIndexOfInput.ToString();
+                        }
+
+                        if (inputNode is ArrayNameNode)
+                        {
+                            ArrayNode arrayNode = new ArrayNode();
+                            arrayNode.Expr = indexingNode;
+                            (inputNode as ArrayNameNode).ArrayDimensions = arrayNode;
+                        }
+                    }
+
+                    inputAstNodes.Add(inputNode);
                 }
             }
 
