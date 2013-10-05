@@ -86,7 +86,7 @@ namespace Dynamo
                     else if (obj is GraphicItem)
                     {
                         //support drawing ASM visuals
-                        VisualizationManagerASM.DrawLibGGraphicItem((GraphicItem)obj, rd, selected, n);
+                        //VisualizationManagerASM.DrawLibGGraphicItem((GraphicItem)obj, rd);
                     }
                 }
 
