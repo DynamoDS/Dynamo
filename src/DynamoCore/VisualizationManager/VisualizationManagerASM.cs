@@ -14,8 +14,6 @@ namespace Dynamo
         {
             AlternateDrawingContextAvailable = false;
             DrawToAlternateContext = false;
-
-            Visualizers.Add(typeof(GraphicItem), DrawLibGGraphicItem);
         }
 
         public static void DrawLibGGraphicItem(NodeModel node, object geom, RenderDescription rd)

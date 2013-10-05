@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Media.Media3D;
 using System.Linq;
+using Autodesk.LibG;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
@@ -131,6 +132,8 @@ namespace Dynamo
             dynSettings.Controller.RequestsRedraw += new EventHandler(Controller_RequestsRedraw);
             DynamoSelection.Instance.Selection.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
             dynSettings.Controller.DynamoModel.ModelCleared += new EventHandler(DynamoModel_ModelCleared);
+
+            Visualizers.Add(typeof(GraphicItem), VisualizationManagerASM.DrawLibGGraphicItem);
         }
 
         void DynamoModel_ModelCleared(object sender, EventArgs e)
