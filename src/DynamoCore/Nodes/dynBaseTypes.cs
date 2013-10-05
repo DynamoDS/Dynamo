@@ -1034,6 +1034,7 @@ namespace Dynamo.Nodes
     [NodeName("Add to List")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
     [NodeDescription("Adds an element to the beginning of a list.")]
+    [NodeSearchTags("cons", "pair")]
     public class List : BuiltinFunction
     {
         public List()
@@ -1411,6 +1412,7 @@ namespace Dynamo.Nodes
     [NodeName("Concatenate Lists")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
     [NodeDescription("Concatenates two lists.")]
+    [NodeSearchTags("append", "extend")]
     public class Append : BuiltinFunction
     {
         public Append()
@@ -1432,6 +1434,7 @@ namespace Dynamo.Nodes
     [NodeName("First of List")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
     [NodeDescription("Gets the Head of a list")]
+    [NodeSearchTags("car")]
     public class First : BuiltinFunction
     {
         public First()
@@ -1452,6 +1455,7 @@ namespace Dynamo.Nodes
     [NodeName("Rest of List")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
     [NodeDescription("Gets the Tail of a list (list with the first element removed).")]
+    [NodeSearchTags("cdr")]
     public class Rest : BuiltinFunction
     {
         public Rest()
@@ -2631,7 +2635,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        private static System.Random random = new System.Random();
+        private readonly System.Random _random = new System.Random();
 
         public override bool RequiresRecalc
         {
@@ -2644,7 +2648,48 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return Value.NewNumber(random.NextDouble());
+            return Value.NewNumber(_random.NextDouble());
+        }
+
+        protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
+        {
+            return builder.Build(this, inputs);
+        }
+    }
+
+    [NodeName("Random List")]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeDescription("Generates a list of uniform random numbers in the range [0.0, 1.0).")]
+    public class RandomList : NodeWithOneOutput
+    {
+        public RandomList()
+        {
+            InPortData.Add(new PortData("amt", "Number of random numbers to be generated.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("rand", "Random number between 0.0 and 1.0.", typeof(Value.List)));
+            RegisterAllPorts();
+        }
+
+        private readonly System.Random _random = new System.Random();
+
+        public override bool RequiresRecalc
+        {
+            get
+            {
+                return true;
+            }
+            set { }
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var n = (int)((Value.Number)args[0]).Item;
+
+            var result = FSharpList<Value>.Empty;
+
+            while (n-- > 0)
+                result = FSharpList<Value>.Cons(Value.NewNumber(_random.NextDouble()), result);
+
+            return Value.NewList(result);
         }
 
         protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
