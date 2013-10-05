@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Threading;
 using System.Windows.Media.Media3D;
 using System.Linq;
 using Autodesk.LibG;
@@ -13,6 +15,7 @@ using Dynamo.Utilities;
 using HelixToolkit.Wpf;
 using Microsoft.Practices.Prism.ViewModel;
 using Newtonsoft.Json;
+using String = System.String;
 
 //testing to see if github integration works.
 
@@ -30,15 +33,16 @@ namespace Dynamo
     {
         #region private members
 
-        private Dictionary<string, Visualization> visualizations 
-            = new Dictionary<string, Visualization>();
+        private Dictionary<string, RenderDescription> visualizations 
+            = new Dictionary<string, RenderDescription>();
 
-        private Dictionary<Type,VisualizerDelegate> visualizers 
+        private Dictionary<Type, VisualizerDelegate> visualizers 
             = new Dictionary<Type, VisualizerDelegate>(); 
 
-        protected bool isUpdating = false;
         private string _alternateContextName = "Host";
         private bool _drawToAlternateContext = true;
+        private object mutex = new object();
+
         #endregion
 
         #region public properties
@@ -46,10 +50,22 @@ namespace Dynamo
         /// <summary>
         /// A dictionary of objects to be stored for visualization.
         /// </summary>
-        public Dictionary<string, Visualization> Visualizations
+        public Dictionary<string, RenderDescription> Visualizations
         {
-            get { return visualizations; }
-            set { visualizations = value; }
+            get
+            {
+                lock (mutex)
+                {
+                    return visualizations; 
+                }
+            }
+            set
+            {
+                lock (mutex)
+                {
+                    visualizations = value;
+                }
+            }
         }
 
         public Dictionary<Type, VisualizerDelegate> Visualizers
@@ -130,7 +146,7 @@ namespace Dynamo
             dynSettings.Controller.DynamoModel.ConnectorDeleted += new ConnectorHandler(DynamoModel_ConnectorDeleted);
             dynSettings.Controller.EvaluationCompleted += new EventHandler(Controller_EvaluationCompleted);
             dynSettings.Controller.RequestsRedraw += new EventHandler(Controller_RequestsRedraw);
-            DynamoSelection.Instance.Selection.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
+            DynamoSelection.Instance.Selection.CollectionChanged += new NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
             dynSettings.Controller.DynamoModel.ModelCleared += new EventHandler(DynamoModel_ModelCleared);
 
             Visualizers.Add(typeof(GraphicItem), VisualizationManagerASM.DrawLibGGraphicItem);
@@ -142,7 +158,7 @@ namespace Dynamo
             OnVisualizationUpdateComplete(this, new VisualizationEventArgs(AggregateRenderDescriptions()));
         }
 
-        void Selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        void Selection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             int movedItems = 0;
 
@@ -153,21 +169,21 @@ namespace Dynamo
 
             //process removals - any node which has a visualization, is not in the selection collection
             //and has some geometry in the selection visualization collections
-            var toRemove = Visualizations.Where(x => x.Value.Description.SelectedPoints.Count > 0 ||
-                                                     x.Value.Description.SelectedLines.Count > 0 ||
-                                                     x.Value.Description.SelectedMeshes.Count > 0)
+            var toRemove = Visualizations.Where(x => x.Value.SelectedPoints.Count > 0 ||
+                                                     x.Value.SelectedLines.Count > 0 ||
+                                                     x.Value.SelectedMeshes.Count > 0)
                                          .Where(
                                              x =>
                                              !DynamoSelection.Instance.Selection.Select(
                                                  y => (y as NodeModel).GUID.ToString()).Contains(x.Key)).Select(x=>x.Value);
             foreach (var viz in toRemove)
             {
-                viz.Description.Points.AddRange(viz.Description.SelectedPoints);
-                viz.Description.SelectedPoints.Clear();
-                viz.Description.Lines.AddRange(viz.Description.SelectedLines);
-                viz.Description.SelectedLines.Clear();
-                viz.Description.Meshes.AddRange(viz.Description.SelectedMeshes);
-                viz.Description.SelectedMeshes.Clear();
+                viz.Points.AddRange(viz.SelectedPoints);
+                viz.SelectedPoints.Clear();
+                viz.Lines.AddRange(viz.SelectedLines);
+                viz.SelectedLines.Clear();
+                viz.Meshes.AddRange(viz.SelectedMeshes);
+                viz.SelectedMeshes.Clear();
 
                 movedItems++;
             }
@@ -184,12 +200,12 @@ namespace Dynamo
                     {
                         //move points, lines, and meshes to selection visuals
                         var viz = Visualizations[node.GUID.ToString()];
-                        viz.Description.SelectedPoints.AddRange(viz.Description.Points);
-                        viz.Description.Points.Clear();
-                        viz.Description.SelectedLines.AddRange(viz.Description.Lines);
-                        viz.Description.Lines.Clear();
-                        viz.Description.SelectedMeshes.AddRange(viz.Description.Meshes);
-                        viz.Description.Meshes.Clear();
+                        viz.SelectedPoints.AddRange(viz.Points);
+                        viz.Points.Clear();
+                        viz.SelectedLines.AddRange(viz.Lines);
+                        viz.Lines.Clear();
+                        viz.SelectedMeshes.AddRange(viz.Meshes);
+                        viz.Meshes.Clear();
 
                         movedItems++;
                     }
@@ -269,9 +285,13 @@ namespace Dynamo
         /// </remarks>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void node_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        void node_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            UpdateVisualizations();
+            if (e.PropertyName == "IsVisible" ||
+                e.PropertyName == "IsUpstreamVisible")
+            {
+                UpdateVisualizations();
+            }
         }
 
         /// <summary>
@@ -284,8 +304,7 @@ namespace Dynamo
             //add a key in the dictionary
             if (!Visualizations.ContainsKey(node.GUID.ToString()))
             {
-                var viz = new Visualization {RequiresUpdate = false};
-                Visualizations.Add(node.GUID.ToString(), viz);
+                Visualizations.Add(node.GUID.ToString(), new RenderDescription());
             }
 
             node.PropertyChanged += node_PropertyChanged;
@@ -309,7 +328,7 @@ namespace Dynamo
         /// </summary>
         public void ClearVisualizations()
         {
-            Visualizations.Values.ToList().ForEach(x=>x.Description.Clear());
+            Visualizations.Values.ToList().ForEach(x=>x.Clear());
         }
 
         /// <summary>
@@ -319,13 +338,6 @@ namespace Dynamo
         /// </summary>
         public virtual void UpdateVisualizations()
         {
-            //don't update the visualizations
-            //if we're already updating.
-            if (isUpdating)
-                return;
-
-            isUpdating = true;
-
             var worker = new BackgroundWorker();
             worker.DoWork += VisualizationUpdateThread;
 
@@ -351,16 +363,9 @@ namespace Dynamo
 
             var v = Visualizations[node.GUID.ToString()];
             
-            //don't set for update if it's not visible
-            //the node's evaluate will fill the geometry collection
-            //but not visualizations will be calculated for the node
-            if(node.IsVisible)
-                v.RequiresUpdate = true;
-
             //clear the gometry collection and the render description
             //the geometry collection will be filled during update.
-            v.Geometry.Clear();
-            v.Description.Clear();
+            v.Clear();
         }
 
         /// <summary>
@@ -381,17 +386,17 @@ namespace Dynamo
 
             var rd = new RenderDescription();
 
-            var keyValuePairs = ids as KeyValuePair<string, Visualization>[] ?? ids.ToArray();
+            var keyValuePairs = ids as KeyValuePair<string, RenderDescription>[] ?? ids.ToArray();
 
-            var pts = keyValuePairs.SelectMany(x => x.Value.Description.Points);
-            var lines = keyValuePairs.SelectMany(x => x.Value.Description.Lines);
-            var meshes = keyValuePairs.SelectMany(x => x.Value.Description.Meshes);
-            var xs = keyValuePairs.SelectMany(x => x.Value.Description.XAxisPoints);
-            var ys = keyValuePairs.SelectMany(x => x.Value.Description.YAxisPoints);
-            var zs = keyValuePairs.SelectMany(x => x.Value.Description.ZAxisPoints);
-            var pts_sel = keyValuePairs.SelectMany(x => x.Value.Description.SelectedPoints);
-            var lines_sel = keyValuePairs.SelectMany(x => x.Value.Description.SelectedLines);
-            var mesh_sel = keyValuePairs.SelectMany(x => x.Value.Description.SelectedMeshes);
+            var pts = keyValuePairs.SelectMany(x => x.Value.Points);
+            var lines = keyValuePairs.SelectMany(x => x.Value.Lines);
+            var meshes = keyValuePairs.SelectMany(x => x.Value.Meshes);
+            var xs = keyValuePairs.SelectMany(x => x.Value.XAxisPoints);
+            var ys = keyValuePairs.SelectMany(x => x.Value.YAxisPoints);
+            var zs = keyValuePairs.SelectMany(x => x.Value.ZAxisPoints);
+            var pts_sel = keyValuePairs.SelectMany(x => x.Value.SelectedPoints);
+            var lines_sel = keyValuePairs.SelectMany(x => x.Value.SelectedLines);
+            var mesh_sel = keyValuePairs.SelectMany(x => x.Value.SelectedMeshes);
 
             rd.Points.AddRange(pts);
             rd.Lines.AddRange(lines);
@@ -404,7 +409,7 @@ namespace Dynamo
             rd.SelectedMeshes.AddRange(mesh_sel);
 
             watch.Stop();
-            Debug.WriteLine(string.Format("{0} ellapsed for aggregating geometry for watch.", watch.Elapsed));
+            Debug.WriteLine(String.Format("{0} ellapsed for aggregating geometry for watch.", watch.Elapsed));
 
             return rd;
         }
@@ -508,12 +513,12 @@ namespace Dynamo
         public void GetVisualizationCounts(
             out int pointCount, out int lineCount, out int meshCount, out int xCount, out int yCount, out int zCount)
         {
-            var points = Visualizations.SelectMany(x => x.Value.Description.Points);
-            var lines = Visualizations.SelectMany(x => x.Value.Description.Lines);
-            var meshes = Visualizations.SelectMany(x => x.Value.Description.Meshes);
-            var xs = Visualizations.SelectMany(x => x.Value.Description.XAxisPoints);
-            var ys = Visualizations.SelectMany(x => x.Value.Description.YAxisPoints);
-            var zs = Visualizations.SelectMany(x => x.Value.Description.ZAxisPoints);
+            var points = Visualizations.SelectMany(x => x.Value.Points);
+            var lines = Visualizations.SelectMany(x => x.Value.Lines);
+            var meshes = Visualizations.SelectMany(x => x.Value.Meshes);
+            var xs = Visualizations.SelectMany(x => x.Value.XAxisPoints);
+            var ys = Visualizations.SelectMany(x => x.Value.YAxisPoints);
+            var zs = Visualizations.SelectMany(x => x.Value.ZAxisPoints);
 
             pointCount = points.Count();
             lineCount = lines.Count();
@@ -525,7 +530,7 @@ namespace Dynamo
     
         public RenderDescription AggregateRenderDescriptions()
         {
-            var descriptions = Visualizations.Values.Select(x => x.Description).ToList();
+            var descriptions = Visualizations.Values;
 
             var rd = new RenderDescription
                 {
@@ -604,8 +609,8 @@ namespace Dynamo
                                        x.OldValue.IsList || x.OldValue.GetType() == typeof(FScheme.Value.Container))
                                     .Where(x => x.GetType().Name != "Watch3D" && x.GetType().Name != "Watch");
 
-            Debug.WriteLine(string.Format("{0} visualizations to update", nodes.Count()));
-            Debug.WriteLine(string.Format("Updating visualizations on thread {0}.", System.Threading.Thread.CurrentThread.ManagedThreadId));
+            Debug.WriteLine(String.Format("{0} visualizations to update", nodes.Count()));
+            Debug.WriteLine(String.Format("Updating visualizations on thread {0}.", Thread.CurrentThread.ManagedThreadId));
 
             var sw = new Stopwatch();
             sw.Start();
@@ -615,7 +620,7 @@ namespace Dynamo
                 if (!visualizations.ContainsKey(node.GUID.ToString()))
                     continue;
 
-                var rd = Visualizations[node.GUID.ToString()].Description;
+                var rd = Visualizations[node.GUID.ToString()];
                 rd.Clear();
 
                 if(node.IsVisible)
@@ -623,8 +628,8 @@ namespace Dynamo
             }
 
             sw.Stop();
-            Debug.WriteLine(string.Format("{0} elapsed for generating visualizations.", sw.Elapsed));
-            DynamoLogger.Instance.Log(string.Format("{0} elapsed for generating visualizations.", sw.Elapsed));
+            Debug.WriteLine(String.Format("{0} elapsed for generating visualizations.", sw.Elapsed));
+            DynamoLogger.Instance.Log(String.Format("{0} elapsed for generating visualizations.", sw.Elapsed));
 
             //generate an aggregated render description to send to the UI
             var aggRd = AggregateRenderDescriptions();
@@ -633,9 +638,102 @@ namespace Dynamo
 
             //notify the UI of visualization completion
             OnVisualizationUpdateComplete(this, new VisualizationEventArgs(aggRd));
-
-            isUpdating = false;
         }
+
+        #region utility methods
+
+        /// <summary>
+        /// Get all objects in the model which have visualizers associated with them.
+        /// </summary>
+        /// <returns></returns>
+        public static List<object> GetAllDrawablesInModel()
+        {
+            var nodes = dynSettings.Controller.DynamoModel.Nodes
+                                   .Where(x => x.OldValue != null);
+
+            var drawables = new List<object>();
+            foreach (var node in nodes)
+            {
+                drawables.AddRange(GetDrawablesFromNode(node));
+            }
+
+            return drawables;
+        }
+
+        /// <summary>
+        /// Get all objects from a given node which have visualizers associated with them.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        public static List<object> GetDrawablesFromNode(NodeModel node)
+        {
+            return GetDrawableFromValue(node.OldValue);
+        }
+
+        /// <summary>
+        /// Get all nodes in model that have values for which there are visualizers associated.
+        /// </summary>
+        /// <returns></returns>
+        public static List<NodeModel> GetDrawableNodesInModel()
+        {
+            var nodes = dynSettings.Controller.DynamoModel.Nodes
+                                   .Where(x => x.OldValue != null);
+
+            return nodes.Where(x => GetDrawablesFromNode(x).Count > 0).ToList();
+        }
+
+        /// <summary>
+        /// Returns whether a node has output which has an associated visualizer.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        public static bool IsNodeDrawable(NodeModel node)
+        {
+            return GetDrawablesFromNode(node).Count > 0;
+        }
+
+        /// <summary>
+        /// Returns the objects from a Value type which have associated visualizers.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static List<object> GetDrawableFromValue(FScheme.Value value)
+        {
+            var drawables = new List<object>();
+
+            var viz = dynSettings.Controller.VisualizationManager;
+
+            if (value.IsList)
+            {
+                foreach (var val_inner in ((FScheme.Value.List)value).Item)
+                {
+                    drawables.AddRange(GetDrawableFromValue(val_inner));
+                }
+                return drawables;
+            }
+
+            var container = value as FScheme.Value.Container;
+            if (container == null)
+                return drawables;
+
+            var obj = ((FScheme.Value.Container)container).Item;
+            var t = obj.GetType();
+            var visualizer = viz.Visualizers.FirstOrDefault(x => x.Key == t || x.Key.IsAssignableFrom(t));
+
+            if (visualizer.Value != null)
+            {
+                drawables.Add(obj);
+            }
+
+            return drawables;
+        }
+
+        public static NodeModel FindNodeWithDrawable(object drawable)
+        {
+            return GetDrawableNodesInModel().FirstOrDefault(x => GetDrawableFromValue(x.OldValue).Contains(drawable));
+        }
+
+        #endregion
     }
 
     public class VisualizationEventArgs : EventArgs

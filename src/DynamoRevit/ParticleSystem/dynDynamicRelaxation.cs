@@ -458,16 +458,10 @@ namespace Dynamo.Nodes
             //this is useful for when this node is used in an infinite
             //loop and you need to draw its contents
 
-            if (_visualization == null)
-            {
-                _visualization = dynSettings.Controller.VisualizationManager.Visualizations.First(x => x.Value.Geometry.Contains(partSys)).Value;
-            }
-
             //throttle sending visualization updates.
             _stepCount++;
             if (_stepCount > 10)
             {
-                _visualization.RequiresUpdate = true;
                 dynSettings.Controller.OnRequestsRedraw(this, EventArgs.Empty);
                 _stepCount = 0;
             }
