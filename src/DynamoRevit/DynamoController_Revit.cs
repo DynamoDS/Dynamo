@@ -5,7 +5,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using Autodesk.LibG;
 using Autodesk.Revit.DB;
 using Dynamo.Controls;
@@ -44,10 +43,28 @@ namespace Dynamo
                 {
                     visualizationManager = new VisualizationManagerRevit();
                     visualizationManager.VisualizationUpdateComplete += new VisualizationCompleteEventHandler(visualizationManager_VisualizationUpdateComplete);
+                    visualizationManager.RequestAlternateContextClear += new EventHandler(visualizationManager_RequestAlternateContextClear);
                 }
 
                 return visualizationManager;
             }
+        }
+
+        void visualizationManager_RequestAlternateContextClear(object sender, EventArgs e)
+        {
+            IdlePromise.ExecuteOnIdle(
+                () =>
+                {
+                    dynRevitSettings.Controller.InitTransaction();
+
+                    if (keeperId != ElementId.InvalidElementId)
+                    {
+                        dynRevitSettings.Doc.Document.Delete(keeperId);
+                        keeperId = ElementId.InvalidElementId;
+                    }
+
+                    dynRevitSettings.Controller.EndTransaction();
+                });
         }
 
         /// <summary>
@@ -57,6 +74,20 @@ namespace Dynamo
         /// <param name="sender"></param>
         /// <param name="e"></param>
         void visualizationManager_VisualizationUpdateComplete(object sender, VisualizationEventArgs e)
+        {
+            //do not draw to geom keeper if the user has selected
+            //not to draw to the alternate context.
+            if (!VisualizationManager.DrawToAlternateContext)
+                return;
+
+            var geoms = VisualizationManager.Visualizations.Values.SelectMany(x => x.Geometry)
+                                                .Where(x => x is GeometryObject)
+                                                .Cast<GeometryObject>()
+                                                .ToList();
+            DrawToAlternateContext(geoms);
+        }
+
+        private void DrawToAlternateContext(List<GeometryObject> geoms)
         {
             Type geometryElementType = typeof(GeometryElement);
             MethodInfo[] geometryElementTypeMethods = geometryElementType.GetMethods(BindingFlags.Static | BindingFlags.Public);
@@ -84,8 +115,6 @@ namespace Dynamo
                             keeperId = ElementId.InvalidElementId;
                         }
 
-                        var geoms = VisualizationManager.Visualizations.Values.SelectMany(x => x.Geometry).Where(x => x is GeometryObject).Cast<GeometryObject>().ToList();
-
                         var argsM = new object[4];
                         argsM[0] = dynRevitSettings.Doc.Document;
                         argsM[1] = ElementId.InvalidElementId;
@@ -95,7 +124,7 @@ namespace Dynamo
                         else
                             argsM[3] = ElementId.InvalidElementId;
 
-                        keeperId = (ElementId)method.Invoke(null, argsM);
+                        keeperId = (ElementId) method.Invoke(null, argsM);
 
                         //keeperId = GeometryElement.SetForTransientDisplay(dynRevitSettings.Doc.Document, ElementId.InvalidElementId, geoms,
                         //                                       ElementId.InvalidElementId);
