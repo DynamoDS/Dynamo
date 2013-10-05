@@ -776,8 +776,8 @@ namespace Dynamo.Models
                     el.X = x;
                     el.Y = y;
 
-                    el.IsVisible = isVisible;
-                    el.IsUpstreamVisible = isUpstreamVisible;
+                    el.isVisible = isVisible;
+                    el.isUpstreamVisible = isUpstreamVisible;
 
                     if (lacingAttrib != null)
                     {

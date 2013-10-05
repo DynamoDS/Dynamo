@@ -80,11 +80,37 @@ namespace Dynamo
             if (!VisualizationManager.DrawToAlternateContext)
                 return;
 
-            var geoms = VisualizationManager.Visualizations.Values.SelectMany(x => x.Geometry)
-                                                .Where(x => x is GeometryObject)
-                                                .Cast<GeometryObject>()
-                                                .ToList();
+            var values = dynSettings.Controller.DynamoModel.Nodes
+                                   .Where(x => x.OldValue != null)
+                                   .Where(x => x.OldValue is FScheme.Value.Container || x.OldValue is FScheme.Value.List).Select(x=>x.OldValue);
+
+            var geoms = values.ToList().SelectMany(RevitGeometryFromNodes).ToList();
+
             DrawToAlternateContext(geoms);
+        }
+
+        private static List<GeometryObject> RevitGeometryFromNodes(FScheme.Value value)
+        {
+            var geoms = new List<GeometryObject>();
+
+            if (value.IsList)
+            {
+                foreach (var val_inner in ((FScheme.Value.List)value).Item)
+                {
+                    geoms.AddRange(RevitGeometryFromNodes(val_inner));
+                }
+                return geoms;
+            }
+
+            var container = value as Value.Container;
+            if (container == null)
+                return geoms;
+
+            var geom = ((FScheme.Value.Container)value).Item as GeometryObject;
+            if (geom != null)
+                geoms.Add(geom);
+
+            return geoms;
         }
 
         private void DrawToAlternateContext(List<GeometryObject> geoms)
@@ -345,29 +371,29 @@ namespace Dynamo
 
         void DrawPython(Value val, string id)
         {
-            DrawContainers(val, id);
+            //DrawContainers(val, id);
         }
 
-        private void DrawContainers(Value val, string id)
-        {
-            if (val.IsList)
-            {
-                foreach (Value v in ((Value.List)val).Item)
-                {
-                    DrawContainers(v, id);
-                }
-            }
-            if (val.IsContainer)
-            {
-                var drawable = ((Value.Container)val).Item;
+        //private void DrawContainers(Value val, string id)
+        //{
+        //    if (val.IsList)
+        //    {
+        //        foreach (Value v in ((Value.List)val).Item)
+        //        {
+        //            DrawContainers(v, id);
+        //        }
+        //    }
+        //    if (val.IsContainer)
+        //    {
+        //        var drawable = ((Value.Container)val).Item;
 
-                //support drawing XYZs geometry objects or LibG graphic items
-                if(drawable is XYZ || drawable is GeometryObject || drawable is GraphicItem )
-                {
-                    VisualizationManager.Visualizations[id].Geometry.Add(drawable);
-                }
-            }
-        }
+        //        //support drawing XYZs geometry objects or LibG graphic items
+        //        if(drawable is XYZ || drawable is GeometryObject || drawable is GraphicItem )
+        //        {
+        //            VisualizationManager.Visualizations[id].Geometry.Add(drawable);
+        //        }
+        //    }
+        //}
 
         Value newEval(bool dirty, string script, dynamic bindings)
         {
