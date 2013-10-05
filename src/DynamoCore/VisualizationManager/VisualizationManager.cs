@@ -41,7 +41,8 @@ namespace Dynamo
 
         private string _alternateContextName = "Host";
         private bool _drawToAlternateContext = true;
-        private object mutex = new object();
+        private object myLock = new object();
+        protected bool isUpdating = false;
 
         #endregion
 
@@ -54,14 +55,14 @@ namespace Dynamo
         {
             get
             {
-                lock (mutex)
+                lock (myLock)
                 {
                     return visualizations; 
                 }
             }
             set
             {
-                lock (mutex)
+                lock (myLock)
                 {
                     visualizations = value;
                 }
@@ -338,6 +339,10 @@ namespace Dynamo
         /// </summary>
         public virtual void UpdateVisualizations()
         {
+            if (isUpdating)
+                return;
+
+            isUpdating = true;
             var worker = new BackgroundWorker();
             worker.DoWork += VisualizationUpdateThread;
 
@@ -571,60 +576,43 @@ namespace Dynamo
             //Debug.WriteLine(renderData);
         }
 
-        internal void VisualizeGeometry(NodeModel node, FScheme.Value val, RenderDescription rd)
+        internal void VisualizeGeometry(NodeModel node, object geom, RenderDescription rd)
         {
-            if (val.IsList)
-            {
-                foreach (var v in ((FScheme.Value.List)val).Item)
-                {
-                    VisualizeGeometry(node, v, rd);
-                }
-            }
-            else
-            {
-                var container = val as FScheme.Value.Container;
-                if (container != null)
-                {
-                    var t = container.Item.GetType();
+            var t = geom.GetType();
 
-                    var viz = Visualizers.FirstOrDefault(x => x.Key == t || x.Key.IsAssignableFrom(t));
+            var viz = Visualizers.FirstOrDefault(x => x.Key == t || x.Key.IsAssignableFrom(t));
 
-                    //draw what's in the container
-                    if (viz.Value != null)
-                    {
-                        viz.Value.Invoke(node, container.Item, rd);
-                    }
-                }
+            //draw what's in the container
+            if (viz.Value != null)
+            {
+                viz.Value.Invoke(node, geom, rd);
             }
         }
 
         protected virtual void VisualizationUpdateThread(object s, DoWorkEventArgs args)
         {
-            //get al the nodes with container or list values
-            //which are not watch nodes
-            var nodes = dynSettings.Controller.DynamoModel.Nodes
-                                   .Where(x => x.OldValue != null)
-                                   .Where(
-                                       x =>
-                                       x.OldValue.IsList || x.OldValue.GetType() == typeof(FScheme.Value.Container))
-                                    .Where(x => x.GetType().Name != "Watch3D" && x.GetType().Name != "Watch");
+            var drawable_dict = GetAllDrawablesInModel().Distinct();
 
-            Debug.WriteLine(String.Format("{0} visualizations to update", nodes.Count()));
+            Debug.WriteLine(String.Format("{0} visualizations to update", drawable_dict.Count()));
             Debug.WriteLine(String.Format("Updating visualizations on thread {0}.", Thread.CurrentThread.ManagedThreadId));
 
             var sw = new Stopwatch();
             sw.Start();
 
-            foreach (var node in nodes)
+            foreach (var drawable in drawable_dict)
             {
+                var node = drawable.Key as NodeModel;
+
                 if (!visualizations.ContainsKey(node.GUID.ToString()))
                     continue;
 
                 var rd = Visualizations[node.GUID.ToString()];
                 rd.Clear();
 
-                if(node.IsVisible)
-                    VisualizeGeometry(node, node.OldValue, rd);
+                if (node.IsVisible)
+                {
+                    drawable.Value.ForEach(x=>VisualizeGeometry(node, x, rd));
+                }   
             }
 
             sw.Stop();
@@ -638,6 +626,8 @@ namespace Dynamo
 
             //notify the UI of visualization completion
             OnVisualizationUpdateComplete(this, new VisualizationEventArgs(aggRd));
+
+            isUpdating = false;
         }
 
         #region utility methods
@@ -646,18 +636,16 @@ namespace Dynamo
         /// Get all objects in the model which have visualizers associated with them.
         /// </summary>
         /// <returns></returns>
-        public static List<object> GetAllDrawablesInModel()
+        public static Dictionary<NodeModel,List<object>> GetAllDrawablesInModel()
         {
             var nodes = dynSettings.Controller.DynamoModel.Nodes
-                                   .Where(x => x.OldValue != null);
+                                   .Where(x => x.OldValue != null)
+                                   .Where(
+                                       x =>
+                                       x.OldValue.IsList || x.OldValue.GetType() == typeof(FScheme.Value.Container))
+                                    .Where(x => x.GetType().Name != "Watch3D" && x.GetType().Name != "Watch");
 
-            var drawables = new List<object>();
-            foreach (var node in nodes)
-            {
-                drawables.AddRange(GetDrawablesFromNode(node));
-            }
-
-            return drawables;
+            return nodes.ToDictionary(x=>x, GetDrawablesFromNode);
         }
 
         /// <summary>
