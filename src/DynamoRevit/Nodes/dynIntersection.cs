@@ -199,8 +199,6 @@ namespace Dynamo.Nodes
 
                     xsect_xyzs = FSharpList<Value>.Cons(Value.NewContainer(ir.XYZPoint), xsect_xyzs);
 
-                    VisualizationGeometry.Add(ir.XYZPoint);
-
                     //xsect_results = FSharpList<Value>.Cons(Value.NewList(xsect), xsect_results);
                 }
             }
@@ -270,8 +268,7 @@ namespace Dynamo.Nodes
                     xyz = FSharpList<Value>.Cons(Value.NewContainer(ir.XYZPoint), xyz);
                     u = FSharpList<Value>.Cons(Value.NewNumber(ir.UVPoint.U), u);
                     v = FSharpList<Value>.Cons(Value.NewNumber(ir.UVPoint.V), v);
-                    
-                    VisualizationGeometry.Add(ir.XYZPoint);
+
                 }
                 
             }
@@ -333,11 +330,7 @@ namespace Dynamo.Nodes
 
                         //var result = face1.Intersect(face2, out resultCurve);
                         var result = mi.Invoke(face1, methodArgs);
-                        if (methodArgs[1] != null)
-                        {
-                            VisualizationGeometry.Add((Curve)methodArgs[1]);
-                        }
-                                                 
+                  
                         set = true;
 
                         outPuts[_resultPort] = Value.NewString(result.ToString());

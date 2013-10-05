@@ -853,8 +853,6 @@ namespace Dynamo.Nodes
             var ns = dynRevitSettings.Revit.Application.Create.NewNurbSpline(
                     pts, Enumerable.Repeat(1.0, pts.Count).ToList());
 
-            VisualizationGeometry.Add(ns);
-
             return Value.NewContainer(ns);
         }
     }
@@ -1078,11 +1076,6 @@ namespace Dynamo.Nodes
 
             Autodesk.Revit.DB.CurveLoop result = Autodesk.Revit.DB.CurveLoop.Create(curvesWithFlip);
 
-            foreach (Curve c in result)
-            {
-                VisualizationGeometry.Add(c);
-            }
-
             return Value.NewContainer(result);
         }
     }
@@ -1110,11 +1103,6 @@ namespace Dynamo.Nodes
             Autodesk.Revit.DB.CurveLoop result = Autodesk.Revit.DB.CurveLoop.CreateViaThicken(curve.Clone(), thickness, normal);
             if (result == null)
                 throw new Exception("Could not thicken curve");
-
-            foreach (Curve c in result)
-            {
-                VisualizationGeometry.Add(c);
-            }
 
             return Value.NewContainer(result);
         }
@@ -1192,8 +1180,6 @@ namespace Dynamo.Nodes
 
             if (result == null)
                 throw new Exception("Could not offset curve");
-
-            VisualizationGeometry.Add(result);
 
             return Value.NewContainer(result);
         }
@@ -1461,8 +1447,6 @@ namespace Dynamo.Nodes
                 
             result = FSharpList<Value>.Cons(Value.NewContainer(startPoint), result);
 
-            VisualizationGeometry.Add(startPoint);
-           
             t = 1.0;
             XYZ endPoint = !XyzOnCurveOrEdge.curveIsReallyUnbound(crvRef) ? crvRef.Evaluate(t, true) : crvRef.Evaluate(t * crvRef.Period, false);
 
@@ -1576,7 +1560,6 @@ namespace Dynamo.Nodes
                             thisXYZ = !XyzOnCurveOrEdge.curveIsReallyUnbound(crvRef) ? crvRef.Evaluate(t, true) : crvRef.Evaluate(t * crvRef.Period, false);
                             result = FSharpList<Value>.Cons(Value.NewContainer(thisXYZ), result);
 
-                            VisualizationGeometry.Add(thisXYZ);
                         }
                         break;
                     }
@@ -1590,8 +1573,6 @@ namespace Dynamo.Nodes
             if (xi > 1.0 + System.Double.Epsilon)
             {
                 result = FSharpList<Value>.Cons(Value.NewContainer(endPoint), result);
-
-                VisualizationGeometry.Add(endPoint);
             }
             return Value.NewList(
                ListModule.Reverse(result)

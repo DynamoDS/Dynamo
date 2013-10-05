@@ -46,8 +46,6 @@ namespace Dynamo.Nodes
             double t = ir.Parameter;
             double d = ir.Distance;
 
-            VisualizationGeometry.Add(pt);
-
             outPuts[_xyzPort] = Value.NewContainer(pt);
             outPuts[_tPort] = Value.NewNumber(t);
             outPuts[_dPort] = Value.NewNumber(d);
@@ -134,8 +132,6 @@ namespace Dynamo.Nodes
                 }
                 catch { }
             }
-
-            VisualizationGeometry.Add(pt);
 
             outPuts[_xyzPort] = Value.NewContainer(pt);
             outPuts[_uvPort] = Value.NewContainer(uv);
