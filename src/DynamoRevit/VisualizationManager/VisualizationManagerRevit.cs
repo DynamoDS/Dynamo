@@ -36,6 +36,7 @@ namespace Dynamo
             Visualizers.Add(typeof(ParticleSystem), DrawParticleSystem);
             Visualizers.Add(typeof(TriangleFace), DrawTriangleFace);
             Visualizers.Add(typeof(GeometryObject), DrawGeometryObject);
+            Visualizers.Add(typeof(Autodesk.Revit.DB.CurveLoop), DrawCurveLoop);
         }
 
         //public override void UpdateVisualizations()
@@ -411,6 +412,18 @@ namespace Dynamo
                     rd.Lines.Add(pt1);
                     rd.Lines.Add(pt2);
                 }
+            }
+        }
+
+        private void DrawCurveLoop(NodeModel node, object obj, RenderDescription rd)
+        {
+            var cl = obj as Autodesk.Revit.DB.CurveLoop;
+            if (cl == null)
+                return;
+
+            foreach (var crv in cl)
+            {
+                DrawCurve(node, crv, rd);
             }
         }
 
