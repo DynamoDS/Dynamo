@@ -131,7 +131,6 @@ namespace Dynamo
             dynSettings.Controller.RequestsRedraw += new EventHandler(Controller_RequestsRedraw);
             DynamoSelection.Instance.Selection.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
             dynSettings.Controller.DynamoModel.ModelCleared += new EventHandler(DynamoModel_ModelCleared);
-
         }
 
         void DynamoModel_ModelCleared(object sender, EventArgs e)
@@ -269,38 +268,7 @@ namespace Dynamo
         /// <param name="e"></param>
         void node_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "IsVisible")
-            {
-                var node = sender as NodeModel;
-
-                if (node == null)
-                    return;
-
-                if (Visualizations.ContainsKey(node.GUID.ToString()))
-                {
-                    Visualization viz = Visualizations[node.GUID.ToString()];
-
-                    if (!node.IsVisible)
-                    {
-                        //clear the render description
-                        viz.Description.Clear();
-                    }
-                    if (node.IsVisible)
-                    {
-                        viz.RequiresUpdate = true;
-                    }
-
-                    UpdateVisualizations();
-                }
-            }
-            else if (e.PropertyName == "IsUpstreamVisible")
-            {
-                //just call for an update
-                //the gatherupstream method when called by
-                //the watch will filter the visualiations for
-                //upstream visibility.
-                UpdateVisualizations();
-            }
+            UpdateVisualizations();
         }
 
         /// <summary>
@@ -310,10 +278,6 @@ namespace Dynamo
         /// <param name="id">The node to register for visualization</param>
         public virtual void RegisterForVisualization(NodeModel node)
         {
-            //don't register if it's not drawable
-            //if (!(node is DrawableNode))
-            //    return;
-
             //add a key in the dictionary
             if (!Visualizations.ContainsKey(node.GUID.ToString()))
             {
@@ -458,31 +422,11 @@ namespace Dynamo
 
                 NodeModel node = pair.Value.Item2;
 
-                if(node is DrawableNode)
+                if(node.OldValue != null)
                     drawables.Add(node.GUID.ToString());
 
                 if (node.IsUpstreamVisible)
                     drawables.AddRange(GetUpstreamDrawableIds(node.Inputs));
-
-                //if the node is function then get all the 
-                //drawables inside that node. only do this if the
-                //node's workspace is the home space to avoid infinite
-                //recursion in the case of custom nodes in custom nodes
-                if (node is Function && node.WorkSpace == dynSettings.Controller.DynamoModel.HomeSpace)
-                {
-                    var func = (Function)node;
-                    IEnumerable<NodeModel> topElements = func.Definition.Workspace.GetTopMostNodes();
-                    foreach (NodeModel innerNode in topElements)
-                    {
-                        var drawableInner = innerNode as DrawableNode;
-
-                        if (drawableInner != null)
-                            drawables.Add(innerNode.GUID.ToString());
-
-                        if (node.IsUpstreamVisible)
-                            drawables.AddRange(GetUpstreamDrawableIds(innerNode.Inputs));
-                    }
-                }
             }
 
             return drawables;
@@ -648,38 +592,31 @@ namespace Dynamo
 
         protected virtual void VisualizationUpdateThread(object s, DoWorkEventArgs args)
         {
-            //only update those nodes which have been flagged for update
-            //var toUpdate = Visualizations.Values.ToList().Where(x => x.RequiresUpdate == true);
+            //get al the nodes with container or list values
+            //which are not watch nodes
             var nodes = dynSettings.Controller.DynamoModel.Nodes
                                    .Where(x => x.OldValue != null)
                                    .Where(
                                        x =>
-                                       x.OldValue.IsList || x.OldValue.GetType() == typeof(FScheme.Value.Container));
+                                       x.OldValue.IsList || x.OldValue.GetType() == typeof(FScheme.Value.Container))
+                                    .Where(x => x.GetType().Name != "Watch3D" && x.GetType().Name != "Watch");
 
-
-            //Debug.WriteLine(string.Format("{0} visualizations to update", toUpdate.Count()));
+            Debug.WriteLine(string.Format("{0} visualizations to update", nodes.Count()));
             Debug.WriteLine(string.Format("Updating visualizations on thread {0}.", System.Threading.Thread.CurrentThread.ManagedThreadId));
-
-            var selIds =
-                DynamoSelection.Instance.Selection.Where(x => x is NodeModel)
-                               .Select(x => ((NodeModel)x).GUID.ToString());
-
-            var selected = Visualizations.Where(x => selIds.Contains(x.Key)).Select(x => x.Value);
 
             var sw = new Stopwatch();
             sw.Start();
 
             foreach (var node in nodes)
             {
+                if (!visualizations.ContainsKey(node.GUID.ToString()))
+                    continue;
+
                 var rd = Visualizations[node.GUID.ToString()].Description;
                 rd.Clear();
 
-                //if the node is not to be previewed, just
-                //leave a cleared render description
-                if (!node.IsVisible)
-                    return;
-
-                VisualizeGeometry(node, node.OldValue, rd);
+                if(node.IsVisible)
+                    VisualizeGeometry(node, node.OldValue, rd);
             }
 
             sw.Stop();
