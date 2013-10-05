@@ -2597,7 +2597,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Random With Seed")]
+    [NodeName("Random Number By Seed")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
     [NodeDescription("Generates a uniform random number in the range [0.0, 1.0).")]
     public class RandomSeed : NodeWithOneOutput
@@ -2624,7 +2624,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Random")]
+    [NodeName("Random Number")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
     [NodeDescription("Generates a uniform random number in the range [0.0, 1.0).")]
     public class Random : NodeWithOneOutput
@@ -2657,7 +2657,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Random List")]
+    [NodeName("Random Number List")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
     [NodeDescription("Generates a list of uniform random numbers in the range [0.0, 1.0).")]
     public class RandomList : NodeWithOneOutput
