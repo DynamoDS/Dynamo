@@ -28,7 +28,7 @@ using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Nodes
 {
-    public abstract class ParticleSystemBase : DrawableNode
+    public abstract class ParticleSystemBase : NodeModel
     {
         internal ParticleSystem ParticleSystem;
 
@@ -264,12 +264,6 @@ namespace Dynamo.Nodes
             else
             {
                 UpdateSystem();
-            }
-
-            if (!VisualizationGeometry.Contains(ParticleSystem))
-            {
-                Debug.WriteLine("Adding particle system to geometry collection.");
-                VisualizationGeometry.Add(ParticleSystem);
             }
 
             outPuts[_psPort] = Value.NewContainer(ParticleSystem);

@@ -14,7 +14,7 @@ using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Revit
 {
-    public abstract partial class RevitTransactionNode : DrawableNode
+    public abstract partial class RevitTransactionNode : NodeModel
     {
         protected object DrawableObject = null;
         //protected Func<object, RenderDescription> DrawMethod = null;

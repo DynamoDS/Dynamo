@@ -34,7 +34,7 @@ using TextBox = System.Windows.Controls.TextBox;
 namespace Dynamo.Nodes
 {
     [IsInteractive(true)]
-    public abstract class SelectionBase : DrawableNodeWithOneOutput
+    public abstract class SelectionBase : NodeWithOneOutput
     {
         private bool _canSelect = true;
         protected string _selectButtonContent;
@@ -265,8 +265,6 @@ namespace Dynamo.Nodes
                 throw new Exception("Nothing selected.");
             }
 
-            VisualizationGeometry.Add(SelectedElement);
-
             return Value.NewContainer(SelectedElement);
         }
     }
@@ -304,7 +302,7 @@ namespace Dynamo.Nodes
     }
 
     [IsInteractive(true)]
-    public abstract class MultipleElementSelectionBase : DrawableNodeWithOneOutput
+    public abstract class MultipleElementSelectionBase : NodeWithOneOutput
     {
         private TextBlock _tb;
         private Button _selectButton;
@@ -475,11 +473,6 @@ namespace Dynamo.Nodes
                 throw new Exception("Nothing selected.");
 
             var els = SelectedElements.Select(Value.NewContainer).ToList();
-
-            foreach (Element e in _selected)
-            {
-                VisualizationGeometry.Add(e);
-            }
 
             return Value.NewList(Utils.SequenceToFSharpList(els));
         }
@@ -672,8 +665,6 @@ namespace Dynamo.Nodes
                     break;
             }
 
-            VisualizationGeometry.Add(face);
-
             return Value.NewContainer(face);
         }
 
@@ -755,8 +746,6 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            VisualizationGeometry.Add((Edge)dynRevitSettings.Doc.Document.GetElement(_reference).GetGeometryObjectFromReference(_reference));
-
             return Value.NewContainer(_reference);
         }
 
@@ -1174,8 +1163,6 @@ namespace Dynamo.Nodes
                 throw new Exception("could not evaluate point on face or edge of the element");
 
             old_refXyz = _reference;
-
-            VisualizationGeometry.Add(thisXYZ);
 
             return Value.NewContainer(thisXYZ);
         }
