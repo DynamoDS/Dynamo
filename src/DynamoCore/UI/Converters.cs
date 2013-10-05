@@ -1019,13 +1019,13 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //source -> target
-            return value == null ? "" : HttpUtility.UrlDecode(value.ToString());
+            return value == null ? "" : HttpUtility.HtmlDecode(value.ToString());
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //target -> source
-            return HttpUtility.UrlEncode(value.ToString());
+            return HttpUtility.HtmlEncode(value.ToString());
         }
     }
 
