@@ -615,8 +615,8 @@ namespace Dynamo.Nodes
         public Fold()
             : base(FScheme.FoldL)
         {
-            InPortData.Add(new PortData("f(x, a)", "Reductor Function: first argument is an item in the list, second is the current accumulated value, result is the new accumulated value.", typeof(object)));
-            InPortData.Add(new PortData("a", "Starting result (accumulator).", typeof(object)));
+            InPortData.Add(new PortData("f(x, a)", "Reductor Function: first argument is an arbitrary item in the list being reduced, second is the current accumulated value, result is the new accumulated value.", typeof(object)));
+            InPortData.Add(new PortData("a", "Starting accumulated value, to be passed into the first call to the Reductor function.", typeof(object)));
             InPortData.Add(new PortData("list", "List to reduce.", typeof(Value.List)));
             OutPortData.Add(new PortData("", "Result", typeof(object)));
 
@@ -2154,6 +2154,7 @@ namespace Dynamo.Nodes
     [NodeName("Equal")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_COMPARISON)]
     [NodeDescription("Compares two numbers.")]
+    [NodeSearchTags("=")]
     public class Equal : Comparison
     {
         public Equal() : base(FScheme.EQ, "=") { }
