@@ -173,11 +173,9 @@ namespace Dynamo.ViewModels
         {
             fadeInTimer = new Timer(20);
             fadeInTimer.Elapsed += fadeInTimer_Elapsed;
-            fadeInTimer.Enabled = true;
 
             fadeOutTimer = new Timer(20);
             fadeOutTimer.Elapsed += fadeOutTimer_Elapsed;
-            fadeOutTimer.Enabled = true;
         }
 
         #endregion
@@ -409,7 +407,7 @@ namespace Dynamo.ViewModels
             margin.Top = botRight.Y;
             margin.Left = -((EstimatedWidth - nodeWidth) / 2) + topLeft.X;
 
-            if (!dynSettings.Controller.IsShowPreviewByDefault)
+            if (!dynSettings.Controller.IsShowPreviewByDefault && this.infoBubbleStyle == Style.PreviewCondensed)
                 margin.Top -= 7;
             return margin;
         }

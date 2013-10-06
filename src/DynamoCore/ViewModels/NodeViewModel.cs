@@ -219,7 +219,12 @@ namespace Dynamo.ViewModels
 
         public bool IsPreviewInsetVisible
         {
-            get { return !dynSettings.Controller.IsShowPreviewByDefault; }
+            get
+            {
+                if (this.PreviewBubble != null && this.PreviewBubble.InfoBubbleStyle == InfoBubbleViewModel.Style.Preview)
+                    return false;
+                return !dynSettings.Controller.IsShowPreviewByDefault;
+            }
         }
 
         #endregion
@@ -268,6 +273,10 @@ namespace Dynamo.ViewModels
             logic.PropertyChanged += logic_PropertyChanged;
             dynSettings.Controller.DynamoViewModel.Model.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Model_PropertyChanged);
             dynSettings.Controller.PropertyChanged += Controller_PropertyChanged;
+
+            this.ErrorBubble = new InfoBubbleViewModel();
+            this.PreviewBubble = new InfoBubbleViewModel();
+            this.PreviewBubble.PropertyChanged += PreviewBubble_PropertyChanged;
 
             //Do a one time setup of the initial ports on the node
             //we can not do this automatically because this constructor
@@ -386,6 +395,16 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private void PreviewBubble_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "InfoBubbleStyle":
+                    RaisePropertyChanged("IsPreviewInsetVisible");
+                    break;
+            }
+        }
+
         private void HandleDefaultShowPreviewChanged()
         {
             RaisePropertyChanged("IsPreviewInsetVisible");
@@ -468,8 +487,6 @@ namespace Dynamo.ViewModels
 
             //create data packet to send to preview bubble
             InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.PreviewCondensed;
-            if (this.OldValue.Length < 40)
-                style = InfoBubbleViewModel.Style.Preview;
             Point topLeft = new Point(NodeModel.X, NodeModel.Y);
             Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
             string content = this.OldValue;
