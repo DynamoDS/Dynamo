@@ -220,7 +220,7 @@
         </Canvas>
         
         <Polygon Grid.Row="2" Fill="White" HorizontalAlignment="Center" VerticalAlignment="Bottom" StrokeThickness="1" Stroke="Gray"
-                 MouseEnter="PreviewArrow_MouseEnter" MouseLeave="PreviewArrow_MouseLeave" 
+                 MouseEnter="PreviewArrow_MouseEnter"
                  Visibility="{Binding Path=IsPreviewInsetVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Polygon.Points>
                     <Point X="0" Y="6"/>

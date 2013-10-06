@@ -75,7 +75,6 @@ namespace Dynamo.Controls
             textBox.FontSize = ViewModel.TextFontSize;
             textBox.Margin = ViewModel.ContentMargin;
             textBox.MaxWidth = ViewModel.MaxWidth;
-            textBox.PreviewMouseDown += InfoBubble_PreviewMouseDown;
             return textBox;
         }
 
@@ -149,10 +148,17 @@ namespace Dynamo.Controls
 
         private void InfoBubble_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.PreviewCondensed &&
-                !dynSettings.Controller.IsShowPreviewByDefault)
+            if (dynSettings.Controller.IsShowPreviewByDefault)
+                return;
+            if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.PreviewCondensed)
             {
                 ShowPreviewBubbleFullContent();
+                ViewModel.SetAlwaysVisibleCommand.Execute(true);
+            }
+            else if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Preview)
+            {
+                ShowPreviewBubbleCondensedContent();
+                ViewModel.SetAlwaysVisibleCommand.Execute(false);
             }
         }
     }

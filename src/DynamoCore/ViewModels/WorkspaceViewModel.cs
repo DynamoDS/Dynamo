@@ -459,14 +459,9 @@ namespace Dynamo.ViewModels
                         {
                             var node = item as NodeModel;
                             NodeViewModel nodeViewModel = new NodeViewModel(node);
-                            InfoBubbleViewModel previewBubble = new InfoBubbleViewModel();
-                            InfoBubbleViewModel errorBubble = new InfoBubbleViewModel();
-                            nodeViewModel.ErrorBubble = errorBubble;
-                            nodeViewModel.PreviewBubble = previewBubble;
-
                             _nodes.Add(nodeViewModel);
-                            Errors.Add(errorBubble);
-                            Previews.Add(previewBubble);
+                            Errors.Add(nodeViewModel.ErrorBubble);
+                            Previews.Add(nodeViewModel.PreviewBubble);
                             //submit the node for rendering
                             if (node is IDrawable)
                                 dynSettings.Controller.OnNodeSubmittedForRendering(node, EventArgs.Empty);

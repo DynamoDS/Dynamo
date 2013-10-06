@@ -328,10 +328,5 @@ namespace Dynamo.Controls
             if (uiElement.Visibility == System.Windows.Visibility.Visible)
                 ViewModel.ShowPreviewCommand.Execute(null);
         }
-
-        private void PreviewArrow_MouseLeave(object sender, MouseEventArgs e)
-        {
-            //ViewModel.HidePreviewCommand.Execute(null);
-        }
     }
 }
