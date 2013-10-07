@@ -222,7 +222,8 @@ namespace Dynamo.ViewModels
                 //    return f.Definition.Workspace.Nodes.Any(x => x is DrawableNode);
                 //}
 
-                return nodeLogic.OldValue!=null;
+                //return nodeLogic.OldValue!=null;
+                return true;
             }
         }
 
