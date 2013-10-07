@@ -10,6 +10,16 @@ using ProtoCore.DSASM;
 
 namespace Dynamo.Nodes
 {
+    public enum DSFunctionType
+    {
+        GeneralFunction,
+        Constructor,
+        StaticMethod,
+        InstanceMethod,
+        StaticProperty,
+        InstanceProperty
+    }
+
     /// <summary>
     /// Description about a DesignScript function. 
     /// 
@@ -21,6 +31,7 @@ namespace Dynamo.Nodes
         public string DisplayName { get; private set;}
         public List<string> ArgumentNames { get; private set;}
         public List<string> ReturnKeys { get; private set;}
+        public DSFunctionType Type { get; private set; }
 
         public DSFunctionDescritpion(string name, 
                                     string displayName, 
