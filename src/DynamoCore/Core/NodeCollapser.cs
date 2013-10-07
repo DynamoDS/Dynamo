@@ -8,7 +8,7 @@ using Microsoft.Practices.Prism;
 
 namespace Dynamo.Utilities
 {
-    static class NodeCollapser
+    public static class NodeCollapser
     {
         /// <summary>
         ///     Collapse a set of nodes in a given workspace.  Has the side effects of prompting the user
@@ -18,19 +18,20 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="selectedNodes"> The function definition for the user-defined node </param>
         /// <param name="currentWorkspace"> The workspace where</param>
-        internal static void Collapse(IEnumerable<NodeModel> selectedNodes, WorkspaceModel currentWorkspace)
+        public static void Collapse(IEnumerable<NodeModel> selectedNodes, WorkspaceModel currentWorkspace, FunctionNamePromptEventArgs args=null)
         {
             var selectedNodeSet = new HashSet<NodeModel>(selectedNodes);
 
-            //First, prompt the user to enter a name
-            //string newNodeName ="", newNodeCategory ="";
-            var args = new FunctionNamePromptEventArgs();
-            dynSettings.Controller.DynamoModel.OnRequestsFunctionNamePrompt(null, args);
-
-            //if (!dynSettings.Controller.DynamoViewModel.ShowNewFunctionDialog(ref newNodeName, ref newNodeCategory))
-            if(!args.Success)
+            if (args == null || !args.Success)
             {
-                return;
+                args = new FunctionNamePromptEventArgs();
+                dynSettings.Controller.DynamoModel.OnRequestsFunctionNamePrompt(null, args);
+
+                //if (!dynSettings.Controller.DynamoViewModel.ShowNewFunctionDialog(ref newNodeName, ref newNodeCategory))
+                if (!args.Success)
+                {
+                    return;
+                }
             }
 
             var newNodeWorkspace = new FuncWorkspace(args.Name, args.Category, args.Description, 0, 0)
