@@ -13,7 +13,7 @@ using Polygon = Autodesk.LibG.Polygon;
 
 namespace Dynamo.Nodes
 {
-    public abstract class LibGNode : NodeWithOneOutput
+    public abstract class LibGNode : DrawableNodeWithOneOutput
     {
         public LibGNode()
         {
@@ -68,22 +68,12 @@ namespace Dynamo.Nodes
         }
     }
 
-    public abstract class GraphicItemNode : LibGNode, IDrawable
-    {
-        //protected List<GraphicItem> _graphicItems = new List<GraphicItem>();
-
-        public List<object> VisualizationGeometry
-        {
-            get { return dynSettings.Controller.VisualizationManager.Visualizations[this.GUID.ToString()].Geometry; }
-        }
-    }
-
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     [NodeName("Point 2D")]
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Create a point in the XY plane.")]
     [NodeSearchable(false)]
-    public class Point2DNode : GraphicItemNode
+    public class Point2DNode : LibGNode
     {
         private Point _point = null;
 
@@ -121,7 +111,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Create a point in 3D space.")]
     [NodeSearchable(false)]
-    public class Point3DNode : GraphicItemNode
+    public class Point3DNode : LibGNode
     {
         private Point _point = null;
 
@@ -155,7 +145,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Extract the X value of a Point.")]
     [NodeSearchable(false)]
-    public class PointXNode : GraphicItemNode
+    public class PointXNode : LibGNode
     {
         public PointXNode()
         {
@@ -180,7 +170,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Extract the Y value of a Point.")]
     [NodeSearchable(false)]
-    public class PointYNode : GraphicItemNode
+    public class PointYNode : LibGNode
     {
         public PointYNode()
         {
@@ -205,7 +195,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Extract the Z value of a Point.")]
     [NodeSearchable(false)]
-    public class PointZNode : GraphicItemNode
+    public class PointZNode : LibGNode
     {
         public PointZNode()
         {
@@ -230,7 +220,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Extract the X value of a Vector.")]
     [NodeSearchable(false)]
-    public class VectorXNode : GraphicItemNode
+    public class VectorXNode : LibGNode
     {
         public VectorXNode()
         {
@@ -255,7 +245,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Extract the Y value of a Vector.")]
     [NodeSearchable(false)]
-    public class VectorYNode : GraphicItemNode
+    public class VectorYNode : LibGNode
     {
         public VectorYNode()
         {
@@ -280,7 +270,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Extract the Z value of a Vector.")]
     [NodeSearchable(false)]
-    public class VectorZNode : GraphicItemNode
+    public class VectorZNode : LibGNode
     {
         public VectorZNode()
         {
@@ -346,7 +336,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Create a CoordinateSystem.")]
     [NodeSearchable(false)]
-    public class CoordinateSystemNode : GraphicItemNode
+    public class CoordinateSystemNode : LibGNode
     {
         private CoordinateSystem _cs = null;
 
@@ -379,7 +369,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Create a Line between two Points.")]
     [NodeSearchable(false)]
-    public class LineNode : GraphicItemNode
+    public class LineNode : LibGNode
     {
         public LineNode()
         {
@@ -415,7 +405,7 @@ namespace Dynamo.Nodes
     [NodeDescription("Create a Circle at a Point with radius")]
     [NodeSearchTags("circle")]
     [NodeSearchable(false)]
-    public class CircleNode : GraphicItemNode
+    public class CircleNode : LibGNode
     {
         private Circle _circle = null;
 
@@ -448,7 +438,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Sweep a Crve along a path producing a Surface")]
     [NodeSearchable(false)]
-    public class SweepAsSurfaceNode : GraphicItemNode
+    public class SweepAsSurfaceNode : LibGNode
     {
         private Surface _surface = null;
 
@@ -480,7 +470,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Sweep a Crve along a path producing a Solid")]
     [NodeSearchable(false)]
-    public class SweepAsSolidNode : GraphicItemNode
+    public class SweepAsSolidNode : LibGNode
     {
         private Solid _solid = null;
 
@@ -512,7 +502,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Get the length of a Curve.")]
     [NodeSearchable(false)]
-    public class LengthNode : GraphicItemNode
+    public class LengthNode : LibGNode
     {
         public LengthNode()
         {
@@ -537,7 +527,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Get the area of a Surface.")]
     [NodeSearchable(false)]
-    public class AreaNode : GraphicItemNode
+    public class AreaNode : LibGNode
     {
         public AreaNode()
         {
@@ -562,7 +552,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Translate Object.")]
     [NodeSearchable(false)]
-    public class TranslateNode : GraphicItemNode
+    public class TranslateNode : LibGNode
     {
         TransformableItem _transformableItem;
         public TranslateNode()
@@ -604,7 +594,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Create a B-Spline Curve through input points.")]
     [NodeSearchable(false)]
-    public class BSplineCurveNode : GraphicItemNode
+    public class BSplineCurveNode : LibGNode
     {
         private BSplineCurve _bsplinecurve = null;
 
@@ -640,7 +630,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Create a B-Spline Curve through input points.")]
     [NodeSearchable(false)]
-    public class ClosedBSplineCurveNode : GraphicItemNode
+    public class ClosedBSplineCurveNode : LibGNode
     {
         private BSplineCurve _bsplinecurve = null;
 
@@ -676,7 +666,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Create a Polygon from a set of points.")]
     [NodeSearchable(false)]
-    public class PolygonNode : GraphicItemNode
+    public class PolygonNode : LibGNode
     {
         private Polygon _polygon = null;
 
@@ -712,7 +702,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Loft Curves to create a surface")]
     [NodeSearchable(false)]
-    public class LoftNode : GraphicItemNode
+    public class LoftNode : LibGNode
     {
         private Surface _surface = null;
 
@@ -748,7 +738,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Draws Geometry created in a Python or external script")]
     [NodeSearchable(false)]
-    public class ForceDrawNode : GraphicItemNode
+    public class ForceDrawNode : LibGNode
     {
         public ForceDrawNode()
         {
@@ -777,7 +767,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Patch Curves to create a Surface")]
     [NodeSearchable(false)]
-    public class PatchNode : GraphicItemNode
+    public class PatchNode : LibGNode
     {
         private Surface _surface = null;
 
@@ -813,7 +803,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Extrude a curve in a direction.")]
     [NodeSearchable(false)]
-    public class ExtrudeNode : GraphicItemNode
+    public class ExtrudeNode : LibGNode
     {
         Surface _surface = null;
 
@@ -847,7 +837,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Cuboid is like a cube, or a shoebox.")]
     [NodeSearchable(false)]
-    public class CuboidNode : GraphicItemNode
+    public class CuboidNode : LibGNode
     {
         Solid _solid = null;
 
@@ -882,7 +872,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Plane, an infinite 2D expanse in 3D space.")]
     [NodeSearchable(false)]
-    public class PlaneNode : GraphicItemNode
+    public class PlaneNode : LibGNode
     {
         Plane _plane = null;
 
@@ -913,7 +903,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Point at parameter along Curve.")]
     [NodeSearchable(false)]
-    public class PointAtParameterNode : GraphicItemNode
+    public class PointAtParameterNode : LibGNode
     {
         Point _point = null;
 
@@ -945,7 +935,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Point at distance along Curve.")]
     [NodeSearchable(false)]
-    public class PointAtDistanceNode : GraphicItemNode
+    public class PointAtDistanceNode : LibGNode
     {
         Point _point = null;
 
@@ -1006,7 +996,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Point at Parameter on Surface.")]
     [NodeSearchable(false)]
-    public class PointAtUvParameterNode : GraphicItemNode
+    public class PointAtUvParameterNode : LibGNode
     {
         Point _point = null;
 
@@ -1071,7 +1061,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Thicken / Extrude a Surface by an amount.")]
     [NodeSearchable(false)]
-    public class ThickenSurfaceNode : GraphicItemNode
+    public class ThickenSurfaceNode : LibGNode
     {
         Solid _solid = null;
 
@@ -1105,7 +1095,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Intersect two pieces of Geometry.")]
     [NodeSearchable(false)]
-    public class IntersectNode : GraphicItemNode
+    public class IntersectNode : LibGNode
     {
         List<Geometry> _result = new List<Geometry>();
 
@@ -1164,7 +1154,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Trim Geometry with a tool Geometry.")]
     [NodeSearchable(false)]
-    public class TrimNode : GraphicItemNode
+    public class TrimNode : LibGNode
     {
         Geometry _result = null;
 
@@ -1212,7 +1202,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_EXPERIMENTAL_GEOMETRY)]
     [NodeDescription("Import SAT Geometry from file.")]
     [NodeSearchable(false)]
-    public class ImportSATNode : GraphicItemNode
+    public class ImportSATNode : LibGNode
     {
         List<DSObject> _result = new List<DSObject>();
 
