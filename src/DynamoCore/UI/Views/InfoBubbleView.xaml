@@ -14,13 +14,32 @@
 
     <Grid x:Name="mainGrid" Background="Transparent" Opacity="{Binding Path=Opacity}" HorizontalAlignment="Left" VerticalAlignment="Top"
           Margin="{Binding Path=Margin}" Visibility="{Binding Path=Opacity, Converter={StaticResource OpacityToVisibilityConverter}}"
-          MouseEnter="InfoBubble_MouseEnter" MouseLeave="InfoBubble_MouseLeave">
+           MouseLeave="InfoBubble_MouseLeave">
         <Polygon Name="backgroundPolygon" Fill="{Binding Path=FrameFill}" Stroke="{Binding Path=FrameStrokeColor}" 
                  StrokeThickness="{Binding Path=FrameStrokeThickness}" Points="{Binding Path=FramePoints}"
                  MouseDown="InfoBubble_PreviewMouseDown">
         </Polygon>
 
-        <StackPanel Name="ContentContainer">
+        <StackPanel Name="ContentContainer" MouseEnter="InfoBubble_MouseEnter">
+            <StackPanel.Resources>
+                <Style TargetType="{x:Type ScrollBar}">
+                    <Setter Property="Background" Value="White"/>
+                    <Setter Property="Foreground" Value="WhiteSmoke"/>
+                </Style>
+                <Style TargetType="{x:Type TextBox}">
+                    <Setter Property="IsReadOnly" Value="True"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="Foreground" Value="{Binding Path=TextForeground}"/>
+                    <Setter Property="FontWeight" Value="{Binding Path=TextFontWeight}"/>
+                    <Setter Property="FontSize" Value="{Binding Path=TextFontSize}"/>
+                    <Setter Property="Margin" Value="{Binding Path=ContentMargin}"/>
+                    <Setter Property="MaxWidth" Value="{Binding Path=MaxWidth}"/>
+                    <Setter Property="MaxHeight" Value="{Binding Path=MaxHeight}"/>
+                    <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+                    <Setter Property="TextWrapping" Value="Wrap"/>
+                </Style>
+            </StackPanel.Resources>
         </StackPanel>
     </Grid>
 </UserControl>

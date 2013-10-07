@@ -221,9 +221,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (this.PreviewBubble != null && this.PreviewBubble.InfoBubbleStyle == InfoBubbleViewModel.Style.Preview)
-                    return false;
-                return !dynSettings.Controller.IsShowPreviewByDefault;
+                return !this.PreviewBubble.IsShowPreviewByDefault;
             }
         }
 
@@ -399,7 +397,7 @@ namespace Dynamo.ViewModels
         {
             switch (e.PropertyName)
             {
-                case "InfoBubbleStyle":
+                case "IsShowPreviewByDefault":
                     RaisePropertyChanged("IsPreviewInsetVisible");
                     break;
             }
@@ -408,18 +406,17 @@ namespace Dynamo.ViewModels
         private void HandleDefaultShowPreviewChanged()
         {
             RaisePropertyChanged("IsPreviewInsetVisible");
+            this.PreviewBubble.IsShowPreviewByDefault = dynSettings.Controller.IsShowPreviewByDefault;
             UpdatePreviewBubbleContent();
             if (dynSettings.Controller.IsShowPreviewByDefault)
             {
                 this.PreviewBubble.SetAlwaysVisibleCommand.Execute(true);
                 this.PreviewBubble.FadeInCommand.Execute(null);
-                this.PreviewBubble.ZIndex = 3;
             }
             else
             {
                 this.PreviewBubble.SetAlwaysVisibleCommand.Execute(false);
                 this.PreviewBubble.FadeOutCommand.Execute(null);
-                this.PreviewBubble.ZIndex = 5;
             }
         }
 
@@ -428,14 +425,12 @@ namespace Dynamo.ViewModels
             if (this.IsSelected == true)
             {
                 this.ZIndex = 4;
-                if (dynSettings.Controller != null && dynSettings.Controller.IsShowPreviewByDefault)
-                    this.PreviewBubble.ZIndex = 4;
+                this.PreviewBubble.ZIndex = 4;
             }
             else
             {
                 this.ZIndex = 3;
-                if (dynSettings.Controller != null && dynSettings.Controller.IsShowPreviewByDefault)
-                    this.PreviewBubble.ZIndex = 3;
+                this.PreviewBubble.ZIndex = 3;
             }
         }
 

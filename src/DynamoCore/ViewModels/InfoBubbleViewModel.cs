@@ -53,7 +53,14 @@ namespace Dynamo.ViewModels
             set { infoBubbleStyle = value; RaisePropertyChanged("InfoBubbleStyle"); }
         }
         public string FullContent;
+        public Direction ConnectingDirection = Direction.None;
 
+        private bool isShowPreviewByDefault;
+        public bool IsShowPreviewByDefault
+        {
+            get { return isShowPreviewByDefault; }
+            set { isShowPreviewByDefault = value; RaisePropertyChanged("IsShowPreviewByDefault"); }
+        }
         public double EstimatedWidth;
         public double EstimatedHeight;
         private PointCollection framePoints;
@@ -104,6 +111,12 @@ namespace Dynamo.ViewModels
         {
             get { return maxWidth; }
             set { maxWidth = value; RaisePropertyChanged("MaxWidth"); }
+        }
+        private double maxHeight;
+        public double MaxHeight
+        {
+            get { return maxHeight; }
+            set { maxHeight = value; RaisePropertyChanged("MaxHeight"); }
         }
 
         private double opacity = 0;
@@ -161,7 +174,6 @@ namespace Dynamo.ViewModels
 
         private Timer fadeInTimer;
         private Timer fadeOutTimer;
-        public Direction ConnectingDirection = Direction.None;
         private Direction limitedDirection = Direction.None;
         private bool alwaysVisible = false;
 
@@ -227,6 +239,7 @@ namespace Dynamo.ViewModels
         {
             if (alwaysVisible)
                 return;
+            this.InfoBubbleStyle = Style.None;
             fadeInTimer.Stop();
             fadeOutTimer.Start();
         }
@@ -407,7 +420,7 @@ namespace Dynamo.ViewModels
             margin.Top = botRight.Y;
             margin.Left = -((EstimatedWidth - nodeWidth) / 2) + topLeft.X;
 
-            if (!dynSettings.Controller.IsShowPreviewByDefault && this.infoBubbleStyle == Style.PreviewCondensed)
+            if (!this.IsShowPreviewByDefault)
                 margin.Top -= 7;
             return margin;
         }
@@ -419,6 +432,7 @@ namespace Dynamo.ViewModels
             FrameStrokeColor = new SolidColorBrush(Color.FromRgb(10, 93, 30));
 
             MaxWidth = 400;
+            MaxHeight = 400;
 
             TextFontSize = 13;
             TextForeground = new SolidColorBrush(Color.FromRgb(51, 51, 51));
@@ -434,6 +448,7 @@ namespace Dynamo.ViewModels
             FrameStrokeColor = new SolidColorBrush(Color.FromRgb(165, 209, 226));
 
             MaxWidth = 200;
+            MaxHeight = 400;
 
             TextFontSize = 12;
             TextFontWeight = FontWeights.Light;
@@ -461,6 +476,7 @@ namespace Dynamo.ViewModels
             FrameStrokeColor = new SolidColorBrush(Color.FromRgb(190, 70, 70));
 
             MaxWidth = 300;
+            MaxHeight = 400;
 
             TextFontSize = 13;
             TextFontWeight = FontWeights.Light;
@@ -476,6 +492,7 @@ namespace Dynamo.ViewModels
             FrameStrokeColor = new SolidColorBrush(Color.FromRgb(153, 153, 153));
 
             MaxWidth = 300;
+            MaxHeight = 400;
 
             TextFontSize = 13;
             TextFontWeight = FontWeights.Light;
