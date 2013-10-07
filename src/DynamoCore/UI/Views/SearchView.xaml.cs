@@ -14,6 +14,7 @@ using DynamoCommands = Dynamo.UI.Commands.DynamoCommands;
 using Dynamo.Search.SearchElements;
 using System.Collections.Generic;
 using System.Windows.Media.Imaging;
+using Dynamo.Selection;
 
 //Copyright © Autodesk, Inc. 2012. All rights reserved.
 //
@@ -60,6 +61,8 @@ namespace Dynamo.Search
             DataContext = _viewModel = dynSettings.Controller.SearchViewModel;
 
             PreviewKeyDown += KeyHandler;
+            this.SearchTextBox.PreviewKeyDown += new KeyEventHandler(OnSearchBoxPreviewKeyDown);
+            this.SearchTextBox.KeyDown += new KeyEventHandler(OnSearchBoxKeyDown);
 
             dynSettings.Controller.SearchViewModel.RequestFocusSearch += new EventHandler(SearchViewModel_RequestFocusSearch);
             dynSettings.Controller.SearchViewModel.RequestReturnFocusToSearch += new EventHandler(SearchViewModel_RequestReturnFocusToSearch);
@@ -73,6 +76,29 @@ namespace Dynamo.Search
 
         }
 
+        void OnSearchBoxKeyDown(object sender, KeyEventArgs e)
+        {
+            bool handleIt = false;
+            e.Handled = handleIt;
+        }
+
+        void OnSearchBoxPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            bool handleIt = false;
+            e.Handled = handleIt;
+        }
+
+        protected override void OnPreviewKeyDown(KeyEventArgs e)
+        {
+            bool handleIt = false;
+
+            if (false != handleIt)
+            {
+                base.OnPreviewKeyDown(e);
+                e.Handled = true;
+            }
+        }
+
         /// <summary>
         ///     A KeyHandler method used by SearchView, increments decrements and executes based on input.
         /// </summary>
@@ -80,21 +106,31 @@ namespace Dynamo.Search
         /// <param name="e">Parameters describing the key push</param>
         public void KeyHandler(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Return)
+            switch (e.Key)
             {
-                _viewModel.ExecuteSelected();
-            }
-            else if (e.Key == Key.Tab)
-            {
-                _viewModel.PopulateSearchTextWithSelectedResult();
-            }
-            else if (e.Key == Key.Down)
-            {
-                _viewModel.SelectNext();
-            }
-            else if (e.Key == Key.Up)
-            {
-                _viewModel.SelectPrevious();
+                case Key.Return:
+                    _viewModel.ExecuteSelected();
+                    break;
+
+                case Key.Delete:
+                    if (DynamoSelection.Instance.Selection.Count > 0)
+                    {
+                        e.Handled = true;
+                        dynSettings.Controller.DynamoViewModel.DeleteCommand.Execute(null);
+                    }
+                    break;
+
+                case Key.Tab:
+                    _viewModel.PopulateSearchTextWithSelectedResult();
+                    break;
+
+                case Key.Down:
+                    _viewModel.SelectNext();
+                    break;
+
+                case Key.Up:
+                    _viewModel.SelectPrevious();
+                    break;
             }
         }
 
@@ -110,7 +146,6 @@ namespace Dynamo.Search
 
         public void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            ((TextBox) sender).Select(((TextBox) sender).Text.Length, 0);
             BindingExpression binding = ((TextBox) sender).GetBindingExpression(TextBox.TextProperty);
             if (binding != null)
                 binding.UpdateSource();
