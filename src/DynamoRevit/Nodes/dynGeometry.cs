@@ -481,6 +481,7 @@ namespace Dynamo.Nodes
     [NodeName("XYZ Start End Vector")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Calculate the normalized vector from one xyz to another.")]
+    [NodeSearchTags("unitized", "normalized", "vector")]
     public class XyzStartEndVector : GeometryBase
     {
         public XyzStartEndVector()
@@ -504,6 +505,7 @@ namespace Dynamo.Nodes
     [NodeName("UV Grid")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates a grid of UVs from a domain.")]
+    [NodeSearchTags("point", "array", "collection", "field", "uv")]
     public class UvGrid: NodeWithOneOutput
     {
         public UvGrid()
@@ -550,6 +552,7 @@ namespace Dynamo.Nodes
     [NodeName("UV Random")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates a grid of UVs froma domain.")]
+    [NodeSearchTags("point", "array", "collection", "field")]
     public class UvRandom: NodeWithOneOutput
     {
         public UvRandom()
@@ -602,6 +605,7 @@ namespace Dynamo.Nodes
     [NodeName("XYZ Grid")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates a grid of XYZs.")]
+    [NodeSearchTags("point", "array", "collection", "field")]
     public class ReferencePtGrid: GeometryBase
     {
         public ReferencePtGrid()
@@ -667,6 +671,7 @@ namespace Dynamo.Nodes
     [NodeName("XYZ Array On Curve")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a list of XYZs along a curve.")]
+    [NodeSearchTags("divide", "array", "curve", "repeat")]
     public class XyzArrayAlongCurve : GeometryBase
     {
         public XyzArrayAlongCurve()
@@ -912,6 +917,7 @@ namespace Dynamo.Nodes
     [NodeName("Line")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a geometric line.")]
+    [NodeSearchTags("curve", "two point", "line")]
     public class LineBound: GeometryBase
     {
         public LineBound()
@@ -956,6 +962,7 @@ namespace Dynamo.Nodes
     [NodeName("Arc By Start Mid End")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a geometric arc given start, middle and end points in XYZ.")]
+    [NodeSearchTags("arc", "circle", "start", "middle", "end", "3 point", "three")]
     public class ArcStartMiddleEnd : GeometryBase
     {
         public ArcStartMiddleEnd()
@@ -1000,6 +1007,7 @@ namespace Dynamo.Nodes
     [NodeName("Arc by Ctr Pt")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a geometric arc given a center point and two end parameters. Start and End Values may be between 0 and 2*PI in Radians")]
+    [NodeSearchTags("arc", "circle", "center", "radius")]
     public class ArcCenter : GeometryBase
     {
         public ArcCenter()
@@ -1047,9 +1055,10 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Transform Crv")]
+    [NodeName("Transform Curve")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Returns the curve (c) transformed by the transform (t).")]
+    [NodeSearchTags("move", "transform", "curve", "line")]
     public class CurveTransformed: GeometryBase
     {
         public CurveTransformed()

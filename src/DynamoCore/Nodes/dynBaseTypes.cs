@@ -615,8 +615,8 @@ namespace Dynamo.Nodes
         public Fold()
             : base(FScheme.FoldL)
         {
-            InPortData.Add(new PortData("f(x, a)", "Reductor Function: first argument is an item in the list, second is the current accumulated value, result is the new accumulated value.", typeof(object)));
-            InPortData.Add(new PortData("a", "Starting result (accumulator).", typeof(object)));
+            InPortData.Add(new PortData("f(x, a)", "Reductor Function: first argument is an arbitrary item in the list being reduced, second is the current accumulated value, result is the new accumulated value.", typeof(object)));
+            InPortData.Add(new PortData("a", "Starting accumulated value, to be passed into the first call to the Reductor function.", typeof(object)));
             InPortData.Add(new PortData("list", "List to reduce.", typeof(Value.List)));
             OutPortData.Add(new PortData("", "Result", typeof(object)));
 
@@ -1034,6 +1034,7 @@ namespace Dynamo.Nodes
     [NodeName("Add to List")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
     [NodeDescription("Adds an element to the beginning of a list.")]
+    [NodeSearchTags("cons", "pair")]
     public class List : BuiltinFunction
     {
         public List()
@@ -1411,6 +1412,7 @@ namespace Dynamo.Nodes
     [NodeName("Concatenate Lists")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
     [NodeDescription("Concatenates two lists.")]
+    [NodeSearchTags("append", "extend")]
     public class Append : BuiltinFunction
     {
         public Append()
@@ -1432,6 +1434,7 @@ namespace Dynamo.Nodes
     [NodeName("First of List")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
     [NodeDescription("Gets the Head of a list")]
+    [NodeSearchTags("car")]
     public class First : BuiltinFunction
     {
         public First()
@@ -1452,6 +1455,7 @@ namespace Dynamo.Nodes
     [NodeName("Rest of List")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
     [NodeDescription("Gets the Tail of a list (list with the first element removed).")]
+    [NodeSearchTags("cdr")]
     public class Rest : BuiltinFunction
     {
         public Rest()
@@ -2150,6 +2154,7 @@ namespace Dynamo.Nodes
     [NodeName("Equal")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_COMPARISON)]
     [NodeDescription("Compares two numbers.")]
+    [NodeSearchTags("=")]
     public class Equal : Comparison
     {
         public Equal() : base(FScheme.EQ, "=") { }
@@ -2593,7 +2598,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Random With Seed")]
+    [NodeName("Random Number By Seed")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
     [NodeDescription("Generates a uniform random number in the range [0.0, 1.0).")]
     public class RandomSeed : NodeWithOneOutput
@@ -2620,7 +2625,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Random")]
+    [NodeName("Random Number")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
     [NodeDescription("Generates a uniform random number in the range [0.0, 1.0).")]
     public class Random : NodeWithOneOutput
@@ -2631,7 +2636,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        private static System.Random random = new System.Random();
+        private readonly System.Random _random = new System.Random();
 
         public override bool RequiresRecalc
         {
@@ -2644,7 +2649,48 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return Value.NewNumber(random.NextDouble());
+            return Value.NewNumber(_random.NextDouble());
+        }
+
+        protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
+        {
+            return builder.Build(this, inputs);
+        }
+    }
+
+    [NodeName("Random Number List")]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeDescription("Generates a list of uniform random numbers in the range [0.0, 1.0).")]
+    public class RandomList : NodeWithOneOutput
+    {
+        public RandomList()
+        {
+            InPortData.Add(new PortData("amt", "Number of random numbers to be generated.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("rand", "Random number between 0.0 and 1.0.", typeof(Value.List)));
+            RegisterAllPorts();
+        }
+
+        private readonly System.Random _random = new System.Random();
+
+        public override bool RequiresRecalc
+        {
+            get
+            {
+                return true;
+            }
+            set { }
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var n = (int)((Value.Number)args[0]).Item;
+
+            var result = FSharpList<Value>.Empty;
+
+            while (n-- > 0)
+                result = FSharpList<Value>.Cons(Value.NewNumber(_random.NextDouble()), result);
+
+            return Value.NewList(result);
         }
 
         protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
@@ -4176,7 +4222,7 @@ namespace Dynamo.Nodes
         {
             get
             {
-                return HttpUtility.UrlDecode(base.Value);
+                return HttpUtility.HtmlDecode(base.Value);
             }
             set
             {
@@ -4217,6 +4263,19 @@ namespace Dynamo.Nodes
                     }
                 }
             }
+        }
+
+        [NodeMigration(from:"0.5.3.0")]
+        public static void Migrate_0530_to_0600(XmlNode nodeElement)
+        {
+            var query = from XmlNode subNode in nodeElement.ChildNodes
+                        where subNode.Name.Equals(typeof(string).FullName)
+                        from XmlAttribute attr in subNode.Attributes
+                        where attr.Name.Equals("value")
+                        select attr;
+
+            foreach (XmlAttribute attr in query)
+                attr.Value = HttpUtility.HtmlEncode(HttpUtility.UrlDecode(attr.Value));
         }
     }
 
