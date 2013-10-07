@@ -57,7 +57,7 @@ namespace Dynamo.ViewModels
             {
                 IncludeRevitApiElements = value;
                 RaisePropertyChanged("IncludeRevitAPIElements");
-                ToggleIncludingRevitAPIElements();
+                //ToggleIncludingRevitAPIElements();
             }
         }
 
@@ -247,72 +247,6 @@ namespace Dynamo.ViewModels
             this.AddRootCategory(BuiltinNodeCategories.IO);
             this.AddRootCategory(BuiltinNodeCategories.SCRIPTING);
             this.AddRootCategory(BuiltinNodeCategories.ANALYZE);
-        }
-
-        public static void RevitAPIRegionExecute(object parameter)
-        {
-            dynSettings.Controller.SearchViewModel.IncludeRevitAPIElements = !dynSettings.Controller.SearchViewModel.IncludeRevitAPIElements;
-            dynSettings.ReturnFocusToSearch();
-        }
-
-        internal static bool RevitAPIRegionCanExecute(object parameter)
-        {
-            return true;
-        }
-
-        public static void PackageManagerRegionExecute(object parameters)
-        {
-            //if (Loaded)
-            //{
-            //    //DynamoCommands.RefreshRemotePackagesCmd.Execute(null);
-            //}
-            //else
-            //{
-                dynSettings.Controller.SearchViewModel.SearchDictionary.Remove((value) => value is PackageManagerSearchElement);
-                dynSettings.Controller.SearchViewModel.SearchAndUpdateResultsSync(dynSettings.Controller.SearchViewModel.SearchText);
-            //}
-
-            dynSettings.ReturnFocusToSearch();
-        }
-
-        internal static bool PackageManagerRegionCanExecute(object parameters)
-        {
-            return true;
-        }
-
-        /// <summary>
-        ///     If Revit API elements are shown, hides them.  Otherwise,
-        ///     shows them.  Update search when done with either.
-        /// </summary>
-        public void ToggleIncludingRevitAPIElements()
-        {
-            if (!IncludeRevitAPIElements)
-            {
-                this.RemoveCategory(BuiltinNodeCategories.REVIT_API);
-
-                foreach (var ele in RevitApiSearchElements)
-                {
-                    SearchDictionary.Remove(ele, ele.Name);
-                    if (!(ele is CategorySearchElement))
-                        SearchDictionary.Remove(ele, BuiltinNodeCategories.REVIT_API + "." + ele.Name);
-                }
-            }
-            else
-            {
-                var revitCat = this.AddCategory(BuiltinNodeCategories.REVIT_API);
-                bool addToCat = !revitCat.Items.Any();
-
-                // add elements to search
-                foreach (var ele in RevitApiSearchElements)
-                {
-                    if (addToCat)
-                        revitCat.Items.Add(ele);
-                    SearchDictionary.Add(ele, ele.Name);
-                    if (!(ele is CategorySearchElement))
-                        SearchDictionary.Add(ele, BuiltinNodeCategories.REVIT_API + "." + ele.Name);
-                }
-            }
-
         }
 
         private const char CATEGORY_DELIMITER = '.';
@@ -589,7 +523,7 @@ namespace Dynamo.ViewModels
                             _visibleSearchResults.Clear();
 
                             // if the search query is empty, go back to the default treeview
-                            if (string.IsNullOrEmpty(query) || query == "Search...")
+                            if (string.IsNullOrEmpty(query))
                             {
 
                                 foreach (var ele in BrowserRootCategories)
@@ -814,7 +748,7 @@ namespace Dynamo.ViewModels
             if (packageHeader.keywords != null && packageHeader.keywords.Count > 0)
                 SearchDictionary.Add(searchEle, packageHeader.keywords);
             SearchDictionary.Add(searchEle, searchEle.Description);
-            SearchAndUpdateResultsSync(SearchText);
+            //SearchAndUpdateResultsSync(SearchText);
         }
 
         /// <summary>
