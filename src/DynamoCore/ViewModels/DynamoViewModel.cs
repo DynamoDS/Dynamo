@@ -329,6 +329,9 @@ namespace Dynamo.ViewModels
 
                 if (!fullscreenWatchShowing && canNavigateBackground)
                     CanNavigateBackground = false;
+
+                if(value)
+                    dynSettings.Controller.OnRequestsRedraw(this, EventArgs.Empty);
             }
         }
 
@@ -384,7 +387,27 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("ConnectorType");
             }
         }
-        
+
+        public bool AlternateDrawingContextAvailable
+        {
+            get { return dynSettings.Controller.VisualizationManager.AlternateDrawingContextAvailable; }
+        }
+
+        public bool ShowGeometryInAlternateContext
+        {
+            get { return dynSettings.Controller.VisualizationManager.DrawToAlternateContext; }
+            set { dynSettings.Controller.VisualizationManager.DrawToAlternateContext = value; }
+        }
+
+        public string AlternateContextGeometryDisplayText
+        {
+            get
+            {
+                return string.Format("Show Geometry in {0}",
+                                     dynSettings.Controller.VisualizationManager.AlternateContextName);
+            }
+        }
+
         #endregion
 
         public DynamoViewModel(DynamoController controller)
@@ -459,6 +482,20 @@ namespace Dynamo.ViewModels
             DynamoLogger.Instance.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Instance_PropertyChanged);
 
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
+            dynSettings.Controller.VisualizationManager.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(VisualizationManager_PropertyChanged);
+        }
+
+        void VisualizationManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "AlternateDrawingContextAvailable":
+                    RaisePropertyChanged("AlternateDrawingContextAvailable");
+                    break;
+                case "ShowGeometryInAlternateContext":
+                    RaisePropertyChanged("ShowGeometryInAlternateContext");
+                    break;
+            }
         }
 
         private void SelectionOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
@@ -675,7 +712,7 @@ namespace Dynamo.ViewModels
             if ( !this._model.Workspaces.Contains(newWs) )
                 this._model.Workspaces.Add(newWs);
 
-            CurrentSpaceViewModel.OnStopDragging(this, EventArgs.Empty);
+            CurrentSpaceViewModel.CancelActiveState();
 
             _model.CurrentWorkspace = newWs;
             _model.CurrentWorkspace.OnDisplayed();
@@ -1245,6 +1282,59 @@ namespace Dynamo.ViewModels
         {
             View = v;
         }
+    }
+
+    public class SelectionBoxUpdateArgs : EventArgs
+    {
+        public enum UpdateFlags
+        {
+            Position = 0x00000001,
+            Dimension = 0x00000002,
+            Visibility = 0x00000004,
+            Mode = 0x00000008
+        }
+
+        public SelectionBoxUpdateArgs(Visibility visibility)
+        {
+            this.Visibility = visibility;
+            this.UpdatedProps = UpdateFlags.Visibility;
+        }
+
+        public SelectionBoxUpdateArgs(double x, double y)
+        {
+            this.X = x;
+            this.Y = y;
+            this.UpdatedProps = UpdateFlags.Position;
+        }
+
+        public SelectionBoxUpdateArgs(double x, double y, double width, double height)
+        {
+            this.X = x;
+            this.Y = y;
+            this.Width = width;
+            this.Height = height;
+            this.UpdatedProps = UpdateFlags.Position | UpdateFlags.Dimension;
+        }
+
+        public void SetSelectionMode(bool isCrossSelection)
+        {
+            this.IsCrossSelection = isCrossSelection;
+            this.UpdatedProps |= UpdateFlags.Mode;
+        }
+
+        public void SetVisibility(Visibility visibility)
+        {
+            this.Visibility = visibility;
+            this.UpdatedProps |= UpdateFlags.Visibility;
+        }
+
+        public double X { get; private set; }
+        public double Y { get; private set; }
+        public double Width { get; private set; }
+        public double Height { get; private set; }
+        public bool IsCrossSelection { get; private set; }
+        public Visibility Visibility { get; private set; }
+        public UpdateFlags UpdatedProps { get; private set; }
     }
 
     public class WorkspaceSaveEventArgs : EventArgs

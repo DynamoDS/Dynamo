@@ -216,13 +216,9 @@ namespace Dynamo.ViewModels
             {
                 //if the node is a Function, show the visibility toggles
                 //if any of it's internal nodes is drawable.
-                if (nodeLogic is Function)
-                {
-                    var f = nodeLogic as Function;
-                    return f.Definition.WorkspaceModel.Nodes.Any(x => x is DrawableNode);
-                }
 
-                return nodeLogic is DrawableNode;
+                //return nodeLogic.OldValue!=null;
+                return true;
             }
         }
 

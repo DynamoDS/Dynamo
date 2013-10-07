@@ -644,9 +644,7 @@ namespace Dynamo.Models
             CleanWorkbench();
 
             //clear the renderables
-            //dynSettings.Controller.RenderDescriptions.Clear();
-            //dynSettings.Controller.OnRequestsRedraw(dynSettings.Controller, EventArgs.Empty);
-            dynSettings.Controller.VisualizationManager.ClearVisualizations();
+            dynSettings.Controller.VisualizationManager.ClearRenderables();
 
             var sw = new Stopwatch();
 
@@ -771,7 +769,12 @@ namespace Dynamo.Models
 
                     NodeModel el = CreateNodeInstance(type, nickname, guid);
                     el.WorkSpace = CurrentWorkspace;
-                    el.Load(elNode);
+
+                    el.Load(
+                        elNode, 
+                        string.IsNullOrEmpty(version)
+                            ? new Version(0, 0, 0, 0) 
+                            : new Version(version));
 
                     CurrentWorkspace.Nodes.Add(el);
 
@@ -780,8 +783,8 @@ namespace Dynamo.Models
                     el.X = x;
                     el.Y = y;
 
-                    el.IsVisible = isVisible;
-                    el.IsUpstreamVisible = isUpstreamVisible;
+                    el.isVisible = isVisible;
+                    el.isUpstreamVisible = isUpstreamVisible;
 
                     if (lacingAttrib != null)
                     {
@@ -1282,7 +1285,7 @@ namespace Dynamo.Models
 
             if ((node is Symbol || node is Output) && CurrentWorkspace is HomeWorkspaceModel)
             {
-                dynSettings.Controller.DynamoModel.WriteToLog("Cannot place dynSymbol or dynOutput in HomeWorkspace");
+                dynSettings.Controller.DynamoModel.WriteToLog("Cannot place Symbol or Output in HomeWorkspace");
                 return null;
             }
 
@@ -1293,7 +1296,7 @@ namespace Dynamo.Models
             //try to set the value on the node
             if (data.ContainsKey("data"))
             {
-                node.Load(data["data"] as XmlNode);
+                node.Load(data["data"] as XmlNode, HomeSpace.WorkspaceVersion);
             }
 
             //override the guid so we can store
@@ -1307,15 +1310,13 @@ namespace Dynamo.Models
                 node.GUID = Guid.NewGuid();
             }
 
-            bool transCoords = false;
-            if (data.ContainsKey("transformFromOuterCanvasCoordinates"))
-                transCoords = true;
+            bool transCoords = data.ContainsKey("transformFromOuterCanvasCoordinates");
 
-            ModelEventArgs args = null;
+            ModelEventArgs args;
             if (data.ContainsKey("x") && data.ContainsKey("y"))
             {
-                double x = ((double)data["x"]);
-                double y = ((double)data["y"]);
+                var x = ((double)data["x"]);
+                var y = ((double)data["y"]);
                 args = new ModelEventArgs(node, x, y, transCoords);
             }
             else
@@ -1650,7 +1651,7 @@ namespace Dynamo.Models
 
             if (parameters == null)
             {
-                ModelEventArgs args = new ModelEventArgs(n, x, y, true);
+                ModelEventArgs args = new ModelEventArgs(n, true);
                 DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
                 vm.CurrentSpaceViewModel.OnRequestNodeCentered(this, args);
             }

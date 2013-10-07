@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Windows.Media.Media3D;
-using Autodesk.LibG;
 using Autodesk.Revit.DB;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Selection;
+using Dynamo.Utilities;
 using HelixToolkit.Wpf;
 using Curve = Autodesk.Revit.DB.Curve;
 using Solid = Autodesk.Revit.DB.Solid;
@@ -19,101 +16,123 @@ namespace Dynamo
 {
     class VisualizationManagerRevit : VisualizationManager
     {
-
-        public override void UpdateVisualizations()
+        public VisualizationManagerRevit()
         {
-            //only update those nodes which have been flagged for update
-            var toUpdate = Visualizations.Values.ToList().Where(x => x.RequiresUpdate == true);
-
-            var selIds =
-                DynamoSelection.Instance.Selection.Where(x => x is NodeModel)
-                               .Select(x => ((NodeModel)x).GUID.ToString());
-
-            var selected = Visualizations.Where(x => selIds.Contains(x.Key)).Select(x => x.Value);
-
-            var sw = new Stopwatch();
-            sw.Start();
-
-            foreach (var n in toUpdate)
+            if (dynSettings.Controller.Context == Context.VASARI_2014)
             {
-                var rd = n.Description;
+                AlternateDrawingContextAvailable = true;
+                DrawToAlternateContext = true;
 
-                //clear the render description
-                rd.Clear();
-
-                foreach (var obj in n.Geometry)
-                {
-                    if (obj is Element)
-                    {
-                        DrawElement(obj, rd);
-                    }
-                    if (obj is Transform)
-                    {
-                        DrawTransform(obj, rd);
-                    }
-                    else if (obj is XYZ)
-                    {
-                        DrawXyz(obj, rd);
-                    }
-                    else if (obj is ParticleSystem)
-                    {
-                        DrawParticleSystem(obj, rd);
-                    }
-                    else if (obj is TriangleFace)
-                    {
-                        DrawTriangleFace(obj, rd);
-                    }
-                    else if (obj is GeometryObject)
-                    {
-                        //Draw Revit geometry
-                        DrawGeometryObject(obj, rd);
-                    }
-                    else if (obj is GraphicItem)
-                    {
-                        //support drawing ASM visuals
-                        VisualizationManagerASM.DrawLibGGraphicItem((GraphicItem)obj, rd, selected, n);
-                    }
-                }
-
-                //set this flag to avoid processing again
-                //if not necessary
-                n.RequiresUpdate = false;
+                AlternateContextName = "Vasari";
+            }
+            else
+            {
+                AlternateDrawingContextAvailable = false;
             }
 
-            sw.Stop();
-
-            //generate an aggregated render description to send to the UI
-            var aggRd = AggregateRenderDescriptions();
-
-            LogVisualizationUpdateData(aggRd, sw.Elapsed.ToString());
-
-            OnVisualizationUpdateComplete(this, new VisualizationEventArgs(AggregateRenderDescriptions()));
+            Visualizers.Add(typeof(Element), DrawElement);
+            Visualizers.Add(typeof(Transform), DrawTransform);
+            Visualizers.Add(typeof(XYZ), DrawXyz);
+            Visualizers.Add(typeof(ParticleSystem), DrawParticleSystem);
+            Visualizers.Add(typeof(TriangleFace), DrawTriangleFace);
+            Visualizers.Add(typeof(GeometryObject), DrawGeometryObject);
+            Visualizers.Add(typeof(Autodesk.Revit.DB.CurveLoop), DrawCurveLoop);
         }
 
-        private void DrawElement(object obj, RenderDescription rd)
+        //public override void UpdateVisualizations()
+        //{
+        //    //only update those nodes which have been flagged for update
+        //    var toUpdate = Visualizations.Values.ToList().Where(x => x.RequiresUpdate == true);
+
+        //    var selIds =
+        //        DynamoSelection.Instance.Selection.Where(x => x is NodeModel)
+        //                       .Select(x => ((NodeModel)x).GUID.ToString());
+
+        //    var selected = Visualizations.Where(x => selIds.Contains(x.Key)).Select(x => x.Value);
+
+        //    var sw = new Stopwatch();
+        //    sw.Start();
+
+        //    foreach (var n in toUpdate)
+        //    {
+        //        var rd = n.Description;
+
+        //        //clear the render description
+        //        rd.Clear();
+
+        //        foreach (var obj in n.Geometry)
+        //        {
+        //            if (obj is Element)
+        //            {
+        //                DrawElement(obj, rd);
+        //            }
+        //            if (obj is Transform)
+        //            {
+        //                DrawTransform(obj, rd);
+        //            }
+        //            else if (obj is XYZ)
+        //            {
+        //                DrawXyz(obj, rd);
+        //            }
+        //            else if (obj is ParticleSystem)
+        //            {
+        //                DrawParticleSystem(obj, rd);
+        //            }
+        //            else if (obj is TriangleFace)
+        //            {
+        //                DrawTriangleFace(obj, rd);
+        //            }
+        //            else if (obj is GeometryObject)
+        //            {
+        //                //Draw Revit geometry
+        //                DrawGeometryObject(obj, rd);
+        //            }
+        //            else if (obj is GraphicItem)
+        //            {
+        //                //support drawing ASM visuals
+        //                //VisualizationManagerASM.DrawLibGGraphicItem((GraphicItem)obj, rd);
+        //            }
+        //        }
+
+        //        //set this flag to avoid processing again
+        //        //if not necessary
+        //        n.RequiresUpdate = false;
+        //    }
+
+        //    sw.Stop();
+
+        //    //generate an aggregated render description to send to the UI
+        //    var aggRd = AggregateRenderDescriptions();
+
+        //    LogVisualizationUpdateData(aggRd, sw.Elapsed.ToString());
+
+        //    OnVisualizationUpdateComplete(this, new VisualizationEventArgs(AggregateRenderDescriptions()));
+        //}
+
+        private void DrawElement(NodeModel node, object obj, RenderDescription rd)
         {
             if (obj == null)
                 return;
 
             if (obj is CurveElement)
             {
-                DrawCurveElement(obj, rd);
+                DrawCurveElement(node, obj, rd);
             }
             else if (obj is ReferencePoint)
             {
-                DrawReferencePoint(obj, rd);
+                DrawReferencePoint(node, obj, rd);
             }
             else if (obj is Form)
             {
-                DrawForm(obj, rd);
+                DrawForm(node, obj, rd);
             }
             else if (obj is GeometryElement)
             {
-                DrawGeometryElement(obj, rd);
+                DrawGeometryElement(node, obj, rd);
             }
             else if (obj is GeometryObject)
             {
-                DrawGeometryObject(obj, rd);
+                DrawGeometryObject(node, obj, rd);
             }
             else
             {
@@ -125,33 +144,40 @@ namespace Dynamo
 
                     if (geom != null)
                     {
-                        DrawGeometryObject(geom, rd);
+                        DrawGeometryObject(node, geom, rd);
                     }
                 }
             }
         }
 
-        private void DrawFace(object obj, RenderDescription rd)
+        private void DrawFace(NodeModel node, object obj, RenderDescription rd)
         {
             var face = obj as Face;
 
             if (face == null)
                 return;
 
-            rd.Meshes.Add(RevitMeshToHelixMesh(face.Triangulate(0.1)));
+            if (node.IsSelected)
+            {
+                rd.SelectedMeshes.Add(RevitMeshToHelixMesh(face.Triangulate(0.1)));
+            }
+            else
+            {
+                rd.Meshes.Add(RevitMeshToHelixMesh(face.Triangulate(0.1)));
+            }
         }
 
-        private void DrawForm(object obj, RenderDescription rd)
+        private void DrawForm(NodeModel node, object obj, RenderDescription rd)
         {
             var form = obj as Form;
 
             if (form == null)
                 return;
 
-            DrawGeometryElement(form.get_Geometry(new Options()), rd);
+            DrawGeometryElement(node, form.get_Geometry(new Options()), rd);
         }
 
-        private void DrawGeometryElement(object obj, RenderDescription rd)
+        private void DrawGeometryElement(NodeModel node, object obj, RenderDescription rd)
         {
             try
             {
@@ -159,7 +185,7 @@ namespace Dynamo
 
                 foreach (GeometryObject go in gelem)
                 {
-                    DrawGeometryObject(go, rd);
+                    DrawGeometryObject(node, go, rd);
                 }
             }
             catch (Exception ex)
@@ -170,60 +196,72 @@ namespace Dynamo
 
         }
 
-        private void DrawGeometryObject(object obj, RenderDescription rd)
+        private void DrawGeometryObject(NodeModel node, object obj, RenderDescription rd)
         {
             if (obj == null)
                 return;
 
             if (obj is XYZ)
             {
-                DrawXyz(obj, rd);
+                DrawXyz(node, obj, rd);
             }
             if (obj is Curve)
             {
-                DrawCurve(obj, rd);
+                DrawCurve(node, obj, rd);
             }
             else if (obj is Solid)
             {
-                DrawSolid(obj, rd);
+                DrawSolid(node, obj, rd);
             }
             else if (obj is Face)
             {
-                DrawFace(obj, rd);
+                DrawFace(node, obj, rd);
             }
             else
             {
-                DrawUndrawable(obj, rd);
+                DrawUndrawable(node, obj, rd);
             }
         }
 
-        private void DrawUndrawable(object obj, RenderDescription rd)
+        private void DrawUndrawable(NodeModel node, object obj, RenderDescription rd)
         {
             //TODO: write a message, throw an exception, draw a question mark
         }
 
-        private void DrawReferencePoint(object obj, RenderDescription rd)
+        private void DrawReferencePoint(NodeModel node, object obj, RenderDescription rd)
         {
             var point = obj as ReferencePoint;
 
             if (point == null)
                 return;
 
-            rd.Points.Add(new Point3D(point.GetCoordinateSystem().Origin.X,
+            if (node.IsSelected)
+            {
+                rd.SelectedPoints.Add(new Point3D(point.GetCoordinateSystem().Origin.X,
                 point.GetCoordinateSystem().Origin.Y,
                 point.GetCoordinateSystem().Origin.Z));
+            }
+            else
+            {
+                rd.Points.Add(new Point3D(point.GetCoordinateSystem().Origin.X,
+                point.GetCoordinateSystem().Origin.Y,
+                point.GetCoordinateSystem().Origin.Z));
+            }
         }
 
-        private void DrawXyz(object obj, RenderDescription rd)
+        private void DrawXyz(NodeModel node, object obj, RenderDescription rd)
         {
             var point = obj as XYZ;
             if (point == null)
                 return;
 
-            rd.Points.Add(new Point3D(point.X, point.Y, point.Z));
+            if(node.IsSelected)
+                rd.SelectedPoints.Add(new Point3D(point.X, point.Y, point.Z));
+            else
+                rd.Points.Add(new Point3D(point.X, point.Y, point.Z));
         }
 
-        private void DrawCurve(object obj, RenderDescription rd)
+        private void DrawCurve(NodeModel node, object obj, RenderDescription rd)
         {
             var curve = obj as Curve;
 
@@ -231,6 +269,8 @@ namespace Dynamo
                 return;
 
             IList<XYZ> points = curve.Tessellate();
+
+            bool selected = node.IsSelected;
 
             for (int i = 0; i < points.Count; ++i)
             {
@@ -241,21 +281,28 @@ namespace Dynamo
                 if (i == 0 || i == (points.Count - 1))
                     continue;
 
-                rd.Lines.Add(new Point3D(xyz.X, xyz.Y, xyz.Z));
+                if (selected)
+                {
+                    rd.SelectedLines.Add(new Point3D(xyz.X, xyz.Y, xyz.Z));
+                }
+                else
+                {
+                    rd.Lines.Add(new Point3D(xyz.X, xyz.Y, xyz.Z));
+                }
             }
         }
 
-        private void DrawCurveElement(object obj, RenderDescription rd)
+        private void DrawCurveElement(NodeModel node, object obj, RenderDescription rd)
         {
             var elem = obj as CurveElement;
 
             if (elem == null)
                 return;
 
-            DrawCurve(elem.GeometryCurve, rd);
+            DrawCurve(node, elem.GeometryCurve, rd);
         }
 
-        private void DrawSolid(object obj, RenderDescription rd)
+        private void DrawSolid(NodeModel node, object obj, RenderDescription rd)
         {
             var solid = obj as Solid;
 
@@ -264,16 +311,16 @@ namespace Dynamo
 
             foreach (Face f in solid.Faces)
             {
-                DrawFace(f, rd);
+                DrawFace(node, f, rd);
             }
 
             foreach (Edge edge in solid.Edges)
             {
-                DrawCurve(edge.AsCurve(), rd);
+                DrawCurve(node, edge.AsCurve(), rd);
             }
         }
 
-        private void DrawTransform(object obj, RenderDescription rd)
+        private void DrawTransform(NodeModel node, object obj, RenderDescription rd)
         {
             var t = obj as Transform;
             if (t == null)
@@ -297,7 +344,7 @@ namespace Dynamo
             rd.ZAxisPoints.Add(zEnd);
         }
 
-        private void DrawTriangleFace(object obj, RenderDescription rd)
+        private void DrawTriangleFace(NodeModel node, object obj, RenderDescription rd)
         {
             var face = obj as TriangleFace;
             if (face == null)
@@ -314,10 +361,18 @@ namespace Dynamo
             builder.TextureCoordinates.Add(new System.Windows.Point(0, 0));
             builder.TextureCoordinates.Add(new System.Windows.Point(0, 0));
             builder.TextureCoordinates.Add(new System.Windows.Point(0, 0));
-            rd.Meshes.Add(builder.ToMesh(true));
+
+            if (node.IsSelected)
+            {
+                rd.SelectedMeshes.Add(builder.ToMesh(true));
+            }
+            else
+            {
+                rd.Meshes.Add(builder.ToMesh(true));
+            }
         }
 
-        private void DrawParticleSystem(object obj, RenderDescription rd)
+        private void DrawParticleSystem(NodeModel node, object obj, RenderDescription rd)
         {
             var ps = obj as ParticleSystem;
             if (ps == null)
@@ -357,6 +412,18 @@ namespace Dynamo
                     rd.Lines.Add(pt1);
                     rd.Lines.Add(pt2);
                 }
+            }
+        }
+
+        private void DrawCurveLoop(NodeModel node, object obj, RenderDescription rd)
+        {
+            var cl = obj as Autodesk.Revit.DB.CurveLoop;
+            if (cl == null)
+                return;
+
+            foreach (var crv in cl)
+            {
+                DrawCurve(node, crv, rd);
             }
         }
 
@@ -430,5 +497,6 @@ namespace Dynamo
         {
             return new Point3D(xyz.X, xyz.Y, xyz.Z);
         }
+    
     }
 }

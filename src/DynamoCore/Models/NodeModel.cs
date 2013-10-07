@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
+using System.Reflection;
 using Dynamo.Nodes;
 using System.Xml;
 using Dynamo.Selection;
@@ -92,8 +93,8 @@ namespace Dynamo.Models
         //bool isSelected = false;
 
         private bool interactionEnabled = true;
-        private bool isVisible;
-        private bool isUpstreamVisible;
+        internal bool isVisible;
+        internal bool isUpstreamVisible;
 
         private IdentifierNode identifier = null;
        // protected AssociativeNode defaultAstExpression = null;
@@ -508,12 +509,12 @@ namespace Dynamo.Models
         /// <param name="xmlDoc">The XmlDocument representing the whole workspace containing this Element.</param>
         /// <param name="nodeElement">The XmlElement representing this Element.</param>
         /// <param name="context">Why is this being called?</param>
-        protected virtual void SaveNode(System.Xml.XmlDocument xmlDoc, System.Xml.XmlElement nodeElement, SaveContext context)
+        protected virtual void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
 
         }
 
-        public void Save(System.Xml.XmlDocument xmlDoc, System.Xml.XmlElement dynEl, SaveContext context)
+        public void Save(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             SaveNode(xmlDoc, dynEl, context);
 
@@ -532,13 +533,41 @@ namespace Dynamo.Models
         /// SaveNode() in order to write the data when saved.
         /// </summary>
         /// <param name="nodeElement">The XmlNode representing this Element.</param>
-        protected virtual void LoadNode(System.Xml.XmlNode nodeElement)
+        protected virtual void LoadNode(XmlNode nodeElement)
         {
 
         }
 
-        public void Load(System.Xml.XmlNode elNode)
+        public void Load(XmlNode elNode, Version workspaceVersion)
         {
+            #region Process Migrations
+
+            var migrations =
+                (from method in GetType().GetMethods()
+                 let attribute =
+                     method.GetCustomAttributes(false)
+                           .OfType<NodeMigrationAttribute>()
+                           .FirstOrDefault()
+                 where attribute != null
+                 let result = new { method, attribute.From, attribute.To }
+                 orderby result.From
+                 select result).ToList();
+
+            var currentVersion = dynSettings.Controller.DynamoModel.HomeSpace.WorkspaceVersion;
+
+            while (workspaceVersion != null && workspaceVersion < currentVersion)
+            {
+                var nextMigration = migrations.FirstOrDefault(x => x.From >= workspaceVersion);
+
+                if (nextMigration == null)
+                    break;
+
+                nextMigration.method.Invoke(this, new object[] { elNode });
+                workspaceVersion = nextMigration.To;
+            }
+
+            #endregion
+
             LoadNode(elNode);
 
             var portInfoProcessed = new HashSet<int>();
@@ -556,7 +585,8 @@ namespace Dynamo.Models
             }
             
             //set defaults
-            foreach (var port in inPorts.Select((x, i) => new { x, i }).Where(x => !portInfoProcessed.Contains(x.i)))
+            foreach (var port in inPorts.Select((x, i) => new { x, i })
+                                        .Where(x => !portInfoProcessed.Contains(x.i)))
             {
                 port.x.UsingDefaultValue = false;
             }

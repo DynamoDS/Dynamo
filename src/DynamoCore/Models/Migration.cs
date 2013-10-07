@@ -25,4 +25,27 @@ namespace Dynamo.Models
             Upgrade = upgrade;
         }
     }
+
+    /// <summary>
+    /// Marks methods on a NodeModel to be used for version migration.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method)]
+    public class NodeMigrationAttribute : Attribute
+    {
+        /// <summary>
+        /// Latest Version this migration applies to.
+        /// </summary>
+        public Version From { get; private set; }
+
+        /// <summary>
+        /// Version this migrates to.
+        /// </summary>
+        public Version To { get; private set; }
+
+        public NodeMigrationAttribute(string from, string to="")
+        {
+            From = new Version(from);
+            To = String.IsNullOrEmpty(to) ? null : new Version(to);
+        }
+    }
 }

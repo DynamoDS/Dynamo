@@ -1,7 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using Autodesk.LibG;
@@ -13,69 +10,16 @@ namespace Dynamo
 {
     public class VisualizationManagerASM : VisualizationManager
     {
-        protected override void VisualizationUpdateThread(object s, DoWorkEventArgs args)
+        public VisualizationManagerASM()
         {
-            //only update those nodes which have been flagged for update
-            var toUpdate = Visualizations.Values.ToList().Where(x => x.RequiresUpdate == true);
-
-            Debug.WriteLine(string.Format("{0} visualizations to update", toUpdate.Count()));
-            Debug.WriteLine(string.Format("Updating visualizations on thread {0}.", System.Threading.Thread.CurrentThread.ManagedThreadId));
-
-            var selIds =
-                DynamoSelection.Instance.Selection.Where(x => x is NodeModel)
-                               .Select(x => ((NodeModel)x).GUID.ToString());
-
-            var selected = Visualizations.Where(x => selIds.Contains(x.Key)).Select(x => x.Value);
-
-            var sw = new Stopwatch();
-            sw.Start();
-
-            int chunkCount = 0;
-
-            foreach (var n in toUpdate)
-            {
-                var rd = n.Description;
-                rd.Clear();
-
-                foreach (var geom in n.Geometry.ToList())
-                {
-                    var g = geom as GraphicItem;
-                    if (g == null)
-                        continue;
-
-                    DrawLibGGraphicItem(g, rd, selected, n);
-
-                    //set this flag to avoid processing again
-                    //if not necessary
-                    n.RequiresUpdate = false;
-
-                    chunkCount++;
-                    if (chunkCount > 100)
-                    {
-                        var renderChunk = AggregateRenderDescriptions();
-                        OnVisualizationUpdateComplete(this, new VisualizationEventArgs(renderChunk));
-                        chunkCount = 0;
-                    }
-                }
-            }
-
-            sw.Stop();
-            Debug.WriteLine(string.Format("{0} elapsed for generating visualizations.", sw.Elapsed));
-            DynamoLogger.Instance.Log(string.Format("{0} elapsed for generating visualizations.", sw.Elapsed));
-
-            //generate an aggregated render description to send to the UI
-            var aggRd = AggregateRenderDescriptions();
-
-            LogVisualizationUpdateData(aggRd, sw.Elapsed.ToString());
-
-            //notify the UI of visualization completion
-            OnVisualizationUpdateComplete(this, new VisualizationEventArgs(aggRd));
-
-            isUpdating = false;
+            AlternateDrawingContextAvailable = false;
+            DrawToAlternateContext = false;
         }
 
-        public static void DrawLibGGraphicItem(GraphicItem g, RenderDescription rd, IEnumerable<Visualization> selected, Visualization n)
+        public static void DrawLibGGraphicItem(NodeModel node, object geom, RenderDescription rd)
         {
+            var selected = DynamoSelection.Instance.Selection.Contains(node);
+            var g = geom as GraphicItem;
 
             if (g is CoordinateSystem)
             {
@@ -120,11 +64,9 @@ namespace Dynamo
 
                 var point_vertices = g.point_vertices_threadsafe();
 
-                var selArray = selected as Visualization[] ?? selected.ToArray();
-
                 for (int i = 0; i < point_vertices.Count; i += 3)
                 {
-                    if (selArray.Contains(n))
+                    if (selected)
                     {
                         rd.SelectedPoints.Add(new Point3D(point_vertices[i],
                                                           point_vertices[i + 1], point_vertices[i + 2]));
@@ -154,7 +96,7 @@ namespace Dynamo
                             line_strip_vertices[counter + 1],
                             line_strip_vertices[counter + 2]);
 
-                        if (selArray.Contains(n))
+                        if (selected)
                         {
                             rd.SelectedLines.Add(p);
                         }
@@ -168,7 +110,7 @@ namespace Dynamo
                         if (i == 0 || i == num_verts - 1)
                             continue;
 
-                        if (selArray.Contains(n))
+                        if (selected)
                         {
                             rd.SelectedLines.Add(p);
                         }
@@ -246,7 +188,7 @@ namespace Dynamo
                 //don't add empty meshes
                 if (builder.Positions.Count > 0)
                 {
-                    if (selArray.Contains(n))
+                    if (selected)
                     {
                         rd.SelectedMeshes.Add(builder.ToMesh(true));
                     }
