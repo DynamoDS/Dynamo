@@ -19,6 +19,8 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using Dynamo.Controls;
 using Dynamo.Models;
+using Dynamo.UI.Commands;
+using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
 
@@ -34,6 +36,10 @@ namespace Dynamo.Nodes
         private bool _isRendering = false;
         WatchView _watchView;
 
+        public DelegateCommand GetBranchVisualizationCommand { get; set; }
+
+        public event EventHandler WatchResultsReadyToVisualize;
+
         public WatchView View
         {
             get { return _watchView; }
@@ -47,6 +53,19 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
 
             ArgumentLacing = LacingStrategy.Disabled;
+
+            GetBranchVisualizationCommand = new DelegateCommand(GetBranchVisualization, CanGetBranchVisualization);
+        }
+
+        public void GetBranchVisualization(object parameters)
+        {
+            var rd = dynSettings.Controller.VisualizationManager.RenderUpstream(this);
+            OnWatchResultsReadyToVisualize(this, new VisualizationEventArgs(rd));
+        }
+
+        public bool CanGetBranchVisualization(object parameter)
+        {
+            return true;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -117,6 +136,12 @@ namespace Dynamo.Nodes
         void mi_Click(object sender, RoutedEventArgs e)
         {
             _watchView.watch_view.ZoomExtents();
+        }
+
+        public void OnWatchResultsReadyToVisualize(object sender, VisualizationEventArgs e)
+        {
+            if (WatchResultsReadyToVisualize != null)
+                WatchResultsReadyToVisualize(sender, e);
         }
     }
 }
