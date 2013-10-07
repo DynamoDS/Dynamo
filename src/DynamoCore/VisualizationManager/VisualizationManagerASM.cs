@@ -13,6 +13,12 @@ namespace Dynamo
 {
     public class VisualizationManagerASM : VisualizationManager
     {
+        public VisualizationManagerASM()
+        {
+            AlternateDrawingContextAvailable = false;
+            DrawToAlternateContext = false;
+        }
+
         protected override void VisualizationUpdateThread(object s, DoWorkEventArgs args)
         {
             //only update those nodes which have been flagged for update

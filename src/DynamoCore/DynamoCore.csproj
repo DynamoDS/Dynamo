@@ -134,6 +134,7 @@ limitations under the License.
   <ItemGroup>
     <Compile Include="Core\UndoRedoRecorder.cs" />
     <Compile Include="DSEngine\AstBuilder.cs" />
+    <Compile Include="Models\DrawableNode.cs" />
     <Compile Include="Nodes\dynDSFunction.cs" />
     <Compile Include="Models\Migration.cs" />
     <Compile Include="Nodes\Geometry.cs" />
@@ -277,7 +278,6 @@ limitations under the License.
     <Compile Include="Core\DynamoController.cs" />
     <Compile Include="Utilities\Guid.cs" />
     <Compile Include="Nodes\dynEnum.cs" />
-    <Compile Include="VisualizationManager\IDrawable.cs" />
     <Compile Include="UI\Commands\Regions\RegionBase.cs" />
     <Compile Include="UI\Commands\Regions\RevitAPIRegion.cs" />
     <Compile Include="UI\Commands\SearchCommands.cs" />
