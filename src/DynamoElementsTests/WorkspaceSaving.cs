@@ -665,11 +665,11 @@ namespace Dynamo.Tests
             var res1 = Controller.SearchViewModel.SearchResults[0];
             var res2 = Controller.SearchViewModel.SearchResults[1];
 
-            Assert.IsAssignableFrom(typeof(NodeSearchElement), res1);
-            Assert.IsAssignableFrom(typeof(NodeSearchElement), res2);
+            Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res1);
+            Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res2);
 
-            var node1 = res1 as NodeSearchElement;
-            var node2 = res2 as NodeSearchElement;
+            var node1 = res1 as CustomNodeSearchElement;
+            var node2 = res2 as CustomNodeSearchElement;
 
             Assert.IsTrue((node1.Guid == oldId && node2.Guid == newId) ||
                           (node1.Guid == newId && node2.Guid == oldId));
@@ -771,7 +771,7 @@ namespace Dynamo.Tests
 
             // results are correct
             Assert.AreEqual(1, Controller.SearchViewModel.SearchResults.Count);
-            var node3 = Controller.SearchViewModel.SearchResults[0] as NodeSearchElement;
+            var node3 = Controller.SearchViewModel.SearchResults[0] as CustomNodeSearchElement;
             Assert.AreEqual(newId, node3.Guid);
 
             // search for un-refactored node
@@ -779,7 +779,7 @@ namespace Dynamo.Tests
 
             // results are correct
             Assert.AreEqual(1, Controller.SearchViewModel.SearchResults.Count);
-            var node4 = Controller.SearchViewModel.SearchResults[0] as NodeSearchElement;
+            var node4 = Controller.SearchViewModel.SearchResults[0] as CustomNodeSearchElement;
             Assert.AreEqual(oldId, node4.Guid);
 
         }
@@ -829,11 +829,11 @@ namespace Dynamo.Tests
             var res1 = Controller.SearchViewModel.SearchResults[0];
             var res2 = Controller.SearchViewModel.SearchResults[1];
 
-            Assert.IsAssignableFrom(typeof(NodeSearchElement), res1);
-            Assert.IsAssignableFrom(typeof(NodeSearchElement), res2);
+            Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res1);
+            Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res2);
 
-            var node1 = res1 as NodeSearchElement;
-            var node2 = res2 as NodeSearchElement;
+            var node1 = res1 as CustomNodeSearchElement;
+            var node2 = res2 as CustomNodeSearchElement;
 
             Assert.IsTrue((node1.Guid == oldId && node2.Guid == newId) ||
                           (node1.Guid == newId && node2.Guid == oldId));

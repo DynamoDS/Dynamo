@@ -364,7 +364,7 @@ namespace Dynamo.Utilities
             var loadedNodes = customNodeLoader.UpdateSearchPath();
 
             // add nodes to search
-            loadedNodes.ForEach(searchViewModel.Add);
+            loadedNodes.ForEach(x => searchViewModel.Add(x) );
             
             // update search view
             searchViewModel.SearchAndUpdateResultsSync(searchViewModel.SearchText);

@@ -47,8 +47,8 @@ namespace Dynamo.Tests
             // results are correct
             Assert.AreEqual(1, _search.SearchResults.Count);
             var res1 = _search.SearchResults[0];
-            Assert.IsAssignableFrom(typeof(NodeSearchElement), res1);
-            var node1 = res1 as NodeSearchElement;
+            Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res1);
+            var node1 = res1 as CustomNodeSearchElement;
             Assert.AreEqual(node1.Guid, guid1);
 
             // search for old name
@@ -78,8 +78,8 @@ namespace Dynamo.Tests
             // results are correct
             Assert.AreEqual(1, _search.SearchResults.Count);
             var res1 = _search.SearchResults[0];
-            Assert.IsAssignableFrom(typeof(NodeSearchElement), res1);
-            var node1 = res1 as NodeSearchElement;
+            Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res1);
+            var node1 = res1 as CustomNodeSearchElement;
             Assert.AreEqual(node1.Guid, guid1);
             Assert.AreEqual(node1.Description, descr);
 
@@ -97,8 +97,8 @@ namespace Dynamo.Tests
             // description is updated
             Assert.AreEqual(1, _search.SearchResults.Count);
             var res2 = _search.SearchResults[0];
-            Assert.IsAssignableFrom(typeof(NodeSearchElement), res2);
-            var node2 = res2 as NodeSearchElement;
+            Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res2);
+            var node2 = res2 as CustomNodeSearchElement;
             Assert.AreEqual( guid1, node2.Guid );
             Assert.AreEqual( newDescription, node2.Description);
 
@@ -135,8 +135,8 @@ namespace Dynamo.Tests
             // results are correct - only one result
             Assert.AreEqual(1, _search.SearchResults.Count);
             var res1 = _search.SearchResults[0];
-            Assert.IsAssignableFrom(typeof(NodeSearchElement), res1);
-            var node1 = res1 as NodeSearchElement;
+            Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res1);
+            var node1 = res1 as CustomNodeSearchElement;
             Assert.AreEqual(node1.Guid, guid1);
 
             // search for old name
@@ -145,8 +145,8 @@ namespace Dynamo.Tests
             // results are correct - the first nodes are returned
             Assert.AreEqual(1, _search.SearchResults.Count);
             var res2 = _search.SearchResults[0];
-            Assert.IsAssignableFrom(typeof(NodeSearchElement), res2);
-            var node2 = res2 as NodeSearchElement;
+            Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res2);
+            var node2 = res2 as CustomNodeSearchElement;
             Assert.AreEqual(node2.Guid, guid2);
         }
 
@@ -233,7 +233,7 @@ namespace Dynamo.Tests
             const string nodeName = "what is this";
             for (var i = 0; i < 100; i++)
             {
-                _search.Add(nodeName, catName, "des", Guid.NewGuid());
+                _search.Add(new CustomNodeInfo(Guid.NewGuid(), nodeName, catName, "des", ""));
             }
             _search.MaxNumSearchResults = 100;
             _search.SearchAndUpdateResultsSync(nodeName);
@@ -287,7 +287,7 @@ namespace Dynamo.Tests
             const string nodeName = "what is this";
             for (var i = 0; i < 100; i++)
             {
-                _search.Add(nodeName, catName, "des", Guid.NewGuid());
+                _search.Add(new CustomNodeInfo(Guid.NewGuid(), nodeName, catName, "des", ""));
             }
 
             var nestedCat = _search.GetCategoryByName(catName);
@@ -300,7 +300,7 @@ namespace Dynamo.Tests
         {
             const string catName = "Category.Child.Thing.That";
             const string nodeName = "what is this";
-            _search.Add(nodeName, catName, "des", Guid.NewGuid());
+            _search.Add(new CustomNodeInfo(Guid.NewGuid(), nodeName, catName, "des", ""));
 
             _search.SearchAndUpdateResultsSync("frog");
             Assert.AreEqual(0, _search.SearchResults.Count);
@@ -311,7 +311,7 @@ namespace Dynamo.Tests
         {
             const string catName = "Category.Child.Thing.That";
             const string nodeName = "what is this";
-            _search.Add(nodeName, catName, "des", Guid.NewGuid());
+            _search.Add(new CustomNodeInfo(Guid.NewGuid(), nodeName, catName, "des", ""));
 
             _search.SearchAndUpdateResultsSync("hi");
             Assert.AreEqual(1, _search.SearchResults.Count);
@@ -323,8 +323,8 @@ namespace Dynamo.Tests
             const string catName = "Category.Child.Thing.That";
             const string nodeName1 = "what is this";
             const string nodeName2 = "where is this";
-            _search.Add(nodeName1, catName, "des", Guid.NewGuid());
-            _search.Add(nodeName2, catName, "des", Guid.NewGuid());
+            _search.Add(new CustomNodeInfo(Guid.NewGuid(), nodeName1, catName, "des", ""));
+            _search.Add(new CustomNodeInfo(Guid.NewGuid(), nodeName2, catName, "des", ""));
 
             _search.SearchAndUpdateResultsSync("wh");
             Assert.AreEqual(2, _search.SearchResults.Count);
@@ -337,9 +337,9 @@ namespace Dynamo.Tests
         {
             const string catName = "Category.Child";
             _search.AddCategory(catName);
-            _search.Add("what", catName, "des", Guid.NewGuid());
-            _search.Add("where", catName, "des", Guid.NewGuid());
-            _search.Add("why", catName, "des", Guid.NewGuid());
+            _search.Add(new CustomNodeInfo(Guid.NewGuid(), "what", catName, "des", ""));
+            _search.Add(new CustomNodeInfo(Guid.NewGuid(), "where", catName, "des", ""));
+            _search.Add(new CustomNodeInfo(Guid.NewGuid(), "where", catName, "des", ""));
             _search.SearchAndUpdateResultsSync("Category.Child");
             Assert.AreEqual(3, _search.SearchResults.Count);
         }
@@ -444,9 +444,9 @@ namespace Dynamo.Tests
 
             var res1 = _search.SearchResults[0];
 
-            Assert.IsAssignableFrom(typeof(NodeSearchElement), res1);
+            Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res1);
 
-            var node1 = res1 as NodeSearchElement;
+            var node1 = res1 as CustomNodeSearchElement;
 
             Assert.AreEqual(node1.Guid, guid1);
 
@@ -502,11 +502,11 @@ namespace Dynamo.Tests
             var res1 = _search.SearchResults[0];
             var res2 = _search.SearchResults[1];
 
-            Assert.IsAssignableFrom(typeof(NodeSearchElement), res1);
-            Assert.IsAssignableFrom(typeof(NodeSearchElement), res2);
+            Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res1);
+            Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res2);
 
-            var node1 = res1 as NodeSearchElement;
-            var node2 = res2 as NodeSearchElement;
+            var node1 = res1 as CustomNodeSearchElement;
+            var node2 = res2 as CustomNodeSearchElement;
 
             Assert.AreEqual(node1.Guid, guid1);
             Assert.AreEqual(node2.Guid, guid2);
@@ -661,15 +661,16 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, _search.SearchResults.Count);
 
             var res1 = _search.SearchResults[0];
-            Assert.IsAssignableFrom(typeof(NodeSearchElement), res1);
-            var node1 = res1 as NodeSearchElement;
+            Assert.IsAssignableFrom(typeof(CustomNodeSearchElement), res1);
+            var node1 = res1 as CustomNodeSearchElement;
             Assert.AreEqual(node1.Guid, guid1);
         }
 
         [Test]
         public void CanRemoveElementCustomNodeByNameWithNestedCategory()
         {
-            _search.Add("Peter", "Turnip.Greens", "A description", System.Guid.NewGuid());
+
+            _search.Add(new CustomNodeInfo(Guid.NewGuid(), "Peter", "Turnip.Greens", "des", ""));
 
             _search.SearchAndUpdateResultsSync("Peter");
             Assert.AreEqual(1, _search.SearchResults.Count);
@@ -683,7 +684,7 @@ namespace Dynamo.Tests
         [Test]
         public void CanRemoveElementCustomNodeByNameWithSingleCategory()
         {
-            _search.Add("Peter", "Greens", "A description", System.Guid.NewGuid());
+            _search.Add(new CustomNodeInfo(Guid.NewGuid(), "Peter", "Greens", "des", ""));
 
             _search.SearchAndUpdateResultsSync("Peter");
             Assert.AreEqual(1, _search.SearchResults.Count);
