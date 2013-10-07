@@ -263,7 +263,7 @@
                                 </StackPanel>
                             </StackPanel.ToolTip>
 
-                            <!--<Border Background="#444" Margin="0 0 10 0" CornerRadius="1" BorderThickness="1" BorderBrush="Black">
+                            <Border Background="#444" Margin="0 0 10 0" CornerRadius="1" BorderThickness="1" BorderBrush="Black">
 
                                 <Border.Style>
                                     <Style TargetType="Border">
@@ -284,7 +284,7 @@
                                 <TextBlock Foreground="Black" FontWeight="Bold" Padding="2" FontSize="9" Text="C" ToolTipService.InitialShowDelay="0">
                                 </TextBlock>
 
-                            </Border>-->
+                            </Border>
 
                             <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" ToolTipService.InitialShowDelay="0">
 
@@ -306,7 +306,7 @@
                                     <TextBlock Name="name" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
                                                  Text="{Binding Path=Description, Converter={StaticResource TooltipLengthTruncater}}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" Visibility="{Binding Path=Description, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
 
-                                    <!--<TextBlock Name="path" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
+                                    <TextBlock Name="path" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
                                                  Text="{Binding Path=Description, Converter={StaticResource TooltipLengthTruncater}}" FontSize="11" TextTrimming="WordEllipsis" Margin="2">
                                        
                                         <TextBlock.Style>
@@ -324,7 +324,7 @@
                                                 </Style.Triggers>
                                             </Style>
                                         </TextBlock.Style>
-                                    </TextBlock>-->
+                                    </TextBlock>
 
 
                                 </StackPanel>
