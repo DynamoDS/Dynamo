@@ -8,6 +8,7 @@ using Autodesk.Revit.DB;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
+using Dynamo.Utilities;
 using HelixToolkit.Wpf;
 using Curve = Autodesk.Revit.DB.Curve;
 using Solid = Autodesk.Revit.DB.Solid;
@@ -19,6 +20,20 @@ namespace Dynamo
 {
     class VisualizationManagerRevit : VisualizationManager
     {
+        public VisualizationManagerRevit()
+        {
+            if (dynSettings.Controller.Context == Context.VASARI_2014)
+            {
+                AlternateDrawingContextAvailable = true;
+                DrawToAlternateContext = true;
+
+                AlternateContextName = "Vasari";
+            }
+            else
+            {
+                AlternateDrawingContextAvailable = false;
+            }
+        }
 
         public override void UpdateVisualizations()
         {

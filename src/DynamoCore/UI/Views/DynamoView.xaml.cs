@@ -536,5 +536,10 @@ namespace Dynamo.Controls
                 _vm.OpenCommand.Execute(path);
             }
         }
+
+        private void RunButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            dynSettings.ReturnFocusToSearch();
+        }
     }
 }

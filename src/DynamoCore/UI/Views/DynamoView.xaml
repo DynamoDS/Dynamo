@@ -250,8 +250,16 @@
                             <MenuItem Focusable="False" Header="_Show Connectors" IsCheckable="True" Name="ShowHideConnectorsMenuItem" IsChecked="{Binding Path=IsShowingConnectors}" Command="{Binding ShowHideConnectorsCommand}">
                             </MenuItem>
                         </MenuItem>
+                        <MenuItem Header ="{Binding AlternateContextGeometryDisplayText}" 
+                                  Name="showGeometryInAlternateContextMenu" 
+                                  Focusable="False" 
+                                  Visibility="{Binding AlternateDrawingContextAvailable, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay}"
+                                  IsCheckable="True"
+                                  IsChecked="{Binding Path=ShowGeometryInAlternateContext}">
+                        </MenuItem>
                         <MenuItem Header="_Background 3D Preview" Name="background3dMenu" Focusable="False">
-                            <MenuItem Header="{Binding Path=FullscreenWatchShowing, Converter={StaticResource ShowHideFullscreenWatchMenuConverter}}" IsChecked="{Binding Path=FullscreenWatchShowing}" Command="{Binding ToggleFullscreenWatchShowingCommand}"  Focusable="False"/>
+                            <MenuItem Header="{Binding Path=FullscreenWatchShowing, Converter={StaticResource ShowHideFullscreenWatchMenuConverter}}" 
+                                      IsChecked="{Binding Path=FullscreenWatchShowing}" Command="{Binding ToggleFullscreenWatchShowingCommand}"  Focusable="False"/>
                             <MenuItem Header="Navigate Background 3D Preview"
                                           IsEnabled="{Binding Path=FullscreenWatchShowing}"
                                           IsChecked="{Binding Path=CanNavigateBackground}"
@@ -602,6 +610,7 @@
                 
                 <Button Name="RunButton" Width="100" Content="Run" 
                     Margin="5" Style="{DynamicResource ResourceKey=STextButton}" 
+                    Click="RunButton_OnClick"
                     Command="{Binding RunExpressionCommand}"
                     CommandParameter="{Binding Path=RunInDebug}"
                     IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" Focusable="False"/>

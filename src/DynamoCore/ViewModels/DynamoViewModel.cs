@@ -385,7 +385,27 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("ConnectorType");
             }
         }
-        
+
+        public bool AlternateDrawingContextAvailable
+        {
+            get { return dynSettings.Controller.VisualizationManager.AlternateDrawingContextAvailable; }
+        }
+
+        public bool ShowGeometryInAlternateContext
+        {
+            get { return dynSettings.Controller.VisualizationManager.DrawToAlternateContext; }
+            set { dynSettings.Controller.VisualizationManager.DrawToAlternateContext = value; }
+        }
+
+        public string AlternateContextGeometryDisplayText
+        {
+            get
+            {
+                return string.Format("Show Geometry in {0}",
+                                     dynSettings.Controller.VisualizationManager.AlternateContextName);
+            }
+        }
+
         #endregion
 
         public DynamoViewModel(DynamoController controller)
@@ -461,6 +481,20 @@ namespace Dynamo.ViewModels
             DynamoLogger.Instance.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Instance_PropertyChanged);
 
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
+            dynSettings.Controller.VisualizationManager.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(VisualizationManager_PropertyChanged);
+        }
+
+        void VisualizationManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "AlternateDrawingContextAvailable":
+                    RaisePropertyChanged("AlternateDrawingContextAvailable");
+                    break;
+                case "ShowGeometryInAlternateContext":
+                    RaisePropertyChanged("ShowGeometryInAlternateContext");
+                    break;
+            }
         }
 
         private void SelectionOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
