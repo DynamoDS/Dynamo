@@ -752,31 +752,6 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        ///     Add a custom node to search.
-        /// </summary>
-        /// <param name="workspace">A dynWorkspace to add</param>
-        /// <param name="name">The name to use</param>
-        public bool Add(string name, string category, string description, Guid functionId)
-        {
-            if (name == "Home")
-                return false;
-
-            // create the node in search
-            var nodeEle = new NodeSearchElement(name, description, functionId);
-            nodeEle.FullCategoryName = category;
-
-            if (SearchDictionary.Contains(nodeEle))
-                return false;
-
-            SearchDictionary.Add(nodeEle, nodeEle.Name);
-            SearchDictionary.Add(nodeEle, category + "." + nodeEle.Name);
-
-            TryAddCategoryAndItem(category, nodeEle);
-
-            return true;
-        }
-
-        /// <summary>
         ///     Attempt to add a new category to the browser and an item as one of its children
         /// </summary>
         /// <param name="category">The name of the category - a string possibly separated with one period </param>
@@ -867,26 +842,6 @@ namespace Dynamo.ViewModels
 
         }
 
-        public void Add(string category, string name, string description, List<string> tags, bool isSearchable)
-        {
-            var searchEle = new NodeSearchElement(name, description, tags);
-            searchEle.SetSearchable(isSearchable);
-
-            if (!string.IsNullOrEmpty(category))
-            {
-                SearchDictionary.Add(searchEle, category + "." + searchEle.Name);
-            }
-
-            TryAddCategoryAndItem(category, searchEle);
-
-            SearchDictionary.Add(searchEle, searchEle.Name);
-            if (tags.Count > 0)
-            {
-                SearchDictionary.Add(searchEle, tags);
-            }
-            SearchDictionary.Add(searchEle, description);
-        }
-
         public void RemoveNode(string nodeName)
         {
             // remove from search dictionary
@@ -951,9 +906,19 @@ namespace Dynamo.ViewModels
 
         }
 
-        public void Add(CustomNodeInfo nodeInfo)
+        public bool Add(CustomNodeInfo nodeInfo)
         {
-            this.Add(nodeInfo.Name, nodeInfo.Category, nodeInfo.Description, nodeInfo.Guid);
+            var nodeEle = new CustomNodeSearchElement(nodeInfo);
+
+            if (SearchDictionary.Contains(nodeEle))
+                return false;
+
+            SearchDictionary.Add(nodeEle, nodeEle.Name);
+            SearchDictionary.Add(nodeEle, nodeInfo.Category + "." + nodeEle.Name);
+
+            TryAddCategoryAndItem(nodeInfo.Category, nodeEle);
+
+            return true;
         }
 
         public void Refactor(CustomNodeInfo nodeInfo)

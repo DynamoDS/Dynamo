@@ -30,12 +30,6 @@ namespace Dynamo.Search.SearchElements
         #region Properties
 
         /// <summary>
-        /// Guid property </summary>
-        /// <value>
-        /// The guid used to reference a dynFunction </value>
-        public Guid Guid { get; internal set; }
-
-        /// <summary>
         /// Node property </summary>
         /// <value>
         /// The node used to instantiate this object </value>
@@ -74,13 +68,13 @@ namespace Dynamo.Search.SearchElements
         /// Weight property </summary>
         /// <value>
         /// Number defining the relative importance of the element in search.  Higher weight means closer to the top. </value>
-        public override double Weight { get; set; }
+        public override sealed double Weight { get; set; }
 
         /// <summary>
         /// Keywords property </summary>
         /// <value>
         /// Joined set of keywords </value>
-        public override string Keywords { get; set; }
+        public override sealed string Keywords { get; set; }
 
         /// <summary>
         /// Whether the description of this node should be visible or not
@@ -105,49 +99,14 @@ namespace Dynamo.Search.SearchElements
         /// <param name="name"></param>
         /// <param name="description"></param>
         /// <param name="tags"></param>
-        public NodeSearchElement(string name, string description, List<string> tags)
+        public NodeSearchElement(string name, string description, IEnumerable<string> tags)
         {
-            //ToggleDescriptionVisibilityCommand = new DelegateCommand(ToggleIsVisible);
             this.Node = null;
             this._name = name;
             this.Weight = 1;
             this.Keywords = String.Join(" ", tags);
             this._type = "Node";
             this._description = description;
-        }
-
-        /// <summary>
-        ///     The class constructor - use this constructor when for
-        ///     custom nodes
-        /// </summary>
-        /// <param name="name">The name of the custom node</param>
-        /// <param name="guid">The unique id for the custom node</param>
-        public NodeSearchElement(string name, string description, Guid guid)
-        {
-            //ToggleDescriptionVisibilityCommand = new DelegateCommand(ToggleIsVisible);
-            this.Node = null;
-            this._name = name;
-            this.Weight = 0.9;
-            this.Keywords = "";
-            this._type = "Custom Node";
-            this.Guid = guid;
-            this._description = description;
-        }
-
-        /// <summary>
-        ///     The class constructor - use this constructor when for
-        ///     custom nodes
-        /// </summary>
-        /// <param name="funcDef">The FunctionDefinition for a custom node</param>
-        public NodeSearchElement(FunctionDefinition funcDef)
-        {
-            //ToggleDescriptionVisibilityCommand = new DelegateCommand(ToggleIsVisible);
-            this.Node = dynSettings.Controller.DynamoModel.CreateNode(funcDef.FunctionId.ToString());
-            this._name = funcDef.WorkspaceModel.Name;
-            this.Weight = 1.1;
-            this.Keywords = "";
-            this._description = "Custom Node";
-            this._type = "Custom Node";
         }
 
         private void ToggleIsVisible(object parameter)
@@ -219,19 +178,12 @@ namespace Dynamo.Search.SearchElements
         /// <returns> A unique hashcode for the object </returns>
         public override int GetHashCode()
         {
-            return this.Guid.GetHashCode() + this.Type.GetHashCode() + this.Name.GetHashCode() + this.Description.GetHashCode();
+            return this.Type.GetHashCode() + this.Name.GetHashCode() + this.Description.GetHashCode();
         }
 
         public bool Equals(NodeSearchElement other)
         {
-            if (other.Type == this.Type && this.Type == "Custom Node")
-            {
-                return other.Guid == this.Guid;
-            }
-            else
-            {
-                return this.Name == other.Name && this.FullCategoryName == other.FullCategoryName;
-            }
+            return this.Name == other.Name && this.FullCategoryName == other.FullCategoryName;
         }
     }
 
