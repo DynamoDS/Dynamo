@@ -21,7 +21,6 @@ using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
-using RevitServices;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.Revit;
 
@@ -50,7 +49,7 @@ namespace Dynamo.Nodes
 
             if (Elements.Any())
             {
-                if (dynRevitSettings.Doc.Document.TryGetElement(Elements[0], out pt))
+                if (dynUtils.TryGetElement(Elements[0], out pt))
                 {
                     pt.Position = xyz;
                 }
@@ -103,7 +102,7 @@ namespace Dynamo.Nodes
 
             if (this.Elements.Any())
             {
-                if (dynRevitSettings.Doc.Document.TryGetElement(Elements[0], out p))
+                if (dynUtils.TryGetElement(Elements[0], out p))
                 {
                     p.SetPointElementReference(edgePoint);
                 }
@@ -157,7 +156,7 @@ namespace Dynamo.Nodes
 
             if (this.Elements.Any())
             {
-                if (dynRevitSettings.Doc.Document.TryGetElement(this.Elements[0], out pt))
+                if (dynUtils.TryGetElement(this.Elements[0], out pt))
                 {
                     pt.Position = facePoint;
                 }
@@ -211,7 +210,7 @@ namespace Dynamo.Nodes
 
             if (Elements.Any())
             {
-                if (dynRevitSettings.Doc.Document.TryGetElement(Elements[0], out p))
+                if (dynUtils.TryGetElement(Elements[0], out p))
                 {
                     //move the point to the new offset
                     p.Position = newLocation;
@@ -319,7 +318,7 @@ namespace Dynamo.Nodes
             foreach (ElementId el in this.Elements)
             {
                 Element e;
-                if (dynRevitSettings.Doc.Document.TryGetElement(el, out e))
+                if (dynUtils.TryGetElement(el, out e))
                 {
                     this.UIDocument.Document.Delete(el);
                 }
@@ -353,7 +352,7 @@ namespace Dynamo.Nodes
     [NodeName("Evaluate curve or edge")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Evaluates curve or edge at parameter.")]
-    public class XyzOnCurveOrEdge : XyzBase
+    public class XyzOnCurveOrEdge : GeometryBase
     {
         public XyzOnCurveOrEdge()
         {
@@ -421,7 +420,7 @@ namespace Dynamo.Nodes
                 :  
                 (thisEdge == null ? null : thisEdge.Evaluate(parameter));
 
-            pts.Add(result);
+            VisualizationGeometry.Add(result);
 
             return Value.NewContainer(result);
         }
@@ -430,12 +429,12 @@ namespace Dynamo.Nodes
     [NodeName("Evaluate tangent transform of curve or edge")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Evaluates tangent vector of curve or edge at parameter.")]
-    public class TangentTransformOnCurveOrEdge : TransformBase
+    public class TangentTransformOnCurveOrEdge : GeometryBase
     {
         public TangentTransformOnCurveOrEdge()
         {
             InPortData.Add(new PortData("parameter", "The normalized parameter to evaluate at within 0..1 range except for closed curve", typeof(Value.Number)));
-            InPortData.Add(new PortData("curve or edge", "The curve or edge to evaluate.", typeof(Value.Container)));
+            InPortData.Add(new PortData("curve or edge", "The geometry curve or edge to evaluate.", typeof(Value.Container)));
             OutPortData.Add(new PortData("tangent transform", "tangent transform at parameter.", typeof(Value.Container)));
 
             RegisterAllPorts();
@@ -469,7 +468,7 @@ namespace Dynamo.Nodes
                 : 
                 (thisEdge == null ? null : thisEdge.ComputeDerivatives(parameter));
 
-            transforms.Add(result);
+            VisualizationGeometry.Add(result);
 
             return Value.NewContainer(result);
         }
@@ -513,7 +512,7 @@ namespace Dynamo.Nodes
 
             if (this.Elements.Any())
             {
-                if (dynRevitSettings.Doc.Document.TryGetElement(this.Elements[0], out p))
+                if (dynUtils.TryGetElement(this.Elements[0], out p))
                 {
                     p.SetPointElementReference(edgePoint);
                 }

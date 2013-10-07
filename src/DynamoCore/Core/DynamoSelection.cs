@@ -1,5 +1,9 @@
-﻿using System;
+﻿using System.Linq;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.Selection
@@ -7,7 +11,7 @@ namespace Dynamo.Selection
     public class DynamoSelection : NotificationObject
     {
         private static DynamoSelection _instance;
-        private ObservableCollection<ISelectable> selection = new ObservableCollection<ISelectable>();
+        private SmartCollection<ISelectable> selection = new SmartCollection<ISelectable>();
 
         public static DynamoSelection Instance
         {
@@ -25,7 +29,7 @@ namespace Dynamo.Selection
         /// <summary>
         /// Returns a collection of ISelectable elements.
         /// </summary>
-        public ObservableCollection<ISelectable> Selection
+        public SmartCollection<ISelectable> Selection
         {
             get { return selection; }
             set
@@ -48,12 +52,7 @@ namespace Dynamo.Selection
         /// <param name="e"></param>
         void selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Reset)
-            {
-                throw new Exception("To properly clean the selection, please use RemoveAll() instead.");
-            }
-
-            // call the select method on elements added to the collection
+            //call the select method on elements added to the collection
             if (e.NewItems != null)
             {
                 foreach (ISelectable n in e.NewItems)
@@ -64,20 +63,22 @@ namespace Dynamo.Selection
 
             if (e.OldItems != null)
             {
-                // call the deselect method on elements removed from the collection
                 foreach (ISelectable n in e.OldItems)
                 {
                     n.Deselect();
                 }
             }
+
+            Debug.WriteLine(string.Format("{0} elements in selection.", Selection.Count));
         }
 
         /// <summary>
-        /// Clears the selection
+        /// Clears the selection, deslecting everything that is selected
         /// </summary>
         public void ClearSelection()
         {
-            Instance.Selection.RemoveAll();
+            Instance.Selection.ToList().ForEach(x=>x.Deselect());
+            Instance.Selection.Reset(new List<ISelectable>());
         }
     }
 
@@ -88,14 +89,45 @@ namespace Dynamo.Selection
         void Deselect();
     }
 
-    public static class Extensions
+    /// <summary>
+    /// A resetable observable collection
+    /// See: http://stackoverflow.com/questions/13302933/how-to-avoid-firing-observablecollection-collectionchanged-multiple-times-when-r
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class SmartCollection<T> : ObservableCollection<T>
     {
-        public static void RemoveAll(this ObservableCollection<ISelectable> list)
+        public SmartCollection()
+            : base()
         {
-            while (list.Count > 0)
+        }
+
+        public SmartCollection(IEnumerable<T> collection)
+            : base(collection)
+        {
+        }
+
+        public SmartCollection(List<T> list)
+            : base(list)
+        {
+        }
+
+        public void AddRange(IEnumerable<T> range)
+        {
+            foreach (var item in range)
             {
-                list.RemoveAt(list.Count - 1);
+                Items.Add(item);
             }
+
+            this.OnPropertyChanged(new PropertyChangedEventArgs("Count"));
+            this.OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
+            this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
+
+        public void Reset(IEnumerable<T> range)
+        {
+            this.Items.Clear();
+
+            AddRange(range);
         }
     }
 

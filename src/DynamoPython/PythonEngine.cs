@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Dynamo;
-using Dynamo.Nodes;
 
 namespace DynamoPython
 {
     public static class PythonEngine
     {
         public delegate FScheme.Value EvaluationDelegate(bool dirty, string script, IEnumerable<Binding> bindings);
-        public delegate void DrawDelegate(FScheme.Value val, RenderDescription rd);
+        public delegate void DrawDelegate(FScheme.Value val, string id);
 
         public static EvaluationDelegate Evaluator;
 
@@ -31,7 +28,7 @@ namespace DynamoPython
                 return engine.Evaluate(PythonBindings.Bindings.Concat(bindings));
             };
 
-            Drawing = delegate(FScheme.Value val, RenderDescription rd) { };
+            Drawing = delegate(FScheme.Value val, string id) { };
         }
     }
 

@@ -17,13 +17,12 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Diagnostics;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Nodes.Prompts;
@@ -33,9 +32,7 @@ using Dynamo.Search;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using DynamoCommands = Dynamo.UI.Commands.DynamoCommands;
 using String = System.String;
-using Dynamo.UI.Controls;
 
 namespace Dynamo.Controls
 {
@@ -53,9 +50,6 @@ namespace Dynamo.Controls
 #pragma warning restore 649
         private DynamoViewModel _vm;
         private Stopwatch _timer;
-
-        // Reference to titlebar
-        private TitleBarButtons titleBarButtons;
 
         public bool ConsoleShowing
         {
@@ -90,17 +84,11 @@ namespace Dynamo.Controls
 
         void vm_RequestLayoutUpdate(object sender, EventArgs e)
         {
-            UpdateLayout();
+            Dispatcher.Invoke(new Action(UpdateLayout), DispatcherPriority.Render, null);
         }
 
         private void dynBench_Activated(object sender, EventArgs e)
         {
-            if (titleBarButtons == null)
-            {
-                titleBarButtons = new TitleBarButtons(this);
-                titleBarButtonsGrid.Children.Add(titleBarButtons);
-            }
-
             this.WorkspaceTabs.SelectedIndex = 0;
             _vm = (DataContext as DynamoViewModel);
             _vm.Model.RequestLayoutUpdate += vm_RequestLayoutUpdate;
@@ -137,6 +125,7 @@ namespace Dynamo.Controls
             _vm.RequestUserSaveWorkflow += new WorkspaceSaveEventHandler(_vm_RequestUserSaveWorkflow);
 
             dynSettings.Controller.ClipBoard.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(ClipBoard_CollectionChanged);
+        
         }
         
         private PackageManagerPublishView _pubPkgView;
@@ -155,18 +144,25 @@ namespace Dynamo.Controls
         }
 
         private PackageManagerSearchView _searchPkgsView;
+        private PackageManagerSearchViewModel _pkgSearchVM;
         void _vm_RequestShowPackageManagerSearch(object s, EventArgs e)
         {
+            if (_pkgSearchVM == null)
+            {
+                _pkgSearchVM = new PackageManagerSearchViewModel(dynSettings.PackageManagerClient);
+            }
+
             if (_searchPkgsView == null)
             {
-                var pms = new PackageManagerSearchViewModel(dynSettings.PackageManagerClient);
-                _searchPkgsView = new PackageManagerSearchView(pms);
+                _searchPkgsView = new PackageManagerSearchView(_pkgSearchVM);
                 _searchPkgsView.Closed += (sender, args) => _searchPkgsView = null;
                 _searchPkgsView.Show();
 
                  if (_searchPkgsView.IsLoaded && this.IsLoaded) _searchPkgsView.Owner = this;
             }
-             _searchPkgsView.Focus();
+            
+            _searchPkgsView.Focus();
+            _pkgSearchVM.RefreshAndSearchAsync();
         }
 
         private InstalledPackagesView _installedPkgsView;
@@ -405,20 +401,6 @@ namespace Dynamo.Controls
 
         }
 
-        private void WindowChanged(object sender, EventArgs e)
-        {
-            if (this.WindowState == WindowState.Maximized)
-            {
-                this.mainGrid.Margin = new Thickness(8);
-                titleBarButtons.Max.Tag = "Restore";
-            }
-            else
-            {
-                this.mainGrid.Margin = new Thickness(0);
-                titleBarButtons.Max.Tag = "Max";
-            }           
-        }
-
         private void OverlayCanvas_OnMouseMove(object sender, MouseEventArgs e)
         {
             if (_vm.IsUILocked)
@@ -444,7 +426,7 @@ namespace Dynamo.Controls
 
             WorkspaceViewModel view_model = _vm.Workspaces[workspace_index];
 
-            view_model.WatchEscapeIsDown = true;
+            dynSettings.Controller.DynamoViewModel.WatchEscapeIsDown = true;
         }
 
         void DynamoView_KeyUp(object sender, KeyEventArgs e)
@@ -456,18 +438,7 @@ namespace Dynamo.Controls
 
             WorkspaceViewModel view_model = _vm.Workspaces[workspace_index];
 
-            view_model.WatchEscapeIsDown = false;
-        }
-
-        private void Id_butt_OnClick(object sender, RoutedEventArgs e)
-        {
-            //get the value of the id field 
-            //and trigger the command
-            string id = id_tb.Text;
-            int workspace_index = _vm.CurrentWorkspaceIndex;
-            WorkspaceViewModel view_model = _vm.Workspaces[workspace_index];
-            if (view_model.FindByIdCommand.CanExecute(id))
-                view_model.FindByIdCommand.Execute(id);
+            dynSettings.Controller.DynamoViewModel.WatchEscapeIsDown = false;
         }
 
         private void WorkspaceTabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -564,6 +535,11 @@ namespace Dynamo.Controls
 
                 _vm.OpenCommand.Execute(path);
             }
+        }
+
+        private void RunButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            dynSettings.ReturnFocusToSearch();
         }
     }
 }

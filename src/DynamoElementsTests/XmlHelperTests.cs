@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using Dynamo.Models;
 using Dynamo.Utilities;
 using NUnit.Framework;
 
@@ -154,6 +155,25 @@ namespace Dynamo.Tests
             // Test reading of existing attribute.
             XmlElementHelper reader = new XmlElementHelper(element);
             Assert.AreEqual("System.Environment", reader.ReadString("ValidName"));
+        }
+
+        [Test]
+        public void TestEnumAttributes()
+        {
+            XmlElement element = xmlDocument.CreateElement("element");
+
+            // Test attribute writing.
+            LacingStrategy strategy = LacingStrategy.CrossProduct;
+            XmlElementHelper writer = new XmlElementHelper(element);
+            writer.SetAttribute("ValidName", strategy.ToString());
+            writer.SetAttribute("ValidName2", "UnknownEnumString");
+
+            // Test reading of existing attributes (with valid/invalid values).
+            XmlElementHelper reader = new XmlElementHelper(element);
+            Assert.AreEqual(strategy, reader.ReadEnum("ValidName", LacingStrategy.Disabled));
+
+            LacingStrategy defaultValue = LacingStrategy.First;
+            Assert.AreEqual(defaultValue, reader.ReadEnum("ValidName2", defaultValue));
         }
     }
 }

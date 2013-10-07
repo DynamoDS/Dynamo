@@ -148,6 +148,20 @@ namespace Dynamo.Nodes
 
             var plane = dynRevitSettings.Doc.Application.Application.Create.NewPlane(normal, meanPt);
 
+            // take first 3 pts to form simplified normal 
+            var bma = ptList[1] - ptList[0];
+            var cma = ptList[2] - ptList[0];
+
+            var simplifiedNorm = bma.CrossProduct(cma);
+
+            // find sign of normal that maximizes the dot product pca normal and simplfied normal 
+            var dotProd = simplifiedNorm.DotProduct(normal);
+
+            if (dotProd < 0)
+            {
+                normal = -1*normal;
+            }
+
             outPuts[_planePort] = Value.NewContainer(plane);
             outPuts[_normalPort] = Value.NewContainer(normal);
             outPuts[_originPort] = Value.NewContainer(meanPt);

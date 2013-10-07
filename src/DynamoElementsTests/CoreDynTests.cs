@@ -371,7 +371,6 @@ namespace Dynamo.Tests
                 "A node\twith tabs, and\r\ncarriage returns,\r\nand !@#$%^&* characters, and also something \"in quotes\".";
 
             Assert.AreEqual(expected, strNode.Value);
-            
         }
 
         [Test]
