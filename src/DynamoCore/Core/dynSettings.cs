@@ -70,7 +70,6 @@ namespace Dynamo.Utilities
                 s = s.Replace(c, "");
             return s;
         }
-
     }
  
 }

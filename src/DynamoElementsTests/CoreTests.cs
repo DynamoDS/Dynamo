@@ -14,6 +14,7 @@ using Dynamo.Utilities;
 using Dynamo.Selection;
 using Dynamo.ViewModels;
 using NUnit.Framework;
+using System.Windows;
 
 namespace Dynamo.Tests
 {
@@ -586,6 +587,61 @@ namespace Dynamo.Tests
                 model.AddToSelection(Controller.DynamoViewModel.Model.Nodes[i]);
                 Assert.AreEqual(numNodes, DynamoSelection.Instance.Selection.Count);
             }
+        }
+
+        [Test]
+        public void TestDraggedNode()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            var sumData = new Dictionary<string, object>();
+            sumData.Add("name", "Add");
+            model.CreateNode(sumData);
+            NodeModel locatable = Controller.DynamoViewModel.Model.Nodes[0];
+            locatable.X = 16;
+            locatable.Y = 32;
+
+            Rect region = new Rect(-100, -100, 200, 200);
+            Point startPoint = new Point(8, 64);
+            var dn = new WorkspaceViewModel.DraggedNode(locatable, startPoint, region);
+
+            // Initial node position.
+            Assert.AreEqual(16, locatable.X);
+            Assert.AreEqual(32, locatable.Y);
+
+            // Move the mouse cursor to move node.
+            dn.Update(new Point(-16, 72));
+            Assert.AreEqual(-8, locatable.X);
+            Assert.AreEqual(40, locatable.Y);
+        }
+
+        [Test]
+        public void TestDraggedNodeLimited()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            var sumData = new Dictionary<string, object>();
+            sumData.Add("name", "Add");
+            model.CreateNode(sumData);
+            NodeModel locatable = Controller.DynamoViewModel.Model.Nodes[0];
+            locatable.X = 10;
+            locatable.Y = 20;
+
+            Rect region = new Rect(-100, -200, 300, 400);
+            Point startPoint = new Point(15, 25);
+            var dn = new WorkspaceViewModel.DraggedNode(locatable, startPoint, region);
+
+            // Initial node position.
+            Assert.AreEqual(10, locatable.X);
+            Assert.AreEqual(20, locatable.Y);
+
+            // Move the mouse cursor to move node.
+            dn.Update(new Point(-500, -500));
+            Assert.AreEqual(-100, locatable.X);
+            Assert.AreEqual(-200, locatable.Y);
+
+            // Move the mouse cursor to move node.
+            dn.Update(new Point(500, 500));
+            Assert.AreEqual(300 - locatable.Width, locatable.X);
+            Assert.AreEqual(400 - locatable.Height, locatable.Y);
         }
 
         [Test]

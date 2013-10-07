@@ -37,7 +37,7 @@ namespace Dynamo.Nodes
     [NodeName("Python Script")]
     [NodeCategory(BuiltinNodeCategories.SCRIPTING_PYTHON)]
     [NodeDescription("Runs an embedded IronPython script")]
-    public class Python : DrawableNodeWithOneOutput
+    public class Python : NodeWithOneOutput
     {
         private bool dirty = true;
         private Value lastEvalValue;

@@ -143,6 +143,11 @@ namespace Dynamo.ViewModels
         private void Connect(object parameter)
         {
             DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
+            WorkspaceViewModel workspaceViewModel = dynamoViewModel.CurrentSpaceViewModel;
+            workspaceViewModel.HandlePortClicked(this);
+
+#if false // TODO(Ben): Remove this after StateMachine has been fully tested.
+            DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
             WorkspaceModel workspaceModel = dynamoViewModel.CurrentSpace;
             WorkspaceViewModel workspaceViewModel = dynamoViewModel.CurrentSpaceViewModel;
 
@@ -226,6 +231,7 @@ namespace Dynamo.ViewModels
                 // Record the creation of connector in the undo recorder.
                 workspaceModel.RecordCreatedModel(newConnectorModel);
             }
+#endif
         }
 
         private bool CanConnect(object parameter)

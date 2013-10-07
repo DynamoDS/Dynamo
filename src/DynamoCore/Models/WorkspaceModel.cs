@@ -527,6 +527,7 @@ namespace Dynamo.Models
                 {
                     ConnectorModel connector = model as ConnectorModel;
                     this.Connectors.Remove(connector);
+                    this.undoRecorder.RecordDeletionForUndo(model);
                 }
             }
 
