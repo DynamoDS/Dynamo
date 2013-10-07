@@ -13,6 +13,8 @@ using HelixToolkit.Wpf;
 using Microsoft.Practices.Prism.ViewModel;
 using Newtonsoft.Json;
 
+//testing to see if github integration works.
+
 namespace Dynamo
 {
     public delegate void VisualizationCompleteEventHandler(object sender, VisualizationEventArgs e);
@@ -29,7 +31,8 @@ namespace Dynamo
             = new Dictionary<string, Visualization>();
 
         protected bool isUpdating = false;
-
+        private string _alternateContextName = "Host";
+        private bool _drawToAlternateContext = true;
         #endregion
 
         #region public properties
@@ -43,6 +46,55 @@ namespace Dynamo
             set { visualizations = value; }
         }
 
+        /// <summary>
+        /// Is another context available for drawing?
+        /// This property can be queried indirectly by the view to enable or disable
+        /// UI functionality based on whether an alternate drawing context is available.
+        /// </summary>
+        public bool AlternateDrawingContextAvailable { get; set; }
+
+        /// <summary>
+        /// Should we draw to the alternate context if it is available?
+        /// </summary>
+        public bool DrawToAlternateContext
+        {
+            get { return _drawToAlternateContext; }
+            set
+            {
+                if (value == false)
+                {
+                    //if the present value has us drawing to the alternate
+                    //context and we would like to stop doing so, we need 
+                    //to trigger an event requesting alternate contexts
+                    //to drop their visualizations
+                    if (_drawToAlternateContext)
+                    {
+                        _drawToAlternateContext = value;
+                        OnRequestAlternateContextClear(this, EventArgs.Empty);
+                    }
+                }
+                else
+                {
+                    //we would like to reenable drawing to an alternate context.
+                    //trigger the standard visualization complete event
+                    if (!_drawToAlternateContext)
+                    {
+                        _drawToAlternateContext = value;
+                        OnVisualizationUpdateComplete(this, new VisualizationEventArgs(AggregateRenderDescriptions()));
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Can be used to expose a name of the alternate context for use in the UI.
+        /// </summary>
+        public string AlternateContextName
+        {
+            get { return _alternateContextName; }
+            set { _alternateContextName = value; }
+        }
+
         #endregion
 
         #region events
@@ -51,7 +103,12 @@ namespace Dynamo
         /// An event triggered on the completion of visualization update.
         /// </summary>
         public event VisualizationCompleteEventHandler VisualizationUpdateComplete;
-        
+
+        /// <summary>
+        /// An event triggered when want any alternate drawing contexts to be cleared.
+        /// </summary>
+        public event EventHandler RequestAlternateContextClear;
+
         #endregion
 
         protected VisualizationManager()
@@ -60,10 +117,11 @@ namespace Dynamo
             dynSettings.Controller.DynamoModel.NodeDeleted += new NodeHandler(DynamoModel_NodeDeleted);
             dynSettings.Controller.DynamoModel.ConnectorDeleted += new ConnectorHandler(DynamoModel_ConnectorDeleted);
             dynSettings.Controller.EvaluationCompleted += new EventHandler(Controller_EvaluationCompleted);
-            dynSettings.Controller.DynamoViewModel.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(DynamoViewModel_PropertyChanged);
+            //dynSettings.Controller.DynamoViewModel.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(DynamoViewModel_PropertyChanged);
             dynSettings.Controller.RequestsRedraw += new EventHandler(Controller_RequestsRedraw);
             DynamoSelection.Instance.Selection.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
             dynSettings.Controller.DynamoModel.ModelCleared += new EventHandler(DynamoModel_ModelCleared);
+
         }
 
         void DynamoModel_ModelCleared(object sender, EventArgs e)
@@ -142,16 +200,16 @@ namespace Dynamo
             UpdateVisualizations();
         }
 
-        void DynamoViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "FullscreenWatchShowing")
-            {
-                if (dynSettings.Controller.DynamoViewModel.FullscreenWatchShowing == true)
-                {
-                    UpdateVisualizations();
-                }
-            }
-        }
+        //void DynamoViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        //{
+        //    if (e.PropertyName == "FullscreenWatchShowing")
+        //    {
+        //        if (dynSettings.Controller.DynamoViewModel.FullscreenWatchShowing == true)
+        //        {
+        //            UpdateVisualizations();
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// Handler for the controller's EvaluationCompleted event.
@@ -174,16 +232,13 @@ namespace Dynamo
         /// <param name="connector"></param>
         void DynamoModel_ConnectorDeleted(ConnectorModel connector)
         {
-            if (connector.End.Owner is IDrawable)
+            if (Visualizations.ContainsKey(connector.End.Owner.GUID.ToString()))
             {
-                if (Visualizations.ContainsKey(connector.End.Owner.GUID.ToString()))
-                {
-                    Visualizations.Remove(connector.End.Owner.GUID.ToString());
-                }
+                Visualizations.Remove(connector.End.Owner.GUID.ToString());
 
                 //tell the watches that they require re-binding.
                 OnVisualizationUpdateComplete(this, new VisualizationEventArgs(AggregateRenderDescriptions()));
-            }
+            }  
         }
 
         /// <summary>
@@ -193,8 +248,7 @@ namespace Dynamo
         /// <param name="node"></param>
         void DynamoModel_NodeDeleted(NodeModel node)
         {
-            if (node is IDrawable)
-                UnregisterFromVisualization(node);
+            UnregisterFromVisualization(node);
         }
 
         /// <summary>
@@ -204,11 +258,7 @@ namespace Dynamo
         /// <param name="node"></param>
         void DynamoModel_NodeAdded(NodeModel node)
         {
-            if (node is IDrawable)
-            {
-                node.PropertyChanged += node_PropertyChanged;
-                RegisterForVisualization(node);
-            }  
+            RegisterForVisualization(node);
         }
 
         /// <summary>
@@ -261,12 +311,18 @@ namespace Dynamo
         /// <param name="id">The node to register for visualization</param>
         public virtual void RegisterForVisualization(NodeModel node)
         {
+            //don't register if it's not drawable
+            if (!(node is DrawableNode))
+                return;
+
             //add a key in the dictionary
             if (!Visualizations.ContainsKey(node.GUID.ToString()))
             {
                 var viz = new Visualization {RequiresUpdate = false};
                 Visualizations.Add(node.GUID.ToString(), viz);
             }
+
+            node.PropertyChanged += node_PropertyChanged;
         }
 
         /// <summary>
@@ -355,7 +411,7 @@ namespace Dynamo
             var watch = new Stopwatch();
             watch.Start();
 
-            var drawables = GetUpstreamIDrawableIds(node.Inputs);
+            var drawables = GetUpstreamDrawableIds(node.Inputs);
             
             var ids = from viz in dynSettings.Controller.VisualizationManager.Visualizations
                       where drawables.Contains(viz.Key)
@@ -396,7 +452,7 @@ namespace Dynamo
         /// </summary>
         /// <param name="inputs">A dictionary describing the inputs on the node.</param>
         /// <returns>A collection of strings.</returns>
-        private List<string> GetUpstreamIDrawableIds(Dictionary<int, Tuple<int, NodeModel>> inputs)
+        private List<string> GetUpstreamDrawableIds(Dictionary<int, Tuple<int, NodeModel>> inputs)
         {
             var drawables = new List<string>();
 
@@ -406,15 +462,12 @@ namespace Dynamo
                     continue;
 
                 NodeModel node = pair.Value.Item2;
-                var drawable = node as IDrawable;
 
-                if(drawable != null)
+                if(node is DrawableNode)
                     drawables.Add(node.GUID.ToString());
 
                 if (node.IsUpstreamVisible)
-                    drawables.AddRange(GetUpstreamIDrawableIds(node.Inputs));
-                //else
-                //    continue; // don't bother checking if function
+                    drawables.AddRange(GetUpstreamDrawableIds(node.Inputs));
 
                 //if the node is function then get all the 
                 //drawables inside that node. only do this if the
@@ -426,13 +479,13 @@ namespace Dynamo
                     IEnumerable<NodeModel> topElements = func.Definition.Workspace.GetTopMostNodes();
                     foreach (NodeModel innerNode in topElements)
                     {
-                        var drawableInner = innerNode as IDrawable;
+                        var drawableInner = innerNode as DrawableNode;
 
                         if (drawableInner != null)
                             drawables.Add(innerNode.GUID.ToString());
 
                         if (node.IsUpstreamVisible)
-                            drawables.AddRange(GetUpstreamIDrawableIds(innerNode.Inputs));
+                            drawables.AddRange(GetUpstreamDrawableIds(innerNode.Inputs));
                     }
                 }
             }
@@ -488,6 +541,17 @@ namespace Dynamo
         {
             if (VisualizationUpdateComplete != null)
                 VisualizationUpdateComplete(sender, e);
+        }
+
+        /// <summary>
+        /// Called when we would like to request the clearing of any alternate drawing contexts.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public virtual void OnRequestAlternateContextClear(object sender, EventArgs e)
+        {
+            if (RequestAlternateContextClear != null)
+                RequestAlternateContextClear(sender, e);
         }
 
         /// <summary>
