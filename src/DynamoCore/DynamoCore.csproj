@@ -259,7 +259,6 @@ limitations under the License.
     <Compile Include="UI\ZoomBorder.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Search\SearchElements\TopSearchElement.cs" />
     <Compile Include="Nodes\dynFormula.cs" />
     <Compile Include="Core\Units.cs" />
     <Compile Include="Utilities\Extensions.cs" />

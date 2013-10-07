@@ -549,7 +549,8 @@ namespace Dynamo.ViewModels
                             if (t.Result.Any() && t.Result.ElementAt(0) is NodeSearchElement)
                             {
                                 _topResult.Items.Clear();
-                                _topResult.AddChild( new TopSearchElement( t.Result.ElementAt(0) ) );
+                                
+                                _topResult.AddChild( (t.Result.ElementAt(0) as NodeSearchElement).Copy() );
 
                                 _topResult.SetVisibilityToLeaves(true);
                                 _topResult.IsExpanded = true;
