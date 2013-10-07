@@ -522,12 +522,8 @@ namespace Dynamo.Tests
         public void TestDraggedNode()
         {
             var model = dynSettings.Controller.DynamoModel;
-            var sumData = new Dictionary<string, object>();
-            sumData.Add("name", "Add");
-            model.CreateNode(sumData);
+            model.CreateNodeInternal(16, 32, "Add");
             NodeModel locatable = Controller.DynamoViewModel.Model.Nodes[0];
-            locatable.X = 16;
-            locatable.Y = 32;
 
             Rect region = new Rect(-100, -100, 200, 200);
             Point startPoint = new Point(8, 64);
@@ -547,9 +543,7 @@ namespace Dynamo.Tests
         public void TestDraggedNodeLimited()
         {
             var model = dynSettings.Controller.DynamoModel;
-            var sumData = new Dictionary<string, object>();
-            sumData.Add("name", "Add");
-            model.CreateNode(sumData);
+            model.CreateNodeInternal(10, 20, "Add");
             NodeModel locatable = Controller.DynamoViewModel.Model.Nodes[0];
             locatable.X = 10;
             locatable.Y = 20;

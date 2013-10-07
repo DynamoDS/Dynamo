@@ -1377,6 +1377,12 @@ namespace Dynamo.Models
                 return null;
             }
 
+            if (command.DefaultPosition == false) // Position was specified.
+            {
+                node.X = command.X;
+                node.Y = command.Y;
+            }
+
             if ((node is Symbol || node is Output) && CurrentWorkspace is HomeWorkspace)
             {
                 WriteToLog("Cannot place dynSymbol or dynOutput in HomeWorkspace");
