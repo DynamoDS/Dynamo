@@ -528,7 +528,7 @@ namespace Dynamo
         }
 
         /// <summary>
-        /// Helper method to total the current visualizations.
+        /// Helper method to get the total numbers of current renderables.
         /// </summary>
         /// <param name="pointCount"></param>
         /// <param name="lineCount"></param>
@@ -536,7 +536,7 @@ namespace Dynamo
         /// <param name="xCount"></param>
         /// <param name="yCount"></param>
         /// <param name="zCount"></param>
-        public void GetVisualizationCounts(
+        public void GetRenderableCounts(
             out int pointCount, out int lineCount, out int meshCount, out int xCount, out int yCount, out int zCount)
         {
             var points = Visualizations.SelectMany(x => x.Value.Points);

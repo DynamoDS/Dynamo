@@ -1369,7 +1369,7 @@ namespace Dynamo.Models
 
             if ((node is Symbol || node is Output) && CurrentWorkspace is HomeWorkspace)
             {
-                dynSettings.Controller.DynamoModel.WriteToLog("Cannot place dynSymbol or dynOutput in HomeWorkspace");
+                dynSettings.Controller.DynamoModel.WriteToLog("Cannot place Symbol or Output in HomeWorkspace");
                 return null;
             }
 
