@@ -19,6 +19,139 @@ namespace Dynamo.Tests
            _search = new SearchViewModel();
         }
 
+        #region Refactoring
+
+        [Test]
+        public void CanRefactorCustomNodeName()
+        {
+            var nodeName = "TheNoodle";
+            var catName = "TheCat";
+            var descr = "TheCat";
+            var path = @"C:\turtle\graphics.dyn";
+            var guid1 = Guid.NewGuid();
+            var dummyInfo1 = new CustomNodeInfo(guid1, nodeName, catName, descr, path);
+
+            _search.Add(dummyInfo1);
+
+            Assert.AreEqual(1, _search.SearchDictionary.NumElements);
+
+            var newNodeName = "TheTurtle";
+            var newInfo = new CustomNodeInfo(guid1, newNodeName, catName, descr, path);
+            _search.Refactor(newInfo);
+
+            Assert.AreEqual(1, _search.SearchDictionary.NumElements);
+
+            // search for new name
+            _search.SearchAndUpdateResultsSync(newNodeName);
+
+            // results are correct
+            Assert.AreEqual(1, _search.SearchResults.Count);
+            var res1 = _search.SearchResults[0];
+            Assert.IsAssignableFrom(typeof(NodeSearchElement), res1);
+            var node1 = res1 as NodeSearchElement;
+            Assert.AreEqual(node1.Guid, guid1);
+
+            // search for old name
+            _search.SearchAndUpdateResultsSync(nodeName);
+
+            // results are correct
+            Assert.AreEqual(0, _search.SearchResults.Count);
+        }
+
+        [Test]
+        public void CanRefactorCustomNodeDescription()
+        {
+            var nodeName = "TheNoodle";
+            var catName = "TheCat";
+            var descr = "Cool description, man";
+            var path = @"C:\turtle\graphics.dyn";
+            var guid1 = Guid.NewGuid();
+            var dummyInfo1 = new CustomNodeInfo(guid1, nodeName, catName, descr, path);
+
+            _search.Add(dummyInfo1);
+
+            Assert.AreEqual(1, _search.SearchDictionary.NumElements);
+
+            // search for name
+            _search.SearchAndUpdateResultsSync(nodeName);
+
+            // results are correct
+            Assert.AreEqual(1, _search.SearchResults.Count);
+            var res1 = _search.SearchResults[0];
+            Assert.IsAssignableFrom(typeof(NodeSearchElement), res1);
+            var node1 = res1 as NodeSearchElement;
+            Assert.AreEqual(node1.Guid, guid1);
+            Assert.AreEqual(node1.Description, descr);
+
+            // refactor description
+            const string newDescription = "Tickle me elmo";
+            var newInfo = new CustomNodeInfo(guid1, nodeName, catName, newDescription, path);
+            _search.Refactor(newInfo);
+
+            // num elements is unchanged
+            Assert.AreEqual(1, _search.SearchDictionary.NumElements);
+
+            // search for name
+            _search.SearchAndUpdateResultsSync(nodeName);
+
+            // description is updated
+            Assert.AreEqual(1, _search.SearchResults.Count);
+            var res2 = _search.SearchResults[0];
+            Assert.IsAssignableFrom(typeof(NodeSearchElement), res2);
+            var node2 = res2 as NodeSearchElement;
+            Assert.AreEqual( guid1, node2.Guid );
+            Assert.AreEqual( newDescription, node2.Description);
+
+        }
+
+        [Test]
+        public void CanRefactorCustomNodeWhilePreservingDuplicates()
+        {
+            var nodeName = "TheNoodle";
+            var catName = "TheCat";
+            var descr = "TheCat";
+            var path = @"C:\turtle\graphics.dyn";
+            var guid1 = Guid.NewGuid();
+            var dummyInfo1 = new CustomNodeInfo(guid1, nodeName, catName, descr, path);
+            var guid2 = Guid.NewGuid();
+            var dummyInfo2 = new CustomNodeInfo(guid2, nodeName, catName, descr, path);
+
+            _search.Add(dummyInfo1);
+            _search.Add(dummyInfo2);
+
+            Assert.AreEqual(2, _search.SearchDictionary.NumElements);
+
+            // refactor one of the nodes with newNodeName
+            var newNodeName = "TheTurtle";
+            var newInfo = new CustomNodeInfo(guid1, newNodeName, catName, descr, path);
+            _search.Refactor(newInfo);
+
+            // num elements is unchanged
+            Assert.AreEqual(2, _search.SearchDictionary.NumElements);
+
+            // search for new name
+            _search.SearchAndUpdateResultsSync(newNodeName);
+
+            // results are correct - only one result
+            Assert.AreEqual(1, _search.SearchResults.Count);
+            var res1 = _search.SearchResults[0];
+            Assert.IsAssignableFrom(typeof(NodeSearchElement), res1);
+            var node1 = res1 as NodeSearchElement;
+            Assert.AreEqual(node1.Guid, guid1);
+
+            // search for old name
+            _search.SearchAndUpdateResultsSync(nodeName);
+
+            // results are correct - the first nodes are returned
+            Assert.AreEqual(1, _search.SearchResults.Count);
+            var res2 = _search.SearchResults[0];
+            Assert.IsAssignableFrom(typeof(NodeSearchElement), res2);
+            var node2 = res2 as NodeSearchElement;
+            Assert.AreEqual(node2.Guid, guid2);
+        }
+
+        #endregion
+
         #region Obtaining Stored Categories
 
         [Test]
@@ -94,7 +227,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void DoNotDuplicateAddedNodesInSearch()
+        public void CanDuplicateAddedNodesInSearch()
         {
             const string catName = "Category.Child.Thing.That";
             const string nodeName = "what is this";
@@ -102,8 +235,9 @@ namespace Dynamo.Tests
             {
                 _search.Add(nodeName, catName, "des", Guid.NewGuid());
             }
+            _search.MaxNumSearchResults = 100;
             _search.SearchAndUpdateResultsSync(nodeName);
-            Assert.AreEqual(1, _search.SearchResults.Count);
+            Assert.AreEqual(100, _search.SearchResults.Count);
             Assert.AreEqual(nodeName, _search.SearchResults[0].Name);
         }
 
@@ -147,7 +281,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void DoNotDuplicateAddedNodesInBrowser()
+        public void CanDuplicateAddedNodesInBrowser()
         {
             const string catName = "Category.Child.Thing.That";
             const string nodeName = "what is this";
@@ -157,7 +291,7 @@ namespace Dynamo.Tests
             }
 
             var nestedCat = _search.GetCategoryByName(catName);
-            Assert.AreEqual(1, nestedCat.Items.Count);
+            Assert.AreEqual(100, nestedCat.Items.Count);
             Assert.AreEqual(nodeName, nestedCat.Items[0].Name);
         }
 
@@ -289,17 +423,59 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void CanAddDuplicateNodesAndGetBothInSearch()
+        public void CannotAddCustomNodesWithSameGuids()
         {
+            var nodeName = "TheNoodle";
+            var catName = "TheCat";
+            var descr = "TheCat";
+            var path = @"C:\turtle\graphics.dyn";
+            var guid1 = Guid.NewGuid();
+            var dummyInfo1 = new CustomNodeInfo(guid1, nodeName, catName, descr, path);
+            var dummyInfo2 = new CustomNodeInfo(guid1, nodeName, catName, descr, path);
 
-            Assert.Inconclusive();
+            _search.Add(dummyInfo1);
+            _search.Add(dummyInfo2);
+
+            Assert.AreEqual(1, _search.SearchDictionary.NumElements);
+
+            _search.SearchAndUpdateResultsSync(nodeName);
+
+            Assert.AreEqual(1, _search.SearchResults.Count);
+
+            var res1 = _search.SearchResults[0];
+
+            Assert.IsAssignableFrom(typeof(NodeSearchElement), res1);
+
+            var node1 = res1 as NodeSearchElement;
+
+            Assert.AreEqual(node1.Guid, guid1);
+
         }
 
         [Test]
         public void CanRemoveNodeAndCategoryByFunctionId()
         {
+            var nodeName = "TheNoodle";
+            var catName = "TheCat";
+            var descr = "TheCat";
+            var path = @"C:\turtle\graphics.dyn";
+            var guid1 = Guid.NewGuid();
+            var dummyInfo1 = new CustomNodeInfo(guid1, nodeName, catName, descr, path);
 
-            Assert.Inconclusive();
+            // add custom node
+            _search.Add(dummyInfo1);
+
+            // confirm it's in the dictionary
+            Assert.AreEqual(1, _search.SearchDictionary.NumElements);
+
+            // remove custom node
+            _search.RemoveNodeAndEmptyParentCategory(guid1);
+
+            // it's gone
+            Assert.AreEqual(0, _search.SearchDictionary.NumElements);
+            _search.SearchAndUpdateResultsSync(nodeName);
+            Assert.AreEqual(0, _search.SearchResults.Count);
+
         }
 
         [Test]
@@ -460,15 +636,34 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void CanRemoveDuplicateNode()
+        public void CanRemoveSingleCustomNodeByIdWhereThereAreDuplicatesWithDifferentIds()
         {
-            Assert.Inconclusive();
-        }
+            var nodeName = "TheNoodle";
+            var catName = "TheCat";
+            var descr = "TheCat";
+            var path = @"C:\turtle\graphics.dyn";
+            var guid1 = Guid.NewGuid();
+            var guid2 = Guid.NewGuid();
+            var dummyInfo1 = new CustomNodeInfo(guid1, nodeName, catName, descr, path);
+            var dummyInfo2 = new CustomNodeInfo(guid2, nodeName, catName, descr, path);
 
-        [Test]
-        public void CanRemoveSingleNodeWhereThereAreDuplicates()
-        {
-            Assert.Inconclusive();
+            _search.Add(dummyInfo1);
+            _search.Add(dummyInfo2);
+
+            Assert.AreEqual(2, _search.SearchDictionary.NumElements);
+
+            _search.RemoveNodeAndEmptyParentCategory(guid2);
+
+            Assert.AreEqual(1, _search.SearchDictionary.NumElements);
+
+            _search.SearchAndUpdateResultsSync(nodeName);
+
+            Assert.AreEqual(1, _search.SearchResults.Count);
+
+            var res1 = _search.SearchResults[0];
+            Assert.IsAssignableFrom(typeof(NodeSearchElement), res1);
+            var node1 = res1 as NodeSearchElement;
+            Assert.AreEqual(node1.Guid, guid1);
         }
 
         [Test]

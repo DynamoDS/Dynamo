@@ -11,9 +11,9 @@ using Dynamo.Tests;
 using Dynamo.Utilities;
 using NUnit.Framework;
 
-namespace Dynamo
+namespace Dynamo.Tests
 {
-    class WorkspaceSaving : DynamoUnitTest
+    public class WorkspaceSaving : DynamoUnitTest
     {
 
         [Test]
@@ -649,13 +649,13 @@ namespace Dynamo
                 model.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel) as CustomNodeWorkspaceModel;
 
             Assert.IsNotNull(nodeWorkspace);
-            var oldDef = nodeWorkspace.FunctionDefinition;
+            var oldId = nodeWorkspace.FunctionDefinition.FunctionId;
 
             var newPath = this.GetNewFileNameOnTempPath("dyf");
             var originalNumElements = Controller.SearchViewModel.SearchDictionary.NumElements;
             nodeWorkspace.SaveAs(newPath); // introduces new function id
 
-            var newDef = nodeWorkspace.FunctionDefinition;
+            var newId = nodeWorkspace.FunctionDefinition.FunctionId;
             
             Controller.SearchViewModel.SearchAndUpdateResultsSync("Constant2");
             Assert.AreEqual(originalNumElements + 1, Controller.SearchViewModel.SearchDictionary.NumElements);
@@ -671,8 +671,8 @@ namespace Dynamo
             var node1 = res1 as NodeSearchElement;
             var node2 = res2 as NodeSearchElement;
 
-            Assert.AreEqual(node1.Guid, oldDef.FunctionId);
-            Assert.AreEqual(node2.Guid, newDef.FunctionId);
+            Assert.IsTrue((node1.Guid == oldId && node2.Guid == newId) ||
+                          (node1.Guid == newId && node2.Guid == oldId));
 
         }
 
@@ -729,6 +729,116 @@ namespace Dynamo
             }
             
         }
+
+        [Test]
+        public void CustomNodeSaveAsAddsNewCustomNodeToSearchAndItCanBeRefactoredWhilePreservingOriginalFromExistingDyf()
+        {
+            // open custom node
+            // SaveAs
+            // two nodes are returned in search on custom node name, difer 
+
+            var model = Controller.DynamoModel;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\custom_node_saving", "Constant2.dyf");
+            model.Open(examplePath);
+
+            var nodeWorkspace =
+                model.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel) as CustomNodeWorkspaceModel;
+
+            Assert.IsNotNull(nodeWorkspace);
+            var oldId = nodeWorkspace.FunctionDefinition.FunctionId;
+
+            var newPath = this.GetNewFileNameOnTempPath("dyf");
+            var originalNumElements = Controller.SearchViewModel.SearchDictionary.NumElements;
+
+            // save as
+            nodeWorkspace.SaveAs(newPath); // introduces new function id
+
+            var newId = nodeWorkspace.FunctionDefinition.FunctionId;
+
+            // refactor oldId with new name
+
+            var nodeName = "TheNoodle";
+            var catName = "TheCat";
+            var descr = "TheCat";
+            var dummyInfo1 = new CustomNodeInfo(newId, nodeName, catName, descr, "");
+            Controller.CustomNodeManager.Refactor(dummyInfo1);
+
+            // num elements is unchanged by refactor
+            Assert.AreEqual(originalNumElements + 1, Controller.SearchViewModel.SearchDictionary.NumElements);
+
+            // search for refactored node
+            Controller.SearchViewModel.SearchAndUpdateResultsSync("TheNoodle");
+
+            // results are correct
+            Assert.AreEqual(1, Controller.SearchViewModel.SearchResults.Count);
+            var node3 = Controller.SearchViewModel.SearchResults[0] as NodeSearchElement;
+            Assert.AreEqual(newId, node3.Guid);
+
+            // search for un-refactored node
+            Controller.SearchViewModel.SearchAndUpdateResultsSync("Constant2");
+
+            // results are correct
+            Assert.AreEqual(1, Controller.SearchViewModel.SearchResults.Count);
+            var node4 = Controller.SearchViewModel.SearchResults[0] as NodeSearchElement;
+            Assert.AreEqual(oldId, node4.Guid);
+
+        }
+
+        [Test]
+        public void CustomNodeSaveAsAddsNewCustomNodeToSearchAndItCanBeRefactoredWhilePreservingOriginalFromExistingDyf2()
+        {
+            // open custom node
+            // SaveAs
+            // two nodes are returned in search on custom node name, difer 
+
+            var model = Controller.DynamoModel;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\custom_node_saving", "Constant2.dyf");
+            model.Open(examplePath);
+
+            var nodeWorkspace =
+                model.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel) as CustomNodeWorkspaceModel;
+
+            Assert.IsNotNull(nodeWorkspace);
+            var oldId = nodeWorkspace.FunctionDefinition.FunctionId;
+
+            var newPath = this.GetNewFileNameOnTempPath("dyf");
+            var originalNumElements = Controller.SearchViewModel.SearchDictionary.NumElements;
+
+            // save as
+            nodeWorkspace.SaveAs(newPath); // introduces new function id
+
+            var newId = nodeWorkspace.FunctionDefinition.FunctionId;
+
+            // refactor oldId with new name
+
+            var nodeName = "Constant2 Alt";
+            var catName = "TheCat";
+            var descr = "TheCat";
+            var dummyInfo1 = new CustomNodeInfo(newId, nodeName, catName, descr, "");
+            Controller.CustomNodeManager.Refactor(dummyInfo1);
+
+            // num elements is unchanged by refactor
+            Assert.AreEqual(originalNumElements + 1, Controller.SearchViewModel.SearchDictionary.NumElements);
+
+            // search common base name
+            Controller.SearchViewModel.SearchAndUpdateResultsSync("Constant2");
+
+            // results are correct
+            Assert.AreEqual(2, Controller.SearchViewModel.SearchResults.Count);
+
+            var res1 = Controller.SearchViewModel.SearchResults[0];
+            var res2 = Controller.SearchViewModel.SearchResults[1];
+
+            Assert.IsAssignableFrom(typeof(NodeSearchElement), res1);
+            Assert.IsAssignableFrom(typeof(NodeSearchElement), res2);
+
+            var node1 = res1 as NodeSearchElement;
+            var node2 = res2 as NodeSearchElement;
+
+            Assert.IsTrue((node1.Guid == oldId && node2.Guid == newId) ||
+                          (node1.Guid == newId && node2.Guid == oldId));
+        }
+
 
         #endregion
     }

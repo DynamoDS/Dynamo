@@ -999,7 +999,7 @@ namespace Dynamo.ViewModels
         public void RemoveNodeAndEmptyParentCategory(Guid customNodeFunctionId)
         {
             var nodes = _browserLeaves
-                .Select(x=>x is NodeSearchElement)
+                .Where(x => x is NodeSearchElement)
                 .Cast<NodeSearchElement>()
                 .Where(x => x.Guid == customNodeFunctionId)
                 .ToList();
@@ -1011,7 +1011,7 @@ namespace Dynamo.ViewModels
 
             foreach (var node in nodes)
             {
-                RemoveNode(node);
+                RemoveNode(node.Guid);
                 RemoveEmptyCategory(node);
             }
 
@@ -1022,7 +1022,7 @@ namespace Dynamo.ViewModels
             this.Add(nodeInfo.Name, nodeInfo.Category, nodeInfo.Description, nodeInfo.Guid);
         }
 
-        internal void Refactor(CustomNodeInfo nodeInfo)
+        public void Refactor(CustomNodeInfo nodeInfo)
         {
             this.RemoveNodeAndEmptyParentCategory(nodeInfo.Guid);
             this.Add(nodeInfo);
