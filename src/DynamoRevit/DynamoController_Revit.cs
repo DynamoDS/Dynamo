@@ -109,6 +109,7 @@ namespace Dynamo
 
             var values = dynSettings.Controller.DynamoModel.Nodes
                                     .Where(x=>!(x is SelectionBase))
+                                    .Where(x=>x.IsVisible)
                                    .Where(x => x.OldValue != null)
                                    .Where(x => x.OldValue is FScheme.Value.Container || x.OldValue is FScheme.Value.List)
                                    .Select(x => x.OldValue);
@@ -143,6 +144,12 @@ namespace Dynamo
             var geom = ((FScheme.Value.Container)value).Item as GeometryObject;
             if (geom != null)
                 geoms.Add(geom);
+
+            var ps = ((FScheme.Value.Container) value).Item as ParticleSystem;
+            if (ps != null)
+            {
+                geoms.AddRange(ps.Springs.Select(spring => Line.CreateBound(spring.getOneEnd().getPosition(), spring.getTheOtherEnd().getPosition())).Cast<GeometryObject>());
+            }
 
             return geoms;
         }

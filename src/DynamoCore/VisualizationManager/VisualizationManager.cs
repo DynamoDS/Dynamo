@@ -626,7 +626,7 @@ namespace Dynamo
             var drawable_dict = GetAllDrawablesInModel();
 
             Debug.WriteLine(String.Format("{0} visualizations to update", drawable_dict.Count()));
-            Debug.WriteLine(String.Format("Updating visualizations on thread {0}.", Thread.CurrentThread.ManagedThreadId));
+            //Debug.WriteLine(String.Format("Updating visualizations on thread {0}.", Thread.CurrentThread.ManagedThreadId));
 
             var sw = new Stopwatch();
             sw.Start();
@@ -649,7 +649,6 @@ namespace Dynamo
 
             sw.Stop();
             Debug.WriteLine(String.Format("{0} elapsed for generating visualizations.", sw.Elapsed));
-            DynamoLogger.Instance.Log(String.Format("{0} elapsed for generating visualizations.", sw.Elapsed));
 
             //generate an aggregated render description to send to the UI
             var aggRd = AggregateRenderDescriptions();
