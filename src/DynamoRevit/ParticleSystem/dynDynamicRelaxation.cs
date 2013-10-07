@@ -28,7 +28,7 @@ using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Nodes
 {
-    public abstract class ParticleSystemBase : NodeModel , IDrawable
+    public abstract class ParticleSystemBase : DrawableNode
     {
         internal ParticleSystem ParticleSystem;
 
@@ -36,18 +36,6 @@ namespace Dynamo.Nodes
         {
             ParticleSystem = new ParticleSystem();
         }
-
-        #region IDrawableInterface
-
-        public List<object> VisualizationGeometry
-        {
-            get
-            {
-                return dynSettings.Controller.VisualizationManager.Visualizations[this.GUID.ToString()].Geometry;
-            }
-        }
-        
-        #endregion
     }
 
     [NodeName("Create Particle System")]

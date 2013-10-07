@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Controls;
 using System.Reflection;
@@ -150,8 +151,8 @@ namespace Dynamo.Utilities
 
             try
             {
-                Type[] loadedTypes = assembly.GetTypes();
-
+                var loadedTypes = assembly.GetTypes();
+ 
                 foreach (var t in loadedTypes)
                 {
                     try
@@ -269,6 +270,7 @@ namespace Dynamo.Utilities
 
             return AssemblyPathToTypesLoaded[assembly.Location];
         }
+
 
         /// <summary>
         ///     Setup the "Samples" sub-menu with contents of samples directory.
