@@ -142,6 +142,7 @@ limitations under the License.
     <Compile Include="Nodes\FunctionDefinition.cs" />
     <Compile Include="Nodes\Geometry.cs" />
     <Compile Include="PackageManager\PackageManagerClient.cs" />
+    <Compile Include="Search\SearchElements\CustomNodeSearchElement.cs" />
     <Compile Include="UI\Commands\BrowserItemCommands.cs" />
     <Compile Include="UI\Commands\Commands.cs" />
     <Compile Include="Core\DynamoLogger.cs" />

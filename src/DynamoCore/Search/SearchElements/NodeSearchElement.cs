@@ -126,27 +126,11 @@ namespace Dynamo.Search.SearchElements
         /// hits enter in the SearchView.</summary>
         public override void Execute()
         {
-            //dynSettings.Controller.SearchViewModel.Visible = Visibility.Collapsed;
-            string name;
-
-            if (this.Node != null && this.Node is Function)
-            {
-                name = ((Function)Node).Definition.FunctionId.ToString();
-            } 
-            else if (this.Guid != Guid.Empty && this._type == "Custom Node") 
-            {
-                name = this.Guid.ToString();
-            }
-            else
-            {
-                name = Name;
-            }
-
             // create node
             var guid = Guid.NewGuid();
             var nodeParams = new Dictionary<string, object>()
                 {
-                    {"name", name},
+                    {"name", this.Name},
                     {"transformFromOuterCanvasCoordinates", true},
                     {"guid", guid}
                 };
@@ -157,7 +141,6 @@ namespace Dynamo.Search.SearchElements
             var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
             if (placedNode != null)
             {
-                //dynSettings.Controller.OnRequestSelect(this, new ModelEventArgs(placedNode));
                 DynamoSelection.Instance.ClearSelection();
                 DynamoSelection.Instance.Selection.Add(placedNode);
             }

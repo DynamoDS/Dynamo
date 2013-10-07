@@ -855,10 +855,10 @@ namespace Dynamo.ViewModels
         public void RemoveNode(Guid funcId)
         {
             // remove from search dictionary
-            SearchDictionary.Remove((x) => x is NodeSearchElement && ((NodeSearchElement)x).Guid == funcId);
+            SearchDictionary.Remove((x) => x is CustomNodeSearchElement && ((CustomNodeSearchElement)x).Guid == funcId);
 
             // remove from browser leaves
-            _browserLeaves.Where(x => x is NodeSearchElement && ((NodeSearchElement) x).Guid == funcId).ToList().ForEach(x => _browserLeaves.Remove(x));
+            _browserLeaves.Where(x => x is CustomNodeSearchElement && ((CustomNodeSearchElement)x).Guid == funcId).ToList().ForEach(x => _browserLeaves.Remove(x));
         }
 
         /// <summary>
@@ -888,8 +888,8 @@ namespace Dynamo.ViewModels
         public void RemoveNodeAndEmptyParentCategory(Guid customNodeFunctionId)
         {
             var nodes = _browserLeaves
-                .Where(x => x is NodeSearchElement)
-                .Cast<NodeSearchElement>()
+                .Where(x => x is CustomNodeSearchElement)
+                .Cast<CustomNodeSearchElement>()
                 .Where(x => x.Guid == customNodeFunctionId)
                 .ToList();
 
