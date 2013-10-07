@@ -20,7 +20,7 @@ namespace Dynamo.Tests
     [Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
     [Journaling(JournalingMode.UsingCommandData)]
-    internal class DynamoTestFramework : IExternalCommand
+    public class DynamoTestFramework : IExternalCommand
     {
         private UIDocument m_doc;
         private UIApplication m_revit;
