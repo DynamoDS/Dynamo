@@ -77,8 +77,9 @@ namespace Dynamo.Nodes
                 get
                 {
 
-                    if (dynSettings.Controller.CustomNodeManager.NodeCategories.ContainsKey(this.Definition.FunctionId))
-                        return dynSettings.Controller.CustomNodeManager.NodeCategories[this.Definition.FunctionId];
+                    if (dynSettings.Controller.CustomNodeManager.NodeInfos.ContainsKey(this.Definition.FunctionId))
+                        return
+                            dynSettings.Controller.CustomNodeManager.NodeInfos[this.Definition.FunctionId].Description;
                     else
                     {
                         return BuiltinNodeCategories.SCRIPTING_CUSTOMNODES;

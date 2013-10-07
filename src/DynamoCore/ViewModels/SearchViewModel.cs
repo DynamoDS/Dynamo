@@ -822,25 +822,24 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="workspace">A dynWorkspace to add</param>
         /// <param name="name">The name to use</param>
-        public void Add(string name, string category, string description, Guid functionId)
+        public bool Add(string name, string category, string description, Guid functionId)
         {
             if (name == "Home")
-                return;
+                return false;
 
             // create the node in search
             var nodeEle = new NodeSearchElement(name, description, functionId);
             nodeEle.FullCategoryName = category;
 
             if (SearchDictionary.Contains(nodeEle))
-                return;
+                return false;
 
             SearchDictionary.Add(nodeEle, nodeEle.Name);
             SearchDictionary.Add(nodeEle, category + "." + nodeEle.Name);
 
             TryAddCategoryAndItem(category, nodeEle);
 
-            
-
+            return true;
         }
 
         /// <summary>
@@ -964,6 +963,15 @@ namespace Dynamo.ViewModels
             _browserLeaves.Where(x => x.Name == nodeName).ToList().ForEach(x => _browserLeaves.Remove(x));
         }
 
+        public void RemoveNode(Guid funcId)
+        {
+            // remove from search dictionary
+            SearchDictionary.Remove((x) => x is NodeSearchElement && ((NodeSearchElement)x).Guid == funcId);
+
+            // remove from browser leaves
+            _browserLeaves.Where(x => x is NodeSearchElement && ((NodeSearchElement) x).Guid == funcId).ToList().ForEach(x => _browserLeaves.Remove(x));
+        }
+
         /// <summary>
         /// Removes a node from search and all empty parent categories
         /// </summary>
@@ -984,6 +992,31 @@ namespace Dynamo.ViewModels
 
         }
 
+        /// <summary>
+        /// Removes a node from search and all empty parent categories
+        /// </summary>
+        /// <param name="nodeName">The name of the node</param>
+        public void RemoveNodeAndEmptyParentCategory(Guid customNodeFunctionId)
+        {
+            var nodes = _browserLeaves
+                .Select(x=>x is NodeSearchElement)
+                .Cast<NodeSearchElement>()
+                .Where(x => x.Guid == customNodeFunctionId)
+                .ToList();
+
+            if (!nodes.Any())
+            {
+                return;
+            }
+
+            foreach (var node in nodes)
+            {
+                RemoveNode(node);
+                RemoveEmptyCategory(node);
+            }
+
+        }
+
         public void Add(CustomNodeInfo nodeInfo)
         {
             this.Add(nodeInfo.Name, nodeInfo.Category, nodeInfo.Description, nodeInfo.Guid);
@@ -991,7 +1024,7 @@ namespace Dynamo.ViewModels
 
         internal void Refactor(CustomNodeInfo nodeInfo)
         {
-            this.RemoveNodeAndEmptyParentCategory(nodeInfo.Name);
+            this.RemoveNodeAndEmptyParentCategory(nodeInfo.Guid);
             this.Add(nodeInfo);
         }
 

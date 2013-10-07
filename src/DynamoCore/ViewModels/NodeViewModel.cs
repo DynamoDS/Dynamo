@@ -443,7 +443,7 @@ namespace Dynamo.ViewModels
         {
             var f = (nodeLogic as Function);
             if(f!= null)
-                dynSettings.Controller.DynamoViewModel.ViewCustomNodeWorkspace(f.Definition);
+                dynSettings.Controller.DynamoViewModel.FocusCustomNodeWorkspace(f.Definition);
         }
 
         private bool CanViewCustomNodeWorkspace(object parameter)

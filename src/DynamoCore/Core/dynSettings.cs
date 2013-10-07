@@ -31,7 +31,7 @@ namespace Dynamo.Utilities
         public static ObservableDictionary<string, Guid> CustomNodes {
             get
             {
-                return dynSettings.Controller.CustomNodeManager.NodeNames;
+                return dynSettings.Controller.CustomNodeManager.GetAllNodeNames();
             }
         }
 

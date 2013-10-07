@@ -20,36 +20,30 @@ namespace Dynamo.Nodes
             RequiresRecalc = true;
         }
 
-        public Guid FunctionId { get; private set; }
+        public Guid FunctionId { get; internal set; }
         public CustomNodeWorkspaceModel WorkspaceModel { get; internal set; }
         public List<Tuple<int, NodeModel>> OutPortMappings { get; internal set; }
         public List<Tuple<int, NodeModel>> InPortMappings { get; internal set; }
 
         public bool RequiresRecalc { get; internal set; }
 
-        /// <summary>
-        /// A list of all dependencies with no duplicates
-        /// </summary>
         public IEnumerable<FunctionDefinition> Dependencies
         {
             get
             {
-                return findAllDependencies(new HashSet<FunctionDefinition>());
+                return FindAllDependencies(new HashSet<FunctionDefinition>());
             }
         }
 
-        /// <summary>
-        /// A list of all direct dependencies without duplicates
-        /// </summary>
         public IEnumerable<FunctionDefinition> DirectDependencies
         {
             get
             {
-                return findDirectDependencies();
+                return FindDirectDependencies();
             }
         }
 
-        private IEnumerable<FunctionDefinition> findAllDependencies(HashSet<FunctionDefinition> dependencySet)
+        private IEnumerable<FunctionDefinition> FindAllDependencies(HashSet<FunctionDefinition> dependencySet)
         {
             var query = DirectDependencies.Where(def => !dependencySet.Contains(def));
 
@@ -57,12 +51,12 @@ namespace Dynamo.Nodes
             {
                 yield return definition;
                 dependencySet.Add(definition);
-                foreach (var def in definition.findAllDependencies(dependencySet))
+                foreach (var def in definition.FindAllDependencies(dependencySet))
                     yield return def;
             }
         }
 
-        private IEnumerable<FunctionDefinition> findDirectDependencies()
+        private IEnumerable<FunctionDefinition> FindDirectDependencies()
         {
             return WorkspaceModel.Nodes
                             .OfType<Function>()
@@ -223,28 +217,20 @@ namespace Dynamo.Nodes
 
         }
 
-        public void AddToSearch()
+        public bool AddToSearch()
         {
-            dynSettings.Controller.SearchViewModel.Add(
+            return dynSettings.Controller.SearchViewModel.Add(
                 this.WorkspaceModel.Name,
                 this.WorkspaceModel.Category,
                 this.WorkspaceModel.Description,
                 this.FunctionId);
         }
 
-        public bool UpdateFromWorkspace(bool writeDefinition = true, bool addToSearch = false, bool compileFunction = true)
+        public bool SyncWithWorkspace(bool addToSearch, bool compileFunction)
         {
 
             // Get the internal nodes for the function
             var functionWorkspace = this.WorkspaceModel;
-
-            string path = this.WorkspaceModel.FileName;
-
-            // If asked to, write the definition to file
-            if (writeDefinition && !System.String.IsNullOrEmpty(path))
-            {
-                Models.WorkspaceModel.SaveWorkspace(path, functionWorkspace);
-            }
 
             try
             {
@@ -258,16 +244,17 @@ namespace Dynamo.Nodes
                 }
 
                 var info = new CustomNodeInfo(this.FunctionId, functionWorkspace.Name, functionWorkspace.Category,
-                                              functionWorkspace.Description, path);
-                dynSettings.Controller.CustomNodeManager.SetNodeInfo(info);
+                                              functionWorkspace.Description, this.WorkspaceModel.FileName);
 
+                dynSettings.Controller.CustomNodeManager.SetNodeInfo(info);
 
                 IEnumerable<string> inputNames, outputNames;
                 this.CompileAndAddToEnvironment(dynSettings.Controller.FSchemeEnvironment, out inputNames, out outputNames);
 
                 //Update existing function nodes which point to this function to match its changes
-                dynSettings.Controller.DynamoModel.AllNodes.OfType<Function>()
-                    .Where(el => el.Definition == this)
+                dynSettings.Controller.DynamoModel.AllNodes
+                    .OfType<Function>()
+                    .Where(el => el.Definition.FunctionId == this.FunctionId)
                     .ToList()
                     .ForEach( node =>
                         {
@@ -278,7 +265,6 @@ namespace Dynamo.Nodes
 
                 //Call OnSave for all saved elements
                functionWorkspace.Nodes.ToList().ForEach(x=>x.onSave());
-
 
             }
             catch (Exception e)
