@@ -151,6 +151,12 @@ namespace Dynamo
                 geoms.AddRange(ps.Springs.Select(spring => Line.CreateBound(spring.getOneEnd().getPosition(), spring.getTheOtherEnd().getPosition())).Cast<GeometryObject>());
             }
 
+            var pt = ((FScheme.Value.Container)value).Item as XYZ;
+            if (pt != null)
+            {
+                geoms.AddRange(ps.Springs.Select(spring => Line.CreateBound(spring.getOneEnd().getPosition(), spring.getTheOtherEnd().getPosition())).Cast<GeometryObject>());
+            }
+
             return geoms;
         }
 
