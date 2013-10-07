@@ -595,7 +595,7 @@ namespace Dynamo
             return true;
         }
 
-        public virtual void AddPythonBindings()
+        private void AddPythonBindings()
         {
             try
             {

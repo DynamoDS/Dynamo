@@ -768,7 +768,12 @@ namespace Dynamo.Models
 
                     NodeModel el = CreateNodeInstance(type, nickname, guid);
                     el.WorkSpace = CurrentWorkspace;
-                    el.Load(elNode);
+
+                    el.Load(
+                        elNode, 
+                        string.IsNullOrEmpty(version)
+                            ? new Version(0, 0, 0, 0) 
+                            : new Version(version));
 
                     CurrentWorkspace.Nodes.Add(el);
 
@@ -1382,7 +1387,7 @@ namespace Dynamo.Models
             node.WorkSpace = CurrentWorkspace;
 
             if (null != xmlNode)
-                node.Load(xmlNode);
+                node.Load(xmlNode, HomeSpace.WorkspaceVersion);
 
             // Override the guid so we can store for connection lookup
             node.GUID = command.NodeId;
