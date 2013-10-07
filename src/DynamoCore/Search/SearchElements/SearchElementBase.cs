@@ -12,7 +12,10 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
+using System.Collections.Generic;
+using System.Windows.Input;
 using Dynamo.Nodes.Search;
+using Dynamo.Utilities;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -20,6 +23,7 @@ namespace Dynamo.Search.SearchElements
     /// A base class for elements found in search </summary>
     public abstract class SearchElementBase : BrowserInternalElement
     {
+
         /// <summary>
         /// Searchable property </summary>
         /// <value>

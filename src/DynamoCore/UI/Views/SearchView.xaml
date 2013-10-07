@@ -220,6 +220,11 @@
                         </Setter.Value>
                     </Setter>
                 </Style>
+
+                <DataTemplate x:Key="ContextMenuStyle">
+                    <TextBlock  Text="{Binding Key}" />
+                </DataTemplate>
+
             </ScrollViewer.Resources>
 
             <!--CATEGORIES-->
@@ -233,7 +238,7 @@
                 </TreeView.Template>
 
                 <TreeView.Resources>
-
+                    
                     <HierarchicalDataTemplate DataType = "{x:Type search:BrowserRootElement}" ItemsSource="{Binding Path=Items}" >
 
                         <TextBlock Foreground="WhiteSmoke" FontSize="14" Text="{Binding Path=Name}"/>
@@ -243,53 +248,6 @@
                     <HierarchicalDataTemplate DataType = "{x:Type search:BrowserInternalElement}" ItemsSource="{Binding Path=Items}">
 
                         <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}"/>
-
-                    </HierarchicalDataTemplate>
-
-                    <HierarchicalDataTemplate DataType="{x:Type searchElements:TopSearchElement}">
-
-                        <StackPanel Orientation="Horizontal">
-
-                            <StackPanel.ToolTip>
-                                <StackPanel Width ="Auto" MaxWidth="235" MaxHeight="200" Height="Auto">
-
-                                    <TextBlock Name="type" TextWrapping="Wrap" HorizontalAlignment="Stretch" FontWeight="Bold" VerticalAlignment="Top" 
-                                                 Text="{Binding Path=Type}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" />
-
-                                    <TextBlock Name="name" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
-                                                 Text="{Binding Path=Description, Converter={StaticResource TooltipLengthTruncater}}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" Visibility="{Binding Path=Description, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
-
-                                </StackPanel>
-                            </StackPanel.ToolTip>
-
-                            <Border Background="#444" Margin="0 0 10 0" CornerRadius="1" BorderThickness="1" BorderBrush="Black">
-
-                                <Border.Style>
-                                    <Style TargetType="Border">
-                                        <Style.Triggers>
-
-                                            <DataTrigger Binding="{Binding Type}" Value="Custom Node">
-                                                <Setter Property="Visibility" Value="Visible"></Setter>
-                                            </DataTrigger>
-
-                                            <DataTrigger Binding="{Binding Type}" Value="Node">
-                                                <Setter Property="Visibility" Value="Hidden"></Setter>
-                                            </DataTrigger>
-
-                                        </Style.Triggers>
-                                    </Style>
-                                </Border.Style>
-
-                                <TextBlock Foreground="Black" FontWeight="Bold" Padding="2" FontSize="9" Text="C" ToolTipService.InitialShowDelay="0">
-                                </TextBlock>
-
-                            </Border>
-
-                            <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" ToolTipService.InitialShowDelay="0">
-
-                            </TextBlock>
-
-                        </StackPanel>
 
                     </HierarchicalDataTemplate>
 
@@ -340,13 +298,13 @@
                             <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" ToolTipService.InitialShowDelay="0" />
 
                             <StackPanel.ContextMenu>
-                                <ContextMenu>
-                                    
-                                    <MenuItem  Header="_Edit..." Name="ShowElementsInContext" Command="{Binding EditCommand}" />
 
+                                <ContextMenu>
+                                    <MenuItem Header="Edit..." Command="{Binding EditCommand}"></MenuItem>
                                 </ContextMenu>
+                                    
                             </StackPanel.ContextMenu>
-                            
+                                
                         </StackPanel>
 
                     </HierarchicalDataTemplate>

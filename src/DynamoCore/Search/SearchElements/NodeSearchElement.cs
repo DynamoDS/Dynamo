@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Windows.Input;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
@@ -23,6 +24,7 @@ using String = System.String;
 
 namespace Dynamo.Search.SearchElements
 {
+
     /// <summary>
     /// A search element representing a local node </summary>
     public partial class NodeSearchElement : SearchElementBase, IEquatable<NodeSearchElement>
@@ -57,6 +59,7 @@ namespace Dynamo.Search.SearchElements
         public override string Description { get { return _description; } }
 
         private bool _searchable = true;
+
         public override bool Searchable { get { return _searchable; } }
 
         public void SetSearchable(bool s)
@@ -107,6 +110,11 @@ namespace Dynamo.Search.SearchElements
             this.Keywords = String.Join(" ", tags);
             this._type = "Node";
             this._description = description;
+        }
+
+        public virtual NodeSearchElement Copy()
+        {
+            return (NodeSearchElement) this.MemberwiseClone();
         }
 
         private void ToggleIsVisible(object parameter)
