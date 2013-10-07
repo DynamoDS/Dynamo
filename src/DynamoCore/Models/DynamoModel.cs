@@ -425,6 +425,8 @@ namespace Dynamo.Models
             var manager = dynSettings.Controller.CustomNodeManager;
             var info = manager.AddFileToPath(workspaceHeader.FileName);
             var funcDef = manager.GetFunctionDefinition(info.Guid);
+            funcDef.AddToSearch();
+
             var ws = funcDef.WorkspaceModel;
             ws.Zoom = workspaceHeader.Zoom;
             ws.HasUnsavedChanges = false;
@@ -434,6 +436,7 @@ namespace Dynamo.Models
                 this.Workspaces.Add(ws);
             }
 
+            
             var vm = dynSettings.Controller.DynamoViewModel.Workspaces.First(x => x.Model == ws);
             vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(workspaceHeader.X, workspaceHeader.Y)));
 
@@ -460,6 +463,7 @@ namespace Dynamo.Models
                 if (!dynSettings.Controller.DynamoViewModel.ViewingHomespace)
                     ViewHomeWorkspace();
 
+                // add custom nodes in dyn directory to path
                 var dirName = Path.GetDirectoryName(xmlPath);
                 dynSettings.Controller.CustomNodeManager.AddDirectoryToSearchPath(dirName);
                 dynSettings.Controller.CustomNodeManager.UpdateSearchPath();

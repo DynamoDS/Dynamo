@@ -106,10 +106,9 @@ namespace Dynamo.Views
 
             if(args.Success)
             {
-
                 if (workspace is CustomNodeWorkspaceModel)
                 {
-                    var def = dynSettings.CustomNodeManager.GetDefinitionFromWorkspace(workspace);
+                    var def = (workspace as CustomNodeWorkspaceModel).FunctionDefinition;
                     dynSettings.CustomNodeManager.Refactor(def.FunctionId, args.Name, args.Category, args.Description);
                 }
 

@@ -25,7 +25,7 @@ namespace Dynamo.Search.SearchElements
 {
     /// <summary>
     /// A search element representing a local node </summary>
-    public partial class NodeSearchElement : SearchElementBase, IEquatable<NodeSearchElement>
+    public partial class NodeSearchElement : SearchElementBase
     {
         #region Properties
 
@@ -97,20 +97,6 @@ namespace Dynamo.Search.SearchElements
         }
 
         #endregion
-
-        /// <summary>
-        /// The class constructor for a built-in type that is already loaded. </summary>
-        /// <param name="node">The local node</param>
-        public NodeSearchElement(NodeModel node)
-        {
-            //ToggleDescriptionVisibilityCommand = new DelegateCommand(ToggleIsVisible);
-            this.Node = node;
-            this._name = Node.NickName;
-            this.Weight = 1;
-            this.Keywords = String.Join(" ", node.Tags);
-            this._type = "Node";
-            this._description = node.Description;
-        }
 
         /// <summary>
         ///     The class constructor - use this constructor for built-in types\
@@ -218,17 +204,33 @@ namespace Dynamo.Search.SearchElements
             }
         }
 
-        public bool Equals(NodeSearchElement other)
+        public override bool Equals(object obj)
         {
-           if (other.Type == this.Type && this.Type == "Custom Node")
-           {
-               return other.Guid == this.Guid;
-           }
-           else
-           {
-               return this.Name == other.Type && this.FullCategoryName == other.FullCategoryName;
-           }
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+
+            var other = (NodeSearchElement)obj;
+
+            if (other.Type == this.Type && this.Type == "Custom Node")
+            {
+                return other.Guid == this.Guid;
+            }
+            else
+            {
+                return this.Name == other.Type && this.FullCategoryName == other.FullCategoryName;
+            }
         }
+
+        /// <summary>
+        /// Overriding equals, we need to override hashcode </summary>
+        /// <returns> A unique hashcode for the object </returns>
+        public override int GetHashCode()
+        {
+            return this.Guid.GetHashCode() + this.Type.GetHashCode() + this.Name.GetHashCode() + this.Description.GetHashCode();
+        }
+
     }
 
 }

@@ -944,8 +944,14 @@ namespace Dynamo.Utilities
             return NodeInfos.FirstOrDefault(x => x.Value.Name == name).Value;
         }
 
+
+        public void Refactor(CustomNodeInfo nodeInfo)
+        {
+            this.Refactor(nodeInfo.Guid, nodeInfo.Name, nodeInfo.Category, nodeInfo.Description);
+        }
+
         /// <summary>
-        /// Refactor a custom node
+        /// Refactor a custom node, including updating search
         /// </summary>
         /// <returns> Returns false if it fails.</returns>
         internal bool Refactor(Guid guid, string newName, string newCategory, string newDescription)
@@ -959,7 +965,6 @@ namespace Dynamo.Utilities
                        .Where(x => x is Function)
                        .Cast<Function>()
                        .Where(x => x.Definition.FunctionId == guid)
-                       .Where(x => x.Name == nodeInfo.Name)
                        .ToList()
                        .ForEach(x =>
                            {
@@ -967,7 +972,7 @@ namespace Dynamo.Utilities
                                x.NickName = newName;
                            });
 
-            dynSettings.Controller.SearchViewModel.RemoveNodeAndEmptyParentCategory(nodeInfo.Name);
+            dynSettings.Controller.SearchViewModel.RemoveNodeAndEmptyParentCategory(nodeInfo.Guid);
 
             nodeInfo.Name = newName;
             nodeInfo.Category = newCategory;
@@ -990,5 +995,6 @@ namespace Dynamo.Utilities
                 .ForEach(dict.Add);
             return dict;
         }
+
     }
 }
