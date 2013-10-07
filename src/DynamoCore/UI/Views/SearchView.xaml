@@ -259,7 +259,6 @@
                                     <TextBlock Name="name" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
                                                  Text="{Binding Path=Description, Converter={StaticResource TooltipLengthTruncater}}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" Visibility="{Binding Path=Description, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
 
-
                                 </StackPanel>
                             </StackPanel.ToolTip>
 
@@ -306,55 +305,48 @@
                                     <TextBlock Name="name" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
                                                  Text="{Binding Path=Description, Converter={StaticResource TooltipLengthTruncater}}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" Visibility="{Binding Path=Description, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
 
+                                </StackPanel>
+                            </StackPanel.ToolTip>
+
+                            <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" ToolTipService.InitialShowDelay="0" />
+
+                        </StackPanel>
+
+                    </HierarchicalDataTemplate>
+
+                    <HierarchicalDataTemplate DataType="{x:Type searchElements:CustomNodeSearchElement}">
+
+                        <StackPanel Orientation="Horizontal">
+
+                            <StackPanel.ToolTip>
+                                <StackPanel Width ="Auto" MaxWidth="235" MaxHeight="200" Height="Auto">
+                                    <TextBlock Name="type" TextWrapping="Wrap" HorizontalAlignment="Stretch" FontWeight="Bold" VerticalAlignment="Top" 
+                                                 Text="{Binding Path=Type}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" />
+
+                                    <TextBlock Name="name" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
+                                                 Text="{Binding Path=Description, Converter={StaticResource TooltipLengthTruncater}}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" 
+                                               Visibility="{Binding Path=Description, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
+
                                     <TextBlock Name="path" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
-                                                 Text="{Binding Path=Description, Converter={StaticResource TooltipLengthTruncater}}" FontSize="11" TextTrimming="WordEllipsis" Margin="2">
-                                       
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Style.Triggers>
-
-                                                    <DataTrigger Binding="{Binding Type}" Value="Custom Node">
-                                                        <Setter Property="Visibility" Value="Visible"></Setter>
-                                                    </DataTrigger>
-
-                                                    <DataTrigger Binding="{Binding Type}" Value="Node">
-                                                        <Setter Property="Visibility" Value="Hidden"></Setter>
-                                                    </DataTrigger>
-
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
+                                                 Text="{Binding Path=Path, Converter={StaticResource FilePathDisplayConverter}}" FontSize="11" Margin="2">
                                     </TextBlock>
-
-
                                 </StackPanel>
                             </StackPanel.ToolTip>
 
                             <Border Background="#444" Margin="0 0 10 0" CornerRadius="1" BorderThickness="1" BorderBrush="Black">
-
-                                <Border.Style>
-                                    <Style TargetType="Border">
-                                        <Style.Triggers>
-
-                                            <DataTrigger Binding="{Binding Type}" Value="Custom Node">
-                                                <Setter Property="Visibility" Value="Visible"></Setter>
-                                            </DataTrigger>
-
-                                            <DataTrigger Binding="{Binding Type}" Value="Node">
-                                                <Setter Property="Visibility" Value="Hidden"></Setter>
-                                            </DataTrigger>
-
-                                        </Style.Triggers>
-                                    </Style>
-                                </Border.Style>
-
-                                <TextBlock Foreground="Black" FontWeight="Bold" Padding="2" FontSize="9" Text="C" ToolTipService.InitialShowDelay="0">
-                                </TextBlock>
-
+                                <TextBlock Foreground="Black" FontWeight="Bold" Padding="2" FontSize="9" Text="C" ToolTipService.InitialShowDelay="0" />
                             </Border>
 
                             <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" ToolTipService.InitialShowDelay="0" />
 
+                            <StackPanel.ContextMenu>
+                                <ContextMenu>
+                                    
+                                    <MenuItem  Header="_Edit..." Name="ShowElementsInContext" Command="{Binding EditCommand}" />
+
+                                </ContextMenu>
+                            </StackPanel.ContextMenu>
+                            
                         </StackPanel>
 
                     </HierarchicalDataTemplate>

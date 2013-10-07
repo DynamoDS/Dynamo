@@ -660,10 +660,17 @@ namespace Dynamo.ViewModels
                 throw new Exception("There is a null function definition for this node.");
             }
 
-            if (_model.CurrentWorkspace.Name.Equals(symbol.WorkspaceModel.Name))
-                return;
+            if (_model.CurrentWorkspace is CustomNodeWorkspaceModel)
+            {
+                var customNodeWorkspace = _model.CurrentWorkspace as CustomNodeWorkspaceModel;
+                if (customNodeWorkspace.FunctionDefinition.FunctionId
+                    == symbol.WorkspaceModel.FunctionDefinition.FunctionId)
+                {
+                    return;
+                }
+            }
 
-            WorkspaceModel newWs = symbol.WorkspaceModel;
+            var newWs = symbol.WorkspaceModel;
 
             if ( !this._model.Workspaces.Contains(newWs) )
                 this._model.Workspaces.Add(newWs);
