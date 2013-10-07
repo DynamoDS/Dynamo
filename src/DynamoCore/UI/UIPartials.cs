@@ -488,7 +488,7 @@ namespace Dynamo.Nodes
             var bindingVal = new System.Windows.Data.Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
-                Converter = new FilePathDisplay()
+                Converter = new FilePathDisplayConverter()
             };
             tb.SetBinding(TextBox.TextProperty, bindingVal);
         }

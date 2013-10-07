@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Dynamo.Selection;
+using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 
 namespace Dynamo.Search.SearchElements
 {
     public class CustomNodeSearchElement : NodeSearchElement, IEquatable<CustomNodeSearchElement>
     {
+
+        public DelegateCommand EditCommand { get; set; }
 
         public Guid Guid { get; internal set; }
 
@@ -30,11 +33,14 @@ namespace Dynamo.Search.SearchElements
             this.FullCategoryName = info.Category;
             this.Guid = info.Guid;
             this._path = info.Path;
+            this.EditCommand = new DelegateCommand(Edit);
         }
 
-        /// <summary>
-        /// Executes the element in search, this is what happens when the user 
-        /// hits enter in the SearchView.</summary>
+        public void Edit(object _)
+        {
+            dynSettings.Controller.DynamoViewModel.GoToWorkspaceCommand.Execute(this.Guid);
+        }
+
         public override void Execute()
         {
             string name = this.Guid.ToString();
