@@ -72,6 +72,8 @@ namespace Dynamo.PackageManager
         public DelegateCommand PublishNewPackageVersionCommand { get; set; }
         public DelegateCommand UninstallCommand { get; set; }
         public DelegateCommand PublishNewPackageCommand { get; set; }
+        public DelegateCommand DeprecateCommand { get; set; }
+        public DelegateCommand UndeprecateCommand { get; set; }
 
         public ObservableCollection<Type> LoadedTypes { get; set; }
         public ObservableCollection<CustomNodeInfo> LoadedCustomNodes { get; set; }
@@ -92,6 +94,8 @@ namespace Dynamo.PackageManager
             PublishNewPackageVersionCommand = new DelegateCommand(PublishNewPackageVersion, CanPublishNewPackageVersion);
             PublishNewPackageCommand = new DelegateCommand(PublishNewPackage, CanPublishNewPackage);
             UninstallCommand = new DelegateCommand(Uninstall, CanUninstall);
+            DeprecateCommand = new DelegateCommand(this.Deprecate, CanDeprecate);
+            UndeprecateCommand = new DelegateCommand(this.Undeprecate, CanUndeprecate);
 
             dynSettings.Controller.DynamoModel.NodeAdded += (node) => UninstallCommand.RaiseCanExecuteChanged();
             dynSettings.Controller.DynamoModel.NodeDeleted += (node) => UninstallCommand.RaiseCanExecuteChanged();
@@ -229,6 +233,32 @@ namespace Dynamo.PackageManager
         private bool CanUninstall()
         {
             return !InUse();
+        }
+
+        private void Deprecate()
+        {
+            var res = MessageBox.Show("Are you sure you want to deprecate " + this.Name + "?  This request will be rejected if you are not a maintainer of the package.  It indicates that you will no longer support the package, although the package will still appear when explicitly searched for.  \n\n You can always undeprecate the package.", "Deprecating Package", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (res == MessageBoxResult.No) return;
+
+            dynSettings.PackageManagerClient.Deprecate(this.Name);
+        }
+
+        private bool CanDeprecate()
+        {
+            return true;
+        }
+
+        private void Undeprecate()
+        {
+            var res = MessageBox.Show("Are you sure you want to undeprecate " + this.Name + "?  This request will be rejected if you are not a maintainer of the package.  It indicates that you will continue to support the package and the package will appear when users are browsing packages.  \n\n You can always re-deprecate the package.", "Removing Package Deprecation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (res == MessageBoxResult.No) return;
+
+            dynSettings.PackageManagerClient.Undeprecate(this.Name);
+        }
+
+        private bool CanUndeprecate()
+        {
+            return true;
         }
 
         private void RefreshCustomNodesFromDirectory()

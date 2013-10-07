@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
@@ -29,6 +30,8 @@ namespace Dynamo.PackageManager
     {
 
         public DelegateCommand DownloadLatest { get; set; }
+        public DelegateCommand UpvoteCommand { get; set; }
+        public DelegateCommand DownvoteCommand { get; set; }
 
         /// <summary>
         /// The class constructor. </summary>
@@ -45,8 +48,37 @@ namespace Dynamo.PackageManager
             {
                 this.Keywords = "";
             }
+            this.Votes = header.votes;
             this.IsExpanded = false;
             this.DownloadLatest = new DelegateCommand((Action) Execute);
+            this.UpvoteCommand = new DelegateCommand((Action) Upvote);
+            this.DownvoteCommand = new DelegateCommand((Action) Downvote);
+        }
+
+        public void Upvote()
+        {
+            Task<bool>.Factory.StartNew(() => dynSettings.PackageManagerClient.Upvote(this.Id))
+                .ContinueWith((t) =>
+                {
+                    if (t.Result)
+                    {
+                        this.Votes += 1;
+                    }
+                }
+                , TaskScheduler.FromCurrentSynchronizationContext()); 
+
+        }
+
+        public void Downvote()
+        {
+            Task<bool>.Factory.StartNew(() => dynSettings.PackageManagerClient.Downvote(this.Id))
+                .ContinueWith((t) =>
+                {
+                    if (t.Result)
+                    {
+                        this.Votes -= 1;
+                    }
+                } , TaskScheduler.FromCurrentSynchronizationContext()); 
         }
 
         public override void Execute()
@@ -61,7 +93,7 @@ namespace Dynamo.PackageManager
             if (result == MessageBoxResult.OK)
             {
                 // get all of the headers
-                var headers = version.full_dependency_ids.Select((id) =>
+                var headers = version.full_dependency_ids.Select(dep=>dep._id).Select((id) =>
                     {
                         PackageHeader pkgHeader;
                         var res = dynSettings.PackageManagerClient.DownloadPackageHeader(id, out pkgHeader);
@@ -130,7 +162,13 @@ namespace Dynamo.PackageManager
                 } 
             }
             public string Maintainers { get { return String.Join(", ", this.Header.maintainers.Select(x=>x.username)); } }
-            public int Votes { get { return this.Header.votes; } }
+            private int _votes;
+            public int Votes
+            {
+                get { return _votes; } 
+                set { _votes = value; RaisePropertyChanged("Votes"); }
+            }
+            public bool IsDeprecated { get { return this.Header.deprecated; } }
             public int Downloads { get { return this.Header.downloads; } }
             public string EngineVersion { get { return Header.versions[Header.versions.Count - 1].engine_version; } }
             public int UsedBy { get { return this.Header.used_by.Count; } } 

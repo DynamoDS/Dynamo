@@ -299,23 +299,6 @@ namespace Dynamo.ViewModels
             //throw new NotImplementedException();
         }
 
-        private void Connect(object parameters)
-        {
-            //make the connector model
-            var end = parameters as PortModel;
-
-            _model = ConnectorModel.Make(_activeStartPort.Owner, end.Owner, _activeStartPort.Index, end.Index, 0);
-            if (_model == null) return;
-
-            _model.Connected += ModelConnected;
-
-            _model.Start.PropertyChanged += Start_PropertyChanged;
-            _model.End.PropertyChanged += End_PropertyChanged;
-            dynSettings.Controller.DynamoViewModel.Model.PropertyChanged += Model_PropertyChanged;
-            dynSettings.Controller.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
-            IsHitTestVisible = false;
-        }
-
         void DynamoViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
@@ -370,14 +353,6 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("CurvePoint0");
                     break;
             }
-        }
-
-        private bool CanConnect(object parameters)
-        {
-            if ((parameters as PortModel) == null)
-                return false;
-
-            return true;
         }
 
         /// <summary>

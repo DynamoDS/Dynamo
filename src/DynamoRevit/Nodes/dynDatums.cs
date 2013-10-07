@@ -21,7 +21,6 @@ using Dynamo.Connectors;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
-using RevitServices;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
 using Dynamo.Revit;
@@ -35,7 +34,9 @@ namespace Dynamo.Nodes
     {
         public Level()
         {
-            InPortData.Add(new PortData("el", "The elevation of the level.", typeof(Value.Number)));
+            InPortData.Add(new PortData("elevation", "The elevation of the level.", typeof(Value.Number)));
+            InPortData.Add(new PortData("name", "The name of the level.", typeof(Value.String)));
+
             OutPortData.Add(new PortData("level", "The level.", typeof(Value.Container)));
 
             RegisterAllPorts();
@@ -44,21 +45,24 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             //Level elements take in one double for the z elevation (height)f
-            double h = (double)((Value.Number)args[0]).Item;
+            var h = (double)((Value.Number)args[0]).Item;
+            var name = ((Value.String) args[1]).Item;
 
             Autodesk.Revit.DB.Level lev;
 
             if (this.Elements.Any())
             {
-                if (dynRevitSettings.Doc.Document.TryGetElement(this.Elements[0], out lev))
+                if (dynUtils.TryGetElement(this.Elements[0], out lev))
                 {
                     lev.Elevation = h;
+                    lev.Name = name;
                 }
                 else
                 {
                     lev = this.UIDocument.Document.IsFamilyDocument
                         ? this.UIDocument.Document.FamilyCreate.NewLevel(h)
                         : this.UIDocument.Document.Create.NewLevel(h);
+                    lev.Name = name;
                     this.Elements[0] = lev.Id;
                 }
             }
@@ -67,6 +71,7 @@ namespace Dynamo.Nodes
                 lev = this.UIDocument.Document.IsFamilyDocument
                     ? this.UIDocument.Document.FamilyCreate.NewLevel(h)
                     : this.UIDocument.Document.Create.NewLevel(h);
+                lev.Name = name;
                 this.Elements.Add(lev.Id);
             }
 
@@ -114,7 +119,7 @@ namespace Dynamo.Nodes
                           if (this.Elements.Count > count)
                           {
                               //...we attempt to fetch it from the document...
-                              if (dynRevitSettings.Doc.Document.TryGetElement(this.Elements[count], out refPlane))
+                              if (dynUtils.TryGetElement(this.Elements[count], out refPlane))
                               {
                                   //...and if we're successful, update it's position (well for now make a new one with the same name)... 
                                   string name = refPlane.Name;
@@ -224,7 +229,7 @@ namespace Dynamo.Nodes
 
                 if (this.Elements.Any())
                 {
-                    if (dynRevitSettings.Doc.Document.TryGetElement(this.Elements[0], out refPlane))
+                    if (dynUtils.TryGetElement(this.Elements[0], out refPlane))
                     {
                         //...and if we're successful, update it's position (well for now make a new one with the same name)... 
                         name = refPlane.Name;
@@ -371,7 +376,7 @@ namespace Dynamo.Nodes
                           if (this.Elements.Count > count)
                           {
                               //...we attempt to fetch it from the document...
-                              if (dynRevitSettings.Doc.Document.TryGetElement(this.Elements[count], out grid))
+                              if (dynUtils.TryGetElement(this.Elements[count], out grid))
                               {
                                   //...and if we're successful, update it's position... 
                                   //grid.Curve = (Curve)((Value.Container)x).Item; // these are all readonly, how to modify exising grid then?
@@ -447,7 +452,7 @@ namespace Dynamo.Nodes
 
                 if (this.Elements.Any())
                 {
-                    if (dynRevitSettings.Doc.Document.TryGetElement(this.Elements[0], out grid))
+                    if (dynUtils.TryGetElement(this.Elements[0], out grid))
                     {
                         grid = this.UIDocument.Document.Create.NewGrid(c);
 
