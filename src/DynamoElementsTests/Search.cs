@@ -289,9 +289,52 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void CanAddDuplicateCustomNodeAndGetBothInResults()
+        public void CanAddDuplicateNodesAndGetBothInSearch()
         {
-            Assert.Fail();
+
+            Assert.Inconclusive();
+        }
+
+        [Test]
+        public void CanRemoveNodeAndCategoryByFunctionId()
+        {
+
+            Assert.Inconclusive();
+        }
+
+        [Test]
+        public void CanAddDuplicateCustomNodeWithDifferentGuidsAndGetBothInResults()
+        {
+            var nodeName = "TheNoodle";
+            var catName = "TheCat";
+            var descr = "TheCat";
+            var path = @"C:\turtle\graphics.dyn";
+            var guid1 = Guid.NewGuid();
+            var guid2 = Guid.NewGuid();
+            var dummyInfo1 = new CustomNodeInfo(guid1, nodeName, catName, descr, path);
+            var dummyInfo2 = new CustomNodeInfo(guid2, nodeName, catName, descr, path);
+
+            _search.Add(dummyInfo1);
+            _search.Add(dummyInfo2);
+
+            Assert.AreEqual(2, _search.SearchDictionary.NumElements);
+
+            _search.SearchAndUpdateResultsSync(nodeName);
+
+            Assert.AreEqual(2, _search.SearchResults.Count);
+
+            var res1 = _search.SearchResults[0];
+            var res2 = _search.SearchResults[1];
+
+            Assert.IsAssignableFrom(typeof(NodeSearchElement), res1);
+            Assert.IsAssignableFrom(typeof(NodeSearchElement), res2);
+
+            var node1 = res1 as NodeSearchElement;
+            var node2 = res2 as NodeSearchElement;
+
+            Assert.AreEqual(node1.Guid, guid1);
+            Assert.AreEqual(node2.Guid, guid2);
+
         }
 
         [Test]
@@ -419,13 +462,13 @@ namespace Dynamo.Tests
         [Test]
         public void CanRemoveDuplicateNode()
         {
-            Assert.Fail();
+            Assert.Inconclusive();
         }
 
         [Test]
         public void CanRemoveSingleNodeWhereThereAreDuplicates()
         {
-            Assert.Fail();
+            Assert.Inconclusive();
         }
 
         [Test]

@@ -464,9 +464,9 @@ namespace Dynamo
         #region CustomNodeWorkspaceModel SaveAs side effects
 
         [Test]
-        public void CustomNodeSaveAsGivesNewFunctionId()
+        public void CustomNodeSaveAsDoesNotGiveNewFunctionIdToNewCustomNode()
         {
-            // open custom node
+            // new custom node
             // SaveAs
             // custom node instance has new function id
             // custom node instance is in environment
@@ -486,7 +486,38 @@ namespace Dynamo
 
             Assert.AreNotEqual(Guid.Empty, initialId);
             Assert.AreNotEqual(Guid.Empty, newDef.FunctionId);
-            Assert.AreNotEqual(newDef.FunctionId, initialId);
+            Assert.AreEqual(newDef.FunctionId, initialId);
+
+        }
+
+        [Test]
+        public void CustomNodeSaveAsGivesNewFunctionIdToExistingFile()
+        {
+            // open custom node
+            // SaveAs
+            // custom node instance has new function id
+            // custom node instance is in environment
+
+            var model = Controller.DynamoModel;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\custom_node_saving", "Constant2.dyf");
+            model.Open(examplePath);
+
+            var nodeWorkspace =
+                model.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel) as CustomNodeWorkspaceModel;
+
+            Assert.IsNotNull(nodeWorkspace);
+            var oldId = nodeWorkspace.FunctionDefinition.FunctionId;
+
+            var newPath = this.GetNewFileNameOnTempPath("dyf");
+            var res = nodeWorkspace.SaveAs(newPath); // introduces new function id
+
+            Assert.IsTrue(res);
+            Assert.IsTrue(File.Exists(newPath));
+
+            // workspace now has different function id
+            var newDef = nodeWorkspace.FunctionDefinition;
+
+            Assert.AreNotEqual(newDef.FunctionId, oldId);
 
         }
 
@@ -506,7 +537,7 @@ namespace Dynamo
                 model.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel) as CustomNodeWorkspaceModel;
             
             Assert.IsNotNull(nodeWorkspace);
-            var oldDef = nodeWorkspace.FunctionDefinition;
+            var oldId = nodeWorkspace.FunctionDefinition.FunctionId;
 
             var newPath = this.GetNewFileNameOnTempPath("dyf");
             var res = nodeWorkspace.SaveAs(newPath); // introduces new function id
@@ -516,11 +547,8 @@ namespace Dynamo
 
             // workspace now has different function id
             var newDef = nodeWorkspace.FunctionDefinition;
-
-            Assert.AreNotEqual(newDef.FunctionId, oldDef.FunctionId);
-            Assert.IsTrue( Controller.CustomNodeManager.IsInitialized(newDef.FunctionId) );
-            Assert.IsTrue( Controller.CustomNodeManager.IsInitialized(oldDef.FunctionId) );
-            
+            Assert.IsTrue(Controller.CustomNodeManager.IsInitialized(newDef.FunctionId));
+            Assert.IsTrue(Controller.CustomNodeManager.IsInitialized(oldId));
         }
 
         [Test]
@@ -531,25 +559,30 @@ namespace Dynamo
             // custom node instance has new function id
             // function id is in environment
 
-            var dynamoModel = Controller.DynamoModel;
-            var nodeName = "Cool node";
-            var catName = BuiltinNodeCategories.SCRIPTING_CUSTOMNODES;
+            var model = Controller.DynamoModel;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\custom_node_saving", "Constant2.dyf");
+            model.Open(examplePath);
 
-            var def = dynamoModel.NewCustomNodeWorkspace(Guid.NewGuid(), nodeName, catName, "", true);
-            var workspace = def.WorkspaceModel;
-            var initialId = def.FunctionId;
+            var nodeWorkspace =
+                model.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel) as CustomNodeWorkspaceModel;
+
+            Assert.IsNotNull(nodeWorkspace);
+            var oldId = nodeWorkspace.FunctionDefinition.FunctionId;
 
             var newPath = this.GetNewFileNameOnTempPath("dyf");
-            workspace.SaveAs(newPath);
+            nodeWorkspace.SaveAs(newPath);
 
-            var newDef = workspace.FunctionDefinition;
+            var newDef = nodeWorkspace.FunctionDefinition;
 
-            var oldValue = Controller.FSchemeEnvironment.LookupSymbol(initialId.ToString());
-            var newValue = Controller.FSchemeEnvironment.LookupSymbol(newDef.FunctionId.ToString());
+            // if symbol isn't present, we would throw an unbound identifier
+            Assert.DoesNotThrow(() =>
+                {
+                    var oldFunc = Controller.FSchemeEnvironment.LookupSymbol(oldId.ToString());
+                    var newFunc = Controller.FSchemeEnvironment.LookupSymbol(newDef.FunctionId.ToString());
 
-            Assert.IsNotNull(oldValue);
-            Assert.IsNotNull(newValue);
-            Assert.Fail("Something wrong with this");
+                    Assert.IsNotNull(oldFunc);
+                    Assert.IsNotNull(newFunc);
+                });
 
         }
 
@@ -563,6 +596,7 @@ namespace Dynamo
             var model = Controller.DynamoModel;
             var examplePath = Path.Combine(GetTestDirectory(), @"core\custom_node_saving", "Constant2.dyf");
             model.Open(examplePath);
+
 
             var nodeWorkspace =
                 model.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel) as CustomNodeWorkspaceModel;
@@ -579,6 +613,7 @@ namespace Dynamo
             var newDef = nodeWorkspace.FunctionDefinition;
 
             // put in workspace
+            model.Home(null);
             model.CreateNode(new Dictionary<string, object>()
                 {
                     {"name", newDef.FunctionId.ToString() },
@@ -595,11 +630,9 @@ namespace Dynamo
             var evaluatedNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Function>();
 
             Assert.IsTrue(evaluatedNode.OldValue.IsNumber);
-
             Assert.AreEqual(2.0, evaluatedNode.OldValue.GetDoubleFromFSchemeValue());
 
         }
-
 
         [Test]
         public void CustomNodeSaveAsAddsNewCustomNodeToSearch()
@@ -619,11 +652,13 @@ namespace Dynamo
             var oldDef = nodeWorkspace.FunctionDefinition;
 
             var newPath = this.GetNewFileNameOnTempPath("dyf");
-            var res = nodeWorkspace.SaveAs(newPath); // introduces new function id
+            var originalNumElements = Controller.SearchViewModel.SearchDictionary.NumElements;
+            nodeWorkspace.SaveAs(newPath); // introduces new function id
 
             var newDef = nodeWorkspace.FunctionDefinition;
-
-            Controller.SearchViewModel.SearchAndUpdateResults("Constant2");
+            
+            Controller.SearchViewModel.SearchAndUpdateResultsSync("Constant2");
+            Assert.AreEqual(originalNumElements + 1, Controller.SearchViewModel.SearchDictionary.NumElements);
 
             Assert.AreEqual(2, Controller.SearchViewModel.SearchResults.Count);
 
@@ -658,27 +693,26 @@ namespace Dynamo
                 model.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel) as CustomNodeWorkspaceModel;
 
             Assert.IsNotNull(nodeWorkspace);
-            var oldDef = nodeWorkspace.FunctionDefinition;
+            var oldId = nodeWorkspace.FunctionDefinition.FunctionId;
 
             // place the custom node a few times in home workspace
+            model.Home(null);
             foreach (var i in Enumerable.Range(0, 10))
             {
                 model.CreateNode(new Dictionary<string, object>()
                 {
-                    {"name", oldDef.FunctionId.ToString() },
+                    {"name", oldId.ToString() },
                     {"x", 0.0 },
                     {"y", 0.0 }
                 });
             }
-             
+            
             // SaveAs
             var newPath = this.GetNewFileNameOnTempPath("dyf");
             var res = nodeWorkspace.SaveAs(newPath); // introduces new function id
 
             Assert.IsTrue(res);
             Assert.IsTrue(File.Exists(newPath));
-
-            //var newDef = nodeWorkspace.FunctionDefinition;  // don't need it
 
             // can get instances of original custom node
             var homeWorkspace =
@@ -690,8 +724,8 @@ namespace Dynamo
                 Assert.IsAssignableFrom(typeof(Function), node);
                 var nodeFunc = node as Function;
 
-                Assert.AreEqual("Constant2", nodeFunc);
-                Assert.AreEqual(nodeFunc.Definition.FunctionId, oldDef.FunctionId);
+                Assert.AreEqual("Constant2", nodeFunc.Name);
+                Assert.AreNotEqual(nodeFunc.Definition.FunctionId, oldId);
             }
             
         }

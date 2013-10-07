@@ -934,17 +934,10 @@ namespace Dynamo.Models
                 WorkspaceModel = workSpace
             };
 
-            functionDefinition.Save(false, true);
+            functionDefinition.SyncWithWorkspace(true, true);
 
             if (makeCurrentWorkspace)
             {
-                if (CurrentWorkspace != HomeSpace)
-                {
-                    var def = dynSettings.Controller.CustomNodeManager.GetDefinitionFromWorkspace(CurrentWorkspace);
-                    if (def != null)
-                        def.Save(false, true);
-                }
-
                 CurrentWorkspace = workSpace;
             }
 
@@ -1513,70 +1506,6 @@ namespace Dynamo.Models
             {
                 ModelCleared(this, EventArgs.Empty);
             }
-        }
-
-        /// <summary>
-        ///     Update a custom node after refactoring.  Updates search and all instances of the node.
-        /// </summary>
-        /// <param name="selectedNodes"> The function definition for the user-defined node </param>
-        public void RefactorCustomNode(object parameter)
-        {
-            //Bench.workspaceLabel.Content = Bench.editNameBox.Text;
-            var def = dynSettings.Controller.CustomNodeManager.GetDefinitionFromWorkspace(CurrentWorkspace);
-
-            //TODO: UI Refactor - Is this the right data for refactor?
-            var info = new CustomNodeInfo(def.FunctionId, editName, CurrentWorkspace.Category, CurrentWorkspace.Description, CurrentWorkspace.FileName);
-
-            dynSettings.Controller.SearchViewModel.Refactor(info);
-
-            //Update existing function nodes
-            foreach (NodeModel el in AllNodes)
-            {
-                if (el is Function)
-                {
-                    var node = (Function)el;
-
-                    if (node.Definition == null)
-                    {
-                        node.Definition = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(Guid.Parse(node.Symbol));
-                    }
-
-                    if (!node.Definition.WorkspaceModel.Name.Equals(CurrentWorkspace.Name))
-                        continue;
-
-                    //Rename nickname only if it's still referring to the old name
-                    if (node.NickName.Equals(CurrentWorkspace.Name))
-                        node.NickName = editName;
-                }
-            }
-
-            dynSettings.Controller.FSchemeEnvironment.RemoveSymbol(CurrentWorkspace.Name);
-
-            //TODO: Delete old stored definition
-            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string pluginsPath = Path.Combine(directory, "definitions");
-
-            if (Directory.Exists(pluginsPath))
-            {
-                string oldpath = Path.Combine(pluginsPath, CurrentWorkspace.Name + ".dyf");
-                if (File.Exists(oldpath))
-                {
-                    string newpath = dynSettings.FormatFileName(
-                        Path.Combine(pluginsPath, editName + ".dyf")
-                        );
-
-                    File.Move(oldpath, newpath);
-                }
-            }
-
-            (CurrentWorkspace).Name = editName;
-
-            def.Save();
-        }
-
-        internal bool CanRefactorCustomNode(object parameter)
-        {
-            return true;
         }
 
         /// <summary>

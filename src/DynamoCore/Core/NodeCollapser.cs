@@ -456,17 +456,9 @@ namespace Dynamo.Utilities
 
             #endregion
 
-            //set the name on the node
-            //collapsedNode.NickName = args.Name;
-            //currentWorkspace.Nodes.Remove(collapsedNode);
-
             // save and load the definition from file
-            newNodeDefinition.UpdateFromWorkspace(false, true, true);
+            newNodeDefinition.SyncWithWorkspace(true, true);
             dynSettings.Controller.DynamoModel.Workspaces.Add(newNodeWorkspace);
-            //var customNodeInfo = new CustomNodeInfo(newNodeDefinition.FunctionId, args.Name, args.Category, args.Description, null);
-            //dynSettings.Controller.CustomNodeManager.AddFunctionDefinition(newNodeDefinition.FunctionId, newNodeDefinition);
-            //dynSettings.Controller.CustomNodeManager.SetNodeInfo(customNodeInfo);
-            //dynSettings.Controller.SearchViewModel.Add(args.Name, args.Category, args.Description, newNodeDefinition.FunctionId);
 
             var collapsedNode = dynSettings.Controller.DynamoModel.CreateNode_Internal(new Dictionary<string, object>()
                 {

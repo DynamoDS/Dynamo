@@ -135,7 +135,6 @@ namespace Dynamo.ViewModels
         public DelegateCommand GoToWorkspaceCommand { get; set; }
         public DelegateCommand DeleteCommand { get; set; }
         public DelegateCommand AlignSelectedCommand { get; set; }
-        public DelegateCommand RefactorCustomNodeCommand { get; set; }
         public DelegateCommand PostUIActivationCommand { get; set; }
         public DelegateCommand ToggleFullscreenWatchShowingCommand { get; set; }
         public DelegateCommand ToggleCanNavigateBackgroundCommand { get; set; }
@@ -429,7 +428,6 @@ namespace Dynamo.ViewModels
             ToggleCanNavigateBackgroundCommand = new DelegateCommand(ToggleCanNavigateBackground, CanToggleCanNavigateBackground);
             AlignSelectedCommand = new DelegateCommand(AlignSelected, CanAlignSelected); ;
             ShowSaveDialogIfNeededAndSaveResultCommand = new DelegateCommand(ShowSaveDialogIfNeededAndSaveResult, CanShowSaveDialogIfNeededAndSaveResultCommand);
-            RefactorCustomNodeCommand = new DelegateCommand(_model.RefactorCustomNode, _model.CanRefactorCustomNode);
             SaveImageCommand = new DelegateCommand(SaveImage, CanSaveImage);
             ShowSaveImageDialogAndSaveResultCommand = new DelegateCommand(ShowSaveImageDialogAndSaveResult, CanShowSaveImageDialogAndSaveResult);
             UndoCommand = new DelegateCommand(_model.Undo, _model.CanUndo);
@@ -652,46 +650,10 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        ///     Save a function.  This includes writing to a file and compiling the 
-        ///     function and saving it to the FSchemeEnvironment
-        /// </summary>
-        /// <param name="definition">The definition to saveo</param>
-        /// <param name="bool">Whether to write the function to file</param>
-        /// <returns>Whether the operation was successful</returns>
-        public string SaveFunctionOnly(FunctionDefinition definition)
-        {
-            if (definition == null)
-                return "";
-
-            // Get the internal nodes for the function
-            WorkspaceModel functionWorkspace = definition.WorkspaceModel;
-
-            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string pluginsPath = Path.Combine(directory, "definitions");
-
-            try
-            {
-                if (!Directory.Exists(pluginsPath))
-                    Directory.CreateDirectory(pluginsPath);
-
-                string path = Path.Combine(pluginsPath, dynSettings.FormatFileName(functionWorkspace.Name) + ".dyf");
-                WorkspaceModel.SaveWorkspace(path, functionWorkspace);
-                return path;
-            }
-            catch (Exception e)
-            {
-                DynamoLogger.Instance.Log("Error saving:" + e.GetType());
-                DynamoLogger.Instance.Log(e);
-                return "";
-            }
-
-        }
-
-        /// <summary>
         ///     Change the currently visible workspace to a custom node's workspace
         /// </summary>
         /// <param name="symbol">The function definition for the custom node workspace to be viewed</param>
-        internal void ViewCustomNodeWorkspace(FunctionDefinition symbol)
+        internal void FocusCustomNodeWorkspace(FunctionDefinition symbol)
         {
             if (symbol == null)
             {
@@ -749,7 +711,7 @@ namespace Dynamo.ViewModels
                     {
                         if (funcDef.WorkspaceModel.Nodes.Contains(e))
                         {
-                            ViewCustomNodeWorkspace(funcDef);
+                            FocusCustomNodeWorkspace(funcDef);
                             break;
                         }
                     }
@@ -876,7 +838,7 @@ namespace Dynamo.ViewModels
         {
             if (parameter is Guid && dynSettings.Controller.CustomNodeManager.Contains((Guid)parameter))
             {
-                ViewCustomNodeWorkspace(dynSettings.Controller.CustomNodeManager.GetFunctionDefinition((Guid)parameter));
+                FocusCustomNodeWorkspace(dynSettings.Controller.CustomNodeManager.GetFunctionDefinition((Guid)parameter));
             }
         }
 

@@ -327,23 +327,23 @@ namespace Dynamo.Models
         {
             if (String.IsNullOrEmpty(path)) return false;
 
-
-            // create new functionId 
-
-
-
-
-
-
-            if (!WorkspaceModel.SaveWorkspace(path, this))
+            DynamoLogger.Instance.Log("Saving " + path + "...");
+            try
             {
-                DynamoLogger.Instance.Log("Workbench could not be saved.");
+                var xmlDoc = this.GetXml();
+                xmlDoc.Save(path);
+                this.FileName = path;
+
+                this.OnWorkspaceSaved();
+            }
+            catch (Exception ex)
+            {
+                //Log(ex);
+                DynamoLogger.Instance.Log(ex.Message);
+                DynamoLogger.Instance.Log(ex.StackTrace);
+                Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
                 return false;
             }
-
-            this.FileName = path;
-
-
 
             return true;
         }
@@ -388,7 +388,7 @@ namespace Dynamo.Models
             Modified();
         }
 
-        //TODO: Replace all Modified calls with RaisePropertyChanged-stlye system, that way observable collections can catch any changes
+        //TODO: Replace all Modified calls with RaisePropertyChanged-style system, that way observable collections can catch any changes
         public void DisableReporting()
         {
             Nodes.ToList().ForEach(x => x.DisableReporting());
@@ -672,45 +672,7 @@ namespace Dynamo.Models
                 Updated(this, e);
         }
 
-        #region static methods
-
-        /// <summary>
-        ///     Generate an xml doc and write the workspace to the given path
-        /// </summary>
-        /// <param name="xmlPath">The path to save to</param>
-        /// <param name="workSpace">The workspace</param>
-        /// <returns>Whether the operation was successful</returns>
-        public static bool SaveWorkspace(string xmlPath, WorkspaceModel workSpace)
-        {
-            DynamoLogger.Instance.Log("Saving " + xmlPath + "...");
-            try
-            {
-                var xmlDoc = GetXml(workSpace, workSpace is HomeWorkspaceModel);
-                xmlDoc.Save(xmlPath);
-                workSpace.FileName = xmlPath;
-
-                workSpace.OnWorkspaceSaved();
-            }
-            catch (Exception ex)
-            {
-                //Log(ex);
-                DynamoLogger.Instance.Log(ex.Message);
-                DynamoLogger.Instance.Log(ex.StackTrace);
-                Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-                return false;
-            }
-
-            return true;
-        }
-
-        /// <summary>
-        ///     Generate the xml doc of the workspace from memory
-        /// </summary>
-        /// <param name="workSpace">The workspace</param>
-        /// <param name="savingHomespace"></param>
-        /// <returns>The generated xmldoc</returns>
-        public static XmlDocument GetXml(
-            WorkspaceModel workSpace, bool savingHomespace)
+        public virtual XmlDocument GetXml()
         {
             try
             {
@@ -718,30 +680,13 @@ namespace Dynamo.Models
                 var xmlDoc = new XmlDocument();
                 xmlDoc.CreateXmlDeclaration("1.0", null, null);
                 var root = xmlDoc.CreateElement("Workspace"); //write the root element
-                root.SetAttribute("Version", workSpace.WorkspaceVersion.ToString());
-                root.SetAttribute("X", workSpace.X.ToString(CultureInfo.InvariantCulture));
-                root.SetAttribute("Y", workSpace.Y.ToString(CultureInfo.InvariantCulture));
-                root.SetAttribute("zoom", workSpace.Zoom.ToString(CultureInfo.InvariantCulture));
-                root.SetAttribute("Description", workSpace.Description);
-                root.SetAttribute("Category", workSpace.Category);
-                root.SetAttribute("Name", workSpace.Name);
-
-                if (!savingHomespace) //If we are not saving the home space
-                {
-                    var def = dynSettings.Controller.CustomNodeManager.GetDefinitionFromWorkspace(workSpace);
-                    Guid guid;
-
-                    if (def != null)
-                    {
-                        guid = def.FunctionId;
-                    }
-                    else
-                    {
-                        guid = Guid.NewGuid();
-                    }
-
-                    root.SetAttribute("ID", guid.ToString());
-                }
+                root.SetAttribute("Version", this.WorkspaceVersion.ToString());
+                root.SetAttribute("X", this.X.ToString(CultureInfo.InvariantCulture));
+                root.SetAttribute("Y", this.Y.ToString(CultureInfo.InvariantCulture));
+                root.SetAttribute("zoom", this.Zoom.ToString(CultureInfo.InvariantCulture));
+                root.SetAttribute("Description", this.Description);
+                root.SetAttribute("Category", this.Category);
+                root.SetAttribute("Name", this.Name);
 
                 xmlDoc.AppendChild(root);
 
@@ -749,7 +694,7 @@ namespace Dynamo.Models
                 //write the root element
                 root.AppendChild(elementList);
 
-                foreach (var el in workSpace.Nodes)
+                foreach (var el in this.Nodes)
                 {
                     var typeName = el.GetType().ToString();
 
@@ -774,7 +719,7 @@ namespace Dynamo.Models
                 //write the root element
                 root.AppendChild(connectorList);
 
-                foreach (var el in workSpace.Nodes)
+                foreach (var el in this.Nodes)
                 {
                     foreach (var port in el.OutPorts)
                     {
@@ -798,7 +743,7 @@ namespace Dynamo.Models
                 //save the notes
                 var noteList = xmlDoc.CreateElement("Notes"); //write the root element
                 root.AppendChild(noteList);
-                foreach (var n in workSpace.Notes)
+                foreach (var n in this.Notes)
                 {
                     var note = xmlDoc.CreateElement(n.GetType().ToString());
                     noteList.AppendChild(note);
@@ -816,6 +761,5 @@ namespace Dynamo.Models
             }
         }
 
-        #endregion
     }
 }

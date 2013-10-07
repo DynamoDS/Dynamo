@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Xml;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using String = System.String;
@@ -58,41 +61,54 @@ namespace Dynamo.Models
         {
             base.Modified();
 
-            //add a check if any loaded defs match this workspace
-            // unnecessary given the next lines --SJE
-            //if (dynSettings.Controller.CustomNodeManager.GetLoadedDefinitions().All(x => x.Workspace != this))
-            //    return;
+            if (this.FunctionDefinition == null) return;
+            this.FunctionDefinition.RequiresRecalc = true;
+            this.FunctionDefinition.SyncWithWorkspace(false, true);
+        }
 
-            var def =
-                dynSettings.Controller.CustomNodeManager
-                           .GetLoadedDefinitions()
-                           .FirstOrDefault(x => x.WorkspaceModel == this);
-
-            if (def == null) return;
-
-            def.RequiresRecalc = true;
-
-            try
-            {
-               def.UpdateFromWorkspace(false, true);
-            }
-            catch { }
+        public List<Function> GetExistingNodes()
+        {
+            return dynSettings.Controller.DynamoModel.AllNodes
+                .OfType<Function>()
+                .Where(el => el.Definition == this.FunctionDefinition)
+                .ToList();
         }
 
         public override bool SaveAs(string path)
         {
-            if (String.IsNullOrEmpty(path)) return false;
+            var oldPath = this.FileName;
+            if (!base.SaveAs(path)) return false;
 
-            var def = dynSettings.Controller.CustomNodeManager.GetDefinitionFromWorkspace(this);
-            if (def == null) return false;
-            
-            // check if FilePath and path differ and FilePath is not null
-            def.WorkspaceModel.FileName = path;
-
-            if (def != null)
+            // A SaveAs to an existing function id prompts the creation of a new 
+            // custom node with a new function id
+            if ( oldPath != path && oldPath != null )
             {
-                def.UpdateFromWorkspace(true);
-                this.FileName = path;
+                if (!File.Exists(oldPath))
+                {
+                    this.FunctionDefinition.SyncWithWorkspace(true, true);
+                    return false;
+                }
+
+                var newDef = this.FunctionDefinition;
+
+                // unload existing custom node from customnodemanager
+                var originalGuid = this.FunctionDefinition.FunctionId;
+                var customNodeManager = dynSettings.CustomNodeManager;
+                customNodeManager.RemoveFromCustomNodeManager(originalGuid);
+
+                // get function definition from old path with old id
+                customNodeManager.AddFileToPath(oldPath);
+                var origDef = customNodeManager.GetFunctionDefinition(originalGuid);
+
+                // reassign existing nodes to point to deserialized function def
+                GetExistingNodes().ForEach(node =>
+                    {
+                        node.Definition = origDef;
+                    });
+
+                // this workspace points to itself
+                newDef.FunctionId = Guid.NewGuid();
+                newDef.SyncWithWorkspace(true, true);
             }
 
             return true;
@@ -101,6 +117,26 @@ namespace Dynamo.Models
         public override void OnDisplayed()
         {
 
+        }
+
+        public override XmlDocument GetXml()
+        {
+            var doc = base.GetXml();
+
+            Guid guid;
+            if (this.FunctionDefinition != null)
+            {
+                guid = this.FunctionDefinition.FunctionId;
+            }
+            else
+            {
+                guid = Guid.NewGuid();
+            }
+
+            var root = doc.DocumentElement;
+            root.SetAttribute("ID", guid.ToString());
+
+            return doc;
         }
     }
 }
