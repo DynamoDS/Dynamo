@@ -56,29 +56,29 @@ namespace Dynamo.Search.SearchElements
         /// the SearchView </summary>
         public abstract void Execute();
 
-        /// <summary>
-        /// Overrides the equality operator, useful for SearchDictionary </summary>
-        /// <returns> True if param is equal to this</returns>
-        /// <param name="obj"> The object to compare to </param>
-        public override bool Equals(object obj)
-        {
-            if (obj == null || GetType() != obj.GetType())
-            {
-                return false;
-            }
+        ///// <summary>
+        ///// Overrides the equality operator, useful for SearchDictionary </summary>
+        ///// <returns> True if param is equal to this</returns>
+        ///// <param name="obj"> The object to compare to </param>
+        //public override bool Equals(object obj)
+        //{
+        //    if (obj == null || GetType() != obj.GetType())
+        //    {
+        //        return false;
+        //    }
 
-            var ele = (SearchElementBase) obj;
-            return this.Type == ele.Type && this.Name == ele.Name && this.Description == ele.Description;
+        //    var ele = (SearchElementBase) obj;
+        //    return this.Type == ele.Type && this.Name == ele.Name && this.Description == ele.Description;
 
-        }
+        //}
 
-        /// <summary>
-        /// Overriding equals, we need to override hashcode </summary>
-        /// <returns> A unique hashcode for the object </returns>
-        public override int GetHashCode()
-        {
-            return this.Type.GetHashCode() + this.Name.GetHashCode() + this.Description.GetHashCode();
-        }
+        ///// <summary>
+        ///// Overriding equals, we need to override hashcode </summary>
+        ///// <returns> A unique hashcode for the object </returns>
+        //public override int GetHashCode()
+        //{
+        //    return this.Type.GetHashCode() + this.Name.GetHashCode() + this.Description.GetHashCode();
+        //}
 
     }
 }

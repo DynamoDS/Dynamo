@@ -25,7 +25,7 @@ namespace Dynamo.Search.SearchElements
 {
     /// <summary>
     /// A search element representing a local node </summary>
-    public partial class NodeSearchElement : SearchElementBase
+    public partial class NodeSearchElement : SearchElementBase, IEquatable<NodeSearchElement>
     {
         #region Properties
 
@@ -211,16 +211,7 @@ namespace Dynamo.Search.SearchElements
                 return false;
             }
 
-            var other = (NodeSearchElement)obj;
-
-            if (other.Type == this.Type && this.Type == "Custom Node")
-            {
-                return other.Guid == this.Guid;
-            }
-            else
-            {
-                return this.Name == other.Type && this.FullCategoryName == other.FullCategoryName;
-            }
+            return this.Equals(obj as NodeSearchElement);
         }
 
         /// <summary>
@@ -231,6 +222,17 @@ namespace Dynamo.Search.SearchElements
             return this.Guid.GetHashCode() + this.Type.GetHashCode() + this.Name.GetHashCode() + this.Description.GetHashCode();
         }
 
+        public bool Equals(NodeSearchElement other)
+        {
+            if (other.Type == this.Type && this.Type == "Custom Node")
+            {
+                return other.Guid == this.Guid;
+            }
+            else
+            {
+                return this.Name == other.Name && this.FullCategoryName == other.FullCategoryName;
+            }
+        }
     }
 
 }
