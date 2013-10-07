@@ -650,5 +650,161 @@ namespace Dynamo.Tests
         //    Assert.AreEqual(1, zValue);
 
         //}
+
+        [Test]
+        public void PlaneTest()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\GeometryTestFiles\PlaneTest.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            // Verification for Plane node.
+            Autodesk.LibG.Geometry geometry1 = null;
+            var getGeometry1 = model.CurrentWorkspace.NodeFromWorkspace<GetFromList>("6b3c6fc6-52f5-4e0d-99fa-fc4cb8314b7d");
+            Assert.IsTrue(Utils.Convert(getGeometry1.GetValue(0), ref geometry1));
+
+            Autodesk.LibG.Plane plane = geometry1 as Autodesk.LibG.Plane;
+            Assert.AreNotEqual(null, plane);
+            Assert.AreEqual(2, plane.origin().x());
+            Assert.AreEqual(1, plane.normal().x());
+
+        }
+
+        [Test]
+        public void PointAtDistanceTest()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\GeometryTestFiles\PointAtDistanceTest.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(29, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(36, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            // Verification for Point created using PointAtDistance node.
+            Autodesk.LibG.Geometry geometry1 = null;
+            var getGeometry1 = model.CurrentWorkspace.NodeFromWorkspace<GetFromList>("5f48e595-d2cd-485f-99a1-dc0abe364ed3");
+            Assert.IsTrue(Utils.Convert(getGeometry1.GetValue(0), ref geometry1));
+
+            Autodesk.LibG.Point point = geometry1 as Autodesk.LibG.Point;
+            Assert.AreNotEqual(null, point);
+            double xValue = point.x();
+            double yValue = point.y();
+            double zValue = point.z();
+            Assert.AreEqual(10, xValue);
+            Assert.AreEqual(5.5978213925456739, yValue);
+            Assert.AreEqual(-2.506439789083756, zValue);
+
+            //Autodesk.LibG.Geometry pointAtDistance = null;
+            //var pointAtDistance1 = model.CurrentWorkspace.NodeFromWorkspace<PointAtDistanceNode>("877369eb-1b97-4d05-a4d4-61d37b803562");
+            //Assert.IsTrue(Utils.Convert(pointAtDistance1.GetValue(0), ref pointAtDistance));
+
+            //Autodesk.LibG.Point point1 = pointAtDistance as Autodesk.LibG.Point;
+        }
+
+        [Test]
+        public void PointAtUVParameterTest()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\GeometryTestFiles\PointAtUVParameterTest.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(51, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(69, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            // Verification for Point which is created using PointAtUVParameter node.
+            Autodesk.LibG.Geometry geometry1 = null;
+            var getGeometry1 = model.CurrentWorkspace.NodeFromWorkspace<GetFromList>("f467baf4-2bac-4c6f-a31e-d33016571bf5");
+            Assert.IsTrue(Utils.Convert(getGeometry1.GetValue(0), ref geometry1));
+
+            Autodesk.LibG.Point point = geometry1 as Autodesk.LibG.Point;
+            Assert.AreNotEqual(null, point);
+            double xValue = point.x();
+            double yValue = point.y();
+            double zValue = point.z();
+            Assert.AreEqual(-6.3977743135825484, xValue);
+            Assert.AreEqual(-16.869544438947674, yValue);
+            Assert.AreEqual(-10.633850246828377, zValue);
+
+            //Autodesk.LibG.Geometry pointAtDistance = null;
+            //var pointAtDistance1 = model.CurrentWorkspace.NodeFromWorkspace<PointAtUvParameterNode>("877369eb-1b97-4d05-a4d4-61d37b803562");
+            //Assert.IsTrue(Utils.Convert(pointAtDistance1.GetValue(0), ref pointAtDistance));
+
+            //Autodesk.LibG.Point point1 = pointAtDistance as Autodesk.LibG.Point;
+        }
+
+        [Test]
+        public void SweeAsSurface_AnotherTest()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\GeometryTestFiles\SweeAsSurface_AnotherTest.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(15, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(20, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            // Verification for Surface.
+            Autodesk.LibG.Geometry geometry1 = null;
+            var getGeometry1 = model.CurrentWorkspace.NodeFromWorkspace<SweepAsSurfaceNode>("a19f5539-3397-4975-ae4b-a0a2c45a3489");
+            Assert.IsTrue(Utils.Convert(getGeometry1.GetValue(0), ref geometry1));
+
+            Autodesk.LibG.Surface surface = geometry1 as Autodesk.LibG.Surface;
+            Assert.AreNotEqual(null, surface);
+            Assert.AreEqual(66.591667947439021, surface.area());
+            Assert.IsFalse(surface.closed_u());
+            Assert.IsTrue(surface.closed_v());
+
+        }
+
+
+        [Test]
+        public void ExtrudCurveTest()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\GeometryTestFiles\ExtrudCurveTest.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(24, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(27, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            // Verification for Surface.
+            Autodesk.LibG.Geometry geometry1 = null;
+            var getGeometry1 = model.CurrentWorkspace.NodeFromWorkspace<ExtrudeNode>("5c61d60b-23d8-444b-98b8-5f7bf75d5694");
+            Assert.IsTrue(Utils.Convert(getGeometry1.GetValue(0), ref geometry1));
+
+            Autodesk.LibG.Surface surface = geometry1 as Autodesk.LibG.Surface;
+            Assert.AreNotEqual(null, surface);
+            Assert.AreEqual(1.280984238447507, surface.area());
+            Assert.IsFalse(surface.closed_u());
+            Assert.IsFalse(surface.closed_v());
+
+        }
     }
 }

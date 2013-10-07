@@ -1,0 +1,14 @@
+<Workspace Version="0.7.0.29004" X="-165.500514191703" Y="-15.1439940451614" zoom="1.8" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.AngleInput type="Dynamo.Nodes.AngleInput" guid="c065b536-a63d-462f-8a17-78e9d958b158" nickname="Angle(deg.)" x="179.734126984133" y="146.695484145479" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="30..180..30" />
+    </Dynamo.Nodes.AngleInput>
+    <Dynamo.Nodes.Sin type="Dynamo.Nodes.Sin" guid="b2090193-83fe-47bc-9872-8fe391dec339" nickname="Sine" x="354.305555555562" y="149.719293669289" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="339dd778-8d2c-4ae2-9fdc-26c1572f8eb6" nickname="Watch" x="558.085603122375" y="186.736742723502" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="c065b536-a63d-462f-8a17-78e9d958b158" start_index="0" end="b2090193-83fe-47bc-9872-8fe391dec339" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b2090193-83fe-47bc-9872-8fe391dec339" start_index="0" end="339dd778-8d2c-4ae2-9fdc-26c1572f8eb6" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
