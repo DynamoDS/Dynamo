@@ -149,8 +149,14 @@ namespace Dynamo
             dynSettings.Controller.RequestsRedraw += new EventHandler(Controller_RequestsRedraw);
             DynamoSelection.Instance.Selection.CollectionChanged += new NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
             dynSettings.Controller.DynamoModel.ModelCleared += new EventHandler(DynamoModel_ModelCleared);
+            dynSettings.Controller.DynamoModel.CleaningUp += new CleanupHandler(DynamoModel_CleaningUp);
 
             Visualizers.Add(typeof(GraphicItem), VisualizationManagerASM.DrawLibGGraphicItem);
+        }
+
+        void DynamoModel_CleaningUp(object sender, EventArgs e)
+        {
+            ClearVisualizations();
         }
 
         void DynamoModel_ModelCleared(object sender, EventArgs e)

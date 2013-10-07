@@ -5,7 +5,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Autodesk.LibG;
 using Autodesk.Revit.DB;
 using Dynamo.Controls;
 using Dynamo.Models;
@@ -44,11 +43,38 @@ namespace Dynamo
                     visualizationManager = new VisualizationManagerRevit();
                     visualizationManager.VisualizationUpdateComplete += new VisualizationCompleteEventHandler(visualizationManager_VisualizationUpdateComplete);
                     visualizationManager.RequestAlternateContextClear += CleanupVisualizations;
+                    dynSettings.Controller.DynamoModel.CleaningUp += CleanupVisualizations;
                 }
-
-                return visualizationManager;
+                return visualizationManager; 
             }
         }
+
+        public DynamoController_Revit(FSchemeInterop.ExecutionEnvironment env, DynamoUpdater updater, Type viewModelType, string context)
+            : base(env, viewModelType, context)
+        {
+            Updater = updater;
+            
+            dynRevitSettings.Controller = this;
+
+            Predicate<NodeModel> requiresTransactionPredicate = node => node is RevitTransactionNode;
+            CheckRequiresTransaction = new PredicateTraverser(requiresTransactionPredicate);
+
+            Predicate<NodeModel> manualTransactionPredicate = node => node is Transaction;
+            CheckManualTransaction = new PredicateTraverser(manualTransactionPredicate);
+
+            dynSettings.Controller.DynamoViewModel.RequestAuthentication += RegisterSingleSignOn;
+
+            AddPythonBindings();
+            AddWatchNodeHandler();
+
+            dynRevitSettings.Revit.Application.DocumentClosed += Application_DocumentClosed;
+            dynRevitSettings.Revit.Application.DocumentOpened += Application_DocumentOpened;
+
+            //allow the showing of elements in context
+            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.CanFindNodesFromElements = true;
+            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.FindNodesFromElements = FindNodesFromSelection;
+        }
+
 
         void CleanupVisualizations(object sender, EventArgs e)
         {
@@ -76,19 +102,27 @@ namespace Dynamo
         void visualizationManager_VisualizationUpdateComplete(object sender, VisualizationEventArgs e)
         {
             //do not draw to geom keeper if the user has selected
-            //not to draw to the alternate context.
-            if (!VisualizationManager.DrawToAlternateContext)
+            //not to draw to the alternate context or if it is not available
+            if (!VisualizationManager.AlternateDrawingContextAvailable  || 
+                !VisualizationManager.DrawToAlternateContext)
                 return;
 
             var values = dynSettings.Controller.DynamoModel.Nodes
+                                    .Where(x=>!(x is SelectionBase))
                                    .Where(x => x.OldValue != null)
-                                   .Where(x => x.OldValue is FScheme.Value.Container || x.OldValue is FScheme.Value.List).Select(x=>x.OldValue);
+                                   .Where(x => x.OldValue is FScheme.Value.Container || x.OldValue is FScheme.Value.List)
+                                   .Select(x => x.OldValue);
 
             var geoms = values.ToList().SelectMany(RevitGeometryFromNodes).ToList();
 
             DrawToAlternateContext(geoms);
         }
 
+        /// <summary>
+        /// Utility method to get the Revit geometry associated with nodes.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         private static List<GeometryObject> RevitGeometryFromNodes(FScheme.Value value)
         {
             var geoms = new List<GeometryObject>();
@@ -126,65 +160,37 @@ namespace Dynamo
             }
 
             var styles = new FilteredElementCollector(dynRevitSettings.Doc.Document);
-            styles.OfClass(typeof (GraphicsStyle));
+            styles.OfClass(typeof(GraphicsStyle));
 
             var gStyle = styles.ToElements().FirstOrDefault(x => x.Name == "Dynamo");
 
             IdlePromise.ExecuteOnIdle(
                 () =>
+                {
+                    dynRevitSettings.Controller.InitTransaction();
+
+                    if (keeperId != ElementId.InvalidElementId)
                     {
-                        dynRevitSettings.Controller.InitTransaction();
+                        dynRevitSettings.Doc.Document.Delete(keeperId);
+                        keeperId = ElementId.InvalidElementId;
+                    }
 
-                        if (keeperId != ElementId.InvalidElementId)
-                        {
-                            dynRevitSettings.Doc.Document.Delete(keeperId);
-                            keeperId = ElementId.InvalidElementId;
-                        }
+                    var argsM = new object[4];
+                    argsM[0] = dynRevitSettings.Doc.Document;
+                    argsM[1] = ElementId.InvalidElementId;
+                    argsM[2] = geoms;
+                    if (gStyle != null)
+                        argsM[3] = gStyle.Id;
+                    else
+                        argsM[3] = ElementId.InvalidElementId;
 
-                        var argsM = new object[4];
-                        argsM[0] = dynRevitSettings.Doc.Document;
-                        argsM[1] = ElementId.InvalidElementId;
-                        argsM[2] = geoms;
-                        if (gStyle != null)
-                            argsM[3] = gStyle.Id;
-                        else
-                            argsM[3] = ElementId.InvalidElementId;
+                    keeperId = (ElementId)method.Invoke(null, argsM);
 
-                        keeperId = (ElementId) method.Invoke(null, argsM);
+                    //keeperId = GeometryElement.SetForTransientDisplay(dynRevitSettings.Doc.Document, ElementId.InvalidElementId, geoms,
+                    //                                       ElementId.InvalidElementId);
 
-                        //keeperId = GeometryElement.SetForTransientDisplay(dynRevitSettings.Doc.Document, ElementId.InvalidElementId, geoms,
-                        //                                       ElementId.InvalidElementId);
-
-                        dynRevitSettings.Controller.EndTransaction();
-                    });
-        }
-
-        public DynamoController_Revit(FSchemeInterop.ExecutionEnvironment env, DynamoUpdater updater, Type viewModelType, string context)
-            : base(env, viewModelType, context)
-        {
-            Updater = updater;
-            
-            dynRevitSettings.Controller = this;
-
-            Predicate<NodeModel> requiresTransactionPredicate = node => node is RevitTransactionNode;
-            CheckRequiresTransaction = new PredicateTraverser(requiresTransactionPredicate);
-
-            Predicate<NodeModel> manualTransactionPredicate = node => node is Transaction;
-            CheckManualTransaction = new PredicateTraverser(manualTransactionPredicate);
-
-            dynSettings.Controller.DynamoViewModel.RequestAuthentication += RegisterSingleSignOn;
-
-            AddPythonBindings();
-            AddWatchNodeHandler();
-
-            dynRevitSettings.Revit.Application.DocumentClosed += Application_DocumentClosed;
-            dynRevitSettings.Revit.Application.DocumentOpened += Application_DocumentOpened;
-
-            //allow the showing of elements in context
-            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.CanFindNodesFromElements = true;
-            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.FindNodesFromElements = FindNodesFromSelection;
-
-            dynSettings.Controller.DynamoModel.CleaningUp += CleanupVisualizations;
+                    dynRevitSettings.Controller.EndTransaction();
+                });
         }
 
         /// <summary>

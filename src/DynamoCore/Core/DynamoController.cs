@@ -251,6 +251,8 @@ namespace Dynamo
 
         public virtual void ShutDown()
         {
+            VisualizationManager.ClearVisualizations();
+
             dynSettings.Controller.DynamoModel.OnCleanup(null);
             dynSettings.Controller = null;
             
