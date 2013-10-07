@@ -1,1 +1,1 @@
-python RunRevitTests.py -n TestOne -a .\bin\Debug\DynamoTestFramework.dll -m empty.rfa -o TestResults.xml
+python RunRevitTests.py -n TestOne -a ..\..\bin\AnyCPU\Debug\DynamoTestFramework.dll -m empty.rfa -o TestResults.xml
