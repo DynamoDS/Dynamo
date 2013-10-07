@@ -504,7 +504,7 @@ namespace Dynamo
 
         public void RequestClearDrawables()
         {
-            VisualizationManager.ClearVisualizations();
+            VisualizationManager.ClearRenderables();
         }
 
         /// <summary>

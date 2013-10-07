@@ -640,9 +640,7 @@ namespace Dynamo.Models
             CleanWorkbench();
 
             //clear the renderables
-            //dynSettings.Controller.RenderDescriptions.Clear();
-            //dynSettings.Controller.OnRequestsRedraw(dynSettings.Controller, EventArgs.Empty);
-            dynSettings.Controller.VisualizationManager.ClearVisualizations();
+            dynSettings.Controller.VisualizationManager.ClearRenderables();
 
             var sw = new Stopwatch();
 
