@@ -28,17 +28,11 @@ namespace Dynamo.Tests
             // run the expression
             dynSettings.Controller.RunExpression(null);
 
-            //look at the data in the visualization manager
-            //ensure that the number of Drawable nodes
-            //and the number of entries in the Dictionary match
-            var drawableNodes = VisualizationManager.GetDrawableNodesInModel();
-            Assert.AreEqual(drawableNodes.Count(), viz.Visualizations.Count);
-
             //ensure that the number of visualizations matches the 
             //number of pieces of geometry in the collection
             var drawables = VisualizationManager.GetAllDrawablesInModel();
             var renderables = viz.Visualizations.SelectMany(x => x.Value.Points);
-            Assert.AreEqual(drawables.Count(), renderables.Count());
+            Assert.AreEqual(drawables.Values.SelectMany(x=>x).Count(), renderables.Count());
 
             //adjust the number node's value - currently set to 0..5 (6 elements)
             var numNode = (DoubleInput)model.Nodes.First(x => x is DoubleInput);
@@ -47,7 +41,7 @@ namespace Dynamo.Tests
 
             drawables = VisualizationManager.GetAllDrawablesInModel();
             renderables = viz.Visualizations.SelectMany(x => x.Value.Points);
-            Assert.AreEqual(drawables.Count(), renderables.Count());
+            Assert.AreEqual(drawables.Values.SelectMany(x=>x).Count(), renderables.Count());
         }
 
         [Test]
@@ -96,18 +90,14 @@ namespace Dynamo.Tests
             //look at the data in the visualization manager
             //ensure that the number of Drawable nodes
             //and the number of entries in the Dictionary match
-            var drawables = VisualizationManager.GetDrawableNodesInModel();
             var points = viz.Visualizations.SelectMany(x => x.Value.Points);
             var lines = viz.Visualizations.SelectMany(x => x.Value.Lines);
-            Assert.AreEqual(drawables.Count(), viz.Visualizations.Count);
 
             Assert.AreEqual(7,points.Count());
             Assert.AreEqual(6, lines.Count()/2);
 
             //delete a conector coming into the lines node
             var lineNode = model.Nodes.First(x => x is LineNode);
-            //var connector = model.CurrentWorkspace.Connectors.First(x => x.End.Owner == lineNode);
-            //model.Delete(connector);
             var port = lineNode.InPorts.First();
             port.Disconnect(port.Connectors.First());
 
@@ -228,9 +218,7 @@ namespace Dynamo.Tests
             // run the expression
             dynSettings.Controller.RunExpression(null);
 
-            var drawables = VisualizationManager.GetAllDrawablesInModel();
             var meshes = viz.Visualizations.SelectMany(x => x.Value.Meshes);
-            Assert.AreEqual(drawables.Count(), viz.Visualizations.Count);
             Assert.AreEqual(1, meshes.Count());
         }
 
@@ -248,9 +236,7 @@ namespace Dynamo.Tests
             // run the expression
             dynSettings.Controller.RunExpression(null);
 
-            var drawables = VisualizationManager.GetDrawableNodesInModel();
             var meshes = viz.Visualizations.SelectMany(x => x.Value.Meshes);
-            Assert.AreEqual(drawables.Count(), viz.Visualizations.Count);
             Assert.AreEqual(1, meshes.Count());
         }
 
@@ -268,12 +254,10 @@ namespace Dynamo.Tests
             // run the expression
             dynSettings.Controller.RunExpression(null);
 
-            var drawables = VisualizationManager.GetDrawableNodesInModel();
             var xs = viz.Visualizations.SelectMany(x => x.Value.XAxisPoints);
             var ys = viz.Visualizations.SelectMany(x => x.Value.YAxisPoints);
             var zs = viz.Visualizations.SelectMany(x => x.Value.ZAxisPoints);
 
-            Assert.AreEqual(drawables.Count(), viz.Visualizations.Count);
             Assert.AreEqual(2, xs.Count());
             Assert.AreEqual(2, ys.Count());
             Assert.AreEqual(2, zs.Count());
@@ -293,14 +277,16 @@ namespace Dynamo.Tests
             // run the expression
             dynSettings.Controller.RunExpression(null);
 
-            var drawables = VisualizationManager.GetDrawableNodesInModel();
-            Assert.AreEqual(drawables.Count(), viz.Visualizations.Count);
+            //var drawables = VisualizationManager.GetDrawableNodesInModel();
+            //Assert.AreEqual(drawables.Count(), viz.Visualizations.Count);
             
             int pointCount, lineCount, meshCount, xCount, yCount, zCount;
             viz.GetVisualizationCounts(
                 out pointCount, out lineCount, out meshCount, out xCount, out yCount, out zCount);
 
-            Assert.AreEqual(23, pointCount);
+            //total points are the two strips of points at the top and
+            //bottom of the mesh, duplicated 11x2x2 plus the one mesh
+            Assert.AreEqual(45, pointCount);
             Assert.AreEqual(1, meshCount);
             
         }
@@ -336,7 +322,7 @@ namespace Dynamo.Tests
             model.Clear(null);
 
             //ensure that we have no visualizations
-            Assert.AreEqual(viz.Visualizations.Count, 0);
+            Assert.AreEqual(0, viz.Visualizations.Count);
         }
     
         [Test]

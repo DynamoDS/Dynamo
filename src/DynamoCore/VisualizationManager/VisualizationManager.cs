@@ -293,6 +293,18 @@ namespace Dynamo
             {
                 UpdateVisualizations();
             }
+            if (e.PropertyName == "State")
+            {
+                var node = sender as NodeModel;
+                if (node.State == ElementState.ERROR)
+                {
+                    //dump the visualization
+                    if (Visualizations.ContainsKey(node.GUID.ToString()))
+                    {
+                        Visualizations[node.GUID.ToString()].Clear();
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -327,9 +339,18 @@ namespace Dynamo
         /// <summary>
         /// Clear the contents of all lists containing render geometry.
         /// </summary>
-        public void ClearVisualizations()
+        public void ClearRenderables()
         {
             Visualizations.Values.ToList().ForEach(x=>x.Clear());
+        }
+
+        /// <summary>
+        /// Clears all visualization entries from dictionary. If you only want to clear the renderable objects
+        /// use ClearRenderables.
+        /// </summary>
+        public void ClearVisualizations()
+        {
+            Visualizations.Clear();
         }
 
         /// <summary>
@@ -589,9 +610,14 @@ namespace Dynamo
             }
         }
 
+        /// <summary>
+        /// The visualization thread logic. Can be overriden in child classes.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="args"></param>
         protected virtual void VisualizationUpdateThread(object s, DoWorkEventArgs args)
         {
-            var drawable_dict = GetAllDrawablesInModel().Distinct();
+            var drawable_dict = GetAllDrawablesInModel();
 
             Debug.WriteLine(String.Format("{0} visualizations to update", drawable_dict.Count()));
             Debug.WriteLine(String.Format("Updating visualizations on thread {0}.", Thread.CurrentThread.ManagedThreadId));
@@ -633,19 +659,27 @@ namespace Dynamo
         #region utility methods
 
         /// <summary>
-        /// Get all objects in the model which have visualizers associated with them.
+        /// Get a dictionary of all objects in the model which have visualizers associated with them,
+        /// keyed by node. Filters the 
         /// </summary>
         /// <returns></returns>
         public static Dictionary<NodeModel,List<object>> GetAllDrawablesInModel()
         {
-            var nodes = dynSettings.Controller.DynamoModel.Nodes
-                                   .Where(x => x.OldValue != null)
-                                   .Where(
-                                       x =>
-                                       x.OldValue.IsList || x.OldValue.GetType() == typeof(FScheme.Value.Container))
-                                    .Where(x => x.GetType().Name != "Watch3D" && x.GetType().Name != "Watch");
+            //get a list of tuples node,drawables
+            var nodeTuples = dynSettings.Controller.DynamoModel.Nodes
+                                        .Where(x => x.OldValue != null)
+                                        .Where(
+                                            x =>
+                                            x.OldValue.IsList ||
+                                            x.OldValue.GetType() == typeof (FScheme.Value.Container))
+                                        .Where(x => x.GetType().Name != "Watch3D" && x.GetType().Name != "Watch")
+                                        .Select(x => new Tuple<NodeModel, List<object>>(x, GetDrawablesFromNode(x)));
 
-            return nodes.ToDictionary(x=>x, GetDrawablesFromNode);
+            //convert the tuple list to a dictionary, only adding
+            //the lists which have items.
+            var drawables = nodeTuples.Where(x=>x.Item2.Count>0).ToDictionary(tuple => tuple.Item1, tuple => tuple.Item2);
+
+            return drawables;
         }
 
         /// <summary>
