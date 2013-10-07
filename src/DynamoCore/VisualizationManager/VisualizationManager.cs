@@ -745,12 +745,16 @@ namespace Dynamo
                 return drawables;
 
             var obj = ((FScheme.Value.Container)container).Item;
-            var t = obj.GetType();
-            var visualizer = viz.Visualizers.FirstOrDefault(x => x.Key == t || x.Key.IsAssignableFrom(t));
 
-            if (visualizer.Value != null)
+            if (obj != null)
             {
-                drawables.Add(obj);
+                var t = obj.GetType();
+                var visualizer = viz.Visualizers.FirstOrDefault(x => x.Key == t || x.Key.IsAssignableFrom(t));
+
+                if (visualizer.Value != null)
+                {
+                    drawables.Add(obj);
+                }
             }
 
             return drawables;
