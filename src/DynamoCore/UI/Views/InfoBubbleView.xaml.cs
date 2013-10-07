@@ -54,7 +54,7 @@ namespace Dynamo.Controls
             //  then add a new TextBox to it
 
             ContentContainer.Children.Clear();
-            TextBox textBox = GetStyledTextBox(ViewModel.Content);
+            TextBox textBox = GetNewTextBox(ViewModel.Content);
             ContentContainer.Children.Add(textBox);
 
             ContentContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
@@ -62,19 +62,10 @@ namespace Dynamo.Controls
             ViewModel.EstimatedHeight = ContentContainer.DesiredSize.Height;
         }
 
-        private TextBox GetStyledTextBox(string text)
+        private TextBox GetNewTextBox(string text)
         {
             TextBox textBox = new TextBox();
-            textBox.TextWrapping = ViewModel.ContentWrapping;
             textBox.Text = text;
-            textBox.IsReadOnly = true;
-            textBox.BorderThickness = new Thickness(0);
-            textBox.Background = Brushes.Transparent;
-            textBox.Foreground = ViewModel.TextForeground;
-            textBox.FontWeight = ViewModel.TextFontWeight;
-            textBox.FontSize = ViewModel.TextFontSize;
-            textBox.Margin = ViewModel.ContentMargin;
-            textBox.MaxWidth = ViewModel.MaxWidth;
             return textBox;
         }
 
@@ -110,33 +101,26 @@ namespace Dynamo.Controls
 
         private void FadeInInfoBubble()
         {
-            InfoBubbleViewModel viewModel = GetViewModel();
-            viewModel.FadeInCommand.Execute(null);
+            ViewModel.FadeInCommand.Execute(null);
         }
 
         private void FadeOutInfoBubble()
         {
-            InfoBubbleViewModel viewModel = GetViewModel();
-            viewModel.FadeOutCommand.Execute(null);
+            ViewModel.FadeOutCommand.Execute(null);
         }
 
         private void InfoBubble_MouseEnter(object sender, MouseEventArgs e)
         {
-            if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.PreviewCondensed &&
-                dynSettings.Controller.IsShowPreviewByDefault)
+            if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.PreviewCondensed)
             {
                 ShowPreviewBubbleFullContent();
             }
-            else
-            {
-                FadeInInfoBubble();
-            }
+            FadeInInfoBubble();
         }
 
         private void InfoBubble_MouseLeave(object sender, MouseEventArgs e)
         {
-            if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Preview &&
-                dynSettings.Controller.IsShowPreviewByDefault)
+            if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Preview && ViewModel.IsShowPreviewByDefault)
             {
                 ShowPreviewBubbleCondensedContent();
             }
@@ -148,17 +132,21 @@ namespace Dynamo.Controls
 
         private void InfoBubble_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (dynSettings.Controller.IsShowPreviewByDefault)
+            if (ViewModel.InfoBubbleStyle != InfoBubbleViewModel.Style.Preview && ViewModel.InfoBubbleStyle != InfoBubbleViewModel.Style.PreviewCondensed)
                 return;
-            if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.PreviewCondensed)
+            
+            if (ViewModel.IsShowPreviewByDefault)
             {
-                ShowPreviewBubbleFullContent();
-                ViewModel.SetAlwaysVisibleCommand.Execute(true);
-            }
-            else if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Preview)
-            {
-                ShowPreviewBubbleCondensedContent();
+                ViewModel.IsShowPreviewByDefault = false;
                 ViewModel.SetAlwaysVisibleCommand.Execute(false);
+                ViewModel.InstantCollapseCommand.Execute(null);
+            }
+            else
+            {
+                ViewModel.IsShowPreviewByDefault = true;
+                ViewModel.ZIndex = 3;
+                ViewModel.SetAlwaysVisibleCommand.Execute(true);
+                ShowPreviewBubbleCondensedContent();
             }
         }
     }

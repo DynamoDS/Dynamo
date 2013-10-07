@@ -266,7 +266,7 @@
                             </WrapPanel>
                         </MenuItem>
                         <MenuItem Header="{Binding Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}" Command="{Binding ToggleConsoleShowingCommand}" InputGestureText="Ctrl + Alt + Up" Focusable="False"/>
-                        <MenuItem Header="_Show Node Preview" Name="showNodePreview" Focusable="False"
+                        <MenuItem Header="{Binding Path=IsShowPreviewByDefault, Converter={StaticResource BoolToShowAllPreviewNameConverter}}" Name="showNodePreview" Focusable="False"
                                   Command="{Binding Path=TogglePreviewBubbleVisibilityCommand}">
                         </MenuItem>
                     </MenuItem>

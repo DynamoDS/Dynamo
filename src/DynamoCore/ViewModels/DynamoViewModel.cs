@@ -376,6 +376,11 @@ namespace Dynamo.ViewModels
 
         public bool IsMouseDown { get; set; }
 
+        public bool IsShowPreviewByDefault
+        {
+            get { return Controller.IsShowPreviewByDefault; }
+        }
+
         public ConnectorType ConnectorType
         {
             get { return dynSettings.Controller.ConnectorType; }
@@ -479,6 +484,9 @@ namespace Dynamo.ViewModels
             {
                 case "IsUILocked":
                     RaisePropertyChanged("IsUILocked");
+                    break;
+                case "IsShowPreviewByDefault":
+                    RaisePropertyChanged("IsShowPreviewByDefault");
                     break;
             }
         }
