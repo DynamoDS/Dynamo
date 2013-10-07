@@ -1838,7 +1838,7 @@ namespace Dynamo.Models
 
             if (parameters == null)
             {
-                ModelEventArgs args = new ModelEventArgs(n, x, y, true);
+                ModelEventArgs args = new ModelEventArgs(n, true);
                 DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
                 vm.CurrentSpaceViewModel.OnRequestNodeCentered(this, args);
             }
