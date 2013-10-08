@@ -10,9 +10,9 @@ using ProtoCore.DSASM;
 
 namespace Dynamo.Nodes
 {
-    public enum DSFunctionType
+    public enum DSLibraryItemType
     {
-        GeneralFunction,
+        GenericFunction,
         Constructor,
         StaticMethod,
         InstanceMethod,
@@ -20,27 +20,42 @@ namespace Dynamo.Nodes
         InstanceProperty
     }
 
-    /// <summary>
-    /// Description about a DesignScript function. 
-    /// 
-    /// TODO: More information may be needed. 
-    /// </summary>
-    public class DSFunctionDescritpion
+    public abstract class DSLibraryItem
     {
-        public string Name { get; private set; }
-        public string DisplayName { get; private set;}
-        public List<string> ArgumentNames { get; private set;}
-        public List<string> ReturnKeys { get; private set;}
-        public DSFunctionType Type { get; private set; }
+        public string Assembly { get; set; }
+        public string Category { get; set; }
+        public string ClassName { get; set; }
+        public string Name { get; set; }
+        public string DisplayName { get; set; }
+        public DSLibraryItemType Type { get; set; }
 
-        public DSFunctionDescritpion(string name, 
-                                    string displayName, 
-                                    List<string> argumentNames, 
-                                    List<string> returnKeys = null)
+        public DSLibraryItem(string assembly, string category, string className, string name, string displayName, DSLibraryItemType type)
         {
-            this.Name = name;
-            this.DisplayName = displayName;
-            this.ArgumentNames = argumentNames;
+            Assembly = assembly;
+            Category = category;
+            ClassName = className;
+            Name = name;
+            DisplayName = displayName;
+            Type = type;
+        }
+    }
+    
+    public class DSFunctionItem: DSLibraryItem
+    {
+        public List<string> Arguments { get; set;}
+        public List<string> ReturnKeys { get; set;}
+
+        public DSFunctionItem(string assembly,
+                                    string category,
+                                    string className, 
+                                    string name,
+                                    string displayName, 
+                                    DSLibraryItemType type,
+                                    List<string> arguments, 
+                                    List<string> returnKeys = null):
+            base(assembly, category, className, name, displayName, type)
+        {
+            this.Arguments = arguments;
             this.ReturnKeys = returnKeys;
         }
     }
@@ -55,25 +70,61 @@ namespace Dynamo.Nodes
     [NodeSearchableAttribute(false)]
     public class DSFunction : NodeModel
     {
-        public string FunctionName
+        public DSFunctionItem functionItem { get; set; }
+
+        public string Assembly
         {
-            get;
-            private set;
+            get
+            {
+                return functionItem.Assembly;
+            }
         }
 
-        public DSFunction(DSFunctionDescritpion functionData)
+        public string FunctionName
         {
-            this.FunctionName = functionData.Name;
-            
-            foreach (var arg in functionData.ArgumentNames)
+            get
+            {
+                if (IsStaticMember())
+                {
+                    return functionItem.ClassName + "." + functionItem.Name;
+                }
+                else
+                {
+                    return functionItem.Name;
+                }
+            }
+        }
+
+        public bool IsInstanceMember()
+        {
+            return functionItem.Type == DSLibraryItemType.InstanceMethod ||
+                   functionItem.Type == DSLibraryItemType.InstanceProperty;
+        }
+
+        public bool IsStaticMember()
+        {
+            return functionItem.Type == DSLibraryItemType.StaticMethod ||
+                   functionItem.Type == DSLibraryItemType.StaticProperty;
+        }
+
+        public DSFunction(DSFunctionItem item)
+        {
+            functionItem = item;
+
+            if (IsInstanceMember())
+            {
+                InPortData.Add(new PortData("this", "Class Instance", typeof(object)));
+            }
+
+            foreach (var arg in functionItem.Arguments)
             {
                 InPortData.Add(new PortData(arg, "parameter", typeof(object)));
             }
 
             // Returns a dictionary
-            if (functionData.ReturnKeys != null && functionData.ReturnKeys.Count > 1)
+            if (functionItem.ReturnKeys != null && functionItem.ReturnKeys.Count >= 1)
             {
-                foreach (var key in functionData.ReturnKeys)
+                foreach (var key in functionItem.ReturnKeys)
                 {
                     OutPortData.Add(new PortData(key, "return value", typeof(object)));
                 }
@@ -84,7 +135,7 @@ namespace Dynamo.Nodes
             }
 
             RegisterAllPorts();
-            NickName = functionData.DisplayName;
+            NickName = functionItem.DisplayName;
         }
 
         protected override AssociativeNode BuildAstNode(DSEngine.IAstBuilder builder, 

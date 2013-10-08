@@ -134,7 +134,7 @@ limitations under the License.
   <ItemGroup>
     <Compile Include="Core\UndoRedoRecorder.cs" />
     <Compile Include="DSEngine\AstBuilder.cs" />
-    <Compile Include="DSEngine\DSUtil.cs" />
+    <Compile Include="DSEngine\DSLibrary.cs" />
     <Compile Include="Nodes\dynDSFunction.cs" />
     <Compile Include="Models\Migration.cs" />
     <Compile Include="Nodes\Geometry.cs" />

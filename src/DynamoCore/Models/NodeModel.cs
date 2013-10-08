@@ -836,6 +836,7 @@ namespace Dynamo.Models
                             indexingNode.value = outputIndexOfInput.ToString();
                         }
 
+                        inputNode = new IdentifierNode(inputNode as IdentifierNode); 
                         if (inputNode is ArrayNameNode)
                         {
                             ArrayNode arrayNode = new ArrayNode();
