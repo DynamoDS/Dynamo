@@ -58,10 +58,16 @@ namespace Dynamo.Tests
             Assert.Fail("This test fails");
         }
 
-        //[Test]
-        //public void TestB()
-        //{
-        //    Assert.AreEqual(0,0);
-        //}
+        [Test]
+        public void TestB()
+        {
+            Assert.AreEqual(0, 0);
+        }
+
+        [Test]
+        public void TestC()
+        {
+            Assert.Inconclusive("This is inconclusive");
+        }
     }
 }

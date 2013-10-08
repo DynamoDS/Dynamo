@@ -164,8 +164,12 @@ namespace Dynamo.Tests
                         resultsRoot.testsuite.result = "Error";
                     }
                 }
-
+                
                 fixtureResult.results.Items = runningResults.ToArray();
+
+                CalculateCaseTotalsOnSuite(fixtureResult);
+                CalculateSweetTotalsOnOuterSweet(rootSuite);
+                CalculateTotalsOnResultsRoot(resultsRoot);
 
                 SaveResults();
 
@@ -179,6 +183,52 @@ namespace Dynamo.Tests
             }
 
             return Result.Succeeded;
+        }
+
+        private void CalculateTotalsOnResultsRoot(resultType result)
+        {
+            var resultItems = result.testsuite.results.Items.ToList();
+            var cases = resultItems
+                .Where(x => x.GetType() == typeof (testsuiteType))
+                .Cast<testsuiteType>()
+                .SelectMany(x => x.results.Items)
+                .Where(x => x.GetType() == typeof (testcaseType))
+                .Cast<testcaseType>();
+            result.errors = cases.Sum(x => x.result == "Failure" ? 1 : 0);
+            result.total = cases.Count();
+
+            result.ignored = cases.Sum(x => x.result == "Ignored" ? 1 : 0);
+            result.inconclusive = cases.Sum(x => x.result == "Inconclusive" ? 1 : 0);
+            result.invalid = cases.Sum(x => x.result == "Invalid" ? 1 : 0);
+            result.notrun = cases.Sum(x => x.executed == "NotRun" ? 1 : 0);
+            result.skipped = cases.Sum(x => x.result == "Skipped" ? 1 : 0);
+            result.errors = cases.Sum(x => x.result == "Error" ? 1 : 0);
+            result.failures = cases.Sum(x => x.result == "Failure" ? 1 : 0);
+        }
+
+        private void CalculateSweetTotalsOnOuterSweet(testsuiteType suite)
+        {
+            var suiteItems = suite.results.Items.ToList();
+            var innerSuites = suiteItems.Where(x => x.GetType() == typeof (testsuiteType)).Cast<testsuiteType>();
+            suite.asserts = innerSuites.Sum(x => Convert.ToInt16(x.asserts)).ToString();
+            suite.result = innerSuites.Any(x => x.result == "Failure") ? "Failure" : "Success";
+            suite.time = innerSuites.Sum(x => Convert.ToDouble(x.time)).ToString();
+        }
+
+        private void CalculateCaseTotalsOnSuite(testsuiteType suite)
+        {
+            //result types
+            //Ignored, Failure, NotRunnable, Error, Success
+
+            //success is true or false
+
+            var suiteItems = suite.results.Items.ToList();
+            var cases = suiteItems.Where(x => x.GetType() == typeof(testcaseType)).Cast<testcaseType>();
+            suite.asserts = cases.Sum(x => Convert.ToInt16(x.asserts)).ToString();
+            suite.result = cases.Any(x => x.result == "Failure") ? "Failure" : "Success";
+            suite.time = cases.Sum(x => Convert.ToDouble(x.time)).ToString();
+            //suite.executed = cases.All(x => x.executed == "False") ? "False" : "True";
+            suite.executed = true.ToString();
         }
 
         /// <summary>
@@ -261,7 +311,6 @@ namespace Dynamo.Tests
 
             //result types
             //Ignored, Failure, NotRunnable, Error, Success
-
             var testCase = new testcaseType
                 {
                     name = t.TestName.Name,
@@ -270,32 +319,52 @@ namespace Dynamo.Tests
                     asserts = result.AssertCount.ToString(CultureInfo.InvariantCulture),
                     time = result.Time.ToString(CultureInfo.InvariantCulture)
                 };
-            resultsRoot.testsuite.success = true.ToString();
 
-            var currAsserts = Convert.ToInt16(resultsRoot.testsuite.asserts);
-            resultsRoot.testsuite.asserts = (currAsserts + result.AssertCount).ToString();
+            //if (result.IsSuccess)
+            //{
+            //    testCase.result = "Success";
+            //}
+            //else if (result.IsFailure)
+            //{
+            //    var fail = new failureType {message = result.Message, stacktrace = result.StackTrace};
+            //    testCase.Item = fail;
+            //    testCase.result = "Failure";
+            //}
+            //else if (result.IsError)
+            //{
+            //    var errCount = Convert.ToInt16(resultsRoot.errors);
+            //    resultsRoot.errors = (errCount + 1);
+            //    testCase.result = "Error";
+            //}
 
-            var currCount = Convert.ToInt16(resultsRoot.total);
-            resultsRoot.total = (currCount + 1);
-
-            if (result.IsSuccess)
+            switch (result.ResultState)
             {
-                testCase.result = "Success";
-            }
-            else if (result.IsFailure)
-            {
-                var fail = new failureType {message = result.Message, stacktrace = result.StackTrace};
-                testCase.Item = fail;
-                testCase.result = "Failure";
-                resultsRoot.testsuite.success = false.ToString();
-                resultsRoot.testsuite.result = "Failure";
-            }
-            else if (result.IsError)
-            {
-                var errCount = Convert.ToInt16(resultsRoot.errors);
-                resultsRoot.errors = (errCount + 1);
-                testCase.result = "Error";
-                resultsRoot.testsuite.result = "Failure";
+                case ResultState.Cancelled:
+                    testCase.result = "Cancelled";
+                    break;
+                case ResultState.Error:
+                    testCase.result = "Error";
+                    break;
+                case ResultState.Failure:
+                    var fail = new failureType {message = result.Message, stacktrace = result.StackTrace};
+                    testCase.Item = fail;
+                    testCase.result = "Failure";
+                    break;
+                case ResultState.Ignored:
+                    testCase.result = "Ignored";
+                    break;
+                case ResultState.Inconclusive:
+                    testCase.result = "Inconclusive";
+                    break;
+                case ResultState.NotRunnable:
+                    testCase.result = "NotRunnable";
+                    break;
+                case ResultState.Skipped:
+                    testCase.result = "Skipped";
+                    break;
+                case ResultState.Success:
+                    testCase.result = "Success";
+                    break;
             }
 
             return testCase;
