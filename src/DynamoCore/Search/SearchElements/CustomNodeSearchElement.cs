@@ -35,6 +35,13 @@ namespace Dynamo.Search.SearchElements
             this.EditCommand = new DelegateCommand(Edit);
         }
 
+        public override NodeSearchElement Copy()
+        {
+            return
+                new CustomNodeSearchElement(new CustomNodeInfo(this.Guid, this.Name, this.FullCategoryName,
+                                                               this.Description, this.Path));
+        }
+
         public void Edit(object _)
         {
             dynSettings.Controller.DynamoViewModel.GoToWorkspaceCommand.Execute(this.Guid);

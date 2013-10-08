@@ -284,10 +284,17 @@
                                     <TextBlock Name="name" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
                                                  Text="{Binding Path=Description, Converter={StaticResource TooltipLengthTruncater}}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" 
                                                Visibility="{Binding Path=Description, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
-
-                                    <TextBlock Name="path" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
-                                                 Text="{Binding Path=Path, Converter={StaticResource FilePathDisplayConverter}}" FontSize="11" Margin="2">
+                                    
+                                    <Separator Background="#BBB"></Separator>
+                                    
+                                    <TextBlock Name="path"
+                                                 Text="{Binding Path=Path, Converter={StaticResource FilePathDisplayConverter}}" Visibility="{Binding Path=Path, Converter={StaticResource EmptyStringToCollapsedConverter}}" FontSize="11" Margin="2">
                                     </TextBlock>
+
+                                    <TextBlock Name="unsaved"
+                                                 Text="Unsaved" Visibility="{Binding Path=Path, Converter={StaticResource NonEmptyStringToCollapsedConverter}}" FontSize="11" Margin="2">
+                                    </TextBlock>
+                                    
                                 </StackPanel>
                             </StackPanel.ToolTip>
 

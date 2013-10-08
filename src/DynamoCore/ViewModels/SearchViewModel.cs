@@ -548,17 +548,19 @@ namespace Dynamo.ViewModels
                             if (t.Result.Any() && t.Result.ElementAt(0) is NodeSearchElement)
                             {
                                 _topResult.Items.Clear();
-                                
-                                _topResult.AddChild( (t.Result.ElementAt(0) as NodeSearchElement).Copy() );
+
+                                var copy = (t.Result.ElementAt(0) as NodeSearchElement).Copy();
+
+                                _topResult.AddChild(copy);
 
                                 _topResult.SetVisibilityToLeaves(true);
                                 _topResult.IsExpanded = true;
                             }
-                            
+
                             // for all of the other results, show them in their category
                             foreach (var ele in _browserLeaves)
                             {
-                                if (t.Result.Contains(ele))
+                                if ( t.Result.Contains(ele) )
                                 {
                                     ele.Visibility = true;
                                     ele.ExpandToRoot();
@@ -579,6 +581,8 @@ namespace Dynamo.ViewModels
                                 this.SelectedIndex = 0;
                                 _visibleSearchResults[0].IsSelected = true;
                             }
+
+
                         }
 
                     }
