@@ -206,7 +206,7 @@ namespace Dynamo.Revit
             {
                 #region no debug
 
-                if (controller.TransMode == TransactionMode.Manual && !controller.TransactionManager.TransactionActive)
+                if (controller.TransMode == TransactionMode.Manual && !controller.IsTransactionActive())
                 {
                     throw new Exception("A Revit transaction is required in order evaluate this element.");
                 }
