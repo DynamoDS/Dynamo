@@ -438,7 +438,7 @@ namespace Dynamo.ViewModels
             TextForeground = new SolidColorBrush(Color.FromRgb(51, 51, 51));
             TextFontWeight = FontWeights.Normal;
             ContentWrapping = TextWrapping.Wrap;
-            ContentMargin = new Thickness(12, 5, 5, 5);
+            ContentMargin = new Thickness(7, 2, 0, 2);
         }
 
         private void SetStyle_NodeTooltip(Direction connectingDirection)
@@ -458,13 +458,13 @@ namespace Dynamo.ViewModels
             switch (connectingDirection)
             {
                 case Direction.Left:
-                    ContentMargin = new Thickness(11, 5, 5, 5);
+                    ContentMargin = new Thickness(6, 2, 0, 2);
                     break;
                 case Direction.Right:
-                    ContentMargin = new Thickness(5, 5, 11, 5);
+                    ContentMargin = new Thickness(0, 2, 6, 2);
                     break;
                 case Direction.Bottom:
-                    ContentMargin = new Thickness(5, 5, 5, 11);
+                    ContentMargin = new Thickness(0, 2, 0, 8);
                     break;
             }
         }
@@ -482,7 +482,7 @@ namespace Dynamo.ViewModels
             TextFontWeight = FontWeights.Light;
             TextForeground = new SolidColorBrush(Color.FromRgb(190, 70, 70));
             ContentWrapping = TextWrapping.Wrap;
-            ContentMargin = new Thickness(5, 5, 5, 12);
+            ContentMargin = new Thickness(0, 2, 0, 9);
         }
 
         private void SetStyle_Preview()
@@ -498,7 +498,7 @@ namespace Dynamo.ViewModels
             TextFontWeight = FontWeights.Light;
             TextForeground = new SolidColorBrush(Color.FromRgb(153, 153, 153));
             ContentWrapping = TextWrapping.Wrap;
-            ContentMargin = new Thickness(5, 12, 5, 5);
+            ContentMargin = new Thickness(0, 9, 0, 2);
         }
 
         private PointCollection GetFramePoints_LibraryItemPreview()
@@ -547,7 +547,7 @@ namespace Dynamo.ViewModels
             else if (botRight.X + EstimatedWidth <= dynSettings.Controller.DynamoViewModel.WorkspaceActualWidth)
             {
                 limitedDirection = Direction.Top;
-                ContentMargin = new Thickness(11, 5, 5, 5);
+                ContentMargin = new Thickness(6, 2, 0, 2);
                 UpdateContent(Content);
 
                 pointCollection.Add(new Point(EstimatedWidth, 0));
@@ -559,7 +559,7 @@ namespace Dynamo.ViewModels
             else
             {
                 limitedDirection = Direction.TopRight;
-                ContentMargin = new Thickness(5, 5, 11, 5);
+                ContentMargin = new Thickness(0, 2, 6, 2);
                 UpdateContent(Content);
 
                 pointCollection.Add(new Point(EstimatedWidth, 0));
@@ -579,7 +579,7 @@ namespace Dynamo.ViewModels
             if (botRight.X + EstimatedWidth > dynSettings.Controller.DynamoViewModel.WorkspaceActualWidth)
             {
                 limitedDirection = Direction.Right;
-                ContentMargin = new Thickness(5, 5, 11, 5);
+                ContentMargin = new Thickness(0, 2, 6, 2);
                 UpdateContent(Content);
                 pointCollection = GetFramePoints_NodeTooltipConnectRight(topLeft, botRight);
             }
@@ -603,7 +603,7 @@ namespace Dynamo.ViewModels
             if (topLeft.X - EstimatedWidth < 0)
             {
                 limitedDirection = Direction.Left;
-                ContentMargin = new Thickness(11, 5, 5, 5);
+                ContentMargin = new Thickness(6, 2, 0, 2);
                 UpdateContent(Content);
                 pointCollection = GetFramePoints_NodeTooltipConnectLeft(topLeft, botRight);
             }
