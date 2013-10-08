@@ -79,6 +79,8 @@ namespace Dynamo.Models
             var oldPath = this.FileName;
             if (!base.SaveAs(path)) return false;
 
+            if (oldPath == null) this.FunctionDefinition.AddToSearch();
+
             // A SaveAs to an existing function id prompts the creation of a new 
             // custom node with a new function id
             if ( oldPath != path && oldPath != null )
