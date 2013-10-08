@@ -215,7 +215,6 @@ namespace Dynamo.ViewModels
 
         #endregion
 
-
         /// <summary>
         ///     The class constructor.
         /// </summary>
@@ -912,7 +911,9 @@ namespace Dynamo.ViewModels
             var nodeEle = new CustomNodeSearchElement(nodeInfo);
 
             if (SearchDictionary.Contains(nodeEle))
-                return false;
+            {
+                return this.Refactor(nodeInfo);
+            }
 
             SearchDictionary.Add(nodeEle, nodeEle.Name);
             SearchDictionary.Add(nodeEle, nodeInfo.Category + "." + nodeEle.Name);
@@ -922,10 +923,10 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        public void Refactor(CustomNodeInfo nodeInfo)
+        public bool Refactor(CustomNodeInfo nodeInfo)
         {
             this.RemoveNodeAndEmptyParentCategory(nodeInfo.Guid);
-            this.Add(nodeInfo);
+            return this.Add(nodeInfo);
         }
 
         public void Search(object parameter)
