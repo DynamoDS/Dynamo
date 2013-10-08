@@ -11,7 +11,6 @@ using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Dynamo.NUnit.Tests;
-using Dynamo.Tests;
 using NUnit.Core;
 using NUnit.Core.Filters;
 
@@ -20,7 +19,7 @@ namespace Dynamo.Tests
     [Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
     [Journaling(JournalingMode.UsingCommandData)]
-    internal class DynamoTestFramework : IExternalCommand
+    public class DynamoTestFramework : IExternalCommand
     {
         private UIDocument m_doc;
         private UIApplication m_revit;
@@ -61,7 +60,6 @@ namespace Dynamo.Tests
 
                 bool canReadData = (0 < dataMap.Count);
 
-              
                 if (canReadData)
                 {
                     if (dataMap.ContainsKey("testName"))
@@ -93,9 +91,6 @@ namespace Dynamo.Tests
                 }
 
                 //http://stackoverflow.com/questions/2798561/how-to-run-nunit-from-my-code
-                string assLocation = Assembly.GetExecutingAssembly().Location;
-                var fi = new FileInfo(assLocation);
-                string testLoc = Path.Combine(fi.DirectoryName, @"DynamoRevitTester.dll");
 
                 //Tests must be executed on the main thread in order to access the Revit API.
                 //NUnit's SimpleTestRunner runs the tests on the main thread
@@ -103,7 +98,7 @@ namespace Dynamo.Tests
                 CoreExtensions.Host.InitializeService();
                 var runner = new SimpleTestRunner();
                 var builder = new TestSuiteBuilder();
-                var package = new TestPackage("DynamoTestFramework", new List<string>() { testLoc });
+                var package = new TestPackage("DynamoTestFramework", new List<string>() { testAssembly });
                 runner.Load(package);
                 TestSuite suite = builder.Build(package);
                 TestFixture fixture = null;
@@ -142,7 +137,7 @@ namespace Dynamo.Tests
                 //for testing
                 //if the journal file contains data
 
-                TestMethod t = FindTestByName(fixture, dataMap["dynamoTestName"]);
+                TestMethod t = FindTestByName(fixture, dataMap["testName"]);
                 if (t != null)
                 {
                     TestFilter filter = new NameFilter(t.TestName);
