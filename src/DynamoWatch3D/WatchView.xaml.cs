@@ -150,22 +150,27 @@ namespace Dynamo.Controls
         void WatchView_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
             dynSettings.Controller.VisualizationManager.VisualizationUpdateComplete += VisualizationManager_VisualizationUpdateComplete;
+
+            var node = DataContext as Watch3D;
+            node.WatchResultsReadyToVisualize += RenderDrawables;
         }
 
         void VisualizationManager_VisualizationUpdateComplete(object sender, VisualizationEventArgs e)
         {
-            Dispatcher.Invoke(new Action<RenderDescription>(RenderDrawables), new object[]{e.Description});
+            Dispatcher.Invoke(new Action(delegate
+            {
+                var node = DataContext as Watch3D;
+                if (node != null)
+                {
+                    node.GetBranchVisualizationCommand.Execute(null);
+                }
+            }));
         }
 
-        private void RenderDrawables(RenderDescription description)
+        private void RenderDrawables(object sender, EventArgs e)
         {
-            //Debug.WriteLine(string.Format("Rendering Watch3D on thread {0}.", System.Threading.Thread.CurrentThread.ManagedThreadId));
-
-            //when the visualization update is complete, rebind geometry
-            //in this watch to collections of geometry composed from upstream
-            //geometry
-
-            var rd = dynSettings.Controller.VisualizationManager.RenderUpstream(this.DataContext as NodeModel);
+            var renderArgs = e as VisualizationEventArgs;
+            var rd = renderArgs.Description;
 
             //aggregate all the render descriptions into one for this node.
             HelixPoints = null;

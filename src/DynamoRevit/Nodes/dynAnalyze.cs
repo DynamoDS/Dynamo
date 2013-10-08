@@ -50,8 +50,6 @@ namespace Dynamo.Nodes
                 norm = f.ComputeNormal(uv);
             }
 
-            VisualizationGeometry.Add(norm);
-
             return Value.NewContainer(norm);
         }
     }
@@ -85,8 +83,6 @@ namespace Dynamo.Nodes
                 UV param = (UV)(args[0] as Value.Container).Item;
                 face_point = f.Evaluate(param);
             }
-
-            VisualizationGeometry.Add(face_point);
 
             return Value.NewContainer(face_point);
         }
@@ -125,8 +121,6 @@ namespace Dynamo.Nodes
                 t.BasisY = t.BasisX.CrossProduct(t.BasisZ);
             }
 
-            VisualizationGeometry.Add(t);
-
             return Value.NewContainer(t);
         }
 
@@ -160,8 +154,6 @@ namespace Dynamo.Nodes
                 t.BasisZ = t.BasisZ.Normalize();
                 t.BasisY = t.BasisX.CrossProduct(t.BasisZ);
             }
-
-            VisualizationGeometry.Add(t);
 
             return Value.NewContainer(t);
         }

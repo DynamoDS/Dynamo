@@ -10,7 +10,7 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Revit
 {
-    public partial class RevitTransactionNode : DrawableNode
+    public partial class RevitTransactionNode : NodeModel
     {
         public override void SetupCustomUIElements(object ui)
         {

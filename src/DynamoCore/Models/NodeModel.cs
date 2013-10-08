@@ -93,8 +93,8 @@ namespace Dynamo.Models
         //bool isSelected = false;
 
         private bool interactionEnabled = true;
-        private bool isVisible;
-        private bool isUpstreamVisible;
+        internal bool isVisible;
+        internal bool isUpstreamVisible;
 
         private IdentifierNode identifier = null;
        // protected AssociativeNode defaultAstExpression = null;
