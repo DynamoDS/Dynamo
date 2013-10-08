@@ -590,28 +590,11 @@ namespace Dynamo.ViewModels
                            .ToList()
                            .ForEach((x) => x.X = xMin + spacing * count++);
             }
-
-            UpdateSelectionOffsets();
-
         }
 
         private bool CanAlignSelected(string alignType)
         {
             return Selection.DynamoSelection.Instance.Selection.Count > 1;
-        }
-
-        private void UpdateSelectionOffsets()
-        {
-            var sel = new List<ISelectable>();
-            foreach (var ele in DynamoSelection.Instance.Selection)
-            {
-                sel.Add(ele);
-            }
-            DynamoSelection.Instance.ClearSelection();
-            foreach (var ele in sel)
-            {
-                DynamoSelection.Instance.Selection.Add(ele);
-            }
         }
 
         private bool CanAlignSelected(object parameter)
