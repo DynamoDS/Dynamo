@@ -134,10 +134,14 @@ limitations under the License.
   <ItemGroup>
     <Compile Include="Core\UndoRedoRecorder.cs" />
     <Compile Include="DSEngine\AstBuilder.cs" />
+    <Compile Include="Models\CustomNodeWorkspaceModel.cs" />
+    <Compile Include="Models\HomeWorkspaceModel.cs" />
     <Compile Include="Nodes\dynDSFunction.cs" />
     <Compile Include="Models\Migration.cs" />
+    <Compile Include="Nodes\FunctionDefinition.cs" />
     <Compile Include="Nodes\Geometry.cs" />
     <Compile Include="PackageManager\PackageManagerClient.cs" />
+    <Compile Include="Search\SearchElements\CustomNodeSearchElement.cs" />
     <Compile Include="UI\Commands\BrowserItemCommands.cs" />
     <Compile Include="UI\Commands\Commands.cs" />
     <Compile Include="Core\DynamoLogger.cs" />
@@ -197,8 +201,8 @@ limitations under the License.
       <DependentUpon>PackageManagerSearchView.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Prompts\CrashPrompt.xaml.cs" />
-    <Compile Include="UI\Prompts\dynEditWindow.xaml.cs">
-      <DependentUpon>dynEditWindow.xaml</DependentUpon>
+    <Compile Include="UI\Prompts\EditWindow.xaml.cs">
+      <DependentUpon>EditWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="UI\Prompts\FunctionNamePrompt.xaml.cs">
@@ -255,7 +259,6 @@ limitations under the License.
     <Compile Include="UI\ZoomBorder.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Search\SearchElements\TopSearchElement.cs" />
     <Compile Include="Nodes\dynFormula.cs" />
     <Compile Include="Core\Units.cs" />
     <Compile Include="Utilities\Extensions.cs" />
@@ -393,7 +396,7 @@ limitations under the License.
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Prompts\dynEditWindow.xaml">
+    <Page Include="UI\Prompts\EditWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

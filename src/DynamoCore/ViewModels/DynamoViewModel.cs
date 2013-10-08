@@ -135,7 +135,6 @@ namespace Dynamo.ViewModels
         public DelegateCommand GoToWorkspaceCommand { get; set; }
         public DelegateCommand DeleteCommand { get; set; }
         public DelegateCommand AlignSelectedCommand { get; set; }
-        public DelegateCommand RefactorCustomNodeCommand { get; set; }
         public DelegateCommand PostUIActivationCommand { get; set; }
         public DelegateCommand ToggleFullscreenWatchShowingCommand { get; set; }
         public DelegateCommand ToggleCanNavigateBackgroundCommand { get; set; }
@@ -452,7 +451,6 @@ namespace Dynamo.ViewModels
             ToggleCanNavigateBackgroundCommand = new DelegateCommand(ToggleCanNavigateBackground, CanToggleCanNavigateBackground);
             AlignSelectedCommand = new DelegateCommand(AlignSelected, CanAlignSelected); ;
             ShowSaveDialogIfNeededAndSaveResultCommand = new DelegateCommand(ShowSaveDialogIfNeededAndSaveResult, CanShowSaveDialogIfNeededAndSaveResultCommand);
-            RefactorCustomNodeCommand = new DelegateCommand(_model.RefactorCustomNode, _model.CanRefactorCustomNode);
             SaveImageCommand = new DelegateCommand(SaveImage, CanSaveImage);
             ShowSaveImageDialogAndSaveResultCommand = new DelegateCommand(ShowSaveImageDialogAndSaveResult, CanShowSaveImageDialogAndSaveResult);
             UndoCommand = new DelegateCommand(_model.Undo, _model.CanUndo);
@@ -622,16 +620,16 @@ namespace Dynamo.ViewModels
         /// <param name="workspace">The workspace for which to show the dialog</param>
         internal void ShowSaveDialogIfNeededAndSave(WorkspaceModel workspace)
         {
-            if (workspace.FilePath != null)
+            if (workspace.FileName != null)
             {
-                _model.SaveAs(workspace.FilePath, workspace);
+                workspace.Save();
             }
             else
             {
                 var fd = this.GetSaveDialog(workspace);
                 if (fd.ShowDialog() == DialogResult.OK)
                 {
-                    _model.SaveAs(fd.FileName, workspace);
+                    workspace.SaveAs(fd.FileName);
                 }
             }
         }
@@ -689,56 +687,27 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        ///     Save a function.  This includes writing to a file and compiling the 
-        ///     function and saving it to the FSchemeEnvironment
-        /// </summary>
-        /// <param name="definition">The definition to saveo</param>
-        /// <param name="bool">Whether to write the function to file</param>
-        /// <returns>Whether the operation was successful</returns>
-        public string SaveFunctionOnly(FunctionDefinition definition)
-        {
-            if (definition == null)
-                return "";
-
-            // Get the internal nodes for the function
-            WorkspaceModel functionWorkspace = definition.Workspace;
-
-            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string pluginsPath = Path.Combine(directory, "definitions");
-
-            try
-            {
-                if (!Directory.Exists(pluginsPath))
-                    Directory.CreateDirectory(pluginsPath);
-
-                string path = Path.Combine(pluginsPath, dynSettings.FormatFileName(functionWorkspace.Name) + ".dyf");
-                WorkspaceModel.SaveWorkspace(path, functionWorkspace);
-                return path;
-            }
-            catch (Exception e)
-            {
-                DynamoLogger.Instance.Log("Error saving:" + e.GetType());
-                DynamoLogger.Instance.Log(e);
-                return "";
-            }
-
-        }
-
-        /// <summary>
         ///     Change the currently visible workspace to a custom node's workspace
         /// </summary>
         /// <param name="symbol">The function definition for the custom node workspace to be viewed</param>
-        internal void ViewCustomNodeWorkspace(FunctionDefinition symbol)
+        internal void FocusCustomNodeWorkspace(FunctionDefinition symbol)
         {
             if (symbol == null)
             {
                 throw new Exception("There is a null function definition for this node.");
             }
 
-            if (_model.CurrentWorkspace.Name.Equals(symbol.Workspace.Name))
-                return;
+            if (_model.CurrentWorkspace is CustomNodeWorkspaceModel)
+            {
+                var customNodeWorkspace = _model.CurrentWorkspace as CustomNodeWorkspaceModel;
+                if (customNodeWorkspace.FunctionDefinition.FunctionId
+                    == symbol.WorkspaceModel.FunctionDefinition.FunctionId)
+                {
+                    return;
+                }
+            }
 
-            WorkspaceModel newWs = symbol.Workspace;
+            var newWs = symbol.WorkspaceModel;
 
             if ( !this._model.Workspaces.Contains(newWs) )
                 this._model.Workspaces.Add(newWs);
@@ -784,16 +753,16 @@ namespace Dynamo.ViewModels
                 {
                     foreach (FunctionDefinition funcDef in Controller.CustomNodeManager.GetLoadedDefinitions())
                     {
-                        if (funcDef.Workspace.Nodes.Contains(e))
+                        if (funcDef.WorkspaceModel.Nodes.Contains(e))
                         {
-                            ViewCustomNodeWorkspace(funcDef);
+                            FocusCustomNodeWorkspace(funcDef);
                             break;
                         }
                     }
                 }
             }
 
-            DynamoViewModel dvm = dynSettings.Controller.DynamoViewModel;
+            var dvm = dynSettings.Controller.DynamoViewModel;
             dvm.CurrentSpaceViewModel.OnRequestCenterViewOnElement(this, new ModelEventArgs(e));
         }
         
@@ -801,7 +770,7 @@ namespace Dynamo.ViewModels
         {
             var vm = dynSettings.Controller.DynamoViewModel;
 
-            if (vm.Model.CurrentWorkspace.FilePath != null)
+            if (vm.Model.CurrentWorkspace.FileName != null)
             {
                 if(_model.CanSave(parameter))
                     _model.Save(parameter);
@@ -825,13 +794,13 @@ namespace Dynamo.ViewModels
             FileDialog _fileDialog = vm.GetSaveDialog(vm.Model.CurrentWorkspace);
 
             //if the xmlPath is not empty set the default directory
-            if (!string.IsNullOrEmpty(vm.Model.CurrentWorkspace.FilePath))
+            if (!string.IsNullOrEmpty(vm.Model.CurrentWorkspace.FileName))
             {
-                var fi = new FileInfo(vm.Model.CurrentWorkspace.FilePath);
+                var fi = new FileInfo(vm.Model.CurrentWorkspace.FileName);
                 _fileDialog.InitialDirectory = fi.DirectoryName;
                 _fileDialog.FileName = fi.Name;
             }
-            else if (vm.Model.CurrentWorkspace is FuncWorkspace && dynSettings.Controller.CustomNodeManager.SearchPath.Any())
+            else if (vm.Model.CurrentWorkspace is CustomNodeWorkspaceModel && dynSettings.Controller.CustomNodeManager.SearchPath.Any())
             {
                 _fileDialog.InitialDirectory = dynSettings.Controller.CustomNodeManager.SearchPath[0];
             }
@@ -913,7 +882,7 @@ namespace Dynamo.ViewModels
         {
             if (parameter is Guid && dynSettings.Controller.CustomNodeManager.Contains((Guid)parameter))
             {
-                ViewCustomNodeWorkspace(dynSettings.Controller.CustomNodeManager.GetFunctionDefinition((Guid)parameter));
+                FocusCustomNodeWorkspace(dynSettings.Controller.CustomNodeManager.GetFunctionDefinition((Guid)parameter));
             }
         }
 
@@ -1061,9 +1030,9 @@ namespace Dynamo.ViewModels
             }
 
             // if you've got the current space path, use it as the inital dir
-            if (!string.IsNullOrEmpty(_model.CurrentWorkspace.FilePath))
+            if (!string.IsNullOrEmpty(_model.CurrentWorkspace.FileName))
             {
-                var fi = new FileInfo(_model.CurrentWorkspace.FilePath);
+                var fi = new FileInfo(_model.CurrentWorkspace.FileName);
                 _fileDialog.InitialDirectory = fi.DirectoryName;
             }
 

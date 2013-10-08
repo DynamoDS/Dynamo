@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Windows.Input;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
@@ -23,17 +24,12 @@ using String = System.String;
 
 namespace Dynamo.Search.SearchElements
 {
+
     /// <summary>
     /// A search element representing a local node </summary>
     public partial class NodeSearchElement : SearchElementBase, IEquatable<NodeSearchElement>
     {
         #region Properties
-
-        /// <summary>
-        /// Guid property </summary>
-        /// <value>
-        /// The guid used to reference a dynFunction </value>
-        public Guid Guid { get; internal set; }
 
         /// <summary>
         /// Node property </summary>
@@ -63,6 +59,7 @@ namespace Dynamo.Search.SearchElements
         public override string Description { get { return _description; } }
 
         private bool _searchable = true;
+
         public override bool Searchable { get { return _searchable; } }
 
         public void SetSearchable(bool s)
@@ -74,13 +71,13 @@ namespace Dynamo.Search.SearchElements
         /// Weight property </summary>
         /// <value>
         /// Number defining the relative importance of the element in search.  Higher weight means closer to the top. </value>
-        public override double Weight { get; set; }
+        public override sealed double Weight { get; set; }
 
         /// <summary>
         /// Keywords property </summary>
         /// <value>
         /// Joined set of keywords </value>
-        public override string Keywords { get; set; }
+        public override sealed string Keywords { get; set; }
 
         /// <summary>
         /// Whether the description of this node should be visible or not
@@ -99,29 +96,14 @@ namespace Dynamo.Search.SearchElements
         #endregion
 
         /// <summary>
-        /// The class constructor for a built-in type that is already loaded. </summary>
-        /// <param name="node">The local node</param>
-        public NodeSearchElement(NodeModel node)
-        {
-            //ToggleDescriptionVisibilityCommand = new DelegateCommand(ToggleIsVisible);
-            this.Node = node;
-            this._name = Node.NickName;
-            this.Weight = 1;
-            this.Keywords = String.Join(" ", node.Tags);
-            this._type = "Node";
-            this._description = node.Description;
-        }
-
-        /// <summary>
         ///     The class constructor - use this constructor for built-in types\
         ///     that are not yet loaded.
         /// </summary>
         /// <param name="name"></param>
         /// <param name="description"></param>
         /// <param name="tags"></param>
-        public NodeSearchElement(string name, string description, List<string> tags)
+        public NodeSearchElement(string name, string description, IEnumerable<string> tags)
         {
-            //ToggleDescriptionVisibilityCommand = new DelegateCommand(ToggleIsVisible);
             this.Node = null;
             this._name = name;
             this.Weight = 1;
@@ -130,38 +112,9 @@ namespace Dynamo.Search.SearchElements
             this._description = description;
         }
 
-        /// <summary>
-        ///     The class constructor - use this constructor when for
-        ///     custom nodes
-        /// </summary>
-        /// <param name="name">The name of the custom node</param>
-        /// <param name="guid">The unique id for the custom node</param>
-        public NodeSearchElement(string name, string description, Guid guid)
+        public virtual NodeSearchElement Copy()
         {
-            //ToggleDescriptionVisibilityCommand = new DelegateCommand(ToggleIsVisible);
-            this.Node = null;
-            this._name = name;
-            this.Weight = 0.9;
-            this.Keywords = "";
-            this._type = "Custom Node";
-            this.Guid = guid;
-            this._description = description;
-        }
-
-        /// <summary>
-        ///     The class constructor - use this constructor when for
-        ///     custom nodes
-        /// </summary>
-        /// <param name="funcDef">The FunctionDefinition for a custom node</param>
-        public NodeSearchElement(FunctionDefinition funcDef)
-        {
-            //ToggleDescriptionVisibilityCommand = new DelegateCommand(ToggleIsVisible);
-            this.Node = dynSettings.Controller.DynamoModel.CreateNode(funcDef.FunctionId.ToString());
-            this._name = funcDef.Workspace.Name;
-            this.Weight = 1.1;
-            this.Keywords = "";
-            this._description = "Custom Node";
-            this._type = "Custom Node";
+            return (NodeSearchElement) this.MemberwiseClone();
         }
 
         private void ToggleIsVisible(object parameter)
@@ -181,27 +134,11 @@ namespace Dynamo.Search.SearchElements
         /// hits enter in the SearchView.</summary>
         public override void Execute()
         {
-            //dynSettings.Controller.SearchViewModel.Visible = Visibility.Collapsed;
-            string name;
-
-            if (this.Node != null && this.Node is Function)
-            {
-                name = ((Function)Node).Definition.FunctionId.ToString();
-            } 
-            else if (this.Guid != Guid.Empty && this._type == "Custom Node") 
-            {
-                name = this.Guid.ToString();
-            }
-            else
-            {
-                name = Name;
-            }
-
             // create node
             var guid = Guid.NewGuid();
             var nodeParams = new Dictionary<string, object>()
                 {
-                    {"name", name},
+                    {"name", this.Name},
                     {"transformFromOuterCanvasCoordinates", true},
                     {"guid", guid}
                 };
@@ -212,22 +149,32 @@ namespace Dynamo.Search.SearchElements
             var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
             if (placedNode != null)
             {
-                //dynSettings.Controller.OnRequestSelect(this, new ModelEventArgs(placedNode));
                 DynamoSelection.Instance.ClearSelection();
                 DynamoSelection.Instance.Selection.Add(placedNode);
             }
         }
 
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+
+            return this.Equals(obj as NodeSearchElement);
+        }
+
+        /// <summary>
+        /// Overriding equals, we need to override hashcode </summary>
+        /// <returns> A unique hashcode for the object </returns>
+        public override int GetHashCode()
+        {
+            return this.Type.GetHashCode() + this.Name.GetHashCode() + this.Description.GetHashCode();
+        }
+
         public bool Equals(NodeSearchElement other)
         {
-           if (other.Type == this.Type && this.Type == "Custom Node")
-           {
-               return other.Guid == this.Guid;
-           }
-           else
-           {
-               return this.Name == other.Type && this.FullCategoryName == other.FullCategoryName;
-           }
+            return this.Name == other.Name && this.FullCategoryName == other.FullCategoryName;
         }
     }
 
