@@ -13,8 +13,8 @@ def main():
 
 	#http://stackoverflow.com/questions/7427101/dead-simple-argparse-example-wanted-1-argument-3-results
 	parser = argparse.ArgumentParser(description='Run Revit Tests')
-	parser.add_argument('-n','--name', help='Name of a test to run.', required=True)
-	parser.add_argument('-f','--fixture', help='Name of fixture to run.', required=False)
+	parser.add_argument('-n','--name', help='Name of a test to run.', required=False)
+	parser.add_argument('-f','--fixture', help='Name of fixture to run.', required=True)
 	parser.add_argument('-a','--assembly', help='Path of the assembly containing tests.', required=True)
 	parser.add_argument('-o','--output', help='Output location of the results file.', required=True)
 	parser.add_argument('-m','--model', help='Path of the model file for open.', required=True)

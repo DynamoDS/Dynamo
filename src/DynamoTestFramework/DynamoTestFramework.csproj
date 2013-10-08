@@ -75,6 +75,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <None Include="NUnitResultTypes.xsd">
       <SubType>Designer</SubType>
     </None>

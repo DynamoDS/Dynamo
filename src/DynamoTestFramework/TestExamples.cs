@@ -48,5 +48,20 @@ namespace Dynamo.Tests
             Assert.AreEqual(0,0);
         } 
     }
-    
+
+    [TestFixture]
+    public class TestExampleFixture
+    {
+        [Test]
+        public void TestA()
+        {
+            Assert.Fail("This test fails");
+        }
+
+        //[Test]
+        //public void TestB()
+        //{
+        //    Assert.AreEqual(0,0);
+        //}
+    }
 }
