@@ -328,12 +328,7 @@ namespace Dynamo.Tests
             var model = dynSettings.Controller.DynamoModel;
             var viz = dynSettings.Controller.VisualizationManager;
 
-            var nodeData = new Dictionary<string, object>();
-            nodeData["x"] = 100.0;
-            nodeData["y"] = 100.0;
-            nodeData["name"] = "Dynamo.Nodes.Point3DNode";
-
-            model.CreateNode(nodeData);
+            model.CreateNodeInternal(100.0, 100.0, "Dynamo.Nodes.Point3DNode");
             Assert.AreEqual(1, model.Nodes.Count);
 
             Assert.AreEqual(1, viz.Visualizations.Count);
