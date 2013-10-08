@@ -12,6 +12,7 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Xml;
 using Dynamo.Nodes;
+using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.Selection;
 using Microsoft.Practices.Prism;

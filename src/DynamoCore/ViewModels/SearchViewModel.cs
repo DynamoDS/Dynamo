@@ -64,7 +64,8 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Leaves of the browser - used for navigation
         /// </summary>
-        private List<SearchElementBase> _browserLeaves = new List<SearchElementBase>(); 
+        private List<SearchElementBase> _searchElements = new List<SearchElementBase>();
+        public List<SearchElementBase> SearchElements { get { return _searchElements; } }
 
         /// <summary>
         ///     SearchText property
@@ -230,23 +231,6 @@ namespace Dynamo.ViewModels
             Visible = false;
             _SearchText = "";
             IncludeRevitAPIElements = false; // revit api
-
-            dynSettings.Controller.DynamoModel.PropertyChanged += (e, args) =>
-                {
-                    if (args.PropertyName == "CurrentWorkspace" && dynSettings.Controller.DynamoModel.CurrentWorkspace != null)
-                    {
-                        var visibleWorkspace =
-                            (dynSettings.Controller.DynamoModel.CurrentWorkspace is CustomNodeWorkspaceModel);
-
-                        this._browserLeaves
-                            .Where(x => x.Name == "Input" || x.Name == "Output")
-                            .OfType<NodeSearchElement>()
-                            .ToList()
-                            .ForEach(x => x.SetSearchable(visibleWorkspace));
-
-                        this.SearchAndUpdateResultsSync();
-                    }
-                };
 
             //Regions = new ObservableDictionary<string, RegionBase<object>>();
             ////Regions.Add("Include Nodes from Package Manager", DynamoCommands.PackageManagerRegionCommand );
@@ -575,7 +559,7 @@ namespace Dynamo.ViewModels
                             }
 
                             // for all of the other results, show them in their category
-                            foreach (var ele in _browserLeaves)
+                            foreach (var ele in _searchElements)
                             {
                                 if ( t.Result.Contains(ele) )
                                 {
@@ -674,7 +658,7 @@ namespace Dynamo.ViewModels
         {
             if (string.IsNullOrEmpty(search) || search == "Search...")
             {
-                return _browserLeaves;
+                return _searchElements;
             }
 
             return SearchDictionary.Search(search, MaxNumSearchResults);
@@ -787,7 +771,7 @@ namespace Dynamo.ViewModels
 
             var searchEleItem = item as SearchElementBase;
             if (searchEleItem != null)
-                _browserLeaves.Add(searchEleItem);
+                _searchElements.Add(searchEleItem);
 
         }
 
@@ -870,7 +854,7 @@ namespace Dynamo.ViewModels
             SearchDictionary.Remove((ele) => (ele).Name.EndsWith("." + nodeName));
 
             // remove from browser leaves
-            _browserLeaves.Where(x => x.Name == nodeName).ToList().ForEach(x => _browserLeaves.Remove(x));
+            _searchElements.Where(x => x.Name == nodeName).ToList().ForEach(x => _searchElements.Remove(x));
         }
 
         public void RemoveNode(Guid funcId)
@@ -879,7 +863,7 @@ namespace Dynamo.ViewModels
             SearchDictionary.Remove((x) => x is CustomNodeSearchElement && ((CustomNodeSearchElement)x).Guid == funcId);
 
             // remove from browser leaves
-            _browserLeaves.Where(x => x is CustomNodeSearchElement && ((CustomNodeSearchElement)x).Guid == funcId).ToList().ForEach(x => _browserLeaves.Remove(x));
+            _searchElements.Where(x => x is CustomNodeSearchElement && ((CustomNodeSearchElement)x).Guid == funcId).ToList().ForEach(x => _searchElements.Remove(x));
         }
 
         /// <summary>
@@ -888,7 +872,7 @@ namespace Dynamo.ViewModels
         /// <param name="nodeName">The name of the node</param>
         public void RemoveNodeAndEmptyParentCategory(string nodeName)
         {
-            var nodes = _browserLeaves.Where(x => x.Name == nodeName).ToList();
+            var nodes = _searchElements.Where(x => x.Name == nodeName).ToList();
             if (!nodes.Any())
             {
                 return;
@@ -908,7 +892,7 @@ namespace Dynamo.ViewModels
         /// <param name="nodeName">The name of the node</param>
         public void RemoveNodeAndEmptyParentCategory(Guid customNodeFunctionId)
         {
-            var nodes = _browserLeaves
+            var nodes = _searchElements
                 .Where(x => x is CustomNodeSearchElement)
                 .Cast<CustomNodeSearchElement>()
                 .Where(x => x.Guid == customNodeFunctionId)
