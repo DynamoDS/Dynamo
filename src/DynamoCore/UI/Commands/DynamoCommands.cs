@@ -153,14 +153,5 @@ namespace Dynamo.ViewModels
         }
 
         #endregion
-
-        #region Private Class Helper Methods
-
-        private NodeModel CreateNodeInstance(string nodeName)
-        {
-            return null;
-        }
-
-        #endregion
     }
 }
