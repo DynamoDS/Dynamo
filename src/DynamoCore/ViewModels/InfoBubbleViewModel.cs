@@ -649,31 +649,31 @@ namespace Dynamo.ViewModels
         private void MakeFitInView()
         {
             //top
-            if (Margin.Top < 30)
+            if (Margin.Top <= 30)
             {
                 Thickness newMargin = Margin;
                 newMargin.Top = 40;
                 Margin = newMargin;
             }
             //left
-            if (Margin.Left < 0)
+            if (Margin.Left <= 0)
             {
                 Thickness newMargin = Margin;
                 newMargin.Left = 0;
                 this.Margin = newMargin;
             }
             //botton
-            if (Margin.Top + EstimatedHeight > dynSettings.Controller.DynamoViewModel.WorkspaceActualHeight)
+            if (Margin.Top + EstimatedHeight >= dynSettings.Controller.DynamoViewModel.WorkspaceActualHeight)
             {
                 Thickness newMargin = Margin;
-                newMargin.Top = dynSettings.Controller.DynamoViewModel.WorkspaceActualHeight - EstimatedHeight;
+                newMargin.Top = dynSettings.Controller.DynamoViewModel.WorkspaceActualHeight - EstimatedHeight - 1;
                 Margin = newMargin;
             }
             //right
-            if (Margin.Left + EstimatedWidth > dynSettings.Controller.DynamoViewModel.WorkspaceActualWidth)
+            if (Margin.Left + EstimatedWidth >= dynSettings.Controller.DynamoViewModel.WorkspaceActualWidth)
             {
                 Thickness newMargin = Margin;
-                newMargin.Left = dynSettings.Controller.DynamoViewModel.WorkspaceActualWidth - EstimatedWidth;
+                newMargin.Left = dynSettings.Controller.DynamoViewModel.WorkspaceActualWidth - EstimatedWidth - 1;
                 Margin = newMargin;
             }
 
