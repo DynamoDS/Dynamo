@@ -18,6 +18,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using Dynamo.Core.Automation;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Prompts;
@@ -226,7 +227,9 @@ namespace Dynamo.Controls
             var view = WPF.FindUpVisualTree<DynamoView>(this);
             view.mainGrid.Focus();
 
-            ViewModel.SelectCommand.Execute(null);
+            Guid nodeGuid = this.ViewModel.NodeModel.GUID;
+            dynSettings.Controller.DynamoViewModel.ExecuteCommand(
+                new SelectModelCommand(nodeGuid, Keyboard.Modifiers));
         }
 
         private void topControl_MouseRightButtonDown(object sender, MouseButtonEventArgs e)

@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Windows.Input;
 using System.Windows.Threading;
 using System.Xml;
 using Dynamo.Core.Automation;
 using Dynamo.Models;
+using Dynamo.Selection;
 using Dynamo.Utilities;
 
 namespace Dynamo.ViewModels
@@ -74,7 +76,7 @@ namespace Dynamo.ViewModels
 
             // Serialized commands for playback.
             playbackTimer.Tag = loadedCommands;
-            playbackTimer.Interval = TimeSpan.FromMilliseconds(200);
+            playbackTimer.Interval = TimeSpan.FromMilliseconds(1000);
             playbackTimer.Tick += OnPlaybackTimerTick;
             playbackTimer.Start();
             return true;
@@ -150,6 +152,32 @@ namespace Dynamo.ViewModels
         {
             NodeModel nodeModel = Model.CreateNodeInternal(command, null);
             CurrentSpace.RecordCreatedModel(nodeModel);
+        }
+
+        internal void SelectModelImpl(SelectModelCommand command)
+        {
+            // Empty ModelGuid means clear selection.
+            if (command.ModelGuid == Guid.Empty)
+            {
+                DynamoSelection.Instance.ClearSelection();
+                return;
+            }
+
+            ModelBase model = CurrentSpace.GetModelInternal(command.ModelGuid);
+
+            if (false == model.IsSelected)
+            {
+                if (!command.Modifiers.HasFlag(ModifierKeys.Shift))
+                    DynamoSelection.Instance.ClearSelection();
+
+                if (!DynamoSelection.Instance.Selection.Contains(model))
+                    DynamoSelection.Instance.Selection.Add(model);
+            }
+            else
+            {
+                if (command.Modifiers.HasFlag(ModifierKeys.Shift))
+                    DynamoSelection.Instance.Selection.Remove(model);
+            }
         }
 
         #endregion
