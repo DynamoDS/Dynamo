@@ -151,6 +151,12 @@ namespace Dynamo
                 geoms.AddRange(ps.Springs.Select(spring => Line.CreateBound(spring.getOneEnd().getPosition(), spring.getTheOtherEnd().getPosition())).Cast<GeometryObject>());
             }
 
+            var cl = ((FScheme.Value.Container) value).Item as Autodesk.Revit.DB.CurveLoop;
+            if (cl != null)
+            {
+                geoms.AddRange(cl);
+            }
+
             //draw xyzs as Point objects
             var pt = ((FScheme.Value.Container)value).Item as XYZ;
             if (pt != null)
