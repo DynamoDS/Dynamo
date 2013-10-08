@@ -116,6 +116,7 @@ namespace Dynamo.Controls
                 ShowPreviewBubbleFullContent();
             }
             FadeInInfoBubble();
+            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.IsMouseOnScrollableArea = true;
         }
 
         private void InfoBubble_MouseLeave(object sender, MouseEventArgs e)
@@ -128,13 +129,14 @@ namespace Dynamo.Controls
             {
                 FadeOutInfoBubble();
             }
+            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.IsMouseOnScrollableArea = false;
         }
 
         private void InfoBubble_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (ViewModel.InfoBubbleStyle != InfoBubbleViewModel.Style.Preview && ViewModel.InfoBubbleStyle != InfoBubbleViewModel.Style.PreviewCondensed)
                 return;
-            
+
             if (ViewModel.IsShowPreviewByDefault)
             {
                 ViewModel.IsShowPreviewByDefault = false;

@@ -310,6 +310,12 @@ namespace Dynamo.ViewModels
             get { return _model == dynSettings.Controller.DynamoModel.HomeSpace; }
         }
 
+        public bool IsMouseOnScrollableArea
+        {
+            get;
+            set;
+        }
+
         public bool WatchEscapeIsDown
         {
             get { return _watchEscapeIsDown; }

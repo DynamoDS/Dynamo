@@ -31,7 +31,9 @@
                     <Setter Property="FontSize" Value="{Binding Path=TextFontSize}"/>
                     <Setter Property="Margin" Value="{Binding Path=ContentMargin}"/>
                     <Setter Property="MaxWidth" Value="{Binding Path=MaxWidth}"/>
+                    <Setter Property="MinWidth" Value="{Binding Path=MinWidth}"/>
                     <Setter Property="MaxHeight" Value="{Binding Path=MaxHeight}"/>
+                    <Setter Property="HorizontalAlignment" Value="Center"/>
                     <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
                     <Setter Property="TextWrapping" Value="Wrap"/>
                 </Style>

@@ -118,6 +118,12 @@ namespace Dynamo.ViewModels
             get { return maxHeight; }
             set { maxHeight = value; RaisePropertyChanged("MaxHeight"); }
         }
+        private double minWidth;
+        public double MinWidth
+        {
+            get { return minWidth; }
+            set { minWidth = value; RaisePropertyChanged("MinWidth"); }
+        }
 
         private double opacity = 0;
         public double Opacity
@@ -275,8 +281,8 @@ namespace Dynamo.ViewModels
 
         private void UpdateContent(string text)
         {
-            if (this.infoBubbleStyle == Style.PreviewCondensed && text.Length > 40)
-                Content = text.Substring(0, 40) + "...";
+            if (this.infoBubbleStyle == Style.PreviewCondensed && text.Length > 25)
+                Content = text.Substring(0, 25) + "...";
             else
                 Content = text;
         }
@@ -317,8 +323,10 @@ namespace Dynamo.ViewModels
                     SetStyle_Error();
                     break;
                 case Style.Preview:
-                case Style.PreviewCondensed:
                     SetStyle_Preview();
+                    break;
+                case Style.PreviewCondensed:
+                    SetStyle_PreviewCondensed();
                     break;
                 case Style.None:
                     throw new ArgumentException("InfoWindow didn't have a style (456B24E0F400)");
@@ -432,7 +440,7 @@ namespace Dynamo.ViewModels
             FrameStrokeColor = new SolidColorBrush(Color.FromRgb(10, 93, 30));
 
             MaxWidth = 400;
-            MaxHeight = 400;
+            MaxHeight = 200;
 
             TextFontSize = 13;
             TextForeground = new SolidColorBrush(Color.FromRgb(51, 51, 51));
@@ -448,7 +456,7 @@ namespace Dynamo.ViewModels
             FrameStrokeColor = new SolidColorBrush(Color.FromRgb(165, 209, 226));
 
             MaxWidth = 200;
-            MaxHeight = 400;
+            MaxHeight = 200;
 
             TextFontSize = 12;
             TextFontWeight = FontWeights.Light;
@@ -476,7 +484,7 @@ namespace Dynamo.ViewModels
             FrameStrokeColor = new SolidColorBrush(Color.FromRgb(190, 70, 70));
 
             MaxWidth = 300;
-            MaxHeight = 400;
+            MaxHeight = 200;
 
             TextFontSize = 13;
             TextFontWeight = FontWeights.Light;
@@ -492,7 +500,25 @@ namespace Dynamo.ViewModels
             FrameStrokeColor = new SolidColorBrush(Color.FromRgb(153, 153, 153));
 
             MaxWidth = 300;
-            MaxHeight = 400;
+            MinWidth = 35;
+            MaxHeight = 200;
+
+            TextFontSize = 13;
+            TextFontWeight = FontWeights.Light;
+            TextForeground = new SolidColorBrush(Color.FromRgb(153, 153, 153));
+            ContentWrapping = TextWrapping.Wrap;
+            ContentMargin = new Thickness(0, 9, 0, 2);
+        }
+
+        private void SetStyle_PreviewCondensed()
+        {
+            FrameFill = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+            FrameStrokeThickness = 1;
+            FrameStrokeColor = new SolidColorBrush(Color.FromRgb(153, 153, 153));
+
+            MaxWidth = 150;
+            MinWidth = 35;
+            MaxHeight = 200;
 
             TextFontSize = 13;
             TextFontWeight = FontWeights.Light;
