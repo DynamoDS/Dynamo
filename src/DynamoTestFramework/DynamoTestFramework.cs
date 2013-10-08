@@ -31,7 +31,17 @@ namespace Dynamo.Tests
     [Journaling(JournalingMode.UsingCommandData)]
     public class DynamoTestFramework : IExternalCommand
     {
-        private resultType testResult;
+        private resultType resultsRoot;
+
+        public testsuiteType rootSuite
+        {
+            get { return resultsRoot.testsuite; }
+        }
+
+        public resultsType dynamoResults
+        {
+            get { return resultsRoot.testsuite.results; }
+        }
 
         /// <summary>
         /// Test name specified in journal's data map.
@@ -109,98 +119,53 @@ namespace Dynamo.Tests
                 var package = new TestPackage("DynamoTestFramework", new List<string>() { testAssembly });
                 runner.Load(package);
                 TestSuite suite = builder.Build(package);
+                
                 TestFixture fixture = null;
                 FindFixtureByName(out fixture, suite, fixtureName);
                 if (fixture == null)
                     throw new Exception(string.Format("Could not find fixture: {0}", fixtureName));
 
-                //foreach (var t in fixture.Tests)
-                //{
-                //    if (t is ParameterizedMethodSuite)
-                //    {
-                //        var paramSuite = t as ParameterizedMethodSuite;
-                //        foreach (var tInner in paramSuite.Tests)
-                //        {
-                //            if (tInner is TestMethod)
-                //                Results.Results.Add(new DynamoRevitTest(tInner as TestMethod));
-                //        }
-                //    }
-                //    else if (t is TestMethod)
-                //        Results.Results.Add(new DynamoRevitTest(t as TestMethod));
-                //}
-
                 InitializeResults();
 
                 if (!canReadData)
                 {
-                    var currInvalid = Convert.ToInt16(testResult.invalid);
-                    testResult.invalid = currInvalid + 1;
-                    testResult.testsuite.result = "Error";
+                    var currInvalid = Convert.ToInt16(resultsRoot.invalid);
+                    resultsRoot.invalid = currInvalid + 1;
+                    resultsRoot.testsuite.result = "Error";
 
                     throw new Exception("Journal file's data map contains no information about tests.");
                 }
 
-                var cases = testResult.testsuite.results.Items.ToList();
+                //find or create a fixture
+                var fixtureResult = FindOrCreateFixtureResults(dynamoResults, fixtureName);
 
-                //for testing
-                //if the journal file contains data
+                //convert the fixture's results array to a list
+                var runningResults = fixtureResult.results.Items.ToList();
 
-                TestMethod t = FindTestByName(fixture, dataMap["testName"]);
-                if (t != null)
+                //if the test name is not specified
+                //run all tests in the fixture
+                if (string.IsNullOrEmpty(testName) || testName == "None")
                 {
-                    TestFilter filter = new NameFilter(t.TestName);
-                    var result = (t as TestMethod).Run(new TestListener(), filter);
-
-                    //result types
-                    //Ignored, Failure, NotRunnable, Error, Success
-
-                    var testCase = new testcaseType
-                        {
-                            name = t.TestName.Name,
-                            executed = result.Executed.ToString(),
-                            success = result.IsSuccess.ToString(),
-                            asserts = result.AssertCount.ToString(CultureInfo.InvariantCulture),
-                            time = result.Time.ToString(CultureInfo.InvariantCulture)
-                        };
-                    testResult.testsuite.success = true.ToString();
-
-                    var currAsserts = Convert.ToInt16(testResult.testsuite.asserts);
-                    testResult.testsuite.asserts = (currAsserts + result.AssertCount).ToString();
-
-                    var currCount = Convert.ToInt16(testResult.total);
-                    testResult.total = (currCount + 1);
-
-                    if (result.IsSuccess)
-                    {
-                        testCase.result = "Success";
-                    }
-                    else if (result.IsFailure)
-                    {
-                        var fail = new failureType {message = result.Message, stacktrace = result.StackTrace};
-                        testCase.Item = fail;
-                        testCase.result = "Failure";
-                        testResult.testsuite.success = false.ToString();
-                        testResult.testsuite.result = "Failure";
-                    }
-                    else if (result.IsError)
-                    {
-                        var errCount = Convert.ToInt16(testResult.errors);
-                        testResult.errors = (errCount + 1);
-                        testCase.result = "Error";
-                        testResult.testsuite.result = "Failure";
-                    }
-
-                    cases.Add(testCase);
+                    var fixtureResults = RunFixture(fixture);
+                    runningResults.AddRange(fixtureResults);
                 }
                 else
                 {
-                    //we have a journal file, but the specified test could not be found
-                    var currInvalid = Convert.ToInt16(testResult.invalid);
-                    testResult.invalid = currInvalid + 1;
-                    testResult.testsuite.result = "Error";
+                    var t = FindTestByName(fixture, testName);
+                    if (t != null)
+                    {
+                        runningResults.Add(RunTest(t));
+                    }
+                    else
+                    {
+                        //we have a journal file, but the specified test could not be found
+                        var currInvalid = Convert.ToInt16(resultsRoot.invalid);
+                        resultsRoot.invalid = currInvalid + 1;
+                        resultsRoot.testsuite.result = "Error";
+                    }
                 }
 
-                testResult.testsuite.results.Items = cases.ToArray();
+                fixtureResult.results.Items = runningResults.ToArray();
 
                 SaveResults();
 
@@ -217,6 +182,126 @@ namespace Dynamo.Tests
         }
 
         /// <summary>
+        /// Find or create a fixture in a suite by name.
+        /// </summary>
+        /// <param name="suite"></param>
+        /// <returns></returns>
+        private testsuiteType FindOrCreateFixtureResults(resultsType results, string fixtureName)
+        {
+            testsuiteType fixture = null;
+
+            if (results.Items != null && results.Items.Any())
+            {
+                fixture = (testsuiteType)results.Items.
+                FirstOrDefault(x => x.GetType() == typeof(testsuiteType) && ((testsuiteType)x).name == fixtureName);
+
+                if (fixture != null)
+                {
+                    return fixture;
+                }
+            }
+
+            fixture = new testsuiteType
+                {
+                    name = fixtureName,
+                    description = "Unit tests in Revit.",
+                    time = "0.0",
+                    type = "TestFixture",
+                    result = "Success",
+                    executed = "True",
+                    results = new resultsType { Items = new object[] { } }
+                };
+
+            //add the newly created fixture to the list of fixtures
+            List<object> currentFixtures = null;
+            currentFixtures = results.Items != null ? 
+                results.Items.ToList() : 
+                new List<object>();
+            currentFixtures.Add(fixture);
+            results.Items = currentFixtures.ToArray();
+
+            return fixture;
+        }
+
+        /// <summary>
+        /// Run all tests in a fixture.
+        /// </summary>
+        /// <param name="fixture">Returns a list of results. These results are usually testcaseType objects.</param>
+        /// <returns></returns>
+        private IEnumerable<object> RunFixture(TestFixture fixture)
+        {
+            var results = new List<object>();
+            
+            foreach (var t in fixture.Tests)
+            {
+                if (t is ParameterizedMethodSuite)
+                {
+                    var paramSuite = t as ParameterizedMethodSuite;
+                    foreach (var tInner in paramSuite.Tests)
+                    {
+                        if (tInner is TestMethod)
+                        {
+                            results.Add(RunTest((TestMethod)tInner));
+                        }
+                    }
+                }
+                else if (t is TestMethod)
+                {
+                    results.Add(RunTest((TestMethod)t));
+                }
+            }
+
+            return results;
+        }
+
+        private testcaseType RunTest(TestMethod t)
+        {
+            TestFilter filter = new NameFilter(t.TestName);
+            var result = (t as TestMethod).Run(new TestListener(), filter);
+
+            //result types
+            //Ignored, Failure, NotRunnable, Error, Success
+
+            var testCase = new testcaseType
+                {
+                    name = t.TestName.Name,
+                    executed = result.Executed.ToString(),
+                    success = result.IsSuccess.ToString(),
+                    asserts = result.AssertCount.ToString(CultureInfo.InvariantCulture),
+                    time = result.Time.ToString(CultureInfo.InvariantCulture)
+                };
+            resultsRoot.testsuite.success = true.ToString();
+
+            var currAsserts = Convert.ToInt16(resultsRoot.testsuite.asserts);
+            resultsRoot.testsuite.asserts = (currAsserts + result.AssertCount).ToString();
+
+            var currCount = Convert.ToInt16(resultsRoot.total);
+            resultsRoot.total = (currCount + 1);
+
+            if (result.IsSuccess)
+            {
+                testCase.result = "Success";
+            }
+            else if (result.IsFailure)
+            {
+                var fail = new failureType {message = result.Message, stacktrace = result.StackTrace};
+                testCase.Item = fail;
+                testCase.result = "Failure";
+                resultsRoot.testsuite.success = false.ToString();
+                resultsRoot.testsuite.result = "Failure";
+            }
+            else if (result.IsError)
+            {
+                var errCount = Convert.ToInt16(resultsRoot.errors);
+                resultsRoot.errors = (errCount + 1);
+                testCase.result = "Error";
+                resultsRoot.testsuite.result = "Failure";
+            }
+
+            return testCase;
+        }
+
+        /// <summary>
         /// Sets up an NUNit ResultsType object or deserializing and existing one.
         /// </summary>
         private void InitializeResults()
@@ -227,15 +312,15 @@ namespace Dynamo.Tests
                 var x = new XmlSerializer(typeof(resultType));
                 using (var sr = new StreamReader(resultsPath))
                 {
-                    testResult = (resultType)x.Deserialize(sr);
+                    resultsRoot = (resultType)x.Deserialize(sr);
                 }
             }
             else
             {
                 //create one result to dump everything into
-                testResult = new resultType {name = Assembly.GetExecutingAssembly().Location};
+                resultsRoot = new resultType { name = Assembly.GetExecutingAssembly().Location };
 
-                var suite = new testsuiteType
+                resultsRoot.testsuite = new testsuiteType
                     {
                         name = "DynamoTestFrameworkTests",
                         description = "Unit tests in Revit.",
@@ -245,18 +330,17 @@ namespace Dynamo.Tests
                         executed = "True"
                     };
 
-                testResult.testsuite = suite;
-                testResult.testsuite.results = new resultsType {Items = new object[] {}};
-
-                testResult.date = DateTime.Now.ToString("yyyy-MM-dd");
-                testResult.time = DateTime.Now.ToString("HH:mm:ss");
-                testResult.failures = 0;
-                testResult.ignored = 0;
-                testResult.notrun = 0;
-                testResult.errors = 0;
-                testResult.skipped = 0;
-                testResult.inconclusive = 0;
-                testResult.invalid = 0;
+                resultsRoot.testsuite = rootSuite;
+                resultsRoot.testsuite.results = new resultsType { Items = new object[] { } };
+                resultsRoot.date = DateTime.Now.ToString("yyyy-MM-dd");
+                resultsRoot.time = DateTime.Now.ToString("HH:mm:ss");
+                resultsRoot.failures = 0;
+                resultsRoot.ignored = 0;
+                resultsRoot.notrun = 0;
+                resultsRoot.errors = 0;
+                resultsRoot.skipped = 0;
+                resultsRoot.inconclusive = 0;
+                resultsRoot.invalid = 0;
             }
         }
 
@@ -272,7 +356,7 @@ namespace Dynamo.Tests
                 tw.WriteComment("This file represents the results of running a test suite");
                 var ns = new XmlSerializerNamespaces();
                 ns.Add("", "");
-                x.Serialize(tw, testResult, ns);
+                x.Serialize(tw, resultsRoot, ns);
             }
         }
 
