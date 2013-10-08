@@ -518,6 +518,13 @@ namespace Dynamo.ViewModels
 
             if (DynamoSelection.Instance.Selection.Count <= 1) return;
 
+            // All the models in the selection will be modified, 
+            // record their current states before anything gets changed.
+            IEnumerable<ModelBase> models = null;
+            SmartCollection<ISelectable> selection = DynamoSelection.Instance.Selection;
+            models = selection.Cast<ModelBase>().Where(x => x is ModelBase);
+            _model.RecordModelsForModification(models.ToList());
+
             if (alignType == "HorizontalCenter")  // make vertial line of elements
             {
                 var xAll = GetSelectionAverageX();
@@ -590,28 +597,11 @@ namespace Dynamo.ViewModels
                            .ToList()
                            .ForEach((x) => x.X = xMin + spacing * count++);
             }
-
-            UpdateSelectionOffsets();
-
         }
 
         private bool CanAlignSelected(string alignType)
         {
             return Selection.DynamoSelection.Instance.Selection.Count > 1;
-        }
-
-        private void UpdateSelectionOffsets()
-        {
-            var sel = new List<ISelectable>();
-            foreach (var ele in DynamoSelection.Instance.Selection)
-            {
-                sel.Add(ele);
-            }
-            DynamoSelection.Instance.ClearSelection();
-            foreach (var ele in sel)
-            {
-                DynamoSelection.Instance.Selection.Add(ele);
-            }
         }
 
         private bool CanAlignSelected(object parameter)
