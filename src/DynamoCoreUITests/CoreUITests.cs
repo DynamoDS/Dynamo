@@ -277,6 +277,375 @@ namespace Dynamo.Tests
             Assert.AreEqual(WorkspaceModel.ZOOM_MINIMUM, workspaceModel.Zoom);
         }
 
+        [Test, RequiresSTA]
+        [Category("DynamoUI")]
+        public void ZoomInOutStressTest()
+        {
+            WorkspaceModel workspaceModel = vm.CurrentSpaceViewModel._model;
+            WorkspaceViewModel workspaceVM = vm.CurrentSpaceViewModel;
+
+            // Zoom in and out repeatly
+            for (int i = 0; i < 100; i++)
+            {
+                for (int stepIn = 0; stepIn < 30; stepIn++)
+                {
+                    if (vm.ZoomInCommand.CanExecute(null))
+                    {
+                        vm.ZoomInCommand.Execute(null);
+                        Console.WriteLine("Zoom in " + stepIn);
+                    }
+                }
+                for (int stepOut = 0; stepOut < 30; stepOut++)
+                {
+                    if (vm.ZoomOutCommand.CanExecute(null))
+                    {
+                        vm.ZoomOutCommand.Execute(null);
+                        Console.WriteLine("Zoom out " + stepOut);
+                    }
+                }
+            }
+
+            // Doesn't crash the system
+            Assert.True(true);
+        }
+
         #endregion
+
+        #region Pan Left, Right, Top, Down Canvas
+
+        [Test, RequiresSTA]
+        [Category("DynamoUI")]
+        public void CanPanLeft()
+        {
+            WorkspaceModel workspaceModel = vm.CurrentSpaceViewModel._model;
+            WorkspaceViewModel workspaceVM = vm.CurrentSpaceViewModel;
+
+            int numOfPanTested = 100;
+            double posX = workspaceModel.X;
+            double posY = workspaceModel.Y;
+
+            // Pan left repeatly
+            for (int i = 0; i < numOfPanTested; i++)
+            {
+                if (vm.PanCommand.CanExecute("Left"))
+                    vm.PanCommand.Execute("Left");
+            }
+
+            Assert.Greater(workspaceModel.X, posX);
+            Assert.AreEqual(workspaceModel.Y, posY);
+        }
+
+        [Test, RequiresSTA]
+        [Category("DynamoUI")]
+        public void CanPanRight()
+        {
+            WorkspaceModel workspaceModel = vm.CurrentSpaceViewModel._model;
+            WorkspaceViewModel workspaceVM = vm.CurrentSpaceViewModel;
+
+            int numOfPanTested = 100;
+            double posX = workspaceModel.X;
+            double posY = workspaceModel.Y;
+
+            // Pan left repeatly
+            for (int i = 0; i < numOfPanTested; i++)
+            {
+                if (vm.PanCommand.CanExecute("Right"))
+                    vm.PanCommand.Execute("Right");
+            }
+
+            Assert.Greater(posX, workspaceModel.X);
+            Assert.AreEqual(workspaceModel.Y, posY);
+        }
+
+        [Test, RequiresSTA]
+        [Category("DynamoUI")]
+        public void CanPanUp()
+        {
+            WorkspaceModel workspaceModel = vm.CurrentSpaceViewModel._model;
+            WorkspaceViewModel workspaceVM = vm.CurrentSpaceViewModel;
+
+            int numOfPanTested = 100;
+            double posX = workspaceModel.X;
+            double posY = workspaceModel.Y;
+
+            // Pan left repeatly
+            for (int i = 0; i < numOfPanTested; i++)
+            {
+                if (vm.PanCommand.CanExecute("Up"))
+                    vm.PanCommand.Execute("Up");
+            }
+
+            Assert.AreEqual(posX, workspaceModel.X);
+            Assert.Greater(workspaceModel.Y, posY);
+        }
+
+        [Test, RequiresSTA]
+        [Category("DynamoUI")]
+        public void CanPanDown()
+        {
+            WorkspaceModel workspaceModel = vm.CurrentSpaceViewModel._model;
+            WorkspaceViewModel workspaceVM = vm.CurrentSpaceViewModel;
+
+            int numOfPanTested = 100;
+            double posX = workspaceModel.X;
+            double posY = workspaceModel.Y;
+
+            // Pan left repeatly
+            for (int i = 0; i < numOfPanTested; i++)
+            {
+                if (vm.PanCommand.CanExecute("Down"))
+                    vm.PanCommand.Execute("Down");
+            }
+
+            Assert.AreEqual(posX, workspaceModel.X);
+            Assert.Greater(posY, workspaceModel.Y);
+        }
+
+        #endregion
+
+        #region Fit to View
+
+        [Test, RequiresSTA]
+        [Category("DynamoUI")]
+        public void FitViewWithNoNodes()
+        {
+            WorkspaceModel workspaceModel = vm.CurrentSpaceViewModel._model;
+            WorkspaceViewModel workspaceVM = vm.CurrentSpaceViewModel;
+
+            double initZoom = workspaceModel.Zoom;
+            double initX = workspaceModel.X;
+            double initY = workspaceModel.Y;
+
+            // Zoom to max zoom value
+            if (workspaceVM.FitViewCommand.CanExecute(null))
+                workspaceVM.FitViewCommand.Execute(null);
+            
+            // Check for no changes
+            Assert.AreEqual(workspaceModel.Zoom, initZoom);
+            Assert.AreEqual(workspaceModel.X, initX);
+            Assert.AreEqual(workspaceModel.Y, initY);
+        }
+
+        [Test, RequiresSTA]
+        [Category("DynamoUI")]
+        public void CanFitView()
+        {
+            WorkspaceModel workspaceModel = vm.CurrentSpaceViewModel._model;
+            WorkspaceViewModel workspaceVM = vm.CurrentSpaceViewModel;
+
+            double initZoom = workspaceModel.Zoom;
+            double initX = workspaceModel.X;
+            double initY = workspaceModel.Y;
+
+            CreateNodeOnCurrentWorkspace();
+
+            // Zoom to max zoom value
+            if (workspaceVM.FitViewCommand.CanExecute(null))
+                workspaceVM.FitViewCommand.Execute(null);
+
+            // Check for no changes
+            Assert.AreNotEqual(workspaceModel.Zoom, initZoom);
+            Assert.AreNotEqual(workspaceModel.X, initX);
+            Assert.AreNotEqual(workspaceModel.Y, initY);
+
+            controller.DynamoViewModel.CurrentSpaceViewModel.Model.HasUnsavedChanges = false;
+        }
+
+        [Test, RequiresSTA]
+        [Category("DynamoUI")]
+        public void CanFitViewTwiceForActualZoom()
+        {
+            WorkspaceModel workspaceModel = vm.CurrentSpaceViewModel.Model;
+            WorkspaceViewModel workspaceVM = vm.CurrentSpaceViewModel;
+
+            double initZoom = workspaceModel.Zoom;
+            double initX = workspaceModel.X;
+            double initY = workspaceModel.Y;
+
+            CreateNodeOnCurrentWorkspace();
+
+            // Zoom to max zoom value
+            if (workspaceVM.FitViewCommand.CanExecute(null))
+                workspaceVM.FitViewCommand.Execute(null);
+
+            // Check for no changes
+            Assert.AreNotEqual(workspaceModel.Zoom, initZoom);
+            Assert.AreNotEqual(workspaceModel.X, initX);
+            Assert.AreNotEqual(workspaceModel.Y, initY);
+
+            controller.DynamoViewModel.CurrentSpace.HasUnsavedChanges = false;
+        }
+
+        [Test, RequiresSTA]
+        [Category("DynamoUI")]
+        public void FitViewStressTest()
+        {
+            WorkspaceModel workspaceModel = vm.CurrentSpaceViewModel.Model;
+            WorkspaceViewModel workspaceVM = vm.CurrentSpaceViewModel;
+            
+            double initZoom = workspaceModel.Zoom;
+            double initX = workspaceModel.X;
+            double initY = workspaceModel.Y;
+
+            CreateNodeOnCurrentWorkspace();
+
+            for (int i = 0; i < 100; i++)
+            {
+                // Zoom to max zoom value
+                if (workspaceVM.FitViewCommand.CanExecute(null))
+                    workspaceVM.FitViewCommand.Execute(null);
+            }
+
+            // Not crashed
+            Assert.True(true);
+
+            controller.DynamoViewModel.CurrentSpace.HasUnsavedChanges = false;
+        }
+
+        [Test, RequiresSTA]
+        [Category("DynamoUI")]
+        public void CanFitViewResetByZoom()
+        {
+            WorkspaceModel workspaceModel = vm.CurrentSpaceViewModel.Model;
+            WorkspaceViewModel workspaceVM = vm.CurrentSpaceViewModel;
+
+            CreateNodeOnCurrentWorkspace();
+
+            if (workspaceVM.FitViewCommand.CanExecute(null))
+                workspaceVM.FitViewCommand.Execute(null);
+
+            double curZoom = workspaceModel.Zoom;
+            double curX = workspaceModel.X;
+            double curY = workspaceModel.Y;
+
+            // Do some zoom action before FitView again
+            vm.ZoomIn(null);
+
+            if (workspaceVM.FitViewCommand.CanExecute(null))
+                workspaceVM.FitViewCommand.Execute(null);
+
+            // Check actual zoom
+            Assert.AreEqual(workspaceModel.Zoom, curZoom);
+            Assert.AreEqual(workspaceModel.X, curX);
+            Assert.AreEqual(workspaceModel.Y, curY);
+
+            controller.DynamoViewModel.CurrentSpace.HasUnsavedChanges = false;
+        }
+
+        [Test, RequiresSTA]
+        [Category("DynamoUI")]
+        public void CanFitViewResetByPan()
+        {
+            WorkspaceModel workspaceModel = vm.CurrentSpaceViewModel.Model;
+            WorkspaceViewModel workspaceVM = vm.CurrentSpaceViewModel;
+
+            CreateNodeOnCurrentWorkspace();
+
+            if (workspaceVM.FitViewCommand.CanExecute(null))
+                workspaceVM.FitViewCommand.Execute(null);
+
+            double curZoom = workspaceModel.Zoom;
+            double curX = workspaceModel.X;
+            double curY = workspaceModel.Y;
+
+            // Do some pan action before FitView again
+            vm.Pan("Up" as object);
+
+            if (workspaceVM.FitViewCommand.CanExecute(null))
+                workspaceVM.FitViewCommand.Execute(null);
+
+            // Check actual zoom
+            Assert.AreEqual(workspaceModel.Zoom, curZoom);
+            Assert.AreEqual(workspaceModel.X, curX);
+            Assert.AreEqual(workspaceModel.Y, curY);
+
+            controller.DynamoViewModel.CurrentSpace.HasUnsavedChanges = false;
+        }
+
+        // Add a number node on workspace
+        private void CreateNodeOnCurrentWorkspace()
+        {
+            // Create number node
+            var nodeData = new Dictionary<string, object>();
+            nodeData.Add("name", "Number");
+            controller.DynamoModel.CreateNode(nodeData);
+            var numNode = controller.DynamoViewModel.Model.Nodes[0];
+
+            // Add to current workspace
+            vm.CurrentSpaceViewModel.Model.Nodes.Add(numNode);
+            int nodeIndex = vm.CurrentSpaceViewModel.Model.Nodes.Count() - 1;
+            vm.CurrentSpaceViewModel.Model.Nodes[nodeIndex].X = 100;
+            vm.CurrentSpaceViewModel.Model.Nodes[nodeIndex].Y = 100;
+        }
+
+        #endregion
+
+        #region InfoBubble
+        
+        [Test]
+        [Category("DynamoUI")]
+        public void UpdateInfoBubble_LibItem()
+        {
+            InfoBubbleViewModel infoBubble = new InfoBubbleViewModel();
+            string content = "This is the test infoBubble";
+            InfoBubbleDataPacket inputData_LibItem = new InfoBubbleDataPacket(InfoBubbleViewModel.Style.LibraryItemPreview, 
+                new Point(0, 0), new Point(0, 0), content, InfoBubbleViewModel.Direction.Left, Guid.Empty);
+
+            if (infoBubble.UpdateContentCommand.CanExecute(null))
+            {
+                infoBubble.UpdateContentCommand.Execute(inputData_LibItem);
+                Assert.AreEqual(content, infoBubble.ItemDescription);
+                Assert.AreEqual(InfoBubbleViewModel.Style.LibraryItemPreview, infoBubble.InfoBubbleStyle);
+                Assert.AreEqual(InfoBubbleViewModel.Direction.Left, infoBubble.ConnectingDirection);
+            }
+        }
+
+        [Test]
+        [Category("DynamoUI")]
+        public void UpdateInfoBubble_NodeTooltip()
+        {
+            InfoBubbleViewModel infoBubble = new InfoBubbleViewModel();
+            string content = "This is the test infoBubble";
+            InfoBubbleDataPacket inputData_NodeTooltip = new InfoBubbleDataPacket(InfoBubbleViewModel.Style.NodeTooltip,
+                new Point(0, 0), new Point(0, 0), content, InfoBubbleViewModel.Direction.Right, Guid.Empty);
+
+            if (infoBubble.UpdateContentCommand.CanExecute(null))
+            {
+                infoBubble.UpdateContentCommand.Execute(inputData_NodeTooltip);
+                Assert.AreEqual(content, infoBubble.ItemDescription);
+                Assert.AreEqual(InfoBubbleViewModel.Style.NodeTooltip, infoBubble.InfoBubbleStyle);
+                Assert.AreEqual(InfoBubbleViewModel.Direction.Right, infoBubble.ConnectingDirection);
+            }
+        }
+
+        [Test]
+        [Category("DynamoUI")]
+        public void UpdateInfoBubble_ErrorBubble()
+        {
+            InfoBubbleViewModel infoBubble = new InfoBubbleViewModel();
+            string content = "This is the test infoBubble";
+            InfoBubbleDataPacket inputData_ErrorBubble = new InfoBubbleDataPacket(InfoBubbleViewModel.Style.Error,
+                new Point(0, 0), new Point(0, 0), content, InfoBubbleViewModel.Direction.Bottom, Guid.Empty);
+
+            if (infoBubble.UpdateContentCommand.CanExecute(null))
+            {
+                infoBubble.UpdateContentCommand.Execute(inputData_ErrorBubble);
+                Assert.AreEqual(content, infoBubble.ItemDescription);
+                Assert.AreEqual(InfoBubbleViewModel.Style.Error, infoBubble.InfoBubbleStyle);
+                Assert.AreEqual(InfoBubbleViewModel.Direction.Bottom, infoBubble.ConnectingDirection);
+            }
+        }
+
+        [Test]
+        [Category("DynamoUI")]
+        public void Collapse()
+        {
+            InfoBubbleViewModel infoBubble = new InfoBubbleViewModel();
+            infoBubble.InstantCollapseCommand.Execute(null);
+            Assert.AreEqual(0, infoBubble.Opacity);
+        }
+
+	    #endregion
+        
     }
 }
