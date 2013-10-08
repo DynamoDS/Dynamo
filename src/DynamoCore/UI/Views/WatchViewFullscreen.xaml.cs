@@ -155,9 +155,6 @@ namespace Dynamo.Controls
 
             MainContextMenu.Items.Add(mi);
 
-            //dynSettings.Controller.RequestsRedraw += new System.EventHandler(Controller_RequestsRedraw);
-            //dynSettings.Controller.RunCompleted += new DynamoController.RunCompletedHandler(Controller_RunCompleted);
-
             //check this for null so the designer can load the preview
             if(dynSettings.Controller != null)
                 dynSettings.Controller.VisualizationManager.VisualizationUpdateComplete += VisualizationManager_VisualizationUpdateComplete;
@@ -173,24 +170,8 @@ namespace Dynamo.Controls
             if (!dynSettings.Controller.DynamoViewModel.FullscreenWatchShowing)
                 return;
 
-            Dispatcher.Invoke(new Action<RenderDescription>(RenderDrawables), new object[]{e.Description});
+            Dispatcher.Invoke(new Action<RenderDescription>(RenderDrawables),DispatcherPriority.Render, new object[]{e.Description});
         }
-
-        //void Controller_RunCompleted(object controller, bool success)
-        //{
-        //    if (!_vm.ParentWorkspace.IsCurrentSpace)
-        //        return;
-
-        //    if (!dynSettings.Controller.DynamoViewModel.FullscreenWatchShowing)
-        //        return;
-
-        //    Dispatcher.Invoke(new Action(RenderDrawables));
-        //}
-
-        //void Controller_RequestsRedraw(object sender, System.EventArgs e)
-        //{
-        //    Dispatcher.Invoke(new Action(RenderDrawables));
-        //}
 
         private void RenderDrawables(RenderDescription rd)
         {
