@@ -1,8 +1,0 @@
-'
-Dim Jrn
-Set Jrn = CrsJournalScript
-Jrn.Command "StartupPage" , "Open this project , ID_FILE_MRU_FIRST"
-Jrn.Data "MRUFileName"  , "$modelName"
-Jrn.RibbonEvent "Execute external command:487f9ff0-5b34-4e7e-97bf-70fbff69194f:Dynamo.Tests.DynamoTestFramework"
-Jrn.Data "APIStringStringMapJournalData"  , 4, "testName", "$testName", "fixtureName", "$fixtureName", "testAssembly", "$testAssembly", "resultsPath","$resultsPath"
-Jrn.Command "SystemMenu" , "Quit the application; prompts to save projects , ID_APP_EXIT"
