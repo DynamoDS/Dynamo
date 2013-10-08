@@ -421,6 +421,8 @@ namespace Dynamo
 
         #endregion
 
+        private TransactionManager.TransactionHandle _transaction;
+
         private TransactionMode _transMode;
         public TransactionMode TransMode
         {
@@ -439,7 +441,8 @@ namespace Dynamo
         {
             base.OnRunCancelled(error);
 
-            TransactionManager.CancelTransaction();
+            if (_transaction != null && _transaction.Status == TransactionStatus.Started)
+                _transaction.CancelTransaction();
         }
 
         protected override void OnEvaluationCompleted()
@@ -453,7 +456,7 @@ namespace Dynamo
                 //      there is nothing to be deleted?
 
                 //Initialize a transaction (if one hasn't been aleady)
-                TransactionManager.StartTransaction(dynRevitSettings.Doc.Document);
+                _transaction = TransactionManager.StartTransaction(dynRevitSettings.Doc.Document);
 
                 //Reset all elements
                 var query = dynSettings.Controller.DynamoModel.AllNodes
@@ -467,7 +470,7 @@ namespace Dynamo
                 // END POINT FOR THE DYNAMO TRANSACTION
                 //////
 
-                TransactionManager.CommitTransaction(); //Close global transaction.
+                _transaction.CommitTransaction(); //Close global transaction.
             };
 
             //If we're in a debug run or not already in the idle thread, then run the Cleanup Delegate
@@ -542,12 +545,12 @@ namespace Dynamo
 
         public void EndTransaction()
         {
-            TransactionManager.CommitTransaction();
+            _transaction.CommitTransaction();
         }
 
         public void CancelTransaction()
         {
-            TransactionManager.CancelTransaction();
+            _transaction.CancelTransaction();
         }
     }
 
