@@ -16,13 +16,21 @@ using NUnit.Core.Filters;
 
 namespace Dynamo.Tests
 {
+    /// <summary>
+    /// The Revit data class holds static references to the document and application
+    /// for use in the tests.
+    /// </summary>
+    public class RevitData
+    {
+        public static UIDocument Document { get; set; }
+        public static UIApplication Application { get; set; }
+    }
+
     [Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
     [Journaling(JournalingMode.UsingCommandData)]
     public class DynamoTestFramework : IExternalCommand
     {
-        private UIDocument m_doc;
-        private UIApplication m_revit;
         private resultType testResult;
 
         /// <summary>
@@ -55,8 +63,8 @@ namespace Dynamo.Tests
 
             try
             {
-                m_revit = revit.Application;
-                m_doc = m_revit.ActiveUIDocument;
+                RevitData.Application = revit.Application;
+                RevitData.Document = RevitData.Application.ActiveUIDocument;
 
                 bool canReadData = (0 < dataMap.Count);
 
