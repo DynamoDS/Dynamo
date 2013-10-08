@@ -18,13 +18,14 @@ def main():
 	parser.add_argument('-a','--assembly', help='Path of the assembly containing tests.', required=True)
 	parser.add_argument('-o','--output', help='Output location of the results file.', required=True)
 	parser.add_argument('-m','--model', help='Path of the model file for open.', required=True)
+	parser.add_argument('-t','--template', help='Path to journal file template.', required=False)
 	args = vars(parser.parse_args())
 	# print args
 
 	start_time = time.time()
 
 	#Generate a temporary journal file
-	journal = generate_journal_file(args['name'], args['fixture'], args['assembly'], args['output'], args['model'])
+	journal = generate_journal_file(args['name'], args['fixture'], args['assembly'], args['output'], args['model'], args['template'])
 
 	#Run Revit passing the journal file as a parameter
 	print 'running ' + journal
@@ -50,14 +51,18 @@ def run_cmd( args, printOutput = True, cwd = None ):
 		
 	return out
 
-def generate_journal_file(testName, fixtureName, testAssembly, resultsPath, modelName):
+def generate_journal_file(testName, fixtureName, testAssembly, resultsPath, modelName, templatePath):
 	
 	currPath = os.getcwd()
 
 	# change into the template path and 
 	# read the template file
-	os.chdir(os.path.abspath("./template"))
-	template = glob.glob("DynamoTemplate.txt")[0]
+	if templatePath is not None:
+		template = templatePath
+	else:
+		os.chdir(os.path.abspath("./templates"))
+		template = glob.glob("ModelTemplate.txt")[0]
+
 	s =''
 	with open(template, 'r') as templateFile:
 		s = string.Template(templateFile.read())
