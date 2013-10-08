@@ -25,9 +25,10 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Transf From Origin and Vecs")]
+    [NodeName("Transform From Origin and Vectors")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Returns a transformation with origin (o), up vector (u), and forward (f).")]
+    [NodeSearchTags("move", "copy")]
     public class TransformOriginAndVectors : GeometryBase
     {
         public TransformOriginAndVectors()
@@ -113,6 +114,7 @@ namespace Dynamo.Nodes
     [NodeName("Translate Transform")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Returns he transformation that translates by the specified vector.")]
+    [NodeSearchTags("copy", "move")]
     public class TransformTranslation : GeometryBase
     {
         public TransformTranslation()
@@ -136,6 +138,7 @@ namespace Dynamo.Nodes
     [NodeName("Reflect Transform")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Returns the transformation that reflects about the specified plane.")]
+    [NodeSearchTags("mirror", "symmetric")]
     public class TransformReflection : GeometryBase
     {
         public TransformReflection()
@@ -159,6 +162,7 @@ namespace Dynamo.Nodes
     [NodeName("Transform Point")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Transform a point with a transform.")]
+    [NodeSearchTags("move", "copy", "xyz")]
     public class TransformPoint : GeometryBase
     {
         public TransformPoint()
