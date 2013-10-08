@@ -19,13 +19,14 @@ def main():
 	parser.add_argument('-o','--output', help='Output location of the results file.', required=True)
 	parser.add_argument('-m','--model', help='Path of the model file for open.', required=True)
 	parser.add_argument('-t','--template', help='Path to journal file template.', required=False)
+	parser.add_argument('-g','--GUID', help='The GUID of the plugin to load.', required=True)
+	parser.add_argument('-p','--plugin', help='The name (including namespace) of the class containing the external command.', required=True)
 	args = vars(parser.parse_args())
-	# print args
 
 	start_time = time.time()
 
 	#Generate a temporary journal file
-	journal = generate_journal_file(args['name'], args['fixture'], args['assembly'], args['output'], args['model'], args['template'])
+	journal = generate_journal_file(args['name'], args['fixture'], args['assembly'], args['output'], args['model'], args['template'], args['GUID'], args['plugin']);
 
 	#Run Revit passing the journal file as a parameter
 	print 'running ' + journal
@@ -51,7 +52,7 @@ def run_cmd( args, printOutput = True, cwd = None ):
 		
 	return out
 
-def generate_journal_file(testName, fixtureName, testAssembly, resultsPath, modelName, templatePath):
+def generate_journal_file(testName, fixtureName, testAssembly, resultsPath, modelName, templatePath, pluginGUID, pluginClass):
 	
 	currPath = os.getcwd()
 
@@ -71,7 +72,7 @@ def generate_journal_file(testName, fixtureName, testAssembly, resultsPath, mode
 	# change back to the test directory
 	os.chdir(os.path.abspath(currPath))
 
-	content = s.substitute(testName=testName, fixtureName=fixtureName, testAssembly=testAssembly, resultsPath=resultsPath, modelName=modelName)
+	content = s.substitute(testName=testName, fixtureName=fixtureName, testAssembly=testAssembly, resultsPath=resultsPath, modelName=modelName, pluginGUID=pluginGUID, pluginClass=pluginClass)
 
 	# save the content to a file
 	journal = "DynamoTestFrameworkTmp.txt"
