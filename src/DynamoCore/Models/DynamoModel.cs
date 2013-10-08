@@ -1428,10 +1428,10 @@ namespace Dynamo.Models
         {
             NodeModel result;
 
-            if (dynSettings.Controller.DSBuiltInFunctions.ContainsKey(name))
+            if (dynSettings.Controller.DSImportedFunctions.ContainsKey(name))
             {
-                var functionData  = dynSettings.Controller.DSBuiltInFunctions[name];
-                result = new DSFunction(functionData as DSFunctionDescritpion);
+                var functionData  = dynSettings.Controller.DSImportedFunctions[name];
+                result = new DSFunction(functionData as DSFunctionItem);
             }
             else if (dynSettings.Controller.BuiltInTypesByName.ContainsKey(name))
             {

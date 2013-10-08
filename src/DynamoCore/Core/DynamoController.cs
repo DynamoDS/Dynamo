@@ -60,7 +60,7 @@ namespace Dynamo
         private readonly Dictionary<string, TypeLoadData> builtinTypesByTypeName =
             new Dictionary<string, TypeLoadData>();
 
-        private readonly Dictionary<string, object> dsBuiltInFunctions = new Dictionary<String, object>();
+        private readonly Dictionary<string, object> dsImportedFunctions = new Dictionary<String, object>();
 
         private bool testing = false;
 
@@ -105,9 +105,9 @@ namespace Dynamo
             get { return builtinTypesByTypeName; }
         }
 
-        public Dictionary<string, object> DSBuiltInFunctions
+        public Dictionary<string, object> DSImportedFunctions
         {
-            get { return dsBuiltInFunctions; }
+            get { return dsImportedFunctions; }
         }
 
         public ExecutionEnvironment FSchemeEnvironment { get; private set; }
@@ -320,11 +320,9 @@ namespace Dynamo
             //Mark the topmost as dirty/clean
             foreach (NodeModel topMost in topElements)
             {
-                /*
                 AstBuilder builder = AstBuilder.Instance;
                 topMost.CompileToAstNode(builder);
                 builder.Execute();
-                */
 
                 topMost.MarkDirty();
             }
