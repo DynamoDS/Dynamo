@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Input;
 using System.Xml;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -69,6 +70,8 @@ namespace Dynamo.Core.Automation
             {
                 case "Dynamo.Core.Automation.CreateNodeCommand":
                     return CreateNodeCommand.DeserializeCore(element);
+                case "Dynamo.Core.Automation.SelectModelCommand":
+                    return SelectModelCommand.DeserializeCore(element);
             }
 
             throw new ArgumentException("element");
@@ -164,4 +167,60 @@ namespace Dynamo.Core.Automation
 
         #endregion
     }
+
+    internal class SelectModelCommand : RecordableCommand
+    {
+        #region Public Class Methods
+
+        internal SelectModelCommand(Guid modelGuid, ModifierKeys modifiers)
+        {
+            this.ModelGuid = modelGuid;
+            this.Modifiers = modifiers;
+        }
+
+        internal static SelectModelCommand DeserializeCore(XmlElement element)
+        {
+            XmlElementHelper helper = new XmlElementHelper(element);
+            System.Guid modelGuid = helper.ReadGuid("ModelGuid");
+            ModifierKeys modifiers = ((ModifierKeys)helper.ReadInteger("Modifiers"));
+            return new SelectModelCommand(modelGuid, modifiers);
+        }
+
+        #endregion
+
+        #region Public Command Properties
+
+        internal Guid ModelGuid { get; private set; }
+        internal ModifierKeys Modifiers { get; private set; }
+
+        #endregion
+
+        #region Protected Overridable Methods
+
+        protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+        {
+            dynamoViewModel.SelectModelImpl(this);
+        }
+
+        protected override void SerializeCore(XmlElement element)
+        {
+            XmlElementHelper helper = new XmlElementHelper(element);
+            helper.SetAttribute("ModelGuid", this.ModelGuid);
+            helper.SetAttribute("Modifiers", ((int)this.Modifiers));
+        }
+
+        #endregion
+    }
+
+    // internal class XxxYyyCommand : RecordableCommand
+    // {
+    //     #region Public Class Methods
+    //     #endregion
+    // 
+    //     #region Public Command Properties
+    //     #endregion
+    // 
+    //     #region Protected Overridable Methods
+    //     #endregion
+    // }
 }
