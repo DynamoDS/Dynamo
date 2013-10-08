@@ -320,23 +320,6 @@ namespace Dynamo.Tests
                     time = result.Time.ToString(CultureInfo.InvariantCulture)
                 };
 
-            //if (result.IsSuccess)
-            //{
-            //    testCase.result = "Success";
-            //}
-            //else if (result.IsFailure)
-            //{
-            //    var fail = new failureType {message = result.Message, stacktrace = result.StackTrace};
-            //    testCase.Item = fail;
-            //    testCase.result = "Failure";
-            //}
-            //else if (result.IsError)
-            //{
-            //    var errCount = Convert.ToInt16(resultsRoot.errors);
-            //    resultsRoot.errors = (errCount + 1);
-            //    testCase.result = "Error";
-            //}
-
             switch (result.ResultState)
             {
                 case ResultState.Cancelled:
