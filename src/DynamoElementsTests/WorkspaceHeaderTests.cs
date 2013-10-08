@@ -6,7 +6,7 @@ using System.Text;
 using Dynamo.Models;
 using NUnit.Framework;
 
-namespace Dynamo
+namespace Dynamo.Tests
 {
     class WorkspaceHeaderTests : UnitTestBase
     {

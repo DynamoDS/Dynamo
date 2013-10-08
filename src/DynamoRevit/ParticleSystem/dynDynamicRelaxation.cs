@@ -429,7 +429,7 @@ namespace Dynamo.Nodes
             "vMax", "Maximum nodal velocity.", typeof(Value.Number));
 
         private Visualization _visualization;
-        private int _stepCount = 0;
+        //private int _stepCount = 0;
 
         private readonly PortData _convergedPort = new PortData(
             "converged?",
@@ -459,12 +459,12 @@ namespace Dynamo.Nodes
             //loop and you need to draw its contents
 
             //throttle sending visualization updates.
-            _stepCount++;
-            if (_stepCount > 10)
-            {
+            //_stepCount++;
+            //if (_stepCount > 10)
+            //{
                 dynSettings.Controller.OnRequestsRedraw(this, EventArgs.Empty);
-                _stepCount = 0;
-            }
+                //_stepCount = 0;
+            //}
 
             outPuts[_vMaxPort] = Value.NewNumber(partSys.getMaxNodalVelocity());
             outPuts[_convergedPort] = Value.NewNumber(Convert.ToInt16(partSys.getConverged()));
