@@ -344,6 +344,8 @@ namespace Dynamo.ViewModels
                     break;
                 case "ArgumentLacing":
                     RaisePropertyChanged("ArgumentLacing");
+                    break;
+
                 case "ToolTipText":
                     UpdateErrorBubbleContent();
                     break;
