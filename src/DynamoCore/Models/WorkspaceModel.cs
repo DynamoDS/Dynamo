@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Windows;
 using System.Xml;
 using System.Globalization;
@@ -24,13 +22,46 @@ namespace Dynamo.Models
 
         #region Properties
 
-        private string _filePath;
+        private string _fileName;
         private string _name;
         private double _height = 100;
         private double _width = 100;
         private double _x;
         private double _y;
         private double _zoom = 1.0;
+
+        public bool WatchChanges
+        {
+            set
+            {
+                if (value)
+                {
+
+                    Nodes.CollectionChanged += MarkUnsavedAndModified;
+                    Notes.CollectionChanged += MarkUnsaved;
+                    Connectors.CollectionChanged += MarkUnsavedAndModified;
+                }
+                else
+                {
+                    Nodes.CollectionChanged -= MarkUnsavedAndModified;
+                    Notes.CollectionChanged -= MarkUnsaved;
+                    Connectors.CollectionChanged -= MarkUnsavedAndModified;
+                }
+            }
+        }
+
+        public bool IsCurrentSpace
+        {
+            get { return _isCurrentSpace; }
+            set
+            {
+                _isCurrentSpace = value;
+                RaisePropertyChanged("IsCurrentSpace");
+            }
+        }
+
+        public event Action OnModified;
+
 
         private string _category = "";
         public string Category
@@ -124,13 +155,13 @@ namespace Dynamo.Models
 
         public ObservableCollection<NoteModel> Notes { get; internal set; }
 
-        public string FilePath
+        public string FileName
         {
-            get { return _filePath; }
+            get { return _fileName; }
             set
             {
-                _filePath = value;
-                RaisePropertyChanged("FilePath");
+                _fileName = value;
+                RaisePropertyChanged("FileName");
             }
         }
 
@@ -232,9 +263,10 @@ namespace Dynamo.Models
 
         internal Version WorkspaceVersion { get; set; }
 
-        #endregion
-
+        
+        
         public delegate void WorkspaceSavedEvent(WorkspaceModel model);
+        public event WorkspaceSavedEvent WorkspaceSaved;
 
         /// <summary>
         ///     Defines whether this is the current space in Dynamo
@@ -262,6 +294,8 @@ namespace Dynamo.Models
             }
         }
 
+        #endregion
+
         protected WorkspaceModel(
             String name, IEnumerable<NodeModel> e, IEnumerable<ConnectorModel> c, double x, double y)
         {
@@ -281,41 +315,46 @@ namespace Dynamo.Models
             undoRecorder = new UndoRedoRecorder(this);
         }
 
-        public bool WatchChanges
-        {
-            set
-            {
-                if (value)
-                {
-                    
-                    Nodes.CollectionChanged += MarkUnsavedAndModified;
-                    Notes.CollectionChanged += MarkUnsaved;
-                    Connectors.CollectionChanged += MarkUnsavedAndModified;
-                }
-                else
-                {
-                    Nodes.CollectionChanged -= MarkUnsavedAndModified;
-                    Notes.CollectionChanged -= MarkUnsaved;
-                    Connectors.CollectionChanged -= MarkUnsavedAndModified;
-                }
-            }
-        }
-
-        public bool IsCurrentSpace
-        {
-            get { return _isCurrentSpace; }
-            set
-            {
-                _isCurrentSpace = value;
-                RaisePropertyChanged("IsCurrentSpace");
-            }
-        }
-
-        public event Action OnModified;
 
         public abstract void OnDisplayed();
 
-        public event WorkspaceSavedEvent WorkspaceSaved;
+        /// <summary>
+        ///     Save to a specific file path, if the path is null or empty, does nothing.
+        ///     If successful, the CurrentWorkspace.FilePath field is updated as a side effect
+        /// </summary>
+        /// <param name="path">The path to save to</param>
+        public virtual bool SaveAs(string path)
+        {
+            if (String.IsNullOrEmpty(path)) return false;
+
+            DynamoLogger.Instance.Log("Saving " + path + "...");
+            try
+            {
+                var xmlDoc = this.GetXml();
+                xmlDoc.Save(path);
+                this.FileName = path;
+
+                this.OnWorkspaceSaved();
+            }
+            catch (Exception ex)
+            {
+                //Log(ex);
+                DynamoLogger.Instance.Log(ex.Message);
+                DynamoLogger.Instance.Log(ex.StackTrace);
+                Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Save assuming that the Filepath attribute is set.
+        /// </summary>
+        public virtual bool Save()
+        {
+            return this.SaveAs(this.FileName);
+        }
 
         /// <summary>
         ///     If there are observers for the save, notifies them
@@ -349,7 +388,7 @@ namespace Dynamo.Models
             Modified();
         }
 
-        //TODO: Replace all Modified calls with RaisePropertyChanged-stlye system, that way observable collections can catch any changes
+        //TODO: Replace all Modified calls with RaisePropertyChanged-style system, that way observable collections can catch any changes
         public void DisableReporting()
         {
             Nodes.ToList().ForEach(x => x.DisableReporting());
@@ -634,45 +673,7 @@ namespace Dynamo.Models
                 Updated(this, e);
         }
 
-        #region static methods
-
-        /// <summary>
-        ///     Generate an xml doc and write the workspace to the given path
-        /// </summary>
-        /// <param name="xmlPath">The path to save to</param>
-        /// <param name="workSpace">The workspace</param>
-        /// <returns>Whether the operation was successful</returns>
-        public static bool SaveWorkspace(string xmlPath, WorkspaceModel workSpace)
-        {
-            DynamoLogger.Instance.Log("Saving " + xmlPath + "...");
-            try
-            {
-                var xmlDoc = GetXmlDocFromWorkspace(workSpace, workSpace is HomeWorkspace);
-                xmlDoc.Save(xmlPath);
-                workSpace.FilePath = xmlPath;
-
-                workSpace.OnWorkspaceSaved();
-            }
-            catch (Exception ex)
-            {
-                //Log(ex);
-                DynamoLogger.Instance.Log(ex.Message);
-                DynamoLogger.Instance.Log(ex.StackTrace);
-                Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-                return false;
-            }
-
-            return true;
-        }
-
-        /// <summary>
-        ///     Generate the xml doc of the workspace from memory
-        /// </summary>
-        /// <param name="workSpace">The workspace</param>
-        /// <param name="savingHomespace"></param>
-        /// <returns>The generated xmldoc</returns>
-        public static XmlDocument GetXmlDocFromWorkspace(
-            WorkspaceModel workSpace, bool savingHomespace)
+        public virtual XmlDocument GetXml()
         {
             try
             {
@@ -680,30 +681,13 @@ namespace Dynamo.Models
                 var xmlDoc = new XmlDocument();
                 xmlDoc.CreateXmlDeclaration("1.0", null, null);
                 var root = xmlDoc.CreateElement("Workspace"); //write the root element
-                root.SetAttribute("Version", workSpace.WorkspaceVersion.ToString());
-                root.SetAttribute("X", workSpace.X.ToString(CultureInfo.InvariantCulture));
-                root.SetAttribute("Y", workSpace.Y.ToString(CultureInfo.InvariantCulture));
-                root.SetAttribute("zoom", workSpace.Zoom.ToString(CultureInfo.InvariantCulture));
-                root.SetAttribute("Description", workSpace.Description);
-                root.SetAttribute("Category", workSpace.Category);
-                root.SetAttribute("Name", workSpace.Name);
-
-                if (!savingHomespace) //If we are not saving the home space
-                {
-                    var def = dynSettings.Controller.CustomNodeManager.GetDefinitionFromWorkspace(workSpace);
-                    Guid guid;
-
-                    if (def != null)
-                    {
-                        guid = def.FunctionId;
-                    }
-                    else
-                    {
-                        guid = Guid.NewGuid();
-                    }
-
-                    root.SetAttribute("ID", guid.ToString());
-                }
+                root.SetAttribute("Version", this.WorkspaceVersion.ToString());
+                root.SetAttribute("X", this.X.ToString(CultureInfo.InvariantCulture));
+                root.SetAttribute("Y", this.Y.ToString(CultureInfo.InvariantCulture));
+                root.SetAttribute("zoom", this.Zoom.ToString(CultureInfo.InvariantCulture));
+                root.SetAttribute("Description", this.Description);
+                root.SetAttribute("Category", this.Category);
+                root.SetAttribute("Name", this.Name);
 
                 xmlDoc.AppendChild(root);
 
@@ -711,7 +695,7 @@ namespace Dynamo.Models
                 //write the root element
                 root.AppendChild(elementList);
 
-                foreach (var el in workSpace.Nodes)
+                foreach (var el in this.Nodes)
                 {
                     var typeName = el.GetType().ToString();
 
@@ -736,7 +720,7 @@ namespace Dynamo.Models
                 //write the root element
                 root.AppendChild(connectorList);
 
-                foreach (var el in workSpace.Nodes)
+                foreach (var el in this.Nodes)
                 {
                     foreach (var port in el.OutPorts)
                     {
@@ -760,7 +744,7 @@ namespace Dynamo.Models
                 //save the notes
                 var noteList = xmlDoc.CreateElement("Notes"); //write the root element
                 root.AppendChild(noteList);
-                foreach (var n in workSpace.Notes)
+                foreach (var n in this.Notes)
                 {
                     var note = xmlDoc.CreateElement(n.GetType().ToString());
                     noteList.AppendChild(note);
@@ -778,128 +762,5 @@ namespace Dynamo.Models
             }
         }
 
-        #endregion
-    }
-
-    internal static class WorkspaceHelpers
-    {
-        //public static Dictionary<string, dynNodeView> HiddenNodes =
-        //    new Dictionary<string, dynNodeView>();
-    }
-
-    public class FuncWorkspace : WorkspaceModel
-    {
-        #region Contructors
-
-        public FuncWorkspace()
-            : this("", "", "", new List<NodeModel>(), new List<ConnectorModel>(), 0, 0)
-        {
-        }
-
-        public FuncWorkspace(String name, String category)
-            : this(name, category, "",new List<NodeModel>(), new List<ConnectorModel>(), 0, 0)
-        {
-        }
-
-        public FuncWorkspace(String name, String category, string description, double x, double y)
-            : this(name, category, description, new List<NodeModel>(), new List<ConnectorModel>(), x, y)
-        {
-        }
-
-        public FuncWorkspace(
-            String name, String category, string description, IEnumerable<NodeModel> e, IEnumerable<ConnectorModel> c, double x, double y)
-            : base(name, e, c, x, y)
-        {
-            WatchChanges = true; 
-            HasUnsavedChanges = false;
-            Category = category;
-            Description = description;
-
-            PropertyChanged += OnPropertyChanged;
-        }
-
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
-        {
-            if (args.PropertyName == "Name" || args.PropertyName == "Category" || args.PropertyName == "Description")
-            {
-                this.HasUnsavedChanges = true;
-            }
-        }
-
-        #endregion
-
-        public override void Modified()
-        {
-            base.Modified();
-
-            //add a check if any loaded defs match this workspace
-            // unnecessary given the next lines --SJE
-            //if (dynSettings.Controller.CustomNodeManager.GetLoadedDefinitions().All(x => x.Workspace != this))
-            //    return;
-
-            var def =
-                dynSettings.Controller.CustomNodeManager
-                           .GetLoadedDefinitions()
-                           .FirstOrDefault(x => x.Workspace == this);
-
-            if (def == null) return;
-
-            def.RequiresRecalc = true;
-
-            try
-            {
-                dynSettings.Controller.DynamoModel.SaveFunction(def, false, true, true);
-            }
-            catch { }
-        }
-
-        public override void OnDisplayed()
-        {
-
-        }
-    }
-
-    public class HomeWorkspace : WorkspaceModel
-    {
-        public HomeWorkspace()
-            : this(new List<NodeModel>(), new List<ConnectorModel>(), 0, 0)
-        {
-        }
-
-        public HomeWorkspace(double x, double y)
-            : this(new List<NodeModel>(), new List<ConnectorModel>(), x, y)
-        {
-        }
-
-        public HomeWorkspace(IEnumerable<NodeModel> e, IEnumerable<ConnectorModel> c, double x, double y)
-            : base("Home", e, c, x, y)
-        {
-        }
-
-        public override void Modified()
-        {
-            base.Modified();
-
-            var controller = dynSettings.Controller;
-            if (dynSettings.Controller.DynamoViewModel.DynamicRunEnabled)
-            {
-                //DynamoLogger.Instance.Log("Running Dynamically");
-                if (!controller.Running)
-                {
-                    //DynamoLogger.Instance.Log("Nothing currently running, now running.");
-                    controller.RunExpression(false);
-                }
-                else
-                {
-                    //DynamoLogger.Instance.Log("Run in progress, cancelling then running.");
-                    controller.QueueRun();
-                }
-            }
-        }
-
-        public override void OnDisplayed()
-        {
-            //DynamoView bench = dynSettings.Bench; // ewwwy
-        }
     }
 }

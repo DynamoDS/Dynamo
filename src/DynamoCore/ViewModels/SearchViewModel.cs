@@ -57,7 +57,7 @@ namespace Dynamo.ViewModels
             {
                 IncludeRevitApiElements = value;
                 RaisePropertyChanged("IncludeRevitAPIElements");
-                ToggleIncludingRevitAPIElements();
+                //ToggleIncludingRevitAPIElements();
             }
         }
 
@@ -247,72 +247,6 @@ namespace Dynamo.ViewModels
             this.AddRootCategory(BuiltinNodeCategories.IO);
             this.AddRootCategory(BuiltinNodeCategories.SCRIPTING);
             this.AddRootCategory(BuiltinNodeCategories.ANALYZE);
-        }
-
-        public static void RevitAPIRegionExecute(object parameter)
-        {
-            dynSettings.Controller.SearchViewModel.IncludeRevitAPIElements = !dynSettings.Controller.SearchViewModel.IncludeRevitAPIElements;
-            dynSettings.ReturnFocusToSearch();
-        }
-
-        internal static bool RevitAPIRegionCanExecute(object parameter)
-        {
-            return true;
-        }
-
-        public static void PackageManagerRegionExecute(object parameters)
-        {
-            //if (Loaded)
-            //{
-            //    //DynamoCommands.RefreshRemotePackagesCmd.Execute(null);
-            //}
-            //else
-            //{
-                dynSettings.Controller.SearchViewModel.SearchDictionary.Remove((value) => value is PackageManagerSearchElement);
-                dynSettings.Controller.SearchViewModel.SearchAndUpdateResultsSync(dynSettings.Controller.SearchViewModel.SearchText);
-            //}
-
-            dynSettings.ReturnFocusToSearch();
-        }
-
-        internal static bool PackageManagerRegionCanExecute(object parameters)
-        {
-            return true;
-        }
-
-        /// <summary>
-        ///     If Revit API elements are shown, hides them.  Otherwise,
-        ///     shows them.  Update search when done with either.
-        /// </summary>
-        public void ToggleIncludingRevitAPIElements()
-        {
-            if (!IncludeRevitAPIElements)
-            {
-                this.RemoveCategory(BuiltinNodeCategories.REVIT_API);
-
-                foreach (var ele in RevitApiSearchElements)
-                {
-                    SearchDictionary.Remove(ele, ele.Name);
-                    if (!(ele is CategorySearchElement))
-                        SearchDictionary.Remove(ele, BuiltinNodeCategories.REVIT_API + "." + ele.Name);
-                }
-            }
-            else
-            {
-                var revitCat = this.AddCategory(BuiltinNodeCategories.REVIT_API);
-                bool addToCat = !revitCat.Items.Any();
-
-                // add elements to search
-                foreach (var ele in RevitApiSearchElements)
-                {
-                    if (addToCat)
-                        revitCat.Items.Add(ele);
-                    SearchDictionary.Add(ele, ele.Name);
-                    if (!(ele is CategorySearchElement))
-                        SearchDictionary.Add(ele, BuiltinNodeCategories.REVIT_API + "." + ele.Name);
-                }
-            }
-
         }
 
         private const char CATEGORY_DELIMITER = '.';
@@ -589,7 +523,7 @@ namespace Dynamo.ViewModels
                             _visibleSearchResults.Clear();
 
                             // if the search query is empty, go back to the default treeview
-                            if (string.IsNullOrEmpty(query) || query == "Search...")
+                            if (string.IsNullOrEmpty(query))
                             {
 
                                 foreach (var ele in BrowserRootCategories)
@@ -615,7 +549,8 @@ namespace Dynamo.ViewModels
                             if (t.Result.Any() && t.Result.ElementAt(0) is NodeSearchElement)
                             {
                                 _topResult.Items.Clear();
-                                _topResult.AddChild( new TopSearchElement( t.Result.ElementAt(0) ) );
+                                
+                                _topResult.AddChild( (t.Result.ElementAt(0) as NodeSearchElement).Copy() );
 
                                 _topResult.SetVisibilityToLeaves(true);
                                 _topResult.IsExpanded = true;
@@ -814,33 +749,7 @@ namespace Dynamo.ViewModels
             if (packageHeader.keywords != null && packageHeader.keywords.Count > 0)
                 SearchDictionary.Add(searchEle, packageHeader.keywords);
             SearchDictionary.Add(searchEle, searchEle.Description);
-            SearchAndUpdateResultsSync(SearchText);
-        }
-
-        /// <summary>
-        ///     Add a custom node to search.
-        /// </summary>
-        /// <param name="workspace">A dynWorkspace to add</param>
-        /// <param name="name">The name to use</param>
-        public void Add(string name, string category, string description, Guid functionId)
-        {
-            if (name == "Home")
-                return;
-
-            // create the node in search
-            var nodeEle = new NodeSearchElement(name, description, functionId);
-            nodeEle.FullCategoryName = category;
-
-            if (SearchDictionary.Contains(nodeEle))
-                return;
-
-            SearchDictionary.Add(nodeEle, nodeEle.Name);
-            SearchDictionary.Add(nodeEle, category + "." + nodeEle.Name);
-
-            TryAddCategoryAndItem(category, nodeEle);
-
-            
-
+            //SearchAndUpdateResultsSync(SearchText);
         }
 
         /// <summary>
@@ -934,26 +843,6 @@ namespace Dynamo.ViewModels
 
         }
 
-        public void Add(string category, string name, string description, List<string> tags, bool isSearchable)
-        {
-            var searchEle = new NodeSearchElement(name, description, tags);
-            searchEle.SetSearchable(isSearchable);
-
-            if (!string.IsNullOrEmpty(category))
-            {
-                SearchDictionary.Add(searchEle, category + "." + searchEle.Name);
-            }
-
-            TryAddCategoryAndItem(category, searchEle);
-
-            SearchDictionary.Add(searchEle, searchEle.Name);
-            if (tags.Count > 0)
-            {
-                SearchDictionary.Add(searchEle, tags);
-            }
-            SearchDictionary.Add(searchEle, description);
-        }
-
         public void RemoveNode(string nodeName)
         {
             // remove from search dictionary
@@ -962,6 +851,15 @@ namespace Dynamo.ViewModels
 
             // remove from browser leaves
             _browserLeaves.Where(x => x.Name == nodeName).ToList().ForEach(x => _browserLeaves.Remove(x));
+        }
+
+        public void RemoveNode(Guid funcId)
+        {
+            // remove from search dictionary
+            SearchDictionary.Remove((x) => x is CustomNodeSearchElement && ((CustomNodeSearchElement)x).Guid == funcId);
+
+            // remove from browser leaves
+            _browserLeaves.Where(x => x is CustomNodeSearchElement && ((CustomNodeSearchElement)x).Guid == funcId).ToList().ForEach(x => _browserLeaves.Remove(x));
         }
 
         /// <summary>
@@ -984,14 +882,49 @@ namespace Dynamo.ViewModels
 
         }
 
-        public void Add(CustomNodeInfo nodeInfo)
+        /// <summary>
+        /// Removes a node from search and all empty parent categories
+        /// </summary>
+        /// <param name="nodeName">The name of the node</param>
+        public void RemoveNodeAndEmptyParentCategory(Guid customNodeFunctionId)
         {
-            this.Add(nodeInfo.Name, nodeInfo.Category, nodeInfo.Description, nodeInfo.Guid);
+            var nodes = _browserLeaves
+                .Where(x => x is CustomNodeSearchElement)
+                .Cast<CustomNodeSearchElement>()
+                .Where(x => x.Guid == customNodeFunctionId)
+                .ToList();
+
+            if (!nodes.Any())
+            {
+                return;
+            }
+
+            foreach (var node in nodes)
+            {
+                RemoveNode(node.Guid);
+                RemoveEmptyCategory(node);
+            }
+
         }
 
-        internal void Refactor(CustomNodeInfo nodeInfo)
+        public bool Add(CustomNodeInfo nodeInfo)
         {
-            this.RemoveNodeAndEmptyParentCategory(nodeInfo.Name);
+            var nodeEle = new CustomNodeSearchElement(nodeInfo);
+
+            if (SearchDictionary.Contains(nodeEle))
+                return false;
+
+            SearchDictionary.Add(nodeEle, nodeEle.Name);
+            SearchDictionary.Add(nodeEle, nodeInfo.Category + "." + nodeEle.Name);
+
+            TryAddCategoryAndItem(nodeInfo.Category, nodeEle);
+
+            return true;
+        }
+
+        public void Refactor(CustomNodeInfo nodeInfo)
+        {
+            this.RemoveNodeAndEmptyParentCategory(nodeInfo.Guid);
             this.Add(nodeInfo);
         }
 

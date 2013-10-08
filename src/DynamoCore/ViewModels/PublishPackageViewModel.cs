@@ -20,12 +20,15 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
+using Dynamo.Nodes;
 using Dynamo.PackageManager.UI;
 using Dynamo.Utilities;
 using Greg.Requests;
 using Greg.Responses;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
+using Double = System.Double;
+using String = System.String;
 
 namespace Dynamo.PackageManager
 {
@@ -357,7 +360,7 @@ namespace Dynamo.PackageManager
             set
             {
                 _FunctionDefinitions = value;
-                this.Name = FunctionDefinitions[0].Workspace.Name;
+                this.Name = FunctionDefinitions[0].WorkspaceModel.Name;
                 this.UpdateDependencies();
             }
         }
@@ -531,11 +534,11 @@ namespace Dynamo.PackageManager
             var allFuncs = AllFuncDefs().ToList();
 
             // all workspaces
-            var workspaces = allFuncs.Select(def => def.Workspace).ToList();
+            var workspaces = allFuncs.Select(def => def.WorkspaceModel).ToList();
 
             // make sure workspaces are saved
             var unsavedWorkspaceNames =
-                workspaces.Where(ws => ws.HasUnsavedChanges || ws.FilePath == null).Select(ws => ws.Name).ToList();
+                workspaces.Where(ws => ws.HasUnsavedChanges || ws.FileName == null).Select(ws => ws.Name).ToList();
             if (unsavedWorkspaceNames.Any())
             {
                 throw new Exception("The following workspaces have not been saved " +
@@ -544,7 +547,7 @@ namespace Dynamo.PackageManager
 
             // omit files currently already under package control
             var files =
-                allFuncs.Select(f => f.Workspace.FilePath)
+                allFuncs.Select(f => f.WorkspaceModel.FileName)
                         .Where(p =>
                                 (dynSettings.PackageLoader.IsUnderPackageControl(p) &&
                                 dynSettings.PackageLoader.GetOwnerPackage(p).Name == this.Name) || !dynSettings.PackageLoader.IsUnderPackageControl(p));
@@ -565,7 +568,7 @@ namespace Dynamo.PackageManager
             // get all of dependencies from custom nodes and additional files
             var allFilePackages =
                 AllDependentFuncDefs()
-                    .Select(x => x.Workspace.FilePath)
+                    .Select(x => x.WorkspaceModel.FileName)
                     .Union( AdditionalFiles )
                     .Where(dynSettings.PackageLoader.IsUnderPackageControl)
                     .Select(dynSettings.PackageLoader.GetOwnerPackage)
@@ -576,7 +579,7 @@ namespace Dynamo.PackageManager
 
             // get all of the dependencies from types
             var allTypePackages = AllFuncDefs()
-                .Select(x => x.Workspace.Nodes)
+                .Select(x => x.WorkspaceModel.Nodes)
                 .SelectMany(x => x)
                 .Select(x => x.GetType())
                 .Where(dynSettings.PackageLoader.IsUnderPackageControl)
@@ -600,7 +603,7 @@ namespace Dynamo.PackageManager
                     .Where(p =>
                                 (dynSettings.PackageLoader.IsUnderPackageControl(p) &&
                                 dynSettings.PackageLoader.GetOwnerPackage(p).Name == this.Name) || !dynSettings.PackageLoader.IsUnderPackageControl(p))
-                        .Select(x => new Tuple<string, string>(x.Workspace.Name, !String.IsNullOrEmpty(x.Workspace.Description) ? x.Workspace.Description : "No description provided" ));
+                        .Select(x => new Tuple<string, string>(x.WorkspaceModel.Name, !String.IsNullOrEmpty(x.WorkspaceModel.Description) ? x.WorkspaceModel.Description : "No description provided" ));
         }
 
         private string _errorString = "";

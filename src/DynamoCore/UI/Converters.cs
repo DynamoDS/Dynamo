@@ -1029,11 +1029,12 @@ namespace Dynamo.Controls
         }
     }
 
-    public class FilePathDisplay : IValueConverter
+    public class FilePathDisplayConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //source->target
+            if (value == null) return "";
 
             var maxChars = 30;
             //var str = value.ToString();
