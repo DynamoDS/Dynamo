@@ -113,7 +113,7 @@ namespace Dynamo.ViewModels
         public string OldValue
         {
             get { 
-                if (this.nodeLogic.WorkSpace is FuncWorkspace)
+                if (this.nodeLogic.WorkSpace is CustomNodeWorkspaceModel)
                 {
                     return "Not available in custom nodes";
                 }
@@ -216,13 +216,9 @@ namespace Dynamo.ViewModels
             {
                 //if the node is a Function, show the visibility toggles
                 //if any of it's internal nodes is drawable.
-                //if (nodeLogic is Function)
-                //{
-                //    var f = nodeLogic as Function;
-                //    return f.Definition.Workspace.Nodes.Any(x => x is DrawableNode);
-                //}
 
-                return nodeLogic.OldValue!=null;
+                //return nodeLogic.OldValue!=null;
+                return true;
             }
         }
 
@@ -443,7 +439,7 @@ namespace Dynamo.ViewModels
         {
             var f = (nodeLogic as Function);
             if(f!= null)
-                dynSettings.Controller.DynamoViewModel.ViewCustomNodeWorkspace(f.Definition);
+                dynSettings.Controller.DynamoViewModel.FocusCustomNodeWorkspace(f.Definition);
         }
 
         private bool CanViewCustomNodeWorkspace(object parameter)

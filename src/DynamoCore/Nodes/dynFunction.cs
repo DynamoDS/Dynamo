@@ -21,11 +21,11 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
+using String = System.String;
 
-namespace Dynamo
+namespace Dynamo.Nodes
 {
-    namespace Nodes
-    {
+
         [NodeDescription("A node with customized internal functionality.")]
         [IsInteractive(false)]
         public partial class Function : NodeWithOneOutput
@@ -53,20 +53,20 @@ namespace Dynamo
 
             public new string Name 
             {
-                get { return this.Definition.Workspace.Name; }
+                get { return this.Definition.WorkspaceModel.Name; }
                 set
                 {
-                    this.Definition.Workspace.Name = value;
+                    this.Definition.WorkspaceModel.Name = value;
                     this.RaisePropertyChanged("Name");
                 }
             }
 
             public override string Description
             {
-                get { return this.Definition.Workspace.Description; }
+                get { return this.Definition.WorkspaceModel.Description; }
                 set
                 {
-                    this.Definition.Workspace.Description = value;
+                    this.Definition.WorkspaceModel.Description = value;
                     this.RaisePropertyChanged("Description");
                 }
             }
@@ -77,8 +77,9 @@ namespace Dynamo
                 get
                 {
 
-                    if (dynSettings.Controller.CustomNodeManager.NodeCategories.ContainsKey(this.Definition.FunctionId))
-                        return dynSettings.Controller.CustomNodeManager.NodeCategories[this.Definition.FunctionId];
+                    if (dynSettings.Controller.CustomNodeManager.NodeInfos.ContainsKey(this.Definition.FunctionId))
+                        return
+                            dynSettings.Controller.CustomNodeManager.NodeInfos[this.Definition.FunctionId].Description;
                     else
                     {
                         return BuiltinNodeCategories.SCRIPTING_CUSTOMNODES;
@@ -247,6 +248,7 @@ namespace Dynamo
                         Guid funcId;
                         if (!VerifySymbol(out funcId))
                         {
+
                             LoadProxyCustomNode(funcId);
                             return;
                         }
@@ -463,11 +465,11 @@ namespace Dynamo
             {
                 var proxyDef = new FunctionDefinition(funcId)
                 {
-                    Workspace =
-                        new FuncWorkspace(
+                    WorkspaceModel =
+                        new CustomNodeWorkspaceModel(
                             NickName, BuiltinNodeCategories.SCRIPTING_CUSTOMNODES)
                         {
-                            FilePath = null
+                            FileName = null
                         }
                 };
 
@@ -510,7 +512,7 @@ namespace Dynamo
 
         [NodeName("Input")]
         [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
-        [NodeDescription("A function parameter")]
+        [NodeDescription("A function parameter, use with custom nodes")]
         [NodeSearchTags("variable", "argument", "parameter")]
         [IsInteractive(false)]
         public partial class Symbol : NodeModel
@@ -584,7 +586,7 @@ namespace Dynamo
 
         [NodeName("Output")]
         [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
-        [NodeDescription("A function output")]
+        [NodeDescription("A function output, use with custom nodes")]
         [IsInteractive(false)]
         public partial class Output : NodeModel
         {
@@ -671,67 +673,4 @@ namespace Dynamo
         //   }
         //}
         #endregion
-    }
-
-    public class FunctionDefinition
-    {
-        internal FunctionDefinition() : this(Guid.NewGuid()) { }
-
-        internal FunctionDefinition(Guid id)
-        {
-            FunctionId = id;
-            RequiresRecalc = true;
-        }
-
-        public Guid FunctionId { get; private set; }
-        public FuncWorkspace Workspace { get; internal set; }
-        public List<Tuple<int, NodeModel>> OutPortMappings { get; internal set; }
-        public List<Tuple<int, NodeModel>> InPortMappings { get; internal set; }
-
-        public bool RequiresRecalc { get; internal set; }
-
-        /// <summary>
-        /// A list of all dependencies with no duplicates
-        /// </summary>
-        public IEnumerable<FunctionDefinition> Dependencies
-        {
-            get
-            {
-                return findAllDependencies(new HashSet<FunctionDefinition>());
-            }
-        }
-
-        /// <summary>
-        /// A list of all direct dependencies without duplicates
-        /// </summary>
-        public IEnumerable<FunctionDefinition> DirectDependencies
-        {
-            get
-            {
-                return findDirectDependencies();
-            }
-        }
-
-        private IEnumerable<FunctionDefinition> findAllDependencies(HashSet<FunctionDefinition> dependencySet)
-        {
-            var query = DirectDependencies.Where(def => !dependencySet.Contains(def));
-
-            foreach (var definition in query)
-            {
-                yield return definition;
-                dependencySet.Add(definition);
-                foreach (var def in definition.findAllDependencies(dependencySet))
-                    yield return def;
-            }
-        }
-
-        private IEnumerable<FunctionDefinition> findDirectDependencies()
-        {
-            return Workspace.Nodes
-                            .OfType<Function>()
-                            .Select(node => node.Definition)
-                            .Where(def => def != this)
-                            .Distinct();
-        }
-    }
 }
