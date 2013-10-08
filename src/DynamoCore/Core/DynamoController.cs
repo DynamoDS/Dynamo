@@ -267,6 +267,8 @@ namespace Dynamo
 
         public virtual void ShutDown()
         {
+            VisualizationManager.ClearVisualizations();
+
             dynSettings.Controller.DynamoModel.OnCleanup(null);
             dynSettings.Controller = null;
             
@@ -520,7 +522,7 @@ namespace Dynamo
 
         public void RequestClearDrawables()
         {
-            VisualizationManager.ClearVisualizations();
+            VisualizationManager.ClearRenderables();
         }
 
         /// <summary>
@@ -639,28 +641,28 @@ namespace Dynamo
 
         void DrawPython(FScheme.Value val, string id)
         {
-            DrawContainers(val, id);
+            //DrawContainers(val, id);
         }
 
-        private void DrawContainers(FScheme.Value val, string id)
-        {
-            if (val.IsList)
-            {
-                foreach (FScheme.Value v in ((FScheme.Value.List)val).Item)
-                {
-                    DrawContainers(v, id);
-                }
-            }
-            if (val.IsContainer)
-            {
-                var drawable = ((FScheme.Value.Container)val).Item;
+        //private void DrawContainers(FScheme.Value val, string id)
+        //{
+        //    if (val.IsList)
+        //    {
+        //        foreach (FScheme.Value v in ((FScheme.Value.List)val).Item)
+        //        {
+        //            DrawContainers(v, id);
+        //        }
+        //    }
+        //    if (val.IsContainer)
+        //    {
+        //        var drawable = ((FScheme.Value.Container)val).Item;
 
-                if (drawable is GraphicItem)
-                {
-                    VisualizationManager.Visualizations[id].Geometry.Add(drawable);
-                }
-            }
-        }
+        //        if (drawable is GraphicItem)
+        //        {
+        //            VisualizationManager.Visualizations[id].Geometry.Add(drawable);
+        //        }
+        //    }
+        //}
     }
 
     public class CancelEvaluationException : Exception

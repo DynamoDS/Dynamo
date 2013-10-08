@@ -347,6 +347,7 @@ namespace Dynamo.Applications
             dynamoViewWidth = dynamoView.ActualWidth;
             dynamoViewHeight = dynamoView.ActualHeight;
             IdlePromise.ClearPromises();
+            IdlePromise.Shutdown();
         }
 
         /// <summary>

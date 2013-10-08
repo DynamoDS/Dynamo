@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using Dynamo;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
@@ -750,10 +751,8 @@ namespace DynamoRevitTests
             model.Open(testPath);
             dynSettings.Controller.RunExpression(true);
 
-            var blendNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is CreateBlendGeometry).First();
-            //SolidBase nodeAsSolidBase = (SolidBase)blendNode;
-            //Solid result = nodeAsSolidBase.resultingSolidForTestRun().First();
-            var result = (Solid)dynSettings.Controller.VisualizationManager.Visualizations[blendNode.GUID.ToString()].Geometry.First();
+            var blendNode = dynSettings.Controller.DynamoModel.Nodes.First(x => x is CreateBlendGeometry);
+            var result = (Solid)VisualizationManager.GetDrawablesFromNode(blendNode).First();
             double volumeMin = 3700000.0;
             double volumeMax = 3900000.0;
             double actualVolume = result.Volume;
@@ -772,10 +771,8 @@ namespace DynamoRevitTests
             model.Open(testPath);
             dynSettings.Controller.RunExpression(true);
 
-            var revolveNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is CreateRevolvedGeometry).First();
-            //SolidBase nodeAsSolidBase = (SolidBase)revolveNode;
-            //Solid result = nodeAsSolidBase.resultingSolidForTestRun().First();
-            var result = (Solid)dynSettings.Controller.VisualizationManager.Visualizations[revolveNode.GUID.ToString()].Geometry.First();
+            var revolveNode = dynSettings.Controller.DynamoModel.Nodes.First(x => x is CreateRevolvedGeometry);
+            var result = (Solid) VisualizationManager.GetDrawablesFromNode(revolveNode).First();
             double volumeMin = 13300.0;
             double volumeMax = 13550.0;
             double actualVolume = result.Volume;
@@ -794,10 +791,8 @@ namespace DynamoRevitTests
             model.Open(testPath);
             dynSettings.Controller.RunExpression(true);
 
-            var sweepNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is CreateSweptGeometry).First();
-            //SolidBase nodeAsSolidBase = (SolidBase)sweepNode;
-            //Solid result = nodeAsSolidBase.resultingSolidForTestRun().First();
-            var result = (Solid)dynSettings.Controller.VisualizationManager.Visualizations[sweepNode.GUID.ToString()].Geometry.First();
+            var sweepNode = dynSettings.Controller.DynamoModel.Nodes.First(x => x is CreateSweptGeometry);
+            var result = (Solid) VisualizationManager.GetDrawablesFromNode(sweepNode).First();
             double volumeMin = 11800.0;
             double volumeMax = 12150.0;
             double actualVolume = result.Volume;
@@ -819,10 +814,8 @@ namespace DynamoRevitTests
                  model.Open(testPath);
                  dynSettings.Controller.RunExpression(true);
 
-                 var skeletonNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is SkinCurveLoops).First();
-                 //SolidBase nodeAsSolidBase = (SolidBase)skeletonNode;
-                 //Solid result = nodeAsSolidBase.resultingSolidForTestRun().First();
-                 var result = (Solid)dynSettings.Controller.VisualizationManager.Visualizations[skeletonNode.GUID.ToString()].Geometry.First();
+                 var skeletonNode = dynSettings.Controller.DynamoModel.Nodes.First(x => x is SkinCurveLoops);
+                 var result = (Solid)VisualizationManager.GetDrawablesFromNode(skeletonNode).First();
                  double volumeMin = 82500.0;
                  double volumeMax = 84500.0;
                  double actualVolume = result.Volume;
@@ -842,10 +835,9 @@ namespace DynamoRevitTests
             model.Open(testPath);
             dynSettings.Controller.RunExpression(true);
 
-            var extrudeNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is CreateExtrusionGeometry).First();
-            //SolidBase nodeAsSolidBase = (SolidBase)extrudeNode;
-            //Solid result = nodeAsSolidBase.resultingSolidForTestRun().First();
-            var result = (Solid)dynSettings.Controller.VisualizationManager.Visualizations[extrudeNode.GUID.ToString()].Geometry.First();
+            var extrudeNode = dynSettings.Controller.DynamoModel.Nodes.First(x => x is CreateExtrusionGeometry);
+
+            var result = (Solid)VisualizationManager.GetDrawablesFromNode(extrudeNode).First();
             double volumeMin = 3850;
             double volumeMax = 4050;
             double actualVolume = result.Volume;
@@ -869,7 +861,7 @@ namespace DynamoRevitTests
 
             //the .dyn has the slider set at 5. let's make sure that
             //if you set the slider to something else before running, that it get the correct number
-            var slider = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is DoubleSliderInput).First();
+            var slider = dynSettings.Controller.DynamoModel.Nodes.First(x => x is DoubleSliderInput);
             ((BasicInteractive<double>)slider).Value = 1;
 
             dynSettings.Controller.RunExpression(true);
@@ -941,7 +933,7 @@ namespace DynamoRevitTests
 
             model.Open(testPath);
 
-            var xyzNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is Xyz).First();
+            var xyzNode = dynSettings.Controller.DynamoModel.Nodes.First(x => x is Xyz);
             Assert.IsNotNull(xyzNode);
 
             //test the first lacing

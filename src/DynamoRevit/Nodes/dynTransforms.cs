@@ -21,8 +21,6 @@ namespace Dynamo.Nodes
         {
             Transform t = Transform.Identity;
 
-            VisualizationGeometry.Add(t);
-
             return Value.NewContainer(t);
         }
     }
@@ -54,8 +52,6 @@ namespace Dynamo.Nodes
             t.BasisY = forward.Normalize();
             t.BasisX = forward.CrossProduct(up).Normalize();
 
-            VisualizationGeometry.Add(t);
-
             return Value.NewContainer(
                t
             );
@@ -82,8 +78,6 @@ namespace Dynamo.Nodes
             var scale = ((Value.Number)args[1]).Item;
 
             Transform t = transform.ScaleBasis(scale);
-
-            VisualizationGeometry.Add(t);
 
             return Value.NewContainer(t);
         }
@@ -112,8 +106,6 @@ namespace Dynamo.Nodes
 
             Transform t = Transform.get_Rotation(origin, axis, angle);
 
-            VisualizationGeometry.Add(t);
-
             return Value.NewContainer(t);
         }
     }
@@ -137,8 +129,6 @@ namespace Dynamo.Nodes
 
             Transform t = Transform.get_Translation(vector);
 
-            VisualizationGeometry.Add(t);
-
             return Value.NewContainer(t);
         }
     }
@@ -161,8 +151,6 @@ namespace Dynamo.Nodes
             var plane = (Autodesk.Revit.DB.Plane)((Value.Container)args[0]).Item;
 
             Transform t = Transform.get_Reflection(plane);
-
-            VisualizationGeometry.Add(t);
 
             return Value.NewContainer(t);
         }
@@ -188,8 +176,6 @@ namespace Dynamo.Nodes
             var pt = (XYZ)((Value.Container)args[1]).Item;
 
             XYZ tpt = GetPointTransformed(pt, t);
-
-            VisualizationGeometry.Add(tpt);
 
             return Value.NewContainer(tpt);
         }
@@ -237,8 +223,6 @@ namespace Dynamo.Nodes
             var t2 = (Transform)((Value.Container)args[1]).Item;
 
             Transform t = t1.Multiply(t2);
-
-            VisualizationGeometry.Add(t);
 
             return Value.NewContainer(t);
         }

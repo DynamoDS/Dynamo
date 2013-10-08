@@ -332,6 +332,9 @@ namespace Dynamo.ViewModels
 
                 if (!fullscreenWatchShowing && canNavigateBackground)
                     CanNavigateBackground = false;
+
+                if(value)
+                    dynSettings.Controller.OnRequestsRedraw(this, EventArgs.Empty);
             }
         }
 

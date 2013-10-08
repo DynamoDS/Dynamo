@@ -85,11 +85,6 @@ namespace Dynamo.Nodes
                 return Value.NewList(result);
             }
 
-            foreach (var l in _tessellationLines)
-            {
-                VisualizationGeometry.Add(l);
-            }
-
             return Value.NewList(result);
         }
     }
@@ -182,11 +177,6 @@ namespace Dynamo.Nodes
                 }
 
                 return Value.NewList(result);
-            }
-
-            foreach (var l in _tessellationLines)
-            {
-                VisualizationGeometry.Add(l);
             }
 
             return Value.NewList(result);
@@ -363,16 +353,6 @@ namespace Dynamo.Nodes
                 return Value.NewList(result);
             }
 
-            foreach (var l in _tessellationLines)
-            {
-                VisualizationGeometry.Add(l);
-            }
-
-            foreach (var f in _triangleFaces)
-            {
-                VisualizationGeometry.Add(f);
-            }
-
             return Value.NewList(result);
         }
     }
@@ -446,11 +426,6 @@ namespace Dynamo.Nodes
                 }
 
                 return Value.NewList(result);
-            }
-
-            foreach (var l in _tessellationLines)
-            {
-                VisualizationGeometry.Add(l);
             }
 
             return Value.NewList(result);
