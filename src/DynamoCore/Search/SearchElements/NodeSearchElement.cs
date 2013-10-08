@@ -114,7 +114,7 @@ namespace Dynamo.Search.SearchElements
 
         public virtual NodeSearchElement Copy()
         {
-            return (NodeSearchElement) this.MemberwiseClone();
+            return new NodeSearchElement(this.Name, this.Description, new List<string>());
         }
 
         private void ToggleIsVisible(object parameter)
