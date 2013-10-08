@@ -435,12 +435,13 @@ namespace Dynamo.Models
             {
                 this.Workspaces.Add(ws);
             }
-
             
             var vm = dynSettings.Controller.DynamoViewModel.Workspaces.First(x => x.Model == ws);
             vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(workspaceHeader.X, workspaceHeader.Y)));
 
             this.CurrentWorkspace = ws;
+
+
         }   
         
         internal bool OpenDefinition( string xmlPath )
@@ -526,42 +527,6 @@ namespace Dynamo.Models
             CurrentWorkspace.OnDisplayed();
         }
 
-        /// <summary>
-        ///     Create a node from a type object in a given workspace.
-        /// </summary>
-        /// <param name="elementType"> The Type object from which the node can be activated </param>
-        /// <param name="nickName"> A nickname for the node.  If null, the nickName is loaded from the NodeNameAttribute of the node </param>
-        /// <param name="guid"> The unique identifier for the node in the workspace. </param>
-        /// <param name="x"> The x coordinate where the dynNodeView will be placed </param>
-        /// <param name="y"> The x coordinate where the dynNodeView will be placed</param>
-        /// <returns> The newly instantiate dynNode</returns>
-        //public NodeModel CreateInstanceAndAddNodeToWorkspace(Type elementType, string nickName, Guid guid,
-        //    double x, double y, WorkspaceModel ws, bool isVisible = true, bool isUpstreamVisible = true)    //Visibility vis = Visibility.Visible)
-        //{
-        //    try
-        //    {
-        //        NodeModel node = CreateNodeInstance(elementType, nickName, guid);
-
-        //        ws.Nodes.Add(node);
-        //        node.WorkSpace = ws;
-
-        //        node.X = x;
-        //        node.Y = y;
-
-        //        node.IsVisible = isVisible;
-        //        node.IsUpstreamVisible = isUpstreamVisible;
-
-        //        OnNodeAdded(node);
-
-        //        return node;
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        DynamoLogger.Instance.Log("Could not create an instance of the selected type: " + elementType);
-        //        DynamoLogger.Instance.Log(e);
-        //        return null;
-        //    }
-        //}
 
         /// <summary>
         ///     Create a build-in node from a type object in a given workspace.

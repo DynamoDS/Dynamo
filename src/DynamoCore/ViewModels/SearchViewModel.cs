@@ -231,6 +231,23 @@ namespace Dynamo.ViewModels
             _SearchText = "";
             IncludeRevitAPIElements = false; // revit api
 
+            dynSettings.Controller.DynamoModel.PropertyChanged += (e, args) =>
+                {
+                    if (args.PropertyName == "CurrentWorkspace" && dynSettings.Controller.DynamoModel.CurrentWorkspace != null)
+                    {
+                        var visibleWorkspace =
+                            (dynSettings.Controller.DynamoModel.CurrentWorkspace is CustomNodeWorkspaceModel);
+
+                        this._browserLeaves
+                            .Where(x => x.Name == "Input" || x.Name == "Output")
+                            .OfType<NodeSearchElement>()
+                            .ToList()
+                            .ForEach(x => x.SetSearchable(visibleWorkspace));
+
+                        this.SearchAndUpdateResultsSync();
+                    }
+                };
+
             //Regions = new ObservableDictionary<string, RegionBase<object>>();
             ////Regions.Add("Include Nodes from Package Manager", DynamoCommands.PackageManagerRegionCommand );
             //var region = new RevitAPIRegion<object>(RevitAPIRegionExecute, RevitAPIRegionCanExecute);
