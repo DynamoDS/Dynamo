@@ -420,8 +420,6 @@ namespace Dynamo.Nodes
                 :  
                 (thisEdge == null ? null : thisEdge.Evaluate(parameter));
 
-            VisualizationGeometry.Add(result);
-
             return Value.NewContainer(result);
         }
     }
@@ -467,8 +465,6 @@ namespace Dynamo.Nodes
                 (!XyzOnCurveOrEdge.curveIsReallyUnbound(thisCurve) ? thisCurve.ComputeDerivatives(parameter, true) : thisCurve.ComputeDerivatives(parameter, false))
                 : 
                 (thisEdge == null ? null : thisEdge.ComputeDerivatives(parameter));
-
-            VisualizationGeometry.Add(result);
 
             return Value.NewContainer(result);
         }

@@ -640,9 +640,7 @@ namespace Dynamo.Models
             CleanWorkbench();
 
             //clear the renderables
-            //dynSettings.Controller.RenderDescriptions.Clear();
-            //dynSettings.Controller.OnRequestsRedraw(dynSettings.Controller, EventArgs.Empty);
-            dynSettings.Controller.VisualizationManager.ClearVisualizations();
+            dynSettings.Controller.VisualizationManager.ClearRenderables();
 
             var sw = new Stopwatch();
 
@@ -781,8 +779,8 @@ namespace Dynamo.Models
                     el.X = x;
                     el.Y = y;
 
-                    el.IsVisible = isVisible;
-                    el.IsUpstreamVisible = isUpstreamVisible;
+                    el.isVisible = isVisible;
+                    el.isUpstreamVisible = isUpstreamVisible;
 
                     if (lacingAttrib != null)
                     {
@@ -1371,7 +1369,7 @@ namespace Dynamo.Models
 
             if ((node is Symbol || node is Output) && CurrentWorkspace is HomeWorkspace)
             {
-                dynSettings.Controller.DynamoModel.WriteToLog("Cannot place dynSymbol or dynOutput in HomeWorkspace");
+                dynSettings.Controller.DynamoModel.WriteToLog("Cannot place Symbol or Output in HomeWorkspace");
                 return null;
             }
 
@@ -1838,7 +1836,7 @@ namespace Dynamo.Models
 
             if (parameters == null)
             {
-                ModelEventArgs args = new ModelEventArgs(n, x, y, true);
+                ModelEventArgs args = new ModelEventArgs(n, true);
                 DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
                 vm.CurrentSpaceViewModel.OnRequestNodeCentered(this, args);
             }
