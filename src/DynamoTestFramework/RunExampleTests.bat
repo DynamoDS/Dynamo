@@ -1,4 +1,0 @@
-python RunRevitTests.py -n TestOne -a C:\Users\Ian\Documents\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoTestFramework.dll -m empty.rfa -o TestResults.xml -f TestExamples -g 487f9ff0-5b34-4e7e-97bf-70fbff69194f -p Dynamo.Tests.DynamoTestFramework
-python RunRevitTests.py -n TestTwo -a C:\Users\Ian\Documents\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoTestFramework.dll -m empty.rfa -o TestResults.xml -f TestExamples -g 487f9ff0-5b34-4e7e-97bf-70fbff69194f -p Dynamo.Tests.DynamoTestFramework
-python RunRevitTests.py -n TestThree -a C:\Users\Ian\Documents\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoTestFramework.dll -m empty.rfa -o TestResults.xml -f TestExamples -g 487f9ff0-5b34-4e7e-97bf-70fbff69194f -p Dynamo.Tests.DynamoTestFramework
-python RunRevitTests.py -a C:\Users\Ian\Documents\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoTestFramework.dll -m empty.rfa -o TestResults.xml -f TestExampleFixture -g 487f9ff0-5b34-4e7e-97bf-70fbff69194f -p Dynamo.Tests.DynamoTestFramework

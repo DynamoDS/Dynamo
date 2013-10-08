@@ -18,7 +18,6 @@ def main():
 	parser.add_argument('-a','--assembly', help='Path of the assembly containing tests.', required=True)
 	parser.add_argument('-o','--output', help='Output location of the results file.', required=True)
 	parser.add_argument('-m','--model', help='Path of the model file for open.', required=True)
-	parser.add_argument('-t','--template', help='Path to journal file template.', required=False)
 	parser.add_argument('-g','--GUID', help='The GUID of the plugin to load.', required=True)
 	parser.add_argument('-p','--plugin', help='The name (including namespace) of the class containing the external command.', required=True)
 	args = vars(parser.parse_args())
@@ -26,7 +25,7 @@ def main():
 	start_time = time.time()
 
 	#Generate a temporary journal file
-	journal = generate_journal_file(args['name'], args['fixture'], args['assembly'], args['output'], args['model'], args['template'], args['GUID'], args['plugin']);
+	journal = generate_journal_file(args['name'], args['fixture'], args['assembly'], args['output'], args['model'], args['GUID'], args['plugin']);
 
 	#Run Revit passing the journal file as a parameter
 	print 'running ' + journal
@@ -34,6 +33,11 @@ def main():
 
 	#Cleanup temporary journal file
  	os.remove(journal)
+
+ 	#cleanup other journal files created by Revit
+	journals = glob.glob("journal.*.txt")
+	for journal in journals:
+		os.remove(journal)
 
 	sys.exit(0)
 
@@ -52,17 +56,15 @@ def run_cmd( args, printOutput = True, cwd = None ):
 		
 	return out
 
-def generate_journal_file(testName, fixtureName, testAssembly, resultsPath, modelName, templatePath, pluginGUID, pluginClass):
+def generate_journal_file(testName, fixtureName, testAssembly, resultsPath, modelName, pluginGUID, pluginClass):
 	
 	currPath = os.getcwd()
 
-	# change into the template path and 
+	scriptPath = os.path.dirname(os.path.realpath(__file__))
+	os.chdir(scriptPath)
+
 	# read the template file
-	if templatePath is not None:
-		template = templatePath
-	else:
-		os.chdir(os.path.abspath("./templates"))
-		template = glob.glob("ModelTemplate.txt")[0]
+	template = glob.glob("JournalTemplate.txt")[0]
 
 	s =''
 	with open(template, 'r') as templateFile:
