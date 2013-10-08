@@ -151,10 +151,22 @@ namespace Dynamo
                 geoms.AddRange(ps.Springs.Select(spring => Line.CreateBound(spring.getOneEnd().getPosition(), spring.getTheOtherEnd().getPosition())).Cast<GeometryObject>());
             }
 
+            //draw xyzs as Point objects
             var pt = ((FScheme.Value.Container)value).Item as XYZ;
             if (pt != null)
             {
-                geoms.AddRange(ps.Springs.Select(spring => Line.CreateBound(spring.getOneEnd().getPosition(), spring.getTheOtherEnd().getPosition())).Cast<GeometryObject>());
+                Type pointType = typeof(Point);
+                MethodInfo[] pointTypeMethods = pointType.GetMethods(BindingFlags.Static | BindingFlags.Public);
+                var method = pointTypeMethods.FirstOrDefault(x => x.Name == "CreatePoint");
+
+                if (method != null)
+                {
+                    var args = new object[3];
+                    args[0] = pt.X;
+                    args[1] = pt.Y;
+                    args[2] = pt.Z;
+                    geoms.Add((Point)method.Invoke(null, args));
+                }
             }
 
             return geoms;

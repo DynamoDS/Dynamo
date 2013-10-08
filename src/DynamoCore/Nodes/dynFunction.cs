@@ -512,7 +512,7 @@ namespace Dynamo.Nodes
 
         [NodeName("Input")]
         [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
-        [NodeDescription("A function parameter")]
+        [NodeDescription("A function parameter, use with custom nodes")]
         [NodeSearchTags("variable", "argument", "parameter")]
         [IsInteractive(false)]
         public partial class Symbol : NodeModel
@@ -586,7 +586,7 @@ namespace Dynamo.Nodes
 
         [NodeName("Output")]
         [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
-        [NodeDescription("A function output")]
+        [NodeDescription("A function output, use with custom nodes")]
         [IsInteractive(false)]
         public partial class Output : NodeModel
         {

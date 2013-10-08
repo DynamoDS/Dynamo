@@ -11,7 +11,6 @@ using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Dynamo.NUnit.Tests;
-using Dynamo.Tests;
 using NUnit.Core;
 using NUnit.Core.Filters;
 

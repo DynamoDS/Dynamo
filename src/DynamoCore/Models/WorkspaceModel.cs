@@ -447,7 +447,7 @@ namespace Dynamo.Models
         {
             if (null == undoRecorder)
                 return;
-            if (null == models || (models.Count <= 0))
+            if (!ShouldProceedWithRecording(models))
                 return;
 
             undoRecorder.BeginActionGroup();
@@ -470,8 +470,8 @@ namespace Dynamo.Models
 
         internal void RecordCreatedModels(List<ModelBase> models)
         {
-            if (null == models || (models.Count <= 0))
-                return; // There's nothing for deletion.
+            if (!ShouldProceedWithRecording(models))
+                return; // There's nothing created.
 
             this.undoRecorder.BeginActionGroup();
             foreach (ModelBase model in models)
@@ -481,7 +481,7 @@ namespace Dynamo.Models
 
         internal void RecordAndDeleteModels(List<ModelBase> models)
         {
-            if (null == models || (models.Count <= 0))
+            if (!ShouldProceedWithRecording(models))
                 return; // There's nothing for deletion.
 
             // Gather a list of connectors first before the nodes they connect
@@ -532,6 +532,14 @@ namespace Dynamo.Models
             }
 
             this.undoRecorder.EndActionGroup(); // Conclude the deletion.
+        }
+
+        private static bool ShouldProceedWithRecording(List<ModelBase> models)
+        {
+            if (null != models)
+                models.RemoveAll((x) => (x == null));
+
+            return (null != models && (models.Count > 0));
         }
 
         #endregion
