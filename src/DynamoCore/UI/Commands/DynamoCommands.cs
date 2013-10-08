@@ -148,7 +148,8 @@ namespace Dynamo.ViewModels
 
         internal void CreateNodeImpl(CreateNodeCommand command)
         {
-            this.Model.CreateNodeInternal(command, null);
+            NodeModel nodeModel = Model.CreateNodeInternal(command, null);
+            CurrentSpace.RecordCreatedModel(nodeModel);
         }
 
         #endregion
