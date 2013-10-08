@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
+using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
@@ -483,6 +484,24 @@ namespace Dynamo.ViewModels
 
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
             dynSettings.Controller.VisualizationManager.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(VisualizationManager_PropertyChanged);
+
+            this.Model.PropertyChanged += (e, args) =>
+            {
+                if (args.PropertyName == "CurrentWorkspace" && dynSettings.Controller.DynamoModel.CurrentWorkspace != null)
+                {
+                    var visibleWorkspace =
+                        (dynSettings.Controller.DynamoModel.CurrentWorkspace is CustomNodeWorkspaceModel);
+
+                    dynSettings.Controller.SearchViewModel.SearchElements
+                        .Where(x => x.Name == "Input" || x.Name == "Output")
+                        .OfType<NodeSearchElement>()
+                        .ToList()
+                        .ForEach(x => x.SetSearchable(visibleWorkspace));
+
+                    dynSettings.Controller.SearchViewModel.SearchAndUpdateResultsSync();
+                }
+            };
+        
         }
 
         void VisualizationManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
