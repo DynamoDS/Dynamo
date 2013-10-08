@@ -22,15 +22,13 @@
     <Grid Name="mainGrid" Margin="0,0,0,2" Width="{Binding Path=PortName, Converter={StaticResource PortNameToWidthConverter}}">
         <Grid Name="portGrid">
             
-            <Grid.ToolTip>
+            <!--<Grid.ToolTip>
                 <Grid Width ="Auto" MaxWidth="235" MaxHeight="200" Height="Auto">
                     <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
                         <TextBlock Name="toolTipText" FontSize="11" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="2" TextWrapping="Wrap"
                                    Text="{Binding Path=ToolTipContent, Converter={StaticResource TooltipLengthTruncater}}"
                                    Visibility="{Binding Path=ToolTipContent, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
-
-                        <!-- Default value -->
 
                         <TextBlock Name="tt_defaultValueName" 
                            VerticalAlignment="Top" Text="Default Value" FontSize="11" FontWeight="Bold" Margin="2, 7, 2, 2" 
@@ -40,7 +38,7 @@
                            Visibility="{Binding Path=DefaultValueTip, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
                     </StackPanel>
                 </Grid>
-            </Grid.ToolTip>
+            </Grid.ToolTip>-->
 
             <Grid.ContextMenu>
                 <ContextMenu>
