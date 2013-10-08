@@ -18,6 +18,7 @@ namespace Dynamo.ViewModels
     public delegate void NoteEventHandler(object sender, EventArgs e);
     public delegate void ViewEventHandler(object sender, EventArgs e);
     public delegate void ZoomEventHandler(object sender, EventArgs e);
+    public delegate void SelectionEventHandler(object sender, SelectionBoxUpdateArgs e);
     public delegate void ViewModelAdditionEventHandler(object sender, ViewModelEventArgs e);
     public delegate void WorkspacePropertyEditHandler(WorkspaceModel workspace );
 
@@ -26,10 +27,8 @@ namespace Dynamo.ViewModels
         #region Properties and Fields
 
         public WorkspaceModel _model;
-        private bool _isConnecting = false;
         private bool _canFindNodesFromElements = false;
 
-        public event EventHandler StopDragging;
         public event PointEventHandler CurrentOffsetChanged;
         public event ZoomEventHandler ZoomChanged;
         public event ZoomEventHandler RequestZoomToViewportCenter;
@@ -38,6 +37,7 @@ namespace Dynamo.ViewModels
         public event NodeEventHandler RequestCenterViewOnElement;
         public event NodeEventHandler RequestNodeCentered;
         public event ViewEventHandler RequestAddViewToOuterCanvas;
+        public event SelectionEventHandler RequestSelectionBoxUpdate;
         public event WorkspacePropertyEditHandler WorkspacePropertyEditRequested;
 
         /// <summary>
@@ -112,12 +112,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public virtual void OnStopDragging(object sender, EventArgs e)
-        {
-            if (StopDragging != null)
-                StopDragging(this, e);
-        }
-        
         public virtual void OnRequestCenterViewOnElement(object sender, ModelEventArgs e)
         {
             if (RequestCenterViewOnElement != null)
@@ -134,6 +128,12 @@ namespace Dynamo.ViewModels
         {
             if (RequestAddViewToOuterCanvas != null)
                 RequestAddViewToOuterCanvas(this, e);
+        }
+
+        public virtual void OnRequestSelectionBoxUpdate(object sender, SelectionBoxUpdateArgs e)
+        {
+            if (RequestSelectionBoxUpdate != null)
+                RequestSelectionBoxUpdate(this, e);
         }
 
         public virtual void OnWorkspacePropertyEditRequested()
@@ -202,6 +202,7 @@ namespace Dynamo.ViewModels
             get { return _model.FilePath; }
         }
 
+#if false // TODO(Ben): Remove this after StateMachine has been fully tested.
         private ConnectorViewModel activeConnector;
         public ConnectorViewModel ActiveConnector
         {
@@ -231,17 +232,20 @@ namespace Dynamo.ViewModels
         //        return false;
         //    }
         //}
+#endif
 
         public bool CanEditName
         {
             get { return _model != dynSettings.Controller.DynamoViewModel.Model.HomeSpace; }
         }
 
+#if false // TODO(Ben): Remove this after StateMachine has been fully tested.
         public bool IsConnecting
         {
             get { return _isConnecting; }
             set { _isConnecting = value; }
         }
+#endif
 
         public bool IsCurrentSpace
         {
@@ -295,6 +299,7 @@ namespace Dynamo.ViewModels
         public WorkspaceViewModel(WorkspaceModel model, DynamoViewModel vm)
         {
             _model = model;
+            stateMachine = new StateMachine(this);
 
             //setup the composite collection
             var nodesColl = new CollectionContainer { Collection = Nodes };

@@ -70,7 +70,7 @@ namespace Dynamo.Tests.UI
 
             //ensure that visulations match our expectations
             int pointCount, lineCount, meshCount, xCount, yCount, zCount;
-            viz.GetVisualizationCounts(
+            viz.GetRenderableCounts(
                 out pointCount, out lineCount, out meshCount, out xCount, out yCount, out zCount);
             
             Assert.AreEqual(7, pointCount);
