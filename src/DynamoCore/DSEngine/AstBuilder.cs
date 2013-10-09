@@ -15,6 +15,7 @@ using ProtoCore.DSASM;
 using ProtoCore.DSASM.Mirror;
 using ProtoCore.Exceptions;
 using ProtoCore.Lang;
+using ProtoCore.Mirror;
 using ProtoCore.Utils;
 using ProtoFFI;
 using ProtoScript.Runners;
@@ -127,15 +128,27 @@ namespace Dynamo.DSEngine
             public const string kVarPrefix = @"var_";
         }
 
+        internal enum NodeState
+        {
+            NoChange,
+            Added,
+            Modified,
+            Deleted
+        }
+
         public static AstBuilder Instance = new AstBuilder();
         private LinkedListOfList<Guid, AssociativeNode> astNodes;
+        private Dictionary<Guid, NodeState> nodeStates;
+        private ILiveRunner liveRunner;
 
         private AstBuilder()
         {
             astNodes = new LinkedListOfList<Guid, AssociativeNode>();
+            liveRunner = new ProtoScript.Runners.LiveRunner();
+            nodeStates = new Dictionary<Guid, NodeState>();
         }
 
-        public void AddNode(Guid dynamoNodeId, AssociativeNode astNode)
+        private void AddNode(Guid dynamoNodeId, AssociativeNode astNode)
         {
             astNodes.AddItem(dynamoNodeId, astNode);
         }
@@ -145,35 +158,39 @@ namespace Dynamo.DSEngine
         /// </summary>
         /// <param name="dynamoNodeId"></param>
         /// <returns></returns>
-        public bool ContainsAstNodes(Guid dynamoNodeId)
+        private bool ContainsAstNodes(Guid dynamoNodeId)
         {
             return astNodes.Contains(dynamoNodeId);
         }
 
-        public void RemoveAstNodes(Guid dynamoNodeId)
+        private void RemoveAstNodes(Guid dynamoNodeId)
         {
             astNodes.Removes(dynamoNodeId); 
         }
 
-        public void ClearAstNodes(Guid dynamoNodeId)
+        private void ClearAstNodes(Guid dynamoNodeId)
         {
             astNodes.Clears(dynamoNodeId);
         }
 
-#if DEBUG
-        /// <summary>
-        /// Dump DesignScript code from AST nodes, just for testing
-        /// </summary>
-        /// <returns></returns>
-        public string DumpCode()
+        private List<Subtree> GetSubtreesForState(NodeState state)
         {
-            List<AssociativeNode> allAstNodes = new List<AssociativeNode>();
-            foreach (var item in astNodes)
+            List<Subtree> subtrees = new List<Subtree>();
+            List<Guid> addedGuids = nodeStates.Where(x => x.Value == state).Select(x => x.Key).ToList();
+            foreach (var guid in addedGuids)
             {
-                allAstNodes.AddRange(item);
+                var nodes = astNodes.GetItems(guid);
+                Subtree tree = new Subtree(nodes);
+                tree.GUID = guid;
+                subtrees.Add(tree);
             }
-            ProtoCore.CodeGenDS codegen = new ProtoCore.CodeGenDS(allAstNodes);
-            return codegen.GenerateCode();
+
+            return subtrees;
+        }
+
+        private void FinishExecution(List<Subtree> added, List<Subtree> modifed, List<Subtree> deleted)
+        {
+
         }
 
         /// <summary>
@@ -181,35 +198,33 @@ namespace Dynamo.DSEngine
         /// </summary>
         public void Execute()
         {
-            ProtoScriptTestRunner runner = new ProtoScriptTestRunner();
-            ProtoCore.Core core = new ProtoCore.Core(new ProtoCore.Options());
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
-            core.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
-            core.Options.Verbose = true;
-            core.RuntimeStatus.MessageHandler = new ConsoleOutputStream();
-            DLLFFIHandler.Register(FFILanguage.CPlusPlus, new ProtoFFI.PInvokeModuleHelper());
-            DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
-            CLRModuleType.ClearTypes();
-
+            DynamoLogger logger = DynamoLogger.Instance;
+#if DEBUG
             List<AssociativeNode> allAstNodes = new List<AssociativeNode>();
             foreach (var item in astNodes)
             {
                 allAstNodes.AddRange(item);
             }
+            ProtoCore.CodeGenDS codegen = new ProtoCore.CodeGenDS(allAstNodes);
+            string code = codegen.GenerateCode();
+            logger.Log(code);
+#endif
 
-            DynamoLogger logger = DynamoLogger.Instance;
+            var added = GetSubtreesForState(NodeState.Added);
+            var modified = GetSubtreesForState(NodeState.Modified);
+            var deleted = GetSubtreesForState(NodeState.Deleted);
+            GraphSyncData syncData = new GraphSyncData(deleted, added, modified);
+
             try
             {
-                logger.Log(DumpCode());
+                liveRunner.UpdateGraph(syncData);
 
-                ExecutionMirror mirror = runner.Execute(allAstNodes, core);
                 List<Guid> keys = astNodes.GetKeys();
                 foreach (var guid in keys)
                 {
                     string varname = StringConstants.kVarPrefix + guid.ToString().Replace("-", string.Empty);
-                    Obj o = mirror.GetValue(varname);
-                    string value = mirror.GetStringValue(o.DsasmValue, core.Heap, 0, true);
+                    RuntimeMirror mirror = liveRunner.InspectNodeValue(varname);
+                    string value = mirror.GetStringData();
                     logger.Log(varname + "=" + value);
                 }
             }
@@ -218,7 +233,6 @@ namespace Dynamo.DSEngine
                 logger.Log(e.Message);
             }
         }
-#endif
 
         #region IAstBuilder interface
         public AssociativeNode Build(NodeModel node, List<AssociativeNode> inputs)
@@ -318,6 +332,16 @@ namespace Dynamo.DSEngine
 
         public void BuildEvaluation(NodeModel node, AssociativeNode rhs, bool isPartial = false)
         {
+            if (nodeStates.ContainsKey(node.GUID))
+            {
+                nodeStates[node.GUID] = NodeState.Modified;
+                ClearAstNodes(node.GUID);
+            }
+            else
+            {
+                nodeStates[node.GUID] = NodeState.Added;
+            }
+
             // If it is a partially applied function, need to create a function 
             // definition and function pointer.
             if (isPartial && rhs is FunctionCallNode)

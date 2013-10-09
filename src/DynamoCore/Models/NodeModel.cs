@@ -803,8 +803,6 @@ namespace Dynamo.Models
                 return this.AstIdentifier; 
             }
 
-            builder.ClearAstNodes(GUID);
-
             // Recursively compile its inputs to ast nodes and add intermediate
             // nodes to builder
             List<AssociativeNode> inputAstNodes = new List<AssociativeNode>();
