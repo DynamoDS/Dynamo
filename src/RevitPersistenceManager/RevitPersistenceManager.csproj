@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{1B8062D6-941C-4FF5-96FF-F1D6E0D92588}</ProjectGuid>
+    <ProjectGuid>{9D0B8EC8-DCDE-4FFA-BCF3-8592F835D316}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DSNodeServicesTest</RootNamespace>
-    <AssemblyName>DSNodeServicesTest</AssemblyName>
+    <RootNamespace>RevitPersistenceManager</RootNamespace>
+    <AssemblyName>RevitPersistenceManager</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,9 +31,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\AnyCPU\Debug\nunit.framework.dll</HintPath>
+    <Reference Include="RevitAPI">
+      <HintPath>C:\RevitAPIs\RevitAPI.dll</HintPath>
+    </Reference>
+    <Reference Include="RevitAPIUI">
+      <HintPath>C:\RevitAPIs\RevitAPIUI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -44,14 +46,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Class1.cs" />
+    <Compile Include="Documentmanager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TraceUtilsTest.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DSNodeServices\DSNodeServices.csproj">
-      <Project>{EF879A10-041D-4C68-83E7-3192685F1BAE}</Project>
-      <Name>DSNodeServices</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
