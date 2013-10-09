@@ -617,6 +617,8 @@ namespace Dynamo
             return _trans != null;
         }
 
+        private TransactionManager.TransactionHandle _transaction;
+
         private TransactionMode _transMode;
         public TransactionMode TransMode
         {
@@ -635,7 +637,8 @@ namespace Dynamo
         {
             base.OnRunCancelled(error);
 
-            CancelTransaction();
+            if (_transaction != null && _transaction.Status == TransactionStatus.Started)
+                _transaction.CancelTransaction();
         }
 
         protected override void OnEvaluationCompleted(object sender, EventArgs e)
@@ -647,7 +650,9 @@ namespace Dynamo
             {
                 //TODO: perhaps this should occur inside of ResetRuns in the event that
                 //      there is nothing to be deleted?
-                InitTransaction(); //Initialize a transaction (if one hasn't been aleady)
+
+                //Initialize a transaction (if one hasn't been aleady)
+                _transaction = TransactionManager.StartTransaction(dynRevitSettings.Doc.Document);
 
                 //Reset all elements
                 var query = dynSettings.Controller.DynamoModel.AllNodes
@@ -660,7 +665,7 @@ namespace Dynamo
                 /* FOR NON-DEBUG RUNS, THIS IS THE ACTUAL END POINT FOR DYNAMO TRANSACTION */
                 //////
 
-                EndTransaction(); //Close global transaction.
+                _transaction.CommitTransaction(); //Close global transaction.
             };
 
             //If we're in a debug run or not already in the idle thread, then run the Cleanup Delegate
@@ -745,6 +750,21 @@ namespace Dynamo
                 //Execute the Run Delegate.
                 base.Run(topElements, runningExpression);
             }
+        }
+
+        public void InitTransaction()
+        {
+            TransactionManager.StartTransaction(dynRevitSettings.Doc.Document);
+        }
+
+        public void EndTransaction()
+        {
+            _transaction.CommitTransaction();
+        }
+
+        public void CancelTransaction()
+        {
+            _transaction.CancelTransaction();
         }
     }
 

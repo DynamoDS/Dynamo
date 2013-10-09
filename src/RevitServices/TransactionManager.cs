@@ -12,12 +12,14 @@ namespace RevitServices
     /// </summary>
     public class TransactionManager
     {
-        private Transaction _trans;
+        private Transaction Transaction { get; set; }
         private readonly WarningHandler _handler;
+        private readonly TransactionHandle _handle;
 
         public TransactionManager()
         {
             _handler = new WarningHandler(this);
+            _handle = new TransactionHandle(this);
         }
 
         /// <summary>
@@ -72,51 +74,20 @@ namespace RevitServices
         /// Starts a RevitAPI Transaction that will be managed by this TransactionManager instance.
         /// </summary>
         /// <param name="document">Document (DB) to start a Transaction for.</param>
-        public void StartTransaction(Document document)
+        public TransactionHandle StartTransaction(Document document)
         {
-            if (_trans == null || _trans.GetStatus() != TransactionStatus.Started)
+            if (Transaction == null || Transaction.GetStatus() != TransactionStatus.Started)
             {
-                _trans = new Transaction(document, "Dynamo Script");
-                _trans.Start();
+                Transaction = new Transaction(document, "Dynamo Script");
+                Transaction.Start();
 
-                FailureHandlingOptions failOpt = _trans.GetFailureHandlingOptions();
+                FailureHandlingOptions failOpt = Transaction.GetFailureHandlingOptions();
                 failOpt.SetFailuresPreprocessor(_handler);
-                _trans.SetFailureHandlingOptions(failOpt);
+                Transaction.SetFailureHandlingOptions(failOpt);
 
                 RaiseTransactionStarted();
             }
-        }
-
-        /// <summary>
-        /// Commits the managed Transaction to the Revit DB.
-        /// </summary>
-        public void CommitTransaction()
-        {
-            if (_trans != null)
-            {
-                if (_trans.GetStatus() == TransactionStatus.Started)
-                {
-                    _trans.Commit();
-                    RaiseTransactionCommitted();
-                }
-                //_trans = null;
-            }
-        }
-
-        /// <summary>
-        /// Cancels the managed Transaction, rolling-back any non-committed changes.
-        /// </summary>
-        public void CancelTransaction()
-        {
-            if (_trans != null)
-            {
-                if (_trans.GetStatus() == TransactionStatus.Started)
-                {
-                    _trans.RollBack();
-                    RaiseTransactionCancelled();
-                }
-                //_trans = null;
-            }
+            return _handle;
         }
 
         /// <summary>
@@ -126,21 +97,8 @@ namespace RevitServices
         {
             get
             {
-                return _trans != null 
-                    && _trans.GetStatus() == TransactionStatus.Started;
-            }
-        }
-
-        /// <summary>
-        /// Status of the managed Transaction.
-        /// </summary>
-        public TransactionStatus TransactionStatus
-        {
-            get
-            {
-                if (_trans == null)
-                    return TransactionStatus.Uninitialized;
-                return _trans.GetStatus();
+                return Transaction != null 
+                    && Transaction.GetStatus() == TransactionStatus.Started;
             }
         }
 
@@ -162,6 +120,65 @@ namespace RevitServices
             }
         }
         #endregion
+
+        public class TransactionHandle
+        {
+            private readonly TransactionManager _manager;
+
+            internal TransactionHandle(TransactionManager t)
+            {
+                _manager = t;
+            }
+
+            /// <summary>
+            /// Commits the managed Transaction to the Revit DB.
+            /// </summary>
+            public TransactionStatus CommitTransaction()
+            {
+                if (_manager != null)
+                {
+                    if (_manager.Transaction.GetStatus() == TransactionStatus.Started)
+                    {
+                        var result = _manager.Transaction.Commit();
+                        _manager.RaiseTransactionCommitted();
+
+                        return result;
+                    }
+                }
+                throw new InvalidOperationException("Cannot commit a transaction that isn't active.");
+            }
+
+            /// <summary>
+            /// Cancels the managed Transaction, rolling-back any non-committed changes.
+            /// </summary>
+            public TransactionStatus CancelTransaction()
+            {
+                if (_manager != null)
+                {
+                    if (_manager.Transaction.GetStatus() == TransactionStatus.Started)
+                    {
+                        var result = _manager.Transaction.RollBack();
+                        _manager.RaiseTransactionCancelled();
+
+                        return result;
+                    }
+                }
+                throw new InvalidOperationException("Cannot cancel a transaction that isn't active.");
+            }
+
+            /// <summary>
+            /// Status of the managed Transaction.
+            /// </summary>
+            public TransactionStatus Status
+            {
+                get
+                {
+                    if (_manager.Transaction == null)
+                        return TransactionStatus.Uninitialized;
+                    return _manager.Transaction.GetStatus();
+                }
+            }
+        }
     }
 
     /// <summary>
