@@ -624,44 +624,52 @@ namespace Dynamo
         /// <param name="args"></param>
         protected virtual void VisualizationUpdateThread(object s, DoWorkEventArgs args)
         {
-            var drawable_dict = GetAllDrawablesInModel();
-
-            Debug.WriteLine(String.Format("{0} visualizations to update", drawable_dict.Count()));
-            //Debug.WriteLine(String.Format("Updating visualizations on thread {0}.", Thread.CurrentThread.ManagedThreadId));
-
-            var sw = new Stopwatch();
-            sw.Start();
-
-            foreach (var drawable in drawable_dict)
+            try
             {
-                var node = drawable.Key as NodeModel;
+                var drawable_dict = GetAllDrawablesInModel();
 
-                if (!visualizations.ContainsKey(node.GUID.ToString()))
+                Debug.WriteLine(String.Format("{0} visualizations to update", drawable_dict.Count()));
+
+                var sw = new Stopwatch();
+                sw.Start();
+
+                foreach (var drawable in drawable_dict)
                 {
-                    RegisterForVisualization(node);
+                    var node = drawable.Key as NodeModel;
+
+                    if (!visualizations.ContainsKey(node.GUID.ToString()))
+                    {
+                        RegisterForVisualization(node);
+                    }
+
+                    var rd = Visualizations[node.GUID.ToString()];
+                    rd.Clear();
+
+                    if (node.IsVisible)
+                    {
+                        drawable.Value.ForEach(x => VisualizeGeometry(node, x, rd));
+                    }
                 }
 
-                var rd = Visualizations[node.GUID.ToString()];
-                rd.Clear();
+                sw.Stop();
+                Debug.WriteLine(String.Format("{0} elapsed for generating visualizations.", sw.Elapsed));
 
-                if (node.IsVisible)
-                {
-                    drawable.Value.ForEach(x=>VisualizeGeometry(node, x, rd));
-                }   
+                //generate an aggregated render description to send to the UI
+                var aggRd = AggregateRenderDescriptions();
+
+                LogVisualizationUpdateData(aggRd, sw.Elapsed.ToString());
+
+                //notify the UI of visualization completion
+                OnVisualizationUpdateComplete(this, new VisualizationEventArgs(aggRd));
             }
-
-            sw.Stop();
-            Debug.WriteLine(String.Format("{0} elapsed for generating visualizations.", sw.Elapsed));
-
-            //generate an aggregated render description to send to the UI
-            var aggRd = AggregateRenderDescriptions();
-
-            LogVisualizationUpdateData(aggRd, sw.Elapsed.ToString());
-
-            //notify the UI of visualization completion
-            OnVisualizationUpdateComplete(this, new VisualizationEventArgs(aggRd));
-
-            isUpdating = false;
+            catch (Exception e)
+            {
+                DynamoLogger.Instance.Log(e);
+            }
+            finally
+            {
+                isUpdating = false;
+            }
         }
 
         #region utility methods
