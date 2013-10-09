@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Dynamo.Core.Automation;
 using Dynamo.Selection;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
@@ -53,14 +54,8 @@ namespace Dynamo.Search.SearchElements
 
             // create node
             var guid = Guid.NewGuid();
-            var nodeParams = new Dictionary<string, object>()
-                {
-                    {"name", name},
-                    {"transformFromOuterCanvasCoordinates", true},
-                    {"guid", guid}
-                };
-
-            dynSettings.Controller.DynamoModel.CreateNode(nodeParams);
+            dynSettings.Controller.DynamoViewModel.ExecuteCommand(
+                new CreateNodeCommand(guid, name, 0, 0, true, true));
 
             // select node
             var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
