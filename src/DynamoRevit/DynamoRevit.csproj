@@ -173,6 +173,7 @@
     <Compile Include="IdlePromise.cs" />
     <Compile Include="Nodes\Floors.cs" />
     <Compile Include="Nodes\Materials.cs" />
+    <Compile Include="Nodes\Walls.cs" />
     <Compile Include="NUnitResultTypes.cs">
       <DependentUpon>NUnitResultTypes.xsd</DependentUpon>
     </Compile>
