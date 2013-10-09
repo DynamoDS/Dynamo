@@ -327,6 +327,15 @@ namespace Dynamo
                 topMost.MarkDirty();
             }
 
+            DynamoViewModel.RunEnabled = true;
+            Running = false;
+
+            foreach (FunctionDefinition def in dynSettings.FunctionWasEvaluated)
+                def.RequiresRecalc = false;
+            OnRunCompleted(this, true);
+
+            return;
+
             try
             {
                 var topNode = new BeginNode(new List<string>());
