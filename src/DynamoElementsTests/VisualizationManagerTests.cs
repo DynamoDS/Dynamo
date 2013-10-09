@@ -326,23 +326,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void VisualizationIsCreatedWhenNodeIsAdded()
-        {
-            var model = dynSettings.Controller.DynamoModel;
-            var viz = dynSettings.Controller.VisualizationManager;
-
-            var nodeData = new Dictionary<string, object>();
-            nodeData["x"] = 100.0;
-            nodeData["y"] = 100.0;
-            nodeData["name"] = "Dynamo.Nodes.Point3DNode";
-
-            model.CreateNode(nodeData);
-            Assert.AreEqual(1, model.Nodes.Count);
-
-            Assert.AreEqual(1, viz.Visualizations.Count);
-        }
-
-        [Test]
         public void VisualizationsAreClearedWhenWorkspaceIsCleared()
         {
             var model = dynSettings.Controller.DynamoModel;
