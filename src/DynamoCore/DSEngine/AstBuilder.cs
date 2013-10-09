@@ -160,7 +160,7 @@ namespace Dynamo.DSEngine
             astNodes.Clears(dynamoNodeId);
         }
 
-#if DEBUG
+//#if DEBUG
         /// <summary>
         /// Dump DesignScript code from AST nodes, just for testing
         /// </summary>
@@ -218,7 +218,7 @@ namespace Dynamo.DSEngine
                 logger.Log(e.Message);
             }
         }
-#endif
+//#endif
 
         #region IAstBuilder interface
         public AssociativeNode Build(NodeModel node, List<AssociativeNode> inputs)
