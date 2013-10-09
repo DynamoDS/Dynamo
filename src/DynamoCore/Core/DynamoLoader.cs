@@ -387,10 +387,7 @@ namespace Dynamo.Utilities
             var loadedNodes = customNodeLoader.UpdateSearchPath();
 
             // add nodes to search
-            foreach (var pair in loadedNodes)
-            {
-                searchViewModel.Add(pair.Name, pair.Category, pair.Description, pair.Guid);
-            }
+            loadedNodes.ForEach(x => searchViewModel.Add(x) );
             
             // update search view
             searchViewModel.SearchAndUpdateResultsSync(searchViewModel.SearchText);
@@ -414,10 +411,7 @@ namespace Dynamo.Utilities
             customNodeLoader.AddDirectoryToSearchPath(path);
 
             // add nodes to search
-            foreach (var pair in loadedNodes)
-            {
-                searchViewModel.Add(pair.Name, pair.Category, pair.Description, pair.Guid);
-            }
+            loadedNodes.ForEach( x => searchViewModel.Add(x) );
 
             // update search view
             searchViewModel.SearchAndUpdateResultsSync(searchViewModel.SearchText);

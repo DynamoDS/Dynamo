@@ -12,7 +12,10 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
+using System.Collections.Generic;
+using System.Windows.Input;
 using Dynamo.Nodes.Search;
+using Dynamo.Utilities;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -20,6 +23,7 @@ namespace Dynamo.Search.SearchElements
     /// A base class for elements found in search </summary>
     public abstract class SearchElementBase : BrowserInternalElement
     {
+
         /// <summary>
         /// Searchable property </summary>
         /// <value>
@@ -55,30 +59,6 @@ namespace Dynamo.Search.SearchElements
         /// What the SearchElement does when execcuted from
         /// the SearchView </summary>
         public abstract void Execute();
-
-        /// <summary>
-        /// Overrides the equality operator, useful for SearchDictionary </summary>
-        /// <returns> True if param is equal to this</returns>
-        /// <param name="obj"> The object to compare to </param>
-        public override bool Equals(object obj)
-        {
-            if (obj == null || GetType() != obj.GetType())
-            {
-                return false;
-            }
-
-            var ele = (SearchElementBase) obj;
-            return this.Type == ele.Type && this.Name == ele.Name && this.Description == ele.Description;
-
-        }
-
-        /// <summary>
-        /// Overriding equals, we need to override hashcode </summary>
-        /// <returns> A unique hashcode for the object </returns>
-        public override int GetHashCode()
-        {
-            return this.Type.GetHashCode() + this.Name.GetHashCode() + this.Description.GetHashCode();
-        }
 
     }
 }
