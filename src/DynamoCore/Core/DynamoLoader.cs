@@ -133,7 +133,8 @@ namespace Dynamo.Utilities
 
                 foreach (var function in functions)
                 {
-                    searchViewModel.Add(function.Category, function.DisplayName, "", new List<String> { }, true);
+                    CustomNodeInfo nodeinfo = new CustomNodeInfo(new System.Guid(), function.DisplayName, function.Category, "", "");
+                    searchViewModel.Add(nodeinfo);
                     if (!controller.DSImportedFunctions.ContainsKey(function.DisplayName))
                     {
                         controller.DSImportedFunctions.Add(function.DisplayName, function);
