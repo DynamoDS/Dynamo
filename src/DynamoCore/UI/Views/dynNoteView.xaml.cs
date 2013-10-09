@@ -17,6 +17,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using Dynamo.Core.Automation;
 using Dynamo.Selection;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
@@ -96,7 +97,9 @@ namespace Dynamo.Nodes
 
         void noteText_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            ViewModel.SelectCommand.Execute(null);
+            System.Guid noteGuid = this.ViewModel.Model.GUID;
+            dynSettings.Controller.DynamoViewModel.ExecuteCommand(
+                new SelectModelCommand(noteGuid, Keyboard.Modifiers));
         }
 
         private void editItem_Click(object sender, RoutedEventArgs e)

@@ -844,13 +844,11 @@ namespace Dynamo.Models
                         double x = double.Parse(xAttrib.Value, CultureInfo.InvariantCulture);
                         double y = double.Parse(yAttrib.Value, CultureInfo.InvariantCulture);
 
-                        var paramDict = new Dictionary<string, object>();
-                        paramDict.Add("x", x);
-                        paramDict.Add("y", y);
-                        paramDict.Add("text", text);
-                        paramDict.Add("workspace", CurrentWorkspace);
-                        
-                        AddNote(paramDict);
+                        // TODO(Ben): Shouldn't we be reading in the Guid 
+                        // from file instead of generating a new one here?
+                        Guid id = Guid.NewGuid();
+                        var command = new CreateNoteCommand(id, text, x, y, false);
+                        AddNoteInternal(command, CurrentWorkspace);
                     }
                 }
 
@@ -940,15 +938,21 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Add a note to the workspace.
+        /// After command framework is implemented, this method should now be only 
+        /// called from a menu item (i.e. Ctrl + W). It should not be used as a way
+        /// for any other code paths to create a note programmatically. For that we
+        /// now have AddNoteInternal which takes in more configurable arguments.
         /// </summary>
-        /// <param name="parameters">A dictionary containing placement data for the note</param>
-        /// <example>{"x":1234.0,"y":1234.0, "guid":1234-1234-...,"text":"the note's text","workspace":workspace </example>
+        /// <param name="parameters">This is not used and should always be null,
+        /// otherwise an ArgumentException will be thrown.</param>
+        /// 
         public void AddNote(object parameters)
         {
-            NoteModel noteModel = AddNoteInternal(parameters);
-            if (null != noteModel)
-                CurrentWorkspace.RecordCreatedModel(noteModel);
+            if (null != parameters) // See above for details of this exception.
+                throw new ArgumentException("Argument should be null!", "parameters");
+
+            var command = new CreateNoteCommand(Guid.NewGuid(), null, 0, 0, true);
+            dynSettings.Controller.DynamoViewModel.ExecuteCommand(command);
         }
 
         internal bool CanAddNote(object parameters)
@@ -1133,15 +1137,10 @@ namespace Dynamo.Models
                 var newX = sameSpace ? note.X + 20 : note.X;
                 var newY = sameSpace ? note.Y + 20 : note.Y;
 
-                var noteData = new Dictionary<string, object>()
-                {
-                    { "x", newX },
-                    { "y", newY },
-                    { "text", note.Text },
-                    { "guid", newGUID }
-                };
+                CreateNoteCommand command = new CreateNoteCommand(
+                    newGUID, note.Text, newX, newY, false);
 
-                createdModels.Add(AddNoteInternal(noteData));
+                createdModels.Add(AddNoteInternal(command, null));
 
                 // TODO: Why can't we just add "noteData" instead of doing a look-up?
                 AddToSelection(CurrentWorkspace.Notes.FirstOrDefault(x => x.GUID == newGUID));
@@ -1594,42 +1593,38 @@ namespace Dynamo.Models
             return null;
         }
 
-        private NoteModel AddNoteInternal(object parameters)
+        internal NoteModel AddNoteInternal(CreateNoteCommand command, WorkspaceModel workspace)
         {
-            var inputs = parameters as Dictionary<string, object> ?? new Dictionary<string, object>();
+            double x = 0.0;
+            double y = 0.0;
+            if (false == command.DefaultPosition)
+            {
+                x = command.X;
+                y = command.Y;
+            }
 
-            // by default place note at center
-            var x = 0.0;
-            var y = 0.0;
-
-            if (inputs != null && inputs.ContainsKey("x"))
-                x = (double)inputs["x"];
-
-            if (inputs != null && inputs.ContainsKey("y"))
-
-                y = (double)inputs["y"];
-
-            var n = new NoteModel(x, y);
+            NoteModel noteModel = new NoteModel(x, y);
+            noteModel.GUID = command.NodeId;
 
             //if we have null parameters, the note is being added
             //from the menu, center the view on the note
 
-            if (parameters == null)
+            if (command.DefaultPosition)
             {
-                ModelEventArgs args = new ModelEventArgs(n, true);
+                ModelEventArgs args = new ModelEventArgs(noteModel, true);
                 DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
                 vm.CurrentSpaceViewModel.OnRequestNodeCentered(this, args);
             }
 
-            object id;
-            if (inputs.TryGetValue("guid", out id))
-                n.GUID = (Guid)id;
+            noteModel.Text = "New Note";
+            if (!string.IsNullOrEmpty(command.NoteText))
+                noteModel.Text = command.NoteText;
 
-            n.Text = (inputs == null || !inputs.ContainsKey("text")) ? "New Note" : inputs["text"].ToString();
-            var ws = (inputs == null || !inputs.ContainsKey("workspace")) ? CurrentWorkspace : (WorkspaceModel)inputs["workspace"];
+            if (null == workspace)
+                workspace = CurrentWorkspace;
 
-            ws.Notes.Add(n);
-            return n;
+            workspace.Notes.Add(noteModel);
+            return noteModel;
         }
 
         #endregion
