@@ -197,9 +197,9 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public string FilePath
+        public string FileName
         {
-            get { return _model.FilePath; }
+            get { return _model.FileName; }
         }
 
 #if false // TODO(Ben): Remove this after StateMachine has been fully tested.
@@ -431,8 +431,8 @@ namespace Dynamo.ViewModels
                 case "HasUnsavedChanges":
                     RaisePropertyChanged("HasUnsavedChanges");
                     break;
-                case "FilePath":
-                    RaisePropertyChanged("FilePath");
+                case "FileName":
+                    RaisePropertyChanged("FileName");
                     break;
             }
         }

@@ -23,6 +23,7 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Prompts;
 using Dynamo.Selection;
+using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 
@@ -123,7 +124,7 @@ namespace Dynamo.Controls
 
         void ViewModel_RequestShowNodeRename(object sender, EventArgs e)
         {
-            var editWindow = new dynEditWindow { DataContext = ViewModel };
+            var editWindow = new EditWindow { DataContext = ViewModel };
 
             var bindingVal = new Binding("NickName")
             {

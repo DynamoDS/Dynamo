@@ -24,16 +24,16 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    
+
     <Grid Background="Black" >
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        
+
         <Grid>
-            
+
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
@@ -44,11 +44,11 @@
             <TextBox Name="SearchTextBox" KeyboardNavigation.TabIndex="0" Foreground="WhiteSmoke" Background="#222" BorderThickness="0" FontSize ="12" Padding="10,12,5,8" Margin ="0"
                        IsEnabled="True" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Stretch" Text="{Binding Path=SearchText,Mode=TwoWay}" Grid.Column="1" MinWidth="280">
             </TextBox>
-            
+
             <TextBlock FontSize ="12" IsHitTestVisible="False" Padding="15,12,5,8" Margin ="0" Foreground="#666" Grid.Column="1" Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}">Search Node Library...</TextBlock>
-            
+
         </Grid>
-        
+
         <ScrollViewer Visibility="{Binding BrowserVisibility, Converter={StaticResource BooleanToVisibilityConverter}}" HorizontalAlignment="Stretch" Margin="0" Name="BrowserScrollView" VerticalAlignment="Stretch" Focusable="False"
                       VerticalScrollBarVisibility="Visible" Background="Black" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=SearchControl}" Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="1" MouseWheel="TreeViewScrollViewer_PreviewMouseWheel">
 
@@ -132,7 +132,7 @@
                                                     <RowDefinition Height="Auto"/>
                                                     <RowDefinition Height="*" />
                                                 </Grid.RowDefinitions>
-                                                
+
                                                 <Grid Background="Transparent" Grid.Row="0">
 
                                                     <Grid.ColumnDefinitions>
@@ -147,7 +147,7 @@
                                                     </Grid.RowDefinitions>
 
                                                     <ToggleButton Margin="5,10,0,0" Grid.Row="0" VerticalAlignment="Top" x:Name="Expander" Background="Transparent" Style="{StaticResource ExpandCollapseToggleStyle}" ClickMode="Press" IsChecked="{Binding IsExpanded}"/>
-                                                    
+
                                                     <Border Margin="5,7,5,5" Name="NodeName" Grid.Column="1" Grid.ColumnSpan="2" VerticalAlignment="Center" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
                                                         <ContentPresenter Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" ContentSource="Header"/>
                                                     </Border>
@@ -159,7 +159,7 @@
                                                 </Border>
 
                                             </Grid>
-                                            
+
 
                                         </Border>
 
@@ -220,6 +220,11 @@
                         </Setter.Value>
                     </Setter>
                 </Style>
+
+                <DataTemplate x:Key="ContextMenuStyle">
+                    <TextBlock  Text="{Binding Key}" />
+                </DataTemplate>
+
             </ScrollViewer.Resources>
 
             <!--CATEGORIES-->
@@ -233,7 +238,7 @@
                 </TreeView.Template>
 
                 <TreeView.Resources>
-
+                    
                     <HierarchicalDataTemplate DataType = "{x:Type search:BrowserRootElement}" ItemsSource="{Binding Path=Items}" >
 
                         <TextBlock Foreground="WhiteSmoke" FontSize="14" Text="{Binding Path=Name}"/>
@@ -246,125 +251,69 @@
 
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type searchElements:TopSearchElement}">
+                    <HierarchicalDataTemplate DataType="{x:Type searchElements:NodeSearchElement}">
 
                         <StackPanel Orientation="Horizontal">
 
-                            <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" ToolTipService.InitialShowDelay="0">
-                            
-                                <TextBlock.ToolTip>
-                                    <StackPanel Width ="Auto" MaxWidth="235" MaxHeight="200" Height="Auto">
-                                        <TextBlock Name="type" TextWrapping="Wrap" HorizontalAlignment="Stretch" FontWeight="Bold" VerticalAlignment="Top" 
+                            <StackPanel.ToolTip>
+                                <StackPanel Width ="Auto" MaxWidth="235" MaxHeight="200" Height="Auto">
+                                    <TextBlock Name="type" TextWrapping="Wrap" HorizontalAlignment="Stretch" FontWeight="Bold" VerticalAlignment="Top" 
                                                  Text="{Binding Path=Type}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" />
-                                        
-                                        <TextBlock Name="name" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
+
+                                    <TextBlock Name="name" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
                                                  Text="{Binding Path=Description, Converter={StaticResource TooltipLengthTruncater}}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" Visibility="{Binding Path=Description, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
-                                
-                                    </StackPanel>
-                                </TextBlock.ToolTip>
-                                
-                            </TextBlock>
 
-                            <Border Background="#444" Margin="10 0 0 0" CornerRadius="2" >
+                                </StackPanel>
+                            </StackPanel.ToolTip>
 
-                                <Border.Style>
-                                    <Style TargetType="Border">
-                                        <Style.Triggers>
-
-                                            <DataTrigger Binding="{Binding Type}" Value="Custom Node">
-                                                <Setter Property="Visibility" Value="Visible"></Setter>
-                                            </DataTrigger>
-
-                                            <DataTrigger Binding="{Binding Type}" Value="Node">
-                                                <Setter Property="Visibility" Value="Hidden"></Setter>
-                                            </DataTrigger>
-
-                                        </Style.Triggers>
-                                    </Style>
-                                </Border.Style>
-
-                                <TextBlock Foreground="Black" FontWeight="Bold" Padding="4" FontSize="9" Text="C" ToolTipService.InitialShowDelay="0">
-                                </TextBlock>
-
-                            </Border>
+                            <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" ToolTipService.InitialShowDelay="0" />
 
                         </StackPanel>
 
                     </HierarchicalDataTemplate>
-                    
-                    <HierarchicalDataTemplate DataType="{x:Type searchElements:NodeSearchElement}">
+
+                    <HierarchicalDataTemplate DataType="{x:Type searchElements:CustomNodeSearchElement}">
 
                         <StackPanel Orientation="Horizontal">
-                            
-                            <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" ToolTipService.InitialShowDelay="0">
-                            
-                                <TextBlock.ToolTip>
-                                    <StackPanel Width ="Auto" MaxWidth="235" MaxHeight="200" Height="Auto">
-                                        <TextBlock Name="type" TextWrapping="Wrap" HorizontalAlignment="Stretch" FontWeight="Bold" VerticalAlignment="Top" 
+
+                            <StackPanel.ToolTip>
+                                <StackPanel Width ="Auto" MaxWidth="235" MaxHeight="200" Height="Auto">
+                                    <TextBlock Name="type" TextWrapping="Wrap" HorizontalAlignment="Stretch" FontWeight="Bold" VerticalAlignment="Top" 
                                                  Text="{Binding Path=Type}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" />
-                                        
-                                        <TextBlock Name="name" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
-                                                 Text="{Binding Path=Description, Converter={StaticResource TooltipLengthTruncater}}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" Visibility="{Binding Path=Description, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
-                                
-                                    </StackPanel>
-                                </TextBlock.ToolTip>
-                                
-                            </TextBlock>
 
-                            <Border Background="#444" Margin="10 0 0 0" CornerRadius="2" >
+                                    <TextBlock Name="name" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
+                                                 Text="{Binding Path=Description, Converter={StaticResource TooltipLengthTruncater}}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" 
+                                               Visibility="{Binding Path=Description, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
+                                    
+                                    <Separator Background="#BBB"></Separator>
+                                    
+                                    <TextBlock Name="path"
+                                                 Text="{Binding Path=Path, Converter={StaticResource FilePathDisplayConverter}}" Visibility="{Binding Path=Path, Converter={StaticResource EmptyStringToCollapsedConverter}}" FontSize="11" Margin="2">
+                                    </TextBlock>
 
-                                <Border.Style>
-                                    <Style TargetType="Border">
-                                        <Style.Triggers>
+                                    <TextBlock Name="unsaved"
+                                                 Text="Unsaved" Visibility="{Binding Path=Path, Converter={StaticResource NonEmptyStringToCollapsedConverter}}" FontSize="11" Margin="2">
+                                    </TextBlock>
+                                    
+                                </StackPanel>
+                            </StackPanel.ToolTip>
 
-                                            <DataTrigger Binding="{Binding Type}" Value="Custom Node">
-                                                <Setter Property="Visibility" Value="Visible"></Setter>
-                                            </DataTrigger>
-                                        
-                                            <DataTrigger Binding="{Binding Type}" Value="Node">
-                                                <Setter Property="Visibility" Value="Hidden"></Setter>
-                                            </DataTrigger>
-
-                                        </Style.Triggers>
-                                    </Style>
-                                </Border.Style>
-
-                                <TextBlock Foreground="Black" FontWeight="Bold" Padding="4" FontSize="9" Text="C" ToolTipService.InitialShowDelay="0">
-                                </TextBlock>
-                                
+                            <Border Background="#444" Margin="0 0 10 0" CornerRadius="1" BorderThickness="1" BorderBrush="Black">
+                                <TextBlock Foreground="Black" FontWeight="Bold" Padding="2" FontSize="9" Text="C" ToolTipService.InitialShowDelay="0" />
                             </Border>
-                            
-                        </StackPanel>
-                        
-                        <!--<Grid>
-                            
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Border}}, Path=ActualWidth}"></ColumnDefinition>
-                            </Grid.ColumnDefinitions> 
-                            
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"></RowDefinition>
-                                <RowDefinition Height="*"></RowDefinition>
-                            </Grid.RowDefinitions>
-                            
-                            <Grid Grid.Row="0">
-                                    <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"></ColumnDefinition>
-                                    <ColumnDefinition Width="20"></ColumnDefinition>
-                                </Grid.ColumnDefinitions>
-                                <Border Grid.Column="0">
-                                        <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" />
-                                </Border>
-                                <Border Grid.Column="1">
-                                    <Button Width="14" Height="16" Foreground="Black" Style="{DynamicResource ResourceKey=SBadgeButton}" Command="{Binding Path=ToggleDescriptionVisibilityCommand }">?</Button>
-                                </Border>
-                                
-                            </Grid>
 
-                            <TextBlock Padding="0,8,0,0" Grid.Row="1" Foreground="LightGray" FontSize="10" Text="{Binding Path=Description}" Visibility="{Binding Path=DescriptionVisibility}" TextWrapping="Wrap"/>
-                            
-                        </Grid>-->
-                        
+                            <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" ToolTipService.InitialShowDelay="0" />
+
+                            <StackPanel.ContextMenu>
+
+                                <ContextMenu>
+                                    <MenuItem Header="Edit..." Command="{Binding EditCommand}"></MenuItem>
+                                </ContextMenu>
+                                    
+                            </StackPanel.ContextMenu>
+                                
+                        </StackPanel>
+
                     </HierarchicalDataTemplate>
 
                 </TreeView.Resources>

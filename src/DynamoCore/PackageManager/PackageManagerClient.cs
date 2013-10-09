@@ -158,7 +158,7 @@ namespace Dynamo.PackageManager
 
         public bool CanPublishCurrentWorkspace()
         {
-            return dynSettings.Controller.DynamoViewModel.CurrentSpace is FuncWorkspace;
+            return dynSettings.Controller.DynamoViewModel.CurrentSpace is CustomNodeWorkspaceModel;
         }
 
         public void PublishSelectedNode()
