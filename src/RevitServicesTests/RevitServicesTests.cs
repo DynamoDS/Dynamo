@@ -2,6 +2,7 @@
 using Dynamo.Utilities;
 using NUnit.Framework;
 using RevitServices;
+using System;
 
 namespace RevitServicesTests
 {
@@ -17,11 +18,11 @@ namespace RevitServicesTests
         public void MakePoint()
         {
             var transManager = new TransactionManager();
-            transManager.StartTransaction(Document);
+            var t = transManager.StartTransaction(Document);
 
             var id = Document.FamilyCreate.NewReferencePoint(new XYZ(0, 0, 0)).Id;
 
-            transManager.CommitTransaction();
+            t.CommitTransaction();
 
             ReferencePoint rp;
             Assert.IsTrue(Document.TryGetElement(id, out rp));
@@ -32,11 +33,11 @@ namespace RevitServicesTests
         public void MakePointThenCancel()
         {
             var transManager = new TransactionManager();
-            transManager.StartTransaction(Document);
+            var t = transManager.StartTransaction(Document);
 
             var id = Document.FamilyCreate.NewReferencePoint(new XYZ(0, 0, 0)).Id;
 
-            transManager.CancelTransaction();
+            t.CancelTransaction();
 
             ReferencePoint rp;
             Assert.IsFalse(Document.TryGetElement(id, out rp));
@@ -51,10 +52,10 @@ namespace RevitServicesTests
             transManager.TransactionStarted += delegate { eventWasFired = true; };
 
             Assert.IsFalse(eventWasFired);
-            transManager.StartTransaction(Document);
+            var t = transManager.StartTransaction(Document);
 
             Assert.IsTrue(eventWasFired);
-            transManager.CancelTransaction();
+            t.CancelTransaction();
         }
 
         [Test]
@@ -67,10 +68,10 @@ namespace RevitServicesTests
 
             Assert.IsFalse(eventWasFired);
 
-            transManager.StartTransaction(Document);
+            var t = transManager.StartTransaction(Document);
             Assert.IsFalse(eventWasFired);
 
-            transManager.CommitTransaction();
+            t.CommitTransaction();
             Assert.IsTrue(eventWasFired);
         }
 
@@ -84,10 +85,10 @@ namespace RevitServicesTests
 
             Assert.IsFalse(eventWasFired);
 
-            transManager.StartTransaction(Document);
+            var t = transManager.StartTransaction(Document);
             Assert.IsFalse(eventWasFired);
 
-            transManager.CancelTransaction();
+            t.CancelTransaction();
             Assert.IsTrue(eventWasFired);
         }
 
@@ -97,29 +98,36 @@ namespace RevitServicesTests
             var transManager = new TransactionManager();
             Assert.IsFalse(transManager.TransactionActive);
 
-            transManager.StartTransaction(Document);
+            var t = transManager.StartTransaction(Document);
             Assert.IsTrue(transManager.TransactionActive);
 
-            transManager.CancelTransaction();
+            t.CancelTransaction();
             Assert.IsFalse(transManager.TransactionActive);
 
-            transManager.StartTransaction(Document);
+            t = transManager.StartTransaction(Document);
             Assert.IsTrue(transManager.TransactionActive);
 
-            transManager.CommitTransaction();
+            t.CommitTransaction();
             Assert.IsFalse(transManager.TransactionActive);
         }
 
         [Test]
-        public void TransactionManagerStatus()
+        public void TransactionHandleStatus()
         {
             var transManager = new TransactionManager();
-            Assert.AreEqual(TransactionStatus.Uninitialized, transManager.TransactionStatus);
 
-            transManager.StartTransaction(Document);
-            Assert.AreEqual(TransactionStatus.Started, transManager.TransactionStatus);
+            var t = transManager.StartTransaction(Document);
+            Assert.AreEqual(TransactionStatus.Started, t.Status);
 
-            transManager.CommitTransaction();
+            t.CommitTransaction();
+
+            Assert.Throws<InvalidOperationException>(
+                () => t.CommitTransaction(), 
+                "Cannot commit a transaction that isn't active.");
+
+            Assert.Throws<InvalidOperationException>(
+                () => t.CancelTransaction(),
+                "Cannot cancel a transaction that isn't active.");
         }
 
         [Test]
