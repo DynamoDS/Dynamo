@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <ImportGroup Label="PropertySheets">	
-	<Import Project="$(SolutionDir)Dynamo.CS.props" />
-</ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(SolutionDir)Dynamo.CS.props" />
+  </ImportGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
@@ -73,6 +73,7 @@
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
+  <PropertyGroup />
   <ItemGroup>
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
@@ -116,6 +117,10 @@
     <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
+      <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
+      <Name>DynamoUtilities</Name>
     </ProjectReference>
     <ProjectReference Include="..\FSchemeInterop\FSchemeInterop.csproj">
       <Project>{F25808D6-DF62-4732-9453-D4978079864C}</Project>

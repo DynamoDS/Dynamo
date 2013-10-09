@@ -13,7 +13,7 @@ namespace Dynamo.PackageManager
     {
         public PackageManagerPublishView(PublishPackageViewModel packageViewModel)
         {
-            
+
             this.DataContext = packageViewModel;
             packageViewModel.PublishSuccess += PackageViewModelOnPublishSuccess;
 
@@ -22,7 +22,6 @@ namespace Dynamo.PackageManager
             this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
             InitializeComponent();
-
         }
 
         private void PackageViewModelOnPublishSuccess(PublishPackageViewModel sender)

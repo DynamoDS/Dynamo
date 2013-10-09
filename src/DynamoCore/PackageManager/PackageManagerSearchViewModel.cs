@@ -19,7 +19,18 @@ namespace Dynamo.PackageManager
 {
     public class PackageManagerSearchViewModel : NotificationObject
     {
+        public enum PackageSearchState
+        {
+            SYNCING,
+            SEARCHING,
+            NORESULTS,
+            RESULTS
+        };
+
         #region Properties & Fields
+
+        // The results of the last synchronization with the package manager server
+        public List<PackageManagerSearchElement> LastSync { get; set; }
 
         /// <summary>
         ///     SearchText property
@@ -28,7 +39,6 @@ namespace Dynamo.PackageManager
         ///     This is the core UI for Dynamo, primarily used for logging.
         /// </value>
         public string _SearchText;
-
         public string SearchText
         {
             get { return _SearchText; }
@@ -36,8 +46,6 @@ namespace Dynamo.PackageManager
             {
                 _SearchText = value;
                 RaisePropertyChanged("SearchText");
-                //DynamoCommands.Search.Execute(null);
-                dynSettings.Controller.SearchViewModel.Search(null);
             }
         }
 
@@ -88,6 +96,20 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
+        /// Gives the current state of search.
+        /// </summary>
+        public PackageSearchState _searchState;
+        public PackageSearchState SearchState
+        {
+            get { return _searchState; }
+            set
+            {
+                _searchState = value;
+                RaisePropertyChanged("SearchState");
+            }
+        }
+
+        /// <summary>
         ///     PackageManagerClient property
         /// </summary>
         /// <value>
@@ -100,6 +122,8 @@ namespace Dynamo.PackageManager
         ///     This is used to manage up-down navigation through the menu.
         /// </summary>
         private List<BrowserItem> _visibleSearchResults = new List<BrowserItem>();
+
+        private SearchDictionary<PackageManagerSearchElement> SearchDictionary;
 
         /// <summary>
         ///     Command to clear the completed package downloads
@@ -125,10 +149,59 @@ namespace Dynamo.PackageManager
             PackageManagerClient = client;
             SearchResults = new ObservableCollection<PackageManagerSearchElement>();
             MaxNumSearchResults = 1000;
+            SearchDictionary = new SearchDictionary<PackageManagerSearchElement>();
             ClearCompletedCommand = new DelegateCommand(ClearCompleted, CanClearCompleted);
             PackageManagerClient.Downloads.CollectionChanged += DownloadsOnCollectionChanged;
             this.SearchResults.CollectionChanged += SearchResultsOnCollectionChanged;
-            SearchAndUpdateResults("");
+            SearchText = "";
+        }
+
+        public void Refresh()
+        {
+
+            var pkgs = PackageManagerClient.ListAll();
+
+            pkgs.Sort((e1, e2) => e1.Name.ToLower().CompareTo(e2.Name.ToLower()));
+            LastSync = pkgs;
+
+            SearchDictionary = new SearchDictionary<PackageManagerSearchElement>();
+
+            foreach (var pkg in pkgs)
+            {
+                SearchDictionary.Add(pkg, pkg.Name);
+                SearchDictionary.Add(pkg, pkg.Description);
+                SearchDictionary.Add(pkg, pkg.Maintainers);
+                SearchDictionary.Add(pkg, pkg.Keywords);
+            }
+        }
+
+        public List<PackageManagerSearchElement> RefreshAndSearch()
+        {
+
+            Refresh();
+            return Search(SearchText);
+
+        }
+
+        public void RefreshAndSearchAsync()
+        {
+            SearchResults.Clear();
+            this.SearchState = PackageSearchState.SYNCING;
+
+            Task<List<PackageManagerSearchElement>>.Factory.StartNew(RefreshAndSearch).ContinueWith((t) =>
+            {
+                lock (SearchResults)
+                {
+                    SearchResults.Clear();
+                    foreach (var result in t.Result)
+                    {
+                        SearchResults.Add(result);
+                    }
+                    this.SearchState = HasNoResults ? PackageSearchState.NORESULTS : PackageSearchState.RESULTS;
+                }
+            }
+            , TaskScheduler.FromCurrentSynchronizationContext()); // run continuation in ui thread
+
         }
 
         private void DownloadsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
@@ -154,7 +227,6 @@ namespace Dynamo.PackageManager
         private void SearchResultsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
         {
             this.RaisePropertyChanged("HasNoResults");
-
         } 
 
         public void ClearCompleted()
@@ -178,18 +250,20 @@ namespace Dynamo.PackageManager
         internal void SearchAndUpdateResults(string query)
         {
             this.SearchText = query;
+
             Task<List<PackageManagerSearchElement>>.Factory.StartNew(() => Search(query)
 
             ).ContinueWith((t) =>
-            {
-                lock (SearchResults)
                 {
 
+                lock (SearchResults)
+                {
                     SearchResults.Clear();
                     foreach (var result in t.Result)
                     {
                         SearchResults.Add(result);
                     }
+                    this.SearchState = HasNoResults ? PackageSearchState.NORESULTS : PackageSearchState.RESULTS;
                 }
             }
             , TaskScheduler.FromCurrentSynchronizationContext()); // run continuation in ui thread
@@ -233,7 +307,27 @@ namespace Dynamo.PackageManager
         /// </summary>
         /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
         /// <param name="search"> The search query </param>
-        internal List<PackageManagerSearchElement> Search(string search)
+        internal List<PackageManagerSearchElement> Search(string query)
+        {
+
+            if (!String.IsNullOrEmpty(query))
+            {
+                return SearchDictionary.Search( query, MaxNumSearchResults);
+            }
+            else
+            {
+                // with null query, don't show deprecated packages
+                return LastSync.Where(x => !x.IsDeprecated).ToList();
+            }
+        }
+
+        /// <summary>
+        ///     Performs a search using the given string as query, but does not update
+        ///     the SearchResults object.
+        /// </summary>
+        /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
+        /// <param name="search"> The search query </param>
+        internal List<PackageManagerSearchElement> SearchOnline(string search)
         {
             bool emptySearch = false;
             if (search == "")
@@ -245,8 +339,8 @@ namespace Dynamo.PackageManager
             {
                 search = String.Join("* ", search.Split(' ')) + "*"; // append wild card to each search
             }
-            
-            var results = PackageManagerClient.Search( search, MaxNumSearchResults);
+
+            var results = PackageManagerClient.Search(search, MaxNumSearchResults);
 
             if (emptySearch)
             {
@@ -295,5 +389,6 @@ namespace Dynamo.PackageManager
 
         }
 
+        
     }
 }

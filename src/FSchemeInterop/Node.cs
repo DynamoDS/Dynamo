@@ -789,7 +789,7 @@ namespace Dynamo.FSchemeInterop.Node
                 {
                     nodeStack.Push(x);
                     //TODO: Add CanOptimize property to INode
-                    if (x.ParentCount > 1 && x.Children.Any())
+                    if (x.ParentCount > 1 && (x is InputNode || x.Children.Any()))
                         multiOuts.Push(x);
                 },
                 x => x.Children);

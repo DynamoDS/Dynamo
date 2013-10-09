@@ -1,16 +1,34 @@
 # adapted from Nathan Miller's Proving Ground Blog
 # http://theprovingground.wikidot.com/revit-api-py-forms
 
-scale = IN
-# *scale
+# Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Users\Ian\Documents\GitHub\Dynamo\bin\AnyCPU\Debug'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+import math
 
 doc = __revit__.ActiveUIDocument.Document
 app = __revit__.Application
-if DynStoredElements.Count>0:
-     count = 0
-     for eID in DynStoredElements:
-          e = doc.get_Element(DynStoredElements[count])
-          doc.Delete(e)
+
+scale = IN
+# *scale
+
+if __persistent__.ContainsKey("elements"):
+    for eID in __persistent__["elements"]:
+        e = doc.get_Element(eID)
+        doc.Delete(e)
+else:
+		__persistent__["elements"] = []
 
 refarr = ReferenceArray()
 refarrarr = ReferenceArrayArray()
@@ -62,5 +80,5 @@ refarrarr.Append(refarr3)
  
 #create Loft
 loft = doc.FamilyCreate.NewLoftForm(True, refarrarr)
-DynStoredElements.Add(loft.Id)
+__persistent__["elements"].Add(loft.Id)
 OUT = loft

@@ -201,6 +201,8 @@ namespace Dynamo.DSEngine
             DynamoLogger logger = DynamoLogger.Instance;
             try
             {
+                logger.Log(DumpCode());
+
                 ExecutionMirror mirror = runner.Execute(allAstNodes, core);
                 List<Guid> keys = astNodes.GetKeys();
                 foreach (var guid in keys)
@@ -227,7 +229,18 @@ namespace Dynamo.DSEngine
         public AssociativeNode Build(DSFunction node, List<AssociativeNode> inputs)
         {
             string function = node.FunctionName;
-            return AstFactory.BuildFunctionCall(function, inputs);
+            AssociativeNode functionCall = AstFactory.BuildFunctionCall(function, inputs);
+
+            // inputs[0] is this pointer
+            if (node.IsInstanceMember())
+            {
+                Debug.Assert(functionCall is FunctionCallNode);
+                return CoreUtils.GenerateCallDotNode(inputs[0], functionCall as FunctionCallNode);
+            }
+            else
+            {
+                return functionCall;
+            }
         }
 
         public AssociativeNode Build(Dynamo.Nodes.Double node, List<AssociativeNode> inputs)
