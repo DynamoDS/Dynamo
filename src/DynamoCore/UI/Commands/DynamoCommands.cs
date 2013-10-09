@@ -186,6 +186,14 @@ namespace Dynamo.ViewModels
             }
         }
 
+        internal void SelectInRegionImpl(SelectInRegionCommand command)
+        {
+            if (command.IsCrossSelection)
+                CurrentSpaceViewModel.CrossSelectCommand.Execute(command.Region);
+            else
+                CurrentSpaceViewModel.ContainSelectCommand.Execute(command.Region);
+        }
+
         #endregion
     }
 }

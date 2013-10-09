@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using System.Windows.Input;
 using System.Xml;
 using Dynamo.Utilities;
@@ -74,6 +75,8 @@ namespace Dynamo.Core.Automation
                     return SelectModelCommand.DeserializeCore(element);
                 case "Dynamo.Core.Automation.CreateNoteCommand":
                     return CreateNoteCommand.DeserializeCore(element);
+                case "Dynamo.Core.Automation.SelectInRegionCommand":
+                    return SelectInRegionCommand.DeserializeCore(element);
             }
 
             throw new ArgumentException("element");
@@ -270,6 +273,59 @@ namespace Dynamo.Core.Automation
             XmlElementHelper helper = new XmlElementHelper(element);
             helper.SetAttribute("ModelGuid", this.ModelGuid);
             helper.SetAttribute("Modifiers", ((int)this.Modifiers));
+        }
+
+        #endregion
+    }
+
+    internal class SelectInRegionCommand : RecordableCommand
+    {
+        #region Public Class Methods
+
+        internal SelectInRegionCommand(Rect region, bool isCrossSelection)
+        {
+            this.Region = region;
+            this.IsCrossSelection = isCrossSelection;
+        }
+
+        internal static SelectInRegionCommand DeserializeCore(XmlElement element)
+        {
+            XmlElementHelper helper = new XmlElementHelper(element);
+
+            double x = helper.ReadDouble("X");
+            double y = helper.ReadDouble("Y");
+            double width = helper.ReadDouble("Width");
+            double height = helper.ReadDouble("Height");
+
+            Rect region = new Rect(x, y, width, height);
+            bool isCrossSelection = helper.ReadBoolean("IsCrossSelection");
+            return new SelectInRegionCommand(region, isCrossSelection);
+        }
+
+        #endregion
+    
+        #region Public Command Properties
+
+        internal Rect Region { get; private set; }
+        internal bool IsCrossSelection { get; private set; }
+
+        #endregion
+    
+        #region Protected Overridable Methods
+
+        protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+        {
+            dynamoViewModel.SelectInRegionImpl(this);
+        }
+
+        protected override void SerializeCore(XmlElement element)
+        {
+            XmlElementHelper helper = new XmlElementHelper(element);
+            helper.SetAttribute("X", this.Region.X);
+            helper.SetAttribute("Y", this.Region.Y);
+            helper.SetAttribute("Width", this.Region.Width);
+            helper.SetAttribute("Height", this.Region.Height);
+            helper.SetAttribute("IsCrossSelection", this.IsCrossSelection);
         }
 
         #endregion
