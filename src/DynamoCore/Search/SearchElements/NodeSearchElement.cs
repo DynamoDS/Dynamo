@@ -14,11 +14,8 @@
 
 using System;
 using System.Collections.Generic;
-<<<<<<< HEAD
-using Dynamo.Core.Automation;
-=======
 using System.Windows.Input;
->>>>>>> master
+using Dynamo.Core.Automation;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
@@ -118,34 +115,7 @@ namespace Dynamo.Search.SearchElements
 
         public virtual NodeSearchElement Copy()
         {
-<<<<<<< HEAD
-            //ToggleDescriptionVisibilityCommand = new DelegateCommand(ToggleIsVisible);
-            this.Node = null;
-            this._name = name;
-            this.Weight = 0.9;
-            this.Keywords = "";
-            this._type = "Custom Node";
-            this.Guid = guid;
-            this._description = description;
-        }
-
-        /// <summary>
-        ///     The class constructor - use this constructor when for
-        ///     custom nodes
-        /// </summary>
-        /// <param name="funcDef">The FunctionDefinition for a custom node</param>
-        public NodeSearchElement(FunctionDefinition funcDef)
-        {
-            //ToggleDescriptionVisibilityCommand = new DelegateCommand(ToggleIsVisible);
-            this.Node = DynamoModel.CreateNodeInstance(funcDef.FunctionId.ToString());
-            this._name = funcDef.Workspace.Name;
-            this.Weight = 1.1;
-            this.Keywords = "";
-            this._description = "Custom Node";
-            this._type = "Custom Node";
-=======
             return new NodeSearchElement(this.Name, this.Description, new List<string>());
->>>>>>> master
         }
 
         private void ToggleIsVisible(object parameter)
@@ -165,38 +135,10 @@ namespace Dynamo.Search.SearchElements
         /// hits enter in the SearchView.</summary>
         public override void Execute()
         {
-<<<<<<< HEAD
-            //dynSettings.Controller.SearchViewModel.Visible = Visibility.Collapsed;
-            string name;
-
-            if (this.Node != null && this.Node is Function)
-            {
-                name = ((Function)Node).Definition.FunctionId.ToString();
-            } 
-            else if (this.Guid != Guid.Empty && this._type == "Custom Node") 
-            {
-                name = this.Guid.ToString();
-            }
-            else
-            {
-                name = Name;
-            }
-
-            System.Guid guid = System.Guid.NewGuid();
-            dynSettings.Controller.DynamoViewModel.ExecuteCommand(
-                new CreateNodeCommand(guid, name, 0, 0, true, true));
-=======
             // create node
             var guid = Guid.NewGuid();
-            var nodeParams = new Dictionary<string, object>()
-                {
-                    {"name", this.Name},
-                    {"transformFromOuterCanvasCoordinates", true},
-                    {"guid", guid}
-                };
-
-            dynSettings.Controller.DynamoModel.CreateNode(nodeParams);
->>>>>>> master
+            dynSettings.Controller.DynamoViewModel.ExecuteCommand(
+                new CreateNodeCommand(guid, this.Name, 0, 0, true, true));
 
             // select node
             var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
