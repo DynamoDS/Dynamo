@@ -330,8 +330,8 @@ namespace Dynamo.Tests
             Watch watch1 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("893a8746-b74f-4078-a125-8b96a48ec782");
             Watch watch2 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("6fa95218-d960-4069-ab38-0fec7c815e06");
 
-            String actualResult1 = watch1.GetValue(0).getStringFromFSchemeValue();
-            String actualResult2 = watch2.GetValue(0).getStringFromFSchemeValue();
+            String actualResult1 = watch1.GetValue(0).GetStringFromFSchemeValue();
+            String actualResult2 = watch2.GetValue(0).GetStringFromFSchemeValue();
             String expectedResult1 = "b";
             String expectedResult2 = "a";
             Assert.AreEqual(expectedResult1, actualResult1);
@@ -439,5 +439,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(expectedResult2, actualResult2);
             Assert.AreEqual(expectedResult3, actualResult3);
         }
+
     }
 }

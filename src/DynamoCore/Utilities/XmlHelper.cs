@@ -135,7 +135,7 @@ namespace Dynamo.Utilities
         {
             TEnum result = defaultValue;
             XmlAttribute attrib = internalElement.Attributes[attribName];
-            if (null == attrib || (System.Enum.TryParse(attrib.Value, out result)))
+            if (null == attrib || (!System.Enum.TryParse(attrib.Value, out result)))
                 return defaultValue;
 
             return result;

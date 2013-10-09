@@ -16,6 +16,16 @@ namespace Dynamo.Controls
         private Point origin;
         private Point start;
 
+        public TranslateTransform GetChildTranslateTransform()
+        {
+            return GetTranslateTransform(child);
+        }
+
+        public ScaleTransform GetChildScaleTransform()
+        {
+            return GetScaleTransform(child);
+        }
+
         private TranslateTransform GetTranslateTransform(UIElement element)
         {
             return (TranslateTransform)((TransformGroup)element.RenderTransform)
@@ -112,32 +122,10 @@ namespace Dynamo.Controls
         {
             if (child != null)
             {
-                var st = GetScaleTransform(child);
-                var tt = GetTranslateTransform(child);
-
                 double zoom = e.Delta > 0 ? .1 : -.1;
-
-                if (!(e.Delta > 0) && (st.ScaleX <= .2 || st.ScaleY <= .2))
-                    return;
-
-                Point relative = e.GetPosition(child);
-                double abosuluteX;
-                double abosuluteY;
-
-                abosuluteX = relative.X * st.ScaleX + tt.X;
-                abosuluteY = relative.Y * st.ScaleY + tt.Y;
-
-                st.ScaleX += zoom;
-                st.ScaleY += zoom;
-
-                //Debug.WriteLine(st.ScaleX);
-
-                tt.X = abosuluteX - relative.X * st.ScaleX;
-                tt.Y = abosuluteY - relative.Y * st.ScaleY;
-
-                var vm = DataContext as WorkspaceViewModel;
-                if (vm.SetZoomCommand.CanExecute(st.ScaleX))
-                    vm.SetZoomCommand.Execute(st.ScaleX);
+                Point mousePosition = e.GetPosition(child);
+                WorkspaceViewModel vm = DataContext as WorkspaceViewModel;
+                vm.OnRequestZoomToViewportPoint(this, new ZoomEventArgs(zoom, mousePosition));
             }
         }
 

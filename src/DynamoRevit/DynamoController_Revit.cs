@@ -5,7 +5,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using Autodesk.Revit.DB;
 using Dynamo.Controls;
 using Dynamo.Models;
@@ -16,7 +15,6 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Greg;
-using RevitServices;
 using Transaction = Dynamo.Nodes.Transaction;
 using Value = Dynamo.FScheme.Value;
 
@@ -30,6 +28,26 @@ namespace Dynamo
 
         public PredicateTraverser CheckManualTransaction { get; private set; }
         public PredicateTraverser CheckRequiresTransaction { get; private set; }
+
+        private ElementId keeperId = ElementId.InvalidElementId;
+
+        /// <summary>
+        /// A visualization manager responsible for generating geometry for rendering.
+        /// </summary>
+        public override VisualizationManager VisualizationManager
+        {
+            get
+            {
+                if (visualizationManager == null)
+                {
+                    visualizationManager = new VisualizationManagerRevit();
+                    visualizationManager.VisualizationUpdateComplete += new VisualizationCompleteEventHandler(visualizationManager_VisualizationUpdateComplete);
+                    visualizationManager.RequestAlternateContextClear += CleanupVisualizations;
+                    dynSettings.Controller.DynamoModel.CleaningUp += CleanupVisualizations;
+                }
+                return visualizationManager; 
+            }
+        }
 
         public DynamoController_Revit(FSchemeInterop.ExecutionEnvironment env, DynamoUpdater updater, Type viewModelType, string context)
             : base(env, viewModelType, context)
@@ -55,11 +73,149 @@ namespace Dynamo
             //allow the showing of elements in context
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.CanFindNodesFromElements = true;
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.FindNodesFromElements = FindNodesFromSelection;
+        }
 
-            TransactionManager = new TransactionManager();
-            TransactionManager.TransactionCommitted += TransactionManager_TransactionCommitted;
-            TransactionManager.TransactionCancelled += TransactionManager_TransactionCancelled;
-            TransactionManager.FailuresRaised += TransactionManager_FailuresRaised;
+
+        void CleanupVisualizations(object sender, EventArgs e)
+        {
+            IdlePromise.ExecuteOnIdle(
+                () =>
+                {
+                    dynRevitSettings.Controller.InitTransaction();
+
+                    if (keeperId != ElementId.InvalidElementId)
+                    {
+                        dynRevitSettings.Doc.Document.Delete(keeperId);
+                        keeperId = ElementId.InvalidElementId;
+                    }
+
+                    dynRevitSettings.Controller.EndTransaction();
+                });
+        }
+
+        /// <summary>
+        /// Handler for the visualization manager's VisualizationUpdateComplete event.
+        /// Sends goemetry to the GeomKeeper, if available, for preview in Revit.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void visualizationManager_VisualizationUpdateComplete(object sender, VisualizationEventArgs e)
+        {
+            //do not draw to geom keeper if the user has selected
+            //not to draw to the alternate context or if it is not available
+            if (!VisualizationManager.AlternateDrawingContextAvailable  || 
+                !VisualizationManager.DrawToAlternateContext)
+                return;
+
+            var values = dynSettings.Controller.DynamoModel.Nodes
+                                    .Where(x=>!(x is SelectionBase))
+                                    .Where(x=>x.IsVisible)
+                                   .Where(x => x.OldValue != null)
+                                   .Where(x => x.OldValue is FScheme.Value.Container || x.OldValue is FScheme.Value.List)
+                                   .Select(x => x.OldValue);
+
+            var geoms = values.ToList().SelectMany(RevitGeometryFromNodes).ToList();
+
+            DrawToAlternateContext(geoms);
+        }
+
+        /// <summary>
+        /// Utility method to get the Revit geometry associated with nodes.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private static List<GeometryObject> RevitGeometryFromNodes(FScheme.Value value)
+        {
+            var geoms = new List<GeometryObject>();
+
+            if (value.IsList)
+            {
+                foreach (var val_inner in ((FScheme.Value.List)value).Item)
+                {
+                    geoms.AddRange(RevitGeometryFromNodes(val_inner));
+                }
+                return geoms;
+            }
+
+            var container = value as Value.Container;
+            if (container == null)
+                return geoms;
+
+            var geom = ((FScheme.Value.Container)value).Item as GeometryObject;
+            if (geom != null)
+                geoms.Add(geom);
+
+            var ps = ((FScheme.Value.Container) value).Item as ParticleSystem;
+            if (ps != null)
+            {
+                geoms.AddRange(ps.Springs.Select(spring => Line.CreateBound(spring.getOneEnd().getPosition(), spring.getTheOtherEnd().getPosition())).Cast<GeometryObject>());
+            }
+
+            //draw xyzs as Point objects
+            var pt = ((FScheme.Value.Container)value).Item as XYZ;
+            if (pt != null)
+            {
+                Type pointType = typeof(Point);
+                MethodInfo[] pointTypeMethods = pointType.GetMethods(BindingFlags.Static | BindingFlags.Public);
+                var method = pointTypeMethods.FirstOrDefault(x => x.Name == "CreatePoint");
+
+                if (method != null)
+                {
+                    var args = new object[3];
+                    args[0] = pt.X;
+                    args[1] = pt.Y;
+                    args[2] = pt.Z;
+                    geoms.Add((Point)method.Invoke(null, args));
+                }
+            }
+
+            return geoms;
+        }
+
+        private void DrawToAlternateContext(List<GeometryObject> geoms)
+        {
+            Type geometryElementType = typeof(GeometryElement);
+            MethodInfo[] geometryElementTypeMethods = geometryElementType.GetMethods(BindingFlags.Static | BindingFlags.Public);
+
+            var method = geometryElementTypeMethods.FirstOrDefault(x => x.Name == "SetForTransientDisplay");
+
+            if (method == null)
+            {
+                return;
+            }
+
+            var styles = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            styles.OfClass(typeof(GraphicsStyle));
+
+            var gStyle = styles.ToElements().FirstOrDefault(x => x.Name == "Dynamo");
+
+            IdlePromise.ExecuteOnIdle(
+                () =>
+                {
+                    dynRevitSettings.Controller.InitTransaction();
+
+                    if (keeperId != ElementId.InvalidElementId)
+                    {
+                        dynRevitSettings.Doc.Document.Delete(keeperId);
+                        keeperId = ElementId.InvalidElementId;
+                    }
+
+                    var argsM = new object[4];
+                    argsM[0] = dynRevitSettings.Doc.Document;
+                    argsM[1] = ElementId.InvalidElementId;
+                    argsM[2] = geoms;
+                    if (gStyle != null)
+                        argsM[3] = gStyle.Id;
+                    else
+                        argsM[3] = ElementId.InvalidElementId;
+
+                    keeperId = (ElementId)method.Invoke(null, argsM);
+
+                    //keeperId = GeometryElement.SetForTransientDisplay(dynRevitSettings.Doc.Document, ElementId.InvalidElementId, geoms,
+                    //                                       ElementId.InvalidElementId);
+
+                    dynRevitSettings.Controller.EndTransaction();
+                });
         }
 
         /// <summary>
@@ -96,7 +252,7 @@ namespace Dynamo
 
             //Load the assembly from the specified path. 					
             return Assembly.LoadFrom(strTempAssmbPath);
-            
+
         }
 
         void FindNodesFromSelection()
@@ -108,8 +264,8 @@ namespace Dynamo
             if (foundNodes.Any())
             {
                 dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestCenterViewOnElement(
-                    this, 
-                    new ModelEventArgs(foundNodes.First(), null));
+                    this, new ModelEventArgs(foundNodes.First()));
+
                 DynamoSelection.Instance.ClearSelection();
                 foundNodes.ForEach(DynamoSelection.Instance.Selection.Add);
             }
@@ -144,7 +300,7 @@ namespace Dynamo
         private delegate void LogDelegate(string msg);
         private delegate void SaveElementDelegate(Element e);
 
-        void AddPythonBindings()
+        private void AddPythonBindings()
         {
             try
             {
@@ -191,9 +347,9 @@ namespace Dynamo
                    new Func<SubTransaction>(
                       delegate
                       {
-                          if (!TransactionManager.TransactionActive)
+                          if (!dynRevitSettings.Controller.IsTransactionActive())
                           {
-                              TransactionManager.StartTransaction(dynRevitSettings.Doc.Document);
+                              dynRevitSettings.Controller.InitTransaction();
                           }
                           return new SubTransaction(dynRevitSettings.Doc.Document);
                       }));
@@ -244,40 +400,70 @@ namespace Dynamo
             }
         }
 
-        void DrawPython(Value val, RenderDescription rd)
+        void DrawPython(Value val, string id)
         {
-            DrawContainers(val, rd);
+            //DrawContainers(val, id);
         }
 
-        private void DrawContainers(Value val, RenderDescription rd)
-        {
-            if (val.IsList)
-            {
-                foreach (Value v in ((Value.List)val).Item)
-                {
-                    DrawContainers(v, rd);
-                }
-            }
-            if (val.IsContainer)
-            {
-                var drawable = ((Value.Container)val).Item;
+        //private void DrawContainers(Value val, string id)
+        //{
+        //    if (val.IsList)
+        //    {
+        //        foreach (Value v in ((Value.List)val).Item)
+        //        {
+        //            DrawContainers(v, id);
+        //        }
+        //    }
+        //    if (val.IsContainer)
+        //    {
+        //        var drawable = ((Value.Container)val).Item;
 
-                if(drawable is XYZ)
-                {
-                    RevitTransactionNode.DrawXYZ(rd, drawable);
-                }
-                else if (drawable is GeometryObject)
-                {
-                    RevitTransactionNode.DrawGeometryObject(rd, drawable);
-                }
-            }
-        }
+        //        //support drawing XYZs geometry objects or LibG graphic items
+        //        if(drawable is XYZ || drawable is GeometryObject || drawable is GraphicItem )
+        //        {
+        //            VisualizationManager.Visualizations[id].Geometry.Add(drawable);
+        //        }
+        //    }
+        //}
 
         Value newEval(bool dirty, string script, dynamic bindings)
         {
-            return dynRevitSettings.Controller.InIdleThread 
-                ? _oldPyEval(dirty, script, bindings) 
-                : IdlePromise<Value>.ExecuteOnIdle(() => _oldPyEval(dirty, script, bindings));
+            bool transactionRunning = Transaction != null && Transaction.GetStatus() == TransactionStatus.Started;
+
+            Value result = null;
+
+            if (dynRevitSettings.Controller.InIdleThread)
+                result = _oldPyEval(dirty, script, bindings);
+            else
+            {
+                result = IdlePromise<Value>.ExecuteOnIdle(
+                   () => _oldPyEval(dirty, script, bindings));
+            }
+
+            if (transactionRunning)
+            {
+                if (!IsTransactionActive())
+                {
+                    InitTransaction();
+                }
+                else
+                {
+                    var ts = Transaction.GetStatus();
+                    if (ts != TransactionStatus.Started)
+                    {
+                        if (ts != TransactionStatus.RolledBack)
+                            CancelTransaction();
+                        InitTransaction();
+                    }
+                }
+            }
+            else if (DynamoViewModel.RunInDebug)
+            {
+                if (IsTransactionActive())
+                    EndTransaction();
+            }
+
+            return result;
         }
         #endregion
 
@@ -301,7 +487,10 @@ namespace Dynamo
                 var element = value as Element;
                 var id = element.Id;
 
-                node.Clicked += () => dynRevitSettings.Doc.ShowElements(element);
+                node.Clicked += delegate
+                {
+                    dynRevitSettings.Doc.ShowElements(element);
+                };
 
                 node.Link = id.IntegerValue.ToString(CultureInfo.InvariantCulture);
             }
@@ -309,8 +498,6 @@ namespace Dynamo
             #endregion
         }
         #endregion
-
-        #region Element Persistence Management
 
         public bool InIdleThread;
 
@@ -382,44 +569,53 @@ namespace Dynamo
             _transElements.Add(id);
         }
 
-        #endregion
+        private Autodesk.Revit.DB.Transaction _trans;
+        public Autodesk.Revit.DB.Transaction Transaction { get { return _trans; } }
 
-        #region Revit Transaction Management
-
-        public TransactionManager TransactionManager { get; private set; }
-
-        void TransactionManager_TransactionCancelled()
+        public void InitTransaction()
         {
-            Updater.RollBack(_transElements);
-            _transElements.Clear();
-            _transDelElements.Clear();
-        }
-
-        void TransactionManager_TransactionCommitted()
-        {
-            _transElements.Clear();
-            CommitDeletions();
-            _transDelElements.Clear();
-        }
-
-        void TransactionManager_FailuresRaised(FailuresAccessor failuresAccessor)
-        {
-            var failList = failuresAccessor.GetFailureMessages();
-
-            var query = from fail in failList
-                        let severity = fail.GetSeverity()
-                        where severity == FailureSeverity.Warning
-                        select fail;
-
-            foreach (var fail in query)
+            if (_trans == null || _trans.GetStatus() != TransactionStatus.Started)
             {
-                DynamoLogger.Instance.Log(
-                    "!! Warning: " + fail.GetDescriptionText());
-                failuresAccessor.DeleteWarning(fail);
+                _trans = new Autodesk.Revit.DB.Transaction(dynRevitSettings.Doc.Document, "Dynamo Script");
+                _trans.Start();
+
+                FailureHandlingOptions failOpt = _trans.GetFailureHandlingOptions();
+                failOpt.SetFailuresPreprocessor(new DynamoWarningPrinter());
+                _trans.SetFailureHandlingOptions(failOpt);
             }
         }
 
-        #endregion
+        public void EndTransaction()
+        {
+            if (_trans != null)
+            {
+                if (_trans.GetStatus() == TransactionStatus.Started)
+                {
+                    _trans.Commit();
+                    _transElements.Clear();
+                    CommitDeletions();
+                    _transDelElements.Clear();
+                }
+                _trans = null;
+            }
+        }
+
+        public void CancelTransaction()
+        {
+            if (_trans != null)
+            {
+                _trans.RollBack();
+                _trans = null;
+                Updater.RollBack(_transElements);
+                _transElements.Clear();
+                _transDelElements.Clear();
+            }
+        }
+
+        public bool IsTransactionActive()
+        {
+            return _trans != null;
+        }
 
         private TransactionManager.TransactionHandle _transaction;
 
@@ -445,9 +641,9 @@ namespace Dynamo
                 _transaction.CancelTransaction();
         }
 
-        protected override void OnEvaluationCompleted()
+        protected override void OnEvaluationCompleted(object sender, EventArgs e)
         {
-            base.OnEvaluationCompleted();
+            base.OnEvaluationCompleted(sender, e);
 
             //Cleanup Delegate
             Action cleanup = delegate
@@ -466,8 +662,7 @@ namespace Dynamo
                     element.ResetRuns();
 
                 //////
-                // FOR NON-DEBUG RUNS, THIS IS THE ACTUAL 
-                // END POINT FOR THE DYNAMO TRANSACTION
+                /* FOR NON-DEBUG RUNS, THIS IS THE ACTUAL END POINT FOR DYNAMO TRANSACTION */
                 //////
 
                 _transaction.CommitTransaction(); //Close global transaction.
@@ -481,16 +676,35 @@ namespace Dynamo
             }
             else
                 cleanup();
+
         }
 
         public override void ShutDown()
         {
+            IdlePromise.ExecuteOnShutdown(
+                delegate
+                    {
+                        var transaction = new Autodesk.Revit.DB.Transaction(dynRevitSettings.Doc.Document, "Dynamo Script");
+                        transaction.Start();
+
+                        if (keeperId != ElementId.InvalidElementId)
+                        {
+                            dynRevitSettings.Doc.Document.Delete(keeperId);
+                            keeperId = ElementId.InvalidElementId;
+                        }
+
+                        transaction.Commit();
+                    }
+                );
+
             base.ShutDown();
             Updater.UnRegisterAllChangeHooks();
         }
 
         protected override void Run(List<NodeModel> topElements, FScheme.Expression runningExpression)
         {
+            var model = (DynamoRevitViewModel)DynamoViewModel;
+
             //If we are not running in debug...
             if (!DynamoViewModel.RunInDebug)
             {
@@ -498,13 +712,13 @@ namespace Dynamo
                 bool manualTrans = topElements.Any(CheckManualTransaction.TraverseUntilAny);
 
                 //Can we avoid running everything in the Revit Idle thread?
-                bool noIdleThread = manualTrans || 
+                bool noIdleThread = manualTrans ||
                     !topElements.Any(CheckRequiresTransaction.TraverseUntilAny);
 
                 //If we don't need to be in the idle thread...
                 if (noIdleThread || Testing)
                 {
-                    DynamoLogger.Instance.Log("Running expression in evaluation thread...");
+                    //DynamoLogger.Instance.Log("Running expression in evaluation thread...");
                     TransMode = TransactionMode.Manual; //Manual transaction control
 
                     if (Testing)
@@ -515,7 +729,7 @@ namespace Dynamo
                 }
                 else //otherwise...
                 {
-                    DynamoLogger.Instance.Log("Running expression in Revit's Idle thread...");
+                    //DynamoLogger.Instance.Log("Running expression in Revit's Idle thread...");
                     TransMode = TransactionMode.Automatic; //Automatic transaction control
 
                     Debug.WriteLine("Adding a run to the idle stack.");
@@ -523,7 +737,7 @@ namespace Dynamo
                     IdlePromise.ExecuteOnIdle(
                         () => base.Run(topElements, runningExpression),
                         false); //Execute the Run Delegate in the Idle thread.
-                    
+
                 }
             }
             else //If we are in debug mode...
@@ -559,5 +773,27 @@ namespace Dynamo
         Debug,
         Manual,
         Automatic
+    }
+
+    public class DynamoWarningPrinter : IFailuresPreprocessor
+    {
+        public FailureProcessingResult PreprocessFailures(FailuresAccessor failuresAccessor)
+        {
+            var failList = failuresAccessor.GetFailureMessages();
+
+            var query = from fail in failList
+                        let severity = fail.GetSeverity()
+                        where severity == FailureSeverity.Warning
+                        select fail;
+
+            foreach (var fail in query)
+            {
+                DynamoLogger.Instance.Log(
+                    "!! Warning: " + fail.GetDescriptionText());
+                failuresAccessor.DeleteWarning(fail);
+            }
+
+            return FailureProcessingResult.Continue;
+        }
     }
 }
