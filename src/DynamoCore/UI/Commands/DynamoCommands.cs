@@ -154,6 +154,12 @@ namespace Dynamo.ViewModels
             CurrentSpace.RecordCreatedModel(nodeModel);
         }
 
+        internal void CreateNoteImpl(CreateNoteCommand command)
+        {
+            NoteModel noteModel = Model.AddNoteInternal(command, null);
+            CurrentSpace.RecordCreatedModel(noteModel);
+        }
+
         internal void SelectModelImpl(SelectModelCommand command)
         {
             // Empty ModelGuid means clear selection.

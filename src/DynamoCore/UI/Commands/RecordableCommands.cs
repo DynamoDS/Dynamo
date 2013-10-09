@@ -72,6 +72,8 @@ namespace Dynamo.Core.Automation
                     return CreateNodeCommand.DeserializeCore(element);
                 case "Dynamo.Core.Automation.SelectModelCommand":
                     return SelectModelCommand.DeserializeCore(element);
+                case "Dynamo.Core.Automation.CreateNoteCommand":
+                    return CreateNoteCommand.DeserializeCore(element);
             }
 
             throw new ArgumentException("element");
@@ -163,6 +165,67 @@ namespace Dynamo.Core.Automation
             helper.SetAttribute("Y", this.Y);
             helper.SetAttribute("DefaultPosition", this.DefaultPosition);
             helper.SetAttribute("TransformCoordinates", TransformCoordinates);
+        }
+
+        #endregion
+    }
+
+    internal class CreateNoteCommand : RecordableCommand
+    {
+        #region Public Class Methods
+
+        internal CreateNoteCommand(Guid nodeId, string noteText,
+            double x, double y, bool defaultPosition)
+        {
+            if (string.IsNullOrEmpty(noteText))
+                noteText = string.Empty;
+
+            this.NodeId = nodeId;
+            this.NoteText = noteText;
+            this.X = x;
+            this.Y = y;
+            this.DefaultPosition = defaultPosition;
+        }
+
+        internal static CreateNoteCommand DeserializeCore(XmlElement element)
+        {
+            XmlElementHelper helper = new XmlElementHelper(element);
+            System.Guid nodeId = helper.ReadGuid("NodeId");
+            string noteText = helper.ReadString("NoteText");
+            double x = helper.ReadDouble("X");
+            double y = helper.ReadDouble("Y");
+
+            return new CreateNoteCommand(nodeId, noteText, x, y,
+                helper.ReadBoolean("DefaultPosition"));
+        }
+
+        #endregion
+
+        #region Public Command Properties
+
+        internal Guid NodeId { get; private set; }
+        internal string NoteText { get; private set; }
+        internal double X { get; private set; }
+        internal double Y { get; private set; }
+        internal bool DefaultPosition { get; private set; }
+
+        #endregion
+
+        #region Protected Overridable Methods
+
+        protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+        {
+            dynamoViewModel.CreateNoteImpl(this);
+        }
+
+        protected override void SerializeCore(XmlElement element)
+        {
+            XmlElementHelper helper = new XmlElementHelper(element);
+            helper.SetAttribute("NodeId", this.NodeId);
+            helper.SetAttribute("NoteText", this.NoteText);
+            helper.SetAttribute("X", this.X);
+            helper.SetAttribute("Y", this.Y);
+            helper.SetAttribute("DefaultPosition", this.DefaultPosition);
         }
 
         #endregion

@@ -15,6 +15,7 @@ using Dynamo.Selection;
 using Dynamo.ViewModels;
 using NUnit.Framework;
 using System.Windows;
+using Dynamo.Core.Automation;
 
 namespace Dynamo.Tests
 {
@@ -74,17 +75,13 @@ namespace Dynamo.Tests
         [Test]
         public void CanAddANote()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            // Create some test note data
+            Guid id = Guid.NewGuid();
+            CreateNoteCommand command = new CreateNoteCommand(
+                id, "This is a test note.", 200.0, 200.0, false);
 
-            //create some test note data
-            var inputs = new Dictionary<string, object>();
-            inputs.Add("x", 200.0);
-            inputs.Add("y", 200.0);
-            inputs.Add("text", "This is a test note.");
-            inputs.Add("workspace", Controller.DynamoViewModel.CurrentSpace);
-
-            model.AddNote(inputs);
-
+            var ws = Controller.DynamoViewModel.CurrentSpace;
+            dynSettings.Controller.DynamoModel.AddNoteInternal(command, ws);
             Assert.AreEqual(Controller.DynamoViewModel.CurrentSpace.Notes.Count, 1);
         }
 
