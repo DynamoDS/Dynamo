@@ -77,6 +77,15 @@ namespace Dynamo.Search
         /// <param name="e">Parameters describing the key push</param>
         public void KeyHandler(object sender, KeyEventArgs e)
         {
+            // ignore the key command if modifiers are present
+            if (e.KeyboardDevice.IsKeyDown(Key.LeftCtrl) || 
+                e.KeyboardDevice.IsKeyDown(Key.RightCtrl) || 
+                e.KeyboardDevice.IsKeyDown(Key.LeftAlt) || 
+                e.KeyboardDevice.IsKeyDown(Key.RightAlt))
+            {
+                return;
+            }
+
             if (e.Key == Key.Return)
             {
                 _viewModel.ExecuteSelected();
@@ -139,6 +148,13 @@ namespace Dynamo.Search
         private void UIElement_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             Console.WriteLine(sender);
+        }
+
+        private void TreeViewScrollViewer_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
+        {
+            ScrollViewer scv = (ScrollViewer)sender;
+            scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
+            e.Handled = true;
         }
     }
 } ;

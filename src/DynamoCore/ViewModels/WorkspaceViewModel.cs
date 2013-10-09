@@ -18,26 +18,27 @@ namespace Dynamo.ViewModels
     public delegate void NoteEventHandler(object sender, EventArgs e);
     public delegate void ViewEventHandler(object sender, EventArgs e);
     public delegate void ZoomEventHandler(object sender, EventArgs e);
+    public delegate void SelectionEventHandler(object sender, SelectionBoxUpdateArgs e);
     public delegate void ViewModelAdditionEventHandler(object sender, ViewModelEventArgs e);
     public delegate void WorkspacePropertyEditHandler(WorkspaceModel workspace );
 
     public partial class WorkspaceViewModel: ViewModelBase
     {
         #region Properties and Fields
-        
+
         public WorkspaceModel _model;
-        private bool _isConnecting = false;
         private bool _canFindNodesFromElements = false;
 
-        public event EventHandler StopDragging;
         public event PointEventHandler CurrentOffsetChanged;
         public event ZoomEventHandler ZoomChanged;
+        public event ZoomEventHandler RequestZoomToViewportCenter;
+        public event ZoomEventHandler RequestZoomToViewportPoint;
+        public event ZoomEventHandler RequestZoomToFitView;
         public event NodeEventHandler RequestCenterViewOnElement;
         public event NodeEventHandler RequestNodeCentered;
         public event ViewEventHandler RequestAddViewToOuterCanvas;
+        public event SelectionEventHandler RequestSelectionBoxUpdate;
         public event WorkspacePropertyEditHandler WorkspacePropertyEditRequested;
-
-        private bool _watchEscapeIsDown = false;
 
         /// <summary>
         /// Convenience property
@@ -72,12 +73,45 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public virtual void OnStopDragging(object sender, EventArgs e)
+        /// <summary>
+        /// For requesting registered workspace to zoom in center
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public virtual void OnRequestZoomToViewportCenter(object sender, ZoomEventArgs e)
         {
-            if (StopDragging != null)
-                StopDragging(this, e);
+            if (RequestZoomToViewportCenter != null)
+            {
+                RequestZoomToViewportCenter(this, e);
+            }
         }
-        
+
+        /// <summary>
+        /// For requesting registered workspace to zoom in out from a point
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public virtual void OnRequestZoomToViewportPoint(object sender, ZoomEventArgs e)
+        {
+            if (RequestZoomToViewportPoint != null)
+            {
+                RequestZoomToViewportPoint(this, e);
+            }
+        }
+
+        /// <summary>
+        /// For requesting registered workspace to zoom in or out to fitview
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public virtual void OnRequestZoomToFitView(object sender, ZoomEventArgs e)
+        {
+            if (RequestZoomToFitView != null)
+            {
+                RequestZoomToFitView(this, e);
+            }
+        }
+
         public virtual void OnRequestCenterViewOnElement(object sender, ModelEventArgs e)
         {
             if (RequestCenterViewOnElement != null)
@@ -94,6 +128,12 @@ namespace Dynamo.ViewModels
         {
             if (RequestAddViewToOuterCanvas != null)
                 RequestAddViewToOuterCanvas(this, e);
+        }
+
+        public virtual void OnRequestSelectionBoxUpdate(object sender, SelectionBoxUpdateArgs e)
+        {
+            if (RequestSelectionBoxUpdate != null)
+                RequestSelectionBoxUpdate(this, e);
         }
 
         public virtual void OnWorkspacePropertyEditRequested()
@@ -162,26 +202,7 @@ namespace Dynamo.ViewModels
             get { return _model.FilePath; }
         }
 
-        public void FullscreenChanged()
-        {
-            RaisePropertyChanged("FullscreenWatchVisible");
-
-            //don't re-run the expression just to update the watch
-            //just redraw it
-            //if (DynamoCommands.IsProcessingCommandQueue)
-            //    return;
-
-            //dynSettings.Controller.RunCommand( dynSettings.Controller.DynamoViewModel.RunExpressionCommand, null );
-            //dynSettings.Controller.DynamoViewModel.RunExpression(null);
-
-            dynSettings.Controller.OnRequestsRedraw(this, EventArgs.Empty);
-        }
-
-        public bool FullscreenWatchVisible
-        {
-            get { return dynSettings.Controller.DynamoViewModel.FullscreenWatchShowing; }
-        }
-
+#if false // TODO(Ben): Remove this after StateMachine has been fully tested.
         private ConnectorViewModel activeConnector;
         public ConnectorViewModel ActiveConnector
         {
@@ -211,17 +232,20 @@ namespace Dynamo.ViewModels
         //        return false;
         //    }
         //}
+#endif
 
         public bool CanEditName
         {
             get { return _model != dynSettings.Controller.DynamoViewModel.Model.HomeSpace; }
         }
 
+#if false // TODO(Ben): Remove this after StateMachine has been fully tested.
         public bool IsConnecting
         {
             get { return _isConnecting; }
             set { _isConnecting = value; }
         }
+#endif
 
         public bool IsCurrentSpace
         {
@@ -231,22 +255,6 @@ namespace Dynamo.ViewModels
         public bool IsHomeSpace
         {
             get { return _model == dynSettings.Controller.DynamoModel.HomeSpace; }
-        }
-
-        public bool WatchEscapeIsDown
-        {
-            get { return _watchEscapeIsDown; }
-            set 
-            { 
-                _watchEscapeIsDown = value;
-                RaisePropertyChanged("WatchEscapeIsDown");
-                RaisePropertyChanged("ShouldBeHitTestVisible");
-            }
-        }
-
-        public bool ShouldBeHitTestVisible
-        {
-            get { return !WatchEscapeIsDown; }
         }
 
         public bool HasUnsavedChanges
@@ -291,6 +299,7 @@ namespace Dynamo.ViewModels
         public WorkspaceViewModel(WorkspaceModel model, DynamoViewModel vm)
         {
             _model = model;
+            stateMachine = new StateMachine(this);
 
             //setup the composite collection
             var nodesColl = new CollectionContainer { Collection = Nodes };
@@ -310,12 +319,18 @@ namespace Dynamo.ViewModels
             _model.Connectors.CollectionChanged += Connectors_CollectionChanged;
             _model.PropertyChanged += ModelPropertyChanged;
 
-            //DynamoSelection.Instance.Selection.CollectionChanged += NodeFromSelectionCanExecuteChanged;
-
             // sync collections
             Nodes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Nodes));
             Connectors_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Connectors));
             Notes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Notes));
+        }
+
+        void DynamoViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "ShouldBeHitTestVisible")
+            {
+                RaisePropertyChanged("ShouldBeHitTestVisible");
+            }
         }
 
         void Connectors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -376,10 +391,6 @@ namespace Dynamo.ViewModels
                         {
                             var node = item as NodeModel;
                             _nodes.Add(new NodeViewModel(node));
-                            
-                            //submit the node for rendering
-                            if(node is IDrawable)
-                                dynSettings.Controller.OnNodeSubmittedForRendering(node, EventArgs.Empty);
                         }
                     }
                     break;
@@ -391,10 +402,6 @@ namespace Dynamo.ViewModels
                     {
                         var node = item as NodeModel;
                         _nodes.Remove(_nodes.First(x => x.NodeLogic == item));
-
-                        //remove the node from rendering
-                        if (node is IDrawable)
-                            dynSettings.Controller.OnNodeRemovedFromRendering(node, EventArgs.Empty);
                     }
                     break;
             }
@@ -414,6 +421,8 @@ namespace Dynamo.ViewModels
                 case "Zoom":
                     OnZoomChanged(this, new ZoomEventArgs(_model.Zoom));
                     RaisePropertyChanged("Zoom");
+                    ZoomInCommand.RaiseCanExecuteChanged();
+                    ZoomOutCommand.RaiseCanExecuteChanged();
                     break;
                 case "IsCurrentSpace":
                     RaisePropertyChanged("IsCurrentSpace");
@@ -641,6 +650,14 @@ namespace Dynamo.ViewModels
                     if (!DynamoSelection.Instance.Selection.Contains(n))
                         DynamoSelection.Instance.Selection.Add(n);
                 }
+                else
+                {
+                    //if the node is not contained but is selected, unselect it 
+                    if (n.IsSelected)
+                    {
+                        DynamoSelection.Instance.Selection.Remove(n);
+                    }   
+                }
             }
 
             foreach (var n in Model.Notes)
@@ -655,6 +672,13 @@ namespace Dynamo.ViewModels
                 {
                     if (!DynamoSelection.Instance.Selection.Contains(n))
                         DynamoSelection.Instance.Selection.Add(n);
+                }
+                else
+                {
+                    if (n.IsSelected)
+                    {
+                        DynamoSelection.Instance.Selection.Remove(n);
+                    } 
                 }
             }
         }
@@ -679,6 +703,13 @@ namespace Dynamo.ViewModels
                     if (!DynamoSelection.Instance.Selection.Contains(n))
                         DynamoSelection.Instance.Selection.Add(n);
                 }
+                else
+                {
+                    if (n.IsSelected)
+                    {
+                        DynamoSelection.Instance.Selection.Remove(n);
+                    }
+                }
             }
 
             foreach (var n in Model.Notes)
@@ -691,6 +722,13 @@ namespace Dynamo.ViewModels
                 {
                     if (!DynamoSelection.Instance.Selection.Contains(n))
                         DynamoSelection.Instance.Selection.Add(n);
+                }
+                else
+                {
+                    if (n.IsSelected)
+                    {
+                        DynamoSelection.Instance.Selection.Remove(n);
+                    }
                 }
             }
         }
@@ -744,12 +782,86 @@ namespace Dynamo.ViewModels
             return false;
         }
 
+        private double _zoomIncrement = 0.05;
+
+        private void ZoomIn(object o)
+        {
+            OnRequestZoomToViewportCenter(this, new ZoomEventArgs(_zoomIncrement));
+        }
+
+        private bool CanZoomIn(object o)
+        {
+            return CanZoom(_zoomIncrement);
+        }
+
+        private void ZoomOut(object o)
+        {
+            OnRequestZoomToViewportCenter(this, new ZoomEventArgs(-_zoomIncrement));
+        }
+
+        private bool CanZoomOut(object o)
+        {
+            return CanZoom(-_zoomIncrement);
+        }
+
+        private bool CanZoom(double zoom)
+        {
+            if ((zoom < 0 && _model.Zoom <= WorkspaceModel.ZOOM_MINIMUM)
+                || (zoom > 0 && _model.Zoom >= WorkspaceModel.ZOOM_MAXIMUM))
+                return false;
+            return true;
+        }
+
         private void SetZoom(object zoom)
         {
             _model.Zoom = Convert.ToDouble(zoom); ;
         }
 
         private bool CanSetZoom(object zoom)
+        {
+            return true;
+        }
+
+        private bool _fitViewActualZoomToggle = true;
+        private void FitView(object o)
+        {
+            // Get the offset and focus width & height (zoom if 100%)
+            double minX, maxX, minY, maxY;
+
+            // Get the width and height of area to fit
+            if (DynamoSelection.Instance.Selection.Count > 0)
+            {   // has selection
+                minX = GetSelectionMinX();
+                maxX = GetSelectionMaxX();
+                minY = GetSelectionMinY();
+                maxY = GetSelectionMaxY();
+            }
+            else
+            {   // no selection, fitview all nodes
+                if (_nodes.Count() <= 0) return;
+
+                IEnumerable<ILocatable> nodes = _nodes.Select((x) => x.NodeModel).Where((x) => x is ILocatable).Cast<ILocatable>();
+                minX = nodes.Select((x) => x.X).Min();
+                maxX = nodes.Select((x) => x.X + x.Width).Max();
+                minY = nodes.Select((y) => y.Y).Min();
+                maxY = nodes.Select((y) => y.Y + y.Height).Max();
+            }
+
+            Point offset = new Point(minX, minY);
+            double focusWidth = maxX - minX;
+            double focusHeight = maxY - minY;
+            ZoomEventArgs zoomArgs;
+
+            _fitViewActualZoomToggle = !_fitViewActualZoomToggle;
+            if (_fitViewActualZoomToggle)
+                zoomArgs = new ZoomEventArgs(offset, focusWidth, focusHeight);
+            else
+                zoomArgs = new ZoomEventArgs(offset, focusWidth, focusHeight, 1.0);
+
+            OnRequestZoomToFitView(this, zoomArgs);
+        }
+
+        private bool CanFitView(object o)
         {
             return true;
         }

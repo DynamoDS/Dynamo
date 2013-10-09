@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Controls;
 using System.Reflection;
@@ -102,6 +103,10 @@ namespace Dynamo.Utilities
                         allLoadedAssemblies[assembly.GetName().Name] = assembly;
                         LoadNodesFromAssembly(assembly);
                     }
+                    catch (BadImageFormatException)
+                    {
+                        //swallow these warnings.
+                    }
                     catch(Exception e)
                     {
                         DynamoLogger.Instance.Log(e);
@@ -109,27 +114,34 @@ namespace Dynamo.Utilities
                 }
             }
 
-            LoadDSBuiltInFunctions();
+            LoadDSLibraries();
             AppDomain.CurrentDomain.AssemblyResolve -= resolver;
 
             #endregion
 
         }
 
-        private static void LoadDSBuiltInFunctions()
+        private static void LoadDSLibraries()
         {
             var searchViewModel = dynSettings.Controller.SearchViewModel;
             var controller = dynSettings.Controller;
 
-            foreach (var method in DSUtil.Instance.DSBuiltInMethods)
+            List<string> libraries = DSLibrary.Instance.Libraries;
+            foreach (var library in libraries)
             {
-                searchViewModel.Add("BuiltIn Functions", method.DisplayName, "", new List<String> { }, true);
-                if (!controller.DSBuiltInFunctions.ContainsKey(method.DisplayName))
+                List<Dynamo.Nodes.DSFunctionItem> functions = DSLibrary.Instance[library];
+
+                foreach (var function in functions)
                 {
-                    controller.DSBuiltInFunctions.Add(method.DisplayName, method);
+                    searchViewModel.Add(function.Category, function.DisplayName, "", new List<String> { }, true);
+                    if (!controller.DSImportedFunctions.ContainsKey(function.DisplayName))
+                    {
+                        controller.DSImportedFunctions.Add(function.DisplayName, function);
+                    }
                 }
+
             }
-       }
+        }
 
         /// <summary>
         ///     Determine if a Type is a node.  Used by LoadNodesFromAssembly to figure
@@ -162,8 +174,8 @@ namespace Dynamo.Utilities
 
             try
             {
-                Type[] loadedTypes = assembly.GetTypes();
-
+                var loadedTypes = assembly.GetTypes();
+ 
                 foreach (var t in loadedTypes)
                 {
                     try
@@ -281,6 +293,7 @@ namespace Dynamo.Utilities
 
             return AssemblyPathToTypesLoaded[assembly.Location];
         }
+
 
         /// <summary>
         ///     Setup the "Samples" sub-menu with contents of samples directory.

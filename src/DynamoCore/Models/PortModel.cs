@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows;
-using Dynamo.FSchemeInterop;
+using System.Xml;
+using Dynamo.Utilities;
 
 namespace Dynamo.Models
 {
@@ -17,19 +17,15 @@ namespace Dynamo.Models
     {
         #region events
 
+        /// <summary>
+        /// Event triggered when a port is connected.
+        /// </summary>
         public event PortConnectedHandler PortConnected;
-        public event PortConnectedHandler PortDisconnected;
 
-        protected virtual void OnPortConnected(EventArgs e)
-        {
-            if (PortConnected != null)
-                PortConnected(this, e);
-        }
-        protected virtual void OnPortDisconnected(EventArgs e)
-        {
-            if (PortDisconnected != null)
-                PortDisconnected(this, e);
-        }
+        /// <summary>
+        /// Event triggered when a port is disconnected.
+        /// </summary>
+        public event PortConnectedHandler PortDisconnected;
 
         #endregion
 
@@ -199,14 +195,17 @@ namespace Dynamo.Models
 
         public void Disconnect(ConnectorModel connector)
         {
+            if (!connectors.Contains(connector))
+                return;
+            
             //throw the event for a connection
             OnPortDisconnected(EventArgs.Empty);
 
-            if (connectors.Contains(connector))
-            {
-                connectors.Remove(connector);
-            }
+            //also trigger the model's connector deletion
+            dynSettings.Controller.DynamoModel.OnConnectorDeleted(connector);
 
+            connectors.Remove(connector);
+            
             //don't set back to white if
             //there are still connectors on this port
             if (connectors.Count == 0)
@@ -214,16 +213,44 @@ namespace Dynamo.Models
                 IsConnected = false;
             }
 
-            if (connectors.Count == 0)
-                Owner.State = ElementState.DEAD;
-
+            Owner.ValidateConnections();
         }
 
-        internal void KillAllConnectors()
+        /// <summary>
+        /// Called when a port is connected.
+        /// </summary>
+        /// <param name="e"></param>
+        protected virtual void OnPortConnected(EventArgs e)
         {
-            foreach (var c in connectors.ToList())
-                c.NotifyConnectedPortsOfDeletion();
+            if (PortConnected != null)
+                PortConnected(this, e);
         }
+
+        /// <summary>
+        /// Called when a port is disconnected.
+        /// </summary>
+        /// <param name="e"></param>
+        protected virtual void OnPortDisconnected(EventArgs e)
+        {
+            if (PortDisconnected != null)
+                PortDisconnected(this, e);
+        }
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            // We are not deserializing the ports.
+            throw new NotImplementedException();
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            // We are not deserializing the ports.
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 
     public class PortData
