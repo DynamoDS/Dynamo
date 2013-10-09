@@ -18,10 +18,15 @@ namespace DSNodeServices
         {
             Object data = Thread.GetData(Thread.GetNamedDataSlot(key));
 
+            //Null is ok
+            if (data == null)
+                return null;
+
             ISerializable ret= data as ISerializable;
             if (ret != null)
                 return ret;
        
+            //Data, that was not serializable is not
             throw new InvalidOperationException("Data in Named slot was not serializable");
         }
 
