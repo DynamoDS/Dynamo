@@ -1885,7 +1885,7 @@ namespace Dynamo.Models
                 }
 
                 result = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(symbol)
-                    .Workspace.GetTopMostNodes().Any(ContinueTraversalUntilAny);
+                    .WorkspaceModel.GetTopMostNodes().Any(ContinueTraversalUntilAny);
             }
             _resultDict[entry] = result;
             if (result)
