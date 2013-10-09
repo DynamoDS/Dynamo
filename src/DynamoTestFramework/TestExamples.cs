@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
+using Autodesk.Revit.DB;
 
 namespace Dynamo.Tests
 {
@@ -8,7 +10,29 @@ namespace Dynamo.Tests
         [Test]
         public void TestOne()
         {
-            Assert.Fail("This failed.");
+            using (var t = new Transaction(RevitData.Document.Document))
+            {
+                if (t.Start("Test one.") == TransactionStatus.Started)
+                {
+                    //create a reference point
+                    var pt = RevitData.Document.Document.FamilyCreate.NewReferencePoint(new XYZ(5, 5, 5));
+
+                    if (t.Commit() != TransactionStatus.Committed)
+                    {
+                        t.RollBack();
+                    }
+                }
+                else
+                {
+                    throw new Exception("Transaction could not be started.");
+                }
+            }
+
+            //verify that the point was created
+            var collector = new FilteredElementCollector(RevitData.Document.Document);
+            collector.OfClass(typeof (ReferencePoint));
+
+            Assert.AreEqual(1, collector.ToElements().Count);
         }
 
         [Test]
@@ -24,5 +48,26 @@ namespace Dynamo.Tests
             Assert.AreEqual(0,0);
         } 
     }
-    
+
+    [TestFixture]
+    public class TestExampleFixture
+    {
+        [Test]
+        public void TestA()
+        {
+            Assert.Fail("This test fails");
+        }
+
+        [Test]
+        public void TestB()
+        {
+            Assert.AreEqual(0, 0);
+        }
+
+        [Test]
+        public void TestC()
+        {
+            Assert.Inconclusive("This is inconclusive");
+        }
+    }
 }

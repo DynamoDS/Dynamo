@@ -467,6 +467,7 @@ namespace Dynamo
 
                 if (node.IsUpstreamVisible)
                     drawables.AddRange(GetUpstreamDrawableIds(node.Inputs));
+
             }
 
             return drawables;
