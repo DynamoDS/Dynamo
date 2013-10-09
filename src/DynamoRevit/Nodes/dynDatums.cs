@@ -89,6 +89,8 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("level", "The level.", typeof(Value.Container)));
 
             RegisterAllPorts();
+
+            PopulateItems();
         }
 
         public override void PopulateItems()

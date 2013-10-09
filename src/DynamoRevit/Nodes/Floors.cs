@@ -5,6 +5,7 @@ using Autodesk.Revit.DB;
 using Dynamo.Models;
 using Dynamo.Revit;
 using Dynamo.Utilities;
+using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Nodes
@@ -14,8 +15,6 @@ namespace Dynamo.Nodes
     [NodeDescription("Get a material from the active Revit document by name.")]
     public class FloorByOutlineLevelAndOffset : RevitTransactionNodeWithOneOutput
     {
-        private List<Curve> edgeList;
-
         public FloorByOutlineLevelAndOffset()
         {
             InPortData.Add(new PortData("curves", "A list of curves representing the edges of the floor.", typeof(Value.List)));
@@ -25,6 +24,7 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("floor", "The floor.", typeof(Value.Container)));
 
             RegisterAllPorts();
+
         }
 
         public override FScheme.Value Evaluate(Microsoft.FSharp.Collections.FSharpList<FScheme.Value> args)
@@ -47,49 +47,38 @@ namespace Dynamo.Nodes
                 throw new Exception("The edge list provided does not have an adequate number of edges to create a floor.");
             }
 
-            if (edgeList == null)
-            {
-                edgeList = new List<Curve>();
-            }
-
             if (this.Elements.Any())
             {
-
-                edgeList.Clear();
-                edges.ToList().ForEach(x => edgeList.Add((Curve) ((Value.Container) x).Item));
-
                 if (dynUtils.TryGetElement(this.Elements[0], out floor))
                 {
                     //Delete the existing floor. Revit API does not allow update of floor sketch.
                     dynRevitSettings.Doc.Document.Delete(floor.Id);
                 }
 
-                var ca = new CurveArray();
-                edgeList.ForEach(ca.Append);
-
-                floor = dynRevitSettings.Doc.Document.Create.NewFloor(ca, floorType, level, false);
+                floor = CreateFloor(edges, floorType, level);
                 this.Elements[0] = floor.Id;
-
             }
             else
             {
-                edgeList.Clear();
-                edges.ToList().ForEach(x => edgeList.Add((Curve)((Value.Container)x).Item));
-
-                var ca = new CurveArray();
-                edgeList.ForEach(ca.Append);
-
-                floor = dynRevitSettings.Doc.Document.Create.NewFloor(ca, floorType, level, false);
+                floor = CreateFloor(edges, floorType, level);
                 Elements.Add(floor.Id);
             }
 
             return Value.NewContainer(floor);
         }
+
+        private static Autodesk.Revit.DB.Floor CreateFloor(IEnumerable<Value> edges, FloorType floorType, Autodesk.Revit.DB.Level level)
+        {
+            var ca = new CurveArray();
+            edges.ToList().ForEach(x => ca.Append((Curve) ((Value.Container) x).Item));
+            var floor = dynRevitSettings.Doc.Document.Create.NewFloor(ca, floorType, level, false);
+            return floor;
+        }
     }
 
     [NodeName("Select Floor Type")]
     [NodeCategory(BuiltinNodeCategories.REVIT_DOCUMENT)]
-    [NodeDescription("Get a material from the active Revit document by name.")]
+    [NodeDescription("Select a floor type.")]
     public class SelectFloorType : DropDrownBase
     {
         public SelectFloorType()
@@ -97,6 +86,8 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("floor type", "The selected floor type.", typeof(Value.Container)));
 
             RegisterAllPorts();
+
+            PopulateItems();
         }
 
         public override void PopulateItems()
