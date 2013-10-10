@@ -78,17 +78,25 @@ namespace Dynamo.Models
         {
             var originalPath = this.FileName;
             var originalGuid = this.FunctionDefinition.FunctionId;
+            var newGuid = Guid.NewGuid();
+            var doRefactor = originalPath != newPath && originalPath != null;
 
             this.Name = Path.GetFileNameWithoutExtension(newPath);
 
-            if (originalPath != newPath && originalPath != null)
+            // need to do change the function id temporarily so saved file is correct
+            if (doRefactor)
             {
-                this.FunctionDefinition.FunctionId = Guid.NewGuid();
+                this.FunctionDefinition.FunctionId = newGuid;
             }
 
             if (!base.SaveAs(newPath))
             {
                 return false;
+            }
+
+            if (doRefactor)
+            {
+                this.FunctionDefinition.FunctionId = originalGuid;
             }
 
             if (originalPath == null)
@@ -100,7 +108,7 @@ namespace Dynamo.Models
 
             // A SaveAs to an existing function id prompts the creation of a new 
             // custom node with a new function id
-            if ( originalPath != newPath && originalPath != null )
+            if ( doRefactor )
             {
                 if (!File.Exists(originalPath))
                 {
@@ -114,14 +122,23 @@ namespace Dynamo.Models
                 dynSettings.CustomNodeManager.Remove(originalGuid);
                 dynSettings.CustomNodeManager.AddFileToPath(originalPath);
                 var origDef = dynSettings.CustomNodeManager.GetFunctionDefinition(originalGuid);
+                if (origDef == null)
+                {
+                    return false;
+                }
 
                 // reassign existing nodes to point to newly deserialized function def
-                GetExistingNodes().ForEach(node =>
-                    {
-                        node.Definition = origDef;
-                    });
+                dynSettings.Controller.DynamoModel.AllNodes
+                        .OfType<Function>()
+                        .Where(el => el.Definition.FunctionId == originalGuid)
+                        .ToList()
+                        .ForEach(node =>
+                            {
+                                node.Definition = origDef;
+                            });
 
-                // this workspace points to itself
+                // update this workspace with its new id
+                newDef.FunctionId = newGuid;
                 newDef.SyncWithWorkspace(true, true);
             }
 
