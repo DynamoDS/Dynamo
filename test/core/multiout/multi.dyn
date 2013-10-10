@@ -1,0 +1,16 @@
+<Workspace Version="0.7.0.24154" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="4d4147b8-829f-4598-8502-eb24469cf8e2" nickname="Number" x="24" y="44.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.NewList type="Dynamo.Nodes.NewList" guid="ec872a47-0cce-4e50-8a42-e3fd6c4f9997" nickname="List" x="135" y="44.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="index0" />
+    </Dynamo.Nodes.NewList>
+    <Dynamo.Nodes.DeCons type="Dynamo.Nodes.DeCons" guid="a4d6ecce-0fe7-483d-a4f2-cd8cddefa25c" nickname="Split List" x="242" y="102.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="4d4147b8-829f-4598-8502-eb24469cf8e2" start_index="0" end="ec872a47-0cce-4e50-8a42-e3fd6c4f9997" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ec872a47-0cce-4e50-8a42-e3fd6c4f9997" start_index="0" end="a4d6ecce-0fe7-483d-a4f2-cd8cddefa25c" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
