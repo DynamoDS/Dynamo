@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using Dynamo.Nodes;
 using Dynamo.PackageManager;
 
 namespace Dynamo.Utilities
@@ -30,7 +31,7 @@ namespace Dynamo.Utilities
         public static ObservableDictionary<string, Guid> CustomNodes {
             get
             {
-                return dynSettings.Controller.CustomNodeManager.NodeNames;
+                return dynSettings.Controller.CustomNodeManager.GetAllNodeNames();
             }
         }
 
@@ -69,7 +70,6 @@ namespace Dynamo.Utilities
                 s = s.Replace(c, "");
             return s;
         }
-
     }
  
 }

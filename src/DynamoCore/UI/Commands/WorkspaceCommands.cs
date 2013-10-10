@@ -7,7 +7,6 @@ namespace Dynamo.ViewModels
         private DelegateCommand _hideCommand;
         private DelegateCommand _crossSelectCommand;
         private DelegateCommand _containSelectCommand;
-        //private DelegateCommand _updateSelectedConnectorsCommand;
         private DelegateCommand _setCurrentOffsetCommand;
         private DelegateCommand _nodeFromSelectionCommand;
         private DelegateCommand _setZoomCommand;
@@ -63,16 +62,6 @@ namespace Dynamo.ViewModels
                 return _containSelectCommand;
             }
         }
-
-        //public DelegateCommand UpdateSelectedConnectorsCommand
-        //{
-        //    get
-        //    {
-        //        if(_updateSelectedConnectorsCommand == null)
-
-        //        return _updateSelectedConnectorsCommand;
-        //    }
-        //}
 
         public DelegateCommand SetCurrentOffsetCommand
         {

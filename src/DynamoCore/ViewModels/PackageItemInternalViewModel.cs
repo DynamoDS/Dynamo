@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows;
+using Dynamo.Nodes;
 using Dynamo.Nodes.Search;
 
 namespace Dynamo.PackageManager.UI

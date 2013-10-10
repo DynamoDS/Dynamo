@@ -1,0 +1,22 @@
+<Workspace Version="0.7.0.22310" X="-236.218181818182" Y="113.934025974026" zoom="0.9" Description="" Category="Ian" Name="Points" ID="29a3cd04-d452-4c02-a0a6-1796527e008f">
+  <Elements>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="ad3eed1d-a29b-4dcd-9d18-549737a9f2ac" nickname="Number" x="590" y="61.9841269841269" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <System.Double value="0..a" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="c7cd4391-76f1-4cfe-8125-d9b6f6a7a8b1" nickname="Output" x="990.666666666667" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="xyz" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="73971cdd-931e-4ad2-a2e7-085361fc8180" nickname="Input" x="401.857142857143" y="85.6238095238095" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="number of points" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Point3DNode type="Dynamo.Nodes.Point3DNode" guid="153511ef-8281-4a1e-bbfc-aeba4bc4c4fc" nickname="Point" x="794.686868686869" y="37.0733044733043" isVisible="true" isUpstreamVisible="true" lacing="CrossProduct" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="ad3eed1d-a29b-4dcd-9d18-549737a9f2ac" start_index="0" end="153511ef-8281-4a1e-bbfc-aeba4bc4c4fc" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ad3eed1d-a29b-4dcd-9d18-549737a9f2ac" start_index="0" end="153511ef-8281-4a1e-bbfc-aeba4bc4c4fc" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ad3eed1d-a29b-4dcd-9d18-549737a9f2ac" start_index="0" end="153511ef-8281-4a1e-bbfc-aeba4bc4c4fc" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="73971cdd-931e-4ad2-a2e7-085361fc8180" start_index="0" end="ad3eed1d-a29b-4dcd-9d18-549737a9f2ac" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="153511ef-8281-4a1e-bbfc-aeba4bc4c4fc" start_index="0" end="c7cd4391-76f1-4cfe-8125-d9b6f6a7a8b1" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

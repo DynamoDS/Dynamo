@@ -252,7 +252,7 @@ namespace Dynamo.DSEngine
         AssociativeNode Build(Pause node, List<AssociativeNode> inputs);
         AssociativeNode Build(Watch node, List<AssociativeNode> inputs);
 
-        AssociativeNode Build(RenderDescription node, List<AssociativeNode> inputs);
+        //AssociativeNode Build(RenderDescription node, List<AssociativeNode> inputs);
         AssociativeNode Build(VariableInput node, List<AssociativeNode> inputs);
         AssociativeNode Build(Symbol node, List<AssociativeNode> inputs);
         AssociativeNode Build(Formula node, List<AssociativeNode> inputs);
@@ -941,10 +941,10 @@ namespace Dynamo.DSEngine
             throw new NotImplementedException();
         }
 
-        public AssociativeNode Build(RenderDescription node, List<AssociativeNode> inputs)
-        {
-            throw new NotImplementedException();
-        }
+        //public AssociativeNode Build(RenderDescription node, List<AssociativeNode> inputs)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public AssociativeNode Build(Repeat node, List<AssociativeNode> inputs)
         {

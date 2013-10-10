@@ -234,7 +234,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
     [NodeDescription("Visualize analytical results at speficied UV values on a face.")]
     [AlsoKnownAs("dynAnalysisResults", "AnalysisResults")]
-    class SpatialFieldFace : RevitTransactionNodeWithOneOutput, IClearable
+    class SpatialFieldFace : RevitTransactionNodeWithOneOutput  //, IClearable
     {
         const string DYNAMO_ANALYSIS_RESULTS_NAME = "Dynamo Analysis Results by Face";
 
@@ -334,7 +334,7 @@ namespace Dynamo.Nodes
     [NodeName("Spatial Field Points")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
     [NodeDescription("Visualize analytical results at speficied XYZ locations.")]
-    class SpatialFieldPoints : RevitTransactionNodeWithOneOutput, IClearable
+    class SpatialFieldPoints : RevitTransactionNodeWithOneOutput //, IClearable
     {
         const string DYNAMO_ANALYSIS_RESULTS_NAME = "Dynamo Analysis Results at Points";
 
@@ -420,7 +420,7 @@ namespace Dynamo.Nodes
     [NodeName("Spatial Field Vectors")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
     [NodeDescription("Visualize analytical vectors speficied XYZ locations.")]
-    class SpatialFieldVectors : RevitTransactionNodeWithOneOutput, IClearable
+    class SpatialFieldVectors : RevitTransactionNodeWithOneOutput //, IClearable
     {
         const string DYNAMO_ANALYSIS_RESULTS_NAME = "Dynamo Analysis Results Vectors";
 
@@ -602,7 +602,7 @@ namespace Dynamo.Nodes
     [NodeName("Spatial Field Curve")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
     [NodeDescription("Visualize analytical data along a curve.")]
-    class SpatialFieldCurve : RevitTransactionNodeWithOneOutput, IClearable
+    class SpatialFieldCurve : RevitTransactionNodeWithOneOutput //, IClearable
     {
         const string DYNAMO_TEMP_CURVES_SCHEMA = "Dynamo Analysis Results by Curve";
 
@@ -754,6 +754,134 @@ namespace Dynamo.Nodes
             }
 
             idxs.Clear();
+        }
+    }
+
+    [NodeName("Ray Bounce")]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_SURFACE)]
+    [NodeDescription("Conduct a ray trace analysis from an origin and direction, providing the maximum number of bounces.")]
+    class RayBounce:RevitTransactionNode
+    {
+        private Face currFace;
+
+        private PortData intersections = new PortData("intersections", "The collection of intersection points.",
+                                                      typeof (Value.List));
+
+        private PortData elements = new PortData("elements", "The elements intersected by the ray.", typeof (Value.List));
+
+        public RayBounce()
+        {
+            InPortData.Add(new PortData("origin", "The origin of the ray.", typeof(Value.Container)));
+            InPortData.Add(new PortData("direction", "The direction of the ray.", typeof(Value.Container)));
+            InPortData.Add(new PortData("max. bounces.", "The maximum number of bounces allowed.", typeof(Value.Number)));
+            InPortData.Add(new PortData("view", "The view in which to conduct the analysis.", typeof(Value.Container)));
+
+            OutPortData.Add(intersections);
+            OutPortData.Add(elements);
+
+            RegisterAllPorts();
+        }
+
+        public override void  Evaluate(FSharpList<Value> args, Dictionary<PortData,Value> outPuts)
+        {
+            var origin = (XYZ) ((Value.Container) args[0]).Item;
+            var direction = (XYZ)((Value.Container)args[1]).Item;
+            var rayLimit = ((Value.Number)args[2]).Item;
+            var view = (View3D)((Value.Container) args[3]).Item;
+
+            XYZ startpt = origin;
+            int rayCount = 0;
+
+            var bouncePts = FSharpList<Value>.Empty;
+            var bounceElements = FSharpList<Value>.Empty;
+            bouncePts = FSharpList<Value>.Cons(Value.NewContainer(origin), bouncePts);
+
+            for (int ctr = 1; ctr <= rayLimit; ctr++)
+            {
+                var referenceIntersector = new ReferenceIntersector(view);
+                IList<ReferenceWithContext> references = referenceIntersector.Find(startpt, direction);
+                ReferenceWithContext rClosest = null;
+                rClosest = FindClosestReference(references);
+                if (rClosest == null)
+                {
+                    break;
+                }
+                else
+                {
+                    var reference = rClosest.GetReference();
+                    var referenceElement = dynRevitSettings.Doc.Document.GetElement(reference);
+                    bounceElements = FSharpList<Value>.Cons(Value.NewContainer(referenceElement), bounceElements);
+                    var referenceObject = referenceElement.GetGeometryObjectFromReference(reference);
+                    var endpt = reference.GlobalPoint;
+                    if (startpt.IsAlmostEqualTo(endpt))
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        rayCount = rayCount + 1;
+                        currFace = referenceObject as Face;
+                        var endptUV = reference.UVPoint;
+                        var FaceNormal = currFace.ComputeDerivatives(endptUV).BasisZ;  // face normal where ray hits
+                        FaceNormal = rClosest.GetInstanceTransform().OfVector(FaceNormal); // transformation to get it in terms of document coordinates instead of the parent symbol
+                        var directionMirrored = direction - 2 * direction.DotProduct(FaceNormal) * FaceNormal; //http://www.fvastro.org/presentations/ray_tracing.htm
+                        direction = directionMirrored; // get ready to shoot the next ray
+                        startpt = endpt;
+
+                        bouncePts = FSharpList<Value>.Cons(Value.NewContainer(endpt), bouncePts);
+                    }
+                }
+            }
+            bouncePts.Reverse();
+            bounceElements.Reverse();
+
+            outPuts[intersections] = Value.NewList(bouncePts);
+            outPuts[elements] = Value.NewList(bounceElements);
+        }
+
+        /// <summary>
+        /// Find the first intersection with a face
+        /// </summary>
+        /// <param name="references"></param>
+        /// <returns></returns>
+        public Autodesk.Revit.DB.ReferenceWithContext FindClosestReference(IList<ReferenceWithContext> references)
+        {
+            ReferenceWithContext rClosest = null;
+
+            double face_prox = System.Double.PositiveInfinity;
+            double edge_prox = System.Double.PositiveInfinity;
+            foreach (ReferenceWithContext r in references)
+            {
+                Reference reference = r.GetReference();
+                Element referenceElement = dynRevitSettings.Doc.Document.GetElement(reference);
+                GeometryObject referenceGeometryObject = referenceElement.GetGeometryObjectFromReference(reference);
+                currFace = null;
+                currFace = referenceGeometryObject as Face;
+                Edge edge = null;
+                edge = referenceGeometryObject as Edge;
+                if (currFace != null)
+                {
+                    if ((r.Proximity < face_prox) && (r.Proximity > System.Double.Epsilon))
+                    {
+                        rClosest = r;
+                        face_prox = Math.Abs(r.Proximity);
+                    }
+                }
+                else if (edge != null)
+                {
+                    if ((r.Proximity < edge_prox) && (r.Proximity > System.Double.Epsilon))
+                    {
+                        edge_prox = Math.Abs(r.Proximity);
+                    }
+                }
+            }
+            if (edge_prox <= face_prox)
+            {
+                // stop bouncing if there is an edge at least as close as the nearest face - there is no single angle of reflection for a ray striking a line
+                //m_outputInfo.Add("there is an edge at least as close as the nearest face - there is no single angle of reflection for a ray striking a line");
+                rClosest = null;
+            }
+            return rClosest;
         }
     }
 }

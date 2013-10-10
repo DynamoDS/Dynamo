@@ -82,8 +82,8 @@ namespace Dynamo.Models
 
         private ConnectorModel(NodeModel start, NodeModel end, int startIndex, int endIndex, int portType )
         {
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
+            //Stopwatch sw = new Stopwatch();
+            //sw.Start();
             pStart = start.OutPorts[startIndex];
 
             PortModel endPort = null;
@@ -93,8 +93,8 @@ namespace Dynamo.Models
 
             pStart.Connect(this);
             this.Connect(endPort);
-            sw.Stop();
-            Debug.WriteLine(string.Format("{0} elapsed for constructing connector.", sw.Elapsed));
+            //sw.Stop();
+            //Debug.WriteLine(string.Format("{0} elapsed for constructing connector.", sw.Elapsed));
         }
 
         public static ConnectorModel Make()

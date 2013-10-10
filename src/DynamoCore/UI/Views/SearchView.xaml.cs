@@ -70,9 +70,9 @@ namespace Dynamo.Search
             //setup the regions on the view model
             _viewModel.Regions = new ObservableDictionary<string, RegionBase>();
             //Regions.Add("Include Nodes from Package Manager", DynamoCommands.PackageManagerRegionCommand );
-            var region = new RevitAPIRegion(SearchViewModel.RevitAPIRegionExecute, SearchViewModel.RevitAPIRegionCanExecute);
-            region.RaiseCanExecuteChanged();
-            _viewModel.Regions.Add("Include Experimental Revit API Nodes", region);
+            //var region = new RevitAPIRegion(SearchViewModel.RevitAPIRegionExecute, SearchViewModel.RevitAPIRegionCanExecute);
+            //region.RaiseCanExecuteChanged();
+            //_viewModel.Regions.Add("Include Experimental Revit API Nodes", region);
 
         }
 
@@ -106,6 +106,16 @@ namespace Dynamo.Search
         /// <param name="e">Parameters describing the key push</param>
         public void KeyHandler(object sender, KeyEventArgs e)
         {
+
+            // ignore the key command if modifiers are present
+            if (e.KeyboardDevice.IsKeyDown(Key.LeftCtrl) || 
+                e.KeyboardDevice.IsKeyDown(Key.RightCtrl) || 
+                e.KeyboardDevice.IsKeyDown(Key.LeftAlt) || 
+                e.KeyboardDevice.IsKeyDown(Key.RightAlt))
+            {
+                return;
+            }
+
             switch (e.Key)
             {
                 case Key.Return:

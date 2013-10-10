@@ -79,6 +79,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DynamoElementsTests\DynamoCoreTests.csproj">
+      <Project>{472084ED-1067-4B2C-8737-3839A6143EB2}</Project>
+      <Name>DynamoCoreTests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DynamoRevit\DynamoRevit.csproj">
       <Project>{FD56AE51-739E-4893-8DE4-925D60C7097C}</Project>
       <Name>DynamoRevit</Name>

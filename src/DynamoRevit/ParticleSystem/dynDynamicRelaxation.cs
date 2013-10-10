@@ -14,86 +14,27 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Autodesk.Revit.DB;
-using Dynamo.Connectors;
 using Dynamo.Controls;
 using Dynamo.FSchemeInterop;
 using Dynamo.Models;
-using Dynamo.Revit;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
-using System.Windows.Media.Media3D;
 
 namespace Dynamo.Nodes
 {
-
-    public abstract class ParticleSystemBase : NodeModel, IDrawable
+    public abstract class ParticleSystemBase : NodeModel
     {
         internal ParticleSystem ParticleSystem;
 
         internal ParticleSystemBase()
         {
-            dynSettings.Controller.RequestsRedraw += Controller_RequestsRedraw;
-        }
-
-        void Controller_RequestsRedraw(object sender, EventArgs e)
-        {
-            Draw();
-        }
-
-        public RenderDescription RenderDescription
-        {
-            get;
-            set;
-        }
-
-        public void Draw()
-        {
-            if (RenderDescription == null)
-                RenderDescription = new RenderDescription();
-
-            if (ParticleSystem == null)
-                return;
-
-            for (int i = 0; i < ParticleSystem.numberOfParticles(); i++)
-            {
-                Particle p = ParticleSystem.getParticle(i);
-                XYZ pos = p.getPosition();
-                if (i < RenderDescription.points.Count())
-                {
-                    RenderDescription.points[i] = new Point3D(pos.X, pos.Y, pos.Z);
-                }
-                else
-                {
-                    var pt = new Point3D(pos.X, pos.Y, pos.Z);
-                    RenderDescription.points.Add(pt);
-                }
-            }
-
-            for (int i = 0; i < ParticleSystem.numberOfSprings(); i++)
-            {
-                ParticleSpring ps = ParticleSystem.getSpring(i);
-                XYZ pos1 = ps.getOneEnd().getPosition();
-                XYZ pos2 = ps.getTheOtherEnd().getPosition();
-
-                if (i * 2 + 1 < RenderDescription.lines.Count())
-                {
-                    RenderDescription.lines[i * 2] = new Point3D(pos1.X, pos1.Y, pos1.Z);
-                    RenderDescription.lines[i * 2 + 1] = new Point3D(pos2.X, pos2.Y, pos2.Z);
-                }
-                else
-                {
-                    var pt1 = new Point3D(pos1.X, pos1.Y, pos1.Z);
-                    var pt2 = new Point3D(pos2.X, pos2.Y, pos2.Z);
-
-                    RenderDescription.lines.Add(pt1);
-                    RenderDescription.lines.Add(pt2);
-                }
-            }
+            ParticleSystem = new ParticleSystem();
         }
     }
 
@@ -139,9 +80,6 @@ namespace Dynamo.Nodes
             OutPortData.Add(_forcesPort);
 
             RegisterAllPorts();
-
-            ParticleSystem = new ParticleSystem();
-
         }
 
         void setupLineTest(int maxPartX, int maxPartY, double springDampening, double springRestLength, double springConstant, double mass)
@@ -415,8 +353,6 @@ namespace Dynamo.Nodes
 
             OutPortData.Add(new PortData("ps", "Particle System", typeof(Value.Container)));
             RegisterAllPorts();
-
-            ParticleSystem = new ParticleSystem();
         }
 
         void setupParticleSystem(Autodesk.Revit.DB.Face f, int uDiv, int vDiv, double springDampening, double springRestLength, double springConstant, double mass)
@@ -492,6 +428,9 @@ namespace Dynamo.Nodes
         private readonly PortData _vMaxPort = new PortData(
             "vMax", "Maximum nodal velocity.", typeof(Value.Number));
 
+        private Visualization _visualization;
+        //private int _stepCount = 0;
+
         private readonly PortData _convergedPort = new PortData(
             "converged?",
             "Has the maximum nodal velocity dropped below the threshold set for the system?",
@@ -518,7 +457,14 @@ namespace Dynamo.Nodes
             //trigger an intermittent update on the controller
             //this is useful for when this node is used in an infinite
             //loop and you need to draw its contents
-            dynSettings.Controller.OnRequestsRedraw(this, EventArgs.Empty);
+
+            //throttle sending visualization updates.
+            //_stepCount++;
+            //if (_stepCount > 10)
+            //{
+                dynSettings.Controller.OnRequestsRedraw(this, EventArgs.Empty);
+                //_stepCount = 0;
+            //}
 
             outPuts[_vMaxPort] = Value.NewNumber(partSys.getMaxNodalVelocity());
             outPuts[_convergedPort] = Value.NewNumber(Convert.ToInt16(partSys.getConverged()));

@@ -209,7 +209,6 @@ namespace Dynamo.Applications
 
                     dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.Updater, typeof(DynamoRevitViewModel), context);
                         
-
                     dynamoView = new DynamoView { DataContext = dynamoController.DynamoViewModel };
                     dynamoController.UIDispatcher = dynamoView.Dispatcher;
 
@@ -348,6 +347,7 @@ namespace Dynamo.Applications
             dynamoViewWidth = dynamoView.ActualWidth;
             dynamoViewHeight = dynamoView.ActualHeight;
             IdlePromise.ClearPromises();
+            IdlePromise.Shutdown();
         }
 
         /// <summary>

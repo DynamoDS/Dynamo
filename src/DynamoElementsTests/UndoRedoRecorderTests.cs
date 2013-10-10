@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using System.IO;
 using Dynamo.Core;
+using Dynamo.Nodes;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using NUnit.Framework;
@@ -97,6 +99,20 @@ namespace Dynamo.Tests
             undoRecorder.RecordDeletionForUndo(model);
             undoRecorder.EndActionGroup();
             models.Remove(model);
+        }
+
+        internal void RemoveModels(int []identifiers)
+        {
+            undoRecorder.BeginActionGroup();
+
+            foreach (int identifier in identifiers)
+            {
+                DummyModel model = GetModel(identifier);
+                undoRecorder.RecordDeletionForUndo(model);
+                models.Remove(model);
+            }
+
+            undoRecorder.EndActionGroup();
         }
 
         internal DummyModel GetModel(int identifier)
@@ -300,6 +316,81 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestDeletionsUndoRedo()
+        {
+            // Ensure the recorder is in its default states.
+            Assert.AreEqual(false, recorder.CanUndo);
+            Assert.AreEqual(false, recorder.CanRedo);
+
+            // Add models into workspace, make sure they exist.
+            workspace.AddModel(new DummyModel(1, 10));
+            workspace.AddModel(new DummyModel(2, 20));
+            Assert.AreNotEqual(null, workspace.GetModel(1));
+            Assert.AreNotEqual(null, workspace.GetModel(2));
+
+            // Make sure we can now undo.
+            Assert.AreEqual(true, recorder.CanUndo);
+            Assert.AreEqual(false, recorder.CanRedo);
+
+            // Delete the inserted models and make sure they're gone.
+            workspace.RemoveModels(new int[] { 1, 2 });
+            Assert.AreEqual(null, workspace.GetModel(1));
+            Assert.AreEqual(null, workspace.GetModel(2));
+
+            // Make sure we can now undo.
+            Assert.AreEqual(true, recorder.CanUndo);
+            Assert.AreEqual(false, recorder.CanRedo);
+
+            recorder.Undo(); // Undo the deletion (undo's still possible).
+            Assert.AreEqual(true, recorder.CanUndo);
+            Assert.AreEqual(true, recorder.CanRedo);
+
+            // Make sure the deletion has been undone.
+            Assert.AreNotEqual(null, workspace.GetModel(1));
+            Assert.AreNotEqual(null, workspace.GetModel(2));
+
+            recorder.Undo(); // Undo the creation.
+            Assert.AreEqual(true, recorder.CanUndo);
+            Assert.AreEqual(true, recorder.CanRedo);
+
+            // Make sure the creation of '2' has been undone.
+            Assert.AreNotEqual(null, workspace.GetModel(1));
+            Assert.AreEqual(null, workspace.GetModel(2));
+
+            recorder.Undo(); // Undo the creation.
+            Assert.AreEqual(false, recorder.CanUndo);
+            Assert.AreEqual(true, recorder.CanRedo);
+
+            // Make sure the creation of '1' has been undone.
+            Assert.AreEqual(null, workspace.GetModel(1));
+            Assert.AreEqual(null, workspace.GetModel(2));
+
+            recorder.Redo(); // Redo the creation of '1'.
+            Assert.AreEqual(true, recorder.CanUndo);
+            Assert.AreEqual(true, recorder.CanRedo);
+
+            // Make sure the creation of '1' has been redone.
+            Assert.AreNotEqual(null, workspace.GetModel(1));
+            Assert.AreEqual(null, workspace.GetModel(2));
+
+            recorder.Redo(); // Redo the creation of '2'.
+            Assert.AreEqual(true, recorder.CanUndo);
+            Assert.AreEqual(true, recorder.CanRedo);
+
+            // Make sure the creation of '2' has been redone.
+            Assert.AreNotEqual(null, workspace.GetModel(1));
+            Assert.AreNotEqual(null, workspace.GetModel(2));
+
+            recorder.Redo(); // Redo the deletion.
+            Assert.AreEqual(true, recorder.CanUndo);
+            Assert.AreEqual(false, recorder.CanRedo);
+
+            // Make sure the model has been deleted.
+            Assert.AreEqual(null, workspace.GetModel(1));
+            Assert.AreEqual(null, workspace.GetModel(2));
+        }
+
+        [Test]
         public void TestModificationUndoRedo00()
         {
             // Ensure the recorder is in its default states.
@@ -477,6 +568,384 @@ namespace Dynamo.Tests
                 recorder.BeginActionGroup();
                 recorder.Clear(); // Clearing with an open group.
             });
+        }
+    }
+
+    internal class SerializationTests : DynamoUnitTest
+    {
+        [Test]
+        public void TestBasicAttributes()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            var sumData = new Dictionary<string, object>();
+            sumData.Add("name", "Dynamo.Nodes.Addition");
+            model.CreateNode(sumData);
+            var sumNode = Controller.DynamoViewModel.Model.Nodes[0] as Addition;
+            sumNode.X = 400;
+            sumNode.Y = 100;
+            //Assert inital values
+            Assert.AreEqual(400, sumNode.X);
+            Assert.AreEqual(100, sumNode.Y);
+            Assert.AreEqual("Dynamo.Nodes.Addition", sumNode.GetType().ToString());
+            Assert.AreEqual("Add", sumNode.NickName);
+            Assert.AreEqual(LacingStrategy.Longest, sumNode.ArgumentLacing);
+            Assert.AreEqual(true, sumNode.IsVisible);
+            Assert.AreEqual(true, sumNode.IsUpstreamVisible);
+            Assert.AreEqual(true, sumNode.InteractionEnabled);
+            Assert.AreEqual(ElementState.DEAD, sumNode.State);
+
+            //Serialize node and then change values
+            XmlDocument xmlDoc = new XmlDocument();
+            XmlElement serializedEl = sumNode.Serialize(xmlDoc, SaveContext.Undo);
+            sumNode.X = 250;
+            sumNode.Y = 0;
+            sumNode.NickName = "TestNode";
+            sumNode.ArgumentLacing = LacingStrategy.CrossProduct;
+            sumNode.IsVisible = false;
+            sumNode.IsUpstreamVisible = false;
+            sumNode.InteractionEnabled = false;
+            sumNode.State = ElementState.ACTIVE;
+
+            //Assert New Changes
+            Assert.AreEqual(250, sumNode.X);
+            Assert.AreEqual(0, sumNode.Y);
+            Assert.AreEqual("TestNode", sumNode.NickName);
+            Assert.AreEqual(LacingStrategy.CrossProduct, sumNode.ArgumentLacing);
+            Assert.AreEqual(false, sumNode.IsVisible);
+            Assert.AreEqual(false, sumNode.IsUpstreamVisible);
+            Assert.AreEqual(false, sumNode.InteractionEnabled);
+            Assert.AreEqual(ElementState.ACTIVE, sumNode.State);
+
+            //Deserialize and Assert Old values
+            sumNode.Deserialize(serializedEl, SaveContext.Undo);
+            Assert.AreEqual(400, sumNode.X);
+            Assert.AreEqual(100, sumNode.Y);
+            Assert.AreEqual("Dynamo.Nodes.Addition", sumNode.GetType().ToString());
+            Assert.AreEqual("Add", sumNode.NickName);
+            Assert.AreEqual(LacingStrategy.Longest, sumNode.ArgumentLacing);
+            Assert.AreEqual(true, sumNode.IsVisible);
+            Assert.AreEqual(true, sumNode.IsUpstreamVisible);
+            Assert.AreEqual(true, sumNode.InteractionEnabled);
+            Assert.AreEqual(ElementState.DEAD, sumNode.State);
+        }
+
+        [Test]
+        public void TestDoubleInput()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            var numData = new Dictionary<string, object>();
+            numData.Add("name", "Number");
+            model.CreateNode(numData);
+            var numNode = Controller.DynamoViewModel.Model.Nodes[0] as DoubleInput;
+            numNode.Value = "0.0";
+            numNode.X = 400; //To check if base Serialization method is being called
+
+            //Assert initial values
+            Assert.AreEqual(400, numNode.X);
+            Assert.AreEqual("0.0", numNode.Value);
+
+            //Serialize node and then change values
+            XmlDocument xmlDoc = new XmlDocument();
+            XmlElement serializedEl = numNode.Serialize(xmlDoc, SaveContext.Undo);
+            numNode.X = 250;
+            numNode.Value = "4";
+
+            //Assert new changes
+            Assert.AreEqual(250, numNode.X);
+            Assert.AreEqual("4", numNode.Value);
+
+            //Deserialize and aasert old values
+            numNode.Deserialize(serializedEl, SaveContext.Undo);
+            Assert.AreEqual(400, numNode.X);
+            Assert.AreEqual("0.0", numNode.Value);
+        }
+
+        [Test]
+        public void TestDoubleSliderInput()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            var numData = new Dictionary<string, object>();
+            numData.Add("name", "Number Slider");
+            model.CreateNode(numData);
+            var numNode = Controller.DynamoViewModel.Model.Nodes[0] as DoubleSliderInput;
+            numNode.X = 400; //To check if NodeModel base Serialization method is being called
+            numNode.Value = 50.0; //To check if Double class's Serialization methods work
+            numNode.Max = 100.0;
+            numNode.Min = 0.0;
+
+            //Assert initial values
+            Assert.AreEqual(400, numNode.X);
+            Assert.AreEqual(50.0, numNode.Value);
+            Assert.AreEqual(0.0, numNode.Min);
+            Assert.AreEqual(100.0, numNode.Max);
+
+            //Serialize node and then change values
+            XmlDocument xmlDoc = new XmlDocument();
+            XmlElement serializedEl = numNode.Serialize(xmlDoc, SaveContext.Undo);
+            numNode.X = 250;
+            numNode.Value = 4.0;
+            numNode.Max = 189.0;
+            numNode.Min = 2.0;
+
+            //Assert new changes
+            Assert.AreEqual(250, numNode.X);
+            Assert.AreEqual(4.0, numNode.Value);
+            Assert.AreEqual(2.0, numNode.Min);
+            Assert.AreEqual(189.0, numNode.Max);
+
+            //Deserialize and aasert old values
+            numNode.Deserialize(serializedEl, SaveContext.Undo);
+            Assert.AreEqual(400, numNode.X);
+            Assert.AreEqual(50.0, numNode.Value);
+            Assert.AreEqual(0.0, numNode.Min);
+            Assert.AreEqual(100.0, numNode.Max);
+        }
+
+        [Test]
+        public void TestBool()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            var boolData = new Dictionary<string, object>();
+            boolData.Add("name", "Boolean");
+            model.CreateNode(boolData);
+            var boolNode = Controller.DynamoViewModel.Model.Nodes[0] as BoolSelector;
+            boolNode.Value = false;
+            boolNode.X = 400; //To check if base Serialization method is being called
+
+            //Assert initial values
+            Assert.AreEqual(400, boolNode.X);
+            Assert.AreEqual(false, boolNode.Value);
+
+            //Serialize node and then change values
+            XmlDocument xmlDoc = new XmlDocument();
+            XmlElement serializedEl = boolNode.Serialize(xmlDoc, SaveContext.Undo);
+            boolNode.X = 250;
+            boolNode.Value = true;
+
+            //Assert new changes
+            Assert.AreEqual(250, boolNode.X);
+            Assert.AreEqual(true, boolNode.Value);
+
+            //Deserialize and aasert old values
+            boolNode.Deserialize(serializedEl, SaveContext.Undo);
+            Assert.AreEqual(400, boolNode.X);
+            Assert.AreEqual(false, boolNode.Value);
+        }
+
+        [Test]
+        public void TestStringInput()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            var strData = new Dictionary<string, object>();
+            strData.Add("name", "String");
+            model.CreateNode(strData);
+            var strNode = Controller.DynamoViewModel.Model.Nodes[0] as StringInput;
+            strNode.Value = "Enter";
+            strNode.X = 400; //To check if base Serialization method is being called
+
+            //Assert initial values
+            Assert.AreEqual(400, strNode.X);
+            Assert.AreEqual("Enter", strNode.Value);
+
+            //Serialize node and then change values
+            XmlDocument xmlDoc = new XmlDocument();
+            XmlElement serializedEl = strNode.Serialize(xmlDoc, SaveContext.Undo);
+            strNode.X = 250;
+            strNode.Value = "Exit";
+
+            //Assert new changes
+            Assert.AreEqual(250, strNode.X);
+            Assert.AreEqual("Exit", strNode.Value);
+
+            //Deserialize and aasert old values
+            strNode.Deserialize(serializedEl, SaveContext.Undo);
+            Assert.AreEqual(400, strNode.X);
+            Assert.AreEqual("Enter", strNode.Value);
+        }
+
+        [Test]
+        public void TestStringFileName()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            var strData = new Dictionary<string, object>();
+            strData.Add("name", "Directory");
+            model.CreateNode(strData);
+            var strNode = Controller.DynamoViewModel.Model.Nodes[0] as StringDirectory;
+            strNode.Value = "Enter";
+            strNode.X = 400; //To check if base Serialization method is being called
+
+            //Assert initial values
+            Assert.AreEqual(400, strNode.X);
+            Assert.AreEqual("Enter", strNode.Value);
+
+            //Serialize node and then change values
+            XmlDocument xmlDoc = new XmlDocument();
+            XmlElement serializedEl = strNode.Serialize(xmlDoc, SaveContext.Undo);
+            strNode.X = 250;
+            strNode.Value = "Exit";
+
+            //Assert new changes
+            Assert.AreEqual(250, strNode.X);
+            Assert.AreEqual("Exit", strNode.Value);
+
+            //Deserialize and aasert old values
+            strNode.Deserialize(serializedEl, SaveContext.Undo);
+            Assert.AreEqual(400, strNode.X);
+            Assert.AreEqual("Enter", strNode.Value);
+        }
+
+        [Test]
+        public void TestVariableInput()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            var listData = new Dictionary<string, object>();
+            listData.Add("name", "List");
+            model.CreateNode(listData);
+            var listNode = Controller.DynamoViewModel.Model.Nodes[0] as NewList;
+            listNode.X = 400; //To check if base Serialization method is being called
+            listNode.InPortData.Add(new PortData("index 1", "Item Index #1", typeof(object)));
+            listNode.InPortData.Add(new PortData("index 2", "Item Index #2", typeof(object)));
+
+            //Assert initial values
+            Assert.AreEqual(400, listNode.X);
+            Assert.AreEqual(3, listNode.InPortData.Count);
+
+            //Serialize node and then change values
+            XmlDocument xmlDoc = new XmlDocument();
+            XmlElement serializedEl = listNode.Serialize(xmlDoc, SaveContext.Undo);
+            listNode.X = 250;
+            listNode.InPortData.RemoveAt(listNode.InPortData.Count - 1);
+
+            //Assert new changes
+            Assert.AreEqual(250, listNode.X);
+            Assert.AreEqual(2, listNode.InPortData.Count);
+
+            //Deserialize and aasert old values
+            listNode.Deserialize(serializedEl, SaveContext.Undo);
+            Assert.AreEqual(400, listNode.X);
+            Assert.AreEqual(3, listNode.InPortData.Count);
+            Assert.AreEqual("index 2", listNode.InPortData.ElementAt(2).NickName);
+        }
+
+        [Test]
+        public void TestSublists()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            var strData = new Dictionary<string, object>();
+            strData.Add("name", "Build Sublists");
+            model.CreateNode(strData);
+            var strNode = Controller.DynamoViewModel.Model.Nodes[0] as Sublists;
+            strNode.Value = "Enter";
+            strNode.X = 400; //To check if base Serialization method is being called
+
+            //Assert initial values
+            Assert.AreEqual(400, strNode.X);
+            Assert.AreEqual("Enter", strNode.Value);
+
+            //Serialize node and then change values
+            XmlDocument xmlDoc = new XmlDocument();
+            XmlElement serializedEl = strNode.Serialize(xmlDoc, SaveContext.Undo);
+            strNode.X = 250;
+            strNode.Value = "Exit";
+
+            //Assert new changes
+            Assert.AreEqual(250, strNode.X);
+            Assert.AreEqual("Exit", strNode.Value);
+
+            //Deserialize and aasert old values
+            strNode.Deserialize(serializedEl, SaveContext.Undo);
+            Assert.AreEqual(400, strNode.X);
+            Assert.AreEqual("Enter", strNode.Value);
+        }
+
+        [Test]
+        public void TestFormula()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            var nodeData = new Dictionary<string, object>();
+            nodeData.Add("name", "Formula");
+            model.CreateNode(nodeData);
+            var formulaNode = Controller.DynamoViewModel.Model.Nodes[0] as Formula;
+            formulaNode.FormulaString = "x+y";
+            formulaNode.X = 400; //To check if base Serialization method is being called
+
+            //Assert initial values
+            Assert.AreEqual(400, formulaNode.X);
+            Assert.AreEqual("x+y", formulaNode.FormulaString);
+            Assert.AreEqual(2, formulaNode.InPortData.Count);
+
+            //Serialize node and then change values
+            XmlDocument xmlDoc = new XmlDocument();
+            XmlElement serializedEl = formulaNode.Serialize(xmlDoc, SaveContext.Undo);
+            formulaNode.X = 250;
+            formulaNode.FormulaString = "x+y+z";
+
+            //Assert new changes
+            Assert.AreEqual(250, formulaNode.X);
+            Assert.AreEqual(3, formulaNode.InPortData.Count);
+            Assert.AreEqual("x+y+z", formulaNode.FormulaString);
+
+            //Deserialize and aasert old values
+            formulaNode.Deserialize(serializedEl, SaveContext.Undo);
+            Assert.AreEqual(400, formulaNode.X);
+            Assert.AreEqual("x+y", formulaNode.FormulaString);
+            Assert.AreEqual(2, formulaNode.InPortData.Count);
+        }
+
+        [Test]
+        public void TestFunctionNode()
+        {
+            var model = Controller.DynamoModel;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\custom_node_serialization\");
+            string openPath = Path.Combine(examplePath, "graph function.dyn");
+            string openPath2 = Path.Combine(examplePath, "GraphFunction.dyf");
+            Assert.IsTrue(
+                Controller.CustomNodeManager.AddFileToPath(openPath2)!= null);
+            model.Open(openPath);
+
+            dynSettings.Controller.RunExpression(null);
+            System.Threading.Thread.Sleep(500);
+
+            // check if the node is loaded
+            //Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count);
+
+            var graphNode = model.CurrentWorkspace.NodeFromWorkspace<Function>("9c8c2279-6f59-417c-8218-3b337230bd99");
+            //var graphNode = (Function)model.Nodes.First(x => x is Function);
+
+            //Assert initial values
+            Assert.AreEqual(534.75, graphNode.X);
+            Assert.AreEqual("07e6b150-d902-4abb-8103-79193552eee7", graphNode.Symbol);
+            Assert.AreEqual("GraphFunction", graphNode.NickName);
+            Assert.AreEqual(4, graphNode.InPortData.Count);
+            Assert.AreEqual("y = f(x)", graphNode.InPortData[3].NickName);
+
+            //Serialize node and then change values
+            XmlDocument xmlDoc = new XmlDocument();
+            XmlElement serializedEl = graphNode.Serialize(xmlDoc, SaveContext.Undo);
+            graphNode.X = 250;
+            graphNode.NickName = "NewNode";
+            graphNode.InPortData.RemoveAt(graphNode.InPortData.Count - 1);
+
+            //Assert new changes
+            Assert.AreEqual(250, graphNode.X);
+            Assert.AreEqual(3, graphNode.InPortData.Count);
+            Assert.AreEqual("NewNode", graphNode.NickName);
+
+            //Deserialize and aasert old values
+            graphNode.Deserialize(serializedEl, SaveContext.Undo);
+            Assert.AreEqual(534.75, graphNode.X);
+            Assert.AreEqual(4, graphNode.InPortData.Count);
+            Assert.AreEqual("GraphFunction", graphNode.NickName);
+            Assert.AreEqual("y = f(x)", graphNode.InPortData[3].NickName);
         }
     }
 }
