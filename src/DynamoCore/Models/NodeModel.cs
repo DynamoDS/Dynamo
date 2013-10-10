@@ -1495,7 +1495,7 @@ namespace Dynamo.Models
             if (eIn == null)
                 return "<null>";
 
-            string accString = String.Concat(Enumerable.Repeat(" . ", currentDepth));
+            string accString = String.Concat(Enumerable.Repeat("  ", currentDepth));
 
             if (maxDepth == currentDepth || currentListIndex == maxListIndex)
             {
