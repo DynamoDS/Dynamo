@@ -9,6 +9,7 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Dynamo.Tests;
 using Microsoft.FSharp.Collections;
 using Microsoft.Practices.Prism;
 using NUnit.Framework;
@@ -128,9 +129,38 @@ namespace DynamoRevitTests
 
             string testPath = Path.Combine(_testPath, "ReferencePoint.dyn");
             model.Open(testPath);
-            Assert.AreEqual(3, dynSettings.Controller.DynamoModel.Nodes.Count());
+            Assert.AreEqual(3, dynSettings.Controller.DynamoModel.Nodes.Count);
             
             dynSettings.Controller.RunExpression(true);
+        }
+
+        [Test]
+        public void ElementNodeReassociation()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string testPath = Path.Combine(_testPath, "ReferencePoint.dyn");
+            model.Open(testPath);
+            Assert.AreEqual(3, dynSettings.Controller.DynamoModel.Nodes.Count);
+
+            dynSettings.Controller.RunExpression();
+
+            var refPtNode = model.CurrentWorkspace.FirstNodeFromWorkspace<ReferencePointByXyz>();
+
+            var oldVal = (ReferencePoint)((Value.Container)refPtNode.OldValue).Item;
+            refPtNode.ResetOldValue();
+
+            var oldId = oldVal.Id;
+            var oldPos = oldVal.Position;
+
+            model.CurrentWorkspace.FirstNodeFromWorkspace<DoubleInput>().Value = "1";
+
+            dynSettings.Controller.RunExpression();
+
+            var newVal = (ReferencePoint)((Value.Container)refPtNode.OldValue).Item;
+
+            Assert.AreEqual(oldId, newVal.Id);
+            Assert.AreNotEqual(oldPos, newVal.Position);
         }
 
         [Test]

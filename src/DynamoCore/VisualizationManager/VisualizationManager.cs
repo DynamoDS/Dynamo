@@ -637,7 +637,9 @@ namespace Dynamo
                 var node = drawable.Key as NodeModel;
 
                 if (!visualizations.ContainsKey(node.GUID.ToString()))
-                    continue;
+                {
+                    RegisterForVisualization(node);
+                }
 
                 var rd = Visualizations[node.GUID.ToString()];
                 rd.Clear();
@@ -727,7 +729,13 @@ namespace Dynamo
         /// <returns></returns>
         public static List<object> GetDrawableFromValue(FScheme.Value value)
         {
+            
             var drawables = new List<object>();
+
+            if (value == null)
+            {
+                return drawables;
+            }
 
             var viz = dynSettings.Controller.VisualizationManager;
 
