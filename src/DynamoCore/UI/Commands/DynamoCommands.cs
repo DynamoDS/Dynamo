@@ -149,8 +149,13 @@ namespace Dynamo.ViewModels
                     // see "RecordableCommand.Redundant" property).
                     // 
                     var previousCommand = recordedCommands.Last();
-                    if (previousCommand.GetType() == command.GetType())
+                    if (previousCommand.GetType() != command.GetType())
+                        recordedCommands.Add(command);
+                    else
+                    {
+                        // Replace the existing command instead of adding.
                         recordedCommands[recordedCommands.Count - 1] = command;
+                    }
                 }
                 else
                     recordedCommands.Add(command);

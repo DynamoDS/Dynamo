@@ -258,11 +258,9 @@ namespace Dynamo.ViewModels
                     this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
 
                     var rect = new Rect(x, y, width, height);
-
-                    if (isCrossSelection)
-                        owningWorkspace.CrossSelectCommand.Execute(rect);
-                    else
-                        owningWorkspace.ContainSelectCommand.Execute(rect);
+                    var command = new SelectInRegionCommand(rect, isCrossSelection);
+                    DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
+                    dynamoViewModel.ExecuteCommand(command);
                 }
                 else if (this.currentState == State.DragSetup)
                 {
@@ -457,6 +455,7 @@ namespace Dynamo.ViewModels
                 if (this.currentState != State.None)
                     throw new InvalidOperationException();
 
+                // Clear existing selection set.
                 var selectNothing = new SelectModelCommand(Guid.Empty, ModifierKeys.None);
                 DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
                 dynamoViewModel.ExecuteCommand(selectNothing);
