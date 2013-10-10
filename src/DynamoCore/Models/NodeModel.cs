@@ -215,9 +215,12 @@ namespace Dynamo.Models
             get { return argumentLacing; }
             set
             {
-                argumentLacing = value;
-                isDirty = true;
-                RaisePropertyChanged("ArgumentLacing");
+                if (argumentLacing != value)
+                {
+                    argumentLacing = value;
+                    isDirty = true;
+                    RaisePropertyChanged("ArgumentLacing");
+                }
             }
         }
 
