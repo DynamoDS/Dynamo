@@ -27,7 +27,7 @@
     </UserControl.Resources>
 
     <UserControl.ToolTip>
-        <Grid Width ="Auto" MaxWidth="235" MaxHeight="200" Height="Auto">
+        <Grid Width ="Auto" MaxWidth="235"  Height="Auto">
             <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
             <!-- Errors -->
@@ -93,10 +93,12 @@
                 </MenuItem>
                 <MenuItem Name="isVisible_cm" Header="Preview" 
                           IsChecked="{Binding Path=IsVisible}" 
-                          Command="{Binding Path=ToggleIsVisibleCommand}"/>
+                          Command="{Binding Path=ToggleIsVisibleCommand}"
+                          Visibility="{Binding Path=ShowsVisibilityToggles, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>
                 <MenuItem Name="isUpstreamVisible_cm" Header="Preview Upstream" 
                           IsChecked="{Binding Path=IsUpstreamVisible}"
-                          Command="{Binding Path=ToggleIsUpstreamVisibleCommand}"/>
+                          Command="{Binding Path=ToggleIsUpstreamVisibleCommand}"
+                          Visibility="{Binding Path=ShowsVisibilityToggles, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>
                 <MenuItem Name="rename_cm" Header="Rename Node..." 
                           Command="{Binding Path=RenameCommand}"/>
                 <MenuItem Name="help_cm" Header="Help..." 

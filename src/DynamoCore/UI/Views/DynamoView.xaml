@@ -18,8 +18,9 @@
         AllowsTransparency="False" 
         KeyDown="DynamoView_KeyDown"
         KeyUp="DynamoView_KeyUp"
-        Background="#FF353535" 
-        ResizeMode="CanResizeWithGrip">
+        ResizeMode="CanResizeWithGrip"
+        Background="#FF353535"
+        FontFamily="Open Sans">
 
     <Window.CommandBindings>
 
@@ -31,6 +32,7 @@
                 <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoModern.xaml" />
                 <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoConverters.xaml"/>
                 <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml" />
+                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/MainMenuStyleDictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
@@ -171,10 +173,7 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <Menu IsMainMenu="True" Name="menu1">
-                    <Menu.Resources>
-                        <ResourceDictionary Source="/DynamoCore;component/UI/Themes/MenuStyleDictionary.xaml" />
-                    </Menu.Resources>
+                <Menu IsMainMenu="True" Name="menu1" Style="{StaticResource MainMenu}">
 
                     <MenuItem Header="_File" Name="fileMenu" Focusable="False">
                         <MenuItem Header="_New" Name="newMenu" Focusable="False">
@@ -211,6 +210,9 @@
                     </MenuItem>
 
                     <MenuItem Header="_Edit" Name="editMenu" Focusable="False">
+                        <MenuItem Focusable="False" Header="_Undo" Command="{Binding UndoCommand}" Name="undo" InputGestureText="Ctrl+Z"/>
+                        <MenuItem Focusable="False" Header="_Redo" Command="{Binding RedoCommand}"  Name="redo" InputGestureText="Ctrl+Y"/>
+                        <Separator/>
                         <MenuItem Focusable="False" Header="_Copy" Command="{Binding CopyCommand}" Name="copy" InputGestureText="Ctrl + C"/>
                         <MenuItem Focusable="False" Header="_Paste" Command="{Binding PasteCommand}"  Name="paste" InputGestureText="Ctrl + V"/>
                         <Separator/>
@@ -238,14 +240,14 @@
                         </MenuItem>
 
                         <MenuItem Header="_Pan" Name="panMenu">
-                            <MenuItem  Header="Pan Left (Mouse wheel drag left)"  Command="{Binding PanCommand}" CommandParameter="Left" InputGestureText="Ctrl + Shift + Left"/>
-                            <MenuItem  Header="Pan Right (Mouse wheel drag right)" Command="{Binding PanCommand}"     CommandParameter="Right" InputGestureText="Ctrl + Shift + Right"/>
-                            <MenuItem  Header="Pan Up (Mouse wheel drag up)"  Command="{Binding PanCommand}" CommandParameter="Up" InputGestureText="Ctrl + Shift + Up"/>
-                            <MenuItem  Header="Pan Down (Mouse wheel drag down)" Command="{Binding PanCommand}" CommandParameter="Down" InputGestureText="Ctrl + Shift + Down"/>
-                        </MenuItem>
+                            <MenuItem  Header="Pan Left (Mouse wheel drag left)"  Command="{Binding PanCommand}" CommandParameter="Left" InputGestureText="Ctrl + Alt + Left"/>
+                            <MenuItem  Header="Pan Right (Mouse wheel drag right)" Command="{Binding PanCommand}" CommandParameter="Right" InputGestureText="Ctrl + Alt + Right"/>
+                            <MenuItem  Header="Pan Up (Mouse wheel drag up)"  Command="{Binding PanCommand}" CommandParameter="Up" InputGestureText="Ctrl + Alt + Up"/>
+                            <MenuItem  Header="Pan Down (Mouse wheel drag down)" Command="{Binding PanCommand}" CommandParameter="Down" InputGestureText="Ctrl + Alt + Down"/>
+                        </MenuItem>    
 
                         <MenuItem Header="{Binding Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}"
-                              Command="{Binding ToggleConsoleShowingCommand}" InputGestureText="Ctrl+Shift+Up"/>
+                              Command="{Binding ToggleConsoleShowingCommand}" InputGestureText="Ctrl + Shift + Up"/>
 
                         <MenuItem Header="_Connectors" Name="connectorMenu">
                             <MenuItem Focusable="False" Header="_Connector Type" IsEnabled="True">
@@ -255,8 +257,16 @@
                             <MenuItem Focusable="False" Header="_Show Connectors" IsCheckable="True" Name="ShowHideConnectorsMenuItem" IsChecked="{Binding Path=IsShowingConnectors}" Command="{Binding ShowHideConnectorsCommand}">
                             </MenuItem>
                         </MenuItem>
+                        <MenuItem Header ="{Binding AlternateContextGeometryDisplayText}" 
+                                  Name="showGeometryInAlternateContextMenu" 
+                                  Focusable="False" 
+                                  Visibility="{Binding AlternateDrawingContextAvailable, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay}"
+                                  IsCheckable="True"
+                                  IsChecked="{Binding Path=ShowGeometryInAlternateContext}">
+                        </MenuItem>
                         <MenuItem Header="_Background 3D Preview" Name="background3dMenu" Focusable="False">
-                            <MenuItem Header="{Binding Path=FullscreenWatchShowing, Converter={StaticResource ShowHideFullscreenWatchMenuConverter}}" IsChecked="{Binding Path=FullscreenWatchShowing}" Command="{Binding ToggleFullscreenWatchShowingCommand}"  Focusable="False"/>
+                            <MenuItem Header="{Binding Path=FullscreenWatchShowing, Converter={StaticResource ShowHideFullscreenWatchMenuConverter}}" 
+                                      IsChecked="{Binding Path=FullscreenWatchShowing}" Command="{Binding ToggleFullscreenWatchShowingCommand}"  Focusable="False"/>
                             <MenuItem Header="Navigate Background 3D Preview"
                                           IsEnabled="{Binding Path=FullscreenWatchShowing}"
                                           IsChecked="{Binding Path=CanNavigateBackground}"
@@ -264,20 +274,6 @@
                                           Focusable="False"
                                           Command="{Binding ToggleCanNavigateBackgroundCommand}"/>
                         </MenuItem>
-                        <MenuItem Focusable="False" Header="_Find Node By Id" IsCheckable="False" Name="FindNodeById">
-                            <WrapPanel HorizontalAlignment="Stretch">
-                                <TextBox Name="id_tb" Width="100"></TextBox>
-                                <Button Content="Find" Width="70" Name="id_butt" Click="Id_butt_OnClick"></Button>
-                            </WrapPanel>
-                        </MenuItem>
-                    </MenuItem>
-
-                    <MenuItem Header="_Workspaces" Name="workspacesMenu" Focusable="False" ItemsSource="{Binding Source={x:Static utilities:dynSettings.CustomNodes}}">
-                        <MenuItem.ItemTemplate>
-                            <DataTemplate>
-                                <MenuItem Focusable="False" Header="{Binding Key}" CommandParameter="{Binding Value}" Command="{Binding Path=DataContext.GoToWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
-                            </DataTemplate>
-                        </MenuItem.ItemTemplate>
                     </MenuItem>
 
                     <MenuItem Header="_Packages" Name="PackageManagerMenu" Focusable="False" IsEnabled="True">
@@ -288,7 +284,6 @@
                     </MenuItem>
 
                     <MenuItem Header="Help" Focusable="False">
-                        <!--<MenuItem Header="_Layout All" Command="{Binding Source={x:Static commands:DynamoCommands.LayoutAllCmd}}"  Name="layoutAll"/>-->
                         <MenuItem Focusable="False" Header="Samples" Name="SamplesMenu">
                             <MenuItem.Icon>
                                 <Image Source="/DynamoCore;component/UI/Images/OpenSelectedItemHS.png" Width="14" Height="14" />
@@ -307,7 +302,7 @@
 
             </Grid>
         </Border>
-
+        
         <!--Shortcuts Toolbar-->
         <Border Grid.Row="1"
                 Grid.Column="0"
@@ -320,10 +315,29 @@
             </Grid>
         </Border>
 
+        <Grid HorizontalAlignment="Stretch"
+              VerticalAlignment="Stretch"
+              Grid.Row="2"
+              Grid.Column="2"
+              Grid.RowSpan="3"
+              Background="#999">
+            <Canvas Name="backgroundCanvas"
+                    Margin="0,35,0,0"
+                    ClipToBounds="True"
+                    IsHitTestVisible="{Binding ShouldBeHitTestVisible}">
+                <Canvas.Background>
+                    <SolidColorBrush Color="{Binding IsHomeSpace, Converter={StaticResource WorkspaceBackgroundColorConverter}}" />
+                </Canvas.Background>
+            </Canvas>
+            <controls:WatchViewFullscreen Margin="0,35,0,0"
+                                          Visibility="{Binding FullscreenWatchShowing, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+            </controls:WatchViewFullscreen>
+        </Grid>
 
         <!--Workspace-->
         <Border Margin="0" BorderBrush="Black" BorderThickness="0" Name="border" 
-                Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="3" Background="#999"
+                Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="3" Background="Transparent"
                 SizeChanged="Workspace_SizeChanged">
             <Grid>
                 <TabControl ItemsSource="{Binding Workspaces}"
@@ -457,10 +471,8 @@
                                                 <Style TargetType="Canvas">
                                                     <Style.Triggers>
 
-                                                        <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}"
-                                                                     Value="{x:Type models:HomeWorkspace}">
-                                                            <Setter Property="Visibility"
-                                                                    Value="Collapsed" />
+                                                        <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type models:HomeWorkspaceModel}">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
                                                         </DataTrigger>
 
                                                     </Style.Triggers>
@@ -482,7 +494,6 @@
                                 </Trigger>
                             </Style.Triggers>
                         </Style>
-
 
                     </TabControl.Resources>
                     <!--<StackPanel HorizontalAlignment="Left" Grid.Row="1" Grid.Column="2" Background="Blue" Width="32" Height="48"></StackPanel>-->
@@ -523,18 +534,13 @@
                                                         Value="#999"></Setter>
                                             </DataTrigger>
                                             
-                                            <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}"
-                                                         Value="{x:Type models:HomeWorkspace}">
-                                                <Setter Property="Text"
-                                                        Value="Home" />
-                                                <Setter Property="FontWeight"
-                                                        Value="Bold" />
+                                            <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type models:HomeWorkspaceModel}">
+                                                <Setter Property="Text" Value="Home"/>
+                                                <Setter Property="FontWeight" Value="Bold"/>
                                             </DataTrigger>
                                             
-                                            <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}"
-                                                         Value="{x:Type models:FuncWorkspace}">
-                                                <Setter Property="Text"
-                                                        Value="{Binding Name}" />
+                                            <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type models:CustomNodeWorkspaceModel}">
+                                                <Setter Property="Text" Value="{Binding Name}"/>
                                             </DataTrigger>
                                             
                                         </Style.Triggers>
@@ -567,9 +573,8 @@
 
                                 </TextBlock>
 
-                                <TextBlock Name="WorkspaceFileName"
-                                           Text="{Binding Path=FilePath, Converter={StaticResource PathToFileNameConverter}}"
-                                           Margin="5,2,10,0">
+
+                                 <TextBlock Name="WorkspaceFileName" Text="{Binding Path=FileName, Converter={StaticResource PathToFileNameConverter}}" Margin="5,2,10,0">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Style.Triggers>
@@ -702,22 +707,27 @@
         <WrapPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="0" Grid.RowSpan="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
                    Grid.ColumnSpan="3">
 
+            <WrapPanel.Background>
+                <LinearGradientBrush  StartPoint="0.5,0"
+                                      EndPoint="0.5,1">
+                    <GradientStop Color="#222"
+                                  Offset="0.0" />
+                    <GradientStop Color="#111"
+                                  Offset="1.0" />
+                </LinearGradientBrush>
+            </WrapPanel.Background>
+
             <Grid Name="bottomBarGrid" Grid.Row="4" Grid.Column="0" Grid.RowSpan="1" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Grid.Background>
-                    <LinearGradientBrush  StartPoint="0.5,0" EndPoint="0.5,1">
-                        <GradientStop Color="#222" Offset="0.0" />
-                        <GradientStop Color="#111" Offset="1.0" />
-                    </LinearGradientBrush>
-                </Grid.Background>
 
                 <WrapPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Grid.RowSpan="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="1">
-
+                    
                     <Button Name="RunButton" Width="100" Content="Run" 
                     Margin="5" Style="{DynamicResource ResourceKey=STextButton}" 
+                    Click="RunButton_OnClick"
                     Command="{Binding RunExpressionCommand}"
                     CommandParameter="{Binding Path=RunInDebug}"
                     IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" Focusable="False"/>

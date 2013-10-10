@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
+using System.Reflection;
 using Dynamo.Nodes;
 using System.Xml;
 using Dynamo.Selection;
@@ -92,8 +93,8 @@ namespace Dynamo.Models
         //bool isSelected = false;
 
         private bool interactionEnabled = true;
-        private bool isVisible;
-        private bool isUpstreamVisible;
+        internal bool isVisible;
+        internal bool isUpstreamVisible;
 
         private IdentifierNode identifier = null;
        // protected AssociativeNode defaultAstExpression = null;
@@ -106,6 +107,9 @@ namespace Dynamo.Models
             get { return this is Function; }
         }
 
+        /// <summary>
+        /// Returns whether the node is to be included in visualizations.
+        /// </summary>
         public bool IsVisible
         {
             get 
@@ -120,6 +124,10 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        /// Returns whether the node aggregates its upstream connections
+        /// for visualizations.
+        /// </summary>
         public bool IsUpstreamVisible
         {
             get 
@@ -501,12 +509,12 @@ namespace Dynamo.Models
         /// <param name="xmlDoc">The XmlDocument representing the whole workspace containing this Element.</param>
         /// <param name="nodeElement">The XmlElement representing this Element.</param>
         /// <param name="context">Why is this being called?</param>
-        protected virtual void SaveNode(System.Xml.XmlDocument xmlDoc, System.Xml.XmlElement nodeElement, SaveContext context)
+        protected virtual void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
 
         }
 
-        public void Save(System.Xml.XmlDocument xmlDoc, System.Xml.XmlElement dynEl, SaveContext context)
+        public void Save(XmlDocument xmlDoc, XmlElement dynEl, SaveContext context)
         {
             SaveNode(xmlDoc, dynEl, context);
 
@@ -525,13 +533,41 @@ namespace Dynamo.Models
         /// SaveNode() in order to write the data when saved.
         /// </summary>
         /// <param name="nodeElement">The XmlNode representing this Element.</param>
-        protected virtual void LoadNode(System.Xml.XmlNode nodeElement)
+        protected virtual void LoadNode(XmlNode nodeElement)
         {
 
         }
 
-        public void Load(System.Xml.XmlNode elNode)
+        public void Load(XmlNode elNode, Version workspaceVersion)
         {
+            #region Process Migrations
+
+            var migrations =
+                (from method in GetType().GetMethods()
+                 let attribute =
+                     method.GetCustomAttributes(false)
+                           .OfType<NodeMigrationAttribute>()
+                           .FirstOrDefault()
+                 where attribute != null
+                 let result = new { method, attribute.From, attribute.To }
+                 orderby result.From
+                 select result).ToList();
+
+            var currentVersion = dynSettings.Controller.DynamoModel.HomeSpace.WorkspaceVersion;
+
+            while (workspaceVersion != null && workspaceVersion < currentVersion)
+            {
+                var nextMigration = migrations.FirstOrDefault(x => x.From >= workspaceVersion);
+
+                if (nextMigration == null)
+                    break;
+
+                nextMigration.method.Invoke(this, new object[] { elNode });
+                workspaceVersion = nextMigration.To;
+            }
+
+            #endregion
+
             LoadNode(elNode);
 
             var portInfoProcessed = new HashSet<int>();
@@ -549,7 +585,8 @@ namespace Dynamo.Models
             }
             
             //set defaults
-            foreach (var port in inPorts.Select((x, i) => new { x, i }).Where(x => !portInfoProcessed.Contains(x.i)))
+            foreach (var port in inPorts.Select((x, i) => new { x, i })
+                                        .Where(x => !portInfoProcessed.Contains(x.i)))
             {
                 port.x.UsingDefaultValue = false;
             }
@@ -980,11 +1017,6 @@ namespace Dynamo.Models
         
         protected virtual void __eval_internal(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
         {
-            //if this element maintains a collcection of references
-            //then clear the collection
-            if (this is IClearable)
-                (this as IClearable).ClearReferences();
-
             var argSets = new List<FSharpList<FScheme.Value>>();
 
             //create a zip of the incoming args and the port data
@@ -1076,11 +1108,6 @@ namespace Dynamo.Models
             {
                 Evaluate(args, outPuts);
                 OnEvaluate();
-            }
-
-            if (dynSettings.Controller.UIDispatcher != null && this is IDrawable)
-            {
-                dynSettings.Controller.UIDispatcher.Invoke(new Action(() => (this as IDrawable).Draw()));
             }
         }
 
@@ -1350,7 +1377,7 @@ namespace Dynamo.Models
             while (port.Connectors.Any())
             {
                 var connector = port.Connectors[0];
-                dynSettings.Controller.DynamoModel.CurrentWorkspace.Connectors.Remove(connector);
+                WorkSpace.Connectors.Remove(connector);
                 connector.NotifyConnectedPortsOfDeletion();
             }
         }
@@ -1380,7 +1407,10 @@ namespace Dynamo.Models
             if (inPorts.Count > count)
             {
                 foreach (var inport in inPorts.Skip(count))
+                {
                     DestroyConnectors(inport);
+                    portDataDict.Remove(inport);
+                }
 
                 for (int i = inPorts.Count - 1; i >= count; i--)
                     inPorts.RemoveAt(i);
@@ -1496,7 +1526,7 @@ namespace Dynamo.Models
             OnDispatchedToUI(this, new UIDispatcherEventArgs(a));
         }
 
-        public static string BuildValueString(Value eIn, int currentListIndex, int maxListIndex, int currentDepth, int maxDepth)
+        public static string PrintValue(Value eIn, int currentListIndex, int maxListIndex, int currentDepth, int maxDepth, int maxStringLength = 20)
         {
             if (eIn == null)
                 return "<null>";
@@ -1505,7 +1535,7 @@ namespace Dynamo.Models
 
             if (maxDepth == currentDepth || currentListIndex == maxListIndex)
             {
-                accString += "...\n";
+                accString += "...";
                 return accString;
             }
 
@@ -1513,7 +1543,7 @@ namespace Dynamo.Models
             {
                 var str = (eIn as Value.Container).Item != null
                     ? (eIn as Value.Container).Item.ToString()
-                    : "null";
+                    : "<empty>";
 
                 accString += str;
             }
@@ -1523,32 +1553,52 @@ namespace Dynamo.Models
             }
             else if (eIn.IsList)
             {
-                accString += "List\n";
-
+                accString += "List";
+                
                 var list = (eIn as Value.List).Item;
 
+                if (!list.Any())
+                {
+                    accString += " (empty)";
+                }
+
+                // when children will be at maxDepth, just do 1
+                if (currentDepth + 1 == maxDepth)
+                {
+                    maxListIndex = 0;
+                }
+
                 // build all elements of sub list
-                accString = 
-                    list.Select((x, i) => new {Element = x, Index = i})
-                        .TakeWhile(e => e.Index <= maxListIndex)
-                        .Aggregate(
-                            accString, 
-                            (current, e) => current + BuildValueString(e.Element, e.Index, maxListIndex, currentDepth + 1, maxDepth));
+                accString =
+                   list.Select((x, i) => new { Element = x, Index = i })
+                       .TakeWhile(e => e.Index <= maxListIndex)
+                       .Aggregate(
+                           accString,
+                           (current, e) => current + "\n" + PrintValue(e.Element, e.Index, maxListIndex, currentDepth + 1, maxDepth));
+
+               
             }
             else if (eIn.IsNumber)
             {
-                accString += (eIn as Value.Number).Item.ToString();
+                var num = (eIn as Value.Number).Item;
+                var numFloat = (float) num;
+                accString += numFloat.ToString();
             }
             else if (eIn.IsString)
             {
-                accString += "\"" + (eIn as Value.String).Item + "\"";
+                var str = (eIn as Value.String).Item;
+
+                if (str.Length > maxStringLength)
+                {
+                    str = str.Substring(0, maxStringLength) + "...";
+                }
+
+                accString += "\"" + str + "\"";
             }
             else if (eIn.IsSymbol)
             {
                 accString += "<" + (eIn as Value.Symbol).Item + ">";
             }
-
-            accString += "\n";
 
             return accString;
         }
@@ -1578,6 +1628,13 @@ namespace Dynamo.Models
             helper.SetAttribute("isVisible", this.IsVisible);
             helper.SetAttribute("isUpstreamVisible", this.IsUpstreamVisible);
             helper.SetAttribute("lacing", this.ArgumentLacing.ToString());
+
+            if (context == SaveContext.Undo)
+            {
+                // Fix: MAGN-159 (nodes are not editable after undo/redo).
+                helper.SetAttribute("interactionEnabled", this.interactionEnabled);
+                helper.SetAttribute("nodeState", this.state.ToString());
+            }
         }
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
@@ -1604,12 +1661,23 @@ namespace Dynamo.Models
             this.isUpstreamVisible = helper.ReadBoolean("isUpstreamVisible", true);
             this.argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
 
-            // TODO(Ben): We need to raise property change events 
-            // here for those data members we directly changed.
-            RaisePropertyChanged("NickName");
-            RaisePropertyChanged("ArgumentLacing");
-            RaisePropertyChanged("IsVisible");
-            RaisePropertyChanged("IsUpstreamVisible");
+            if (context == SaveContext.Undo)
+            {
+                // Fix: MAGN-159 (nodes are not editable after undo/redo).
+                interactionEnabled = helper.ReadBoolean("interactionEnabled", true);
+                this.state = helper.ReadEnum("nodeState", ElementState.ACTIVE);
+
+                // We only notify property changes in an undo/redo operation. Normal
+                // operations like file loading or copy-paste have the models created
+                // in different ways and their views will always be up-to-date with 
+                // respect to their models.
+                RaisePropertyChanged("InteractionEnabled");
+                RaisePropertyChanged("State");
+                RaisePropertyChanged("NickName");
+                RaisePropertyChanged("ArgumentLacing");
+                RaisePropertyChanged("IsVisible");
+                RaisePropertyChanged("IsUpstreamVisible");
+            }
         }
 
         #endregion
@@ -1801,7 +1869,7 @@ namespace Dynamo.Models
                 }
 
                 result = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(symbol)
-                    .Workspace.GetTopMostNodes().Any(ContinueTraversalUntilAny);
+                    .WorkspaceModel.GetTopMostNodes().Any(ContinueTraversalUntilAny);
             }
             _resultDict[entry] = result;
             if (result)

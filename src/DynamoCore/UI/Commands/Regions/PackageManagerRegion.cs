@@ -14,8 +14,8 @@ namespace Dynamo.Commands
         {
             get
             {
-                if (packageManagerRegion == null)
-                    packageManagerRegion = new Dynamo.Search.Regions.PackageManagerRegion(SearchViewModel.PackageManagerRegionExecute, SearchViewModel.PackageManagerRegionCanExecute);
+                //if (packageManagerRegion == null)
+                //    packageManagerRegion = new Dynamo.Search.Regions.PackageManagerRegion(SearchViewModel.PackageManagerRegionExecute, SearchViewModel.PackageManagerRegionCanExecute);
                 return packageManagerRegion;
             }
         }

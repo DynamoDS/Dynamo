@@ -53,31 +53,12 @@ namespace Dynamo.Utilities
         /// </summary>
         public event DefinitionLoadHandler DefinitionLoaded;
 
-        private Dictionary<Guid, FunctionDefinition> loadedNodes = new Dictionary<Guid, FunctionDefinition>();
-        private Dictionary<Guid, string> nodePaths = new Dictionary<Guid, string>();
+        private Dictionary<Guid, FunctionDefinition> LoadedCustomNodes = new Dictionary<Guid, FunctionDefinition>();
 
         /// <summary>
         /// NodeNames </summary>
         /// <value>Maps function names to function ids.</value>
-        public ObservableDictionary<string, Guid> NodeNames
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// NodeCategories property </summary>
-        /// <value>Maps function ids to categories. </value>
-        public ObservableDictionary<Guid, string> NodeCategories
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// NodeDescriptions property </summary>
-        /// <value>Maps function ids to descriptions. </value>
-        public ObservableDictionary<Guid, string> NodeDescriptions
+        public ObservableDictionary<Guid, CustomNodeInfo> NodeInfos
         {
             get;
             private set;
@@ -100,9 +81,7 @@ namespace Dynamo.Utilities
             SearchPath = new ObservableCollection<string>();
             SearchPath.Add(searchPath);
 
-            NodeNames = new ObservableDictionary<string, Guid>();
-            NodeCategories = new ObservableDictionary<Guid, string>();
-            NodeDescriptions = new ObservableDictionary<Guid, string>();
+            NodeInfos = new ObservableDictionary<Guid, CustomNodeInfo>();
 
         }
         /// <summary> 
@@ -112,26 +91,8 @@ namespace Dynamo.Utilities
         /// <returns></returns>
         public Guid GuidFromPath(string path)
         {
-            var pair = this.nodePaths.FirstOrDefault(x => x.Value == path);
+            var pair = this.NodeInfos.FirstOrDefault(x => x.Value.Path == path);
             return pair.Key;
-        }
-
-        /// <summary>
-        ///     Enumerates all of the node names.
-        /// </summary>
-        /// <returns>A list of all of the node names</returns>
-        public IEnumerable<string> GetNodeNames()
-        {
-            return NodeNames.Keys.ToList();
-        }
-
-        /// <summary>
-        ///     Enumerates all of the node name guid pairs
-        /// </summary>
-        /// <returns>A list of tuples with the name as first element and guid as second</returns>
-        public IEnumerable<Tuple<string, string, Guid>> GetNodeNameCategoryAndGuidList()
-        {
-            return this.NodeNames.AsEnumerable().Select(first => new Tuple<string, string, Guid>(first.Key, NodeCategories[first.Value], first.Value));
         }
 
         /// <summary>
@@ -140,7 +101,7 @@ namespace Dynamo.Utilities
         /// <returns>A list of the current loaded custom node defs</returns>
         public IEnumerable<FunctionDefinition> GetLoadedDefinitions()
         {
-            return loadedNodes.Values;
+            return LoadedCustomNodes.Values;
         }
 
         /// <summary>
@@ -149,7 +110,7 @@ namespace Dynamo.Utilities
         /// <returns>False if SearchPath is not a valid directory, otherwise true</returns>
         public void AddFunctionDefinition(Guid id, FunctionDefinition def)
         {
-            this.loadedNodes[id] = def;
+            this.LoadedCustomNodes[id] = def;
         }
 
         /// <summary>
@@ -180,25 +141,8 @@ namespace Dynamo.Utilities
             return info;
         }
 
-        /// <summary>
-        ///     Indicates whether a custom node from a particular folder is loaded.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <param name="typeNames">The typenames from the folder that are in use.</param>
-        /// <returns></returns>
-        public bool TypesFromFolderAreInUse(string path, ref HashSet<Tuple<string, string>> whereTypesAreLoaded)
-        {
-            whereTypesAreLoaded.UnionWith(dynSettings.Controller.DynamoModel.AllNodes.Where((n) => n is Function)
-                                           .Cast<Function>()
-                                           .Where((func) => this.nodePaths[func.Definition.FunctionId].StartsWith(path))
-                                           .Select((func) => new Tuple<string, string>(func.Name, func.WorkSpace.Name)));
-
-            return whereTypesAreLoaded.Any();
-        }
-
         public List<CustomNodeInfo> GetInfosFromFolder(string dir)
         {
-            
             return Directory.Exists(dir) ? Directory.EnumerateFiles(dir, "*.dyf")
                      .Select( AddFileToPath )
                      .Where(x => x != null)
@@ -221,17 +165,16 @@ namespace Dynamo.Utilities
 
         }
 
-        /// <summary>
-        ///     Remove a folder and all of its elements from the search path
-        ///     and the current Dynamo instance
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        public bool RemoveFolder(string path)
+        public CustomNodeInfo RemoveFromCustomNodeManager(Guid guid)
         {
-            if (SearchPath.Contains(path))
-                SearchPath.Remove(path);
-            return RemoveTypesLoadedFromFolder(path);
+            var nodeInfo = GetNodeInfo(guid);
+
+            if (LoadedCustomNodes.ContainsKey(guid))
+                LoadedCustomNodes.Remove(guid);
+            if (NodeInfos.ContainsKey(guid))
+                NodeInfos.Remove(guid);
+
+            return nodeInfo;
         }
 
         /// <summary>
@@ -240,19 +183,13 @@ namespace Dynamo.Utilities
         /// <param name="guid"></param>
         public void Remove(Guid guid)
         {
-            if (loadedNodes.ContainsKey(guid)) 
-                loadedNodes.Remove(guid);
-            if (nodePaths.ContainsKey(guid))
-                nodePaths.Remove(guid);
-            if (NodeCategories.ContainsKey(guid))
-                NodeCategories.Remove(guid);
-            var nodeName = NodeNames.Where((x) => x.Value == guid).ToList();
-            nodeName.ForEach((pair) =>
-             {
-                    NodeNames.Remove(pair.Key);
-                    dynSettings.Controller.SearchViewModel.RemoveNodeAndEmptyParentCategory(pair.Key);
-             });
+            var nodeInfo = this.RemoveFromCustomNodeManager(guid);
+
+            // remove from search
+            dynSettings.Controller.SearchViewModel.RemoveNodeAndEmptyParentCategory(nodeInfo.Guid);
             dynSettings.Controller.SearchViewModel.SearchAndUpdateResults();
+
+            // remove from fscheme environment
             dynSettings.Controller.FSchemeEnvironment.RemoveSymbol(guid.ToString());
         }
 
@@ -292,11 +229,30 @@ namespace Dynamo.Utilities
         /// <param name="def">The definition for the function</param>
         public void SetFunctionDefinition(Guid guid, FunctionDefinition def)
         {
-            if (this.loadedNodes.ContainsKey(guid))
+            if (this.LoadedCustomNodes.ContainsKey(guid))
             {
-                this.loadedNodes.Remove(guid);
+                this.LoadedCustomNodes.Remove(guid);
             }
-            this.loadedNodes.Add(guid, def);
+            this.LoadedCustomNodes.Add(guid, def);
+        }
+
+        /// <summary>
+        /// Stores the path and function definition without initializing a node.  Overwrites
+        /// the existing NodeInfo if necessary
+        /// </summary>
+        /// <param name="guid">The unique id for the node.</param>
+        /// <param name="path">The path for the node.</param>
+        public void SetNodeInfo(CustomNodeInfo newInfo)
+        {
+            var nodeInfo = GetNodeInfo(newInfo.Guid);
+            if (nodeInfo == null)
+            {
+                NodeInfos.Add(newInfo.Guid, newInfo);
+            }
+            else
+            {
+                NodeInfos[newInfo.Guid] = newInfo;
+            }
         }
 
         /// <summary>
@@ -306,73 +262,26 @@ namespace Dynamo.Utilities
         /// <param name="path">The path for the node.</param>
         public void SetNodePath(Guid id, string path)
         {
-            if (this.Contains(id))
+            var nodeInfo = GetNodeInfo(id);
+            if (nodeInfo != null)
             {
-                this.nodePaths[id] = path;
-            }
-            else
-            {
-                this.nodePaths.Add(id, path);
+                nodeInfo.Path = path;
             }
         }
 
         /// <summary>
-        ///     Stores the path and function definition without initializing a node
+        ///     Stores the path and function definition without initializing node
         /// </summary>
-        /// <param name="guid">The unique id for the node.</param>
-        /// <param name="path">The path for the node.</param>
-        public void SetNodeInfo(CustomNodeInfo info)
+        /// <param name="id">The unique id for the node.</param>
+        /// <returns>The path to the node or null if it wasn't found.</returns>
+        public string GetNodePath(Guid id)
         {
-            this.SetNodeName(info.Guid, info.Name);
-            this.SetNodeCategory(info.Guid, info.Category);
-            this.SetNodeDescription(info.Guid, info.Description);
-            this.SetNodePath(info.Guid, info.Path);
-        }
-
-        /// <summary>
-        ///     Sets the category for a custom node
-        /// </summary>
-        /// <param name="guid">The unique id for the node.</param>
-        /// <param name="category">The name for the node</param>
-        public void SetNodeName(Guid id, string name)
-        {
-            // remove if the guid already has a name assigned
-            this.NodeNames.Where(x => x.Value == id).ToList().ForEach(x=>this.NodeNames.Remove(x));
-            this.NodeNames.Add(name, id);
-        }
-
-        /// <summary>
-        ///     Sets the category for a custom node
-        /// </summary>
-        /// <param name="guid">The unique id for the node.</param>
-        /// <param name="category">The category for the node</param>
-        public void SetNodeCategory(Guid id, string category)
-        {
-            if (this.NodeCategories.ContainsKey(id))
+            var nodeInfo = GetNodeInfo(id);
+            if (nodeInfo != null)
             {
-                this.NodeCategories[id] = category;
+                return nodeInfo.Path;
             }
-            else
-            {
-                this.NodeCategories.Add(id, category);
-            }
-        }
-
-        /// <summary>
-        ///     Sets the description for a custom node
-        /// </summary>
-        /// <param name="guid">The unique id for the node.</param>
-        /// <param name="category">The description for the node</param>
-        public void SetNodeDescription(Guid id, string description)
-        {
-            if (this.NodeDescriptions.ContainsKey(id))
-            {
-                this.NodeDescriptions[id] = description;
-            }
-            else
-            {
-                this.NodeDescriptions.Add(id, description);
-            }
+            return null;
         }
 
         /// <summary>
@@ -396,7 +305,7 @@ namespace Dynamo.Utilities
 
             if (this.IsInitialized(id))
             {
-                return loadedNodes[id];
+                return LoadedCustomNodes[id];
             }
             else
             {
@@ -410,26 +319,12 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        ///     Stores the path and function definition without initializing node
-        /// </summary>
-        /// <param name="id">The unique id for the node.</param>
-        /// <returns>The path to the node or null if it wasn't found.</returns>
-        public string GetNodePath(Guid id)
-        {
-            if (this.Contains(id) && nodePaths.ContainsKey(id))
-            {
-                return nodePaths[id];
-            }
-            return null;
-        }
-
-        /// <summary>
         ///     Tells whether the custom node's unique identifier is inside of the manager (initialized or not)
         /// </summary>
         /// <param name="guid">The FunctionId</param>
         public bool Contains(Guid guid)
         {
-            return IsInitialized(guid) || nodePaths.ContainsKey(guid);
+            return IsInitialized(guid) || NodeInfos.ContainsKey(guid);
         }
 
         /// <summary>
@@ -438,7 +333,7 @@ namespace Dynamo.Utilities
         /// <param name="name">The name of the custom node.</param>
         public bool Contains(string name)
         {
-            return IsInitialized(name) || NodeNames.ContainsKey(name);
+            return IsInitialized(name) || GetNodeInfo(name) != null;
         }
 
         /// <summary>
@@ -448,10 +343,11 @@ namespace Dynamo.Utilities
         /// <returns>The name of the </returns>
         public bool IsInitialized(string name)
         {
-            if (this.NodeNames.ContainsKey(name))
+            var info = GetNodeInfo(name);
+           
+            if ( info != null )
             {
-                var guid = this.NodeNames[name];
-                return this.IsInitialized(guid);
+                return this.IsInitialized(info.Guid);
             }
             else
             {
@@ -465,7 +361,7 @@ namespace Dynamo.Utilities
         /// <param name="guid">Whether the definition is stored with the manager.</param>
         public bool IsInitialized(Guid guid)
         {
-            return loadedNodes.ContainsKey(guid);
+            return LoadedCustomNodes.ContainsKey(guid);
         }
 
         /// <summary>
@@ -480,8 +376,7 @@ namespace Dynamo.Utilities
                 return Guid.Empty;
             }
 
-            return this.NodeNames[name];
-
+            return GetNodeInfo(name).Guid;
         }
 
         /// <summary>
@@ -528,10 +423,10 @@ namespace Dynamo.Utilities
             }
             else
             {
-                def = this.loadedNodes[guid];
+                def = this.LoadedCustomNodes[guid];
             }
 
-            WorkspaceModel ws = def.Workspace;
+            WorkspaceModel ws = def.WorkspaceModel;
 
             IEnumerable<string> inputs =
                 ws.Nodes.Where(e => e is Symbol)
@@ -674,7 +569,7 @@ namespace Dynamo.Utilities
         /// <returns>A valid function definition if the FunctionDefinition is already loaded, otherwise null. </returns>
         public FunctionDefinition GetDefinitionFromWorkspace(WorkspaceModel workspace)
         {
-            return this.loadedNodes.Values.FirstOrDefault((def) => def.Workspace == workspace);
+            return this.LoadedCustomNodes.Values.FirstOrDefault((def) => def.WorkspaceModel == workspace);
         }
 
         /// <summary>
@@ -703,6 +598,7 @@ namespace Dynamo.Utilities
                 double cx = 0;
                 double cy = 0;
                 string description = "";
+                string version = "";
 
                 double zoom = 1.0;
                 string id = "";
@@ -732,9 +628,9 @@ namespace Dynamo.Utilities
                         else if (att.Name.Equals("Description"))
                             description = att.Value;
                         else if (att.Name.Equals("ID"))
-                        {
                             id = att.Value;
-                        }
+                        else if (att.Name.Equals("Version"))
+                            version = att.Value;
                     }
                 }
 
@@ -751,19 +647,19 @@ namespace Dynamo.Utilities
                 //DynamoCommands.WriteToLogCmd.Execute("Loading node definition for \"" + funName + "\" from: " + xmlPath);
                 dynSettings.Controller.DynamoModel.WriteToLog("Loading node definition for \"" + funName + "\" from: " + xmlPath);
 
-                var ws = new FuncWorkspace(
+                var ws = new CustomNodeWorkspaceModel(
                     funName, category.Length > 0
                     ? category
                     : BuiltinNodeCategories.SCRIPTING_CUSTOMNODES, description, cx, cy)
                 {
                     WatchChanges = false,
-                    FilePath = xmlPath,
+                    FileName = xmlPath,
                     Zoom = zoom
                 };
 
                 def = new FunctionDefinition(Guid.Parse(id))
                 {
-                    Workspace = ws
+                    WorkspaceModel = ws
                 };
 
                 // load a dummy version, so any nodes depending on this node
@@ -772,7 +668,7 @@ namespace Dynamo.Utilities
                 controller.FSchemeEnvironment.DefineSymbol(def.FunctionId.ToString(), dummyExpression);
 
                 // set the node as loaded
-                this.loadedNodes.Add(def.FunctionId, def);
+                this.LoadedCustomNodes.Add(def.FunctionId, def);
 
                 XmlNodeList elNodes = xmlDoc.GetElementsByTagName("Elements");
                 XmlNodeList cNodes = xmlDoc.GetElementsByTagName("Connectors");
@@ -860,42 +756,12 @@ namespace Dynamo.Utilities
                         return false;
 
                     el.DisableReporting();
-                    
-                    // moved this logic to LoadNode in dynFunction --SJE
 
-                    if (el is Function)
-                    {
-                        var fun = el as Function;
-                        // we've found a custom node, we need to attempt to load its guid.  
-                        // if it doesn't exist (i.e. its a legacy node), we need to assign it one,
-                        // deterministically
-                        //Guid funId;
-                        //try
-                        //{
-                        //    funId = Guid.Parse(fun.Symbol);
-                        //}
-                        //catch
-                        //{
-                        //    funId = GuidUtility.Create(GuidUtility.UrlNamespace, nicknameAttrib.Value);
-                        //    fun.Symbol = funId.ToString();
-                        //}
-
-                        // if it's not a recurisve node and it's not yet loaded, load it
-                        //if (funcDefGuid != funId && !this.loadedNodes.ContainsKey(funId))
-                        //{
-                        //    dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(funId);
-                        //    fun.Definition = this.loadedNodes[funId];
-                        //}
-                        //else if (this.loadedNodes.ContainsKey(funId))
-                        //{
-                        //    fun.Definition = this.loadedNodes[funId];
-                        //}
-
-                    }
-
-                    el.Load(elNode); // has load definition in it, which we have not yet completed.
-                   
-                    
+                    el.Load(
+                        elNode,
+                        string.IsNullOrEmpty(version)
+                            ? new Version(0, 0, 0, 0) 
+                            : new Version(version));
                 }
 
                 #endregion
@@ -986,8 +852,7 @@ namespace Dynamo.Utilities
                 foreach (var e in ws.Nodes)
                     e.EnableReporting();
 
-                var expression = CompileFunction(def);
-                controller.FSchemeEnvironment.DefineSymbol(def.FunctionId.ToString(), expression);
+                def.CompileAndAddToEnvironment(controller.FSchemeEnvironment); 
 
                 ws.WatchChanges = true;
 
@@ -1015,159 +880,6 @@ namespace Dynamo.Utilities
                 DefinitionLoaded(def);
         }
 
-        public static FScheme.Expression CompileFunction(FunctionDefinition definition)
-        {
-            IEnumerable<string> ins;
-            IEnumerable<string> outs;
-
-            return CompileFunction(definition, out ins, out outs);
-        }
-
-        public static FScheme.Expression CompileFunction(FunctionDefinition definition, out IEnumerable<string> inputNames, out IEnumerable<string> outputNames)
-        {
-            inputNames = null;
-            outputNames = null;
-
-            if (definition == null)
-                return null;
-
-            // Get the internal nodes for the function
-            WorkspaceModel functionWorkspace = definition.Workspace;
-
-            #region Find outputs
-
-            // Find output elements for the node
-            List<Output> outputs = functionWorkspace.Nodes.OfType<Output>().ToList();
-
-            var topMost = new List<Tuple<int, NodeModel>>();
-
-            // if we found output nodes, add select their inputs
-            // these will serve as the function output
-            if (outputs.Any())
-            {
-                topMost.AddRange(
-                    outputs.Where(x => x.HasInput(0)).Select(x => x.Inputs[0]));
-
-                outputNames = outputs.Select(x => x.Symbol);
-            }
-            else
-            {
-                // if there are no explicitly defined output nodes
-                // get the top most nodes and set THEM as the output
-                IEnumerable<NodeModel> topMostNodes = functionWorkspace.GetTopMostNodes();
-
-                var outNames = new List<string>();
-
-                foreach (NodeModel topNode in topMostNodes)
-                {
-                    if (topNode is Function && (topNode as Function).Definition == definition)
-                    {
-                        topMost.Add(Tuple.Create(0, topNode));
-                        outNames.Add("∞");
-                        continue;
-                    }
-
-                    foreach (int output in Enumerable.Range(0, topNode.OutPortData.Count))
-                    {
-                        if (!topNode.HasOutput(output))
-                        {
-                            topMost.Add(Tuple.Create(output, topNode));
-                            outNames.Add(topNode.OutPortData[output].NickName);
-                        }
-                    }
-                }
-
-                outputNames = outNames;
-            }
-
-            #endregion
-
-            // color the node to define its connectivity
-            foreach (var ele in topMost)
-            {
-                ele.Item2.ValidateConnections();
-            }
-
-            //Find function entry point, and then compile the function and add it to our environmen
-            var variables = functionWorkspace.Nodes.OfType<Symbol>().ToList();
-            inputNames = variables.Select(x => x.InputSymbol);
-
-            INode top;
-            var buildDict = new Dictionary<NodeModel, Dictionary<int, INode>>();
-
-            if (topMost.Count > 1)
-            {
-                InputNode node = new ExternalFunctionNode(FScheme.Value.NewList);
-
-                int i = 0;
-                foreach (var topNode in topMost)
-                {
-                    string inputName = i.ToString(CultureInfo.InvariantCulture);
-                    node.AddInput(inputName);
-                    node.ConnectInput(inputName, new BeginNode());
-                    try
-                    {
-                        var exp = topNode.Item2.Build(buildDict, topNode.Item1);
-                        node.ConnectInput(inputName, exp);
-                    }
-                    catch
-                    {
-
-                    }
-
-                    i++;
-                }
-
-                top = node;
-            }
-            else if (topMost.Count == 1)
-            {
-                top = topMost[0].Item2.Build(buildDict, topMost[0].Item1);
-            }
-            else
-            {
-                // if the custom node is empty, it will initially be an empty begin
-                top = new BeginNode();
-            }
-
-            // if the node has any outputs, we create a BeginNode in order to evaluate all of them
-            // sequentially (begin evaluates a list of expressions)
-            if (outputs.Any())
-            {
-                var beginNode = new BeginNode();
-                List<NodeModel> hangingNodes = functionWorkspace.GetHangingNodes().ToList();
-
-                foreach (var tNode in hangingNodes.Select((x, index) => new { Index = index, Node = x }))
-                {
-                    beginNode.AddInput(tNode.Index.ToString(CultureInfo.InvariantCulture));
-                    beginNode.ConnectInput(
-                        tNode.Index.ToString(CultureInfo.InvariantCulture),
-                        tNode.Node.Build(buildDict, 0));
-                }
-
-                beginNode.AddInput(hangingNodes.Count.ToString(CultureInfo.InvariantCulture));
-                beginNode.ConnectInput(hangingNodes.Count.ToString(CultureInfo.InvariantCulture), top);
-
-                top = beginNode;
-            }
-
-            // make the anonymous function
-            FScheme.Expression expression = Utils.MakeAnon(
-                variables.Select(x => x.GUID.ToString()),
-                top.Compile());
-
-            return expression;
-
-        }
-
-        private static string FormatFileName(string filename)
-        {
-            return RemoveChars(
-                filename,
-                new[] { "\\", "/", ":", "*", "?", "\"", "<", ">", "|" }
-                );
-        }
-
         internal static string RemoveChars(string s, IEnumerable<string> chars)
         {
             return chars.Aggregate(s, (current, c) => current.Replace(c, ""));
@@ -1188,16 +900,29 @@ namespace Dynamo.Utilities
 
         internal CustomNodeInfo GetNodeInfo(Guid x)
         {
-            var path = GetNodePath(x);
-            var des = NodeDescriptions[x];
-            var cat = NodeCategories[x];
-            var name = this.NodeNames.FirstOrDefault(pair => pair.Value == x).Key;
-            return new CustomNodeInfo(x, name, cat, des, path);
+            if (NodeInfos.ContainsKey(x))
+            {
+                return NodeInfos[x];
+            }
+            else
+            {
+                return null;
+            }
+        }
 
+        internal CustomNodeInfo GetNodeInfo(string name)
+        {
+            return NodeInfos.FirstOrDefault(x => x.Value.Name == name).Value;
+        }
+
+
+        public void Refactor(CustomNodeInfo nodeInfo)
+        {
+            this.Refactor(nodeInfo.Guid, nodeInfo.Name, nodeInfo.Category, nodeInfo.Description);
         }
 
         /// <summary>
-        /// Refactor a custom node
+        /// Refactor a custom node, including updating search
         /// </summary>
         /// <returns> Returns false if it fails.</returns>
         internal bool Refactor(Guid guid, string newName, string newCategory, string newDescription)
@@ -1211,7 +936,6 @@ namespace Dynamo.Utilities
                        .Where(x => x is Function)
                        .Cast<Function>()
                        .Where(x => x.Definition.FunctionId == guid)
-                       .Where(x => x.Name == nodeInfo.Name)
                        .ToList()
                        .ForEach(x =>
                            {
@@ -1219,7 +943,7 @@ namespace Dynamo.Utilities
                                x.NickName = newName;
                            });
 
-            dynSettings.Controller.SearchViewModel.RemoveNodeAndEmptyParentCategory(nodeInfo.Name);
+            dynSettings.Controller.SearchViewModel.RemoveNodeAndEmptyParentCategory(nodeInfo.Guid);
 
             nodeInfo.Name = newName;
             nodeInfo.Category = newCategory;
@@ -1232,5 +956,16 @@ namespace Dynamo.Utilities
 
             return true;
         }
+
+        // this is a terrible hack
+        internal ObservableDictionary<string, Guid> GetAllNodeNames()
+        {
+            var dict = new ObservableDictionary<string, Guid>();
+            this.NodeInfos.Select(info => new KeyValuePair<string, Guid>(info.Value.Name, info.Value.Guid))
+                .ToList()
+                .ForEach(dict.Add);
+            return dict;
+        }
+
     }
 }

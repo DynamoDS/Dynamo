@@ -114,13 +114,12 @@ namespace Dynamo.ViewModels
 
         public string OldValue
         {
-            get
-            {
-                if (this.nodeLogic.WorkSpace is FuncWorkspace)
+            get { 
+                if (this.nodeLogic.WorkSpace is CustomNodeWorkspaceModel)
                 {
                     return "Not available in custom nodes";
                 }
-                return NodeModel.BuildValueString(nodeLogic.OldValue, 0, 3, 0, 2).TrimEnd('\n');
+                return NodeModel.PrintValue(nodeLogic.OldValue, 0, 3, 0, 3);
             }
         }
 
@@ -213,6 +212,18 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public bool ShowsVisibilityToggles
+        {
+            get
+            {
+                //if the node is a Function, show the visibility toggles
+                //if any of it's internal nodes is drawable.
+
+                //return nodeLogic.OldValue!=null;
+                return true;
+            }
+        }
+
         #endregion
 
         #region events
@@ -265,16 +276,16 @@ namespace Dynamo.ViewModels
             //are initially registered
             SetupInitialPortViewModels();
 
-            dynSettings.Controller.RequestNodeSelect += new NodeEventHandler(Controller_RequestNodeSelect);
+            //dynSettings.Controller.RequestNodeSelect += new NodeEventHandler(Controller_RequestNodeSelect);
         }
 
-        void Controller_RequestNodeSelect(object sender, EventArgs e)
-        {
-            ModelBase n = (e as ModelEventArgs).Model;
+        //void Controller_RequestNodeSelect(object sender, EventArgs e)
+        //{
+        //    ModelBase n = (e as ModelEventArgs).Model;
 
-            DynamoSelection.Instance.ClearSelection();
-            DynamoSelection.Instance.Selection.Add(n);
-        }
+        //    DynamoSelection.Instance.ClearSelection();
+        //    DynamoSelection.Instance.Selection.Add(n);
+        //}
 
         #endregion
 
@@ -388,6 +399,8 @@ RaisePropertyChanged("IsUpstreamVisible");
 
         private void UpdateErrorBubblePosition(double x, double y)
         {
+            if (this.ErrorBubble == null)
+                return;
             Point topLeft = new Point(NodeModel.X, NodeModel.Y);
             Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
             InfoBubbleDataPacket data = new InfoBubbleDataPacket();
@@ -473,8 +486,8 @@ RaisePropertyChanged("IsUpstreamVisible");
         private void ViewCustomNodeWorkspace(object parameter)
         {
             var f = (nodeLogic as Function);
-            if (f != null)
-                dynSettings.Controller.DynamoViewModel.ViewCustomNodeWorkspace(f.Definition);
+            if(f!= null)
+                dynSettings.Controller.DynamoViewModel.FocusCustomNodeWorkspace(f.Definition);
         }
 
         private bool CanViewCustomNodeWorkspace(object parameter)
