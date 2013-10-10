@@ -704,50 +704,45 @@ namespace Dynamo.Models
 
                 foreach (var data in OutPortData.Select((d, i) => new { Index = i, Data = d }))
                 {
-                    if (HasOutput(data.Index))
+                    if (data.Index > 0)
                     {
-                        if (data.Index > 0)
+                        var diff = data.Index - prevIndex;
+                        InputNode restNode;
+                        if (diff > 1)
                         {
-                            var diff = data.Index - prevIndex;
-                            InputNode restNode;
-                            if (diff > 1)
-                            {
-                                restNode = new ExternalFunctionNode(FScheme.Drop, new[] { "amt", "list" });
-                                restNode.ConnectInput("amt", new NumberNode(diff));
-                                restNode.ConnectInput("list", prev);
-                            }
-                            else
-                            {
-                                restNode = new ExternalFunctionNode(FScheme.Cdr, new[] { "list" });
-                                restNode.ConnectInput("list", prev);
-                            }
-                            prev = restNode;
-                            prevIndex = data.Index;
+                            restNode = new ExternalFunctionNode(FScheme.Drop, new[] { "amt", "list" });
+                            restNode.ConnectInput("amt", new NumberNode(diff));
+                            restNode.ConnectInput("list", prev);
                         }
-
-                        var firstNode = new ExternalFunctionNode(FScheme.Car, new[] { "list" }) as InputNode;
-                        firstNode.ConnectInput("list", prev);
-
-                        if (partial)
+                        else
                         {
-                            var outerNode = new AnonymousFunctionNode(partialSymList, firstNode);
-                            if (connections.Any())
-                            {
-                                outerNode = new AnonymousFunctionNode(
-                                    connections.Select(x => x.Item1),
-                                    outerNode);
-                                foreach (var connection in connections)
-                                {
-                                    outerNode.ConnectInput(connection.Item1, connection.Item2);
-                                }
-                            }
-                            firstNode = outerNode;
+                            restNode = new ExternalFunctionNode(FScheme.Cdr, new[] { "list" });
+                            restNode.ConnectInput("list", prev);
                         }
-
-                        nodes[data.Index] = firstNode;
+                        prev = restNode;
+                        prevIndex = data.Index;
                     }
-                    else
-                        nodes[data.Index] = new NumberNode(0);
+
+                    var firstNode = new ExternalFunctionNode(FScheme.Car, new[] { "list" }) as InputNode;
+                    firstNode.ConnectInput("list", prev);
+
+                    if (partial)
+                    {
+                        var outerNode = new AnonymousFunctionNode(partialSymList, firstNode);
+                        if (connections.Any())
+                        {
+                            outerNode = new AnonymousFunctionNode(
+                                connections.Select(x => x.Item1),
+                                outerNode);
+                            foreach (var connection in connections)
+                            {
+                                outerNode.ConnectInput(connection.Item1, connection.Item2);
+                            }
+                        }
+                        firstNode = outerNode;
+                    }
+
+                    nodes[data.Index] = firstNode;
                 }
             }
             else
