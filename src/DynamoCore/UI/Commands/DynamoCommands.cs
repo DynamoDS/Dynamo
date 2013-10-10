@@ -139,7 +139,22 @@ namespace Dynamo.ViewModels
             // In the playback mode 'this.recordedCommands' will be 
             // 'null' so that the incoming command will not be recorded.
             if (null != recordedCommands)
-                recordedCommands.Add(command);
+            {
+                if (command.Redundant && (recordedCommands.Count > 0))
+                {
+                    // If a command is being marked "Redundant", then we will 
+                    // only be interested in the most recent one. If we already
+                    // have another instance recorded immediately prior to this,
+                    // then replace the old instance with the new (for details,
+                    // see "RecordableCommand.Redundant" property).
+                    // 
+                    var previousCommand = recordedCommands.Last();
+                    if (previousCommand.GetType() == command.GetType())
+                        recordedCommands[recordedCommands.Count - 1] = command;
+                }
+                else
+                    recordedCommands.Add(command);
+            }
 
             command.Execute(this);
         }
