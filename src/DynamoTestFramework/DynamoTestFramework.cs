@@ -141,7 +141,7 @@ namespace Dynamo.Tests
                 CoreExtensions.Host.InitializeService();
                 var runner = new SimpleTestRunner();
                 var builder = new TestSuiteBuilder();
-                var package = new TestPackage("DynamoTestFramework", new List<string>() {Path.Combine(Assembly.GetExecutingAssembly().Location, Path.GetFullPath(testAssembly))});
+                var package = new TestPackage("DynamoTestFramework", new List<string>() {testAssembly});
                 runner.Load(package);
                 TestSuite suite = builder.Build(package);
 
