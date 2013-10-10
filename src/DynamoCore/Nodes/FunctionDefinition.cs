@@ -220,10 +220,20 @@ namespace Dynamo.Nodes
         public bool AddToSearch()
         {
             return
-                dynSettings.Controller.SearchViewModel.Add(new CustomNodeInfo(this.FunctionId, this.WorkspaceModel.Name,
-                                                                              this.WorkspaceModel.Category,
-                                                                              this.WorkspaceModel.Description,
-                                                                              this.WorkspaceModel.FileName ));
+                dynSettings.Controller.SearchViewModel.Add(new CustomNodeInfo(  this.FunctionId, 
+                                                                                this.WorkspaceModel.Name,
+                                                                                this.WorkspaceModel.Category,
+                                                                                this.WorkspaceModel.Description,
+                                                                                this.WorkspaceModel.FileName ));
+        }
+
+        public void UpdateCustomNodeManager()
+        {
+            dynSettings.CustomNodeManager.SetNodeInfo(new CustomNodeInfo(   this.FunctionId,
+                                                                            this.WorkspaceModel.Name,
+                                                                            this.WorkspaceModel.Category,
+                                                                            this.WorkspaceModel.Description,
+                                                                            this.WorkspaceModel.FileName));
         }
 
         public bool SyncWithWorkspace(bool addToSearch, bool compileFunction)
