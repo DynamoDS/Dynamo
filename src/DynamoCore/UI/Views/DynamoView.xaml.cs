@@ -40,8 +40,8 @@ using Dynamo.UI.Commands;
 using System.Windows.Data;
 using Dynamo.UI.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
 using System.Windows.Media;
+using Dynamo.Core;
 
 namespace Dynamo.Controls
 {
@@ -59,6 +59,10 @@ namespace Dynamo.Controls
 #pragma warning restore 649
         private DynamoViewModel _vm;
         private Stopwatch _timer;
+
+        private bool[] workspaceVisibility;
+        private int slidingWindowStart, slidingWindowEnd;
+        private int newSlidingWindowSize, previousSlidingWindowSize;
 
         public bool ConsoleShowing
         {
@@ -82,6 +86,9 @@ namespace Dynamo.Controls
 
         public DynamoView()
         {
+            slidingWindowStart = slidingWindowEnd = -1;
+            newSlidingWindowSize = previousSlidingWindowSize = 0;
+
             _timer = new Stopwatch();
             _timer.Start();
 
@@ -537,7 +544,7 @@ namespace Dynamo.Controls
                 workspace_vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(workspace_vm.Model.X, workspace_vm.Model.Y)));
                 workspace_vm.OnZoomChanged(this, new ZoomEventArgs(workspace_vm.Zoom));
 
-                //ResizeWorkspaceTabs();
+                ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
             }
         }
 
@@ -628,30 +635,10 @@ namespace Dynamo.Controls
 
         private void TabControlMenuItem_MouseLeftButtonUp(object sender, RoutedEventArgs e)
         {
-            string selectedWVM = (string)((MenuItem)sender).Header;
-            WorkspaceTabs.SelectedIndex = GetWorkspaceIndex(selectedWVM);           
-            Console.WriteLine("SelectedIndex: " + selectedWVM);
-
             BindingExpression be = ((MenuItem)sender).GetBindingExpression(MenuItem.HeaderProperty);
             WorkspaceViewModel wsvm = (WorkspaceViewModel)be.DataItem;
-            Console.WriteLine("WSVM: " + wsvm.Name);
-
-            Console.WriteLine("WSIndex: " + _vm.Workspaces.IndexOf(wsvm));
-            //string tag = ((MenuItem)sender).Tag as string;
-            //Console.WriteLine("Tag: " + tag);
-        }
-
-        private int GetWorkspaceIndex(string workspaceName)
-        {
-            for (int i = 0; i < _vm.Workspaces.Count; i++)
-            {                
-                if (_vm.Workspaces[i].Name.Equals(workspaceName))
-                {
-                    return i;
-                }
-            }
-
-            return -1;
+            WorkspaceTabs.SelectedIndex = _vm.Workspaces.IndexOf(wsvm);
+            ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
         }
 
         public CustomPopupPlacement[] PlacePopup(Size popupSize, Size targetSize, Point offset)
@@ -661,17 +648,128 @@ namespace Dynamo.Controls
             return placements;
         }
 
-        private void ResizeWorkspaceTabs()
+        private void ToggleWorkspaceTabVisibility(int tabSelected)
         {
-            for (int i = 0; i < WorkspaceTabs.Items.Count; i++)
+            SlideWindowToIncludeTab(tabSelected);
+
+            for (int tabIndex = 1; tabIndex < WorkspaceTabs.Items.Count; tabIndex++)
             {
-                TabItem tab = (TabItem)WorkspaceTabs.ItemContainerGenerator.ContainerFromIndex(i);
-                if (tab != null)
+                TabItem tabItem = (TabItem)WorkspaceTabs.ItemContainerGenerator.ContainerFromIndex(tabIndex);
+                if (tabIndex < slidingWindowStart || tabIndex > slidingWindowEnd)
+                    tabItem.Visibility = Visibility.Collapsed;
+                else
+                    tabItem.Visibility = Visibility.Visible;
+            }
+        }
+
+        private int GetSlidingWindowSize()
+        {
+            int tabCount = WorkspaceTabs.Items.Count;
+
+            if (tabCount > Configurations.MinTabsBeforeClipping)
+            {
+                int fullWidthTabsVisible = (int)(WorkspaceTabs.ActualWidth / Configurations.TabDefaultWidth);
+
+                if (fullWidthTabsVisible < Configurations.MinTabsBeforeClipping)
+                    return Configurations.MinTabsBeforeClipping - 1;
+                else
+                    return fullWidthTabsVisible - 1;
+            }
+            else
+                return tabCount - 1;
+        }
+
+        private void ExpandSlidingWindow()
+        {
+            int windowDiff = newSlidingWindowSize - previousSlidingWindowSize;
+            int lastTab = WorkspaceTabs.Items.Count - 1;
+
+            while (windowDiff != 0)
+            {
+                if (slidingWindowEnd != lastTab)
+                    slidingWindowEnd++;
+                else
+                    slidingWindowStart--;
+
+                windowDiff--;
+            }
+        }
+
+        private void SlideWindowToIncludeTab(int tabIndex)
+        {
+            previousSlidingWindowSize = newSlidingWindowSize;
+
+            newSlidingWindowSize = GetSlidingWindowSize();
+
+            if (newSlidingWindowSize == 0)
+            {
+                slidingWindowStart = slidingWindowEnd = -1;
+                return;
+            }
+
+            if (tabIndex != 0)
+            {
+                if (tabIndex < slidingWindowStart)
                 {
-                    MultiBindingExpression myBinding = BindingOperations.GetMultiBindingExpression(tab, TabItem.WidthProperty);
-                    myBinding.UpdateTarget();
+                    slidingWindowStart = tabIndex;
+                    slidingWindowEnd = slidingWindowStart + (newSlidingWindowSize - 1);
+                }
+                else if (tabIndex > slidingWindowEnd)
+                {
+                    slidingWindowEnd = tabIndex;
+                    slidingWindowStart = slidingWindowEnd - (newSlidingWindowSize - 1);
+                }
+                else
+                {
+                    // Handles sliding window size change caused by window resizing
+                    if (previousSlidingWindowSize > newSlidingWindowSize)
+                    {
+                        // Only need to trim when there are more tabs than window
+                        int nonHomeTabsCount = WorkspaceTabs.Items.Count - 1;
+                        if (nonHomeTabsCount > newSlidingWindowSize)
+                        {
+                            // Trim window
+                            int windowDiff = previousSlidingWindowSize - newSlidingWindowSize;
+                            while (windowDiff != 0)
+                            {
+                                if (tabIndex == slidingWindowEnd)
+                                    slidingWindowStart++;
+                                else
+                                    slidingWindowEnd--;
+
+                                windowDiff--;
+                            }
+                        }
+                    }
+                    else if (previousSlidingWindowSize < newSlidingWindowSize)
+                        ExpandSlidingWindow();
                 }
             }
+            else
+            {
+                // Handles sliding window size change caused by window resizing and tab close
+                if (previousSlidingWindowSize > newSlidingWindowSize)
+                {
+                    // Only need to trim when there are more tabs than window
+                    int nonHomeWorkspaceTabCount = WorkspaceTabs.Items.Count - 1;
+                    if (nonHomeWorkspaceTabCount > newSlidingWindowSize)
+                    {
+                        slidingWindowEnd = slidingWindowStart + (newSlidingWindowSize - 1);
+                    }
+                }
+                else if (previousSlidingWindowSize < newSlidingWindowSize)
+                    ExpandSlidingWindow();
+                else
+                {
+                    int lastTab = WorkspaceTabs.Items.Count - 1;
+
+                    if (slidingWindowEnd > lastTab)
+                        slidingWindowEnd = lastTab;
+
+                    slidingWindowStart = slidingWindowEnd - (newSlidingWindowSize - 1);
+                }
+            }
+
         }
 
 		private void Button_MouseEnter(object sender, MouseEventArgs e)
@@ -778,5 +876,15 @@ namespace Dynamo.Controls
         {
             _vm.IsMouseDown = false;
 		}
-    }
+
+        private void WorkspaceTabs_TargetUpdated(object sender, DataTransferEventArgs e)
+        {
+            ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
+        }
+
+        private void WorkspaceTabs_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
+        }
+    }    
 }
