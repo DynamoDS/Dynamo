@@ -70,12 +70,6 @@
                         </GeometryModel3D>
                     </ModelVisual3D.Content>
                 </ModelVisual3D>
-                <!--<HelixToolkit:MeshVisual3D FaceMaterial="{Binding Path=HelixMeshMaterial}" 
-                                        FaceBackMaterial="{Binding Path=HelixMeshMaterial}"
-                                        EdgeDiameter="0.0"
-                                        VertexRadius="0.0"
-                                        SharedVertices="True"
-                                        Mesh="{Binding HelixMesh}" Content=""/>-->
                 <HelixToolkit:LinesVisual3D Thickness="4" Color="Red" Points="{Binding Path=HelixXAxes, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
                 <HelixToolkit:LinesVisual3D Thickness="4" Color="Green" Points="{Binding Path=HelixYAxes, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
                 <HelixToolkit:LinesVisual3D Thickness="4" Color="Blue" Points="{Binding Path=HelixZAxes, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
