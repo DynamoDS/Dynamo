@@ -329,13 +329,22 @@ namespace Dynamo.Controls
 
             do
             {
-                //var dialog = new FunctionNamePrompt(dynSettings.Controller.SearchViewModel.Categories, error);
                 var dialog = new FunctionNamePrompt(dynSettings.Controller.SearchViewModel.Categories)
                 {
-                    nameBox = { Text = e.Name },
                     categoryBox = { Text = e.Category },
                     DescriptionInput = { Text = e.Description }
                 };
+
+                if (e.CanEditName)
+                {
+                    dialog.nameBox.Visibility = Visibility.Visible;
+                    dialog.nameView.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    dialog.nameView.Visibility = Visibility.Visible;
+                    dialog.nameBox.Visibility = Visibility.Collapsed;
+                }
 
                 if (dialog.ShowDialog() != true)
                 {
@@ -346,12 +355,6 @@ namespace Dynamo.Controls
                 if (String.IsNullOrEmpty(dialog.Text))
                 {
                     error = "You must supply a name.";
-                    MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
-                                                   MessageBoxImage.Error);
-                }
-                else if (e.Name != dialog.Text && dynSettings.Controller.CustomNodeManager.Contains(dialog.Text))
-                {
-                    error = "A custom node with the given name already exists.";
                     MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
                                                    MessageBoxImage.Error);
                 }
