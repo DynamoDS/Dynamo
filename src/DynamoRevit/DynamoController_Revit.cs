@@ -149,8 +149,8 @@ namespace Dynamo
             if (container == null)
                 return geoms;
 
-            var geom = ((FScheme.Value.Container) value).Item as GeometryObject;
-            if (geom != null)
+            var geom = ((FScheme.Value.Container)value).Item as GeometryObject;
+            if (geom != null && !(geom is Face))
                 geoms.Add(geom);
 
             var ps = ((FScheme.Value.Container) value).Item as ParticleSystem;
