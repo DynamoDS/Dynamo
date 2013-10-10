@@ -20,6 +20,13 @@ namespace Dynamo.Core.Automation
     /// 
     internal abstract class RecordableCommand
     {
+        #region Class Data Members
+
+        // See property for more details.
+        protected bool redundant = false;
+
+        #endregion
+
         #region Public Class Operational Methods
 
         /// <summary>
@@ -81,6 +88,21 @@ namespace Dynamo.Core.Automation
 
             throw new ArgumentException("element");
         }
+
+        #endregion
+
+        #region Public Command Properties
+
+        /// <summary>
+        /// Some commands are fired at high frequency (e.g. dragging and window 
+        /// selection related commands), and can be simulated during playback by
+        /// issuing the final occurrence of the command. For example, window 
+        /// selection command is fired for each mouse-move event, but the end 
+        /// result will be same if only the final selection command is recorded.
+        /// If this property is set to 'true', then only the last occurrence will
+        /// be recorded for playback.
+        /// </summary>
+        internal bool Redundant { get { return this.redundant; } }
 
         #endregion
 
@@ -284,6 +306,8 @@ namespace Dynamo.Core.Automation
 
         internal SelectInRegionCommand(Rect region, bool isCrossSelection)
         {
+            this.redundant = true; // High-frequency command.
+
             this.Region = region;
             this.IsCrossSelection = isCrossSelection;
         }
