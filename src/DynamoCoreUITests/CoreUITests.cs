@@ -589,12 +589,12 @@ namespace Dynamo.Tests
             InfoBubbleViewModel infoBubble = new InfoBubbleViewModel();
             string content = "This is the test infoBubble";
             InfoBubbleDataPacket inputData_LibItem = new InfoBubbleDataPacket(InfoBubbleViewModel.Style.LibraryItemPreview, 
-                new Point(0, 0), new Point(0, 0), content, InfoBubbleViewModel.Direction.Left, Guid.Empty);
+                new Point(0, 0), new Point(0, 0), content, InfoBubbleViewModel.Direction.Left);
 
             if (infoBubble.UpdateContentCommand.CanExecute(null))
             {
                 infoBubble.UpdateContentCommand.Execute(inputData_LibItem);
-                Assert.AreEqual(content, infoBubble.ItemDescription);
+                Assert.AreEqual(content, infoBubble.Content);
                 Assert.AreEqual(InfoBubbleViewModel.Style.LibraryItemPreview, infoBubble.InfoBubbleStyle);
                 Assert.AreEqual(InfoBubbleViewModel.Direction.Left, infoBubble.ConnectingDirection);
             }
@@ -607,12 +607,12 @@ namespace Dynamo.Tests
             InfoBubbleViewModel infoBubble = new InfoBubbleViewModel();
             string content = "This is the test infoBubble";
             InfoBubbleDataPacket inputData_NodeTooltip = new InfoBubbleDataPacket(InfoBubbleViewModel.Style.NodeTooltip,
-                new Point(0, 0), new Point(0, 0), content, InfoBubbleViewModel.Direction.Right, Guid.Empty);
+                new Point(0, 0), new Point(0, 0), content, InfoBubbleViewModel.Direction.Right);
 
             if (infoBubble.UpdateContentCommand.CanExecute(null))
             {
                 infoBubble.UpdateContentCommand.Execute(inputData_NodeTooltip);
-                Assert.AreEqual(content, infoBubble.ItemDescription);
+                Assert.AreEqual(content, infoBubble.Content);
                 Assert.AreEqual(InfoBubbleViewModel.Style.NodeTooltip, infoBubble.InfoBubbleStyle);
                 Assert.AreEqual(InfoBubbleViewModel.Direction.Right, infoBubble.ConnectingDirection);
             }
@@ -625,12 +625,12 @@ namespace Dynamo.Tests
             InfoBubbleViewModel infoBubble = new InfoBubbleViewModel();
             string content = "This is the test infoBubble";
             InfoBubbleDataPacket inputData_ErrorBubble = new InfoBubbleDataPacket(InfoBubbleViewModel.Style.Error,
-                new Point(0, 0), new Point(0, 0), content, InfoBubbleViewModel.Direction.Bottom, Guid.Empty);
+                new Point(0, 0), new Point(0, 0), content, InfoBubbleViewModel.Direction.Bottom);
 
             if (infoBubble.UpdateContentCommand.CanExecute(null))
             {
                 infoBubble.UpdateContentCommand.Execute(inputData_ErrorBubble);
-                Assert.AreEqual(content, infoBubble.ItemDescription);
+                Assert.AreEqual(content, infoBubble.Content);
                 Assert.AreEqual(InfoBubbleViewModel.Style.Error, infoBubble.InfoBubbleStyle);
                 Assert.AreEqual(InfoBubbleViewModel.Direction.Bottom, infoBubble.ConnectingDirection);
             }

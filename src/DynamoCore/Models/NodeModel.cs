@@ -1526,8 +1526,8 @@ namespace Dynamo.Models
                     list.Select((x, i) => new {Element = x, Index = i})
                         .TakeWhile(e => e.Index <= maxListIndex)
                         .Aggregate(
-                            accString, 
-                            (current, e) => current + BuildValueString(e.Element, e.Index, maxListIndex, currentDepth + 1, maxDepth));
+                            accString,
+                            (current, e) => current + BuildValueString(e.Element, e.Index, maxListIndex, currentDepth + 1, maxDepth)).TrimEnd('\n');
             }
             else if (eIn.IsNumber)
             {

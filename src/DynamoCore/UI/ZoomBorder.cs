@@ -175,7 +175,7 @@ namespace Dynamo.Controls
 
         private void child_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            if (child != null)
+            if (child != null && !dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.IsMouseOnScrollableArea)
             {
                 double zoom = e.Delta > 0 ? .1 : -.1;
                 Point mousePosition = e.GetPosition(child);
