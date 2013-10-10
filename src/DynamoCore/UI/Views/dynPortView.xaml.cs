@@ -121,6 +121,11 @@ namespace Dynamo.Connectors
                 ViewModel.UpdateCenter(p);
             }
         }
+
+        private void portGrid_MouseEnter(object sender, MouseEventArgs e)
+        {
+
+        }
     }
 
 }
