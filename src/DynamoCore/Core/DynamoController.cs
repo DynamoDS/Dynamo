@@ -298,6 +298,7 @@ namespace Dynamo
                 //Setup background worker
                 var worker = new BackgroundWorker();
                 worker.DoWork += EvaluationThread;
+                // worker.DoWork += DSEvaluationThread;
 
                 DynamoViewModel.RunEnabled = false;
 
@@ -312,6 +313,35 @@ namespace Dynamo
                 EvaluationThread(null, null);
         }
 
+        protected virtual void DSEvaluationThread(Object e, DoWorkEventArgs args)
+        {
+            AstBuilder.Instance.BeginBuildingAst();
+
+            List<NodeModel> topElements = DynamoViewModel.Model.HomeSpace.GetTopMostNodes().ToList();
+            foreach (NodeModel topMost in topElements)
+            {
+                topMost.CompileToAstNode(AstBuilder.Instance);
+            }
+
+            AstBuilder.Instance.FinishBuildingAst();
+            LiveRunnerServices.Instance.UpdateGraph(AstBuilder.Instance.SyncData);
+
+            List<Guid> nodes = AstBuilder.Instance.ToBeQueriedNodes;
+            if (nodes != null)
+            {
+                foreach (var node in nodes)
+                {
+                   string var = AstBuilder.StringConstants.kVarPrefix + node.ToString().Replace("-", string.Empty);
+                   DynamoLogger.Instance.Log(var + " = " + LiveRunnerServices.Instance.GetStringValue(var));
+                }
+            }
+
+            DynamoViewModel.RunEnabled = true;
+            Running = false;
+            OnRunCompleted(this, true);
+            return;
+        }
+
         protected virtual void EvaluationThread(object s, DoWorkEventArgs args)
         {
             //Get our entry points (elements with nothing connected to output)
@@ -320,21 +350,8 @@ namespace Dynamo
             //Mark the topmost as dirty/clean
             foreach (NodeModel topMost in topElements)
             {
-                AstBuilder builder = AstBuilder.Instance;
-                topMost.CompileToAstNode(builder);
-                builder.Execute();
-
                 topMost.MarkDirty();
             }
-
-            DynamoViewModel.RunEnabled = true;
-            Running = false;
-
-            foreach (FunctionDefinition def in dynSettings.FunctionWasEvaluated)
-                def.RequiresRecalc = false;
-            OnRunCompleted(this, true);
-
-            return;
 
             try
             {
