@@ -854,6 +854,8 @@ namespace Dynamo.Models
             //     AstIdentifier = ...;
             var rhs = BuildAstNode(builder, inputAstNodes);
             builder.BuildEvaluation(this, rhs);
+            RequiresRecalc = false;
+
             return AstIdentifier;
         }
 

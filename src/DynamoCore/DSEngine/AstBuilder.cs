@@ -153,16 +153,6 @@ namespace Dynamo.DSEngine
             astNodes.AddItem(dynamoNodeId, astNode);
         }
 
-        /// <summary>
-        /// If AstBuilder has generated AST node for this Dynamo node
-        /// </summary>
-        /// <param name="dynamoNodeId"></param>
-        /// <returns></returns>
-        private bool ContainsAstNodes(Guid dynamoNodeId)
-        {
-            return astNodes.Contains(dynamoNodeId);
-        }
-
         private void RemoveAstNodes(Guid dynamoNodeId)
         {
             astNodes.Removes(dynamoNodeId); 
@@ -188,18 +178,34 @@ namespace Dynamo.DSEngine
             return subtrees;
         }
 
-        private void FinishExecution(List<Subtree> added, List<Subtree> modifed, List<Subtree> deleted)
+        public List<Guid> ToBeQueriedNodes
         {
+            get
+            {
+                var nodes = nodeStates.Where(x => x.Value == NodeState.Added || x.Value == NodeState.Modified)
+                                    .Select(x => x.Key)
+                                    .ToList();
+                return nodes;
+            }
+        }
 
+        public GraphSyncData SyncData
+        {
+            get
+            {
+                var added = GetSubtreesForState(NodeState.Added);
+                var modified = GetSubtreesForState(NodeState.Modified);
+                var deleted = GetSubtreesForState(NodeState.Deleted);
+                GraphSyncData syncData = new GraphSyncData(deleted, added, modified);
+                return syncData;
+            }
         }
 
         /// <summary>
-        /// Execute AST nodes, just for testing. 
+        /// Dump code
         /// </summary>
-        public void Execute()
+        public string DumpCode()
         {
-            DynamoLogger logger = DynamoLogger.Instance;
-#if DEBUG
             List<AssociativeNode> allAstNodes = new List<AssociativeNode>();
             foreach (var item in astNodes)
             {
@@ -207,36 +213,8 @@ namespace Dynamo.DSEngine
             }
             ProtoCore.CodeGenDS codegen = new ProtoCore.CodeGenDS(allAstNodes);
             string code = codegen.GenerateCode();
-            logger.Log(code);
-#endif
-
-            var added = GetSubtreesForState(NodeState.Added);
-            var modified = GetSubtreesForState(NodeState.Modified);
-            var deleted = GetSubtreesForState(NodeState.Deleted);
-            GraphSyncData syncData = new GraphSyncData(deleted, added, modified);
-
-            try
-            {
-                liveRunner.UpdateGraph(syncData);
-
-                List<Guid> keys = astNodes.GetKeys();
-                foreach (var guid in keys)
-                {
-                    string varname = StringConstants.kVarPrefix + guid.ToString().Replace("-", string.Empty);
-                    RuntimeMirror mirror = liveRunner.InspectNodeValue(varname);
-                    string value = mirror.GetStringData();
-                    logger.Log(varname + "=" + value);
-                }
-            }
-            catch (CompileErrorsOccured e)
-            {
-                logger.Log(e.Message);
-            }
+            return code;
         }
-<<<<<<< HEAD
-=======
-//#endif
->>>>>>> upstream/ChocoButter
 
         #region IAstBuilder interface
         public AssociativeNode Build(NodeModel node, List<AssociativeNode> inputs)
@@ -361,6 +339,21 @@ namespace Dynamo.DSEngine
 
             var assignment = AstFactory.BuildAssignment(node.AstIdentifier, rhs);
             AddNode(node.GUID, assignment);
+        }
+
+        public void BeginBuildingAst()
+        {
+            List<Guid> keys = new List<Guid>(nodeStates.Keys);
+
+            foreach (var node in keys)
+            {
+                nodeStates[node] = NodeState.NoChange;
+            }
+        }
+
+        public void FinishBuildingAst()
+        {
+
         }
     }
 }
