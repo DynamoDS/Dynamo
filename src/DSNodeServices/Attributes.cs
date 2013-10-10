@@ -15,8 +15,5 @@ namespace DSNodeServices
     {}
 
 
-    public class Constants
-    {
-        public const string RevitTraceID = "Revit-Slot-{8C34D023-EF13-43A7-A210-C7EC45731FED}";
-    }
+    
 }
