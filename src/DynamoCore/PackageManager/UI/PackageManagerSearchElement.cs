@@ -39,7 +39,7 @@ namespace Dynamo.PackageManager
         public PackageManagerSearchElement(Greg.Responses.PackageHeader header)
         {
             this.Header = header;
-            this.Weight = header.deprecated ? 0.2 : 1;
+            this.Weight = header.deprecated ? 0.1 : 1;
 
             if (header.keywords != null && header.keywords.Count > 0)
             {
