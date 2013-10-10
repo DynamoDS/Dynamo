@@ -7,6 +7,7 @@
         xmlns:models="clr-namespace:Dynamo.Models"
         xmlns:controls="clr-namespace:Dynamo.Controls" xmlns:commands="clr-namespace:Dynamo.UI.Commands"        
         xmlns:mwt="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
+        xmlns:core="clr-namespace:Dynamo.Core"
         x:Name="_this"
         Height="768" 
         Width="1024"
@@ -333,12 +334,14 @@
                 SizeChanged="Workspace_SizeChanged">
 
             <Grid>
-                <TabControl ItemsSource="{Binding Workspaces}"
+                <TabControl ItemsSource="{Binding Path=Workspaces, NotifyOnTargetUpdated=True}"
                             Name="WorkspaceTabs"
                             SelectedIndex="{Binding CurrentWorkspaceIndex}"
                             Background="Transparent"
                             Padding="0"
-                            SelectionChanged="WorkspaceTabs_SelectionChanged">
+                            TargetUpdated="WorkspaceTabs_TargetUpdated"
+                            SelectionChanged="WorkspaceTabs_SelectionChanged"
+                            SizeChanged="WorkspaceTabs_SizeChanged">
 
                     <TabControl.Resources>
 
@@ -597,14 +600,15 @@
                                     Value="0" />
                             <Setter Property="Padding"
                                     Value="0" />
+                            <!--<EventSetter Event="Click"
+                                         Handler="TabCloseButton_Click" />-->
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="Button">
                                         <Border x:Name="Border"
                                                 Background="Transparent"
-                                                BorderThickness="0 0 0 0"
-                                                BorderBrush="#3b3b3b">
-                                            <ContentPresenter Margin="1 1 0 0" />
+                                                BorderThickness="0 0 0 0">
+                                            <ContentPresenter Margin="0 1 0 0" />
                                         </Border>
                                     </ControlTemplate>
                                 </Setter.Value>
@@ -620,7 +624,7 @@
 
                         <Style TargetType="{x:Type TabItem}">
                             <Setter Property="MaxWidth"
-                                    Value="200" />
+                                    Value="{Binding Source={x:Static core:Configurations.TabDefaultWidth}}" />
                             <Setter Property="Width">
                                 <Setter.Value>
                                     <MultiBinding Converter="{StaticResource TabSizeConverter}">
@@ -629,6 +633,7 @@
                                                  Path="ActualWidth" />
                                         <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type TabControl}}"
                                                  Path="Items.Count" />
+                                        <!--<Binding Path="Visibility" />-->
                                     </MultiBinding>
                                 </Setter.Value>
                             </Setter>
@@ -677,7 +682,7 @@
                                                         Command="{Binding HideCommand}"
                                                         Grid.Column="1">
                                                     <Image Width="16"
-                                                           Height="15">
+                                                           Height="16">
                                                         <Image.Style>
                                                             <Style TargetType="{x:Type Image}">
                                                                 <Style.Triggers>
@@ -722,13 +727,15 @@
                                 <MouseBinding Gesture="MiddleClick" Command="{Binding HideCommand}" />
                             </Button.InputBindings>-->
 
-                            <DockPanel Margin="8,0,5,0"
+                            <DockPanel Margin="0,0,5,0"
                                        Height="20"
                                        HorizontalAlignment="Stretch">
 
                                 <TextBlock Name="WorkspaceName"
                                            Margin="0,2,0,0"
-                                           DockPanel.Dock="Left">
+                                           Padding="8,0,0,0"
+                                           DockPanel.Dock="Left"
+                                           TextTrimming="CharacterEllipsis">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Style.Triggers>
@@ -766,7 +773,7 @@
                                     </TextBlock.Style>
                                 </TextBlock>
 
-                                <TextBlock Name="WorkspaceFileName"
+                                <TextBlock Name="WorkspaceSaveState"
                                            Margin="0,2,0,0"
                                            DockPanel.Dock="Left">
                                     <TextBlock.Style>

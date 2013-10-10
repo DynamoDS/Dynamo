@@ -11,6 +11,7 @@ using System.Web;
 using Dynamo.ViewModels;
 using Dynamo.PackageManager;
 using System.Windows.Controls;
+using Dynamo.Core;
 
 namespace Dynamo.Controls
 {
@@ -1041,22 +1042,21 @@ namespace Dynamo.Controls
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {           
             TabControl tabControl = values[0] as TabControl;
-            int tabControlMenuWidth = 20;
-            double tabControlActualWidth = tabControl.ActualWidth - tabControlMenuWidth; // Need to factor in tabControlMenu
-            int tabDefaultWidth = 200;
+            
+            double tabControlActualWidth = tabControl.ActualWidth - Configurations.TabControlMenuWidth; // Need to factor in tabControlMenu
 
-            double width = tabControlActualWidth / tabControl.Items.Count;
+            int visibleTabsNumber = tabControl.Items.Count;
 
-            if ((tabControlActualWidth - tabControl.Items.Count * tabDefaultWidth) >= 0)
-            {
-                width = tabDefaultWidth;
-            }
+            if (visibleTabsNumber > Configurations.MinTabsBeforeClipping)
+                visibleTabsNumber = Configurations.MinTabsBeforeClipping;
 
-            if (width > tabDefaultWidth)
-                width = tabDefaultWidth;
+            double width = tabControlActualWidth / visibleTabsNumber;
+
+            if ((tabControlActualWidth - tabControl.Items.Count * Configurations.TabDefaultWidth) >= 0 || width > Configurations.TabDefaultWidth)
+                width = Configurations.TabDefaultWidth;
             
             //Subtract 1, otherwise we could overflow to two rows.
-            return (width <= tabControlMenuWidth) ? tabControlMenuWidth : (width - 1);
+            return (width <= Configurations.TabControlMenuWidth) ? Configurations.TabControlMenuWidth : (width - 1);
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
