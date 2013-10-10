@@ -696,7 +696,8 @@ namespace Dynamo.Tests
             var oldId = nodeWorkspace.FunctionDefinition.FunctionId;
 
             // place the custom node a few times in home workspace
-            model.Home(null);
+            var homeWorkspace = model.Workspaces.OfType<HomeWorkspaceModel>().First();
+            model.CurrentWorkspace = homeWorkspace;
             foreach (var i in Enumerable.Range(0, 10))
             {
                 model.CreateNode(new Dictionary<string, object>()
@@ -714,19 +715,13 @@ namespace Dynamo.Tests
             Assert.IsTrue(res);
             Assert.IsTrue(File.Exists(newPath));
 
+            Assert.IsNotNull(nodeWorkspace.FunctionDefinition);
+
             // can get instances of original custom node
-            var homeWorkspace =
-                model.Workspaces.FirstOrDefault(x => x is HomeWorkspaceModel) as HomeWorkspaceModel;
-
             Assert.AreEqual(10, homeWorkspace.Nodes.Count);
-            foreach (var node in homeWorkspace.Nodes)
-            {
-                Assert.IsAssignableFrom(typeof(Function), node);
-                var nodeFunc = node as Function;
-
-                Assert.AreEqual(Path.GetFileNameWithoutExtension(newPath), nodeFunc.Name);
-                Assert.AreNotEqual(nodeFunc.Definition.FunctionId, oldId);
-            }
+            var funcs = homeWorkspace.Nodes.OfType<Function>().Where(x => x.Definition.FunctionId == oldId).ToList();
+            Assert.AreEqual(10, funcs.Count);
+            funcs.ForEach(x => Assert.AreEqual( "Constant2", x.Name ));
             
         }
 
