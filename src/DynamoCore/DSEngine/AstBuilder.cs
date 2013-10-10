@@ -233,6 +233,10 @@ namespace Dynamo.DSEngine
                 logger.Log(e.Message);
             }
         }
+<<<<<<< HEAD
+=======
+//#endif
+>>>>>>> upstream/ChocoButter
 
         #region IAstBuilder interface
         public AssociativeNode Build(NodeModel node, List<AssociativeNode> inputs)
