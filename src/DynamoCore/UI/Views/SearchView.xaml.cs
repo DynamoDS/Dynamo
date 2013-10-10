@@ -145,11 +145,6 @@ namespace Dynamo.Search
             //RegionMenu.IsOpen = true;
         }
 
-        private void UIElement_OnMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            Console.WriteLine(sender);
-        }
-
         private void TreeViewScrollViewer_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
         {
             ScrollViewer scv = (ScrollViewer)sender;

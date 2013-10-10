@@ -583,7 +583,8 @@ namespace Dynamo.ViewModels
                                 _visibleSearchResults[0].IsSelected = true;
                             }
 
-
+                            SearchResults.Clear();
+                            _visibleSearchResults.ToList().ForEach(x => SearchResults.Add( (NodeSearchElement) x));
                         }
 
                     }
