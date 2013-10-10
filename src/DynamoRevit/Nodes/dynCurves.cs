@@ -118,10 +118,11 @@ namespace Dynamo.Nodes
                 Type CurveElementType = typeof(Autodesk.Revit.DB.CurveElement);
                 MethodInfo[] curveElementMethods = CurveElementType.GetMethods(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
                 System.String nameOfMethodSetCurve = "ResetSketchPlaneAndCurve";
+                System.String nameOfMethodSetCurveAlt = "SetSketchPlaneAndCurve";
 
                 foreach (MethodInfo m in curveElementMethods)
                 {
-                    if (m.Name == nameOfMethodSetCurve)
+                    if (m.Name == nameOfMethodSetCurve || m.Name == nameOfMethodSetCurveAlt)
                     {
                         object[] argsM = new object[2];
                         sp = dynRevitUtils.GetSketchPlaneFromCurve(c);

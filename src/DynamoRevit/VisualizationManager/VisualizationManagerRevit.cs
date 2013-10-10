@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows.Media.Media3D;
 using Autodesk.Revit.DB;
 using Dynamo.Models;
@@ -157,13 +158,20 @@ namespace Dynamo
             if (face == null)
                 return;
 
+            var mesh = face.Triangulate(0.2);
+            if (mesh == null)
+            {
+                Debug.WriteLine("Mesh could not be computed from face.");
+                return;
+            }
+
             if (node.IsSelected)
             {
-                rd.SelectedMeshes.Add(RevitMeshToHelixMesh(face.Triangulate(0.1)));
+                rd.SelectedMeshes.Add(RevitMeshToHelixMesh(mesh));
             }
             else
             {
-                rd.Meshes.Add(RevitMeshToHelixMesh(face.Triangulate(0.1)));
+                rd.Meshes.Add(RevitMeshToHelixMesh(mesh));
             }
         }
 

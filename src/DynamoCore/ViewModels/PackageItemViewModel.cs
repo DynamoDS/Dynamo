@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
+using Dynamo.Nodes;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.PackageManager.UI
@@ -132,7 +133,7 @@ namespace Dynamo.PackageManager.UI
             {
                 if (DependencyType == DependencyType.CustomNode)
                 {
-                    return Definition.Workspace.Name;
+                    return Definition.WorkspaceModel.Name;
                 }
                 return Assembly.FullName;
             }
