@@ -43,8 +43,6 @@
         <KeyBinding Key="Tab"
                                 Command="{Binding Path=DataContext.SelectNeighborsCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
 
-        <KeyBinding Key="Delete"
-                                Command="{Binding Path=DataContext.DeleteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
         <KeyBinding Key="N"
                                 Modifiers="Control"
                                 Command="{Binding Path=DataContext.NewHomeWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
@@ -54,8 +52,6 @@
         <KeyBinding Key="Tab"
                                 Command="{Binding Path=DataContext.SelectNeighborsCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
 
-        <KeyBinding Key="Delete"
-                                Command="{Binding Path=DataContext.DeleteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
         <KeyBinding Key="C"
                                 Modifiers="Control"
                                 Command="{Binding Path=DataContext.CopyCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
@@ -270,7 +266,6 @@
                                 <Button Content="Find" Width="70" Name="id_butt" Click="Id_butt_OnClick"></Button>
                             </WrapPanel>
                         </MenuItem>
-                        <MenuItem Header="{Binding Path=ConsoleShowing, Converter={StaticResource ShowHideConsoleMenuConverter}}" Command="{Binding ToggleConsoleShowingCommand}" InputGestureText="Ctrl + Alt + Up" Focusable="False"/>
                     </MenuItem>
 
                     <MenuItem Header="_Workspaces" Name="workspacesMenu" Focusable="False" ItemsSource="{Binding Source={x:Static utilities:dynSettings.CustomNodes}}">

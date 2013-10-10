@@ -1276,7 +1276,7 @@ namespace Dynamo.DSEngine
 
             CodeBlockNode funcBody = new CodeBlockNode();
             {
-                var lhs = BuildIdentifier(ProtoCore.DSDefinitions.Kw.kw_return);
+                var lhs = BuildIdentifier(ProtoCore.DSDefinitions.Keyword.Return);
                 var rhs = BuildFunctionCall(func.Function.Name, func.FormalArguments);
                 var returnStmt = BuildAssignment(lhs, rhs);
                 funcBody.Body.Add(returnStmt);
@@ -1330,7 +1330,7 @@ namespace Dynamo.DSEngine
 
             CodeBlockNode funcBody = new CodeBlockNode();
             {
-                var lhs = BuildIdentifier(ProtoCore.DSDefinitions.Kw.kw_return);
+                var lhs = BuildIdentifier(ProtoCore.DSDefinitions.Keyword.Return);
                 var returnStmt = BuildAssignment(lhs, expr);
                 funcBody.Body.Add(returnStmt);
             }
@@ -1395,7 +1395,7 @@ namespace Dynamo.DSEngine
                 FunctionCallNode eval = BuildFunctionCall(StringConstants.kEvalFunction, evaluateArgs) as FunctionCallNode;
                 FunctionDotCallNode evalCall = CoreUtils.GenerateCallDotNode(evalInstance, eval, null);
 
-                IdentifierNode ret = BuildIdentifier(ProtoCore.DSDefinitions.Kw.kw_return);
+                IdentifierNode ret = BuildIdentifier(ProtoCore.DSDefinitions.Keyword.Return);
                 BinaryExpressionNode returnStmt = BuildAssignment(ret, evalCall);
 
                 funcBody.Body.Add(returnStmt);
