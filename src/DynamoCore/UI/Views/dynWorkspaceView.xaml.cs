@@ -21,6 +21,13 @@ namespace Dynamo.Views
     /// </summary>
     public partial class dynWorkspaceView : UserControl
     {
+
+        //TRON
+        private DrawingVisual hitVisual = null;
+        private List<DependencyObject> hitResultsList = new List<DependencyObject>();
+        private int count = 0;
+        //END
+
         private bool isWindowSelecting;
         private Point mouseDownPos;
         private Dynamo.Controls.DragCanvas WorkBench = null;
@@ -454,7 +461,16 @@ namespace Dynamo.Views
             //redraw it to match the new mouse coordinates.
             if (vm.IsConnecting && vm.ActiveConnector != null)
             {
+                Point mouse = (Point)e.GetPosition((UIElement)sender);
                 vm.ActiveConnector.Redraw(e.GetPosition(WorkBench));
+                foreach (DependencyObject deob in this.FindChildren(mouse))
+                {
+                    if (deob.GetType() == typeof(Grid))
+                    {
+                        
+                    }
+                }
+                
             }
 
             if (isWindowSelecting)
@@ -559,6 +575,66 @@ namespace Dynamo.Views
         {
             WorkBench = sender as Dynamo.Controls.DragCanvas;
             //DrawGrid();
+        }
+
+
+        // TRON'S
+        private List<DependencyObject> FindChildren(System.Windows.Point mouse)
+        {
+            hitResultsList.Clear();
+            VisualTreeHelper.HitTest(this, null, new HitTestResultCallback(VisualCallBack), new PointHitTestParameters(mouse));
+            if (hitResultsList.Count > 0)
+                Debug.WriteLine("Number of visual hits: " + hitResultsList.Count);
+            return this.hitResultsList;
+        }
+
+        private HitTestResultBehavior VisualCallBack(HitTestResult result)
+        {
+            if (result == null || result.VisualHit == null)
+                throw new ArgumentNullException();
+
+            //if (result.VisualHit is DrawingVisual)
+            //    hitVisual = (DrawingVisual)result.VisualHit;
+            this.count++;
+            Debug.WriteLine(count + "Type of hit object: " + result.VisualHit.GetType());
+            if (result.VisualHit.GetType() == typeof(PortModel))
+            {
+                Debug.WriteLine("I'm inside");
+                //hitVisual = ((PortModel)result.VisualHit);
+                hitResultsList.Add(result.VisualHit);
+            }
+
+            //if (result.VisualHit.GetType().IsAssignableFrom(typeof(Grid)))
+            if (result.VisualHit.GetType() == typeof(Grid))
+            {
+                Debug.WriteLine("CAUGHT");
+                hitResultsList.Add(result.VisualHit);
+            }
+
+            if (result.VisualHit.GetType() == typeof(PortViewModel))
+            {
+                Debug.WriteLine("CAUGHT PORTVIEWMODEL");
+                hitResultsList.Add(result.VisualHit);
+            }
+
+            if (result.VisualHit.GetType() == typeof(PortModel))
+            {
+                Debug.WriteLine("CAUGHT portModel");
+                hitResultsList.Add(result.VisualHit);
+            }
+
+            if (result.VisualHit.GetType() == (typeof(UserControl)))
+            {
+                Debug.WriteLine("Caught UserControl");
+                hitResultsList.Add(result.VisualHit);
+            }
+
+            if (result.VisualHit.GetType() == typeof(System.Windows.Controls.Grid))
+            {
+                Debug.WriteLine("CAUGHT");
+            }
+
+            return HitTestResultBehavior.Continue;
         }
     }
 }
