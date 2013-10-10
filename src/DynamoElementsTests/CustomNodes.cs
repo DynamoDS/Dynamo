@@ -2,8 +2,10 @@
 using System.IO;
 using System.Linq;
 using System.Threading;
+using Dynamo.FSchemeInterop;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
+using Microsoft.FSharp.Collections;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -172,7 +174,29 @@ namespace Dynamo.Tests
         [Test]
         public void MultipleOutputs()
         {
-            Assert.Inconclusive();   
+            var model = Controller.DynamoModel;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\multiout");
+
+            string openPath = Path.Combine(examplePath, "multi.dyn");
+            model.Open(openPath);
+
+            dynSettings.Controller.RunExpression();
+
+            var splitListVal = model.CurrentWorkspace.FirstNodeFromWorkspace<DeCons>().OldValue;
+
+            Assert.IsInstanceOf<FScheme.Value.List>(splitListVal);
+
+            var outs = (splitListVal as FScheme.Value.List).Item;
+
+            Assert.AreEqual(2, outs.Length);
+
+            var out1 = outs[0];
+            Assert.IsInstanceOf<FScheme.Value.Number>(out1);
+            Assert.AreEqual(0, (out1 as FScheme.Value.Number).Item);
+
+            var out2 = outs[1];
+            Assert.IsInstanceOf<FScheme.Value.List>(out2);
+            Assert.IsTrue((out2 as FScheme.Value.List).Item.IsEmpty);
         }
 
         /// <summary>
