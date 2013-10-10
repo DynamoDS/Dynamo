@@ -134,7 +134,7 @@ namespace Dynamo.Core.Automation
             double x = helper.ReadDouble("X");
             double y = helper.ReadDouble("Y");
 
-            return new CreateNodeCommand(nodeId, nodeName, x, y, 
+            return new CreateNodeCommand(nodeId, nodeName, x, y,
                 helper.ReadBoolean("DefaultPosition"),
                 helper.ReadBoolean("TransformCoordinates"));
         }
@@ -303,14 +303,14 @@ namespace Dynamo.Core.Automation
         }
 
         #endregion
-    
+
         #region Public Command Properties
 
         internal Rect Region { get; private set; }
         internal bool IsCrossSelection { get; private set; }
 
         #endregion
-    
+
         #region Protected Overridable Methods
 
         protected override void ExecuteCore(DynamoViewModel dynamoViewModel)

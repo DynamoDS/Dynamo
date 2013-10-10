@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using Dynamo.Core.Automation;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Utilities;
@@ -456,7 +457,9 @@ namespace Dynamo.ViewModels
                 if (this.currentState != State.None)
                     throw new InvalidOperationException();
 
-                DynamoSelection.Instance.ClearSelection();
+                var selectNothing = new SelectModelCommand(Guid.Empty, ModifierKeys.None);
+                DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
+                dynamoViewModel.ExecuteCommand(selectNothing);
 
                 // Update the selection box and make it visible 
                 // but with an initial dimension of zero.
