@@ -332,7 +332,9 @@ namespace Dynamo.Controls
                 var dialog = new FunctionNamePrompt(dynSettings.Controller.SearchViewModel.Categories)
                 {
                     categoryBox = { Text = e.Category },
-                    DescriptionInput = { Text = e.Description }
+                    DescriptionInput = { Text = e.Description },
+                    nameView = { Text = e.Name },
+                    nameBox = { Text = e.Name }
                 };
 
                 if (e.CanEditName)

@@ -110,8 +110,10 @@ namespace Dynamo.Models
             // custom node with a new function id
             if ( doRefactor )
             {
-                if (!File.Exists(originalPath))
+                // if the original path does not exist
+                if ( !File.Exists(originalPath) )
                 {
+                    this.FunctionDefinition.FunctionId = newGuid;
                     this.FunctionDefinition.SyncWithWorkspace(true, true);
                     return false;
                 }
