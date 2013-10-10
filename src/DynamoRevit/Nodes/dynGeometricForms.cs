@@ -372,10 +372,11 @@ namespace Dynamo.Nodes
                 {
                     MethodInfo[] freeFormInstanceMethods = FreeFormType.GetMethods(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
                     System.String nameOfMethodUpdate = "UpdateToSolidGeometry";
+                    System.String nameOfMethodUpdateAlt = "UpdateSolidGeometry";
 
                     foreach (MethodInfo mInst in freeFormInstanceMethods)
                     {
-                        if (mInst.Name == nameOfMethodUpdate)
+                        if (mInst.Name == nameOfMethodUpdate || mInst.Name == nameOfMethodUpdateAlt)
                         {
                             object[] argsM = new object[1];
                             argsM[0] = mySolid;

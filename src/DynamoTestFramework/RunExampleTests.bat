@@ -1,3 +1,0 @@
-python RunRevitTests.py -n TestOne -a C:\Users\Ian\Documents\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoTestFramework.dll -m empty.rfa -o TestResults.xml -f TestExamples
-python RunRevitTests.py -n TestTwo -a C:\Users\Ian\Documents\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoTestFramework.dll -m empty.rfa -o TestResults.xml -f TestExamples
-python RunRevitTests.py -n TestThree -a C:\Users\Ian\Documents\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoTestFramework.dll -m empty.rfa -o TestResults.xml -f TestExamples

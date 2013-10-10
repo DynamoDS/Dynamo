@@ -71,7 +71,7 @@ namespace Dynamo.Revit
                 return;
 
             //Only save elements in the home workspace
-            if (WorkSpace is FuncWorkspace)
+            if (WorkSpace is CustomNodeWorkspaceModel)
                 return;
 
             foreach (var run in elements)

@@ -211,12 +211,9 @@ namespace Dynamo.Search
         {
             var result = new HashSet<V>();
 
-            string pattern = ".*(" + Regex.Escape(query) + ").*";
             foreach (var pair in _tagDictionary)
             {
-                MatchCollection matches = Regex.Matches(pair.Key.ToLower(), pattern, RegexOptions.IgnoreCase);
-
-                if (matches.Count > 0)
+                if (pair.Key.ToLower().Contains(query.ToLower()))
                 {
                     result.UnionWith(pair.Value);
                 }
@@ -236,10 +233,7 @@ namespace Dynamo.Search
 
             foreach (var pair in _tagDictionary)
             {
-                // allow internal characters
-                string pattern = ".*(" + Regex.Escape(query) + ").*";
-                MatchCollection matches = Regex.Matches(pair.Key.ToLower(), pattern, RegexOptions.IgnoreCase);
-                if (matches.Count > 0)
+                if (pair.Key.ToLower().Contains(query.ToLower()))
                 {
                     // it has a match, how close is it to matching the entire string?
                     double matchCloseness = ((double) query.Length) / pair.Key.Length;
