@@ -149,8 +149,8 @@ namespace Dynamo
             if (container == null)
                 return geoms;
 
-            var geom = ((FScheme.Value.Container) value).Item as GeometryObject;
-            if (geom != null)
+            var geom = ((FScheme.Value.Container)value).Item as GeometryObject;
+            if (geom != null && !(geom is Face))
                 geoms.Add(geom);
 
             var ps = ((FScheme.Value.Container) value).Item as ParticleSystem;
@@ -161,6 +161,12 @@ namespace Dynamo
                         spring =>
                             Line.CreateBound(spring.getOneEnd().getPosition(), spring.getTheOtherEnd().getPosition()))
                         .Cast<GeometryObject>());
+            }
+
+            var cl = ((FScheme.Value.Container) value).Item as Autodesk.Revit.DB.CurveLoop;
+            if (cl != null)
+            {
+                geoms.AddRange(cl);
             }
 
             //draw xyzs as Point objects
