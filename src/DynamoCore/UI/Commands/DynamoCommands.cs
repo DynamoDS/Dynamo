@@ -173,7 +173,14 @@ namespace Dynamo.ViewModels
 
         internal void CreateNodeImpl(CreateNodeCommand command)
         {
-            NodeModel nodeModel = Model.CreateNodeInternal(command, null);
+            NodeModel nodeModel = Model.CreateNode(
+                command.NodeId,
+                command.NodeName,
+                command.X,
+                command.Y,
+                command.DefaultPosition,
+                command.TransformCoordinates);
+
             CurrentSpace.RecordCreatedModel(nodeModel);
         }
 

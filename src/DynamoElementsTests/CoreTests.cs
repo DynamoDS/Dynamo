@@ -68,7 +68,7 @@ namespace Dynamo.Tests
         public void CanAddANodeByName()
         {
             var model = dynSettings.Controller.DynamoModel;
-            model.CreateNodeInternal(400.0, 100.0, "Add");
+            model.CreateNode(400.0, 100.0, "Add");
             Assert.AreEqual(Controller.DynamoViewModel.CurrentSpace.Nodes.Count, 1);
         }
 
@@ -115,7 +115,7 @@ namespace Dynamo.Tests
             // create 100 nodes, and select them as you go
             for (int i = 0; i < numNodes; i++)
             {
-                model.CreateNodeInternal(0, 0, "Add");
+                model.CreateNode(0, 0, "Add");
 
                 Assert.AreEqual(i + 1, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
@@ -153,9 +153,9 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(0, Controller.DynamoViewModel.Model.Nodes.Count());
 
-            model.CreateNodeInternal(400.0, 100.0, "Add");
-            model.CreateNodeInternal(100.0, 100.0, "Number");
-            model.CreateNodeInternal(100.0, 300.0, "Number");
+            model.CreateNode(400.0, 100.0, "Add");
+            model.CreateNode(100.0, 100.0, "Number");
+            model.CreateNode(100.0, 300.0, "Number");
 
             Assert.AreEqual(3, Controller.DynamoViewModel.Model.Nodes.Count());
 
@@ -174,7 +174,7 @@ namespace Dynamo.Tests
             // create 100 nodes, and select them as you go
             for (int i = 0; i < numNodes; i++)
             {
-                model.CreateNodeInternal(0, 0, "Add");
+                model.CreateNode(0, 0, "Add");
 
                 Assert.AreEqual(i + 1, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
@@ -198,7 +198,7 @@ namespace Dynamo.Tests
             // create 100 nodes, and select them as you go
             for (int i = 0; i < numNodes; i++)
             {
-                model.CreateNodeInternal(0, 0, "Add");
+                model.CreateNode(0, 0, "Add");
 
                 Assert.AreEqual(i + 1, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
@@ -225,7 +225,7 @@ namespace Dynamo.Tests
             // create 100 nodes, and select them as you go
             for (int i = 0; i < numNodes; i++)
             {
-                model.CreateNodeInternal(0, 0, "Add");
+                model.CreateNode(0, 0, "Add");
 
                 Assert.AreEqual(i + 1, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
@@ -252,7 +252,7 @@ namespace Dynamo.Tests
             // create 100 nodes, and select them as you go
             for (int i = 0; i < numNodes; i++)
             {
-                model.CreateNodeInternal(0, 0, "Add");
+                model.CreateNode(0, 0, "Add");
                 Assert.AreEqual(i + 1, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
                 model.AddToSelection(Controller.DynamoViewModel.Model.Nodes[i]);
@@ -284,7 +284,7 @@ namespace Dynamo.Tests
             // create 100 nodes, and select them as you go
             for (int i = 0; i < numNodes; i++)
             {
-                model.CreateNodeInternal(0, 0, "Add");
+                model.CreateNode(0, 0, "Add");
 
                 Assert.AreEqual(i + 1, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
@@ -332,7 +332,7 @@ namespace Dynamo.Tests
 
             for (int i = 0; i < numNodes; i++)
             {
-                model.CreateNodeInternal(0, 0, "Add");
+                model.CreateNode(0, 0, "Add");
                 Assert.AreEqual(i + 1, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
             }
 
@@ -366,7 +366,7 @@ namespace Dynamo.Tests
 
             for (int i = 0; i < numNodes; i++)
             {
-                model.CreateNodeInternal(0, 0, "Add");
+                model.CreateNode(0, 0, "Add");
                 Assert.AreEqual(i + 1, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
             }
 
@@ -498,10 +498,10 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            model.CreateNodeInternal(400.0, 100.0, "Dynamo.Nodes.Addition");
-            model.CreateNodeInternal(100.0, 100.0, "Number");
-            model.CreateNodeInternal(100.0, 300.0, "Number");
-            model.CreateNodeInternal(100.0, 300.0, "Dynamo.Nodes.Watch");
+            model.CreateNode(400.0, 100.0, "Dynamo.Nodes.Addition");
+            model.CreateNode(100.0, 100.0, "Number");
+            model.CreateNode(100.0, 300.0, "Number");
+            model.CreateNode(100.0, 300.0, "Dynamo.Nodes.Watch");
 
             //update the layout so the following
             //connectors have visuals to transform to
@@ -564,7 +564,7 @@ namespace Dynamo.Tests
             // create 100 nodes, and select them as you go
             for (int i = 0; i < numNodes; i++)
             {
-                model.CreateNodeInternal(0, 0, "Add");
+                model.CreateNode(0, 0, "Add");
 
                 Assert.AreEqual(i + 1, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
@@ -585,7 +585,7 @@ namespace Dynamo.Tests
         public void TestDraggedNode()
         {
             var model = dynSettings.Controller.DynamoModel;
-            model.CreateNodeInternal(16, 32, "Add");
+            model.CreateNode(16, 32, "Add");
             NodeModel locatable = Controller.DynamoViewModel.Model.Nodes[0];
 
             Rect region = new Rect(-100, -100, 200, 200);
@@ -606,7 +606,7 @@ namespace Dynamo.Tests
         public void TestDraggedNodeLimited()
         {
             var model = dynSettings.Controller.DynamoModel;
-            model.CreateNodeInternal(10, 20, "Add");
+            model.CreateNode(10, 20, "Add");
             NodeModel locatable = Controller.DynamoViewModel.Model.Nodes[0];
             locatable.X = 10;
             locatable.Y = 20;

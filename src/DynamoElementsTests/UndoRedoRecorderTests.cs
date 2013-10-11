@@ -577,7 +577,7 @@ namespace Dynamo.Tests
         public void TestBasicAttributes()
         {
             var model = dynSettings.Controller.DynamoModel;
-            model.CreateNodeInternal(400, 100, "Dynamo.Nodes.Addition");
+            model.CreateNode(400, 100, "Dynamo.Nodes.Addition");
             var sumNode = Controller.DynamoViewModel.Model.Nodes[0] as Addition;
 
             //Assert inital values
@@ -630,7 +630,7 @@ namespace Dynamo.Tests
         public void TestDoubleInput()
         {
             var model = dynSettings.Controller.DynamoModel;
-            model.CreateNodeInternal(400, 0, "Number");
+            model.CreateNode(400, 0, "Number");
 
             var numNode = Controller.DynamoViewModel.Model.Nodes[0] as DoubleInput;
             numNode.Value = "0.0";
@@ -660,7 +660,7 @@ namespace Dynamo.Tests
         public void TestDoubleSliderInput()
         {
             var model = dynSettings.Controller.DynamoModel;
-            model.CreateNodeInternal(400, 0, "Number Slider");
+            model.CreateNode(400, 0, "Number Slider");
 
             var numNode = Controller.DynamoViewModel.Model.Nodes[0] as DoubleSliderInput;
             numNode.X = 400; //To check if NodeModel base Serialization method is being called
@@ -700,7 +700,7 @@ namespace Dynamo.Tests
         public void TestBool()
         {
             var model = dynSettings.Controller.DynamoModel;
-            model.CreateNodeInternal(0, 0, "Boolean");
+            model.CreateNode(0, 0, "Boolean");
 
             var boolNode = Controller.DynamoViewModel.Model.Nodes[0] as BoolSelector;
             boolNode.Value = false;
@@ -730,7 +730,7 @@ namespace Dynamo.Tests
         public void TestStringInput()
         {
             var model = dynSettings.Controller.DynamoModel;
-            model.CreateNodeInternal(0, 0, "String");
+            model.CreateNode(0, 0, "String");
 
             var strNode = Controller.DynamoViewModel.Model.Nodes[0] as StringInput;
             strNode.Value = "Enter";
@@ -760,7 +760,7 @@ namespace Dynamo.Tests
         public void TestStringFileName()
         {
             var model = dynSettings.Controller.DynamoModel;
-            model.CreateNodeInternal(0, 0, "Directory");
+            model.CreateNode(0, 0, "Directory");
 
             var strNode = Controller.DynamoViewModel.Model.Nodes[0] as StringDirectory;
             strNode.Value = "Enter";
@@ -790,7 +790,7 @@ namespace Dynamo.Tests
         public void TestVariableInput()
         {
             var model = dynSettings.Controller.DynamoModel;
-            model.CreateNodeInternal(0, 0, "List");
+            model.CreateNode(0, 0, "List");
 
             var listNode = Controller.DynamoViewModel.Model.Nodes[0] as NewList;
             listNode.X = 400; //To check if base Serialization method is being called
@@ -822,7 +822,7 @@ namespace Dynamo.Tests
         public void TestSublists()
         {
             var model = dynSettings.Controller.DynamoModel;
-            model.CreateNodeInternal(0, 0, "Build Sublists");
+            model.CreateNode(0, 0, "Build Sublists");
 
             var strNode = Controller.DynamoViewModel.Model.Nodes[0] as Sublists;
             strNode.Value = "Enter";
@@ -852,7 +852,7 @@ namespace Dynamo.Tests
         public void TestFormula()
         {
             var model = dynSettings.Controller.DynamoModel;
-            model.CreateNodeInternal(0, 0, "Formula");
+            model.CreateNode(0, 0, "Formula");
 
             var formulaNode = Controller.DynamoViewModel.Model.Nodes[0] as Formula;
             formulaNode.FormulaString = "x+y";
