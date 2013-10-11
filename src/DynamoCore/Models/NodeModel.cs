@@ -1226,7 +1226,7 @@ namespace Dynamo.Models
         public bool HasInput(int data)
         {
             return (Inputs.ContainsKey(data) && Inputs[data] != null) ||
-                   (InPortData.Count > data && InPortData[data].HasDefaultValue);
+                   (InPorts.Count > data && InPorts[data].UsingDefaultValue);
         }
 
         public bool HasOutput(int portData)
