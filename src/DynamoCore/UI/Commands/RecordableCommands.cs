@@ -85,7 +85,7 @@ namespace Dynamo.Core.Automation
                 case "Dynamo.Core.Automation.SelectInRegionCommand":
                     return SelectInRegionCommand.DeserializeCore(element);
                 case "Dynamo.Core.Automation.BeginDragCommand":
-                    return BeginDragCommand.DeserializeCore(element);
+                    return DragSelectionCommand.DeserializeCore(element);
             }
 
             throw new ArgumentException("element");
@@ -357,27 +357,32 @@ namespace Dynamo.Core.Automation
         #endregion
     }
 
-    internal class BeginDragCommand : RecordableCommand
+    internal class DragSelectionCommand : RecordableCommand
     {
         #region Public Class Methods
 
-        internal BeginDragCommand(Point mouseCursor)
+        internal enum Operation { BeginDrag, EndDrag };
+
+        internal DragSelectionCommand(Point mouseCursor, Operation operation)
         {
             this.MouseCursor = mouseCursor;
+            this.DragOperation = operation;
         }
 
-        internal static BeginDragCommand DeserializeCore(XmlElement element)
+        internal static DragSelectionCommand DeserializeCore(XmlElement element)
         {
             XmlElementHelper helper = new XmlElementHelper(element);
             double x = helper.ReadDouble("X");
             double y = helper.ReadDouble("Y");
-            return new BeginDragCommand(new Point(x, y));
+            int op = helper.ReadInteger("DragOperation");
+            return new DragSelectionCommand(new Point(x, y), ((Operation)op));
         }
 
         #endregion
 
         #region Public Command Properties
 
+        internal Operation DragOperation { get; private set; }
         internal Point MouseCursor { get; private set; }
 
         #endregion
@@ -386,7 +391,7 @@ namespace Dynamo.Core.Automation
 
         protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
         {
-            dynamoViewModel.BeginDragImpl(this);
+            dynamoViewModel.DragSelectionImpl(this);
         }
 
         protected override void SerializeCore(XmlElement element)
@@ -394,6 +399,7 @@ namespace Dynamo.Core.Automation
             XmlElementHelper helper = new XmlElementHelper(element);
             helper.SetAttribute("X", this.MouseCursor.X);
             helper.SetAttribute("Y", this.MouseCursor.Y);
+            helper.SetAttribute("DragOperation", ((int)this.DragOperation));
         }
 
         #endregion
