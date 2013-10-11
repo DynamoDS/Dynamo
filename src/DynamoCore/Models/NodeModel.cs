@@ -803,8 +803,6 @@ namespace Dynamo.Models
                 return this.AstIdentifier; 
             }
 
-            builder.ClearAstNodes(GUID);
-
             // Recursively compile its inputs to ast nodes and add intermediate
             // nodes to builder
             List<AssociativeNode> inputAstNodes = new List<AssociativeNode>();
@@ -856,6 +854,8 @@ namespace Dynamo.Models
             //     AstIdentifier = ...;
             var rhs = BuildAstNode(builder, inputAstNodes);
             builder.BuildEvaluation(this, rhs);
+            RequiresRecalc = false;
+
             return AstIdentifier;
         }
 
@@ -1887,7 +1887,7 @@ namespace Dynamo.Models
                 }
 
                 result = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(symbol)
-                    .Workspace.GetTopMostNodes().Any(ContinueTraversalUntilAny);
+                    .WorkspaceModel.GetTopMostNodes().Any(ContinueTraversalUntilAny);
             }
             _resultDict[entry] = result;
             if (result)

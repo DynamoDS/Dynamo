@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Greg.Requests;
 using RestSharp;
@@ -99,7 +100,7 @@ namespace Dynamo.PackageManager
 
         public bool IsUnderPackageControl(FunctionDefinition def)
         {
-            return IsUnderPackageControl(def.Workspace.FilePath);
+            return IsUnderPackageControl(def.WorkspaceModel.FileName);
         }
 
         public bool IsUnderPackageControl(Type t)
@@ -119,7 +120,7 @@ namespace Dynamo.PackageManager
 
         public Package GetOwnerPackage(FunctionDefinition def)
         {
-            return GetOwnerPackage(def.Workspace.FilePath);
+            return GetOwnerPackage(def.WorkspaceModel.FileName);
         }
 
         public Package GetOwnerPackage(string path)
