@@ -29,6 +29,7 @@ using System.Linq;
 using System.Windows.Threading;
 using System.Xml;
 using System.Xml.Serialization;
+using Autodesk.Revit.UI.Events;
 using Dynamo.NUnit.Tests;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
@@ -232,7 +233,8 @@ namespace Dynamo.Applications
                     dynamoView.Closing += dynamoView_Closing;
                     dynamoView.Closed += dynamoView_Closed;
 
-                    revit.Application.ViewActivated += new EventHandler<Autodesk.Revit.UI.Events.ViewActivatedEventArgs>(Application_ViewActivated);
+                    //revit.Application.ViewActivated += new EventHandler<Autodesk.Revit.UI.Events.ViewActivatedEventArgs>(Application_ViewActivated);
+                    revit.Application.ViewActivating += Application_ViewActivating;
                 });
             }
             catch (Exception ex)
@@ -250,6 +252,38 @@ namespace Dynamo.Applications
             return Result.Succeeded;
         }
 
+        private void Application_ViewActivating(object sender, ViewActivatingEventArgs e)
+        {
+            if (dynSettings.Controller != null)
+            {
+                if (e.CurrentActiveView is View3D)
+                {
+                    var view = e.NewActiveView as View3D;
+                    var previousView = e.CurrentActiveView as View3D;
+
+                    if (view.IsPerspective)
+                    {
+                        //warn user that Dynamo can't be run in perspective 
+                        //and disable the run
+                        DynamoLogger.Instance.LogWarning(
+                            "Dynamo is not available in a perspective view. Please switch to another view to Run.", WarningLevel.Moderate);
+                        dynSettings.Controller.DynamoViewModel.RunEnabled = false;
+                    }
+                    else if (!view.IsPerspective && previousView.IsPerspective)
+                    {
+                        DynamoLogger.Instance.ResetWarning();
+                        dynSettings.Controller.DynamoViewModel.RunEnabled = true;
+                    }
+                }
+                else
+                {
+                    DynamoLogger.Instance.LogWarning(string.Format("Active view is now {0}", e.CurrentActiveView.Name), WarningLevel.Mild);
+                    dynSettings.Controller.DynamoViewModel.RunEnabled = true;
+                }
+            }
+        }
+
+
         /// <summary>
         /// Handler for the ViewActivated event.
         /// Used to query whether Dynamo can be run on the active view.
@@ -263,6 +297,8 @@ namespace Dynamo.Applications
                 if (e.CurrentActiveView is View3D)
                 {
                     var view = e.CurrentActiveView as View3D;
+                    var previousView = e.PreviousActiveView as View3D;
+
                     if (view.IsPerspective)
                     {
                         //warn user that Dynamo can't be run in perspective 
@@ -271,9 +307,8 @@ namespace Dynamo.Applications
                             "Dynamo is not available in a perspective view. Please switch to another view to Run.", WarningLevel.Moderate);
                         dynSettings.Controller.DynamoViewModel.RunEnabled = false;
                     }
-                    else
+                    else if ( !view.IsPerspective && (previousView == null || previousView.IsPerspective) )
                     {
-                        //for any other type of 
                         DynamoLogger.Instance.ResetWarning();
                         dynSettings.Controller.DynamoViewModel.RunEnabled = true;
                     }
@@ -289,8 +324,7 @@ namespace Dynamo.Applications
         /// <summary>
         /// A method to deal with unhandle exceptions.  Executes right before Revit crashes.
         /// Dynamo is still valid at this time, but further work may cause corruption.  Here, 
-        /// we run the ExitCommand, allowing the user to save all of their work.  Then, we send them
-        /// to the issues page on Github. 
+        /// we run the ExitCommand, allowing the user to save all of their work.  
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args">Info about the exception</param>
