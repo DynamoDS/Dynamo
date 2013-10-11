@@ -64,9 +64,9 @@ namespace Dynamo.Search
             //setup the regions on the view model
             _viewModel.Regions = new ObservableDictionary<string, RegionBase>();
             //Regions.Add("Include Nodes from Package Manager", DynamoCommands.PackageManagerRegionCommand );
-            var region = new RevitAPIRegion(SearchViewModel.RevitAPIRegionExecute, SearchViewModel.RevitAPIRegionCanExecute);
-            region.RaiseCanExecuteChanged();
-            _viewModel.Regions.Add("Include Experimental Revit API Nodes", region);
+            //var region = new RevitAPIRegion(SearchViewModel.RevitAPIRegionExecute, SearchViewModel.RevitAPIRegionCanExecute);
+            //region.RaiseCanExecuteChanged();
+            //_viewModel.Regions.Add("Include Experimental Revit API Nodes", region);
 
         }
 

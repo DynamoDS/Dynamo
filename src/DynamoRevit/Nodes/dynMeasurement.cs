@@ -21,6 +21,7 @@ using System.Xml;
 using Autodesk.Revit.DB;
 using DSCoreNodes;
 using Dynamo.Models;
+using Dynamo.UI.Prompts;
 using Microsoft.FSharp.Collections;
 
 using Dynamo.Utilities;
@@ -346,7 +347,7 @@ namespace Dynamo.Nodes
 
         private void editWindowItem_Click(object sender, RoutedEventArgs e)
         {
-            var editWindow = new dynEditWindow();
+            var editWindow = new EditWindow();
 
             editWindow.DataContext = this;
             var bindingVal = new System.Windows.Data.Binding("Value")

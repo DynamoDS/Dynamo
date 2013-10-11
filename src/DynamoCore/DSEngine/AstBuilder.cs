@@ -15,6 +15,7 @@ using ProtoCore.DSASM;
 using ProtoCore.DSASM.Mirror;
 using ProtoCore.Exceptions;
 using ProtoCore.Lang;
+using ProtoCore.Mirror;
 using ProtoCore.Utils;
 using ProtoFFI;
 using ProtoScript.Runners;
@@ -127,44 +128,82 @@ namespace Dynamo.DSEngine
             public const string kVarPrefix = @"var_";
         }
 
+        internal enum NodeState
+        {
+            NoChange,
+            Added,
+            Modified,
+            Deleted
+        }
+
         public static AstBuilder Instance = new AstBuilder();
         private LinkedListOfList<Guid, AssociativeNode> astNodes;
+        private Dictionary<Guid, NodeState> nodeStates;
+        private ILiveRunner liveRunner;
 
         private AstBuilder()
         {
             astNodes = new LinkedListOfList<Guid, AssociativeNode>();
+            liveRunner = new ProtoScript.Runners.LiveRunner();
+            nodeStates = new Dictionary<Guid, NodeState>();
         }
 
-        public void AddNode(Guid dynamoNodeId, AssociativeNode astNode)
+        private void AddNode(Guid dynamoNodeId, AssociativeNode astNode)
         {
             astNodes.AddItem(dynamoNodeId, astNode);
         }
 
-        /// <summary>
-        /// If AstBuilder has generated AST node for this Dynamo node
-        /// </summary>
-        /// <param name="dynamoNodeId"></param>
-        /// <returns></returns>
-        public bool ContainsAstNodes(Guid dynamoNodeId)
-        {
-            return astNodes.Contains(dynamoNodeId);
-        }
-
-        public void RemoveAstNodes(Guid dynamoNodeId)
+        private void RemoveAstNodes(Guid dynamoNodeId)
         {
             astNodes.Removes(dynamoNodeId); 
         }
 
-        public void ClearAstNodes(Guid dynamoNodeId)
+        private void ClearAstNodes(Guid dynamoNodeId)
         {
             astNodes.Clears(dynamoNodeId);
         }
 
-//#if DEBUG
+        private List<Subtree> GetSubtreesForState(NodeState state)
+        {
+            List<Subtree> subtrees = new List<Subtree>();
+            List<Guid> addedGuids = nodeStates.Where(x => x.Value == state).Select(x => x.Key).ToList();
+            foreach (var guid in addedGuids)
+            {
+                var nodes = astNodes.GetItems(guid);
+                Subtree tree = new Subtree(nodes);
+                tree.GUID = guid;
+                subtrees.Add(tree);
+            }
+
+            return subtrees;
+        }
+
+        public List<Guid> ToBeQueriedNodes
+        {
+            get
+            {
+                var nodes = nodeStates.Where(x => x.Value == NodeState.Added || x.Value == NodeState.Modified)
+                                    .Select(x => x.Key)
+                                    .ToList();
+                return nodes;
+            }
+        }
+
+        public GraphSyncData SyncData
+        {
+            get
+            {
+                var added = GetSubtreesForState(NodeState.Added);
+                var modified = GetSubtreesForState(NodeState.Modified);
+                var deleted = GetSubtreesForState(NodeState.Deleted);
+                GraphSyncData syncData = new GraphSyncData(deleted, added, modified);
+                return syncData;
+            }
+        }
+
         /// <summary>
-        /// Dump DesignScript code from AST nodes, just for testing
+        /// Dump code
         /// </summary>
-        /// <returns></returns>
         public string DumpCode()
         {
             List<AssociativeNode> allAstNodes = new List<AssociativeNode>();
@@ -173,52 +212,9 @@ namespace Dynamo.DSEngine
                 allAstNodes.AddRange(item);
             }
             ProtoCore.CodeGenDS codegen = new ProtoCore.CodeGenDS(allAstNodes);
-            return codegen.GenerateCode();
+            string code = codegen.GenerateCode();
+            return code;
         }
-
-        /// <summary>
-        /// Execute AST nodes, just for testing. 
-        /// </summary>
-        public void Execute()
-        {
-            ProtoScriptTestRunner runner = new ProtoScriptTestRunner();
-            ProtoCore.Core core = new ProtoCore.Core(new ProtoCore.Options());
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
-            core.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
-            core.Options.Verbose = true;
-            core.RuntimeStatus.MessageHandler = new ConsoleOutputStream();
-            DLLFFIHandler.Register(FFILanguage.CPlusPlus, new ProtoFFI.PInvokeModuleHelper());
-            DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
-            CLRModuleType.ClearTypes();
-
-            List<AssociativeNode> allAstNodes = new List<AssociativeNode>();
-            foreach (var item in astNodes)
-            {
-                allAstNodes.AddRange(item);
-            }
-
-            DynamoLogger logger = DynamoLogger.Instance;
-            try
-            {
-                logger.Log(DumpCode());
-
-                ExecutionMirror mirror = runner.Execute(allAstNodes, core);
-                List<Guid> keys = astNodes.GetKeys();
-                foreach (var guid in keys)
-                {
-                    string varname = StringConstants.kVarPrefix + guid.ToString().Replace("-", string.Empty);
-                    Obj o = mirror.GetValue(varname);
-                    string value = mirror.GetStringValue(o.DsasmValue, core.Heap, 0, true);
-                    logger.Log(varname + "=" + value);
-                }
-            }
-            catch (CompileErrorsOccured e)
-            {
-                logger.Log(e.Message);
-            }
-        }
-//#endif
 
         #region IAstBuilder interface
         public AssociativeNode Build(NodeModel node, List<AssociativeNode> inputs)
@@ -318,6 +314,16 @@ namespace Dynamo.DSEngine
 
         public void BuildEvaluation(NodeModel node, AssociativeNode rhs, bool isPartial = false)
         {
+            if (nodeStates.ContainsKey(node.GUID))
+            {
+                nodeStates[node.GUID] = NodeState.Modified;
+                ClearAstNodes(node.GUID);
+            }
+            else
+            {
+                nodeStates[node.GUID] = NodeState.Added;
+            }
+
             // If it is a partially applied function, need to create a function 
             // definition and function pointer.
             if (isPartial && rhs is FunctionCallNode)
@@ -333,6 +339,21 @@ namespace Dynamo.DSEngine
 
             var assignment = AstFactory.BuildAssignment(node.AstIdentifier, rhs);
             AddNode(node.GUID, assignment);
+        }
+
+        public void BeginBuildingAst()
+        {
+            List<Guid> keys = new List<Guid>(nodeStates.Keys);
+
+            foreach (var node in keys)
+            {
+                nodeStates[node] = NodeState.NoChange;
+            }
+        }
+
+        public void FinishBuildingAst()
+        {
+
         }
     }
 }
