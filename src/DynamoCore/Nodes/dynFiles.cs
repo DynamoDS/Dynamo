@@ -375,8 +375,14 @@ namespace Dynamo.Nodes
         {
             Changed = false;
 
-            _watcher = new FileSystemWatcher(
-                Path.GetDirectoryName(filePath), Path.GetFileName(filePath))
+            var dir = Path.GetDirectoryName(filePath);
+
+            if (string.IsNullOrEmpty(dir))
+                dir = ".";
+
+            var name = Path.GetFileName(filePath);
+
+            _watcher = new FileSystemWatcher(dir, name)
             {
                 NotifyFilter = NotifyFilters.LastWrite,
                 EnableRaisingEvents = true

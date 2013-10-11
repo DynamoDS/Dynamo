@@ -47,22 +47,21 @@ namespace Dynamo.Tests
         public static double GetDoubleFromFSchemeValue(this FScheme.Value value)
         {
             var doubleWatchVal = 0.0;
-            Assert.AreEqual(true, Utils.Convert(value, ref doubleWatchVal));
+            Assert.IsTrue(Utils.Convert(value, ref doubleWatchVal));
             return doubleWatchVal;
         }
 
         public static string GetStringFromFSchemeValue(this FScheme.Value value)
         {
             string stringValue = string.Empty;
-            Assert.AreEqual(true, FSchemeInterop.Utils.Convert(value, ref stringValue));
+            Assert.IsTrue(Utils.Convert(value, ref stringValue));
             return stringValue;
         }
-
 
         public static FSharpList<FScheme.Value> GetListFromFSchemeValue(this FScheme.Value value)
         {
             FSharpList<FScheme.Value> listWatchVal = null;
-            Assert.AreEqual(true, Utils.Convert(value, ref listWatchVal));
+            Assert.IsTrue(Utils.Convert(value, ref listWatchVal));
             return listWatchVal;
         }
     }
