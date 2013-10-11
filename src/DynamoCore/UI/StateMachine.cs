@@ -56,13 +56,6 @@ namespace Dynamo.ViewModels
         /// </summary>
         public class DraggedNode
         {
-            // TODO(Ben): The DragCanvas.AllowDragOutOfView property will be 
-            // made obsolete when infinite canvas is integrated in the release
-            // branch. That is the point "DraggedNode.region" data member needs
-            // to be removed.
-            // 
-            Rect region = default(Rect);
-
             double deltaX = 0, deltaY = 0;
             ILocatable locatable = null;
 
@@ -80,9 +73,8 @@ namespace Dynamo.ViewModels
             /// be moved. However, the movement of ILocatable will be limited by 
             /// region and that it cannot be moved beyond the region.</param>
             /// 
-            public DraggedNode(ILocatable locatable, Point mouseCursor, Rect region)
+            public DraggedNode(ILocatable locatable, Point mouseCursor)
             {
-                this.region = region;
                 this.locatable = locatable;
                 deltaX = mouseCursor.X - locatable.X;
                 deltaY = mouseCursor.Y - locatable.Y;
@@ -93,14 +85,8 @@ namespace Dynamo.ViewModels
                 // Make sure the nodes do not go beyond the region.
                 double x = mouseCursor.X - deltaX;
                 double y = mouseCursor.Y - deltaY;
-                locatable.X = ((x > region.X) ? x : region.X);
-                locatable.Y = ((y > region.Y) ? y : region.Y);
-
-                // Make sure the nodes do not go beyond the upper limits.
-                if ((locatable.X + locatable.Width) > region.Width)
-                    locatable.X = region.Width - locatable.Width;
-                if ((locatable.Y + locatable.Height) > region.Height)
-                    locatable.Y = region.Height - locatable.Height;
+                locatable.X = x;
+                locatable.Y = y;
             }
         }
 
@@ -265,14 +251,6 @@ namespace Dynamo.ViewModels
                 }
                 else if (this.currentState == State.DragSetup)
                 {
-                    // Before the integration with infinite canvas work, we would 
-                    // prefer not to have the nodes move out of the canvas region.
-                    // Here at the beginning of a drag operation, we'll simply 
-                    // determine the region within which the nodes can move.
-                    // 
-                    var canvas = sender as Dynamo.Controls.DragCanvas;
-                    Rect region = new Rect(0, 0, canvas.ActualWidth, canvas.ActualHeight);
-
                     // This represents the first mouse-move event after the mouse-down
                     // event. Note that a mouse-down event can either be followed by a
                     // mouse-move event or simply a mouse-up event. That means having 
@@ -287,7 +265,7 @@ namespace Dynamo.ViewModels
                     {
                         ILocatable locatable = selectable as ILocatable;
                         if (null != locatable)
-                            draggedNodes.Add(new DraggedNode(locatable, mouseCursor, region));
+                            draggedNodes.Add(new DraggedNode(locatable, mouseCursor));
                     }
 
                     if (draggedNodes.Count <= 0) // There is nothing to drag.
