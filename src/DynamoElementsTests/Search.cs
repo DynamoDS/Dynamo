@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using Dynamo.Nodes.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
@@ -214,6 +215,34 @@ namespace Dynamo.Tests
         #endregion
 
         #region Search
+
+        [Test]
+        public void PopulateSearchTextWithSelectedResultReturnsExpectedResult()
+        {
+            var catName = "Animals";
+            var descr = "";
+            var path = "";
+
+            _search.Add(new CustomNodeInfo(Guid.NewGuid(), "xyz", catName, descr, path));
+            _search.Add(new CustomNodeInfo(Guid.NewGuid(), "abc", catName, descr, path));
+            _search.Add(new CustomNodeInfo(Guid.NewGuid(), "cat", catName, descr, path));
+            _search.Add(new CustomNodeInfo(Guid.NewGuid(), "dog", catName, descr, path));
+            _search.Add(new CustomNodeInfo(Guid.NewGuid(), "frog", catName, descr, path));
+            _search.Add(new CustomNodeInfo(Guid.NewGuid(), "Noodle", catName, descr, path));
+
+            _search.SearchAndUpdateResultsSync("xy");
+            _search.PopulateSearchTextWithSelectedResult();
+            Assert.AreEqual("xyz",_search.SearchText);
+
+            _search.SearchAndUpdateResultsSync("ood");
+            _search.PopulateSearchTextWithSelectedResult();
+            Assert.AreEqual("Noodle", _search.SearchText);
+
+            _search.SearchAndUpdateResultsSync("do");
+            _search.PopulateSearchTextWithSelectedResult();
+            Assert.AreEqual("dog", _search.SearchText);
+
+        }
 
         [Test]
         public void CanSearchForPartOfTextAndGetResult()

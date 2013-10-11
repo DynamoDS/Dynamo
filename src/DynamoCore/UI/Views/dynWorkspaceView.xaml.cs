@@ -98,8 +98,8 @@ namespace Dynamo.Views
                 {
                     Name = newName,
                     Description = newDescription,
-                    Category = newCategory
-
+                    Category = newCategory,
+                    CanEditName = false
                 };
 
             dynSettings.Controller.DynamoModel.OnRequestsFunctionNamePrompt(this, args);
@@ -109,10 +109,10 @@ namespace Dynamo.Views
                 if (workspace is CustomNodeWorkspaceModel)
                 {
                     var def = (workspace as CustomNodeWorkspaceModel).FunctionDefinition;
-                    dynSettings.CustomNodeManager.Refactor(def.FunctionId, args.Name, args.Category, args.Description);
+                    dynSettings.CustomNodeManager.Refactor(def.FunctionId, args.CanEditName ? args.Name : workspace.Name, args.Category, args.Description);
                 }
-
-                workspace.Name = args.Name;
+                
+                if (args.CanEditName) workspace.Name = args.Name;
                 workspace.Description = args.Description;
                 workspace.Category = args.Category;
                 // workspace.Author = "";

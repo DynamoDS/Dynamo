@@ -148,7 +148,7 @@ namespace Dynamo.PackageManager
         {
             PackageManagerClient = client;
             SearchResults = new ObservableCollection<PackageManagerSearchElement>();
-            MaxNumSearchResults = 1000;
+            MaxNumSearchResults = 12;
             SearchDictionary = new SearchDictionary<PackageManagerSearchElement>();
             ClearCompletedCommand = new DelegateCommand(ClearCompleted, CanClearCompleted);
             PackageManagerClient.Downloads.CollectionChanged += DownloadsOnCollectionChanged;
@@ -158,7 +158,6 @@ namespace Dynamo.PackageManager
 
         public void Refresh()
         {
-
             var pkgs = PackageManagerClient.ListAll();
 
             pkgs.Sort((e1, e2) => e1.Name.ToLower().CompareTo(e2.Name.ToLower()));
@@ -309,7 +308,6 @@ namespace Dynamo.PackageManager
         /// <param name="search"> The search query </param>
         internal List<PackageManagerSearchElement> Search(string query)
         {
-
             if (!String.IsNullOrEmpty(query))
             {
                 return SearchDictionary.Search( query, MaxNumSearchResults);

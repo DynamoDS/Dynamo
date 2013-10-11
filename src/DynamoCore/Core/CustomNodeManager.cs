@@ -53,7 +53,7 @@ namespace Dynamo.Utilities
         /// </summary>
         public event DefinitionLoadHandler DefinitionLoaded;
 
-        private Dictionary<Guid, FunctionDefinition> LoadedCustomNodes = new Dictionary<Guid, FunctionDefinition>();
+        public Dictionary<Guid, FunctionDefinition> LoadedCustomNodes = new Dictionary<Guid, FunctionDefinition>();
 
         /// <summary>
         /// NodeNames </summary>
@@ -130,7 +130,7 @@ namespace Dynamo.Utilities
 
             // the node has already been loaded
             // from somewhere else
-            if (Contains(guid))
+            if (this.Contains(guid))
             {
                 return GetNodeInfo(guid);
             }
@@ -159,18 +159,19 @@ namespace Dynamo.Utilities
         {
 
             var guidsToRemove = GetInfosFromFolder(path).Select(x => x.Guid);
-            guidsToRemove.ToList().ForEach(this.Remove);
+            guidsToRemove.ToList().ForEach(this.RemoveFromDynamo);
 
             return guidsToRemove.Any();
 
         }
 
-        public CustomNodeInfo RemoveFromCustomNodeManager(Guid guid)
+        public CustomNodeInfo Remove(Guid guid)
         {
             var nodeInfo = GetNodeInfo(guid);
 
             if (LoadedCustomNodes.ContainsKey(guid))
                 LoadedCustomNodes.Remove(guid);
+
             if (NodeInfos.ContainsKey(guid))
                 NodeInfos.Remove(guid);
 
@@ -181,9 +182,9 @@ namespace Dynamo.Utilities
         ///     Attempts to remove all traces of a particular custom node from Dynamo, assuming the node is not in a loaded workspace.
         /// </summary>
         /// <param name="guid"></param>
-        public void Remove(Guid guid)
+        public void RemoveFromDynamo(Guid guid)
         {
-            var nodeInfo = this.RemoveFromCustomNodeManager(guid);
+            var nodeInfo = this.Remove(guid);
 
             // remove from search
             dynSettings.Controller.SearchViewModel.RemoveNodeAndEmptyParentCategory(nodeInfo.Guid);
@@ -471,7 +472,7 @@ namespace Dynamo.Utilities
             Guid id;
             if (CustomNodeManager.GetHeaderFromPath(path, out id, out name, out category, out description))
             {
-                return new CustomNodeInfo(id, name, category, description, path);
+                return new CustomNodeInfo(id, Path.GetFileNameWithoutExtension(path), category, description, path);
             }
             else
             {
