@@ -8,41 +8,82 @@ import time
 import glob
 import smtplib
 import string
+import xml.etree.ElementTree as ET
+
+class Test:
+	def __init__(self, testName, fixtureName, testAssembly, resultsPath, modelPath, pluginGUID, pluginClass, runDynamo):
+		self.testName = testName
+		self.fixtureName = fixtureName
+		self.testAssembly = testAssembly
+		self.resultsPath = resultsPath
+		self.modelPath = modelPath
+		self.pluginGUID = pluginGUID
+		self.pluginClass = pluginClass
+		self.runDynamo = runDynamo
+	def __repr__(self):
+		return "<Test name:%s fixture:%s assembly:%s resultsPath:%s modelPath:%s pluginGUID:%s pluginClass:%s runDynamo:%s>" % (self.testName, self.fixtureName, self.testAssembly, self.resultsPath, self.modelPath, self.pluginGUID, self.pluginClass, self.runDynamo)
 
 def main():
 
 	#http://stackoverflow.com/questions/7427101/dead-simple-argparse-example-wanted-1-argument-3-results
 	parser = argparse.ArgumentParser(description='Run Revit Tests')
-	parser.add_argument('-n','--name', help='Name of a test to run.', required=False)
-	parser.add_argument('-f','--fixture', help='Name of fixture to run.', required=True)
-	parser.add_argument('-a','--assembly', help='Path of the assembly containing tests.', required=True)
-	parser.add_argument('-o','--output', nargs='?', const=1, default='DynamoTestResults.xml', help='Output location of the results file.', required=False)
-	parser.add_argument('-m','--model', help='Path of the model file for open.', required=True)
-	parser.add_argument('-g','--GUID', nargs='?', const=1, default='487f9ff0-5b34-4e7e-97bf-70fbff69194f', help='The GUID of the plugin to load.', required=False)
-	parser.add_argument('-p','--plugin', nargs='?', const=1, default='Dynamo.Tests.DynamoTestFramework', help='The name (including namespace) of the class containing the external command.', required=False)
-	parser.add_argument('-d', '--dynamo', nargs='?',const=1, default='true', help='Is dynamo required? Enter true or false.', required=False)
+	# parser.add_argument('-n','--name', help='Name of a test to run.', required=False)
+	# parser.add_argument('-f','--fixture', help='Name of fixture to run.', required=False)
+	# parser.add_argument('-a','--assembly', help='Path of the assembly containing tests.', required=False)
+	# parser.add_argument('-o','--output', nargs='?', const=1, default='DynamoTestResults.xml', help='Output location of the results file.', required=False)
+	# parser.add_argument('-m','--model', help='Path of the model file for open.', required=False)
+	# parser.add_argument('-g','--GUID', nargs='?', const=1, default='487f9ff0-5b34-4e7e-97bf-70fbff69194f', help='The GUID of the plugin to load.', required=False)
+	# parser.add_argument('-p','--plugin', nargs='?', const=1, default='Dynamo.Tests.DynamoTestFramework', help='The name (including namespace) of the class containing the external command.', required=False)
+	# parser.add_argument('-d', '--dynamo', nargs='?',const=1, default='true', help='Is dynamo required? Enter true or false.', required=False)
+	parser.add_argument('-i', '--input', help='An input xml specifying tests to be run.', required = True)
 	args = vars(parser.parse_args())
-
-	print args
 
 	start_time = time.time()
 
-	#Generate a temporary journal file
-	journal = generate_journal_file(args['name'], args['fixture'], args['assembly'], args['output'], args['model'], args['GUID'], args['plugin'], args['dynamo']);
+	tests = []
+	tests = parse_input_file(args['input'])
+	run_tests(tests)
 
-	#Run Revit passing the journal file as a parameter
-	print 'running ' + journal
-	run_cmd( ['Revit', os.path.abspath(journal)] )
-
-	#Cleanup temporary journal file
- 	os.remove(journal)
-
- 	#cleanup other journal files created by Revit
+ 	#cleanup journal files created by Revit
 	journals = glob.glob("journal.*.txt")
 	for journal in journals:
 		os.remove(journal)
 
 	sys.exit(0)
+
+def run_tests(tests):
+
+	for test in tests:
+		#Generate a temporary journal file
+		journal = generate_journal_file(test)
+
+		#Run Revit passing the journal file as a parameter
+		print 'running ' + journal
+		run_cmd( ['Revit', os.path.abspath(journal)] )
+
+		#Cleanup temporary journal file
+	 	os.remove(journal)
+
+def parse_input_file(inputFile):
+	tests = []
+	tree = ET.parse(inputFile)
+	testRoot = tree.getroot()
+	resultsPath = testRoot.get('resultsPath')
+	pluginClass = testRoot.get('pluginClass')
+	pluginGUID = testRoot.get('pluginGUID')
+	for testAssembly in testRoot.iter('testAssemblies'):
+		for testAssembly_data in testAssembly.findall('testAssembly'):
+			assemblyName = testAssembly_data.get('name')
+			for fixture in testAssembly_data.findall('testFixture'):
+				fixtureName = fixture.get('name')
+				for test in fixture.findall('test'):
+					testName = test.get('name')
+					runDynamo = test.get('runDynamo')
+					modelPath = test.get('modelPath')
+					test = Test(testName, fixtureName, assemblyName, resultsPath, modelPath, pluginGUID, pluginClass,runDynamo)
+					print repr(test)
+					tests.append(test)
+	return tests
 
 def run_cmd( args, printOutput = True, cwd = None ):	
 	p = subprocess.Popen(args, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd = cwd)
@@ -59,7 +100,7 @@ def run_cmd( args, printOutput = True, cwd = None ):
 		
 	return out
 
-def generate_journal_file(testName, fixtureName, testAssembly, resultsPath, modelName, pluginGUID, pluginClass, runDynamo):
+def generate_journal_file(test):
 	
 	currPath = os.getcwd()
 
@@ -77,8 +118,8 @@ def generate_journal_file(testName, fixtureName, testAssembly, resultsPath, mode
 	# change back to the test directory
 	os.chdir(os.path.abspath(currPath))
 
-	content = s.substitute(testName=testName, fixtureName=fixtureName, testAssembly=testAssembly, 
-		resultsPath=resultsPath, modelName=modelName, pluginGUID=pluginGUID, pluginClass=pluginClass, runDynamo=runDynamo)
+	content = s.substitute(testName=test.testName, fixtureName=test.fixtureName, testAssembly=test.testAssembly, 
+		resultsPath=test.resultsPath, modelName=test.modelPath, pluginGUID=test.pluginGUID, pluginClass=test.pluginClass, runDynamo=test.runDynamo)
 
 	# save the content to a file
 	journal = "DynamoTestFrameworkTmp.txt"
@@ -90,3 +131,4 @@ def generate_journal_file(testName, fixtureName, testAssembly, resultsPath, mode
 
 if __name__ == "__main__":
 	main()
+
