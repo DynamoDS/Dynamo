@@ -5,12 +5,16 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Serialization;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using Dynamo.Applications;
+using Dynamo.Controls;
 using Dynamo.NUnit.Tests;
+using Dynamo.Utilities;
 using NUnit.Core;
 using NUnit.Core.Filters;
 
@@ -66,8 +70,18 @@ namespace Dynamo.Tests
         /// </summary>
         private string resultsPath = "";
 
+        /// <summary>
+        /// Should Dynamo be run?
+        /// </summary>
+        private bool runDynamo;
+
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
+            DynamoLogger.Instance.StartLogging();
+
+            DynamoLogger.Instance.Log("Adding assembly resolver", LogLevel.File);
+            AppDomain.CurrentDomain.AssemblyResolve += Dynamo.Utilities.AssemblyHelper.CurrentDomain_AssemblyResolve;
+
             //Get the data map from the running journal file.
             IDictionary<string, string> dataMap = revit.JournalData;
 
@@ -77,6 +91,8 @@ namespace Dynamo.Tests
                 RevitData.Document = RevitData.Application.ActiveUIDocument;
 
                 bool canReadData = (0 < dataMap.Count);
+
+                DynamoLogger.Instance.Log("Reading data map from journal.", LogLevel.File);
 
                 if (canReadData)
                 {
@@ -96,6 +112,10 @@ namespace Dynamo.Tests
                     {
                         resultsPath = dataMap["resultsPath"];
                     }
+                    if (dataMap.ContainsKey("runDynamo"))
+                    {
+                        runDynamo = Convert.ToBoolean(dataMap["runDynamo"]);
+                    }
                 }
 
                 if (string.IsNullOrEmpty(testAssembly))
@@ -108,6 +128,11 @@ namespace Dynamo.Tests
                     throw new Exception("You must supply a path for the results file.");
                 }
 
+                if (runDynamo)
+                {
+                    StartDynamo();
+                }
+
                 //http://stackoverflow.com/questions/2798561/how-to-run-nunit-from-my-code
 
                 //Tests must be executed on the main thread in order to access the Revit API.
@@ -116,10 +141,10 @@ namespace Dynamo.Tests
                 CoreExtensions.Host.InitializeService();
                 var runner = new SimpleTestRunner();
                 var builder = new TestSuiteBuilder();
-                var package = new TestPackage("DynamoTestFramework", new List<string>() { testAssembly });
+                var package = new TestPackage("DynamoTestFramework", new List<string>() {testAssembly});
                 runner.Load(package);
                 TestSuite suite = builder.Build(package);
-                
+
                 TestFixture fixture = null;
                 FindFixtureByName(out fixture, suite, fixtureName);
                 if (fixture == null)
@@ -164,7 +189,7 @@ namespace Dynamo.Tests
                         resultsRoot.testsuite.result = "Error";
                     }
                 }
-                
+
                 fixtureResult.results.Items = runningResults.ToArray();
 
                 CalculateCaseTotalsOnSuite(fixtureResult);
@@ -173,6 +198,7 @@ namespace Dynamo.Tests
 
                 SaveResults();
 
+                DynamoLogger.Instance.FinishLogging();
             }
             catch (Exception ex)
             {
@@ -181,8 +207,32 @@ namespace Dynamo.Tests
                 Console.WriteLine(ex.StackTrace);
                 return Result.Failed;
             }
+            finally
+            {
+                DynamoLogger.Instance.FinishLogging();
+            }
 
             return Result.Succeeded;
+        }
+
+        private void StartDynamo()
+        {
+            Level defaultLevel = null;
+            var fecLevel = new FilteredElementCollector(RevitData.Document.Document);
+            fecLevel.OfClass(typeof(Level));
+
+            dynRevitSettings.Revit = RevitData.Application;
+            dynRevitSettings.Doc = RevitData.Document;
+            dynRevitSettings.DefaultLevel = defaultLevel;
+
+            //create dynamo
+            var r = new Regex(@"\b(Autodesk |Structure |MEP |Architecture )\b");
+            string context = r.Replace(RevitData.Application.Application.VersionName, "");
+
+            var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.Updater, typeof(DynamoRevitViewModel), context)
+                {
+                    Testing = true
+                };
         }
 
         private void CalculateTotalsOnResultsRoot(resultType result)

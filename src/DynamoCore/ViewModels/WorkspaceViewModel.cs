@@ -448,6 +448,63 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        internal void SelectInRegion(Rect region, bool isCrossSelect)
+        {
+            bool fullyEnclosed = !isCrossSelect;
+
+            foreach (NodeModel n in Model.Nodes)
+            {
+                double x0 = n.X;
+                double y0 = n.Y;
+
+                if (IsInRegion(region, n, fullyEnclosed))
+                {
+                    if (!DynamoSelection.Instance.Selection.Contains(n))
+                        DynamoSelection.Instance.Selection.Add(n);
+                }
+                else
+                {
+                    if (n.IsSelected)
+                        DynamoSelection.Instance.Selection.Remove(n);
+                }
+            }
+
+            foreach (var n in Model.Notes)
+            {
+                double x0 = n.X;
+                double y0 = n.Y;
+
+                if (IsInRegion(region, n, fullyEnclosed))
+                {
+                    if (!DynamoSelection.Instance.Selection.Contains(n))
+                        DynamoSelection.Instance.Selection.Add(n);
+                }
+                else
+                {
+                    if (n.IsSelected)
+                        DynamoSelection.Instance.Selection.Remove(n);
+                }
+            }
+        }
+
+        private static bool IsInRegion(Rect region, ILocatable locatable, bool fullyEnclosed)
+        {
+            double x0 = locatable.X;
+            double y0 = locatable.Y;
+
+            if (false == fullyEnclosed) // Cross selection.
+            {
+                Rect test = new Rect(x0, y0, locatable.Width, locatable.Height);
+                return region.IntersectsWith(test);
+            }
+            else // Contain selection.
+            {
+                double x1 = x0 + locatable.Width;
+                double y1 = y0 + locatable.Height;
+                return (region.Contains(x0, y0) && region.Contains(x1, y1));
+            }
+        }
+
         public double GetSelectionAverageX()
         {
             return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
@@ -621,111 +678,6 @@ namespace Dynamo.ViewModels
             // can hide anything but the home workspace
             return dynSettings.Controller.DynamoViewModel.Model.HomeSpace != this._model;
         }
-
-        private void ContainSelect(object parameters)
-        {
-            var rect = (Rect)parameters;
-
-            foreach (NodeModel n in Model.Nodes)
-            {
-                double x0 = n.X;
-                double y0 = n.Y;
-                double x1 = x0 + n.Width;
-                double y1 = y0 + n.Height;
-
-                bool contains = rect.Contains(x0, y0) && rect.Contains(x1, y1);
-                if (contains)
-                {
-                    if (!DynamoSelection.Instance.Selection.Contains(n))
-                        DynamoSelection.Instance.Selection.Add(n);
-                }
-                else
-                {
-                    //if the node is not contained but is selected, unselect it 
-                    if (n.IsSelected)
-                    {
-                        DynamoSelection.Instance.Selection.Remove(n);
-                    }   
-                }
-            }
-
-            foreach (var n in Model.Notes)
-            {
-                double x0 = n.X;
-                double y0 = n.Y;
-                double x1 = x0 + n.Width;
-                double y1 = y0 + n.Height;
-
-                bool contains = rect.Contains(x0, y0) && rect.Contains(x1, y1);
-                if (contains)
-                {
-                    if (!DynamoSelection.Instance.Selection.Contains(n))
-                        DynamoSelection.Instance.Selection.Add(n);
-                }
-                else
-                {
-                    if (n.IsSelected)
-                    {
-                        DynamoSelection.Instance.Selection.Remove(n);
-                    } 
-                }
-            }
-        }
-
-        private bool CanContainSelect(object parameters)
-        {
-            return true;
-        }
-
-        private void CrossingSelect(object parameters)
-        {
-            var rect = (Rect)parameters;
-
-            foreach (NodeModel n in Model.Nodes)
-            {
-                double x0 = n.X;
-                double y0 = n.Y;
-
-                bool intersects = rect.IntersectsWith(new Rect(x0, y0, n.Width, n.Height));
-                if (intersects)
-                {
-                    if (!DynamoSelection.Instance.Selection.Contains(n))
-                        DynamoSelection.Instance.Selection.Add(n);
-                }
-                else
-                {
-                    if (n.IsSelected)
-                    {
-                        DynamoSelection.Instance.Selection.Remove(n);
-                    }
-                }
-            }
-
-            foreach (var n in Model.Notes)
-            {
-                double x0 = n.X;
-                double y0 = n.Y;
-
-                bool intersects = rect.IntersectsWith(new Rect(x0, y0, n.Width, n.Height));
-                if (intersects)
-                {
-                    if (!DynamoSelection.Instance.Selection.Contains(n))
-                        DynamoSelection.Instance.Selection.Add(n);
-                }
-                else
-                {
-                    if (n.IsSelected)
-                    {
-                        DynamoSelection.Instance.Selection.Remove(n);
-                    }
-                }
-            }
-        }
-
-        private bool CanCrossSelect(object parameters)
-        {
-            return true;
-        } 
 
         private void SetCurrentOffset(object parameter)
         {

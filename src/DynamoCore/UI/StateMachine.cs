@@ -229,14 +229,6 @@ namespace Dynamo.ViewModels
                 }
                 else if (this.currentState == State.WindowSelection)
                 {
-                    // TODO(Ben): Can we not only select those nodes that we 
-                    // have not previously selected? Of course that requires 
-                    // us to take deselection into consideration.
-                    // 
-                    // Clear the selected elements before reselecting 
-                    // all nodes that fall within the selection window.
-                    DynamoSelection.Instance.ClearSelection();
-
                     // When the mouse is held down, reposition the drag selection box.
                     double x = Math.Min(mouseDownPos.X, mouseCursor.X);
                     double y = Math.Min(mouseDownPos.Y, mouseCursor.Y);
