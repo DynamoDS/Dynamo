@@ -122,7 +122,10 @@ namespace Dynamo.ViewModels
             string xmlFileName = string.Format(format, DateTime.Now);
             string xmlFilePath = Path.Combine(Path.GetTempPath(), xmlFileName);
 
+            // Save recorded commands into XML file and open it in viewer.
             document.Save(xmlFilePath);
+            if (System.IO.File.Exists(xmlFilePath))
+                System.Diagnostics.Process.Start(xmlFilePath);
         }
 
         private bool CanSaveRecordedCommands(object parameters)
