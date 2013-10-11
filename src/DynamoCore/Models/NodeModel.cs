@@ -282,7 +282,7 @@ namespace Dynamo.Models
         /// Get the last computed value from the node.
         /// </summary>
         private FScheme.Value _oldValue = null;
-        public FScheme.Value OldValue
+        public virtual FScheme.Value OldValue
         {
             get { return _oldValue; }
             protected set
