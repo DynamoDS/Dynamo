@@ -21,6 +21,7 @@ namespace Dynamo.ViewModels
         #region State Machine Related Methods/Data Members
 
         private StateMachine stateMachine = null;
+        private List<DraggedNode> draggedNodes = new List<DraggedNode>();
 
         internal bool HandleLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -45,6 +46,75 @@ namespace Dynamo.ViewModels
         internal void CancelActiveState()
         {
             stateMachine.CancelActiveState();
+        }
+
+        internal void BeginDragSelection(Point mouseCursor)
+        {
+            // Before the integration with infinite canvas work, we would 
+            // prefer not to have the nodes move out of the canvas region.
+            // Here at the beginning of a drag operation, we'll simply 
+            // determine the region within which the nodes can move.
+            // 
+            Rect region = new Rect(0, 0, 10000, 10000);
+
+            // This represents the first mouse-move event after the mouse-down
+            // event. Note that a mouse-down event can either be followed by a
+            // mouse-move event or simply a mouse-up event. That means having 
+            // a click does not imply there will be a drag operation. That is 
+            // the reason the first mouse-move event is used to signal the 
+            // actual drag operation (as oppose to just click-and-release).
+            // Here each node in the selection is being recorded for undo right
+            // before they get updated by the drag operation.
+            // 
+            RecordSelectionForUndo();
+            foreach (ISelectable selectable in DynamoSelection.Instance.Selection)
+            {
+                ILocatable locatable = selectable as ILocatable;
+                if (null != locatable)
+                    draggedNodes.Add(new DraggedNode(locatable, mouseCursor, region));
+            }
+
+            if (draggedNodes.Count <= 0) // There is nothing to drag.
+            {
+                string message = "Shouldn't get here if nothing is dragged";
+                throw new InvalidOperationException(message);
+            }
+        }
+
+        internal void UpdateDraggedSelection(Point mouseCursor)
+        {
+            if (draggedNodes.Count <= 0)
+            {
+                throw new InvalidOperationException(
+                    "UpdateDraggedSelection cannot be called now");
+            }
+
+            foreach (DraggedNode draggedNode in draggedNodes)
+                draggedNode.Update(mouseCursor);
+        }
+
+        internal void EndDragSelection(Point mouseCursor)
+        {
+            UpdateDraggedSelection(mouseCursor); // Final position update.
+            draggedNodes.Clear(); // We are no longer dragging anything.
+        }
+
+        private void RecordSelectionForUndo()
+        {
+            // This is where we attempt to store all the models in undo recorder 
+            // before they are modified (i.e. being dragged around the canvas).
+            // Note that we only do this once when the first mouse-move occurs 
+            // after a mouse-down, because mouse-down can potentially be used 
+            // just to select a node (as opposed to moving the selected nodes), in 
+            // which case we don't want any of the nodes to be recorded for undo.
+            // 
+            List<ModelBase> models = DynamoSelection.Instance.Selection.
+                Where((x) => (x is ModelBase)).Cast<ModelBase>().ToList<ModelBase>();
+
+            this._model.RecordModelsForModification(models);
+            DynamoController controller = Dynamo.Utilities.dynSettings.Controller;
+            controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+            controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
         }
 
         #endregion
@@ -129,7 +199,6 @@ namespace Dynamo.ViewModels
             private Point mouseDownPos = new Point();
             private WorkspaceViewModel owningWorkspace = null;
             private ConnectorViewModel activeConnector = null;
-            private List<DraggedNode> draggedNodes = new List<DraggedNode>();
 
             #endregion
 
@@ -205,8 +274,13 @@ namespace Dynamo.ViewModels
                 }
                 else if (this.currentState == State.NodeReposition)
                 {
-                    draggedNodes.Clear();
-                    this.currentState = State.None;
+                    Point mouseCursor = e.GetPosition(sender as IInputElement);
+                    var operation = DragSelectionCommand.Operation.EndDrag;
+                    var command = new DragSelectionCommand(mouseCursor, operation);
+                    DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
+                    dynamoViewModel.ExecuteCommand(command);
+
+                    this.currentState = State.None; // Dragging operation ended.
                 }
                 else if (this.currentState == State.DragSetup)
                     this.currentState = State.None;
@@ -256,44 +330,26 @@ namespace Dynamo.ViewModels
                 }
                 else if (this.currentState == State.DragSetup)
                 {
-                    // Before the integration with infinite canvas work, we would 
-                    // prefer not to have the nodes move out of the canvas region.
-                    // Here at the beginning of a drag operation, we'll simply 
-                    // determine the region within which the nodes can move.
-                    // 
-                    var canvas = sender as Dynamo.Controls.DragCanvas;
-                    Rect region = new Rect(0, 0, canvas.ActualWidth, canvas.ActualHeight);
-
-                    // This represents the first mouse-move event after the mouse-down
-                    // event. Note that a mouse-down event can either be followed by a
-                    // mouse-move event or simply a mouse-up event. That means having 
-                    // a click does not imply there will be a drag operation. That is 
-                    // the reason the first mouse-move event is used to signal the 
-                    // actual drag operation (as oppose to just click-and-release).
-                    // Here each node in the selection is being recorded for undo right
-                    // before they get updated by the drag operation.
-                    // 
-                    RecordNodesForUndo();
-                    foreach (ISelectable selectable in DynamoSelection.Instance.Selection)
-                    {
-                        ILocatable locatable = selectable as ILocatable;
-                        if (null != locatable)
-                            draggedNodes.Add(new DraggedNode(locatable, mouseCursor, region));
-                    }
-
-                    if (draggedNodes.Count <= 0) // There is nothing to drag.
+                    // There are something in the selection, but none is ILocatable.
+                    if (!DynamoSelection.Instance.Selection.Any((x) => (x is ILocatable)))
                     {
                         this.currentState = State.None;
                         return false;
                     }
+
+                    // Record and begin the drag operation for selected nodes.
+                    var operation = DragSelectionCommand.Operation.BeginDrag;
+                    var command = new DragSelectionCommand(mouseCursor, operation);
+                    DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
+                    dynamoViewModel.ExecuteCommand(command);
 
                     this.currentState = State.NodeReposition;
                     return true;
                 }
                 else if (this.currentState == State.NodeReposition)
                 {
-                    foreach (DraggedNode draggedNode in draggedNodes)
-                        draggedNode.Update(mouseCursor);
+                    // Update the dragged nodes (note: this isn't recorded).
+                    owningWorkspace.UpdateDraggedSelection(mouseCursor);
                 }
 
                 return false; // Mouse event not handled.
@@ -411,25 +467,6 @@ namespace Dynamo.ViewModels
                 }
 
                 return null;
-            }
-
-            private void RecordNodesForUndo()
-            {
-                // This is where we attempt to store all the models in undo recorder 
-                // before they are modified (i.e. being dragged around the canvas).
-                // Note that we only do this once when the first mouse-move occurs 
-                // after a mouse-down, because mouse-down can potentially be used 
-                // just to select a node (as opposed to moving the selected nodes), in 
-                // which case we don't want any of the nodes to be recorded for undo.
-                // 
-                List<ModelBase> models = DynamoSelection.Instance.Selection.
-                    Where((x) => (x is ModelBase)).Cast<ModelBase>().ToList<ModelBase>();
-
-                WorkspaceModel workspaceModel = owningWorkspace.Model;
-                workspaceModel.RecordModelsForModification(models);
-                DynamoController controller = Dynamo.Utilities.dynSettings.Controller;
-                controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
-                controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
             }
 
             private void InitiateDragSequence()

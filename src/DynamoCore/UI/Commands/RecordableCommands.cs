@@ -84,7 +84,7 @@ namespace Dynamo.Core.Automation
                     return CreateNoteCommand.DeserializeCore(element);
                 case "Dynamo.Core.Automation.SelectInRegionCommand":
                     return SelectInRegionCommand.DeserializeCore(element);
-                case "Dynamo.Core.Automation.BeginDragCommand":
+                case "Dynamo.Core.Automation.DragSelectionCommand":
                     return DragSelectionCommand.DeserializeCore(element);
             }
 

@@ -223,6 +223,10 @@ namespace Dynamo.ViewModels
 
         internal void DragSelectionImpl(DragSelectionCommand command)
         {
+            if (DragSelectionCommand.Operation.BeginDrag == command.DragOperation)
+                CurrentSpaceViewModel.BeginDragSelection(command.MouseCursor);
+            else
+                CurrentSpaceViewModel.EndDragSelection(command.MouseCursor);
         }
 
         #endregion
