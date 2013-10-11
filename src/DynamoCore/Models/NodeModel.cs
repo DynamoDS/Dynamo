@@ -1225,7 +1225,8 @@ namespace Dynamo.Models
         /// <returns>True if there is an input, false otherwise.</returns>
         public bool HasInput(int data)
         {
-            return Inputs.ContainsKey(data) && Inputs[data] != null;
+            return (Inputs.ContainsKey(data) && Inputs[data] != null) ||
+                   (InPortData.Count > data && InPortData[data].HasDefaultValue);
         }
 
         public bool HasOutput(int portData)
