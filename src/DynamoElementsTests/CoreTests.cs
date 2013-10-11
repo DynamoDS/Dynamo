@@ -401,7 +401,7 @@ namespace Dynamo.Tests
 
             model.SaveAs(null);
 
-            Assert.IsNull(Controller.DynamoViewModel.CurrentSpace.FilePath);
+            Assert.IsNull(Controller.DynamoViewModel.CurrentSpace.FileName);
         }
 
         [Test]
@@ -423,7 +423,7 @@ namespace Dynamo.Tests
 
             model.Save(null);
 
-            Assert.IsNull(Controller.DynamoViewModel.CurrentSpace.FilePath);
+            Assert.IsNull(Controller.DynamoViewModel.CurrentSpace.FileName);
         }
 
 
@@ -476,6 +476,72 @@ namespace Dynamo.Tests
                 model.Home(null);
                 Assert.AreEqual(true, Controller.DynamoViewModel.ViewingHomespace);
             }
+        }
+
+        [Test]
+        public void TestRecordModelsForModificationWithEmptyInput()
+        {
+            WorkspaceModel workspace = Controller.DynamoViewModel.CurrentSpace;
+            Assert.AreEqual(false, workspace.CanUndo);
+
+            // Calling the method with a null argument.
+            workspace.RecordModelsForModification(null);
+            Assert.AreEqual(false, workspace.CanUndo);
+
+            // Calling the method with an empty list.
+            List<ModelBase> models = new List<ModelBase>();
+            workspace.RecordModelsForModification(models);
+            Assert.AreEqual(false, workspace.CanUndo);
+
+            // Calling the method with a list full of null.
+            models.Add(null);
+            models.Add(null);
+            workspace.RecordModelsForModification(models);
+            Assert.AreEqual(false, workspace.CanUndo);
+        }
+
+        [Test]
+        public void TestRecordCreatedModelsWithEmptyInput()
+        {
+            WorkspaceModel workspace = Controller.DynamoViewModel.CurrentSpace;
+            Assert.AreEqual(false, workspace.CanUndo);
+
+            // Calling the method with a null argument.
+            workspace.RecordCreatedModels(null);
+            Assert.AreEqual(false, workspace.CanUndo);
+
+            // Calling the method with an empty list.
+            List<ModelBase> models = new List<ModelBase>();
+            workspace.RecordCreatedModels(models);
+            Assert.AreEqual(false, workspace.CanUndo);
+
+            // Calling the method with a list full of null.
+            models.Add(null);
+            models.Add(null);
+            workspace.RecordCreatedModels(models);
+            Assert.AreEqual(false, workspace.CanUndo);
+        }
+
+        [Test]
+        public void TestRecordAndDeleteModelsWithEmptyInput()
+        {
+            WorkspaceModel workspace = Controller.DynamoViewModel.CurrentSpace;
+            Assert.AreEqual(false, workspace.CanUndo);
+
+            // Calling the method with a null argument.
+            workspace.RecordAndDeleteModels(null);
+            Assert.AreEqual(false, workspace.CanUndo);
+
+            // Calling the method with an empty list.
+            List<ModelBase> models = new List<ModelBase>();
+            workspace.RecordAndDeleteModels(models);
+            Assert.AreEqual(false, workspace.CanUndo);
+
+            // Calling the method with a list full of null.
+            models.Add(null);
+            models.Add(null);
+            workspace.RecordAndDeleteModels(models);
+            Assert.AreEqual(false, workspace.CanUndo);
         }
 
         [Test]

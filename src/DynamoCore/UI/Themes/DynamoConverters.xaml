@@ -35,6 +35,7 @@
                                         ErrorBrush="{StaticResource nodeErrorBrush}">
     </controls:StateToColorConverter>
     <controls:PortNameConverter x:Key="PortNameConverter"/>
+    <controls:FilePathDisplayConverter x:Key="FilePathDisplayConverter"/>
     <controls:PathToFileNameConverter x:Key="PathToFileNameConverter"/>
     <controls:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
     <controls:ShowHideConsoleMenuItemConverter x:Key="ShowHideConsoleMenuConverter"/>

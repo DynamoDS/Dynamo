@@ -133,10 +133,12 @@ namespace Dynamo.Utilities
 
                 foreach (var function in functions)
                 {
-                    searchViewModel.Add(function.Category, function.DisplayName, "", new List<String> { }, true);
-                    if (!controller.DSImportedFunctions.ContainsKey(function.DisplayName))
+                    Guid guid = System.Guid.NewGuid();
+                    CustomNodeInfo nodeinfo = new CustomNodeInfo(guid, function.DisplayName, function.Category, "", "");
+                    searchViewModel.Add(nodeinfo);
+                    if (!controller.DSImportedFunctions.ContainsKey(guid.ToString()))
                     {
-                        controller.DSImportedFunctions.Add(function.DisplayName, function);
+                        controller.DSImportedFunctions.Add(guid.ToString(), function);
                     }
                 }
 
@@ -387,10 +389,7 @@ namespace Dynamo.Utilities
             var loadedNodes = customNodeLoader.UpdateSearchPath();
 
             // add nodes to search
-            foreach (var pair in loadedNodes)
-            {
-                searchViewModel.Add(pair.Name, pair.Category, pair.Description, pair.Guid);
-            }
+            loadedNodes.ForEach(x => searchViewModel.Add(x) );
             
             // update search view
             searchViewModel.SearchAndUpdateResultsSync(searchViewModel.SearchText);
@@ -414,10 +413,7 @@ namespace Dynamo.Utilities
             customNodeLoader.AddDirectoryToSearchPath(path);
 
             // add nodes to search
-            foreach (var pair in loadedNodes)
-            {
-                searchViewModel.Add(pair.Name, pair.Category, pair.Description, pair.Guid);
-            }
+            loadedNodes.ForEach( x => searchViewModel.Add(x) );
 
             // update search view
             searchViewModel.SearchAndUpdateResultsSync(searchViewModel.SearchText);

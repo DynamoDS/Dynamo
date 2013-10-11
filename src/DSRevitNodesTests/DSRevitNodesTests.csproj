@@ -57,12 +57,6 @@
     <Compile Include="GeometryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DSNodes\DSRevitNodes.csproj">
-      <Project>{0BC2A611-BD0E-4FCC-A1DE-81F14ED369B2}</Project>
-      <Name>DSRevitNodes</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

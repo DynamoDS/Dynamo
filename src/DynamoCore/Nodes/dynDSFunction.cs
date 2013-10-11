@@ -84,7 +84,7 @@ namespace Dynamo.Nodes
         {
             get
             {
-                if (IsStaticMember())
+                if (IsStaticMember() || IsConstructor())
                 {
                     return functionItem.ClassName + "." + functionItem.Name;
                 }
@@ -105,6 +105,11 @@ namespace Dynamo.Nodes
         {
             return functionItem.Type == DSLibraryItemType.StaticMethod ||
                    functionItem.Type == DSLibraryItemType.StaticProperty;
+        }
+
+        public bool IsConstructor()
+        {
+            return functionItem.Type == DSLibraryItemType.Constructor;
         }
 
         public DSFunction(DSFunctionItem item)
