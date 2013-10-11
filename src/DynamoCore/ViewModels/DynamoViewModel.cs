@@ -108,7 +108,7 @@ namespace Dynamo.ViewModels
         protected bool debug = false;
         protected bool dynamicRun = false;
 
-        private bool fullscreenWatchShowing = false;
+        private bool fullscreenWatchShowing = true;
         private bool canNavigateBackground = false;
         private bool _watchEscapeIsDown = false;
 
@@ -872,39 +872,7 @@ namespace Dynamo.ViewModels
 
         public void ToggleFullscreenWatchShowing(object parameter)
         {
-            if (FullscreenWatchShowing)
-            {
-                //delete the watches
-                //foreach (WorkspaceViewModel vm in dynSettings.Controller.DynamoViewModel.Workspaces)
-                //{
-                //    vm.Watch3DViewModels.Clear();
-                //}
-
-                FullscreenWatchShowing = false;
-            }
-            else
-            {
-                //construct a watch
-                //foreach (WorkspaceViewModel vm in dynSettings.Controller.DynamoViewModel.Workspaces)
-                //{
-                //    vm.Watch3DViewModels.Add(new Watch3DFullscreenViewModel(vm));
-                //}
-
-                //removed because we can reference the commands from here
-                //and also because this behavior was not great. instead we'll
-                //request just a redraw
-
-                //run the expression to refresh
-                //if (DynamoCommands.IsProcessingCommandQueue)
-                //    return;
-
-                //dynSettings.Controller.RunCommand(dynSettings.Controller.DynamoViewModel.RunExpressionCommand, null);
-                //RunExpression(null);
-
-                //dynSettings.Controller.OnRequestsRedraw(this, EventArgs.Empty);
-
-                FullscreenWatchShowing = true;
-            }
+            FullscreenWatchShowing = !FullscreenWatchShowing;
         }
 
         internal bool CanToggleFullscreenWatchShowing(object parameter)

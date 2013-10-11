@@ -1,0 +1,3 @@
+REM python ..\..\src\DynamoTestFramework\RunRevitTests.py -n ReferencePoint -a C:\Users\Ian\Documents\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoRevitTester.dll -m .\empty.rfa -f PointTests
+python ..\..\src\DynamoTestFramework\RunRevitTests.py -d false -n CanCreateAndDeleteAReferencePoint -a C:\Users\Ian\Documents\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoRevitTester.dll -m .\empty.rfa -f PointTests
+python ..\..\src\DynamoTestFramework\RunRevitTests.py -n ReferencePoint -a C:\Users\Ian\Documents\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoRevitTester.dll -m .\empty.rfa -f PointTests

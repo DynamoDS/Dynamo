@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<RevitAddIns>
+  <AddIn Type="Command">
+    <Name>Dynamo Dynamo Test Framework</Name>
+    <Assembly>"C:\Users\Ian\Documents\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoTestFramework.dll"</Assembly>
+    <AddInId>487f9ff0-5b34-4e7e-97bf-70fbff69194f</AddInId>
+    <FullClassName>Dynamo.Tests.DynamoTestFramework</FullClassName>
+    <VendorId>ADSK</VendorId>
+    <VendorDescription>Autodesk, github.com/ikeough/dynamo</VendorDescription>
+  </AddIn>
+</RevitAddIns>

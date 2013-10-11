@@ -40,76 +40,6 @@ namespace Dynamo
             Visualizers.Add(typeof(Autodesk.Revit.DB.CurveLoop), DrawCurveLoop);
         }
 
-        //public override void UpdateVisualizations()
-        //{
-        //    //only update those nodes which have been flagged for update
-        //    var toUpdate = Visualizations.Values.ToList().Where(x => x.RequiresUpdate == true);
-
-        //    var selIds =
-        //        DynamoSelection.Instance.Selection.Where(x => x is NodeModel)
-        //                       .Select(x => ((NodeModel)x).GUID.ToString());
-
-        //    var selected = Visualizations.Where(x => selIds.Contains(x.Key)).Select(x => x.Value);
-
-        //    var sw = new Stopwatch();
-        //    sw.Start();
-
-        //    foreach (var n in toUpdate)
-        //    {
-        //        var rd = n.Description;
-
-        //        //clear the render description
-        //        rd.Clear();
-
-        //        foreach (var obj in n.Geometry)
-        //        {
-        //            if (obj is Element)
-        //            {
-        //                DrawElement(obj, rd);
-        //            }
-        //            if (obj is Transform)
-        //            {
-        //                DrawTransform(obj, rd);
-        //            }
-        //            else if (obj is XYZ)
-        //            {
-        //                DrawXyz(obj, rd);
-        //            }
-        //            else if (obj is ParticleSystem)
-        //            {
-        //                DrawParticleSystem(obj, rd);
-        //            }
-        //            else if (obj is TriangleFace)
-        //            {
-        //                DrawTriangleFace(obj, rd);
-        //            }
-        //            else if (obj is GeometryObject)
-        //            {
-        //                //Draw Revit geometry
-        //                DrawGeometryObject(obj, rd);
-        //            }
-        //            else if (obj is GraphicItem)
-        //            {
-        //                //support drawing ASM visuals
-        //                //VisualizationManagerASM.DrawLibGGraphicItem((GraphicItem)obj, rd);
-        //            }
-        //        }
-
-        //        //set this flag to avoid processing again
-        //        //if not necessary
-        //        n.RequiresUpdate = false;
-        //    }
-
-        //    sw.Stop();
-
-        //    //generate an aggregated render description to send to the UI
-        //    var aggRd = AggregateRenderDescriptions();
-
-        //    LogVisualizationUpdateData(aggRd, sw.Elapsed.ToString());
-
-        //    OnVisualizationUpdateComplete(this, new VisualizationEventArgs(AggregateRenderDescriptions()));
-        //}
-
         private void DrawElement(NodeModel node, object obj, RenderDescription rd)
         {
             if (obj == null)
@@ -461,33 +391,28 @@ namespace Dynamo
                 {
                     var new_point = RevitPointToWindowsPoint(tri.get_Vertex(j));
 
-                    //find a matching point
-                    //compare the angle between the normals
-                    //to discern a 'break' angle for adjacent faces
-                    //int foundIndex = -1;
-                    //for (int k = 0; k < points.Count; k++)
-                    //{
-                    //    var testPt = points[k];
-                    //    var testNorm = norms[k];
-                    //    var ang = Vector3D.AngleBetween(normal, testNorm);
+                    int foundIndex = -1;
+                    for (int k = 0; k < points.Count; k++)
+                    {
+                        var testPt = points[k];
+                        var testNorm = norms[k];
 
-                    //    if (new_point.X == testPt.X &&
-                    //        new_point.Y == testPt.Y &&
-                    //        new_point.Z == testPt.Z &&
-                    //        ang > 90.0000)
-                    //    {
-                    //        foundIndex = k;
-                    //        //average the merged normals
-                    //        norms[k] = (testNorm + normal) / 2;
-                    //        break;
-                    //    }
-                    //}
+                        if (new_point.X == testPt.X &&
+                            new_point.Y == testPt.Y &&
+                            new_point.Z == testPt.Z)
+                        {
+                            foundIndex = k;
+                            //average the merged normals
+                            norms[k] = (testNorm + normal) / 2;
+                            break;
+                        }
+                    }
 
-                    //if (foundIndex != -1)
-                    //{
-                    //    tris.Add(foundIndex);
-                    //    continue;
-                    //}
+                    if (foundIndex != -1)
+                    {
+                        tris.Add(foundIndex);
+                        continue;
+                    }
 
                     tris.Add(points.Count);
                     points.Add(new_point);
