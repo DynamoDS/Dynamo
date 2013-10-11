@@ -358,12 +358,33 @@ namespace Dynamo.Core.Automation
     // internal class XxxYyyCommand : RecordableCommand
     // {
     //     #region Public Class Methods
+    // 
+    //     internal XxxYyyCommand()
+    //     {
+    //     }
+    // 
+    //     internal static XxxYyyCommand DeserializeCore(XmlElement element)
+    //     {
+    //         throw new NotImplementedException();
+    //     }
+    // 
     //     #endregion
     // 
     //     #region Public Command Properties
     //     #endregion
     // 
     //     #region Protected Overridable Methods
+    // 
+    //     protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+    //     {
+    //         throw new NotImplementedException();
+    //     }
+    // 
+    //     protected override void SerializeCore(XmlElement element)
+    //     {
+    //         throw new NotImplementedException();
+    //     }
+    // 
     //     #endregion
     // }
 }
