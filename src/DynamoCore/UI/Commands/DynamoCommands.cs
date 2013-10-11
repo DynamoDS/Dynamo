@@ -221,6 +221,10 @@ namespace Dynamo.ViewModels
             CurrentSpaceViewModel.SelectInRegion(command.Region, command.IsCrossSelection);
         }
 
+        internal void BeginDragImpl(BeginDragCommand command)
+        {
+        }
+
         #endregion
     }
 }

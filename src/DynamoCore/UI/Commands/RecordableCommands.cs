@@ -84,6 +84,8 @@ namespace Dynamo.Core.Automation
                     return CreateNoteCommand.DeserializeCore(element);
                 case "Dynamo.Core.Automation.SelectInRegionCommand":
                     return SelectInRegionCommand.DeserializeCore(element);
+                case "Dynamo.Core.Automation.BeginDragCommand":
+                    return BeginDragCommand.DeserializeCore(element);
             }
 
             throw new ArgumentException("element");
@@ -350,6 +352,48 @@ namespace Dynamo.Core.Automation
             helper.SetAttribute("Width", this.Region.Width);
             helper.SetAttribute("Height", this.Region.Height);
             helper.SetAttribute("IsCrossSelection", this.IsCrossSelection);
+        }
+
+        #endregion
+    }
+
+    internal class BeginDragCommand : RecordableCommand
+    {
+        #region Public Class Methods
+
+        internal BeginDragCommand(Point mouseCursor)
+        {
+            this.MouseCursor = mouseCursor;
+        }
+
+        internal static BeginDragCommand DeserializeCore(XmlElement element)
+        {
+            XmlElementHelper helper = new XmlElementHelper(element);
+            double x = helper.ReadDouble("X");
+            double y = helper.ReadDouble("Y");
+            return new BeginDragCommand(new Point(x, y));
+        }
+
+        #endregion
+
+        #region Public Command Properties
+
+        internal Point MouseCursor { get; private set; }
+
+        #endregion
+
+        #region Protected Overridable Methods
+
+        protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+        {
+            dynamoViewModel.BeginDragImpl(this);
+        }
+
+        protected override void SerializeCore(XmlElement element)
+        {
+            XmlElementHelper helper = new XmlElementHelper(element);
+            helper.SetAttribute("X", this.MouseCursor.X);
+            helper.SetAttribute("Y", this.MouseCursor.Y);
         }
 
         #endregion
