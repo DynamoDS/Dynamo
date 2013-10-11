@@ -411,7 +411,7 @@ namespace Dynamo.Tests
             Assert.IsAssignableFrom(typeof(HomeWorkspaceModel), dynamoModel.CurrentWorkspace);
 
             // make change
-            dynamoModel.CreateNodeInternal(0.0, 0.0, "Add");
+            dynamoModel.CreateNode(0.0, 0.0, "Add");
             Assert.IsTrue(Controller.DynamoModel.CurrentWorkspace.HasUnsavedChanges);
             Assert.AreEqual(1, Controller.DynamoModel.CurrentWorkspace.Nodes.Count);
 
@@ -439,7 +439,7 @@ namespace Dynamo.Tests
             var def = dynamoModel.NewCustomNodeWorkspace(Guid.NewGuid(), nodeName, catName, "", true);
             Assert.IsFalse(def.WorkspaceModel.HasUnsavedChanges);
 
-            dynamoModel.CreateNodeInternal(0.0, 0.0, "Add");
+            dynamoModel.CreateNode(0.0, 0.0, "Add");
             Assert.IsTrue(def.WorkspaceModel.HasUnsavedChanges);
             Assert.AreEqual(1, def.WorkspaceModel.Nodes.Count );
             
@@ -603,7 +603,7 @@ namespace Dynamo.Tests
 
             // put in workspace
             model.Home(null);
-            model.CreateNodeInternal(0.0, 0.0, newDef.FunctionId.ToString());
+            model.CreateNode(0.0, 0.0, newDef.FunctionId.ToString());
 
             // run expression
             Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count );
@@ -682,7 +682,7 @@ namespace Dynamo.Tests
             // place the custom node a few times in home workspace
             model.Home(null);
             foreach (var i in Enumerable.Range(0, 10))
-                model.CreateNodeInternal(0.0, 0.0, oldId.ToString());
+                model.CreateNode(0.0, 0.0, oldId.ToString());
             
             // SaveAs
             var newPath = this.GetNewFileNameOnTempPath("dyf");

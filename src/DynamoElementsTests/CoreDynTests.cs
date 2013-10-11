@@ -406,7 +406,7 @@ namespace Dynamo.Tests
         [Test]
         public void SliceList()
         {
-            dynSettings.Controller.DynamoModel.CreateNodeInternal(0, 0, "Partition List");
+            dynSettings.Controller.DynamoModel.CreateNode(0, 0, "Partition List");
 
             //Create a List
             //For a list of 0..20, this will have 21 elements
@@ -466,7 +466,7 @@ namespace Dynamo.Tests
 
             var list = Utils.SequenceToFSharpList(Enumerable.Range(0, 20).Select(x => FScheme.Value.NewNumber(x)));
 
-            model.CreateNodeInternal(0, 0, "Diagonal Left List");
+            model.CreateNode(0, 0, "Diagonal Left List");
 
             var leftNode = (DiagonalLeftList)dynSettings.Controller.DynamoModel.Nodes.First(x => x is DiagonalLeftList);
             var args = FSharpList<FScheme.Value>.Empty;
@@ -490,7 +490,7 @@ namespace Dynamo.Tests
             //3,9
             //4
 
-            model.CreateNodeInternal(0, 0, "Diagonal Right List");
+            model.CreateNode(0, 0, "Diagonal Right List");
 
             var rightNode = (DiagonalRightList)dynSettings.Controller.DynamoModel.Nodes.First(x => x is DiagonalRightList);
             args = FSharpList<FScheme.Value>.Empty;

@@ -1074,10 +1074,7 @@ namespace Dynamo.Models
                 xmlDoc.AppendChild(dynEl);
                 node.Save(xmlDoc, dynEl, SaveContext.Copy);
 
-                CreateNodeCommand command = new CreateNodeCommand(
-                    newGuid, nodeName, node.X, node.Y + 100, false, false);
-
-                createdModels.Add(CreateNodeInternal(command, dynEl));
+                createdModels.Add(CreateNode(newGuid, node.X, node.Y + 100, nodeName, dynEl));
             }
 
             //process the command queue so we have 
@@ -1221,10 +1218,25 @@ namespace Dynamo.Models
         }
 
         // Wrapper for use in unit test cases (to be removed?)
-        public NodeModel CreateNodeInternal(double x, double y, string nodeName)
+        public NodeModel CreateNode(double x, double y, string nodeName)
+        {
+            return CreateNode(System.Guid.NewGuid(), x, y, nodeName, null);
+        }
+
+        public NodeModel CreateNode(Guid id, double x, double y,
+            string nodeName, XmlNode xmlNode)
         {
             CreateNodeCommand command = new CreateNodeCommand(
-                System.Guid.NewGuid(), nodeName, x, y, false, false);
+                id, nodeName, x, y, false, false);
+
+            return CreateNodeInternal(command, xmlNode);
+        }
+
+        public NodeModel CreateNode(Guid nodeId, string nodeName,
+            double x, double y, bool defaultPosition, bool transformCoordinates)
+        {
+            CreateNodeCommand command = new CreateNodeCommand(nodeId, nodeName,
+                x, y, defaultPosition, transformCoordinates);
 
             return CreateNodeInternal(command, null);
         }
@@ -1244,7 +1256,7 @@ namespace Dynamo.Models
         /// <returns>Returns an instance of created NodeModel if the call is 
         /// successful, or null otherwise.</returns>
         /// 
-        internal NodeModel CreateNodeInternal(CreateNodeCommand command, XmlNode xmlNode)
+        private NodeModel CreateNodeInternal(CreateNodeCommand command, XmlNode xmlNode)
         {
             if (command == null)
                 return null;

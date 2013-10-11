@@ -462,11 +462,8 @@ namespace Dynamo.Utilities
             newNodeDefinition.SyncWithWorkspace(true, true);
             dynSettings.Controller.DynamoModel.Workspaces.Add(newNodeWorkspace);
 
-
-            CreateNodeCommand command = new CreateNodeCommand(Guid.NewGuid(),
-                newNodeDefinition.FunctionId.ToString(), avgX, avgY, false, false);
-
-            var collapsedNode = dynSettings.Controller.DynamoModel.CreateNodeInternal(command, null);
+            string name = newNodeDefinition.FunctionId.ToString();
+            var collapsedNode = dynSettings.Controller.DynamoModel.CreateNode(avgX, avgY, name);
 
             // place the node as intended, not centered
             collapsedNode.X = avgX;
