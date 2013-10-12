@@ -60,9 +60,7 @@ namespace Dynamo.Controls
         private DynamoViewModel _vm;
         private Stopwatch _timer;
 
-        private bool[] workspaceVisibility;
         private int slidingWindowStart, slidingWindowEnd;
-        private int newSlidingWindowSize, previousSlidingWindowSize;
 
         public bool ConsoleShowing
         {
@@ -86,8 +84,7 @@ namespace Dynamo.Controls
 
         public DynamoView()
         {
-            slidingWindowStart = slidingWindowEnd = -1;
-            newSlidingWindowSize = previousSlidingWindowSize = 0;
+            slidingWindowStart = slidingWindowEnd = 0;            
 
             _timer = new Stopwatch();
             _timer.Start();
@@ -666,9 +663,14 @@ namespace Dynamo.Controls
         {
             int tabCount = WorkspaceTabs.Items.Count;
 
+            // Note: returning -1 for Home tab being always visible.
+            // Home tab is not taken account into sliding window
             if (tabCount > Configurations.MinTabsBeforeClipping)
             {
-                int fullWidthTabsVisible = (int)(WorkspaceTabs.ActualWidth / Configurations.TabDefaultWidth);
+                // Usable tab control width need to exclude tabcontrol menu
+                int usableTabControlWidth = (int)WorkspaceTabs.ActualWidth - Configurations.TabControlMenuWidth;
+
+                int fullWidthTabsVisible = usableTabControlWidth / Configurations.TabDefaultWidth;
 
                 if (fullWidthTabsVisible < Configurations.MinTabsBeforeClipping)
                     return Configurations.MinTabsBeforeClipping - 1;
@@ -679,94 +681,114 @@ namespace Dynamo.Controls
                 return tabCount - 1;
         }
 
-        private void ExpandSlidingWindow()
-        {
-            int windowDiff = newSlidingWindowSize - previousSlidingWindowSize;
-            int lastTab = WorkspaceTabs.Items.Count - 1;
-
-            while (windowDiff != 0)
-            {
-                if (slidingWindowEnd != lastTab)
-                    slidingWindowEnd++;
-                else
-                    slidingWindowStart--;
-
-                windowDiff--;
-            }
-        }
-
-        private void SlideWindowToIncludeTab(int tabIndex)
-        {
-            previousSlidingWindowSize = newSlidingWindowSize;
-
-            newSlidingWindowSize = GetSlidingWindowSize();
+        private void SlideWindowToIncludeTab(int tabSelected)
+        {            
+            int newSlidingWindowSize = GetSlidingWindowSize();
 
             if (newSlidingWindowSize == 0)
             {
-                slidingWindowStart = slidingWindowEnd = -1;
+                slidingWindowStart = slidingWindowEnd = 0;
                 return;
             }
 
-            if (tabIndex != 0)
+            if (tabSelected != 0)
             {
-                if (tabIndex < slidingWindowStart)
+                // Selection is not home tab
+                if (tabSelected < slidingWindowStart)
                 {
-                    slidingWindowStart = tabIndex;
+                    // Slide window towards the front
+                    slidingWindowStart = tabSelected;
                     slidingWindowEnd = slidingWindowStart + (newSlidingWindowSize - 1);
                 }
-                else if (tabIndex > slidingWindowEnd)
+                else if (tabSelected > slidingWindowEnd)
                 {
-                    slidingWindowEnd = tabIndex;
+                    // Slide window towards the end
+                    slidingWindowEnd = tabSelected;
                     slidingWindowStart = slidingWindowEnd - (newSlidingWindowSize - 1);
                 }
                 else
                 {
-                    // Handles sliding window size change caused by window resizing
-                    if (previousSlidingWindowSize > newSlidingWindowSize)
-                    {
-                        // Only need to trim when there are more tabs than window
-                        int nonHomeTabsCount = WorkspaceTabs.Items.Count - 1;
-                        if (nonHomeTabsCount > newSlidingWindowSize)
-                        {
-                            // Trim window
-                            int windowDiff = previousSlidingWindowSize - newSlidingWindowSize;
-                            while (windowDiff != 0)
-                            {
-                                if (tabIndex == slidingWindowEnd)
-                                    slidingWindowStart++;
-                                else
-                                    slidingWindowEnd--;
+                    int currentSlidingWindowSize = slidingWindowEnd - slidingWindowStart + 1;
+                    int windowDiff = Math.Abs(currentSlidingWindowSize - newSlidingWindowSize);
 
-                                windowDiff--;
-                            }
+                    // Handles sliding window size change caused by window resizing
+                    if (currentSlidingWindowSize > newSlidingWindowSize)
+                    {
+                        // Trim window
+                        while (windowDiff > 0)
+                        {
+                            if (tabSelected == slidingWindowEnd)
+                                slidingWindowStart++; // Trim from front
+                            else
+                                slidingWindowEnd--; // Trim from end
+
+                            windowDiff--;
                         }
                     }
-                    else if (previousSlidingWindowSize < newSlidingWindowSize)
-                        ExpandSlidingWindow();
+                    else if (currentSlidingWindowSize < newSlidingWindowSize)
+                    {
+                        // Expand window
+                        int lastTab = WorkspaceTabs.Items.Count - 1;
+
+                        while (windowDiff > 0)
+                        {
+                            if (slidingWindowEnd == lastTab)
+                                slidingWindowStart--;
+                            else
+                                slidingWindowEnd++;
+
+                            windowDiff--;
+                        }
+                    }
+                    else
+                    {
+                        // Handle tab closing
+
+                    }
                 }
             }
             else
             {
+                // Selection is home tab
+                int currentSlidingWindowSize = slidingWindowEnd - slidingWindowStart + 1;
+                int windowDiff = Math.Abs(currentSlidingWindowSize - newSlidingWindowSize);
+
+                int lastTab = WorkspaceTabs.Items.Count - 1;
+
                 // Handles sliding window size change caused by window resizing and tab close
-                if (previousSlidingWindowSize > newSlidingWindowSize)
+                if (currentSlidingWindowSize > newSlidingWindowSize)
                 {
-                    // Only need to trim when there are more tabs than window
-                    int nonHomeWorkspaceTabCount = WorkspaceTabs.Items.Count - 1;
-                    if (nonHomeWorkspaceTabCount > newSlidingWindowSize)
+                    // Trim window
+                    while (windowDiff > 0)
                     {
-                        slidingWindowEnd = slidingWindowStart + (newSlidingWindowSize - 1);
+                        slidingWindowEnd--; // Trim from end
+
+                        windowDiff--;
                     }
                 }
-                else if (previousSlidingWindowSize < newSlidingWindowSize)
-                    ExpandSlidingWindow();
+                else if (currentSlidingWindowSize < newSlidingWindowSize)
+                {
+                    // Expand window due to window resize
+                    while (windowDiff > 0)
+                    {
+                        if (slidingWindowEnd == lastTab)
+                            slidingWindowStart--;
+                        else
+                            slidingWindowEnd++;
+
+                        windowDiff--;
+                    }
+                }
                 else
                 {
-                    int lastTab = WorkspaceTabs.Items.Count - 1;
+                    // Handle tab closing with no change in window size
+                    // Shift window
 
                     if (slidingWindowEnd > lastTab)
-                        slidingWindowEnd = lastTab;
-
-                    slidingWindowStart = slidingWindowEnd - (newSlidingWindowSize - 1);
+                    {
+                        slidingWindowStart--;
+                        slidingWindowEnd--;
+                    }
                 }
             }
 
