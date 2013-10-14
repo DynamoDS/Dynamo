@@ -7,7 +7,9 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.Events;
 using Dynamo.Controls;
+using Dynamo.FSchemeInterop;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
@@ -18,6 +20,9 @@ using Dynamo.ViewModels;
 using Greg;
 using RevitPersistenceManager;
 using RevitServices;
+using RevitServices.Threading;
+using RevitServices.Transactions;
+using CurveLoop = Autodesk.Revit.DB.CurveLoop;
 using Transaction = Dynamo.Nodes.Transaction;
 using Value = Dynamo.FScheme.Value;
 
@@ -45,7 +50,7 @@ namespace Dynamo
                 {
                     visualizationManager = new VisualizationManagerRevit();
                     visualizationManager.VisualizationUpdateComplete +=
-                        new VisualizationCompleteEventHandler(visualizationManager_VisualizationUpdateComplete);
+                        visualizationManager_VisualizationUpdateComplete;
                     visualizationManager.RequestAlternateContextClear += CleanupVisualizations;
                     dynSettings.Controller.DynamoModel.CleaningUp += CleanupVisualizations;
                 }
@@ -53,7 +58,7 @@ namespace Dynamo
             }
         }
 
-        public DynamoController_Revit(FSchemeInterop.ExecutionEnvironment env, DynamoUpdater updater, Type viewModelType,
+        public DynamoController_Revit(ExecutionEnvironment env, DynamoUpdater updater, Type viewModelType,
             string context)
             : base(env, viewModelType, context)
         {
@@ -88,7 +93,7 @@ namespace Dynamo
 
         private void CleanupVisualizations(object sender, EventArgs e)
         {
-            IdlePromise.ExecuteOnIdle(
+            IdlePromise.ExecuteOnIdleAsync(
                 () =>
                 {
                     dynRevitSettings.Controller.InitTransaction();
@@ -121,7 +126,7 @@ namespace Dynamo
                 .Where(x => !(x is SelectionBase))
                 .Where(x => x.IsVisible)
                 .Where(x => x.OldValue != null)
-                .Where(x => x.OldValue is FScheme.Value.Container || x.OldValue is FScheme.Value.List)
+                .Where(x => x.OldValue is Value.Container || x.OldValue is Value.List)
                 .Select(x => x.OldValue);
 
             var geoms = values.ToList().SelectMany(RevitGeometryFromNodes).ToList();
@@ -134,15 +139,15 @@ namespace Dynamo
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        private static List<GeometryObject> RevitGeometryFromNodes(FScheme.Value value)
+        private static List<GeometryObject> RevitGeometryFromNodes(Value value)
         {
             var geoms = new List<GeometryObject>();
 
             if (value.IsList)
             {
-                foreach (var val_inner in ((FScheme.Value.List) value).Item)
+                foreach (var valInner in ((Value.List) value).Item)
                 {
-                    geoms.AddRange(RevitGeometryFromNodes(val_inner));
+                    geoms.AddRange(RevitGeometryFromNodes(valInner));
                 }
                 return geoms;
             }
@@ -151,28 +156,27 @@ namespace Dynamo
             if (container == null)
                 return geoms;
 
-            var geom = ((FScheme.Value.Container)value).Item as GeometryObject;
+            var geom = ((Value.Container)value).Item as GeometryObject;
             if (geom != null && !(geom is Face))
                 geoms.Add(geom);
 
-            var ps = ((FScheme.Value.Container) value).Item as ParticleSystem;
+            var ps = ((Value.Container) value).Item as ParticleSystem;
             if (ps != null)
             {
                 geoms.AddRange(
                     ps.Springs.Select(
                         spring =>
-                            Line.CreateBound(spring.getOneEnd().getPosition(), spring.getTheOtherEnd().getPosition()))
-                        .Cast<GeometryObject>());
+                            Line.CreateBound(spring.getOneEnd().getPosition(), spring.getTheOtherEnd().getPosition())));
             }
 
-            var cl = ((FScheme.Value.Container) value).Item as Autodesk.Revit.DB.CurveLoop;
+            var cl = ((Value.Container) value).Item as CurveLoop;
             if (cl != null)
             {
                 geoms.AddRange(cl);
             }
 
             //draw xyzs as Point objects
-            var pt = ((FScheme.Value.Container) value).Item as XYZ;
+            var pt = ((Value.Container) value).Item as XYZ;
             if (pt != null)
             {
                 Type pointType = typeof (Point);
@@ -210,7 +214,7 @@ namespace Dynamo
 
             var gStyle = styles.ToElements().FirstOrDefault(x => x.Name == "Dynamo");
 
-            IdlePromise.ExecuteOnIdle(
+            IdlePromise.ExecuteOnIdleAsync(
                 () =>
                 {
                     dynRevitSettings.Controller.InitTransaction();
@@ -265,7 +269,7 @@ namespace Dynamo
         public Assembly LoadSSONet()
         {
             // get the location of RevitAPI assembly.  SSONet is in the same directory.
-            var revitAPIAss = Assembly.GetAssembly(typeof (Autodesk.Revit.DB.XYZ)); // any type loaded from RevitAPI
+            var revitAPIAss = Assembly.GetAssembly(typeof (XYZ)); // any type loaded from RevitAPI
             var revitAPIDir = Path.GetDirectoryName(revitAPIAss.Location);
 
             //Retrieve the list of referenced assemblies in an array of AssemblyName.
@@ -292,7 +296,7 @@ namespace Dynamo
             }
         }
 
-        private void Application_DocumentOpened(object sender, Autodesk.Revit.DB.Events.DocumentOpenedEventArgs e)
+        private void Application_DocumentOpened(object sender, DocumentOpenedEventArgs e)
         {
             //when a document is opened 
             if (dynRevitSettings.Doc == null)
@@ -302,7 +306,7 @@ namespace Dynamo
             }
         }
 
-        private void Application_DocumentClosed(object sender, Autodesk.Revit.DB.Events.DocumentClosedEventArgs e)
+        private void Application_DocumentClosed(object sender, DocumentClosedEventArgs e)
         {
             //Disable running against revit without a document
             if (dynRevitSettings.Revit.ActiveUIDocument == null)
@@ -630,7 +634,7 @@ namespace Dynamo
             //from the idle thread. Otherwise, just run it in this thread.
             if (dynSettings.Controller.DynamoViewModel.RunInDebug || !InIdleThread && !Testing)
             {
-                IdlePromise.ExecuteOnIdle(cleanup, false);
+                IdlePromise.ExecuteOnIdleSync(cleanup);
             }
             else
                 cleanup();
@@ -661,15 +665,9 @@ namespace Dynamo
 
         protected override void RunDS()
         {
-
             DocumentManager.CurrentDoc = dynRevitSettings.Doc.Document;
 
-            IdlePromise.ExecuteOnIdle(() =>
-                {
-
-DSRevitNodes.Point point = DSRevitNodes.Point.ByCoordinates(10, 10, 10 );
-            
-                }, true);
+            IdlePromise.ExecuteOnIdleAsync(() => DSRevitNodes.Point.ByCoordinates(10, 10, 10));
         }
 
 
@@ -706,9 +704,7 @@ DSRevitNodes.Point point = DSRevitNodes.Point.ByCoordinates(10, 10, 10 );
 
                     Debug.WriteLine("Adding a run to the idle stack.");
                     InIdleThread = true; //Now in the idle thread.
-                    IdlePromise.ExecuteOnIdle(
-                        () => base.Run(topElements, runningExpression),
-                        false); //Execute the Run Delegate in the Idle thread.
+                    IdlePromise.ExecuteOnIdleSync(() => base.Run(topElements, runningExpression)); //Execute the Run Delegate in the Idle thread.
 
                 }
             }

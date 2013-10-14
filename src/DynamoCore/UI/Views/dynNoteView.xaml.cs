@@ -46,15 +46,15 @@ namespace Dynamo.Nodes
                     if (ViewModel != null)
                         ViewModel.UpdateSizeFromView(noteText.ActualWidth, noteText.ActualHeight);
                 };
-            noteText.PreviewMouseDown += new MouseButtonEventHandler(noteText_PreviewMouseDown);
+            noteText.PreviewMouseDown += noteText_PreviewMouseDown;
 
-            this.Loaded += new RoutedEventHandler(dynNoteView_Loaded);
+            this.Loaded += dynNoteView_Loaded;
         }
 
         void dynNoteView_Loaded(object sender, RoutedEventArgs e)
         {
             ViewModel = this.DataContext as NoteViewModel;
-            ViewModel.RequestsSelection += new EventHandler(ViewModel_RequestsSelection);
+            ViewModel.RequestsSelection += ViewModel_RequestsSelection;
 
             // NoteModel has default dimension of 100x100 which will not be ideal in 
             // most cases. Here we update the model according to the size of the view.

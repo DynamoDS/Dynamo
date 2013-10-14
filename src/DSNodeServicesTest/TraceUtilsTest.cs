@@ -44,13 +44,13 @@ namespace DSNodeServicesTest
             bool test = false;
 
             Thread th = new Thread(
-                new ThreadStart(() =>
-                    {
-                        SerializableSring ret = (SerializableSring)DSNodeServices.TraceUtils.GetTraceData(id);
+                () =>
+                {
+                    SerializableSring ret = (SerializableSring)DSNodeServices.TraceUtils.GetTraceData(id);
 
-                        test = ret == null;
+                    test = ret == null;
                         
-                    })
+                }
                 );
             th.Start();
             th.Join();

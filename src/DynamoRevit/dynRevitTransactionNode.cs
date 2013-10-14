@@ -10,6 +10,7 @@ using Dynamo.Models;
 using Microsoft.FSharp.Collections;
 
 using Dynamo.Utilities;
+using RevitServices.Threading;
 using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Revit
@@ -231,7 +232,7 @@ namespace Dynamo.Revit
 
                 DynamoLogger.Instance.Log("Starting a debug transaction for element: " + NickName);
 
-                IdlePromise.ExecuteOnIdle(
+                IdlePromise.ExecuteOnIdleSync(
                    delegate
                    {
                        controller.InitTransaction();
@@ -257,8 +258,7 @@ namespace Dynamo.Revit
                            controller.CancelTransaction();
                            throw;
                        }
-                   },
-                   false);
+                   });
 
                 #endregion
             }
@@ -287,7 +287,7 @@ namespace Dynamo.Revit
         {
             var controller = dynRevitSettings.Controller;
 
-            IdlePromise.ExecuteOnIdle(
+            IdlePromise.ExecuteOnIdleAsync(
                delegate
                {
                    controller.InitTransaction();

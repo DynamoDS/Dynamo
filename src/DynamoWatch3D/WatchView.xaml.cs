@@ -141,10 +141,10 @@ namespace Dynamo.Controls
             //to bind to properties on this class
             watch_view.DataContext = this;
 
-            MouseRightButtonUp += new System.Windows.Input.MouseButtonEventHandler(view_MouseRightButtonUp);
-            PreviewMouseRightButtonDown += new System.Windows.Input.MouseButtonEventHandler(view_PreviewMouseRightButtonDown);
+            MouseRightButtonUp += view_MouseRightButtonUp;
+            PreviewMouseRightButtonDown += view_PreviewMouseRightButtonDown;
 
-            this.Loaded += new System.Windows.RoutedEventHandler(WatchView_Loaded);
+            this.Loaded += WatchView_Loaded;
         }
 
         void WatchView_Loaded(object sender, System.Windows.RoutedEventArgs e)

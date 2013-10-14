@@ -32,7 +32,7 @@ namespace Dynamo.Connectors
         public dynPortView()
         {
             InitializeComponent();
-            this.Loaded += new RoutedEventHandler(dynPort_Loaded);
+            this.Loaded += dynPort_Loaded;
         }
 
         void dynPort_Loaded(object sender, RoutedEventArgs e)

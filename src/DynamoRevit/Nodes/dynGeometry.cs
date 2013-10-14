@@ -1822,7 +1822,7 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetColumn(combo, 0);
             System.Windows.Controls.Grid.SetRow(combo, 0);
 
-            combo.DropDownOpened += new EventHandler(combo_DropDownOpened);
+            combo.DropDownOpened += combo_DropDownOpened;
             combo.SelectionChanged += delegate
             {
                 if (combo.SelectedIndex != -1)

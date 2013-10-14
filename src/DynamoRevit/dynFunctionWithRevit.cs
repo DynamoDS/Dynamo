@@ -9,6 +9,7 @@ using Dynamo.Utilities;
 using Dynamo.Revit;
 using System.Xml;
 using Autodesk.Revit.DB;
+using RevitServices.Threading;
 
 namespace Dynamo.Nodes
 {
@@ -111,7 +112,7 @@ namespace Dynamo.Nodes
 
         public override void Destroy()
         {
-            IdlePromise.ExecuteOnIdle(
+            IdlePromise.ExecuteOnIdleAsync(
                delegate
                {
                    dynRevitSettings.Controller.InitTransaction();

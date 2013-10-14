@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Autodesk.Revit.DB;
 
-namespace RevitServices
+namespace RevitServices.Transactions
 {
     /// <summary>
     /// Wraps Revit Transaction methods and provides events for transaction initialization

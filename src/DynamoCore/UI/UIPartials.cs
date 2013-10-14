@@ -136,7 +136,7 @@ namespace Dynamo.Nodes
 
             Enabled = false;
 
-            button.Click += new RoutedEventHandler(button_Click);
+            button.Click += button_Click;
 
             var bindingVal = new System.Windows.Data.Binding("Enabled")
             {
@@ -382,8 +382,8 @@ namespace Dynamo.Nodes
             nodeUI.inputGrid.Children.Add(wp);
 
             //rbFalse.IsChecked = true;
-            rbTrue.Checked += new System.Windows.RoutedEventHandler(rbTrue_Checked);
-            rbFalse.Checked += new System.Windows.RoutedEventHandler(rbFalse_Checked);
+            rbTrue.Checked += rbTrue_Checked;
+            rbFalse.Checked += rbFalse_Checked;
 
             rbFalse.DataContext = this;
             rbTrue.DataContext = this;
@@ -461,7 +461,7 @@ namespace Dynamo.Nodes
             //readFileButton.Margin = new System.Windows.Thickness(4);
             readFileButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             readFileButton.VerticalAlignment = System.Windows.VerticalAlignment.Top;
-            readFileButton.Click += new System.Windows.RoutedEventHandler(readFileButton_Click);
+            readFileButton.Click += readFileButton_Click;
             readFileButton.Content = "Browse...";
             readFileButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             readFileButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
@@ -528,7 +528,7 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetColumn(combo, 0);
             System.Windows.Controls.Grid.SetRow(combo, 0);
 
-            combo.DropDownOpened += new EventHandler(combo_DropDownOpened);
+            combo.DropDownOpened += combo_DropDownOpened;
             combo.SelectionChanged += delegate
             {
                 if (combo.SelectedIndex != -1)
@@ -707,12 +707,12 @@ namespace Dynamo.Nodes
                 Root = new WatchNode();
             watchTree.DataContext = Root;
 
-            this.RequestBindingUnhook += new EventHandler(delegate
+            this.RequestBindingUnhook += delegate
             {
                 BindingOperations.ClearAllBindings(watchTree.treeView1);
-            });
+            };
 
-            this.RequestBindingRehook += new EventHandler(delegate
+            this.RequestBindingRehook += delegate
             {
                 var sourceBinding = new Binding("Children")
                 {
@@ -720,7 +720,7 @@ namespace Dynamo.Nodes
                     Source = Root,
                 };
                 watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty, sourceBinding);
-            });
+            };
 
         }
 

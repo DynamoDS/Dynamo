@@ -109,22 +109,22 @@ namespace Dynamo.Controls
 
             //PACKAGE MANAGER
             _vm.RequestPackagePublishDialog += _vm_RequestRequestPackageManagerPublish;
-            _vm.RequestManagePackagesDialog += new EventHandler(_vm_RequestShowInstalledPackages);
-            _vm.RequestPackageManagerSearchDialog += new EventHandler(_vm_RequestShowPackageManagerSearch);
+            _vm.RequestManagePackagesDialog += _vm_RequestShowInstalledPackages;
+            _vm.RequestPackageManagerSearchDialog += _vm_RequestShowPackageManagerSearch;
 
             //FUNCTION NAME PROMPT
             _vm.Model.RequestsFunctionNamePrompt += _vm_RequestsFunctionNamePrompt;
 
-            _vm.RequestClose += new EventHandler(_vm_RequestClose);
-            _vm.RequestSaveImage += new ImageSaveEventHandler(_vm_RequestSaveImage);
+            _vm.RequestClose += _vm_RequestClose;
+            _vm.RequestSaveImage += _vm_RequestSaveImage;
 
-            dynSettings.Controller.RequestsCrashPrompt += new DynamoController.CrashPromptHandler(Controller_RequestsCrashPrompt);
+            dynSettings.Controller.RequestsCrashPrompt += Controller_RequestsCrashPrompt;
 
-            DynamoSelection.Instance.Selection.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
+            DynamoSelection.Instance.Selection.CollectionChanged += Selection_CollectionChanged;
 
-            _vm.RequestUserSaveWorkflow += new WorkspaceSaveEventHandler(_vm_RequestUserSaveWorkflow);
+            _vm.RequestUserSaveWorkflow += _vm_RequestUserSaveWorkflow;
 
-            dynSettings.Controller.ClipBoard.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(ClipBoard_CollectionChanged);
+            dynSettings.Controller.ClipBoard.CollectionChanged += ClipBoard_CollectionChanged;
         
         }
         

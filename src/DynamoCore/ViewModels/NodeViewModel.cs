@@ -266,7 +266,7 @@ namespace Dynamo.ViewModels
             logic.OutPorts.CollectionChanged += outports_collectionChanged;
             
             logic.PropertyChanged += logic_PropertyChanged;
-            dynSettings.Controller.DynamoViewModel.Model.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Model_PropertyChanged);
+            dynSettings.Controller.DynamoViewModel.Model.PropertyChanged += Model_PropertyChanged;
 
             //Do a one time setup of the initial ports on the node
             //we can not do this automatically because this constructor

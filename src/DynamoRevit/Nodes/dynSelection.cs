@@ -27,6 +27,7 @@ using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.Revit.SyncedNodeExtensions; //Gives the RegisterEval... methods
 using Microsoft.FSharp.Collections;
+using RevitServices.Threading;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
 using TextBox = System.Windows.Controls.TextBox;
@@ -183,7 +184,7 @@ namespace Dynamo.Nodes
         private void selectButton_Click(object sender, RoutedEventArgs e)
         {
             CanSelect = false;
-            IdlePromise.ExecuteOnIdle(
+            IdlePromise.ExecuteOnIdleAsync(
                 delegate
                 {
                     OnSelectClick();
@@ -392,7 +393,7 @@ namespace Dynamo.Nodes
         private void selectButton_Click(object sender, RoutedEventArgs e)
         {
             _selectButton.IsEnabled = false;
-            IdlePromise.ExecuteOnIdle(
+            IdlePromise.ExecuteOnIdleAsync(
                 delegate
                 {
                     OnSelectClick();

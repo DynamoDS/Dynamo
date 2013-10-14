@@ -1549,7 +1549,7 @@ namespace Dynamo.Nodes
 
             try
             {
-                _parsed = DoubleInput.ParseValue(Value, new[] { ',' }, parameters, new ConversionDelegate(TokenConvert));
+                _parsed = DoubleInput.ParseValue(Value, new[] { ',' }, parameters, TokenConvert);
 
                 if (InPortData.Count > 2)
                     InPortData.RemoveRange(2, InPortData.Count - 2);
@@ -4236,7 +4236,7 @@ namespace Dynamo.Nodes
 
         protected DropDrownBase()
         {
-            Items.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Items_CollectionChanged);
+            Items.CollectionChanged += Items_CollectionChanged;
         }
 
         void Items_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -4247,7 +4247,7 @@ namespace Dynamo.Nodes
                               orderby item.Name
                               select item;
             Items = sortedItems.ToObservableCollection();
-            Items.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Items_CollectionChanged);
+            Items.CollectionChanged += Items_CollectionChanged;
         }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)

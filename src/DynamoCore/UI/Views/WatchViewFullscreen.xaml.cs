@@ -140,18 +140,18 @@ namespace Dynamo.Controls
         {
             InitializeComponent();
             watch_view.DataContext = this;
-            this.Loaded += new RoutedEventHandler(WatchViewFullscreen_Loaded);
+            this.Loaded += WatchViewFullscreen_Loaded;
         }
 
         void WatchViewFullscreen_Loaded(object sender, RoutedEventArgs e)
         {
-            MouseLeftButtonDown += new System.Windows.Input.MouseButtonEventHandler(view_MouseButtonIgnore);
-            MouseLeftButtonUp += new System.Windows.Input.MouseButtonEventHandler(view_MouseButtonIgnore);
-            MouseRightButtonUp += new System.Windows.Input.MouseButtonEventHandler(view_MouseRightButtonUp);
-            PreviewMouseRightButtonDown += new System.Windows.Input.MouseButtonEventHandler(view_PreviewMouseRightButtonDown);
+            MouseLeftButtonDown += view_MouseButtonIgnore;
+            MouseLeftButtonUp += view_MouseButtonIgnore;
+            MouseRightButtonUp += view_MouseRightButtonUp;
+            PreviewMouseRightButtonDown += view_PreviewMouseRightButtonDown;
 
             var mi = new MenuItem { Header = "Zoom to Fit" };
-            mi.Click += new RoutedEventHandler(mi_Click);
+            mi.Click += mi_Click;
 
             MainContextMenu.Items.Add(mi);
 

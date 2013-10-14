@@ -18,8 +18,8 @@ namespace Dynamo.DSEngine
         private LiveRunnerServices()
         {
             liveRunner = new ProtoScript.Runners.LiveRunner();
-            liveRunner.DynamoGraphUpdateReady += new DynamoGraphUpdateReadyEventHandler(OnGraphUpdateReady);
-            liveRunner.DynamoNodeValueReady += new DynamoNodeValueReadyEventHandler(OnNodeValueReady);
+            liveRunner.DynamoGraphUpdateReady += OnGraphUpdateReady;
+            liveRunner.DynamoNodeValueReady += OnNodeValueReady;
 
             PreLoadGeometryLibrary();
         }
