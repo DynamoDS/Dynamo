@@ -776,6 +776,35 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        ///     Adds a DesignScript function
+        /// </summary>
+        /// <param name="funcItem"></param>
+        public void Add(DSFunctionItem funcItem)
+        {
+            string name = funcItem.QualifiedName;
+            string cat = funcItem.Category;
+            List<string> tags = new List<string>();
+            string description = "";
+
+            var searchEle = new NodeSearchElement(name, description, tags);
+            searchEle.SetSearchable(true);
+
+            if (!string.IsNullOrEmpty(cat))
+            {
+                SearchDictionary.Add(searchEle, cat + "." + searchEle.Name);
+            }
+
+            TryAddCategoryAndItem(cat, searchEle);
+
+            SearchDictionary.Add(searchEle, searchEle.Name);
+            if (tags.Count > 0)
+            {
+                SearchDictionary.Add(searchEle, tags);
+            }
+            SearchDictionary.Add(searchEle, description);
+        }
+
+        /// <summary>
         ///     Adds a local DynNode to search
         /// </summary>
         /// <param name="dynNode">A Dynamo node object</param>

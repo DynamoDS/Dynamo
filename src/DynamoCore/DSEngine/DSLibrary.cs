@@ -173,7 +173,7 @@ namespace Dynamo.DSEngine
 
         private DSLibrary()
         {
-            GraphToDSCompiler.GraphUtilities.PreloadAssembly(new List<string> { "Math.dll"});
+            GraphToDSCompiler.GraphUtilities.PreloadAssembly(new List<string> { "Math.dll", "ProtoGeometry.dll"});
 
             importedFunctions = new Dictionary<string, List<DSFunctionItem>>();
             PopulateBuiltIns();
