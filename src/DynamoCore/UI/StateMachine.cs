@@ -187,6 +187,11 @@ namespace Dynamo.ViewModels
             this.SetActiveConnector(null);
         }
 
+        internal void CancelConnection()
+        {
+            this.SetActiveConnector(null);
+        }
+
         internal void UpdateActiveConnector(Point mouseCursor)
         {
             if (null != this.activeConnector)
@@ -346,7 +351,9 @@ namespace Dynamo.ViewModels
                 {
                     // Clicking on the canvas while connecting simply cancels 
                     // the operation and drop the temporary connector.
-                    var command = new PortClickedCommand(Guid.Empty, -1, PortType.INPUT);
+                    var command = new MakeConnectionCommand(Guid.Empty, -1,
+                        PortType.INPUT, MakeConnectionCommand.Mode.Cancel);
+
                     var dynamoViewModel = dynSettings.Controller.DynamoViewModel;
                     dynamoViewModel.ExecuteCommand(command);
 
@@ -476,9 +483,7 @@ namespace Dynamo.ViewModels
                     return false;
 
                 PortModel portModel = portViewModel.PortModel;
-
                 DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
-                WorkspaceModel workspaceModel = dynamoViewModel.CurrentSpace;
                 WorkspaceViewModel workspaceViewModel = dynamoViewModel.CurrentSpaceViewModel;
 
                 if (this.currentState != State.Connection) // Not in a connection attempt...
@@ -487,8 +492,8 @@ namespace Dynamo.ViewModels
                     Guid nodeId = portModel.Owner.GUID;
                     int portIndex = portModel.Owner.GetPortIndex(portModel, out portType);
 
-                    var command = new PortClickedCommand(nodeId, portIndex, portType);
-                    dynamoViewModel.ExecuteCommand(command);
+                    dynamoViewModel.ExecuteCommand(new MakeConnectionCommand(
+                        nodeId, portIndex, portType, MakeConnectionCommand.Mode.Begin));
 
                     if (owningWorkspace.IsConnecting)
                         this.currentState = State.Connection;
@@ -499,8 +504,10 @@ namespace Dynamo.ViewModels
                     Guid nodeId = portModel.Owner.GUID;
                     int portIndex = portModel.Owner.GetPortIndex(portModel, out portType);
 
-                    var command = new PortClickedCommand(nodeId, portIndex, portType);
-                    dynamoViewModel.ExecuteCommand(command);
+                    dynamoViewModel.ExecuteCommand(new MakeConnectionCommand(
+                        nodeId, portIndex, portType, MakeConnectionCommand.Mode.End));
+
+                    this.currentState = State.None;
                 }
 
                 return true;
