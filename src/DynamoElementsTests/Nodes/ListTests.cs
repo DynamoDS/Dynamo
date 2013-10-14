@@ -7,7 +7,6 @@ using Microsoft.FSharp.Collections;
 
 namespace Dynamo.Tests
 {
-    [TestFixture]
     class ListTests : DynamoUnitTest
     {
         string listTestFolder { get { return Path.Combine(GetTestDirectory(), "core", "list"); } }

@@ -9,6 +9,7 @@ using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
+    [TestFixture]
     internal class XmlHelperTests
     {
         private XmlDocument xmlDocument = null;

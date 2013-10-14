@@ -244,16 +244,22 @@ namespace Dynamo.Tests
                 .SelectMany(x => x.results.Items)
                 .Where(x => x.GetType() == typeof (testcaseType))
                 .Cast<testcaseType>();
-            result.errors = cases.Sum(x => x.result == "Failure" ? 1 : 0);
-            result.total = cases.Count();
 
-            result.ignored = cases.Sum(x => x.result == "Ignored" ? 1 : 0);
-            result.inconclusive = cases.Sum(x => x.result == "Inconclusive" ? 1 : 0);
-            result.invalid = cases.Sum(x => x.result == "Invalid" ? 1 : 0);
-            result.notrun = cases.Sum(x => x.executed == "NotRun" ? 1 : 0);
-            result.skipped = cases.Sum(x => x.result == "Skipped" ? 1 : 0);
-            result.errors = cases.Sum(x => x.result == "Error" ? 1 : 0);
-            result.failures = cases.Sum(x => x.result == "Failure" ? 1 : 0);
+            var testcaseTypes = cases as testcaseType[] ?? cases.ToArray();
+
+            if (!testcaseTypes.Any())
+                return;
+
+            result.errors = testcaseTypes.Sum(x => x.result == "Failure" ? 1 : 0);
+            result.total = testcaseTypes.Count();
+
+            result.ignored = testcaseTypes.Sum(x => x.result == "Ignored" ? 1 : 0);
+            result.inconclusive = testcaseTypes.Sum(x => x.result == "Inconclusive" ? 1 : 0);
+            result.invalid = testcaseTypes.Sum(x => x.result == "Invalid" ? 1 : 0);
+            result.notrun = testcaseTypes.Sum(x => x.executed == "NotRun" ? 1 : 0);
+            result.skipped = testcaseTypes.Sum(x => x.result == "Skipped" ? 1 : 0);
+            result.errors = testcaseTypes.Sum(x => x.result == "Error" ? 1 : 0);
+            result.failures = testcaseTypes.Sum(x => x.result == "Failure" ? 1 : 0);
         }
 
         private void CalculateSweetTotalsOnOuterSweet(testsuiteType suite)
