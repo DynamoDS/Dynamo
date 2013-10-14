@@ -1,0 +1,46 @@
+<dynWorkspace X="0" Y="0">
+  <dynElements>
+    <Dynamo.Nodes.dynPython type="Dynamo.Nodes.dynPython" guid="b1d208e9-ff8d-4586-8ada-6e8d9ccfcf6d" nickname="Python Script" x="267.25" y="89" lacing="First">
+      <Script># adapted from Nathan Miller's Proving Ground Blog
+# http://wiki.theprovingground.org/revit-api-py-curves
+
+import clr
+import math
+ 
+doc = __revit__.ActiveUIDocument.Document
+app = __revit__.Application
+
+scale = IN
+
+xyzs = []
+output = []
+
+#use for loop to create a series of points
+for i in range(0,20):
+    x = math.sin(i)*scale
+    y = math.cos(i)*scale
+    z = i*scale/2
+ 
+    myXYZ = XYZ(x,y,z)
+    xyzs.append(myXYZ)
+
+#create hermite spline
+hs = app.Create.NewHermiteSpline(xyzs, False)
+output.append(hs)
+output.append(xyzs)
+
+OUT = output;</Script>
+    </Dynamo.Nodes.dynPython>
+    <Dynamo.Nodes.dynWatch3D type="Dynamo.Nodes.dynWatch3D" guid="ada46d91-3dfa-4a65-bcaa-d1ea39312c41" nickname="Watch 3D" x="631.758741258741" y="275.552447552448" lacing="Disabled" />
+    <Dynamo.Nodes.dynDoubleSliderInput type="Dynamo.Nodes.dynDoubleSliderInput" guid="99c31498-e06e-4b95-8000-beaf61dde392" nickname="Number Slider" x="0" y="0" lacing="First">
+      <System.Double value="26.1235955056179" min="0" max="100" />
+    </Dynamo.Nodes.dynDoubleSliderInput>
+    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="9ebd471e-ea8a-4e90-9235-e15b7d06b992" nickname="Watch" x="459.268159601846" y="60.267535090427" lacing="Disabled" />
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnectorModel start="b1d208e9-ff8d-4586-8ada-6e8d9ccfcf6d" start_index="0" end="9ebd471e-ea8a-4e90-9235-e15b7d06b992" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="b1d208e9-ff8d-4586-8ada-6e8d9ccfcf6d" start_index="0" end="ada46d91-3dfa-4a65-bcaa-d1ea39312c41" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="99c31498-e06e-4b95-8000-beaf61dde392" start_index="0" end="b1d208e9-ff8d-4586-8ada-6e8d9ccfcf6d" end_index="0" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>
