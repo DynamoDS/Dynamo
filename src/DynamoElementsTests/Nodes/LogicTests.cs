@@ -15,7 +15,7 @@ using String = System.String;
 namespace Dynamo.Tests
 {
     [TestFixture]
-    class ComparisonTests : DynamoUnitTest
+    public class ComparisonTests : DynamoUnitTest
     {
         private string logicTestFolder { get { return Path.Combine(GetTestDirectory(), "core", "logic", "comparison"); } }
 
@@ -292,7 +292,7 @@ namespace Dynamo.Tests
     }
 
     [TestFixture]
-    class ConditionalTest : DynamoUnitTest
+    public class ConditionalTest : DynamoUnitTest
     {
         private string logicTestFolder { get { return Path.Combine(GetTestDirectory(), "core", "logic", "conditional"); } }
 
