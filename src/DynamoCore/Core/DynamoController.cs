@@ -202,6 +202,8 @@ namespace Dynamo
         /// </summary>
         public DynamoController(ExecutionEnvironment env, Type viewModelType, string context)
         {
+            DynamoLogger.Instance.StartLogging();
+
             dynSettings.Controller = this;
 
             this.Context = context;
@@ -257,6 +259,8 @@ namespace Dynamo
             dynSettings.Controller = null;
             
             Selection.DynamoSelection.Instance.ClearSelection();
+
+            DynamoLogger.Instance.FinishLogging();
         }
 
         #region Running
