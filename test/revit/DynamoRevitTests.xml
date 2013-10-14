@@ -49,7 +49,7 @@
 			</testFixture>
 			<testFixture name="MeasureTests">
 				<test name="GetCurveDomain" runDynamo="True" modelPath=".\GetCurveDomain.rfa"/>
-				<test name="GetSurfaceDomain" runDynamo="True" modelPath=".\GetSurfaceDomain.rfa"/>
+				<test name="GetSurfaceDomain" runDynamo="True" modelPath=".\GetSurfaceDomain.rvt"/>
 				<test name="Length" runDynamo="True" modelPath=".\empty.rfa"/>
 				<test name="UVRandom" runDynamo="True" modelPath=".\empty.rfa"/>
 			</testFixture>
