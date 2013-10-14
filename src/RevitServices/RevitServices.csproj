@@ -66,6 +66,7 @@ limitations under the License.
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Elements\ModelUpdater.cs" />
     <Compile Include="Elements\ElementValidity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Threading\IdlePromise.cs" />

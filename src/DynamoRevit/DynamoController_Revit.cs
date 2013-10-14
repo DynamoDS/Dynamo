@@ -20,6 +20,7 @@ using Dynamo.ViewModels;
 using Greg;
 using RevitPersistenceManager;
 using RevitServices;
+using RevitServices.Elements;
 using RevitServices.Threading;
 using RevitServices.Transactions;
 using CurveLoop = Autodesk.Revit.DB.CurveLoop;
@@ -30,7 +31,7 @@ namespace Dynamo
 {
     public class DynamoController_Revit : DynamoController
     {
-        public DynamoUpdater Updater { get; private set; }
+        public RevitServicesUpdater Updater { get; private set; }
 
         private dynamic _oldPyEval;
 
@@ -58,7 +59,7 @@ namespace Dynamo
             }
         }
 
-        public DynamoController_Revit(ExecutionEnvironment env, DynamoUpdater updater, Type viewModelType,
+        public DynamoController_Revit(ExecutionEnvironment env, RevitServicesUpdater updater, Type viewModelType,
             string context)
             : base(env, viewModelType, context)
         {
@@ -500,10 +501,10 @@ namespace Dynamo
 
         private readonly List<ElementId> _transElements = new List<ElementId>();
 
-        private readonly Dictionary<DynElementUpdateDelegate, HashSet<ElementId>> _transDelElements
-            = new Dictionary<DynElementUpdateDelegate, HashSet<ElementId>>();
+        private readonly Dictionary<ElementUpdateDelegate, HashSet<ElementId>> _transDelElements
+            = new Dictionary<ElementUpdateDelegate, HashSet<ElementId>>();
 
-        internal void RegisterSuccessfulDeleteHook(ElementId id, DynElementUpdateDelegate updateDelegate)
+        internal void RegisterSuccessfulDeleteHook(ElementId id, ElementUpdateDelegate updateDelegate)
         {
             HashSet<ElementId> elements;
             if (!_transDelElements.TryGetValue(updateDelegate, out elements))
@@ -520,9 +521,9 @@ namespace Dynamo
                 kvp.Key(kvp.Value);
         }
 
-        internal void RegisterDMUHooks(ElementId id, DynElementUpdateDelegate updateDelegate)
+        internal void RegisterDMUHooks(ElementId id, ElementUpdateDelegate updateDelegate)
         {
-            DynElementUpdateDelegate del = delegate(HashSet<ElementId> deleted)
+            ElementUpdateDelegate del = delegate(HashSet<ElementId> deleted)
             {
                 foreach (var invId in deleted) //invalid)
                 {
