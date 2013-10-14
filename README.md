@@ -27,19 +27,7 @@ The current version will run on top of Revit 2013, Revit 2014, and Project Vasar
 
 ###0.6.1###
 
-New
-- Many UI improvements
-- Background and watch 3d can now draw from any node with geometric output
-- Coloring preview geometry based on node selection
-- navigation without with key commands
-- navigation with onscreen commands
-- Sheet creation and View placement
-- Package manager search is now instant, no commit needed
-- Deprecation of Packages
-- Drop down menus sorted by name
-- name inputs for levels
-- better reference line/model line creation methods
-- Model Text nodes
+October 2013
 
 Fixes
 - Project to Face/Plane corrections
@@ -49,6 +37,27 @@ Fixes
 - Conditional statements don't break formula node
 - Custom node fixes
 - Package Manager download fixes
+
+
+New
+- Undo/Redo now available
+- Many UI improvements
+- Visualization in canvas (available in Vasari only)
+- Background and watch 3d can now draw from any node with geometric output
+- Coloring preview geometry based on node selection
+- navigation without with key commands
+- navigation with onscreen commands
+- View creation nodes: section, axo, crop controls,element isolation, more
+- Sheet creation and View placement
+- Override Colors in View
+- Package manager search is now instant, no commit needed
+- Deprecation of Packages
+- Drop down menus sorted by name
+- name inputs for levels
+- better reference line/model line creation methods
+- Model Text nodes
+- Raybounce nodes
+
 
 ###0.6.0###
 
