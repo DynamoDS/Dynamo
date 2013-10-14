@@ -69,7 +69,7 @@ namespace Dynamo.Models
         /// <param name="endIndex"></param>
         /// <param name="portType"></param>
         /// <returns>The valid connector model or null if the connector is invalid</returns>
-        public static ConnectorModel Make(NodeModel start, NodeModel end, int startIndex, int endIndex, int portType)
+        public static ConnectorModel Make(NodeModel start, NodeModel end, int startIndex, int endIndex, PortType portType)
         {
             if (start != null && end != null && start != end && startIndex >= 0
                 && endIndex >= 0 && start.OutPorts.Count > startIndex && end.InPorts.Count > endIndex )
@@ -80,7 +80,7 @@ namespace Dynamo.Models
             return null;
         }
 
-        private ConnectorModel(NodeModel start, NodeModel end, int startIndex, int endIndex, int portType )
+        private ConnectorModel(NodeModel start, NodeModel end, int startIndex, int endIndex, PortType portType)
         {
             //Stopwatch sw = new Stopwatch();
             //sw.Start();
@@ -88,7 +88,7 @@ namespace Dynamo.Models
 
             PortModel endPort = null;
 
-            if (portType == 0)
+            if (portType == PortType.INPUT)
                 endPort = end.InPorts[endIndex];
 
             pStart.Connect(this);

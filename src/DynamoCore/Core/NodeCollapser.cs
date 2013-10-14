@@ -306,7 +306,7 @@ namespace Dynamo.Utilities
                                                   inputReceiverNode,
                                                   0,
                                                   inputReceiverData,
-                                                  0 );
+                                                  PortType.INPUT);
 
                     if (conn1 != null)
                         newNodeWorkspace.Connectors.Add(conn1);
@@ -318,7 +318,7 @@ namespace Dynamo.Utilities
                                                      curriedNode.InnerNode,
                                                      0,
                                                      0,
-                                                     0);
+                                                     PortType.INPUT);
                     if (conn != null)
                         newNodeWorkspace.Connectors.Add(conn);
 
@@ -328,7 +328,7 @@ namespace Dynamo.Utilities
                         inputReceiverNode,
                         0,
                         inputReceiverData,
-                        0);
+                        PortType.INPUT);
 
                     if (conn2 != null)
                         newNodeWorkspace.Connectors.Add(conn2);
@@ -398,7 +398,7 @@ namespace Dynamo.Utilities
                                 node,
                                 outputSenderData,
                                 0,
-                                0 );
+                                PortType.INPUT);
                     
                     if (conn != null)
                         newNodeWorkspace.Connectors.Add(conn);
@@ -449,7 +449,7 @@ namespace Dynamo.Utilities
                         curriedNode.InnerNode,
                         outputSenderData,
                         targetPortIndex + 1,
-                        0);
+                        PortType.INPUT);
 
                     if (conn != null)
                         newNodeWorkspace.Connectors.Add(conn);
@@ -478,7 +478,7 @@ namespace Dynamo.Utilities
                                     collapsedNode,
                                     nodeTuple.Item2,
                                     nodeTuple.Item3,
-                                    0 );
+                                    PortType.INPUT);
 
                 if (conn != null)
                     currentWorkspace.Connectors.Add(conn);
@@ -492,7 +492,7 @@ namespace Dynamo.Utilities
                                     nodeTuple.Item1,
                                     nodeTuple.Item2,
                                     nodeTuple.Item3,
-                                    0 );
+                                    PortType.INPUT);
 
                 if (conn != null)
                     currentWorkspace.Connectors.Add(conn);
