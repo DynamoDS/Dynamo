@@ -139,12 +139,10 @@ namespace Dynamo.DSEngine
         public static AstBuilder Instance = new AstBuilder();
         private LinkedListOfList<Guid, AssociativeNode> astNodes;
         private Dictionary<Guid, NodeState> nodeStates;
-        private ILiveRunner liveRunner;
 
         private AstBuilder()
         {
             astNodes = new LinkedListOfList<Guid, AssociativeNode>();
-            liveRunner = new ProtoScript.Runners.LiveRunner();
             nodeStates = new Dictionary<Guid, NodeState>();
         }
 
@@ -182,7 +180,7 @@ namespace Dynamo.DSEngine
         {
             get
             {
-                var nodes = nodeStates.Where(x => x.Value == NodeState.Added || x.Value == NodeState.Modified)
+                var nodes = nodeStates.Where(x => x.Value != NodeState.Deleted)
                                     .Select(x => x.Key)
                                     .ToList();
                 return nodes;
@@ -224,11 +222,15 @@ namespace Dynamo.DSEngine
 
         public AssociativeNode Build(DSFunction node, List<AssociativeNode> inputs)
         {
-            string function = node.FunctionName;
+            string function = node.Definition.Name;
             AssociativeNode functionCall = AstFactory.BuildFunctionCall(function, inputs);
 
-            // inputs[0] is this pointer
-            if (node.IsInstanceMember())
+            if (node.IsStaticMember() || node.IsConstructor())
+            {
+                IdentifierNode classNode = new IdentifierNode(node.Definition.ClassName);
+                return CoreUtils.GenerateCallDotNode(classNode, functionCall as FunctionCallNode);
+            }
+            else if (node.IsInstanceMember())
             {
                 Debug.Assert(functionCall is FunctionCallNode);
                 return CoreUtils.GenerateCallDotNode(inputs[0], functionCall as FunctionCallNode);

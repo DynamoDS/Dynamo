@@ -594,6 +594,13 @@ namespace Dynamo.Models
 
             if (typeName.StartsWith("Dynamo.Nodes"))
             {
+#if USE_DSENGINE
+                if (typeName.Equals("Dynamo.Nodes.DSFunction"))
+                {
+                    typeName = modelData.Attributes["name"].Value;
+                }
+#endif
+
                 DynamoModel dynamo = dynSettings.Controller.DynamoViewModel.Model;
                 NodeModel nodeModel = dynamo.CreateNode(typeName);
                 nodeModel.WorkSpace = this;

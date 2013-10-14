@@ -1065,6 +1065,10 @@ namespace Dynamo.Models
                 nodeData.Add("y", node.Y + 100);
                 if (node is Function)
                     nodeData.Add("name", (node as Function).Definition.FunctionId);
+#if USE_DSENGINE
+                else if (node is DSFunction)
+                    nodeData.Add("name", (node as DSFunction).Definition.QualifiedName);
+#endif
                 else
                     nodeData.Add("name", node.GetType());
                 nodeData.Add("guid", newGuid);
