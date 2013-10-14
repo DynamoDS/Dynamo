@@ -640,9 +640,17 @@ namespace Dynamo.Controls
 
         public CustomPopupPlacement[] PlacePopup(Size popupSize, Size targetSize, Point offset)
         {
-            CustomPopupPlacement[] placements = new[] { new CustomPopupPlacement() };
-            placements[0].Point = new Point(targetSize.Width - popupSize.Width, targetSize.Height);
-            return placements;
+            Point popupLocation = new Point(targetSize.Width - popupSize.Width, targetSize.Height);
+
+            CustomPopupPlacement placement1 = 
+                new CustomPopupPlacement(popupLocation, PopupPrimaryAxis.Vertical);
+
+            CustomPopupPlacement placement2 =
+                new CustomPopupPlacement(popupLocation, PopupPrimaryAxis.Horizontal);
+
+            CustomPopupPlacement[] ttplaces = 
+                new CustomPopupPlacement[] { placement1, placement2 };
+            return ttplaces;
         }
 
         private void ToggleWorkspaceTabVisibility(int tabSelected)
