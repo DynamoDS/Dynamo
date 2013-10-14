@@ -10,6 +10,7 @@ using Dynamo.Models;
 using Microsoft.FSharp.Collections;
 
 using Dynamo.Utilities;
+using RevitServices.Elements;
 using RevitServices.Threading;
 using Value = Dynamo.FScheme.Value;
 
@@ -95,7 +96,7 @@ namespace Dynamo.Revit
 
         protected override void LoadNode(XmlNode nodeElement)
         {
-            var del = new DynElementUpdateDelegate(onDeleted);
+            var del = new ElementUpdateDelegate(onDeleted);
 
             elements.Clear();
 
@@ -134,7 +135,7 @@ namespace Dynamo.Revit
 
         internal void RegisterAllElementsDeleteHook()
         {
-            var del = new DynElementUpdateDelegate(onDeleted);
+            var del = new ElementUpdateDelegate(onDeleted);
 
             foreach (var id in elements.SelectMany(eList => eList)) 
             {
@@ -163,7 +164,7 @@ namespace Dynamo.Revit
 
             #region Register Elements w/ DMU
 
-            var del = new DynElementUpdateDelegate(onDeleted);
+            var del = new ElementUpdateDelegate(onDeleted);
 
             foreach (ElementId id in Elements)
                 dynRevitSettings.Controller.RegisterDMUHooks(id, del);
@@ -395,7 +396,7 @@ namespace Dynamo.Revit
                 );
             }
 
-            static DynElementUpdateDelegate UnRegOnDelete(Action deleteAction)
+            static ElementUpdateDelegate UnRegOnDelete(Action deleteAction)
             {
                 return delegate(HashSet<ElementId> deleted)
                 {
@@ -410,7 +411,7 @@ namespace Dynamo.Revit
                 };
             }
 
-            static DynElementUpdateDelegate ReEvalOnModified(NodeModel node, Action modifiedAction)
+            static ElementUpdateDelegate ReEvalOnModified(NodeModel node, Action modifiedAction)
             {
                 return delegate
                 {
