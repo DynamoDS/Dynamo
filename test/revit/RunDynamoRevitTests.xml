@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <tests pluginClass='Dynamo.Tests.DynamoTestFramework' pluginGUID='487f9ff0-5b34-4e7e-97bf-70fbff69194f' resultsPath='DynamoTestResults.xml'>
 	<testAssemblies>
-		<testAssembly name="C:\Users\Ian\Documents\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoRevitTester.dll">
+		<testAssembly name="DynamoRevitTester.dll">
 			<testFixture name="AnalysisTests">
 				<test name="RayBounce" runDynamo="True" modelPath=".\RayBounce.rvt"/>
 			</testFixture>
@@ -60,7 +60,7 @@
 			<testFixture name="PointTests">
 				<test name="ReferencePoint" runDynamo="True" modelPath=".\empty.rfa"/>
 				<test name="CanCreateAndDeleteAReferencePoint" runDynamo="False" modelPath=".\empty.rfa"/>
-				<test name="XYZFromReferencePoint" runDynamo="False" modelPath=".\empty.rfa"/>
+				<test name="XYZFromReferencePoint" runDynamo="True" modelPath=".\empty.rfa"/>
 			</testFixture>
 			<testFixture name="RegressionTests">
 				<test name="Regressions" runDynamo="True" modelPath=".\empty.rfa"/>
