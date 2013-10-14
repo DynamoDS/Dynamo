@@ -37,6 +37,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="RevitAPI">
+      <HintPath>$(REVITAPI)\RevitAPI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="RevitAPIUI">
+      <HintPath>$(REVITAPI)\RevitAPIUI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="LibGNet, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\DynamoAsm\LibGNet.dll</HintPath>
@@ -52,7 +60,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Geometry.cs" />
+    <Compile Include="Point.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DSNodeServices\DSNodeServices.csproj">
+      <Project>{EF879A10-041D-4C68-83E7-3192685F1BAE}</Project>
+      <Name>DSNodeServices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RevitPersistenceManager\RevitPersistenceManager.csproj">
+      <Project>{9D0B8EC8-DCDE-4FFA-BCF3-8592F835D316}</Project>
+      <Name>RevitPersistenceManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RevitServices\RevitServices.csproj">
+      <Project>{E4701F9E-41AB-4044-8166-85D924FEB632}</Project>
+      <Name>RevitServices</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
