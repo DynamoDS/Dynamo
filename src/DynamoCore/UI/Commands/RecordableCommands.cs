@@ -87,8 +87,8 @@ namespace Dynamo.Core.Automation
                     return SelectInRegionCommand.DeserializeCore(element);
                 case "Dynamo.Core.Automation.DragSelectionCommand":
                     return DragSelectionCommand.DeserializeCore(element);
-                case "Dynamo.Core.Automation.PortClickedCommand":
-                    return PortClickedCommand.DeserializeCore(element);
+                case "Dynamo.Core.Automation.MakeConnectionCommand":
+                    return MakeConnectionCommand.DeserializeCore(element);
             }
 
             throw new ArgumentException("element");
@@ -364,7 +364,7 @@ namespace Dynamo.Core.Automation
     {
         #region Public Class Methods
 
-        internal enum Operation { BeginDrag, EndDrag };
+        internal enum Operation { BeginDrag, EndDrag }
 
         internal DragSelectionCommand(Point mouseCursor, Operation operation)
         {
@@ -408,24 +408,28 @@ namespace Dynamo.Core.Automation
         #endregion
     }
 
-    internal class PortClickedCommand : RecordableCommand
+    internal class MakeConnectionCommand : RecordableCommand
     {
         #region Public Class Methods
 
-        internal PortClickedCommand(Guid nodeId, int portIndex, PortType portType)
+        internal enum Mode { Begin, End, Cancel }
+
+        internal MakeConnectionCommand(Guid nodeId, int portIndex, PortType portType, Mode mode)
         {
             this.NodeId = nodeId;
             this.PortIndex = portIndex;
             this.Type = portType;
+            this.ConnectionMode = mode;
         }
 
-        internal static PortClickedCommand DeserializeCore(XmlElement element)
+        internal static MakeConnectionCommand DeserializeCore(XmlElement element)
         {
             XmlElementHelper helper = new XmlElementHelper(element);
             Guid nodeId = helper.ReadGuid("NodeId");
             int portIndex = helper.ReadInteger("PortIndex");
             PortType portType = ((PortType)helper.ReadInteger("Type"));
-            return new PortClickedCommand(nodeId, portIndex, portType);
+            Mode mode = ((Mode)helper.ReadInteger("ConnectionMode"));
+            return new MakeConnectionCommand(nodeId, portIndex, portType, mode);
         }
 
         #endregion
@@ -435,6 +439,7 @@ namespace Dynamo.Core.Automation
         internal Guid NodeId { get; private set; }
         internal int PortIndex { get; private set; }
         internal PortType Type { get; private set; }
+        internal Mode ConnectionMode { get; private set; }
 
         #endregion
 
@@ -442,7 +447,7 @@ namespace Dynamo.Core.Automation
 
         protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
         {
-            dynamoViewModel.PortClickedImpl(this);
+            dynamoViewModel.MakeConnectionImpl(this);
         }
 
         protected override void SerializeCore(XmlElement element)
@@ -451,6 +456,7 @@ namespace Dynamo.Core.Automation
             helper.SetAttribute("NodeId", this.NodeId);
             helper.SetAttribute("PortIndex", this.PortIndex);
             helper.SetAttribute("Type", ((int)this.Type));
+            helper.SetAttribute("ConnectionMode", ((int)this.ConnectionMode));
         }
 
         #endregion

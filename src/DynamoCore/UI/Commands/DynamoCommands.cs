@@ -229,11 +229,26 @@ namespace Dynamo.ViewModels
                 CurrentSpaceViewModel.EndDragSelection(command.MouseCursor);
         }
 
-        internal void PortClickedImpl(PortClickedCommand command)
+        internal void MakeConnectionImpl(MakeConnectionCommand command)
         {
             System.Guid nodeId = command.NodeId;
-            CurrentSpaceViewModel.BeginConnection(
-                nodeId, command.PortIndex, command.Type);
+
+            switch (command.ConnectionMode)
+            {
+                case MakeConnectionCommand.Mode.Begin:
+                    CurrentSpaceViewModel.BeginConnection(
+                        nodeId, command.PortIndex, command.Type);
+                    break;
+
+                case MakeConnectionCommand.Mode.End:
+                    CurrentSpaceViewModel.EndConnection(
+                        nodeId, command.PortIndex, command.Type);
+                    break;
+
+                case MakeConnectionCommand.Mode.Cancel:
+                    CurrentSpaceViewModel.CancelConnection();
+                    break;
+            }
         }
 
         #endregion
