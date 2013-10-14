@@ -83,7 +83,7 @@ def parse_input_file(inputFile, resultsPath):
 					runDynamo = test.get('runDynamo')
 					modelPath = test.get('modelPath')
 					test = Test(testName, fixtureName, assemblyName, resultsPath, modelPath, pluginGUID, pluginClass,runDynamo)
-					print repr(test)
+					# print repr(test)
 					tests.append(test)
 	return tests
 
