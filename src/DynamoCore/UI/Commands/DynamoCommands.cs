@@ -231,6 +231,9 @@ namespace Dynamo.ViewModels
 
         internal void PortClickedImpl(PortClickedCommand command)
         {
+            System.Guid nodeId = command.NodeId;
+            CurrentSpaceViewModel.BeginConnection(
+                nodeId, command.PortIndex, command.Type);
         }
 
         #endregion
