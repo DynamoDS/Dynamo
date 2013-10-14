@@ -70,6 +70,10 @@ namespace Dynamo.Utilities
                                 Directory.GetFiles(location, "*.dll") as IEnumerable<string>, 
                                 Enumerable.Concat);
 
+#if USE_DSENGINE
+            List<string> excludedAssemblies = new List<String>() { "ManagedAsmGeometry.dll", "ManagedAsmPersistentManager.dll" };
+#endif
+
             var resolver = new ResolveEventHandler(delegate(object sender, ResolveEventArgs args)
             {
                 Assembly result;
@@ -85,6 +89,11 @@ namespace Dynamo.Utilities
 
                 if (fn == null)
                     continue;
+
+#if USE_DSENGINE
+                if (excludedAssemblies.Contains(Path.GetFileName(fn)))
+                    continue;
+#endif
 
                 if (LoadedAssemblyNames.Contains(fn))
                     continue;
@@ -114,7 +123,9 @@ namespace Dynamo.Utilities
                 }
             }
 
+#if USE_DSENGINE
             LoadDSLibraries();
+#endif
             AppDomain.CurrentDomain.AssemblyResolve -= resolver;
 
             #endregion
@@ -133,15 +144,13 @@ namespace Dynamo.Utilities
 
                 foreach (var function in functions)
                 {
-                    Guid guid = System.Guid.NewGuid();
-                    CustomNodeInfo nodeinfo = new CustomNodeInfo(guid, function.DisplayName, function.Category, "", "");
-                    searchViewModel.Add(nodeinfo);
-                    if (!controller.DSImportedFunctions.ContainsKey(guid.ToString()))
+                    searchViewModel.Add(function);
+
+                    if (!controller.DSImportedFunctions.ContainsKey(function.QualifiedName))
                     {
-                        controller.DSImportedFunctions.Add(guid.ToString(), function);
+                        controller.DSImportedFunctions.Add(function.QualifiedName, function);
                     }
                 }
-
             }
         }
 
