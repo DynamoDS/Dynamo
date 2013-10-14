@@ -57,7 +57,7 @@ namespace Dynamo.ViewModels
             /// 
             internal XmlElement Serialize(XmlDocument document)
             {
-                string commandName = this.GetType().ToString();
+                string commandName = this.GetType().Name;
                 XmlElement element = document.CreateElement(commandName);
                 this.SerializeCore(element);
                 return element;
@@ -80,12 +80,7 @@ namespace Dynamo.ViewModels
                 if (string.IsNullOrEmpty(element.Name))
                     throw new ArgumentException("XmlElement without name");
 
-                int index = element.Name.LastIndexOf('.');
-                if (-1 == index)
-                    throw new ArgumentException("Ill-formed XmlElement name");
-
-                string command = element.Name.Substring(index + 1);
-                switch (command)
+                switch (element.Name)
                 {
                     case "CreateNodeCommand":
                         return CreateNodeCommand.DeserializeCore(element);
@@ -101,7 +96,7 @@ namespace Dynamo.ViewModels
                         return MakeConnectionCommand.DeserializeCore(element);
                 }
 
-                string message = string.Format("Unknown command: {0}", command);
+                string message = string.Format("Unknown command: {0}", element.Name);
                 throw new ArgumentException(message);
             }
 
