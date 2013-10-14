@@ -12,137 +12,107 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-using System;
 using System.Collections.Generic;
-using Autodesk.Revit.DB;
-using Dynamo.Utilities;
-using Autodesk.Revit.DB.Events;
 using Autodesk.Revit.ApplicationServices;
+using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.Events;
 
-namespace Dynamo
+namespace RevitServices.Elements
 {
-    public delegate void DynElementUpdateDelegate(HashSet<ElementId> updated);
-
-    public enum ChangeTypeEnum
+    public class RevitServicesUpdater // : IUpdater
     {
-        Delete,
-        Modify,
-        Add
-    };
+        //static UpdaterId _mUpdaterId;
 
-    public class DynamoUpdater : IUpdater
-    {
-        static AddInId m_appId;
-        static UpdaterId m_updaterId;
-
-        readonly Dictionary<ChangeTypeEnum, Dictionary<ElementId, DynElementUpdateDelegate>> _updateDict
-           = new Dictionary<ChangeTypeEnum, Dictionary<ElementId, DynElementUpdateDelegate>>();
+        readonly Dictionary<ChangeTypeEnum, Dictionary<ElementId, ElementUpdateDelegate>> _updateDict
+           = new Dictionary<ChangeTypeEnum, Dictionary<ElementId, ElementUpdateDelegate>>();
 
         // constructor takes the AddInId for the add-in associated with this updater
-        public DynamoUpdater(AddInId id, ControlledApplication app)
+        public RevitServicesUpdater(/*AddInId id, */ControlledApplication app)
         {
-            m_appId = id;
-            m_updaterId = new UpdaterId(m_appId, new Guid("1F1F44B4-8002-4CC1-8FDB-17ACD24A2ECE")); //[Guid("1F1F44B4-8002-4CC1-8FDB-17ACD24A2ECE")]
+            //_mUpdaterId = new UpdaterId(id, new Guid("1F1F44B4-8002-4CC1-8FDB-17ACD24A2ECE")); //[Guid("1F1F44B4-8002-4CC1-8FDB-17ACD24A2ECE")]
 
-            _updateDict[ChangeTypeEnum.Delete] = new Dictionary<ElementId, DynElementUpdateDelegate>();
-            _updateDict[ChangeTypeEnum.Modify] = new Dictionary<ElementId, DynElementUpdateDelegate>();
-            _updateDict[ChangeTypeEnum.Add] = new Dictionary<ElementId, DynElementUpdateDelegate>();
+            _updateDict[ChangeTypeEnum.Delete] = new Dictionary<ElementId, ElementUpdateDelegate>();
+            _updateDict[ChangeTypeEnum.Modify] = new Dictionary<ElementId, ElementUpdateDelegate>();
+            _updateDict[ChangeTypeEnum.Add] = new Dictionary<ElementId, ElementUpdateDelegate>();
 
             app.DocumentChanged += Application_DocumentChanged;
         }
 
+        public Document DocumentToWatch { get; set; }
+
         public void RollBack(IEnumerable<ElementId> deleted)
         {
-            processUpdates(new List<ElementId>(), deleted, new List<ElementId>());
+            ProcessUpdates(new List<ElementId>(), deleted, new List<ElementId>());
         }
 
-        private void processUpdates(IEnumerable<ElementId> modified, IEnumerable<ElementId> deleted, IEnumerable<ElementId> added)
+        private void ProcessUpdates(IEnumerable<ElementId> modified, IEnumerable<ElementId> deleted, IEnumerable<ElementId> added)
         {
-
             #region Modified
+
             var modDict = _updateDict[ChangeTypeEnum.Modify];
-            var dict = new Dictionary<DynElementUpdateDelegate, HashSet<ElementId>>();
+            var dict = new Dictionary<ElementUpdateDelegate, HashSet<ElementId>>();
             foreach (ElementId modifiedElementID in modified)
             {
-                try
-                {
-                    if (!modDict.ContainsKey(modifiedElementID))
-                        continue;
+                if (!modDict.ContainsKey(modifiedElementID))
+                    continue;
 
-                    var k = modDict[modifiedElementID];
-                    if (!dict.ContainsKey(k))
-                        dict[k] = new HashSet<ElementId>();
-                    dict[k].Add(modifiedElementID);
-                }
-                catch (Exception e)
-                {
-                    DynamoLogger.Instance.Log("Dynamic Model Update error while parsing modified elements.");
-                    DynamoLogger.Instance.Log(e);
-                }
+                var k = modDict[modifiedElementID];
+                if (!dict.ContainsKey(k))
+                    dict[k] = new HashSet<ElementId>();
+                dict[k].Add(modifiedElementID);
             }
 
             foreach (var pair in dict)
                 pair.Key(pair.Value);
+
             #endregion
 
             #region Added
+
             modDict = _updateDict[ChangeTypeEnum.Add];
             dict.Clear();
             foreach (ElementId addedElementID in added)
             {
-                try
-                {
-                    if (!modDict.ContainsKey(addedElementID))
-                        continue;
+                if (!modDict.ContainsKey(addedElementID))
+                    continue;
 
-                    var k = modDict[addedElementID];
-                    if (!dict.ContainsKey(k))
-                        dict[k] = new HashSet<ElementId>();
-                    dict[k].Add(addedElementID);
-                }
-                catch (Exception e)
-                {
-                    DynamoLogger.Instance.Log("Dynamic Model Update error while parsing added elements.");
-                    DynamoLogger.Instance.Log(e);
-                }
+                var k = modDict[addedElementID];
+                if (!dict.ContainsKey(k))
+                    dict[k] = new HashSet<ElementId>();
+                dict[k].Add(addedElementID);
             }
 
             foreach (var pair in dict)
                 pair.Key(pair.Value);
+
             #endregion
 
             #region Deleted
+
             modDict = _updateDict[ChangeTypeEnum.Delete];
             dict.Clear();
             foreach (ElementId deletedElementID in deleted)
             {
-                try
-                {
-                    if (!modDict.ContainsKey(deletedElementID))
-                        continue;
+                if (!modDict.ContainsKey(deletedElementID))
+                    continue;
 
-                    var k = modDict[deletedElementID];
-                    if (!dict.ContainsKey(k))
-                        dict[k] = new HashSet<ElementId>();
-                    dict[k].Add(deletedElementID);
-                }
-                catch (Exception e)
-                {
-                    DynamoLogger.Instance.Log("Dynamic Model Update error while parsing deleted elements.");
-                    DynamoLogger.Instance.Log(e);
-                }
+                var k = modDict[deletedElementID];
+                if (!dict.ContainsKey(k))
+                    dict[k] = new HashSet<ElementId>();
+                dict[k].Add(deletedElementID);
             }
 
             foreach (var pair in dict)
                 pair.Key(pair.Value);
+
             #endregion
         }
 
         void Application_DocumentChanged(object sender, DocumentChangedEventArgs args)
         {
-            if (args.GetDocument().Equals(dynRevitSettings.Doc.Document))
+            if (args.GetDocument().Equals(DocumentToWatch))
             {
-                processUpdates(
+                ProcessUpdates(
                    args.GetModifiedElementIds(),
                    args.GetDeletedElementIds(),
                    args.GetAddedElementIds());
@@ -156,16 +126,15 @@ namespace Dynamo
         /// <param name="e">ID of the Element being watched.</param>
         /// <param name="type">Type of change to watch for.</param>
         /// <param name="d">Delegate to be called when changed.</param>
-        public void RegisterChangeHook(ElementId e, ChangeTypeEnum type, DynElementUpdateDelegate d)
+        public void RegisterChangeHook(ElementId e, ChangeTypeEnum type, ElementUpdateDelegate d)
         {
-            Dictionary<ElementId, DynElementUpdateDelegate> dict;
-            if (!_updateDict.ContainsKey(type))
+            Dictionary<ElementId, ElementUpdateDelegate> dict;
+            
+            if (!_updateDict.TryGetValue(type, out dict))
             {
-                dict = new Dictionary<ElementId, DynElementUpdateDelegate>();
+                dict = new Dictionary<ElementId, ElementUpdateDelegate>();
                 _updateDict[type] = dict;
             }
-            else
-                dict = _updateDict[type];
 
             dict[e] = d;
         }
@@ -188,9 +157,10 @@ namespace Dynamo
             }
         }
 
+        /* Disabled IUpdater Methods
         public void Execute(UpdaterData data)
         {
-            processUpdates(
+            ProcessUpdates(
                data.GetModifiedElementIds(),
                data.GetDeletedElementIds(),
                data.GetAddedElementIds());
@@ -208,12 +178,22 @@ namespace Dynamo
 
         public UpdaterId GetUpdaterId()
         {
-            return m_updaterId;
+            return _mUpdaterId;
         }
 
         public string GetUpdaterName()
         {
             return "Dyanmo Element Watcher";
-        }
+        }*/
     }
+
+    public delegate void ElementUpdateDelegate(HashSet<ElementId> updated);
+
+    public enum ChangeTypeEnum
+    {
+        Delete,
+        Modify,
+        Add
+    };
+
 }
