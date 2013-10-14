@@ -924,7 +924,7 @@
                                 <RotateTransform Angle="90"/>
                             </Image.RenderTransform>
                         </Image>
-                        <TextBlock Grid.Column="0" VerticalAlignment="Stretch" Foreground="#aaaaaa" FontWeight="SemiBold" Margin="5 0 5 0" >
+                        <TextBlock Grid.Column="0" VerticalAlignment="Stretch" Foreground="#aaaaaa" FontWeight="Normal" Margin="5 0 5 0" >
                             Library
                         </TextBlock>
                     </Grid>

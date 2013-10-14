@@ -683,7 +683,12 @@ namespace Dynamo.Controls
                 if (fullWidthTabsVisible < Configurations.MinTabsBeforeClipping)
                     return Configurations.MinTabsBeforeClipping - 1;
                 else
+                {
+                    if (tabCount < fullWidthTabsVisible)
+                        return tabCount - 1;
+
                     return fullWidthTabsVisible - 1;
+                }
             }
             else
                 return tabCount - 1;

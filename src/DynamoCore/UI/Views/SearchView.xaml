@@ -57,7 +57,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <Label Grid.Column="0" FontWeight="SemiBold" Margin="0" Padding="16,0,0,0" Foreground="#AAAAAA" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                    <Label Grid.Column="0" FontWeight="Normal" Margin="0" Padding="16,0,0,0" Foreground="#AAAAAA" VerticalAlignment="Center" HorizontalAlignment="Stretch">
                         Library
                     </Label>
                     <Image Grid.Column="1"
@@ -431,7 +431,7 @@
 
                     <HierarchicalDataTemplate DataType = "{x:Type search:BrowserRootElement}" ItemsSource="{Binding Path=Items}" >
 
-                        <TextBlock Foreground="WhiteSmoke" FontSize="14" Text="{Binding Path=Name}"/>
+                        <TextBlock Foreground="WhiteSmoke" FontSize="12" Text="{Binding Path=Name}"/>
 
                     </HierarchicalDataTemplate>
 
