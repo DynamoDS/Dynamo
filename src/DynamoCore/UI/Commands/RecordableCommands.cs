@@ -73,7 +73,7 @@ namespace Dynamo.ViewModels
             /// can be reconstructed.</param>
             /// <returns>Returns the reconstructed RecordableCommand object. If a 
             /// RecordableCommand cannot be reconstructed, this method throws a 
-            /// FormatException.</returns>
+            /// relevant exception.</returns>
             /// 
             internal static RecordableCommand Deserialize(XmlElement element)
             {
