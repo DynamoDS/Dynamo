@@ -16,6 +16,7 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Greg;
+using RevitPersistenceManager;
 using RevitServices;
 using Transaction = Dynamo.Nodes.Transaction;
 using Value = Dynamo.FScheme.Value;
@@ -660,6 +661,8 @@ namespace Dynamo
 
         protected override void RunDS()
         {
+
+            DocumentManager.CurrentDoc = dynRevitSettings.Doc.Document;
 
             IdlePromise.ExecuteOnIdle(() =>
                 {
