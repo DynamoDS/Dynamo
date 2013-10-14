@@ -30,7 +30,7 @@ def main():
 	# parser.add_argument('-n','--name', help='Name of a test to run.', required=False)
 	# parser.add_argument('-f','--fixture', help='Name of fixture to run.', required=False)
 	# parser.add_argument('-a','--assembly', help='Path of the assembly containing tests.', required=False)
-	# parser.add_argument('-o','--output', nargs='?', const=1, default='DynamoTestResults.xml', help='Output location of the results file.', required=False)
+	parser.add_argument('-r','--results', nargs='?', const=1, default='DynamoTestResults.xml', help='Output location of the results file.', required=True)
 	# parser.add_argument('-m','--model', help='Path of the model file for open.', required=False)
 	# parser.add_argument('-g','--GUID', nargs='?', const=1, default='487f9ff0-5b34-4e7e-97bf-70fbff69194f', help='The GUID of the plugin to load.', required=False)
 	# parser.add_argument('-p','--plugin', nargs='?', const=1, default='Dynamo.Tests.DynamoTestFramework', help='The name (including namespace) of the class containing the external command.', required=False)
@@ -38,10 +38,13 @@ def main():
 	parser.add_argument('-i', '--input', help='An input xml specifying tests to be run.', required = True)
 	args = vars(parser.parse_args())
 
-	start_time = time.time()
-
 	tests = []
-	tests = parse_input_file(args['input'])
+	tests = parse_input_file(args['input'], args['results'])
+
+	#cleanup existing results file
+	if os.path.exists(args['results']):
+		os.remove(args['results'])
+
 	run_tests(tests)
 
  	#cleanup journal files created by Revit
@@ -64,11 +67,10 @@ def run_tests(tests):
 		#Cleanup temporary journal file
 	 	os.remove(journal)
 
-def parse_input_file(inputFile):
+def parse_input_file(inputFile, resultsPath):
 	tests = []
 	tree = ET.parse(inputFile)
 	testRoot = tree.getroot()
-	resultsPath = testRoot.get('resultsPath')
 	pluginClass = testRoot.get('pluginClass')
 	pluginGUID = testRoot.get('pluginGUID')
 	for testAssembly in testRoot.iter('testAssemblies'):
