@@ -50,7 +50,7 @@ namespace Dynamo.Nodes
 
         public FileReaderBase()
         {
-            handler = new FileSystemEventHandler(watcher_FileChanged);
+            handler = watcher_FileChanged;
 
             InPortData.Add(new PortData("path", "Path to the file", typeof(Value.String)));
             

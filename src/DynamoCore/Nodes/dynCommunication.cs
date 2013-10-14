@@ -97,7 +97,7 @@ namespace Dynamo.Nodes
 
         public void ReceiveCallback(IAsyncResult ar)
         {
-            LogDelegate log = new LogDelegate(DynamoLogger.Instance.Log);
+            LogDelegate log = DynamoLogger.Instance.Log;
 
             try
             {
@@ -124,7 +124,7 @@ namespace Dynamo.Nodes
         private void ListenOnUDP()
         {
 
-            LogDelegate log = new LogDelegate(DynamoLogger.Instance.Log);
+            LogDelegate log = DynamoLogger.Instance.Log;
 
             // UDP sample from http://stackoverflow.com/questions/8274247/udp-listener-respond-to-client
             UdpClient listener;
@@ -145,7 +145,7 @@ namespace Dynamo.Nodes
 
 
                     log("Waiting for broadcast");
-                    listener.BeginReceive(new AsyncCallback(ReceiveCallback), s);
+                    listener.BeginReceive(ReceiveCallback, s);
                     //byte[] bytes = listener.Receive(ref groupEP);
                 }
             }

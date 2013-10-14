@@ -170,7 +170,6 @@
     <Compile Include="Nodes\dynTransactions.cs" />
     <Compile Include="Nodes\dynTransforms.cs" />
     <Compile Include="Nodes\dynViews.cs" />
-    <Compile Include="IdlePromise.cs" />
     <Compile Include="Nodes\Floors.cs" />
     <Compile Include="Nodes\Materials.cs" />
     <Compile Include="Nodes\Walls.cs" />

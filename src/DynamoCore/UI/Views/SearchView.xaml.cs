@@ -38,7 +38,7 @@ namespace Dynamo.Search
         public SearchView()
         {
             InitializeComponent();
-            this.Loaded += new RoutedEventHandler(SearchView_Loaded);
+            this.Loaded += SearchView_Loaded;
 
             SearchTextBox.IsVisibleChanged += delegate
             {
@@ -58,8 +58,8 @@ namespace Dynamo.Search
 
             PreviewKeyDown += KeyHandler;
 
-            dynSettings.Controller.SearchViewModel.RequestFocusSearch += new EventHandler(SearchViewModel_RequestFocusSearch);
-            dynSettings.Controller.SearchViewModel.RequestReturnFocusToSearch += new EventHandler(SearchViewModel_RequestReturnFocusToSearch);
+            dynSettings.Controller.SearchViewModel.RequestFocusSearch += SearchViewModel_RequestFocusSearch;
+            dynSettings.Controller.SearchViewModel.RequestReturnFocusToSearch += SearchViewModel_RequestReturnFocusToSearch;
 
             //setup the regions on the view model
             _viewModel.Regions = new ObservableDictionary<string, RegionBase>();

@@ -423,7 +423,7 @@ namespace Dynamo.ViewModels
             //register for property change notifications 
             //on the model and the controller
             _model.PropertyChanged += _model_PropertyChanged;
-            dynSettings.Controller.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Controller_PropertyChanged);
+            dynSettings.Controller.PropertyChanged += Controller_PropertyChanged;
             _model.Workspaces.CollectionChanged += Workspaces_CollectionChanged;
 
             _model.AddHomeWorkspace();
@@ -482,10 +482,10 @@ namespace Dynamo.ViewModels
             ZoomOutCommand = new DelegateCommand(ZoomOut, CanZoomOut);
             FitViewCommand = new DelegateCommand(FitView, CanFitView);
 
-            DynamoLogger.Instance.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Instance_PropertyChanged);
+            DynamoLogger.Instance.PropertyChanged += Instance_PropertyChanged;
 
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
-            dynSettings.Controller.VisualizationManager.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(VisualizationManager_PropertyChanged);
+            dynSettings.Controller.VisualizationManager.PropertyChanged += VisualizationManager_PropertyChanged;
 
             this.Model.PropertyChanged += (e, args) =>
             {

@@ -3,6 +3,8 @@ using Dynamo.Utilities;
 using NUnit.Framework;
 using RevitServices;
 using System;
+using RevitServices.Elements;
+using RevitServices.Transactions;
 
 namespace RevitServicesTests
 {

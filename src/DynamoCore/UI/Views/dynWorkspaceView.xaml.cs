@@ -41,10 +41,10 @@ namespace Dynamo.Views
         {
             InitializeComponent();
 
-            selectionCanvas.Loaded += new RoutedEventHandler(selectionCanvas_Loaded);
-            DataContextChanged += new DependencyPropertyChangedEventHandler(dynWorkspaceView_DataContextChanged);
+            selectionCanvas.Loaded += selectionCanvas_Loaded;
+            DataContextChanged += dynWorkspaceView_DataContextChanged;
 
-            this.Loaded += new RoutedEventHandler(dynWorkspaceView_Loaded);
+            this.Loaded += dynWorkspaceView_Loaded;
         }
 
         void dynWorkspaceView_Loaded(object sender, RoutedEventArgs e)
@@ -57,7 +57,7 @@ namespace Dynamo.Views
             outerCanvas.Children.Add(zoomAndPanControl);
 
             Debug.WriteLine("Workspace loaded.");
-            DynamoSelection.Instance.Selection.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
+            DynamoSelection.Instance.Selection.CollectionChanged += Selection_CollectionChanged;
         }
 
         void Selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -73,14 +73,14 @@ namespace Dynamo.Views
         void dynWorkspaceView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             ViewModel.Loaded();
-            ViewModel.CurrentOffsetChanged += new PointEventHandler(vm_CurrentOffsetChanged);
-            ViewModel.ZoomChanged += new ZoomEventHandler(vm_ZoomChanged);
-            ViewModel.RequestZoomToViewportCenter += new ZoomEventHandler(vm_ZoomAtViewportCenter);
-            ViewModel.RequestZoomToViewportPoint += new ZoomEventHandler(vm_ZoomAtViewportPoint);
-            ViewModel.RequestZoomToFitView += new ZoomEventHandler(vm_ZoomToFitView);
-            ViewModel.RequestCenterViewOnElement += new NodeEventHandler(CenterViewOnElement);
-            ViewModel.RequestNodeCentered += new NodeEventHandler(vm_RequestNodeCentered);
-            ViewModel.RequestAddViewToOuterCanvas += new ViewEventHandler(vm_RequestAddViewToOuterCanvas);
+            ViewModel.CurrentOffsetChanged += vm_CurrentOffsetChanged;
+            ViewModel.ZoomChanged += vm_ZoomChanged;
+            ViewModel.RequestZoomToViewportCenter += vm_ZoomAtViewportCenter;
+            ViewModel.RequestZoomToViewportPoint += vm_ZoomAtViewportPoint;
+            ViewModel.RequestZoomToFitView += vm_ZoomToFitView;
+            ViewModel.RequestCenterViewOnElement += CenterViewOnElement;
+            ViewModel.RequestNodeCentered += vm_RequestNodeCentered;
+            ViewModel.RequestAddViewToOuterCanvas += vm_RequestAddViewToOuterCanvas;
             ViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
             ViewModel.WorkspacePropertyEditRequested += VmOnWorkspacePropertyEditRequested;
             ViewModel.RequestSelectionBoxUpdate += VmOnRequestSelectionBoxUpdate;

@@ -38,6 +38,7 @@ using Autodesk.Revit.UI;
 using Dynamo.Applications.Properties;
 using Dynamo.Controls;
 using Dynamo.Utilities;
+using RevitServices.Threading;
 using IWin32Window = System.Windows.Interop.IWin32Window;
 using MessageBox = System.Windows.Forms.MessageBox;
 using Rectangle = System.Drawing.Rectangle;
@@ -193,7 +194,7 @@ namespace Dynamo.Applications
                 dynRevitSettings.Doc = m_doc;
                 dynRevitSettings.DefaultLevel = defaultLevel;
                 
-                IdlePromise.ExecuteOnIdle(delegate
+                IdlePromise.ExecuteOnIdleAsync(delegate
                 {
                     //get window handle
                     IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
@@ -232,7 +233,7 @@ namespace Dynamo.Applications
                     dynamoView.Closing += dynamoView_Closing;
                     dynamoView.Closed += dynamoView_Closed;
 
-                    revit.Application.ViewActivated += new EventHandler<Autodesk.Revit.UI.Events.ViewActivatedEventArgs>(Application_ViewActivated);
+                    revit.Application.ViewActivated += Application_ViewActivated;
                 });
             }
             catch (Exception ex)

@@ -110,7 +110,7 @@ namespace Dynamo.Nodes
 
             foreach (PortModel p in InPorts)
             {
-                p.PortDisconnected += new PortConnectedHandler(p_PortDisconnected);
+                p.PortDisconnected += p_PortDisconnected;
             }
         }
 

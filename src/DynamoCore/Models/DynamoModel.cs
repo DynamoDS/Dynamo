@@ -272,7 +272,7 @@ namespace Dynamo.Models
 
         public DynamoModel()
         {
-            Migrations.Add(new Migration(new Version("0.5.3.0"), new Action(Migrate_0_5_3_to_0_6_0)));
+            Migrations.Add(new Migration(new Version("0.5.3.0"), Migrate_0_5_3_to_0_6_0));
         }
 
         /// <summary>

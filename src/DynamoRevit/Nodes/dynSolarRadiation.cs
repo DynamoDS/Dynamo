@@ -91,7 +91,7 @@ namespace Dynamo.Nodes
             analysisResultButt.Margin = new Thickness(0, 0, 0, 0);
             analysisResultButt.HorizontalAlignment = HorizontalAlignment.Center;
             analysisResultButt.VerticalAlignment = VerticalAlignment.Center;
-            analysisResultButt.Click += new RoutedEventHandler(analysisResultButt_Click);
+            analysisResultButt.Click += analysisResultButt_Click;
             analysisResultButt.Content = "Select AR";
             analysisResultButt.HorizontalAlignment = HorizontalAlignment.Stretch;
             analysisResultButt.VerticalAlignment = VerticalAlignment.Center;
@@ -178,7 +178,7 @@ namespace Dynamo.Nodes
 
             sunPathButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             sunPathButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            sunPathButt.Click += new System.Windows.RoutedEventHandler(registerButt_Click);
+            sunPathButt.Click += registerButt_Click;
             sunPathButt.Content = "Use SunPath\nfrom Current View";
             sunPathButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             sunPathButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;

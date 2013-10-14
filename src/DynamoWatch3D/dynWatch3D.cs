@@ -83,7 +83,7 @@ namespace Dynamo.Nodes
 
             MenuItem mi = new MenuItem();
             mi.Header = "Zoom to Fit";
-            mi.Click += new RoutedEventHandler(mi_Click);
+            mi.Click += mi_Click;
 
             nodeUI.MainContextMenu.Items.Add(mi);
 
@@ -117,7 +117,7 @@ namespace Dynamo.Nodes
             _watchView.SetValue(Grid.ColumnSpanProperty, 3);
             _watchView.Margin = new Thickness(5, 0, 5, 5);
             backgroundRect.Margin = new Thickness(5, 0, 5, 5);
-            CompositionTarget.Rendering += new EventHandler(CompositionTarget_Rendering);
+            CompositionTarget.Rendering += CompositionTarget_Rendering;
         }
 
         void CompositionTarget_Rendering(object sender, EventArgs e)

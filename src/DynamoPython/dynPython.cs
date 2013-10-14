@@ -106,10 +106,10 @@ namespace Dynamo.Nodes
             editWindowItem.Header = "Edit...";
             editWindowItem.IsCheckable = false;
             nodeUI.MainContextMenu.Items.Add(editWindowItem);
-            editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
+            editWindowItem.Click += editWindowItem_Click;
             nodeUI.UpdateLayout();
 
-            nodeUI.MouseDown += new MouseButtonEventHandler(nodeUI_MouseDown);
+            nodeUI.MouseDown += nodeUI_MouseDown;
         }
 
         void nodeUI_MouseDown(object sender, MouseButtonEventArgs e)

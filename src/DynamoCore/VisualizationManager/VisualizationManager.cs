@@ -142,12 +142,12 @@ namespace Dynamo
 
         protected VisualizationManager()
         {
-            dynSettings.Controller.DynamoModel.ConnectorDeleted += new ConnectorHandler(DynamoModel_ConnectorDeleted);
-            dynSettings.Controller.EvaluationCompleted += new EventHandler(Controller_EvaluationCompleted);
-            dynSettings.Controller.RequestsRedraw += new EventHandler(Controller_RequestsRedraw);
-            DynamoSelection.Instance.Selection.CollectionChanged += new NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
-            dynSettings.Controller.DynamoModel.ModelCleared += new EventHandler(DynamoModel_ModelCleared);
-            dynSettings.Controller.DynamoModel.CleaningUp += new CleanupHandler(DynamoModel_CleaningUp);
+            dynSettings.Controller.DynamoModel.ConnectorDeleted += DynamoModel_ConnectorDeleted;
+            dynSettings.Controller.EvaluationCompleted += Controller_EvaluationCompleted;
+            dynSettings.Controller.RequestsRedraw += Controller_RequestsRedraw;
+            DynamoSelection.Instance.Selection.CollectionChanged += Selection_CollectionChanged;
+            dynSettings.Controller.DynamoModel.ModelCleared += DynamoModel_ModelCleared;
+            dynSettings.Controller.DynamoModel.CleaningUp += DynamoModel_CleaningUp;
 
             Visualizers.Add(typeof(GraphicItem), VisualizationManagerASM.DrawLibGGraphicItem);
         }

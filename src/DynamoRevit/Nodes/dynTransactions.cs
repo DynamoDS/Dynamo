@@ -24,6 +24,7 @@ using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Microsoft.FSharp.Core;
+using RevitServices.Threading;
 using Expression = Dynamo.FScheme.Expression;
 using Value = Dynamo.FScheme.Value;
 using Autodesk.Revit.DB;
