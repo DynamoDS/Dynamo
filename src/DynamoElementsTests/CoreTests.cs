@@ -19,7 +19,6 @@ using Dynamo.Core.Automation;
 
 namespace Dynamo.Tests
 {
-    [TestFixture]
     internal class CoreTests : DynamoUnitTest
     {
         

@@ -245,5 +245,25 @@ namespace Dynamo.Tests
             Assert.Greater(actualVolume, volumeMin);
             Assert.Less(actualVolume, volumeMax);
         }
+
+        [Test]
+        public void CurvebyPointsEllipse()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\CurvebyPointsEllipse.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+
+
+            FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            fec.OfClass(typeof(CurveElement));
+
+            Assert.AreEqual(fec.ToElements().Count(), 1);
+
+            CurveByPoints mc = (CurveByPoints)fec.ToElements().ElementAt(0);
+        }
     }
 }
