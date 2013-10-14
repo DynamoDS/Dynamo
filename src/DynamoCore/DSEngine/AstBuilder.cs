@@ -139,12 +139,10 @@ namespace Dynamo.DSEngine
         public static AstBuilder Instance = new AstBuilder();
         private LinkedListOfList<Guid, AssociativeNode> astNodes;
         private Dictionary<Guid, NodeState> nodeStates;
-        private ILiveRunner liveRunner;
 
         private AstBuilder()
         {
             astNodes = new LinkedListOfList<Guid, AssociativeNode>();
-            liveRunner = new ProtoScript.Runners.LiveRunner();
             nodeStates = new Dictionary<Guid, NodeState>();
         }
 
@@ -182,7 +180,7 @@ namespace Dynamo.DSEngine
         {
             get
             {
-                var nodes = nodeStates.Where(x => x.Value == NodeState.Added || x.Value == NodeState.Modified)
+                var nodes = nodeStates.Where(x => x.Value != NodeState.Deleted)
                                     .Select(x => x.Key)
                                     .ToList();
                 return nodes;
