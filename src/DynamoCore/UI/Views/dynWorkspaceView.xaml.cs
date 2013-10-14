@@ -462,14 +462,38 @@ namespace Dynamo.Views
             if (vm.IsConnecting && vm.ActiveConnector != null)
             {
                 Point mouse = (Point)e.GetPosition((UIElement)sender);
-                vm.ActiveConnector.Redraw(e.GetPosition(WorkBench));
-                foreach (DependencyObject deob in this.FindChildren(mouse))
+                
+                if (this.FindChildren(mouse).Count > 0)
                 {
-                    if (deob.GetType() == typeof(Grid))
+                    foreach (DependencyObject deob in this.FindChildren(mouse))
                     {
-                        
+                        if (deob.GetType() == typeof(Grid))
+                        {
+                            Grid g = (Grid)deob;
+                            UserControl uc;
+                            try
+                            {
+                                uc = (UserControl)g.Parent;
+                                if (null != uc)
+                                {
+                                    PortViewModel pvm = (PortViewModel)uc.DataContext;
+                                    if (null != pvm)
+                                    {
+                                        vm.ActiveConnector.Redraw(pvm.Center);
+                                    }
+                                }
+                            }
+                            catch
+                            {
+                                continue;
+                            }
+                            //UserControl uc = (UserControl)g.Parent;
+
+                        }
                     }
                 }
+                else
+                    vm.ActiveConnector.Redraw(e.GetPosition(WorkBench));
                 
             }
 
@@ -593,45 +617,11 @@ namespace Dynamo.Views
             if (result == null || result.VisualHit == null)
                 throw new ArgumentNullException();
 
-            //if (result.VisualHit is DrawingVisual)
-            //    hitVisual = (DrawingVisual)result.VisualHit;
-            this.count++;
-            Debug.WriteLine(count + "Type of hit object: " + result.VisualHit.GetType());
-            if (result.VisualHit.GetType() == typeof(PortModel))
-            {
-                Debug.WriteLine("I'm inside");
-                //hitVisual = ((PortModel)result.VisualHit);
-                hitResultsList.Add(result.VisualHit);
-            }
-
             //if (result.VisualHit.GetType().IsAssignableFrom(typeof(Grid)))
             if (result.VisualHit.GetType() == typeof(Grid))
             {
-                Debug.WriteLine("CAUGHT");
+                Debug.WriteLine("CAUGHT GRID");
                 hitResultsList.Add(result.VisualHit);
-            }
-
-            if (result.VisualHit.GetType() == typeof(PortViewModel))
-            {
-                Debug.WriteLine("CAUGHT PORTVIEWMODEL");
-                hitResultsList.Add(result.VisualHit);
-            }
-
-            if (result.VisualHit.GetType() == typeof(PortModel))
-            {
-                Debug.WriteLine("CAUGHT portModel");
-                hitResultsList.Add(result.VisualHit);
-            }
-
-            if (result.VisualHit.GetType() == (typeof(UserControl)))
-            {
-                Debug.WriteLine("Caught UserControl");
-                hitResultsList.Add(result.VisualHit);
-            }
-
-            if (result.VisualHit.GetType() == typeof(System.Windows.Controls.Grid))
-            {
-                Debug.WriteLine("CAUGHT");
             }
 
             return HitTestResultBehavior.Continue;

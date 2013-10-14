@@ -8,7 +8,7 @@
     MouseEnter="DynPort_OnMouseEnter"
     MouseLeave="DynPort_OnMouseLeave"
     IsHitTestVisible="True"
-    Background="Yellow" LayoutUpdated="DynPortView_OnLayoutUpdated">
+    Background="Transparent" LayoutUpdated="DynPortView_OnLayoutUpdated">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -20,7 +20,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Background="Blue" Name="mainGrid" IsHitTestVisible="True" Margin="0,0,0,2" Width="{Binding Path=PortName, Converter={StaticResource PortNameToWidthConverter}}">
+    <Grid Background="Transparent" Name="mainGrid" IsHitTestVisible="True" Margin="0,0,0,2" Width="{Binding Path=PortName, Converter={StaticResource PortNameToWidthConverter}}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="15"/>
             <ColumnDefinition Width="*"/>
