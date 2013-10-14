@@ -8,7 +8,6 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
-using Dynamo.Core.Automation;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
@@ -442,7 +441,7 @@ namespace Dynamo.ViewModels
             // 
             this.commandFilePath = commandFilePath;
             if (string.IsNullOrEmpty(commandFilePath))
-                this.recordedCommands = new List<Core.Automation.RecordableCommand>();
+                this.recordedCommands = new List<DynamoViewModel.RecordableCommand>();
 
             OpenCommand = new DelegateCommand(_model.Open, _model.CanOpen);
             ShowOpenDialogAndOpenResultCommand = new DelegateCommand(_model.ShowOpenDialogAndOpenResult, _model.CanShowOpenDialogAndOpenResultCommand);

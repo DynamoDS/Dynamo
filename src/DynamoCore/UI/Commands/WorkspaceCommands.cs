@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Dynamo.Core.Automation;
 using Dynamo.Nodes;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;

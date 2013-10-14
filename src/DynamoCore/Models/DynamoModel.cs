@@ -19,8 +19,8 @@ using Microsoft.Practices.Prism;
 using NUnit.Framework;
 using Enum = System.Enum;
 using String = System.String;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using ProtoCore.DSASM;
-using Dynamo.Core.Automation;
 using Dynamo.ViewModels;
 
 namespace Dynamo.Models
@@ -847,7 +847,7 @@ namespace Dynamo.Models
                         // TODO(Ben): Shouldn't we be reading in the Guid 
                         // from file instead of generating a new one here?
                         Guid id = Guid.NewGuid();
-                        var command = new CreateNoteCommand(id, text, x, y, false);
+                        var command = new DynCmd.CreateNoteCommand(id, text, x, y, false);
                         AddNoteInternal(command, CurrentWorkspace);
                     }
                 }
@@ -951,7 +951,7 @@ namespace Dynamo.Models
             if (null != parameters) // See above for details of this exception.
                 throw new ArgumentException("Argument should be null!", "parameters");
 
-            var command = new CreateNoteCommand(Guid.NewGuid(), null, 0, 0, true);
+            var command = new DynCmd.CreateNoteCommand(Guid.NewGuid(), null, 0, 0, true);
             dynSettings.Controller.DynamoViewModel.ExecuteCommand(command);
         }
 
@@ -1134,7 +1134,7 @@ namespace Dynamo.Models
                 var newX = sameSpace ? note.X + 20 : note.X;
                 var newY = sameSpace ? note.Y + 20 : note.Y;
 
-                CreateNoteCommand command = new CreateNoteCommand(
+                DynCmd.CreateNoteCommand command = new DynCmd.CreateNoteCommand(
                     newGUID, note.Text, newX, newY, false);
 
                 createdModels.Add(AddNoteInternal(command, null));
@@ -1614,7 +1614,7 @@ namespace Dynamo.Models
             return null;
         }
 
-        internal NoteModel AddNoteInternal(CreateNoteCommand command, WorkspaceModel workspace)
+        internal NoteModel AddNoteInternal(DynCmd.CreateNoteCommand command, WorkspaceModel workspace)
         {
             double x = 0.0;
             double y = 0.0;

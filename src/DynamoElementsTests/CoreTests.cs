@@ -15,7 +15,7 @@ using Dynamo.Selection;
 using Dynamo.ViewModels;
 using NUnit.Framework;
 using System.Windows;
-using Dynamo.Core.Automation;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Tests
 {
@@ -76,7 +76,7 @@ namespace Dynamo.Tests
         {
             // Create some test note data
             Guid id = Guid.NewGuid();
-            CreateNoteCommand command = new CreateNoteCommand(
+            DynCmd.CreateNoteCommand command = new DynCmd.CreateNoteCommand(
                 id, "This is a test note.", 200.0, 200.0, false);
 
             var ws = Controller.DynamoViewModel.CurrentSpace;

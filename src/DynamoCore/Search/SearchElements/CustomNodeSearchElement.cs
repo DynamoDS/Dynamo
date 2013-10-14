@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Dynamo.Core.Automation;
 using Dynamo.Selection;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -55,7 +55,7 @@ namespace Dynamo.Search.SearchElements
             // create node
             var guid = Guid.NewGuid();
             dynSettings.Controller.DynamoViewModel.ExecuteCommand(
-                new CreateNodeCommand(guid, name, 0, 0, true, true));
+                new DynCmd.CreateNodeCommand(guid, name, 0, 0, true, true));
 
             // select node
             var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);

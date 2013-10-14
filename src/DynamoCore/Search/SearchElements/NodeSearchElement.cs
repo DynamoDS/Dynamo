@@ -15,13 +15,13 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Input;
-using Dynamo.Core.Automation;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using String = System.String;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -138,7 +138,7 @@ namespace Dynamo.Search.SearchElements
             // create node
             var guid = Guid.NewGuid();
             dynSettings.Controller.DynamoViewModel.ExecuteCommand(
-                new CreateNodeCommand(guid, this.Name, 0, 0, true, true));
+                new DynCmd.CreateNodeCommand(guid, this.Name, 0, 0, true, true));
 
             // select node
             var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);

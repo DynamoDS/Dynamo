@@ -7,12 +7,12 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using Dynamo.Core.Automation;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Views;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.ViewModels
 {
@@ -351,8 +351,8 @@ namespace Dynamo.ViewModels
                 {
                     // Clicking on the canvas while connecting simply cancels 
                     // the operation and drop the temporary connector.
-                    var command = new MakeConnectionCommand(Guid.Empty, -1,
-                        PortType.INPUT, MakeConnectionCommand.Mode.Cancel);
+                    var command = new DynCmd.MakeConnectionCommand(Guid.Empty, -1,
+                        PortType.INPUT, DynCmd.MakeConnectionCommand.Mode.Cancel);
 
                     var dynamoViewModel = dynSettings.Controller.DynamoViewModel;
                     dynamoViewModel.ExecuteCommand(command);
@@ -396,8 +396,8 @@ namespace Dynamo.ViewModels
                 else if (this.currentState == State.NodeReposition)
                 {
                     Point mouseCursor = e.GetPosition(sender as IInputElement);
-                    var operation = DragSelectionCommand.Operation.EndDrag;
-                    var command = new DragSelectionCommand(mouseCursor, operation);
+                    var operation = DynCmd.DragSelectionCommand.Operation.EndDrag;
+                    var command = new DynCmd.DragSelectionCommand(mouseCursor, operation);
                     var dynamoViewModel = dynSettings.Controller.DynamoViewModel;
                     dynamoViewModel.ExecuteCommand(command);
 
@@ -444,7 +444,7 @@ namespace Dynamo.ViewModels
                     this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
 
                     var rect = new Rect(x, y, width, height);
-                    var command = new SelectInRegionCommand(rect, isCrossSelection);
+                    var command = new DynCmd.SelectInRegionCommand(rect, isCrossSelection);
                     DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
                     dynamoViewModel.ExecuteCommand(command);
                 }
@@ -458,8 +458,8 @@ namespace Dynamo.ViewModels
                     }
 
                     // Record and begin the drag operation for selected nodes.
-                    var operation = DragSelectionCommand.Operation.BeginDrag;
-                    var command = new DragSelectionCommand(mouseCursor, operation);
+                    var operation = DynCmd.DragSelectionCommand.Operation.BeginDrag;
+                    var command = new DynCmd.DragSelectionCommand(mouseCursor, operation);
                     DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
                     dynamoViewModel.ExecuteCommand(command);
 
@@ -492,8 +492,8 @@ namespace Dynamo.ViewModels
                     Guid nodeId = portModel.Owner.GUID;
                     int portIndex = portModel.Owner.GetPortIndex(portModel, out portType);
 
-                    dynamoViewModel.ExecuteCommand(new MakeConnectionCommand(
-                        nodeId, portIndex, portType, MakeConnectionCommand.Mode.Begin));
+                    dynamoViewModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
+                        nodeId, portIndex, portType, DynCmd.MakeConnectionCommand.Mode.Begin));
 
                     if (owningWorkspace.IsConnecting)
                         this.currentState = State.Connection;
@@ -504,8 +504,8 @@ namespace Dynamo.ViewModels
                     Guid nodeId = portModel.Owner.GUID;
                     int portIndex = portModel.Owner.GetPortIndex(portModel, out portType);
 
-                    dynamoViewModel.ExecuteCommand(new MakeConnectionCommand(
-                        nodeId, portIndex, portType, MakeConnectionCommand.Mode.End));
+                    dynamoViewModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
+                        nodeId, portIndex, portType, DynCmd.MakeConnectionCommand.Mode.End));
 
                     this.currentState = State.None;
                 }
@@ -547,7 +547,7 @@ namespace Dynamo.ViewModels
                     throw new InvalidOperationException();
 
                 // Clear existing selection set.
-                var selectNothing = new SelectModelCommand(Guid.Empty, ModifierKeys.None);
+                var selectNothing = new DynCmd.SelectModelCommand(Guid.Empty, ModifierKeys.None);
                 DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
                 dynamoViewModel.ExecuteCommand(selectNothing);
 
