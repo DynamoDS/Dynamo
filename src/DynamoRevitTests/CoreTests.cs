@@ -100,6 +100,26 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(oldId, newVal.Id);
             Assert.AreNotEqual(oldPos, newVal.Position);
+
+            refPtNode.ResetOldValue();
+
+            var numberNode = model.CurrentWorkspace.FirstNodeFromWorkspace<DoubleInput>();
+            numberNode.Value = "0..10";
+
+            dynSettings.Controller.RunExpression();
+
+            var multipleValues = ((FScheme.Value.List)refPtNode.OldValue).Item;
+            Assert.AreEqual(10, multipleValues.Length);
+            Assert.IsTrue(multipleValues.Any(x => ((ReferencePoint)((FScheme.Value.Container)x).Item).Id == oldId));
+
+            refPtNode.ResetOldValue();
+
+            numberNode.Value = "0";
+
+            dynSettings.Controller.RunExpression();
+
+            var finalVal = (ReferencePoint)((FScheme.Value.Container)refPtNode.OldValue).Item;
+            Assert.AreEqual(oldId, finalVal.Id);
         }
 
         [Test]

@@ -22,7 +22,7 @@ namespace Dynamo.Tests
         [Test]
         public void CanCreateAndDeleteAReferencePoint()
         {
-            using (var trans = new Transaction(dynRevitSettings.Doc.Document, "CreateAndDeleteAreReferencePoint"))
+            using (var trans = new Transaction(RevitData.Document.Document, "CreateAndDeleteAreReferencePoint"))
             {
                 trans.Start();
 
@@ -38,7 +38,7 @@ namespace Dynamo.Tests
                 fec.WherePasses(ef);
                 Assert.AreEqual(1, fec.ToElements().Count());
 
-                dynRevitSettings.Doc.Document.Delete(rp);
+                RevitData.Document.Document.Delete(rp);
                 trans.Commit();
             }
         }
