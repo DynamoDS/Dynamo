@@ -431,8 +431,8 @@ namespace Dynamo.ViewModels
                         second = start;
                     }
 
-                    ConnectorModel newConnectorModel = ConnectorModel.Make(
-                        firstPort.Owner, second.Owner, firstPort.Index, second.Index, 0);
+                    ConnectorModel newConnectorModel = ConnectorModel.Make(firstPort.Owner,
+                        second.Owner, firstPort.Index, second.Index, PortType.INPUT);
 
                     if (newConnectorModel == null) // The connector is invalid
                         return false;
