@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Windows.Forms;
 using Autodesk.Revit.DB;
 using Dynamo.Controls;
 using Dynamo.Models;
@@ -656,6 +657,18 @@ namespace Dynamo
             base.ShutDown();
             Updater.UnRegisterAllChangeHooks();
         }
+
+        protected override void RunDS()
+        {
+
+            IdlePromise.ExecuteOnIdle(() =>
+                {
+
+DSRevitNodes.Point point = DSRevitNodes.Point.ByCoordinates(10, 10, 10 );
+            
+                }, true);
+        }
+
 
         protected override void Run(List<NodeModel> topElements, FScheme.Expression runningExpression)
         {
