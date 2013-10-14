@@ -9,7 +9,7 @@ Dynamo extends the parametric functionality of Autodesk Revit. Dynamo aims to be
 * [Stephen Elliott](https://github.com/Steell): Engine overhaul, main developer. 
 * [Peter Boyer](https://github.com/pboyer): UX and UI overhaul, main developer.
 * [Lev Lipkin](https://github.com/LevL): Revit node designer, Revit interaction specialist.
-* [Matt Jezyk](https://github.com/tatlin): Node designer and overall design input.
+* [Matt Jezyk](https://github.com/tatlin): Product management and requirements gathering. Node designer and overall design input.
 * [Zach Kron](https://github.com/kronz): Project management and requirements gathering.
 * [Luke Church](https://github.com/lukechurch): Software Architecture
 * Lillian Smith: Useful feedback and use cases.
@@ -24,6 +24,31 @@ Dynamo has been developed based on feedback from several parties including Arup,
 The current version will run on top of Revit 2013, Revit 2014, and Project Vasari Beta 3. 
 
 ## Releases ##
+
+###0.6.1###
+
+New
+- Many UI improvements
+- Background and watch 3d can now draw from any node with geometric output
+- Coloring preview geometry based on node selection
+- navigation without with key commands
+- navigation with onscreen commands
+- Sheet creation and View placement
+- Package manager search is now instant, no commit needed
+- Deprecation of Packages
+- Drop down menus sorted by name
+- name inputs for levels
+- better reference line/model line creation methods
+- Model Text nodes
+
+Fixes
+- Project to Face/Plane corrections
+- many excel node fixes and performance improvements
+- Python output improvements for integers
+- Best Fit Plane Orientation consistency
+- Conditional statements don't break formula node
+- Custom node fixes
+- Package Manager download fixes
 
 ###0.6.0###
 
