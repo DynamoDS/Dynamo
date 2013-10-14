@@ -6,7 +6,6 @@ using System.Text;
 using System.Windows.Input;
 using System.Windows.Threading;
 using System.Xml;
-using Dynamo.Core.Automation;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Utilities;
@@ -169,9 +168,9 @@ namespace Dynamo.ViewModels
 
         #endregion
 
-        #region The Actual Command Handlers
+        #region The Actual Command Handlers (Private)
 
-        internal void CreateNodeImpl(CreateNodeCommand command)
+        private void CreateNodeImpl(CreateNodeCommand command)
         {
             NodeModel nodeModel = Model.CreateNode(
                 command.NodeId,
@@ -184,13 +183,13 @@ namespace Dynamo.ViewModels
             CurrentSpace.RecordCreatedModel(nodeModel);
         }
 
-        internal void CreateNoteImpl(CreateNoteCommand command)
+        private void CreateNoteImpl(CreateNoteCommand command)
         {
             NoteModel noteModel = Model.AddNoteInternal(command, null);
             CurrentSpace.RecordCreatedModel(noteModel);
         }
 
-        internal void SelectModelImpl(SelectModelCommand command)
+        private void SelectModelImpl(SelectModelCommand command)
         {
             // Empty ModelGuid means clear selection.
             if (command.ModelGuid == Guid.Empty)
@@ -216,12 +215,12 @@ namespace Dynamo.ViewModels
             }
         }
 
-        internal void SelectInRegionImpl(SelectInRegionCommand command)
+        private void SelectInRegionImpl(SelectInRegionCommand command)
         {
             CurrentSpaceViewModel.SelectInRegion(command.Region, command.IsCrossSelection);
         }
 
-        internal void DragSelectionImpl(DragSelectionCommand command)
+        private void DragSelectionImpl(DragSelectionCommand command)
         {
             if (DragSelectionCommand.Operation.BeginDrag == command.DragOperation)
                 CurrentSpaceViewModel.BeginDragSelection(command.MouseCursor);
@@ -229,7 +228,7 @@ namespace Dynamo.ViewModels
                 CurrentSpaceViewModel.EndDragSelection(command.MouseCursor);
         }
 
-        internal void MakeConnectionImpl(MakeConnectionCommand command)
+        private void MakeConnectionImpl(MakeConnectionCommand command)
         {
             System.Guid nodeId = command.NodeId;
 

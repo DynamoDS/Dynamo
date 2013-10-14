@@ -18,7 +18,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using Dynamo.Core.Automation;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Prompts;
@@ -26,6 +25,7 @@ using Dynamo.Selection;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Controls
 {
@@ -230,7 +230,7 @@ namespace Dynamo.Controls
 
             Guid nodeGuid = this.ViewModel.NodeModel.GUID;
             dynSettings.Controller.DynamoViewModel.ExecuteCommand(
-                new SelectModelCommand(nodeGuid, Keyboard.Modifiers));
+                new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers));
         }
 
         private void topControl_MouseRightButtonDown(object sender, MouseButtonEventArgs e)

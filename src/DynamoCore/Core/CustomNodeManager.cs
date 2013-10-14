@@ -12,7 +12,7 @@ using Dynamo.FSchemeInterop;
 using Dynamo.ViewModels;
 using NUnit.Framework;
 using Enum = System.Enum;
-using Dynamo.Core.Automation;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Utilities
 {
@@ -839,7 +839,7 @@ namespace Dynamo.Utilities
                         double y = Convert.ToDouble(yAttrib.Value, CultureInfo.InvariantCulture);
 
                         Guid guid = Guid.NewGuid();
-                        var command = new CreateNoteCommand(guid, text, x, y, false);
+                        var command = new DynCmd.CreateNoteCommand(guid, text, x, y, false);
                         dynSettings.Controller.DynamoModel.AddNoteInternal(command, ws);
                     }
                 }
