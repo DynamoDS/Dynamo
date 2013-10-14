@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Xml;
 using Dynamo.Models;
+using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
@@ -28,6 +30,13 @@ namespace Dynamo.Nodes
         public string Name { get; set; }
         public string DisplayName { get; set; }
         public DSLibraryItemType Type { get; set; }
+        public string QualifiedName
+        {
+            get
+            {
+                return string.IsNullOrEmpty(ClassName) ? Name : ClassName + "." + Name;
+            }
+        }
 
         public DSLibraryItem(string assembly, string category, string className, string name, string displayName, DSLibraryItemType type)
         {
@@ -70,66 +79,43 @@ namespace Dynamo.Nodes
     [NodeSearchableAttribute(false)]
     public class DSFunction : NodeModel
     {
-        public DSFunctionItem functionItem { get; set; }
-
-        public string Assembly
-        {
-            get
-            {
-                return functionItem.Assembly;
-            }
-        }
-
-        public string FunctionName
-        {
-            get
-            {
-                if (IsStaticMember() || IsConstructor())
-                {
-                    return functionItem.ClassName + "." + functionItem.Name;
-                }
-                else
-                {
-                    return functionItem.Name;
-                }
-            }
-        }
+        public DSFunctionItem Definition { get; set; }
 
         public bool IsInstanceMember()
         {
-            return functionItem.Type == DSLibraryItemType.InstanceMethod ||
-                   functionItem.Type == DSLibraryItemType.InstanceProperty;
+            return Definition.Type == DSLibraryItemType.InstanceMethod ||
+                   Definition.Type == DSLibraryItemType.InstanceProperty;
         }
 
         public bool IsStaticMember()
         {
-            return functionItem.Type == DSLibraryItemType.StaticMethod ||
-                   functionItem.Type == DSLibraryItemType.StaticProperty;
+            return Definition.Type == DSLibraryItemType.StaticMethod ||
+                   Definition.Type == DSLibraryItemType.StaticProperty;
         }
 
         public bool IsConstructor()
         {
-            return functionItem.Type == DSLibraryItemType.Constructor;
+            return Definition.Type == DSLibraryItemType.Constructor;
         }
 
         public DSFunction(DSFunctionItem item)
         {
-            functionItem = item;
+            Definition = item;
 
             if (IsInstanceMember())
             {
                 InPortData.Add(new PortData("this", "Class Instance", typeof(object)));
             }
 
-            foreach (var arg in functionItem.Arguments)
+            foreach (var arg in Definition.Arguments)
             {
                 InPortData.Add(new PortData(arg, "parameter", typeof(object)));
             }
 
             // Returns a dictionary
-            if (functionItem.ReturnKeys != null && functionItem.ReturnKeys.Count >= 1)
+            if (Definition.ReturnKeys != null && Definition.ReturnKeys.Count >= 1)
             {
-                foreach (var key in functionItem.ReturnKeys)
+                foreach (var key in Definition.ReturnKeys)
                 {
                     OutPortData.Add(new PortData(key, "return value", typeof(object)));
                 }
@@ -140,13 +126,32 @@ namespace Dynamo.Nodes
             }
 
             RegisterAllPorts();
-            NickName = functionItem.DisplayName;
+            NickName = Definition.DisplayName;
+        }
+
+        public override bool RequiresRecalc
+        {
+            get
+            {
+                return Inputs.Values.Where(x => x != null).Any(x => x.Item2.isDirty);
+            }
+            set
+            {
+                base.RequiresRecalc = value;
+            }
         }
 
         protected override AssociativeNode BuildAstNode(DSEngine.IAstBuilder builder, 
                                                         List<ProtoCore.AST.AssociativeAST.AssociativeNode> inputs)
         {
             return builder.Build(this, inputs);
+        }
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); 
+            XmlElementHelper helper = new XmlElementHelper(element);
+            helper.SetAttribute("name", this.Definition.QualifiedName);
         }
     }
 }
