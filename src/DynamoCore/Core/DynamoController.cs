@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Windows.Forms;
 using System.Windows.Threading;
 using Autodesk.LibG;
 using Dynamo.DSEngine;
@@ -273,6 +274,24 @@ namespace Dynamo
         {
             RunCancelled = true;
             runAgain = true;
+        }
+
+
+        public void RunDSExpression(bool showErrors = true)
+        {
+
+            MessageBox.Show("DS Pre-exec");
+
+            RunDS();
+
+
+            MessageBox.Show("DS Post-exec");
+
+        }
+
+        protected virtual void RunDS()
+        {
+            throw new NotImplementedException();
         }
 
         public void RunExpression(bool showErrors = true)
@@ -557,6 +576,12 @@ namespace Dynamo
         {
             RunExpression(Convert.ToBoolean(parameters));
         }
+
+        public void RunDSExpression(object parameters)
+        {
+            RunDSExpression(Convert.ToBoolean(parameters));
+        }
+
 
         internal bool CanRunExpression(object parameters)
         {

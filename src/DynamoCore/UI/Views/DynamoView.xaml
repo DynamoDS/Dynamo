@@ -606,6 +606,14 @@
                     CommandParameter="{Binding Path=RunInDebug}"
                     IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" Focusable="False"/>
 
+                <Button Name="RunDSButton" Width="100" Content="Run DS" 
+ Margin="5" Style="{DynamicResource ResourceKey=STextButton}" 
+                    Click="RunDSButton_OnClick"
+                    Command="{Binding RunDSExpressionCommand}"
+                    CommandParameter="{Binding Path=RunInDebug}"
+                    IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" Focusable="False"/>
+
+
                 <Button Name="cancelButton" Width="100" Content="Cancel" Focusable="False" Style="{DynamicResource ResourceKey=STextButton}" 
                       Command="{Binding CancelRunCommand}" Margin="5"/>
 
