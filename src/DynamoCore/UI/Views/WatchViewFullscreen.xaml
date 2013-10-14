@@ -30,7 +30,7 @@
                     <HelixToolkit:DefaultLights>
                     </HelixToolkit:DefaultLights>
                 </HelixToolkit:LightVisual3D>
-                <HelixToolkit:GridLinesVisual3D  Width="8" Length="8" MinorDistance="1" MajorDistance="1" Thickness="0.01"/>
+                <!--<HelixToolkit:GridLinesVisual3D  Width="8" Length="8" MinorDistance="1" MajorDistance="1" Thickness="0.01"/>-->
                 <HelixToolkit:PointsVisual3D Size="6" Color="ForestGreen" Points="{Binding Path=HelixPoints, Mode=TwoWay}"></HelixToolkit:PointsVisual3D>
                 <HelixToolkit:LinesVisual3D Thickness="1" Color="DarkSlateGray" Points="{Binding Path=HelixLines, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
                 <HelixToolkit:PointsVisual3D Size="8" Color="Cyan" Points="{Binding Path=HelixPointsSelected, Mode=TwoWay}"></HelixToolkit:PointsVisual3D>
@@ -87,6 +87,7 @@
                 <HelixToolkit:LinesVisual3D Thickness="4" Color="Red" Points="{Binding Path=HelixXAxes, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
                 <HelixToolkit:LinesVisual3D Thickness="4" Color="Green" Points="{Binding Path=HelixYAxes, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
                 <HelixToolkit:LinesVisual3D Thickness="4" Color="Blue" Points="{Binding Path=HelixZAxes, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
+                <HelixToolkit:LinesVisual3D Thickness="1" Color="DarkGray" Points="{Binding Path=HelixGrid, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
             </ModelVisual3D>
         </HelixToolkit:HelixViewport3D>
     </Grid>

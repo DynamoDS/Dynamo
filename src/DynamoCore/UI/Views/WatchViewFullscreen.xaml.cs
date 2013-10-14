@@ -40,10 +40,21 @@ namespace Dynamo.Controls
         public ThreadSafeList<Point3D> _pointsCacheSelected = new ThreadSafeList<Point3D>();
         public ThreadSafeList<Point3D> _linesCacheSelected = new ThreadSafeList<Point3D>();
         public MeshGeometry3D _meshCacheSelected = new MeshGeometry3D();
- 
+        private ThreadSafeList<Point3D> _gridCache = new ThreadSafeList<Point3D>();
+  
         public Material HelixMeshMaterial
         {
             get { return Materials.White; }
+        }
+
+        public ThreadSafeList<Point3D> HelixGrid
+        {
+            get { return _gridCache; }
+            set
+            {
+                _gridCache = value;
+                NotifyPropertyChanged("HelixGrid");
+            }
         }
 
         public ThreadSafeList<Point3D> HelixPoints
@@ -160,6 +171,32 @@ namespace Dynamo.Controls
                 dynSettings.Controller.VisualizationManager.VisualizationUpdateComplete += VisualizationManager_VisualizationUpdateComplete;
 
             _vm = DataContext as Watch3DFullscreenViewModel;
+
+            DrawGrid();
+        }
+
+        /// <summary>
+        /// Create the grid
+        /// </summary>
+        private void DrawGrid()
+        {
+            HelixGrid = null;
+
+            var newLines = new ThreadSafeList<Point3D>();
+
+            for (int x = -10; x <= 10; x++)
+            {
+                newLines.Add(new Point3D(x,-10,-.001));
+                newLines.Add(new Point3D(x,10,-.001));
+            }
+
+            for (int y = -10; y <= 10; y++)
+            {
+                newLines.Add(new Point3D(-10, y, -.001));
+                newLines.Add(new Point3D(10, y, -.001));
+            }
+
+            HelixGrid = newLines;
         }
 
         void VisualizationManager_VisualizationUpdateComplete(object sender, VisualizationEventArgs e)
