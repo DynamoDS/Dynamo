@@ -224,11 +224,15 @@ namespace Dynamo.DSEngine
 
         public AssociativeNode Build(DSFunction node, List<AssociativeNode> inputs)
         {
-            string function = node.FunctionName;
+            string function = node.Definition.Name;
             AssociativeNode functionCall = AstFactory.BuildFunctionCall(function, inputs);
 
-            // inputs[0] is this pointer
-            if (node.IsInstanceMember())
+            if (node.IsStaticMember() || node.IsConstructor())
+            {
+                IdentifierNode classNode = new IdentifierNode(node.Definition.ClassName);
+                return CoreUtils.GenerateCallDotNode(classNode, functionCall as FunctionCallNode);
+            }
+            else if (node.IsInstanceMember())
             {
                 Debug.Assert(functionCall is FunctionCallNode);
                 return CoreUtils.GenerateCallDotNode(inputs[0], functionCall as FunctionCallNode);

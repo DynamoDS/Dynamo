@@ -297,8 +297,11 @@ namespace Dynamo
             {
                 //Setup background worker
                 var worker = new BackgroundWorker();
+#if USE_DSENGINE
+                worker.DoWork += DSEvaluationThread;
+#else
                 worker.DoWork += EvaluationThread;
-                // worker.DoWork += DSEvaluationThread;
+#endif
 
                 DynamoViewModel.RunEnabled = false;
 
