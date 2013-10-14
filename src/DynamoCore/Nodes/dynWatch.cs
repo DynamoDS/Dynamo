@@ -161,7 +161,7 @@ namespace Dynamo.Nodes
 
             WatchNode node = null;
             
-            if (eIn == null)
+            if (eIn == null || eIn.IsDummy)
             {
                 node = new WatchNode("null");
                 return node;
