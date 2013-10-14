@@ -129,6 +129,18 @@ namespace Dynamo.Nodes
             NickName = Definition.DisplayName;
         }
 
+        public override bool RequiresRecalc
+        {
+            get
+            {
+                return Inputs.Values.Where(x => x != null).Any(x => x.Item2.isDirty);
+            }
+            set
+            {
+                base.RequiresRecalc = value;
+            }
+        }
+
         protected override AssociativeNode BuildAstNode(DSEngine.IAstBuilder builder, 
                                                         List<ProtoCore.AST.AssociativeAST.AssociativeNode> inputs)
         {
