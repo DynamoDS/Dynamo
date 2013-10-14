@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using Dynamo.Utilities;
 using NUnit.Framework;
 
@@ -26,7 +23,7 @@ namespace Dynamo.Tests
             //or a null will be passed into here.
             Assert.IsNotNullOrEmpty(dynamoFilePath, "Dynamo file path is invalid or missing.");
             Assert.IsNotNullOrEmpty(revitFilePath, "Revit file path is invalid or missing.");
-
+            
             //open the revit model
             SwapCurrentModel(revitFilePath);
 
