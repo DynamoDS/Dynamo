@@ -43,12 +43,16 @@ namespace Dynamo.Tests
         /// <returns></returns>
         static List<object[]> SetupRevitRegressionTests()
         {
+            DynamoLogger.Instance.Log("Setting up regression tests...", LogLevel.File);
+
             var testParameters = new List<object[]>();
 
             var fi = new FileInfo(Assembly.GetExecutingAssembly().Location);
             string assDir = fi.DirectoryName;
-            string testsLoc = Path.Combine(assDir, @"..\..\test\revit\regression\");
+            string testsLoc = Path.Combine(assDir, @"..\..\..\test\revit\regression\");
             var regTestPath = Path.GetFullPath(testsLoc);
+
+            DynamoLogger.Instance.Log(string.Format("Using regression path: {0}", regTestPath), LogLevel.File);
 
             var di = new DirectoryInfo(regTestPath);
             var dyns = di.GetFiles("*.dyn");
@@ -74,6 +78,9 @@ namespace Dynamo.Tests
                 }
 
                 testParameters.Add(data);
+
+                DynamoLogger.Instance.Log(data[0].ToString(),LogLevel.File);
+                DynamoLogger.Instance.Log(data[0].ToString(), LogLevel.File);
             }
 
             return testParameters;
