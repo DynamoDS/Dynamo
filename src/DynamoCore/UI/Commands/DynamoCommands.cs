@@ -229,6 +229,10 @@ namespace Dynamo.ViewModels
                 CurrentSpaceViewModel.EndDragSelection(command.MouseCursor);
         }
 
+        internal void PortClickedImpl(PortClickedCommand command)
+        {
+        }
+
         #endregion
     }
 }

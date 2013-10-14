@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using System.Xml;
+using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 
@@ -86,6 +87,8 @@ namespace Dynamo.Core.Automation
                     return SelectInRegionCommand.DeserializeCore(element);
                 case "Dynamo.Core.Automation.DragSelectionCommand":
                     return DragSelectionCommand.DeserializeCore(element);
+                case "Dynamo.Core.Automation.PortClickedCommand":
+                    return PortClickedCommand.DeserializeCore(element);
             }
 
             throw new ArgumentException("element");
@@ -400,6 +403,54 @@ namespace Dynamo.Core.Automation
             helper.SetAttribute("X", this.MouseCursor.X);
             helper.SetAttribute("Y", this.MouseCursor.Y);
             helper.SetAttribute("DragOperation", ((int)this.DragOperation));
+        }
+
+        #endregion
+    }
+
+    internal class PortClickedCommand : RecordableCommand
+    {
+        #region Public Class Methods
+
+        internal PortClickedCommand(Guid nodeId, int portIndex, PortType portType)
+        {
+            this.NodeId = nodeId;
+            this.PortIndex = portIndex;
+            this.Type = portType;
+        }
+
+        internal static PortClickedCommand DeserializeCore(XmlElement element)
+        {
+            XmlElementHelper helper = new XmlElementHelper(element);
+            Guid nodeId = helper.ReadGuid("NodeId");
+            int portIndex = helper.ReadInteger("PortIndex");
+            PortType portType = ((PortType)helper.ReadInteger("Type"));
+            return new PortClickedCommand(nodeId, portIndex, portType);
+        }
+
+        #endregion
+
+        #region Public Command Properties
+
+        internal Guid NodeId { get; private set; }
+        internal int PortIndex { get; private set; }
+        internal PortType Type { get; private set; }
+
+        #endregion
+
+        #region Protected Overridable Methods
+
+        protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+        {
+            dynamoViewModel.PortClickedImpl(this);
+        }
+
+        protected override void SerializeCore(XmlElement element)
+        {
+            XmlElementHelper helper = new XmlElementHelper(element);
+            helper.SetAttribute("NodeId", this.NodeId);
+            helper.SetAttribute("PortIndex", this.PortIndex);
+            helper.SetAttribute("Type", ((int)this.Type));
         }
 
         #endregion
