@@ -798,7 +798,7 @@ namespace Dynamo.Models
 
         public AssociativeNode CompileToAstNode(AstBuilder builder)
         {
-            if (!RequiresRecalc)
+            if (!RequiresRecalc && !isDirty)
             {
                 return this.AstIdentifier; 
             }
@@ -852,9 +852,13 @@ namespace Dynamo.Models
             // But in the end there is always an assignment:
             //
             //     AstIdentifier = ...;
-            var rhs = BuildAstNode(builder, inputAstNodes);
-            builder.BuildEvaluation(this, rhs);
-            RequiresRecalc = false;
+
+            if (isDirty)
+            {
+                var rhs = BuildAstNode(builder, inputAstNodes);
+                builder.BuildEvaluation(this, rhs);
+                isDirty = false;
+            }
 
             return AstIdentifier;
         }
