@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--This file represents the results of running a test suite-->
+<test-results name="C:\Users\Ian\Documents\GitHub\Dynamo\bin\AnyCPU\Debug\DynamoTestFramework.dll" total="17" failures="0" not-run="0" date="2013-10-11" time="15:36:11" errors="1" inconclusive="0" ignored="0" skipped="0" invalid="0">
+  <test-suite name="DynamoTestFrameworkTests" description="Unit tests in Revit." time="10.6554145" asserts="41" type="TestFixture" result="Success" executed="True">
+    <results>
+      <test-suite name="CoreTests" description="Unit tests in Revit." time="1.3903283" asserts="9" type="TestFixture" result="Success" executed="True">
+        <results>
+          <test-case name="SanityCheck" success="True" time="0.2112005" executed="True" asserts="1" result="Success" />
+          <test-case name="CanChangeLacingAndHaveElementsUpdate" success="True" time="0.605582" executed="True" asserts="5" result="Success" />
+          <test-case name="ElementNodeReassociation" success="True" time="0.5325064" executed="True" asserts="3" result="Success" />
+          <test-case name="SwitchDocuments" success="False" time="0.0410394" executed="True" asserts="0" result="Error" />
+        </results>
+      </test-suite>
+      <test-suite name="CurveTests" description="Unit tests in Revit." time="7.2621424" asserts="24" type="TestFixture" result="Success" executed="True">
+        <results>
+          <test-case name="ModelCurve" success="True" time="0.789108" executed="True" asserts="4" result="Success" />
+          <test-case name="ReferenceCurve" success="True" time="0.8366738" executed="True" asserts="5" result="Success" />
+          <test-case name="CurveByPoints" success="True" time="0.5905636" executed="True" asserts="4" result="Success" />
+          <test-case name="CurveLoop" success="True" time="0.4524298" executed="True" asserts="1" result="Success" />
+          <test-case name="CurvebyPointsArc" success="True" time="0.6836515" executed="True" asserts="2" result="Success" />
+          <test-case name="OffsetCurve" success="True" time="0.4654434" executed="True" asserts="1" result="Success" />
+          <test-case name="ThickenCurve" success="True" time="0.471448" executed="True" asserts="1" result="Success" />
+          <test-case name="CurveByPointsByLineNode" success="True" time="1.0670145" executed="True" asserts="2" result="Success" />
+          <test-case name="ClosedCurve" success="True" time="0.9088617" executed="True" asserts="2" result="Success" />
+          <test-case name="CurvebyPointsEllipse" success="True" time="0.9969481" executed="True" asserts="2" result="Success" />
+        </results>
+      </test-suite>
+      <test-suite name="FamilyTests" description="Unit tests in Revit." time="2.0029438" asserts="8" type="TestFixture" result="Success" executed="True">
+        <results>
+          <test-case name="FamilyTypeSelectorNode" success="True" time="0.2522755" executed="True" asserts="4" result="Success" />
+          <test-case name="GetFamilyInstancesByType" success="True" time="0.9318894" executed="True" asserts="3" result="Success" />
+          <test-case name="GetFamilyInstanceLocation" success="True" time="0.8187789" executed="True" asserts="1" result="Success" />
+        </results>
+      </test-suite>
+    </results>
+  </test-suite>
+</test-results>

@@ -11,7 +11,6 @@ using String = System.String;
 
 namespace Dynamo.Tests
 {
-    [TestFixture]
     internal class CoreDynTests : DynamoUnitTest
     {
         [Test]
@@ -583,6 +582,115 @@ namespace Dynamo.Tests
             {
                 Assert.AreEqual((watch.OldValue as FScheme.Value.Number).Item, 19);   
             }
+        }
+
+        [Test]
+        public void AndNode()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            var exPath = Path.Combine(GetTestDirectory(), @"core\customast");
+
+            model.Open(Path.Combine(exPath, @"and-test.dyn"));
+
+            dynSettings.Controller.RunExpression();
+
+            var watchValue = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>().OldValue;
+
+            Assert.IsAssignableFrom<FScheme.Value.Number>(watchValue);
+            Assert.AreEqual(0, (watchValue as FScheme.Value.Number).Item);
+        }
+
+        [Test]
+        public void OrNode()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            var exPath = Path.Combine(GetTestDirectory(), @"core\customast");
+
+            model.Open(Path.Combine(exPath, @"or-test.dyn"));
+
+            dynSettings.Controller.RunExpression();
+
+            var watchValue = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>().OldValue;
+
+            Assert.IsAssignableFrom<FScheme.Value.Number>(watchValue);
+            Assert.AreEqual(1, (watchValue as FScheme.Value.Number).Item);
+        }
+
+        [Test]
+        public void IfNode()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            var exPath = Path.Combine(GetTestDirectory(), @"core\customast");
+
+            model.Open(Path.Combine(exPath, @"if-test.dyn"));
+
+            dynSettings.Controller.RunExpression();
+
+            var watchValue = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>().OldValue;
+
+            Assert.IsAssignableFrom<FScheme.Value.String>(watchValue);
+            Assert.AreEqual("can't divide by 0", (watchValue as FScheme.Value.String).Item);
+        }
+
+        [Test]
+        public void PerformAllNode()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            var exPath = Path.Combine(GetTestDirectory(), @"core\customast");
+
+            model.Open(Path.Combine(exPath, @"begin-test.dyn"));
+
+            var textAndFileName = @"test.txt";
+
+            model.CurrentWorkspace.FirstNodeFromWorkspace<StringInput>().Value = textAndFileName;
+
+            dynSettings.Controller.RunExpression();
+
+            File.Delete(textAndFileName);
+
+            var watchValue = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>().OldValue;
+
+            Assert.IsAssignableFrom<FScheme.Value.String>(watchValue);
+            Assert.AreEqual(textAndFileName, (watchValue as FScheme.Value.String).Item);
+        }
+
+        [Test]
+        public void Constants()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            var exPath = Path.Combine(GetTestDirectory(), @"core\customast");
+
+            model.Open(Path.Combine(exPath, @"constants-test.dyn"));
+
+            dynSettings.Controller.RunExpression();
+
+            Assert.Pass();
+        }
+
+        [Test]
+        public void Thunks()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            var exPath = Path.Combine(GetTestDirectory(), @"core\customast");
+
+            model.Open(Path.Combine(exPath, @"thunk-test.dyn"));
+
+            dynSettings.Controller.RunExpression();
+
+            Assert.Pass();
+        }
+
+        [Test]
+        public void MultithreadingWithFutureAndNow()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            var exPath = Path.Combine(GetTestDirectory(), @"core\multithreading");
+
+            model.Open(Path.Combine(exPath, @"multithread-test.dyn"));
+
+            dynSettings.Controller.RunExpression();
+
+            Assert.Pass();
         }
     }
 }
