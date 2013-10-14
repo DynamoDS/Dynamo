@@ -141,7 +141,11 @@ namespace Dynamo.Tests
                 CoreExtensions.Host.InitializeService();
                 var runner = new SimpleTestRunner();
                 var builder = new TestSuiteBuilder();
-                var package = new TestPackage("DynamoTestFramework", new List<string>() {testAssembly});
+                string testAssemblyLoc = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), testAssembly);
+
+                DynamoLogger.Instance.Log(string.Format("Running tests from assembly: {0}", testAssemblyLoc), LogLevel.File);
+
+                var package = new TestPackage("DynamoTestFramework", new List<string>() {testAssemblyLoc});
                 runner.Load(package);
                 TestSuite suite = builder.Build(package);
 
@@ -179,7 +183,23 @@ namespace Dynamo.Tests
                     var t = FindTestByName(fixture, testName);
                     if (t != null)
                     {
-                        runningResults.Add(RunTest(t));
+                        if (t is ParameterizedMethodSuite)
+                        {
+                            var paramSuite = t as ParameterizedMethodSuite;
+                            foreach (var tInner in paramSuite.Tests)
+                            {
+                                if (tInner is TestMethod)
+                                {
+                                    DynamoLogger.Instance.Log(string.Format("Running test:{0}", (tInner as TestMethod).TestName.Name), LogLevel.File);
+                                    runningResults.Add(RunTest((TestMethod)tInner));
+                                }
+                            }
+                        }
+                        else if (t is TestMethod)
+                        {
+                            DynamoLogger.Instance.Log(string.Format("Running test:{0}", (t as TestMethod).TestName.Name), LogLevel.File);
+                            runningResults.Add(RunTest((TestMethod)t));
+                        } 
                     }
                     else
                     {
@@ -197,8 +217,6 @@ namespace Dynamo.Tests
                 CalculateTotalsOnResultsRoot(resultsRoot);
 
                 SaveResults();
-
-                DynamoLogger.Instance.FinishLogging();
             }
             catch (Exception ex)
             {
@@ -347,12 +365,14 @@ namespace Dynamo.Tests
                     {
                         if (tInner is TestMethod)
                         {
+                            DynamoLogger.Instance.Log(string.Format("Running test:{0}", (tInner as TestMethod).TestName.Name), LogLevel.File);
                             results.Add(RunTest((TestMethod)tInner));
                         }
                     }
                 }
                 else if (t is TestMethod)
                 {
+                    DynamoLogger.Instance.Log(string.Format("Running test:{0}", (t as TestMethod).TestName.Name), LogLevel.File);
                     results.Add(RunTest((TestMethod)t));
                 }
             }
@@ -503,11 +523,11 @@ namespace Dynamo.Tests
         /// <param name="fixture"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        private static TestMethod FindTestByName(TestFixture fixture, string name)
+        private static Test FindTestByName(TestFixture fixture, string name)
         {
-            return (from t in fixture.Tests.OfType<TestMethod>() 
-                    where (t as TestMethod).TestName.Name == name 
-                    select t as TestMethod).FirstOrDefault();
+            return (from t in fixture.Tests.OfType<Test>()
+                    where t.TestName.Name == name 
+                    select t).FirstOrDefault();
         }
     }
 }
