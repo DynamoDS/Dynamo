@@ -18,6 +18,7 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Greg;
+using ProtoScript.Runners;
 using RevitPersistenceManager;
 using RevitServices;
 using RevitServices.Elements;
@@ -668,7 +669,26 @@ namespace Dynamo
         {
             DocumentManager.CurrentDoc = dynRevitSettings.Doc.Document;
 
-            IdlePromise.ExecuteOnIdleAsync(() => DSRevitNodes.Point.ByCoordinates(10, 10, 10));
+
+            //This is prototype grade only
+            ProtoRunner runner = new ProtoRunner();
+            
+            string demoScript = 
+                "import(\"DSRevitNodes.dll\");" +
+                "y = 40..50..2;" +
+                "z = 0..10..5;" +
+                "pt = Point.ByCoordinates(10, y<1>, z<2>);" +
+                "pt2 = Point.ByCoordinates(10, 10, 10);";
+
+
+
+            //IdlePromise.ExecuteOnIdleAsync(() => DSRevitNodes.Point.ByCoordinates(10, 10, 10));
+            IdlePromise.ExecuteOnIdleAsync(() =>
+                {
+                    ProtoRunner.ProtoVMState state = runner.PreStart(demoScript);
+                    runner.RunToNextBreakpoint(state);
+                });
+
         }
 
 
