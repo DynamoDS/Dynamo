@@ -788,7 +788,7 @@ namespace Dynamo.Models
                     var guidEnd = new Guid(guidEndAttrib.Value);
                     int startIndex = Convert.ToInt16(intStartAttrib.Value);
                     int endIndex = Convert.ToInt16(intEndAttrib.Value);
-                    int portType = Convert.ToInt16(portTypeAttrib.Value);
+                    PortType portType = ((PortType)Convert.ToInt16(portTypeAttrib.Value));
 
                     //find the elements to connect
                     NodeModel start = null;
@@ -814,7 +814,7 @@ namespace Dynamo.Models
                     }
 
                     var newConnector = ConnectorModel.Make(start, end,
-                                                        startIndex, endIndex, portType);
+                        startIndex, endIndex, portType);
 
                     //Stopwatch addTimer = new Stopwatch();
                     //addTimer.Start();
@@ -1577,7 +1577,7 @@ namespace Dynamo.Models
                 int startIndex = (int)connectionData["port_start"];
                 int endIndex = (int)connectionData["port_end"];
 
-                var c = ConnectorModel.Make(start, end, startIndex, endIndex, 0);
+                var c = ConnectorModel.Make(start, end, startIndex, endIndex, PortType.INPUT);
 
                 if (c != null)
                     CurrentWorkspace.Connectors.Add(c);
