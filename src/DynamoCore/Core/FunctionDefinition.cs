@@ -6,9 +6,10 @@ using System.Text;
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.Utilities;
 
-namespace Dynamo.Nodes
+namespace Dynamo
 {
     public class FunctionDefinition
     {
