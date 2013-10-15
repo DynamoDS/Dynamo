@@ -189,7 +189,7 @@ namespace Dynamo.DSEngine
         AssociativeNode Build(Ceiling node, List<AssociativeNode> inputs);
         AssociativeNode Build(Dynamo.Nodes.Random node, List<AssociativeNode> inputs);
         AssociativeNode Build(Pi node, List<AssociativeNode> inputs);
-        AssociativeNode Build(dyn2Pi node, List<AssociativeNode> inputs);
+        AssociativeNode Build(PiTimes2 node, List<AssociativeNode> inputs);
         AssociativeNode Build(EConstant node, List<AssociativeNode> inputs);
         AssociativeNode Build(Sin node, List<AssociativeNode> inputs);
         AssociativeNode Build(Cos node, List<AssociativeNode> inputs);
@@ -669,7 +669,7 @@ namespace Dynamo.DSEngine
             throw new NotSupportedException();
         }
 
-        public AssociativeNode Build(dyn2Pi node, List<AssociativeNode> inputs)
+        public AssociativeNode Build(PiTimes2 node, List<AssociativeNode> inputs)
         {
             // Constant expression directly returned from node
             throw new NotSupportedException();
