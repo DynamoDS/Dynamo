@@ -2804,9 +2804,10 @@ namespace Dynamo.Nodes
     [NodeDescription("Pi constant")]
     [NodeSearchTags("trigonometry", "circle", "π")]
     [IsInteractive(false)]
-    public class dyn2Pi : NodeModel
+    [AlsoKnownAs("Dynamo.Nodes.2Pi", "Dynamo.Nodes.dyn2Pi")]
+    public class PiTimes2 : NodeModel
     {
-        public dyn2Pi()
+        public PiTimes2()
         {
             OutPortData.Add(new PortData("3.14159...*2", "2*pi", typeof(Value.Number)));
             RegisterAllPorts();
