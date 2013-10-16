@@ -12,6 +12,7 @@ using Dynamo.FSchemeInterop;
 using Dynamo.ViewModels;
 using NUnit.Framework;
 using Enum = System.Enum;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Utilities
 {
@@ -837,13 +838,9 @@ namespace Dynamo.Utilities
                         double x = Convert.ToDouble(xAttrib.Value, CultureInfo.InvariantCulture);
                         double y = Convert.ToDouble(yAttrib.Value, CultureInfo.InvariantCulture);
 
-                        var paramDict = new Dictionary<string, object>();
-                        paramDict.Add("x", x);
-                        paramDict.Add("y", y);
-                        paramDict.Add("text", text);
-                        paramDict.Add("workspace", ws);
-
-                        dynSettings.Controller.DynamoModel.AddNote(paramDict);
+                        Guid guid = Guid.NewGuid();
+                        var command = new DynCmd.CreateNoteCommand(guid, text, x, y, false);
+                        dynSettings.Controller.DynamoModel.AddNoteInternal(command, ws);
                     }
                 }
 

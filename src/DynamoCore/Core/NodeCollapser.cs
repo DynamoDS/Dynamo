@@ -461,12 +461,8 @@ namespace Dynamo.Utilities
             newNodeDefinition.SyncWithWorkspace(true, true);
             dynSettings.Controller.DynamoModel.Workspaces.Add(newNodeWorkspace);
 
-            var collapsedNode = dynSettings.Controller.DynamoModel.CreateNode_Internal(new Dictionary<string, object>()
-                {
-                    {"name", newNodeDefinition.FunctionId.ToString() },
-                    {"x", avgX },
-                    {"y", avgY }
-                });
+            string name = newNodeDefinition.FunctionId.ToString();
+            var collapsedNode = dynSettings.Controller.DynamoModel.CreateNode(avgX, avgY, name);
 
             // place the node as intended, not centered
             collapsedNode.X = avgX;
