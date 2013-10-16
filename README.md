@@ -59,7 +59,7 @@ New
 - Raybounce nodes
 
 
->>>>>>> 0.6.0
+###0.6.0###
 
 September 2013
 
