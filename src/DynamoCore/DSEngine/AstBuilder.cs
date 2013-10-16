@@ -168,8 +168,7 @@ namespace Dynamo.DSEngine
             foreach (var guid in addedGuids)
             {
                 var nodes = astNodes.GetItems(guid);
-                Subtree tree = new Subtree(nodes);
-                tree.GUID = guid;
+                Subtree tree = new Subtree(nodes, guid);
                 subtrees.Add(tree);
             }
 
