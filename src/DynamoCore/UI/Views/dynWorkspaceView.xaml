@@ -63,17 +63,23 @@
                             <DataTemplate DataType="{x:Type viewModels:ConnectorViewModel}">
                                 <views:dynConnectorView></views:dynConnectorView>
                             </DataTemplate>
+                            
+                            <DataTemplate DataType="{x:Type viewModels:InfoBubbleViewModel}">
+                                <controls:InfoBubbleView></controls:InfoBubbleView>
+                            </DataTemplate>
+                            
                         </ItemsControl.Resources>
                         
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <controls:DragCanvas
                                     UseLayoutRounding="True"
-                                    Width="100000" 
-                                    Height="100000" 
+                                    Width="2500" 
+                                    Height="2500" 
                                     x:Name="DragCanvas"
                                     Visibility="Visible"
                                     ContextMenuOpening="WorkBench_ContextMenuOpening" 
+                                    AllowDragOutOfView="True"
                                     Loaded="WorkBench_OnLoaded" IsItemsHost="True">
                                     <Canvas.Background>
                                         <SolidColorBrush Color="Transparent"/>

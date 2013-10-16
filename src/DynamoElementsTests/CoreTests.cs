@@ -587,9 +587,8 @@ namespace Dynamo.Tests
             model.CreateNode(16, 32, "Add");
             NodeModel locatable = Controller.DynamoViewModel.Model.Nodes[0];
 
-            Rect region = new Rect(-100, -100, 200, 200);
             Point startPoint = new Point(8, 64);
-            var dn = new WorkspaceViewModel.DraggedNode(locatable, startPoint, region);
+            var dn = new WorkspaceViewModel.DraggedNode(locatable, startPoint);
 
             // Initial node position.
             Assert.AreEqual(16, locatable.X);
@@ -599,34 +598,6 @@ namespace Dynamo.Tests
             dn.Update(new Point(-16, 72));
             Assert.AreEqual(-8, locatable.X);
             Assert.AreEqual(40, locatable.Y);
-        }
-
-        [Test]
-        public void TestDraggedNodeLimited()
-        {
-            var model = dynSettings.Controller.DynamoModel;
-            model.CreateNode(10, 20, "Add");
-            NodeModel locatable = Controller.DynamoViewModel.Model.Nodes[0];
-            locatable.X = 10;
-            locatable.Y = 20;
-
-            Rect region = new Rect(-100, -200, 300, 400);
-            Point startPoint = new Point(15, 25);
-            var dn = new WorkspaceViewModel.DraggedNode(locatable, startPoint, region);
-
-            // Initial node position.
-            Assert.AreEqual(10, locatable.X);
-            Assert.AreEqual(20, locatable.Y);
-
-            // Move the mouse cursor to move node.
-            dn.Update(new Point(-500, -500));
-            Assert.AreEqual(-100, locatable.X);
-            Assert.AreEqual(-200, locatable.Y);
-
-            // Move the mouse cursor to move node.
-            dn.Update(new Point(500, 500));
-            Assert.AreEqual(300 - locatable.Width, locatable.X);
-            Assert.AreEqual(400 - locatable.Height, locatable.Y);
         }
 
         [Test]

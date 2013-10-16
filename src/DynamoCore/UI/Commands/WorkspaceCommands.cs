@@ -15,6 +15,8 @@ namespace Dynamo.ViewModels
         private DelegateCommand _zoomInCommand;
         private DelegateCommand _zoomOutCommand;
         private DelegateCommand _fitViewCommand;
+        private DelegateCommand _resetFitViewToggleCommand;
+        private DelegateCommand _togglePanCommand;
         private DelegateCommand _findByIdCommand;
         private DelegateCommand _alignSelectedCommand;
         private DelegateCommand _findNodesFromSelectionCommand;
@@ -103,6 +105,26 @@ namespace Dynamo.ViewModels
                 if (_fitViewCommand == null)
                     _fitViewCommand = new DelegateCommand(FitView, CanFitView);
                 return _fitViewCommand;
+            }
+        }
+
+        public DelegateCommand ResetFitViewToggleCommand
+        {
+            get
+            {
+                if (_resetFitViewToggleCommand == null)
+                    _resetFitViewToggleCommand = new DelegateCommand(ResetFitViewToggle, CanResetFitViewToggle);
+                return _resetFitViewToggleCommand;
+            }
+        }
+
+        public DelegateCommand TogglePanCommand
+        {
+            get
+            {
+                if (_togglePanCommand == null)
+                    _togglePanCommand = new DelegateCommand(TogglePan, CanTogglePan);
+                return _togglePanCommand;
             }
         }
 
