@@ -619,9 +619,8 @@ namespace Dynamo.ViewModels
 
             // All the models in the selection will be modified, 
             // record their current states before anything gets changed.
-            IEnumerable<ModelBase> models = null;
             SmartCollection<ISelectable> selection = DynamoSelection.Instance.Selection;
-            models = selection.Cast<ModelBase>().Where(x => x is ModelBase);
+            IEnumerable<ModelBase> models = selection.OfType<ModelBase>();
             _model.RecordModelsForModification(models.ToList());
 
             if (alignType == "HorizontalCenter")  // make vertial line of elements

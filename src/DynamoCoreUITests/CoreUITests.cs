@@ -543,9 +543,7 @@ namespace Dynamo.Tests.UI
         private void CreateNodeOnCurrentWorkspace()
         {
             // Create number node
-            var nodeData = new System.Collections.Generic.Dictionary<string, object>();
-            nodeData.Add("name", "Number");
-            Controller.DynamoModel.CreateNode(nodeData);
+            Controller.DynamoModel.CreateNode(Guid.NewGuid(), "Number", 0, 0, true, false);
             var numNode = Controller.DynamoViewModel.Model.Nodes[0];
 
             // Add to current workspace

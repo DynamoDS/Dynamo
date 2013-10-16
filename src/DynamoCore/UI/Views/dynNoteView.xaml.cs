@@ -21,7 +21,7 @@ using Dynamo.Selection;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using DynamoCommands = Dynamo.UI.Commands.DynamoCommands;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Nodes
 {
@@ -96,7 +96,9 @@ namespace Dynamo.Nodes
 
         void noteText_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            ViewModel.SelectCommand.Execute(null);
+            System.Guid noteGuid = this.ViewModel.Model.GUID;
+            dynSettings.Controller.DynamoViewModel.ExecuteCommand(
+                new DynCmd.SelectModelCommand(noteGuid, Keyboard.Modifiers));
         }
 
         private void editItem_Click(object sender, RoutedEventArgs e)

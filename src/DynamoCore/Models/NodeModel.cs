@@ -1202,6 +1202,26 @@ namespace Dynamo.Models
             CheckPortsForRecalc();
         }
 
+        internal int GetPortIndex(PortModel portModel, out PortType portType)
+        {
+            int index = this.inPorts.IndexOf(portModel);
+            if (-1 != index)
+            {
+                portType = PortType.INPUT;
+                return index;
+            }
+
+            index = this.outPorts.IndexOf(portModel);
+            if (-1 != index)
+            {
+                portType = PortType.OUTPUT;
+                return index;
+            }
+
+            portType = PortType.INPUT;
+            return -1; // No port found.
+        }
+
         /// <summary>
         /// Attempts to get the input for a certain port.
         /// </summary>
