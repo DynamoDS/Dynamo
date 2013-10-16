@@ -22,7 +22,7 @@ namespace Dynamo.ViewModels
     public delegate void WorkspaceSaveEventHandler(object sender, WorkspaceSaveEventArgs e);
     public delegate void RequestPackagePublishDialogHandler(PublishPackageViewModel publishViewModel);
 
-    public class DynamoViewModel:ViewModelBase
+    public partial class DynamoViewModel : ViewModelBase
     {
         #region events
 
@@ -122,6 +122,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand PasteCommand { get; set; }
         public DelegateCommand AddToSelectionCommand { get; set; }
         public DelegateCommand ShowNewFunctionDialogCommand { get; set; }
+        public DelegateCommand SaveRecordedCommand { get; set; }
         public DelegateCommand ClearCommand { get; set; }
         public DelegateCommand GoHomeCommand { get; set; }
         public DelegateCommand ShowPackageManagerSearchCommand { get; set; }
@@ -411,7 +412,7 @@ namespace Dynamo.ViewModels
 
         #endregion
 
-        public DynamoViewModel(DynamoController controller)
+        public DynamoViewModel(DynamoController controller, string commandFilePath)
         {
             ConnectorType = ConnectorType.BEZIER;
             
@@ -430,6 +431,18 @@ namespace Dynamo.ViewModels
 
             Controller = controller;
 
+            // Validate if the supplied commandFilePath is valid and the file exists.
+            if (string.IsNullOrEmpty(commandFilePath) || (!File.Exists(commandFilePath)))
+                commandFilePath = null;
+
+            // If there is no command file being specified, then that means it 
+            // is not in automation mode. The command recording will be enabled
+            // in a regular user scenario.
+            // 
+            this.commandFilePath = commandFilePath;
+            if (string.IsNullOrEmpty(commandFilePath))
+                this.recordedCommands = new List<DynamoViewModel.RecordableCommand>();
+
             OpenCommand = new DelegateCommand(_model.Open, _model.CanOpen);
             ShowOpenDialogAndOpenResultCommand = new DelegateCommand(_model.ShowOpenDialogAndOpenResult, _model.CanShowOpenDialogAndOpenResultCommand);
             WriteToLogCmd = new DelegateCommand(_model.WriteToLog, _model.CanWriteToLog);
@@ -437,6 +450,7 @@ namespace Dynamo.ViewModels
             AddNoteCommand = new DelegateCommand(_model.AddNote, _model.CanAddNote);
             AddToSelectionCommand = new DelegateCommand(_model.AddToSelection, _model.CanAddToSelection);
             ShowNewFunctionDialogCommand = new DelegateCommand(_model.ShowNewFunctionDialogAndMakeFunction, _model.CanShowNewFunctionDialogCommand);
+            SaveRecordedCommand = new DelegateCommand(SaveRecordedCommands, CanSaveRecordedCommands);
             ClearCommand = new DelegateCommand(_model.Clear, _model.CanClear);
             GoHomeCommand = new DelegateCommand(GoHomeView, CanGoHomeView);
             SelectAllCommand = new DelegateCommand(SelectAll, CanSelectAll);

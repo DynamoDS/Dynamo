@@ -8,7 +8,7 @@ namespace Dynamo.Controls
 {
     public class DynamoRevitViewModel : DynamoViewModel
     {
-        public DynamoRevitViewModel(DynamoController controller) : base(controller) { }
+        public DynamoRevitViewModel(DynamoController controller) : base(controller, null) { }
 
         public override bool CanRunDynamically
         {
