@@ -12,7 +12,6 @@ using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
-    [TestFixture]
     class PackageLoaderTests : DynamoUnitTest
     {
         public string PackagesDirectory { get { return Path.Combine(this.GetTestDirectory(), "pkgs"); } }
@@ -131,7 +130,6 @@ namespace Dynamo.Tests
         }
     }
 
-    [TestFixture]
     class PackageManagerClientTests : DynamoUnitTest
     {
         // All of these tests do not require authentication
@@ -191,7 +189,6 @@ namespace Dynamo.Tests
 
     }
 
-    [TestFixture]
     class PackageUploadBuilderTests : DynamoUnitTest
     {
 

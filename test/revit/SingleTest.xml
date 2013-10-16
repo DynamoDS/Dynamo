@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tests pluginClass='Dynamo.Tests.DynamoTestFramework' pluginGUID='487f9ff0-5b34-4e7e-97bf-70fbff69194f'>
+	<testAssemblies>
+		<testAssembly name="DynamoRevitTester.dll">
+			<testFixture name="MeasureTests">
+				<test name="GetSurfaceDomain" runDynamo="True" modelPath=".\GetSurfaceDomain.rvt"/>
+			</testFixture>
+		</testAssembly>
+	</testAssemblies>
+</tests>

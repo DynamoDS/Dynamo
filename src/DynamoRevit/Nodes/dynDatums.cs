@@ -79,6 +79,32 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Select Level")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_DATUMS)]
+    [NodeDescription("Creates a level datum.")]
+    public class SelectLevel : DropDrownBase
+    {
+        public SelectLevel()
+        {
+            OutPortData.Add(new PortData("level", "The level.", typeof(Value.Container)));
+
+            RegisterAllPorts();
+
+            PopulateItems();
+        }
+
+        public override void PopulateItems()
+        {
+            Items.Clear();
+
+            //find all levels in the project
+            var levelColl = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            levelColl.OfClass(typeof (Autodesk.Revit.DB.Level));
+
+            levelColl.ToElements().ToList().ForEach(x=>Items.Add(new DynamoDropDownItem(x.Name, x)));
+        }
+    }
+
     [NodeName("Ref Plane")]
     [NodeCategory(BuiltinNodeCategories.REVIT_DATUMS)]
     [NodeDescription("Creates a reference plane.")]

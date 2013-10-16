@@ -5,8 +5,6 @@ namespace Dynamo.ViewModels
     public partial class WorkspaceViewModel
     {
         private DelegateCommand _hideCommand;
-        private DelegateCommand _crossSelectCommand;
-        private DelegateCommand _containSelectCommand;
         private DelegateCommand _setCurrentOffsetCommand;
         private DelegateCommand _nodeFromSelectionCommand;
         private DelegateCommand _setZoomCommand;
@@ -38,28 +36,6 @@ namespace Dynamo.ViewModels
                     _hideCommand = new DelegateCommand(Hide, CanHide);
 
                 return _hideCommand;
-            }
-        }
-
-        public DelegateCommand CrossSelectCommand
-        {
-            get
-            {
-                if(_crossSelectCommand == null)
-                    _crossSelectCommand = new DelegateCommand(CrossingSelect, CanCrossSelect);
-
-                return _crossSelectCommand;
-            }
-        }
-
-        public DelegateCommand ContainSelectCommand
-        {
-            get
-            {
-                if(_containSelectCommand == null)
-                    _containSelectCommand = new DelegateCommand(ContainSelect, CanContainSelect);
-
-                return _containSelectCommand;
             }
         }
 

@@ -214,14 +214,6 @@ namespace Dynamo.ViewModels
                 }
                 else if (this.currentState == State.WindowSelection)
                 {
-                    // TODO(Ben): Can we not only select those nodes that we 
-                    // have not previously selected? Of course that requires 
-                    // us to take deselection into consideration.
-                    // 
-                    // Clear the selected elements before reselecting 
-                    // all nodes that fall within the selection window.
-                    DynamoSelection.Instance.ClearSelection();
-
                     // When the mouse is held down, reposition the drag selection box.
                     double x = Math.Min(mouseDownPos.X, mouseCursor.X);
                     double y = Math.Min(mouseDownPos.Y, mouseCursor.Y);
@@ -243,11 +235,7 @@ namespace Dynamo.ViewModels
                     this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
 
                     var rect = new Rect(x, y, width, height);
-
-                    if (isCrossSelection)
-                        owningWorkspace.CrossSelectCommand.Execute(rect);
-                    else
-                        owningWorkspace.ContainSelectCommand.Execute(rect);
+                    owningWorkspace.SelectInRegion(rect, isCrossSelection);
                 }
                 else if (this.currentState == State.DragSetup)
                 {
@@ -362,8 +350,8 @@ namespace Dynamo.ViewModels
                         second = start;
                     }
 
-                    ConnectorModel newConnectorModel = ConnectorModel.Make(
-                        firstPort.Owner, second.Owner, firstPort.Index, second.Index, 0);
+                    ConnectorModel newConnectorModel = ConnectorModel.Make(firstPort.Owner,
+                        second.Owner, firstPort.Index, second.Index, PortType.INPUT);
 
                     if (newConnectorModel == null) // The connector is invalid
                         return false;

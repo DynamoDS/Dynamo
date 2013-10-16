@@ -18,7 +18,6 @@ using System.Windows;
 
 namespace Dynamo.Tests
 {
-    [TestFixture]
     internal class CoreTests : DynamoUnitTest
     {
         

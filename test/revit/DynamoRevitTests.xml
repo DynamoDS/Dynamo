@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tests pluginClass='Dynamo.Tests.DynamoTestFramework' pluginGUID='487f9ff0-5b34-4e7e-97bf-70fbff69194f'>
+	<testAssemblies>
+		<testAssembly name="DynamoRevitTester.dll">
+			<testFixture name="AnalysisTests">
+				<test name="RayBounce" runDynamo="True" modelPath=".\RayBounce.rvt"/>
+			</testFixture>
+			<testFixture name="AdaptiveComponentTests">
+				<test name="AdaptiveComponentByFace" runDynamo="True" modelPath=".\AdaptiveComponentByFace.rfa"/>
+				<test name="AdaptiveComponentByCurve" runDynamo="True" modelPath=".\AdaptiveComponentByCurve.rfa"/>
+				<test name="AdaptiveComponent" runDynamo="True" modelPath=".\AdaptiveComponent.rfa"/>
+			</testFixture>
+			<testFixture name="BugTests">
+				<test name="MAGN_66" runDynamo="True" modelPath=".\MAGN_66.rfa"/>
+			</testFixture>
+			<testFixture name="CoreTests">
+				<test name="SanityCheck" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="CanChangeLacingAndHaveElementsUpdate" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="ElementNodeReassociation" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="SwitchDocuments" runDynamo="False" modelPath=".\empty.rfa"/>
+			</testFixture>
+			<testFixture name="CurveTests">
+				<test name="ModelCurve" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="ReferenceCurve" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="CurveByPoints" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="CurveLoop" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="CurvebyPointsArc" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="OffsetCurve" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="ThickenCurve" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="CurveByPointsByLineNode" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="ClosedCurve" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="CurvebyPointsEllipse" runDynamo="True" modelPath=".\empty.rfa"/>
+			</testFixture>
+			<testFixture name="FamilyTests">
+				<test name="FamilyTypeSelectorNode" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="GetFamilyInstancesByType" runDynamo="True" modelPath=".\GetFamilyInstancesByType.rvt"/>
+				<test name="GetFamilyInstanceLocation" runDynamo="True" modelPath=".\GetFamilyInstanceLocation.rvt"/>
+			</testFixture>
+			<testFixture name="DividedSurfaceTests">
+				<test name="DividedSurface" runDynamo="True" modelPath=".\DividedSurface.rfa"/>
+			</testFixture>
+			<testFixture name="DatumsTests">
+				<test name="Level" runDynamo="True" modelPath=".\Level.rvt"/>
+			</testFixture>
+			<testFixture name="IntersectionTests">
+				<test name="CurveCurveIntersection" runDynamo="True" modelPath=".\CurveCurveIntersection.rfa"/>
+				<test name="CurveFaceIntersection" runDynamo="True" modelPath=".\CurveFaceIntersection.rfa"/>
+				<test name="FaceFaceIntersection" runDynamo="True" modelPath=".\FaceFaceIntersection.rfa"/>
+			</testFixture>
+			<testFixture name="MeasureTests">
+				<test name="GetCurveDomain" runDynamo="True" modelPath=".\GetCurveDomain.rfa"/>
+				<test name="GetSurfaceDomain" runDynamo="True" modelPath=".\GetSurfaceDomain.rvt"/>
+				<test name="Length" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="UVRandom" runDynamo="True" modelPath=".\empty.rfa"/>
+			</testFixture>
+			<testFixture name="MiscTests">
+				<test name="GetMaterialByName" runDynamo="True" modelPath=".\GetMaterialByName.rfa"/>
+				<test name="ModelText" runDynamo="True" modelPath=".\ModelText.rfa"/>
+			</testFixture>
+			<testFixture name="PointTests">
+				<test name="ReferencePoint" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="CanCreateAndDeleteAReferencePoint" runDynamo="False" modelPath=".\empty.rfa"/>
+				<test name="XYZFromReferencePoint" runDynamo="True" modelPath=".\empty.rfa"/>
+			</testFixture>
+			<testFixture name="RegressionTests">
+				<test name="Regressions" runDynamo="True" modelPath=".\empty.rfa"/>
+			</testFixture>
+			<testFixture name="SampleTests">
+				<test name="CreatePointSequenceSample" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="CreatePointEndSample" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="CreatePointSample" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="RefGridSlidersSample" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="RefGridSlidersEndSample" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="DivideSelectedCurveEndSample" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="DivideSelectedCurveSample" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="FormFromCurveSelectionListSample" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="FormFromCurveSelectionSample" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="GraphFunctionAndConnectPointsSample" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="ScalableGraphFunctionSample" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="GraphFunctionSample" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="InstParamSample" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="InstParam2MassesSample" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="InstParam2MassesDrivingEachOtherSample" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="InstParam2MassesDrivingEachOtherSample" runDynamo="True" modelPath=".\empty.rfa"/>
+			</testFixture>
+			<testFixture name="SolidTests">
+				<test name="BlendSolid" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="Loft" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="RevolveSolid" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="SolidBySkeleton" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="SweepToMakeSolid" runDynamo="True" modelPath=".\empty.rfa"/>
+			</testFixture>
+			<testFixture name="ViewTests">
+				<test name="AxonometricView" runDynamo="True" modelPath=".\AxonometricView.rfa"/>
+				<test name="OverrideElementColorInView" runDynamo="True" modelPath=".\OverrideElementColorInView.rvt"/>
+				<test name="PerspectiveView" runDynamo="True" modelPath=".\PerspectiveView.rfa"/>
+			</testFixture>
+		</testAssembly>
+	</testAssemblies>
+</tests>
