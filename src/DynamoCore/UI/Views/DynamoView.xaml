@@ -108,10 +108,6 @@
                                 Modifiers="Control+Shift"
                                 Command="{Binding Path=DataContext.ClearCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
 
-        <KeyBinding Key="L"
-                Modifiers="Control+Shift"
-                    Command="{Binding Path=DataContext.LayoutAllCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
-
         <KeyBinding Key="Left"
                     Modifiers="Ctrl+Alt"
                     CommandParameter="Left"
