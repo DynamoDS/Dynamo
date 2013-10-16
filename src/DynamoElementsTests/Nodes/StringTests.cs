@@ -14,7 +14,6 @@ using String = System.String;
 
 namespace Dynamo.Tests
 {
-    [TestFixture]
     class StringTests : DynamoUnitTest
     {
         string localDynamoStringTestFloder { get { return Path.Combine(GetTestDirectory(), "core", "string");}}
