@@ -48,6 +48,11 @@ namespace Dynamo.DSEngine
             /// not implemented yet.
         }
 
+        public RuntimeMirror GetMirror(string var)
+        {
+            return liveRunner.InspectNodeValue(var);
+        }
+
         public string GetStringValue(string var)
         {
             RuntimeMirror mirror = liveRunner.InspectNodeValue(var);
