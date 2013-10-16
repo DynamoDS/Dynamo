@@ -20,7 +20,7 @@ namespace Dynamo.Nodes
         public List<int> PastResultIds { get { return _pastResultsIds; } }
 
         // TODO: this should be overriding OnEvaluate, but OnEvaluate is used differently throughout the codebase
-        // too late to test this for 0.6.1
+        // too late to test this for 0.6.2
         protected void ClearPreviousResults()  
         {
             // remove the display results registered for this node
