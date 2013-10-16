@@ -173,8 +173,6 @@ namespace Dynamo.Applications
 
             isRunning = true;
 
-            DynamoLogger.Instance.StartLogging();
-
             try
             {
                 m_revit = revit.Application;
@@ -376,8 +374,6 @@ namespace Dynamo.Applications
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
             AppDomain.CurrentDomain.AssemblyResolve += Dynamo.Utilities.AssemblyHelper.CurrentDomain_AssemblyResolve;
-
-            DynamoLogger.Instance.StartLogging();
 
             // Get the StringStringMap class which can write support into.
             IDictionary<string, string> dataMap = revit.JournalData;

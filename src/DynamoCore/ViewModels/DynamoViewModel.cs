@@ -961,8 +961,6 @@ namespace Dynamo.ViewModels
             OnRequestClose(this, EventArgs.Empty);
 
             dynSettings.Controller.ShutDown();
-
-            DynamoLogger.Instance.FinishLogging();
         }
 
         internal bool CanExit(object allowCancel)

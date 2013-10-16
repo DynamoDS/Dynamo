@@ -78,8 +78,6 @@ namespace Dynamo.Tests
         {
             try
             {
-                DynamoLogger.Instance.StartLogging();
-
                 //create a new instance of the ViewModel
                 Controller = new DynamoController(new ExecutionEnvironment(), typeof (DynamoViewModel), Context.NONE)
                     {
