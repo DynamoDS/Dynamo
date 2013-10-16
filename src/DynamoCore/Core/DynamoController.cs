@@ -7,12 +7,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Threading;
-using Autodesk.LibG;
-using Dynamo.DSEngine;
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -172,13 +169,6 @@ namespace Dynamo
         {
             if (RequestsRedraw != null)
                 RequestsRedraw(sender, e);
-        }
-
-        public event DispatchedToUIThreadHandler DispatchedToUI;
-        public void OnDispatchedToUI(object sender, UIDispatcherEventArgs e)
-        {
-            if (DispatchedToUI != null)
-                DispatchedToUI(this, e);
         }
 
         public delegate void CrashPromptHandler(object sender, DispatcherUnhandledExceptionEventArgs e);
@@ -479,14 +469,7 @@ namespace Dynamo
             {
                 /* Evaluation failed due to error */
 
-                if (dynSettings.Controller.UIDispatcher != null)
-                {
-                    //Print unhandled exception
-                    if (ex.Message.Length > 0)
-                    {
-                        dynSettings.Controller.DispatchOnUIThread(() => DynamoLogger.Instance.Log(ex));
-                    }
-                }
+                DynamoLogger.Instance.Log(ex);
 
                 OnRunCancelled(true);
                 RunCancelled = true;
@@ -530,16 +513,6 @@ namespace Dynamo
         public void RequestClearDrawables()
         {
             VisualizationManager.ClearRenderables();
-        }
-
-        /// <summary>
-        /// Called by nodes for behavior that they want to dispatch on the UI thread
-        /// Triggers event to be received by the UI. If no UI exists, behavior will not be executed.
-        /// </summary>
-        /// <param name="a"></param>
-        public void DispatchOnUIThread(Action a)
-        {
-            OnDispatchedToUI(this, new UIDispatcherEventArgs(a));
         }
 
         public void CancelRun(object parameter)
