@@ -949,7 +949,10 @@ namespace Dynamo.Models
         public void AddNote(object parameters)
         {
             if (null != parameters) // See above for details of this exception.
-                throw new ArgumentException("Argument should be null!", "parameters");
+            {
+                var message = "Internal error, argument must be null";
+                throw new ArgumentException(message, "parameters");
+            }
 
             var command = new DynCmd.CreateNoteCommand(Guid.NewGuid(), null, 0, 0, true);
             dynSettings.Controller.DynamoViewModel.ExecuteCommand(command);
@@ -1276,7 +1279,8 @@ namespace Dynamo.Models
             NodeModel node = CreateNodeInstance(nodeName);
             if (node == null)
             {
-                WriteToLog("Failed to create the node");
+                string format = "Failed to create node '{0}' (GUID: {1})";
+                WriteToLog(string.Format(format, nodeName, nodeId));
                 return null;
             }
 
@@ -1288,7 +1292,8 @@ namespace Dynamo.Models
 
             if ((node is Symbol || node is Output) && CurrentWorkspace is HomeWorkspaceModel)
             {
-                WriteToLog("Cannot place dynSymbol or dynOutput in HomeWorkspace");
+                string format = "Cannot place '{0}' in HomeWorkspace (GUID: {1})";
+                WriteToLog(string.Format(format, nodeName, nodeId));
                 return null;
             }
 
