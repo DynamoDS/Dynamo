@@ -62,13 +62,14 @@ namespace Dynamo.Views
             selectionCanvas.Children.Add(endlessGrid);
             zoomBorder.EndlessGrid = endlessGrid; // Register with ZoomBorder
 
-            // EndlessGrid Toggle On/Off Binding
-            Binding binding = new Binding()
+            // Binding for grid lines HitTest and Visibility
+            var binding = new Binding()
             {
-                Path = new PropertyPath("FullscreenWatchVisible"),
+                Path = new PropertyPath("DataContext.FullscreenWatchShowing"),
                 Converter = new InverseBoolToVisibilityConverter(),
                 Mode = BindingMode.OneWay,
             };
+            binding.RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(TabControl), 1);
             endlessGrid.SetBinding(UIElement.VisibilityProperty, binding);
 
             Debug.WriteLine("Workspace loaded.");

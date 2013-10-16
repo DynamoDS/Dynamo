@@ -337,7 +337,7 @@
 
         <!--Workspace-->
         <Border Margin="0" BorderBrush="Black" BorderThickness="0" Name="border" 
-                Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="3" Background="Transparent"
+                Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="3"
                 SizeChanged="Workspace_SizeChanged">
             <Grid>
                 <TabControl ItemsSource="{Binding Workspaces}"
