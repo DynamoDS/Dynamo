@@ -25,6 +25,7 @@ using Dynamo.Selection;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using System.Windows.Media;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Controls
@@ -55,9 +56,8 @@ namespace Dynamo.Controls
             this.Loaded += new RoutedEventHandler(dynNodeView_Loaded);
             inputGrid.Loaded += new RoutedEventHandler(inputGrid_Loaded);
             this.LayoutUpdated += OnLayoutUpdated;
-            
+
             Canvas.SetZIndex(this, 1);
-            
         }
 
         #endregion
@@ -95,9 +95,11 @@ namespace Dynamo.Controls
 
         void NodeLogic_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "ArgumentLacing")
+            switch (e.PropertyName)
             {
-                ViewModel.SetLacingTypeCommand.RaiseCanExecuteChanged();
+                case "ArgumentLacing":
+                    ViewModel.SetLacingTypeCommand.RaiseCanExecuteChanged();
+                    break;
             }
         }
 
@@ -162,7 +164,7 @@ namespace Dynamo.Controls
             ViewModel.SetupCustomUIElementsCommand.Execute(this);
         }
 
-        private Dictionary<UIElement, bool> enabledDict 
+        private Dictionary<UIElement, bool> enabledDict
             = new Dictionary<UIElement, bool>();
 
         internal void DisableInteraction()
@@ -248,16 +250,77 @@ namespace Dynamo.Controls
 
         private void NickNameBlock_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
+            ViewModel.CollapseTooltipCommand.Execute(null);
             if (e.ClickCount > 1)
             {
                 if (this.ViewModel != null && this.ViewModel.RenameCommand.CanExecute(null))
                 {
                     this.ViewModel.RenameCommand.Execute(null);
-                }   
+                }
 
                 e.Handled = true;
             }
         }
 
+        private void NickNameBlock_OnMouseEnter(object sender, MouseEventArgs e)
+        {
+            TextBlock textBlock = sender as TextBlock;
+            string tooltipContent = ViewModel.NickName + '\n' + ViewModel.Description;
+            UIElement containingWorkspace = WPF.FindUpVisualTree<TabControl>(this);
+            Point topLeft = textBlock.TranslatePoint(new Point(0, 0), containingWorkspace);
+            double actualWidth = textBlock.ActualWidth * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
+            double actualHeight = textBlock.ActualHeight * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
+            Point botRight = new Point(topLeft.X + actualWidth, topLeft.Y + actualHeight);
+            ViewModel.ShowTooltipCommand.Execute(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.NodeTooltip, topLeft, botRight, tooltipContent, InfoBubbleViewModel.Direction.Bottom, Guid.Empty));
+        }
+
+        private void NickNameBlock_OnMouseLeave(object sender, MouseEventArgs e)
+        {
+            ViewModel.FadeOutTooltipCommand.Execute(null);
+        }
+
+        private void InputPort_OnMouseEnter(object sender, MouseEventArgs e)
+        {
+            ContentPresenter inputPort = sender as ContentPresenter;
+            string content = (inputPort.Content as PortViewModel).ToolTipContent;
+            UIElement containingWorkspace = WPF.FindUpVisualTree<TabControl>(this);
+            Point topLeft = inputPort.TranslatePoint(new Point(0, 0), containingWorkspace);
+            double actualWidth = inputPort.ActualWidth * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
+            double actualHeight = inputPort.ActualHeight * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
+            Point botRight = new Point(topLeft.X + actualWidth, topLeft.Y + actualHeight);
+            ViewModel.ShowTooltipCommand.Execute(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.NodeTooltip, topLeft, botRight, content, InfoBubbleViewModel.Direction.Right, Guid.Empty));
+        }
+
+        private void InputPort_OnMouseLeave(object sender, MouseEventArgs e)
+        {
+            ViewModel.FadeOutTooltipCommand.Execute(null);
+        }
+
+        private void InputPort_OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ViewModel.CollapseTooltipCommand.Execute(null);
+        }
+
+        private void OutputPort_OnMouseEnter(object sender, MouseEventArgs e)
+        {
+            ContentPresenter outputPort = sender as ContentPresenter;
+            string content = (outputPort.Content as PortViewModel).ToolTipContent;
+            UIElement containingWorkspace = WPF.FindUpVisualTree<TabControl>(this);
+            Point topLeft = outputPort.TranslatePoint(new Point(0, 0), containingWorkspace);
+            double actualWidth = outputPort.ActualWidth * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
+            double actualHeight = outputPort.ActualHeight * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
+            Point botRight = new Point(topLeft.X + actualWidth, topLeft.Y + actualHeight);
+            ViewModel.ShowTooltipCommand.Execute(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.NodeTooltip, topLeft, botRight, content, InfoBubbleViewModel.Direction.Left, Guid.Empty));
+        }
+
+        private void OutputPort_OnMouseLeave(object sender, MouseEventArgs e)
+        {
+            ViewModel.FadeOutTooltipCommand.Execute(null);
+        }
+
+        private void OutputPort_OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ViewModel.CollapseTooltipCommand.Execute(null);
+        }
     }
 }

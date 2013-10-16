@@ -10,6 +10,8 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Dynamo.Controls;
+using System.Windows.Threading;
 
 namespace Dynamo.ViewModels
 {
@@ -20,20 +22,23 @@ namespace Dynamo.ViewModels
     public delegate void ZoomEventHandler(object sender, EventArgs e);
     public delegate void SelectionEventHandler(object sender, SelectionBoxUpdateArgs e);
     public delegate void ViewModelAdditionEventHandler(object sender, ViewModelEventArgs e);
-    public delegate void WorkspacePropertyEditHandler(WorkspaceModel workspace );
+    public delegate void WorkspacePropertyEditHandler(WorkspaceModel workspace);
 
-    public partial class WorkspaceViewModel: ViewModelBase
+    public partial class WorkspaceViewModel : ViewModelBase
     {
         #region Properties and Fields
 
         public WorkspaceModel _model;
         private bool _canFindNodesFromElements = false;
+        public Dispatcher Dispatcher;
 
         public event PointEventHandler CurrentOffsetChanged;
         public event ZoomEventHandler ZoomChanged;
         public event ZoomEventHandler RequestZoomToViewportCenter;
         public event ZoomEventHandler RequestZoomToViewportPoint;
         public event ZoomEventHandler RequestZoomToFitView;
+        public event EventHandler RequestTogglePan;
+        public event EventHandler RequestStopPan;
         public event NodeEventHandler RequestCenterViewOnElement;
         public event NodeEventHandler RequestNodeCentered;
         public event ViewEventHandler RequestAddViewToOuterCanvas;
@@ -112,6 +117,22 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public virtual void OnRequestTogglePan(object sender, EventArgs e)
+        {
+            if (RequestTogglePan != null)
+            {
+                RequestTogglePan(this, e);
+            }
+        }
+
+        public virtual void OnRequestStopPan(object sender, EventArgs e)
+        {
+            if (RequestStopPan != null)
+            {
+                RequestStopPan(this, e);
+            }
+        }
+
         public virtual void OnRequestCenterViewOnElement(object sender, ModelEventArgs e)
         {
             if (RequestCenterViewOnElement != null)
@@ -159,11 +180,13 @@ namespace Dynamo.ViewModels
         private ObservableCollection<Watch3DFullscreenViewModel> _watches = new ObservableCollection<Watch3DFullscreenViewModel>();
         ObservableCollection<NodeViewModel> _nodes = new ObservableCollection<NodeViewModel>();
         ObservableCollection<NoteViewModel> _notes = new ObservableCollection<NoteViewModel>();
+        ObservableCollection<InfoBubbleViewModel> _errors = new ObservableCollection<InfoBubbleViewModel>();
 
         public ObservableCollection<ConnectorViewModel> Connectors
         {
             get { return _connectors; }
-            set { 
+            set
+            {
                 _connectors = value;
                 RaisePropertyChanged("Connectors");
             }
@@ -185,6 +208,11 @@ namespace Dynamo.ViewModels
                 _notes = value;
                 RaisePropertyChanged("Notes");
             }
+        }
+        public ObservableCollection<InfoBubbleViewModel> Errors
+        {
+            get { return _errors; }
+            set { _errors = value; RaisePropertyChanged("Errors"); }
         }
 
         public string Name
@@ -213,12 +241,12 @@ namespace Dynamo.ViewModels
                 {
                     WorkspaceElements.Add(value);
                     activeConnector = value;
-                }    
+                }
                 else
                 {
                     WorkspaceElements.Remove(activeConnector);
                 }
-                
+
                 RaisePropertyChanged("ActiveConnector");
             }
         }
@@ -292,7 +320,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public Action FindNodesFromElements{ get; set; }
+        public Action FindNodesFromElements { get; set; }
 
         #endregion
 
@@ -311,6 +339,9 @@ namespace Dynamo.ViewModels
             var notesColl = new CollectionContainer { Collection = Notes };
             _workspaceElements.Add(notesColl);
 
+            var errorsColl = new CollectionContainer { Collection = Errors };
+            _workspaceElements.Add(errorsColl);
+
             //respond to collection changes on the model by creating new view models
             //currently, view models are added for notes and nodes
             //connector view models are added during connection
@@ -323,6 +354,7 @@ namespace Dynamo.ViewModels
             Nodes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Nodes));
             Connectors_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Connectors));
             Notes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Notes));
+            Dispatcher = System.Windows.Threading.Dispatcher.CurrentDispatcher;
         }
 
         void DynamoViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -335,7 +367,7 @@ namespace Dynamo.ViewModels
 
         void Connectors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            switch(e.Action)
+            switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
                     foreach (var item in e.NewItems)
@@ -390,18 +422,28 @@ namespace Dynamo.ViewModels
                         if (item != null && item is NodeModel)
                         {
                             var node = item as NodeModel;
-                            _nodes.Add(new NodeViewModel(node));
+
+                            NodeViewModel nodeViewModel = new NodeViewModel(node);
+                            _nodes.Add(nodeViewModel);
+                            InfoBubbleViewModel errorBubble = new InfoBubbleViewModel(node.GUID);
+                            nodeViewModel.ErrorBubble = errorBubble;
+                            Errors.Add(errorBubble);
                         }
                     }
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     _nodes.Clear();
+                    Errors.Clear();
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var item in e.OldItems)
                     {
                         var node = item as NodeModel;
-                        _nodes.Remove(_nodes.First(x => x.NodeLogic == item));
+                        NodeViewModel nodeViewModel = _nodes.First(x => x.NodeLogic == item);
+
+                        Errors.Remove(nodeViewModel.ErrorBubble);
+                        _nodes.Remove(nodeViewModel);
+
                     }
                     break;
             }
@@ -629,7 +671,7 @@ namespace Dynamo.ViewModels
 
                 var yMin = GetSelectionMinY();
                 var yMax = GetSelectionMaxTopY();
-                var spacing = (yMax - yMin)/(DynamoSelection.Instance.Selection.Count - 1);
+                var spacing = (yMax - yMin) / (DynamoSelection.Instance.Selection.Count - 1);
                 int count = 0;
 
                 DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
@@ -667,7 +709,7 @@ namespace Dynamo.ViewModels
 
         private void Hide(object parameters)
         {
-            if ( !this.Model.HasUnsavedChanges|| dynSettings.Controller.DynamoViewModel.AskUserToSaveWorkspaceOrCancel(this.Model))
+            if (!this.Model.HasUnsavedChanges || dynSettings.Controller.DynamoViewModel.AskUserToSaveWorkspaceOrCancel(this.Model))
             {
                 dynSettings.Controller.DynamoViewModel.Model.HideWorkspace(this._model);
             }
@@ -728,6 +770,7 @@ namespace Dynamo.ViewModels
         private void ZoomIn(object o)
         {
             OnRequestZoomToViewportCenter(this, new ZoomEventArgs(_zoomIncrement));
+            ResetFitViewToggle(o);
         }
 
         private bool CanZoomIn(object o)
@@ -738,6 +781,7 @@ namespace Dynamo.ViewModels
         private void ZoomOut(object o)
         {
             OnRequestZoomToViewportCenter(this, new ZoomEventArgs(-_zoomIncrement));
+            ResetFitViewToggle(o);
         }
 
         private bool CanZoomOut(object o)
@@ -755,7 +799,7 @@ namespace Dynamo.ViewModels
 
         private void SetZoom(object zoom)
         {
-            _model.Zoom = Convert.ToDouble(zoom); ;
+            _model.Zoom = Convert.ToDouble(zoom);
         }
 
         private bool CanSetZoom(object zoom)
@@ -763,7 +807,7 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        private bool _fitViewActualZoomToggle = true;
+        private bool _fitViewActualZoomToggle = false;
         private void FitView(object o)
         {
             // Get the offset and focus width & height (zoom if 100%)
@@ -803,6 +847,36 @@ namespace Dynamo.ViewModels
         }
 
         private bool CanFitView(object o)
+        {
+            return true;
+        }
+
+        private void ResetFitViewToggle(object o)
+        {
+            _fitViewActualZoomToggle = false;
+        }
+
+        private bool CanResetFitViewToggle(object o)
+        {
+            return true;
+        }
+
+        private void TogglePan(object o)
+        {
+            OnRequestTogglePan(this, null);
+        }
+
+        private bool CanTogglePan(object o)
+        {
+            return true;
+        }
+
+        private void StopPan(object o)
+        {
+            OnRequestStopPan(this, null);
+        }
+
+        private bool CanStopPan(object o)
         {
             return true;
         }
@@ -889,7 +963,7 @@ namespace Dynamo.ViewModels
         }
     }
 
-    public class ViewModelEventArgs:EventArgs
+    public class ViewModelEventArgs : EventArgs
     {
         public NodeViewModel ViewModel { get; set; }
         public ViewModelEventArgs(NodeViewModel vm)

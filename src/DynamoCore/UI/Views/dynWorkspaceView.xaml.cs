@@ -25,6 +25,7 @@ namespace Dynamo.Views
         // TODO(Ben): Remove this.
         private Dynamo.Controls.DragCanvas WorkBench = null;
         private ZoomAndPanControl zoomAndPanControl = null;
+        private EndlessGrid endlessGrid = null;
 
         public WorkspaceViewModel ViewModel
         {
@@ -56,6 +57,21 @@ namespace Dynamo.Views
             zoomAndPanControl.Focusable = false;
             outerCanvas.Children.Add(zoomAndPanControl);
 
+            // Add EndlessGrid
+            endlessGrid = new EndlessGrid(outerCanvas);
+            selectionCanvas.Children.Add(endlessGrid);
+            zoomBorder.EndlessGrid = endlessGrid; // Register with ZoomBorder
+
+            // Binding for grid lines HitTest and Visibility
+            var binding = new Binding()
+            {
+                Path = new PropertyPath("DataContext.FullscreenWatchShowing"),
+                Converter = new InverseBoolToVisibilityConverter(),
+                Mode = BindingMode.OneWay,
+            };
+            binding.RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(TabControl), 1);
+            endlessGrid.SetBinding(UIElement.VisibilityProperty, binding);
+
             Debug.WriteLine("Workspace loaded.");
             DynamoSelection.Instance.Selection.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
         }
@@ -81,6 +97,10 @@ namespace Dynamo.Views
             ViewModel.RequestCenterViewOnElement += new NodeEventHandler(CenterViewOnElement);
             ViewModel.RequestNodeCentered += new NodeEventHandler(vm_RequestNodeCentered);
             ViewModel.RequestAddViewToOuterCanvas += new ViewEventHandler(vm_RequestAddViewToOuterCanvas);
+            ViewModel.RequestTogglePan -= new EventHandler(vm_TogglePan);
+            ViewModel.RequestTogglePan += new EventHandler(vm_TogglePan);
+            ViewModel.RequestStopPan -= new EventHandler(vm_ExitPan);
+            ViewModel.RequestStopPan += new EventHandler(vm_ExitPan);
             ViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
             ViewModel.WorkspacePropertyEditRequested += VmOnWorkspacePropertyEditRequested;
             ViewModel.RequestSelectionBoxUpdate += VmOnRequestSelectionBoxUpdate;
@@ -157,11 +177,11 @@ namespace Dynamo.Views
 
         void selectionCanvas_Loaded(object sender, RoutedEventArgs e)
         {
-            var sw = new Stopwatch();
-            sw.Start();
-            DrawGrid();
-            sw.Stop();
-            DynamoLogger.Instance.Log(string.Format("{0} elapsed for drawing grid.", sw.Elapsed));
+            //Stopwatch sw = new Stopwatch();
+            //sw.Start();
+            //DrawGrid();
+            //sw.Stop();
+            //DynamoLogger.Instance.Log(string.Format("{0} elapsed for drawing grid.", sw.Elapsed));
         }
 
         void vm_RequestAddViewToOuterCanvas(object sender, EventArgs e)
@@ -170,6 +190,16 @@ namespace Dynamo.Views
             outerCanvas.Children.Add(view);
             Canvas.SetBottom(view, 0);
             Canvas.SetRight(view, 0);
+        }
+
+        private void vm_TogglePan(object sender, EventArgs e)
+        {
+            zoomBorder.PanMode = !zoomBorder.PanMode;
+        }
+
+        private void vm_ExitPan(object sender, EventArgs e)
+        {
+            zoomBorder.PanMode = false;
         }
 
         private double currentNodeCascadeOffset = 0.0;
@@ -417,110 +447,6 @@ namespace Dynamo.Views
                         zoomBorder.SetTranslateTransformOrigin(new Point(vm.Model.X - deltaX, vm.Model.Y - deltaY));
                     } 
                 });
-        }
-
-        private void DrawGrid()
-        {
-            selectionCanvas.UseLayoutRounding = true;
-
-            // vertical canvas edge line
-            var xLine = new Line
-                {
-                    Stroke = new SolidColorBrush(Color.FromArgb(255, 180, 180, 180)),
-                    X1 = 0,
-                    Y1 = 0,
-                    X2 = 0,
-                    Y2 = selectionCanvas.ActualHeight,
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    StrokeThickness = 1
-                };
-            selectionCanvas.Children.Add(xLine);
-
-            Line xLine2 = null;
-
-            xLine.Stroke = new SolidColorBrush(Color.FromArgb(255, 140, 140, 140));
-
-            // vertical canvas edge line thicker
-            xLine2 = new Line
-                {
-                    Stroke = new SolidColorBrush(Color.FromArgb(70, 180, 180, 180)),
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    StrokeThickness = 6,
-                    Y1 = xLine.Y1 + 6.5,
-                    X1 = xLine.X1 + 3.5,
-                    X2 = xLine.X2 + 3.5,
-                    Y2 = selectionCanvas.ActualHeight,
-                    IsHitTestVisible = false
-                };
-            selectionCanvas.Children.Add(xLine2);
- 
-            Dynamo.Controls.DragCanvas.SetCanBeDragged(xLine, false);
-            xLine.IsHitTestVisible = false;
-
-            var bindingX = new Binding() 
-            { 
-                Path = new PropertyPath("DataContext.FullscreenWatchShowing"), 
-                Converter = new InverseBoolToVisibilityConverter(),
-                Mode = BindingMode.OneWay,
-            };
-            bindingX.RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(TabControl),1);
-
-            xLine.SetBinding(UIElement.VisibilityProperty, bindingX);
-            if (xLine2 != null)
-            {
-                xLine2.SetBinding(UIElement.VisibilityProperty, bindingX);
-            }
-
-            // horizontal canvas edge line
-            var yLine = new Line
-                {
-                    Stroke = new SolidColorBrush(Color.FromArgb(255, 180, 180, 180)),
-                    X1 = -0.5,
-                    Y1 = 0,
-                    X2 = selectionCanvas.ActualWidth,
-                    Y2 = 0,
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    StrokeThickness = 1
-                };
-            selectionCanvas.Children.Add(yLine);
-
-            Line yLine2 = null;
-            yLine.Stroke = new SolidColorBrush(Color.FromArgb(255, 140, 140, 140));
-
-            // horizontal canvas edge line thicker
-            yLine2 = new Line
-                {
-                    Stroke = new SolidColorBrush(Color.FromArgb(70, 180, 180, 180)),
-                    StrokeThickness = 6,
-                    X1 = 0,
-                    X2 = selectionCanvas.ActualWidth,
-                    Y1 = yLine.Y1 + 3.5,
-                    Y2 = yLine.Y2 + 3.5,
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    IsHitTestVisible = false
-                };
-            selectionCanvas.Children.Add(yLine2);
-
-            yLine.IsHitTestVisible = false;
-
-            var bindingY = new Binding()
-            {
-                Path = new PropertyPath("DataContext.FullscreenWatchShowing"),
-                Converter = new InverseBoolToVisibilityConverter(),
-                Mode = BindingMode.OneWay,
-            };
-            bindingY.RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(TabControl), 1);
-
-            yLine.SetBinding(UIElement.VisibilityProperty, bindingY);
-            if (yLine2 != null)
-            {
-                yLine2.SetBinding(UIElement.VisibilityProperty, bindingY);
-            }
-            
         }
 
         private void WorkBench_OnLoaded(object sender, RoutedEventArgs e)
