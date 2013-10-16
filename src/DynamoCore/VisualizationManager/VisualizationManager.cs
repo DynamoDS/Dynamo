@@ -16,6 +16,7 @@ using HelixToolkit.Wpf;
 using Microsoft.Practices.Prism.ViewModel;
 using Newtonsoft.Json;
 using String = System.String;
+using Dynamo.DSEngine;
 
 //testing to see if github integration works.
 
@@ -150,6 +151,9 @@ namespace Dynamo
             dynSettings.Controller.DynamoModel.CleaningUp += DynamoModel_CleaningUp;
 
             Visualizers.Add(typeof(GraphicItem), VisualizationManagerASM.DrawLibGGraphicItem);
+#if USE_DSENGINE
+            Visualizers.Add(typeof(Autodesk.DesignScript.Interfaces.IGraphicItem), VisualizationManagerDSGeometry.DrawDesignScriptGraphicItem);
+#endif
         }
 
         void DynamoModel_CleaningUp(object sender, EventArgs e)
@@ -624,6 +628,32 @@ namespace Dynamo
         /// <returns></returns>
         public static Dictionary<NodeModel,List<object>> GetAllDrawablesInModel()
         {
+#if USE_DSENGINE
+            Dictionary<NodeModel, List<object>> drawables = new Dictionary<NodeModel, List<object>>();
+            foreach (var node in dynSettings.Controller.DynamoModel.Nodes)
+            {
+                if (node is DSFunction)
+                {
+                    string varName = node.AstIdentifier.Name;
+                    var mirror = Dynamo.DSEngine.LiveRunnerServices.Instance.GetMirror(varName);
+                    if (mirror != null)
+                    {
+                        var graphItems = mirror.GetData().GetGraphicsItems();
+                        if (graphItems != null)
+                        {
+                            List<object> drawableItems = new List<object>();
+                            foreach (var item in graphItems)
+                            {
+                                drawableItems.Add(item); 
+                            }
+                            drawables.Add(node, drawableItems);
+                        }
+                    }
+                }
+            }
+
+            return drawables;
+#else
             //get a list of tuples node,drawables
             var nodeTuples = dynSettings.Controller.DynamoModel.Nodes
                                         .Where(x => x.OldValue != null)
@@ -639,6 +669,7 @@ namespace Dynamo
             var drawables = nodeTuples.Where(x=>x.Item2.Count>0).ToDictionary(tuple => tuple.Item1, tuple => tuple.Item2);
 
             return drawables;
+#endif
         }
 
         /// <summary>

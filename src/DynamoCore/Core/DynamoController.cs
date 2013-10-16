@@ -358,6 +358,7 @@ namespace Dynamo
                 }
             }
 
+            OnEvaluationCompleted(this, EventArgs.Empty);
             DynamoViewModel.RunEnabled = true;
             Running = false;
             OnRunCompleted(this, true);
