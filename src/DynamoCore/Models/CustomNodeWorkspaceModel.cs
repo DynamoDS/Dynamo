@@ -74,46 +74,73 @@ namespace Dynamo.Models
                 .ToList();
         }
 
-        public override bool SaveAs(string path)
+        public override bool SaveAs(string newPath)
         {
-            var oldPath = this.FileName;
-            if (!base.SaveAs(path)) return false;
+            var originalPath = this.FileName;
+            var originalGuid = this.FunctionDefinition.FunctionId;
+            var newGuid = Guid.NewGuid();
+            var doRefactor = originalPath != newPath && originalPath != null;
 
-            if (oldPath == null)
+            this.Name = Path.GetFileNameWithoutExtension(newPath);
+
+            // need to do change the function id temporarily so saved file is correct
+            if (doRefactor)
+            {
+                this.FunctionDefinition.FunctionId = newGuid;
+            }
+
+            if (!base.SaveAs(newPath))
+            {
+                return false;
+            }
+
+            if (doRefactor)
+            {
+                this.FunctionDefinition.FunctionId = originalGuid;
+            }
+
+            if (originalPath == null)
             {
                 this.FunctionDefinition.AddToSearch();
                 dynSettings.Controller.SearchViewModel.SearchAndUpdateResultsSync();
+                this.FunctionDefinition.UpdateCustomNodeManager();
             }
 
             // A SaveAs to an existing function id prompts the creation of a new 
             // custom node with a new function id
-            if ( oldPath != path && oldPath != null )
+            if ( doRefactor )
             {
-                if (!File.Exists(oldPath))
+                // if the original path does not exist
+                if ( !File.Exists(originalPath) )
                 {
+                    this.FunctionDefinition.FunctionId = newGuid;
                     this.FunctionDefinition.SyncWithWorkspace(true, true);
                     return false;
                 }
 
                 var newDef = this.FunctionDefinition;
 
-                // unload existing custom node from customnodemanager
-                var originalGuid = this.FunctionDefinition.FunctionId;
-                var customNodeManager = dynSettings.CustomNodeManager;
-                customNodeManager.RemoveFromCustomNodeManager(originalGuid);
+                // reload the original funcdef from its path
+                dynSettings.CustomNodeManager.Remove(originalGuid);
+                dynSettings.CustomNodeManager.AddFileToPath(originalPath);
+                var origDef = dynSettings.CustomNodeManager.GetFunctionDefinition(originalGuid);
+                if (origDef == null)
+                {
+                    return false;
+                }
 
-                // get function definition from old path with old id
-                customNodeManager.AddFileToPath(oldPath);
-                var origDef = customNodeManager.GetFunctionDefinition(originalGuid);
+                // reassign existing nodes to point to newly deserialized function def
+                dynSettings.Controller.DynamoModel.AllNodes
+                        .OfType<Function>()
+                        .Where(el => el.Definition.FunctionId == originalGuid)
+                        .ToList()
+                        .ForEach(node =>
+                            {
+                                node.Definition = origDef;
+                            });
 
-                // reassign existing nodes to point to deserialized function def
-                GetExistingNodes().ForEach(node =>
-                    {
-                        node.Definition = origDef;
-                    });
-
-                // this workspace points to itself
-                newDef.FunctionId = Guid.NewGuid();
+                // update this workspace with its new id
+                newDef.FunctionId = newGuid;
                 newDef.SyncWithWorkspace(true, true);
             }
 

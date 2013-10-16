@@ -282,7 +282,7 @@ namespace Dynamo.Models
         /// Get the last computed value from the node.
         /// </summary>
         private FScheme.Value _oldValue = null;
-        public FScheme.Value OldValue
+        public virtual FScheme.Value OldValue
         {
             get { return _oldValue; }
             protected set
@@ -1245,7 +1245,8 @@ namespace Dynamo.Models
         /// <returns>True if there is an input, false otherwise.</returns>
         public bool HasInput(int data)
         {
-            return Inputs.ContainsKey(data) && Inputs[data] != null;
+            return (Inputs.ContainsKey(data) && Inputs[data] != null) ||
+                   (InPorts.Count > data && InPorts[data].UsingDefaultValue);
         }
 
         public bool HasOutput(int portData)

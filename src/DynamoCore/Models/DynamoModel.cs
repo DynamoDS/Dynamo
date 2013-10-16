@@ -134,6 +134,7 @@ namespace Dynamo.Models
         public string Name { get; set; }
         public string Category { get; set; }
         public string Description { get; set; }
+        public bool CanEditName { get; set; }
         public bool Success { get; set; }
 
         public FunctionNamePromptEventArgs()
@@ -141,6 +142,7 @@ namespace Dynamo.Models
             Name = "";
             Category = "";
             Description = "";
+            CanEditName = true;
         }
     }
 
@@ -1544,7 +1546,7 @@ namespace Dynamo.Models
             if (null == this._cspace)
                 return;
 
-            List<ModelBase> modelsToDelete = new List<ModelBase>();
+            var modelsToDelete = new List<ModelBase>();
 
             if (null != parameters) // Something is specified in parameters.
             {
