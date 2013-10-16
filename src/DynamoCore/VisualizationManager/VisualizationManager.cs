@@ -554,6 +554,7 @@ namespace Dynamo
         {
             try
             {
+
                 var sw = new Stopwatch();
                 sw.Start();
 
