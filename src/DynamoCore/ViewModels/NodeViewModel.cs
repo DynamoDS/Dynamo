@@ -1,4 +1,4 @@
-﻿//Copyright 2013 Ian Keough
+//Copyright 2013 Ian Keough
 
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
@@ -21,13 +21,14 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using System.Windows;
 
 namespace Dynamo.ViewModels
 {
     /// <summary>
     /// Interaction logic for dynControl.xaml
     /// </summary>
-    
+
     public partial class NodeViewModel : ViewModelBase
     {
         #region delegates
@@ -39,12 +40,11 @@ namespace Dynamo.ViewModels
 
         ObservableCollection<PortViewModel> inPorts = new ObservableCollection<PortViewModel>();
         ObservableCollection<PortViewModel> outPorts = new ObservableCollection<PortViewModel>();
-        
+
         NodeModel nodeLogic;
-        public NodeModel NodeModel { get { return nodeLogic; } private set { nodeLogic = value; }}
-        
+        public NodeModel NodeModel { get { return nodeLogic; } private set { nodeLogic = value; } }
+
         private bool isFullyConnected = false;
-        
         #endregion
 
         #region public members
@@ -58,7 +58,7 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("IsFullyConnected");
             }
         }
-        
+
         public LacingStrategy ArgumentLacing
         {
             get { return nodeLogic.ArgumentLacing; }
@@ -74,11 +74,13 @@ namespace Dynamo.ViewModels
             get { return nodeLogic; }
         }
 
+        public InfoBubbleViewModel ErrorBubble { get; set; }
+
         public string ToolTipText
         {
             get { return nodeLogic.ToolTipText; }
         }
-        
+
         public ObservableCollection<PortViewModel> InPorts
         {
             get { return inPorts; }
@@ -130,7 +132,7 @@ namespace Dynamo.ViewModels
         {
             get { return nodeLogic.Description; }
         }
-        
+
         //public double DropShadowOpacity
         //{
         //    get
@@ -264,7 +266,7 @@ namespace Dynamo.ViewModels
             //and remove port model views
             logic.InPorts.CollectionChanged += inports_collectionChanged;
             logic.OutPorts.CollectionChanged += outports_collectionChanged;
-            
+
             logic.PropertyChanged += logic_PropertyChanged;
             dynSettings.Controller.DynamoViewModel.Model.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Model_PropertyChanged);
 
@@ -315,7 +317,7 @@ namespace Dynamo.ViewModels
                 case "CurrentWorkspace":
                     RaisePropertyChanged("NodeVisibility");
                     break;
-                    
+
             }
         }
 
@@ -336,9 +338,11 @@ namespace Dynamo.ViewModels
                     break;
                 case "X":
                     RaisePropertyChanged("Left");
+                    UpdateErrorBubblePosition(NodeModel.X, NodeModel.Y);
                     break;
                 case "Y":
                     RaisePropertyChanged("Top");
+                    UpdateErrorBubblePosition(NodeModel.X, NodeModel.Y);
                     break;
                 case "InteractionEnabled":
                     RaisePropertyChanged("IsInteractionEnabled");
@@ -352,13 +356,57 @@ namespace Dynamo.ViewModels
                 case "ArgumentLacing":
                     RaisePropertyChanged("ArgumentLacing");
                     break;
+
+                case "ToolTipText":
+                    UpdateErrorBubbleContent();
+                    break;
                 case "IsVisible":
                     RaisePropertyChanged("IsVisible");
                     break;
-                case "IsUpstreamVisible":
-                    RaisePropertyChanged("IsUpstreamVisible");
+
+case "IsUpstreamVisible":
+RaisePropertyChanged("IsUpstreamVisible");
                     break;
+
             }
+        }
+
+        private void UpdateErrorBubbleContent()
+        {
+            if (this.ErrorBubble == null)
+                return;
+            if (string.IsNullOrEmpty(NodeModel.ToolTipText))
+            {
+                if (ErrorBubble.Opacity != 0)
+                {
+                    ErrorBubble.SetAlwaysVisibleCommand.Execute(false);
+                    ErrorBubble.FadeOutCommand.Execute(null);
+                }
+            }
+            else
+            {
+                Point topLeft = new Point(NodeModel.X, NodeModel.Y);
+                Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
+                InfoBubbleDataPacket data = new InfoBubbleDataPacket(InfoBubbleViewModel.Style.Error, topLeft, botRight, NodeModel.ToolTipText, InfoBubbleViewModel.Direction.Bottom, NodeModel.GUID);
+                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.Invoke((new Action(() =>
+                {
+                    this.ErrorBubble.UpdateContentCommand.Execute(data);
+                    this.ErrorBubble.SetAlwaysVisibleCommand.Execute(true);
+                    this.ErrorBubble.FadeInCommand.Execute(null);
+                })));
+            }
+        }
+
+        private void UpdateErrorBubblePosition(double x, double y)
+        {
+            if (this.ErrorBubble == null)
+                return;
+            Point topLeft = new Point(NodeModel.X, NodeModel.Y);
+            Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
+            InfoBubbleDataPacket data = new InfoBubbleDataPacket();
+            data.TopLeft = topLeft;
+            data.BotRight = botRight;
+            this.ErrorBubble.UpdatePositionCommand.Execute(data);
         }
 
         private void ShowHelp(object parameter)
@@ -447,6 +495,25 @@ namespace Dynamo.ViewModels
             return nodeLogic.IsCustomFunction;
         }
 
+        private void SetLayout(object parameters)
+        {
+            var dict = parameters as Dictionary<string,
+            double>;
+            nodeLogic.X = dict["X"];
+            nodeLogic.Y = dict["Y"];
+            nodeLogic.Height = dict["Height"];
+            nodeLogic.Width = dict["Width"];
+        }
+
+        private bool CanSetLayout(object parameters)
+        {
+            var dict = parameters as Dictionary<string,
+            double>;
+            if (dict == null)
+                return false;
+            return true;
+        }
+
         void inports_collectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             //The visual height of the node is bound to preferred height.
@@ -457,7 +524,7 @@ namespace Dynamo.ViewModels
                 //create a new port view model
                 foreach (var item in e.NewItems)
                 {
-                    InPorts.Add(new PortViewModel(item as PortModel,nodeLogic));
+                    InPorts.Add(new PortViewModel(item as PortModel, nodeLogic));
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
@@ -503,6 +570,7 @@ namespace Dynamo.ViewModels
 
             this.nodeLogic.IsVisible = !this.nodeLogic.IsVisible;
 
+            RaisePropertyChanged("IsVisible");
             dynSettings.Controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
             dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
         }
@@ -515,11 +583,12 @@ namespace Dynamo.ViewModels
 
             this.nodeLogic.IsUpstreamVisible = !this.nodeLogic.IsUpstreamVisible;
 
+            RaisePropertyChanged("IsUpstreamVisible");
             dynSettings.Controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
             dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
         }
 
-        private bool CanVisibilityBeToggled(object parameter) 
+        private bool CanVisibilityBeToggled(object parameter)
         {
             return true;
         }
@@ -556,7 +625,7 @@ namespace Dynamo.ViewModels
 
         private bool CanSetState(object parameter)
         {
-            if(parameter is ElementState)
+            if (parameter is ElementState)
                 return true;
             return false;
         }
@@ -591,6 +660,36 @@ namespace Dynamo.ViewModels
         }
 
         private bool CanSelect(object parameter)
+        {
+            return true;
+        }
+
+        private void ShowTooltip(object parameter)
+        {
+            dynSettings.Controller.DynamoViewModel.ShowInfoBubble(parameter);
+        }
+
+        private bool CanShowTooltip(object parameter)
+        {
+            return true;
+        }
+
+        private void FadeOutTooltip(object parameter)
+        {
+            dynSettings.Controller.DynamoViewModel.HideInfoBubble(parameter);
+        }
+
+        private bool CanFadeOutTooltip(object parameter)
+        {
+            return true;
+        }
+
+        private void CollapseTooltip(object parameter)
+        {
+            dynSettings.Controller.InfoBubbleViewModel.InstantCollapseCommand.Execute(null);
+        }
+
+        private bool CanCollapseTooltip(object parameter)
         {
             return true;
         }

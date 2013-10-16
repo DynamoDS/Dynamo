@@ -314,6 +314,8 @@ namespace Dynamo.Controls
                 return;
             }
 
+            Mouse.Capture(this);
+
             //we know the data context will have the is connecting property
             //but we don't want an explicit reference to it
             //the datacontext will be the workspace elements collection
@@ -545,6 +547,8 @@ namespace Dynamo.Controls
 
                 count++;
             }
+
+            Mouse.Capture(null);
         }
 
 

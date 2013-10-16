@@ -1,4 +1,4 @@
-﻿//Copyright 2013 Ian Keough
+//Copyright 2013 Ian Keough
 
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
@@ -33,6 +33,11 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using String = System.String;
+using System.Collections.ObjectModel;
+using Dynamo.UI.Commands;
+using System.Windows.Data;
+using Dynamo.UI.Controls;
+using System.Windows.Media;
 
 namespace Dynamo.Controls
 {
@@ -77,10 +82,79 @@ namespace Dynamo.Controls
             _timer.Start();
 
             InitializeComponent();
+            InitializeShortcutBar();
 
             this.Loaded += dynBench_Activated;
+
+            //setup InfoBubble for library items tooltip
+            InfoBubbleView InfoBubble = new InfoBubbleView { DataContext = dynSettings.Controller.InfoBubbleViewModel };
+            InfoBubbleGrid.Children.Add(InfoBubble);
         }
 
+        void InitializeShortcutBar()
+        {
+            ShortcutToolbar shortcutBar = new ShortcutToolbar();
+
+            DynamoViewModel viewModel = dynSettings.Controller.DynamoViewModel;
+
+            ShortcutBarItem newScriptButton = new ShortcutBarItem();
+            newScriptButton.ShortcutToolTip = "New [Ctrl + N]";
+            newScriptButton.ShortcutCommand = viewModel.NewHomeWorkspaceCommand;
+            newScriptButton.ShortcutCommandParameter = null;
+            newScriptButton.ImgNormalSource = "/DynamoCore;component/UI/Images/new_normal.png";
+            newScriptButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/new_disabled.png";
+            newScriptButton.ImgHoverSource = "/DynamoCore;component/UI/Images/new_hover.png";
+
+            ShortcutBarItem openScriptButton = new ShortcutBarItem();
+            openScriptButton.ShortcutToolTip = "Open [Ctrl + O]";
+            openScriptButton.ShortcutCommand = viewModel.ShowOpenDialogAndOpenResultCommand;
+            openScriptButton.ShortcutCommandParameter = null;
+            openScriptButton.ImgNormalSource = "/DynamoCore;component/UI/Images/open_normal.png";
+            openScriptButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/open_disabled.png";
+            openScriptButton.ImgHoverSource = "/DynamoCore;component/UI/Images/open_hover.png";
+
+            ShortcutBarItem saveButton = new ShortcutBarItem();
+            saveButton.ShortcutToolTip = "Save [Ctrl + S]";
+            saveButton.ShortcutCommand = viewModel.ShowSaveDialogIfNeededAndSaveResultCommand;
+            saveButton.ShortcutCommandParameter = null;
+            saveButton.ImgNormalSource = "/DynamoCore;component/UI/Images/save_normal.png";
+            saveButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/save_disabled.png";
+            saveButton.ImgHoverSource = "/DynamoCore;component/UI/Images/save_hover.png";
+
+            // PLACEHOLDER FOR FUTURE SHORTCUTS
+            //ShortcutBarItem undoButton = new ShortcutBarItem();
+            //undoButton.ShortcutToolTip = "Undo [Ctrl + Z]";
+            ////undoButton.ShortcutCommand = viewModel.; // Function implementation in progress
+            //undoButton.ShortcutCommandParameter = null;
+            //undoButton.ImgNormalSource = "/DynamoCore;component/UI/Images/undo_normal.png";
+            //undoButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/undo_disabled.png";
+            //undoButton.ImgHoverSource = "/DynamoCore;component/UI/Images/undo_hover.png";
+
+            //ShortcutBarItem redoButton = new ShortcutBarItem();
+            //redoButton.ShortcutToolTip = "Redo [Ctrl + Y]";
+            ////redoButton.ShortcutCommand = viewModel.; // Function implementation in progress
+            //redoButton.ShortcutCommandParameter = null;
+            //redoButton.ImgNormalSource = "/DynamoCore;component/UI/Images/redo_normal.png";
+            //redoButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/redo_disabled.png";
+            //redoButton.ImgHoverSource = "/DynamoCore;component/UI/Images/redo_hover.png";
+
+            //ShortcutBarItem runButton = new ShortcutBarItem();
+            //runButton.ShortcutToolTip = "Run [Ctrl + R]";
+            ////runButton.ShortcutCommand = viewModel.RunExpressionCommand; // Function implementation in progress
+            //runButton.ShortcutCommandParameter = null;
+            //runButton.ImgNormalSource = "/DynamoCore;component/UI/Images/run_normal.png";
+            //runButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/run_disabled.png";
+            //runButton.ImgHoverSource = "/DynamoCore;component/UI/Images/run_hover.png";
+
+            shortcutBar.ShortcutBarItems.Add(newScriptButton);
+            shortcutBar.ShortcutBarItems.Add(openScriptButton);
+            shortcutBar.ShortcutBarItems.Add(saveButton);
+            //shortcutBar.ShortcutBarItems.Add(undoButton);
+            //shortcutBar.ShortcutBarItems.Add(redoButton);
+            //shortcutBar.ShortcutBarItems.Add(runButton);            
+
+            shortcutBarGrid.Children.Add(shortcutBar);
+        }
 
         void vm_RequestLayoutUpdate(object sender, EventArgs e)
         {
@@ -101,7 +175,7 @@ namespace Dynamo.Controls
 
             #region Search initialization
 
-            var search = new SearchView {DataContext = dynSettings.Controller.SearchViewModel};
+            var search = new SearchView { DataContext = dynSettings.Controller.SearchViewModel };
             sidebarGrid.Children.Add(search);
             dynSettings.Controller.SearchViewModel.Visible = true;
 
@@ -115,6 +189,7 @@ namespace Dynamo.Controls
             //FUNCTION NAME PROMPT
             _vm.Model.RequestsFunctionNamePrompt += _vm_RequestsFunctionNamePrompt;
 
+            _vm.SidebarClosed += new EventHandler(_vm_SidebarClosed);
             _vm.RequestClose += new EventHandler(_vm_RequestClose);
             _vm.RequestSaveImage += new ImageSaveEventHandler(_vm_RequestSaveImage);
 
@@ -127,7 +202,7 @@ namespace Dynamo.Controls
             dynSettings.Controller.ClipBoard.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(ClipBoard_CollectionChanged);
         
         }
-        
+
         private PackageManagerPublishView _pubPkgView;
         void _vm_RequestRequestPackageManagerPublish(PublishPackageViewModel model)
         {
@@ -136,7 +211,7 @@ namespace Dynamo.Controls
                 _pubPkgView = new PackageManagerPublishView(model);
                 _pubPkgView.Closed += (sender, args) => _pubPkgView = null;
                 _pubPkgView.Show();
-               
+
                 if (_pubPkgView.IsLoaded && this.IsLoaded) _pubPkgView.Owner = this;
             }
 
@@ -154,11 +229,12 @@ namespace Dynamo.Controls
 
             if (_searchPkgsView == null)
             {
-                _searchPkgsView = new PackageManagerSearchView(_pkgSearchVM);
+                var pms = new PackageManagerSearchViewModel(dynSettings.PackageManagerClient);
+                _searchPkgsView = new PackageManagerSearchView(pms);
                 _searchPkgsView.Closed += (sender, args) => _searchPkgsView = null;
                 _searchPkgsView.Show();
 
-                 if (_searchPkgsView.IsLoaded && this.IsLoaded) _searchPkgsView.Owner = this;
+                if (_searchPkgsView.IsLoaded && this.IsLoaded) _searchPkgsView.Owner = this;
             }
             
             _searchPkgsView.Focus();
@@ -174,7 +250,7 @@ namespace Dynamo.Controls
                 _installedPkgsView.Closed += (sender, args) => _installedPkgsView = null;
                 _installedPkgsView.Show();
 
-                if (_installedPkgsView.IsLoaded && this.IsLoaded)  _installedPkgsView.Owner = this;
+                if (_installedPkgsView.IsLoaded && this.IsLoaded) _installedPkgsView.Owner = this;
             }
             _installedPkgsView.Focus();
         }
@@ -275,9 +351,9 @@ namespace Dynamo.Controls
                     height = Math.Max(n.Y + n.Height, height);
                 }
 
-                var rtb = new RenderTargetBitmap( Math.Max(1, (int)width),
-                                                  Math.Max(1, (int)height), 
-                                                  96, 
+                var rtb = new RenderTargetBitmap(Math.Max(1, (int)width),
+                                                  Math.Max(1, (int)height),
+                                                  96,
                                                   96,
                                                   System.Windows.Media.PixelFormats.Default);
 
@@ -304,6 +380,11 @@ namespace Dynamo.Controls
         void _vm_RequestClose(object sender, EventArgs e)
         {
             Close();
+        }
+
+        void _vm_SidebarClosed(object sender, EventArgs e)
+        {
+            LibraryClicked(sender, e);
         }
 
         /// <summary>
@@ -530,14 +611,117 @@ namespace Dynamo.Controls
                 dynSettings.Controller.DynamoViewModel.QueueLoad(path);
             else
             {
-                if(dynSettings.Controller.DynamoModel.CanGoHome(null))
+                if (dynSettings.Controller.DynamoModel.CanGoHome(null))
                     dynSettings.Controller.DynamoModel.Home(null);
 
                 _vm.OpenCommand.Execute(path);
             }
         }
 
-        private void RunButton_OnClick(object sender, RoutedEventArgs e)
+		private void Button_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Grid g = (Grid)sender;
+            TextBlock tb = (TextBlock)(g.Children[1]);
+            var bc = new BrushConverter();
+            tb.Foreground = (Brush)bc.ConvertFrom("#cccccc");
+            Image collapseIcon = (Image)g.Children[0];
+            var imageUri = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/collapse_hover.png");
+
+            BitmapImage hover = new BitmapImage(imageUri);
+            // hover.Rotation = Rotation.Rotate180;
+
+            TransformedBitmap transform = new TransformedBitmap();
+            transform.BeginInit();
+            transform.Source = hover;
+            RotateTransform rt = new RotateTransform(180, 16, 16);
+            transform.Transform = rt;
+            transform.EndInit();
+
+            collapseIcon.Source = transform;
+        }
+
+		private void Button_Click(object sender, EventArgs e)
+        {
+            SearchView sv = (SearchView)this.sidebarGrid.Children[0];
+            if (sv.Visibility == Visibility.Collapsed)
+            {
+                //this.sidebarGrid.Width = restoreWidth;
+                sv.Width = double.NaN;
+                sv.HorizontalAlignment = HorizontalAlignment.Stretch;
+                sv.Height = double.NaN;
+                sv.VerticalAlignment = VerticalAlignment.Stretch;
+
+                this.mainGrid.ColumnDefinitions[0].Width = new System.Windows.GridLength(restoreWidth);
+                this.verticalSplitter.Visibility = Visibility.Visible;
+                sv.Visibility = Visibility.Visible;
+                this.sidebarGrid.Visibility = Visibility.Visible;
+                this.collapsedSidebar.Visibility = Visibility.Collapsed;
+            }
+            //SearchView sv = (SearchView)this.sidebarGrid.Children[0];
+            //sv.Width = double.NaN;
+            //this.sidebarGrid.Width = 250;
+            //this.collapsedSidebar.Visibility = Visibility.Collapsed;
+        }
+
+		private void Button_MouseLeave(object sender, MouseEventArgs e)
+        {
+            Grid g = (Grid)sender;
+            TextBlock tb = (TextBlock)(g.Children[1]);
+            var bc = new BrushConverter();
+            tb.Foreground = (Brush)bc.ConvertFromString("#aaaaaa");
+            Image collapseIcon = (Image)g.Children[0];
+
+            // Change the collapse icon and rotate
+            var imageUri = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/collapse_normal.png");
+            BitmapImage hover = new BitmapImage(imageUri);
+
+            TransformedBitmap transform = new TransformedBitmap();
+            transform.BeginInit();
+            transform.Source = hover;
+            RotateTransform rt = new RotateTransform(180, 16, 16);
+            transform.Transform = rt;
+            transform.EndInit();
+
+            collapseIcon.Source = transform;
+        }
+
+        private double restoreWidth = 0;
+
+        private void LibraryClicked(object sender, EventArgs e)
+        {
+            // this.sidebarGrid.Visibility = Visibility.Collapsed;
+            restoreWidth = this.sidebarGrid.ActualWidth;
+
+            // this.sidebarGrid.Width = 0;
+            this.mainGrid.ColumnDefinitions[0].Width = new System.Windows.GridLength(0.0);
+            this.verticalSplitter.Visibility = System.Windows.Visibility.Collapsed;
+            this.sidebarGrid.Visibility = System.Windows.Visibility.Collapsed;
+            
+            this.horizontalSplitter.Width = double.NaN;
+            SearchView sv = (SearchView)this.sidebarGrid.Children[0];
+            sv.Visibility = Visibility.Collapsed;
+
+            this.sidebarGrid.Visibility = Visibility.Collapsed;
+            this.collapsedSidebar.Visibility = Visibility.Visible;
+        }
+
+        private void Workspace_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (this._vm == null)
+                return;
+            this._vm.WorkspaceActualHeight = border.ActualHeight;
+            this._vm.WorkspaceActualWidth = border.ActualWidth;
+        }
+
+        private void Window_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            _vm.IsMouseDown = true;
+		}
+
+        private void Window_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            _vm.IsMouseDown = false;
+		}        private void RunButton_OnClick(object sender, RoutedEventArgs e)
         {
             dynSettings.ReturnFocusToSearch();
         }
