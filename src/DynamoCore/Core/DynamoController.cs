@@ -353,11 +353,19 @@ namespace Dynamo
             {
                 foreach (var node in nodes)
                 {
-                   string var = AstBuilder.StringConstants.kVarPrefix + node.ToString().Replace("-", string.Empty);
-                   DynamoLogger.Instance.Log(var + " = " + LiveRunnerServices.Instance.GetStringValue(var));
+                    try
+                    {
+                        string var = AstBuilder.StringConstants.kVarPrefix + node.ToString().Replace("-", string.Empty);
+                        DynamoLogger.Instance.Log(var + " = " + LiveRunnerServices.Instance.GetStringValue(var));
+                    }
+                    catch (Exception exp)
+                    {
+                        DynamoLogger.Instance.Log(exp.Message);
+                    }
                 }
             }
 
+            OnEvaluationCompleted(this, EventArgs.Empty);
             DynamoViewModel.RunEnabled = true;
             Running = false;
             OnRunCompleted(this, true);
