@@ -10,8 +10,6 @@ namespace DynamoSandbox
         [STAThread]
         public static void Main(string[] args)
         {
-            DynamoLogger.Instance.StartLogging();
-
             try
             {
                 // Running Dynamo sandbox with a command file:

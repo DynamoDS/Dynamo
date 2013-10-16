@@ -77,9 +77,6 @@ namespace Dynamo.Tests
 
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
-            DynamoLogger.Instance.StartLogging();
-
-            DynamoLogger.Instance.Log("Adding assembly resolver", LogLevel.File);
             AppDomain.CurrentDomain.AssemblyResolve += Dynamo.Utilities.AssemblyHelper.CurrentDomain_AssemblyResolve;
 
             //Get the data map from the running journal file.
@@ -91,8 +88,6 @@ namespace Dynamo.Tests
                 RevitData.Document = RevitData.Application.ActiveUIDocument;
 
                 bool canReadData = (0 < dataMap.Count);
-
-                DynamoLogger.Instance.Log("Reading data map from journal.", LogLevel.File);
 
                 if (canReadData)
                 {
@@ -143,8 +138,6 @@ namespace Dynamo.Tests
                 var builder = new TestSuiteBuilder();
                 string testAssemblyLoc = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), testAssembly);
 
-                DynamoLogger.Instance.Log(string.Format("Running tests from assembly: {0}", testAssemblyLoc), LogLevel.File);
-
                 var package = new TestPackage("DynamoTestFramework", new List<string>() {testAssemblyLoc});
                 runner.Load(package);
                 TestSuite suite = builder.Build(package);
@@ -190,14 +183,12 @@ namespace Dynamo.Tests
                             {
                                 if (tInner is TestMethod)
                                 {
-                                    DynamoLogger.Instance.Log(string.Format("Running test:{0}", (tInner as TestMethod).TestName.Name), LogLevel.File);
                                     runningResults.Add(RunTest((TestMethod)tInner));
                                 }
                             }
                         }
                         else if (t is TestMethod)
                         {
-                            DynamoLogger.Instance.Log(string.Format("Running test:{0}", (t as TestMethod).TestName.Name), LogLevel.File);
                             runningResults.Add(RunTest((TestMethod)t));
                         } 
                     }
@@ -224,10 +215,6 @@ namespace Dynamo.Tests
                 Console.WriteLine(ex.ToString());
                 Console.WriteLine(ex.StackTrace);
                 return Result.Failed;
-            }
-            finally
-            {
-                DynamoLogger.Instance.FinishLogging();
             }
 
             return Result.Succeeded;
@@ -365,14 +352,12 @@ namespace Dynamo.Tests
                     {
                         if (tInner is TestMethod)
                         {
-                            DynamoLogger.Instance.Log(string.Format("Running test:{0}", (tInner as TestMethod).TestName.Name), LogLevel.File);
                             results.Add(RunTest((TestMethod)tInner));
                         }
                     }
                 }
                 else if (t is TestMethod)
                 {
-                    DynamoLogger.Instance.Log(string.Format("Running test:{0}", (t as TestMethod).TestName.Name), LogLevel.File);
                     results.Add(RunTest((TestMethod)t));
                 }
             }
