@@ -21,6 +21,7 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using String = System.String;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -136,14 +137,8 @@ namespace Dynamo.Search.SearchElements
         {
             // create node
             var guid = Guid.NewGuid();
-            var nodeParams = new Dictionary<string, object>()
-                {
-                    {"name", this.Name},
-                    {"transformFromOuterCanvasCoordinates", true},
-                    {"guid", guid}
-                };
-
-            dynSettings.Controller.DynamoModel.CreateNode(nodeParams);
+            dynSettings.Controller.DynamoViewModel.ExecuteCommand(
+                new DynCmd.CreateNodeCommand(guid, this.Name, 0, 0, true, true));
 
             // select node
             var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);

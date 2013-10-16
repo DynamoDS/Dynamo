@@ -19,6 +19,7 @@ using Microsoft.Practices.Prism;
 using NUnit.Framework;
 using Enum = System.Enum;
 using String = System.String;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using ProtoCore.DSASM;
 using Dynamo.ViewModels;
 
@@ -843,13 +844,11 @@ namespace Dynamo.Models
                         double x = double.Parse(xAttrib.Value, CultureInfo.InvariantCulture);
                         double y = double.Parse(yAttrib.Value, CultureInfo.InvariantCulture);
 
-                        var paramDict = new Dictionary<string, object>();
-                        paramDict.Add("x", x);
-                        paramDict.Add("y", y);
-                        paramDict.Add("text", text);
-                        paramDict.Add("workspace", CurrentWorkspace);
-                        
-                        AddNote(paramDict);
+                        // TODO(Ben): Shouldn't we be reading in the Guid 
+                        // from file instead of generating a new one here?
+                        Guid id = Guid.NewGuid();
+                        var command = new DynCmd.CreateNoteCommand(id, text, x, y, false);
+                        AddNoteInternal(command, CurrentWorkspace);
                     }
                 }
 
@@ -939,15 +938,24 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Add a note to the workspace.
+        /// After command framework is implemented, this method should now be only 
+        /// called from a menu item (i.e. Ctrl + W). It should not be used as a way
+        /// for any other code paths to create a note programmatically. For that we
+        /// now have AddNoteInternal which takes in more configurable arguments.
         /// </summary>
-        /// <param name="parameters">A dictionary containing placement data for the note</param>
-        /// <example>{"x":1234.0,"y":1234.0, "guid":1234-1234-...,"text":"the note's text","workspace":workspace </example>
+        /// <param name="parameters">This is not used and should always be null,
+        /// otherwise an ArgumentException will be thrown.</param>
+        /// 
         public void AddNote(object parameters)
         {
-            NoteModel noteModel = AddNoteInternal(parameters);
-            if (null != noteModel)
-                CurrentWorkspace.RecordCreatedModel(noteModel);
+            if (null != parameters) // See above for details of this exception.
+            {
+                var message = "Internal error, argument must be null";
+                throw new ArgumentException(message, "parameters");
+            }
+
+            var command = new DynCmd.CreateNoteCommand(Guid.NewGuid(), null, 0, 0, true);
+            dynSettings.Controller.DynamoViewModel.ExecuteCommand(command);
         }
 
         internal bool CanAddNote(object parameters)
@@ -1060,22 +1068,16 @@ namespace Dynamo.Models
                 Guid newGuid = Guid.NewGuid();
                 nodeLookup.Add(node.GUID, newGuid);
 
-                var nodeData = new Dictionary<string, object>();
-                nodeData.Add("x", node.X);
-                nodeData.Add("y", node.Y + 100);
+                string nodeName = node.GetType().ToString();
                 if (node is Function)
-                    nodeData.Add("name", (node as Function).Definition.FunctionId);
-                else
-                    nodeData.Add("name", node.GetType());
-                nodeData.Add("guid", newGuid);
+                    nodeName = ((node as Function).Definition.FunctionId).ToString();
 
                 var xmlDoc = new XmlDocument();
                 var dynEl = xmlDoc.CreateElement(node.GetType().ToString());
                 xmlDoc.AppendChild(dynEl);
                 node.Save(xmlDoc, dynEl, SaveContext.Copy);
 
-                nodeData.Add("data", dynEl);
-                createdModels.Add(CreateNode_Internal(nodeData));
+                createdModels.Add(CreateNode(newGuid, node.X, node.Y + 100, nodeName, dynEl));
             }
 
             //process the command queue so we have 
@@ -1135,15 +1137,10 @@ namespace Dynamo.Models
                 var newX = sameSpace ? note.X + 20 : note.X;
                 var newY = sameSpace ? note.Y + 20 : note.Y;
 
-                var noteData = new Dictionary<string, object>()
-                {
-                    { "x", newX },
-                    { "y", newY },
-                    { "text", note.Text },
-                    { "guid", newGUID }
-                };
+                DynCmd.CreateNoteCommand command = new DynCmd.CreateNoteCommand(
+                    newGUID, note.Text, newX, newY, false);
 
-                createdModels.Add(AddNoteInternal(noteData));
+                createdModels.Add(AddNoteInternal(command, null));
 
                 // TODO: Why can't we just add "noteData" instead of doing a look-up?
                 AddToSelection(CurrentWorkspace.Notes.FirstOrDefault(x => x.GUID == newGUID));
@@ -1223,72 +1220,102 @@ namespace Dynamo.Models
             return true;
         }
 
-        /// <summary>
-        /// Create a node.
-        /// </summary>
-        /// <param name="parameters">A dictionary containing data about the node.</param>
-        public void CreateNode(object parameters)
+        // Wrapper for use in unit test cases (to be removed?)
+        public NodeModel CreateNode(double x, double y, string nodeName)
         {
-            NodeModel nodeModel = CreateNode_Internal(parameters);
-            if (null != nodeModel)
-                nodeModel.WorkSpace.RecordCreatedModel(nodeModel);
+            System.Guid id = Guid.NewGuid();
+            return CreateNodeInternal(id, nodeName, x, y, false, false, null);
         }
 
-        internal NodeModel CreateNode_Internal(object parameters)
+        public NodeModel CreateNode(Guid id, double x, double y,
+            string nodeName, XmlNode xmlNode)
         {
-            var data = parameters as Dictionary<string, object>;
-            if (data == null)
+            return CreateNodeInternal(id, nodeName, x, y, false, false, xmlNode);
+        }
+
+        public NodeModel CreateNode(Guid nodeId, string nodeName,
+            double x, double y, bool defaultPosition, bool transformCoordinates)
+        {
+            return CreateNodeInternal(nodeId, nodeName,
+                x, y, defaultPosition, transformCoordinates, null);
+        }
+
+        /// <summary>
+        /// Create a node with the given parameters. Since this method is called
+        /// on an instance of DynamoModel, it also raises node added event to any
+        /// event handlers, typically useful for real user scenario (listeners 
+        /// may include package manager and other UI components).
+        /// </summary>
+        /// <param name="nodeId">The Guid to be used for the new node, it cannot
+        /// be Guid.Empty since this method does not attempt to internally generate 
+        /// a new Guid. An ArgumentException will be thrown if this argument is 
+        /// Guid.Empty.</param>
+        /// <param name="nodeName">The name of the node type to be created.</param>
+        /// <param name="x">The x coordinates where the newly created node should 
+        /// be placed. This value is ignored if useDefaultPos is true.</param>
+        /// <param name="y">The y coordinates where the newly created node should 
+        /// be placed. This value is ignored if useDefaultPos is true.</param>
+        /// <param name="useDefaultPos">This parameter indicates if the node 
+        /// should be created at the default position. If this parameter is true,
+        /// the node is created at the center of view, and both x and y parameters
+        /// are ignored. If this is false, the values for both x and y parameters 
+        /// will be used as the initial position of the new node.</param>
+        /// <param name="transformCoordinates">If this parameter is true, then the
+        /// position of new node will be transformed from outerCanvas space into 
+        /// zoomCanvas space.</param>
+        /// <param name="xmlNode">This argument carries information that a node 
+        /// may require for its creation. The new node loads itself from this 
+        /// parameter if one is specified. This parameter is optional.</param>
+        /// <returns>Returns the created NodeModel, or null if the operation has 
+        /// failed.</returns>
+        /// 
+        private NodeModel CreateNodeInternal(
+            Guid nodeId, string nodeName, double x, double y,
+            bool useDefaultPos, bool transformCoordinates, XmlNode xmlNode)
+        {
+            if (nodeId == Guid.Empty)
+                throw new ArgumentException("Node ID must be specified", "nodeId");
+
+            NodeModel node = CreateNodeInstance(nodeName);
+            if (node == null)
             {
+                string format = "Failed to create node '{0}' (GUID: {1})";
+                WriteToLog(string.Format(format, nodeName, nodeId));
                 return null;
             }
 
-            NodeModel node = CreateNode(data["name"].ToString());
-            if (node == null)
+            if (useDefaultPos == false) // Position was specified.
             {
-                dynSettings.Controller.DynamoModel.WriteToLog("Failed to create the node");
-                return null;
+                node.X = x;
+                node.Y = y;
             }
 
             if ((node is Symbol || node is Output) && CurrentWorkspace is HomeWorkspaceModel)
             {
-                dynSettings.Controller.DynamoModel.WriteToLog("Cannot place Symbol or Output in HomeWorkspace");
+                string format = "Cannot place '{0}' in HomeWorkspace (GUID: {1})";
+                WriteToLog(string.Format(format, nodeName, nodeId));
                 return null;
             }
 
             CurrentWorkspace.Nodes.Add(node);
             node.WorkSpace = CurrentWorkspace;
 
-            //if we've received a value in the dictionary
-            //try to set the value on the node
-            if (data.ContainsKey("data"))
-            {
-                node.Load(data["data"] as XmlNode, HomeSpace.WorkspaceVersion);
-            }
+            if (null != xmlNode)
+                node.Load(xmlNode, HomeSpace.WorkspaceVersion);
 
-            //override the guid so we can store
-            //for connection lookup
-            if (data.ContainsKey("guid"))
-            {
-                node.GUID = (Guid)data["guid"];
-            }
-            else
-            {
-                node.GUID = Guid.NewGuid();
-            }
+            // Override the guid so we can store for connection lookup
+            node.GUID = nodeId;
 
-            bool transCoords = data.ContainsKey("transformFromOuterCanvasCoordinates");
+            DynamoViewModel viewModel = dynSettings.Controller.DynamoViewModel;
+            WorkspaceViewModel workspaceViewModel = viewModel.CurrentSpaceViewModel;
 
-            ModelEventArgs args;
-            if (data.ContainsKey("x") && data.ContainsKey("y"))
-            {
-                var x = ((double)data["x"]);
-                var y = ((double)data["y"]);
-                args = new ModelEventArgs(node, x, y, transCoords);
-            }
+            ModelEventArgs args = null;
+            if (!useDefaultPos)
+                args = new ModelEventArgs(node, x, y, transformCoordinates);
             else
             {
                 // The position of the new node has not been specified.
-                args = new ModelEventArgs(node, transCoords);
+                args = new ModelEventArgs(node, transformCoordinates);
             }
 
             DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
@@ -1297,16 +1324,13 @@ namespace Dynamo.Models
             node.EnableInteraction();
 
             if (CurrentWorkspace == HomeSpace)
-            {
                 node.SaveResult = true;
-            }
 
             OnNodeAdded(node);
-
             return node;
         }
 
-        internal NodeModel CreateNode(string name)
+        internal static NodeModel CreateNodeInstance(string name)
         {
             NodeModel result;
 
@@ -1595,42 +1619,38 @@ namespace Dynamo.Models
             return null;
         }
 
-        private NoteModel AddNoteInternal(object parameters)
+        internal NoteModel AddNoteInternal(DynCmd.CreateNoteCommand command, WorkspaceModel workspace)
         {
-            var inputs = parameters as Dictionary<string, object> ?? new Dictionary<string, object>();
+            double x = 0.0;
+            double y = 0.0;
+            if (false == command.DefaultPosition)
+            {
+                x = command.X;
+                y = command.Y;
+            }
 
-            // by default place note at center
-            var x = 0.0;
-            var y = 0.0;
-
-            if (inputs != null && inputs.ContainsKey("x"))
-                x = (double)inputs["x"];
-
-            if (inputs != null && inputs.ContainsKey("y"))
-
-                y = (double)inputs["y"];
-
-            var n = new NoteModel(x, y);
+            NoteModel noteModel = new NoteModel(x, y);
+            noteModel.GUID = command.NodeId;
 
             //if we have null parameters, the note is being added
             //from the menu, center the view on the note
 
-            if (parameters == null)
+            if (command.DefaultPosition)
             {
-                ModelEventArgs args = new ModelEventArgs(n, true);
+                ModelEventArgs args = new ModelEventArgs(noteModel, true);
                 DynamoViewModel vm = dynSettings.Controller.DynamoViewModel;
                 vm.CurrentSpaceViewModel.OnRequestNodeCentered(this, args);
             }
 
-            object id;
-            if (inputs.TryGetValue("guid", out id))
-                n.GUID = (Guid)id;
+            noteModel.Text = "New Note";
+            if (!string.IsNullOrEmpty(command.NoteText))
+                noteModel.Text = command.NoteText;
 
-            n.Text = (inputs == null || !inputs.ContainsKey("text")) ? "New Note" : inputs["text"].ToString();
-            var ws = (inputs == null || !inputs.ContainsKey("workspace")) ? CurrentWorkspace : (WorkspaceModel)inputs["workspace"];
+            if (null == workspace)
+                workspace = CurrentWorkspace;
 
-            ws.Notes.Add(n);
-            return n;
+            workspace.Notes.Add(noteModel);
+            return noteModel;
         }
 
         #endregion

@@ -193,15 +193,27 @@ namespace Dynamo
 
         #region Constructor and Initialization
 
-        public static DynamoController MakeSandbox()
+        public static DynamoController MakeSandbox(string commandFilePath = null)
         {
-            return new DynamoController(new ExecutionEnvironment(), typeof (DynamoViewModel), "None");
+            ExecutionEnvironment env = new ExecutionEnvironment();
+
+            // If a command file path is not specified or if it is invalid, then fallback.
+            if (string.IsNullOrEmpty(commandFilePath) || (File.Exists(commandFilePath) == false))
+                return new DynamoController(env, typeof(DynamoViewModel), "None");
+
+            return new DynamoController(env, typeof(DynamoViewModel), "None", commandFilePath);
+        }
+
+        public DynamoController(ExecutionEnvironment env, Type viewModelType, string context) : 
+            this(env, viewModelType, context, null)
+        {
         }
 
         /// <summary>
         ///     Class constructor
         /// </summary>
-        public DynamoController(ExecutionEnvironment env, Type viewModelType, string context)
+        public DynamoController(ExecutionEnvironment env,
+            Type viewModelType, string context, string commandFilePath)
         {
             DynamoLogger.Instance.StartLogging();
 
@@ -214,7 +226,8 @@ namespace Dynamo
 
             //create the view model to which the main window will bind
             //the DynamoModel is created therein
-            this.DynamoViewModel = (DynamoViewModel)Activator.CreateInstance(viewModelType,new object[]{this});
+            this.DynamoViewModel = (DynamoViewModel)Activator.CreateInstance(
+                viewModelType, new object[] { this, commandFilePath });
 
             // custom node loader
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -250,6 +263,9 @@ namespace Dynamo
             this.InfoBubbleViewModel = new InfoBubbleViewModel();
 
             AddPythonBindings();
+
+            // Kick start the automation run, if possible.
+            this.DynamoViewModel.BeginCommandPlayback();
         }
 
         #endregion
