@@ -56,9 +56,9 @@ namespace Dynamo.Controls
             get { return LogScroller.Height > 0; }
         }
 
-        public static Application MakeSandboxAndRun()
+        public static Application MakeSandboxAndRun(string commandFilePath)
         {
-            var controller = DynamoController.MakeSandbox();
+            var controller = DynamoController.MakeSandbox(commandFilePath);
             var app = new Application();
 
             //create the view
