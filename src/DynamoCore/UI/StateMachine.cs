@@ -423,9 +423,11 @@ namespace Dynamo.ViewModels
                     this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
 
                     var rect = new Rect(x, y, width, height);
+
                     var command = new DynCmd.SelectInRegionCommand(rect, isCrossSelection);
                     DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
                     dynamoViewModel.ExecuteCommand(command);
+
                 }
                 else if (this.currentState == State.DragSetup)
                 {

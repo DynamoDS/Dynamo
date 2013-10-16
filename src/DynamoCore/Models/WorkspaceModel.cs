@@ -322,17 +322,17 @@ namespace Dynamo.Models
         ///     Save to a specific file path, if the path is null or empty, does nothing.
         ///     If successful, the CurrentWorkspace.FilePath field is updated as a side effect
         /// </summary>
-        /// <param name="path">The path to save to</param>
-        public virtual bool SaveAs(string path)
+        /// <param name="newPath">The path to save to</param>
+        public virtual bool SaveAs(string newPath)
         {
-            if (String.IsNullOrEmpty(path)) return false;
+            if (String.IsNullOrEmpty(newPath)) return false;
 
-            DynamoLogger.Instance.Log("Saving " + path + "...");
+            DynamoLogger.Instance.Log("Saving " + newPath + "...");
             try
             {
                 var xmlDoc = this.GetXml();
-                xmlDoc.Save(path);
-                this.FileName = path;
+                xmlDoc.Save(newPath);
+                this.FileName = newPath;
 
                 this.OnWorkspaceSaved();
             }

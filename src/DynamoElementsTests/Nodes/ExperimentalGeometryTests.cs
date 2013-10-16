@@ -154,7 +154,7 @@ namespace Dynamo.Tests
             Assert.AreNotEqual(null, cuboid);
             Assert.AreEqual(150.0, cuboid.area());
             Assert.AreEqual(125.0, cuboid.volume());
-            Assert.AreEqual(55.555555555555557, cuboid.center_of_gravity().x(), 0.000000001);
+            Assert.AreEqual(55.555555555555557, cuboid.center_of_gravity().x());
 
         }
 
@@ -206,7 +206,7 @@ namespace Dynamo.Tests
 
             Autodesk.LibG.Surface loftedSruface = geometry1 as Autodesk.LibG.Surface;
             Assert.AreNotEqual(null, loftedSruface);
-            Assert.AreEqual(35.391268214374563, loftedSruface.area(), 0.000000001);
+            Assert.AreEqual(35.391268214374563, loftedSruface.area());
             Assert.IsTrue(loftedSruface.closed_u());
             Assert.IsFalse(loftedSruface.closed_v());
 
@@ -217,7 +217,7 @@ namespace Dynamo.Tests
 
             Autodesk.LibG.Surface loftedSruface1 = geometry2 as Autodesk.LibG.Surface;
             Assert.AreNotEqual(null, loftedSruface1);
-            Assert.AreEqual(16.887305503979327, loftedSruface1.area(), 0.000000001);
+            Assert.AreEqual(16.887305503979327, loftedSruface1.area());
             Assert.IsFalse(loftedSruface1.closed_u());
             Assert.IsFalse(loftedSruface1.closed_v());
 
@@ -245,7 +245,7 @@ namespace Dynamo.Tests
 
             Autodesk.LibG.Surface patchedsurface = geometry1 as Autodesk.LibG.Surface;
             Assert.AreNotEqual(null, patchedsurface);
-            Assert.AreEqual(16.290817227238776, patchedsurface.area(), 0.000000001);
+            Assert.AreEqual(16.290817227238776, patchedsurface.area());
             Assert.IsFalse(patchedsurface.closed_u());
             Assert.IsFalse(patchedsurface.closed_v());
 
@@ -256,7 +256,7 @@ namespace Dynamo.Tests
 
             Autodesk.LibG.Surface patchedSurface1 = geometry2 as Autodesk.LibG.Surface;
             Assert.AreNotEqual(null, patchedSurface1);
-            Assert.AreEqual(113.4724961861788, patchedSurface1.area(), 0.000000001);
+            Assert.AreEqual(113.4724961861788, patchedSurface1.area());
             Assert.IsFalse(patchedSurface1.closed_u());
             Assert.IsFalse(patchedSurface1.closed_v());
 
@@ -284,7 +284,7 @@ namespace Dynamo.Tests
 
             Autodesk.LibG.Surface patchedsurface = geometry1 as Autodesk.LibG.Surface;
             Assert.AreNotEqual(null, patchedsurface);
-            Assert.AreEqual(2.0321279999999815, patchedsurface.area(), 0.000000001);
+            Assert.AreEqual(2.0321279999999815, patchedsurface.area());
             Assert.IsFalse(patchedsurface.closed_u());
             Assert.IsFalse(patchedsurface.closed_v());
 
@@ -316,8 +316,8 @@ namespace Dynamo.Tests
             double yValue = point.y();
             double zValue = point.z();
             Assert.AreEqual(0, xValue);
-            Assert.AreEqual(3.14159265358979, yValue, 0.000000001);
-            Assert.AreEqual(3.14159265358979, zValue, 0.000000001);
+            Assert.AreEqual(3.14159265358979, yValue);
+            Assert.AreEqual(3.14159265358979, zValue);
 
             // Property Node tests.
             var xProperty = model.CurrentWorkspace.NodeFromWorkspace<PointXNode>("935b53bb-535a-4b32-aff8-3b9dbf72869d");
@@ -381,7 +381,7 @@ namespace Dynamo.Tests
             Assert.AreNotEqual(null, sweptSurface);
 
             double sweptSurfaceArea = sweptSurface.area();
-            Assert.AreEqual(182.24579120015983, sweptSurfaceArea, 0.000000001);
+            Assert.AreEqual(182.24579120015983, sweptSurfaceArea);
 
             var areFromNode = model.CurrentWorkspace.NodeFromWorkspace<AreaNode>("9ef163dd-e0e0-4acc-a07b-b901e41f1512");
             Assert.AreEqual(sweptSurfaceArea, areFromNode.GetValue(0).GetDoubleFromFSchemeValue());
@@ -422,7 +422,7 @@ namespace Dynamo.Tests
 
             Autodesk.LibG.Surface patchedsurface = geometry1 as Autodesk.LibG.Surface;
             Assert.AreNotEqual(null, patchedsurface);
-            Assert.AreEqual(975.75638786954767, patchedsurface.area(), 0.000000001);
+            Assert.AreEqual(975.75638786954767, patchedsurface.area());
             Assert.IsFalse(patchedsurface.closed_u());
             Assert.IsTrue(patchedsurface.closed_v());
 
@@ -450,7 +450,7 @@ namespace Dynamo.Tests
 
             Autodesk.LibG.Surface bSplineSurface1 = geometry1 as Autodesk.LibG.Surface;
             Assert.AreNotEqual(null, bSplineSurface1);
-            Assert.AreEqual(38.202015536467101, bSplineSurface1.area(), 0.000000001);
+            Assert.AreEqual(38.202015536467101, bSplineSurface1.area());
             Assert.IsFalse(bSplineSurface1.closed_u());
             Assert.IsTrue(bSplineSurface1.closed_v());
 
@@ -461,7 +461,7 @@ namespace Dynamo.Tests
 
             Autodesk.LibG.Surface bSplineSurface2 = geometry1 as Autodesk.LibG.Surface;
             Assert.AreNotEqual(null, bSplineSurface2);
-            Assert.AreEqual(38.202015536467101, bSplineSurface2.area(), 0.000000001);
+            Assert.AreEqual(38.202015536467101, bSplineSurface2.area());
             Assert.IsFalse(bSplineSurface2.closed_u());
             Assert.IsTrue(bSplineSurface2.closed_v());
         }
@@ -490,7 +490,7 @@ namespace Dynamo.Tests
             Assert.AreNotEqual(null, sweepedSolid);
             Assert.AreEqual(194.26617152241661, sweepedSolid.area(), 0.000000001);
             Assert.AreEqual(93.991683898354964, sweepedSolid.volume(), 0.000000001);
-            Assert.AreEqual(10.000000000000005, sweepedSolid.center_of_gravity().x(), 0.000000001);
+            Assert.AreEqual(10.000000000000005, sweepedSolid.center_of_gravity().x());
 
         }
 
@@ -516,7 +516,7 @@ namespace Dynamo.Tests
 
             Autodesk.LibG.Surface sweptSurface = geometry1 as Autodesk.LibG.Surface;
             Assert.AreNotEqual(null, sweptSurface);
-            Assert.AreEqual(182.24579120015983, sweptSurface.area(), 0.000000001);
+            Assert.AreEqual(182.24579120015983, sweptSurface.area());
             Assert.IsTrue(sweptSurface.closed_u());
             Assert.IsFalse(sweptSurface.closed_v());
 
@@ -544,9 +544,9 @@ namespace Dynamo.Tests
 
             Autodesk.LibG.Solid thickenSolid = geometry1 as Autodesk.LibG.Solid;
             Assert.AreNotEqual(null, thickenSolid);
-            Assert.AreEqual(217.12607751804401, thickenSolid.area(), 0.000000001);
-            Assert.AreEqual(42.74408242616218, thickenSolid.volume(), 0.000000001);
-            Assert.AreEqual(-4.4489040318494073, thickenSolid.center_of_gravity().x(), 0.000000001);
+            Assert.AreEqual(217.12607751804401, thickenSolid.area());
+            Assert.AreEqual(42.74408242616218, thickenSolid.volume());
+            Assert.AreEqual(-4.4489040318494073, thickenSolid.center_of_gravity().x());
 
         }
 
@@ -574,7 +574,7 @@ namespace Dynamo.Tests
             Assert.AreNotEqual(null, translatedSolid);
             Assert.AreEqual(194.26617152241661, translatedSolid.area(), 0.000000001);
             Assert.AreEqual(93.991683898354964, translatedSolid.volume(), 0.000000001);
-            Assert.AreEqual(10.000000000000005, translatedSolid.center_of_gravity().x(), 0.000000001);
+            Assert.AreEqual(10.000000000000005, translatedSolid.center_of_gravity().x());
 
 
             // Verification for Solid created using "Sweep as Solid" node.
@@ -586,7 +586,7 @@ namespace Dynamo.Tests
             Assert.AreNotEqual(null, sweepedSolid);
             Assert.AreEqual(194.26617152241661, sweepedSolid.area(), 0.000000001);
             Assert.AreEqual(93.991683898354964, sweepedSolid.volume(), 0.000000001);
-            Assert.AreEqual(10.000000000000005, sweepedSolid.center_of_gravity().x(), 0.000000001);
+            Assert.AreEqual(10.000000000000005, sweepedSolid.center_of_gravity().x());
 
         }
 
@@ -612,7 +612,7 @@ namespace Dynamo.Tests
 
             Autodesk.LibG.Surface sweptSurface = geometry1 as Autodesk.LibG.Surface;
             Assert.AreNotEqual(null, sweptSurface);
-            Assert.AreEqual(88.30416734641004, sweptSurface.area(), 0.000000001);
+            Assert.AreEqual(88.30416734641004, sweptSurface.area());
             Assert.IsFalse(sweptSurface.closed_u());
             Assert.IsFalse(sweptSurface.closed_v());
 
@@ -704,8 +704,8 @@ namespace Dynamo.Tests
             double yValue = point.y();
             double zValue = point.z();
             Assert.AreEqual(10, xValue);
-            Assert.AreEqual(5.5978213925456739, yValue, 0.000000001);
-            Assert.AreEqual(-2.506439789083756, zValue, 0.000000001);
+            Assert.AreEqual(5.5978213925456739, yValue);
+            Assert.AreEqual(-2.506439789083756, zValue);
 
             //Autodesk.LibG.Geometry pointAtDistance = null;
             //var pointAtDistance1 = model.CurrentWorkspace.NodeFromWorkspace<PointAtDistanceNode>("877369eb-1b97-4d05-a4d4-61d37b803562");
@@ -739,9 +739,9 @@ namespace Dynamo.Tests
             double xValue = point.x();
             double yValue = point.y();
             double zValue = point.z();
-            Assert.AreEqual(-6.3977743135825484, xValue, 0.000000001);
-            Assert.AreEqual(-16.869544438947674, yValue, 0.000000001);
-            Assert.AreEqual(-10.633850246828377, zValue, 0.000000001);
+            Assert.AreEqual(-6.3977743135825484, xValue);
+            Assert.AreEqual(-16.869544438947674, yValue);
+            Assert.AreEqual(-10.633850246828377, zValue);
 
             //Autodesk.LibG.Geometry pointAtDistance = null;
             //var pointAtDistance1 = model.CurrentWorkspace.NodeFromWorkspace<PointAtUvParameterNode>("877369eb-1b97-4d05-a4d4-61d37b803562");
@@ -772,7 +772,7 @@ namespace Dynamo.Tests
 
             Autodesk.LibG.Surface surface = geometry1 as Autodesk.LibG.Surface;
             Assert.AreNotEqual(null, surface);
-            Assert.AreEqual(66.591667947439021, surface.area(), 0.000000001);
+            Assert.AreEqual(66.591667947439021, surface.area());
             Assert.IsFalse(surface.closed_u());
             Assert.IsTrue(surface.closed_v());
 
@@ -801,7 +801,7 @@ namespace Dynamo.Tests
 
             Autodesk.LibG.Surface surface = geometry1 as Autodesk.LibG.Surface;
             Assert.AreNotEqual(null, surface);
-            Assert.AreEqual(1.280984238447507, surface.area(), 0.000000001);
+            Assert.AreEqual(1.280984238447507, surface.area());
             Assert.IsFalse(surface.closed_u());
             Assert.IsFalse(surface.closed_v());
 
