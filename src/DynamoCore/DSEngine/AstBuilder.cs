@@ -77,12 +77,13 @@ namespace Dynamo.DSEngine
         public List<T> GetItems(Key key)
         {
             LinkedListNode<List<T>> listNode;
-            if (!map.TryGetValue(key, out listNode))
+            if (!map.TryGetValue(key, out listNode) || listNode.Value == null)
             {
                 return null;
             }
 
-            return listNode.Value;
+            List<T> ret = new List<T>(listNode.Value);
+            return ret;
         }
 
         public List<Key> GetKeys()
@@ -227,12 +228,14 @@ namespace Dynamo.DSEngine
             if (node.IsStaticMember() || node.IsConstructor())
             {
                 IdentifierNode classNode = new IdentifierNode(node.Definition.ClassName);
-                return CoreUtils.GenerateCallDotNode(classNode, functionCall as FunctionCallNode);
+                AssociativeNode dotCallNode = CoreUtils.GenerateCallDotNode(classNode, functionCall as FunctionCallNode, LiveRunnerServices.Instance.Core);
+                return dotCallNode;
             }
             else if (node.IsInstanceMember())
             {
                 Debug.Assert(functionCall is FunctionCallNode);
-                return CoreUtils.GenerateCallDotNode(inputs[0], functionCall as FunctionCallNode);
+                AssociativeNode dotCallNode = CoreUtils.GenerateCallDotNode(inputs[0], functionCall as FunctionCallNode, LiveRunnerServices.Instance.Core);
+                return dotCallNode;
             }
             else
             {
