@@ -43,23 +43,6 @@ namespace Dynamo.Connectors
 
             if (ViewModel != null)
                 ViewModel.UpdateCenter(CalculateCenter());
-
-            // change width of the first grid cell of output ports to be 0
-            // these are based on the visual tree structure detected by Snoop
-            UserControl uc = (UserControl)this;
-            var tempParent = uc.Parent;
-            var temp2 = VisualTreeHelper.GetParent(this);
-            var temp3 = VisualTreeHelper.GetParent(temp2);
-            var temp4 = VisualTreeHelper.GetParent(temp3);
-            var temp5 = VisualTreeHelper.GetParent(temp4);
-            var temp6 = VisualTreeHelper.GetParent(temp5);
-            DockPanel temp7 = (DockPanel)VisualTreeHelper.GetParent(temp6);
-            int temp9 = Grid.GetRow(temp7);
-            int temp10 = Grid.GetColumn(temp7);
-            if (temp10 == 2 && temp9 == 0)
-            {
-                this.mainGrid.ColumnDefinitions[0].Width = new System.Windows.GridLength(0.0);
-            }
         }
 
         #endregion constructors

@@ -121,10 +121,6 @@
                         </Style>
                     </ItemsControl.ItemContainerStyle>
                 </ItemsControl>
-                <DockPanel.RenderTransform>
-                    <TranslateTransform X="-15" Y="0"/>
-                </DockPanel.RenderTransform>
-
             </DockPanel>
 
             <!-- OUTPUT PORTS -->
