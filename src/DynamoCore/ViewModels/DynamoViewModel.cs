@@ -164,6 +164,8 @@ namespace Dynamo.ViewModels
         public DelegateCommand ZoomOutCommand { get; set; }
         public DelegateCommand FitViewCommand { get; set; }
 
+        public DelegateCommand ImportLibraryCommand { get; set; }
+
         /// <summary>
         /// An observable collection of workspace view models which tracks the model
         /// </summary>
@@ -481,6 +483,10 @@ namespace Dynamo.ViewModels
             ZoomInCommand = new DelegateCommand(ZoomIn, CanZoomIn);
             ZoomOutCommand = new DelegateCommand(ZoomOut, CanZoomOut);
             FitViewCommand = new DelegateCommand(FitView, CanFitView);
+
+#if USE_DSENGINE
+            ImportLibraryCommand = new DelegateCommand(ImportLibrary, CanImportLibrary);
+#endif
 
             DynamoLogger.Instance.PropertyChanged += Instance_PropertyChanged;
 
@@ -1218,6 +1224,40 @@ namespace Dynamo.ViewModels
         {
             return CurrentSpaceViewModel.FitViewCommand.CanExecute(parameter);
         }
+
+#if USE_DSENGINE
+        public void ImportLibrary(object parameter)
+        {
+            string fileFilter = "Assembly Library Files (*.dll)|*.dll|"
+                              + "All Files (*.*)|*.*";
+
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = fileFilter;
+            openFileDialog.Title = "Import Library";
+            openFileDialog.Multiselect = true;
+            openFileDialog.RestoreDirectory = true;
+
+            DialogResult result = openFileDialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                foreach (string filePath in openFileDialog.FileNames)
+                {
+                    if (!filePath.ToLower().EndsWith(".dll") && !filePath.ToLower().EndsWith(".ds"))
+                    {
+                        return;
+                    }
+
+                    if (filePath.ToLower().EndsWith(".dll"))
+                        Dynamo.DSEngine.DSLibraryServices.Instance.ImportLibrary(filePath);
+                }
+            }
+        }
+
+        internal bool CanImportLibrary(object parameter)
+        {
+            return true;
+        }
+#endif
     }
 
     public class ZoomEventArgs : EventArgs
