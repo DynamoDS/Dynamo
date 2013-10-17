@@ -57,13 +57,17 @@ namespace Dynamo.Core
 
     public class UndoRedoRecorder
     {
+
+        public enum UserAction
+        {
+            Creation,
+            Modification,
+            Deletion
+        }
+
         #region Private Class Data Members
 
-        private const string CreationAction = "Creation";
-        private const string ModificationAction = "Modification";
-        private const string DeletionAction = "Deletion";
-
-        private const string UserAction = "UserAction";
+        private const string UserActionAttrib = "UserAction";
         private const string ActionGroup = "ActionGroup";
 
         private IUndoRedoRecorderClient undoClient = null;
@@ -181,7 +185,7 @@ namespace Dynamo.Core
         public void RecordCreationForUndo(ModelBase model)
         {
             RecordActionInternal(this.currentActionGroup,
-                model, UndoRedoRecorder.CreationAction);
+                model, UserAction.Creation);
 
             this.redoStack.Clear(); // Wipe out the redo-stack.
         }
@@ -196,7 +200,7 @@ namespace Dynamo.Core
         public void RecordDeletionForUndo(ModelBase model)
         {
             RecordActionInternal(this.currentActionGroup,
-                model, UndoRedoRecorder.DeletionAction);
+                model, UserAction.Deletion);
 
             this.redoStack.Clear(); // Wipe out the redo-stack.
         }
@@ -211,7 +215,7 @@ namespace Dynamo.Core
         public void RecordModificationForUndo(ModelBase model)
         {
             RecordActionInternal(this.currentActionGroup,
-                model, UndoRedoRecorder.ModificationAction);
+                model, UserAction.Modification);
 
             this.redoStack.Clear(); // Wipe out the redo-stack.
         }
@@ -278,7 +282,7 @@ namespace Dynamo.Core
 
         private void SetNodeAction(XmlNode childNode, string action)
         {
-            XmlAttribute actionAttribute = document.CreateAttribute(UserAction);
+            XmlAttribute actionAttribute = document.CreateAttribute(UserActionAttrib);
             actionAttribute.Value = action;
             childNode.Attributes.Append(actionAttribute);
         }
@@ -305,7 +309,7 @@ namespace Dynamo.Core
             return redoStack.Pop();
         }
 
-        private void RecordActionInternal(XmlElement group, ModelBase model, string action)
+        private void RecordActionInternal(XmlElement group, ModelBase model, UserAction action)
         {
             if (IsRecordedInActionGroup(group, model))
                 return;
@@ -313,7 +317,7 @@ namespace Dynamo.Core
             // Serialize the affected model into xml representation
             // and store it under the current action group.
             XmlNode childNode = model.Serialize(this.document, SaveContext.Undo);
-            SetNodeAction(childNode, action);
+            SetNodeAction(childNode, action.ToString());
             group.AppendChild(childNode);
         }
 
@@ -340,25 +344,27 @@ namespace Dynamo.Core
             for (int index = actions.Count - 1; index >= 0; index--)
             {
                 XmlElement element = actions[index] as XmlElement;
-                XmlAttribute actionAttribute = element.Attributes[UserAction];
-                switch (actionAttribute.Value)
+                XmlAttribute actionAttribute = element.Attributes[UserActionAttrib];
+                UserAction modelActionType;
+                modelActionType = (UserAction)Enum.Parse(typeof(UserAction), actionAttribute.Value);
+                switch (modelActionType)
                 {
                     // Before undo takes place (to delete the model), the most 
                     // up-to-date model is retrieved and serialized into the 
                     // redo action group so that it can properly be redone later.
-                    case UndoRedoRecorder.CreationAction:
+                    case UserAction.Creation:
                         ModelBase toBeDeleted = undoClient.GetModelForElement(element);
-                        RecordActionInternal(newGroup, toBeDeleted, actionAttribute.Value);
+                        RecordActionInternal(newGroup, toBeDeleted, modelActionType);
                         undoClient.DeleteModel(element);
                         break;
 
-                    case UndoRedoRecorder.ModificationAction:
+                    case UserAction.Modification:
                         ModelBase toBeUpdated = undoClient.GetModelForElement(element);
-                        RecordActionInternal(newGroup, toBeUpdated, actionAttribute.Value);
+                        RecordActionInternal(newGroup, toBeUpdated, modelActionType);
                         undoClient.ReloadModel(element);
                         break;
 
-                    case UndoRedoRecorder.DeletionAction:
+                    case UserAction.Deletion:
                         newGroup.AppendChild(element);
                         undoClient.CreateModel(element);
                         break;
@@ -382,23 +388,25 @@ namespace Dynamo.Core
             for (int index = actions.Count - 1; index >= 0; index--)
             {
                 XmlElement element = actions[index] as XmlElement;
-                XmlAttribute actionAttribute = element.Attributes[UserAction];
-                switch (actionAttribute.Value)
+                XmlAttribute actionAttribute = element.Attributes[UserActionAttrib];
+                UserAction modelActionType;
+                modelActionType = (UserAction)Enum.Parse(typeof(UserAction), actionAttribute.Value);
+                switch (modelActionType)
                 {
-                    case UndoRedoRecorder.CreationAction:
+                    case UserAction.Creation:
                         newGroup.AppendChild(element);
                         undoClient.CreateModel(element);
                         break;
 
-                    case UndoRedoRecorder.ModificationAction:
+                    case UserAction.Modification:
                         ModelBase toBeUpdated = undoClient.GetModelForElement(element);
-                        RecordActionInternal(newGroup, toBeUpdated, actionAttribute.Value);
+                        RecordActionInternal(newGroup, toBeUpdated, modelActionType);
                         undoClient.ReloadModel(element);
                         break;
 
-                    case UndoRedoRecorder.DeletionAction:
+                    case UserAction.Deletion:
                         ModelBase toBeDeleted = undoClient.GetModelForElement(element);
-                        RecordActionInternal(newGroup, toBeDeleted, actionAttribute.Value);
+                        RecordActionInternal(newGroup, toBeDeleted, modelActionType);
                         undoClient.DeleteModel(element);
                         break;
                 }
