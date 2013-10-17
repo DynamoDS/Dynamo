@@ -465,8 +465,12 @@ namespace Dynamo.Views
                 
                 if (this.FindChildren(mouse).Count > 0)
                 {
-                    foreach (DependencyObject deob in this.FindChildren(mouse))
+                    int minIndex = 0;
+                    double curDistance = 1000000;
+                    //foreach (DependencyObject deob in this.FindChildren(mouse))
+                    for (int i=0; i<this.hitResultsList.Count; i++)
                     {
+                        DependencyObject deob = this.hitResultsList[i];
                         if (deob.GetType() == typeof(Grid))
                         {
                             Grid g = (Grid)deob;
@@ -478,8 +482,13 @@ namespace Dynamo.Views
                                 {
                                     PortViewModel pvm = (PortViewModel)uc.DataContext;
                                     if (null != pvm)
-                                    {
-                                        vm.ActiveConnector.Redraw(pvm.Center);
+                                    {                                        
+                                        if (Distance(mouse, pvm.Center) < curDistance)
+                                        {
+                                            curDistance = Distance(mouse, pvm.Center);
+                                            minIndex = i;
+                                        }
+                                        //vm.ActiveConnector.Redraw(pvm.Center);
                                     }
                                 }
                             }
@@ -491,6 +500,20 @@ namespace Dynamo.Views
 
                         }
                     }
+
+                    try 
+                    {
+                        DependencyObject DepOb = hitResultsList[minIndex];
+                        Grid g2 = (Grid)DepOb;
+                        UserControl uc2 = (UserControl)g2.Parent;
+                        PortViewModel pvm2 = (PortViewModel)uc2.DataContext;
+                        vm.ActiveConnector.Redraw(pvm2.Center);
+                    }
+                    catch (Exception e2)
+                    {
+                        Debug.WriteLine(e2.ToString());
+                    }
+
                 }
                 else
                     vm.ActiveConnector.Redraw(e.GetPosition(WorkBench));
@@ -557,6 +580,11 @@ namespace Dynamo.Views
             }
         }
 
+        private double Distance(Point mouse, Point point)
+        {
+            return Math.Sqrt(Math.Pow(mouse.X - point.X, 2) + Math.Pow(mouse.Y - point.Y, 2));
+        }
+
         private void WorkBench_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
         }
@@ -606,7 +634,9 @@ namespace Dynamo.Views
         private List<DependencyObject> FindChildren(System.Windows.Point mouse)
         {
             hitResultsList.Clear();
-            VisualTreeHelper.HitTest(this, null, new HitTestResultCallback(VisualCallBack), new PointHitTestParameters(mouse));
+            EllipseGeometry expandedHitTestArea = new EllipseGeometry(mouse, 50.0, 7.0);
+
+            VisualTreeHelper.HitTest(this, null, new HitTestResultCallback(VisualCallBack), new GeometryHitTestParameters(expandedHitTestArea));
             if (hitResultsList.Count > 0)
                 Debug.WriteLine("Number of visual hits: " + hitResultsList.Count);
             return this.hitResultsList;
@@ -623,6 +653,7 @@ namespace Dynamo.Views
                 Debug.WriteLine("CAUGHT GRID");
                 hitResultsList.Add(result.VisualHit);
             }
+            
 
             return HitTestResultBehavior.Continue;
         }

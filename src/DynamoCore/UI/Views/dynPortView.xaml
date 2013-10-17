@@ -22,8 +22,7 @@
 
     <Grid Background="Transparent" Name="mainGrid" IsHitTestVisible="True" Margin="0,0,0,2" Width="{Binding Path=PortName, Converter={StaticResource PortNameToWidthConverter}}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="15"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Grid Name="portGrid" Grid.Column="1" MouseEnter="portGrid_MouseEnter">
             
