@@ -21,18 +21,15 @@ namespace Dynamo.Views
     /// </summary>
     public partial class dynWorkspaceView : UserControl
     {
-
-        //TRON
-        private DrawingVisual hitVisual = null;
-        private List<DependencyObject> hitResultsList = new List<DependencyObject>();
-        private int count = 0;
-        //END
-
         private bool isWindowSelecting;
         private Point mouseDownPos;
         private Dynamo.Controls.DragCanvas WorkBench = null;
         private ZoomAndPanControl zoomAndPanControl = null;
         private EndlessGrid endlessGrid = null;
+
+        private DrawingVisual hitVisual = null;
+        private List<DependencyObject> hitResultsList = new List<DependencyObject>();
+        private int minIndex = 0;
 
         public WorkspaceViewModel ViewModel
         {
@@ -402,6 +399,23 @@ namespace Dynamo.Views
 
                 #endregion
             }
+            else
+            {
+                if (hitResultsList.Count > 0)
+                {
+                    try
+                    {
+                        Grid g = (Grid)hitResultsList[0];
+                        UserControl uc = (UserControl)g.Parent;
+                        PortViewModel pvm = (PortViewModel)uc.DataContext;
+                        pvm.ConnectCommand.Execute(null);
+                    }
+                    catch (Exception exc)
+                    {
+                        Debug.WriteLine(exc.StackTrace);
+                    }
+                }
+            }
 
             //if you click on the canvas and you're connecting
             //then drop the connector, otherwise do nothing
@@ -465,7 +479,7 @@ namespace Dynamo.Views
                 
                 if (this.FindChildren(mouse).Count > 0)
                 {
-                    int minIndex = 0;
+                    minIndex = 0;
                     double curDistance = 1000000;
                     //foreach (DependencyObject deob in this.FindChildren(mouse))
                     for (int i=0; i<this.hitResultsList.Count; i++)
