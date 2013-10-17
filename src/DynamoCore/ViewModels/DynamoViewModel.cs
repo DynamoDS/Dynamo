@@ -175,6 +175,8 @@ namespace Dynamo.ViewModels
         public DelegateCommand TogglePanCommand { get; set; }
         public DelegateCommand EscapeCommand { get; set; }
 
+        public DelegateCommand SelectVisualizationInViewCommand { get; set; }
+
         /// <summary>
         /// An observable collection of workspace view models which tracks the model
         /// </summary>
@@ -511,6 +513,8 @@ namespace Dynamo.ViewModels
             FitViewCommand = new DelegateCommand(FitView, CanFitView);
             TogglePanCommand = new DelegateCommand(TogglePan, CanTogglePan);
             EscapeCommand = new DelegateCommand(Escape, CanEscape);
+
+            SelectVisualizationInViewCommand = new DelegateCommand(SelectVisualizationInView, CanSelectVisualizationInView);
 
             DynamoLogger.Instance.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Instance_PropertyChanged);
 
@@ -1256,6 +1260,26 @@ namespace Dynamo.ViewModels
         internal bool CanHideInfoBubble(object parameter)
         {
             return true;
+        }
+
+        internal void SelectVisualizationInView(object parameters)
+        {
+            var arr = (double[])parameters;
+            double x = arr[0];
+            double y = arr[1];
+            double z = arr[2];
+
+            dynSettings.Controller.VisualizationManager.LookupSelectedElement(x, y, z);
+        }
+
+        internal bool CanSelectVisualizationInView(object parameters)
+        {
+            if (parameters != null)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 
