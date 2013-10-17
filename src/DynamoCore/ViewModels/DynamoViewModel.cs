@@ -447,13 +447,8 @@ namespace Dynamo.ViewModels
 
             Controller = controller;
 
-            // If there is no command file being specified, then that means it 
-            // is not in automation mode. The command recording will be enabled
-            // in a regular user scenario.
-            // 
+            // Instantiate an AutomationSettings to handle record/playback.
             automationSettings = new AutomationSettings(this, commandFilePath);
-            if (automationSettings.CurrentMode == AutomationSettings.Mode.Recording)
-                recordedCommands = new List<DynamoViewModel.RecordableCommand>();
 
             OpenCommand = new DelegateCommand(_model.Open, _model.CanOpen);
             ShowOpenDialogAndOpenResultCommand = new DelegateCommand(_model.ShowOpenDialogAndOpenResult, _model.CanShowOpenDialogAndOpenResultCommand);
