@@ -17,8 +17,9 @@
         </Border.Resources>
 
         <Border Margin="11 0 0 0"
-                    HorizontalAlignment="Left"
+                    HorizontalAlignment="Stretch"
                     VerticalAlignment="Center">
+            <Grid>
             <ItemsControl x:Name="ShortcutItemsControl"
                               ItemsSource="{Binding ElementName='MenuUserControl', Path=ShortcutBarItems}">
                 <ItemsControl.ItemTemplate>
@@ -69,6 +70,58 @@
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
             </ItemsControl>
+
+                <ItemsControl x:Name="ShortcutRightSideItemsControl"
+                              ItemsSource="{Binding ElementName='MenuUserControl', Path=ShortcutBarRightSideItems}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button ToolTip="{Binding ShortcutToolTip}"
+                                    Command="{Binding ShortcutCommand}"
+                                    CommandParameter="{Binding ShortcutCommandParameter}"
+                                    IsEnabled="{Binding IsEnabled}">
+                                <Button.Resources>
+                                    <Image x:Key="Normal"
+                                           Width="25"
+                                           Height="25"
+                                           Source="{Binding ImgNormalSource}" />
+                                    <Image x:Key="Disabled"
+                                           Width="25"
+                                           Height="25"
+                                           Source="{Binding ImgDisabledSource}" />
+                                    <Image x:Key="Hover"
+                                           Width="25"
+                                           Height="25"
+                                           Source="{Binding ImgHoverSource}" />
+                                </Button.Resources>
+                                <Button.Style>
+                                    <Style BasedOn="{StaticResource ShortCutButton}" TargetType="{x:Type Button}">
+                                        <Style.Triggers>
+                                            <MultiDataTrigger>
+                                                <MultiDataTrigger.Conditions>
+                                                    <Condition Binding="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IsMouseOver}" Value="false" />
+                                                    <Condition Binding="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IsEnabled}" Value="true" />
+                                                </MultiDataTrigger.Conditions>
+                                                <Setter Property="Content" Value="{StaticResource Normal}" />
+                                            </MultiDataTrigger>
+                                            <Trigger Property="IsEnabled" Value="false">
+                                                <Setter Property="Content" Value="{StaticResource Disabled}" />
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver" Value="true">
+                                                <Setter Property="Content" Value="{StaticResource Hover}" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel x:Name="ShortcutBar" Orientation="Horizontal" HorizontalAlignment="Right"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </Grid>
         </Border>
     </Border>
 </UserControl>

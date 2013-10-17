@@ -121,6 +121,14 @@ namespace Dynamo.Controls
             saveButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/save_disabled.png";
             saveButton.ImgHoverSource = "/DynamoCore;component/UI/Images/save_hover.png";
 
+            ShortcutBarItem screenShotButton = new ShortcutBarItem();
+            screenShotButton.ShortcutToolTip = "Export Workspace As Image";
+            screenShotButton.ShortcutCommand = viewModel.ShowSaveImageDialogAndSaveResultCommand;
+            screenShotButton.ShortcutCommandParameter = null;
+            screenShotButton.ImgNormalSource = "/DynamoCore;component/UI/Images/screenshot_normal.png";
+            screenShotButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/screenshot_disabled.png";
+            screenShotButton.ImgHoverSource = "/DynamoCore;component/UI/Images/screenshot_hover.png";
+
             // PLACEHOLDER FOR FUTURE SHORTCUTS
             //ShortcutBarItem undoButton = new ShortcutBarItem();
             //undoButton.ShortcutToolTip = "Undo [Ctrl + Z]";
@@ -149,6 +157,7 @@ namespace Dynamo.Controls
             shortcutBar.ShortcutBarItems.Add(newScriptButton);
             shortcutBar.ShortcutBarItems.Add(openScriptButton);
             shortcutBar.ShortcutBarItems.Add(saveButton);
+            shortcutBar.ShortcutBarRightSideItems.Add(screenShotButton);
             //shortcutBar.ShortcutBarItems.Add(undoButton);
             //shortcutBar.ShortcutBarItems.Add(redoButton);
             //shortcutBar.ShortcutBarItems.Add(runButton);            
