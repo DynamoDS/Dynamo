@@ -124,7 +124,11 @@ namespace Dynamo.Utilities
             }
 
 #if USE_DSENGINE
-            LoadDSLibraries();
+            foreach (var library in DSLibraryServices.Instance.Libraries)
+            {
+                LoadDSFunctionsFromLibrary(library);
+            }
+            DSLibraryServices.Instance.LibraryLoaded += new DSLibraryServices.LibraryLoadedEventHandler(OnLoadDSLibrary);
 #endif
             AppDomain.CurrentDomain.AssemblyResolve -= resolver;
 
@@ -132,28 +136,32 @@ namespace Dynamo.Utilities
 
         }
 
-        private static void LoadDSLibraries()
+#if USE_DSENGINE
+        private static void LoadDSFunctionsFromLibrary(string library)
         {
-            var searchViewModel = dynSettings.Controller.SearchViewModel;
-            var controller = dynSettings.Controller;
-
-            List<string> libraries = DSLibrary.Instance.Libraries;
-            foreach (var library in libraries)
+            List<Dynamo.Nodes.DSFunctionItem> functions = DSLibraryServices.Instance[library];
+            if (functions != null)
             {
-                List<Dynamo.Nodes.DSFunctionItem> functions = DSLibrary.Instance[library];
+                var searchViewModel = dynSettings.Controller.SearchViewModel;
+                var controller = dynSettings.Controller;
 
                 foreach (var function in functions)
                 {
                     searchViewModel.Add(function);
 
-                    if (!controller.DSImportedFunctions.ContainsKey(function.QualifiedName))
+                    if (!controller.DSImportedFunctions.ContainsKey(function.DisplayName))
                     {
-                        controller.DSImportedFunctions.Add(function.QualifiedName, function);
+                        controller.DSImportedFunctions.Add(function.DisplayName, function);
                     }
                 }
             }
         }
 
+        private static void OnLoadDSLibrary(object sender, DSLibraryServices.LibraryLoadedEventArgs e)
+        {
+            LoadDSFunctionsFromLibrary(e.LibraryPath);
+        }
+#endif
         /// <summary>
         ///     Determine if a Type is a node.  Used by LoadNodesFromAssembly to figure
         ///     out what nodes to load from other libraries (.dlls).
