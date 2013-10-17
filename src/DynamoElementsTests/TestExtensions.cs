@@ -27,7 +27,7 @@ namespace Dynamo.Tests
             var nodeToT = NodeFromWorkspace(ws, guid);
             Assert.NotNull(nodeToT);
             Assert.IsAssignableFrom(typeof(T), nodeToT);
-            return (T)nodeToT;
+            return nodeToT as T;
         }
 
         public static T NodeFromWorkspace<T>(this WorkspaceModel ws, string guidString)
