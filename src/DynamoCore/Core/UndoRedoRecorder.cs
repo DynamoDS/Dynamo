@@ -55,17 +55,16 @@ namespace Dynamo.Core
         ModelBase GetModelForElement(XmlElement modelData);
     }
 
-    public class UndoRedoRecorder
+    internal class UndoRedoRecorder
     {
+        #region Private Class Data Members
 
-        public enum UserAction
+        internal enum UserAction
         {
             Creation,
             Modification,
             Deletion
         }
-
-        #region Private Class Data Members
 
         private const string UserActionAttrib = "UserAction";
         private const string ActionGroup = "ActionGroup";
