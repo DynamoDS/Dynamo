@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Threading;
 using System.Xml;
+using Dynamo.Utilities;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.ViewModels
@@ -15,6 +16,23 @@ namespace Dynamo.ViewModels
 
         internal enum Mode { None, Playback, Recording }
 
+        /// <summary>
+        /// This attribute specifies if Dynamo main window should be 
+        /// closed after all the loaded commands have been played back. 
+        /// This is set to "true" by default for recorded command files.
+        /// </summary>
+        /// 
+        private const string ExitAttribName = "ExitAfterPlayback";
+
+        /// <summary>
+        /// This attribute specifies the amount of time in milliseconds that 
+        /// Dynamo window should pause before closing. This value is ignored 
+        /// if ExitAttribName is set to "false" (in which case Dynamo 
+        /// window will not be closed after playback is completed).
+        /// </summary>
+        /// 
+        private const string PauseAttribName = "PauseAfterPlaybackInMs";
+
         private DynamoViewModel owningViewModel = null;
         private DispatcherTimer playbackTimer = null;
         private List<DynCmd.RecordableCommand> loadedCommands = null;
@@ -24,6 +42,8 @@ namespace Dynamo.ViewModels
 
         #region Class Properties
 
+        internal int PauseAfterPlayback { get; private set; }
+        internal bool ExitAfterPlayback { get; private set; }
         internal Mode CurrentMode { get; private set; }
 
         internal bool CanSaveRecordedCommands
@@ -43,6 +63,9 @@ namespace Dynamo.ViewModels
 
         internal AutomationSettings(DynamoViewModel vm, string commandFilePath)
         {
+            this.PauseAfterPlayback = 10; // 10ms after playback is done.
+            this.ExitAfterPlayback = true; // Exit Dynamo after playback.
+
             this.CurrentMode = Mode.None;
             if (LoadCommandFromFile(commandFilePath))
                 this.CurrentMode = Mode.Playback;
@@ -112,6 +135,11 @@ namespace Dynamo.ViewModels
             XmlElement commandRoot = document.CreateElement("Commands");
             document.AppendChild(commandRoot);
 
+            // Create attributes that applied to the entire recording.
+            XmlElementHelper helper = new XmlElementHelper(commandRoot);
+            helper.SetAttribute(ExitAttribName, ExitAfterPlayback);
+            helper.SetAttribute(PauseAttribName, PauseAfterPlayback);
+
             foreach (DynCmd.RecordableCommand command in recordedCommands)
                 commandRoot.AppendChild(command.Serialize(document));
 
@@ -148,9 +176,14 @@ namespace Dynamo.ViewModels
                 document.Load(commandFilePath);
 
                 // Get to the root node of this Xml document.
-                XmlNode commandRoot = document.FirstChild;
+                XmlElement commandRoot = document.FirstChild as XmlElement;
                 if (null == commandRoot || (null == commandRoot.ChildNodes))
                     return false;
+
+                // Read in optional attributes from the command root element.
+                XmlElementHelper helper = new XmlElementHelper(commandRoot);
+                this.ExitAfterPlayback = helper.ReadBoolean(ExitAttribName, true);
+                this.PauseAfterPlayback = helper.ReadInteger(PauseAttribName, 10);
 
                 loadedCommands = new List<DynCmd.RecordableCommand>();
                 foreach (XmlNode node in commandRoot.ChildNodes)
