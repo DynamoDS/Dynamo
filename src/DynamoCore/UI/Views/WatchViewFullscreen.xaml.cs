@@ -288,16 +288,19 @@ namespace Dynamo.Controls
         public HitTestResultBehavior ResultCallback(HitTestResult result)
         {
             // Did we hit 3D?
-            RayHitTestResult rayResult = result as RayHitTestResult;
+            var rayResult = result as RayHitTestResult;
             if (rayResult != null)
             {
                 // Did we hit a MeshGeometry3D?
-                RayMeshGeometry3DHitTestResult rayMeshResult =
+                var rayMeshResult =
                     rayResult as RayMeshGeometry3DHitTestResult;
 
                 if (rayMeshResult != null)
                 {
                     // Yes we did!
+                    var pt = rayMeshResult.PointHit;
+                    dynSettings.Controller.VisualizationManager.LookupSelectedElement(pt.X, pt.Y, pt.Z);
+                    return HitTestResultBehavior.Stop;
                 }
             }
 

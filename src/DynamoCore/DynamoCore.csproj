@@ -325,6 +325,17 @@ limitations under the License.
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Search\SearchDictionary.cs" />
+    <Compile Include="VisualizationManager\octree\FastSerialization.cs" />
+    <Compile Include="VisualizationManager\octree\IOctree.cs" />
+    <Compile Include="VisualizationManager\octree\Octree.cs" />
+    <Compile Include="VisualizationManager\octree\OctreeBox.cs" />
+    <Compile Include="VisualizationManager\octree\OctreeDistance.cs" />
+    <Compile Include="VisualizationManager\octree\OctreeLeaf.cs" />
+    <Compile Include="VisualizationManager\octree\OctreeNode.cs" />
+    <Compile Include="VisualizationManager\octree\Point3d.cs" />
+    <Compile Include="VisualizationManager\octree\Point3f.cs" />
+    <Compile Include="VisualizationManager\octree\Vector3d.cs" />
+    <Compile Include="VisualizationManager\octree\Vector3f.cs" />
     <Compile Include="VisualizationManager\RenderDescription.cs" />
     <Compile Include="VisualizationManager\Visualization.cs" />
     <Compile Include="VisualizationManager\VisualizationManager.cs" />
