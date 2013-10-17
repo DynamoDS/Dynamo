@@ -23,7 +23,7 @@
 
         <HelixToolkit:HelixViewport3D Name="watch_view" ZoomExtentsWhenLoaded="True" 
                                       ShowViewCube="False" CameraRotationMode="Turntable"
-                                      IsHitTestVisible="True">
+                                      IsHitTestVisible="True" MouseLeftButtonDown="Watch_view_OnMouseDown">
         
             <ModelVisual3D>
                 <HelixToolkit:LightVisual3D>
