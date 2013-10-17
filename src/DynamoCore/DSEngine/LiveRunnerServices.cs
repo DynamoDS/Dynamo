@@ -28,14 +28,10 @@ namespace Dynamo.DSEngine
         // LiveRunner to provide an API to load libraries.
         private void PreLoadGeometryLibrary()
         {
-            ImportNode import1 = new ImportNode { ModuleName = "Math.dll" };
-            ImportNode import2 = new ImportNode { ModuleName = "ProtoGeometry.dll" };
-
-            Subtree tree = new Subtree();
-            tree.GUID = System.Guid.NewGuid();
-            tree.AstNodes = new List<AssociativeNode> {import1, import2};
-            GraphSyncData synData = new GraphSyncData(null, new List<Subtree> { tree }, null);
-            liveRunner.UpdateGraph(synData);
+            List<string> libs = new List<string>();
+            libs.Add("Math.dll");
+            libs.Add("ProtoGeometry.dll");
+            liveRunner.ResetVMAndResyncGraph(libs);
         }
 
         private void OnGraphUpdateReady(object sender, DynamoGraphUpdateReadyEventArgs e)
@@ -46,6 +42,14 @@ namespace Dynamo.DSEngine
         private void OnNodeValueReady(object sender, DynamoNodeValueReadyEventArgs e)
         {
             /// not implemented yet.
+        }
+
+        public ProtoCore.Core  Core
+        {
+            get
+            {
+                return liveRunner.Core;
+            }
         }
 
         public RuntimeMirror GetMirror(string var)
