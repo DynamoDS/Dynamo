@@ -154,10 +154,16 @@ namespace Dynamo
             DynamoSelection.Instance.Selection.CollectionChanged += new NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
             dynSettings.Controller.DynamoModel.ModelCleared += new EventHandler(DynamoModel_ModelCleared);
             dynSettings.Controller.DynamoModel.CleaningUp += new CleanupHandler(DynamoModel_CleaningUp);
+            dynSettings.Controller.DynamoModel.NodeDeleted += new NodeHandler(DynamoModel_NodeDeleted);
 
             Visualizers.Add(typeof(GraphicItem), VisualizationManagerASM.DrawLibGGraphicItem);
 
             octree = new Octree.OctreeSearch.Octree(10000,-10000,10000,-10000,10000,-10000,10000000);
+        }
+
+        void DynamoModel_NodeDeleted(NodeModel node)
+        {
+            UpdateVisualizations();
         }
 
         void DynamoModel_CleaningUp(object sender, EventArgs e)
@@ -566,6 +572,8 @@ namespace Dynamo
                 var sw = new Stopwatch();
                 sw.Start();
 
+                octree.Clear();
+
                 //get a dictionary of all nodes with drawable objects
                 var drawable_dict = GetAllDrawablesInModel();
                 
@@ -573,21 +581,6 @@ namespace Dynamo
                 var drawableKeys = drawable_dict.Select(x => x.Key.GUID.ToString());
                 var toCleanup = Visualizations.Where(x => !drawableKeys.Contains(x.Key)).ToList();
                 toCleanup.ForEach(x=>Visualizations.Remove(x.Key));
-
-                //create a dictionary of the verts to remove
-                //and the associated nodes
-                var nodesVertsTuples = toCleanup
-                    .Where(x => x.Value.Meshes.Count > 0)
-                    .Select(x => new Tuple<string, IEnumerable<Point3D>>(x.Key, x.Value.Meshes.SelectMany(y=>y.Positions)));
-
-                //clean the elements out of the octree as well
-                foreach (var tup in nodesVertsTuples)
-                {
-                    foreach (var pt in tup.Item2)
-                    {
-                        octree.RemoveNode(pt.X, pt.Y, pt.Z, tup.Item1);
-                    }
-                }
 
                 Debug.WriteLine(string.Format("{0} drawables have been removed.", toCleanup.Count));
 
