@@ -213,10 +213,31 @@ namespace Dynamo.ViewModels
             DispatcherTimer timer = sender as DispatcherTimer;
             timer.Stop(); // Stop the timer before command completes.
 
-            if (loadedCommands.Count <= 0)
+            if (loadedCommands.Count <= 0) // There's nothing else for playback.
             {
-                this.playbackTimer = null;
-                System.Windows.Application.Current.Shutdown();
+                if (this.ExitAfterPlayback == false)
+                {
+                    // The playback is done, but the command file indicates that
+                    // Dynamo should not be shutdown after the playback, so here
+                    // we simply invalidate the timer.
+                    // 
+                    this.playbackTimer = null;
+                }
+                else
+                {
+                    // The command file requires Dynamo be shutdown after all 
+                    // commands has been played back. If that's the case, we'll
+                    // reconfigure the callback to a shutdown timer, and then 
+                    // change its interval to the duration specified earlier.
+                    // 
+                    this.playbackTimer.Tick -= OnPlaybackTimerTick;
+                    this.playbackTimer.Tick += OnShutdownTimerTick;
+
+                    var interval = TimeSpan.FromMilliseconds(PauseAfterPlayback);
+                    this.playbackTimer.Interval = interval;
+                    this.playbackTimer.Start(); // Start shutdown timer.
+                }
+
                 return;
             }
 
@@ -231,6 +252,14 @@ namespace Dynamo.ViewModels
             // 
             nextCommand.Execute(this.owningViewModel);
             timer.Start();
+        }
+
+        private void OnShutdownTimerTick(object sender, EventArgs e)
+        {
+            this.playbackTimer.Stop();
+            this.playbackTimer = null;
+
+            System.Windows.Application.Current.Shutdown();
         }
 
         #endregion
