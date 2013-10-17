@@ -76,6 +76,19 @@ namespace Dynamo.Controls
             return app;
         }
 
+        public static DynamoController MakeSandboxForUnitTest(string commandFilePath)
+        {
+            var controller = DynamoController.MakeSandbox(commandFilePath);
+            var application = new Application();
+
+            var dynamoView = new DynamoView(); // Create the view
+            dynamoView.DataContext = controller.DynamoViewModel;
+            controller.UIDispatcher = dynamoView.Dispatcher;
+
+            application.Run(dynamoView);
+            return controller;
+        }
+
         public DynamoView()
         {
             _timer = new Stopwatch();
