@@ -267,17 +267,6 @@ namespace Dynamo.Controls
             }
         }
 
-        public Watch3DFullscreenViewModel ViewModel
-        {
-            get
-            {
-                if (this.DataContext is Watch3DFullscreenViewModel)
-                    return (Watch3DFullscreenViewModel)this.DataContext;
-                else
-                    return null;
-            }
-        }
-
         private void Watch_view_OnMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             Point mousePos = e.GetPosition(watch_view);
@@ -299,7 +288,7 @@ namespace Dynamo.Controls
                 {
                     // Yes we did!
                     var pt = rayMeshResult.PointHit;
-                    dynSettings.Controller.VisualizationManager.LookupSelectedElement(pt.X, pt.Y, pt.Z);
+                    ((DynamoViewModel)DataContext).SelectVisualizationInViewCommand.Execute(new double[]{pt.X,pt.Y,pt.Z});
                     return HitTestResultBehavior.Stop;
                 }
             }
