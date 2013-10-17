@@ -114,14 +114,15 @@ namespace Dynamo
                 // get the top most nodes and set THEM as the output
                 IEnumerable<NodeModel> topMostNodes = functionWorkspace.GetTopMostNodes();
 
+                NodeModel infinite = null;
+
                 var outNames = new List<string>();
 
                 foreach (NodeModel topNode in topMostNodes)
                 {
                     if (topNode is Function && (topNode as Function).Definition == this)
                     {
-                        topMost.Add(Tuple.Create(0, topNode));
-                        outNames.Add("∞");
+                        infinite = topNode;
                         continue;
                     }
 
@@ -133,6 +134,12 @@ namespace Dynamo
                             outNames.Add(topNode.OutPortData[output].NickName);
                         }
                     }
+                }
+
+                if (infinite != null && outNames.Count == 0)
+                {
+                    topMost.Add(Tuple.Create(0, infinite));
+                    outNames.Add("∞");
                 }
 
                 outputNames = outNames;
