@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using Dynamo.FSchemeInterop;
+using Microsoft.FSharp.Collections;
 using NUnit.Framework;
 using Dynamo.Utilities;
 using Dynamo.Nodes;
@@ -119,14 +120,15 @@ namespace Dynamo.Tests
             // Verification for BSplineCurve node.
             Autodesk.LibG.Geometry geometry1 = null;
             var getGeometry1 = model.CurrentWorkspace.NodeFromWorkspace<BSplineCurveNode>("78c56e90-0bc2-4629-8335-fef14ba958ed");
-            Assert.IsTrue(Utils.Convert(getGeometry1.GetValue(0), ref geometry1));
+            FSharpList<FScheme.Value> innerList1 = getGeometry1.GetValue(0).GetListFromFSchemeValue();
+            Assert.IsTrue(Utils.Convert(innerList1[0], ref geometry1));
 
             Autodesk.LibG.BSplineCurve bSCurve = geometry1 as Autodesk.LibG.BSplineCurve;
             Assert.AreNotEqual(null, bSCurve);
             Assert.IsFalse(bSCurve.is_closed());
             Assert.IsTrue(bSCurve.is_planar());
             Assert.AreEqual(1, bSCurve.start_point().x());
-            Assert.AreEqual(5, bSCurve.end_point().x());
+            Assert.AreEqual(5, bSCurve.end_point().y());
 
         }
 
