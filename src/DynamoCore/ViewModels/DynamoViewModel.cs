@@ -447,17 +447,13 @@ namespace Dynamo.ViewModels
 
             Controller = controller;
 
-            // Validate if the supplied commandFilePath is valid and the file exists.
-            if (string.IsNullOrEmpty(commandFilePath) || (!File.Exists(commandFilePath)))
-                commandFilePath = null;
-
             // If there is no command file being specified, then that means it 
             // is not in automation mode. The command recording will be enabled
             // in a regular user scenario.
             // 
-            this.commandFilePath = commandFilePath;
-            if (string.IsNullOrEmpty(commandFilePath))
-                this.recordedCommands = new List<DynamoViewModel.RecordableCommand>();
+            automationSettings = new AutomationSettings(this, commandFilePath);
+            if (automationSettings.CurrentMode == AutomationSettings.Mode.Recording)
+                recordedCommands = new List<DynamoViewModel.RecordableCommand>();
 
             OpenCommand = new DelegateCommand(_model.Open, _model.CanOpen);
             ShowOpenDialogAndOpenResultCommand = new DelegateCommand(_model.ShowOpenDialogAndOpenResult, _model.CanShowOpenDialogAndOpenResultCommand);
@@ -1007,13 +1003,16 @@ namespace Dynamo.ViewModels
         /// <returns>Whether the cleanup was completed or cancelled.</returns>
         public bool AskUserToSaveWorkspacesOrCancel(bool allowCancel = true)
         {
-            // In an automation run, Dynamo should not be asking user to save 
-            // the modified file. Instead it should be shutting down, leaving 
-            // behind unsaved changes (if saving is desired, then the save command 
-            // should have been recorded for the test case to it can be replayed).
-            // 
-            if (null != commandFilePath && (File.Exists(commandFilePath)))
-                return true; // In playback mode, just exit without saving.
+            if (null != automationSettings)
+            {
+                // In an automation run, Dynamo should not be asking user to save 
+                // the modified file. Instead it should be shutting down, leaving 
+                // behind unsaved changes (if saving is desired, then the save command 
+                // should have been recorded for the test case to it can be replayed).
+                // 
+                if (automationSettings.CurrentMode == AutomationSettings.Mode.Playback)
+                    return true; // In playback mode, just exit without saving.
+            }
 
             foreach (var wvm in Workspaces.Where((wvm) => wvm.Model.HasUnsavedChanges))
             {
