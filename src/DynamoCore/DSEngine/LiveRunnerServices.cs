@@ -11,40 +11,30 @@ namespace Dynamo.DSEngine
     public class LiveRunnerServices
     {
         public static LiveRunnerServices Instance = new LiveRunnerServices();
-
-        private DynamoLogger logger = DynamoLogger.Instance;
         private ILiveRunner liveRunner;
+        private List<string> loadedLibraries;
 
         private LiveRunnerServices()
         {
             liveRunner = new ProtoScript.Runners.LiveRunner();
             liveRunner.DynamoGraphUpdateReady += OnGraphUpdateReady;
             liveRunner.DynamoNodeValueReady += OnNodeValueReady;
+            loadedLibraries = new List<string>();
 
-            PreLoadGeometryLibrary();
+            DSLibraryServices.Instance.LibraryLoaded += new DSLibraryServices.LibraryLoadedEventHandler(OnLoadLibrary);
+            liveRunner.ResetVMAndResyncGraph(DSLibraryServices.Instance.PreLoadedLibraries);
+            loadedLibraries = new List<string>(DSLibraryServices.Instance.PreLoadedLibraries);
         }
       
-        // temporary solution: preload assembilies in liverunner. Waiting for
-        // LiveRunner to provide an API to load libraries.
-        private void PreLoadGeometryLibrary()
-        {
-            List<string> libs = new List<string>();
-            libs.Add("Math.dll");
-            libs.Add("ProtoGeometry.dll");
-            liveRunner.ResetVMAndResyncGraph(libs);
-        }
-
         private void OnGraphUpdateReady(object sender, DynamoGraphUpdateReadyEventArgs e)
         {
-            /// not implemented yet.
         }
 
         private void OnNodeValueReady(object sender, DynamoNodeValueReadyEventArgs e)
         {
-            /// not implemented yet.
         }
 
-        public ProtoCore.Core  Core
+        public ProtoCore.Core Core
         {
             get
             {
@@ -67,14 +57,19 @@ namespace Dynamo.DSEngine
         {
             try
             {
-                // async BeginUpdateGraph() hasn't been implemented yet.
-                // liveRunner.BeginUpdateGraph(graphData);
                 liveRunner.UpdateGraph(graphData);
             }
             catch (Exception e)
             {
-                logger.Log("Update graph failed: " + e.Message);
+                DynamoLogger.Instance.LogWarning("Update graph failed: " + e.Message, WarningLevel.Severe);
             }
+        }
+
+        private void OnLoadLibrary(object sender, DSLibraryServices.LibraryLoadedEventArgs e)
+        {
+            string newLibraryPath = e.LibraryPath;
+            loadedLibraries.Add(newLibraryPath);
+            liveRunner.ResetVMAndResyncGraph(loadedLibraries);
         }
     }
 }
