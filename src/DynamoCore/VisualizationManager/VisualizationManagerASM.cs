@@ -16,7 +16,7 @@ namespace Dynamo
             DrawToAlternateContext = false;
         }
 
-        public static void DrawLibGGraphicItem(NodeModel node, object geom, RenderDescription rd)
+        public static void DrawLibGGraphicItem(NodeModel node, object geom, RenderDescription rd,  Octree.OctreeSearch.Octree octree)
         {
             var selected = DynamoSelection.Instance.Selection.Contains(node);
             var g = geom as GraphicItem;
@@ -177,6 +177,8 @@ namespace Dynamo
                     points.Add(new_point);
                     norms.Add(normal);
                     tex.Add(new System.Windows.Point(0,0));
+
+                    octree.AddNode(new_point.X, new_point.Y, new_point.Z, node.GUID.ToString());
                 }
 
                 //builder.AddTriangles(points, norms, tex);
