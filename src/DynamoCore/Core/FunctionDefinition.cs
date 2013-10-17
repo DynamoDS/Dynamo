@@ -68,26 +68,15 @@ namespace Dynamo
 
         public void CompileAndAddToEnvironment(ExecutionEnvironment env)
         {
-            IEnumerable<string> inputNames;
-            IEnumerable<string> outputNames;
-            var compiledFunction = this.Compile(out inputNames, out outputNames);
+            var compiledFunction = this.Compile();
 
             env.DefineSymbol( this.FunctionId.ToString(),compiledFunction);
         }
 
-        public void CompileAndAddToEnvironment(ExecutionEnvironment env, out IEnumerable<string> inputNames, out IEnumerable<string> outputNames)
+        public FScheme.Expression Compile()
         {
-            var compiledFunction = this.Compile(out inputNames, out outputNames);
-
-            env.DefineSymbol(
-                this.FunctionId.ToString(),
-                compiledFunction);
-        }
-
-        public FScheme.Expression Compile(out IEnumerable<string> inputNames, out IEnumerable<string> outputNames)
-        {
-            inputNames = null;
-            outputNames = null;
+            IEnumerable<string> inputNames = null;
+            IEnumerable<string> outputNames = null;
 
             // Get the internal nodes for the function
             WorkspaceModel functionWorkspace = this.WorkspaceModel;
@@ -156,6 +145,21 @@ namespace Dynamo
             //Find function entry point, and then compile
             var variables = functionWorkspace.Nodes.OfType<Symbol>().ToList();
             inputNames = variables.Select(x => x.InputSymbol);
+
+            //Update existing function nodes which point to this function to match its changes
+            dynSettings.Controller.DynamoModel.AllNodes
+                .OfType<Function>()
+                .Where(el => el.Definition.FunctionId == this.FunctionId)
+                .ToList()
+                .ForEach(node =>
+                {
+                    node.SetInputs(inputNames);
+                    node.SetOutputs(outputNames);
+                    node.RegisterAllPorts();
+                });
+
+            //Call OnSave for all saved elements
+            functionWorkspace.Nodes.ToList().ForEach(x => x.onSave());
 
             INode top;
             var buildDict = new Dictionary<NodeModel, Dictionary<int, INode>>();
@@ -266,24 +270,7 @@ namespace Dynamo
 
                 dynSettings.Controller.CustomNodeManager.SetNodeInfo(info);
 
-                IEnumerable<string> inputNames, outputNames;
-                this.CompileAndAddToEnvironment(dynSettings.Controller.FSchemeEnvironment, out inputNames, out outputNames);
-
-                //Update existing function nodes which point to this function to match its changes
-                dynSettings.Controller.DynamoModel.AllNodes
-                    .OfType<Function>()
-                    .Where(el => el.Definition.FunctionId == this.FunctionId)
-                    .ToList()
-                    .ForEach( node =>
-                        {
-                            node.SetInputs(inputNames);
-                            node.SetOutputs(outputNames);
-                            node.RegisterAllPorts();
-                        });
-
-                //Call OnSave for all saved elements
-               functionWorkspace.Nodes.ToList().ForEach(x=>x.onSave());
-
+                this.CompileAndAddToEnvironment(dynSettings.Controller.FSchemeEnvironment);
             }
             catch (Exception e)
             {
