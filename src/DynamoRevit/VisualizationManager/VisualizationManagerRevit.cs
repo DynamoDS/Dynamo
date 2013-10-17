@@ -97,11 +97,11 @@ namespace Dynamo
 
             if (node.IsSelected)
             {
-                rd.SelectedMeshes.Add(RevitMeshToHelixMesh(mesh));
+                rd.SelectedMeshes.Add(RevitMeshToHelixMesh(mesh, octree, node));
             }
             else
             {
-                rd.Meshes.Add(RevitMeshToHelixMesh(mesh));
+                rd.Meshes.Add(RevitMeshToHelixMesh(mesh, octree,node));
             }
         }
 
@@ -365,7 +365,7 @@ namespace Dynamo
             }
         }
 
-        private static MeshGeometry3D RevitMeshToHelixMesh(Mesh rmesh)
+        private static MeshGeometry3D RevitMeshToHelixMesh(Mesh rmesh, Octree.OctreeSearch.Octree octree, NodeModel node)
         {
             var builder = new MeshBuilder();
             var points = new Point3DCollection();
@@ -418,6 +418,7 @@ namespace Dynamo
                     points.Add(new_point);
                     norms.Add(normal);
                     tex.Add(new System.Windows.Point(0, 0));
+                    octree.AddNode(new_point.X, new_point.Y, new_point.Z, node.GUID.ToString());
                 }
 
                 builder.Append(points, tris, norms, tex);
