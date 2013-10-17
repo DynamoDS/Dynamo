@@ -22,6 +22,7 @@ namespace Dynamo.ViewModels
         private DynamoViewModel owningViewModel = null;
         private DispatcherTimer playbackTimer = null;
         private List<DynCmd.RecordableCommand> loadedCommands = null;
+        private List<DynCmd.RecordableCommand> recordedCommands = null;
 
         #endregion
 
@@ -29,15 +30,31 @@ namespace Dynamo.ViewModels
 
         internal Mode CurrentMode { get; private set; }
 
+        internal bool CanSaveRecordedCommands
+        {
+            get
+            {
+                if (null == recordedCommands)
+                    return false;
+
+                return (recordedCommands.Count > 0);
+            }
+        }
+
         #endregion
 
         #region Class Operational Methods
 
         internal AutomationSettings(DynamoViewModel vm, string commandFilePath)
         {
-            this.CurrentMode = Mode.Recording;
+            this.CurrentMode = Mode.None;
             if (LoadCommandFromFile(commandFilePath))
                 this.CurrentMode = Mode.Playback;
+            else
+            {
+                this.CurrentMode = Mode.Recording;
+                recordedCommands = new List<DynCmd.RecordableCommand>();
+            }
 
             this.owningViewModel = vm;
             if (null == this.owningViewModel)
@@ -65,29 +82,50 @@ namespace Dynamo.ViewModels
             playbackTimer.Start();
         }
 
-        private void OnPlaybackTimerTick(object sender, EventArgs e)
+        internal void RecordCommand(DynCmd.RecordableCommand command)
         {
-            DispatcherTimer timer = sender as DispatcherTimer;
-            timer.Stop(); // Stop the timer before command completes.
-
-            if (loadedCommands.Count <= 0)
+            // In the playback mode 'this.recordedCommands' will be 
+            // 'null' so that the incoming command will not be recorded.
+            if (null != recordedCommands)
             {
-                this.playbackTimer = null;
-                System.Windows.Application.Current.Shutdown();
-                return;
+                if (command.Redundant && (recordedCommands.Count > 0))
+                {
+                    // If a command is being marked "Redundant", then we will 
+                    // only be interested in the most recent one. If we already
+                    // have another instance recorded immediately prior to this,
+                    // then replace the old instance with the new (for details,
+                    // see "RecordableCommand.Redundant" property).
+                    // 
+                    var previousCommand = recordedCommands.Last();
+                    if (previousCommand.GetType() != command.GetType())
+                        recordedCommands.Add(command);
+                    else
+                    {
+                        // Replace the existing command instead of adding.
+                        recordedCommands[recordedCommands.Count - 1] = command;
+                    }
+                }
+                else
+                    recordedCommands.Add(command);
             }
+        }
 
-            // Remove the first command from the loaded commands.
-            DynCmd.RecordableCommand nextCommand = loadedCommands[0];
-            loadedCommands.RemoveAt(0);
+        internal string SaveRecordedCommands()
+        {
+            XmlDocument document = new XmlDocument();
+            XmlElement commandRoot = document.CreateElement("Commands");
+            document.AppendChild(commandRoot);
 
-            // Execute the command, this may take a while longer than the timer
-            // inverval (usually very short), that's why the timer was stopped 
-            // before the command execution starts. After the command is done,
-            // the timer is then resumed for the next command in queue.
-            // 
-            nextCommand.Execute(this.owningViewModel);
-            timer.Start();
+            foreach (DynCmd.RecordableCommand command in recordedCommands)
+                commandRoot.AppendChild(command.Serialize(document));
+
+            string format = "Commands-{0:yyyyMMdd-hhmmss}.xml";
+            string xmlFileName = string.Format(format, DateTime.Now);
+            string xmlFilePath = Path.Combine(Path.GetTempPath(), xmlFileName);
+
+            // Save recorded commands into XML file and open it in viewer.
+            document.Save(xmlFilePath);
+            return xmlFilePath;
         }
 
         #endregion
@@ -141,6 +179,31 @@ namespace Dynamo.ViewModels
             return (null != loadedCommands && (loadedCommands.Count > 0));
         }
 
+        private void OnPlaybackTimerTick(object sender, EventArgs e)
+        {
+            DispatcherTimer timer = sender as DispatcherTimer;
+            timer.Stop(); // Stop the timer before command completes.
+
+            if (loadedCommands.Count <= 0)
+            {
+                this.playbackTimer = null;
+                System.Windows.Application.Current.Shutdown();
+                return;
+            }
+
+            // Remove the first command from the loaded commands.
+            DynCmd.RecordableCommand nextCommand = loadedCommands[0];
+            loadedCommands.RemoveAt(0);
+
+            // Execute the command, this may take a while longer than the timer
+            // inverval (usually very short), that's why the timer was stopped 
+            // before the command execution starts. After the command is done,
+            // the timer is then resumed for the next command in queue.
+            // 
+            nextCommand.Execute(this.owningViewModel);
+            timer.Start();
+        }
+
         #endregion
     }
 
@@ -148,7 +211,6 @@ namespace Dynamo.ViewModels
     {
         // Automation related data members.
         private AutomationSettings automationSettings = null;
-        private List<RecordableCommand> recordedCommands = null;
 
         #region Automation Related Methods
 
@@ -164,26 +226,23 @@ namespace Dynamo.ViewModels
 
         private void SaveRecordedCommands(object parameters)
         {
-            XmlDocument document = new XmlDocument();
-            XmlElement commandRoot = document.CreateElement("Commands");
-            document.AppendChild(commandRoot);
-
-            foreach (RecordableCommand command in recordedCommands)
-                commandRoot.AppendChild(command.Serialize(document));
-
-            string format = "Commands-{0:yyyyMMdd-hhmmss}.xml";
-            string xmlFileName = string.Format(format, DateTime.Now);
-            string xmlFilePath = Path.Combine(Path.GetTempPath(), xmlFileName);
-
-            // Save recorded commands into XML file and open it in viewer.
-            document.Save(xmlFilePath);
-            if (System.IO.File.Exists(xmlFilePath))
-                System.Diagnostics.Process.Start(xmlFilePath);
+            if (null != automationSettings)
+            {
+                string xmlFilePath = automationSettings.SaveRecordedCommands();
+                if (string.IsNullOrEmpty(xmlFilePath) == false)
+                {
+                    if (System.IO.File.Exists(xmlFilePath))
+                        System.Diagnostics.Process.Start(xmlFilePath);
+                }
+            }
         }
 
         private bool CanSaveRecordedCommands(object parameters)
         {
-            return (null != recordedCommands && (recordedCommands.Count > 0));
+            if (null == automationSettings)
+                return false;
+
+            return automationSettings.CanSaveRecordedCommands;
         }
 
         #endregion
@@ -192,30 +251,8 @@ namespace Dynamo.ViewModels
 
         internal void ExecuteCommand(RecordableCommand command)
         {
-            // In the playback mode 'this.recordedCommands' will be 
-            // 'null' so that the incoming command will not be recorded.
-            if (null != recordedCommands)
-            {
-                if (command.Redundant && (recordedCommands.Count > 0))
-                {
-                    // If a command is being marked "Redundant", then we will 
-                    // only be interested in the most recent one. If we already
-                    // have another instance recorded immediately prior to this,
-                    // then replace the old instance with the new (for details,
-                    // see "RecordableCommand.Redundant" property).
-                    // 
-                    var previousCommand = recordedCommands.Last();
-                    if (previousCommand.GetType() != command.GetType())
-                        recordedCommands.Add(command);
-                    else
-                    {
-                        // Replace the existing command instead of adding.
-                        recordedCommands[recordedCommands.Count - 1] = command;
-                    }
-                }
-                else
-                    recordedCommands.Add(command);
-            }
+            if (null != this.automationSettings)
+                this.automationSettings.RecordCommand(command);
 
             command.Execute(this);
         }
