@@ -1007,6 +1007,14 @@ namespace Dynamo.ViewModels
         /// <returns>Whether the cleanup was completed or cancelled.</returns>
         public bool AskUserToSaveWorkspacesOrCancel(bool allowCancel = true)
         {
+            // In an automation run, Dynamo should not be asking user to save 
+            // the modified file. Instead it should be shutting down, leaving 
+            // behind unsaved changes (if saving is desired, then the save command 
+            // should have been recorded for the test case to it can be replayed).
+            // 
+            if (null != commandFilePath && (File.Exists(commandFilePath)))
+                return true; // In playback mode, just exit without saving.
+
             foreach (var wvm in Workspaces.Where((wvm) => wvm.Model.HasUnsavedChanges))
             {
                 //if (!AskUserToSaveWorkspaceOrCancel(wvm.Model, allowCancel))

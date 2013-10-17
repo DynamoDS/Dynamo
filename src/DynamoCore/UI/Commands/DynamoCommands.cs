@@ -92,6 +92,7 @@ namespace Dynamo.ViewModels
             if (loadedCommands.Count <= 0)
             {
                 this.playbackTimer = null;
+                System.Windows.Application.Current.Shutdown();
                 return;
             }
 
