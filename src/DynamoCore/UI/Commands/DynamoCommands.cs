@@ -75,7 +75,7 @@ namespace Dynamo.ViewModels
 
             // Serialized commands for playback.
             playbackTimer.Tag = loadedCommands;
-            playbackTimer.Interval = TimeSpan.FromMilliseconds(500);
+            playbackTimer.Interval = TimeSpan.FromMilliseconds(20);
             playbackTimer.Tick += OnPlaybackTimerTick;
             playbackTimer.Start();
             return true;
