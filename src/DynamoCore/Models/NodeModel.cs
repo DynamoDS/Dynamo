@@ -1096,8 +1096,39 @@ namespace Dynamo.Models
                 //and send the results to the outputs
                 foreach (var data in OutPortData)
                 {
-                    //Reverse the evaluation results so they come out right way around
-                    evalResult[data] = Utils.SequenceToFSharpList(evalResult[data].Reverse());
+                    var portResults = evalResult[data];
+
+                    //if the lacing is cross product, the results
+                    //need to be split back out into a set of lists
+                    //equal in dimension to the first list argument
+                    if (args[0].IsList && ArgumentLacing == LacingStrategy.CrossProduct)
+                    {
+                        var length = portResults.Count();
+                        var innerLength = length/((Value.List)args[0]).Item.Count();
+                        int subCount = 0;
+                        var listOfLists = FSharpList<Value>.Empty;
+                        var innerList = FSharpList<Value>.Empty;
+                        for (int i = 0; i < length; i++)
+                        {
+                            innerList = FSharpList<Value>.Cons(portResults.ElementAt(i), innerList);
+                            subCount++;
+
+                            if (subCount == innerLength)
+                            {
+                                subCount = 0;
+                                listOfLists = FSharpList<Value>.Cons(Value.NewList(innerList), listOfLists);
+                                innerList = FSharpList<Value>.Empty;
+                            }
+                        }
+
+                        evalResult[data] = Utils.SequenceToFSharpList(listOfLists);
+                    }
+                    else
+                    {
+                        //Reverse the evaluation results so they come out right way around
+                        evalResult[data] = Utils.SequenceToFSharpList(evalResult[data].Reverse());
+                    }
+
                     outPuts[data] = Value.NewList(evalResult[data]);
                 }
                     
