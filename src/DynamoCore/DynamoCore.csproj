@@ -562,6 +562,11 @@ limitations under the License.
     <Resource Include="UI\Images\expand_hover.png" />
     <Resource Include="UI\Images\expand_normal.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\screenshot_disabled.png" />
+    <Resource Include="UI\Images\screenshot_hover.png" />
+    <Resource Include="UI\Images\screenshot_normal.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y "$(SolutionDir)..\extern\DesignScript\*" "$(OutputPath)"</PostBuildEvent>
