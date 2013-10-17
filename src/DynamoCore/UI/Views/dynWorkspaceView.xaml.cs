@@ -27,6 +27,10 @@ namespace Dynamo.Views
         private ZoomAndPanControl zoomAndPanControl = null;
         private EndlessGrid endlessGrid = null;
 
+        private DrawingVisual hitVisual = null;
+        private List<DependencyObject> hitResultsList = new List<DependencyObject>();
+        private int minIndex = 0;
+
         public WorkspaceViewModel ViewModel
         {
             get
@@ -395,6 +399,23 @@ namespace Dynamo.Views
 
                 #endregion
             }
+            else
+            {
+                if (hitResultsList.Count > 0)
+                {
+                    try
+                    {
+                        Grid g = (Grid)hitResultsList[0];
+                        UserControl uc = (UserControl)g.Parent;
+                        PortViewModel pvm = (PortViewModel)uc.DataContext;
+                        pvm.ConnectCommand.Execute(null);
+                    }
+                    catch (Exception exc)
+                    {
+                        Debug.WriteLine(exc.StackTrace);
+                    }
+                }
+            }
 
             //if you click on the canvas and you're connecting
             //then drop the connector, otherwise do nothing
@@ -454,7 +475,63 @@ namespace Dynamo.Views
             //redraw it to match the new mouse coordinates.
             if (vm.IsConnecting && vm.ActiveConnector != null)
             {
-                vm.ActiveConnector.Redraw(e.GetPosition(WorkBench));
+                Point mouse = (Point)e.GetPosition((UIElement)sender);
+                
+                if (this.FindChildren(mouse).Count > 0)
+                {
+                    minIndex = 0;
+                    double curDistance = 1000000;
+                    //foreach (DependencyObject deob in this.FindChildren(mouse))
+                    for (int i=0; i<this.hitResultsList.Count; i++)
+                    {
+                        DependencyObject deob = this.hitResultsList[i];
+                        if (deob.GetType() == typeof(Grid))
+                        {
+                            Grid g = (Grid)deob;
+                            UserControl uc;
+                            try
+                            {
+                                uc = (UserControl)g.Parent;
+                                if (null != uc)
+                                {
+                                    PortViewModel pvm = (PortViewModel)uc.DataContext;
+                                    if (null != pvm)
+                                    {                                        
+                                        if (Distance(mouse, pvm.Center) < curDistance)
+                                        {
+                                            curDistance = Distance(mouse, pvm.Center);
+                                            minIndex = i;
+                                        }
+                                        //vm.ActiveConnector.Redraw(pvm.Center);
+                                    }
+                                }
+                            }
+                            catch
+                            {
+                                continue;
+                            }
+                            //UserControl uc = (UserControl)g.Parent;
+
+                        }
+                    }
+
+                    try 
+                    {
+                        DependencyObject DepOb = hitResultsList[minIndex];
+                        Grid g2 = (Grid)DepOb;
+                        UserControl uc2 = (UserControl)g2.Parent;
+                        PortViewModel pvm2 = (PortViewModel)uc2.DataContext;
+                        vm.ActiveConnector.Redraw(pvm2.Center);
+                    }
+                    catch (Exception e2)
+                    {
+                        Debug.WriteLine(e2.ToString());
+                    }
+
+                }
+                else
+                    vm.ActiveConnector.Redraw(e.GetPosition(WorkBench));
+                
             }
 
             if (isWindowSelecting)
@@ -517,6 +594,11 @@ namespace Dynamo.Views
             }
         }
 
+        private double Distance(Point mouse, Point point)
+        {
+            return Math.Sqrt(Math.Pow(mouse.X - point.X, 2) + Math.Pow(mouse.Y - point.Y, 2));
+        }
+
         private void WorkBench_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
         }
@@ -559,6 +641,35 @@ namespace Dynamo.Views
         {
             WorkBench = sender as Dynamo.Controls.DragCanvas;
             //DrawGrid();
+        }
+
+
+        // TRON'S
+        private List<DependencyObject> FindChildren(System.Windows.Point mouse)
+        {
+            hitResultsList.Clear();
+            EllipseGeometry expandedHitTestArea = new EllipseGeometry(mouse, 50.0, 7.0);
+
+            VisualTreeHelper.HitTest(this, null, new HitTestResultCallback(VisualCallBack), new GeometryHitTestParameters(expandedHitTestArea));
+            if (hitResultsList.Count > 0)
+                Debug.WriteLine("Number of visual hits: " + hitResultsList.Count);
+            return this.hitResultsList;
+        }
+
+        private HitTestResultBehavior VisualCallBack(HitTestResult result)
+        {
+            if (result == null || result.VisualHit == null)
+                throw new ArgumentNullException();
+
+            //if (result.VisualHit.GetType().IsAssignableFrom(typeof(Grid)))
+            if (result.VisualHit.GetType() == typeof(Grid))
+            {
+                Debug.WriteLine("CAUGHT GRID");
+                hitResultsList.Add(result.VisualHit);
+            }
+            
+
+            return HitTestResultBehavior.Continue;
         }
     }
 }

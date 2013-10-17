@@ -121,7 +121,6 @@
                         </Style>
                     </ItemsControl.ItemContainerStyle>
                 </ItemsControl>
-
             </DockPanel>
 
             <!-- OUTPUT PORTS -->

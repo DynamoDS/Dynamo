@@ -55,6 +55,7 @@ namespace Dynamo.Controls
             inputGrid.Loaded += new RoutedEventHandler(inputGrid_Loaded);
             this.LayoutUpdated += OnLayoutUpdated;
 
+            
             Canvas.SetZIndex(this, 1);
         }
 
@@ -75,6 +76,7 @@ namespace Dynamo.Controls
 
         }
 
+
         void dynNodeView_Loaded(object sender, RoutedEventArgs e)
         {
             //This is an annoying bug in WPF for .net 4.0
@@ -89,6 +91,7 @@ namespace Dynamo.Controls
             ViewModel.RequestsSelection += new EventHandler(ViewModel_RequestsSelection);
 
             ViewModel.NodeLogic.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(NodeLogic_PropertyChanged);
+            
         }
 
         void NodeLogic_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -317,6 +320,24 @@ namespace Dynamo.Controls
         private void OutputPort_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             ViewModel.CollapseTooltipCommand.Execute(null);
+        }
+
+        private childItem FindVisualChild<childItem>(DependencyObject obj)
+                where childItem : DependencyObject
+        {
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(obj); i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(obj, i);
+                if (child != null && child is childItem)
+                    return (childItem)child;
+                else
+                {
+                    childItem childOfChild = FindVisualChild<childItem>(child);
+                    if (childOfChild != null)
+                        return childOfChild;
+                }
+            }
+            return null;
         }
     }
 }
