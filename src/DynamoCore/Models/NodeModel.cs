@@ -150,13 +150,21 @@ namespace Dynamo.Models
             }
             set
             {
-                if (value != ElementState.ERROR)
+                //don't bother changing the state
+                //when we are not reporting modifications
+                //used when clearing the workbench
+                //to avoid nodes recoloring when connectors
+                //are deleted
+                if (IsReportingModifications)
                 {
-                    SetTooltip();
-                }
+                    if (value != ElementState.ERROR)
+                    {
+                        SetTooltip();
+                    }
 
-                state = value;
-                RaisePropertyChanged("State");
+                    state = value;
+                    RaisePropertyChanged("State");
+                }
             }
         }
 
@@ -1150,6 +1158,7 @@ namespace Dynamo.Models
         protected internal void EnableReporting()
         {
             _report = true;
+            ValidateConnections();
         }
 
         protected internal bool IsReportingModifications { get { return _report; } }
