@@ -133,6 +133,55 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void BSplineCurve_AllPointsAreArSamePosition()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\GeometryTestFiles\BSplineCurve_AllPointsAreArSamePosition.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            Assert.Throws<AssertionException>(() =>
+                {
+                    dynSettings.Controller.RunExpression(null);
+                });
+        }
+
+        [Test]
+        public void ClosedBSplineCurve_WhenAllPointsAreLinear()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\GeometryTestFiles\ClosedBSplineCurve_WhenAllPointsAreLinear.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(14, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            // Verification for BSplineCurve node.
+            Autodesk.LibG.Geometry geometry1 = null;
+            var getGeometry1 = model.CurrentWorkspace.NodeFromWorkspace<ClosedBSplineCurveNode>("ba9c10bc-a932-43e8-8741-f5d79e7966ac");
+            Assert.IsTrue(Utils.Convert(getGeometry1.GetValue(0), ref geometry1));
+
+            Autodesk.LibG.BSplineCurve bSCurve = geometry1 as Autodesk.LibG.BSplineCurve;
+            Assert.AreNotEqual(null, bSCurve);
+            Assert.IsTrue(bSCurve.is_closed());
+            Assert.IsTrue(bSCurve.is_planar());
+            //Assert.AreEqual(0, bSCurve.start_point().x());
+            //Assert.AreEqual(10, bSCurve.end_point().y());
+
+        }
+
+
+        [Test]
         public void CuboidTest()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -334,6 +383,53 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void Point2D_ArrayOfPoint()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\GeometryTestFiles\Point2D_ArrayOfPoint.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            // Verification for Point
+            Autodesk.LibG.Geometry geometry1 = null;
+            var getGeometry1 = model.CurrentWorkspace.NodeFromWorkspace<GetFromList>("b33aad81-94cc-4f8f-9580-51870b7e9363");
+            Assert.IsTrue(Utils.Convert(getGeometry1.GetValue(0), ref geometry1));
+
+            Autodesk.LibG.Point point = geometry1 as Autodesk.LibG.Point;
+            Assert.AreNotEqual(null, point);
+            double xValue = point.x();
+            double yValue = point.y();
+            Assert.AreEqual(10, xValue);
+            Assert.AreEqual(10, yValue);
+        }
+
+        [Test]
+        public void Point_WithInvalidInputType()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\GeometryTestFiles\Point_WithInvalidInputType.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            Assert.Throws<AssertionException>(() =>
+                {
+                    dynSettings.Controller.RunExpression(null);
+                });
+        }
+
+        [Test]
         public void PolygonTest()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -359,6 +455,26 @@ namespace Dynamo.Tests
 
         }
 
+
+        [Test]
+        public void Polygon_AllPointsAreLinear()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\GeometryTestFiles\Polygon_AllPointsAreLinear.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(13, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            Assert.Throws<AssertionException>(() =>
+            {
+                dynSettings.Controller.RunExpression(null);
+            });
+
+        }
         [Test]
         public void PropertycheckTest()
         {
@@ -549,6 +665,26 @@ namespace Dynamo.Tests
             Assert.AreEqual(217.12607751804401, thickenSolid.area());
             Assert.AreEqual(42.74408242616218, thickenSolid.volume());
             Assert.AreEqual(-4.4489040318494073, thickenSolid.center_of_gravity().x());
+
+        }
+
+        [Test]
+        public void ThickenSurface_InputIncorrectGeometry()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\GeometryTestFiles\ThickenSurface_InputIncorrectGeometry.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(18, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            Assert.Throws<AssertionException>(() =>
+                {
+                    dynSettings.Controller.RunExpression(null);
+                });
 
         }
 
@@ -808,5 +944,113 @@ namespace Dynamo.Tests
             Assert.IsFalse(surface.closed_v());
 
         }
+
+
+        [Test]
+        public void Circle_NegativeTest()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\GeometryTestFiles\Circle_NegativeTest.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(14, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(20, model.CurrentWorkspace.Connectors.Count);
+
+            // run expression
+            dynSettings.Controller.RunExpression(null);
+
+            // Verification for Circle with CircleWithZeroVectorLength which is invalid
+            // though this test case is now passing but after fixing defect this test case will fail and need to update this test case.
+            Autodesk.LibG.Geometry geometry1 = null;
+            var getGeometry1 = model.CurrentWorkspace.NodeFromWorkspace<CircleNode>("b1d4583f-fac2-4459-b266-9f69dd538d8c");
+            Assert.IsTrue(Utils.Convert(getGeometry1.GetValue(0), ref geometry1));
+
+            Autodesk.LibG.Circle circle = geometry1 as Autodesk.LibG.Circle;
+            Assert.AreNotEqual(null, circle);
+
+            // Verification for Circle with CircleWithRadiusZero which is invalid
+            // though this test case is now passing but after fixing defect this test case will fail and need to update this test case.
+            Autodesk.LibG.Geometry geometry2 = null;
+            var getGeometry2 = model.CurrentWorkspace.NodeFromWorkspace<CircleNode>("2094fe23-9f14-4fa4-ab2a-5dfc66dda6ef");
+            Assert.IsTrue(Utils.Convert(getGeometry2.GetValue(0), ref geometry2));
+
+            Autodesk.LibG.Circle circle2 = geometry1 as Autodesk.LibG.Circle;
+            Assert.AreNotEqual(null, circle);
+
+            //// run the expression
+            //Assert.Throws<AssertionException>(() =>
+            //    {
+            //        dynSettings.Controller.RunExpression(null);
+            //    });
+        }
+
+        [Test]
+        public void Sweep_NegativeScenario()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\GeometryTestFiles\Sweep_NegativeScenario.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(15, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(20, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            Assert.Throws<AssertionException>(() =>
+                {
+                    dynSettings.Controller.RunExpression(null);
+                });
+        }
+
+        [Test]
+        public void Loft_NegativeScenario()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\GeometryTestFiles\Loft_NegativeScenario.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(17, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            Assert.Throws<AssertionException>(() =>
+            {
+                dynSettings.Controller.RunExpression(null);
+            });
+        }
+
+        [Test]
+        public void LoftUsingCircles()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\GeometryTestFiles\LoftUsingCircles.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(33, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(46, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            // Verification for Solid created using Thinking Lofted surface.
+            Autodesk.LibG.Geometry geometry1 = null;
+            var getGeometry1 = model.CurrentWorkspace.NodeFromWorkspace<ThickenSurfaceNode>("b6952095-fc70-4b11-b0b6-b399714c0460");
+            Assert.IsTrue(Utils.Convert(getGeometry1.GetValue(0), ref geometry1));
+
+            Autodesk.LibG.Solid thikenSolid = geometry1 as Autodesk.LibG.Solid;
+            Assert.AreNotEqual(null, thikenSolid);
+            Assert.AreEqual(5468.2219186769089, thikenSolid.area(), 0.000000001);
+            Assert.AreEqual(24.601521194889756, thikenSolid.volume(), 0.000000001);
+            Assert.AreEqual(9.4206816962888951, thikenSolid.center_of_gravity().x());
+
+        }
+
     }
 }
