@@ -732,8 +732,9 @@ namespace Dynamo.Models
                 {
                     if (data.Index > 0)
                     {
-                        prev = new ExternalFunctionNode(FScheme.Cdr, new[] { "list" });
-                        prev.ConnectInput("list", prev);
+                        var rest = new ExternalFunctionNode(FScheme.Cdr, new[] { "list" });
+                        rest.ConnectInput("list", prev);
+                        prev = rest;
                     }
 
                     var firstNode = new ExternalFunctionNode(FScheme.Car, new[] { "list" });
@@ -742,9 +743,14 @@ namespace Dynamo.Models
                 });
         }
 
-        private Dictionary<int, INode> buildPartialSingleOut(IEnumerable<string> portNames, List<Tuple<string, INode>> connections, IEnumerable<string> partials)
+        private Dictionary<int, INode> buildPartialSingleOut(IEnumerable<string> portNames, List<Tuple<string, INode>> connections, List<string> partials)
         {
             InputNode node = Compile(portNames);
+
+            foreach (var partial in partials)
+            {
+                node.ConnectInput(partial, new SymbolNode(partial));
+            }
 
             var outerNode = new AnonymousFunctionNode(partials, node);
             if (connections.Any())
@@ -776,17 +782,12 @@ namespace Dynamo.Models
                     accessor.ConnectInput("idx", new NumberNode(data.Index));
 
                     var outerNode = new AnonymousFunctionNode(partials, accessor);
-
                     if (connections.Any())
                     {
-
-                        foreach (var connection in connections)
-                            node.ConnectInput(connection.Item1, new SymbolNode(connection.Item1));
-
-                        outerNode = new AnonymousFunctionNode(
-                            connections.Select(x => x.Item1), outerNode);
+                        outerNode = new AnonymousFunctionNode(connections.Select(x => x.Item1), outerNode);
                         foreach (var connection in connections)
                         {
+                            node.ConnectInput(connection.Item1, new SymbolNode(connection.Item1));
                             outerNode.ConnectInput(connection.Item1, connection.Item2);
                         }
                     }
