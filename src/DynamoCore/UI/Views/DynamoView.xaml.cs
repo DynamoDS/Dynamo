@@ -78,6 +78,9 @@ namespace Dynamo.Controls
 
             InitializeComponent();
 
+#if !USE_DSENGINE
+            LibraryManagerMenu.Visibility = System.Windows.Visibility.Collapsed;
+#endif
             this.Loaded += dynBench_Activated;
         }
 

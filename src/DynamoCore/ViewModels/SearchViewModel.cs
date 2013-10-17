@@ -781,7 +781,7 @@ namespace Dynamo.ViewModels
         /// <param name="funcItem"></param>
         public void Add(DSFunctionItem funcItem)
         {
-            string name = funcItem.QualifiedName;
+            string name = funcItem.DisplayName;
             string cat = funcItem.Category;
             List<string> tags = new List<string>();
             string description = "";
