@@ -458,6 +458,34 @@ namespace Dynamo.Models
             undoRecorder.EndActionGroup();
         }
 
+        internal void RecordModelsForUndo(Dictionary<ModelBase, UndoRedoRecorder.UserAction> models)
+        {
+            if (null == undoRecorder)
+                return;
+            if (!ShouldProceedWithRecording(models))
+                return;
+
+            undoRecorder.BeginActionGroup();
+            {
+                foreach (var modelPair in models)
+                {
+                    switch (modelPair.Value)
+                    {
+                        case UndoRedoRecorder.UserAction.Creation:
+                            undoRecorder.RecordCreationForUndo(modelPair.Key);
+                            break;
+                        case UndoRedoRecorder.UserAction.Deletion:
+                            undoRecorder.RecordDeletionForUndo(modelPair.Key);
+                            break;
+                        case UndoRedoRecorder.UserAction.Modification:
+                            undoRecorder.RecordModificationForUndo(modelPair.Key);
+                            break;
+                    }
+                }
+            }
+            undoRecorder.EndActionGroup();
+        }
+
         internal void RecordCreatedModel(ModelBase model)
         {
             if (null != model)
@@ -538,6 +566,15 @@ namespace Dynamo.Models
         {
             if (null != models)
                 models.RemoveAll((x) => (x == null));
+
+            return (null != models && (models.Count > 0));
+        }
+
+        private static bool ShouldProceedWithRecording(
+            Dictionary<ModelBase, UndoRedoRecorder.UserAction> models)
+        {
+            if (null != models)
+                models.Remove(null);
 
             return (null != models && (models.Count > 0));
         }
