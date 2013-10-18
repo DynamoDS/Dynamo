@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Models;
+using Dynamo.Selection;
 
 namespace Dynamo.DSEngine
 {
@@ -17,7 +18,8 @@ namespace Dynamo.DSEngine
                 return;
             }
 
-            using (var renderPackage = new RenderPackage(rd))
+            bool selected = DynamoSelection.Instance.Selection.Contains(node);
+            using (var renderPackage = new RenderPackage(selected))
             {
                 graphItem.Tessellate(renderPackage);
                 renderPackage.AddToRenderDescription(rd);
