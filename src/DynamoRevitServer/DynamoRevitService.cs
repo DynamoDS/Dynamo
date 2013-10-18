@@ -28,13 +28,13 @@ namespace Dynamo.Revit.Server
         
         public bool OpenDynamoWorkspace(string path)
         {
-            Task.Run(() => dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(path));
+            dynSettings.Controller.DynamoViewModel.OpenCommand.Execute(path);
             return true;
         }
 
         public bool RunDynamoExpression()
         {
-            Task.Run(() => dynSettings.Controller.RunExpression());
+            dynSettings.Controller.RunExpression();
             return true;
         }
     }

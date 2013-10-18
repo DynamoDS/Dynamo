@@ -1,31 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Globalization;
-using System.IO;
-using System.Reflection;
-using System.Resources;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Forms;
-using System.Linq;
-using System.Xml;
-using System.Xml.Serialization;
-using Dynamo.FSchemeInterop;
-using Dynamo.NUnit.Tests;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
-using Autodesk.Revit.DB.Analysis;
 using Autodesk.Revit.UI;
-
 using System.ServiceModel;
 using System.ServiceModel.Description;
-
-using Dynamo;
-using Dynamo.Applications.Properties;
 using Dynamo.Controls;
+using Dynamo.FSchemeInterop;
 using Dynamo.Utilities;
 using RevitServices.Elements;
 using RevitServices.Threading;
@@ -74,7 +57,6 @@ namespace Dynamo.Revit.Server
 
                 IdlePromise.RegisterIdle(application);
 
-                Host.Open();
             }
             catch (Exception ex)
             {
@@ -109,15 +91,17 @@ namespace Dynamo.Revit.Server
                 // assign static members
                 dynRevitSettings.Revit = revit.Application;
                 dynRevitSettings.Doc = revit.Application.ActiveUIDocument;
-                dynRevitSettings.DefaultLevel = GetDefaultLevel(revit.Application.ActiveUIDocument.Document);
+                //dynRevitSettings.DefaultLevel = GetDefaultLevel(revit.Application.ActiveUIDocument.Document);
 
                 //// start controller
-                //var updater = new RevitServicesUpdater(ServerApp.UiControlledApp.ControlledApplication);
-                //var context = GetRevitContext(revit.Application.Application);
-                //new DynamoController_Revit(new ExecutionEnvironment(),
-                //                            updater,
-                //                            typeof(DynamoRevitViewModel),
-                //                            context);
+                var updater = new RevitServicesUpdater(ServerApp.UiControlledApp.ControlledApplication);
+                var context = GetRevitContext(revit.Application.Application);
+                new DynamoController_Revit( new ExecutionEnvironment(),
+                                            updater,
+                                            typeof(DynamoRevitViewModel),
+                                            context);
+
+                ServerApp.Host.Open();
             }
             catch (Exception ex)
             {
