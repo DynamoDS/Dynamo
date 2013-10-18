@@ -428,9 +428,6 @@ namespace Dynamo.Nodes
         private readonly PortData _vMaxPort = new PortData(
             "vMax", "Maximum nodal velocity.", typeof(Value.Number));
 
-        private Visualization _visualization;
-        //private int _stepCount = 0;
-
         private readonly PortData _convergedPort = new PortData(
             "converged?",
             "Has the maximum nodal velocity dropped below the threshold set for the system?",
