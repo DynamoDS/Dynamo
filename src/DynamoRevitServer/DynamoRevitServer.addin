@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+  <AddIn Type="Application">
+    <Name>Dynamo</Name>
+    <Assembly>C:\Users\boyerp\Dropbox\Github\Autodesk\Dynamo\bin\AnyCPU\Debug\DynamoRevitServer.dll</Assembly>
+    <AddInId>78e73998-9854-45c0-a94d-3159fcdf7ce3</AddInId>
+    <FullClassName>Dynamo.Revit.Server.ServerApp</FullClassName>
+    <VendorId>ADSK</VendorId>
+    <VendorDescription>Dynamo, github.com/ikeough/dynamo</VendorDescription>
+  </AddIn>
+  <AddIn Type="Command">
+    <Assembly>C:\Users\boyerp\Dropbox\Github\Autodesk\Dynamo\bin\AnyCPU\Debug\DynamoRevitServer.dll</Assembly>
+    <AddInId>4f145842-a474-4948-b77c-31ba7fa75dab</AddInId>
+    <FullClassName>Dynamo.Revit.Server.StartCommand</FullClassName>
+    <VendorId>ADSK</VendorId>
+    <Text>Start Dynamo Server!</Text>
+    <VisibilityMode>AlwaysVisible</VisibilityMode>
+    <Discipline>Any</Discipline>
+    <LanguageType>Unknown</LanguageType>
+  </AddIn>
+</RevitAddIns>

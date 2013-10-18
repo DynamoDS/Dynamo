@@ -18,6 +18,18 @@
   <wsdl:message name="IDynamoRevitService_OpenFile_OutputMessage">
     <wsdl:part name="parameters" element="tns:OpenFileResponse" />
   </wsdl:message>
+  <wsdl:message name="IDynamoRevitService_OpenDynamoWorkspace_InputMessage">
+    <wsdl:part name="parameters" element="tns:OpenDynamoWorkspace" />
+  </wsdl:message>
+  <wsdl:message name="IDynamoRevitService_OpenDynamoWorkspace_OutputMessage">
+    <wsdl:part name="parameters" element="tns:OpenDynamoWorkspaceResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDynamoRevitService_RunDynamoExpression_InputMessage">
+    <wsdl:part name="parameters" element="tns:RunDynamoExpression" />
+  </wsdl:message>
+  <wsdl:message name="IDynamoRevitService_RunDynamoExpression_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RunDynamoExpressionResponse" />
+  </wsdl:message>
   <wsdl:portType name="IDynamoRevitService">
     <wsdl:operation name="GetData">
       <wsdl:input wsaw:Action="http://tempuri.org/IDynamoRevitService/GetData" message="tns:IDynamoRevitService_GetData_InputMessage" />
@@ -26,6 +38,14 @@
     <wsdl:operation name="OpenFile">
       <wsdl:input wsaw:Action="http://tempuri.org/IDynamoRevitService/OpenFile" message="tns:IDynamoRevitService_OpenFile_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IDynamoRevitService/OpenFileResponse" message="tns:IDynamoRevitService_OpenFile_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="OpenDynamoWorkspace">
+      <wsdl:input wsaw:Action="http://tempuri.org/IDynamoRevitService/OpenDynamoWorkspace" message="tns:IDynamoRevitService_OpenDynamoWorkspace_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IDynamoRevitService/OpenDynamoWorkspaceResponse" message="tns:IDynamoRevitService_OpenDynamoWorkspace_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RunDynamoExpression">
+      <wsdl:input wsaw:Action="http://tempuri.org/IDynamoRevitService/RunDynamoExpression" message="tns:IDynamoRevitService_RunDynamoExpression_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IDynamoRevitService/RunDynamoExpressionResponse" message="tns:IDynamoRevitService_RunDynamoExpression_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="BasicHttpBinding_IDynamoRevitService" type="tns:IDynamoRevitService">
@@ -41,6 +61,24 @@
     </wsdl:operation>
     <wsdl:operation name="OpenFile">
       <soap:operation soapAction="http://tempuri.org/IDynamoRevitService/OpenFile" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OpenDynamoWorkspace">
+      <soap:operation soapAction="http://tempuri.org/IDynamoRevitService/OpenDynamoWorkspace" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RunDynamoExpression">
+      <soap:operation soapAction="http://tempuri.org/IDynamoRevitService/RunDynamoExpression" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>

@@ -38,6 +38,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Practices.Prism, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -67,6 +72,42 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DynamoAsm\DynamoAsm.csproj">
+      <Project>{95192f1a-3265-4986-8d07-50f8fd4f2439}</Project>
+      <Name>DynamoAsm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
+      <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
+      <Name>DynamoCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoMSOffice\DynamoMSOffice.csproj">
+      <Project>{798656e4-733f-4abc-8af4-604412fc0bc0}</Project>
+      <Name>DynamoMSOffice</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoPython\DynamoPython.csproj">
+      <Project>{2b0f2800-6f62-4869-9074-088c5f6dcca2}</Project>
+      <Name>DynamoPython</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoRevit\DynamoRevit.csproj">
+      <Project>{fd56ae51-739e-4893-8de4-925d60c7097c}</Project>
+      <Name>DynamoRevit</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
+      <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
+      <Name>DynamoUtilities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FSchemeInterop\FSchemeInterop.csproj">
+      <Project>{f25808d6-df62-4732-9453-d4978079864c}</Project>
+      <Name>FSchemeInterop</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FScheme\FScheme.2012.fsproj">
+      <Project>{f0e5a3e5-bdd0-41ae-848e-ded9efc5fa7f}</Project>
+      <Name>FScheme.2012</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RevitPersistenceManager\RevitPersistenceManager.csproj">
+      <Project>{9d0b8ec8-dcde-4ffa-bcf3-8592f835d316}</Project>
+      <Name>RevitPersistenceManager</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RevitServices\RevitServices.csproj">
       <Project>{e4701f9e-41ab-4044-8166-85d924feb632}</Project>
       <Name>RevitServices</Name>

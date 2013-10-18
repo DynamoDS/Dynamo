@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.ServiceModel;
-using System.Text;
+﻿using System.ServiceModel;
+using Dynamo.Utilities;
 
-namespace DynamoRevitServer
+namespace Dynamo.Revit.Server
 {
     [ServiceContract]
     public interface IDynamoRevitService
@@ -15,6 +11,12 @@ namespace DynamoRevitServer
 
         [OperationContract]
         bool OpenFile(string path);
+
+        [OperationContract]
+        bool OpenDynamoWorkspace(string path);
+
+        [OperationContract]
+        bool RunDynamoExpression();
     }
 
 }

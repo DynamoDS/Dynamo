@@ -279,7 +279,6 @@ namespace Dynamo
 
             //Load the assembly from the specified path. 					
             return Assembly.LoadFrom(strTempAssmbPath);
-
         }
 
         private void FindNodesFromSelection()

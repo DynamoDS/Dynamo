@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DynamoRevitClient.ServiceReference1;
 
-namespace DynamoRevitClient
+namespace Dynamo.Revit.Client
 {
     class Program
     {

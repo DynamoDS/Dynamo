@@ -20,6 +20,12 @@ namespace DynamoRevitClient.ServiceReference1 {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDynamoRevitService/OpenFile", ReplyAction="http://tempuri.org/IDynamoRevitService/OpenFileResponse")]
         bool OpenFile(string path);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDynamoRevitService/OpenDynamoWorkspace", ReplyAction="http://tempuri.org/IDynamoRevitService/OpenDynamoWorkspaceResponse")]
+        bool OpenDynamoWorkspace(string path);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDynamoRevitService/RunDynamoExpression", ReplyAction="http://tempuri.org/IDynamoRevitService/RunDynamoExpressionResponse")]
+        bool RunDynamoExpression();
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -55,6 +61,14 @@ namespace DynamoRevitClient.ServiceReference1 {
         
         public bool OpenFile(string path) {
             return base.Channel.OpenFile(path);
+        }
+        
+        public bool OpenDynamoWorkspace(string path) {
+            return base.Channel.OpenDynamoWorkspace(path);
+        }
+        
+        public bool RunDynamoExpression() {
+            return base.Channel.RunDynamoExpression();
         }
     }
 }
