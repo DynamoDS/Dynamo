@@ -6,11 +6,7 @@
              xmlns:HelixToolkit="clr-namespace:HelixToolkit.Wpf;assembly=HelixToolkit.Wpf"
              Name="topControl" 
              mc:Ignorable="d" 
-             Height="{Binding RelativeSource={RelativeSource FindAncestor, 
-                AncestorLevel=1, AncestorType={x:Type Grid}}, Path=ActualHeight}"
              d:DesignHeight="300" d:DesignWidth="300">
-    <!--NOTE: The height of the fullscreen watch3d should automaticall
-              resize to the parent window / grid, though for some reason it's not-->
 
         <Grid Name="inputGrid"
             x:FieldModifier="public"
@@ -23,7 +19,7 @@
 
         <HelixToolkit:HelixViewport3D Name="watch_view" ZoomExtentsWhenLoaded="True" 
                                       ShowViewCube="False" CameraRotationMode="Turntable"
-                                      IsHitTestVisible="True" MouseLeftButtonDown="Watch_view_OnMouseDown">
+                                      IsHitTestVisible="True" MouseLeftButtonDown="Watch_view_OnMouseDown" ShowCoordinateSystem="true">
         
             <ModelVisual3D>
                 <HelixToolkit:LightVisual3D>
