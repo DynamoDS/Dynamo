@@ -39,7 +39,9 @@ def main():
 	args = vars(parser.parse_args())
 
 	tests = []
-	tests = parse_input_file(args['input'], args['results'])
+	resultsPath = os.path.abspath(args['results'])
+	print resultsPath
+	tests = parse_input_file(args['input'], resultsPath)
 
 	#cleanup existing results file
 	if os.path.exists(args['results']):
