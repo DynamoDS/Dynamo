@@ -1,4 +1,4 @@
-![Image](https://raw.github.com/ikeough/Dynamo/master/doc/distrib/Images/dynamo_logo_dark.png) 
+<img align="left" src="https://raw.github.com/ikeough/Dynamo/master/doc/distrib/Images/dynamo_logo_dark.png">
 
 #Visual Programming for BIM#
 
