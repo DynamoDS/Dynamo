@@ -151,7 +151,7 @@ namespace Dynamo.Tests
         }
 
         /// <summary>
-        /// Run an infinite loop for 10 seconds to confirm that it doesn't stack overflow
+        /// Run an infinite recursive loop for 10 seconds to confirm that it doesn't stack overflow
         /// </summary>
         [Test]
         public void TailCallOptimization()
@@ -166,37 +166,6 @@ namespace Dynamo.Tests
         public void RenameConsistency()
         {
             Assert.Inconclusive();
-        }
-
-        /// <summary>
-        /// Confirm that a custom node with multiple outputs evaluates successfully.
-        /// </summary>
-        [Test]
-        public void MultipleOutputs()
-        {
-            var model = Controller.DynamoModel;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\multiout");
-
-            string openPath = Path.Combine(examplePath, "multi.dyn");
-            model.Open(openPath);
-
-            dynSettings.Controller.RunExpression();
-
-            var splitListVal = model.CurrentWorkspace.FirstNodeFromWorkspace<DeCons>().OldValue;
-
-            Assert.IsInstanceOf<FScheme.Value.List>(splitListVal);
-
-            var outs = (splitListVal as FScheme.Value.List).Item;
-
-            Assert.AreEqual(2, outs.Length);
-
-            var out1 = outs[0];
-            Assert.IsInstanceOf<FScheme.Value.Number>(out1);
-            Assert.AreEqual(0, (out1 as FScheme.Value.Number).Item);
-
-            var out2 = outs[1];
-            Assert.IsInstanceOf<FScheme.Value.List>(out2);
-            Assert.IsTrue((out2 as FScheme.Value.List).Item.IsEmpty);
         }
 
         /// <summary>
@@ -217,6 +186,59 @@ namespace Dynamo.Tests
             Assert.Inconclusive();
         }
 
+        /// <summary>
+        /// Confirm that a custom node with multiple outputs evaluates successfully.
+        /// </summary>
+        [Test]
+        public void MultipleOutputs()
+        {
+            var model = Controller.DynamoModel;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\multiout");
 
+            string openPath = Path.Combine(examplePath, "multi-custom.dyn");
+            model.Open(openPath);
+
+            dynSettings.Controller.RunExpression();
+
+            var splitListVal = model.CurrentWorkspace.FirstNodeFromWorkspace<Function>().OldValue;
+
+            Assert.IsInstanceOf<FScheme.Value.List>(splitListVal);
+
+            var outs = (splitListVal as FScheme.Value.List).Item;
+
+            Assert.AreEqual(2, outs.Length);
+
+            var out1 = outs[0];
+            Assert.IsInstanceOf<FScheme.Value.Number>(out1);
+            Assert.AreEqual(0, (out1 as FScheme.Value.Number).Item);
+
+            var out2 = outs[1];
+            Assert.IsInstanceOf<FScheme.Value.List>(out2);
+            Assert.IsTrue((out2 as FScheme.Value.List).Item.IsEmpty);
+        }
+
+        [Test]
+        public void PartialApplicationWithMultipleOutputs()
+        {
+            var model = Controller.DynamoModel;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\multiout");
+
+            string openPath = Path.Combine(examplePath, "partial-multi-custom.dyn");
+            model.Open(openPath);
+
+            dynSettings.Controller.RunExpression();
+
+            var firstWatch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("d824e8dd-1009-449f-b5d6-1cd83bd180d6");
+
+            Assert.IsInstanceOf<FScheme.Value.List>(firstWatch.OldValue);
+            Assert.IsInstanceOf<FScheme.Value.Number>((firstWatch.OldValue as FScheme.Value.List).Item[0]);
+            Assert.AreEqual(0, ((firstWatch.OldValue as FScheme.Value.List).Item[0] as FScheme.Value.Number).Item);
+
+            var restWatch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("af7ada9a-4316-475b-8582-742acc40fc1b");
+
+            Assert.IsInstanceOf<FScheme.Value.List>(restWatch.OldValue);
+            Assert.IsInstanceOf<FScheme.Value.List>((restWatch.OldValue as FScheme.Value.List).Item[0]);
+            Assert.IsTrue(((restWatch.OldValue as FScheme.Value.List).Item[0] as FScheme.Value.List).Item.IsEmpty);
+        }
     }
 }
