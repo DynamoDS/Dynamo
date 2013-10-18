@@ -50,7 +50,7 @@ namespace Dynamo.Applications
                                                                         "Dynamo.Applications.DynamoRevit")) as
                                  PushButton;
 
-                Bitmap dynamoIcon = Resources.Nodes_32_32;
+                Bitmap dynamoIcon = Resources.logo_square_32x32;
 
 
                 BitmapSource bitmapSource = Imaging.CreateBitmapSourceFromHBitmap(
