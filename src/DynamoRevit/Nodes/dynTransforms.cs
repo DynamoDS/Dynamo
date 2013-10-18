@@ -1,20 +1,14 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-using Autodesk.Revit.DB;
-using Dynamo.Connectors;
+﻿using Autodesk.Revit.DB;
 using Dynamo.Models;
-using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
-using Dynamo.FSchemeInterop;
 
 namespace Dynamo.Nodes
 {
     [NodeName("Identity Transform")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Returns the identity transformation.")]
-    public class TransformIdentity: TransformBase
+    public class TransformIdentity: GeometryBase
     {
         public TransformIdentity()
         {
@@ -26,16 +20,16 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             Transform t = Transform.Identity;
-            transforms.Add(t);
 
             return Value.NewContainer(t);
         }
     }
 
-    [NodeName("Transf From Origin and Vecs")]
+    [NodeName("Transform From Origin and Vectors")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Returns a transformation with origin (o), up vector (u), and forward (f).")]
-    public class TransformOriginAndVectors : TransformBase
+    [NodeSearchTags("move", "copy")]
+    public class TransformOriginAndVectors : GeometryBase
     {
         public TransformOriginAndVectors()
         {
@@ -58,8 +52,6 @@ namespace Dynamo.Nodes
             t.BasisZ = up.Normalize();
             t.BasisY = forward.Normalize();
             t.BasisX = forward.CrossProduct(up).Normalize();
-            
-            transforms.Add(t);
 
             return Value.NewContainer(
                t
@@ -70,7 +62,7 @@ namespace Dynamo.Nodes
     [NodeName("Scale Transform")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Returns the identity transformation.")]
-    public class TransformScaleBasis : TransformBase
+    public class TransformScaleBasis : GeometryBase
     {
         public TransformScaleBasis()
         {
@@ -87,7 +79,7 @@ namespace Dynamo.Nodes
             var scale = ((Value.Number)args[1]).Item;
 
             Transform t = transform.ScaleBasis(scale);
-            transforms.Add(t);
+
             return Value.NewContainer(t);
         }
     }
@@ -95,7 +87,7 @@ namespace Dynamo.Nodes
     [NodeName("Rotate Transform")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Returns a transform that rotates by the specified angle about the specified axis and point.")]
-    public class TransformRotation : TransformBase
+    public class TransformRotation : GeometryBase
     {
         public TransformRotation()
         {
@@ -115,8 +107,6 @@ namespace Dynamo.Nodes
 
             Transform t = Transform.get_Rotation(origin, axis, angle);
 
-            transforms.Add(t);
-
             return Value.NewContainer(t);
         }
     }
@@ -124,7 +114,8 @@ namespace Dynamo.Nodes
     [NodeName("Translate Transform")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Returns he transformation that translates by the specified vector.")]
-    public class TransformTranslation : TransformBase
+    [NodeSearchTags("copy", "move")]
+    public class TransformTranslation : GeometryBase
     {
         public TransformTranslation()
         {
@@ -140,8 +131,6 @@ namespace Dynamo.Nodes
 
             Transform t = Transform.get_Translation(vector);
 
-            transforms.Add(t);
-
             return Value.NewContainer(t);
         }
     }
@@ -149,7 +138,8 @@ namespace Dynamo.Nodes
     [NodeName("Reflect Transform")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Returns the transformation that reflects about the specified plane.")]
-    public class TransformReflection : TransformBase
+    [NodeSearchTags("mirror", "symmetric")]
+    public class TransformReflection : GeometryBase
     {
         public TransformReflection()
         {
@@ -165,8 +155,6 @@ namespace Dynamo.Nodes
 
             Transform t = Transform.get_Reflection(plane);
 
-            transforms.Add(t);
-
             return Value.NewContainer(t);
         }
     }
@@ -174,7 +162,8 @@ namespace Dynamo.Nodes
     [NodeName("Transform Point")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Transform a point with a transform.")]
-    public class TransformPoint : XyzBase
+    [NodeSearchTags("move", "copy", "xyz")]
+    public class TransformPoint : GeometryBase
     {
         public TransformPoint()
         {
@@ -191,7 +180,6 @@ namespace Dynamo.Nodes
             var pt = (XYZ)((Value.Container)args[1]).Item;
 
             XYZ tpt = GetPointTransformed(pt, t);
-            pts.Add(tpt);
 
             return Value.NewContainer(tpt);
         }
@@ -222,7 +210,7 @@ namespace Dynamo.Nodes
     [NodeName("Multiply Transform")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Multiply two transforms.")]
-    public class Multiplytransform : TransformBase
+    public class Multiplytransform : GeometryBase
     {
         public Multiplytransform()
         {
@@ -239,7 +227,6 @@ namespace Dynamo.Nodes
             var t2 = (Transform)((Value.Container)args[1]).Item;
 
             Transform t = t1.Multiply(t2);
-            transforms.Add(t);
 
             return Value.NewContainer(t);
         }

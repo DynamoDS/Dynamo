@@ -1,13 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.IO;
 using Dynamo;
-using Dynamo.Nodes;
-using Dynamo.Utilities;
-using IronPython.Hosting;
 using Microsoft.Scripting;
 using Microsoft.Scripting.Hosting;
 using Python = IronPython.Hosting.Python;

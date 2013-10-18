@@ -4,30 +4,18 @@ namespace Dynamo.ViewModels
 {
     public partial class ConnectorViewModel
     {
-        private DelegateCommand _connectCommand;
-        private DelegateCommand _redrawCommand;
-        private DelegateCommand _highlightCommand;
-        private DelegateCommand _unHighlightCommand;
-
-        public DelegateCommand ConnectCommand
-        {
-            get
-            {
-                if(_connectCommand == null)
-                    _connectCommand = new DelegateCommand(Connect, CanConnect);
-
-                return _connectCommand;
-            }
-        }
+        private DelegateCommand redrawCommand;
+        private DelegateCommand highlightCommand;
+        private DelegateCommand unHighlightCommand;
 
         public DelegateCommand RedrawCommand
         {
             get
             {
-                if(_redrawCommand == null)
-                    _redrawCommand = new DelegateCommand(Redraw, CanRedraw);
+                if (redrawCommand == null)
+                    redrawCommand = new DelegateCommand(Redraw, CanRedraw);
 
-                return _redrawCommand;
+                return redrawCommand;
             }
         }
 
@@ -35,10 +23,10 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if(_highlightCommand == null)
-                    _highlightCommand = new DelegateCommand(Highlight, CanHighlight);
+                if (highlightCommand == null)
+                    highlightCommand = new DelegateCommand(Highlight, CanHighlight);
 
-                return _highlightCommand;
+                return highlightCommand;
             }
         }
 
@@ -46,10 +34,10 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if(_unHighlightCommand == null)
-                    _unHighlightCommand = new DelegateCommand(Unhighlight, CanUnHighlight);
+                if (unHighlightCommand == null)
+                    unHighlightCommand = new DelegateCommand(Unhighlight, CanUnHighlight);
 
-                return _unHighlightCommand;
+                return unHighlightCommand;
             }
         }
     }

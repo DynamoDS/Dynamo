@@ -1,4 +1,4 @@
-﻿//Copyright 2013 Ian Keough
+//Copyright 2013 Ian Keough
 
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
@@ -17,13 +17,12 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Diagnostics;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Nodes.Prompts;
@@ -33,7 +32,6 @@ using Dynamo.Search;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using DynamoCommands = Dynamo.UI.Commands.DynamoCommands;
 using String = System.String;
 using System.Collections.ObjectModel;
 using Dynamo.UI.Commands;
@@ -63,9 +61,9 @@ namespace Dynamo.Controls
             get { return LogScroller.Height > 0; }
         }
 
-        public static Application MakeSandboxAndRun()
+        public static Application MakeSandboxAndRun(string commandFilePath)
         {
-            var controller = DynamoController.MakeSandbox();
+            var controller = DynamoController.MakeSandbox(commandFilePath);
             var app = new Application();
 
             //create the view
@@ -160,7 +158,7 @@ namespace Dynamo.Controls
 
         void vm_RequestLayoutUpdate(object sender, EventArgs e)
         {
-            UpdateLayout();
+            Dispatcher.Invoke(new Action(UpdateLayout), DispatcherPriority.Render, null);
         }
 
         private void dynBench_Activated(object sender, EventArgs e)
@@ -202,6 +200,7 @@ namespace Dynamo.Controls
             _vm.RequestUserSaveWorkflow += new WorkspaceSaveEventHandler(_vm_RequestUserSaveWorkflow);
 
             dynSettings.Controller.ClipBoard.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(ClipBoard_CollectionChanged);
+        
         }
 
         private PackageManagerPublishView _pubPkgView;
@@ -220,18 +219,25 @@ namespace Dynamo.Controls
         }
 
         private PackageManagerSearchView _searchPkgsView;
+        private PackageManagerSearchViewModel _pkgSearchVM;
         void _vm_RequestShowPackageManagerSearch(object s, EventArgs e)
         {
+            if (_pkgSearchVM == null)
+            {
+                _pkgSearchVM = new PackageManagerSearchViewModel(dynSettings.PackageManagerClient);
+            }
+
             if (_searchPkgsView == null)
             {
-                var pms = new PackageManagerSearchViewModel(dynSettings.PackageManagerClient);
-                _searchPkgsView = new PackageManagerSearchView(pms);
+                _searchPkgsView = new PackageManagerSearchView(_pkgSearchVM);
                 _searchPkgsView.Closed += (sender, args) => _searchPkgsView = null;
                 _searchPkgsView.Show();
 
                 if (_searchPkgsView.IsLoaded && this.IsLoaded) _searchPkgsView.Owner = this;
             }
+            
             _searchPkgsView.Focus();
+            _pkgSearchVM.RefreshAndSearchAsync();
         }
 
         private InstalledPackagesView _installedPkgsView;
@@ -257,21 +263,21 @@ namespace Dynamo.Controls
         void _vm_RequestUserSaveWorkflow(object sender, WorkspaceSaveEventArgs e)
         {
             var dialogText = "";
-            if (e.Workspace is FuncWorkspace)
+            if (e.Workspace is CustomNodeWorkspaceModel)
             {
                 dialogText = "You have unsaved changes to custom node workspace: \"" + e.Workspace.Name +
                              "\"\n\n Would you like to save your changes?";
             }
             else // homeworkspace
             {
-                if (string.IsNullOrEmpty(e.Workspace.FilePath))
+                if (string.IsNullOrEmpty(e.Workspace.FileName))
                 {
                     dialogText = "You have unsaved changes to the Home workspace." +
                                  "\n\n Would you like to save your changes?";
                 }
                 else
                 {
-                    dialogText = "You have unsaved changes to " + Path.GetFileName(e.Workspace.FilePath) +
+                    dialogText = "You have unsaved changes to " + Path.GetFileName(e.Workspace.FileName) +
                     "\n\n Would you like to save your changes?";
                 }
             }
@@ -403,13 +409,24 @@ namespace Dynamo.Controls
 
             do
             {
-                //var dialog = new FunctionNamePrompt(dynSettings.Controller.SearchViewModel.Categories, error);
                 var dialog = new FunctionNamePrompt(dynSettings.Controller.SearchViewModel.Categories)
                 {
-                    nameBox = { Text = e.Name },
                     categoryBox = { Text = e.Category },
-                    DescriptionInput = { Text = e.Description }
+                    DescriptionInput = { Text = e.Description },
+                    nameView = { Text = e.Name },
+                    nameBox = { Text = e.Name }
                 };
+
+                if (e.CanEditName)
+                {
+                    dialog.nameBox.Visibility = Visibility.Visible;
+                    dialog.nameView.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    dialog.nameView.Visibility = Visibility.Visible;
+                    dialog.nameBox.Visibility = Visibility.Collapsed;
+                }
 
                 if (dialog.ShowDialog() != true)
                 {
@@ -420,12 +437,6 @@ namespace Dynamo.Controls
                 if (String.IsNullOrEmpty(dialog.Text))
                 {
                     error = "You must supply a name.";
-                    MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
-                                                   MessageBoxImage.Error);
-                }
-                else if (e.Name != dialog.Text && dynSettings.Controller.CustomNodeManager.Contains(dialog.Text))
-                {
-                    error = "A custom node with the given name already exists.";
                     MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
                                                    MessageBoxImage.Error);
                 }
@@ -500,7 +511,7 @@ namespace Dynamo.Controls
 
             WorkspaceViewModel view_model = _vm.Workspaces[workspace_index];
 
-            view_model.WatchEscapeIsDown = true;
+            dynSettings.Controller.DynamoViewModel.WatchEscapeIsDown = true;
         }
 
         void DynamoView_KeyUp(object sender, KeyEventArgs e)
@@ -512,18 +523,7 @@ namespace Dynamo.Controls
 
             WorkspaceViewModel view_model = _vm.Workspaces[workspace_index];
 
-            view_model.WatchEscapeIsDown = false;
-        }
-
-        private void Id_butt_OnClick(object sender, RoutedEventArgs e)
-        {
-            //get the value of the id field 
-            //and trigger the command
-            string id = id_tb.Text;
-            int workspace_index = _vm.CurrentWorkspaceIndex;
-            WorkspaceViewModel view_model = _vm.Workspaces[workspace_index];
-            if (view_model.FindByIdCommand.CanExecute(id))
-                view_model.FindByIdCommand.Execute(id);
+            dynSettings.Controller.DynamoViewModel.WatchEscapeIsDown = false;
         }
 
         private void WorkspaceTabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -725,6 +725,9 @@ namespace Dynamo.Controls
         private void Window_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
             _vm.IsMouseDown = false;
-		}
+		}        private void RunButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            dynSettings.ReturnFocusToSearch();
+        }
     }
 }

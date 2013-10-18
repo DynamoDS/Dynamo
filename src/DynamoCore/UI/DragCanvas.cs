@@ -13,6 +13,7 @@ using System.Windows.Threading;
 using Dynamo.Models;
 using Dynamo.Selection;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;
+using Dynamo.ViewModels;
 
 namespace Dynamo.Controls
 {
@@ -21,10 +22,10 @@ namespace Dynamo.Controls
     /// </summary>
     public class DragCanvas : Canvas
     {
-
-        private List<DependencyObject> hitResultsList = new List<DependencyObject>();
-
         #region Data
+
+#if false // TODO(Ben): Remove this after StateMachine has been fully tested.
+        private List<DependencyObject> hitResultsList = new List<DependencyObject>();
 
         // Stores a reference to the UIElement currently being dragged by the user.
         private ObservableCollection<OffsetData> offsets = new ObservableCollection<OffsetData>();
@@ -32,8 +33,30 @@ namespace Dynamo.Controls
         // Keeps track of where the mouse cursor was when a drag operation began.		
         private Point origCursorLocation;
 
-        // True if a drag operation is underway, else false.
-        public bool isDragInProgress;
+        private enum DragState
+        {
+            /// <summary>
+            /// This state indicates that there is no on-going drag operation.
+            /// </summary>
+            None,
+
+            /// <summary>
+            /// When a mouse is clicked within a node, the dragState is set to 
+            /// Setup, indicating that the DragCanvas is ready for any subsequent
+            /// mouse-move event to begin a drag operation. However, the mouse
+            /// may be released without getting moved, in which case only 
+            /// selection is done (i.e. dragState will be reset back to None).
+            /// </summary>
+            Setup,
+
+            /// <summary>
+            /// There is an on-going drag operation, and all the nodes that 
+            /// are getting dragged have already been recorded for undo.
+            /// </summary>
+            InProgress
+        }
+
+        private DragState dragState = DragState.None;
 
         //true if user is making a connection between elements
         //MVVM: move isConnecting onto the DynamoViewModel
@@ -46,6 +69,10 @@ namespace Dynamo.Controls
 
         //true if we're ignoring clicks
         public bool ignoreClick;
+#endif
+
+        // The owning workspace for this DragCanvas
+        public Dynamo.Views.dynWorkspaceView owningWorkspace = null;
 
         #endregion // Data
 
@@ -105,6 +132,7 @@ namespace Dynamo.Controls
 
         #endregion // Static Constructor
 
+#if false // TODO(Ben): Remove this after StateMachine has been fully tested.
         #region Constructor
 
         /// <summary>
@@ -123,30 +151,15 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         void selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Reset)
-            {
-                throw new Exception("To properly clean the selection, please use RemoveAll() instead.");
-            }
-
-            // call the select method on elements added to the collection
             if (e.NewItems != null)
             {
                 foreach (ISelectable sel in e.NewItems)
                 {
                     var n = sel as ILocatable;
-                    
+
                     if (n == null)
                         continue;
-                    //n.Select();
 
-                    //UIElement el = (UIElement)n;
-
-                    //double left = Canvas.GetLeft(el);
-                    //double right = Canvas.GetRight(el);
-                    //double top = Canvas.GetTop(el);
-                    //double bottom = Canvas.GetBottom(el);
-
-                    //MVVM: now storing element coordinates on models
                     double left = n.X;
                     double right = n.X + n.Width;
                     double top = n.Y;
@@ -158,32 +171,21 @@ namespace Dynamo.Controls
                     bool modTop = false;
                     double hOffset = ResolveOffset(left, right, out modLeft);
                     double vOffset = ResolveOffset(top, bottom, out modTop);
-                    OffsetData os = new OffsetData(hOffset, vOffset, modLeft, modTop, n);
+                    var os = new OffsetData(hOffset, vOffset, modLeft, modTop, n);
                     offsets.Add(os);
                 }
             }
 
-            if (e.OldItems != null)
+            //remove all ofset data where the node is no longer in the selection
+            var toRemove = offsets.Where(od => !DynamoSelection.Instance.Selection.Contains(od.Node)).ToList();
+            foreach (OffsetData od in toRemove)
             {
-                // call the deselect method on elements removed from the collection
-                foreach (ISelectable n in e.OldItems)
-                {
-                    //(n as ISelectable).Deselect();
-
-                    // remove the corresponding offsetdata object
-                    // for the element being removed
-                    List<OffsetData> toRemove = offsets.Where(od => od.Node == n).ToList();
-
-                    foreach (OffsetData od in toRemove)
-                    {
-                        offsets.Remove(od);
-                    }
-                }
+                offsets.Remove(od);
             }
         }
 
         #endregion // Constructor
-
+#endif
         #region Interface
 
         #region AllowDragging
@@ -290,6 +292,18 @@ namespace Dynamo.Controls
 
         #region Overrides
 
+        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        {
+            object dataContext = this.owningWorkspace.DataContext;
+            WorkspaceViewModel wvm = dataContext as WorkspaceViewModel;
+            if (wvm.HandleLeftButtonDown(this, e))
+            {
+                base.OnMouseLeftButtonDown(e);
+                e.Handled = true;
+            }
+        }
+
+#if false // TODO(Ben): Remove this after StateMachine has been fully tested.
         #region OnMouseLeftButtonDown
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
@@ -336,7 +350,7 @@ namespace Dynamo.Controls
                         this.origCursorLocation = e.GetPosition(this);
                         Debug.WriteLine(string.Format("ResetCursorLocation point x:{0} y:{0}", this.origCursorLocation.X, this.origCursorLocation.Y));
 
-                        this.isDragInProgress = true;
+                        this.dragState = DragState.Setup;
 
                         e.Handled = true;
                         return;
@@ -354,13 +368,37 @@ namespace Dynamo.Controls
         {
             base.OnPreviewMouseMove(e);
 
-            if (DynamoSelection.Instance.Selection.Count == 0 || !this.isDragInProgress)
+            if (DynamoSelection.Instance.Selection.Count == 0 || (DragState.None == dragState))
                 return;
+
+            if (DragState.Setup == dragState)
+            {
+                dragState = DragState.InProgress; // The drag operation is now started.
+
+                if (null != this.owningWorkspace)
+                {
+                    // This is where we attempt to store all the models in undo recorder 
+                    // before they are modified (i.e. being dragged around the canvas).
+                    // Note that we only do this once when the first mouse-move occurs 
+                    // after a mouse-down, because mouse-down can potentially be used 
+                    // just to select a node (as opposed to moving the selected nodes), in 
+                    // which case we don't want any of the nodes to be recorded for undo.
+                    // 
+                    List<ModelBase> models = DynamoSelection.Instance.Selection.
+                        Where((x) => (x is ModelBase)).Cast<ModelBase>().ToList<ModelBase>();
+
+                    WorkspaceModel workspaceModel = owningWorkspace.ViewModel.Model;
+                    workspaceModel.RecordModelsForModification(models);
+                    DynamoController controller = Dynamo.Utilities.dynSettings.Controller;
+                    controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+                    controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
+                }
+            }
 
             // Get the position of the mouse cursor, relative to the Canvas.
             Point cursorLocation = e.GetPosition(this);
 
-            #region Calculate Offsets
+        #region Calculate Offsets
 
             int count = 0;
             foreach (ISelectable sel in DynamoSelection.Instance.Selection)
@@ -383,11 +421,11 @@ namespace Dynamo.Controls
                 count++;
             }
 
-            #endregion // Calculate Offsets
+        #endregion // Calculate Offsets
 
             if (!this.AllowDragOutOfView)
             {
-                #region Verify Drag Element Location
+        #region Verify Drag Element Location
 
                 count = 0;
                 foreach (ISelectable sel in DynamoSelection.Instance.Selection)
@@ -423,10 +461,10 @@ namespace Dynamo.Controls
                     count++;
                 }
 
-                #endregion // Verify Drag Element Location
+        #endregion // Verify Drag Element Location
             }
 
-            #region Move Drag Element
+        #region Move Drag Element
             count = 0;
             this.Dispatcher.Invoke(new Action(
                   delegate
@@ -455,7 +493,7 @@ namespace Dynamo.Controls
                       }
                   }
                ), DispatcherPriority.Render, null);
-            #endregion // Move Drag Element
+        #endregion // Move Drag Element
 
         }
 
@@ -467,7 +505,7 @@ namespace Dynamo.Controls
         {
             base.OnMouseUp(e);
 
-            this.isDragInProgress = false;
+            this.dragState = DragState.None;
 
             // recalculate the offsets for all items in
             // the selection. 
@@ -515,6 +553,7 @@ namespace Dynamo.Controls
 
 
         #endregion // OnHostPreviewMouseUp
+#endif
 
         #endregion // Host Event Handlers
 
@@ -700,72 +739,20 @@ namespace Dynamo.Controls
 
         #endregion // Private Helpers
 
+#if false // TODO(Ben): Remove this after StateMachine has been fully tested.
         /// <summary>
-        /// Find the user control of type 'testType' by traversing the tree.
+        /// The WorkspaceView (i.e. the owner of this DragCanvas object) calls
+        /// this method to mark the current drag operation as being "over". This 
+        /// happens when user activates another workspace.
         /// </summary>
-        /// <returns></returns>
-        public UIElement ElementClicked(DependencyObject depObj)  //, Type testType)
+        internal void CancelDragOperation()
         {
-            UIElement foundElement = null;
-
-            //walk up the tree to see whether the element is part of a port
-            //then get the port's parent object
-            while (depObj != null)
-            {
-                // If the current object is a UIElement which is a child of the
-                // Canvas, exit the loop and return it.
-                UIElement elem = depObj as UIElement;
-
-                if (elem != null)
-                {
-                    Type t = elem.GetType();
-
-                    //only hit test against visible elements
-                    //we want to avoid elements in other workspaces.
-                    if (elem is ISelectable && elem.Visibility == System.Windows.Visibility.Visible)
-                    {
-                        foundElement = elem;
-                        return foundElement;
-                    }
-                }
-
-                // VisualTreeHelper works with objects of type Visual or Visual3D.
-                // If the current object is not derived from Visual or Visual3D,
-                // then use the LogicalTreeHelper to find the parent element.
-                if (depObj is Visual)
-                    depObj = VisualTreeHelper.GetParent(depObj);
-                else
-                    depObj = LogicalTreeHelper.GetParent(depObj);
-            }
-
-            return foundElement;
+            this.dragState = DragState.None;
         }
-
-        // Return the result of the hit test to the callback.
-        public HitTestResultBehavior MyHitTestResult(HitTestResult result)
-        {
-            // Add the hit test result to the list that will be processed after the enumeration.
-            if (!hitResultsList.Contains(result.VisualHit))
-            {
-                hitResultsList.Add(result.VisualHit);
-            }
-
-            // Set the behavior to return visuals at all z-order levels.
-            return HitTestResultBehavior.Continue;
-        }
-
-        static bool HasParentType(Type t, Type testType)
-        {
-            while (t != typeof(object))
-            {
-                t = t.BaseType;
-                if (t.Equals(testType))
-                    return true;
-            }
-            return false;
-        }
+#endif
     }
 
+#if false // TODO(Ben): Remove this after StateMachine has been fully tested.
     public class OffsetData
     {
         public double OriginalHorizontalOffset
@@ -813,5 +800,5 @@ namespace Dynamo.Controls
             this.Node = node;
         }
     }
-
+#endif
 }

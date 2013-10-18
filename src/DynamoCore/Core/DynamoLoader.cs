@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Controls;
 using System.Reflection;
@@ -8,7 +9,6 @@ using System.IO;
 using System.Windows.Controls;
 using System.Windows;
 using String = System.String;
-using ProtoCore.DSASM;
 
 namespace Dynamo.Utilities
 {
@@ -101,6 +101,10 @@ namespace Dynamo.Utilities
                         allLoadedAssemblies[assembly.GetName().Name] = assembly;
                         LoadNodesFromAssembly(assembly);
                     }
+                    catch (BadImageFormatException)
+                    {
+                        //swallow these warnings.
+                    }
                     catch(Exception e)
                     {
                         DynamoLogger.Instance.Log(e);
@@ -108,30 +112,13 @@ namespace Dynamo.Utilities
                 }
             }
 
-            LoadBuiltInFunctions();
             AppDomain.CurrentDomain.AssemblyResolve -= resolver;
 
             #endregion
 
         }
 
-        private static void LoadBuiltInFunctions()
-        {
-            GraphToDSCompiler.GraphUtilities.PreloadAssembly(new List<string> {"Math.dll" });
-            List<ProcedureNode> builtInMethods = GraphToDSCompiler.GraphUtilities.BuiltInMethods;
-            var searchViewModel = dynSettings.Controller.SearchViewModel;
-            var controller = dynSettings.Controller;
-
-            foreach (var method in builtInMethods)
-            {
-                searchViewModel.Add("BuiltIn Functions", method.name, "", new List<String> { }, true);
-
-                if (!controller.BuiltInFunctions.ContainsKey(method.name))
-                {
-                    controller.BuiltInFunctions.Add(method.name, method);
-                }
-            }
-        }
+        
 
         /// <summary>
         ///     Determine if a Type is a node.  Used by LoadNodesFromAssembly to figure
@@ -164,8 +151,8 @@ namespace Dynamo.Utilities
 
             try
             {
-                Type[] loadedTypes = assembly.GetTypes();
-
+                var loadedTypes = assembly.GetTypes();
+ 
                 foreach (var t in loadedTypes)
                 {
                     try
@@ -284,6 +271,7 @@ namespace Dynamo.Utilities
             return AssemblyPathToTypesLoaded[assembly.Location];
         }
 
+
         /// <summary>
         ///     Setup the "Samples" sub-menu with contents of samples directory.
         /// </summary>
@@ -376,10 +364,7 @@ namespace Dynamo.Utilities
             var loadedNodes = customNodeLoader.UpdateSearchPath();
 
             // add nodes to search
-            foreach (var pair in loadedNodes)
-            {
-                searchViewModel.Add(pair.Name, pair.Category, pair.Description, pair.Guid);
-            }
+            loadedNodes.ForEach(x => searchViewModel.Add(x) );
             
             // update search view
             searchViewModel.SearchAndUpdateResultsSync(searchViewModel.SearchText);
@@ -403,10 +388,7 @@ namespace Dynamo.Utilities
             customNodeLoader.AddDirectoryToSearchPath(path);
 
             // add nodes to search
-            foreach (var pair in loadedNodes)
-            {
-                searchViewModel.Add(pair.Name, pair.Category, pair.Description, pair.Guid);
-            }
+            loadedNodes.ForEach( x => searchViewModel.Add(x) );
 
             // update search view
             searchViewModel.SearchAndUpdateResultsSync(searchViewModel.SearchText);

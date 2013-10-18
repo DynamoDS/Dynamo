@@ -1,0 +1,23 @@
+<Workspace Version="0.7.0.24633" X="-28.4666666666667" Y="3.76444444444445" zoom="0.8" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.Begin type="Dynamo.Nodes.Begin" guid="57bae6ae-3564-4190-b01d-464eb927d45b" nickname="Perform All" x="570.583333333333" y="212.544444444444" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="expr1" />
+      <Input name="expr2" />
+    </Dynamo.Nodes.Begin>
+    <Dynamo.Nodes.FileWriter type="Dynamo.Nodes.FileWriter" guid="40fb283d-a6c1-4e4c-a2e4-11e9f73c1c53" nickname="Write File" x="346.833333333333" y="145.044444444444" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="53a0f0cc-d476-4a41-b3a4-81177ef7a1b5" nickname="String" x="161.833333333333" y="142.544444444444" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="test.txt" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.FileReader type="Dynamo.Nodes.FileReader" guid="a21771f0-ee50-49c5-b694-5a8abef4c37e" nickname="Read Text File" x="346.833333333333" y="232.544444444444" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="a1b2a15e-d097-4132-baa9-e7311e383259" nickname="Watch" x="711.833333333333" y="343.794444444444" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="57bae6ae-3564-4190-b01d-464eb927d45b" start_index="0" end="a1b2a15e-d097-4132-baa9-e7311e383259" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="40fb283d-a6c1-4e4c-a2e4-11e9f73c1c53" start_index="0" end="57bae6ae-3564-4190-b01d-464eb927d45b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="53a0f0cc-d476-4a41-b3a4-81177ef7a1b5" start_index="0" end="40fb283d-a6c1-4e4c-a2e4-11e9f73c1c53" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="53a0f0cc-d476-4a41-b3a4-81177ef7a1b5" start_index="0" end="40fb283d-a6c1-4e4c-a2e4-11e9f73c1c53" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="53a0f0cc-d476-4a41-b3a4-81177ef7a1b5" start_index="0" end="a21771f0-ee50-49c5-b694-5a8abef4c37e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a21771f0-ee50-49c5-b694-5a8abef4c37e" start_index="0" end="57bae6ae-3564-4190-b01d-464eb927d45b" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

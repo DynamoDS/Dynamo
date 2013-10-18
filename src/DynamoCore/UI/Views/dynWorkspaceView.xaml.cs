@@ -13,6 +13,7 @@ using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.UI;
 
 namespace Dynamo.Views
 {
@@ -21,8 +22,7 @@ namespace Dynamo.Views
     /// </summary>
     public partial class dynWorkspaceView : UserControl
     {
-        private bool isWindowSelecting;
-        private Point mouseDownPos;
+        // TODO(Ben): Remove this.
         private Dynamo.Controls.DragCanvas WorkBench = null;
         private ZoomAndPanControl zoomAndPanControl = null;
         private EndlessGrid endlessGrid = null;
@@ -66,13 +66,14 @@ namespace Dynamo.Views
             selectionCanvas.Children.Add(endlessGrid);
             zoomBorder.EndlessGrid = endlessGrid; // Register with ZoomBorder
 
-            // EndlessGrid Toggle On/Off Binding
-            Binding binding = new Binding()
+            // Binding for grid lines HitTest and Visibility
+            var binding = new Binding()
             {
-                Path = new PropertyPath("FullscreenWatchVisible"),
+                Path = new PropertyPath("DataContext.FullscreenWatchShowing"),
                 Converter = new InverseBoolToVisibilityConverter(),
                 Mode = BindingMode.OneWay,
             };
+            binding.RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(TabControl), 1);
             endlessGrid.SetBinding(UIElement.VisibilityProperty, binding);
 
             Debug.WriteLine("Workspace loaded.");
@@ -97,7 +98,6 @@ namespace Dynamo.Views
             ViewModel.RequestZoomToViewportCenter += new ZoomEventHandler(vm_ZoomAtViewportCenter);
             ViewModel.RequestZoomToViewportPoint += new ZoomEventHandler(vm_ZoomAtViewportPoint);
             ViewModel.RequestZoomToFitView += new ZoomEventHandler(vm_ZoomToFitView);
-            ViewModel.StopDragging += new EventHandler(vm_StopDragging);
             ViewModel.RequestCenterViewOnElement += new NodeEventHandler(CenterViewOnElement);
             ViewModel.RequestNodeCentered += new NodeEventHandler(vm_RequestNodeCentered);
             ViewModel.RequestAddViewToOuterCanvas += new ViewEventHandler(vm_RequestAddViewToOuterCanvas);
@@ -107,6 +107,7 @@ namespace Dynamo.Views
             ViewModel.RequestStopPan += new EventHandler(vm_ExitPan);
             ViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
             ViewModel.WorkspacePropertyEditRequested += VmOnWorkspacePropertyEditRequested;
+            ViewModel.RequestSelectionBoxUpdate += VmOnRequestSelectionBoxUpdate;
         }
 
         private void VmOnWorkspacePropertyEditRequested(WorkspaceModel workspace)
@@ -121,26 +122,51 @@ namespace Dynamo.Views
                 {
                     Name = newName,
                     Description = newDescription,
-                    Category = newCategory
-
+                    Category = newCategory,
+                    CanEditName = false
                 };
 
             dynSettings.Controller.DynamoModel.OnRequestsFunctionNamePrompt(this, args);
 
             if(args.Success)
             {
-
-                if (workspace is FuncWorkspace)
+                if (workspace is CustomNodeWorkspaceModel)
                 {
-                    var def = dynSettings.CustomNodeManager.GetDefinitionFromWorkspace(workspace);
-                    dynSettings.CustomNodeManager.Refactor(def.FunctionId, args.Name, args.Category, args.Description);
+                    var def = (workspace as CustomNodeWorkspaceModel).FunctionDefinition;
+                    dynSettings.CustomNodeManager.Refactor(def.FunctionId, args.CanEditName ? args.Name : workspace.Name, args.Category, args.Description);
                 }
-
-                workspace.Name = args.Name;
+                
+                if (args.CanEditName) workspace.Name = args.Name;
                 workspace.Description = args.Description;
                 workspace.Category = args.Category;
                 // workspace.Author = "";
 
+            }
+        }
+
+        private void VmOnRequestSelectionBoxUpdate(object sender, SelectionBoxUpdateArgs e)
+        {
+            if (e.UpdatedProps.HasFlag(SelectionBoxUpdateArgs.UpdateFlags.Position))
+            {
+                Canvas.SetLeft(this.selectionBox, e.X);
+                Canvas.SetTop(this.selectionBox, e.Y);
+            }
+
+            if (e.UpdatedProps.HasFlag(SelectionBoxUpdateArgs.UpdateFlags.Dimension))
+            {
+                selectionBox.Width = e.Width;
+                selectionBox.Height = e.Height;
+            }
+
+            if (e.UpdatedProps.HasFlag(SelectionBoxUpdateArgs.UpdateFlags.Visibility))
+                selectionBox.Visibility = e.Visibility;
+
+            if (e.UpdatedProps.HasFlag(SelectionBoxUpdateArgs.UpdateFlags.Mode))
+            {
+                if (e.IsCrossSelection && (null == selectionBox.StrokeDashArray))
+                    selectionBox.StrokeDashArray = new DoubleCollection { 4 };
+                else if (!e.IsCrossSelection && (null != selectionBox.StrokeDashArray))
+                    selectionBox.StrokeDashArray = null;
             }
         }
 
@@ -184,38 +210,32 @@ namespace Dynamo.Views
 
         void vm_RequestNodeCentered(object sender, EventArgs e)
         {
-            double x = 0;
-            double y = 0;
-            ModelBase node = (e as ModelEventArgs).Model;
-            Dictionary<string, object> data = (e as ModelEventArgs).Data;
+            ModelEventArgs args = e as ModelEventArgs;
+            ModelBase node = args.Model;
 
-            x = outerCanvas.ActualWidth / 2.0;
-            y = outerCanvas.ActualHeight / 2.0;
+            double x = outerCanvas.ActualWidth / 2.0;
+            double y = outerCanvas.ActualHeight / 2.0;
 
             // apply small perturbation
             // so node isn't right on top of last placed node
             if (currentNodeCascadeOffset > 96.0)
-            {
                 currentNodeCascadeOffset = 0.0;
-            }
 
             x += currentNodeCascadeOffset;
             y += currentNodeCascadeOffset;
 
             currentNodeCascadeOffset += 24.0;
-            
-            var transformFromOuterCanvas = data.ContainsKey("transformFromOuterCanvasCoordinates");
 
-            if (data.ContainsKey("x"))
-                x = (double)data["x"];
-
-            if (data.ContainsKey("y"))
-                y = (double)data["y"];
+            if (args.PositionSpecified)
+            {
+                x = args.X;
+                y = args.Y;
+            }
 
             Point dropPt = new Point(x, y);
 
             // Transform dropPt from outerCanvas space into zoomCanvas space
-            if (transformFromOuterCanvas)
+            if (args.TransformCoordinates)
             {
                 if (WorkBench != null)
                 {
@@ -239,12 +259,6 @@ namespace Dynamo.Views
 
             node.X = dropPt.X;
             node.Y = dropPt.Y;
-        }
-
-        void vm_StopDragging(object sender, EventArgs e)
-        {
-            WorkBench.isDragInProgress = false;
-            WorkBench.ignoreClick = true;
         }
 
         void zoomBorder_MouseMove(object sender, MouseEventArgs e)
@@ -313,10 +327,16 @@ namespace Dynamo.Views
             double absoluteX, absoluteY;
             absoluteX = relative.X * ViewModel._model.Zoom + ViewModel._model.X;
             absoluteY = relative.Y * ViewModel._model.Zoom + ViewModel._model.Y;
+            Point resultOffset = new Point();
+            resultOffset.X = absoluteX - (relative.X * resultZoom);
+            resultOffset.Y = absoluteY - (relative.Y * resultZoom);
 
             ViewModel._model.Zoom = resultZoom;
-            ViewModel._model.X = absoluteX - (relative.X * ViewModel._model.Zoom);
-            ViewModel._model.Y = absoluteY - (relative.Y * ViewModel._model.Zoom);
+            ViewModel._model.X = resultOffset.X;
+            ViewModel._model.Y = resultOffset.Y;
+
+            vm_CurrentOffsetChanged(this, new PointEventArgs(resultOffset));
+            vm_ZoomChanged(this, new ZoomEventArgs(resultZoom));
         }
 
         void vm_ZoomToFitView(object sender, EventArgs e)
@@ -348,10 +368,17 @@ namespace Dynamo.Views
             double centerOffsetX = viewportPadding + (fitWidth - (zoomArgs.FocusWidth * scaleRequired)) / 2;
             double centerOffsetY = viewportPadding + (fitHeight - (zoomArgs.FocusHeight * scaleRequired)) / 2;
 
+            Point resultOffset = new Point();
+            resultOffset.X = -(zoomArgs.Offset.X * scaleRequired) + centerOffsetX;
+            resultOffset.Y = -(zoomArgs.Offset.Y * scaleRequired) + centerOffsetY;
+
             // Apply on model
             ViewModel._model.Zoom = scaleRequired;
-            ViewModel._model.X = -(zoomArgs.Offset.X * scaleRequired) + centerOffsetX;
-            ViewModel._model.Y = -(zoomArgs.Offset.Y * scaleRequired) + centerOffsetY;
+            ViewModel._model.X = resultOffset.X;
+            ViewModel._model.Y = resultOffset.Y;
+
+            vm_CurrentOffsetChanged(this, new PointEventArgs(resultOffset));
+            vm_ZoomChanged(this, new ZoomEventArgs(scaleRequired));
         }
 
         private void dynWorkspaceView_KeyDown(object sender, KeyEventArgs e)
@@ -368,11 +395,11 @@ namespace Dynamo.Views
 
         private void dynWorkspaceView_KeyUp(object sender, KeyEventArgs e)
         {
-
         }
 
-        private void DynWorkspaceView_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+//<<<<<<< HEAD
             WorkspaceViewModel vm = (DataContext as WorkspaceViewModel);
 
             if (!(DataContext as WorkspaceViewModel).IsConnecting)
@@ -434,38 +461,21 @@ namespace Dynamo.Views
             //}
 
             dynSettings.ReturnFocusToSearch();
+//=======
+            WorkspaceViewModel wvm = (DataContext as WorkspaceViewModel);
+            wvm.HandleLeftButtonDown(this.WorkBench, e);
+//>>>>>>> upstream/master
         }
 
-        private void DynWorkspaceView_OnMouseUp(object sender, MouseButtonEventArgs e)
+        private void OnMouseRelease(object sender, MouseButtonEventArgs e)
         {
-            //Debug.WriteLine("Starting mouse up.");
-
-            WorkspaceViewModel vm = (DataContext as WorkspaceViewModel);
-
-            if (e.ChangedButton == MouseButton.Left)
-            {
-                //MVVM: this is in the bench, should it be here?
-                //beginNameEditClick = false;
-
-                if (isWindowSelecting)
-                {
-                    #region release window selection
-
-                    //DEBUG WINDOW SELECTION
-                    // Release the mouse capture and stop tracking it.
-                    isWindowSelecting = false;
-                    //workBench.ReleaseMouseCapture();
-
-                    // Hide the drag selection box.
-                    selectionBox.Visibility = Visibility.Collapsed;
-
-                    #endregion
-                }
-            }
+            WorkspaceViewModel wvm = (DataContext as WorkspaceViewModel);
+            wvm.HandleMouseRelease(this.WorkBench, e);
         }
 
-        private void DynWorkspaceView_OnMouseMove(object sender, MouseEventArgs e)
+        private void OnMouseMove(object sender, MouseEventArgs e)
         {
+//<<<<<<< HEAD
             var vm = (DataContext as WorkspaceViewModel);
 
             //Canvas.SetLeft(debugPt, e.GetPosition(dynSettings.Workbench).X - debugPt.Width/2);
@@ -592,6 +602,10 @@ namespace Dynamo.Views
                     #endregion
                 }
             }
+//=======
+            WorkspaceViewModel wvm = (DataContext as WorkspaceViewModel);
+            wvm.HandleMouseMove(this.WorkBench, e);
+//>>>>>>> upstream/master
         }
 
         private double Distance(Point mouse, Point point)
@@ -640,6 +654,7 @@ namespace Dynamo.Views
         private void WorkBench_OnLoaded(object sender, RoutedEventArgs e)
         {
             WorkBench = sender as Dynamo.Controls.DragCanvas;
+            WorkBench.owningWorkspace = this;
             //DrawGrid();
         }
 
