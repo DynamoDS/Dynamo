@@ -409,7 +409,7 @@ namespace Dynamo.Tests
         {
             string openPath = Path.Combine(GetTestDirectory(), @"core\excel\NewWorkbook_Add2DListData.dyn");
             Controller.DynamoModel.Open(openPath);
-            Assert.AreEqual(10, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+            Assert.AreEqual(11, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
             var watch = Controller.DynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
             Controller.RunExpression(null);
 

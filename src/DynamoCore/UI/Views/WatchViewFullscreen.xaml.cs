@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Linq;
 using System.Windows.Threading;
@@ -276,6 +277,36 @@ namespace Dynamo.Controls
                     return null;
             }
         }
+
+        private void Watch_view_OnMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            Point mousePos = e.GetPosition(watch_view);
+            PointHitTestParameters hitParams = new PointHitTestParameters(mousePos);
+            VisualTreeHelper.HitTest(watch_view, null, ResultCallback, hitParams);
+        }
+
+        public HitTestResultBehavior ResultCallback(HitTestResult result)
+        {
+            // Did we hit 3D?
+            var rayResult = result as RayHitTestResult;
+            if (rayResult != null)
+            {
+                // Did we hit a MeshGeometry3D?
+                var rayMeshResult =
+                    rayResult as RayMeshGeometry3DHitTestResult;
+
+                if (rayMeshResult != null)
+                {
+                    // Yes we did!
+                    var pt = rayMeshResult.PointHit;
+                    dynSettings.Controller.VisualizationManager.LookupSelectedElement(pt.X, pt.Y, pt.Z);
+                    return HitTestResultBehavior.Stop;
+                }
+            }
+
+            return HitTestResultBehavior.Continue;
+        }
+
 
     }
 }

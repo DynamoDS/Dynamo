@@ -3,18 +3,17 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Threading;
 using System.Windows.Media.Media3D;
 using System.Linq;
 using Autodesk.LibG;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.Utilities;
 using HelixToolkit.Wpf;
 using Microsoft.Practices.Prism.ViewModel;
 using Newtonsoft.Json;
+using Octree.OctreeSearch;
 using String = System.String;
 
 //testing to see if github integration works.
@@ -23,7 +22,7 @@ namespace Dynamo
 {
     public delegate void VisualizationCompleteEventHandler(object sender, VisualizationEventArgs e);
 
-    public delegate void VisualizerDelegate(NodeModel node, object geom, RenderDescription target);
+    public delegate void VisualizerDelegate(NodeModel node, object geom, RenderDescription target, Octree.OctreeSearch.Octree octree);
 
     /// <summary>
     /// Visualization manager consolidates functionality for creating visualizations 
@@ -43,6 +42,7 @@ namespace Dynamo
         private bool _drawToAlternateContext = true;
         private object myLock = new object();
         protected bool isUpdating = false;
+        private Octree.OctreeSearch.Octree octree;
 
         #endregion
 
@@ -124,6 +124,12 @@ namespace Dynamo
             set { _alternateContextName = value; }
         }
 
+        public Octree.OctreeSearch.Octree Octree
+        {
+            get { return octree; }
+            set { octree = value; }
+        }
+
         #endregion
 
         #region events
@@ -148,8 +154,16 @@ namespace Dynamo
             DynamoSelection.Instance.Selection.CollectionChanged += new NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
             dynSettings.Controller.DynamoModel.ModelCleared += new EventHandler(DynamoModel_ModelCleared);
             dynSettings.Controller.DynamoModel.CleaningUp += new CleanupHandler(DynamoModel_CleaningUp);
+            dynSettings.Controller.DynamoModel.NodeDeleted += new NodeHandler(DynamoModel_NodeDeleted);
 
             Visualizers.Add(typeof(GraphicItem), VisualizationManagerASM.DrawLibGGraphicItem);
+
+            octree = new Octree.OctreeSearch.Octree(10000,-10000,10000,-10000,10000,-10000,10000000);
+        }
+
+        void DynamoModel_NodeDeleted(NodeModel node)
+        {
+            UpdateVisualizations();
         }
 
         void DynamoModel_CleaningUp(object sender, EventArgs e)
@@ -541,7 +555,7 @@ namespace Dynamo
             //draw what's in the container
             if (viz.Value != null)
             {
-                viz.Value.Invoke(node, geom, rd);
+                viz.Value.Invoke(node, geom, rd, octree);
             }
         }
 
@@ -558,6 +572,8 @@ namespace Dynamo
                 var sw = new Stopwatch();
                 sw.Start();
 
+                octree.Clear();
+
                 //get a dictionary of all nodes with drawable objects
                 var drawable_dict = GetAllDrawablesInModel();
                 
@@ -565,6 +581,7 @@ namespace Dynamo
                 var drawableKeys = drawable_dict.Select(x => x.Key.GUID.ToString());
                 var toCleanup = Visualizations.Where(x => !drawableKeys.Contains(x.Key)).ToList();
                 toCleanup.ForEach(x=>Visualizations.Remove(x.Key));
+
                 Debug.WriteLine(string.Format("{0} drawables have been removed.", toCleanup.Count));
 
                 //add visualizations for nodes that have none
@@ -614,6 +631,21 @@ namespace Dynamo
         {
             Visualizations.Add(kvp.Key.GUID.ToString(), new RenderDescription());
             kvp.Key.PropertyChanged += node_PropertyChanged;
+        }
+
+        public void LookupSelectedElement(double x, double y, double z)
+        {
+            var id = octree.GetNode(x, y, z);
+
+            if (id == null)
+                return;
+
+            var node = dynSettings.Controller.DynamoModel.Nodes.FirstOrDefault(n => n.GUID.ToString() == id.ToString());
+            if (node != null && !DynamoSelection.Instance.Selection.Contains(node))
+            {
+                DynamoSelection.Instance.ClearSelection();
+                DynamoSelection.Instance.Selection.Add(node);
+            }
         }
 
         #region utility methods
