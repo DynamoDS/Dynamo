@@ -12,6 +12,7 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.DB;
@@ -23,40 +24,54 @@ namespace RevitServices.Elements
     {
         //static UpdaterId _mUpdaterId;
 
-        readonly Dictionary<ChangeTypeEnum, Dictionary<ElementId, ElementUpdateDelegate>> _updateDict
-           = new Dictionary<ChangeTypeEnum, Dictionary<ElementId, ElementUpdateDelegate>>();
+        //TODO: To handle multiple documents, should store unique ids as opposed to ElementIds.
+
+        private readonly Dictionary<ElementId, ElementUpdateDelegate> _deletedCallbacks = new Dictionary<ElementId, ElementUpdateDelegate>();
+        private readonly Dictionary<ElementId, ElementUpdateDelegate> _modifiedCallbacks = new Dictionary<ElementId, ElementUpdateDelegate>();
+
+        public event ElementUpdateDelegate ElementsAdded;
+
+        protected virtual void OnElementsAdded(HashSet<ElementId> updated)
+        {
+            var handler = ElementsAdded;
+            if (handler != null) handler(updated);
+        }
 
         // constructor takes the AddInId for the add-in associated with this updater
         public RevitServicesUpdater(/*AddInId id, */ControlledApplication app)
         {
             //_mUpdaterId = new UpdaterId(id, new Guid("1F1F44B4-8002-4CC1-8FDB-17ACD24A2ECE")); //[Guid("1F1F44B4-8002-4CC1-8FDB-17ACD24A2ECE")]
-
-            _updateDict[ChangeTypeEnum.Delete] = new Dictionary<ElementId, ElementUpdateDelegate>();
-            _updateDict[ChangeTypeEnum.Modify] = new Dictionary<ElementId, ElementUpdateDelegate>();
-            _updateDict[ChangeTypeEnum.Add] = new Dictionary<ElementId, ElementUpdateDelegate>();
-
+            
             app.DocumentChanged += Application_DocumentChanged;
         }
 
+        //TODO: remove once we are using unique ids
+        /// <summary>
+        /// Document that is being watched for changes.
+        /// </summary>
         public Document DocumentToWatch { get; set; }
 
+        /// <summary>
+        /// Forces all deletion callbacks to be called for given sequence of elements.
+        /// </summary>
+        /// <param name="deleted">Sequence of elements to have registered deletion callbacks invoked.</param>
         public void RollBack(IEnumerable<ElementId> deleted)
         {
-            ProcessUpdates(new List<ElementId>(), deleted, new List<ElementId>());
+            var empty = new List<ElementId>();
+            ProcessUpdates(empty, deleted, empty);
         }
 
         private void ProcessUpdates(IEnumerable<ElementId> modified, IEnumerable<ElementId> deleted, IEnumerable<ElementId> added)
         {
             #region Modified
 
-            var modDict = _updateDict[ChangeTypeEnum.Modify];
             var dict = new Dictionary<ElementUpdateDelegate, HashSet<ElementId>>();
             foreach (ElementId modifiedElementID in modified)
             {
-                if (!modDict.ContainsKey(modifiedElementID))
+                if (!_modifiedCallbacks.ContainsKey(modifiedElementID))
                     continue;
 
-                var k = modDict[modifiedElementID];
+                var k = _modifiedCallbacks[modifiedElementID];
                 if (!dict.ContainsKey(k))
                     dict[k] = new HashSet<ElementId>();
                 dict[k].Add(modifiedElementID);
@@ -67,36 +82,15 @@ namespace RevitServices.Elements
 
             #endregion
 
-            #region Added
-
-            modDict = _updateDict[ChangeTypeEnum.Add];
-            dict.Clear();
-            foreach (ElementId addedElementID in added)
-            {
-                if (!modDict.ContainsKey(addedElementID))
-                    continue;
-
-                var k = modDict[addedElementID];
-                if (!dict.ContainsKey(k))
-                    dict[k] = new HashSet<ElementId>();
-                dict[k].Add(addedElementID);
-            }
-
-            foreach (var pair in dict)
-                pair.Key(pair.Value);
-
-            #endregion
-
             #region Deleted
 
-            modDict = _updateDict[ChangeTypeEnum.Delete];
             dict.Clear();
             foreach (ElementId deletedElementID in deleted)
             {
-                if (!modDict.ContainsKey(deletedElementID))
+                if (!_deletedCallbacks.ContainsKey(deletedElementID))
                     continue;
 
-                var k = modDict[deletedElementID];
+                var k = _deletedCallbacks[deletedElementID];
                 if (!dict.ContainsKey(k))
                     dict[k] = new HashSet<ElementId>();
                 dict[k].Add(deletedElementID);
@@ -104,6 +98,12 @@ namespace RevitServices.Elements
 
             foreach (var pair in dict)
                 pair.Key(pair.Value);
+
+            #endregion
+
+            #region Added
+
+            OnElementsAdded(new HashSet<ElementId>(added));
 
             #endregion
         }
@@ -126,17 +126,17 @@ namespace RevitServices.Elements
         /// <param name="e">ID of the Element being watched.</param>
         /// <param name="type">Type of change to watch for.</param>
         /// <param name="d">Delegate to be called when changed.</param>
-        public void RegisterChangeHook(ElementId e, ChangeTypeEnum type, ElementUpdateDelegate d)
+        public void RegisterChangeHook(ElementId e, ChangeType type, ElementUpdateDelegate d)
         {
-            Dictionary<ElementId, ElementUpdateDelegate> dict;
-            
-            if (!_updateDict.TryGetValue(type, out dict))
+            switch (type)
             {
-                dict = new Dictionary<ElementId, ElementUpdateDelegate>();
-                _updateDict[type] = dict;
+                case ChangeType.Delete:
+                    _deletedCallbacks[e] = d;
+                    break;
+                case ChangeType.Modify:
+                    _modifiedCallbacks[e] = d;
+                    break;
             }
-
-            dict[e] = d;
         }
 
         /// <summary>
@@ -144,17 +144,28 @@ namespace RevitServices.Elements
         /// </summary>
         /// <param name="e">ID of the Element to unregister.</param>
         /// <param name="type">Type of change to unsubscribe from.</param>
-        public void UnRegisterChangeHook(ElementId e, ChangeTypeEnum type)
+        public void UnRegisterChangeHook(ElementId e, ChangeType type)
         {
-            _updateDict[type].Remove(e);
+            switch (type)
+            {
+                case ChangeType.Delete:
+                    _deletedCallbacks.Remove(e);
+                    break;
+                case ChangeType.Modify:
+                    _modifiedCallbacks.Remove(e);
+                    break;
+            }
         }
 
+        /// <summary>
+        /// Clears all registered callbacks. This includes Modified and Deleted callbacks registered
+        /// with RegisterChangeHook, and all delegates registered with the ElementsAdded event.
+        /// </summary>
         public void UnRegisterAllChangeHooks()
         {
-            foreach (var hookDict in _updateDict.Values)
-            {
-                hookDict.Clear();
-            }
+            _deletedCallbacks.Clear();
+            _modifiedCallbacks.Clear();
+            ElementsAdded = null;
         }
 
         /* Disabled IUpdater Methods
@@ -187,13 +198,15 @@ namespace RevitServices.Elements
         }*/
     }
 
+    /// <summary>
+    /// Callback for when Elements have been updated.
+    /// </summary>
+    /// <param name="updated">All modified elements that have been registered with this callback.</param>
     public delegate void ElementUpdateDelegate(HashSet<ElementId> updated);
 
-    public enum ChangeTypeEnum
+    public enum ChangeType
     {
         Delete,
-        Modify,
-        Add
+        Modify
     };
-
 }

@@ -24,6 +24,7 @@ using RevitServices;
 using RevitServices.Elements;
 using RevitServices.Threading;
 using RevitServices.Transactions;
+using ChangeType = RevitServices.Elements.ChangeType;
 using CurveLoop = Autodesk.Revit.DB.CurveLoop;
 using Transaction = Dynamo.Nodes.Transaction;
 using Value = Dynamo.FScheme.Value;
@@ -528,14 +529,13 @@ namespace Dynamo
             {
                 foreach (var invId in deleted) //invalid)
                 {
-                    Updater.UnRegisterChangeHook(invId, ChangeTypeEnum.Modify);
-                    Updater.UnRegisterChangeHook(invId, ChangeTypeEnum.Add);
-                    Updater.UnRegisterChangeHook(invId, ChangeTypeEnum.Delete);
+                    Updater.UnRegisterChangeHook(invId, ChangeType.Modify);
+                    Updater.UnRegisterChangeHook(invId, ChangeType.Delete);
                 }
                 updateDelegate(deleted); //invalid);
             };
 
-            Updater.RegisterChangeHook(id, ChangeTypeEnum.Delete, del);
+            Updater.RegisterChangeHook(id, ChangeType.Delete, del);
             _transElements.Add(id);
         }
 

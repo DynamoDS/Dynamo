@@ -12,6 +12,7 @@ using Microsoft.FSharp.Collections;
 using Dynamo.Utilities;
 using RevitServices.Elements;
 using RevitServices.Threading;
+using ChangeType = RevitServices.Elements.ChangeType;
 using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Revit
@@ -371,12 +372,12 @@ namespace Dynamo.Revit
                 var u = dynRevitSettings.Controller.Updater;
                 u.RegisterChangeHook(
                    id,
-                   ChangeTypeEnum.Modify,
+                   ChangeType.Modify,
                    ReEvalOnModified(node, modAction)
                 );
                 u.RegisterChangeHook(
                    id,
-                   ChangeTypeEnum.Delete,
+                   ChangeType.Delete,
                    UnRegOnDelete(delAction)
                 );
             }
@@ -389,10 +390,10 @@ namespace Dynamo.Revit
             {
                 var u = dynRevitSettings.Controller.Updater;
                 u.UnRegisterChangeHook(
-                   id, ChangeTypeEnum.Modify
+                   id, ChangeType.Modify
                 );
                 u.UnRegisterChangeHook(
-                   id, ChangeTypeEnum.Delete
+                   id, ChangeType.Delete
                 );
             }
 
@@ -403,8 +404,8 @@ namespace Dynamo.Revit
                     foreach (var d in deleted)
                     {
                         var u = dynRevitSettings.Controller.Updater;
-                        u.UnRegisterChangeHook(d, ChangeTypeEnum.Delete);
-                        u.UnRegisterChangeHook(d, ChangeTypeEnum.Modify);
+                        u.UnRegisterChangeHook(d, ChangeType.Delete);
+                        u.UnRegisterChangeHook(d, ChangeType.Modify);
                     }
                     if (deleteAction != null)
                         deleteAction();
