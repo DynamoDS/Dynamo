@@ -19,7 +19,7 @@
 
         <HelixToolkit:HelixViewport3D Name="watch_view" ZoomExtentsWhenLoaded="True" 
                                       ShowViewCube="False" CameraRotationMode="Turntable"
-                                      IsHitTestVisible="True" MouseLeftButtonDown="Watch_view_OnMouseDown" ShowCoordinateSystem="true">
+                                      IsHitTestVisible="True" MouseLeftButtonDown="Watch_view_OnMouseDown" ShowCoordinateSystem="{Binding ElementName=topControl, Path=DataContext.CanNavigateBackground}">
         
             <ModelVisual3D>
                 <HelixToolkit:LightVisual3D>
