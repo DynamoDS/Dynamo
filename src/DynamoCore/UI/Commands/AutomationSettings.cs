@@ -259,7 +259,9 @@ namespace Dynamo.ViewModels
             this.playbackTimer.Stop();
             this.playbackTimer = null;
 
-            System.Windows.Application.Current.Shutdown();
+            // This causes the main window to close (and exit application).
+            var dispatcher = dynSettings.Controller.UIDispatcher;
+            dispatcher.BeginInvokeShutdown(DispatcherPriority.Normal);
         }
 
         #endregion

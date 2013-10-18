@@ -76,17 +76,14 @@ namespace Dynamo.Controls
             return app;
         }
 
-        public static DynamoController MakeSandboxForUnitTest(string commandFilePath)
+        public static DynamoView MakeSandboxForUnitTest(string commandFilePath)
         {
             var controller = DynamoController.MakeSandbox(commandFilePath);
-            var application = new Application();
 
             var dynamoView = new DynamoView(); // Create the view
             dynamoView.DataContext = controller.DynamoViewModel;
             controller.UIDispatcher = dynamoView.Dispatcher;
-
-            application.Run(dynamoView);
-            return controller;
+            return dynamoView;
         }
 
         public DynamoView()
