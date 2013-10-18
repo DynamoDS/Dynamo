@@ -46,16 +46,10 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        void setDirty(bool val)
+        public override bool RequiresRecalc
         {
-            if (IsReportingModifications)
-            {
-                DisableReporting();
-                RequiresRecalc = val;
-                EnableReporting();
-            }
-            else
-                RequiresRecalc = val;
+            get { return Inputs[0].Item2.RequiresRecalc; }
+            set { }
         }
 
         protected override INode Build(Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
@@ -101,10 +95,17 @@ namespace Dynamo.Nodes
                             var f = (args[0] as Value.Function).Item;
 
                             if (dynSettings.Controller.DynamoViewModel.RunInDebug)
-                                return f.Invoke(FSharpList<Value>.Empty);
+                            {
+                                _node.OldValue = f.Invoke(FSharpList<Value>.Empty);
+                                return _node.OldValue;
+                            }
                             
                             return IdlePromise<Value>.ExecuteOnIdle(
-                                () => f.Invoke(FSharpList<Value>.Empty));
+                                () =>
+                                    {
+                                        _node.OldValue = f.Invoke(FSharpList<Value>.Empty);
+                                        return _node.OldValue;
+                                    });
                         }));
 
                 //startTransaction :: () -> ()
@@ -140,8 +141,6 @@ namespace Dynamo.Nodes
                                 
                                 _node.ValidateConnections();
                             }
-                            else
-                                _node.setDirty(false);
 
                             return Value.NewDummy("ended transaction");
                         }));

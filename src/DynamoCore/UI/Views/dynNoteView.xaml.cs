@@ -18,9 +18,10 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using Dynamo.Selection;
+using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using DynamoCommands = Dynamo.UI.Commands.DynamoCommands;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Nodes
 {
@@ -54,6 +55,14 @@ namespace Dynamo.Nodes
         {
             ViewModel = this.DataContext as NoteViewModel;
             ViewModel.RequestsSelection += new EventHandler(ViewModel_RequestsSelection);
+
+            // NoteModel has default dimension of 100x100 which will not be ideal in 
+            // most cases. Here we update the model according to the size of the view.
+            // At this point the view (a TextBlock) would have already been updated 
+            // with the bound data, so its size is up-to-date, here we make a call to 
+            // update the corresponding model.
+            // 
+            ViewModel.UpdateSizeFromView(noteText.ActualWidth, noteText.ActualHeight);
         }
 
         void ViewModel_RequestsSelection(object sender, EventArgs e)
@@ -87,12 +96,14 @@ namespace Dynamo.Nodes
 
         void noteText_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            ViewModel.SelectCommand.Execute(null);
+            System.Guid noteGuid = this.ViewModel.Model.GUID;
+            dynSettings.Controller.DynamoViewModel.ExecuteCommand(
+                new DynCmd.SelectModelCommand(noteGuid, Keyboard.Modifiers));
         }
 
         private void editItem_Click(object sender, RoutedEventArgs e)
         {
-            var editWindow = new dynEditWindow();
+            var editWindow = new EditWindow();
 
             editWindow.editText.TextChanged += delegate
                 {
@@ -103,7 +114,7 @@ namespace Dynamo.Nodes
 
             //setup a binding with the edit window's text field
             editWindow.editText.DataContext = DataContext as NoteViewModel;
-            var bindingVal = new System.Windows.Data.Binding("Text")
+            var bindingVal = new Binding("Text")
             {
                 Mode = BindingMode.TwoWay,
                 Source = (DataContext as NoteViewModel),
@@ -111,10 +122,7 @@ namespace Dynamo.Nodes
             };
             editWindow.editText.SetBinding(TextBox.TextProperty, bindingVal);
 
-            if (editWindow.ShowDialog() != true)
-            {
-                return;
-            }
+            editWindow.ShowDialog();
 
         }
 

@@ -14,31 +14,33 @@ def main():
 
 	parser = OptionParser()
 	parser.add_option("-r", "--root", dest="root", help="The root directory of the dynamo project.", metavar="FILE", default="E:/Dynamo")
+	parser.add_option("-p", "--prefix", dest="prefix", help="The prefix on the filename for the object.", metavar="FILE", default="DynamoDailyInstall")
+	parser.add_option("-d", "--date", dest="include_date", action="store_true", default=False, help="Add the date as a suffix to the filename.")
 
 	(options, args) = parser.parse_args()
 
 	repo_root = options.root
 	installer_dir =  form_path( [repo_root, 'scripts/install'] )
 	installer_bin_dir = 'Installers'
-	installer_bat = 'CreateInstallers-RELEASE.bat'
+
 	print "Publishing to s3"
 	print installer_dir
 	print installer_bin_dir
 	
-	publish_to_s3( installer_dir, installer_bin_dir )
+	publish_to_s3( installer_dir, installer_bin_dir, options.prefix, options.include_date )
 
 # S3 ##############################
 
-def publish_to_s3(installer_dir, installer_bin_dir):
+def publish_to_s3(installer_dir, installer_bin_dir, prefix, include_date):
 
 	try:
 
 		mkdir('temp')
-		copy_folder_contents( form_path([installer_dir, installer_bin_dir]), 'temp' )
+		copy_folder_contents( form_path([installer_dir, installer_bin_dir]), 'temp')
 
 		for file in os.listdir('temp'):
 		  if fnmatch.fnmatch( file, '*.exe'):
-		  	dynamo_s3.upload_daily( form_path( ['temp', file] ) )
+		  	dynamo_s3.upload_daily( form_path( ['temp', file] ), prefix, include_date )
 
 	except Exception:
 		print 'There was an exception uploading to s3.'

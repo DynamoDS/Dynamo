@@ -189,7 +189,7 @@ namespace Dynamo.DSEngine
         AssociativeNode Build(Ceiling node, List<AssociativeNode> inputs);
         AssociativeNode Build(Dynamo.Nodes.Random node, List<AssociativeNode> inputs);
         AssociativeNode Build(Pi node, List<AssociativeNode> inputs);
-        AssociativeNode Build(dyn2Pi node, List<AssociativeNode> inputs);
+        AssociativeNode Build(PiTimes2 node, List<AssociativeNode> inputs);
         AssociativeNode Build(EConstant node, List<AssociativeNode> inputs);
         AssociativeNode Build(Sin node, List<AssociativeNode> inputs);
         AssociativeNode Build(Cos node, List<AssociativeNode> inputs);
@@ -252,7 +252,7 @@ namespace Dynamo.DSEngine
         AssociativeNode Build(Pause node, List<AssociativeNode> inputs);
         AssociativeNode Build(Watch node, List<AssociativeNode> inputs);
 
-        AssociativeNode Build(RenderDescription node, List<AssociativeNode> inputs);
+        //AssociativeNode Build(RenderDescription node, List<AssociativeNode> inputs);
         AssociativeNode Build(VariableInput node, List<AssociativeNode> inputs);
         AssociativeNode Build(Symbol node, List<AssociativeNode> inputs);
         AssociativeNode Build(Formula node, List<AssociativeNode> inputs);
@@ -669,7 +669,7 @@ namespace Dynamo.DSEngine
             throw new NotSupportedException();
         }
 
-        public AssociativeNode Build(dyn2Pi node, List<AssociativeNode> inputs)
+        public AssociativeNode Build(PiTimes2 node, List<AssociativeNode> inputs)
         {
             // Constant expression directly returned from node
             throw new NotSupportedException();
@@ -941,10 +941,10 @@ namespace Dynamo.DSEngine
             throw new NotImplementedException();
         }
 
-        public AssociativeNode Build(RenderDescription node, List<AssociativeNode> inputs)
-        {
-            throw new NotImplementedException();
-        }
+        //public AssociativeNode Build(RenderDescription node, List<AssociativeNode> inputs)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public AssociativeNode Build(Repeat node, List<AssociativeNode> inputs)
         {
@@ -1276,7 +1276,7 @@ namespace Dynamo.DSEngine
 
             CodeBlockNode funcBody = new CodeBlockNode();
             {
-                var lhs = BuildIdentifier(ProtoCore.DSDefinitions.Keyword.Return);
+                var lhs = BuildIdentifier(ProtoCore.DSDefinitions.Kw.kw_return);
                 var rhs = BuildFunctionCall(func.Function.Name, func.FormalArguments);
                 var returnStmt = BuildAssignment(lhs, rhs);
                 funcBody.Body.Add(returnStmt);
@@ -1330,7 +1330,7 @@ namespace Dynamo.DSEngine
 
             CodeBlockNode funcBody = new CodeBlockNode();
             {
-                var lhs = BuildIdentifier(ProtoCore.DSDefinitions.Keyword.Return);
+                var lhs = BuildIdentifier(ProtoCore.DSDefinitions.Kw.kw_return);
                 var returnStmt = BuildAssignment(lhs, expr);
                 funcBody.Body.Add(returnStmt);
             }
@@ -1395,7 +1395,7 @@ namespace Dynamo.DSEngine
                 FunctionCallNode eval = BuildFunctionCall(StringConstants.kEvalFunction, evaluateArgs) as FunctionCallNode;
                 FunctionDotCallNode evalCall = CoreUtils.GenerateCallDotNode(evalInstance, eval, null);
 
-                IdentifierNode ret = BuildIdentifier(ProtoCore.DSDefinitions.Keyword.Return);
+                IdentifierNode ret = BuildIdentifier(ProtoCore.DSDefinitions.Kw.kw_return);
                 BinaryExpressionNode returnStmt = BuildAssignment(ret, evalCall);
 
                 funcBody.Body.Add(returnStmt);

@@ -16,7 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Diagnostics;
+using Autodesk.Revit.UI;
 
 namespace Dynamo.Utilities
 {
@@ -25,6 +25,12 @@ namespace Dynamo.Utilities
    class _IdlePromise
    {
       internal static Queue<Action> promises = new Queue<Action>();
+      internal static Queue<Action> shutdown_promises = new Queue<Action>();
+      
+      internal static void AddShutdownPromise(Action d)
+      {
+          shutdown_promises.Enqueue(d);
+      }
 
       internal static void AddPromise(Action d)
       {
@@ -45,6 +51,11 @@ namespace Dynamo.Utilities
          return promises.Any();
       }
 
+      internal static bool HasPendingShutdownPromises()
+      {
+          return shutdown_promises.Any();
+      }
+
       internal static void register(Autodesk.Revit.UI.UIControlledApplication uIApplication)
       {
          uIApplication.Idling += new EventHandler<Autodesk.Revit.UI.Events.IdlingEventArgs>(Application_Idling);
@@ -63,7 +74,17 @@ namespace Dynamo.Utilities
           _IdlePromise.promises.Clear();
       }
 
-      public static void RegisterIdle(Autodesk.Revit.UI.UIControlledApplication uIApplication)
+       public static void ClearShutdownPromises()
+       {
+           _IdlePromise.shutdown_promises.Clear();
+       }
+
+       public static bool HasPendingShutdownPromises()
+       {
+           return _IdlePromise.HasPendingShutdownPromises();
+       }
+
+      public static void RegisterIdle(UIControlledApplication uIApplication)
       {
          _IdlePromise.register(uIApplication);
       }
@@ -88,6 +109,23 @@ namespace Dynamo.Utilities
             }
          }
       }
+
+      public static void ExecuteOnShutdown(Action p)
+      {
+          _IdlePromise.AddShutdownPromise(p);
+      }
+
+       //shuffle all the shutdown promises onto the 
+       //normal queue to be processed
+        public static void Shutdown()
+        {
+            foreach (var p in _IdlePromise.shutdown_promises)
+            {
+                ExecuteOnIdle(p);
+            }
+
+            ClearShutdownPromises();
+        }
    }
 
    public class IdlePromise<T>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -34,6 +34,42 @@ namespace Dynamo.Controls
         }
     }
 
+    public class PackageSearchStateToStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+                              CultureInfo culture)
+        {
+            if (value is PackageManagerSearchViewModel.PackageSearchState)
+            {
+                var st = (PackageManagerSearchViewModel.PackageSearchState) value;
+
+                if (st == PackageManagerSearchViewModel.PackageSearchState.NORESULTS)
+                {
+                    return "Search returned no results!";
+                }
+                else if (st == PackageManagerSearchViewModel.PackageSearchState.RESULTS)
+                {
+                    return "";
+                }
+                else if (st == PackageManagerSearchViewModel.PackageSearchState.SEARCHING)
+                {
+                    return "Searching...";
+                }
+                else if (st == PackageManagerSearchViewModel.PackageSearchState.SYNCING)
+                {
+                    return "Synchronizing package list with server...";
+                }
+            }
+
+            return "Unknown";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     public class PackageUploadStateToStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,
@@ -45,15 +81,15 @@ namespace Dynamo.Controls
 
                 if (st == PackageUploadHandle.State.Compressing)
                 {
-                    return "Compressing";
+                    return "Compressing...";
                 }
                 else if (st == PackageUploadHandle.State.Copying)
                 {
-                    return "Copying";
+                    return "Copying...";
                 }
                 else if (st == PackageUploadHandle.State.Error)
                 {
-                    return "Error";
+                    return "Error!";
                 }
                 else if (st == PackageUploadHandle.State.Ready)
                 {
@@ -65,7 +101,7 @@ namespace Dynamo.Controls
                 }
                 else if (st == PackageUploadHandle.State.Uploading)
                 {
-                    return "Uploading";
+                    return "Uploading...";
                 }
 
             }
@@ -477,7 +513,7 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter,
             System.Globalization.CultureInfo culture)
         {
-            string menuValue = "Preview Background";
+            string menuValue = "Showing Background 3D Preview";
             if ((bool)value == true)
                 return menuValue;
             else
@@ -928,17 +964,26 @@ namespace Dynamo.Controls
     {
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            //source -> target
+            //units are stored internally as culturally invariant, so we need to convert them back
             double dbl;
-            if (double.TryParse(value as string, out dbl))
+            if (double.TryParse(value as string, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
             {
-                return base.Convert(dbl, targetType, parameter, culture);
+                return(dbl.ToString("0.000", CultureInfo.CurrentCulture));
             }
-            return value ?? "";
+            return value ?? "0.000";
         }
 
         public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value;
+            //target -> source
+            //units are entered as culture-specific, so we need to store them as invariant
+            double dbl;
+            if (double.TryParse(value as string, NumberStyles.Any, CultureInfo.CurrentCulture, out dbl))
+            {
+                return dbl;
+            }
+            return value ?? "";
         }
     }
 
@@ -946,14 +991,26 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            double degrees = System.Convert.ToDouble(value, culture) * 180.0 / Math.PI;
-            return degrees;
+            //source -> target
+            //Convert radians to degrees
+            double dbl;
+            if (double.TryParse(value as string, NumberStyles.Any, CultureInfo.CurrentCulture, out dbl))
+            {
+                return System.Convert.ToDouble(value, culture) * 180.0 / Math.PI;
+            }
+            return value ?? "";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            double radians = System.Convert.ToDouble(value, culture) * Math.PI / 180.0;
-            return radians;
+            //target -> source
+            //Convert degrees to radians
+            double dbl;
+            if (double.TryParse(value as string, NumberStyles.Any, CultureInfo.CurrentCulture, out dbl))
+            {
+                return System.Convert.ToDouble(value, culture) * Math.PI / 180.0;
+            }
+            return value ?? "";
         }
     }
 
@@ -962,21 +1019,22 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //source -> target
-            return value == null ? "" : HttpUtility.UrlDecode(value.ToString());
+            return value == null ? "" : HttpUtility.HtmlDecode(value.ToString());
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //target -> source
-            return HttpUtility.UrlEncode(value.ToString());
+            return HttpUtility.HtmlEncode(value.ToString());
         }
     }
 
-    public class FilePathDisplay : IValueConverter
+    public class FilePathDisplayConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //source->target
+            if (value == null) return "";
 
             var maxChars = 30;
             //var str = value.ToString();
@@ -1034,6 +1092,32 @@ namespace Dynamo.Controls
             throw new NotImplementedException();
         }
     }
+    public sealed class WarningLevelToColorConverter:IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is WarningLevel)
+            {
+                var level = (WarningLevel) value;
+                switch (level)
+                {
+                    case WarningLevel.Mild:
+                        return new System.Windows.Media.SolidColorBrush(Colors.Gray);
+                    case WarningLevel.Moderate:
+                        return new System.Windows.Media.SolidColorBrush(Colors.Gold);
+                    case WarningLevel.Severe:
+                        return new System.Windows.Media.SolidColorBrush(Colors.Tomato);
+                }
+            }
+
+            return Colors.Gray;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 
     public class OpacityToVisibilityConverter : IValueConverter
     {
@@ -1048,6 +1132,7 @@ namespace Dynamo.Controls
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return null;
+
         }
     }
 }

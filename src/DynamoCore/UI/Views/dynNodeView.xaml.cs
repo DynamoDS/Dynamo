@@ -22,9 +22,11 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Prompts;
 using Dynamo.Selection;
+using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using System.Windows.Media;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Controls
 {
@@ -127,7 +129,7 @@ namespace Dynamo.Controls
 
         void ViewModel_RequestShowNodeRename(object sender, EventArgs e)
         {
-            var editWindow = new dynEditWindow { DataContext = ViewModel };
+            var editWindow = new EditWindow { DataContext = ViewModel };
 
             var bindingVal = new Binding("NickName")
             {
@@ -231,7 +233,9 @@ namespace Dynamo.Controls
             var view = WPF.FindUpVisualTree<DynamoView>(this);
             view.mainGrid.Focus();
 
-            ViewModel.SelectCommand.Execute(null);
+            Guid nodeGuid = this.ViewModel.NodeModel.GUID;
+            dynSettings.Controller.DynamoViewModel.ExecuteCommand(
+                new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers));
         }
 
         private void topControl_MouseRightButtonDown(object sender, MouseButtonEventArgs e)

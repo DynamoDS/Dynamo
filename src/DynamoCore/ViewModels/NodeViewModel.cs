@@ -1,4 +1,4 @@
-﻿//Copyright 2013 Ian Keough
+//Copyright 2013 Ian Keough
 
 //Licensed under the Apache License, Version 2.0 (the "License");
 //you may not use this file except in compliance with the License.
@@ -114,13 +114,12 @@ namespace Dynamo.ViewModels
 
         public string OldValue
         {
-            get
-            {
-                if (this.nodeLogic.WorkSpace is FuncWorkspace)
+            get { 
+                if (this.nodeLogic.WorkSpace is CustomNodeWorkspaceModel)
                 {
                     return "Not available in custom nodes";
                 }
-                return NodeModel.BuildValueString(nodeLogic.OldValue, 0, 3, 0, 2).TrimEnd('\n');
+                return NodeModel.PrintValue(nodeLogic.OldValue, 0, 3, 0, 3);
             }
         }
 
@@ -213,6 +212,18 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public bool ShowsVisibilityToggles
+        {
+            get
+            {
+                //if the node is a Function, show the visibility toggles
+                //if any of it's internal nodes is drawable.
+
+                //return nodeLogic.OldValue!=null;
+                return true;
+            }
+        }
+
         #endregion
 
         #region events
@@ -265,16 +276,16 @@ namespace Dynamo.ViewModels
             //are initially registered
             SetupInitialPortViewModels();
 
-            dynSettings.Controller.RequestNodeSelect += new NodeEventHandler(Controller_RequestNodeSelect);
+            //dynSettings.Controller.RequestNodeSelect += new NodeEventHandler(Controller_RequestNodeSelect);
         }
 
-        void Controller_RequestNodeSelect(object sender, EventArgs e)
-        {
-            ModelBase n = (e as ModelEventArgs).Model;
+        //void Controller_RequestNodeSelect(object sender, EventArgs e)
+        //{
+        //    ModelBase n = (e as ModelEventArgs).Model;
 
-            DynamoSelection.Instance.ClearSelection();
-            DynamoSelection.Instance.Selection.Add(n);
-        }
+        //    DynamoSelection.Instance.ClearSelection();
+        //    DynamoSelection.Instance.Selection.Add(n);
+        //}
 
         #endregion
 
@@ -342,12 +353,21 @@ namespace Dynamo.ViewModels
                 case "State":
                     RaisePropertyChanged("State");
                     break;
+                case "ArgumentLacing":
+                    RaisePropertyChanged("ArgumentLacing");
+                    break;
+
                 case "ToolTipText":
                     UpdateErrorBubbleContent();
                     break;
-                //case "ArgumentLacing":
-                //    SetLacingTypeCommand.RaiseCanExecuteChanged();
-                //    break;
+                case "IsVisible":
+                    RaisePropertyChanged("IsVisible");
+                    break;
+
+case "IsUpstreamVisible":
+RaisePropertyChanged("IsUpstreamVisible");
+                    break;
+
             }
         }
 
@@ -379,6 +399,8 @@ namespace Dynamo.ViewModels
 
         private void UpdateErrorBubblePosition(double x, double y)
         {
+            if (this.ErrorBubble == null)
+                return;
             Point topLeft = new Point(NodeModel.X, NodeModel.Y);
             Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
             InfoBubbleDataPacket data = new InfoBubbleDataPacket();
@@ -440,45 +462,32 @@ namespace Dynamo.ViewModels
 
         void SetLacingType(object param)
         {
-            string parameter = param.ToString();
+            // Record the state of this node before changes.
+            DynamoModel dynamo = dynSettings.Controller.DynamoModel;
+            dynamo.CurrentWorkspace.RecordModelForModification(nodeLogic);
 
-            if (parameter == "First")
-            {
-                NodeLogic.ArgumentLacing = LacingStrategy.First;
-            }
-            else if (parameter == "Longest")
-            {
-                NodeLogic.ArgumentLacing = LacingStrategy.Longest;
-            }
-            else if (parameter == "Shortest")
-            {
-                NodeLogic.ArgumentLacing = LacingStrategy.Shortest;
-            }
-            else if (parameter == "CrossProduct")
-            {
-                NodeLogic.ArgumentLacing = LacingStrategy.CrossProduct;
-            }
-            else
-                NodeLogic.ArgumentLacing = LacingStrategy.Disabled;
+            LacingStrategy strategy = LacingStrategy.Disabled;
+            if (!System.Enum.TryParse(param.ToString(), out strategy))
+                strategy = LacingStrategy.Disabled;
 
-            RaisePropertyChanged("Lacing");
+            NodeLogic.ArgumentLacing = strategy;
+
+            RaisePropertyChanged("ArgumentLacing");
+            dynSettings.Controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+            dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
         }
 
         bool CanSetLacingType(object param)
         {
-            string parameter = param.ToString();
-
-            if (this.ArgumentLacing == LacingStrategy.Disabled)
-                return false;
-
-            return true;
+            // Only allow setting of lacing strategy when it is not disabled.
+            return (this.ArgumentLacing != LacingStrategy.Disabled);
         }
 
         private void ViewCustomNodeWorkspace(object parameter)
         {
             var f = (nodeLogic as Function);
-            if (f != null)
-                dynSettings.Controller.DynamoViewModel.ViewCustomNodeWorkspace(f.Definition);
+            if(f!= null)
+                dynSettings.Controller.DynamoViewModel.FocusCustomNodeWorkspace(f.Definition);
         }
 
         private bool CanViewCustomNodeWorkspace(object parameter)
@@ -555,14 +564,28 @@ namespace Dynamo.ViewModels
 
         private void ToggleIsVisible(object parameter)
         {
+            // Record the state of this node before changes.
+            DynamoModel dynamo = dynSettings.Controller.DynamoModel;
+            dynamo.CurrentWorkspace.RecordModelForModification(nodeLogic);
+
             this.nodeLogic.IsVisible = !this.nodeLogic.IsVisible;
+
             RaisePropertyChanged("IsVisible");
+            dynSettings.Controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+            dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
         }
 
         private void ToggleIsUpstreamVisible(object parameter)
         {
+            // Record the state of this node before changes.
+            DynamoModel dynamo = dynSettings.Controller.DynamoModel;
+            dynamo.CurrentWorkspace.RecordModelForModification(nodeLogic);
+
             this.nodeLogic.IsUpstreamVisible = !this.nodeLogic.IsUpstreamVisible;
+
             RaisePropertyChanged("IsUpstreamVisible");
+            dynSettings.Controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+            dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
         }
 
         private bool CanVisibilityBeToggled(object parameter)

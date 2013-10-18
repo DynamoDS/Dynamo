@@ -8,7 +8,7 @@ namespace Dynamo.Controls
 {
     public class DynamoRevitViewModel : DynamoViewModel
     {
-        public DynamoRevitViewModel(DynamoController controller) : base(controller) { }
+        public DynamoRevitViewModel(DynamoController controller, string commandFilePath) : base(controller, commandFilePath) { }
 
         public override bool CanRunDynamically
         {
@@ -61,8 +61,8 @@ namespace Dynamo.Controls
             IEnumerable<string> outputs, 
             FunctionDefinition functionDefinition)
         {
-            if (functionDefinition.Workspace.Nodes.Any(x => x is RevitTransactionNode)
-                || functionDefinition.Dependencies.Any(d => d.Workspace.Nodes.Any(x => x is RevitTransactionNode)))
+            if (functionDefinition.WorkspaceModel.Nodes.Any(x => x is RevitTransactionNode)
+                || functionDefinition.Dependencies.Any(d => d.WorkspaceModel.Nodes.Any(x => x is RevitTransactionNode)))
             {
                 return new FunctionWithRevit(inputs, outputs, functionDefinition);
             }

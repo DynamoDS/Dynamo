@@ -129,6 +129,8 @@ namespace Dynamo.Controls
                 var tt = GetTranslateTransform(child);
                 tt.X = 0.0;
                 tt.Y = 0.0;
+
+                updateGrid();
             }
         }
 
@@ -137,6 +139,8 @@ namespace Dynamo.Controls
             var tt = GetTranslateTransform(child);
             tt.X += x;
             tt.Y += y;
+
+            updateGrid();
         }
 
         public Point GetTranslateTransformOrigin()
@@ -253,6 +257,8 @@ namespace Dynamo.Controls
                     Vector v = start - e.GetPosition(this);
                     tt.X = origin.X - v.X;
                     tt.Y = origin.Y - v.Y;
+
+                    updateGrid();
 
                     // Reset Fit View Toggle
                     WorkspaceViewModel vm = DataContext as WorkspaceViewModel;

@@ -6,12 +6,11 @@ using Autodesk.Revit.DB;
 
 using Dynamo.Controls;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Utilities;
 
 namespace Dynamo.Revit
 {
-    public partial class RevitTransactionNode : NodeModel, IDrawable
+    public partial class RevitTransactionNode : NodeModel
     {
         public override void SetupCustomUIElements(object ui)
         {
@@ -43,7 +42,7 @@ namespace Dynamo.Revit
             foreach (var id in AllElements)
             {
                 Element el;
-                if (dynUtils.TryGetElement(id, typeof (Element), out el))
+                if (dynUtils.TryGetElement(id, out el))
                 {
                     existingElements.Add(el);
                 }
