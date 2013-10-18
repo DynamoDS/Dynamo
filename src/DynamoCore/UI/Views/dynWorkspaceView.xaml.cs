@@ -405,7 +405,7 @@ namespace Dynamo.Views
                 {
                     try
                     {
-                        Grid g = (Grid)hitResultsList[0];
+                        Grid g = (Grid)hitResultsList[minIndex];
                         UserControl uc = (UserControl)g.Parent;
                         PortViewModel pvm = (PortViewModel)uc.DataContext;
                         pvm.ConnectCommand.Execute(null);
