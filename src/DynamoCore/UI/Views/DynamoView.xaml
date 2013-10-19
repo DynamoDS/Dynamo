@@ -328,10 +328,10 @@
                     <SolidColorBrush Color="{Binding IsHomeSpace, Converter={StaticResource WorkspaceBackgroundColorConverter}}" />
                 </Canvas.Background>
             </Canvas>
-            <controls:WatchViewFullscreen Margin="0,35,0,0"
+            <controls:Watch3DView Margin="0,35,0,0"
                                           Visibility="{Binding FullscreenWatchShowing, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}">
 
-            </controls:WatchViewFullscreen>
+            </controls:Watch3DView>
         </Grid>
 
         <!--
