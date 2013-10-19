@@ -20,12 +20,12 @@ namespace Dynamo.ViewModels
 {
 
     public delegate void WorkspaceSaveEventHandler(object sender, WorkspaceSaveEventArgs e);
+
     public delegate void RequestPackagePublishDialogHandler(PublishPackageViewModel publishViewModel);
 
-    public partial class DynamoViewModel : ViewModelBase
+    public partial class DynamoViewModel : ViewModelBase, IWatchViewModel
     {
         #region events
-
 
         public event EventHandler RequestManagePackagesDialog;
         public virtual void OnRequestManagePackagesDialog(Object sender, EventArgs e)
@@ -176,6 +176,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand EscapeCommand { get; set; }
 
         public DelegateCommand SelectVisualizationInViewCommand { get; set; }
+        public DelegateCommand GetBranchVisualizationCommand { get; set; }
 
         /// <summary>
         /// An observable collection of workspace view models which tracks the model
@@ -515,6 +516,7 @@ namespace Dynamo.ViewModels
             EscapeCommand = new DelegateCommand(Escape, CanEscape);
 
             SelectVisualizationInViewCommand = new DelegateCommand(SelectVisualizationInView, CanSelectVisualizationInView);
+            GetBranchVisualizationCommand = new DelegateCommand(GetBranchVisualization, CanGetBranchVisualization);
 
             DynamoLogger.Instance.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Instance_PropertyChanged);
 
@@ -537,7 +539,6 @@ namespace Dynamo.ViewModels
                     dynSettings.Controller.SearchViewModel.SearchAndUpdateResultsSync();
                 }
             };
-        
         }
 
         void VisualizationManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -1262,6 +1263,8 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        #region IWatchViewModel interface
+
         internal void SelectVisualizationInView(object parameters)
         {
             var arr = (double[])parameters;
@@ -1281,6 +1284,22 @@ namespace Dynamo.ViewModels
 
             return false;
         }
+
+        public void GetBranchVisualization(object parameters)
+        {
+            dynSettings.Controller.VisualizationManager.RenderUpstream(null);
+        }
+
+        public bool CanGetBranchVisualization(object parameter)
+        {
+            if (FullscreenWatchShowing)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        #endregion
     }
 
     public class ZoomEventArgs : EventArgs
@@ -1442,5 +1461,11 @@ namespace Dynamo.ViewModels
         {
             Path = path;
         }
+    }
+
+    public interface IWatchViewModel
+    {
+        DelegateCommand SelectVisualizationInViewCommand { get; set; }
+        DelegateCommand GetBranchVisualizationCommand { get; set; }
     }
 }

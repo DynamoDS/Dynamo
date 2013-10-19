@@ -260,8 +260,8 @@ limitations under the License.
       <DependentUpon>WatchTree.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UI\Views\WatchViewFullscreen.xaml.cs">
-      <DependentUpon>WatchViewFullscreen.xaml</DependentUpon>
+    <Compile Include="UI\Views\Watch3DView.xaml.cs">
+      <DependentUpon>Watch3DView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="UI\WebBrowserUtility.cs" />
@@ -493,7 +493,7 @@ limitations under the License.
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Views\WatchViewFullscreen.xaml">
+    <Page Include="UI\Views\Watch3DView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

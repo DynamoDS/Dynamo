@@ -99,7 +99,7 @@ namespace Dynamo
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void visualizationManager_VisualizationUpdateComplete(object sender, VisualizationEventArgs e)
+        void visualizationManager_VisualizationUpdateComplete(object sender, EventArgs e)
         {
             //do not draw to geom keeper if the user has selected
             //not to draw to the alternate context or if it is not available

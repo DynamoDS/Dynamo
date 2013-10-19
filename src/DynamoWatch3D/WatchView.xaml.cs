@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Windows.Media.Media3D;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using HelixToolkit.Wpf;
@@ -133,6 +134,11 @@ namespace Dynamo.Controls
             }
         }
 
+        /// <summary>
+        /// A unique id for the view which is used to filter messages back from the visualizer.
+        /// </summary>
+        public Guid ViewId { get; set; }
+
         public WatchView()
         {
             InitializeComponent();
@@ -145,14 +151,16 @@ namespace Dynamo.Controls
             PreviewMouseRightButtonDown += new System.Windows.Input.MouseButtonEventHandler(view_PreviewMouseRightButtonDown);
 
             this.Loaded += new System.Windows.RoutedEventHandler(WatchView_Loaded);
+
+            ViewId = Guid.NewGuid();
         }
 
         void WatchView_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            dynSettings.Controller.VisualizationManager.VisualizationUpdateComplete += VisualizationManager_VisualizationUpdateComplete;
+            //dynSettings.Controller.VisualizationManager.VisualizationUpdateComplete += VisualizationManager_VisualizationUpdateComplete;
 
-            var node = DataContext as Watch3D;
-            node.WatchResultsReadyToVisualize += RenderDrawables;
+            //var node = DataContext as Watch3D;
+            //node.WatchResultsReadyToVisualize += RenderDrawables;
         }
 
         void VisualizationManager_VisualizationUpdateComplete(object sender, VisualizationEventArgs e)
@@ -162,7 +170,7 @@ namespace Dynamo.Controls
                 var node = DataContext as Watch3D;
                 if (node != null)
                 {
-                    node.GetBranchVisualizationCommand.Execute(null);
+                    node.GetBranchVisualizationCommand.Execute(ViewId);
                 }
             }));
         }
