@@ -1267,6 +1267,8 @@ namespace Dynamo.ViewModels
 
         internal void SelectVisualizationInView(object parameters)
         {
+            Debug.WriteLine("Selecting mesh from background watch.");
+
             var arr = (double[])parameters;
             double x = arr[0];
             double y = arr[1];
