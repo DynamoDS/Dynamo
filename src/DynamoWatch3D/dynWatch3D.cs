@@ -96,7 +96,7 @@ namespace Dynamo.Nodes
             var strokeBrush = (Brush)bc.ConvertFrom("#313131");
             backgroundRect.Stroke = strokeBrush;
             backgroundRect.StrokeThickness = 1;
-            var backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(250, 250, 216));
+            var backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(240, 240, 240));
             backgroundRect.Fill = backgroundBrush;
 
             nodeUI.grid.Children.Add(backgroundRect);
