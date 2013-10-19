@@ -327,6 +327,7 @@ namespace Dynamo.Controls
             Point mousePos = e.GetPosition(watch_view);
             PointHitTestParameters hitParams = new PointHitTestParameters(mousePos);
             VisualTreeHelper.HitTest(watch_view, null, ResultCallback, hitParams);
+            e.Handled = true;
         }
 
         public HitTestResultBehavior ResultCallback(HitTestResult result)

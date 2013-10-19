@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -142,6 +143,7 @@ namespace Dynamo.Nodes
 
         internal void SelectVisualizationInView(object parameters)
         {
+            Debug.WriteLine("Selecting mesh from watch 3d node.");
             var arr = (double[])parameters;
             double x = arr[0];
             double y = arr[1];
