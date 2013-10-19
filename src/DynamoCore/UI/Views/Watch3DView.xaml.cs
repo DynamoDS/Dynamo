@@ -251,6 +251,12 @@ namespace Dynamo.Controls
             HelixGrid = newLines;
         }
 
+        /// <summary>
+        /// Use the render description returned from the visualization manager to update the visuals.
+        /// The visualization event arguments will contain a render description and an id representing 
+        /// the associated node. Visualizations for the background preview will return an empty id.
+        /// </summary>
+        /// <param name="e"></param>
         private void RenderDrawables(VisualizationEventArgs e)
         {
             //Debug.WriteLine(string.Format("Rendering full screen Watch3D on thread {0}.", System.Threading.Thread.CurrentThread.ManagedThreadId));
