@@ -2,19 +2,31 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Media;
+using System.Windows.Media.Media3D;
 using Autodesk.DesignScript.Interfaces;
+using HelixToolkit.Wpf;
 
 namespace Dynamo.DSEngine
 {
     class RenderPackage: IRenderPackage, IDisposable
     {
         private IntPtr nativeRenderPackage;
-        private RenderDescription rd;
+        private bool selected;
+        
+        private List<double> lineStripVertices = new List<double>();
+        private List<byte> lineStripVertexColors = new List<byte>();
+        private List<int> lineStripVertexCounts = new List<int>();
+        private List<double> pointVertices = new List<double>();
+        private List<byte> pointVertexColors = new List<byte>();
+        private List<double> triangleVertices = new List<double>();
+        private List<byte> triangleVertexColor = new List<byte>();
+        private List<double> triangleNormals = new List<double>();
 
-        public RenderPackage(RenderDescription rd)
+        public RenderPackage(bool selected)
         {
             nativeRenderPackage = DesignScriptStudio.Renderer.RenderPackageUtils.CreateNativeRenderPackage(this);
-            this.rd = rd;
+            this.selected = selected;
         }
 
         public IntPtr NativeRenderPackage
@@ -27,45 +39,109 @@ namespace Dynamo.DSEngine
 
         public void PushLineStripVertex(double x, double y, double z)
         {
-            rd.Lines.Add(new System.Windows.Media.Media3D.Point3D(x, y, z));
+            lineStripVertices.Add(x);
+            lineStripVertices.Add(y);
+            lineStripVertices.Add(z);
         }
 
         public void PushLineStripVertexColor(byte red, byte green, byte blue, byte alpha)
         {
+            lineStripVertexColors.Add(red);
+            lineStripVertexColors.Add(green);
+            lineStripVertexColors.Add(blue);
+            lineStripVertexColors.Add(alpha);
         }
 
         public void PushLineStripVertexCount(int n)
         {
-            return;
+            lineStripVertexCounts.Add(n);
         }
 
         public void PushPointVertex(double x, double y, double z)
         {
-            rd.Points.Add(new System.Windows.Media.Media3D.Point3D(x, y, z));
+            pointVertices.Add(x);
+            pointVertices.Add(y);
+            pointVertices.Add(z);
         }
 
         public void PushPointVertexColor(byte red, byte green, byte blue, byte alpha)
         {
-            return;
+            pointVertexColors.Add(red);
+            pointVertexColors.Add(green);
+            pointVertexColors.Add(blue);
+            pointVertexColors.Add(alpha);
         }
 
         public void PushTriangleVertex(double x, double y, double z)
         {
-            return;
+            triangleVertices.Add(x);
+            triangleVertices.Add(y);
+            triangleVertices.Add(z);
         }
 
         public void PushTriangleVertexColor(byte red, byte green, byte blue, byte alpha)
         {
-            return;
+            triangleVertexColor.Add(red);
+            triangleVertexColor.Add(green);
+            triangleVertexColor.Add(blue);
+            triangleVertexColor.Add(alpha);
         }
 
         public void PushTriangleVertexNormal(double x, double y, double z)
         {
-            return;
+            triangleNormals.Add(x);
+            triangleNormals.Add(y);
+            triangleNormals.Add(z);
         }
 
         public void AddToRenderDescription(RenderDescription rd)
         {
+            var points = selected ? rd.SelectedPoints : rd.Points;
+            for (int i = 0; i < pointVertices.Count(); i += 3)
+            {
+                var point = new Point3D(pointVertices[i], pointVertices[i + 1], pointVertices[i + 2]);
+                points.Add(point);
+            }
+
+            int idx = 0;
+            var lines = selected ? rd.SelectedLines : rd.Lines;
+            foreach (var count in lineStripVertexCounts)
+            {
+                for (int i = 0; i < count; ++i)
+                {
+                    var point = new Point3D(lineStripVertices[idx], lineStripVertices[idx + 1], lineStripVertices[idx + 2]);
+                    lines.Add(point);
+                    if (i != 0 && i != count - 1)
+                    {
+                        lines.Add(point);
+                    }
+                    idx += 3;
+                }
+            }
+
+            var builder = new MeshBuilder();
+            var tex = new PointCollection();
+            var norms = new Vector3DCollection();
+            var triangles = new Point3DCollection();
+            var tris = new List<int>();
+
+            for (int i = 0; i < triangleVertices.Count(); i += 3)
+            {
+                var point = new Point3D(triangleVertices[i], triangleVertices[i + 1], triangleVertices[i + 2]); 
+                var normal = new Vector3D(triangleNormals[i], triangleNormals[i + 1], triangleNormals[i + 2]);
+
+                tris.Add((i + 1) / 3);
+                triangles.Add(point);
+                norms.Add(normal);
+                tex.Add(new System.Windows.Point(0, 0));
+            }
+
+            builder.Append(triangles, tris, norms, tex);
+            if (builder.Positions.Count > 0)
+            {
+                var meshes = selected ? rd.SelectedMeshes : rd.Meshes;
+                meshes.Add(builder.ToMesh(true));
+            }
         }
 
         public void Dispose()

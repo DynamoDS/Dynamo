@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Dynamo.Nodes;
+using Dynamo.UI.Commands;
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
 using ProtoFFI;
@@ -12,7 +14,7 @@ namespace Dynamo.DSEngine
     /// <summary>
     /// A helper class to get some information from DesignScript core.
     /// </summary>
-    public class DSLibrary
+    public class DSLibraryServices
     {
         public static class BuiltInCategories
         {
@@ -20,7 +22,19 @@ namespace Dynamo.DSEngine
             public const string Operators = "Opertors";
         }
 
-        public static DSLibrary Instance = new DSLibrary();
+        public class LibraryLoadedEventArgs : EventArgs
+        {
+            public LibraryLoadedEventArgs(string libraryPath)
+            {
+                LibraryPath = libraryPath;
+            }
+
+            public string LibraryPath { get; private set; }
+        }
+
+        public delegate void LibraryLoadedEventHandler(object sender, LibraryLoadedEventArgs e);
+        public event LibraryLoadedEventHandler LibraryLoaded;
+        public static DSLibraryServices Instance = new DSLibraryServices();
 
         public List<string> Libraries
         {
@@ -35,38 +49,89 @@ namespace Dynamo.DSEngine
             }
         }
 
-        public List<DSFunctionItem> this[string category]
+        private List<string> preLoadedLibraries;
+        public List<string> PreLoadedLibraries
         {
             get
             {
-                if (string.IsNullOrEmpty(category))
+                if (preLoadedLibraries == null)
+                {
+                    preLoadedLibraries = new List<string> { "Math.dll", "ProtoGeometry.dll" };
+                }
+                return preLoadedLibraries;
+            }
+        }
+
+        public List<DSFunctionItem> this[string library]
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(library))
                 {
                     return null;
                 }
 
                 List<DSFunctionItem> functions = null;;
-                importedFunctions.TryGetValue(category, out functions);
+                importedFunctions.TryGetValue(library, out functions);
                 return functions;
             }
         }
 
-        private List<DSFunctionItem> TryGetImportedFunctions(string category)
+        public void ImportLibrary(string libraryPath)
         {
-            if (string.IsNullOrEmpty(category))
+            if (!File.Exists(libraryPath))
+            {
+                string errorMessage = string.Format("Cannot find library path: {0}.", libraryPath);
+                DynamoLogger.Instance.LogWarning(errorMessage, WarningLevel.Moderate);
+                return;
+            }
+
+            libraryPath = Path.GetFullPath(libraryPath);
+            if (this.Libraries.Any(path => string.Compare(libraryPath, path, true) == 0))
+            {
+                string errorMessage = string.Format("Library {0} has been imported.", libraryPath);
+                DynamoLogger.Instance.LogWarning(errorMessage, WarningLevel.Moderate);
+                return;
+            }
+
+            DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
+            var importedClasses = GraphToDSCompiler.GraphUtilities.GetClassesForAssembly(libraryPath);
+            if (GraphToDSCompiler.GraphUtilities.BuildStatus.ErrorCount > 0)
+            {
+                string errorMessage = string.Format("Build error for library: {0}", libraryPath);
+                DynamoLogger.Instance.LogWarning(errorMessage, WarningLevel.Moderate);
+                foreach (var error in GraphToDSCompiler.GraphUtilities.BuildStatus.Errors)
+                {
+                    DynamoLogger.Instance.LogWarning(error.Message, WarningLevel.Moderate);
+                }
+                return;
+            }
+
+            foreach (ProtoCore.DSASM.ClassNode classNode in importedClasses)
+            {
+                ImportClass(classNode);
+            }
+
+            LibraryLoaded(this, new LibraryLoadedEventArgs(libraryPath));
+        }
+
+        private Dictionary<string, List<DSFunctionItem>> importedFunctions;
+
+        private List<DSFunctionItem> TryGetImportedFunctions(string libraryPath)
+        {
+            if (string.IsNullOrEmpty(libraryPath))
             {
                 throw new ArgumentException("Invalid category");
             }
 
             List<DSFunctionItem> functions = null;
-            if (!importedFunctions.TryGetValue(category, out functions))
+            if (!importedFunctions.TryGetValue(libraryPath, out functions))
             {
                 functions = new List<DSFunctionItem>();
-                importedFunctions[category] = functions;
+                importedFunctions[libraryPath] = functions;
             }
             return functions;
-        }
-
-        private Dictionary<string, List<DSFunctionItem>> importedFunctions;
+        }       
 
         private void PopulateBuiltIns()
         {
@@ -93,6 +158,13 @@ namespace Dynamo.DSEngine
             opFunctions.Add(new DSFunctionItem(null, category, null, Op.GetOpFunction(Operator.div), Op.GetOpSymbol(Operator.div), DSLibraryItemType.GenericFunction, args, null));
         }
 
+        private string GetCategory(ClassNode classNode)
+        {
+            string libraryPath = Path.GetFullPath(classNode.ExternLib);
+            string category = Path.GetFileNameWithoutExtension(libraryPath) + "." + classNode.name;
+            return category;
+        }
+
         private DSFunctionItem ImportProcedure(string library, string category, string className, ProcedureNode proc)
         {
             DSLibraryItemType type = DSLibraryItemType.GenericFunction;
@@ -107,12 +179,21 @@ namespace Dynamo.DSEngine
                 if (CoreUtils.IsGetterSetter(proc.name))
                 {
                     type = DSLibraryItemType.StaticProperty;
-                    CoreUtils.TryGetPropertyName(proc.name, out displayName);
                 }
                 else
                 {
                     type = DSLibraryItemType.StaticMethod;
                 }
+            }
+
+            if (CoreUtils.IsGetterSetter(proc.name))
+            {            
+                CoreUtils.TryGetPropertyName(proc.name, out displayName);
+            }
+
+            if (!string.IsNullOrEmpty(className))
+            {
+                displayName = className + "." + displayName;
             }
 
             List<string> arguments = proc.argInfoList.Select(x => x.Name).ToList();
@@ -133,30 +214,14 @@ namespace Dynamo.DSEngine
                 return;
             }
 
-            string library = classNode.ExternLib;
-            List<DSFunctionItem> functions = TryGetImportedFunctions(library);
+            string libraryPath = Path.GetFullPath(classNode.ExternLib);
+            List<DSFunctionItem> functions = TryGetImportedFunctions(libraryPath);
 
-            string category = System.IO.Path.GetFileNameWithoutExtension(library) + "." + classNode.name;
+            string category = GetCategory(classNode);
             foreach (var proc in classNode.vtable.procList)
             {
-                var function = ImportProcedure(library, category, classNode.name, proc);
+                var function = ImportProcedure(libraryPath, category, classNode.name, proc);
                 functions.Add(function);
-            }
-        }
-  
-        private void ImportLibrary(string assemblyPath)
-        {
-            DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
-
-            var importedClasses = GraphToDSCompiler.GraphUtilities.GetClassesForAssembly(assemblyPath);
-            if (GraphToDSCompiler.GraphUtilities.BuildStatus.ErrorCount > 0)
-            {
-                return;
-            }
-
-            foreach (ProtoCore.DSASM.ClassNode classNode in importedClasses)
-            {
-                ImportClass(classNode);
             }
         }
 
@@ -171,9 +236,9 @@ namespace Dynamo.DSEngine
             }
         }
 
-        private DSLibrary()
+        private DSLibraryServices()
         {
-            GraphToDSCompiler.GraphUtilities.PreloadAssembly(new List<string> { "Math.dll", "ProtoGeometry.dll"});
+            GraphToDSCompiler.GraphUtilities.PreloadAssembly(this.PreLoadedLibraries);
 
             importedFunctions = new Dictionary<string, List<DSFunctionItem>>();
             PopulateBuiltIns();
