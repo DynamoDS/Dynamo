@@ -164,6 +164,7 @@ limitations under the License.
     <Compile Include="UI\Controls\ShortcutToolbar.xaml.cs">
       <DependentUpon>ShortcutToolbar.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\SharedResourceDictionary.cs" />
     <Compile Include="UI\Views\InfoBubbleView.xaml.cs">
       <DependentUpon>InfoBubbleView.xaml</DependentUpon>
     </Compile>
