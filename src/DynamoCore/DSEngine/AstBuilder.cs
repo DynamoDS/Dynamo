@@ -236,8 +236,14 @@ namespace Dynamo.DSEngine
             }
             else if (node.IsInstanceMember())
             {
-                Debug.Assert(functionCall is FunctionCallNode);
-                AssociativeNode dotCallNode = CoreUtils.GenerateCallDotNode(inputs[0], functionCall as FunctionCallNode, LiveRunnerServices.Instance.Core);
+                AssociativeNode thisNode = new NullNode(); 
+                if (inputs.Count >= 1)
+                {
+                    thisNode = inputs[0];
+                    inputs.RemoveAt(0);  // remove this pointer
+                }
+                functionCall = AstFactory.BuildFunctionCall(function, inputs);
+                AssociativeNode dotCallNode = CoreUtils.GenerateCallDotNode(thisNode, functionCall as FunctionCallNode, LiveRunnerServices.Instance.Core);
                 return dotCallNode;
             }
             else
