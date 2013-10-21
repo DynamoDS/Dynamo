@@ -56,7 +56,7 @@ namespace Dynamo.Nodes
         {
             get
             {
-                return Inputs.Values.Where(x => x != null).Any(x => x.Item2.isDirty);
+                return Inputs.Values.Where(x => x != null).Any(x => x.Item2.isDirty || x.Item2.RequiresRecalc);
             }
             set
             {
