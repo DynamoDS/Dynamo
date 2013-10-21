@@ -310,6 +310,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(expected2, actual2);
             Assert.AreEqual(expected3, actual3);
             Assert.AreEqual(expected4, actual4);
+            System.Console.WriteLine(expected4.ToString(), actual4.ToString());
         }
 
         #endregion
