@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
@@ -12,63 +13,6 @@ using ProtoCore.DSASM;
 
 namespace Dynamo.Nodes
 {
-    public enum DSLibraryItemType
-    {
-        GenericFunction,
-        Constructor,
-        StaticMethod,
-        InstanceMethod,
-        StaticProperty,
-        InstanceProperty
-    }
-
-    public abstract class DSLibraryItem
-    {
-        public string Assembly { get; set; }
-        public string Category { get; set; }
-        public string ClassName { get; set; }
-        public string Name { get; set; }
-        public string DisplayName { get; set; }
-        public DSLibraryItemType Type { get; set; }
-        public string QualifiedName
-        {
-            get
-            {
-                return string.IsNullOrEmpty(ClassName) ? Name : ClassName + "." + Name;
-            }
-        }
-
-        public DSLibraryItem(string assembly, string category, string className, string name, string displayName, DSLibraryItemType type)
-        {
-            Assembly = assembly;
-            Category = category;
-            ClassName = className;
-            Name = name;
-            DisplayName = displayName;
-            Type = type;
-        }
-    }
-    
-    public class DSFunctionItem: DSLibraryItem
-    {
-        public List<string> Arguments { get; set;}
-        public List<string> ReturnKeys { get; set;}
-
-        public DSFunctionItem(string assembly,
-                                    string category,
-                                    string className, 
-                                    string name,
-                                    string displayName, 
-                                    DSLibraryItemType type,
-                                    List<string> arguments, 
-                                    List<string> returnKeys = null):
-            base(assembly, category, className, name, displayName, type)
-        {
-            this.Arguments = arguments;
-            this.ReturnKeys = returnKeys;
-        }
-    }
-
     /// <summary>
     /// DesignScript function node. All functions from DesignScript share the
     /// same function node but internally have different procedure node.
@@ -98,9 +42,35 @@ namespace Dynamo.Nodes
             return Definition.Type == DSLibraryItemType.Constructor;
         }
 
-        public DSFunction(DSFunctionItem item)
+        public DSFunction()
         {
-            Definition = item;
+
+        }
+
+        public DSFunction(DSFunctionItem definition)
+        {
+            Initialize(definition);
+        }
+
+        public override bool RequiresRecalc
+        {
+            get
+            {
+                return Inputs.Values.Where(x => x != null).Any(x => x.Item2.isDirty);
+            }
+            set
+            {
+                base.RequiresRecalc = value;
+            }
+        }
+
+        /// <summary>
+        /// Initialize a DS function node.
+        /// </summary>
+        /// <param name="funcDef"></param>
+        private void Initialize(DSFunctionItem funcDef)
+        {
+            Definition = funcDef;
 
             if (IsInstanceMember())
             {
@@ -129,15 +99,50 @@ namespace Dynamo.Nodes
             NickName = Definition.DisplayName;
         }
 
-        public override bool RequiresRecalc
+        /// <summary>
+        /// Save document will call this method to serialize node to xml data
+        /// </summary>
+        /// <param name="xmlDoc"></param>
+        /// <param name="nodeElement"></param>
+        /// <param name="context"></param>
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
-            get
+            XmlElement def = xmlDoc.CreateElement(typeof(DSFunctionItem).FullName);
+
+            def.SetAttribute("Assembly", Definition.Assembly ?? "");
+            def.SetAttribute("Category", Definition.Category ?? "");
+            def.SetAttribute("ClassName", Definition.ClassName ?? "");
+            def.SetAttribute("Name", Definition.Name ?? "");
+            def.SetAttribute("DisplayName", Definition.DisplayName ?? "");
+            def.SetAttribute("Type", Definition.Type.ToString());
+            def.SetAttribute("Arguments", Definition.Arguments == null ? "" : string.Join(";", Definition.Arguments));
+            def.SetAttribute("ReturnKeys", Definition.ReturnKeys == null ? "" : string.Join(";", Definition.ReturnKeys));
+
+            nodeElement.AppendChild(def);
+        }
+
+        /// <summary>
+        /// Open document will call this method to unsearilize xml data to node
+        /// </summary>
+        /// <param name="nodeElement"></param>
+        protected override void LoadNode(XmlNode nodeElement)
+        {
+            foreach (XmlElement subNode in nodeElement.ChildNodes.Cast<XmlElement>().Where(subNode => subNode.Name.Equals(typeof(DSFunctionItem).FullName)))
             {
-                return Inputs.Values.Where(x => x != null).Any(x => x.Item2.isDirty);
-            }
-            set
-            {
-                base.RequiresRecalc = value;
+                XmlElementHelper helper = new XmlElementHelper(subNode);
+
+                var assembly = helper.ReadString("Assembly", "");
+                var category = helper.ReadString("Category", "");
+                var className = helper.ReadString("ClassName", "");
+                var name = helper.ReadString("Name", "");
+                var displayName = helper.ReadString("DisplayName");
+                var strType = helper.ReadString("Type", DSLibraryItemType.GenericFunction.ToString());
+                var type = (DSLibraryItemType)System.Enum.Parse(typeof(DSLibraryItemType), strType);
+                var arguments = helper.ReadString("Arguments", "").Split(new char[] { ';' }).ToList();
+                var returnKeys = helper.ReadString("Returnkeys", "").Split(new char[] { ';' }).ToList();
+
+                DSFunctionItem item = new DSFunctionItem(assembly, category, className, name, displayName, type, arguments, returnKeys);
+                Initialize(item);
             }
         }
 
@@ -147,6 +152,11 @@ namespace Dynamo.Nodes
             return builder.Build(this, inputs);
         }
 
+        /// <summary>
+        /// Copy command will call it to serialize this node to xml data.
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="context"></param>
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
             base.SerializeCore(element, context); 

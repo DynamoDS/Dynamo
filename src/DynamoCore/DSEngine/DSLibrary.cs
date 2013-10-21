@@ -11,6 +11,69 @@ using ProtoFFI;
 
 namespace Dynamo.DSEngine
 {
+    public enum DSLibraryItemType
+    {
+        GenericFunction,
+        Constructor,
+        StaticMethod,
+        InstanceMethod,
+        StaticProperty,
+        InstanceProperty
+    }
+
+    /// <summary>
+    /// Describe a DesignScript library item.
+    /// </summary>
+    public abstract class DSLibraryItem
+    {
+        public string Assembly { get; set; }
+        public string Category { get; set; }
+        public string ClassName { get; set; }
+        public string Name { get; set; }
+        public string DisplayName { get; set; }
+        public DSLibraryItemType Type { get; set; }
+        public string QualifiedName
+        {
+            get
+            {
+                return string.IsNullOrEmpty(ClassName) ? Name : ClassName + "." + Name;
+            }
+        }
+
+        public DSLibraryItem(string assembly, string category, string className, string name, string displayName, DSLibraryItemType type)
+        {
+            Assembly = assembly;
+            Category = category;
+            ClassName = className;
+            Name = name;
+            DisplayName = displayName;
+            Type = type;
+        }
+    }
+
+    /// <summary>
+    /// Describe a DesignScript function in a imported library
+    /// </summary>
+    public class DSFunctionItem : DSLibraryItem
+    {
+        public List<string> Arguments { get; set; }
+        public List<string> ReturnKeys { get; set; }
+
+        public DSFunctionItem(string assembly,
+                                    string category,
+                                    string className,
+                                    string name,
+                                    string displayName,
+                                    DSLibraryItemType type,
+                                    List<string> arguments,
+                                    List<string> returnKeys = null) :
+            base(assembly, category, className, name, displayName, type)
+        {
+            this.Arguments = arguments;
+            this.ReturnKeys = returnKeys;
+        }
+    }
+
     /// <summary>
     /// A helper class to get some information from DesignScript core.
     /// </summary>
