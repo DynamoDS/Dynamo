@@ -138,8 +138,28 @@ namespace Dynamo.Nodes
                 var displayName = helper.ReadString("DisplayName");
                 var strType = helper.ReadString("Type", DSLibraryItemType.GenericFunction.ToString());
                 var type = (DSLibraryItemType)System.Enum.Parse(typeof(DSLibraryItemType), strType);
-                var arguments = helper.ReadString("Arguments", "").Split(new char[] { ';' }).ToList();
-                var returnKeys = helper.ReadString("Returnkeys", "").Split(new char[] { ';' }).ToList();
+
+                List<string> arguments = null;
+                var argumentValue = helper.ReadString("Arguments", null);
+                if (argumentValue != null)
+                {
+                    argumentValue = argumentValue.Trim();
+                }
+                if (!string.IsNullOrEmpty(argumentValue))
+                {
+                    arguments = argumentValue.Split(new char[] { ';' }).ToList();
+                }
+
+                List<string> returnKeys = null;
+                var returnKeyValue = helper.ReadString("ReturnKeys", null);
+                if (returnKeyValue != null)
+                {
+                    returnKeyValue = returnKeyValue.Trim();
+                }
+                if (!string.IsNullOrEmpty(returnKeyValue))
+                {
+                    returnKeys = returnKeyValue.Split(new char[] { ';' }).ToList();
+                }
 
                 DSLibraryServices.Instance.ImportLibrary(assembly);
                 DSFunctionItem item = new DSFunctionItem(assembly, category, className, name, displayName, type, arguments, returnKeys);
