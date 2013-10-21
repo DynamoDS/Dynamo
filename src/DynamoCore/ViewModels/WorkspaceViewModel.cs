@@ -73,7 +73,7 @@ namespace Dynamo.ViewModels
         {
             if (ZoomChanged != null)
             {
-                Debug.WriteLine(string.Format("Setting zoom to {0}", e.Zoom));
+                //Debug.WriteLine(string.Format("Setting zoom to {0}", e.Zoom));
                 ZoomChanged(this, e);
             }
         }

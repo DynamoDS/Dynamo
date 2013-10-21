@@ -87,5 +87,8 @@
                 <HelixToolkit:LinesVisual3D Thickness="1" Color="DarkGray" Points="{Binding Path=HelixGrid, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
             </ModelVisual3D>
         </HelixToolkit:HelixViewport3D>
+
+        <Thumb Name ="resizeThumb" Width="10" Height="10" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="5"
+               DragDelta="ResizeThumb_OnDragDelta" DragStarted="ResizeThumb_OnDragStarted" DragCompleted="ResizeThumb_OnDragCompleted"/>
     </Grid>
 </UserControl>
