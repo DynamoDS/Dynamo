@@ -235,27 +235,42 @@ namespace Dynamo.DSEngine
             DSLibraryItemType type = DSLibraryItemType.GenericFunction;
             string displayName = proc.name;
 
-            if (proc.isConstructor)
+            if (CoreUtils.IsGetterSetter(proc.name))
             {
-                type = DSLibraryItemType.Constructor;
-            }
-            else if (proc.isStatic)
-            {
-                if (CoreUtils.IsGetterSetter(proc.name))
+                type = proc.isStatic ? DSLibraryItemType.StaticProperty : DSLibraryItemType.InstanceProperty;
+                CoreUtils.TryGetPropertyName(proc.name, out displayName);
+
+                // temporary add prefix to distinguish getter/setter until the
+                // design is nailed down
+                if (CoreUtils.IsGetter(proc.name))
                 {
-                    type = DSLibraryItemType.StaticProperty;
+                    displayName = "get" + displayName;
                 }
                 else
                 {
-                    type = DSLibraryItemType.StaticMethod;
+                    displayName = "set" + displayName;
                 }
             }
-
-            if (CoreUtils.IsGetterSetter(proc.name))
-            {            
-                CoreUtils.TryGetPropertyName(proc.name, out displayName);
+            else
+            {
+                if (proc.isConstructor)
+                {
+                    type = DSLibraryItemType.Constructor;
+                }
+                else if (proc.isStatic)
+                {
+                    type = DSLibraryItemType.StaticMethod;
+                }
+                else if (!string.IsNullOrEmpty(className))
+                {
+                    type = DSLibraryItemType.InstanceMethod;
+                }
+                else
+                {
+                    type = DSLibraryItemType.GenericFunction;
+                }
             }
-
+            
             if (!string.IsNullOrEmpty(className))
             {
                 displayName = className + "." + displayName;
