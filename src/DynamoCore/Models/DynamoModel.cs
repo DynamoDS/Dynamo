@@ -774,10 +774,10 @@ namespace Dynamo.Models
                 DynamoLogger.Instance.Log(string.Format("{0} ellapsed for loading nodes.", sw.Elapsed - previousElapsed));
                 previousElapsed = sw.Elapsed;
 
-                OnRequestLayoutUpdate(this, EventArgs.Empty);
+                //OnRequestLayoutUpdate(this, EventArgs.Empty);
 
-                DynamoLogger.Instance.Log(string.Format("{0} ellapsed for updating layout.", sw.Elapsed - previousElapsed));
-                previousElapsed = sw.Elapsed;
+                //DynamoLogger.Instance.Log(string.Format("{0} ellapsed for updating layout.", sw.Elapsed - previousElapsed));
+                //previousElapsed = sw.Elapsed;
 
                 foreach (XmlNode connector in cNodesList.ChildNodes)
                 {
