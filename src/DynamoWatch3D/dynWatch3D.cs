@@ -26,6 +26,7 @@ namespace Dynamo.Nodes
 
         public DelegateCommand SelectVisualizationInViewCommand { get; set; }
         public DelegateCommand GetBranchVisualizationCommand { get; set; }
+        public bool WatchIsResizable { get; set; }
 
         public Watch3DView View
         {
@@ -56,6 +57,7 @@ namespace Dynamo.Nodes
 
             GetBranchVisualizationCommand = new DelegateCommand(GetBranchVisualization, CanGetBranchVisualization);
             SelectVisualizationInViewCommand = new DelegateCommand(SelectVisualizationInView, CanSelectVisualizationInView);
+            WatchIsResizable = true;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
