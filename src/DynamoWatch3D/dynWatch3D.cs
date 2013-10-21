@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Xml;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.UI.Commands;
@@ -23,6 +24,8 @@ namespace Dynamo.Nodes
         private bool _isRendering = false;
         Watch3DView _watchView;
         private bool _canNavigateBackground = true;
+        private double _watchWidth = 200;
+        private double _watchHeight = 200;
 
         public DelegateCommand SelectVisualizationInViewCommand { get; set; }
         public DelegateCommand GetBranchVisualizationCommand { get; set; }
@@ -88,8 +91,8 @@ namespace Dynamo.Nodes
             _watchView = new Watch3DView(GUID.ToString());
             _watchView.DataContext = this;
 
-            _watchView.Width = 200;
-            _watchView.Height = 200;
+            _watchView.Width = _watchWidth;
+            _watchView.Height = _watchHeight;
 
             System.Windows.Shapes.Rectangle backgroundRect = new System.Windows.Shapes.Rectangle();
             backgroundRect.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -129,6 +132,62 @@ namespace Dynamo.Nodes
         void mi_Click(object sender, RoutedEventArgs e)
         {
             _watchView.View.ZoomExtents();
+        }
+
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        {
+            base.SaveNode(xmlDoc, nodeElement, context);
+            var helper = new XmlElementHelper(nodeElement);
+            helper.SetAttribute("width", Width);
+            helper.SetAttribute("height", Height);
+        }
+
+        protected override void LoadNode(XmlNode nodeElement)
+        {
+            base.LoadNode(nodeElement);
+            try
+            {
+                _watchWidth = Convert.ToDouble(nodeElement.Attributes["width"].Value);
+                _watchHeight = Convert.ToDouble(nodeElement.Attributes["height"].Value);
+            }
+            catch(Exception ex)
+            {
+                DynamoLogger.Instance.Log(ex);
+                DynamoLogger.Instance.Log("Width and height attributes could not be found for this node.");
+            }
+            
+        }
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                var helper = new XmlElementHelper(element);
+                helper.SetAttribute("Width", Width);
+                helper.SetAttribute("Height", Height);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                var helper = new XmlElementHelper(element);
+
+                try
+                {
+                    _watchWidth = helper.ReadDouble("Width");
+                    _watchHeight = helper.ReadDouble("Height");
+                }
+                catch(Exception ex)
+                {
+                    DynamoLogger.Instance.Log(ex);
+                    DynamoLogger.Instance.Log("Width and height attributes could not be found for this node.");
+                }
+                
+            }
         }
 
         #region IWatchViewModel interface
