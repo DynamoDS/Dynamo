@@ -253,9 +253,6 @@ namespace Dynamo
             this.InfoBubbleViewModel = new InfoBubbleViewModel();
 
             AddPythonBindings();
-
-            // Kick start the automation run, if possible.
-            this.DynamoViewModel.BeginCommandPlayback();
         }
 
         #endregion
