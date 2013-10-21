@@ -88,8 +88,8 @@ namespace Dynamo.Nodes
             _watchView = new Watch3DView(GUID.ToString());
             _watchView.DataContext = this;
 
-            _watchView.Width = 400;
-            _watchView.Height = 300;
+            _watchView.Width = 200;
+            _watchView.Height = 200;
 
             System.Windows.Shapes.Rectangle backgroundRect = new System.Windows.Shapes.Rectangle();
             backgroundRect.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;

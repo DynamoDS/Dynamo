@@ -388,12 +388,12 @@ namespace Dynamo.Controls
             //Debug.WriteLine("ActualSize:" + _nodeUI.ActualWidth + "," + _nodeUI.ActualHeight);
             //Debug.WriteLine("Grid size:" + _nodeUI.ActualWidth + "," + _nodeUI.ActualHeight);
 
-            if (xAdjust >= MinWidth)
+            if (xAdjust >= inputGrid.MinWidth)
             {
                 Width = xAdjust;
             }
 
-            if (yAdjust >= MinHeight)
+            if (yAdjust >= inputGrid.MinHeight)
             {
                 Height = yAdjust;
             }

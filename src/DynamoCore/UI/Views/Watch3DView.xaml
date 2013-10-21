@@ -21,7 +21,7 @@
     
     <Grid Name="inputGrid"
             x:FieldModifier="public"
-            Canvas.ZIndex="0" >
+            Canvas.ZIndex="0" MinHeight="100" MinWidth="100">
 
         <Grid.ContextMenu>
             <ContextMenu Name="MainContextMenu" x:FieldModifier="public" ContextMenuOpening="MainContextMenu_ContextMenuOpening">
@@ -30,7 +30,8 @@
 
         <HelixToolkit:HelixViewport3D Name="watch_view" ZoomExtentsWhenLoaded="True" 
                                       ShowViewCube="False" CameraRotationMode="Turntable"
-                                      IsHitTestVisible="True" MouseLeftButtonDown="Watch_view_OnMouseDown" ShowCoordinateSystem="{Binding ElementName=topControl, Path=DataContext.CanNavigateBackground}">
+                                      IsHitTestVisible="True" MouseLeftButtonDown="Watch_view_OnMouseDown" 
+                                      ShowCoordinateSystem="{Binding ElementName=topControl, Path=DataContext.CanNavigateBackground}">
         
             <ModelVisual3D>
                 <HelixToolkit:LightVisual3D>
