@@ -260,8 +260,8 @@ limitations under the License.
       <DependentUpon>WatchTree.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UI\Views\WatchViewFullscreen.xaml.cs">
-      <DependentUpon>WatchViewFullscreen.xaml</DependentUpon>
+    <Compile Include="UI\Views\Watch3DView.xaml.cs">
+      <DependentUpon>Watch3DView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="UI\WebBrowserUtility.cs" />
@@ -325,6 +325,17 @@ limitations under the License.
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Search\SearchDictionary.cs" />
+    <Compile Include="VisualizationManager\octree\FastSerialization.cs" />
+    <Compile Include="VisualizationManager\octree\IOctree.cs" />
+    <Compile Include="VisualizationManager\octree\Octree.cs" />
+    <Compile Include="VisualizationManager\octree\OctreeBox.cs" />
+    <Compile Include="VisualizationManager\octree\OctreeDistance.cs" />
+    <Compile Include="VisualizationManager\octree\OctreeLeaf.cs" />
+    <Compile Include="VisualizationManager\octree\OctreeNode.cs" />
+    <Compile Include="VisualizationManager\octree\Point3d.cs" />
+    <Compile Include="VisualizationManager\octree\Point3f.cs" />
+    <Compile Include="VisualizationManager\octree\Vector3d.cs" />
+    <Compile Include="VisualizationManager\octree\Vector3f.cs" />
     <Compile Include="VisualizationManager\RenderDescription.cs" />
     <Compile Include="VisualizationManager\Visualization.cs" />
     <Compile Include="VisualizationManager\VisualizationManager.cs" />
@@ -482,7 +493,7 @@ limitations under the License.
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Views\WatchViewFullscreen.xaml">
+    <Page Include="UI\Views\Watch3DView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -561,6 +572,11 @@ limitations under the License.
     <Resource Include="UI\Images\collapse_normal.png" />
     <Resource Include="UI\Images\expand_hover.png" />
     <Resource Include="UI\Images\expand_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\screenshot_disabled.png" />
+    <Resource Include="UI\Images\screenshot_hover.png" />
+    <Resource Include="UI\Images\screenshot_normal.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

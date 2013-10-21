@@ -20,7 +20,7 @@ DefaultDirName=C:\Autodesk\Dynamo\Core
 DefaultGroupName=
 OutputDir=Installers
 OutputBaseFilename=InstallDynamo
-SetupIconFile=Extra\Nodes_32_32.ico
+SetupIconFile=Extra\logo_square_32x32.ico
 Compression=lzma
 SolidCompression=true
 RestartIfNeededByRun=false
@@ -28,7 +28,7 @@ FlatComponentsList=false
 ShowLanguageDialog=auto
 DirExistsWarning=no
 UninstallFilesDir={app}\Uninstall
-UninstallDisplayIcon={app}\Nodes_32_32.ico
+UninstallDisplayIcon={app}\logo_square_32x32.ico
 UninstallDisplayName=Dynamo 0.6.2
 UsePreviousAppDir=no
 
