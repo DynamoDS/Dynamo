@@ -831,7 +831,8 @@ namespace Dynamo.Models
                 Tuple<int, NodeModel> inputTuple;
                 if (!TryGetInput(index, out inputTuple))
                 {
-                    inputAstNodes.Add(null);
+                    // inputAstNodes.Add(null);
+                    inputAstNodes.Add(new NullNode());
                 }
                 else
                 {
