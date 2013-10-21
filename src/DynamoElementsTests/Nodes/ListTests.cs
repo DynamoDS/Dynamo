@@ -1678,12 +1678,14 @@ namespace Dynamo.Tests
             var numberRange = model.CurrentWorkspace.NodeFromWorkspace<NumberRange>("4e781f03-5b48-4d58-a511-8c732665e961");
 
             FSharpList<FScheme.Value> actual = numberRange.GetValue(0).GetListFromFSchemeValue();
-            FSharpList<FScheme.Value> actualChild1 = actual[0].GetListFromFSchemeValue();
-            FSharpList<FScheme.Value> actualChild2 = actual[1].GetListFromFSchemeValue();
-            FSharpList<FScheme.Value> actualChild3 = actual[2].GetListFromFSchemeValue();
-            FSharpList<FScheme.Value> actualChild4 = actual[3].GetListFromFSchemeValue();
+            FSharpList<FScheme.Value> innerList1 = actual[0].GetListFromFSchemeValue();
+            FSharpList<FScheme.Value> innerList2 = actual[1].GetListFromFSchemeValue();
+            FSharpList<FScheme.Value> actualChild1 = innerList1[0].GetListFromFSchemeValue();
+            FSharpList<FScheme.Value> actualChild2 = innerList1[1].GetListFromFSchemeValue();
+            FSharpList<FScheme.Value> actualChild3 = innerList2[0].GetListFromFSchemeValue();
+            FSharpList<FScheme.Value> actualChild4 = innerList2[1].GetListFromFSchemeValue();
 
-            Assert.AreEqual(4, actual.Length);
+            Assert.AreEqual(2, actual.Length);
 
             Assert.AreEqual(10, actualChild1.Length);
             Assert.AreEqual(10, actualChild1[9].GetDoubleFromFSchemeValue());

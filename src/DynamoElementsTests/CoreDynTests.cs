@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -69,6 +70,61 @@ namespace Dynamo.Tests
             Assert.AreEqual(9, listWatchVal[3].GetDoubleFromFSchemeValue());
             Assert.AreEqual(10, listWatchVal[4].GetDoubleFromFSchemeValue());
 
+        }
+
+        /// <summary>
+        /// Confirm that a node with multiple outputs evaluates successfully.
+        /// </summary>
+        [Test]
+        public void MultipleOutputs()
+        {
+            var model = Controller.DynamoModel;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\multiout");
+
+            string openPath = Path.Combine(examplePath, "multi.dyn");
+            model.Open(openPath);
+
+            dynSettings.Controller.RunExpression();
+
+            var splitListVal = model.CurrentWorkspace.FirstNodeFromWorkspace<DeCons>().OldValue;
+
+            Assert.IsInstanceOf<FScheme.Value.List>(splitListVal);
+
+            var outs = (splitListVal as FScheme.Value.List).Item;
+
+            Assert.AreEqual(2, outs.Length);
+
+            var out1 = outs[0];
+            Assert.IsInstanceOf<FScheme.Value.Number>(out1);
+            Assert.AreEqual(0, (out1 as FScheme.Value.Number).Item);
+
+            var out2 = outs[1];
+            Assert.IsInstanceOf<FScheme.Value.List>(out2);
+            Assert.IsTrue((out2 as FScheme.Value.List).Item.IsEmpty);
+        }
+
+        [Test]
+        public void PartialApplicationWithMultipleOutputs()
+        {
+            var model = Controller.DynamoModel;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\multiout");
+
+            string openPath = Path.Combine(examplePath, "partial-multi.dyn");
+            model.Open(openPath);
+
+            dynSettings.Controller.RunExpression();
+
+            var firstWatch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("3005609b-ceaa-451f-9b6c-6ca957358ad6");
+
+            Assert.IsInstanceOf<FScheme.Value.List>(firstWatch.OldValue);
+            Assert.IsInstanceOf<FScheme.Value.Number>((firstWatch.OldValue as FScheme.Value.List).Item[0]);
+            Assert.AreEqual(0, ((firstWatch.OldValue as FScheme.Value.List).Item[0] as FScheme.Value.Number).Item);
+
+            var restWatch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("2787f566-7612-41d1-8cec-8212fea58c8b");
+
+            Assert.IsInstanceOf<FScheme.Value.List>(restWatch.OldValue);
+            Assert.IsInstanceOf<FScheme.Value.List>((restWatch.OldValue as FScheme.Value.List).Item[0]);
+            Assert.IsTrue(((restWatch.OldValue as FScheme.Value.List).Item[0] as FScheme.Value.List).Item.IsEmpty);
         }
 
         [Test]
