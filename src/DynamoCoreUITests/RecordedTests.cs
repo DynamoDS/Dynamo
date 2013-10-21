@@ -18,7 +18,7 @@ namespace Dynamo.Tests.UI
     public class RecordedTests
     {
         // For access within test cases.
-        private Exception exception = null;
+        private WorkspaceModel workspace = null;
         private DynamoController controller = null;
 
         [SetUp]
@@ -30,14 +30,12 @@ namespace Dynamo.Tests.UI
         public void Exit()
         {
             this.controller = null;
-            this.exception = null;
         }
 
         [Test, RequiresSTA]
         public void TestCreateNodes()
         {
             RunCommandsFromFile("CreateNodesAndConnectors.xml");
-            WorkspaceModel workspace = controller.DynamoModel.CurrentWorkspace;
             Assert.AreEqual(5, workspace.Nodes.Count);
         }
 
@@ -45,7 +43,6 @@ namespace Dynamo.Tests.UI
         public void TestCreateConnectors()
         {
             RunCommandsFromFile("CreateNodesAndConnectors.xml");
-            WorkspaceModel workspace = controller.DynamoModel.CurrentWorkspace;
             Assert.AreEqual(4, workspace.Connectors.Count);
         }
 
@@ -67,6 +64,7 @@ namespace Dynamo.Tests.UI
             Assert.IsNotNull(controller);
             Assert.IsNotNull(controller.DynamoModel);
             Assert.IsNotNull(controller.DynamoModel.CurrentWorkspace);
+            workspace = controller.DynamoModel.CurrentWorkspace;
         }
     }
 }
