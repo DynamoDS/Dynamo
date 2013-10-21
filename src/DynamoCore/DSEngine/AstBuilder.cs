@@ -7,6 +7,7 @@ using System.Text;
 using Dynamo.FSchemeInterop;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using ProtoCore;
 using ProtoCore.AST;
@@ -145,6 +146,8 @@ namespace Dynamo.DSEngine
         {
             astNodes = new LinkedListOfList<Guid, AssociativeNode>();
             nodeStates = new Dictionary<Guid, NodeState>();
+
+            dynSettings.Controller.DynamoModel.NodeDeleted += this.OnNodeDeleted;
         }
 
         private void AddNode(Guid dynamoNodeId, AssociativeNode astNode)
@@ -328,6 +331,7 @@ namespace Dynamo.DSEngine
                 nodeStates[node.GUID] = NodeState.Added;
             }
 
+            /*
             // If it is a partially applied function, need to create a function 
             // definition and function pointer.
             if (isPartial && rhs is FunctionCallNode)
@@ -340,6 +344,7 @@ namespace Dynamo.DSEngine
                 // create a function pointer for this node
                 rhs = AstFactory.BuildIdentifier(newFunc.Name);
             }
+            */
 
             var assignment = AstFactory.BuildAssignment(node.AstIdentifier, rhs);
             AddNode(node.GUID, assignment);
@@ -358,6 +363,11 @@ namespace Dynamo.DSEngine
         public void FinishBuildingAst()
         {
 
+        }
+
+        public void OnNodeDeleted(NodeModel node)
+        {
+            nodeStates[node.GUID] = NodeState.Deleted;
         }
     }
 }
