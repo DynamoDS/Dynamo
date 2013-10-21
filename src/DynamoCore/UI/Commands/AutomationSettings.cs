@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using System.Windows.Threading;
 using System.Xml;
 using Dynamo.Utilities;
@@ -33,6 +34,7 @@ namespace Dynamo.ViewModels
         /// 
         private const string PauseAttribName = "PauseAfterPlaybackInMs";
 
+        private System.Windows.Window mainWindow = null;
         private DynamoViewModel owningViewModel = null;
         private DispatcherTimer playbackTimer = null;
         private List<DynCmd.RecordableCommand> loadedCommands = null;
@@ -80,18 +82,19 @@ namespace Dynamo.ViewModels
                 throw new ArgumentNullException("vm");
         }
 
-        internal void BeginCommandPlayback()
+        internal void BeginCommandPlayback(System.Windows.Window mainWindow)
         {
             if (this.CurrentMode != Mode.Playback)
                 return; // Not currently in playback mode.
 
             if (null != this.playbackTimer)
             {
+                // Ensure that this method is not called more than once.
                 throw new InvalidOperationException(
                     "Internal error: 'BeginCommandPlayback' called twice");
             }
 
-            // Ensure that this method is not called more than once.
+            this.mainWindow = mainWindow;
             System.Diagnostics.Debug.Assert(null == playbackTimer);
             playbackTimer = new DispatcherTimer();
 
@@ -260,8 +263,7 @@ namespace Dynamo.ViewModels
             this.playbackTimer = null;
 
             // This causes the main window to close (and exit application).
-            var dispatcher = dynSettings.Controller.UIDispatcher;
-            dispatcher.BeginInvokeShutdown(DispatcherPriority.Normal);
+            mainWindow.Close();
         }
 
         #endregion

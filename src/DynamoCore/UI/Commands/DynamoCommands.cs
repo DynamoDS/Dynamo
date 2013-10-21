@@ -20,10 +20,10 @@ namespace Dynamo.ViewModels
         /// DynamoController calls this method at the end of its initialization
         /// sequence so that loaded commands, if any, begin to playback.
         /// </summary>
-        internal void BeginCommandPlayback()
+        internal void BeginCommandPlayback(System.Windows.Window mainWindow)
         {
             if (null != automationSettings)
-                automationSettings.BeginCommandPlayback();
+                automationSettings.BeginCommandPlayback(mainWindow);
         }
 
         private void SaveRecordedCommands(object parameters)

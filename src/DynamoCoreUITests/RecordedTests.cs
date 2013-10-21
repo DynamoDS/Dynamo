@@ -55,39 +55,18 @@ namespace Dynamo.Tests.UI
             commandFilePath = Path.Combine(commandFilePath, @"core\recorded\");
             commandFilePath = Path.Combine(commandFilePath, commandFileName);
 
-            Thread worker = new Thread(LaunchDynamoWithCommandFile);
-            worker.SetApartmentState(ApartmentState.STA);
-            worker.Name = "RunCommandThread";
-            worker.Start(commandFilePath);
-            worker.Join();
+            // Create the controller to run alongside the view.
+            controller = DynamoController.MakeSandbox(commandFilePath);
+
+            // Create the view.
+            var dynamoView = new DynamoView();
+            dynamoView.DataContext = controller.DynamoViewModel;
+            controller.UIDispatcher = dynamoView.Dispatcher;
+            dynamoView.ShowDialog();
 
             Assert.IsNotNull(controller);
             Assert.IsNotNull(controller.DynamoModel);
             Assert.IsNotNull(controller.DynamoModel.CurrentWorkspace);
-        }
-
-        private void LaunchDynamoWithCommandFile(object parameter)
-        {
-            try
-            {
-                string commandFilePath = parameter as string;
-                var view = DynamoView.MakeSandboxForUnitTest(commandFilePath);
-                this.controller = dynSettings.Controller;
-                view.ShowDialog();
-            }
-            catch (Exception exception)
-            {
-                Debug.WriteLine("Exception: " + exception.Message);
-                Debug.WriteLine("StackTrace: " + exception.StackTrace);
-                this.exception = exception;
-
-                if (null != exception.InnerException)
-                {
-                    var inner = exception.InnerException;
-                    Debug.WriteLine("InnerException: " + inner.Message);
-                    Debug.WriteLine("InnerException: " + inner.StackTrace);
-                }
-            }
         }
     }
 }
