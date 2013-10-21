@@ -91,6 +91,27 @@ namespace Dynamo.Nodes
                 Code = helper.ReadString("CodeText");
             }
         }
+
+        protected override AssociativeNode BuildAstNode(DSEngine.IAstBuilder builder, List<AssociativeNode> inputAstNodes)
+        {
+            return builder.Build(this, inputAstNodes);
+        }
+
+        protected override AssociativeNode GetIndexedOutputNode(int index)
+        {
+            Dictionary<int, List<GraphToDSCompiler.VariableLine>> unboundIdentifiers;
+            unboundIdentifiers = new Dictionary<int, List<GraphToDSCompiler.VariableLine>>();
+            List<ProtoCore.AST.Node> resultNodes;
+            GraphToDSCompiler.GraphUtilities.ParseCodeBlockNodeStatements(Code, unboundIdentifiers, out resultNodes);
+            BinaryExpressionNode indexedStatement = resultNodes[index] as BinaryExpressionNode;
+            return indexedStatement.LeftNode as AssociativeNode;
+        }
+
+        protected override bool HasMultipleOutputs()
+        {
+            return true;
+        }
+
         #endregion
 
         #region Private Methods

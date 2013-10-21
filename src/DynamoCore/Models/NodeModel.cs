@@ -843,7 +843,7 @@ namespace Dynamo.Models
                     // Multiple outputs from input node, input node may be a 
                     // function node which returns a dictionary or a code block
                     // node which has multiple outputs.
-                    if (HasMultipleOutputs())
+                    if (inputModel.HasMultipleOutputs())
                     {
                         inputNode = inputModel.GetIndexedOutputNode(outputIndexOfInput);
                     }
