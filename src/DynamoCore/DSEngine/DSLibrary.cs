@@ -140,20 +140,22 @@ namespace Dynamo.DSEngine
             }
         }
 
+        /// <summary>
+        /// Import a library (if it hasn't been imported yet).
+        /// </summary>
+        /// <param name="libraryPath"></param>
         public void ImportLibrary(string libraryPath)
         {
             if (!File.Exists(libraryPath))
             {
                 string errorMessage = string.Format("Cannot find library path: {0}.", libraryPath);
-                DynamoLogger.Instance.LogWarning(errorMessage, WarningLevel.Moderate);
-                return;
+                throw new FileNotFoundException(errorMessage);
             }
 
             libraryPath = Path.GetFullPath(libraryPath);
+
             if (this.Libraries.Any(path => string.Compare(libraryPath, path, true) == 0))
             {
-                string errorMessage = string.Format("Library {0} has been imported.", libraryPath);
-                DynamoLogger.Instance.LogWarning(errorMessage, WarningLevel.Moderate);
                 return;
             }
 
