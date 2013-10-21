@@ -139,7 +139,7 @@ namespace Dynamo.Utilities
 #if USE_DSENGINE
         private static void LoadDSFunctionsFromLibrary(string library)
         {
-            List<Dynamo.Nodes.DSFunctionItem> functions = DSLibraryServices.Instance[library];
+            List<DSFunctionItem> functions = DSLibraryServices.Instance[library];
             if (functions != null)
             {
                 var searchViewModel = dynSettings.Controller.SearchViewModel;

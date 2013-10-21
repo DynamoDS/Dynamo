@@ -11,6 +11,69 @@ using ProtoFFI;
 
 namespace Dynamo.DSEngine
 {
+    public enum DSLibraryItemType
+    {
+        GenericFunction,
+        Constructor,
+        StaticMethod,
+        InstanceMethod,
+        StaticProperty,
+        InstanceProperty
+    }
+
+    /// <summary>
+    /// Describe a DesignScript library item.
+    /// </summary>
+    public abstract class DSLibraryItem
+    {
+        public string Assembly { get; set; }
+        public string Category { get; set; }
+        public string ClassName { get; set; }
+        public string Name { get; set; }
+        public string DisplayName { get; set; }
+        public DSLibraryItemType Type { get; set; }
+        public string QualifiedName
+        {
+            get
+            {
+                return string.IsNullOrEmpty(ClassName) ? Name : ClassName + "." + Name;
+            }
+        }
+
+        public DSLibraryItem(string assembly, string category, string className, string name, string displayName, DSLibraryItemType type)
+        {
+            Assembly = assembly;
+            Category = category;
+            ClassName = className;
+            Name = name;
+            DisplayName = displayName;
+            Type = type;
+        }
+    }
+
+    /// <summary>
+    /// Describe a DesignScript function in a imported library
+    /// </summary>
+    public class DSFunctionItem : DSLibraryItem
+    {
+        public List<string> Arguments { get; set; }
+        public List<string> ReturnKeys { get; set; }
+
+        public DSFunctionItem(string assembly,
+                                    string category,
+                                    string className,
+                                    string name,
+                                    string displayName,
+                                    DSLibraryItemType type,
+                                    List<string> arguments,
+                                    List<string> returnKeys = null) :
+            base(assembly, category, className, name, displayName, type)
+        {
+            this.Arguments = arguments;
+            this.ReturnKeys = returnKeys;
+        }
+    }
+
     /// <summary>
     /// A helper class to get some information from DesignScript core.
     /// </summary>
@@ -77,20 +140,22 @@ namespace Dynamo.DSEngine
             }
         }
 
+        /// <summary>
+        /// Import a library (if it hasn't been imported yet).
+        /// </summary>
+        /// <param name="libraryPath"></param>
         public void ImportLibrary(string libraryPath)
         {
             if (!File.Exists(libraryPath))
             {
                 string errorMessage = string.Format("Cannot find library path: {0}.", libraryPath);
-                DynamoLogger.Instance.LogWarning(errorMessage, WarningLevel.Moderate);
-                return;
+                throw new FileNotFoundException(errorMessage);
             }
 
             libraryPath = Path.GetFullPath(libraryPath);
+
             if (this.Libraries.Any(path => string.Compare(libraryPath, path, true) == 0))
             {
-                string errorMessage = string.Format("Library {0} has been imported.", libraryPath);
-                DynamoLogger.Instance.LogWarning(errorMessage, WarningLevel.Moderate);
                 return;
             }
 
@@ -170,27 +235,42 @@ namespace Dynamo.DSEngine
             DSLibraryItemType type = DSLibraryItemType.GenericFunction;
             string displayName = proc.name;
 
-            if (proc.isConstructor)
+            if (CoreUtils.IsGetterSetter(proc.name))
             {
-                type = DSLibraryItemType.Constructor;
-            }
-            else if (proc.isStatic)
-            {
-                if (CoreUtils.IsGetterSetter(proc.name))
+                type = proc.isStatic ? DSLibraryItemType.StaticProperty : DSLibraryItemType.InstanceProperty;
+                CoreUtils.TryGetPropertyName(proc.name, out displayName);
+
+                // temporary add prefix to distinguish getter/setter until the
+                // design is nailed down
+                if (CoreUtils.IsGetter(proc.name))
                 {
-                    type = DSLibraryItemType.StaticProperty;
+                    displayName = "get" + displayName;
                 }
                 else
                 {
-                    type = DSLibraryItemType.StaticMethod;
+                    displayName = "set" + displayName;
                 }
             }
-
-            if (CoreUtils.IsGetterSetter(proc.name))
-            {            
-                CoreUtils.TryGetPropertyName(proc.name, out displayName);
+            else
+            {
+                if (proc.isConstructor)
+                {
+                    type = DSLibraryItemType.Constructor;
+                }
+                else if (proc.isStatic)
+                {
+                    type = DSLibraryItemType.StaticMethod;
+                }
+                else if (!string.IsNullOrEmpty(className))
+                {
+                    type = DSLibraryItemType.InstanceMethod;
+                }
+                else
+                {
+                    type = DSLibraryItemType.GenericFunction;
+                }
             }
-
+            
             if (!string.IsNullOrEmpty(className))
             {
                 displayName = className + "." + displayName;
