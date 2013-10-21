@@ -21,6 +21,7 @@ using Enum = System.Enum;
 using String = System.String;
 using ProtoCore.DSASM;
 using Dynamo.ViewModels;
+using Dynamo.DSEngine;
 
 namespace Dynamo.Models
 {
