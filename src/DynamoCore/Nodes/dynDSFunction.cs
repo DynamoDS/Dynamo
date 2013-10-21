@@ -141,8 +141,11 @@ namespace Dynamo.Nodes
                 var arguments = helper.ReadString("Arguments", "").Split(new char[] { ';' }).ToList();
                 var returnKeys = helper.ReadString("Returnkeys", "").Split(new char[] { ';' }).ToList();
 
+                DSLibraryServices.Instance.ImportLibrary(assembly);
                 DSFunctionItem item = new DSFunctionItem(assembly, category, className, name, displayName, type, arguments, returnKeys);
                 Initialize(item);
+
+                return;
             }
         }
 
