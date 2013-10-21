@@ -635,6 +635,38 @@ namespace Dynamo.Nodes
 
     }
 
+    public partial class CodeBlockNodeModel
+    {
+        public override void SetupCustomUIElements(object ui)
+        {
+            var nodeUI = ui as dynNodeView;
+
+            var tb = new CodeNodeTextBox(Code)
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF)),
+                AcceptsReturn = true
+            };
+
+
+            nodeUI.inputGrid.Children.Add(tb);
+            Grid.SetColumn(tb, 0);
+            Grid.SetRow(tb, 0);
+
+            tb.DataContext = this;
+            tb.BindToProperty(new Binding("Code")
+            {
+                Mode = BindingMode.TwoWay,
+                NotifyOnValidationError = false,
+                Source = this,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            });
+
+            tb.Focus();
+        }
+    }
+
     public partial class Output
     {
         public override void SetupCustomUIElements(object ui)
