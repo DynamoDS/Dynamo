@@ -4,10 +4,12 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Linq;
 using System.Windows.Threading;
+using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using HelixToolkit.Wpf;
@@ -17,7 +19,7 @@ namespace Dynamo.Controls
     /// <summary>
     /// Interaction logic for WatchControl.xaml
     /// </summary>
-    public partial class WatchViewFullscreen : UserControl, INotifyPropertyChanged
+    public partial class Watch3DView : UserControl, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyPropertyChanged(string propertyName)
@@ -28,8 +30,8 @@ namespace Dynamo.Controls
             }
         }
 
+        private readonly string _id="";
         Point _rightMousePoint;
-        private Watch3DFullscreenViewModel _vm;
 
         protected ThreadSafeList<MeshVisual3D> _meshes = new ThreadSafeList<MeshVisual3D>();
         public ThreadSafeList<Point3D> _pointsCache = new ThreadSafeList<Point3D>();
@@ -148,19 +150,32 @@ namespace Dynamo.Controls
             }
         }
 
-        public WatchViewFullscreen()
+        public HelixViewport3D View
+        {
+            get { return watch_view; }
+        }
+
+        public Watch3DView()
         {
             InitializeComponent();
             watch_view.DataContext = this;
-            this.Loaded += new RoutedEventHandler(WatchViewFullscreen_Loaded);
+            Loaded += WatchViewFullscreen_Loaded;
+        }
+
+        public Watch3DView(string id)
+        {
+            InitializeComponent();
+            watch_view.DataContext = this;
+            Loaded += WatchViewFullscreen_Loaded;
+            _id = id;
         }
 
         void WatchViewFullscreen_Loaded(object sender, RoutedEventArgs e)
         {
-            MouseLeftButtonDown += new System.Windows.Input.MouseButtonEventHandler(view_MouseButtonIgnore);
-            MouseLeftButtonUp += new System.Windows.Input.MouseButtonEventHandler(view_MouseButtonIgnore);
-            MouseRightButtonUp += new System.Windows.Input.MouseButtonEventHandler(view_MouseRightButtonUp);
-            PreviewMouseRightButtonDown += new System.Windows.Input.MouseButtonEventHandler(view_PreviewMouseRightButtonDown);
+            MouseLeftButtonDown += new MouseButtonEventHandler(view_MouseButtonIgnore);
+            MouseLeftButtonUp += new MouseButtonEventHandler(view_MouseButtonIgnore);
+            MouseRightButtonUp += new MouseButtonEventHandler(view_MouseRightButtonUp);
+            PreviewMouseRightButtonDown += new MouseButtonEventHandler(view_PreviewMouseRightButtonDown);
 
             var mi = new MenuItem { Header = "Zoom to Fit" };
             mi.Click += new RoutedEventHandler(mi_Click);
@@ -168,12 +183,48 @@ namespace Dynamo.Controls
             MainContextMenu.Items.Add(mi);
 
             //check this for null so the designer can load the preview
-            if(dynSettings.Controller != null)
+            if (dynSettings.Controller != null)
+            {
                 dynSettings.Controller.VisualizationManager.VisualizationUpdateComplete += VisualizationManager_VisualizationUpdateComplete;
-
-            _vm = DataContext as Watch3DFullscreenViewModel;
+                dynSettings.Controller.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
+            }
 
             DrawGrid();
+        }
+
+        /// <summary>
+        /// Handler for the visualization manager's ResultsReadyToVisualize event.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void VisualizationManager_ResultsReadyToVisualize(object sender, VisualizationEventArgs e)
+        {
+            Dispatcher.Invoke(new Action<VisualizationEventArgs>(RenderDrawables), DispatcherPriority.Render,
+                                new object[] {e});
+        }
+
+        /// <summary>
+        /// When visualization is complete, the view requests it's visuals. For Full
+        /// screen watch, this will be all renderables. For a Watch 3D node, this will
+        /// be the subset of the renderables associated with the node.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void VisualizationManager_VisualizationUpdateComplete(object sender, EventArgs e)
+        {
+            if (dynSettings.Controller == null)
+                return;
+
+            Dispatcher.Invoke(new Action(delegate
+            {
+                var vm = (IWatchViewModel) DataContext;
+                   
+                if (vm.GetBranchVisualizationCommand.CanExecute(null))
+                {
+                    vm.GetBranchVisualizationCommand.Execute(null);
+                }
+            }));
+
         }
 
         /// <summary>
@@ -187,8 +238,8 @@ namespace Dynamo.Controls
 
             for (int x = -10; x <= 10; x++)
             {
-                newLines.Add(new Point3D(x,-10,-.001));
-                newLines.Add(new Point3D(x,10,-.001));
+                newLines.Add(new Point3D(x, -10, -.001));
+                newLines.Add(new Point3D(x, 10, -.001));
             }
 
             for (int y = -10; y <= 10; y++)
@@ -200,21 +251,25 @@ namespace Dynamo.Controls
             HelixGrid = newLines;
         }
 
-        void VisualizationManager_VisualizationUpdateComplete(object sender, VisualizationEventArgs e)
-        {
-            if (dynSettings.Controller == null)
-                return;
-
-            if (!dynSettings.Controller.DynamoViewModel.FullscreenWatchShowing)
-                return;
-
-            Dispatcher.Invoke(new Action<RenderDescription>(RenderDrawables),DispatcherPriority.Render, new object[]{e.Description});
-        }
-
-        private void RenderDrawables(RenderDescription rd)
+        /// <summary>
+        /// Use the render description returned from the visualization manager to update the visuals.
+        /// The visualization event arguments will contain a render description and an id representing 
+        /// the associated node. Visualizations for the background preview will return an empty id.
+        /// </summary>
+        /// <param name="e"></param>
+        private void RenderDrawables(VisualizationEventArgs e)
         {
             //Debug.WriteLine(string.Format("Rendering full screen Watch3D on thread {0}.", System.Threading.Thread.CurrentThread.ManagedThreadId));
             
+            //check the id, if the id is meant for another watch,
+            //then ignore it
+            if (e.Id != _id)
+            {
+                return;
+            }
+
+            var rd = e.Description;
+
             HelixPoints = null;
             HelixLines = null;
             HelixMesh = null;
@@ -245,17 +300,17 @@ namespace Dynamo.Controls
         {
         }
 
-        void view_MouseButtonIgnore(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        void view_MouseButtonIgnore(object sender, MouseButtonEventArgs e)
         {
             e.Handled = false;
         }
 
-        void view_PreviewMouseRightButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        void view_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             _rightMousePoint = e.GetPosition(topControl);
         }
 
-        void view_MouseRightButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        void view_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             //if the mouse has moved, and this is a right click, we assume 
             // rotation. handle the event so we don't show the context menu
@@ -267,22 +322,12 @@ namespace Dynamo.Controls
             }
         }
 
-        public Watch3DFullscreenViewModel ViewModel
-        {
-            get
-            {
-                if (this.DataContext is Watch3DFullscreenViewModel)
-                    return (Watch3DFullscreenViewModel)this.DataContext;
-                else
-                    return null;
-            }
-        }
-
-        private void Watch_view_OnMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void Watch_view_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             Point mousePos = e.GetPosition(watch_view);
             PointHitTestParameters hitParams = new PointHitTestParameters(mousePos);
             VisualTreeHelper.HitTest(watch_view, null, ResultCallback, hitParams);
+            e.Handled = true;
         }
 
         public HitTestResultBehavior ResultCallback(HitTestResult result)
@@ -299,14 +344,12 @@ namespace Dynamo.Controls
                 {
                     // Yes we did!
                     var pt = rayMeshResult.PointHit;
-                    dynSettings.Controller.VisualizationManager.LookupSelectedElement(pt.X, pt.Y, pt.Z);
+                    ((IWatchViewModel)DataContext).SelectVisualizationInViewCommand.Execute(new double[] { pt.X, pt.Y, pt.Z });
                     return HitTestResultBehavior.Stop;
                 }
             }
 
             return HitTestResultBehavior.Continue;
         }
-
-
     }
 }
