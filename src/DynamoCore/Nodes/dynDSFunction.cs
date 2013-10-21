@@ -149,6 +149,42 @@ namespace Dynamo.Nodes
             }
         }
 
+        protected override bool HasMultipleOutputs()
+        {
+            return (OutPortData.Count > 1) || 
+                   (Definition.ReturnKeys != null && Definition.ReturnKeys.Count > 0);
+        }
+
+        protected override AssociativeNode GetIndexedOutputNode(int index)
+        {
+            if (index >= OutPortData.Count)
+            {
+                DynamoLogger.Instance.Log("Overindexing", LogLevel.Warning);
+                return new NullNode();
+            }
+
+            PortData portData = OutPortData[index];
+            var indexingNode = new ProtoCore.AST.AssociativeAST.StringNode();
+            if (!string.IsNullOrEmpty(portData.NickName))
+            {
+                indexingNode.value = portData.NickName;
+            }
+            else
+            {
+                indexingNode.value = index.ToString();
+            }
+
+            var indexedNode = new IdentifierNode(this.AstIdentifier as IdentifierNode);
+            if (indexedNode is ArrayNameNode)
+            {
+                ArrayNode arrayNode = new ArrayNode();
+                arrayNode.Expr = indexingNode;
+                (indexedNode as ArrayNameNode).ArrayDimensions = arrayNode;
+            }
+
+            return indexedNode;
+        }
+
         protected override AssociativeNode BuildAstNode(DSEngine.IAstBuilder builder, 
                                                         List<ProtoCore.AST.AssociativeAST.AssociativeNode> inputs)
         {
