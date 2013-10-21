@@ -39,6 +39,7 @@ namespace Dynamo.Models
         ObservableCollection<ConnectorModel> connectors = new ObservableCollection<ConnectorModel>();
         private bool _usingDefaultValue;
         private bool _defaultValueEnabled;
+        private Thickness marginThickness;
 
         #endregion
 
@@ -170,6 +171,19 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        /// Controls the space between successive output ports
+        /// </summary>
+        public Thickness MarginThickness
+        {
+            get { return marginThickness; }
+            set
+            {
+                marginThickness = value;
+                RaisePropertyChanged("MarginThickness");
+            }
+        }
+
         #endregion
 
         public PortModel(int index, PortType portType, NodeModel owner, string name)
@@ -181,6 +195,7 @@ namespace Dynamo.Models
             PortName = name;
             UsingDefaultValue = false;
             DefaultValueEnabled = false;
+            MarginThickness = new Thickness(0);
         }
 
         public void Connect(ConnectorModel connector)
@@ -259,6 +274,7 @@ namespace Dynamo.Models
         public string ToolTipString { get; internal set; }
         public Type PortType { get; set; }
         public FScheme.Value DefaultValue { get; set; }
+        public double VerticalMargin { get; set; }
 
         public PortData(string nickName, string tip, Type portType, FScheme.Value defaultValue=null)
         {
@@ -266,6 +282,7 @@ namespace Dynamo.Models
             ToolTipString = tip;
             PortType = portType;
             DefaultValue = defaultValue;
+            VerticalMargin = 0;
         }
 
         public bool HasDefaultValue 

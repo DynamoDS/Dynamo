@@ -77,6 +77,11 @@ namespace Dynamo.ViewModels
             set { _port.UsingDefaultValue = value; }
         }
 
+        public Thickness MarginThickness
+        {
+            get { return _port.MarginThickness; }
+        }
+
         public PortViewModel(PortModel port, NodeModel node)
         {
             _node = node;
@@ -126,6 +131,9 @@ namespace Dynamo.ViewModels
                     break;
                 case "UsingDefaultValue":
                     RaisePropertyChanged("UsingDefaultValue");
+                    break;
+                case "MarginThickness":
+                    RaisePropertyChanged("MarginThickness");
                     break;
             }
             
