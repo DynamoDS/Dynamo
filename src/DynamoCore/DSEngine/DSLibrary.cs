@@ -232,9 +232,23 @@ namespace Dynamo.DSEngine
 
         private DSFunctionItem ImportProcedure(string library, string category, string className, ProcedureNode proc)
         {
-            DSLibraryItemType type = DSLibraryItemType.GenericFunction;
-            string displayName = proc.name;
+            bool isGenericFunction = string.IsNullOrEmpty(className);
+            if (!isGenericFunction)
+            {
+                // Skip overloaded member functions whose first parameter is 
+                // %thisPtrArg
+                if (proc.argInfoList != null && proc.argInfoList.Count >= 1)
+                {
+                    var firstArgument = proc.argInfoList[0];
+                    if (firstArgument.Name.Equals(ProtoCore.DSASM.Constants.kThisPointerArgName))
+                    {
+                        return null;
+                    }
+                }
+            }
 
+            string displayName = proc.name;
+            DSLibraryItemType type = DSLibraryItemType.GenericFunction;
             if (CoreUtils.IsGetterSetter(proc.name))
             {
                 type = proc.isStatic ? DSLibraryItemType.StaticProperty : DSLibraryItemType.InstanceProperty;
@@ -301,7 +315,10 @@ namespace Dynamo.DSEngine
             foreach (var proc in classNode.vtable.procList)
             {
                 var function = ImportProcedure(libraryPath, category, classNode.name, proc);
-                functions.Add(function);
+                if (function != null)
+                {
+                    functions.Add(function);
+                }
             }
         }
 
