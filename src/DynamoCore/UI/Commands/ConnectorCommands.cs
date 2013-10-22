@@ -5,8 +5,6 @@ namespace Dynamo.ViewModels
     public partial class ConnectorViewModel
     {
         private DelegateCommand redrawCommand;
-        private DelegateCommand highlightCommand;
-        private DelegateCommand unHighlightCommand;
 
         public DelegateCommand RedrawCommand
         {

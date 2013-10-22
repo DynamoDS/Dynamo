@@ -22,6 +22,7 @@
                 <ui:SharedResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml" />
                 <ui:SharedResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoConverters.xaml" />
                 <ui:SharedResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoModern.xaml" />
+                <ui:SharedResourceDictionary Source="/DynamoCore;component/UI/Themes/DataTemplates.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -50,25 +51,7 @@
 
                     <ItemsControl ItemsSource="{Binding WorkspaceElements}" Name="WorkspaceElements">
 
-                        <ItemsControl.Resources>
-
-                            <DataTemplate DataType="{x:Type viewModels:NodeViewModel}">
-                                <controls:dynNodeView></controls:dynNodeView>
-                            </DataTemplate>
-
-                            <DataTemplate DataType="{x:Type viewModels:NoteViewModel}">
-                                <nodes:dynNoteView></nodes:dynNoteView>
-                            </DataTemplate>
-
-                            <DataTemplate DataType="{x:Type viewModels:ConnectorViewModel}">
-                                <views:dynConnectorView></views:dynConnectorView>
-                            </DataTemplate>
-                            
-                            <DataTemplate DataType="{x:Type viewModels:InfoBubbleViewModel}">
-                                <controls:InfoBubbleView></controls:InfoBubbleView>
-                            </DataTemplate>
-                            
-                        </ItemsControl.Resources>
+                        <!--Resources for the ItemsControl can now be found in DataTemplates.xml-->
                         
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>

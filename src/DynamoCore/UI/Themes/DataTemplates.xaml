@@ -1,0 +1,22 @@
+﻿<ResourceDictionary   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:ui="clr-namespace:Dynamo.UI"
+                      xmlns:viewModels="clr-namespace:Dynamo.ViewModels" xmlns:views="clr-namespace:Dynamo.Nodes.Views"
+                      xmlns:controls="clr-namespace:Dynamo.Controls" xmlns:nodes="clr-namespace:Dynamo.Nodes">
+
+    <DataTemplate DataType="{x:Type viewModels:NodeViewModel}">
+        <controls:dynNodeView></controls:dynNodeView>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewModels:NoteViewModel}">
+        <nodes:dynNoteView></nodes:dynNoteView>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewModels:ConnectorViewModel}">
+        <views:dynConnectorView></views:dynConnectorView>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewModels:InfoBubbleViewModel}">
+        <controls:InfoBubbleView></controls:InfoBubbleView>
+    </DataTemplate>
+
+</ResourceDictionary>
