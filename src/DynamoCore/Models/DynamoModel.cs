@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Runtime.Remoting;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Threading;
 using System.Xml;
 using Dynamo.Nodes;
 using Dynamo.Search.SearchElements;
@@ -819,17 +820,13 @@ namespace Dynamo.Models
                     var newConnector = ConnectorModel.Make(start, end,
                         startIndex, endIndex, portType);
 
-                    //Stopwatch addTimer = new Stopwatch();
-                    //addTimer.Start();
                     if (newConnector != null)
                         CurrentWorkspace.Connectors.Add(newConnector);
-                    //addTimer.Stop();
-                    //Debug.WriteLine(string.Format("{0} elapsed for add connector to collection.", addTimer.Elapsed));
 
                     OnConnectorAdded(newConnector);
                 }
 
-                //DynamoLogger.Instance.Log(string.Format("{0} ellapsed for loading connectors.", sw.Elapsed - previousElapsed));
+                DynamoLogger.Instance.Log(string.Format("{0} ellapsed for loading connectors.", sw.Elapsed - previousElapsed));
                 previousElapsed = sw.Elapsed;
 
                 #region instantiate notes
@@ -869,7 +866,14 @@ namespace Dynamo.Models
 
                 HomeSpace.FileName = xmlPath;
 
-                DynamoLogger.Instance.Log(string.Format("{0} ellapsed for loading workspace.", sw.Elapsed));
+                http://www.japf.fr/2009/10/measure-rendering-time-in-a-wpf-application/comment-page-1/#comment-2892
+                Dispatcher.CurrentDispatcher.BeginInvoke(
+                    DispatcherPriority.Loaded,
+                    new Action(() =>
+                        {
+                            DynamoLogger.Instance.Log(string.Format("{0} ellapsed for loading workspace.", sw.Elapsed)); 
+                        }));
+
             }
             catch (Exception ex)
             {
