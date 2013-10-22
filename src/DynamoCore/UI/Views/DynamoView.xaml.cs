@@ -60,7 +60,7 @@ namespace Dynamo.Controls
         private DynamoViewModel _vm;
         private Stopwatch _timer;
 
-        private int slidingWindowStart, slidingWindowEnd;
+        private int tabSlidingWindowStart, tabSlidingWindowEnd;
 
         public bool ConsoleShowing
         {
@@ -84,7 +84,7 @@ namespace Dynamo.Controls
 
         public DynamoView()
         {
-            slidingWindowStart = slidingWindowEnd = 0;            
+            tabSlidingWindowStart = tabSlidingWindowEnd = 0;            
 
             _timer = new Stopwatch();
             _timer.Start();
@@ -630,7 +630,7 @@ namespace Dynamo.Controls
             }
         }
 
-        private void TabControlMenuItem_MouseLeftButtonUp(object sender, RoutedEventArgs e)
+        private void TabControlMenuItem_Click(object sender, RoutedEventArgs e)
         {
             BindingExpression be = ((MenuItem)sender).GetBindingExpression(MenuItem.HeaderProperty);
             WorkspaceViewModel wsvm = (WorkspaceViewModel)be.DataItem;
@@ -660,7 +660,7 @@ namespace Dynamo.Controls
             for (int tabIndex = 1; tabIndex < WorkspaceTabs.Items.Count; tabIndex++)
             {
                 TabItem tabItem = (TabItem)WorkspaceTabs.ItemContainerGenerator.ContainerFromIndex(tabIndex);
-                if (tabIndex < slidingWindowStart || tabIndex > slidingWindowEnd)
+                if (tabIndex < tabSlidingWindowStart || tabIndex > tabSlidingWindowEnd)
                     tabItem.Visibility = Visibility.Collapsed;
                 else
                     tabItem.Visibility = Visibility.Visible;
@@ -700,28 +700,28 @@ namespace Dynamo.Controls
 
             if (newSlidingWindowSize == 0)
             {
-                slidingWindowStart = slidingWindowEnd = 0;
+                tabSlidingWindowStart = tabSlidingWindowEnd = 0;
                 return;
             }
 
             if (tabSelected != 0)
             {
                 // Selection is not home tab
-                if (tabSelected < slidingWindowStart)
+                if (tabSelected < tabSlidingWindowStart)
                 {
                     // Slide window towards the front
-                    slidingWindowStart = tabSelected;
-                    slidingWindowEnd = slidingWindowStart + (newSlidingWindowSize - 1);
+                    tabSlidingWindowStart = tabSelected;
+                    tabSlidingWindowEnd = tabSlidingWindowStart + (newSlidingWindowSize - 1);
                 }
-                else if (tabSelected > slidingWindowEnd)
+                else if (tabSelected > tabSlidingWindowEnd)
                 {
                     // Slide window towards the end
-                    slidingWindowEnd = tabSelected;
-                    slidingWindowStart = slidingWindowEnd - (newSlidingWindowSize - 1);
+                    tabSlidingWindowEnd = tabSelected;
+                    tabSlidingWindowStart = tabSlidingWindowEnd - (newSlidingWindowSize - 1);
                 }
                 else
                 {
-                    int currentSlidingWindowSize = slidingWindowEnd - slidingWindowStart + 1;
+                    int currentSlidingWindowSize = tabSlidingWindowEnd - tabSlidingWindowStart + 1;
                     int windowDiff = Math.Abs(currentSlidingWindowSize - newSlidingWindowSize);
 
                     // Handles sliding window size change caused by window resizing
@@ -730,10 +730,10 @@ namespace Dynamo.Controls
                         // Trim window
                         while (windowDiff > 0)
                         {
-                            if (tabSelected == slidingWindowEnd)
-                                slidingWindowStart++; // Trim from front
+                            if (tabSelected == tabSlidingWindowEnd)
+                                tabSlidingWindowStart++; // Trim from front
                             else
-                                slidingWindowEnd--; // Trim from end
+                                tabSlidingWindowEnd--; // Trim from end
 
                             windowDiff--;
                         }
@@ -745,10 +745,10 @@ namespace Dynamo.Controls
 
                         while (windowDiff > 0)
                         {
-                            if (slidingWindowEnd == lastTab)
-                                slidingWindowStart--;
+                            if (tabSlidingWindowEnd == lastTab)
+                                tabSlidingWindowStart--;
                             else
-                                slidingWindowEnd++;
+                                tabSlidingWindowEnd++;
 
                             windowDiff--;
                         }
@@ -763,7 +763,7 @@ namespace Dynamo.Controls
             else
             {
                 // Selection is home tab
-                int currentSlidingWindowSize = slidingWindowEnd - slidingWindowStart + 1;
+                int currentSlidingWindowSize = tabSlidingWindowEnd - tabSlidingWindowStart + 1;
                 int windowDiff = Math.Abs(currentSlidingWindowSize - newSlidingWindowSize);
 
                 int lastTab = WorkspaceTabs.Items.Count - 1;
@@ -774,7 +774,7 @@ namespace Dynamo.Controls
                     // Trim window
                     while (windowDiff > 0)
                     {
-                        slidingWindowEnd--; // Trim from end
+                        tabSlidingWindowEnd--; // Trim from end
 
                         windowDiff--;
                     }
@@ -784,10 +784,10 @@ namespace Dynamo.Controls
                     // Expand window due to window resize
                     while (windowDiff > 0)
                     {
-                        if (slidingWindowEnd == lastTab)
-                            slidingWindowStart--;
+                        if (tabSlidingWindowEnd == lastTab)
+                            tabSlidingWindowStart--;
                         else
-                            slidingWindowEnd++;
+                            tabSlidingWindowEnd++;
 
                         windowDiff--;
                     }
@@ -797,10 +797,10 @@ namespace Dynamo.Controls
                     // Handle tab closing with no change in window size
                     // Shift window
 
-                    if (slidingWindowEnd > lastTab)
+                    if (tabSlidingWindowEnd > lastTab)
                     {
-                        slidingWindowStart--;
-                        slidingWindowEnd--;
+                        tabSlidingWindowStart--;
+                        tabSlidingWindowEnd--;
                     }
                 }
             }

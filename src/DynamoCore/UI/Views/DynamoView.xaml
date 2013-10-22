@@ -602,7 +602,7 @@
                                                                         Value="{Binding Path=Name}" />
 
                                                                 <EventSetter Event="Click"
-                                                                             Handler="TabControlMenuItem_MouseLeftButtonUp" />
+                                                                             Handler="TabControlMenuItem_Click" />
 
                                                                 <Style.Triggers>
                                                                     <Trigger Property="Role"
@@ -792,9 +792,10 @@
                                        HorizontalAlignment="Stretch">
 
                                 <TextBlock Name="WorkspaceName"
-                                           Margin="0,2,0,0"
-                                           Padding="8,0,0,0"
+                                           Margin="8,2,0,0"
+                                           Padding="0,0,0,0"
                                            DockPanel.Dock="Left"
+                                           HorizontalAlignment="Stretch"
                                            TextTrimming="CharacterEllipsis">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
