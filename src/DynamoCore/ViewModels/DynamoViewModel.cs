@@ -429,6 +429,8 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public bool WatchIsResizable { get; set; }
+
         #endregion
 
         public DynamoViewModel(DynamoController controller, string commandFilePath)
@@ -530,6 +532,8 @@ namespace Dynamo.ViewModels
                     dynSettings.Controller.SearchViewModel.SearchAndUpdateResultsSync();
                 }
             };
+
+            WatchIsResizable = false;
         }
 
         void VisualizationManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -1471,5 +1475,6 @@ namespace Dynamo.ViewModels
     {
         DelegateCommand SelectVisualizationInViewCommand { get; set; }
         DelegateCommand GetBranchVisualizationCommand { get; set; }
+        bool WatchIsResizable { get; set; }
     }
 }
