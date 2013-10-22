@@ -16,7 +16,7 @@
              MouseMove="OnMouseMove" 
              KeyDown="dynWorkspaceView_KeyDown" KeyUp="dynWorkspaceView_KeyUp" 
              IsHitTestVisible="{Binding IsCurrentSpace}">
-    <UserControl.Resources>
+    <!--<UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml" />
@@ -25,7 +25,7 @@
                 <ui:SharedResourceDictionary Source="/DynamoCore;component/UI/Themes/DataTemplates.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-    </UserControl.Resources>
+    </UserControl.Resources>-->
 
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
 
