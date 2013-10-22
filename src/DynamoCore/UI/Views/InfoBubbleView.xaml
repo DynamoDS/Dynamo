@@ -9,17 +9,23 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <controls:OpacityToVisibilityConverter x:Key="OpacityToVisibilityConverter"/>
+            <controls:InfoBubbleStyleToVisibilityConverter x:Key="StyleToVisibilityConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid x:Name="mainGrid" Background="Transparent" Opacity="{Binding Path=Opacity}" HorizontalAlignment="Left" VerticalAlignment="Top"
-          Margin="{Binding Path=Margin}" Visibility="{Binding Path=Opacity, Converter={StaticResource OpacityToVisibilityConverter}}">
+          Margin="{Binding Path=Margin}" Visibility="{Binding Path=Opacity, Converter={StaticResource OpacityToVisibilityConverter}}"
+           MouseLeave="InfoBubble_MouseLeave" MouseMove="MainGrid_MouseMove" MouseWheel="InfoBubble_MouseWheel">
+
         <Polygon Name="backgroundPolygon" Fill="{Binding Path=FrameFill}" Stroke="{Binding Path=FrameStrokeColor}" 
                  StrokeThickness="{Binding Path=FrameStrokeThickness}" Points="{Binding Path=FramePoints}"
-                 MouseDown="InfoBubble_PreviewMouseDown">
+                 Margin="0, 0, 0, 0" MouseDown="InfoBubble_PreviewMouseDown">
         </Polygon>
 
-        <StackPanel Name="ContentContainer" MouseEnter="InfoBubble_MouseEnter">
+        <StackPanel Name="ContentContainer" HorizontalAlignment="Center" VerticalAlignment="Center"
+                    MaxHeight="{Binding Path=MaxHeight}" MaxWidth="{Binding Path=MaxWidth}"
+                    MinWidth="{Binding Path=MinWidth}" MinHeight="{Binding Path=MinHeight}"
+                    MouseEnter="ContentContainer_MouseEnter">
             <StackPanel.Resources>
                 <Style TargetType="{x:Type TextBox}">
                     <Setter Property="IsReadOnly" Value="True"/>
@@ -29,10 +35,10 @@
                     <Setter Property="FontWeight" Value="{Binding Path=TextFontWeight}"/>
                     <Setter Property="FontSize" Value="{Binding Path=TextFontSize}"/>
                     <Setter Property="Margin" Value="{Binding Path=ContentMargin}"/>
-                    <Setter Property="MaxWidth" Value="{Binding Path=MaxWidth}"/>
-                    <Setter Property="MinWidth" Value="{Binding Path=MinWidth}"/>
-                    <Setter Property="MaxHeight" Value="{Binding Path=MaxHeight}"/>
+                    <Setter Property="MaxWidth" Value="{Binding Path=ContentMaxWidth}"/>
+                    <Setter Property="MaxHeight" Value="{Binding Path=ContentMaxHeight}"/>
                     <Setter Property="HorizontalAlignment" Value="Center"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
                     <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
                     <Setter Property="TextWrapping" Value="Wrap"/>
                 </Style>
@@ -82,5 +88,21 @@
             </StackPanel.Resources>
         </StackPanel>
 
+        <Rectangle Name="VerticalResizeBar" Width="15" HorizontalAlignment="Right" Fill="Transparent" StrokeThickness="0"
+                   Margin="0 0 -10 0" Visibility="{Binding Path=InfoBubbleStyle, Converter={StaticResource StyleToVisibilityConverter}}"
+                   MouseEnter="VerticalResizeBar_MouseEnter" MouseLeave="ResizeObject_MouseLeave"
+                   MouseDown="VerticalResizeBar_MouseDown" MouseUp="ResizeObject_MouseUp"/>
+
+        <Rectangle Name="HorizontalResizeBar" Height="15" VerticalAlignment="Bottom" Fill="Transparent" StrokeThickness="0"
+                   Margin="0 0 0 -10" Visibility="{Binding Path=InfoBubbleStyle, Converter={StaticResource StyleToVisibilityConverter}}"
+                   MouseEnter="HorizontalResizeBar_MouseEnter" MouseLeave="ResizeObject_MouseLeave"
+                   MouseDown="HorizontalResizeBar_MouseDown" MouseUp="ResizeObject_MouseUp"
+                   />
+
+        <Rectangle Name="ConnerResizePoint" Height="15" Width="15" VerticalAlignment="Bottom" HorizontalAlignment="Right" 
+                   Fill="Transparent" StrokeThickness="0" Margin="0 0 -10 -10"
+                   Visibility="{Binding Path=InfoBubbleStyle, Converter={StaticResource StyleToVisibilityConverter}}"
+                   MouseEnter="ConnerResizePoint_MouseEnter" MouseLeave="ResizeObject_MouseLeave"
+                   MouseDown="ConnerResizePoint_MouseDown" MouseUp="ResizeObject_MouseUp"/>
     </Grid>
 </UserControl>
