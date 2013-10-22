@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Media3D;
+using System.Xml;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.UI.Commands;
@@ -23,9 +25,14 @@ namespace Dynamo.Nodes
         private bool _isRendering = false;
         Watch3DView _watchView;
         private bool _canNavigateBackground = true;
+        private double _watchWidth = 200;
+        private double _watchHeight = 200;
+        private Point3D _camPosition = new Point3D(10,10,10);
+        private Vector3D _lookDirection = new Vector3D(-1,-1,-1);
 
         public DelegateCommand SelectVisualizationInViewCommand { get; set; }
         public DelegateCommand GetBranchVisualizationCommand { get; set; }
+        public bool WatchIsResizable { get; set; }
 
         public Watch3DView View
         {
@@ -56,6 +63,7 @@ namespace Dynamo.Nodes
 
             GetBranchVisualizationCommand = new DelegateCommand(GetBranchVisualization, CanGetBranchVisualization);
             SelectVisualizationInViewCommand = new DelegateCommand(SelectVisualizationInView, CanSelectVisualizationInView);
+            WatchIsResizable = true;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -86,8 +94,10 @@ namespace Dynamo.Nodes
             _watchView = new Watch3DView(GUID.ToString());
             _watchView.DataContext = this;
 
-            _watchView.Width = 400;
-            _watchView.Height = 300;
+            _watchView.Width = _watchWidth;
+            _watchView.Height = _watchHeight;
+            _watchView.View.Camera.Position = _camPosition;
+            _watchView.View.Camera.LookDirection = _lookDirection;
 
             System.Windows.Shapes.Rectangle backgroundRect = new System.Windows.Shapes.Rectangle();
             backgroundRect.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -127,6 +137,67 @@ namespace Dynamo.Nodes
         void mi_Click(object sender, RoutedEventArgs e)
         {
             _watchView.View.ZoomExtents();
+        }
+
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        {
+            base.SaveNode(xmlDoc, nodeElement, context);
+            
+            var viewElement = xmlDoc.CreateElement("view");
+            nodeElement.AppendChild(viewElement);
+            var viewHelper = new XmlElementHelper(viewElement);
+
+            viewHelper.SetAttribute("width", Width);
+            viewHelper.SetAttribute("height", Height);
+
+            var camElement = xmlDoc.CreateElement("camera");
+            viewElement.AppendChild(camElement);
+            var camHelper = new XmlElementHelper(camElement);
+
+            camHelper.SetAttribute("pos_x", _watchView.View.Camera.Position.X);
+            camHelper.SetAttribute("pos_y", _watchView.View.Camera.Position.Y);
+            camHelper.SetAttribute("pos_z", _watchView.View.Camera.Position.Z);
+            camHelper.SetAttribute("look_x", _watchView.View.Camera.LookDirection.X);
+            camHelper.SetAttribute("look_y", _watchView.View.Camera.LookDirection.Y);
+            camHelper.SetAttribute("look_z", _watchView.View.Camera.LookDirection.Z);
+        }
+
+        protected override void LoadNode(XmlNode nodeElement)
+        {
+            base.LoadNode(nodeElement);
+            try
+            {
+                foreach (XmlNode node in nodeElement.ChildNodes)
+                {
+                    if (node.Name == "view")
+                    {
+                        _watchWidth = Convert.ToDouble(node.Attributes["width"].Value);
+                        _watchHeight = Convert.ToDouble(node.Attributes["height"].Value);
+
+                        foreach (XmlNode inNode in node.ChildNodes)
+                        {
+                            if (inNode.Name == "camera")
+                            {
+                                var x = Convert.ToDouble(inNode.Attributes["pos_x"].Value);
+                                var y = Convert.ToDouble(inNode.Attributes["pos_y"].Value);
+                                var z = Convert.ToDouble(inNode.Attributes["pos_z"].Value);
+                                var lx = Convert.ToDouble(inNode.Attributes["look_x"].Value);
+                                var ly = Convert.ToDouble(inNode.Attributes["look_y"].Value);
+                                var lz = Convert.ToDouble(inNode.Attributes["look_z"].Value);
+                                _camPosition = new Point3D(x,y,z);
+                                _lookDirection = new Vector3D(lx,ly,lz);
+                            }
+                        }
+                    }
+                }
+                
+            }
+            catch(Exception ex)
+            {
+                DynamoLogger.Instance.Log(ex);
+                DynamoLogger.Instance.Log("View attributes could not be read from the file.");
+            }
+            
         }
 
         #region IWatchViewModel interface
