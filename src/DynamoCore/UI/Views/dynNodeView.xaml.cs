@@ -8,6 +8,7 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Prompts;
 using Dynamo.Selection;
+using Dynamo.UI;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -37,6 +38,11 @@ namespace Dynamo.Controls
 
         public dynNodeView()
         {
+            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoModernDictionary);
+            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoColorsAndBrushesDictionary);
+            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DataTemplatesDictionary);
+            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoConvertersDictionary);
+
             InitializeComponent();
 
             this.Loaded += new RoutedEventHandler(dynNodeView_Loaded);

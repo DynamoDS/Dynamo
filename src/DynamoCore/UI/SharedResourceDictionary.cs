@@ -53,4 +53,142 @@ namespace Dynamo.UI
             }
         }
     }
+
+    public static class SharedDictionaryManager
+    {
+        private static ResourceDictionary _dynamoModernDictionary;
+        private static ResourceDictionary _dataTemplatesDictionary;
+        private static ResourceDictionary _dynamoColorsAndBrushesDictionary;
+        private static ResourceDictionary _dynamoConvertersDictionary;
+        private static ResourceDictionary _dynamoTextDictionary;
+        private static ResourceDictionary _mainMenuStyleDictionary;
+        private static ResourceDictionary _toolbarStyleDictionary;
+
+        public static ResourceDictionary DynamoModernDictionary
+        {
+            get
+            {
+                if (_dynamoModernDictionary == null)
+                {
+                    System.Uri resourceLocater =
+                        new System.Uri("/DynamoCore;component/UI/Themes/DynamoModern.xaml",
+                                        System.UriKind.Relative);
+
+                    _dynamoModernDictionary =
+                        (ResourceDictionary)Application.LoadComponent(resourceLocater);
+                }
+
+                return _dynamoModernDictionary;
+            }
+        }
+
+        public static ResourceDictionary DataTemplatesDictionary
+        {
+            get
+            {
+                if (_dataTemplatesDictionary == null)
+                {
+                    System.Uri resourceLocater =
+                        new System.Uri("/DynamoCore;component/UI/Themes/DataTemplates.xaml",
+                                        System.UriKind.Relative);
+
+                    _dataTemplatesDictionary =
+                        (ResourceDictionary)Application.LoadComponent(resourceLocater);
+                }
+
+                return _dataTemplatesDictionary;
+            }
+        }
+
+        public static ResourceDictionary DynamoColorsAndBrushesDictionary
+        {
+            get
+            {
+                if (_dynamoColorsAndBrushesDictionary == null)
+                {
+                    System.Uri resourceLocater =
+                        new System.Uri("/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml",
+                                        System.UriKind.Relative);
+
+                    _dynamoColorsAndBrushesDictionary =
+                        (ResourceDictionary)Application.LoadComponent(resourceLocater);
+                }
+
+                return _dynamoColorsAndBrushesDictionary;
+            }
+        }
+
+        public static ResourceDictionary DynamoConvertersDictionary
+        {
+            get
+            {
+                if (_dynamoConvertersDictionary == null)
+                {
+                    System.Uri resourceLocater =
+                        new System.Uri("/DynamoCore;component/UI/Themes/DynamoConverters.xaml",
+                                        System.UriKind.Relative);
+
+                    _dynamoConvertersDictionary =
+                        (ResourceDictionary)Application.LoadComponent(resourceLocater);
+                }
+
+                return _dynamoConvertersDictionary;
+            }
+        }
+
+        public static ResourceDictionary DynamoTextDictionary
+        {
+            get
+            {
+                if (_dynamoTextDictionary == null)
+                {
+                    System.Uri resourceLocater =
+                        new System.Uri("/DynamoCore;component/UI/Themes/DynamoText.xaml",
+                                        System.UriKind.Relative);
+
+                    _dynamoTextDictionary =
+                        (ResourceDictionary)Application.LoadComponent(resourceLocater);
+                }
+
+                return _dynamoTextDictionary;
+            }
+        }
+
+        public static ResourceDictionary MainMenuStyleDictionary
+        {
+            get
+            {
+                if (_mainMenuStyleDictionary == null)
+                {
+                    System.Uri resourceLocater =
+                        new System.Uri("/DynamoCore;component/UI/Themes/MainMenuStyleDictionary.xaml",
+                                        System.UriKind.Relative);
+
+                    _mainMenuStyleDictionary =
+                        (ResourceDictionary)Application.LoadComponent(resourceLocater);
+                }
+
+                return _mainMenuStyleDictionary;
+            }
+        }
+
+        public static ResourceDictionary ToolbarStyleDictionary
+        {
+            get
+            {
+                if (_toolbarStyleDictionary == null)
+                {
+                    System.Uri resourceLocater =
+                        new System.Uri("/DynamoCore;component/UI/Themes/ToolbarStyleDictionary.xaml",
+                                        System.UriKind.Relative);
+
+                    _toolbarStyleDictionary =
+                        (ResourceDictionary)Application.LoadComponent(resourceLocater);
+                }
+
+                return _toolbarStyleDictionary;
+            }
+        }
+
+    }
 }
