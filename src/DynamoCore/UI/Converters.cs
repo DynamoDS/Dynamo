@@ -1135,4 +1135,20 @@ namespace Dynamo.Controls
 
         }
     }
+
+    public class BoolToShowAllPreviewNameConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if ((bool)value)
+                return "Hide All Preview";
+            else
+                return "Show All Preview";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
 }
