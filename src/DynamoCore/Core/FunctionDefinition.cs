@@ -149,7 +149,7 @@ namespace Dynamo
             //Update existing function nodes which point to this function to match its changes
             dynSettings.Controller.DynamoModel.AllNodes
                 .OfType<Function>()
-                .Where(el => el.Definition.FunctionId == this.FunctionId)
+                .Where(el => el.Definition != null && el.Definition.FunctionId == this.FunctionId)
                 .ToList()
                 .ForEach(node =>
                 {
