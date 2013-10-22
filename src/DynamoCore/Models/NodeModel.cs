@@ -98,6 +98,7 @@ namespace Dynamo.Models
         internal bool isUpstreamVisible;
 
         private IdentifierNode identifier = null;
+        private List<string> inputIdentifiers = new List<String>();
        // protected AssociativeNode defaultAstExpression = null;
  
         /// <summary>
@@ -442,6 +443,7 @@ namespace Dynamo.Models
                 return identifier;
             }
         }
+
         #endregion
 
         protected NodeModel()
@@ -827,19 +829,22 @@ namespace Dynamo.Models
             // Recursively compile its inputs to ast nodes and add intermediate
             // nodes to builder
             List<AssociativeNode> inputAstNodes = new List<AssociativeNode>();
+            List<string> inputIdentifiers = new List<String>();
+
             for (int index = 0; index < InPortData.Count; ++index)
             {
                 Tuple<int, NodeModel> inputTuple;
+
+                AssociativeNode inputNode = null;
                 if (!TryGetInput(index, out inputTuple))
                 {
-                    // inputAstNodes.Add(null);
-                    inputAstNodes.Add(new NullNode());
+                    inputNode = new NullNode();
                 }
                 else
                 {
                     int outputIndexOfInput = inputTuple.Item1;
                     NodeModel inputModel = inputTuple.Item2;
-                    AssociativeNode inputNode = inputModel.CompileToAstNode(builder);
+                    inputNode = inputModel.CompileToAstNode(builder);
 
                     // Multiple outputs from input node, input node may be a 
                     // function node which returns a dictionary or a code block
@@ -848,23 +853,28 @@ namespace Dynamo.Models
                     {
                         inputNode = inputModel.GetIndexedOutputNode(outputIndexOfInput);
                     }
+                }
 
-                    inputAstNodes.Add(inputNode);
+                inputAstNodes.Add(inputNode);
+                if (inputNode is IdentifierNode)
+                {
+                    inputIdentifiers.Add((inputNode as IdentifierNode).Name);
+                }
+                else 
+                {
+                    inputIdentifiers.Add(null);
                 }
             }
 
-            // Build evaluatiion for this node. If the rhs is a partially
-            // applied function, then a function defintion node will be created.
-            // But in the end there is always an assignment:
-            //
-            //     AstIdentifier = ...;
-
-            if (isDirty)
+            bool inputChanged = !inputIdentifiers.SequenceEqual(this.inputIdentifiers);                  
+            if (isDirty || inputChanged)
             {
+                // build ast node for the corresponding node
                 var rhs = BuildAstNode(builder, inputAstNodes);
                 builder.BuildEvaluation(this, rhs);
                 isDirty = false;
             }
+            this.inputIdentifiers = inputIdentifiers;
 
             return AstIdentifier;
         }
