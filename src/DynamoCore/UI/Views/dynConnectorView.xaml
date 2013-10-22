@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:ui="clr-namespace:Dynamo.UI"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              mc:Ignorable="d">
 
     <Grid>
@@ -41,9 +42,17 @@
         </Canvas>
 
         <Path Stroke="{DynamicResource SelectionGradientBrush}" StrokeThickness="{Binding StrokeThickness}" IsHitTestVisible="{Binding IsHitTestVisible}"
-              Name="connector" MouseEnter="Highlight" MouseLeave="Unhighlight"
-              Visibility="{Binding BezVisibility, Converter={StaticResource BooleanToVisibilityConverter}}" Style="{StaticResource ConnectorStyle}" Canvas.ZIndex="0">
-            
+              Name="connector"
+              Visibility="{Binding BezVisibility, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" Style="{StaticResource ConnectorStyle}" Canvas.ZIndex="0"
+              MouseEnter="Highlight" MouseLeave="Unhighlight">
+            <!--<i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseEnter">
+                    <i:InvokeCommandAction Command="HighlightCommand"></i:InvokeCommandAction>
+                </i:EventTrigger>
+                <i:EventTrigger EventName="MouseLeave">
+                    <i:InvokeCommandAction Command="UnHighlightCommand"></i:InvokeCommandAction>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>-->
             <Path.Data>
                 <PathGeometry>
                     <PathGeometry.Figures>
@@ -62,9 +71,17 @@
         </Path>
 
         <Path Stroke="{DynamicResource SelectionGradientBrush}" StrokeThickness="{Binding StrokeThickness}" IsHitTestVisible="{Binding IsHitTestVisible}"
-              Name="plineConnector" MouseEnter="Highlight" MouseLeave="Unhighlight" Style="{StaticResource ConnectorStyle}"
-              Visibility="{Binding PlineVisibility, Converter={StaticResource BooleanToVisibilityConverter}}" Canvas.ZIndex="0">
-            
+              Name="plineConnector" Style="{StaticResource ConnectorStyle}"
+              Visibility="{Binding PlineVisibility, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" Canvas.ZIndex="0"
+              MouseEnter="Highlight" MouseLeave="Unhighlight">
+            <!--<i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseEnter">
+                    <i:InvokeCommandAction Command="HighlightCommand"></i:InvokeCommandAction>
+                </i:EventTrigger>
+                <i:EventTrigger EventName="MouseLeave">
+                    <i:InvokeCommandAction Command="UnHighlightCommand"></i:InvokeCommandAction>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>-->
             <Path.Data>
                 <PathGeometry>
                     <PathGeometry.Figures>

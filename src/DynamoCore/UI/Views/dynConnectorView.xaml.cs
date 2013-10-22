@@ -19,7 +19,7 @@ namespace Dynamo.Nodes.Views
 
         void EndDot_OnMouseDown(object sender, MouseEventArgs e)
         {
-          
+
         }
 
         private void Highlight(object sender, MouseEventArgs e)
@@ -36,12 +36,12 @@ namespace Dynamo.Nodes.Views
 
         public ConnectorViewModel ViewModel
         {
-            get { return (ConnectorViewModel) DataContext; }
+            get { return (ConnectorViewModel)DataContext; }
         }
 
         void Connector_OnMouseDown(object sender, MouseEventArgs e)
         {
-           // Let the click pass through the connector
+            // Let the click pass through the connector
         }
     }
 }

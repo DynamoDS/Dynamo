@@ -858,6 +858,15 @@ namespace Dynamo.Models
                 foreach (NodeModel e in CurrentWorkspace.Nodes)
                     e.EnableReporting();
 
+                http://www.japf.fr/2009/10/measure-rendering-time-in-a-wpf-application/comment-page-1/#comment-2892
+                Dispatcher.CurrentDispatcher.BeginInvoke(
+                    DispatcherPriority.Loaded,
+                    new Action(() =>
+                    {
+                        sw.Stop();
+                        DynamoLogger.Instance.Log(string.Format("{0} ellapsed for loading workspace.", sw.Elapsed));
+                    }));
+
                 if(!string.IsNullOrEmpty(version))
                     CurrentWorkspace.WorkspaceVersion = new Version(version);
                 dynSettings.Controller.DynamoModel.ProcessMigrations();
@@ -865,15 +874,6 @@ namespace Dynamo.Models
                 #endregion
 
                 HomeSpace.FileName = xmlPath;
-
-                http://www.japf.fr/2009/10/measure-rendering-time-in-a-wpf-application/comment-page-1/#comment-2892
-                Dispatcher.CurrentDispatcher.BeginInvoke(
-                    DispatcherPriority.Loaded,
-                    new Action(() =>
-                        {
-                            DynamoLogger.Instance.Log(string.Format("{0} ellapsed for loading workspace.", sw.Elapsed)); 
-                        }));
-
             }
             catch (Exception ex)
             {
