@@ -795,15 +795,6 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Indicate if this node may return multiple outputs.
-        /// </summary>
-        /// <returns></returns>
-        protected virtual bool HasMultipleOutputs()
-        {
-            return false;
-        }
-
-        /// <summary>
         /// Node may overwrite this method if it provides multiple output, say
         /// a function which returns a dictionary, or code block node. 
         /// </summary>
@@ -811,7 +802,12 @@ namespace Dynamo.Models
         /// <returns></returns>
         protected virtual AssociativeNode GetIndexedOutputNode(int index)
         {
-            throw new NotImplementedException();
+            if (index > 0)
+            {
+                throw new ArgumentOutOfRangeException("Index is out of range");
+            }
+
+            return this.AstIdentifier;
         }
 
         protected virtual AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputAstNodes)
@@ -819,11 +815,11 @@ namespace Dynamo.Models
             return builder.Build(this, inputAstNodes);
         }
 
-        public AssociativeNode CompileToAstNode(AstBuilder builder)
+        public void CompileToAstNode(AstBuilder builder)
         {
             if (!RequiresRecalc && !isDirty)
             {
-                return this.AstIdentifier; 
+                return; 
             }
 
             // Recursively compile its inputs to ast nodes and add intermediate
@@ -844,15 +840,12 @@ namespace Dynamo.Models
                 {
                     int outputIndexOfInput = inputTuple.Item1;
                     NodeModel inputModel = inputTuple.Item2;
-                    inputNode = inputModel.CompileToAstNode(builder);
+                    inputModel.CompileToAstNode(builder);
 
                     // Multiple outputs from input node, input node may be a 
                     // function node which returns a dictionary or a code block
                     // node which has multiple outputs.
-                    if (inputModel.HasMultipleOutputs())
-                    {
-                        inputNode = inputModel.GetIndexedOutputNode(outputIndexOfInput);
-                    }
+                    inputNode = inputModel.GetIndexedOutputNode(outputIndexOfInput);
                 }
 
                 inputAstNodes.Add(inputNode);
@@ -871,12 +864,13 @@ namespace Dynamo.Models
             {
                 // build ast node for the corresponding node
                 var rhs = BuildAstNode(builder, inputAstNodes);
-                builder.BuildEvaluation(this, rhs);
+                if (rhs != null)
+                {
+                    builder.BuildEvaluation(this, rhs);
+                }
                 isDirty = false;
             }
             this.inputIdentifiers = inputIdentifiers;
-
-            return AstIdentifier;
         }
 
         /// <summary>
