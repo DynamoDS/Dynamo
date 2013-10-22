@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
@@ -350,6 +351,52 @@ namespace Dynamo.Controls
             }
 
             return HitTestResultBehavior.Continue;
+        }
+
+        /// <summary>
+        /// Callback for thumb control's DragStarted event.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ResizeThumb_OnDragStarted(object sender, DragStartedEventArgs e)
+        {
+            //throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Callbcak for thumb control's DragCompleted event.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ResizeThumb_OnDragCompleted(object sender, DragCompletedEventArgs e)
+        {
+            //throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Callback for thumb control's DragDelta event.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ResizeThumb_OnDragDelta(object sender, DragDeltaEventArgs e)
+        {
+            var yAdjust = ActualHeight + e.VerticalChange;
+            var xAdjust = ActualWidth + e.HorizontalChange;
+
+            //Debug.WriteLine("d_x:" + e.HorizontalChange + "," + "d_y:" + e.VerticalChange);
+            //Debug.WriteLine("Size:" + _nodeUI.Width + "," + _nodeUI.Height);
+            //Debug.WriteLine("ActualSize:" + _nodeUI.ActualWidth + "," + _nodeUI.ActualHeight);
+            //Debug.WriteLine("Grid size:" + _nodeUI.ActualWidth + "," + _nodeUI.ActualHeight);
+
+            if (xAdjust >= inputGrid.MinWidth)
+            {
+                Width = xAdjust;
+            }
+
+            if (yAdjust >= inputGrid.MinHeight)
+            {
+                Height = yAdjust;
+            }
         }
     }
 }
