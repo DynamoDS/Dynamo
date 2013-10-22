@@ -14,6 +14,10 @@ namespace Dynamo.Connectors
 
         public dynPortView()
         {
+            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoModernDictionary);
+            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoColorsAndBrushesDictionary);
+            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoConvertersDictionary);
+
             InitializeComponent();
         }
 
