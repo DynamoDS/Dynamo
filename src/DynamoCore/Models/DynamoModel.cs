@@ -860,7 +860,7 @@ namespace Dynamo.Models
 
                 http://www.japf.fr/2009/10/measure-rendering-time-in-a-wpf-application/comment-page-1/#comment-2892
                 Dispatcher.CurrentDispatcher.BeginInvoke(
-                    DispatcherPriority.Loaded,
+                    DispatcherPriority.Background,
                     new Action(() =>
                     {
                         sw.Stop();
