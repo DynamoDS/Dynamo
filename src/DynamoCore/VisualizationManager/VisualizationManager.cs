@@ -201,7 +201,7 @@ namespace Dynamo
                                          .Where(
                                              x =>
                                              !DynamoSelection.Instance.Selection.Select(
-                                                 y => (y as NodeModel).GUID.ToString()).Contains(x.Key)).Select(x=>x.Value);
+                                                 y => (y as ModelBase).GUID.ToString()).Contains(x.Key)).Select(x=>x.Value);
             foreach (var viz in toRemove)
             {
                 viz.Points.AddRange(viz.SelectedPoints);
