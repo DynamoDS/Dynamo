@@ -40,6 +40,11 @@ namespace Dynamo.Views
 
         public dynWorkspaceView()
         {
+            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoModernDictionary);
+            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoColorsAndBrushesDictionary);
+            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DataTemplatesDictionary);
+            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoConvertersDictionary);
+
             InitializeComponent();
 
             selectionCanvas.Loaded += new RoutedEventHandler(selectionCanvas_Loaded);
