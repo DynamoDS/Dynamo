@@ -10,11 +10,11 @@
 
         <Grid.Resources>
             <ResourceDictionary>
-                <ResourceDictionary.MergedDictionaries>
+                <!--<ResourceDictionary.MergedDictionaries>
                     <ui:SharedResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml" />
                     <ui:SharedResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoConverters.xaml" />
                     <ui:SharedResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoModern.xaml" />
-                </ResourceDictionary.MergedDictionaries>
+                </ResourceDictionary.MergedDictionaries>-->
                 
                 <LinearGradientBrush x:Key="SelectionGradientBrush" StartPoint="0,.5" EndPoint="1,.5">
                     <GradientStop Color="{Binding IsStartSelected, Converter={StaticResource BooleanToSelectionColorConverter}}" Offset="0"></GradientStop>
