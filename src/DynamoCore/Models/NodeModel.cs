@@ -6,10 +6,11 @@ using System.Linq;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
 using System.Reflection;
-using Dynamo.Nodes;
+using System.Windows;
 using System.Xml;
 using Dynamo.Selection;
 using Microsoft.FSharp.Collections;
+using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.FSchemeInterop;
@@ -791,6 +792,26 @@ namespace Dynamo.Models
             return nodes[outPort];
         }
 
+        /// <summary>
+        /// Indicate if this node may return multiple outputs.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual bool HasMultipleOutputs()
+        {
+            return false;
+        }
+
+        /// <summary>
+        /// Node may overwrite this method if it provides multiple output, say
+        /// a function which returns a dictionary, or code block node. 
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        protected virtual AssociativeNode GetIndexedOutputNode(int index)
+        {
+            throw new NotImplementedException();
+        }
+
         protected virtual AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputAstNodes)
         {
             return builder.Build(this, inputAstNodes);
@@ -817,30 +838,14 @@ namespace Dynamo.Models
                 {
                     int outputIndexOfInput = inputTuple.Item1;
                     NodeModel inputModel = inputTuple.Item2;
-
                     AssociativeNode inputNode = inputModel.CompileToAstNode(builder);
-                    // Multiple outputs from input node, so using a key to
-                    // indexing into the input
-                    if (inputModel.OutPortData.Count > 1)
-                    {
-                        PortData portData = inputModel.OutPortData[outputIndexOfInput];
-                        var indexingNode = new ProtoCore.AST.AssociativeAST.StringNode();
-                        if (!String.IsNullOrEmpty(portData.NickName))
-                        {
-                            indexingNode.value = portData.NickName;
-                        }
-                        else
-                        {
-                            indexingNode.value = outputIndexOfInput.ToString();
-                        }
 
-                        inputNode = new IdentifierNode(inputNode as IdentifierNode); 
-                        if (inputNode is ArrayNameNode)
-                        {
-                            ArrayNode arrayNode = new ArrayNode();
-                            arrayNode.Expr = indexingNode;
-                            (inputNode as ArrayNameNode).ArrayDimensions = arrayNode;
-                        }
+                    // Multiple outputs from input node, input node may be a 
+                    // function node which returns a dictionary or a code block
+                    // node which has multiple outputs.
+                    if (inputModel.HasMultipleOutputs())
+                    {
+                        inputNode = inputModel.GetIndexedOutputNode(outputIndexOfInput);
                     }
 
                     inputAstNodes.Add(inputNode);
@@ -1334,12 +1339,14 @@ namespace Dynamo.Models
                     {
                         p = outPorts[index];
                         p.PortName = data.NickName;
+                        p.MarginThickness = new Thickness(0, data.VerticalMargin, 0, 0);
                         return p;
                     }
 
                     p = new PortModel(index, portType, this, data.NickName)
                     {
-                        UsingDefaultValue = false
+                        UsingDefaultValue = false,
+                        MarginThickness = new Thickness(0,data.VerticalMargin,0,0)
                     };
 
                     OutPorts.Add(p);
