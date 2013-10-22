@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -41,18 +39,6 @@ namespace Dynamo.Connectors
     
             //set the handled flag so that the element doesn't get dragged
             e.Handled = true;
-        }
-
-        private void DynPort_OnMouseEnter(object sender, MouseEventArgs e)
-        {
-            if (ViewModel != null)
-                ViewModel.HighlightCommand.Execute(null);
-        }
-
-        private void DynPort_OnMouseLeave(object sender, MouseEventArgs e)
-        {
-            if (ViewModel != null)
-                ViewModel.UnHighlightCommand.Execute(null);
         }
 
         public PortViewModel ViewModel

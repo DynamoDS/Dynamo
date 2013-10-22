@@ -229,26 +229,5 @@ namespace Dynamo.ViewModels
         {
             return true;
         }
-
-        private void Highlight(object parameter)
-        {
-           var connectorViewModels = dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Connectors.Where(
-                x => _port.Connectors.Contains(x.ConnectorModel));
-        }
-
-        private bool CanHighlight(object parameter)
-        {
-            return true;
-        }
-
-        private void UnHighlight(object parameter)
-        {
-            
-        }
-
-        private bool CanUnHighlight(object parameter)
-        {
-            return true;
-        }
     }
 }
