@@ -24,27 +24,5 @@ namespace Dynamo.ViewModels
                 return _connectCommand;
             }
         }
-
-        public DelegateCommand HighlightCommand
-        {
-            get
-            {
-                if(_highlightCommand == null)
-                    _highlightCommand = new DelegateCommand(Highlight, CanHighlight);
-
-                return _highlightCommand;
-            }
-        }
-
-        public DelegateCommand UnHighlightCommand
-        {
-            get
-            {
-                if(_unHighlightCommand == null)
-                    _unHighlightCommand = new DelegateCommand(UnHighlight, CanUnHighlight);
-
-                return _unHighlightCommand;
-            }
-        }
     }
 }
