@@ -211,13 +211,13 @@
                        StrokeThickness="2"
                        Fill="{Binding Path=State, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource StateToColorConverter}}" 
                        RadiusX="2" RadiusY="2" Canvas.ZIndex="2">
-                <Rectangle.Effect>
+                <!--<Rectangle.Effect>
                     <DropShadowEffect
                     ShadowDepth="0"
                     Color="#222"
                     Opacity="0.45"
                     BlurRadius="12.0" />
-                </Rectangle.Effect>
+                </Rectangle.Effect>-->
             </Rectangle>
         </Canvas>
 
