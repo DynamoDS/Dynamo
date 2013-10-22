@@ -17,6 +17,8 @@ namespace Dynamo.ViewModels
 
         private ConnectorModel _model;
 
+        private bool ShouldRedraw { get; set; }
+
         public ConnectorModel ConnectorModel
         {
             get { return _model; }
@@ -209,7 +211,7 @@ namespace Dynamo.ViewModels
             IsConnecting = true;
             _activeStartPort = port;
 
-            this.Redraw(port.Center);
+            Redraw(port.Center);
         }
 
         public ConnectorViewModel(ConnectorModel model)
@@ -269,11 +271,6 @@ namespace Dynamo.ViewModels
                     Redraw();
                     break;
             }
-        }
-
-        void ModelConnected(object sender, EventArgs e)
-        {
-            //throw new NotImplementedException();
         }
 
         void DynamoViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
