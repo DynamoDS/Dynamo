@@ -169,38 +169,21 @@ namespace Dynamo.Nodes
             }
         }
 
-        protected override bool HasMultipleOutputs()
-        {
-            return (OutPortData.Count > 1) || 
-                   (Definition.ReturnKeys != null && Definition.ReturnKeys.Count > 0);
-        }
-
         protected override AssociativeNode GetIndexedOutputNode(int index)
         {
-            if (index >= OutPortData.Count)
+            if (index < 0 || index >= Definition.ReturnKeys.Count)
             {
-                DynamoLogger.Instance.Log("Overindexing", LogLevel.Warning);
-                return new NullNode();
+                throw new ArgumentOutOfRangeException("Index is out of range.");
             }
 
-            PortData portData = OutPortData[index];
-            var indexingNode = new ProtoCore.AST.AssociativeAST.StringNode();
-            if (!string.IsNullOrEmpty(portData.NickName))
-            {
-                indexingNode.value = portData.NickName;
-            }
-            else
-            {
-                indexingNode.value = index.ToString();
-            }
+            StringNode indexingNode = new StringNode();
+            indexingNode.value = Definition.ReturnKeys[index];
 
-            var indexedNode = new IdentifierNode(this.AstIdentifier as IdentifierNode);
-            if (indexedNode is ArrayNameNode)
-            {
-                ArrayNode arrayNode = new ArrayNode();
-                arrayNode.Expr = indexingNode;
-                (indexedNode as ArrayNameNode).ArrayDimensions = arrayNode;
-            }
+            ArrayNode arrayNode = new ArrayNode();
+            arrayNode.Expr = indexingNode;
+
+            var indexedNode = new IdentifierNode(AstIdentifier as IdentifierNode);
+            indexedNode.ArrayDimensions = arrayNode;
 
             return indexedNode;
         }
