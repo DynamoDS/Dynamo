@@ -27,6 +27,7 @@ namespace Dynamo.Views
         private ZoomAndPanControl zoomAndPanControl = null;
         private EndlessGrid endlessGrid = null;
 
+        private PortViewModel snappedPort = null;
         private DrawingVisual hitVisual = null;
         private List<DependencyObject> hitResultsList = new List<DependencyObject>();
         private int minIndex = 0;
@@ -39,6 +40,14 @@ namespace Dynamo.Views
                     return this.DataContext as WorkspaceViewModel;
                 else
                     return null;
+            }
+        }
+
+        internal bool IsSnappedToPort
+        {
+            get
+            {
+                return (this.snappedPort != null);
             }
         }
 
@@ -399,213 +408,83 @@ namespace Dynamo.Views
 
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-//<<<<<<< HEAD
-            WorkspaceViewModel vm = (DataContext as WorkspaceViewModel);
-
-            if (!(DataContext as WorkspaceViewModel).IsConnecting)
-            {
-                #region window selection
-
-                //WorkBench.ClearSelection();
-                DynamoSelection.Instance.ClearSelection();
-
-                //DEBUG WINDOW SELECTION
-                // Capture and track the mouse.
-                isWindowSelecting = true;
-                mouseDownPos = e.GetPosition(WorkBench);
-                //workBench.CaptureMouse();
-
-                // Initial placement of the drag selection box.         
-                Canvas.SetLeft(selectionBox, mouseDownPos.X);
-                Canvas.SetTop(selectionBox, mouseDownPos.Y);
-                selectionBox.Width = 0;
-                selectionBox.Height = 0;
-
-                // Make the drag selection box visible.
-                selectionBox.Visibility = Visibility.Visible;
-
-                #endregion
-            }
-            else
-            {
-                if (hitResultsList.Count > 0)
-                {
-                    try
-                    {
-                        Grid g = (Grid)hitResultsList[minIndex];
-                        UserControl uc = (UserControl)g.Parent;
-                        PortViewModel pvm = (PortViewModel)uc.DataContext;
-                        pvm.ConnectCommand.Execute(null);
-                    }
-                    catch (Exception exc)
-                    {
-                        Debug.WriteLine(exc.StackTrace);
-                    }
-                }
-            }
-
-            //if you click on the canvas and you're connecting
-            //then drop the connector, otherwise do nothing
-            if (vm != null)
-            {
-                if (vm.ActiveConnector != null)
-                {
-                    vm.IsConnecting = false;
-                    vm.ActiveConnector = null;
-                }
-            }
-
-            //if (editingName && !hoveringEditBox)
-            //{
-            //    DisableEditNameBox();
-            //}
-
-            dynSettings.ReturnFocusToSearch();
-//=======
             WorkspaceViewModel wvm = (DataContext as WorkspaceViewModel);
-            wvm.HandleLeftButtonDown(this.WorkBench, e);
-//>>>>>>> upstream/master
+
+            if (this.snappedPort != null)
+                wvm.HandlePortClicked(this.snappedPort);
+            else
+                wvm.HandleLeftButtonDown(this.WorkBench, e);
         }
 
         private void OnMouseRelease(object sender, MouseButtonEventArgs e)
         {
+            this.snappedPort = null;
             WorkspaceViewModel wvm = (DataContext as WorkspaceViewModel);
             wvm.HandleMouseRelease(this.WorkBench, e);
         }
 
         private void OnMouseMove(object sender, MouseEventArgs e)
         {
-//<<<<<<< HEAD
-            var vm = (DataContext as WorkspaceViewModel);
-
-            //Canvas.SetLeft(debugPt, e.GetPosition(dynSettings.Workbench).X - debugPt.Width/2);
-            //Canvas.SetTop(debugPt, e.GetPosition(dynSettings.Workbench).Y - debugPt.Height / 2);
+            this.snappedPort = null;
+            bool snapToCursor = false;
+            WorkspaceViewModel wvm = (DataContext as WorkspaceViewModel);
 
             //If we are currently connecting and there is an active connector,
             //redraw it to match the new mouse coordinates.
-            if (vm.IsConnecting && vm.ActiveConnector != null)
+            if (wvm.IsConnecting)
             {
-                Point mouse = (Point)e.GetPosition((UIElement)sender);
-                
-                if (this.FindChildren(mouse).Count > 0)
+                Point mouse = e.GetPosition((UIElement)sender);
+                this.snappedPort = GetSnappedPort(mouse);
+                if (this.snappedPort != null)
                 {
-                    minIndex = 0;
-                    double curDistance = 1000000;
-                    //foreach (DependencyObject deob in this.FindChildren(mouse))
-                    for (int i=0; i<this.hitResultsList.Count; i++)
-                    {
-                        DependencyObject deob = this.hitResultsList[i];
-                        if (deob.GetType() == typeof(Grid))
-                        {
-                            Grid g = (Grid)deob;
-                            UserControl uc;
-                            try
-                            {
-                                uc = (UserControl)g.Parent;
-                                if (null != uc)
-                                {
-                                    PortViewModel pvm = (PortViewModel)uc.DataContext;
-                                    if (null != pvm)
-                                    {                                        
-                                        if (Distance(mouse, pvm.Center) < curDistance)
-                                        {
-                                            curDistance = Distance(mouse, pvm.Center);
-                                            minIndex = i;
-                                        }
-                                        //vm.ActiveConnector.Redraw(pvm.Center);
-                                    }
-                                }
-                            }
-                            catch
-                            {
-                                continue;
-                            }
-                            //UserControl uc = (UserControl)g.Parent;
-
-                        }
-                    }
-
-                    try 
-                    {
-                        DependencyObject DepOb = hitResultsList[minIndex];
-                        Grid g2 = (Grid)DepOb;
-                        UserControl uc2 = (UserControl)g2.Parent;
-                        PortViewModel pvm2 = (PortViewModel)uc2.DataContext;
-                        vm.ActiveConnector.Redraw(pvm2.Center);
-                    }
-                    catch (Exception e2)
-                    {
-                        Debug.WriteLine(e2.ToString());
-                    }
-
+                    snapToCursor = true;
+                    wvm.HandleMouseMove(this.WorkBench, this.snappedPort.Center);
                 }
-                else
-                    vm.ActiveConnector.Redraw(e.GetPosition(WorkBench));
-                
             }
 
-            if (isWindowSelecting)
+            if (false == snapToCursor)
+                wvm.HandleMouseMove(this.WorkBench, e);
+        }
+
+        private PortViewModel GetSnappedPort(Point mouseCursor)
+        {
+            if (this.FindNearestPorts(mouseCursor).Count <= 0)
+                return null;
+
+            double curDistance = 1000000;
+            PortViewModel nearestPort = null;
+
+            for (int i = 0; i < this.hitResultsList.Count; i++)
             {
-                // When the mouse is held down, reposition the drag selection box.
+                DependencyObject depObject = this.hitResultsList[i];
+                Grid grid = depObject as Grid;
+                if (grid == null)
+                    continue;
 
-                Point mousePos = e.GetPosition(WorkBench);
-
-                if (mouseDownPos.X < mousePos.X)
+                try
                 {
-                    Canvas.SetLeft(selectionBox, mouseDownPos.X);
-                    selectionBox.Width = mousePos.X - mouseDownPos.X;
+                    UserControl uc = grid.Parent as UserControl;
+                    if (null == uc)
+                        continue;
+
+                    PortViewModel pvm = uc.DataContext as PortViewModel;
+                    if (pvm == null)
+                        continue;
+
+                    double distance = Distance(mouseCursor, pvm.Center);
+                    if (distance < curDistance)
+                    {
+                        curDistance = distance;
+                        nearestPort = pvm;
+                    }
                 }
-                else
+                catch
                 {
-                    Canvas.SetLeft(selectionBox, mousePos.X);
-                    selectionBox.Width = mouseDownPos.X - mousePos.X;
-                }
-
-                if (mouseDownPos.Y < mousePos.Y)
-                {
-                    Canvas.SetTop(selectionBox, mouseDownPos.Y);
-                    selectionBox.Height = mousePos.Y - mouseDownPos.Y;
-                }
-                else
-                {
-                    Canvas.SetTop(selectionBox, mousePos.Y);
-
-                    selectionBox.Height = mouseDownPos.Y - mousePos.Y;
-                }
-
-                //clear the selected elements
-                DynamoSelection.Instance.ClearSelection();
-
-                var rect =
-                    new Rect(
-                        Canvas.GetLeft(selectionBox),
-                        Canvas.GetTop(selectionBox),
-                        selectionBox.Width,
-                        selectionBox.Height);
-
-                if (mousePos.X > mouseDownPos.X)
-                {
-                    #region contain select
-
-                    selectionBox.StrokeDashArray = null;
-                    vm.ContainSelectCommand.Execute(rect);
-
-                    #endregion
-                }
-                else if (mousePos.X < mouseDownPos.X)
-                {
-                    #region crossing select
-
-                    selectionBox.StrokeDashArray = new DoubleCollection { 4 };
-                    vm.CrossSelectCommand.Execute(rect);
-
-                    #endregion
+                    continue;
                 }
             }
-//=======
-            WorkspaceViewModel wvm = (DataContext as WorkspaceViewModel);
-            wvm.HandleMouseMove(this.WorkBench, e);
-//>>>>>>> upstream/master
+
+            return nearestPort;
         }
 
         private double Distance(Point mouse, Point point)
@@ -660,7 +539,7 @@ namespace Dynamo.Views
 
 
         // TRON'S
-        private List<DependencyObject> FindChildren(System.Windows.Point mouse)
+        private List<DependencyObject> FindNearestPorts(System.Windows.Point mouse)
         {
             hitResultsList.Clear();
             EllipseGeometry expandedHitTestArea = new EllipseGeometry(mouse, 50.0, 7.0);

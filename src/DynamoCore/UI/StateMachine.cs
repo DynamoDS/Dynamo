@@ -41,6 +41,11 @@ namespace Dynamo.ViewModels
             return stateMachine.HandleMouseMove(sender, e);
         }
 
+        internal bool HandleMouseMove(object sender, Point mouseCursor)
+        {
+            return stateMachine.HandleMouseMove(sender, mouseCursor);
+        }
+
         internal bool HandlePortClicked(PortViewModel portViewModel)
         {
             return stateMachine.HandlePortClicked(portViewModel);
@@ -389,11 +394,8 @@ namespace Dynamo.ViewModels
                 return false; // Mouse event not handled.
             }
 
-            internal bool HandleMouseMove(object sender, MouseEventArgs e)
+            internal bool HandleMouseMove(object sender, Point mouseCursor)
             {
-                IInputElement element = sender as IInputElement;
-                Point mouseCursor = e.GetPosition(element);
-
                 if (this.currentState == State.Connection)
                 {
                     // If we are currently connecting and there is an active 
@@ -456,6 +458,13 @@ namespace Dynamo.ViewModels
                 }
 
                 return false; // Mouse event not handled.
+            }
+
+            internal bool HandleMouseMove(object sender, MouseEventArgs e)
+            {
+                IInputElement element = sender as IInputElement;
+                Point mouseCursor = e.GetPosition(element);
+                return HandleMouseMove(sender, mouseCursor);
             }
 
             internal bool HandlePortClicked(PortViewModel portViewModel)
