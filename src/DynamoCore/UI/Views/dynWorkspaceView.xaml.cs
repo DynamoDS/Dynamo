@@ -255,6 +255,7 @@ namespace Dynamo.Views
 
             node.X = dropPt.X;
             node.Y = dropPt.Y;
+            node.ReportPosition();
         }
 
         void zoomBorder_MouseMove(object sender, MouseEventArgs e)

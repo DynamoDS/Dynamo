@@ -131,15 +131,6 @@ namespace Dynamo.ViewModels
             
         }
 
-        /// <summary>
-        /// Update the port model's center, triggering an update to all connectors
-        /// </summary>
-        /// <param name="center"></param>
-        public void UpdateCenter(Point center)
-        {
-            _port.Center = center;
-        }
-
         private void Connect(object parameter)
         {
             DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;

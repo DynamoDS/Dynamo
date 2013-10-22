@@ -13,9 +13,8 @@
     PreviewKeyUp="OnPreviewKeyUp"
     MouseLeftButtonDown="topControl_MouseLeftButtonDown"
     MouseRightButtonDown="topControl_MouseRightButtonDown" 
-
-             Canvas.Left="{Binding Left, Mode=TwoWay}" 
-             Canvas.Top="{Binding Top, Mode=TwoWay}">
+    Canvas.Left="{Binding Left, Mode=TwoWay}" 
+    Canvas.Top="{Binding Top, Mode=TwoWay}">
 
     <UserControl.Resources>
         <ResourceDictionary>
