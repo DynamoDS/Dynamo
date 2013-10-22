@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Dynamo.Controls.WatchView"
+﻿<UserControl x:Class="Dynamo.Controls.Watch3DView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -7,20 +7,43 @@
              Name="topControl" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoModern.xaml" />
+                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoConverters.xaml"/>
+                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml" />
+                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/MainMenuStyleDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    <Grid Name="inputGrid"
+            x:FieldModifier="public"
+            Canvas.ZIndex="0" MinHeight="100" MinWidth="100">
+
+        <Grid.ContextMenu>
+            <ContextMenu Name="MainContextMenu" x:FieldModifier="public" ContextMenuOpening="MainContextMenu_ContextMenuOpening">
+            </ContextMenu>
+        </Grid.ContextMenu>
+
         <HelixToolkit:HelixViewport3D Name="watch_view" ZoomExtentsWhenLoaded="True" 
                                       ShowViewCube="False" CameraRotationMode="Turntable"
-                                      ShowFrameRate="True">
+                                      IsHitTestVisible="True" MouseLeftButtonDown="Watch_view_OnMouseDown" 
+                                      ShowCoordinateSystem="{Binding ElementName=topControl, Path=DataContext.CanNavigateBackground}">
+        
             <ModelVisual3D>
                 <HelixToolkit:LightVisual3D>
                     <HelixToolkit:DefaultLights>
                     </HelixToolkit:DefaultLights>
                 </HelixToolkit:LightVisual3D>
-                <HelixToolkit:GridLinesVisual3D  Width="8" Length="8" MinorDistance="1" MajorDistance="1" Thickness="0.01"/>
+                <!--<HelixToolkit:GridLinesVisual3D  Width="8" Length="8" MinorDistance="1" MajorDistance="1" Thickness="0.01"/>-->
                 <HelixToolkit:PointsVisual3D Size="6" Color="ForestGreen" Points="{Binding Path=HelixPoints, Mode=TwoWay}"></HelixToolkit:PointsVisual3D>
                 <HelixToolkit:LinesVisual3D Thickness="1" Color="DarkSlateGray" Points="{Binding Path=HelixLines, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
                 <HelixToolkit:PointsVisual3D Size="8" Color="Cyan" Points="{Binding Path=HelixPointsSelected, Mode=TwoWay}"></HelixToolkit:PointsVisual3D>
                 <HelixToolkit:LinesVisual3D Thickness="3" Color="Cyan" Points="{Binding Path=HelixLinesSelected, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
+                
                 <ModelVisual3D>
                     <ModelVisual3D.Content>
                         <!--<GeometryModel3D Geometry="{Binding HelixMesh}" Material="{Binding Path=HelixMeshMaterial}"/>-->
@@ -73,7 +96,12 @@
                 <HelixToolkit:LinesVisual3D Thickness="4" Color="Red" Points="{Binding Path=HelixXAxes, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
                 <HelixToolkit:LinesVisual3D Thickness="4" Color="Green" Points="{Binding Path=HelixYAxes, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
                 <HelixToolkit:LinesVisual3D Thickness="4" Color="Blue" Points="{Binding Path=HelixZAxes, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
+                <HelixToolkit:LinesVisual3D Thickness="1" Color="DarkGray" Points="{Binding Path=HelixGrid, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
             </ModelVisual3D>
         </HelixToolkit:HelixViewport3D>
+
+        <Thumb Name ="resizeThumb" Width="10" Height="10" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="5"
+               DragDelta="ResizeThumb_OnDragDelta" DragStarted="ResizeThumb_OnDragStarted" DragCompleted="ResizeThumb_OnDragCompleted"
+               Visibility="{Binding WatchIsResizable, Converter={StaticResource BooleanToVisibilityConverter}}"/>
     </Grid>
 </UserControl>
