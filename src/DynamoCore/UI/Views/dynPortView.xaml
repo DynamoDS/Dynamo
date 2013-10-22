@@ -4,6 +4,7 @@
     xmlns:controls="clr-namespace:Dynamo.Views"
     Height="20" 
     Width="Auto"
+    Margin="{Binding Path=MarginThickness}"
     MouseLeftButtonDown="UserControl_MouseLeftButtonDown" 
     MouseEnter="DynPort_OnMouseEnter"
     MouseLeave="DynPort_OnMouseLeave"
