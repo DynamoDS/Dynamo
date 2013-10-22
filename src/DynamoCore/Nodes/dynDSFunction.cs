@@ -56,7 +56,7 @@ namespace Dynamo.Nodes
         {
             get
             {
-                return Inputs.Values.Where(x => x != null).Any(x => x.Item2.isDirty);
+                return Inputs.Values.Where(x => x != null).Any(x => x.Item2.isDirty || x.Item2.RequiresRecalc);
             }
             set
             {
@@ -138,8 +138,28 @@ namespace Dynamo.Nodes
                 var displayName = helper.ReadString("DisplayName");
                 var strType = helper.ReadString("Type", DSLibraryItemType.GenericFunction.ToString());
                 var type = (DSLibraryItemType)System.Enum.Parse(typeof(DSLibraryItemType), strType);
-                var arguments = helper.ReadString("Arguments", "").Split(new char[] { ';' }).ToList();
-                var returnKeys = helper.ReadString("Returnkeys", "").Split(new char[] { ';' }).ToList();
+
+                List<string> arguments = null;
+                var argumentValue = helper.ReadString("Arguments", null);
+                if (argumentValue != null)
+                {
+                    argumentValue = argumentValue.Trim();
+                }
+                if (!string.IsNullOrEmpty(argumentValue))
+                {
+                    arguments = argumentValue.Split(new char[] { ';' }).ToList();
+                }
+
+                List<string> returnKeys = null;
+                var returnKeyValue = helper.ReadString("ReturnKeys", null);
+                if (returnKeyValue != null)
+                {
+                    returnKeyValue = returnKeyValue.Trim();
+                }
+                if (!string.IsNullOrEmpty(returnKeyValue))
+                {
+                    returnKeys = returnKeyValue.Split(new char[] { ';' }).ToList();
+                }
 
                 DSLibraryServices.Instance.ImportLibrary(assembly);
                 DSFunctionItem item = new DSFunctionItem(assembly, category, className, name, displayName, type, arguments, returnKeys);
@@ -149,38 +169,28 @@ namespace Dynamo.Nodes
             }
         }
 
-        protected override bool HasMultipleOutputs()
-        {
-            return (OutPortData.Count > 1) || 
-                   (Definition.ReturnKeys != null && Definition.ReturnKeys.Count > 0);
-        }
-
         protected override AssociativeNode GetIndexedOutputNode(int index)
         {
-            if (index >= OutPortData.Count)
+            if (index < 0 ||
+                (OutPortData != null && index >= OutPortData.Count) ||
+                (Definition.ReturnKeys != null && index > 0 && index >= Definition.ReturnKeys.Count))
             {
-                DynamoLogger.Instance.Log("Overindexing", LogLevel.Warning);
-                return new NullNode();
+                throw new ArgumentOutOfRangeException("Index is out of range.");
             }
 
-            PortData portData = OutPortData[index];
-            var indexingNode = new ProtoCore.AST.AssociativeAST.StringNode();
-            if (!string.IsNullOrEmpty(portData.NickName))
+            if (Definition.ReturnKeys == null || Definition.ReturnKeys.Count == 0)
             {
-                indexingNode.value = portData.NickName;
-            }
-            else
-            {
-                indexingNode.value = index.ToString();
+                return AstIdentifier;
             }
 
-            var indexedNode = new IdentifierNode(this.AstIdentifier as IdentifierNode);
-            if (indexedNode is ArrayNameNode)
-            {
-                ArrayNode arrayNode = new ArrayNode();
-                arrayNode.Expr = indexingNode;
-                (indexedNode as ArrayNameNode).ArrayDimensions = arrayNode;
-            }
+            StringNode indexingNode = new StringNode();
+            indexingNode.value = Definition.ReturnKeys[index];
+
+            ArrayNode arrayNode = new ArrayNode();
+            arrayNode.Expr = indexingNode;
+
+            var indexedNode = new IdentifierNode(AstIdentifier as IdentifierNode);
+            indexedNode.ArrayDimensions = arrayNode;
 
             return indexedNode;
         }

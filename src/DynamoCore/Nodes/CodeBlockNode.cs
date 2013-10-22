@@ -106,12 +106,6 @@ namespace Dynamo.Nodes
             BinaryExpressionNode indexedStatement = resultNodes[index] as BinaryExpressionNode;
             return indexedStatement.LeftNode as AssociativeNode;
         }
-
-        protected override bool HasMultipleOutputs()
-        {
-            return true;
-        }
-
         #endregion
 
         #region Private Methods

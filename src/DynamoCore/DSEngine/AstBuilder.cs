@@ -7,6 +7,7 @@ using System.Text;
 using Dynamo.FSchemeInterop;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using ProtoCore;
 using ProtoCore.AST;
@@ -146,6 +147,8 @@ namespace Dynamo.DSEngine
         {
             astNodes = new LinkedListOfList<Guid, AssociativeNode>();
             nodeStates = new Dictionary<Guid, NodeState>();
+
+            dynSettings.Controller.DynamoModel.NodeDeleted += this.OnNodeDeleted;
         }
 
         private void AddNode(Guid dynamoNodeId, AssociativeNode astNode)
@@ -234,8 +237,14 @@ namespace Dynamo.DSEngine
             }
             else if (node.IsInstanceMember())
             {
-                Debug.Assert(functionCall is FunctionCallNode);
-                AssociativeNode dotCallNode = CoreUtils.GenerateCallDotNode(inputs[0], functionCall as FunctionCallNode, LiveRunnerServices.Instance.Core);
+                AssociativeNode thisNode = new NullNode(); 
+                if (inputs.Count >= 1)
+                {
+                    thisNode = inputs[0];
+                    inputs.RemoveAt(0);  // remove this pointer
+                }
+                functionCall = AstFactory.BuildFunctionCall(function, inputs);
+                AssociativeNode dotCallNode = CoreUtils.GenerateCallDotNode(thisNode, functionCall as FunctionCallNode, LiveRunnerServices.Instance.Core);
                 return dotCallNode;
             }
             else
@@ -344,6 +353,7 @@ namespace Dynamo.DSEngine
                 nodeStates[node.GUID] = NodeState.Added;
             }
 
+            /*
             if (node is CodeBlockNodeModel)
             {
                 return;
@@ -361,6 +371,7 @@ namespace Dynamo.DSEngine
                 // create a function pointer for this node
                 rhs = AstFactory.BuildIdentifier(newFunc.Name);
             }
+            */
 
             var assignment = AstFactory.BuildAssignment(node.AstIdentifier, rhs);
             AddNode(node.GUID, assignment);
@@ -379,6 +390,11 @@ namespace Dynamo.DSEngine
         public void FinishBuildingAst()
         {
 
+        }
+
+        public void OnNodeDeleted(NodeModel node)
+        {
+            nodeStates[node.GUID] = NodeState.Deleted;
         }
     }
 }
