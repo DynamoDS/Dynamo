@@ -13,6 +13,7 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Greg.Responses;
 using Microsoft.Practices.Prism.ViewModel;
+using Dynamo.DSEngine;
 
 namespace Dynamo.ViewModels
 {
