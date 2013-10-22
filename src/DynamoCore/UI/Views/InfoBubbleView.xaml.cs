@@ -24,7 +24,14 @@ namespace Dynamo.Controls
     /// </summary>
     public partial class InfoBubbleView : UserControl
     {
+        #region Properties
+
+        private bool isResizing = false;
+        private bool isResizeHeight = false;
+        private bool isResizeWidth = false;
+
         public InfoBubbleViewModel ViewModel { get { return GetViewModel(); } }
+        #endregion
 
         public InfoBubbleView()
         {
@@ -45,22 +52,6 @@ namespace Dynamo.Controls
             }
         }
 
-        private TextBox GetNewTextBox(string text)
-        {
-            TextBox textBox = new TextBox();
-            textBox.TextWrapping = ViewModel.ContentWrapping;
-            textBox.Text = text;
-            textBox.IsReadOnly = true;
-            textBox.BorderThickness = new Thickness(0);
-            textBox.Background = Brushes.Transparent;
-            textBox.Foreground = ViewModel.TextForeground;
-            textBox.FontWeight = ViewModel.TextFontWeight;
-            textBox.FontSize = ViewModel.TextFontSize;
-            textBox.Margin = ViewModel.ContentMargin;
-            textBox.MaxWidth = ViewModel.MaxWidth;
-            return textBox;
-        }
-
         private void UpdateContent()
         {
             //The reason of changing the content from the code behind like this is due to a bug of WPF
@@ -78,12 +69,11 @@ namespace Dynamo.Controls
             ViewModel.EstimatedHeight = ContentContainer.DesiredSize.Height;
         }
 
-        private InfoBubbleViewModel GetViewModel()
+        private TextBox GetNewTextBox(string text)
         {
-            if (this.DataContext is InfoBubbleViewModel)
-                return this.DataContext as InfoBubbleViewModel;
-            else
-                return null;
+            TextBox textBox = new TextBox();
+            textBox.Text = text;
+            return textBox;
         }
 
         private void ShowPreviewBubbleFullContent()
@@ -95,6 +85,7 @@ namespace Dynamo.Controls
             Point botRight = ViewModel.TargetBotRight;
             InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
             this.ViewModel.UpdateContentCommand.Execute(data);
+            this.ViewModel.ZIndex = 5;
         }
 
         private void ShowPreviewBubbleCondensedContent()
@@ -106,6 +97,15 @@ namespace Dynamo.Controls
             Point botRight = ViewModel.TargetBotRight;
             InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
             this.ViewModel.UpdateContentCommand.Execute(data);
+            this.ViewModel.ZIndex = 3;
+        }
+
+        private InfoBubbleViewModel GetViewModel()
+        {
+            if (this.DataContext is InfoBubbleViewModel)
+                return this.DataContext as InfoBubbleViewModel;
+            else
+                return null;
         }
 
         private void FadeInInfoBubble()
@@ -118,7 +118,7 @@ namespace Dynamo.Controls
             ViewModel.FadeOutCommand.Execute(null);
         }
 
-        private void InfoBubble_MouseEnter(object sender, MouseEventArgs e)
+        private void ContentContainer_MouseEnter(object sender, MouseEventArgs e)
         {
             if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.PreviewCondensed)
             {
@@ -135,7 +135,7 @@ namespace Dynamo.Controls
             }
             else
             {
-                 FadeOutInfoBubble();
+                FadeOutInfoBubble();
             }
         }
 
@@ -157,6 +157,82 @@ namespace Dynamo.Controls
                 ViewModel.SetAlwaysVisibleCommand.Execute(true);
                 ShowPreviewBubbleCondensedContent();
             }
-         }
+        }
+
+        private void ResizeObject_MouseLeave(object sender, MouseEventArgs e)
+        {
+            Mouse.OverrideCursor = null;
+        }
+
+        private void ResizeObject_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            Mouse.Capture(null);
+            isResizing = false;
+            isResizeHeight = false;
+            isResizeWidth = false;
+        }
+
+        private void MainGrid_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (!isResizing)
+                return;
+
+            Point mouseLocation = Mouse.GetPosition(mainGrid);
+            if (!isResizeHeight)
+                mouseLocation.Y = double.MaxValue;
+            if (!isResizeWidth)
+                mouseLocation.X = double.MaxValue;
+
+            ViewModel.ResizeCommand.Execute(mouseLocation);
+        }
+
+        private void HorizontalResizeBar_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Mouse.OverrideCursor = Cursors.SizeNS;
+        }
+
+        private void HorizontalResizeBar_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Mouse.Capture(sender as UIElement);
+            e.Handled = true;
+
+            isResizing = true;
+            isResizeHeight = true;
+        }
+
+        private void ConnerResizePoint_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Mouse.OverrideCursor = Cursors.SizeNWSE;
+        }
+
+        private void ConnerResizePoint_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Mouse.Capture(sender as UIElement);
+            e.Handled = true;
+
+            isResizing = true;
+            isResizeWidth = true;
+            isResizeHeight = true;
+        }
+
+        private void VerticalResizeBar_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Mouse.Capture(sender as UIElement);
+            e.Handled = true;
+
+            isResizing = true;
+            isResizeWidth = true;
+        }
+
+        private void VerticalResizeBar_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Mouse.OverrideCursor = Cursors.SizeWE;
+        }
+
+        private void InfoBubble_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            e.Handled = true;
+        }
+
     }
 }

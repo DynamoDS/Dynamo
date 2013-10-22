@@ -1151,4 +1151,19 @@ namespace Dynamo.Controls
             return null;
         }
     }
+
+    public class InfoBubbleStyleToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if ((InfoBubbleViewModel.Style) value == InfoBubbleViewModel.Style.Preview)
+                return Visibility.Visible;
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
 }
