@@ -11,24 +11,11 @@ namespace Dynamo.Connectors
 {
     public partial class dynPortView : UserControl, IViewModelView<PortViewModel>
     {
-        private Dynamo.Controls.DragCanvas canvas;
-
         #region constructors
 
         public dynPortView()
         {
             InitializeComponent();
-            this.Loaded += new RoutedEventHandler(dynPort_Loaded);
-        }
-
-        void dynPort_Loaded(object sender, RoutedEventArgs e)
-        {
-            //Debug.WriteLine("Port loaded.");
-            canvas = WPF.FindUpVisualTree<Dynamo.Controls.DragCanvas>(this);
-
-            if (ViewModel != null)
-                ViewModel.UpdateCenter(CalculateCenter());
-
         }
 
         #endregion constructors
@@ -56,22 +43,6 @@ namespace Dynamo.Connectors
             e.Handled = true;
         }
 
-        Point CalculateCenter()
-        {
-            if (canvas != null && portRect.IsDescendantOf(canvas))
-            {
-                var transform = portRect.TransformToAncestor(canvas); // need to check if it is an ancestor first
-                var rootPoint = transform.Transform(new Point(portRect.ActualWidth / 2, portRect.ActualHeight / 2));
-                
-                //put the "center" at one edge of the port
-                if(ViewModel.PortType == PortType.INPUT)
-                    return new Point(rootPoint.X - portRect.ActualWidth / 2 - 3, rootPoint.Y);
-                return new Point(rootPoint.X + portRect.ActualWidth/2 + 3, rootPoint.Y);
-            }
-
-            return new Point();
-        }
-
         private void DynPort_OnMouseEnter(object sender, MouseEventArgs e)
         {
             if (ViewModel != null)
@@ -92,19 +63,6 @@ namespace Dynamo.Connectors
                     return (PortViewModel) this.DataContext;
                 else
                     return null;
-            }
-        }
-
-        private void DynPortView_OnLayoutUpdated(object sender, EventArgs e)
-        {
-            if (ViewModel == null)
-                return;
-
-            Point p = CalculateCenter();
-            if (p != ViewModel.Center)
-            {
-                //Debug.WriteLine("Port layout updated.");
-                ViewModel.UpdateCenter(p);
             }
         }
     }

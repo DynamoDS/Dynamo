@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using Dynamo.Models;
 using Dynamo.Utilities;
@@ -21,17 +22,6 @@ namespace Dynamo.ViewModels
             get { return _model; }
         }
 
-        Brush _strokeBrush;
-        public Brush StrokeBrush
-        {
-            get { return _strokeBrush; }
-            set
-            {
-                _strokeBrush = value;
-                RaisePropertyChanged("StrokeBrush");
-            }
-        }
-
         private bool _isConnecting = false;
         public bool IsConnecting
         {
@@ -43,7 +33,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private bool _isHitTestVisible = false;
+        private bool _isHitTestVisible = true;
         public bool IsHitTestVisible
         {
             get { return _isHitTestVisible;  } 
@@ -84,7 +74,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        
         private Point _curvePoint1;
         public Point CurvePoint1
         {
@@ -163,7 +152,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-
         private double _endDotSize = 6;
         public double EndDotSize
         {
@@ -172,19 +160,6 @@ namespace Dynamo.ViewModels
             {
                 _endDotSize = value;
                 RaisePropertyChanged("EndDotSize");
-            }
-        }
-        
-        private const double HighlightThickness = 6;
-
-        private double _strokeThickness = 3;
-        public double StrokeThickness
-        {
-            get { return _strokeThickness; }
-            set 
-            {
-                _strokeThickness = value;
-                RaisePropertyChanged("StrokeThickness");
             }
         }
 
@@ -231,49 +206,30 @@ namespace Dynamo.ViewModels
         //construct a view and start drawing.
         public ConnectorViewModel(PortModel port)
         {
-            //var bc = new BrushConverter();
-            //StrokeBrush = (Brush)bc.ConvertFrom("#777");
-            const string colour = "#777";
-            Color c = Color.FromArgb(
-            Convert.ToByte(colour.Substring(1,1),16),
-            Convert.ToByte(colour.Substring(2,1),16),
-            Convert.ToByte(colour.Substring(3,1),16));
-            StrokeBrush = new SolidBrush(c);
-
             IsConnecting = true;
             _activeStartPort = port;
 
-            // makes sure that all of the positions on the curve path are
-            // set
             this.Redraw(port.Center);
-
         }
 
         public ConnectorViewModel(ConnectorModel model)
         {
-            //var bc = new BrushConverter();
-            //StrokeBrush = (Brush)bc.ConvertFrom("#777");
-            const string colour = "#777";
-            Color c = Color.FromArgb(
-            Convert.ToByte(colour.Substring(1, 1), 16),
-            Convert.ToByte(colour.Substring(2, 1), 16),
-            Convert.ToByte(colour.Substring(3, 1), 16));
-            StrokeBrush = new SolidBrush(c);
-
             _model = model;
-            
-            _model.Start.PropertyChanged += Start_PropertyChanged;
-            _model.End.PropertyChanged += End_PropertyChanged;
+
             _model.PropertyChanged += Model_PropertyChanged;
             _model.Start.Owner.PropertyChanged += StartOwner_PropertyChanged;
             _model.End.Owner.PropertyChanged += EndOwner_PropertyChanged;
 
             dynSettings.Controller.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
 
-            //make sure we have valid curve points
             Redraw();
         }
 
+        /// <summary>
+        /// If the start owner changes position or size, redraw the connector.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void StartOwner_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
@@ -281,15 +237,36 @@ namespace Dynamo.ViewModels
                 case "IsSelected":
                     RaisePropertyChanged("IsStartSelected");
                     break;
+                case "Position":
+                    RaisePropertyChanged("CurvePoint0");
+                    Redraw();
+                    break;
+                case "Width":
+                    RaisePropertyChanged("CurvePoint0");
+                    Redraw();
+                    break;
             }
         }
 
+        /// <summary>
+        /// If the end owner changes position or size, redraw the connector.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void EndOwner_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
                 case "IsSelected":
                     RaisePropertyChanged("IsEndSelected");
+                    break;
+                case "Position":
+                    RaisePropertyChanged("CurvePoint0");
+                    Redraw();
+                    break;
+                case "Width":
+                    RaisePropertyChanged("CurvePoint0");
+                    Redraw();
                     break;
             }
         }
@@ -334,45 +311,23 @@ namespace Dynamo.ViewModels
             }
         }
 
-        void End_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "Center":
-                    Redraw();
-                    break;
-            }
-        }
-
-        void Start_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "Center":
-                    Redraw();
-                    RaisePropertyChanged("CurvePoint0");
-                    break;
-            }
-        }
-
         /// <summary>
         ///     Recalculate the path points using the internal model.
         /// </summary>
         public void Redraw()
         {
+            //Debug.WriteLine("Redrawing...");
             if (this.ConnectorModel.End != null)
                 this.Redraw(this.ConnectorModel.End.Center);
         }
 
         /// <summary>
-        ///     Recalculate the connector's points given the end point
+        /// Recalculate the connector's points given the end point
         /// </summary>
         /// <param name="p2">The position of the end point</param>
         public void Redraw(object parameter)
         {
             Point p2 = (Point)parameter;
-
-            //Debug.WriteLine("Redrawing...");
 
             CurvePoint3 = p2;
 
@@ -404,26 +359,6 @@ namespace Dynamo.ViewModels
         }
 
         private bool CanRedraw(object parameter)
-        {
-            return true;
-        }
-
-        private void Highlight(object parameter)
-        {
-            StrokeThickness = HighlightThickness;
-        }
-
-        private bool CanHighlight(object parameter)
-        {
-            return true;
-        }
-
-        private void Unhighlight(object parameter)
-        {
-            StrokeThickness = _strokeThickness;
-        }
-
-        private bool CanUnHighlight(object parameter)
         {
             return true;
         }

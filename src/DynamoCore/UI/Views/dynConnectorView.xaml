@@ -23,6 +23,20 @@
 
                 <Style x:Key="ConnectorStyle" TargetType="Path">
                     <Style.Triggers>
+                        <EventTrigger RoutedEvent="MouseEnter">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation From="3" To="6" Duration="0" Storyboard.TargetProperty="StrokeThickness"></DoubleAnimation>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="MouseLeave">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation From="6" To="3" Duration="0" Storyboard.TargetProperty="StrokeThickness"></DoubleAnimation>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
                         <DataTrigger Binding="{Binding Path=IsConnecting, Mode=OneWay}" Value="True">
                             <Setter Property="StrokeDashArray" Value="2"/>
                         </DataTrigger>
@@ -41,18 +55,10 @@
             
         </Canvas>
 
-        <Path Stroke="{DynamicResource SelectionGradientBrush}" StrokeThickness="{Binding StrokeThickness}" IsHitTestVisible="{Binding IsHitTestVisible}"
+        <Path Stroke="{DynamicResource SelectionGradientBrush}" StrokeThickness="3" IsHitTestVisible="{Binding IsHitTestVisible}"
               Name="connector"
-              Visibility="{Binding BezVisibility, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" Style="{StaticResource ConnectorStyle}" Canvas.ZIndex="0"
-              MouseEnter="Highlight" MouseLeave="Unhighlight">
-            <!--<i:Interaction.Triggers>
-                <i:EventTrigger EventName="MouseEnter">
-                    <i:InvokeCommandAction Command="HighlightCommand"></i:InvokeCommandAction>
-                </i:EventTrigger>
-                <i:EventTrigger EventName="MouseLeave">
-                    <i:InvokeCommandAction Command="UnHighlightCommand"></i:InvokeCommandAction>
-                </i:EventTrigger>
-            </i:Interaction.Triggers>-->
+              Visibility="{Binding BezVisibility, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" 
+              Style="{StaticResource ConnectorStyle}" Canvas.ZIndex="0">
             <Path.Data>
                 <PathGeometry>
                     <PathGeometry.Figures>
@@ -70,18 +76,9 @@
             </Path.Data>
         </Path>
 
-        <Path Stroke="{DynamicResource SelectionGradientBrush}" StrokeThickness="{Binding StrokeThickness}" IsHitTestVisible="{Binding IsHitTestVisible}"
+        <Path Stroke="{DynamicResource SelectionGradientBrush}" StrokeThickness="3" IsHitTestVisible="{Binding IsHitTestVisible}"
               Name="plineConnector" Style="{StaticResource ConnectorStyle}"
-              Visibility="{Binding PlineVisibility, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" Canvas.ZIndex="0"
-              MouseEnter="Highlight" MouseLeave="Unhighlight">
-            <!--<i:Interaction.Triggers>
-                <i:EventTrigger EventName="MouseEnter">
-                    <i:InvokeCommandAction Command="HighlightCommand"></i:InvokeCommandAction>
-                </i:EventTrigger>
-                <i:EventTrigger EventName="MouseLeave">
-                    <i:InvokeCommandAction Command="UnHighlightCommand"></i:InvokeCommandAction>
-                </i:EventTrigger>
-            </i:Interaction.Triggers>-->
+              Visibility="{Binding PlineVisibility, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" Canvas.ZIndex="0">
             <Path.Data>
                 <PathGeometry>
                     <PathGeometry.Figures>

@@ -18,27 +18,5 @@ namespace Dynamo.ViewModels
                 return redrawCommand;
             }
         }
-
-        public DelegateCommand HighlightCommand
-        {
-            get
-            {
-                if (highlightCommand == null)
-                    highlightCommand = new DelegateCommand(Highlight, CanHighlight);
-
-                return highlightCommand;
-            }
-        }
-
-        public DelegateCommand UnHighlightCommand
-        {
-            get
-            {
-                if (unHighlightCommand == null)
-                    unHighlightCommand = new DelegateCommand(Unhighlight, CanUnHighlight);
-
-                return unHighlightCommand;
-            }
-        }
     }
 }
