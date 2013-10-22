@@ -16,15 +16,16 @@
     Canvas.Left="{Binding Left, Mode=TwoWay}" 
     Canvas.Top="{Binding Top, Mode=TwoWay}">
 
-    <UserControl.Resources>
+    <!--<UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml" />
                 <ui:SharedResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoConverters.xaml" />
                 <ui:SharedResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoModern.xaml" />
+                <ui:SharedResourceDictionary Source="/DynamoCore;component/UI/Themes/DataTemplates.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-    </UserControl.Resources>
+    </UserControl.Resources>-->
 
     <Grid Name="grid" x:FieldModifier="public" Grid.Row="1" Canvas.ZIndex="3" Margin="0" Width="Auto" HorizontalAlignment="Left">
 
@@ -93,11 +94,6 @@
             Canvas.ZIndex="1" Width="Auto" Grid.Column="0" Grid.Row="0">
 
                 <ItemsControl ItemsSource="{Binding Path=InPorts}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <connectors:dynPortView></connectors:dynPortView>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
                     <ItemsControl.ItemContainerStyle>
                         <Style TargetType="{x:Type ContentPresenter}">
                             <Setter Property="HorizontalAlignment" Value="Left"/>
@@ -118,11 +114,6 @@
               Background="Transparent"
               Canvas.ZIndex="1" Width="Auto" Grid.Column="2" Grid.Row="0">
                 <ItemsControl ItemsSource="{Binding Path=OutPorts}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <connectors:dynPortView></connectors:dynPortView>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
                     <ItemsControl.ItemContainerStyle>
                         <Style TargetType="{x:Type ContentPresenter}">
                             <Setter Property="HorizontalAlignment" Value="Right"/>
