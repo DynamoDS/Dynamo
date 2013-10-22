@@ -171,9 +171,16 @@ namespace Dynamo.Nodes
 
         protected override AssociativeNode GetIndexedOutputNode(int index)
         {
-            if (index < 0 || index >= Definition.ReturnKeys.Count)
+            if (index < 0 ||
+                (OutPortData != null && index >= OutPortData.Count) ||
+                (Definition.ReturnKeys != null && index > 0 && index >= Definition.ReturnKeys.Count))
             {
                 throw new ArgumentOutOfRangeException("Index is out of range.");
+            }
+
+            if (Definition.ReturnKeys == null || Definition.ReturnKeys.Count == 0)
+            {
+                return AstIdentifier;
             }
 
             StringNode indexingNode = new StringNode();
