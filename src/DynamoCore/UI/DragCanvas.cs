@@ -13,7 +13,9 @@ using System.Windows.Threading;
 using Dynamo.Models;
 using Dynamo.Selection;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Controls
 {
@@ -294,6 +296,35 @@ namespace Dynamo.Controls
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
+#if false //New command framework not been implemented
+            if (e.ClickCount == 2)
+            {
+                // create node
+                var guid = Guid.NewGuid();
+                dynSettings.Controller.DynamoViewModel.ExecuteCommand(
+                    new DynCmd.CreateNodeCommand(guid, "Code Block", 0, 0, true, true));
+
+                //move node
+                var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
+                if (placedNode != null)
+                {
+                    placedNode.X = e.GetPosition(this).X - 92;
+                    placedNode.Y = e.GetPosition(this).Y - 31;
+                }
+
+                // select node
+                if (placedNode != null)
+                {
+                    //dynSettings.Controller.OnRequestSelect(this, new ModelEventArgs(placedNode));
+                    DynamoSelection.Instance.ClearSelection();
+                    DynamoSelection.Instance.Selection.Add(placedNode);
+                }
+
+                e.Handled = true;
+                return;
+            }
+#endif
+
             object dataContext = this.owningWorkspace.DataContext;
             WorkspaceViewModel wvm = dataContext as WorkspaceViewModel;
             if (wvm.HandleLeftButtonDown(this, e))

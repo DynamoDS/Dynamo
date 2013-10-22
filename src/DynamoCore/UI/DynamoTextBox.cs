@@ -228,4 +228,46 @@ namespace Dynamo.Nodes
         }
         #endregion
     }
+
+    public class CodeNodeTextBox : DynamoTextBox
+    {
+        bool shift, enter;
+        public CodeNodeTextBox(string s)
+            : base(s)
+        {
+            shift = enter = false;
+        }
+        protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.LeftShift || e.Key == Key.RightShift)
+            {
+                shift = true;
+            }
+            else if (e.Key == Key.Enter || e.Key == Key.Return)
+            {
+                enter = true;
+            }
+            if (shift == true && enter == true)
+            {
+                dynSettings.ReturnFocusToSearch();
+                shift = enter = false;
+            }
+        }
+        protected override void OnPreviewKeyUp(KeyEventArgs e)
+        {
+            if (e.Key == Key.LeftShift || e.Key == Key.RightShift)
+            {
+                shift = false;
+            }
+            else if (e.Key == Key.Enter || e.Key == Key.Return)
+            {
+                enter = false;
+            }
+        }
+        protected override void OnGotFocus(RoutedEventArgs e)
+        {
+            base.OnGotFocus(e);
+            this.FontSize = 19.1 / this.FontFamily.LineSpacing;
+        }
+    }
 }

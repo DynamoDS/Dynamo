@@ -113,6 +113,7 @@ namespace Dynamo.DSEngine
         AssociativeNode Build(Dynamo.Nodes.Double node, List<AssociativeNode> inputs);
         AssociativeNode Build(Dynamo.Nodes.Bool node, List<AssociativeNode> inputs);
         AssociativeNode Build(Dynamo.Nodes.String node, List<AssociativeNode> inputs);
+        AssociativeNode Build(Dynamo.Nodes.CodeBlockNodeModel node, List<AssociativeNode> inputs);
     }
 
     /// <summary>
@@ -266,6 +267,21 @@ namespace Dynamo.DSEngine
         {
             return AstFactory.BuildStringNode(node.Value);
         }
+
+        public AssociativeNode Build(Dynamo.Nodes.CodeBlockNodeModel node, List<AssociativeNode> inputs)
+        {
+            Dictionary<int, List<GraphToDSCompiler.VariableLine>> unboundIdentifiers;
+            unboundIdentifiers = new Dictionary<int, List<GraphToDSCompiler.VariableLine>>();
+            List<ProtoCore.AST.Node> resultNodes;
+            GraphToDSCompiler.GraphUtilities.ParseCodeBlockNodeStatements(node.Code, unboundIdentifiers, out resultNodes);
+
+            foreach (var astNode in resultNodes)
+            {
+                AddNode(node.GUID, (astNode as AssociativeNode));
+            }
+
+            return null;
+        }
         #endregion
 
         /// <summary>
@@ -338,6 +354,11 @@ namespace Dynamo.DSEngine
             }
 
             /*
+            if (node is CodeBlockNodeModel)
+            {
+                return;
+            }
+
             // If it is a partially applied function, need to create a function 
             // definition and function pointer.
             if (isPartial && rhs is FunctionCallNode)
