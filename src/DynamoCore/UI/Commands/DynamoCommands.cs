@@ -145,6 +145,22 @@ namespace Dynamo.ViewModels
 
         private void DeleteModelImpl(DeleteModelCommand command)
         {
+            List<ModelBase> modelsToDelete = new List<ModelBase>();
+            if (command.ModelGuid != Guid.Empty)
+            {
+                modelsToDelete.Add(CurrentSpace.GetModelInternal(command.ModelGuid));
+            }
+            else
+            {
+                // When nothing is specified then it means all selected models.
+                foreach (ISelectable selectable in DynamoSelection.Instance.Selection)
+                {
+                    if (selectable is ModelBase)
+                        modelsToDelete.Add(selectable as ModelBase);
+                }
+            }
+
+            _model.DeleteModelInternal(modelsToDelete);
         }
 
         #endregion
