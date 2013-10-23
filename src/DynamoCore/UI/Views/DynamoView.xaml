@@ -35,7 +35,7 @@
                 <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoModern.xaml" />
                 <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoConverters.xaml"/>
                 <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml" />
-                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/MainMenuStyleDictionary.xaml" />
+                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/MenuStyleDictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
@@ -336,7 +336,7 @@
                     <SolidColorBrush Color="{Binding IsHomeSpace, Converter={StaticResource WorkspaceBackgroundColorConverter}}" />
                 </Canvas.Background>
             </Canvas>
-            <controls:Watch3DView Margin="0,35,0,0"
+            <controls:Watch3DView Margin="0,20,0,0"
                                           Visibility="{Binding FullscreenWatchShowing, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}">
 
             </controls:Watch3DView>
@@ -444,47 +444,6 @@
                                                                                             </Style>
                                                                                         </Image.Style>
                                                                                     </Image>
-                                                                                    <!--<Popup Name="Popup"
-                                                                                           Placement="Custom"
-                                                                                           CustomPopupPlacementCallback="PlacePopup"
-                                                                                           IsOpen="{TemplateBinding IsSubmenuOpen}"
-                                                                                           AllowsTransparency="True"
-                                                                                           Focusable="False"
-                                                                                           PopupAnimation="Fade">
-                                                                                        <mwt:SystemDropShadowChrome Color="#71000000"
-                                                                                                                    CornerRadius="1"
-                                                                                                                    Margin="0,0,8,8"
-                                                                                                                    SnapsToDevicePixels="True">
-                                                                                            <Border Name="SubmenuBorder"
-                                                                                                    Margin="1"
-                                                                                                    SnapsToDevicePixels="True"
-                                                                                                    BorderBrush="{StaticResource NormalBorderBrush}"
-                                                                                                    Background="{StaticResource NormalBackgroundBrush}"
-                                                                                                    CornerRadius="1"
-                                                                                                    BorderThickness="1">
-                                                                                                <StackPanel IsItemsHost="True"
-                                                                                                            KeyboardNavigation.DirectionalNavigation="Cycle" />
-                                                                                            </Border>
-                                                                                        </mwt:SystemDropShadowChrome>
-                                                                                    </Popup>-->
-                                                                                    <!--<Popup Name="Popup"
-                                                                                           Placement="Left"
-                                                                                           IsOpen="{TemplateBinding IsSubmenuOpen}"
-                                                                                           AllowsTransparency="True"
-                                                                                           Focusable="False"
-                                                                                           PopupAnimation="Fade"
-                                                                                           VerticalOffset="20"
-                                                                                           HorizontalOffset="18">
-                                                                                        <Border Name="SubmenuBorder"
-                                                                                                Margin="0"
-                                                                                                SnapsToDevicePixels="True"
-                                                                                                BorderBrush="{StaticResource NormalBorderBrush}"
-                                                                                                Background="{StaticResource NormalBackgroundBrush}"
-                                                                                                BorderThickness="0">
-                                                                                            <StackPanel IsItemsHost="True"
-                                                                                                        KeyboardNavigation.DirectionalNavigation="Cycle" />
-                                                                                        </Border>
-                                                                                    </Popup>-->
                                                                                     <Popup Name="Popup"
                                                                                            Placement="Custom"
                                                                                            CustomPopupPlacementCallback="PlacePopup"
