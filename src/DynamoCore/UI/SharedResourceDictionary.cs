@@ -64,6 +64,7 @@ namespace Dynamo.UI
         private static ResourceDictionary _mainMenuStyleDictionary;
         private static ResourceDictionary _toolbarStyleDictionary;
         private static ResourceDictionary _connectorsDictionary;
+        private static ResourceDictionary _portsDictionary;
 
         public static ResourceDictionary DynamoModernDictionary
         {
@@ -206,6 +207,24 @@ namespace Dynamo.UI
                 }
 
                 return _connectorsDictionary;
+            }
+        }
+
+        public static ResourceDictionary PortsDictionary
+        {
+            get
+            {
+                if (_portsDictionary == null)
+                {
+                    System.Uri resourceLocater =
+                        new System.Uri("/DynamoCore;component/UI/Themes/Ports.xaml",
+                                        System.UriKind.Relative);
+
+                    _portsDictionary =
+                        (ResourceDictionary)Application.LoadComponent(resourceLocater);
+                }
+
+                return _portsDictionary;
             }
         }
     }
