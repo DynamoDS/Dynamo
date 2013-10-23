@@ -74,7 +74,8 @@ namespace Dynamo.Nodes
             GotFocus += OnGotFocus;
             LostFocus += OnLostFocus;
             LostKeyboardFocus += OnLostFocus;
-
+            Height = 20;
+            Padding = new Thickness(3);
             base.Text = initialText;
             this.Pending = false;
         }
