@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using Dynamo.FSchemeInterop;
+using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Selection;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
 using Microsoft.FSharp.Collections;
 using NUnit.Framework;
 
@@ -12,6 +16,188 @@ namespace Dynamo.Tests
 {
     internal class CustomNodes : DynamoUnitTest
     {
+        [Test]
+        public void CanCollapseNodesAndGetSameResult()
+        {
+            var model = Controller.DynamoModel;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\collapse\");
+
+            string openPath = Path.Combine(examplePath, "collapse.dyn");
+            model.Open(openPath);
+
+            var watchNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
+
+            var numNodesPreCollapse = model.CurrentWorkspace.Nodes.Count;
+
+            Controller.RunExpression();
+
+            var valuePreCollapse = (watchNode.OldValue as FScheme.Value.Number).Item;
+
+            var nodesToCollapse = new[]
+            {
+                "1da395b9-2539-4705-a479-1f6e575df01d", 
+                "b8130bf5-dd14-4784-946d-9f4705df604e",
+                "a54c7cfa-450a-4edc-b7a5-b3e15145a9e1"
+            };
+
+            foreach (var guid in nodesToCollapse)
+            {
+                var node = model.Nodes.First(x => x.GUID == Guid.Parse(guid));
+                model.AddToSelection(node);
+            }
+
+            NodeCollapser.Collapse(
+                DynamoSelection.Instance.Selection.OfType<NodeModel>(),
+                model.CurrentWorkspace,
+                new FunctionNamePromptEventArgs
+                {
+                    Category = "Testing",
+                    Description = "",
+                    Name = "__CollapseTest__",
+                    Success = true
+                });
+
+            var numNodesPostCollapse = model.CurrentWorkspace.Nodes.Count;
+
+            Assert.AreNotEqual(numNodesPreCollapse, numNodesPostCollapse);
+            Assert.AreEqual(nodesToCollapse.Length, numNodesPreCollapse - numNodesPostCollapse + 1);
+
+            Controller.RunExpression();
+
+            var valuePostCollapse = (watchNode.OldValue as FScheme.Value.Number).Item;
+
+            Assert.AreEqual(valuePreCollapse, valuePostCollapse);
+        }
+
+        [Test]
+        public void CanCollapseNodesWithDefaultValues()
+        {
+            var model = Controller.DynamoModel;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\collapse\");
+
+            string openPath = Path.Combine(examplePath, "collapse-defaults.dyn");
+            model.Open(openPath);
+
+            //Confirm that everything is working OK.
+            Controller.RunExpression();
+
+            var minNode = model.CurrentWorkspace.FirstNodeFromWorkspace<ListMin>();
+            var numNode = model.CurrentWorkspace.FirstNodeFromWorkspace<DoubleInput>();
+
+            Assert.IsInstanceOf<FScheme.Value.Number>(minNode.OldValue);
+            Assert.AreEqual(10, (minNode.OldValue as FScheme.Value.Number).Item);
+
+            model.AddToSelection(minNode);
+            model.AddToSelection(numNode);
+
+            NodeCollapser.Collapse(
+                DynamoSelection.Instance.Selection.OfType<NodeModel>(),
+                model.CurrentWorkspace,
+                new FunctionNamePromptEventArgs
+                {
+                    Category = "Testing",
+                    Description = "",
+                    Name = "__CollapseTest__",
+                    Success = true
+                });
+
+            Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count);
+
+            Controller.RunExpression();
+
+            var collapsedNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Function>();
+
+            Assert.IsInstanceOf<FScheme.Value.Number>(collapsedNode.OldValue);
+            Assert.AreEqual(10, (collapsedNode.OldValue as FScheme.Value.Number).Item);
+        }
+
+        [Test]
+        public void CanCollapseWith1NodeHoleInSelection()
+        {
+            var model = Controller.DynamoModel;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\collapse\");
+
+            string openPath = Path.Combine(examplePath, "collapse-function.dyn");
+            model.Open(openPath);
+
+            //Confirm that everything is working OK.
+            Controller.RunExpression();
+
+            var mulNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Multiplication>();
+
+            Assert.IsInstanceOf<FScheme.Value.Number>(mulNode.OldValue);
+            Assert.AreEqual(0, (mulNode.OldValue as FScheme.Value.Number).Item);
+
+            foreach (var node in model.CurrentWorkspace.Nodes.Where(x => !(x is Addition)))
+            {
+                model.AddToSelection(node);
+            }
+
+            NodeCollapser.Collapse(
+                DynamoSelection.Instance.Selection.OfType<NodeModel>(),
+                model.CurrentWorkspace,
+                new FunctionNamePromptEventArgs
+                {
+                    Category = "Testing",
+                    Description = "",
+                    Name = "__CollapseTest__",
+                    Success = true
+                });
+
+            Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count);
+
+            Controller.RunExpression();
+
+            var collapsedNode = model.CurrentWorkspace.FirstNodeFromWorkspace<Function>();
+
+            Assert.IsInstanceOf<FScheme.Value.Number>(collapsedNode.OldValue);
+            Assert.AreEqual(0, (collapsedNode.OldValue as FScheme.Value.Number).Item);
+        }
+
+        [Test]
+        public void GitHub_461_DeleteNodesFromCustomNodeWorkspaceAfterCollapse()
+        {
+            var model = Controller.DynamoModel;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\collapse\");
+
+            string openPath = Path.Combine(examplePath, "collapse.dyn");
+            model.Open(openPath);
+
+            var nodesToCollapse = new[]
+            {
+                "1da395b9-2539-4705-a479-1f6e575df01d", 
+                "b8130bf5-dd14-4784-946d-9f4705df604e",
+                "a54c7cfa-450a-4edc-b7a5-b3e15145a9e1"
+            };
+
+            foreach (var guid in nodesToCollapse)
+            {
+                var node = model.Nodes.First(x => x.GUID == Guid.Parse(guid));
+                model.AddToSelection(node);
+            }
+
+            NodeCollapser.Collapse(
+                 DynamoSelection.Instance.Selection.Where(x => x is NodeModel)
+                    .Select(x => (x as NodeModel)),
+                    model.CurrentWorkspace,
+                    new FunctionNamePromptEventArgs
+                    {
+                        Category = "Testing",
+                        Description = "",
+                        Name = "__CollapseTest2__",
+                        Success = true
+                    });
+
+            Controller.DynamoViewModel.GoToWorkspace(
+                Controller.CustomNodeManager.GetGuidFromName("__CollapseTest2__"));
+
+            var numNodes = model.CurrentWorkspace.Nodes.Count;
+
+            model.Delete(model.CurrentWorkspace.FirstNodeFromWorkspace<Addition>());
+
+            Assert.AreEqual(numNodes - 1, model.CurrentWorkspace.Nodes.Count);
+        }
+
         [Test]
         public void CombineWithCustomNodes()
         {
