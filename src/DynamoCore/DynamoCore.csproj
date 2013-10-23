@@ -164,7 +164,6 @@ limitations under the License.
     <Compile Include="UI\Controls\ShortcutToolbar.xaml.cs">
       <DependentUpon>ShortcutToolbar.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\SharedResourceDictionary.cs" />
     <Compile Include="UI\Views\InfoBubbleView.xaml.cs">
       <DependentUpon>InfoBubbleView.xaml</DependentUpon>
     </Compile>
@@ -172,6 +171,7 @@ limitations under the License.
     <Compile Include="UI\Commands\RecordableCommands.cs" />
     <Compile Include="UI\DynamoTextBox.cs" />
     <Compile Include="UI\StateMachine.cs" />
+    <Compile Include="UI\SharedResourceDictionary.cs" />
     <Compile Include="UI\Views\ZoomAndPanControl.xaml.cs">
       <DependentUpon>ZoomAndPanControl.xaml</DependentUpon>
     </Compile>
