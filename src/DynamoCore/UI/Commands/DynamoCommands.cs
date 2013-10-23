@@ -143,6 +143,10 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private void DeleteModelImpl(DeleteModelCommand command)
+        {
+        }
+
         #endregion
     }
 }

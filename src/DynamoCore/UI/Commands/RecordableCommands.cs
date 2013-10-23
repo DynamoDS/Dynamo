@@ -94,6 +94,8 @@ namespace Dynamo.ViewModels
                         return DragSelectionCommand.DeserializeCore(element);
                     case "MakeConnectionCommand":
                         return MakeConnectionCommand.DeserializeCore(element);
+                    case "DeleteModelCommand":
+                        return DeleteModelCommand.DeserializeCore(element);
                 }
 
                 string message = string.Format("Unknown command: {0}", element.Name);
@@ -463,6 +465,46 @@ namespace Dynamo.ViewModels
                 helper.SetAttribute("PortIndex", this.PortIndex);
                 helper.SetAttribute("Type", ((int)this.Type));
                 helper.SetAttribute("ConnectionMode", ((int)this.ConnectionMode));
+            }
+
+            #endregion
+        }
+
+        internal class DeleteModelCommand : RecordableCommand
+        {
+            #region Public Class Methods
+
+            internal DeleteModelCommand(Guid modelGuid)
+            {
+                this.ModelGuid = modelGuid;
+            }
+
+            internal static DeleteModelCommand DeserializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                System.Guid modelGuid = helper.ReadGuid("ModelGuid");
+                return new DeleteModelCommand(modelGuid);
+            }
+
+            #endregion
+
+            #region Public Command Properties
+
+            internal Guid ModelGuid { get; private set; }
+
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+            {
+                dynamoViewModel.DeleteModelImpl(this);
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("ModelGuid", this.ModelGuid);
             }
 
             #endregion
