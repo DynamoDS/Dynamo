@@ -496,11 +496,11 @@ namespace Dynamo.ViewModels
             InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
 
             //update preview bubble
-            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.Invoke((new Action(() =>
-            {
-                //if (dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Previews.Contains(this.PreviewBubble))
-                //    this.PreviewBubble.UpdateContentCommand.Execute(data);
-            })));
+            //dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.Invoke((new Action(() =>
+            //{
+            //    if (dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Previews.Contains(this.PreviewBubble))
+            //        this.PreviewBubble.UpdateContentCommand.Execute(data);
+            //})));
         }
 
         private void UpdatePreviewBubblePosition()
