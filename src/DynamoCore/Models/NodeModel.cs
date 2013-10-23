@@ -1626,7 +1626,7 @@ namespace Dynamo.Models
                        .TakeWhile(e => e.Index <= maxListIndex)
                        .Aggregate(
                            accString,
-                           (current, e) => current + "\n" + PrintValue(e.Element, e.Index, maxListIndex, currentDepth + 1, maxDepth));
+                           (current, e) => current + "\n" + PrintValue(e.Element, e.Index, maxListIndex, currentDepth + 1, maxDepth, maxStringLength));
 
                
             }
