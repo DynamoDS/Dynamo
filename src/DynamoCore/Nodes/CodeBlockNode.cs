@@ -31,6 +31,27 @@ namespace Dynamo.Nodes
             DynamoLogger.Instance.Log("Error in Code Block Node");
             this.State = ElementState.ERROR;
         }
+
+        /// <summary>
+        /// Formats user text by :
+        /// 1. Removing whitespaces form the front and back (whitespaces -> space, tab or enter)
+        /// 2.Adds a semicolon at the end
+        /// </summary>
+        /// <param name="inputCode"></param>
+        /// <returns></returns>
+        public string FormatUserText(string inputCode)
+        {
+            inputCode = inputCode.Trim();
+
+            if (inputCode.Equals(""))
+                return inputCode;
+
+            //Add the ';' if required
+            if (inputCode[inputCode.Length-1] != ';')
+                return inputCode.Insert(inputCode.Length, ";");
+            else
+                return inputCode;
+        }
         #endregion
 
         #region Properties
@@ -111,6 +132,10 @@ namespace Dynamo.Nodes
         #region Private Methods
         private void ProcessCode()
         {
+
+            //Format user test
+            code = FormatUserText(code);
+
             //New code => Revamp everything
             codeStatements.Clear();
 
@@ -249,7 +274,7 @@ namespace Dynamo.Nodes
 
     }
 
-    //NOT TESTED - currently happening
+
     public class Statement
     {
         #region Enums
@@ -319,8 +344,7 @@ namespace Dynamo.Nodes
             else if (astNode is FunctionDotCallNode)
             {
                 FunctionDotCallNode currentNode = astNode as FunctionDotCallNode;
-                Variable result = new Variable(currentNode.FunctionCall.Function as IdentifierNode);
-                refVariableList.Add(result);
+                GetReferencedVariables(currentNode.FunctionCall, refVariableList);
             }
             else if (astNode is InlineConditionalNode)
             {
