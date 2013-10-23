@@ -35,10 +35,12 @@
                                         ErrorBrush="{StaticResource nodeErrorBrush}">
     </controls:StateToColorConverter>
     <controls:PortNameConverter x:Key="PortNameConverter"/>
+    <controls:FilePathDisplayConverter x:Key="FilePathDisplayConverter"/>
     <controls:PathToFileNameConverter x:Key="PathToFileNameConverter"/>
     <controls:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
     <controls:ShowHideConsoleMenuItemConverter x:Key="ShowHideConsoleMenuConverter"/>
     <controls:ShowHideFullscreenWatchMenuItemConverter x:Key="ShowHideFullscreenWatchMenuConverter"/>
+    <controls:PackageSearchStateToStringConverter x:Key="PackageSearchStateToStringConverter"/>
     <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter"/>
     <controls:NonEmptyStringToCollapsedConverter x:Key="NonEmptyStringToCollapsedConverter"/>
     <controls:EnumToBooleanConverter x:Key="EnumToBoolConverter"/>
@@ -61,4 +63,5 @@
     <controls:PortNameToWidthConverter x:Key="PortNameToWidthConverter"/>
     <controls:TooltipLengthTruncater x:Key="TooltipLengthTruncater" />
     <controls:TabSizeConverter x:Key="TabSizeConverter" />
+    <controls:WarningLevelToColorConverter x:Key="WarningLevelToColorConverter"/>
 </ResourceDictionary>

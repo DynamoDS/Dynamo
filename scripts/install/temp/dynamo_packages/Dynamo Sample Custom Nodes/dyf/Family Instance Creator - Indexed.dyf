@@ -1,0 +1,52 @@
+<!--
+Copyright David Wood 2012. Derived from http://revitator.blogspot.co.uk/2012/10/dynamo-indexed-family-instances.html
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<dynWorkspace X="-86" Y="0.746383363472006" Name="Family Instance Creator - Indexed" Category="Revit.Family Creation" ID="21db5e9b-68cb-431c-925b-9a947b5dc494">
+  <dynElements>
+    <Dynamo.Elements.dynFamilyInstanceCreatorXYZ type="Dynamo.Elements.dynFamilyInstanceCreatorXYZ" guid="c29d387a-0c14-4b9c-95c1-1e3439bebaef" nickname="Family Instance Creator" x="384.25" y="163.53743315508" />
+    <Dynamo.Elements.dynFamilyInstanceParameterSetter type="Dynamo.Elements.dynFamilyInstanceParameterSetter" guid="2742db67-638a-438c-a472-19bc11607ba6" nickname="Set Instance Parameter" x="571.977272727273" y="217.258467023173" />
+    <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="e87743cf-26d3-4837-b886-5b86569246f9" nickname="Variable" x="81" y="213.5">
+      <Symbol value="typ" />
+    </Dynamo.Elements.dynSymbol>
+    <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="65039c74-7e36-4941-9909-5ca14abbd53f" nickname="Variable" x="78.75" y="286">
+      <Symbol value="param" />
+    </Dynamo.Elements.dynSymbol>
+    <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="80ecf1f4-0171-4a02-acf9-dfbe02fbbc1b" nickname="Variable" x="80.25" y="365.396473779385">
+      <Symbol value="index" />
+    </Dynamo.Elements.dynSymbol>
+    <Dynamo.Elements.dynTransaction type="Dynamo.Elements.dynTransaction" guid="f91adf07-23d1-4f7e-acc1-278c1e25ac62" nickname="Transaction" x="753.5" y="238.253616636528" />
+    <Dynamo.Elements.dynFamilyInstanceParameterSetter type="Dynamo.Elements.dynFamilyInstanceParameterSetter" guid="980ef5e3-3f45-4bfa-8e00-476d09c89ce7" nickname="Set Instance Parameter" x="665" y="346.503616636528" />
+    <Dynamo.Elements.dynStringInput type="Dynamo.Elements.dynStringInput" guid="98ca6b3a-e289-4c1b-8c47-9d72a225021b" nickname="String" x="365" y="367.503616636528">
+      <System.String value="Offset" />
+    </Dynamo.Elements.dynStringInput>
+    <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="c87e66b5-bb47-4c13-8677-4e401b6a9ec6" nickname="Number" x="482.25" y="426.753616636528">
+      <System.Double value="0" />
+    </Dynamo.Elements.dynDoubleInput>
+    <Dynamo.Elements.dynXYZZero type="Dynamo.Elements.dynXYZZero" guid="23ab469d-0090-45fd-9501-04e3ecd1b999" nickname="XYZ Zero" x="148.5" y="116.753616636528" />
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnector start="c29d387a-0c14-4b9c-95c1-1e3439bebaef" start_index="0" end="2742db67-638a-438c-a472-19bc11607ba6" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="2742db67-638a-438c-a472-19bc11607ba6" start_index="0" end="980ef5e3-3f45-4bfa-8e00-476d09c89ce7" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="e87743cf-26d3-4837-b886-5b86569246f9" start_index="0" end="c29d387a-0c14-4b9c-95c1-1e3439bebaef" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="65039c74-7e36-4941-9909-5ca14abbd53f" start_index="0" end="2742db67-638a-438c-a472-19bc11607ba6" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="80ecf1f4-0171-4a02-acf9-dfbe02fbbc1b" start_index="0" end="2742db67-638a-438c-a472-19bc11607ba6" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnector start="980ef5e3-3f45-4bfa-8e00-476d09c89ce7" start_index="0" end="f91adf07-23d1-4f7e-acc1-278c1e25ac62" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="98ca6b3a-e289-4c1b-8c47-9d72a225021b" start_index="0" end="980ef5e3-3f45-4bfa-8e00-476d09c89ce7" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="c87e66b5-bb47-4c13-8677-4e401b6a9ec6" start_index="0" end="980ef5e3-3f45-4bfa-8e00-476d09c89ce7" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnector start="23ab469d-0090-45fd-9501-04e3ecd1b999" start_index="0" end="c29d387a-0c14-4b9c-95c1-1e3439bebaef" end_index="0" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>

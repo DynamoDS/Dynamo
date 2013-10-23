@@ -1,20 +1,7 @@
-﻿//Copyright © Autodesk, Inc. 2012. All rights reserved.
-//
-//Licensed under the Apache License, Version 2.0 (the "License");
-//you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at
-//
-//http://www.apache.org/licenses/LICENSE-2.0
-//
-//Unless required by applicable law or agreed to in writing, software
-//distributed under the License is distributed on an "AS IS" BASIS,
-//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//See the License for the specific language governing permissions and
-//limitations under the License.
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
@@ -29,6 +16,8 @@ namespace Dynamo.PackageManager
     {
 
         public DelegateCommand DownloadLatest { get; set; }
+        public DelegateCommand UpvoteCommand { get; set; }
+        public DelegateCommand DownvoteCommand { get; set; }
 
         /// <summary>
         /// The class constructor. </summary>
@@ -36,7 +25,8 @@ namespace Dynamo.PackageManager
         public PackageManagerSearchElement(Greg.Responses.PackageHeader header)
         {
             this.Header = header;
-            this.Weight = 1;
+            this.Weight = header.deprecated ? 0.1 : 1;
+
             if (header.keywords != null && header.keywords.Count > 0)
             {
                 this.Keywords = String.Join(" ", header.keywords);
@@ -45,8 +35,37 @@ namespace Dynamo.PackageManager
             {
                 this.Keywords = "";
             }
+            this.Votes = header.votes;
             this.IsExpanded = false;
             this.DownloadLatest = new DelegateCommand((Action) Execute);
+            this.UpvoteCommand = new DelegateCommand((Action) Upvote);
+            this.DownvoteCommand = new DelegateCommand((Action) Downvote);
+        }
+
+        public void Upvote()
+        {
+            Task<bool>.Factory.StartNew(() => dynSettings.PackageManagerClient.Upvote(this.Id))
+                .ContinueWith((t) =>
+                {
+                    if (t.Result)
+                    {
+                        this.Votes += 1;
+                    }
+                }
+                , TaskScheduler.FromCurrentSynchronizationContext()); 
+
+        }
+
+        public void Downvote()
+        {
+            Task<bool>.Factory.StartNew(() => dynSettings.PackageManagerClient.Downvote(this.Id))
+                .ContinueWith((t) =>
+                {
+                    if (t.Result)
+                    {
+                        this.Votes -= 1;
+                    }
+                } , TaskScheduler.FromCurrentSynchronizationContext()); 
         }
 
         public override void Execute()
@@ -61,7 +80,7 @@ namespace Dynamo.PackageManager
             if (result == MessageBoxResult.OK)
             {
                 // get all of the headers
-                var headers = version.full_dependency_ids.Select((id) =>
+                var headers = version.full_dependency_ids.Select(dep=>dep._id).Select((id) =>
                     {
                         PackageHeader pkgHeader;
                         var res = dynSettings.PackageManagerClient.DownloadPackageHeader(id, out pkgHeader);
@@ -130,7 +149,13 @@ namespace Dynamo.PackageManager
                 } 
             }
             public string Maintainers { get { return String.Join(", ", this.Header.maintainers.Select(x=>x.username)); } }
-            public int Votes { get { return this.Header.votes; } }
+            private int _votes;
+            public int Votes
+            {
+                get { return _votes; } 
+                set { _votes = value; RaisePropertyChanged("Votes"); }
+            }
+            public bool IsDeprecated { get { return this.Header.deprecated; } }
             public int Downloads { get { return this.Header.downloads; } }
             public string EngineVersion { get { return Header.versions[Header.versions.Count - 1].engine_version; } }
             public int UsedBy { get { return this.Header.used_by.Count; } } 

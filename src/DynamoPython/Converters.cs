@@ -26,7 +26,7 @@ namespace DynamoPython
                 return data;
             else if (data is string)
                 return FScheme.Value.NewString(data);
-            else if (data is double)
+            else if (data is double || data is int || data is float)
                 return FScheme.Value.NewNumber(data);
             else if (data is IEnumerable<dynamic>)
             {

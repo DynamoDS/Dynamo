@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Dynamo;
+using Dynamo.Utilities;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using IronPython.Hosting;
 using IronPython.Runtime;
@@ -121,7 +123,15 @@ namespace DynamoPython
                     DynamoLogger.Instance.Log("Failed to load Revit types for autocomplete.  Python autocomplete will not see Autodesk namespace types.");
                 }
             }
-            
+
+            if (!assemblies.Any(x => x.FullName.Contains("LibGNet")))
+            {
+                AssemblyHelper.LoadLibG();
+
+                //refresh the assemblies collection
+                assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            }
+
             if (assemblies.Any(x => x.FullName.Contains("LibGNet")))
             {
                 try
@@ -162,14 +172,10 @@ namespace DynamoPython
                 {
                     AutocompletionInProgress = true;
 
-                    Dynamo.DynamoLogger.Instance.Log("GETTING COMPLETION DATA");
-
                     // is it a CLR type?
                     var type = TryGetType(name); 
                     if (type != null)
                     {
-                        Dynamo.DynamoLogger.Instance.Log("ENUMERATING TYPE");
-
                         items = EnumerateMembers(type, name);
                     }
                     // it's a variable?
@@ -200,37 +206,11 @@ namespace DynamoPython
                             }
                         }
 
-                        if (mem != null) 
-                        {
-                            if (mem is PythonModule) 
-                            {
-                                Dynamo.DynamoLogger.Instance.Log("Got PythonModule with is");
-                            }
-                            else if (mem.GetType() == typeof(PythonModule))
-                            {
-                                Dynamo.DynamoLogger.Instance.Log("Got PythonModule with GetType and typeof");
-                            }
-                            else
-                            {
-                                Dynamo.DynamoLogger.Instance.Log("Not a PythonModule");
-                                Dynamo.DynamoLogger.Instance.Log(mem.GetType().ToString());
-
-                                try
-                                {
-                                    var pm = (PythonModule) mem;
-                                }
-                                catch (Exception e)
-                                {
-                                    Dynamo.DynamoLogger.Instance.Log(e.ToString());
-                                }
-                            }
-
-                        }
                     }
                 }
                 catch
                 {
-                    Dynamo.DynamoLogger.Instance.Log("EXCEPTION: GETTING COMPLETION DATA");
+                    //Dynamo.DynamoLogger.Instance.Log("EXCEPTION: GETTING COMPLETION DATA");
                 }
                 AutocompletionInProgress = false;
             }

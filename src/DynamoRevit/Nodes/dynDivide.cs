@@ -1,18 +1,4 @@
-﻿//Copyright © Autodesk, Inc. 2012. All rights reserved.
-//
-//Licensed under the Apache License, Version 2.0 (the "License");
-//you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at
-//
-//http://www.apache.org/licenses/LICENSE-2.0
-//
-//Unless required by applicable law or agreed to in writing, software
-//distributed under the License is distributed on an "AS IS" BASIS,
-//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//See the License for the specific language governing permissions and
-//limitations under the License.
-
-using System;
+﻿using System;
 using System.Linq;
 using System.Collections.Generic;
 using Autodesk.Revit.DB;
@@ -54,7 +40,7 @@ namespace Dynamo.Nodes
             //xs = ((Value.Number)args[3]).Item;// Spacing
 
             Autodesk.Revit.DB.DividedPath divPath;
-            List<Reference> refList = new List<Reference>();
+            var refList = new List<Reference>();
 
             // this node can take one or more curve elements and create one or more divided path elements
             // input is one or more user-selected curves for now
@@ -82,7 +68,6 @@ namespace Dynamo.Nodes
                 //elements later.
                 int count = 0;
 
-
                 //We create our output by...
                 var result = Utils.SequenceToFSharpList(
                    curveList.Select(
@@ -95,18 +80,13 @@ namespace Dynamo.Nodes
                           //...check to see if we already have a divided node made by this curve in a previous run
                           if (this.Elements.Count > count)
                           {
-                              Element e;
-
                               //...we attempt to fetch it from the document...
-                              if (dynUtils.TryGetElement(this.Elements[count],typeof(Autodesk.Revit.DB.DividedPath), out e))
+                              if (dynUtils.TryGetElement(this.Elements[count], out divPath))
                               {
-                                  //...if we find a divided path and if we're successful matching it to the doc, update it's properties... 
-                                  divPath = e as Autodesk.Revit.DB.DividedPath;
-
+                                  //...if we find a divided path and if we're successful matching it to the doc, update it's properties...
                                   if (divPath != null)
                                   {
                                       divPath.FixedNumberOfPoints = (int)xi;
-
                                   }
                                   else
                                   {
@@ -121,7 +101,6 @@ namespace Dynamo.Nodes
                                       divPath.FixedNumberOfPoints = (int)xi;
                                       this.Elements[count] = divPath.Id;
                                       refList.Clear();
-
                                   }
                               }
                               else
@@ -138,7 +117,6 @@ namespace Dynamo.Nodes
                                   this.Elements[count] = divPath.Id;
                                   refList.Clear();
                               }
-
                           }
                           //...otherwise...
                           else
@@ -164,12 +142,10 @@ namespace Dynamo.Nodes
 
                 //Now that we've added all the divided paths from this run, we delete all of the
                 //extra ones from the previous run.
-                foreach (var eid in this.Elements.Skip(count))
+                foreach (var eid in Elements.Skip(count))
                 {
-
                     this.DeleteElement(eid); // remove unused divided paths
                 }
-
 
                 return Value.NewList(result);
             }
@@ -192,12 +168,10 @@ namespace Dynamo.Nodes
                 //If we've made any elements previously...
                 if (this.Elements.Any())
                 {
-                    Element e;
                     //...try to get the first one...
-                    if (dynUtils.TryGetElement(this.Elements[0],typeof(Autodesk.Revit.DB.DividedPath), out e))
+                    if (dynUtils.TryGetElement(this.Elements[0], out divPath))
                     {
                         //..and if we do, update it's data.
-                        divPath = e as Autodesk.Revit.DB.DividedPath;
                         divPath.FixedNumberOfPoints = (int)xi;
                     }
                     else
@@ -265,25 +239,13 @@ namespace Dynamo.Nodes
             //If we've made any elements previously...
             if (this.Elements.Any())
             {
-                Element e;
                 //...try to get the first one...
-                if (dynUtils.TryGetElement(this.Elements[0],typeof(Autodesk.Revit.DB.DividedSurface), out e))
-                {
-                    //..and if we do, update it's data.
-                    divSurf = e as Autodesk.Revit.DB.DividedSurface;
-                }
-                else
+                if (!dynUtils.TryGetElement(this.Elements[0], out divSurf))
                 {
                     //...otherwise, just make a new one and replace it in the list.
                     divSurf = this.UIDocument.Document.FamilyCreate.NewDividedSurface(face.Reference);
                     this.Elements[0] = divSurf.Id;
                 }
-
-                ////We still delete all extra elements, since in the previous run we might have received a list.
-                //foreach (var el in this.Elements.Skip(1))
-                //{
-                //    this.DeleteElement(el);
-                //}
             }
             //...otherwise...
             else

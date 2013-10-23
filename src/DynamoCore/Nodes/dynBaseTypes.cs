@@ -1,19 +1,4 @@
-﻿//Copyright 2013 Ian Keough
-
-//Licensed under the Apache License, Version 2.0 (the "License");
-//you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at
-
-//http://www.apache.org/licenses/LICENSE-2.0
-
-//Unless required by applicable law or agreed to in writing, software
-//distributed under the License is distributed on an "AS IS" BASIS,
-//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//See the License for the specific language governing permissions and
-//limitations under the License.
-
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -21,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Windows.Data;
 using System.Xml;
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
@@ -321,6 +307,50 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            XmlDocument xmlDoc = element.OwnerDocument;
+            foreach (var inport in InPortData)
+            {
+                XmlElement input = xmlDoc.CreateElement("Input");
+                input.SetAttribute("name", inport.NickName);
+                element.AppendChild(input);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+
+            if (context == SaveContext.Undo)
+            {
+                //Reads in the new number of ports required from the data stored in the Xml Element
+                //during Serialize (nextLength). Changes the current In Port Data to match the
+                //required size by adding or removing port data.
+                int currLength = InPortData.Count;
+                XmlNodeList inNodes = element.SelectNodes("Input");
+                int nextLength = inNodes.Count;
+                if (nextLength > currLength)
+                {
+                    for (; currLength < nextLength; currLength++)
+                    {
+                        XmlNode subNode = inNodes.Item(currLength);
+                        string nickName = subNode.Attributes["name"].Value;
+                        InPortData.Add(new PortData(nickName, "", typeof(object)));
+                    }
+                }
+                else if (nextLength < currLength)
+                    InPortData.RemoveRange(nextLength, currLength - nextLength);
+
+                RegisterAllPorts();
+            }
+        }
+
+        #endregion
+
         protected override void OnEvaluate()
         {
             base.OnEvaluate();
@@ -570,8 +600,8 @@ namespace Dynamo.Nodes
         public Fold()
             : base(FScheme.FoldL)
         {
-            InPortData.Add(new PortData("f(x, a)", "Reductor Function: first argument is an item in the list, second is the current accumulated value, result is the new accumulated value.", typeof(object)));
-            InPortData.Add(new PortData("a", "Starting result (accumulator).", typeof(object)));
+            InPortData.Add(new PortData("f(x, a)", "Reductor Function: first argument is an arbitrary item in the list being reduced, second is the current accumulated value, result is the new accumulated value.", typeof(object)));
+            InPortData.Add(new PortData("a", "Starting accumulated value, to be passed into the first call to the Reductor function.", typeof(object)));
             InPortData.Add(new PortData("list", "List to reduce.", typeof(Value.List)));
             OutPortData.Add(new PortData("", "Result", typeof(object)));
 
@@ -989,6 +1019,7 @@ namespace Dynamo.Nodes
     [NodeName("Add to List")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
     [NodeDescription("Adds an element to the beginning of a list.")]
+    [NodeSearchTags("cons", "pair")]
     public class List : BuiltinFunction
     {
         public List()
@@ -1366,6 +1397,7 @@ namespace Dynamo.Nodes
     [NodeName("Concatenate Lists")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
     [NodeDescription("Concatenates two lists.")]
+    [NodeSearchTags("append", "extend")]
     public class Append : BuiltinFunction
     {
         public Append()
@@ -1387,6 +1419,7 @@ namespace Dynamo.Nodes
     [NodeName("First of List")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
     [NodeDescription("Gets the Head of a list")]
+    [NodeSearchTags("car")]
     public class First : BuiltinFunction
     {
         public First()
@@ -1407,6 +1440,7 @@ namespace Dynamo.Nodes
     [NodeName("Rest of List")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
     [NodeDescription("Gets the Tail of a list (list with the first element removed).")]
+    [NodeSearchTags("cdr")]
     public class Rest : BuiltinFunction
     {
         public Rest()
@@ -1703,13 +1737,38 @@ namespace Dynamo.Nodes
             processTextForNewInputs();
         }
 
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("value", Value);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+            processTextForNewInputs();
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                Value = helper.ReadString("value");
+            }
+        }
+
+        #endregion
+
         private void processTextForNewInputs()
         {
             var parameters = new List<string>();
 
             try
             {
-                _parsed = DoubleInput.ParseValue(Value, new[] { ',' }, parameters);
+                _parsed = DoubleInput.ParseValue(Value, new[] { ',' }, parameters, new ConversionDelegate(TokenConvert));
 
                 if (InPortData.Count > 2)
                     InPortData.RemoveRange(2, InPortData.Count - 2);
@@ -1725,6 +1784,11 @@ namespace Dynamo.Nodes
             {
                 Error(e.Message);
             }
+        }
+
+        private double TokenConvert(double value)
+        {
+            return value;
         }
 
         internal static readonly Regex IdentifierPattern = new Regex(@"(?<id>[a-zA-Z_][^ ]*)|\[(?<id>\w(?:[^}\\]|(?:\\}))*)\]");
@@ -2075,6 +2139,7 @@ namespace Dynamo.Nodes
     [NodeName("Equal")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_COMPARISON)]
     [NodeDescription("Compares two numbers.")]
+    [NodeSearchTags("=")]
     public class Equal : Comparison
     {
         public Equal() : base(FScheme.EQ, "=") { }
@@ -2518,7 +2583,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Random With Seed")]
+    [NodeName("Random Number By Seed")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
     [NodeDescription("Generates a uniform random number in the range [0.0, 1.0).")]
     public class RandomSeed : NodeWithOneOutput
@@ -2545,7 +2610,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Random")]
+    [NodeName("Random Number")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
     [NodeDescription("Generates a uniform random number in the range [0.0, 1.0).")]
     public class Random : NodeWithOneOutput
@@ -2556,7 +2621,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        private static System.Random random = new System.Random();
+        private readonly System.Random _random = new System.Random();
 
         public override bool RequiresRecalc
         {
@@ -2569,7 +2634,48 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return Value.NewNumber(random.NextDouble());
+            return Value.NewNumber(_random.NextDouble());
+        }
+
+        protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
+        {
+            return builder.Build(this, inputs);
+        }
+    }
+
+    [NodeName("Random Number List")]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeDescription("Generates a list of uniform random numbers in the range [0.0, 1.0).")]
+    public class RandomList : NodeWithOneOutput
+    {
+        public RandomList()
+        {
+            InPortData.Add(new PortData("amt", "Number of random numbers to be generated.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("rand", "Random number between 0.0 and 1.0.", typeof(Value.List)));
+            RegisterAllPorts();
+        }
+
+        private readonly System.Random _random = new System.Random();
+
+        public override bool RequiresRecalc
+        {
+            get
+            {
+                return true;
+            }
+            set { }
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var n = (int)((Value.Number)args[0]).Item;
+
+            var result = FSharpList<Value>.Empty;
+
+            while (n-- > 0)
+                result = FSharpList<Value>.Cons(Value.NewNumber(_random.NextDouble()), result);
+
+            return Value.NewList(result);
         }
 
         protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
@@ -2589,6 +2695,8 @@ namespace Dynamo.Nodes
         {
             OutPortData.Add(new PortData("2.71828...", "e", typeof(Value.Number)));
             RegisterAllPorts();
+
+            OldValue = Value.NewNumber(Math.E);
         }
 
         public override bool RequiresRecalc
@@ -2637,6 +2745,8 @@ namespace Dynamo.Nodes
         {
             OutPortData.Add(new PortData("3.14159...", "pi", typeof(Value.Number)));
             RegisterAllPorts();
+
+            OldValue = Value.NewNumber(Math.PI);
         }
 
         public override bool RequiresRecalc
@@ -2679,12 +2789,15 @@ namespace Dynamo.Nodes
     [NodeDescription("Pi constant")]
     [NodeSearchTags("trigonometry", "circle", "π")]
     [IsInteractive(false)]
-    public class dyn2Pi : NodeModel
+    [AlsoKnownAs("Dynamo.Nodes.2Pi", "Dynamo.Nodes.dyn2Pi")]
+    public class PiTimes2 : NodeModel
     {
-        public dyn2Pi()
+        public PiTimes2()
         {
             OutPortData.Add(new PortData("3.14159...*2", "2*pi", typeof(Value.Number)));
             RegisterAllPorts();
+
+            OldValue = Value.NewNumber(Math.PI*2);
         }
 
         public override bool RequiresRecalc
@@ -3262,6 +3375,30 @@ namespace Dynamo.Nodes
             nodeElement.AppendChild(outEl);
         }
 
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("doubleValue", Value);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                Value = helper.ReadDouble("doubleValue");
+            }
+        }
+
+        #endregion
+
         protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
         {
             return builder.Build(this, inputs);
@@ -3279,6 +3416,30 @@ namespace Dynamo.Nodes
         {
             return builder.Build(this, inputs);
         }
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("boolValue", Value);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                Value = helper.ReadBoolean("boolValue");
+            }
+        }
+
+        #endregion
     }
 
     public abstract partial class String : BasicInteractive<string>
@@ -3298,9 +3459,35 @@ namespace Dynamo.Nodes
             return builder.Build(this, inputs);
             
         }
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("stringValue", Value);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                Value = helper.ReadString("stringValue");
+            }
+        }
+
+        #endregion
     }
 
     #endregion
+
+    public delegate double ConversionDelegate(double value);
 
     [NodeName("Number")]
     [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
@@ -3312,10 +3499,18 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("", "", typeof(Value.Number)));
 
             RegisterAllPorts();
+
+            _convertToken = Convert;
+        }
+
+        public virtual double Convert(double value)
+        {
+            return value;
         }
 
         private List<IDoubleSequence> _parsed;
         private string _value;
+        protected ConversionDelegate _convertToken;
 
         public string Value
         {
@@ -3331,7 +3526,7 @@ namespace Dynamo.Nodes
 
                 try
                 {
-                    _parsed = ParseValue(value, new[] { '\n' }, idList);
+                    _parsed = ParseValue(value, new[] { '\n' }, idList, _convertToken);
 
                     InPortData.Clear();
 
@@ -3370,7 +3565,33 @@ namespace Dynamo.Nodes
             }
         }
 
-        public static List<IDoubleSequence> ParseValue(string text, char[] seps, List<string> identifiers)
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("doubleInputValue", Value);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                this.Value = helper.ReadString("doubleInputValue");
+            }
+        }
+
+        #endregion
+
+        public static List<IDoubleSequence> ParseValue(string text, char[] seps, List<string> identifiers, ConversionDelegate convertToken)
         {
             var idSet = new HashSet<string>(identifiers);
             return text.Replace(" ", "").Split(seps, StringSplitOptions.RemoveEmptyEntries).Select(
@@ -3399,10 +3620,10 @@ namespace Dynamo.Nodes
                             {
                                 if (rangeIdentifiers[2].StartsWith("#") || rangeIdentifiers[2].StartsWith("~"))
                                     throw new Exception("Cannot use range or approx. identifier on increment field when one has already been used to specify a count.");
-                                return new Sequence(startToken, ParseToken(rangeIdentifiers[2], idSet, identifiers), endToken);
+                                return new Sequence(startToken, ParseToken(rangeIdentifiers[2], idSet, identifiers), endToken, convertToken);
                             }
 
-                            return new Sequence(startToken, new DoubleToken(1), endToken) as IDoubleSequence;
+                            return new Sequence(startToken, new DoubleToken(1), endToken, convertToken) as IDoubleSequence;
                         }
                         else
                         {
@@ -3415,7 +3636,7 @@ namespace Dynamo.Nodes
                                     var count = rangeIdentifiers[2].Substring(1);
                                     IDoubleInputToken countToken = ParseToken(count, idSet, identifiers);
 
-                                    return new CountRange(startToken, countToken, endToken);
+                                    return new CountRange(startToken, countToken, endToken, convertToken);
                                 }
 
                                 if (rangeIdentifiers[2].StartsWith("~"))
@@ -3423,17 +3644,17 @@ namespace Dynamo.Nodes
                                     var approx = rangeIdentifiers[2].Substring(1);
                                     IDoubleInputToken approxToken = ParseToken(approx, idSet, identifiers);
 
-                                    return new ApproxRange(startToken, approxToken, endToken);
+                                    return new ApproxRange(startToken, approxToken, endToken, convertToken);
                                 }
 
-                                return new Range(startToken, ParseToken(rangeIdentifiers[2], idSet, identifiers), endToken);
+                                return new Range(startToken, ParseToken(rangeIdentifiers[2], idSet, identifiers), endToken, convertToken);
                             }
-                            return new Range(startToken, new DoubleToken(1), endToken) as IDoubleSequence;
+                            return new Range(startToken, new DoubleToken(1), endToken, convertToken) as IDoubleSequence;
                         }
 
                     }
 
-                    return new OneNumber(startToken) as IDoubleSequence;
+                    return new OneNumber(startToken, convertToken) as IDoubleSequence;
                 }).ToList();
         }
 
@@ -3496,15 +3717,16 @@ namespace Dynamo.Nodes
         private class OneNumber : IDoubleSequence
         {
             private readonly IDoubleInputToken _token;
-
             private readonly double? _result;
-
-            public OneNumber(IDoubleInputToken t)
+            private readonly ConversionDelegate _convert;
+ 
+            public OneNumber(IDoubleInputToken t, ConversionDelegate convertToken)
             {
                 _token = t;
+                _convert = convertToken;
 
                 if (_token is DoubleToken)
-                    _result = GetValue(null).First();
+                    _result = _convert(GetValue(null).First());
             }
 
             public Value GetFSchemeValue(Dictionary<string, double> idLookup)
@@ -3535,14 +3757,16 @@ namespace Dynamo.Nodes
             private readonly IDoubleInputToken _start;
             private readonly IDoubleInputToken _step;
             private readonly IDoubleInputToken _count;
+            private readonly ConversionDelegate _convert;
 
             private readonly IEnumerable<double> _result;
 
-            public Sequence(IDoubleInputToken start, IDoubleInputToken step, IDoubleInputToken count)
+            public Sequence(IDoubleInputToken start, IDoubleInputToken step, IDoubleInputToken count, ConversionDelegate convertToken)
             {
                 _start = start;
                 _step = step;
                 _count = count;
+                _convert = convertToken;
 
                 if (_start is DoubleToken && _step is DoubleToken && _count is DoubleToken)
                 {
@@ -3606,14 +3830,16 @@ namespace Dynamo.Nodes
             private readonly IDoubleInputToken _start;
             private readonly IDoubleInputToken _step;
             private readonly IDoubleInputToken _end;
+            private readonly ConversionDelegate _convert;
 
             private readonly IEnumerable<double> _result;
 
-            public Range(IDoubleInputToken start, IDoubleInputToken step, IDoubleInputToken end)
+            public Range(IDoubleInputToken start, IDoubleInputToken step, IDoubleInputToken end, ConversionDelegate convertToken)
             {
                 _start = start;
                 _step = step;
                 _end = end;
+                _convert = convertToken;
 
                 if (_start is DoubleToken && _step is DoubleToken && _end is DoubleToken)
                 {
@@ -3632,13 +3858,13 @@ namespace Dynamo.Nodes
             {
                 if (_result == null)
                 {
-                    var step = _step.GetValue(idLookup);
+                    var step = _convert(_step.GetValue(idLookup));
 
                     if (step == 0)
                         throw new Exception("Can't have 0 step.");
 
-                    var start = _start.GetValue(idLookup);
-                    var end = _end.GetValue(idLookup);
+                    var start = _convert(_start.GetValue(idLookup));
+                    var end = _convert(_end.GetValue(idLookup));
 
                     return Process(start, step, end);
                 }
@@ -3680,8 +3906,8 @@ namespace Dynamo.Nodes
 
         private class CountRange : Range
         {
-            public CountRange(IDoubleInputToken startToken, IDoubleInputToken countToken, IDoubleInputToken endToken)
-                : base(startToken, countToken, endToken)
+            public CountRange(IDoubleInputToken startToken, IDoubleInputToken countToken, IDoubleInputToken endToken, ConversionDelegate convertToken)
+                : base(startToken, countToken, endToken, convertToken)
             { }
 
             protected override IEnumerable<double> Process(double start, double count, double end)
@@ -3706,8 +3932,8 @@ namespace Dynamo.Nodes
 
         private class ApproxRange : Range
         {
-            public ApproxRange(IDoubleInputToken start, IDoubleInputToken step, IDoubleInputToken end) 
-                : base(start, step, end)
+            public ApproxRange(IDoubleInputToken start, IDoubleInputToken step, IDoubleInputToken end, ConversionDelegate convertToken) 
+                : base(start, step, end, convertToken)
             { }
 
             protected override IEnumerable<double> Process(double start, double approx, double end)
@@ -3790,44 +4016,16 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Angle(deg.)")]
+    [NodeName("Angle (deg.)")]
     [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
-    [NodeDescription("An angle in degrees.")]
-    public partial class AngleInput : Double
+    [NodeDescription("An angle in degrees. Outputs radians")]
+    [NodeSearchTags("trigonometry", "angle", "degree")]
+    public class AngleInput : DoubleInput
     {
-        public AngleInput()
+        public override double Convert(double value)
         {
-            RegisterAllPorts();
+            return value * Math.PI / 180.0;
         }
-
-        public override double Value
-        {
-            get
-            {
-                return base.Value;
-            }
-            set
-            {
-                if (base.Value == value)
-                    return;
-
-                base.Value = value;
-                //RaisePropertyChanged("Value");
-            }
-        }
-
-        protected override double DeserializeValue(string val)
-        {
-            try
-            {
-                return Convert.ToDouble(val);
-            }
-            catch
-            {
-                return 0;
-            }
-        }
-
     }
 
     [NodeName("Number Slider")]
@@ -3946,6 +4144,32 @@ namespace Dynamo.Nodes
                 }
             }
         }
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called.
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("min", Min);
+                helper.SetAttribute("max", Max);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called.
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                Min = helper.ReadDouble("min");
+                Max = helper.ReadDouble("max");
+            }
+        }
+
+        #endregion
     }
 
     [NodeName("Boolean")]
@@ -3984,7 +4208,7 @@ namespace Dynamo.Nodes
         {
             get
             {
-                return HttpUtility.UrlDecode(base.Value);
+                return HttpUtility.HtmlDecode(base.Value);
             }
             set
             {
@@ -4025,6 +4249,19 @@ namespace Dynamo.Nodes
                     }
                 }
             }
+        }
+
+        [NodeMigration(from:"0.5.3.0")]
+        public static void Migrate_0530_to_0600(XmlNode nodeElement)
+        {
+            var query = from XmlNode subNode in nodeElement.ChildNodes
+                        where subNode.Name.Equals(typeof(string).FullName)
+                        from XmlAttribute attr in subNode.Attributes
+                        where attr.Name.Equals("value")
+                        select attr;
+
+            foreach (XmlAttribute attr in query)
+                attr.Value = HttpUtility.HtmlEncode(HttpUtility.UrlDecode(attr.Value));
         }
     }
 
@@ -4088,6 +4325,30 @@ namespace Dynamo.Nodes
         {
             return builder.Build(this, inputs);
         }
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("value", Value);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                Value = helper.ReadString("value");
+            }
+        }
+
+        #endregion
     }
 
     #endregion
@@ -4248,7 +4509,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return Value.NewString(NodeModel.BuildValueString(args[0],0,10000,0, 25));
+            return Value.NewString(NodeModel.PrintValue(args[0],0,10000,0, 25));
         }
 
         protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
@@ -4265,7 +4526,7 @@ namespace Dynamo.Nodes
         public SplitString()
         {
             InPortData.Add(new PortData("str", "String to split", typeof(Value.String)));
-            InPortData.Add(new PortData("del", "Delimiter", typeof(Value.String)));
+            InPortData.Add(new PortData("del", "Delimiter", typeof(Value.String), Value.NewString("")));
             OutPortData.Add(new PortData("strs", "List of split strings", typeof(Value.List)));
 
             RegisterAllPorts();
@@ -4278,10 +4539,9 @@ namespace Dynamo.Nodes
 
             return Value.NewList(
                 Utils.SequenceToFSharpList(
-                    str.Split(new string[] { del }, StringSplitOptions.None)
-                       .Select(Value.NewString)
-                )
-            );
+                    del == ""
+                        ? str.ToCharArray().Select(c => Value.NewString(c.ToString()))
+                        : str.Split(new[] { del }, StringSplitOptions.None).Select(Value.NewString)));
         }
 
         protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
@@ -4385,7 +4645,7 @@ namespace Dynamo.Nodes
     /// <summary>
     /// A class used to store a name and associated item for a drop down menu
     /// </summary>
-    public class DynamoDropDownItem
+    public class DynamoDropDownItem:IComparable
     {
         public string Name { get; set; }
         public object Item { get; set; }
@@ -4400,6 +4660,16 @@ namespace Dynamo.Nodes
             Name = name;
             Item = item;
         }
+
+        public int CompareTo(object obj)
+        {
+            var a = obj as DynamoDropDownItem;
+            if (a == null)
+                return 1;
+
+            return this.Name.CompareTo(a);
+        }
+
     }
 
     /// <summary>
@@ -4434,6 +4704,22 @@ namespace Dynamo.Nodes
                     selectedIndex = value;
                 RaisePropertyChanged("SelectedIndex");
             }
+        }
+
+        protected DropDrownBase()
+        {
+            Items.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Items_CollectionChanged);
+        }
+
+        void Items_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            //sort the collection when changed
+            //rehook the collection changed event
+            var sortedItems = from item in Items
+                              orderby item.Name
+                              select item;
+            Items = sortedItems.ToObservableCollection();
+            Items.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Items_CollectionChanged);
         }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)

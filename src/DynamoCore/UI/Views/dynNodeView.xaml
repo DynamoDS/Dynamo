@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Dynamo.Controls.dynNodeView"
+<UserControl x:Class="Dynamo.Controls.dynNodeView"
     x:ClassModifier="public"
     x:FieldModifier="public"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -25,22 +25,6 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-
-    <UserControl.ToolTip>
-        <Grid Width ="Auto" MaxWidth="235" MaxHeight="200" Height="Auto">
-            <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <!-- Last value -->
-
-                <TextBlock Name="tt_lastValueName" 
-                           VerticalAlignment="Top" Text="Current Value" FontSize="11" FontWeight="Bold" Margin="2, 7, 2, 2" 
-                           Visibility="{Binding Path=ToolTipText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}"/>
-                <TextBlock Name="tt_lastValue" TextWrapping="Wrap" 
-                           Text="{Binding Path=OldValue}"  FontSize="11" TextTrimming="WordEllipsis" Margin="2" 
-                           Visibility="{Binding Path=ToolTipText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}"/>
-
-            </StackPanel>
-        </Grid>
-    </UserControl.ToolTip>
 
     <Grid Name="grid" x:FieldModifier="public" Grid.Row="1" Canvas.ZIndex="3" Margin="0" Width="Auto" HorizontalAlignment="Left">
 
@@ -74,10 +58,12 @@
                 </MenuItem>
                 <MenuItem Name="isVisible_cm" Header="Preview" 
                           IsChecked="{Binding Path=IsVisible}" 
-                          Command="{Binding Path=ToggleIsVisibleCommand}"/>
+                          Command="{Binding Path=ToggleIsVisibleCommand}"
+                          Visibility="{Binding Path=ShowsVisibilityToggles, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>
                 <MenuItem Name="isUpstreamVisible_cm" Header="Preview Upstream" 
                           IsChecked="{Binding Path=IsUpstreamVisible}"
-                          Command="{Binding Path=ToggleIsUpstreamVisibleCommand}"/>
+                          Command="{Binding Path=ToggleIsUpstreamVisibleCommand}"
+                          Visibility="{Binding Path=ShowsVisibilityToggles, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>
                 <MenuItem Name="rename_cm" Header="Rename Node..." 
                           Command="{Binding Path=RenameCommand}"/>
                 <MenuItem Name="help_cm" Header="Help..." 
