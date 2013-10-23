@@ -44,7 +44,6 @@ namespace Dynamo.Nodes
 
         public DSFunction()
         {
-
         }
 
         public DSFunction(DSFunctionItem definition)
@@ -127,6 +126,12 @@ namespace Dynamo.Nodes
         /// <param name="nodeElement"></param>
         protected override void LoadNode(XmlNode nodeElement)
         {
+            // In copy/paste, no need to recreate function defintion
+            if (Definition != null)
+            {
+                return;
+            }
+
             foreach (XmlElement subNode in nodeElement.ChildNodes.Cast<XmlElement>().Where(subNode => subNode.Name.Equals(typeof(DSFunctionItem).FullName)))
             {
                 XmlElementHelper helper = new XmlElementHelper(subNode);
