@@ -313,7 +313,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public void Redraw()
         {
-            //Debug.WriteLine("Redrawing...");
+            Debug.WriteLine("Redrawing...");
             if (this.ConnectorModel.End != null)
                 this.Redraw(this.ConnectorModel.End.Center);
         }
@@ -326,7 +326,7 @@ namespace Dynamo.ViewModels
         {
             Point p2 = (Point)parameter;
 
-            CurvePoint3 = p2;
+            _curvePoint3 = p2;
 
             var offset = 0.0;
             double distance = 0;
@@ -340,19 +340,21 @@ namespace Dynamo.ViewModels
                 distance = CurvePoint3.X - CurvePoint0.X;
                 offset = distance / 2;
             }
-
-            CurvePoint1 = new Point(CurvePoint0.X + offset, CurvePoint0.Y);
-            CurvePoint2 = new Point(p2.X - offset, p2.Y);
+            
+            _curvePoint1 = new Point(CurvePoint0.X + offset, CurvePoint0.Y);
+            _curvePoint2 = new Point(p2.X - offset, p2.Y);
 
             //if connector is dragged from an input port
             if (ActiveStartPort != null && ActiveStartPort.PortType == PortType.INPUT)
             {
-                CurvePoint1 = new Point(CurvePoint0.X - offset, CurvePoint1.Y);;
-                CurvePoint2 = new Point(p2.X + offset, p2.Y);
+                _curvePoint1 = new Point(CurvePoint0.X - offset, CurvePoint1.Y); ;
+                _curvePoint2 = new Point(p2.X + offset, p2.Y);
             }
 
-            DotTop = CurvePoint3.Y - EndDotSize / 2;
-            DotLeft = CurvePoint3.X - EndDotSize / 2;
+            _dotTop = CurvePoint3.Y - EndDotSize / 2;
+            _dotLeft = CurvePoint3.X - EndDotSize / 2;
+
+            RaisePropertyChanged(string.Empty);
         }
 
         private bool CanRedraw(object parameter)
