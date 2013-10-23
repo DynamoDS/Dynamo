@@ -1266,6 +1266,12 @@ namespace Dynamo.Models
             return Inputs.TryGetValue(data, out input) && input != null;
         }
 
+        /// <summary>
+        /// Attempts to get the output for a certain port.
+        /// </summary>
+        /// <param name="output">Index to look for an output for.</param>
+        /// <param name="newOutputs">If an output is found, it will be assigned.</param>
+        /// <returns>True if there is an output, false otherwise.</returns>
         public bool TryGetOutput(int output, out HashSet<Tuple<int, NodeModel>> newOutputs)
         {
             return Outputs.TryGetValue(output, out newOutputs);
@@ -1274,14 +1280,29 @@ namespace Dynamo.Models
         /// <summary>
         /// Checks if there is an input for a certain port.
         /// </summary>
-        /// <param name="data">PortData to look for an input for.</param>
+        /// <param name="data">Index of the port to look for an input for.</param>
         /// <returns>True if there is an input, false otherwise.</returns>
         public bool HasInput(int data)
         {
-            return (Inputs.ContainsKey(data) && Inputs[data] != null) ||
-                   (InPorts.Count > data && InPorts[data].UsingDefaultValue);
+            return HasConnectedInput(data) || (InPorts.Count > data && InPorts[data].UsingDefaultValue);
         }
 
+        /// <summary>
+        /// Checks if there is a connected input for a certain port. This does
+        /// not count default values as an input.
+        /// </summary>
+        /// <param name="data">Index of the port to look for an input for.</param>
+        /// <returns>True if there is an input, false otherwise.</returns>
+        public bool HasConnectedInput(int data)
+        {
+            return Inputs.ContainsKey(data) && Inputs[data] != null;
+        }
+
+        /// <summary>
+        /// Checks if there is an output for a certain port.
+        /// </summary>
+        /// <param name="portData">Index of the port to look for an output for.</param>
+        /// <returns>True if there is an output, false otherwise.</returns>
         public bool HasOutput(int portData)
         {
             return Outputs.ContainsKey(portData) && Outputs[portData].Any();
@@ -1302,6 +1323,9 @@ namespace Dynamo.Models
         {
         }
 
+        /// <summary>
+        /// Updates UI so that all ports reflect current state of InPortData and OutPortData.
+        /// </summary>
         public void RegisterAllPorts()
         {
             RegisterInputs();
