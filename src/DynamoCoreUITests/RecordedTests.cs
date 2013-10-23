@@ -46,6 +46,35 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(4, workspace.Connectors.Count);
         }
 
+        [Test, RequiresSTA]
+        public void TestDeleteCommands()
+        {
+            RunCommandsFromFile("CreateAndDeleteNodes.xml");
+            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(2, workspace.Connectors.Count);
+
+            // This dictionary maps each of the node GUIDs, to a Boolean 
+            // flag indicating that if the node exists or deleted.
+            Dictionary<string, bool> nodeExistenceMap = new Dictionary<string, bool>()
+            {
+                { "ba59fa31-919d-4e67-b7c6-b58589a7093f", true },
+                { "42058bba-c2fd-4e49-8d76-44c45d0dc597", false },
+                { "5c92e961-8095-49bb-828d-1f3c14f9a005", true },
+                { "d5ad0ff6-9314-4e22-947f-7ba967ad4758", false },
+                { "4d2b71b4-d2c1-4695-afcf-6f7ec05c71f5", true },
+                { "a71328b2-dee7-45d6-8070-44ecebc358d9", true },
+            };
+
+            var nodes = workspace.Nodes;
+            foreach (var pair in nodeExistenceMap)
+            {
+                Guid guid = Guid.Parse(pair.Key);
+                var node = nodes.FirstOrDefault((x) => (x.GUID == guid));
+                bool nodeExists = (null != node);
+                Assert.AreEqual(nodeExists, pair.Value);
+            }
+        }
+
         private void RunCommandsFromFile(string commandFileName)
         {
             string commandFilePath = DynamoTestUI.GetTestDirectory();
