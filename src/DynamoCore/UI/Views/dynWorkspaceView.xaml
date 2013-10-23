@@ -4,11 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Dynamo.Controls" 
-             xmlns:views="clr-namespace:Dynamo.Nodes.Views"
-             xmlns:nodes="clr-namespace:Dynamo.Nodes"
-             xmlns:commands="clr-namespace:Dynamo.UI.Commands"
-             xmlns:viewModels="clr-namespace:Dynamo.ViewModels" xmlns:dynamo="clr-namespace:Dynamo"
-             xmlns:utilities="clr-namespace:Dynamo.Utilities" xmlns:ui="clr-namespace:Dynamo.UI"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              MouseLeftButtonDown="OnMouseLeftButtonDown"
@@ -16,16 +11,6 @@
              MouseMove="OnMouseMove" 
              KeyDown="dynWorkspaceView_KeyDown" KeyUp="dynWorkspaceView_KeyUp" 
              IsHitTestVisible="{Binding IsCurrentSpace}">
-    <!--<UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ui:SharedResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml" />
-                <ui:SharedResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoConverters.xaml" />
-                <ui:SharedResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoModern.xaml" />
-                <ui:SharedResourceDictionary Source="/DynamoCore;component/UI/Themes/DataTemplates.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>-->
 
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
 
