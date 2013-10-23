@@ -294,8 +294,20 @@ namespace Dynamo.Controls
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
+            // If we are snapping to a port when the mouse is clicked, the 
+            // DragCanvas should not handle the event here (e.Handled should
+            // be set to 'false') so that workspace view gets a chance of 
+            // handling it.
+            // 
+            if (owningWorkspace.IsSnappedToPort)
+            {
+                e.Handled = false; // Do not handle it here!
+                return;
+            }
+
             object dataContext = this.owningWorkspace.DataContext;
             WorkspaceViewModel wvm = dataContext as WorkspaceViewModel;
+
             if (wvm.HandleLeftButtonDown(this, e))
             {
                 base.OnMouseLeftButtonDown(e);
