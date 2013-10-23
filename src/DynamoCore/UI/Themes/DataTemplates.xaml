@@ -20,8 +20,8 @@
         <controls:InfoBubbleView></controls:InfoBubbleView>
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type viewModels:PortViewModel}">
+    <!--<DataTemplate DataType="{x:Type viewModels:PortViewModel}">
         <connectors:dynPortView></connectors:dynPortView>
-    </DataTemplate>
+    </DataTemplate>-->
 
 </ResourceDictionary>

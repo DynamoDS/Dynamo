@@ -142,11 +142,11 @@ namespace Dynamo.Models
                 var pt = new Point();
                 if (portType == PortType.INPUT)
                 {
-                    pt = new Point(owner.X, owner.Y + _headerHeight + _portHeight*(Index+1));
+                    pt = new Point(owner.X, owner.Y + _headerHeight + 5 + _portHeight*(Index+1));
                 }
                 else if (portType == PortType.OUTPUT)
                 {
-                    pt = new Point(owner.X + owner.Width, owner.Y + _headerHeight + _portHeight * (Index+1));
+                    pt = new Point(owner.X + owner.Width, owner.Y + _headerHeight + 5 + _portHeight * (Index+1));
                 }
 
                 return pt;
