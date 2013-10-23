@@ -22,10 +22,10 @@
         KeyDown="DynamoView_KeyDown"
         KeyUp="DynamoView_KeyUp"
         Background="#FF353535"
-        FontFamily="Open Sans"
         SnapsToDevicePixels="True"
         ResizeMode="CanResizeWithGrip"
-        UseLayoutRounding="True">
+        UseLayoutRounding="True"
+        Style="{DynamicResource DynamoWindowStyle}">
 
     <Window.CommandBindings>
 
