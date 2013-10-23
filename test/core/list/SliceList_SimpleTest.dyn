@@ -1,0 +1,20 @@
+<Workspace Version="0.7.0.25915" X="-5918.77800828343" Y="-2314.04650739697" zoom="2" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.SliceList type="Dynamo.Nodes.SliceList" guid="df64e6c8-3a73-40b3-b63c-34cb5936b848" nickname="Slice List" x="3276.88603080786" y="1312.83705796268" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="a566c423-c423-42f1-aeba-a5e129134217" nickname="Number" x="3141.83544250727" y="1407.79751417313" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1..10..#4" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="b243c1ea-8cb6-4a3f-b198-c4deb6ad07fb" nickname="Number" x="3156.83544250727" y="1329.70965347217" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="da5a41ab-77ec-4e81-b372-c269c54418f0" nickname="Number" x="3156.83544250727" y="1251.62179277121" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="a566c423-c423-42f1-aeba-a5e129134217" start_index="0" end="df64e6c8-3a73-40b3-b63c-34cb5936b848" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b243c1ea-8cb6-4a3f-b198-c4deb6ad07fb" start_index="0" end="df64e6c8-3a73-40b3-b63c-34cb5936b848" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="da5a41ab-77ec-4e81-b372-c269c54418f0" start_index="0" end="df64e6c8-3a73-40b3-b63c-34cb5936b848" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
