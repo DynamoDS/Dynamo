@@ -159,7 +159,10 @@ namespace Dynamo.Utilities
 
         private static void OnLoadDSLibrary(object sender, DSLibraryServices.LibraryLoadedEventArgs e)
         {
-            LoadDSFunctionsFromLibrary(e.LibraryPath);
+            if (e.Status == DSLibraryServices.LibraryLoadStatus.Ok)
+            {
+                LoadDSFunctionsFromLibrary(e.LibraryPath);
+            }
         }
 #endif
         /// <summary>
