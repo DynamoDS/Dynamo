@@ -63,4 +63,5 @@
     <controls:PortNameToWidthConverter x:Key="PortNameToWidthConverter"/>
     <controls:TooltipLengthTruncater x:Key="TooltipLengthTruncater" />
     <controls:WarningLevelToColorConverter x:Key="WarningLevelToColorConverter"/>
+    <controls:BoolToShowAllPreviewNameConverter x:Key="BoolToShowAllPreviewNameConverter" />
 </ResourceDictionary>
