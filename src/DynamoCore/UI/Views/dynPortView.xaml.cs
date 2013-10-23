@@ -6,6 +6,7 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using System.Windows.Media;
 
 namespace Dynamo.Connectors
 {
@@ -28,7 +29,6 @@ namespace Dynamo.Connectors
 
             if (ViewModel != null)
                 ViewModel.UpdateCenter(CalculateCenter());
-
         }
 
         #endregion constructors
@@ -106,6 +106,11 @@ namespace Dynamo.Connectors
                 //Debug.WriteLine("Port layout updated.");
                 ViewModel.UpdateCenter(p);
             }
+        }
+
+        private void portGrid_MouseEnter(object sender, MouseEventArgs e)
+        {
+
         }
     }
 
