@@ -1,18 +1,4 @@
-﻿//Copyright © Autodesk, Inc. 2012. All rights reserved.
-//
-//Licensed under the Apache License, Version 2.0 (the "License");
-//you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at
-//
-//http://www.apache.org/licenses/LICENSE-2.0
-//
-//Unless required by applicable law or agreed to in writing, software
-//distributed under the License is distributed on an "AS IS" BASIS,
-//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//See the License for the specific language governing permissions and
-//limitations under the License.
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -20,13 +6,10 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using System.Xml;
-
-using Dynamo.Connectors;
 using Dynamo.Controls;
 using Dynamo.Models;
 using DynamoPython;
 using ICSharpCode.AvalonEdit.CodeCompletion;
-using ICSharpCode.AvalonEdit.Editing;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 
@@ -40,7 +23,7 @@ namespace Dynamo.Nodes
     [NodeName("Python Script")]
     [NodeCategory(BuiltinNodeCategories.SCRIPTING_PYTHON)]
     [NodeDescription("Runs an embedded IronPython script")]
-    public class Python : NodeWithOneOutput, IDrawable
+    public class Python : NodeWithOneOutput
     {
         private bool dirty = true;
         private Value lastEvalValue;
@@ -51,8 +34,6 @@ namespace Dynamo.Nodes
         private Dictionary<string, dynamic> stateDict = new Dictionary<string, dynamic>();
 
         private string script;
-
-        public RenderDescription RenderDescription{get;set;}
 
         public Python()
         {
@@ -69,16 +50,30 @@ namespace Dynamo.Nodes
         {
             script = "# Default imports\n";
 
+            
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
             if (assemblies.Any(x => x.FullName.Contains("RevitAPI")) && assemblies.Any(x => x.FullName.Contains("RevitAPIUI")))
             {
                 script = script + "import clr\nclr.AddReference('RevitAPI')\nclr.AddReference('RevitAPIUI')\nfrom Autodesk.Revit.DB import *\nimport Autodesk\n";
             }
 
-            if (assemblies.Any(x => x.FullName.Contains("LibGNet")))
+            string dll_dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\dll";
+
+            if (!assemblies.Any(x => x.FullName.Contains("LibGNet")))
             {
-                string current_dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                script = script + "import sys\nimport clr\npath = r'C:\\Autodesk\\Dynamo\\Core'" + "\nexec_path = r'" + current_dir + "'\nsys.path.append(path)\nsys.path.append(exec_path)\nclr.AddReference('LibGNet')\nfrom Autodesk.LibG import *\n";
+                //LibG could not be found, possibly because we haven't used a node
+                //that requires it yet. Let's load it...
+                string libGPath = Path.Combine(dll_dir, "LibGNet.dll");
+                var libG = Assembly.LoadFrom(libGPath);
+
+                //refresh the collection of loaded assemblies
+                assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            }
+
+            if (assemblies.Any(x => x.FullName.Contains("LibGNet")))
+            { 
+                script = script + "import sys\nimport clr\npath = r'C:\\Autodesk\\Dynamo\\Core'" + "\nexec_path = r'" + dll_dir + "'\nsys.path.append(path)\nsys.path.append(exec_path)\nclr.AddReference('LibGNet')\nfrom Autodesk.LibG import *\n";
             }
 
             script = script + "\n#The input to this node will be stored in the IN variable.\ndataEnteringNode = IN\n\n#Assign your output to the OUT variable\nOUT = 0";
@@ -158,6 +153,9 @@ namespace Dynamo.Nodes
         {
             Value result = PythonEngine.Evaluator(dirty, script, makeBindings(args));
             lastEvalValue = result;
+
+            Draw();
+
             return result;
         }
 
@@ -194,7 +192,6 @@ namespace Dynamo.Nodes
 
             this.dirty = true;
         }
-
 
         #region Autocomplete
 
@@ -262,13 +259,8 @@ namespace Dynamo.Nodes
 
         public void Draw()
         {
-            if (this.RenderDescription == null)
-                this.RenderDescription = new RenderDescription();
-            else
-                this.RenderDescription.ClearAll();
-
             if(lastEvalValue != null)
-                PythonEngine.Drawing(lastEvalValue, this.RenderDescription);
+                PythonEngine.Drawing(lastEvalValue, this.GUID.ToString());
         }
     }
 

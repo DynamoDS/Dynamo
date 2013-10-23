@@ -1,18 +1,4 @@
-﻿//Copyright © Autodesk, Inc. 2012. All rights reserved.
-//
-//Licensed under the Apache License, Version 2.0 (the "License");
-//you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at
-//
-//http://www.apache.org/licenses/LICENSE-2.0
-//
-//Unless required by applicable law or agreed to in writing, software
-//distributed under the License is distributed on an "AS IS" BASIS,
-//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//See the License for the specific language governing permissions and
-//limitations under the License.
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -49,7 +35,6 @@ namespace Dynamo.PackageManager
 
         #region Properties
 
-
         /// <summary>
         ///     Client property
         /// </summary>
@@ -68,16 +53,62 @@ namespace Dynamo.PackageManager
 
         #endregion
 
-        /// <summary>
-        ///     The class constructor.
-        /// </summary>
         public PackageManagerClient()
         {
             Client = new Client(null, "http://54.225.121.251"); // initialize authenticator later
             IsLoggedIn = false;
         }
 
-        internal List<PackageManagerSearchElement> Search(string search, int maxNumSearchResults)
+        public bool Upvote(string packageId)
+        {
+            dynSettings.Controller.DynamoViewModel.OnRequestAuthentication();
+
+            try
+            {
+                var nv = new Greg.Requests.Upvote(packageId);
+                var pkgResponse = Client.ExecuteAndDeserialize(nv);
+                return pkgResponse.success;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public bool Downvote(string packageId)
+        {
+            dynSettings.Controller.DynamoViewModel.OnRequestAuthentication();
+
+            try
+            {
+                var nv = new Greg.Requests.Downvote(packageId);
+                var pkgResponse = Client.ExecuteAndDeserialize(nv);
+                return pkgResponse.success;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public List<PackageManagerSearchElement> ListAll()
+        {
+            try
+            {
+                var nv = Greg.Requests.HeaderCollectionDownload.ByEngine("dynamo");
+                var pkgResponse = Client.ExecuteAndDeserializeWithContent<List<PackageHeader>>(nv);
+                return
+                    pkgResponse.content
+                               .Select((header) => new PackageManagerSearchElement(header))
+                               .ToList();
+            }
+            catch
+            {
+                return new List<PackageManagerSearchElement>();
+            }
+        }
+
+        public List<PackageManagerSearchElement> Search(string search, int maxNumSearchResults)
         {
             try
             {
@@ -113,7 +144,7 @@ namespace Dynamo.PackageManager
 
         public bool CanPublishCurrentWorkspace()
         {
-            return dynSettings.Controller.DynamoViewModel.CurrentSpace is FuncWorkspace;
+            return dynSettings.Controller.DynamoViewModel.CurrentSpace is CustomNodeWorkspaceModel;
         }
 
         public void PublishSelectedNode()
@@ -275,10 +306,10 @@ namespace Dynamo.PackageManager
             set { _downloads = value; }
         }
 
-        internal void ClearInstalled()
+        internal void ClearCompletedDownloads()
         {
             foreach (
-                var ele in Downloads.Where((x) => x.DownloadState == PackageDownloadHandle.State.Installed).ToList())
+                var ele in Downloads.Where((x) => x.DownloadState == PackageDownloadHandle.State.Installed || x.DownloadState == PackageDownloadHandle.State.Error ).ToList())
             {
                 Downloads.Remove(ele);
             }
@@ -385,6 +416,38 @@ namespace Dynamo.PackageManager
         internal void GoToWebsite()
         {
             Process.Start(Client.BaseUrl);
+        }
+
+        internal PackageManagerResult Deprecate(string name)
+        {
+            dynSettings.Controller.DynamoViewModel.OnRequestAuthentication();
+
+            try
+            {
+                var nv = new Greg.Requests.Deprecate(name, "dynamo");
+                var pkgResponse = Client.ExecuteAndDeserialize(nv);
+                return new PackageManagerResult(pkgResponse.message, pkgResponse.success);
+            }
+            catch
+            {
+                return new PackageManagerResult("Failed to send.", false);
+            }
+        }
+
+        internal PackageManagerResult Undeprecate(string name)
+        {
+            dynSettings.Controller.DynamoViewModel.OnRequestAuthentication();
+
+            try
+            {
+                var nv = new Greg.Requests.Undeprecate(name, "dynamo");
+                var pkgResponse = Client.ExecuteAndDeserialize(nv);
+                return new PackageManagerResult(pkgResponse.message, pkgResponse.success);
+            }
+            catch
+            {
+                return new PackageManagerResult("Failed to send.", false);
+            }
         }
     }
 

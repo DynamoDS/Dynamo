@@ -1,21 +1,8 @@
-﻿//Copyright © Autodesk, Inc. 2012. All rights reserved.
-//
-//Licensed under the Apache License, Version 2.0 (the "License");
-//you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at
-//
-//http://www.apache.org/licenses/LICENSE-2.0
-//
-//Unless required by applicable law or agreed to in writing, software
-//distributed under the License is distributed on an "AS IS" BASIS,
-//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//See the License for the specific language governing permissions and
-//limitations under the License.
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Autodesk.LibG;
 
 using Microsoft.FSharp.Core;
 using Microsoft.FSharp.Collections;
@@ -109,6 +96,23 @@ namespace Dynamo.FSchemeInterop
             convertedValue = ((FScheme.Value.List)value).Item;
             return true;
         }
+
+        /// <summary>
+        ///     A utility function to obtain the Geometry from a Value
+        /// </summary>
+        /// <param name="value">A Value object that returns Container</param>
+        /// <param name="convertedValue">The holder for the obtained value</param>
+        /// <returns>False if the first param returns false for IsContainer</returns>
+        public static bool Convert(FScheme.Value value, ref Autodesk.LibG.Geometry convertedValue)
+        {
+            convertedValue = null;
+            if (!value.IsContainer)
+                return false;
+            object itemValue = (value as Value.Container).Item;
+            convertedValue = itemValue as Autodesk.LibG.Geometry;
+            return (convertedValue != null);
+        }
+
 
         /// <summary>
         /// Converts a Func to an FSharpFunc.

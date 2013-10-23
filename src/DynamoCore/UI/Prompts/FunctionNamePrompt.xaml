@@ -31,6 +31,7 @@
                 </Label.ToolTip>
             </Label>
             <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="nameBox" Padding="5" />
+            <TextBlock Name="nameView" Foreground="WhiteSmoke" FontSize="13" Padding="5"></TextBlock>
 
             <Label Content="Description" Foreground="DarkGray" Height="28"  HorizontalAlignment="Left" Name="DescriptionLabel" VerticalAlignment="Top" >
                 <Label.ToolTip>

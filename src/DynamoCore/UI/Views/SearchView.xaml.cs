@@ -16,20 +16,6 @@ using System.Collections.Generic;
 using System.Windows.Media.Imaging;
 using Dynamo.Selection;
 
-//Copyright © Autodesk, Inc. 2012. All rights reserved.
-//
-//Licensed under the Apache License, Version 2.0 (the "License");
-//you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at
-//
-//http://www.apache.org/licenses/LICENSE-2.0
-//
-//Unless required by applicable law or agreed to in writing, software
-//distributed under the License is distributed on an "AS IS" BASIS,
-//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//See the License for the specific language governing permissions and
-//limitations under the License.
-
 namespace Dynamo.Search
 {
     /// <summary>
@@ -70,9 +56,9 @@ namespace Dynamo.Search
             //setup the regions on the view model
             _viewModel.Regions = new ObservableDictionary<string, RegionBase>();
             //Regions.Add("Include Nodes from Package Manager", DynamoCommands.PackageManagerRegionCommand );
-            var region = new RevitAPIRegion(SearchViewModel.RevitAPIRegionExecute, SearchViewModel.RevitAPIRegionCanExecute);
-            region.RaiseCanExecuteChanged();
-            _viewModel.Regions.Add("Include Experimental Revit API Nodes", region);
+            //var region = new RevitAPIRegion(SearchViewModel.RevitAPIRegionExecute, SearchViewModel.RevitAPIRegionCanExecute);
+            //region.RaiseCanExecuteChanged();
+            //_viewModel.Regions.Add("Include Experimental Revit API Nodes", region);
 
         }
 
@@ -106,6 +92,16 @@ namespace Dynamo.Search
         /// <param name="e">Parameters describing the key push</param>
         public void KeyHandler(object sender, KeyEventArgs e)
         {
+
+            // ignore the key command if modifiers are present
+            if (e.KeyboardDevice.IsKeyDown(Key.LeftCtrl) || 
+                e.KeyboardDevice.IsKeyDown(Key.RightCtrl) || 
+                e.KeyboardDevice.IsKeyDown(Key.LeftAlt) || 
+                e.KeyboardDevice.IsKeyDown(Key.RightAlt))
+            {
+                return;
+            }
+
             switch (e.Key)
             {
                 case Key.Return:
@@ -172,11 +168,6 @@ namespace Dynamo.Search
         {
             //RegionMenu.PlacementTarget = (UIElement) sender;
             //RegionMenu.IsOpen = true;
-        }
-
-        private void UIElement_OnMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            Console.WriteLine(sender);
         }
 
         private void TreeViewScrollViewer_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)

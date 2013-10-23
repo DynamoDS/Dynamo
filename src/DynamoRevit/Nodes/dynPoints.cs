@@ -1,17 +1,3 @@
-//Copyright 2013 Ian Keough
-
-//Licensed under the Apache License, Version 2.0 (the "License");
-//you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at
-
-//http://www.apache.org/licenses/LICENSE-2.0
-
-//Unless required by applicable law or agreed to in writing, software
-//distributed under the License is distributed on an "AS IS" BASIS,
-//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//See the License for the specific language governing permissions and
-//limitations under the License.
-
 using System;
 using System.Linq;
 using System.Windows.Controls;
@@ -49,10 +35,8 @@ namespace Dynamo.Nodes
 
             if (Elements.Any())
             {
-                Element e;
-                if (dynUtils.TryGetElement(Elements[0], typeof(ReferencePoint), out e))
+                if (dynUtils.TryGetElement(Elements[0], out pt))
                 {
-                    pt = (ReferencePoint)e;
                     pt.Position = xyz;
                 }
                 else
@@ -104,10 +88,8 @@ namespace Dynamo.Nodes
 
             if (this.Elements.Any())
             {
-                Element e;
-                if (dynUtils.TryGetElement(this.Elements[0],typeof(ReferencePoint), out e))
+                if (dynUtils.TryGetElement(Elements[0], out p))
                 {
-                    p = e as ReferencePoint;
                     p.SetPointElementReference(edgePoint);
                 }
                 else
@@ -160,10 +142,8 @@ namespace Dynamo.Nodes
 
             if (this.Elements.Any())
             {
-                Element e;
-                if (dynUtils.TryGetElement(this.Elements[0],typeof(ReferencePoint), out e))
+                if (dynUtils.TryGetElement(this.Elements[0], out pt))
                 {
-                    pt = (ReferencePoint)e;
                     pt.Position = facePoint;
                 }
                 else
@@ -216,11 +196,9 @@ namespace Dynamo.Nodes
 
             if (Elements.Any())
             {
-                Element el;
-                if (dynUtils.TryGetElement(Elements[0], typeof (ReferencePoint), out el))
+                if (dynUtils.TryGetElement(Elements[0], out p))
                 {
                     //move the point to the new offset
-                    p = (ReferencePoint) el;
                     p.Position = newLocation;
                     Elements[0] = p.Id;
                 }
@@ -326,7 +304,7 @@ namespace Dynamo.Nodes
             foreach (ElementId el in this.Elements)
             {
                 Element e;
-                if (dynUtils.TryGetElement(el,typeof(object), out e))
+                if (dynUtils.TryGetElement(el, out e))
                 {
                     this.UIDocument.Document.Delete(el);
                 }
@@ -360,7 +338,7 @@ namespace Dynamo.Nodes
     [NodeName("Evaluate curve or edge")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Evaluates curve or edge at parameter.")]
-    public class XyzOnCurveOrEdge : XyzBase
+    public class XyzOnCurveOrEdge : GeometryBase
     {
         public XyzOnCurveOrEdge()
         {
@@ -428,8 +406,6 @@ namespace Dynamo.Nodes
                 :  
                 (thisEdge == null ? null : thisEdge.Evaluate(parameter));
 
-            pts.Add(result);
-
             return Value.NewContainer(result);
         }
     }
@@ -437,12 +413,12 @@ namespace Dynamo.Nodes
     [NodeName("Evaluate tangent transform of curve or edge")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Evaluates tangent vector of curve or edge at parameter.")]
-    public class TangentTransformOnCurveOrEdge : TransformBase
+    public class TangentTransformOnCurveOrEdge : GeometryBase
     {
         public TangentTransformOnCurveOrEdge()
         {
             InPortData.Add(new PortData("parameter", "The normalized parameter to evaluate at within 0..1 range except for closed curve", typeof(Value.Number)));
-            InPortData.Add(new PortData("curve or edge", "The curve or edge to evaluate.", typeof(Value.Container)));
+            InPortData.Add(new PortData("curve or edge", "The geometry curve or edge to evaluate.", typeof(Value.Container)));
             OutPortData.Add(new PortData("tangent transform", "tangent transform at parameter.", typeof(Value.Container)));
 
             RegisterAllPorts();
@@ -475,8 +451,6 @@ namespace Dynamo.Nodes
                 (!XyzOnCurveOrEdge.curveIsReallyUnbound(thisCurve) ? thisCurve.ComputeDerivatives(parameter, true) : thisCurve.ComputeDerivatives(parameter, false))
                 : 
                 (thisEdge == null ? null : thisEdge.ComputeDerivatives(parameter));
-
-            transforms.Add(result);
 
             return Value.NewContainer(result);
         }
@@ -520,10 +494,8 @@ namespace Dynamo.Nodes
 
             if (this.Elements.Any())
             {
-                Element e;
-                if (dynUtils.TryGetElement(this.Elements[0], typeof(ReferencePoint), out e))
+                if (dynUtils.TryGetElement(this.Elements[0], out p))
                 {
-                    p = e as ReferencePoint;
                     p.SetPointElementReference(edgePoint);
                 }
                 else

@@ -153,6 +153,16 @@ namespace Dynamo.Utilities
                 c.Add(e);
             return c;
         }
+
+        public static ThreadSafeList<TSource> ToThreadSafeList<TSource>(this IEnumerable<TSource> source)
+        {
+            var tsl = new ThreadSafeList<TSource>();
+            foreach (var item in source)
+            {
+                tsl.Add(item);
+            }
+            return tsl;
+        }
         
     }
 }

@@ -1,18 +1,4 @@
-﻿//Copyright 2013 Ian Keough
-
-//Licensed under the Apache License, Version 2.0 (the "License");
-//you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at
-
-//http://www.apache.org/licenses/LICENSE-2.0
-
-//Unless required by applicable law or agreed to in writing, software
-//distributed under the License is distributed on an "AS IS" BASIS,
-//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//See the License for the specific language governing permissions and
-//limitations under the License.
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Autodesk.Revit.DB;
@@ -147,6 +133,20 @@ namespace Dynamo.Nodes
             var normal = orderedEigenvectors[0].CrossProduct(orderedEigenvectors[1]);
 
             var plane = dynRevitSettings.Doc.Application.Application.Create.NewPlane(normal, meanPt);
+
+            // take first 3 pts to form simplified normal 
+            var bma = ptList[1] - ptList[0];
+            var cma = ptList[2] - ptList[0];
+
+            var simplifiedNorm = bma.CrossProduct(cma);
+
+            // find sign of normal that maximizes the dot product pca normal and simplfied normal 
+            var dotProd = simplifiedNorm.DotProduct(normal);
+
+            if (dotProd < 0)
+            {
+                normal = -1*normal;
+            }
 
             outPuts[_planePort] = Value.NewContainer(plane);
             outPuts[_normalPort] = Value.NewContainer(normal);
