@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Drawing;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Point = System.Windows.Point;
@@ -16,8 +15,6 @@ namespace Dynamo.ViewModels
         public PortModel ActiveStartPort { get { return _activeStartPort; } internal set { _activeStartPort = value; } }
 
         private ConnectorModel _model;
-
-        private bool ShouldRedraw { get; set; }
 
         public ConnectorModel ConnectorModel
         {
@@ -205,7 +202,10 @@ namespace Dynamo.ViewModels
 
 #endregion
 
-        //construct a view and start drawing.
+        /// <summary>
+        /// Construct a view and start drawing.
+        /// </summary>
+        /// <param name="port"></param>
         public ConnectorViewModel(PortModel port)
         {
             IsConnecting = true;
@@ -214,6 +214,10 @@ namespace Dynamo.ViewModels
             Redraw(port.Center);
         }
 
+        /// <summary>
+        /// Construct a view and respond to property changes on the model. 
+        /// </summary>
+        /// <param name="model"></param>
         public ConnectorViewModel(ConnectorModel model)
         {
             _model = model;
@@ -313,7 +317,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public void Redraw()
         {
-            Debug.WriteLine("Redrawing...");
+            //Debug.WriteLine("Redrawing...");
             if (this.ConnectorModel.End != null)
                 this.Redraw(this.ConnectorModel.End.Center);
         }
@@ -354,6 +358,8 @@ namespace Dynamo.ViewModels
             _dotTop = CurvePoint3.Y - EndDotSize / 2;
             _dotLeft = CurvePoint3.X - EndDotSize / 2;
 
+            //Update all the bindings at once.
+            //http://stackoverflow.com/questions/4651466/good-way-to-refresh-databinding-on-all-properties-of-a-viewmodel-when-model-chan
             RaisePropertyChanged(string.Empty);
         }
 
