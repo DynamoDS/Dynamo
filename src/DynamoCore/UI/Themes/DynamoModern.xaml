@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:clr="clr-namespace:System;assembly=mscorlib">
-    
+
     <!--Control colors.-->
     <Color x:Key="WindowColor">#FFE8EDF9</Color>
     <Color x:Key="ContentAreaColorLight">#FFC5CBF9</Color>
@@ -590,27 +590,5 @@
     <clr:Int32 x:Key="connector_stroke_thickness">2</clr:Int32>
     <clr:Double x:Key="connector_stroke_opacity">0.6</clr:Double>
     <clr:Double x:Key="connector_bezier_offset">20.0</clr:Double>
-
-    <Style x:Key="SConnector" TargetType="Path">
-        <Style.Triggers>
-            <EventTrigger RoutedEvent="MouseEnter">
-                <BeginStoryboard>
-                    <Storyboard>
-                        <DoubleAnimation From="3" To="6" Duration="0" Storyboard.TargetProperty="StrokeThickness"></DoubleAnimation>
-                    </Storyboard>
-                </BeginStoryboard>
-            </EventTrigger>
-            <EventTrigger RoutedEvent="MouseLeave">
-                <BeginStoryboard>
-                    <Storyboard>
-                        <DoubleAnimation From="6" To="3" Duration="0" Storyboard.TargetProperty="StrokeThickness"></DoubleAnimation>
-                    </Storyboard>
-                </BeginStoryboard>
-            </EventTrigger>
-            <DataTrigger Binding="{Binding Path=IsConnecting, Mode=OneWay}" Value="True">
-                <Setter Property="StrokeDashArray" Value="2"/>
-            </DataTrigger>
-        </Style.Triggers>
-    </Style>
 
 </ResourceDictionary>

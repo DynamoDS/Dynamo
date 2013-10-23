@@ -7,15 +7,6 @@
 
     <Grid>
 
-        <Grid.Resources>
-            <ResourceDictionary>
-                <LinearGradientBrush x:Key="SelectionGradientBrush" StartPoint="0,.5" EndPoint="1,.5">
-                    <GradientStop Color="{Binding IsStartSelected, Converter={StaticResource BooleanToSelectionColorConverter}}" Offset="0"></GradientStop>
-                    <GradientStop Color="{Binding IsEndSelected, Converter={StaticResource BooleanToSelectionColorConverter}}" Offset="1"></GradientStop>
-                </LinearGradientBrush>
-            </ResourceDictionary>
-        </Grid.Resources>
-        
         <Canvas Canvas.Top="0" Canvas.Left="0" ZIndex="1">
 
             <Ellipse Name="endDot" Width="8" Height="8" Margin="-5"  Fill="{Binding IsEndSelected, Converter={StaticResource BooleanToBrushConverter}}" IsHitTestVisible="False"
@@ -26,7 +17,7 @@
             
         </Canvas>
 
-        <Path Stroke="{DynamicResource SelectionGradientBrush}" StrokeThickness="3" IsHitTestVisible="{Binding IsHitTestVisible}"
+        <Path Stroke="{DynamicResource BConnectorSelection}" StrokeThickness="3" IsHitTestVisible="{Binding IsHitTestVisible}"
               Name="connector"
               Visibility="{Binding BezVisibility, Converter={StaticResource BooleanToVisibilityConverter}}" 
               Style="{StaticResource SConnector}" Canvas.ZIndex="0">
@@ -47,7 +38,7 @@
             </Path.Data>
         </Path>
 
-        <Path Stroke="{DynamicResource SelectionGradientBrush}" StrokeThickness="3" IsHitTestVisible="{Binding IsHitTestVisible}"
+        <Path Stroke="{DynamicResource BConnectorSelection}" StrokeThickness="3" IsHitTestVisible="{Binding IsHitTestVisible}"
               Name="plineConnector" Style="{StaticResource SConnector}"
               Visibility="{Binding PlineVisibility, Converter={StaticResource BooleanToVisibilityConverter}}" Canvas.ZIndex="0">
             <Path.Data>
