@@ -340,8 +340,7 @@ namespace Dynamo.Nodes
             else if (astNode is FunctionDotCallNode)
             {
                 FunctionDotCallNode currentNode = astNode as FunctionDotCallNode;
-                Variable result = new Variable(currentNode.FunctionCall.Function as IdentifierNode);
-                refVariableList.Add(result);
+                GetReferencedVariables(currentNode.FunctionCall, refVariableList);
             }
             else if (astNode is InlineConditionalNode)
             {
