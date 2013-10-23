@@ -13,14 +13,16 @@ namespace Dynamo.Nodes
     //taken from http://stackoverflow.com/questions/660554/how-to-automatically-select-all-text-on-focus-in-wpf-textbox
     public class ClickSelectTextBox : TextBox
     {
+        protected bool selectAllWhenFocused = true;
+        protected RoutedEventHandler focusHandler;
+
         public ClickSelectTextBox()
         {
+            focusHandler = new RoutedEventHandler(SelectAllText);
             AddHandler(PreviewMouseLeftButtonDownEvent,
                 new MouseButtonEventHandler(SelectivelyIgnoreMouseButton), true);
-            AddHandler(GotKeyboardFocusEvent,
-                new RoutedEventHandler(SelectAllText), true);
-            AddHandler(MouseDoubleClickEvent,
-                new RoutedEventHandler(SelectAllText), true);
+            AddHandler(GotKeyboardFocusEvent, focusHandler, true);
+            AddHandler(MouseDoubleClickEvent, focusHandler, true);
         }
 
         private static void SelectivelyIgnoreMouseButton(
@@ -33,13 +35,13 @@ namespace Dynamo.Nodes
 
             if (parent != null)
             {
-                var textBox = (TextBox)parent;
-                if (!textBox.IsKeyboardFocusWithin)
+                var textBox = parent as ClickSelectTextBox;
+                if (textBox != null && (!textBox.IsKeyboardFocusWithin))
                 {
                     // If the text box is not yet focussed, give it the focus and
                     // stop further processing of this click event.
                     textBox.Focus();
-                    e.Handled = true;
+                    e.Handled = textBox.selectAllWhenFocused;
                 }
             }
         }
@@ -236,7 +238,20 @@ namespace Dynamo.Nodes
             : base(s)
         {
             shift = enter = false;
+
+            //Remove the select all when focused feature
+            RemoveHandler(GotKeyboardFocusEvent, focusHandler);
+
+            //Allow for event processing after textbook has been focused to
+            //help set the Caret position
+            selectAllWhenFocused = false;
         }
+
+        /// <summary>
+        /// To allow users to remove focus by pressing Shift Enter. Uses two bools (shift / enter)
+        /// and sets them when pressed/released
+        /// </summary>
+        #region Key Press Event Handlers 
         protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == Key.LeftShift || e.Key == Key.RightShift)
@@ -264,9 +279,13 @@ namespace Dynamo.Nodes
                 enter = false;
             }
         }
+        #endregion
+
+        /// <summary>
+        /// Set font size so that text size matches port (for alignment)
+        /// </summary>
         protected override void OnGotFocus(RoutedEventArgs e)
         {
-            base.OnGotFocus(e);
             this.FontSize = 19.1 / this.FontFamily.LineSpacing;
         }
     }
