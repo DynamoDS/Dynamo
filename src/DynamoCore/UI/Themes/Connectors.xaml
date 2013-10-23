@@ -27,9 +27,4 @@
         </Style.Triggers>
     </Style>
 
-    <LinearGradientBrush x:Key="BConnectorSelection" StartPoint="0,.5" EndPoint="1,.5">
-        <GradientStop Color="{Binding IsStartSelected, Converter={StaticResource BooleanToSelectionColorConverter}}" Offset="0"></GradientStop>
-        <GradientStop Color="{Binding IsEndSelected, Converter={StaticResource BooleanToSelectionColorConverter}}" Offset="1"></GradientStop>
-    </LinearGradientBrush>
-    
 </ResourceDictionary>
