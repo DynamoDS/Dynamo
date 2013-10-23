@@ -8,6 +8,7 @@ using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using System.Windows;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.ViewModels
 {
@@ -563,7 +564,8 @@ namespace Dynamo.ViewModels
 
         private void DeleteNodeAndItsConnectors(object parameter)
         {
-            dynSettings.Controller.DynamoModel.Delete(nodeLogic);
+            var command = new DynCmd.DeleteModelCommand(nodeLogic.GUID);
+            dynSettings.Controller.DynamoViewModel.ExecuteCommand(command);
         }
 
         void SetLacingType(object param)
