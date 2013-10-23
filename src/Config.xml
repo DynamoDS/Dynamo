@@ -3,6 +3,6 @@
 	<Executable><!-- Required.   -->C:\Program Files (x86)\NUnit 2.6.2\bin\nunit-console.exe</Executable>
 	<Arguments>DynamoCoreUITests.dll DynamoPythonTests.dll DynamoMSOfficeTests.dll DynamoCoreTests.dll DSRevitNodesTests.dll DSCoreNodesTests.dll</Arguments>
 	<WorkingDir>..\bin\AnyCPU\Debug\</WorkingDir>
-	<Output>Coverage.html</Output>
-	<ReportType>html</ReportType>
+	<Output>Coverage.xml</Output> <!-- Change the value to html-->
+	<ReportType>xml</ReportType><!-- Change the value to html -->
 </AnalyseParams>
