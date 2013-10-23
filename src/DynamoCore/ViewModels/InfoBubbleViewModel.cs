@@ -161,6 +161,16 @@ namespace Dynamo.ViewModels
         private Direction limitedDirection;
         private bool alwaysVisible;
 
+        public double Left
+        {
+            get { return 0; }
+        }
+
+        public double Top
+        {
+            get { return 0; }
+        }
+
         #endregion
 
         #region Public Methods
