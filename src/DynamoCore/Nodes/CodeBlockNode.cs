@@ -31,6 +31,24 @@ namespace Dynamo.Nodes
             DynamoLogger.Instance.Log("Error in Code Block Node");
             this.State = ElementState.ERROR;
         }
+
+        /// <summary>
+        /// Formats user text by :
+        /// 1. Removing whitespaces form the front and back (whitespaces -> space, tab or enter)
+        /// 2.Adds a semicolon at the end
+        /// </summary>
+        /// <param name="inputCode"></param>
+        /// <returns></returns>
+        public string FormatUserText(string inputCode)
+        {
+            inputCode = inputCode.Trim();
+
+            //Add the ';' if required
+            if (inputCode[inputCode.Length-1] != ';')
+                return inputCode.Insert(inputCode.Length, ";");
+            else
+                return inputCode;
+        }
         #endregion
 
         #region Properties
@@ -119,6 +137,9 @@ namespace Dynamo.Nodes
                 SetPorts();
                 return;
             }
+
+            //Addition of ';' to end of code
+            code = FormatUserText(code);
 
             //Parse the text and assign each AST node to a statement instance
             List<string> compiledCode;
