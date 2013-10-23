@@ -22,7 +22,7 @@
         KeyUp="DynamoView_KeyUp"
         ResizeMode="CanResizeWithGrip"
         Background="#FF353535"
-        FontFamily="Open Sans">
+        Style="{DynamicResource DynamoWindowStyle}">
 
     <Window.CommandBindings>
 
