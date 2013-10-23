@@ -664,6 +664,7 @@ namespace Dynamo.Nodes
             });
 
             tb.Focus();
+            tb.SelectAll();
         }
     }
 
