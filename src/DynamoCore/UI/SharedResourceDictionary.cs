@@ -63,6 +63,7 @@ namespace Dynamo.UI
         private static ResourceDictionary _dynamoTextDictionary;
         private static ResourceDictionary _mainMenuStyleDictionary;
         private static ResourceDictionary _toolbarStyleDictionary;
+        private static ResourceDictionary _connectorsDictionary;
 
         public static ResourceDictionary DynamoModernDictionary
         {
@@ -190,5 +191,22 @@ namespace Dynamo.UI
             }
         }
 
+        public static ResourceDictionary ConnectorsDictionary
+        {
+            get
+            {
+                if (_connectorsDictionary == null)
+                {
+                    System.Uri resourceLocater =
+                        new System.Uri("/DynamoCore;component/UI/Themes/Connectors.xaml",
+                                        System.UriKind.Relative);
+
+                    _connectorsDictionary =
+                        (ResourceDictionary)Application.LoadComponent(resourceLocater);
+                }
+
+                return _connectorsDictionary;
+            }
+        }
     }
 }
