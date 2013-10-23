@@ -149,7 +149,7 @@
                          TextAlignment="Center" 
                          IsHitTestVisible="True" 
                          Canvas.ZIndex="5" 
-                         Height ="25"
+                         Height ="20"
                          Background="{x:Null}" FontStyle="Normal" Foreground="LightGray"
                     Visibility="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:dynWorkspaceView}}, Converter={StaticResource ZoomToVisibilityConverter}}"
             Grid.Row="0" Grid.Column="0"

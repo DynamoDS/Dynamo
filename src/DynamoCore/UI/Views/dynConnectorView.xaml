@@ -6,7 +6,14 @@
              mc:Ignorable="d">
 
     <Grid>
+        <Grid.Resources>
 
+            <LinearGradientBrush x:Key="BConnectorSelection" StartPoint="0,.5" EndPoint="1,.5">
+                <GradientStop Color="{Binding IsStartSelected, Converter={StaticResource BooleanToSelectionColorConverter}}" Offset="0"></GradientStop>
+                <GradientStop Color="{Binding IsEndSelected, Converter={StaticResource BooleanToSelectionColorConverter}}" Offset="1"></GradientStop>
+            </LinearGradientBrush>
+        </Grid.Resources>
+        
         <Canvas Canvas.Top="0" Canvas.Left="0" ZIndex="1">
 
             <Ellipse Name="endDot" Width="8" Height="8" Margin="-5"  Fill="{Binding IsEndSelected, Converter={StaticResource BooleanToBrushConverter}}" IsHitTestVisible="False"
