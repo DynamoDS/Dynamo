@@ -107,7 +107,7 @@ namespace Dynamo.ViewModels
                 {
                     return "Not available in custom nodes";
                 }
-                return NodeModel.PrintValue(nodeLogic.OldValue, 0, int.MaxValue, 0, int.MaxValue, int.MaxValue);
+                return NodeModel.PrintValue(nodeLogic.OldValue, 0, 1000, 0, 100, 1000);
             }
         }
 
@@ -498,8 +498,8 @@ namespace Dynamo.ViewModels
             //update preview bubble
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.Invoke((new Action(() =>
             {
-                if (dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Previews.Contains(this.PreviewBubble))
-                    this.PreviewBubble.UpdateContentCommand.Execute(data);
+                //if (dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Previews.Contains(this.PreviewBubble))
+                //    this.PreviewBubble.UpdateContentCommand.Execute(data);
             })));
         }
 
