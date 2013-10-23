@@ -29,7 +29,7 @@
 
         <Path Stroke="{DynamicResource SelectionGradientBrush}" StrokeThickness="3" IsHitTestVisible="{Binding IsHitTestVisible}"
               Name="connector"
-              Visibility="{Binding BezVisibility, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" 
+              Visibility="{Binding BezVisibility, Converter={StaticResource BooleanToVisibilityConverter}}" 
               Style="{StaticResource ConnectorStyle}" Canvas.ZIndex="0">
             <Path.Data>
                 <PathGeometry>
@@ -50,7 +50,7 @@
 
         <Path Stroke="{DynamicResource SelectionGradientBrush}" StrokeThickness="3" IsHitTestVisible="{Binding IsHitTestVisible}"
               Name="plineConnector" Style="{StaticResource ConnectorStyle}"
-              Visibility="{Binding PlineVisibility, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" Canvas.ZIndex="0">
+              Visibility="{Binding PlineVisibility, Converter={StaticResource BooleanToVisibilityConverter}}" Canvas.ZIndex="0">
             <Path.Data>
                 <PathGeometry>
                     <PathGeometry.Figures>
