@@ -62,6 +62,22 @@
                 Offset="1" />
     </LinearGradientBrush>
 
+    <!-- Embedded Font -->
+    <!-- Open Sans (under Apache License, version 2.0)
+         Link: http://www.google.com/fonts/specimen/Open+Sans -->
+    <FontFamily x:Key="OpenSansRegular">/DynamoCore;component/UI/Fonts/#Open Sans</FontFamily>
+    <FontFamily x:Key="OpenSansItalic">/DynamoCore;component/UI/Fonts/#Open Sans Italic</FontFamily>
+    <FontFamily x:Key="OpenSansLight">/DynamoCore;component/UI/Fonts/#Open Sans Light</FontFamily>
+    <FontFamily x:Key="OpenSansSemibold">/DynamoCore;component/UI/Fonts/#Open Sans Semibold</FontFamily>
+    <FontFamily x:Key="OpenSansBold">/DynamoCore;component/UI/Fonts/#Open Sans Bold</FontFamily>
+    <FontFamily x:Key="OpenSansLightItalic">/DynamoCore;component/UI/Fonts/#Open Sans Light Italic</FontFamily>
+    <FontFamily x:Key="OpenSansSemiboldItalic">/DynamoCore;component/UI/Fonts/#Open Sans Semibold Italic</FontFamily>
+    <FontFamily x:Key="OpenSansBoldItalic">/DynamoCore;component/UI/Fonts/#Open Sans Bold Italic</FontFamily>
+    
+    <!-- Window Common Styling -->
+    <Style x:Key="DynamoWindowStyle"  TargetType="{x:Type Window}">
+        <Setter Property="FontFamily" Value="{StaticResource OpenSansRegular}" />
+    </Style>
 
     <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="ToggleButton">
         
