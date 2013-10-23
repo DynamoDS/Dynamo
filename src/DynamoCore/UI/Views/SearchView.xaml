@@ -96,7 +96,7 @@
 
             <TextBox Name="SearchTextBox"
                      KeyboardNavigation.TabIndex="0"
-                     Foreground="WhiteSmoke"
+                     Foreground="#DDD"
                      Background="Transparent" BorderThickness="0" FontSize ="12" Padding="15,12,5,8" Margin ="0"
                        IsEnabled="True" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Stretch" Text="{Binding Path=SearchText,Mode=TwoWay}" Grid.Column="1" MinWidth="280">
             </TextBox>
@@ -250,7 +250,7 @@
                 <Style x:Key="SearchTreeView" TargetType="{x:Type TreeView}">
                     <Setter Property="Focusable" Value="False"></Setter>
                     <Setter Property="Background" Value="Black"/>
-                    <Setter Property="Foreground" Value="WhiteSmoke"/>
+                    <Setter Property="Foreground" Value="#DDD"/>
                     <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
                     <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
                     <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -437,13 +437,13 @@
                     
                     <HierarchicalDataTemplate DataType = "{x:Type search:BrowserRootElement}" ItemsSource="{Binding Path=Items}" >
 
-                        <TextBlock Foreground="WhiteSmoke" FontSize="12" Text="{Binding Path=Name}"/>
+                        <TextBlock Foreground="#DDD" FontSize="12" Text="{Binding Path=Name}"/>
 
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType = "{x:Type search:BrowserInternalElement}" ItemsSource="{Binding Path=Items}">
 
-                        <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}"/>
+                        <TextBlock Foreground="#DDD" Text="{Binding Path=Name}"/>
 
                     </HierarchicalDataTemplate>
 
@@ -465,7 +465,7 @@
                                 </StackPanel>
                             </StackPanel.ToolTip>
 
-                            <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" ToolTipService.InitialShowDelay="0" />
+                            <TextBlock Foreground="#DDD" Text="{Binding Path=Name}" ToolTipService.InitialShowDelay="0" />
 
                         </StackPanel>
 
@@ -503,7 +503,7 @@
                                 <TextBlock Foreground="Black" FontWeight="Bold" Padding="2" FontSize="9" Text="C" ToolTipService.InitialShowDelay="0" />
                             </Border>
 
-                            <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" ToolTipService.InitialShowDelay="0" />
+                            <TextBlock Foreground="#DDD" Text="{Binding Path=Name}" ToolTipService.InitialShowDelay="0" />
 
                             <StackPanel.ContextMenu>
 
