@@ -24,33 +24,8 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoConverters.xaml" />
+        <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoModern.xaml" />
     </ResourceDictionary.MergedDictionaries>
-
-    <!--Zoom fade text-->
-
-    <Style x:Key="SZoomFadeText" TargetType="{x:Type TextBlock}">
-        <Style.Triggers>
-            <DataTrigger
-              Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:dynWorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}" Value="true">
-                <DataTrigger.EnterActions>
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                             To="1.0" Duration="0:0:0.2"/>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </DataTrigger.EnterActions>
-                <DataTrigger.ExitActions>
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                             To="0.0" Duration="0:0:0.2"/>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </DataTrigger.ExitActions>
-            </DataTrigger>
-        </Style.Triggers>
-    </Style>
 
     <DataTemplate DataType="{x:Type viewModels:PortViewModel}">
         <Grid Name="mainGrid" Height="20" Width="{Binding Path=PortName, Converter={StaticResource PortNameToWidthConverter}}">
