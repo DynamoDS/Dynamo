@@ -165,6 +165,13 @@ namespace Dynamo.ViewModels
 
         private void UndoRedoImpl(UndoRedoCommand command)
         {
+            if (command.CmdOperation == UndoRedoCommand.Operation.Undo)
+                CurrentSpace.Undo();
+            else if (command.CmdOperation == UndoRedoCommand.Operation.Redo)
+                CurrentSpace.Redo();
+
+            UndoCommand.RaiseCanExecuteChanged();
+            RedoCommand.RaiseCanExecuteChanged();
         }
 
         #endregion

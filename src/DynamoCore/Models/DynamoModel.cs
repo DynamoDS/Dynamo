@@ -965,38 +965,6 @@ namespace Dynamo.Models
             return true;
         }
 
-        #region Undo/Redo Supporting Methods
-
-        internal void Undo(object parameters)
-        {
-            if (null != _cspace)
-                _cspace.Undo();
-
-            dynSettings.Controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
-            dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
-        }
-
-        internal bool CanUndo(object parameters)
-        {
-            return ((null == _cspace) ? false : _cspace.CanUndo);
-        }
-
-        internal void Redo(object parameters)
-        {
-            if (null != _cspace)
-                _cspace.Redo();
-
-            dynSettings.Controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
-            dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
-        }
-
-        internal bool CanRedo(object parameters)
-        {
-            return ((null == _cspace) ? false : _cspace.CanRedo);
-        }
-
-        #endregion
-
         /// <summary>
         /// Copy selected ISelectable objects to the clipboard.
         /// </summary>
