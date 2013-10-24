@@ -163,6 +163,10 @@ namespace Dynamo.ViewModels
             _model.DeleteModelInternal(modelsToDelete);
         }
 
+        private void UndoRedoImpl(UndoRedoCommand command)
+        {
+        }
+
         #endregion
     }
 }
