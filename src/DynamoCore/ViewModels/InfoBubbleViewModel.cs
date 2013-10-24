@@ -11,6 +11,7 @@ using Dynamo.Utilities;
 using System.Windows.Threading;
 using Dynamo.Controls;
 using System.Collections.ObjectModel;
+using Dynamo.Core;
 
 namespace Dynamo.ViewModels
 {
@@ -202,15 +203,8 @@ namespace Dynamo.ViewModels
         private Direction limitedDirection = Direction.None;
         private bool alwaysVisible = false;
 
-        //preview min and max sizes
-        private double preview_MaxWidth = 500;
-        private double preview_MaxHeight;
-        private double preview_MinWidth = 200;
-        private double preview_MinHeight = 50;
         private double preview_LastMaxWidth = double.MaxValue;
         private double preview_LastMaxHeight = double.MaxValue;
-        private double preview_DefaultMaxWidth = 300;
-        private double preview_DefaultMaxHeight = 200;
 
         public double Left
         {
@@ -319,12 +313,12 @@ namespace Dynamo.ViewModels
             double newMaxWidth = deltaPoint.X;
             double newMaxHeight = deltaPoint.Y;
 
-            if (deltaPoint.X != double.MaxValue && newMaxWidth >= preview_MinWidth && newMaxWidth <= preview_MaxWidth)
+            if (deltaPoint.X != double.MaxValue && newMaxWidth >= Configurations.PreviewMinWidth && newMaxWidth <= Configurations.PreviewMaxWidth)
             {
                 MaxWidth = newMaxWidth;
                 ContentMaxWidth = newMaxWidth - 10;
             }
-            if (deltaPoint.Y != double.MaxValue && newMaxHeight >= preview_MinHeight)
+            if (deltaPoint.Y != double.MaxValue && newMaxHeight >= Configurations.PreviewMinHeight)
             {
                 MaxHeight = newMaxHeight;
                 ContentMaxHeight = newMaxHeight - 17;
@@ -351,7 +345,7 @@ namespace Dynamo.ViewModels
         {
             FullContent = text;
             if (this.infoBubbleStyle == Style.PreviewCondensed && text.Length > 25)
-                Content = text.Substring(0, 25) + "...";
+                Content = text.Substring(0, Configurations.CondensedPreviewMaxLength) + "...";
             else
                 Content = text;
         }
@@ -506,92 +500,92 @@ namespace Dynamo.ViewModels
             margin.Left = -((EstimatedWidth - nodeWidth) / 2) + topLeft.X;
 
             if (!this.IsShowPreviewByDefault)
-                margin.Top -= 7;
+                margin.Top -= Configurations.PreviewArrowHeight;
             return margin;
         }
 
         private void SetStyle_LibraryItemPreview()
         {
-            FrameFill = new SolidColorBrush(Color.FromRgb(255, 255, 255));
-            FrameStrokeThickness = 1;
-            FrameStrokeColor = new SolidColorBrush(Color.FromRgb(10, 93, 30));
+            FrameFill = Configurations.LibraryTooltipFrameFill;
+            FrameStrokeThickness = Configurations.LibraryTooltipFrameStrokeThickness;
+            FrameStrokeColor = Configurations.LibraryTooltipFrameStrokeColor;
 
-            MaxWidth = 400;
-            MaxHeight = 200;
-            ContentMaxWidth = MaxWidth - 10;
-            ContentMaxHeight = MaxHeight - 17;
+            MaxWidth = Configurations.LibraryTooltipMaxWidth;
+            MaxHeight = Configurations.LibraryTooltipMaxHeight;
+            ContentMaxWidth = Configurations.LibraryTooltipContentMaxWidth;
+            ContentMaxHeight = Configurations.LibraryTooltipContentMaxHeight;
 
-            TextFontSize = 13;
-            TextForeground = new SolidColorBrush(Color.FromRgb(51, 51, 51));
-            TextFontWeight = FontWeights.Normal;
-            ContentWrapping = TextWrapping.Wrap;
-            ContentMargin = new Thickness(12, 5, 5, 5);
+            TextFontSize = Configurations.LibraryTooltipTextFontSize;
+            TextForeground = Configurations.LibraryTooltipTextForeground;
+            TextFontWeight = Configurations.LibraryTooltipTextFontWeight;
+            ContentWrapping = Configurations.LibraryTooltipContentWrapping;
+            ContentMargin = Configurations.LibraryTooltipContentMargin;
         }
 
         private void SetStyle_NodeTooltip(Direction connectingDirection)
         {
-            FrameFill = new SolidColorBrush(Color.FromRgb(255, 255, 255));
-            FrameStrokeThickness = 1;
-            FrameStrokeColor = new SolidColorBrush(Color.FromRgb(165, 209, 226));
+            FrameFill = Configurations.NodeTooltipFrameFill;
+            FrameStrokeThickness = Configurations.NodeTooltipFrameStrokeThickness;
+            FrameStrokeColor = Configurations.NodeTooltipFrameStrokeColor;
 
-            MaxWidth = 200;
-            MaxHeight = 200;
-            ContentMaxWidth = MaxWidth - 10;
-            ContentMaxHeight = MaxHeight - 16;
+            MaxWidth = Configurations.NodeTooltipMaxWidth;
+            MaxHeight = Configurations.NodeTooltipMaxHeight;
+            ContentMaxWidth = Configurations.NodeTooltipContentMaxWidth;
+            ContentMaxHeight = Configurations.NodeTooltipContentMaxHeight;
 
-            TextFontSize = 12;
-            TextFontWeight = FontWeights.Light;
-            TextForeground = new SolidColorBrush(Color.FromRgb(98, 140, 153));
-            ContentWrapping = TextWrapping.Wrap;
+            TextFontSize = Configurations.NodeTooltipTextFontSize;
+            TextForeground = Configurations.NodeTooltipTextForeground;
+            TextFontWeight = Configurations.NodeTooltipTextFontWeight;
+            ContentWrapping = Configurations.NodeTooltipContentWrapping;
 
             switch (connectingDirection)
             {
                 case Direction.Left:
-                    ContentMargin = new Thickness(11, 5, 5, 5);
+                    ContentMargin = Configurations.NodeTooltipContentMarginLeft;
                     break;
                 case Direction.Right:
-                    ContentMargin = new Thickness(5, 5, 11, 5);
+                    ContentMargin = Configurations.NodeTooltipContentMarginRight;
                     break;
                 case Direction.Bottom:
-                    ContentMargin = new Thickness(5, 5, 5, 11);
+                    ContentMargin = Configurations.NodeTooltipContentMarginBottom;
                     break;
             }
         }
 
         private void SetStyle_Error()
         {
-            FrameFill = new SolidColorBrush(Color.FromRgb(255, 255, 255));
-            FrameStrokeThickness = 1;
-            FrameStrokeColor = new SolidColorBrush(Color.FromRgb(190, 70, 70));
+            FrameFill = Configurations.ErrorFrameFill;
+            FrameStrokeThickness = Configurations.ErrorFrameStrokeThickness;
+            FrameStrokeColor = Configurations.ErrorFrameStrokeColor;
 
-            MaxWidth = 300;
-            MaxHeight = 200;
-            ContentMaxWidth = MaxWidth - 10;
-            ContentMaxHeight = MaxHeight - 16;
+            MaxWidth = Configurations.ErrorMaxWidth;
+            MaxHeight = Configurations.ErrorMaxHeight;
+            ContentMaxWidth = Configurations.ErrorContentMaxWidth;
+            ContentMaxHeight = Configurations.ErrorContentMaxHeight;
 
-            TextFontSize = 13;
-            TextFontWeight = FontWeights.Light;
-            TextForeground = new SolidColorBrush(Color.FromRgb(190, 70, 70));
-            ContentWrapping = TextWrapping.Wrap;
-            ContentMargin = new Thickness(5, 5, 5, 12);
+            TextFontSize = Configurations.ErrorTextFontSize;
+            TextForeground = Configurations.ErrorTextForeground;
+            TextFontWeight = Configurations.ErrorTextFontWeight;
+            ContentWrapping = Configurations.ErrorContentWrapping;
+            ContentMargin = Configurations.ErrorContentMargin;
         }
 
         private void SetStyle_Preview()
         {
-            FrameFill = new SolidColorBrush(Color.FromRgb(255, 255, 255));
-            FrameStrokeThickness = 1;
-            FrameStrokeColor = new SolidColorBrush(Color.FromRgb(153, 153, 153));
+            FrameFill = Configurations.PreviewFrameFill;
+            FrameStrokeThickness = Configurations.PreviewFrameStrokeThickness;
+            FrameStrokeColor = Configurations.PreviewFrameStrokeColor;
 
-            TextFontSize = 13;
-            TextFontWeight = FontWeights.Light;
-            TextForeground = new SolidColorBrush(Color.FromRgb(153, 153, 153));
-            ContentWrapping = TextWrapping.Wrap;
-            ContentMargin = new Thickness(5, 12, 5, 5);
+            TextFontSize = Configurations.PreviewTextFontSize;
+            TextForeground = Configurations.PreviewTextForeground;
+            TextFontWeight = Configurations.PreviewTextFontWeight;
+            ContentWrapping = Configurations.PreviewContentWrapping;
+            ContentMargin = Configurations.PreviewContentMargin;
 
             if (this.preview_LastMaxHeight == double.MaxValue)
             {
-                this.MaxHeight = this.preview_DefaultMaxHeight;
-                this.ContentMaxHeight = this.preview_DefaultMaxHeight - 17;
+                this.MaxHeight = Configurations.PreviewDefaultMaxHeight;
+                this.ContentMaxHeight = Configurations.PreviewDefaultMaxHeight - 17;
             }
             else
             {
@@ -601,8 +595,8 @@ namespace Dynamo.ViewModels
 
             if (this.preview_LastMaxWidth == double.MaxValue)
             {
-                this.MaxWidth = this.preview_DefaultMaxWidth;
-                this.ContentMaxWidth = this.preview_DefaultMaxWidth - 10;
+                this.MaxWidth = Configurations.PreviewDefaultMaxWidth;
+                this.ContentMaxWidth = Configurations.PreviewDefaultMaxWidth - 10;
             }
             else
             {
@@ -610,39 +604,39 @@ namespace Dynamo.ViewModels
                 this.ContentMaxWidth = this.preview_LastMaxWidth - 10;
             }
 
-            MinHeight = this.preview_MinHeight;
-            MinWidth = this.preview_MinWidth;
+            MinHeight = Configurations.PreviewMinHeight;
+            MinWidth = Configurations.PreviewMinWidth;
         }
 
         private void SetStyle_PreviewCondensed()
         {
-            FrameFill = new SolidColorBrush(Color.FromRgb(255, 255, 255));
-            FrameStrokeThickness = 1;
-            FrameStrokeColor = new SolidColorBrush(Color.FromRgb(153, 153, 153));
+            FrameFill = Configurations.PreviewFrameFill;
+            FrameStrokeThickness = Configurations.PreviewFrameStrokeThickness;
+            FrameStrokeColor = Configurations.PreviewFrameStrokeColor;
 
-            MaxWidth = 150;
-            MinWidth = 35;
-            MaxHeight = 200;
-            MinHeight = 0;
-            ContentMaxWidth = MaxWidth - 10;
-            ContentMaxHeight = MaxHeight - 17;
+            MaxWidth = Configurations.PreviewCondensedMaxWidth;
+            MinWidth = Configurations.PreviewCondensedMinWidth;
+            MaxHeight = Configurations.PreviewCondensedMaxHeight;
+            MinHeight = Configurations.PreviewCondensedMinHeight;
+            ContentMaxWidth = Configurations.PreviewCondensedContentMaxWidth;
+            ContentMaxHeight = Configurations.PreviewCondensedContentMaxHeight;
 
-            TextFontSize = 13;
-            TextFontWeight = FontWeights.Light;
-            TextForeground = new SolidColorBrush(Color.FromRgb(153, 153, 153));
-            ContentWrapping = TextWrapping.Wrap;
-            ContentMargin = new Thickness(5, 12, 5, 5);
+            TextFontSize = Configurations.PreviewTextFontSize;
+            TextForeground = Configurations.PreviewTextForeground;
+            TextFontWeight = Configurations.PreviewTextFontWeight;
+            ContentWrapping = Configurations.PreviewContentWrapping;
+            ContentMargin = Configurations.PreviewContentMargin;
         }
 
         private PointCollection GetFramePoints_LibraryItemPreview()
         {
             PointCollection pointCollection = new PointCollection();
             pointCollection.Add(new Point(EstimatedWidth, 0));
-            pointCollection.Add(new Point(7, 0));
-            pointCollection.Add(new Point(7, EstimatedHeight / 2 - 7));
+            pointCollection.Add(new Point(Configurations.LibraryTooltipArrowWidth, 0));
+            pointCollection.Add(new Point(Configurations.LibraryTooltipArrowWidth, EstimatedHeight / 2 - Configurations.LibraryTooltipArrowHeight / 2));
             pointCollection.Add(new Point(0, EstimatedHeight / 2));
-            pointCollection.Add(new Point(7, EstimatedHeight / 2 + 7));
-            pointCollection.Add(new Point(7, EstimatedHeight));
+            pointCollection.Add(new Point(Configurations.LibraryTooltipArrowWidth, EstimatedHeight / 2 + Configurations.LibraryTooltipArrowHeight / 2));
+            pointCollection.Add(new Point(Configurations.LibraryTooltipArrowWidth, EstimatedHeight));
             pointCollection.Add(new Point(EstimatedWidth, EstimatedHeight));
 
             return pointCollection;
@@ -671,35 +665,37 @@ namespace Dynamo.ViewModels
                 limitedDirection = Direction.None;
                 pointCollection.Add(new Point(EstimatedWidth, 0));
                 pointCollection.Add(new Point(0, 0));
-                pointCollection.Add(new Point(0, EstimatedHeight - 6));
-                pointCollection.Add(new Point((EstimatedWidth / 2) - 6, EstimatedHeight - 6));
+                pointCollection.Add(new Point(0, EstimatedHeight - Configurations.NodeTooltipArrowHeight_BottomConnecting));
+                pointCollection.Add(new Point((EstimatedWidth / 2) - Configurations.NodeTooltipArrowWidth_BottomConnecting / 2,
+                    EstimatedHeight - Configurations.NodeTooltipArrowHeight_BottomConnecting));
                 pointCollection.Add(new Point(EstimatedWidth / 2, EstimatedHeight));
-                pointCollection.Add(new Point((EstimatedWidth / 2) + 6, EstimatedHeight - 6));
-                pointCollection.Add(new Point(EstimatedWidth, EstimatedHeight - 6));
+                pointCollection.Add(new Point((EstimatedWidth / 2) + (Configurations.NodeTooltipArrowWidth_BottomConnecting / 2),
+                    EstimatedHeight - Configurations.NodeTooltipArrowHeight_BottomConnecting));
+                pointCollection.Add(new Point(EstimatedWidth, EstimatedHeight - Configurations.NodeTooltipArrowHeight_BottomConnecting));
             }
             else if (botRight.X + EstimatedWidth <= dynSettings.Controller.DynamoViewModel.WorkspaceActualWidth)
             {
                 limitedDirection = Direction.Top;
-                ContentMargin = new Thickness(11, 5, 5, 5);
+                ContentMargin = Configurations.NodeTooltipContentMarginLeft;
                 UpdateContent(Content);
 
                 pointCollection.Add(new Point(EstimatedWidth, 0));
                 pointCollection.Add(new Point(0, 0));
-                pointCollection.Add(new Point(6, 6));
-                pointCollection.Add(new Point(6, EstimatedHeight));
+                pointCollection.Add(new Point(Configurations.NodeTooltipArrowWidth_SideConnecting, Configurations.NodeTooltipArrowHeight_SideConnecting / 2));
+                pointCollection.Add(new Point(Configurations.NodeTooltipArrowWidth_SideConnecting, EstimatedHeight));
                 pointCollection.Add(new Point(EstimatedWidth, EstimatedHeight));
             }
             else
             {
                 limitedDirection = Direction.TopRight;
-                ContentMargin = new Thickness(5, 5, 11, 5);
+                ContentMargin = Configurations.NodeTooltipContentMarginRight;
                 UpdateContent(Content);
 
                 pointCollection.Add(new Point(EstimatedWidth, 0));
                 pointCollection.Add(new Point(0, 0));
                 pointCollection.Add(new Point(0, EstimatedHeight));
-                pointCollection.Add(new Point(EstimatedWidth - 6, EstimatedHeight));
-                pointCollection.Add(new Point(EstimatedWidth - 6, 6));
+                pointCollection.Add(new Point(EstimatedWidth - Configurations.NodeTooltipArrowWidth_SideConnecting, EstimatedHeight));
+                pointCollection.Add(new Point(EstimatedWidth - Configurations.NodeTooltipArrowWidth_SideConnecting, Configurations.NodeTooltipArrowHeight_SideConnecting / 2));
 
             }
             return pointCollection;
@@ -712,18 +708,20 @@ namespace Dynamo.ViewModels
             if (botRight.X + EstimatedWidth > dynSettings.Controller.DynamoViewModel.WorkspaceActualWidth)
             {
                 limitedDirection = Direction.Right;
-                ContentMargin = new Thickness(5, 5, 11, 5);
+                ContentMargin = Configurations.NodeTooltipContentMarginRight;
                 UpdateContent(Content);
                 pointCollection = GetFramePoints_NodeTooltipConnectRight(topLeft, botRight);
             }
             else
             {
                 pointCollection.Add(new Point(EstimatedWidth, 0));
-                pointCollection.Add(new Point(6, 0));
-                pointCollection.Add(new Point(6, EstimatedHeight / 2 - 6));
+                pointCollection.Add(new Point(Configurations.NodeTooltipArrowWidth_SideConnecting, 0));
+                pointCollection.Add(new Point(Configurations.NodeTooltipArrowWidth_SideConnecting,
+                    EstimatedHeight / 2 - Configurations.NodeTooltipArrowHeight_SideConnecting / 2));
                 pointCollection.Add(new Point(0, EstimatedHeight / 2));
-                pointCollection.Add(new Point(6, EstimatedHeight / 2 + 6));
-                pointCollection.Add(new Point(6, EstimatedHeight));
+                pointCollection.Add(new Point(Configurations.NodeTooltipArrowWidth_SideConnecting,
+                    EstimatedHeight / 2 + Configurations.NodeTooltipArrowHeight_SideConnecting / 2));
+                pointCollection.Add(new Point(Configurations.NodeTooltipArrowWidth_SideConnecting, EstimatedHeight));
                 pointCollection.Add(new Point(EstimatedWidth, EstimatedHeight));
             }
             return pointCollection;
@@ -736,19 +734,21 @@ namespace Dynamo.ViewModels
             if (topLeft.X - EstimatedWidth < 0)
             {
                 limitedDirection = Direction.Left;
-                ContentMargin = new Thickness(11, 5, 5, 5);
+                ContentMargin = Configurations.NodeTooltipContentMarginLeft;
                 UpdateContent(Content);
                 pointCollection = GetFramePoints_NodeTooltipConnectLeft(topLeft, botRight);
             }
             else
             {
-                pointCollection.Add(new Point(EstimatedWidth - 6, 0));
+                pointCollection.Add(new Point(EstimatedWidth - Configurations.NodeTooltipArrowWidth_SideConnecting, 0));
                 pointCollection.Add(new Point(0, 0));
                 pointCollection.Add(new Point(0, EstimatedHeight));
-                pointCollection.Add(new Point(EstimatedWidth - 6, EstimatedHeight));
-                pointCollection.Add(new Point(EstimatedWidth - 6, EstimatedHeight / 2 + 6));
+                pointCollection.Add(new Point(EstimatedWidth - Configurations.NodeTooltipArrowWidth_SideConnecting, EstimatedHeight));
+                pointCollection.Add(new Point(EstimatedWidth - Configurations.NodeTooltipArrowWidth_SideConnecting,
+                    EstimatedHeight / 2 + Configurations.NodeTooltipArrowHeight_SideConnecting / 2));
                 pointCollection.Add(new Point(EstimatedWidth, EstimatedHeight / 2));
-                pointCollection.Add(new Point(EstimatedWidth - 6, EstimatedHeight / 2 - 6));
+                pointCollection.Add(new Point(EstimatedWidth - Configurations.NodeTooltipArrowWidth_SideConnecting,
+                    EstimatedHeight / 2 - Configurations.NodeTooltipArrowHeight_SideConnecting / 2));
             }
             return pointCollection;
         }
@@ -758,22 +758,22 @@ namespace Dynamo.ViewModels
             PointCollection pointCollection = new PointCollection();
             pointCollection.Add(new Point(EstimatedWidth, 0));
             pointCollection.Add(new Point(0, 0));
-            pointCollection.Add(new Point(0, EstimatedHeight - 6));
-            pointCollection.Add(new Point((EstimatedWidth / 2) - 6, EstimatedHeight - 6));
+            pointCollection.Add(new Point(0, EstimatedHeight - Configurations.ErrorArrowHeight));
+            pointCollection.Add(new Point((EstimatedWidth / 2) - Configurations.ErrorArrowWidth / 2, EstimatedHeight - Configurations.ErrorArrowHeight));
             pointCollection.Add(new Point(EstimatedWidth / 2, EstimatedHeight));
-            pointCollection.Add(new Point((EstimatedWidth / 2) + 6, EstimatedHeight - 6));
-            pointCollection.Add(new Point(EstimatedWidth, EstimatedHeight - 6));
+            pointCollection.Add(new Point((EstimatedWidth / 2) + Configurations.ErrorArrowWidth / 2, EstimatedHeight - Configurations.ErrorArrowHeight));
+            pointCollection.Add(new Point(EstimatedWidth, EstimatedHeight - Configurations.ErrorArrowHeight));
             return pointCollection;
         }
 
         private PointCollection GetFramePoints_Preview()
         {
             PointCollection pointCollection = new PointCollection();
-            pointCollection.Add(new Point(EstimatedWidth, 7));
-            pointCollection.Add(new Point(EstimatedWidth / 2 + 7, 7));
+            pointCollection.Add(new Point(EstimatedWidth, Configurations.PreviewArrowHeight));
+            pointCollection.Add(new Point(EstimatedWidth / 2 + Configurations.PreviewArrowWidth / 2, Configurations.PreviewArrowHeight));
             pointCollection.Add(new Point(EstimatedWidth / 2, 0));
-            pointCollection.Add(new Point(EstimatedWidth / 2 - 7, 7));
-            pointCollection.Add(new Point(0, 7));
+            pointCollection.Add(new Point(EstimatedWidth / 2 - Configurations.PreviewArrowWidth / 2, Configurations.PreviewArrowHeight));
+            pointCollection.Add(new Point(0, Configurations.PreviewArrowHeight));
             pointCollection.Add(new Point(0, EstimatedHeight));
             pointCollection.Add(new Point(EstimatedWidth, EstimatedHeight));
             return pointCollection;
