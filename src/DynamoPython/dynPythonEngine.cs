@@ -9,35 +9,35 @@ namespace DynamoPython
 {
     internal class DynPythonEngine
     {
-        private ScriptEngine engine;
-        private ScriptSource source;
+        private readonly ScriptEngine _engine;
+        private ScriptSource _source;
 
         public DynPythonEngine()
         {
-            this.engine = Python.CreateEngine();
+            _engine = Python.CreateEngine();
         }
 
         public void ProcessCode(string code)
         {
-            this.source = engine.CreateScriptSourceFromString(code, SourceCodeKind.Statements);
+            _source = _engine.CreateScriptSourceFromString(code, SourceCodeKind.Statements);
         }
 
-        public FScheme.Value Evaluate(IEnumerable<Binding> bindings)
+        public FScheme.Value Evaluate(IEnumerable<KeyValuePair<string, dynamic>> bindings)
         {
-            var scope = this.engine.CreateScope();
+            var scope = _engine.CreateScope();
 
             foreach (var bind in bindings)
             {
-                scope.SetVariable(bind.Symbol, bind.Value);
+                scope.SetVariable(bind.Key, bind.Value);
             }
 
             try
             {
-                this.source.Execute(scope);
+                _source.Execute(scope);
             }
             catch (Exception e)
             {
-                var eo = engine.GetService<ExceptionOperations>();
+                var eo = _engine.GetService<ExceptionOperations>();
                 string error = eo.FormatException(e);
                 return FScheme.Value.NewString(error);
             }
