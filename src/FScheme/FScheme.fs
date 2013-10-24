@@ -392,7 +392,21 @@ let LTE = boolMath (<=) "less-than-or-equals"
 let GTE = boolMath (>=) "greater-than-or-equals"
 let LT =  boolMath (<) "less-than"
 let GT =  boolMath (>) "greater-than"
-let EQ =  boolMath (=) "equals"
+
+let rec EQ = function
+    | [Number(x1); Number(x2)] when x1 = x2 -> Number(1.)
+    | [String(x1); String(x2)] when x1 = x2 -> Number(1.)
+
+    | [List(x1); List(x2)] when x1.Length = x2.Length ->
+        if Seq.forall2 (fun x y -> match EQ <| [x; y] with Number(1.) -> true | _ -> false)  x1 x2 then
+            Number(1.)
+        else
+            Number(0.)
+    
+    | [Container(o1); Container(o2)] when o1 = o1 || o1.Equals(o2) -> Number(1.)
+
+    | m -> Number(0.)
+        
 
 let Not = function
     | [expr] -> if ValueToBool expr then Number(0.) else Number(1.)
