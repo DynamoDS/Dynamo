@@ -235,6 +235,31 @@ b = c[w][x][y][z];";
             Assert.AreEqual(true, refVarNames.Contains("c"));
             Assert.AreEqual(true, refVarNames.Contains("z"));
         }
+
+        [Test]
+        public void TestSemiColonAddition()
+        {
+            string userText, compilableText;
+            userText = "a";
+            compilableText = CodeBlockNodeModel.FormatUserText(userText);
+            Assert.AreEqual("a;", compilableText);
+
+            userText = "\na\n\n\n";
+            compilableText = CodeBlockNodeModel.FormatUserText(userText);
+            Assert.AreEqual("a;", compilableText);
+
+            userText = "a = 1; \n\n b = foo( c,\nd\n,\ne)";
+            compilableText = CodeBlockNodeModel.FormatUserText(userText);
+            Assert.AreEqual("a = 1; \n\n b = foo( c,\nd\n,\ne);", compilableText);
+
+            userText = "      a = b-c;\nx = 1+3;\n   ";
+            compilableText = CodeBlockNodeModel.FormatUserText(userText);
+            Assert.AreEqual("a = b-c;\nx = 1+3;", compilableText);
+
+            userText = "\n   \n   \n    \n";
+            compilableText = CodeBlockNodeModel.FormatUserText(userText);
+            Assert.AreEqual("", compilableText);
+        }
     }
 }
 
