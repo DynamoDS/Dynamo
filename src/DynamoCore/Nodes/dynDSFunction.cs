@@ -76,9 +76,12 @@ namespace Dynamo.Nodes
                 InPortData.Add(new PortData("this", "Class Instance", typeof(object)));
             }
 
-            foreach (var arg in Definition.Arguments)
+            if (Definition.Arguments != null)
             {
-                InPortData.Add(new PortData(arg, "parameter", typeof(object)));
+                foreach (var arg in Definition.Arguments)
+                {
+                    InPortData.Add(new PortData(arg, "parameter", typeof(object)));
+                }
             }
 
             // Returns a dictionary
@@ -218,7 +221,7 @@ namespace Dynamo.Nodes
         {
             base.SerializeCore(element, context); 
             XmlElementHelper helper = new XmlElementHelper(element);
-            helper.SetAttribute("name", this.Definition.QualifiedName);
+            helper.SetAttribute("name", this.Definition.DisplayName);
         }
     }
 }

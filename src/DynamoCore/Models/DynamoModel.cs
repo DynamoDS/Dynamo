@@ -1068,7 +1068,7 @@ namespace Dynamo.Models
                     nodeData.Add("name", (node as Function).Definition.FunctionId);
 #if USE_DSENGINE
                 else if (node is DSFunction)
-                    nodeData.Add("name", (node as DSFunction).Definition.QualifiedName);
+                    nodeData.Add("name", (node as DSFunction).Definition.DisplayName);
 #endif
                 else
                     nodeData.Add("name", node.GetType());
