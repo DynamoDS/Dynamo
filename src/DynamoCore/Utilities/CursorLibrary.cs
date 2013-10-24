@@ -12,6 +12,9 @@ namespace Dynamo.Utilities
     {
         private static Cursor _handPan;
         private static Cursor _handPanActive;
+        private static Cursor _arcAdding;
+        private static Cursor _arcRemoving;
+        private static Cursor _usualPointer;
 
         public static Cursor HandPan
         {
@@ -30,6 +33,36 @@ namespace Dynamo.Utilities
                 if (_handPanActive == null)
                     _handPanActive = GetCursorFromFile("hand_pan_active.cur");
                 return _handPanActive;
+            }
+        }
+
+        public static Cursor ArcAdding
+        {
+            get
+            {
+                if (_arcAdding == null)
+                    _arcAdding = GetCursorFromFile("arc_add.cur");
+                return _arcAdding;
+            }
+        }
+
+        public static Cursor ArcRemoving
+        {
+            get
+            {
+                if (_arcRemoving == null)
+                    _arcRemoving = GetCursorFromFile("arc_remove.cur");
+                return _arcRemoving;
+            }
+        }
+
+        public static Cursor UsualPointer
+        {
+            get
+            {
+                if (_usualPointer == null)
+                    _usualPointer = GetCursorFromFile("pointer.cur");
+                return _usualPointer;
             }
         }
 

@@ -351,6 +351,8 @@ limitations under the License.
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="UI\Images\cursors.psd" />
+    <None Include="UI\Images\cursors1.psd" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DSCoreNodes\DSCoreNodes.csproj">
@@ -577,6 +579,36 @@ limitations under the License.
     <Resource Include="UI\Images\screenshot_disabled.png" />
     <Resource Include="UI\Images\screenshot_hover.png" />
     <Resource Include="UI\Images\screenshot_normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\arc_add.cur" />
+    <Resource Include="UI\Images\arc_add.png" />
+    <Resource Include="UI\Images\arc_remove.cur" />
+    <Resource Include="UI\Images\arc_remove.png" />
+    <Resource Include="UI\Images\arc_select.cur" />
+    <Resource Include="UI\Images\arc_select.png" />
+    <Resource Include="UI\Images\condense.cur" />
+    <Resource Include="UI\Images\condense.png" />
+    <Resource Include="UI\Images\expand.cur" />
+    <Resource Include="UI\Images\expand.png" />
+    <Resource Include="UI\Images\hand.cur" />
+    <Resource Include="UI\Images\hand.png" />
+    <Resource Include="UI\Images\hand_drag.png" />
+    <Resource Include="UI\Images\hand_pan.png" />
+    <Resource Include="UI\Images\hand_pan_active.png" />
+    <Resource Include="UI\Images\move.png" />
+    <Resource Include="UI\Images\pointer.cur" />
+    <Resource Include="UI\Images\pointer.png" />
+    <Resource Include="UI\Images\pointer_add.cur" />
+    <Resource Include="UI\Images\pointer_add.png" />
+    <Resource Include="UI\Images\rectangular_selection.cur" />
+    <Resource Include="UI\Images\rectangular_selection.png" />
+    <Resource Include="UI\Images\resize_diagonal.cur" />
+    <Resource Include="UI\Images\resize_diagonal.png" />
+    <Resource Include="UI\Images\resize_horizontal.cur" />
+    <Resource Include="UI\Images\resize_horizontal.png" />
+    <Resource Include="UI\Images\resize_vertical.cur" />
+    <Resource Include="UI\Images\resize_vertical.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
