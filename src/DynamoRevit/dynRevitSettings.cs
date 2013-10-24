@@ -14,7 +14,6 @@ namespace Dynamo.Utilities
 {
     class dynUtils
     {
-        private static ElementId _testid;
         /// <summary>
         /// Utility function to determine if an Element of the given ID exists in the document.
         /// </summary>

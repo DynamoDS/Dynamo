@@ -1,17 +1,3 @@
-//Copyright 2013 Ian Keough
-
-//Licensed under the Apache License, Version 2.0 (the "License");
-//you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at
-
-//http://www.apache.org/licenses/LICENSE-2.0
-
-//Unless required by applicable law or agreed to in writing, software
-//distributed under the License is distributed on an "AS IS" BASIS,
-//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//See the License for the specific language governing permissions and
-//limitations under the License.
-
 using System;
 using System.ComponentModel;
 using System.IO;
@@ -121,6 +107,14 @@ namespace Dynamo.Controls
             saveButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/save_disabled.png";
             saveButton.ImgHoverSource = "/DynamoCore;component/UI/Images/save_hover.png";
 
+            ShortcutBarItem screenShotButton = new ShortcutBarItem();
+            screenShotButton.ShortcutToolTip = "Export Workspace As Image";
+            screenShotButton.ShortcutCommand = viewModel.ShowSaveImageDialogAndSaveResultCommand;
+            screenShotButton.ShortcutCommandParameter = null;
+            screenShotButton.ImgNormalSource = "/DynamoCore;component/UI/Images/screenshot_normal.png";
+            screenShotButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/screenshot_disabled.png";
+            screenShotButton.ImgHoverSource = "/DynamoCore;component/UI/Images/screenshot_hover.png";
+
             // PLACEHOLDER FOR FUTURE SHORTCUTS
             //ShortcutBarItem undoButton = new ShortcutBarItem();
             //undoButton.ShortcutToolTip = "Undo [Ctrl + Z]";
@@ -149,6 +143,7 @@ namespace Dynamo.Controls
             shortcutBar.ShortcutBarItems.Add(newScriptButton);
             shortcutBar.ShortcutBarItems.Add(openScriptButton);
             shortcutBar.ShortcutBarItems.Add(saveButton);
+            shortcutBar.ShortcutBarRightSideItems.Add(screenShotButton);
             //shortcutBar.ShortcutBarItems.Add(undoButton);
             //shortcutBar.ShortcutBarItems.Add(redoButton);
             //shortcutBar.ShortcutBarItems.Add(runButton);            

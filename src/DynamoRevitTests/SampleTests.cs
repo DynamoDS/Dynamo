@@ -263,5 +263,295 @@ namespace Dynamo.Tests
         {
             Assert.Inconclusive();
         }
+
+        [Test]
+        public void Attractor_1()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_samplesPath, @".\10 Attractor\Attractor Logic_End.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(15, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(20, model.CurrentWorkspace.Connectors.Count);
+
+            dynSettings.Controller.RunExpression(true);
+        }
+
+        [Test]
+        public void Attractor_2()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_samplesPath, @".\10 Attractor\Attractor Logic_Start.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(17, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(17, model.CurrentWorkspace.Connectors.Count);
+
+            dynSettings.Controller.RunExpression(true);
+        }
+
+        [Test]
+        public void IndexedFamilyInstances()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            //string modelPath = Path.GetFullPath(Path.Combine(_samplesPath, @".\11 Indexed Family Instances\IndexedFamilyInstances.rfa"));
+            //SwapCurrentModel(modelPath);
+
+            string samplePath = Path.Combine(_samplesPath, @".\11 Indexed Family Instances\Indexed Family Instances.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
+
+            dynSettings.Controller.RunExpression(true);
+        }
+
+        [Ignore]
+        public void AdaptiveComponentPlacement()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            //string modelPath = Path.GetFullPath(Path.Combine(_samplesPath, @".\18 Adaptive Components\Adaptive Component Placement.rfa"));
+            //SwapCurrentModel(modelPath);
+
+            string samplePath = Path.Combine(_samplesPath, @".\18 Adaptive Components\Adaptive Component Placement.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count);
+
+            dynSettings.Controller.RunExpression(true);
+        }
+
+        [Test]
+        public void Tesselation_1()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string modelPath = Path.GetFullPath(Path.Combine(_samplesPath, @".\16 Tesselation\tesselation.rfa"));
+            SwapCurrentModel(modelPath);
+
+            string samplePath = Path.Combine(_samplesPath, @".\16 Tesselation\2dDomain.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(17, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(23, model.CurrentWorkspace.Connectors.Count);
+
+            dynSettings.Controller.RunExpression(true);
+
+            //var watch = model.CurrentWorkspace.NodeFromWorkspace<NewList>("789c1592-b64c-4a97-8f1a-8cef3d0cc2d0");
+            //FSharpList<FScheme.Value> actual = watch.GetValue(0).GetListFromFSchemeValue();
+            //Assert.AreEqual(0, actual.Length);
+
+        }
+
+        [Test]
+        public void Tesselation_2()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string modelPath = Path.GetFullPath(Path.Combine(_samplesPath, @".\16 Tesselation\tesselation.rfa"));
+            SwapCurrentModel(modelPath);
+
+            string samplePath = Path.Combine(_samplesPath, @".\16 Tesselation\tesselation with coincident grids.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(16, model.CurrentWorkspace.Connectors.Count);
+
+            dynSettings.Controller.RunExpression(true);
+
+        }
+
+        [Test]
+        public void Tesselation_3()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string modelPath = Path.GetFullPath(Path.Combine(_samplesPath, @".\16 Tesselation\tesselation.rfa"));
+            SwapCurrentModel(modelPath);
+
+            string samplePath = Path.Combine(_samplesPath, @".\16 Tesselation\tesselation.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count);
+
+            dynSettings.Controller.RunExpression(true);
+
+        }
+
+        [Ignore]
+        public void Tesselation_4()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string modelPath = Path.GetFullPath(Path.Combine(_samplesPath, @".\16 Tesselation\tesselation.rfa"));
+            SwapCurrentModel(modelPath);
+
+            string samplePath = Path.Combine(_samplesPath, @".\16 Tesselation\tesselation_types.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
+
+            dynSettings.Controller.RunExpression(true);
+
+        }
+
+        [Test]
+        public void Transforms_TranslateAndRotatesequence()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_samplesPath, @".\17 Transforms\Translate and Rotate sequence.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(13, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(13, model.CurrentWorkspace.Connectors.Count);
+
+            dynSettings.Controller.RunExpression(true);
+
+        }
+
+        [Test]
+        public void Transforms_TranslateAndRotate()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_samplesPath, @".\17 Transforms\Translate and Rotate.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count);
+
+            dynSettings.Controller.RunExpression(true);
+
+        }
+
+        [Test]
+        public void Formulas_FormulaCurve()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_samplesPath, @".\19 Formulas\FormulaCurve.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(17, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(19, model.CurrentWorkspace.Connectors.Count);
+
+            dynSettings.Controller.RunExpression(true);
+
+        }
+
+        [Ignore]
+        public void Formulas_ScalableCircle()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_samplesPath, @".\19 Formulas\Scalable Circle.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
+
+            dynSettings.Controller.RunExpression(true);
+
+        }
+
+        [Ignore]
+        public void Spreadsheets_ExcelToStuff()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_samplesPath, @".\15 Spreadsheets\Excel to Stuff.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+            model.Open(testPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(22, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(18, model.CurrentWorkspace.Connectors.Count);
+
+            var workspace = model.CurrentWorkspace;
+            var filePickerNode = workspace.FirstNodeFromWorkspace<StringFilename>();
+
+            // remap the file name as Excel requires an absolute path
+            var excelFilePath = Path.Combine(_samplesPath, @".\15 Spreadsheets\");
+            //excelFilePath = Path.Combine(excelFilePath, excelFileName);
+            excelFilePath = Path.Combine(excelFilePath, "helix.xlsx");
+            filePickerNode.Value = excelFilePath;
+
+            Assert.IsFalse(string.IsNullOrEmpty(excelFilePath));
+            Assert.IsTrue(File.Exists(excelFilePath));
+
+            dynSettings.Controller.RunExpression(true);
+        }
+
+        [Test]
+        public void Spreadsheets_CSVToStuff()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_samplesPath, @".\15 Spreadsheets\CSV to Stuff.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+            model.Open(testPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+
+            var workspace = model.CurrentWorkspace;
+            var filePickerNode = workspace.FirstNodeFromWorkspace<StringFilename>();
+
+            // remap the file name as CSV requires an absolute path
+            var excelFilePath = Path.Combine(_samplesPath, @".\15 Spreadsheets\");
+            excelFilePath = Path.Combine(excelFilePath, "helix_smaller.csv");
+
+            filePickerNode.Value = excelFilePath;
+
+            Assert.IsFalse(string.IsNullOrEmpty(excelFilePath));
+            Assert.IsTrue(File.Exists(excelFilePath));
+
+            //dynSettings.Controller.RunExpression(true);
+        }
     }
 }

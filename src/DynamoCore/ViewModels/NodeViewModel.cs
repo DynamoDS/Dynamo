@@ -1,17 +1,3 @@
-//Copyright 2013 Ian Keough
-
-//Licensed under the Apache License, Version 2.0 (the "License");
-//you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at
-
-//http://www.apache.org/licenses/LICENSE-2.0
-
-//Unless required by applicable law or agreed to in writing, software
-//distributed under the License is distributed on an "AS IS" BASIS,
-//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//See the License for the specific language governing permissions and
-//limitations under the License.
-
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -76,6 +62,8 @@ namespace Dynamo.ViewModels
 
         public InfoBubbleViewModel ErrorBubble { get; set; }
 
+        public InfoBubbleViewModel PreviewBubble { get; set; }
+
         public string ToolTipText
         {
             get { return nodeLogic.ToolTipText; }
@@ -119,7 +107,7 @@ namespace Dynamo.ViewModels
                 {
                     return "Not available in custom nodes";
                 }
-                return NodeModel.PrintValue(nodeLogic.OldValue, 0, 3, 0, 3);
+                return NodeModel.PrintValue(nodeLogic.OldValue, 0, 1000, 0, 100, 1000);
             }
         }
 
@@ -172,10 +160,12 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public double ZIndex
-        {
-            get { return 3; }
-        }
+        private double zIndex = 3;
+         public double ZIndex
+         {
+            get { return zIndex; }
+            set { zIndex = value; RaisePropertyChanged("ZIndex"); }
+         }
 
         /// <summary>
         /// Input grid's enabled state is now bound to this property
@@ -224,6 +214,14 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public bool IsPreviewInsetVisible
+        {
+            get
+            {
+                return !this.PreviewBubble.IsShowPreviewByDefault;
+            }
+        }
+
         #endregion
 
         #region events
@@ -269,6 +267,11 @@ namespace Dynamo.ViewModels
 
             logic.PropertyChanged += logic_PropertyChanged;
             dynSettings.Controller.DynamoViewModel.Model.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Model_PropertyChanged);
+            dynSettings.Controller.PropertyChanged += Controller_PropertyChanged;
+            
+            this.ErrorBubble = new InfoBubbleViewModel();
+            this.PreviewBubble = new InfoBubbleViewModel();
+            this.PreviewBubble.PropertyChanged += PreviewBubble_PropertyChanged;
 
             //Do a one time setup of the initial ports on the node
             //we can not do this automatically because this constructor
@@ -335,20 +338,24 @@ namespace Dynamo.ViewModels
                     break;
                 case "OldValue":
                     RaisePropertyChanged("OldValue");
+                    UpdatePreviewBubbleContent();
                     break;
                 case "X":
                     RaisePropertyChanged("Left");
-                    UpdateErrorBubblePosition(NodeModel.X, NodeModel.Y);
+                    UpdateErrorBubblePosition();
+                    UpdatePreviewBubblePosition();
                     break;
                 case "Y":
                     RaisePropertyChanged("Top");
-                    UpdateErrorBubblePosition(NodeModel.X, NodeModel.Y);
+                    UpdateErrorBubblePosition();
+                    UpdatePreviewBubblePosition();
                     break;
                 case "InteractionEnabled":
                     RaisePropertyChanged("IsInteractionEnabled");
                     break;
                 case "IsSelected":
                     RaisePropertyChanged("IsSelected");
+                    UpdateZIndex();
                     break;
                 case "State":
                     RaisePropertyChanged("State");
@@ -364,10 +371,71 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("IsVisible");
                     break;
 
-case "IsUpstreamVisible":
-RaisePropertyChanged("IsUpstreamVisible");
+                case "IsUpstreamVisible":
+                    RaisePropertyChanged("IsUpstreamVisible");
                     break;
 
+                case "Width":
+                    RaisePropertyChanged("Width");
+                    UpdateErrorBubblePosition();
+                    UpdatePreviewBubblePosition();
+                    break;
+                case "Height":
+                    RaisePropertyChanged("Height");
+                    UpdateErrorBubblePosition();
+                    UpdatePreviewBubblePosition();
+                    break;
+            }
+        }
+
+        private void Controller_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "IsShowPreviewByDefault":
+                    HandleDefaultShowPreviewChanged();
+                    break;
+            }
+        }
+
+        private void PreviewBubble_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "IsShowPreviewByDefault":
+                    RaisePropertyChanged("IsPreviewInsetVisible");
+                    break;
+            }
+        }
+
+        private void HandleDefaultShowPreviewChanged()
+        {
+            RaisePropertyChanged("IsPreviewInsetVisible");
+            this.PreviewBubble.IsShowPreviewByDefault = dynSettings.Controller.IsShowPreviewByDefault;
+            UpdatePreviewBubbleContent();
+            if (dynSettings.Controller.IsShowPreviewByDefault)
+            {
+                this.PreviewBubble.SetAlwaysVisibleCommand.Execute(true);
+                this.PreviewBubble.FadeInCommand.Execute(null);
+            }
+            else
+            {
+                this.PreviewBubble.SetAlwaysVisibleCommand.Execute(false);
+                this.PreviewBubble.FadeOutCommand.Execute(null);
+            }
+        }
+
+        private void UpdateZIndex()
+        {
+            if (this.IsSelected == true)
+            {
+                this.ZIndex = 4;
+                this.PreviewBubble.ZIndex = 4;
+           }
+            else
+            {
+                this.ZIndex = 3;
+                this.PreviewBubble.ZIndex = 3;
             }
         }
 
@@ -387,9 +455,14 @@ RaisePropertyChanged("IsUpstreamVisible");
             {
                 Point topLeft = new Point(NodeModel.X, NodeModel.Y);
                 Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
-                InfoBubbleDataPacket data = new InfoBubbleDataPacket(InfoBubbleViewModel.Style.Error, topLeft, botRight, NodeModel.ToolTipText, InfoBubbleViewModel.Direction.Bottom, NodeModel.GUID);
-                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.Invoke((new Action(() =>
+                InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.Error;
+                string content = NodeModel.ToolTipText;
+                InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Bottom;
+                InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
+                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.BeginInvoke((new Action(() =>
                 {
+                    if (!dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Errors.Contains(this.ErrorBubble))
+                        return;
                     this.ErrorBubble.UpdateContentCommand.Execute(data);
                     this.ErrorBubble.SetAlwaysVisibleCommand.Execute(true);
                     this.ErrorBubble.FadeInCommand.Execute(null);
@@ -397,7 +470,7 @@ RaisePropertyChanged("IsUpstreamVisible");
             }
         }
 
-        private void UpdateErrorBubblePosition(double x, double y)
+        private void UpdateErrorBubblePosition()
         {
             if (this.ErrorBubble == null)
                 return;
@@ -407,6 +480,39 @@ RaisePropertyChanged("IsUpstreamVisible");
             data.TopLeft = topLeft;
             data.BotRight = botRight;
             this.ErrorBubble.UpdatePositionCommand.Execute(data);
+        }
+
+        private void UpdatePreviewBubbleContent()
+        {
+            if (this.PreviewBubble == null || this.NodeModel is Watch)
+                return;
+
+            //create data packet to send to preview bubble
+            InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.PreviewCondensed;
+            Point topLeft = new Point(NodeModel.X, NodeModel.Y);
+            Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
+            string content = this.OldValue;
+            InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Top;
+            InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
+
+            //update preview bubble
+            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.BeginInvoke((new Action(() =>
+            {
+                if (dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Previews.Contains(this.PreviewBubble))
+                    this.PreviewBubble.UpdateContentCommand.Execute(data);
+            })));
+        }
+
+        private void UpdatePreviewBubblePosition()
+        {
+            if (this.PreviewBubble == null || this.NodeModel is Watch)
+                return;
+            Point topLeft = new Point(NodeModel.X, NodeModel.Y);
+            Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
+            InfoBubbleDataPacket data = new InfoBubbleDataPacket();
+            data.TopLeft = topLeft;
+            data.BotRight = botRight;
+            this.PreviewBubble.UpdatePositionCommand.Execute(data);
         }
 
         private void ShowHelp(object parameter)
@@ -690,6 +796,28 @@ RaisePropertyChanged("IsUpstreamVisible");
         }
 
         private bool CanCollapseTooltip(object parameter)
+        {
+            return true;
+        }
+
+        private void ShowPreview(object parameter)
+        {
+            UpdatePreviewBubbleContent();
+            this.PreviewBubble.ZIndex = 5;
+            this.PreviewBubble.FadeInCommand.Execute(null);
+        }
+
+        private bool CanShowPreview(object parameter)
+        {
+            return true;
+        }
+
+        private void HidePreview(object parameter)
+        {
+            //this.PreviewBubble.FadeOutCommand.Execute(null);
+        }
+
+        private bool CanHidePreview(object parameter)
         {
             return true;
         }

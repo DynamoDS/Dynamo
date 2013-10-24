@@ -52,7 +52,7 @@ namespace Dynamo.Utilities
             //Step 1: determine which nodes will be inputs to the new node
             var inputs = new HashSet<Tuple<NodeModel, int, Tuple<int, NodeModel>>>(
                 selectedNodeSet.SelectMany(
-                    node => Enumerable.Range(0, node.InPortData.Count).Where(node.HasInput)
+                    node => Enumerable.Range(0, node.InPortData.Count).Where(node.HasConnectedInput)
                         .Select(data => Tuple.Create(node, data, node.Inputs[data]))
                         .Where(input => !selectedNodeSet.Contains(input.Item3.Item2))));
 
