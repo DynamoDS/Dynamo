@@ -177,6 +177,7 @@ namespace Dynamo.ViewModels
 
         public DelegateCommand SelectVisualizationInViewCommand { get; set; }
         public DelegateCommand GetBranchVisualizationCommand { get; set; }
+        public DelegateCommand TogglePreviewBubbleVisibilityCommand { get; set; }
 
         /// <summary>
         /// An observable collection of workspace view models which tracks the model
@@ -399,6 +400,11 @@ namespace Dynamo.ViewModels
 
         public bool IsMouseDown { get; set; }
 
+        public bool IsShowPreviewByDefault
+        {
+            get { return Controller.IsShowPreviewByDefault; }
+        }
+
         public ConnectorType ConnectorType
         {
             get { return dynSettings.Controller.ConnectorType; }
@@ -519,6 +525,7 @@ namespace Dynamo.ViewModels
 
             SelectVisualizationInViewCommand = new DelegateCommand(SelectVisualizationInView, CanSelectVisualizationInView);
             GetBranchVisualizationCommand = new DelegateCommand(GetBranchVisualization, CanGetBranchVisualization);
+            TogglePreviewBubbleVisibilityCommand = new DelegateCommand(TogglePreviewBubbleVisibility, CanTogglePreviewBubbleVisibility);
 
             DynamoLogger.Instance.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Instance_PropertyChanged);
 
@@ -571,6 +578,9 @@ namespace Dynamo.ViewModels
             {
                 case "IsUILocked":
                     RaisePropertyChanged("IsUILocked");
+                    break;
+                case "IsShowPreviewByDefault":
+                    RaisePropertyChanged("IsShowPreviewByDefault");
                     break;
             }
         }
@@ -1263,6 +1273,16 @@ namespace Dynamo.ViewModels
         }
 
         internal bool CanHideInfoBubble(object parameter)
+        {
+            return true;
+        }
+
+        public void TogglePreviewBubbleVisibility(object parameter)
+        {
+            this.Controller.IsShowPreviewByDefault = !this.Controller.IsShowPreviewByDefault;
+        }
+
+        internal bool CanTogglePreviewBubbleVisibility(object parameter)
         {
             return true;
         }
