@@ -108,12 +108,13 @@ namespace Dynamo.DSEngine
     /// </summary>
     public interface IAstBuilder
     {
-        AssociativeNode Build(NodeModel node, List<AssociativeNode> inputs);
-        AssociativeNode Build(Dynamo.Nodes.DSFunction node, List<AssociativeNode> inputs);
-        AssociativeNode Build(Dynamo.Nodes.Double node, List<AssociativeNode> inputs);
-        AssociativeNode Build(Dynamo.Nodes.Bool node, List<AssociativeNode> inputs);
-        AssociativeNode Build(Dynamo.Nodes.String node, List<AssociativeNode> inputs);
-        AssociativeNode Build(Dynamo.Nodes.CodeBlockNodeModel node, List<AssociativeNode> inputs);
+        void Build(NodeModel node, List<AssociativeNode> inputs);
+        void Build(Dynamo.Nodes.DSFunction node, List<AssociativeNode> inputs);
+        void Build(Dynamo.Nodes.Double node, List<AssociativeNode> inputs);
+        void Build(Dynamo.Nodes.Bool node, List<AssociativeNode> inputs);
+        void Build(Dynamo.Nodes.String node, List<AssociativeNode> inputs);
+        void Build(Dynamo.Nodes.DoubleInput node, List<AssociativeNode> inputs);
+        void Build(Dynamo.Nodes.CodeBlockNodeModel node, List<AssociativeNode> inputs);
     }
 
     /// <summary>
@@ -219,21 +220,26 @@ namespace Dynamo.DSEngine
         }
 
         #region IAstBuilder interface
-        public AssociativeNode Build(NodeModel node, List<AssociativeNode> inputs)
+        public void Build(NodeModel node, List<AssociativeNode> inputs)
         {
-            return AstFactory.BuildNullNode();
+            StartBuildingAstNodes(node);
+
+            var rhs = AstFactory.BuildNullNode();
+            var assignment = AstFactory.BuildAssignment(node.AstIdentifier, rhs);
+            AddNode(node.GUID, assignment);
         }
 
-        public AssociativeNode Build(DSFunction node, List<AssociativeNode> inputs)
+        public void Build(DSFunction node, List<AssociativeNode> inputs)
         {
+            StartBuildingAstNodes(node);
+
             string function = node.Definition.Name;
             AssociativeNode functionCall = AstFactory.BuildFunctionCall(function, inputs);
 
             if (node.IsStaticMember() || node.IsConstructor())
             {
                 IdentifierNode classNode = new IdentifierNode(node.Definition.ClassName);
-                AssociativeNode dotCallNode = CoreUtils.GenerateCallDotNode(classNode, functionCall as FunctionCallNode, LiveRunnerServices.Instance.Core);
-                return dotCallNode;
+                functionCall = CoreUtils.GenerateCallDotNode(classNode, functionCall as FunctionCallNode, LiveRunnerServices.Instance.Core);
             }
             else if (node.IsInstanceMember())
             {
@@ -244,32 +250,62 @@ namespace Dynamo.DSEngine
                     inputs.RemoveAt(0);  // remove this pointer
                 }
                 functionCall = AstFactory.BuildFunctionCall(function, inputs);
-                AssociativeNode dotCallNode = CoreUtils.GenerateCallDotNode(thisNode, functionCall as FunctionCallNode, LiveRunnerServices.Instance.Core);
-                return dotCallNode;
+                functionCall= CoreUtils.GenerateCallDotNode(thisNode, functionCall as FunctionCallNode, LiveRunnerServices.Instance.Core);
+            }
+
+            var assignment = AstFactory.BuildAssignment(node.AstIdentifier, functionCall);
+            AddNode(node.GUID, assignment);
+        }
+
+        public void Build(Dynamo.Nodes.Double node, List<AssociativeNode> inputs)
+        {
+            StartBuildingAstNodes(node);
+
+            var rhs = AstFactory.BuildDoubleNode(node.Value);
+            var assignment = AstFactory.BuildAssignment(node.AstIdentifier, rhs);
+            AddNode(node.GUID, assignment);
+        }
+
+        public void Build(Dynamo.Nodes.DoubleInput node, List<AssociativeNode> inputs)
+        {
+            StartBuildingAstNodes(node);
+
+            AssociativeNode rhs = null;
+            if (inputs.Count == 1)
+            {
+                rhs = inputs[0];
             }
             else
             {
-                return functionCall;
+                rhs = AstFactory.BuildExprList(inputs);
             }
+
+            var assignment = AstFactory.BuildAssignment(node.AstIdentifier, rhs);
+            AddNode(node.GUID, assignment);
         }
 
-        public AssociativeNode Build(Dynamo.Nodes.Double node, List<AssociativeNode> inputs)
+        public void Build(Dynamo.Nodes.Bool node, List<AssociativeNode> inputs)
         {
-            return AstFactory.BuildDoubleNode(node.Value);
+            StartBuildingAstNodes(node);
+
+            var rhs =  AstFactory.BuildBooleanNode(node.Value);
+            var assignment = AstFactory.BuildAssignment(node.AstIdentifier, rhs);
+            AddNode(node.GUID, assignment);
         }
 
-        public AssociativeNode Build(Dynamo.Nodes.Bool node, List<AssociativeNode> inputs)
+        public void Build(Dynamo.Nodes.String node, List<AssociativeNode> inputs)
         {
-            return AstFactory.BuildBooleanNode(node.Value);
+            StartBuildingAstNodes(node);
+
+            var rhs = AstFactory.BuildStringNode(node.Value);
+            var assignment = AstFactory.BuildAssignment(node.AstIdentifier, rhs);
+            AddNode(node.GUID, assignment);
         }
 
-        public AssociativeNode Build(Dynamo.Nodes.String node, List<AssociativeNode> inputs)
+        public void Build(Dynamo.Nodes.CodeBlockNodeModel node, List<AssociativeNode> inputs)
         {
-            return AstFactory.BuildStringNode(node.Value);
-        }
+            StartBuildingAstNodes(node);
 
-        public AssociativeNode Build(Dynamo.Nodes.CodeBlockNodeModel node, List<AssociativeNode> inputs)
-        {
             Dictionary<int, List<GraphToDSCompiler.VariableLine>> unboundIdentifiers;
             unboundIdentifiers = new Dictionary<int, List<GraphToDSCompiler.VariableLine>>();
             List<ProtoCore.AST.Node> resultNodes;
@@ -279,8 +315,6 @@ namespace Dynamo.DSEngine
             {
                 AddNode(node.GUID, (astNode as AssociativeNode));
             }
-
-            return null;
         }
         #endregion
 
@@ -341,24 +375,9 @@ namespace Dynamo.DSEngine
             return partialFunc;
         }
 
+        /*
         public void BuildEvaluation(NodeModel node, AssociativeNode rhs, bool isPartial = false)
         {
-            if (nodeStates.ContainsKey(node.GUID))
-            {
-                nodeStates[node.GUID] = NodeState.Modified;
-                ClearAstNodes(node.GUID);
-            }
-            else
-            {
-                nodeStates[node.GUID] = NodeState.Added;
-            }
-
-            /*
-            if (node is CodeBlockNodeModel)
-            {
-                return;
-            }
-
             // If it is a partially applied function, need to create a function 
             // definition and function pointer.
             if (isPartial && rhs is FunctionCallNode)
@@ -371,11 +390,11 @@ namespace Dynamo.DSEngine
                 // create a function pointer for this node
                 rhs = AstFactory.BuildIdentifier(newFunc.Name);
             }
-            */
 
             var assignment = AstFactory.BuildAssignment(node.AstIdentifier, rhs);
             AddNode(node.GUID, assignment);
         }
+        */
 
         public void BeginBuildingAst()
         {
@@ -392,8 +411,23 @@ namespace Dynamo.DSEngine
 
         }
 
+        private void StartBuildingAstNodes(NodeModel node)
+        {
+            RemoveAstNodes(node.GUID);
+
+            if (nodeStates.ContainsKey(node.GUID))
+            {
+                nodeStates[node.GUID] = NodeState.Modified;
+            }
+            else
+            {
+                nodeStates[node.GUID] = NodeState.Added;
+            }
+        }
+
         public void OnNodeDeleted(NodeModel node)
         {
+            RemoveAstNodes(node.GUID);
             nodeStates[node.GUID] = NodeState.Deleted;
         }
     }

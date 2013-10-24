@@ -2300,11 +2300,6 @@ namespace Dynamo.Nodes
         {
             return Value.NewNumber(_random.NextDouble());
         }
-
-        protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
-        {
-            return builder.Build(this, inputs);
-        }
     }
 
     [NodeName("Random Number List")]
@@ -3001,9 +2996,9 @@ namespace Dynamo.Nodes
 
         #endregion
 
-        protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
+        protected override void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
         {
-            return builder.Build(this, inputs);
+            builder.Build(this, inputs);
         }
     }
 
@@ -3014,9 +3009,9 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewNumber(Value ? 1 : 0);
         }
 
-        protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
+        protected override void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
         {
-            return builder.Build(this, inputs);
+            builder.Build(this, inputs);
         }
 
         #region Serialization/Deserialization Methods
@@ -3056,10 +3051,9 @@ namespace Dynamo.Nodes
             return "\"" + base.PrintExpression() + "\"";
         }
 
-        protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
+        protected override void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
         {
-            return builder.Build(this, inputs);
-            
+            builder.Build(this, inputs);
         }
 
         #region Serialization/Deserialization Methods
@@ -3292,21 +3286,23 @@ namespace Dynamo.Nodes
                 : FScheme.Value.NewList(Utils.SequenceToFSharpList(_parsed.Select(x => x.GetFSchemeValue(paramDict))));
         }
 
-        protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
+        protected override void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
         {
             var paramDict = InPortData.Select(x => x.NickName)
                 .Zip(inputs, Tuple.Create)
                 .ToDictionary(x => x.Item1, x => x.Item2);
 
+            List<AssociativeNode> newInputs = null;
             if (_parsed.Count == 1)
             {
-                return _parsed[0].GetAstNode(paramDict);
+                newInputs = new List<AssociativeNode> { _parsed[0].GetAstNode(paramDict)};
             }
             else
             {
-                List<AssociativeNode> nodes = _parsed.Select(x => x.GetAstNode(paramDict)).ToList();
-                return AstFactory.BuildExprList(nodes);
+                newInputs = _parsed.Select(x => x.GetAstNode(paramDict)).ToList();
             }
+
+            builder.Build(this, newInputs);
         }
 
         public interface IDoubleSequence

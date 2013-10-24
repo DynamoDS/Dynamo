@@ -113,9 +113,9 @@ namespace Dynamo.Nodes
             }
         }
 
-        protected override AssociativeNode BuildAstNode(DSEngine.IAstBuilder builder, List<AssociativeNode> inputAstNodes)
+        protected override void BuildAstNode(DSEngine.IAstBuilder builder, List<AssociativeNode> inputAstNodes)
         {
-            return builder.Build(this, inputAstNodes);
+            builder.Build(this, inputAstNodes);
         }
 
         protected override AssociativeNode GetIndexedOutputNode(int index)

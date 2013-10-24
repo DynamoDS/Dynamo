@@ -166,7 +166,10 @@ namespace Dynamo.Nodes
                     returnKeys = returnKeyValue.Split(new char[] { ';' }).ToList();
                 }
 
-                DSLibraryServices.Instance.ImportLibrary(assembly);
+                if (!string.IsNullOrEmpty(assembly))
+                {
+                    DSLibraryServices.Instance.ImportLibrary(assembly);
+                }
                 DSFunctionItem item = new DSFunctionItem(assembly, category, className, name, displayName, type, arguments, returnKeys);
                 Initialize(item);
 
@@ -200,10 +203,10 @@ namespace Dynamo.Nodes
             return indexedNode;
         }
 
-        protected override AssociativeNode BuildAstNode(DSEngine.IAstBuilder builder, 
+        protected override void BuildAstNode(DSEngine.IAstBuilder builder, 
                                                         List<ProtoCore.AST.AssociativeAST.AssociativeNode> inputs)
         {
-            return builder.Build(this, inputs);
+            builder.Build(this, inputs);
         }
 
         /// <summary>
