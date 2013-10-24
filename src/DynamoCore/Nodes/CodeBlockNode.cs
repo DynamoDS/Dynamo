@@ -149,7 +149,7 @@ namespace Dynamo.Nodes
 
             if (Code.Equals("") || Code.Equals("Your Code Goes Here")) //If its null then remove all the ports
             {
-                SetPorts();
+                SetPorts(new List<string>());
                 return;
             }
 
@@ -175,10 +175,10 @@ namespace Dynamo.Nodes
                 DisplayError();
             }
 
-            SetPorts(); //Set the input and output ports based on the statements
+            SetPorts(unboundIdentifiers); //Set the input and output ports based on the statements
         }
 
-        private void SetPorts()
+        private void SetPorts(List<string> unboundIdentifiers)
         {
             InPortData.Clear();
             OutPortData.Clear();
@@ -188,7 +188,7 @@ namespace Dynamo.Nodes
                 return;
             }
 
-            SetInputPorts();
+            SetInputPorts(unboundIdentifiers);
 
             //Since output ports need to be aligned with the statements, calculate the margins
             //needed based on the statement lines and add them to port data.
@@ -216,21 +216,11 @@ namespace Dynamo.Nodes
         }
 
         /// <summary>
-        /// Set a port for each different input parameter
+        /// Set a port for each different unbound identifier
         /// </summary>
-        private void SetInputPorts()
+        private void SetInputPorts(List<string> unboundIdentifier)
         {
-            List<string> uniqueInputs = new List<string>();
-            foreach (var singleStatement in codeStatements)
-            {
-                List<string> inputNames = Statement.GetReferencedVariableNames(singleStatement, true);
-                foreach (string name in inputNames)
-                {
-                    if (!uniqueInputs.Contains(name))
-                        uniqueInputs.Add(name);
-                }
-            }
-            foreach (string name in uniqueInputs)
+            foreach (string name in unboundIdentifier)
                 InPortData.Add(new PortData(name, "Input", typeof(object)));
         }
 
@@ -353,6 +343,11 @@ namespace Dynamo.Nodes
                 GetReferencedVariables(currentNode.FromNode, refVariableList);
                 GetReferencedVariables(currentNode.ToNode, refVariableList);
                 GetReferencedVariables(currentNode.StepNode, refVariableList);
+            }
+            else if (astNode is BinaryExpressionNode)
+            {
+                BinaryExpressionNode currentNode = astNode as BinaryExpressionNode;
+                GetReferencedVariables(currentNode.RightNode, refVariableList);
             }
             else
             {
