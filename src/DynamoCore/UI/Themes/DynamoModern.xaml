@@ -590,5 +590,5 @@
     <clr:Int32 x:Key="connector_stroke_thickness">2</clr:Int32>
     <clr:Double x:Key="connector_stroke_opacity">0.6</clr:Double>
     <clr:Double x:Key="connector_bezier_offset">20.0</clr:Double>
-
+    
 </ResourceDictionary>

@@ -171,7 +171,7 @@ limitations under the License.
       <DependentUpon>ShortcutToolbar.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\SharedResourceDictionary.cs" />
-    <Compile Include="UI\Views\HandlingEventTrigger.cs" />
+    <Compile Include="UI\HandlingEventTrigger.cs" />
     <Compile Include="UI\Views\InfoBubbleView.xaml.cs">
       <DependentUpon>InfoBubbleView.xaml</DependentUpon>
     </Compile>
