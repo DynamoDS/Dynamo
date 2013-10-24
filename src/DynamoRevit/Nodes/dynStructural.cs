@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Autodesk.Revit.Creation;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Structure;
-using Dynamo.Connectors;
 using Dynamo.Models;
 using Dynamo.Revit;
 using Dynamo.Utilities;

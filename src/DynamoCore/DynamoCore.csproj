@@ -248,10 +248,6 @@ limitations under the License.
       <DependentUpon>dynNoteView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UI\Views\dynPortView.xaml.cs">
-      <DependentUpon>dynPortView.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="UI\Views\dynWorkspaceView.xaml.cs">
       <DependentUpon>dynWorkspaceView.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -486,10 +482,6 @@ limitations under the License.
     <Page Include="UI\Views\dynNodeView.xaml">
     </Page>
     <Page Include="UI\Views\dynNoteView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\Views\dynPortView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

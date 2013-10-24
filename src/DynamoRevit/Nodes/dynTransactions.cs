@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Dynamo;
-using Dynamo.Connectors;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.FSchemeInterop;
 using Dynamo.Models;
@@ -12,10 +9,6 @@ using Microsoft.FSharp.Collections;
 using Microsoft.FSharp.Core;
 using Expression = Dynamo.FScheme.Expression;
 using Value = Dynamo.FScheme.Value;
-using Autodesk.Revit.DB;
-using System.Diagnostics;
-using Dynamo.Controls;
-using System.Windows.Threading;
 
 namespace Dynamo.Nodes
 {
