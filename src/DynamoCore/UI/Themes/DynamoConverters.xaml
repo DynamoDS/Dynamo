@@ -60,6 +60,7 @@
     <controls:BoolToVisibilityCollapsedConverter x:Key="BooleanToVisibilityCollapsedConverter"/>
     <controls:InverseBooleanToVisibilityCollapsedConverter x:Key="InverseBoolToVisibilityCollapsedConverter"/>
     <controls:ZoomToVisibilityConverter x:Key="ZoomToVisibilityConverter"/>
+    <controls:ZoomToBooleanConverter x:Key="ZoomToBooleanConverter"/>
     <controls:PortNameToWidthConverter x:Key="PortNameToWidthConverter"/>
     <controls:TooltipLengthTruncater x:Key="TooltipLengthTruncater" />
     <controls:WarningLevelToColorConverter x:Key="WarningLevelToColorConverter"/>
