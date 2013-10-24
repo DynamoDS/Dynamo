@@ -8,7 +8,7 @@
 
     <Style x:Key="SConnector" TargetType="Path">
         <Style.Triggers>
-            <EventTrigger RoutedEvent="MouseEnter">
+            <!--<EventTrigger RoutedEvent="MouseEnter">
                 <BeginStoryboard>
                     <Storyboard>
                         <DoubleAnimation From="3" To="6" Duration="0" Storyboard.TargetProperty="StrokeThickness"></DoubleAnimation>
@@ -21,7 +21,7 @@
                         <DoubleAnimation From="6" To="3" Duration="0" Storyboard.TargetProperty="StrokeThickness"></DoubleAnimation>
                     </Storyboard>
                 </BeginStoryboard>
-            </EventTrigger>
+            </EventTrigger>-->
             <DataTrigger Binding="{Binding Path=IsConnecting, Mode=OneWay}" Value="True">
                 <Setter Property="StrokeDashArray" Value="2"/>
             </DataTrigger>
