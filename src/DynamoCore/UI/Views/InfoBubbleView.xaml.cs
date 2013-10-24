@@ -61,6 +61,9 @@ namespace Dynamo.Controls
             //  then add a new TextBox to it
 
             ContentContainer.Children.Clear();
+
+            if (ViewModel == null) return;
+
             TextBox textBox = GetNewTextBox(ViewModel.Content);
             ContentContainer.Children.Add(textBox);
 
