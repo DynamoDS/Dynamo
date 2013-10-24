@@ -87,6 +87,10 @@
 				<test name="Tesselation_1" runDynamo="True" modelPath=".\empty.rfa"/>
 				<test name="Tesselation_2" runDynamo="True" modelPath=".\empty.rfa"/>
 				<test name="Tesselation_3" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="Transforms_TranslateAndRotatesequence" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="Transforms_TranslateAndRotate" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="Formulas_FormulaCurve" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="Spreadsheets_CSVToStuff" runDynamo="True" modelPath=".\empty.rfa"/>
 			</testFixture>
 			<testFixture name="SolidTests">
 				<test name="BlendSolid" runDynamo="True" modelPath=".\empty.rfa"/>

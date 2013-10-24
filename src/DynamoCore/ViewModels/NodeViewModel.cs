@@ -108,7 +108,7 @@ namespace Dynamo.ViewModels
                 {
                     return "Not available in custom nodes";
                 }
-                return NodeModel.PrintValue(nodeLogic.OldValue, 0, int.MaxValue, 0, int.MaxValue, int.MaxValue);
+                return NodeModel.PrintValue(nodeLogic.OldValue, 0, 1000, 0, 100, 1000);
             }
         }
 
@@ -460,7 +460,7 @@ namespace Dynamo.ViewModels
                 string content = NodeModel.ToolTipText;
                 InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Bottom;
                 InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
-                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.Invoke((new Action(() =>
+                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.BeginInvoke((new Action(() =>
                 {
                     if (!dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Errors.Contains(this.ErrorBubble))
                         return;
@@ -497,7 +497,7 @@ namespace Dynamo.ViewModels
             InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
 
             //update preview bubble
-            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.Invoke((new Action(() =>
+            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.BeginInvoke((new Action(() =>
             {
                 if (dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Previews.Contains(this.PreviewBubble))
                     this.PreviewBubble.UpdateContentCommand.Execute(data);
