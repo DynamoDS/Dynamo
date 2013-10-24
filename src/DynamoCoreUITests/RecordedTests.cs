@@ -65,8 +65,31 @@ namespace Dynamo.Tests.UI
                 { "a71328b2-dee7-45d6-8070-44ecebc358d9", true },
             };
 
+            VerifyModelExistence(nodeExistenceMap);
+        }
+
+        [Test, RequiresSTA]
+        public void TestUndoRedoNodesAndConnections()
+        {
+            RunCommandsFromFile("UndoRedoNodesAndConnections.xml");
+            Assert.AreEqual(2, workspace.Connectors.Count);
+
+            // This dictionary maps each of the node GUIDs, to a Boolean 
+            // flag indicating that if the node exists or deleted.
+            Dictionary<string, bool> nodeExistenceMap = new Dictionary<string, bool>()
+            {
+                { "fec0ae4f-f3b7-4b33-b728-c75e5415d73c", true },
+                { "168298c7-f003-48f8-a346-0061086f8e3a", true },
+                { "69ee3a47-0a9a-4746-ace3-6643d508f235", true },
+            };
+
+            VerifyModelExistence(nodeExistenceMap);
+        }
+
+        private void VerifyModelExistence(Dictionary<string, bool> modelExistenceMap)
+        {
             var nodes = workspace.Nodes;
-            foreach (var pair in nodeExistenceMap)
+            foreach (var pair in modelExistenceMap)
             {
                 Guid guid = Guid.Parse(pair.Key);
                 var node = nodes.FirstOrDefault((x) => (x.GUID == guid));
