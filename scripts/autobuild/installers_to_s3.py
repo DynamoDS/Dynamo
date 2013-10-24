@@ -15,7 +15,7 @@ def main():
 	parser = OptionParser()
 	parser.add_option("-r", "--root", dest="root", help="The root directory of the dynamo project.", metavar="FILE", default="E:/Dynamo")
 	parser.add_option("-p", "--prefix", dest="prefix", help="The prefix on the filename for the object.", metavar="FILE", default="DynamoDailyInstall")
-	parser.add_option("-d", "--date", dest="include_date", action="store_true", default=False, help="Add the date as a suffix to the filename.")
+	parser.add_option("-d", "--date", dest="include_date", action="store_true", default=True, help="Add the date as a suffix to the filename.")
 
 	(options, args) = parser.parse_args()
 

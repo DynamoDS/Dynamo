@@ -281,6 +281,9 @@
                                           Focusable="False"
                                           Command="{Binding ToggleCanNavigateBackgroundCommand}"/>
                         </MenuItem>
+                        <MenuItem Header="{Binding Path=IsShowPreviewByDefault, Converter={StaticResource BoolToShowAllPreviewNameConverter}}" 
+                                  Name="showNodePreview" Focusable="False" Command="{Binding Path=TogglePreviewBubbleVisibilityCommand}">
+                        </MenuItem>
                     </MenuItem>
 
                     <MenuItem Header="_Packages" Name="PackageManagerMenu" Focusable="False" IsEnabled="True">
