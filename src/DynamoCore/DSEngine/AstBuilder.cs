@@ -270,11 +270,16 @@ namespace Dynamo.DSEngine
 
         public AssociativeNode Build(Dynamo.Nodes.CodeBlockNodeModel node, List<AssociativeNode> inputs)
         {
-            Dictionary<int, List<GraphToDSCompiler.VariableLine>> unboundIdentifiers;
-            unboundIdentifiers = new Dictionary<int, List<GraphToDSCompiler.VariableLine>>();
-            List<ProtoCore.AST.Node> resultNodes;
-            GraphToDSCompiler.GraphUtilities.ParseCodeBlockNodeStatements(node.Code, unboundIdentifiers, out resultNodes);
-
+            if (node.State == ElementState.ERROR)
+            {
+                DynamoLogger.Instance.Log("Error in Code Block Node. Not sent for building and compiling");
+                return null;
+            }
+            List<string> unboundIdentifiers = new List<string>();
+            List<ProtoCore.AST.Node> resultNodes = new List<Node>();
+            List<ProtoCore.BuildData.ErrorEntry> errors;
+            List<ProtoCore.BuildData.WarningEntry> warnings;
+            GraphToDSCompiler.GraphUtilities.Parse(node.Code, out resultNodes, out errors, out  warnings, unboundIdentifiers);
             foreach (var astNode in resultNodes)
             {
                 AddNode(node.GUID, (astNode as AssociativeNode));
