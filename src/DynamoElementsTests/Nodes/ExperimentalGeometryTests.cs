@@ -67,6 +67,31 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void ArrayOfLines_WithSliceNode()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\GeometryTestFiles\ArrayOfLines_WithSliceNode.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(14, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            Autodesk.LibG.Geometry line = null;
+            var getGeometry2 = model.CurrentWorkspace.NodeFromWorkspace<GetFromList>("b906acc6-cf91-48b5-95ce-25a6e13ce983");
+            Assert.IsTrue(Utils.Convert(getGeometry2.GetValue(0), ref line));
+
+            // Verification for "Length" , "StartPoint" and "EndPoint" of Line.
+            Autodesk.LibG.Line line1 = line as Autodesk.LibG.Line;
+            Assert.AreEqual(4, line1.start_point().x());
+            Assert.AreEqual(4, line1.end_point().x());
+            Assert.AreEqual(10.770329614269007, line1.length(), 0.000000001);
+        }
+        [Test]
         public void CircleTest()
         {
             var model = dynSettings.Controller.DynamoModel;
@@ -945,6 +970,61 @@ namespace Dynamo.Tests
 
         }
 
+        [Test]
+        public void ExtrudeArrayOfClosedCurves()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\GeometryTestFiles\ExtrudeArrayOfClosedCurves.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(14, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            // Verification for Surface.
+            Autodesk.LibG.Geometry geometry1 = null;
+            var getGeometry1 = model.CurrentWorkspace.NodeFromWorkspace<GetFromList>("d0aabae2-386f-4757-9fcb-124b36c82b69");
+            Assert.IsTrue(Utils.Convert(getGeometry1.GetValue(0), ref geometry1));
+
+            Autodesk.LibG.Surface surface = geometry1 as Autodesk.LibG.Surface;
+            Assert.AreNotEqual(null, surface);
+            Assert.AreEqual(125.66370614359172, surface.area());
+            Assert.IsFalse(surface.closed_u());
+            Assert.IsTrue(surface.closed_v());
+
+        }
+
+        [Test]
+        public void ExtrudeArrayOfOpenCurves()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\GeometryTestFiles\ExtrudeArrayOfOpenCurves.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            // Verification for Surface.
+            Autodesk.LibG.Geometry geometry1 = null;
+            var getGeometry1 = model.CurrentWorkspace.NodeFromWorkspace<ExtrudeNode>("d6c89a2b-d91b-49ce-a57f-8c33c34c29b5");
+            Assert.IsTrue(Utils.Convert(getGeometry1.GetValue(0), ref geometry1));
+
+            Autodesk.LibG.Surface surface = geometry1 as Autodesk.LibG.Surface;
+            Assert.AreNotEqual(null, surface);
+            Assert.AreEqual(11.188272457045143, surface.area());
+            Assert.IsFalse(surface.closed_u());
+            Assert.IsFalse(surface.closed_v());
+
+        }
 
         [Test]
         public void Circle_NegativeTest()
