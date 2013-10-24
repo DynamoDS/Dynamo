@@ -81,7 +81,16 @@
 				<test name="InstParamSample" runDynamo="True" modelPath=".\empty.rfa"/>
 				<test name="InstParam2MassesSample" runDynamo="True" modelPath=".\empty.rfa"/>
 				<test name="InstParam2MassesDrivingEachOtherSample" runDynamo="True" modelPath=".\empty.rfa"/>
-				<test name="InstParam2MassesDrivingEachOtherSample" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="Attractor_1" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="Attractor_2" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="IndexedFamilyInstances" runDynamo="True" modelPath="..\..\doc\distrib\Samples\11 Indexed Family Instances\IndexedFamilyInstances.rfa"/>
+				<test name="Tesselation_1" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="Tesselation_2" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="Tesselation_3" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="Transforms_TranslateAndRotatesequence" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="Transforms_TranslateAndRotate" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="Formulas_FormulaCurve" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="Spreadsheets_CSVToStuff" runDynamo="True" modelPath=".\empty.rfa"/>
 			</testFixture>
 			<testFixture name="SolidTests">
 				<test name="BlendSolid" runDynamo="True" modelPath=".\empty.rfa"/>

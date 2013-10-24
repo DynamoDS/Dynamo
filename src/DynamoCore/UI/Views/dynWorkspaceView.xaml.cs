@@ -27,6 +27,11 @@ namespace Dynamo.Views
         private ZoomAndPanControl zoomAndPanControl = null;
         private EndlessGrid endlessGrid = null;
 
+        private PortViewModel snappedPort = null;
+        private DrawingVisual hitVisual = null;
+        private List<DependencyObject> hitResultsList = new List<DependencyObject>();
+        private int minIndex = 0;
+
         public WorkspaceViewModel ViewModel
         {
             get
@@ -35,6 +40,14 @@ namespace Dynamo.Views
                     return this.DataContext as WorkspaceViewModel;
                 else
                     return null;
+            }
+        }
+
+        internal bool IsSnappedToPort
+        {
+            get
+            {
+                return (this.snappedPort != null);
             }
         }
 
@@ -403,19 +416,87 @@ namespace Dynamo.Views
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             WorkspaceViewModel wvm = (DataContext as WorkspaceViewModel);
-            wvm.HandleLeftButtonDown(this.WorkBench, e);
+
+            if (this.snappedPort != null)
+                wvm.HandlePortClicked(this.snappedPort);
+            else
+                wvm.HandleLeftButtonDown(this.WorkBench, e);
         }
 
         private void OnMouseRelease(object sender, MouseButtonEventArgs e)
         {
+            this.snappedPort = null;
             WorkspaceViewModel wvm = (DataContext as WorkspaceViewModel);
             wvm.HandleMouseRelease(this.WorkBench, e);
         }
 
         private void OnMouseMove(object sender, MouseEventArgs e)
         {
+            this.snappedPort = null;
+            bool snapToCursor = false;
             WorkspaceViewModel wvm = (DataContext as WorkspaceViewModel);
-            wvm.HandleMouseMove(this.WorkBench, e);
+
+            //If we are currently connecting and there is an active connector,
+            //redraw it to match the new mouse coordinates.
+            if (wvm.IsConnecting)
+            {
+                Point mouse = e.GetPosition((UIElement)sender);
+                this.snappedPort = GetSnappedPort(mouse);
+                if (this.snappedPort != null)
+                {
+                    snapToCursor = true;
+                    wvm.HandleMouseMove(this.WorkBench, this.snappedPort.Center);
+                }
+            }
+
+            if (false == snapToCursor)
+                wvm.HandleMouseMove(this.WorkBench, e);
+        }
+
+        private PortViewModel GetSnappedPort(Point mouseCursor)
+        {
+            if (this.FindNearestPorts(mouseCursor).Count <= 0)
+                return null;
+
+            double curDistance = 1000000;
+            PortViewModel nearestPort = null;
+
+            for (int i = 0; i < this.hitResultsList.Count; i++)
+            {
+                DependencyObject depObject = this.hitResultsList[i];
+                Grid grid = depObject as Grid;
+                if (grid == null)
+                    continue;
+
+                try
+                {
+                    UserControl uc = grid.Parent as UserControl;
+                    if (null == uc)
+                        continue;
+
+                    PortViewModel pvm = uc.DataContext as PortViewModel;
+                    if (pvm == null)
+                        continue;
+
+                    double distance = Distance(mouseCursor, pvm.Center);
+                    if (distance < curDistance)
+                    {
+                        curDistance = distance;
+                        nearestPort = pvm;
+                    }
+                }
+                catch
+                {
+                    continue;
+                }
+            }
+
+            return nearestPort;
+        }
+
+        private double Distance(Point mouse, Point point)
+        {
+            return Math.Sqrt(Math.Pow(mouse.X - point.X, 2) + Math.Pow(mouse.Y - point.Y, 2));
         }
 
         private void WorkBench_ContextMenuOpening(object sender, ContextMenuEventArgs e)
@@ -461,6 +542,35 @@ namespace Dynamo.Views
             WorkBench = sender as Dynamo.Controls.DragCanvas;
             WorkBench.owningWorkspace = this;
             //DrawGrid();
+        }
+
+
+        // TRON'S
+        private List<DependencyObject> FindNearestPorts(System.Windows.Point mouse)
+        {
+            hitResultsList.Clear();
+            EllipseGeometry expandedHitTestArea = new EllipseGeometry(mouse, 50.0, 7.0);
+
+            VisualTreeHelper.HitTest(this, null, new HitTestResultCallback(VisualCallBack), new GeometryHitTestParameters(expandedHitTestArea));
+            if (hitResultsList.Count > 0)
+                Debug.WriteLine("Number of visual hits: " + hitResultsList.Count);
+            return this.hitResultsList;
+        }
+
+        private HitTestResultBehavior VisualCallBack(HitTestResult result)
+        {
+            if (result == null || result.VisualHit == null)
+                throw new ArgumentNullException();
+
+            //if (result.VisualHit.GetType().IsAssignableFrom(typeof(Grid)))
+            if (result.VisualHit.GetType() == typeof(Grid))
+            {
+                Debug.WriteLine("CAUGHT GRID");
+                hitResultsList.Add(result.VisualHit);
+            }
+            
+
+            return HitTestResultBehavior.Continue;
         }
     }
 }

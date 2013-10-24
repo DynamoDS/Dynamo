@@ -50,6 +50,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoMSOfficeTests", "Dyna
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoTestFramework", "DynamoTestFramework\DynamoTestFramework.csproj", "{745CCA0F-549E-4756-A31E-41BF7F905B8A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5A0047AF-ED33-47DD-9257-FE458ED3337D}"
+	ProjectSection(SolutionItems) = preProject
+		Config.xml = Config.xml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Dynamo.vsmdi

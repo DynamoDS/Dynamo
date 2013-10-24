@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows;
@@ -9,6 +10,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Dynamo.Controls;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.UI;
 using Dynamo.UI.Prompts;
@@ -74,10 +76,30 @@ namespace Dynamo.Nodes
             };
             subButton.Click += delegate 
             {
-                this.WorkSpace.RecordModelForModification(this);
+                RecordModels();
                 RemoveInput(); 
                 RegisterAllPorts(); 
             };
+        }
+
+        private void RecordModels()
+        {
+            var connectors = InPorts[InPorts.Count - 1].Connectors;
+            if (connectors.Count != 0)
+            {
+                if (connectors.Count != 1)
+                {
+                    throw new InvalidOperationException(
+                        "There should be only one connection to an input port");
+                }
+                Dictionary<ModelBase, UndoRedoRecorder.UserAction> models;
+                models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();
+                models.Add(connectors[0], UndoRedoRecorder.UserAction.Deletion);
+                models.Add(this, UndoRedoRecorder.UserAction.Modification);
+                this.WorkSpace.RecordModelsForUndo(models);
+            }
+            else
+                this.WorkSpace.RecordModelForModification(this);
         }
 
     }
