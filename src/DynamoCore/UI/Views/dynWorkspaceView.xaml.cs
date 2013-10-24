@@ -44,6 +44,7 @@ namespace Dynamo.Views
             this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoColorsAndBrushesDictionary);
             this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DataTemplatesDictionary);
             this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoConvertersDictionary);
+            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.ConnectorsDictionary);
 
             InitializeComponent();
 
