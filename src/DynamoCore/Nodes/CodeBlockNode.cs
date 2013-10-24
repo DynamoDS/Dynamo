@@ -39,8 +39,13 @@ namespace Dynamo.Nodes
         /// </summary>
         /// <param name="inputCode"></param>
         /// <returns></returns>
-        public string FormatUserText(string inputCode)
+        internal static string FormatUserText(string inputCode)
         {
+            if (inputCode == null)
+            {
+                return "";
+            }
+
             inputCode = inputCode.Trim();
 
             if (inputCode.Equals(""))
@@ -134,7 +139,7 @@ namespace Dynamo.Nodes
         {
 
             //Format user test
-            code = FormatUserText(code);
+            code = CodeBlockNodeModel.FormatUserText(code);
 
             //New code => Revamp everything
             codeStatements.Clear();
