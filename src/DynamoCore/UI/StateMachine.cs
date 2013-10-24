@@ -41,6 +41,11 @@ namespace Dynamo.ViewModels
             return stateMachine.HandleMouseMove(sender, e);
         }
 
+        internal bool HandleMouseMove(object sender, Point mouseCursor)
+        {
+            return stateMachine.HandleMouseMove(sender, mouseCursor);
+        }
+
         internal bool HandlePortClicked(PortViewModel portViewModel)
         {
             return stateMachine.HandlePortClicked(portViewModel);
@@ -189,6 +194,7 @@ namespace Dynamo.ViewModels
         {
             if (null != this.activeConnector)
                 this.activeConnector.Redraw(mouseCursor);
+
         }
 
         private void SetActiveConnector(ConnectorViewModel connector)
@@ -388,17 +394,15 @@ namespace Dynamo.ViewModels
                 return false; // Mouse event not handled.
             }
 
-            internal bool HandleMouseMove(object sender, MouseEventArgs e)
+            internal bool HandleMouseMove(object sender, Point mouseCursor)
             {
-                IInputElement element = sender as IInputElement;
-                Point mouseCursor = e.GetPosition(element);
-
                 if (this.currentState == State.Connection)
                 {
                     // If we are currently connecting and there is an active 
                     // connector, redraw it to match the new mouse coordinates.
-                    // 
+
                     owningWorkspace.UpdateActiveConnector(mouseCursor);
+
                 }
                 else if (this.currentState == State.WindowSelection)
                 {
@@ -454,6 +458,13 @@ namespace Dynamo.ViewModels
                 }
 
                 return false; // Mouse event not handled.
+            }
+
+            internal bool HandleMouseMove(object sender, MouseEventArgs e)
+            {
+                IInputElement element = sender as IInputElement;
+                Point mouseCursor = e.GetPosition(element);
+                return HandleMouseMove(sender, mouseCursor);
             }
 
             internal bool HandlePortClicked(PortViewModel portViewModel)
