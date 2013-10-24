@@ -197,7 +197,7 @@ namespace Dynamo.Search
             var bc = new BrushConverter();
             lb.Foreground = (Brush)bc.ConvertFromString("#cccccc");
             Image collapsestate = (Image)g.Children[1];
-            var collapsestateSource = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/collapsestate_hover.png");
+            var collapsestateSource = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/expand_hover.png");
             BitmapImage bmi = new BitmapImage(collapsestateSource);
             RotateTransform rotateTransform = new RotateTransform(-90, 16, 16);
             collapsestate.Source = new BitmapImage(collapsestateSource);
@@ -210,7 +210,7 @@ namespace Dynamo.Search
             var bc = new BrushConverter();
             lb.Foreground = (Brush)bc.ConvertFromString("#aaaaaa");
             Image collapsestate = (Image)g.Children[1];
-            var collapsestateSource = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/collapsestate_normal.png");
+            var collapsestateSource = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/expand_normal.png");
             collapsestate.Source = new BitmapImage(collapsestateSource);
         }
 

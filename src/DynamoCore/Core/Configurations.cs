@@ -16,5 +16,12 @@ namespace Dynamo.Core
         public static readonly int GridThickness = 2;
         public static readonly Color GridLineColor = Color.FromRgb(232, 232, 232);
         #endregion
+
+        #region Tab Bar Configurations
+        // Tabcontrol Settings        
+        public static readonly int MinTabsBeforeClipping = 6;
+        public static readonly int TabControlMenuWidth = 20;
+        public static readonly int TabDefaultWidth = 200;
+        #endregion
     }
 }
