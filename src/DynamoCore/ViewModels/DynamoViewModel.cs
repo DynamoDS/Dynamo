@@ -486,8 +486,8 @@ namespace Dynamo.ViewModels
             ShowSaveDialogIfNeededAndSaveResultCommand = new DelegateCommand(ShowSaveDialogIfNeededAndSaveResult, CanShowSaveDialogIfNeededAndSaveResultCommand);
             SaveImageCommand = new DelegateCommand(SaveImage, CanSaveImage);
             ShowSaveImageDialogAndSaveResultCommand = new DelegateCommand(ShowSaveImageDialogAndSaveResult, CanShowSaveImageDialogAndSaveResult);
-            UndoCommand = new DelegateCommand(_model.Undo, _model.CanUndo);
-            RedoCommand = new DelegateCommand(_model.Redo, _model.CanRedo);
+            UndoCommand = new DelegateCommand(Undo, CanUndo);
+            RedoCommand = new DelegateCommand(Redo, CanRedo);
             CopyCommand = new DelegateCommand(_model.Copy, _model.CanCopy);
             PasteCommand = new DelegateCommand(_model.Paste, _model.CanPaste);
             ToggleConsoleShowingCommand = new DelegateCommand(ToggleConsoleShowing, CanToggleConsoleShowing);
@@ -1085,6 +1085,30 @@ namespace Dynamo.ViewModels
         internal bool CanShowSaveImageDialogAndSaveResult(object parameter)
         {
             return true;
+        }
+
+        private void Undo(object parameter)
+        {
+            var command = new UndoRedoCommand(UndoRedoCommand.Operation.Undo);
+            this.ExecuteCommand(command);
+        }
+
+        private bool CanUndo(object parameter)
+        {
+            var workspace = _model.CurrentWorkspace;
+            return ((null == workspace) ? false : workspace.CanUndo);
+        }
+
+        private void Redo(object parameter)
+        {
+            var command = new UndoRedoCommand(UndoRedoCommand.Operation.Redo);
+            this.ExecuteCommand(command);
+        }
+
+        private bool CanRedo(object parameter)
+        {
+            var workspace = _model.CurrentWorkspace;
+            return ((null == workspace) ? false : workspace.CanRedo);
         }
 
         public void ToggleConsoleShowing(object parameter)
