@@ -926,7 +926,6 @@ namespace Dynamo.Controls
         {
             double number = (double)System.Convert.ChangeType(value, typeof(double));
 
-            //Debug.WriteLine(number);
             if (number <= .5)
                 return false;
 
