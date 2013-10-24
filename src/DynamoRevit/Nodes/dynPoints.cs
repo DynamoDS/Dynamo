@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Windows.Controls;
 using Autodesk.Revit.DB;
-using Dynamo.Connectors;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Utilities;

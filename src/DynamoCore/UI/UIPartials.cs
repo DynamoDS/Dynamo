@@ -8,7 +8,6 @@ using System.Windows.Forms;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Dynamo.Connectors;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.UI;
