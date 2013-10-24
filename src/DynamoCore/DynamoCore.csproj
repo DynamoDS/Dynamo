@@ -240,10 +240,6 @@ limitations under the License.
       <DependentUpon>DynamoView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UI\Views\dynConnectorView.xaml.cs">
-      <DependentUpon>dynConnectorView.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="UI\Views\dynNodeView.xaml.cs">
       <DependentUpon>dynNodeView.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -484,10 +480,6 @@ limitations under the License.
       <Generator>MSBuild:Compile</Generator>
     </Resource>
     <Page Include="UI\Views\DynamoView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\Views\dynConnectorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
