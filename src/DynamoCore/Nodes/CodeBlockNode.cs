@@ -125,10 +125,13 @@ namespace Dynamo.Nodes
 
         protected override AssociativeNode GetIndexedOutputNode(int index)
         {
-            Dictionary<int, List<GraphToDSCompiler.VariableLine>> unboundIdentifiers;
-            unboundIdentifiers = new Dictionary<int, List<GraphToDSCompiler.VariableLine>>();
-            List<ProtoCore.AST.Node> resultNodes;
-            GraphToDSCompiler.GraphUtilities.ParseCodeBlockNodeStatements(Code, unboundIdentifiers, out resultNodes);
+            if (this.State == ElementState.ERROR)
+                return null;
+            List<string> unboundIdentifiers = new List<string>();
+            List<ProtoCore.AST.Node> resultNodes = new List<Node>();
+            List<ProtoCore.BuildData.ErrorEntry> errors;
+            List<ProtoCore.BuildData.WarningEntry> warnings;
+            GraphToDSCompiler.GraphUtilities.Parse(code, out resultNodes, out errors, out  warnings, unboundIdentifiers);
             BinaryExpressionNode indexedStatement = resultNodes[index] as BinaryExpressionNode;
             return indexedStatement.LeftNode as AssociativeNode;
         }
@@ -151,25 +154,11 @@ namespace Dynamo.Nodes
             }
 
             //Parse the text and assign each AST node to a statement instance
-            List<string> compiledCode;
-
-            //To allow for statements like a+b; which are not handled by the parser, enter a fake assigned
-            //variable and compute. Cannot handle comments as of now
-            GraphToDSCompiler.GraphUtilities.CompileExpression(Code, out compiledCode);
-            string fakeVariableName = "temp" + this.GUID.ToString().Remove(7);
-            string codeToParse = "";
-            for (int i = 0; i < compiledCode.Count; i++)
-            {
-                string singleExpression = compiledCode[i];
-                singleExpression = singleExpression.Replace("%t", fakeVariableName);
-                //singleExpression = singleExpression.Replace("\r\n","\n");
-                codeToParse += singleExpression;
-            }
-
-            Dictionary<int, List<GraphToDSCompiler.VariableLine>> unboundIdentifiers;
-            unboundIdentifiers = new Dictionary<int, List<GraphToDSCompiler.VariableLine>>();
-            List<ProtoCore.AST.Node> resultNodes;
-            if (GraphToDSCompiler.GraphUtilities.ParseCodeBlockNodeStatements(codeToParse, unboundIdentifiers, out resultNodes))
+            List<string> unboundIdentifiers = new List<string>();
+            List<ProtoCore.AST.Node> resultNodes = new List<Node>();
+            List<ProtoCore.BuildData.ErrorEntry> errors;
+            List<ProtoCore.BuildData.WarningEntry> warnings;
+            if(GraphToDSCompiler.GraphUtilities.Parse(code,out resultNodes,out errors,out  warnings, unboundIdentifiers) && resultNodes!=null)
             {
                 //Create an instance of statement for each code statement written by the user
                 foreach (Node node in resultNodes)
