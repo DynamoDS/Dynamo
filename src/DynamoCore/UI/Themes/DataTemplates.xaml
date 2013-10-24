@@ -4,16 +4,16 @@
                       xmlns:controls="clr-namespace:Dynamo.Controls" xmlns:nodes="clr-namespace:Dynamo.Nodes"
                       xmlns:connectors="clr-namespace:Dynamo.Connectors">
 
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoConverters.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+    
     <DataTemplate DataType="{x:Type viewModels:NodeViewModel}">
         <controls:dynNodeView></controls:dynNodeView>
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type viewModels:NoteViewModel}">
         <nodes:dynNoteView></nodes:dynNoteView>
-    </DataTemplate>
-
-    <DataTemplate DataType="{x:Type viewModels:ConnectorViewModel}">
-        <views:dynConnectorView></views:dynConnectorView>
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type viewModels:InfoBubbleViewModel}">
