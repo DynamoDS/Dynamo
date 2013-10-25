@@ -61,7 +61,7 @@ namespace Dynamo.UI
         private static ResourceDictionary _dynamoColorsAndBrushesDictionary;
         private static ResourceDictionary _dynamoConvertersDictionary;
         private static ResourceDictionary _dynamoTextDictionary;
-        private static ResourceDictionary _mainMenuStyleDictionary;
+        private static ResourceDictionary _menuStyleDictionary;
         private static ResourceDictionary _toolbarStyleDictionary;
         private static ResourceDictionary _connectorsDictionary;
         private static ResourceDictionary _portsDictionary;
@@ -156,21 +156,21 @@ namespace Dynamo.UI
             }
         }
 
-        public static ResourceDictionary MainMenuStyleDictionary
+        public static ResourceDictionary MenuStyleDictionary
         {
             get
             {
-                if (_mainMenuStyleDictionary == null)
+                if (_menuStyleDictionary == null)
                 {
                     System.Uri resourceLocater =
-                        new System.Uri("/DynamoCore;component/UI/Themes/MainMenuStyleDictionary.xaml",
+                        new System.Uri("/DynamoCore;component/UI/Themes/MenuStyleDictionary.xaml",
                                         System.UriKind.Relative);
 
-                    _mainMenuStyleDictionary =
+                    _menuStyleDictionary =
                         (ResourceDictionary)Application.LoadComponent(resourceLocater);
                 }
 
-                return _mainMenuStyleDictionary;
+                return _menuStyleDictionary;
             }
         }
 
