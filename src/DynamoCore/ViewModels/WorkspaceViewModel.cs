@@ -46,6 +46,7 @@ namespace Dynamo.ViewModels
         public event WorkspacePropertyEditHandler WorkspacePropertyEditRequested;
 
         public event EventHandler RequestChangeCursorDragging;
+        public event EventHandler RequestChangeCursorUsual;
 
         /// <summary>
         /// Convenience property
@@ -70,6 +71,12 @@ namespace Dynamo.ViewModels
         {
             if (RequestChangeCursorDragging != null)
                 RequestChangeCursorDragging(this, e);
+        }
+
+        private void OnRequestChangeCursorUsual(object sender, EventArgs e)
+        {
+            if (RequestChangeCursorUsual != null)
+                RequestChangeCursorUsual(this, e);
         }
 
         /// <summary>

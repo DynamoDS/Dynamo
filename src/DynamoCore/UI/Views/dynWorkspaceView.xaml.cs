@@ -169,11 +169,19 @@ namespace Dynamo.Views
             ViewModel.RequestSelectionBoxUpdate += VmOnRequestSelectionBoxUpdate;
 
             ViewModel.RequestChangeCursorDragging += new EventHandler(vm_ChangeCursorDragging);
+            ViewModel.RequestChangeCursorUsual += new EventHandler(vm_ChangeCursorUsual);
         }
 
         private void vm_ChangeCursorDragging(object sender, EventArgs e)
         {
-            this.Cursor = CursorsLibrary.RectangularSelection;
+            if (this.Cursor != CursorsLibrary.RectangularSelection)
+                this.Cursor = CursorsLibrary.RectangularSelection;
+        }
+
+        private void vm_ChangeCursorUsual(object sender, EventArgs e)
+        {
+            if (this.Cursor != CursorsLibrary.UsualPointer)
+                this.Cursor = CursorsLibrary.UsualPointer;
         }
 
         private void VmOnWorkspacePropertyEditRequested(WorkspaceModel workspace)
@@ -622,8 +630,8 @@ namespace Dynamo.Views
             try
             {
                 VisualTreeHelper.HitTest(this, null, new HitTestResultCallback(VisualCallBack), new GeometryHitTestParameters(expandedHitTestArea));
-                if (hitResultsList.Count > 0)
-                    Debug.WriteLine("Number of visual hits: " + hitResultsList.Count);
+                //if (hitResultsList.Count > 0)
+                    //Debug.WriteLine("Number of visual hits: " + hitResultsList.Count);
             }
             catch
             {
@@ -640,10 +648,21 @@ namespace Dynamo.Views
             //if (result.VisualHit.GetType().IsAssignableFrom(typeof(Grid)))
             if (result.VisualHit.GetType() == typeof(Grid))
             {
-                Debug.WriteLine("CAUGHT GRID");
+                //Debug.WriteLine("CAUGHT GRID");
                 hitResultsList.Add(result.VisualHit);
             }
-            
+
+            if (result.VisualHit.GetType() == typeof(UserControl))
+            {
+                Debug.WriteLine("CAUGHT UC");
+            }
+
+            if (result.VisualHit.GetType() == typeof(Dynamo.Connectors.dynPortView))
+            {
+                Debug.WriteLine("CAUGHT dynPortView");
+            }
+
+
 
             return HitTestResultBehavior.Continue;
         }

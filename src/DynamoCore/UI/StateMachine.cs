@@ -377,6 +377,9 @@ namespace Dynamo.ViewModels
                     args = new SelectionBoxUpdateArgs(Visibility.Collapsed);
                     this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
                     this.currentState = State.None;
+
+                    this.owningWorkspace.RequestChangeCursorUsual(this, e);
+
                     return true; // Mouse event handled.
                 }
                 else if (this.currentState == State.NodeReposition)
@@ -386,6 +389,8 @@ namespace Dynamo.ViewModels
                     var command = new DynCmd.DragSelectionCommand(mouseCursor, operation);
                     var dynamoViewModel = dynSettings.Controller.DynamoViewModel;
                     dynamoViewModel.ExecuteCommand(command);
+
+                    this.owningWorkspace.RequestChangeCursorUsual(this, e);
 
                     this.currentState = State.None; // Dragging operation ended.
                 }
@@ -531,6 +536,8 @@ namespace Dynamo.ViewModels
                     throw new InvalidOperationException();
 
                 this.currentState = State.DragSetup;
+
+                this.owningWorkspace.RequestChangeCursorUsual(this, new EventArgs());
             }
 
             private void InitiateWindowSelectionSequence()

@@ -19,6 +19,9 @@ namespace Dynamo.Utilities
         private static Cursor _condense;
         private static Cursor _expand;
         private static Cursor _rectangularSelection;
+        private static Cursor _resizeHorizontal;
+        private static Cursor _resizeVertical;
+        private static Cursor _resizeDiagonal;
 
         public static Cursor HandPan
         {
@@ -107,6 +110,36 @@ namespace Dynamo.Utilities
                 if (_rectangularSelection == null)
                     _rectangularSelection = GetCursorFromFile("rectangular_selection.cur");
                 return _rectangularSelection;
+            }
+        }
+
+        public static Cursor ResizeHorizontal
+        {
+            get
+            {
+                if (_resizeHorizontal == null)
+                    _resizeHorizontal = GetCursorFromFile("resize_horizontal.cur");
+                return _resizeHorizontal;
+            }
+        }
+
+        public static Cursor ResizeVertical
+        {
+            get
+            {
+                if (_resizeVertical == null)
+                    _resizeVertical = GetCursorFromFile("resize_vertical.cur");
+                return _resizeVertical;
+            }
+        }
+
+        public static Cursor ResizeDiagonal
+        {
+            get
+            {
+                if (_resizeDiagonal == null)
+                    _resizeDiagonal = GetCursorFromFile("resize_diagonal.cur");
+                return _resizeDiagonal;
             }
         }
 
