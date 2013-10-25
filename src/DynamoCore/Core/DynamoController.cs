@@ -359,7 +359,7 @@ namespace Dynamo
                 {
                     try
                     {
-                        string var = AstBuilder.StringConstants.kVarPrefix + node.ToString().Replace("-", string.Empty);
+                        string var = AstBuilder.StringConstants.VarPrefix + node.ToString().Replace("-", string.Empty);
                         DynamoLogger.Instance.Log(var + " = " + LiveRunnerServices.Instance.GetStringValue(var));
                     }
                     catch (Exception exp)

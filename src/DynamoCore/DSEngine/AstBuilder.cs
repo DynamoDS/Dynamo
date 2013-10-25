@@ -103,6 +103,11 @@ namespace Dynamo.DSEngine
         }
     }
 
+    /// <summary>
+    /// SyncDataManager is to manage the state of a Dynamo node and the 
+    /// corresponding AST nodes of that Dynamo node. It is responsible for 
+    /// generating GraphSyncData that will be consumed by LiveRunner.
+    /// </summary>
     internal class SyncDataManager
     {
         internal enum State
@@ -125,6 +130,10 @@ namespace Dynamo.DSEngine
             return new GraphSyncData(deleted, added, modified);
         }
 
+        /// <summary>
+        /// Get all active nodes.
+        /// </summary>
+        /// <returns></returns>
         public List<Guid> GetNodes()
         {
             var nodes = states.Where(x => x.Value != State.Deleted)
@@ -133,6 +142,10 @@ namespace Dynamo.DSEngine
             return nodes;
         }
 
+        /// <summary>
+        /// Reset states of all nodes to State.NoChange. It should be called
+        /// before each running. 
+        /// </summary>
         public void ResetStates()
         {
             List<Guid> guids = new List<Guid>(states.Keys);
@@ -142,6 +155,10 @@ namespace Dynamo.DSEngine
             }
         }
 
+        /// <summary>
+        /// Notify SyncDataManager that is going to add AST nodes.
+        /// </summary>
+        /// <param name="guid"></param>
         public void MarkForAdding(Guid guid)
         {
             if (states.ContainsKey(guid))
@@ -155,11 +172,20 @@ namespace Dynamo.DSEngine
             nodes.Removes(guid);
         }
 
+        /// <summary>
+        /// Add an AST node to the existing AST node list.
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <param name="node"></param>
         public void AddNode(Guid guid, AssociativeNode node)
         {
             nodes.AddItem(guid, node);
         }
 
+        /// <summary>
+        /// Delete all AST nodes for this Dynamo node.
+        /// </summary>
+        /// <param name="guid"></param>
         public void DeleteNodes(Guid guid)
         {
             states[guid] = State.Deleted;
@@ -210,9 +236,9 @@ namespace Dynamo.DSEngine
     {
         internal class StringConstants
         {
-            public const string kParamPrefix = @"p_";
-            public const string kFunctionPrefix = @"func_";
-            public const string kVarPrefix = @"var_";
+            public const string ParamPrefix = @"p_";
+            public const string FunctionPrefix = @"func_";
+            public const string VarPrefix = @"var_";
         }
 
         public static AstBuilder Instance = new AstBuilder();
@@ -364,7 +390,7 @@ namespace Dynamo.DSEngine
             {
                 if (func.FormalArguments[i] == null)
                 {
-                    VarDeclNode param = AstFactory.BuildParamNode(AstBuilder.StringConstants.kParamPrefix + paramPostfix);
+                    VarDeclNode param = AstFactory.BuildParamNode(AstBuilder.StringConstants.ParamPrefix + paramPostfix);
                     partialArgs.Add(param);
 
                     func.FormalArguments[i] = param.NameNode;
@@ -390,7 +416,7 @@ namespace Dynamo.DSEngine
             partialFunc.IsExternLib = false;
             partialFunc.IsDNI = false;
             partialFunc.ExternLibName = null;
-            partialFunc.Name = StringConstants.kFunctionPrefix + Guid.NewGuid().ToString().Replace("-", string.Empty);
+            partialFunc.Name = StringConstants.FunctionPrefix + Guid.NewGuid().ToString().Replace("-", string.Empty);
             partialFunc.Singnature = new ArgumentSignatureNode();
             partialFunc.Singnature.Arguments = partialArgs;
             partialFunc.FunctionBody = funcBody;
