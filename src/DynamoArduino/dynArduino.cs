@@ -6,8 +6,6 @@ using System.IO.Ports;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Microsoft.FSharp.Collections;
-
-using Dynamo.Connectors;
 using Dynamo.FSchemeInterop;
 using Value = Dynamo.FScheme.Value;
 

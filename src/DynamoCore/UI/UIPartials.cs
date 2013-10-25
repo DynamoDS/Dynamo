@@ -9,10 +9,10 @@ using System.Windows.Forms;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Dynamo.Connectors;
 using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Models;
+using Dynamo.UI;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -793,14 +793,10 @@ namespace Dynamo.Nodes
         public dynNodeButton()
             : base()
         {
-            var dict = new ResourceDictionary();
-            var uri = new Uri("/DynamoCore;component/UI/Themes/DynamoModern.xaml", UriKind.Relative);
-            dict.Source = uri;
-            Style = (Style)dict["SNodeTextButton"];
+            Style = (Style)SharedDictionaryManager.DynamoModernDictionary["SNodeTextButton"];
 
             this.Margin = new Thickness(1, 0, 1, 0);
         }
-
     }
 
     [NodeName("Read Image File")]

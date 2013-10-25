@@ -53,6 +53,12 @@ namespace Dynamo.Views
 
         public dynWorkspaceView()
         {
+            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoModernDictionary);
+            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoColorsAndBrushesDictionary);
+            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DataTemplatesDictionary);
+            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoConvertersDictionary);
+            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.ConnectorsDictionary);
+
             InitializeComponent();
 
             selectionCanvas.Loaded += new RoutedEventHandler(selectionCanvas_Loaded);
@@ -268,6 +274,7 @@ namespace Dynamo.Views
 
             node.X = dropPt.X;
             node.Y = dropPt.Y;
+            node.ReportPosition();
         }
 
         void zoomBorder_MouseMove(object sender, MouseEventArgs e)
