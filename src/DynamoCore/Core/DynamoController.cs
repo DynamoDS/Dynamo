@@ -346,7 +346,7 @@ namespace Dynamo
             }
 
             AstBuilder.Instance.FinishBuildingAst();
-            LiveRunnerServices.Instance.UpdateGraph(AstBuilder.Instance.SyncData);
+            LiveRunnerServices.Instance.UpdateGraph(AstBuilder.Instance.GetSyncData());
 
             List<Guid> nodes = AstBuilder.Instance.ToBeQueriedNodes;
             if (nodes != null)
