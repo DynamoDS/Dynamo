@@ -325,7 +325,6 @@ namespace Dynamo.DSEngine
             if (node.State == ElementState.ERROR)
             {
                 DynamoLogger.Instance.Log("Error in Code Block Node. Not sent for building and compiling");
-                return null;
             }
 
             syncDataManager.MarkForAdding(node.GUID);
