@@ -4,7 +4,7 @@
       <System.Double value="-10" />
     </Dynamo.Nodes.DoubleInput>
     <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="2c26388d-3d14-443a-ac41-c2bb0987a58e" nickname="Math.Abs" x="235" y="220.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <Dynamo.DSEngine.DSFunctionItem Assembly="C:\Project\github\Dynamo\bin\AnyCPU\Debug\Math.dll" Category="Math.Math" ClassName="Math" Name="Abs" DisplayName="Math.Abs" Type="StaticMethod" Arguments="d_value" ReturnKeys="" />
+      <Dynamo.DSEngine.DSFunctionItem Assembly="Math.dll" Category="Math.Math" ClassName="Math" Name="Abs" DisplayName="Math.Abs" Type="StaticMethod" Arguments="d_value" ReturnKeys="" />
     </Dynamo.Nodes.DSFunction>
     <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="0c85072f-f9c5-45f3-8099-832161dfcacb" nickname="*" x="414" y="271.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <Dynamo.DSEngine.DSFunctionItem Assembly="" Category="Opertors" ClassName="" Name="%mul" DisplayName="*" Type="GenericFunction" Arguments="operand1;operand2" ReturnKeys="" />

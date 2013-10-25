@@ -13,16 +13,16 @@
       <Dynamo.DSEngine.DSFunctionItem Assembly="" Category="Opertors" ClassName="" Name="%mul" DisplayName="*" Type="GenericFunction" Arguments="operand1;operand2" ReturnKeys="" />
     </Dynamo.Nodes.DSFunction>
     <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="e2f3d3f2-d89e-4d42-8049-31cbb611d812" nickname="Math.Cos" x="168" y="339.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <Dynamo.DSEngine.DSFunctionItem Assembly="C:\Project\github\Dynamo\bin\AnyCPU\Debug\Math.dll" Category="Math.Math" ClassName="Math" Name="Cos" DisplayName="Math.Cos" Type="StaticMethod" Arguments="value" ReturnKeys="" />
+      <Dynamo.DSEngine.DSFunctionItem Assembly="Math.dll" Category="Math.Math" ClassName="Math" Name="Cos" DisplayName="Math.Cos" Type="StaticMethod" Arguments="value" ReturnKeys="" />
     </Dynamo.Nodes.DSFunction>
     <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="c17e4e98-6627-47c2-a272-47470343b2c6" nickname="Math.getPI" x="172" y="424.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <Dynamo.DSEngine.DSFunctionItem Assembly="C:\Project\github\Dynamo\bin\AnyCPU\Debug\Math.dll" Category="Math.Math" ClassName="Math" Name="%get_PI" DisplayName="Math.getPI" Type="StaticProperty" Arguments="" ReturnKeys="" />
+      <Dynamo.DSEngine.DSFunctionItem Assembly="Math.dll" Category="Math.Math" ClassName="Math" Name="%get_PI" DisplayName="Math.getPI" Type="StaticProperty" Arguments="" ReturnKeys="" />
     </Dynamo.Nodes.DSFunction>
     <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="a89d3583-99d4-446e-98f5-dde49d05798a" nickname="Point.getX" x="402" y="336.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <Dynamo.DSEngine.DSFunctionItem Assembly="C:\Project\github\Dynamo\bin\AnyCPU\Debug\ProtoGeometry.dll" Category="ProtoGeometry.Point" ClassName="Point" Name="%get_X" DisplayName="Point.getX" Type="InstanceProperty" Arguments="" ReturnKeys="" />
+      <Dynamo.DSEngine.DSFunctionItem Assembly="ProtoGeometry.dll" Category="ProtoGeometry.Point" ClassName="Point" Name="%get_X" DisplayName="Point.getX" Type="InstanceProperty" Arguments="" ReturnKeys="" />
     </Dynamo.Nodes.DSFunction>
     <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="1f727871-4331-45b4-9451-c44fc9b7fb28" nickname="Point.ByCoordinates" x="173" y="504.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <Dynamo.DSEngine.DSFunctionItem Assembly="C:\Project\github\Dynamo\bin\AnyCPU\Debug\ProtoGeometry.dll" Category="ProtoGeometry.Point" ClassName="Point" Name="ByCoordinates" DisplayName="Point.ByCoordinates" Type="Constructor" Arguments="x;y;z" ReturnKeys="" />
+      <Dynamo.DSEngine.DSFunctionItem Assembly="ProtoGeometry.dll" Category="ProtoGeometry.Point" ClassName="Point" Name="ByCoordinates" DisplayName="Point.ByCoordinates" Type="Constructor" Arguments="x;y;z" ReturnKeys="" />
     </Dynamo.Nodes.DSFunction>
   </Elements>
   <Connectors>
