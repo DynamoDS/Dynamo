@@ -372,6 +372,7 @@ namespace Dynamo.ViewModels
 
                 if (this.currentState == State.WindowSelection)
                 {
+                    
                     SelectionBoxUpdateArgs args = null;
                     args = new SelectionBoxUpdateArgs(Visibility.Collapsed);
                     this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
@@ -551,6 +552,7 @@ namespace Dynamo.ViewModels
 
                 this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
                 this.currentState = State.WindowSelection;
+                this.owningWorkspace.RequestChangeCursorDragging(this, args);
             }
 
             #endregion

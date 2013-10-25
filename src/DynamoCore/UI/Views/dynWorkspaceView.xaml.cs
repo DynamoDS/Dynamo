@@ -51,6 +51,7 @@ namespace Dynamo.Views
         private PortViewModel snappedPort = null;
         private DrawingVisual hitVisual = null;
         private List<DependencyObject> hitResultsList = new List<DependencyObject>();
+        private CursorState cursorState = CursorState.UsualPointer;
         private int minIndex = 0;
 
 
@@ -166,6 +167,13 @@ namespace Dynamo.Views
             ViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
             ViewModel.WorkspacePropertyEditRequested += VmOnWorkspacePropertyEditRequested;
             ViewModel.RequestSelectionBoxUpdate += VmOnRequestSelectionBoxUpdate;
+
+            ViewModel.RequestChangeCursorDragging += new EventHandler(vm_ChangeCursorDragging);
+        }
+
+        private void vm_ChangeCursorDragging(object sender, EventArgs e)
+        {
+            this.Cursor = CursorsLibrary.RectangularSelection;
         }
 
         private void VmOnWorkspacePropertyEditRequested(WorkspaceModel workspace)
@@ -462,7 +470,9 @@ namespace Dynamo.Views
             if (this.snappedPort != null)
                 wvm.HandlePortClicked(this.snappedPort);
             else
+            {
                 wvm.HandleLeftButtonDown(this.WorkBench, e);
+            }
         }
 
         private void OnMouseRelease(object sender, MouseButtonEventArgs e)
@@ -475,7 +485,7 @@ namespace Dynamo.Views
         private void OnMouseMove(object sender, MouseEventArgs e)
         {
             this.snappedPort = null;
-            
+
             bool snapToCursor = false;
             WorkspaceViewModel wvm = (DataContext as WorkspaceViewModel);
 
@@ -492,10 +502,18 @@ namespace Dynamo.Views
                 }
                 this.Cursor = CursorsLibrary.ArcAdding;
             }
-            else if (wvm.
+            else if (Mouse.LeftButton == MouseButtonState.Pressed)
+            {
+                this.Cursor = CursorsLibrary.RectangularSelection;
+            }
             else
             {
-                this.Cursor = CursorsLibrary.UsualPointer;
+                Point mouse = e.GetPosition((UIElement)sender);
+                this.snappedPort = GetSnappedPort(mouse);
+                if (this.snappedPort != null && this.snappedPort.PortType != PortType.OUTPUT)
+                    this.Cursor = CursorsLibrary.ArcRemoving;
+                else
+                    this.Cursor = CursorsLibrary.UsualPointer;
             }
 
 
