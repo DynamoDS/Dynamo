@@ -64,5 +64,13 @@ namespace Dynamo.Tests
             Assert.IsTrue(Utils.Convert(value, ref listWatchVal));
             return listWatchVal;
         }
+
+        public static T GetObjectFromFSchemeValue<T>(this FScheme.Value value)
+        {
+            Assert.IsInstanceOf<FScheme.Value.Container>(value);
+            var o = (value as FScheme.Value.Container).Item;
+            Assert.IsInstanceOf<T>(o);
+            return (T)o;
+        }
     }
 }
