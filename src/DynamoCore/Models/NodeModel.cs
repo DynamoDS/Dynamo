@@ -438,7 +438,7 @@ namespace Dynamo.Models
                 if (identifier == null)
                 {
                     identifier = new IdentifierNode();
-                    identifier.Name = identifier.Value = AstBuilder.StringConstants.kVarPrefix + GUID.ToString().Replace("-", string.Empty);
+                    identifier.Name = identifier.Value = AstBuilder.StringConstants.VarPrefix + GUID.ToString().Replace("-", string.Empty);
                 }
                 return identifier;
             }
