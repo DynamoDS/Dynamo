@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Autodesk.Revit.DB;
-using Dynamo.Connectors;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;

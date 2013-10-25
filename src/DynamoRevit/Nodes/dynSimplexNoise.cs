@@ -3,14 +3,7 @@
 
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Autodesk.Revit.DB;
-using Dynamo.Connectors;
-using Dynamo.FSchemeInterop;
 using Dynamo.Models;
-using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 
 namespace Dynamo.Nodes
