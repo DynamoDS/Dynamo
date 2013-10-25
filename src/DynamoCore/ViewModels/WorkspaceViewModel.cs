@@ -316,6 +316,11 @@ namespace Dynamo.ViewModels
             get { return _model.Zoom; }
         }
 
+        public bool ZoomEnabled
+        {
+            get { return CanZoom(_zoomIncrement); }
+        }
+
         public bool CanFindNodesFromElements
         {
             get { return _canFindNodesFromElements; }

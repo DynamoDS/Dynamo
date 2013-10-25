@@ -77,10 +77,10 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(logicTestFolder, "testEqualInvalidInput.dyn");
 
             model.Open(testFilePath);
-            Assert.Throws<AssertionException>(() =>
-            {
-                dynSettings.Controller.RunExpression(null);
-            });
+            
+            dynSettings.Controller.RunExpression();
+
+            Assert.AreEqual(0, model.CurrentWorkspace.FirstNodeFromWorkspace<Equal>().OldValue.GetDoubleFromFSchemeValue());
         }
 
         [Test]

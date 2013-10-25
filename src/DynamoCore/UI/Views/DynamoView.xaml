@@ -5,9 +5,11 @@
         xmlns:utilities="clr-namespace:Dynamo.Utilities"
         xmlns:sys="clr-namespace:System;assembly=mscorlib" 
         xmlns:models="clr-namespace:Dynamo.Models"
-        xmlns:controls="clr-namespace:Dynamo.Controls" xmlns:commands="clr-namespace:Dynamo.UI.Commands"
+        xmlns:controls="clr-namespace:Dynamo.Controls"
+        xmlns:commands="clr-namespace:Dynamo.UI.Commands"
         xmlns:dynamo="clr-namespace:Dynamo"
         xmlns:core="clr-namespace:Dynamo.Core"
+        xmlns:ui="clr-namespace:Dynamo.UI"
         x:Name="_this"
         Height="768" 
         Width="1024"
@@ -32,10 +34,10 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoModern.xaml" />
-                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoConverters.xaml"/>
-                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml" />
-                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/MenuStyleDictionary.xaml" />
+                <ui:SharedResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoModern.xaml" />
+                <ui:SharedResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoConverters.xaml"/>
+                <ui:SharedResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml" />
+                <ui:SharedResourceDictionary Source="/DynamoCore;component/UI/Themes/MainMenuStyleDictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>

@@ -41,6 +41,8 @@ namespace Dynamo.Models
         ObservableCollection<ConnectorModel> connectors = new ObservableCollection<ConnectorModel>();
         private bool _usingDefaultValue;
         private bool _defaultValueEnabled;
+        private double _headerHeight = 20;
+        private double _portHeight = 20;
 
         #endregion
 
@@ -131,18 +133,25 @@ namespace Dynamo.Models
 
         /// <summary>
         /// Center is used by connected connectors to update their shape
-        /// It is updated by an event handler on the port view
+        /// The "center" of a port is derived from the type of port and
+        /// offsets from the node origin based on the port's index in the 
+        /// ports collection.
         /// </summary>
         public Point Center
         {
             get
             {
-                return center;
-            }
-            set
-            {
-                center = value;
-                RaisePropertyChanged("Center");
+                var pt = new Point();
+                if (portType == PortType.INPUT)
+                {
+                    pt = new Point(owner.X, owner.Y + _headerHeight + 5 + _portHeight/2 + _portHeight*Index+1);
+                }
+                else if (portType == PortType.OUTPUT)
+                {
+                    pt = new Point(owner.X + owner.Width, owner.Y + _headerHeight + 5 + _portHeight / 2 + _portHeight * Index);
+                }
+
+                return pt;
             }
         }
 
