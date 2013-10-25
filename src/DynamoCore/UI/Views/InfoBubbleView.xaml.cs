@@ -42,6 +42,7 @@ namespace Dynamo.Controls
         private void InfoBubbleView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             (DataContext as InfoBubbleViewModel).PropertyChanged += ViewModel_PropertyChanged;
+            UpdateContent();
         }
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
