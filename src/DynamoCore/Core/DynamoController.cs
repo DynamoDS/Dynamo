@@ -332,7 +332,11 @@ namespace Dynamo
                 //asynchronously, as it will finish the 
                 //test before the evaluation (and the run)
                 //is complete
+#if USE_DSENGINE
+                DSEvaluationThread(null, null);
+#else
                 EvaluationThread(null, null);
+#endif
         }
 
         protected virtual void DSEvaluationThread(Object e, DoWorkEventArgs args)
