@@ -15,6 +15,10 @@ namespace Dynamo.Utilities
         private static Cursor _arcAdding;
         private static Cursor _arcRemoving;
         private static Cursor _usualPointer;
+        private static Cursor _libraryClick;
+        private static Cursor _condense;
+        private static Cursor _expand;
+        private static Cursor _rectangularSelection;
 
         public static Cursor HandPan
         {
@@ -63,6 +67,46 @@ namespace Dynamo.Utilities
                 if (_usualPointer == null)
                     _usualPointer = GetCursorFromFile("pointer.cur");
                 return _usualPointer;
+            }
+        }
+
+        public static Cursor LibraryClick
+        {
+            get
+            {
+                if (_libraryClick == null)
+                    _libraryClick = GetCursorFromFile("hand.cur");
+                return _libraryClick;
+            }
+        }
+
+        public static Cursor Expand
+        {
+            get
+            {
+                if (_expand == null)
+                    _expand = GetCursorFromFile("expand.cur");
+                return _expand;
+            }
+        }
+
+        public static Cursor Condense
+        {
+            get
+            {
+                if (_condense == null)
+                    _condense = GetCursorFromFile("condense.cur");
+                return _condense;
+            }
+        }
+
+        public static Cursor RectangularSelection
+        {
+            get
+            {
+                if (_rectangularSelection == null)
+                    _rectangularSelection = GetCursorFromFile("rectangular_selection.cur");
+                return _rectangularSelection;
             }
         }
 
