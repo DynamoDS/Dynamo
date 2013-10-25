@@ -2142,8 +2142,8 @@ namespace Dynamo.Nodes
     [NodeSearchTags("=")]
     public class Equal : Comparison
     {
-        public Equal() : base(FScheme.EQ, "=") { }
-
+        public Equal() : base(FSharpFunc<FSharpList<Value>, Value>.FromConverter(FScheme.EQ), "=") { }
+         
         protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
         {
             return builder.Build(this, inputs);

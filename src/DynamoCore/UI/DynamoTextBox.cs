@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.Models;
+using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 
@@ -74,9 +75,11 @@ namespace Dynamo.Nodes
             GotFocus += OnGotFocus;
             LostFocus += OnLostFocus;
             LostKeyboardFocus += OnLostFocus;
-
+            Height = 20;
+            Padding = new Thickness(3);
             base.Text = initialText;
             this.Pending = false;
+            Style = (Style)SharedDictionaryManager.DynamoModernDictionary["SZoomFadeTextBox"];
         }
 
         public void BindToProperty(System.Windows.Data.Binding binding)

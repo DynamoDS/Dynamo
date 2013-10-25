@@ -1,8 +1,12 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:controls="clr-namespace:Dynamo.Controls"
-                    xmlns:clr="clr-namespace:System;assembly=mscorlib">
+                    xmlns:clr="clr-namespace:System;assembly=mscorlib" 
+                    xmlns:controls="clr-namespace:Dynamo.Views" xmlns:nodes="clr-namespace:Dynamo.Nodes">
 
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoConverters.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+    
     <!--Control colors.-->
     <Color x:Key="WindowColor">#FFE8EDF9</Color>
     <Color x:Key="ContentAreaColorLight">#FFC5CBF9</Color>
@@ -231,6 +235,55 @@
         </Setter>
     </Style>
 
+    <!--Zoom fade text-->
+    <Style x:Key="SZoomFadeText" TargetType="{x:Type TextBlock}">
+        <Style.Triggers>
+            <DataTrigger
+              Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:dynWorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}" Value="true">
+                <DataTrigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                             To="1.0" Duration="0:0:0.2"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+                <DataTrigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                             To="0.0" Duration="0:0:0.2"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.ExitActions>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="SZoomFadeTextBox" TargetType="{x:Type TextBox}">
+        <Style.Triggers>
+            <DataTrigger
+              Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:dynWorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}" Value="true">
+                <DataTrigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                             To="1.0" Duration="0:0:0.2"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+                <DataTrigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                             To="0.0" Duration="0:0:0.2"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.ExitActions>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    
     <LinearGradientBrush x:Key="ButtonGradientBackground" StartPoint="0.5,0" EndPoint="0.5,1">
         <GradientStop Color="#444" Offset="0.0" />
         <GradientStop Color="#2E2E2E" Offset="1.0" />
@@ -452,7 +505,8 @@
                                        Margin="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Margin}" 
                                        FontSize="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontSize}"
                                        Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" 
-                                       Padding="1"></TextBlock>
+                                       Padding="3" 
+                                       Style="{StaticResource SZoomFadeText}"></TextBlock>
                         </Grid>
                     </Grid>
 
@@ -585,9 +639,11 @@
         </Setter>
     </Style>
 
+    <!--Connectors-->
+    
     <clr:Int32 x:Key="connector_end_dot_size">6</clr:Int32>
     <clr:Int32 x:Key="connector_stroke_thickness">2</clr:Int32>
     <clr:Double x:Key="connector_stroke_opacity">0.6</clr:Double>
     <clr:Double x:Key="connector_bezier_offset">20.0</clr:Double>
-    
+
 </ResourceDictionary>

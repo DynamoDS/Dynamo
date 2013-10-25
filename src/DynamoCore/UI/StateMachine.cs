@@ -274,6 +274,7 @@ namespace Dynamo.ViewModels
                 double y = mouseCursor.Y - deltaY;
                 locatable.X = x;
                 locatable.Y = y;
+                locatable.ReportPosition();
             }
         }
 

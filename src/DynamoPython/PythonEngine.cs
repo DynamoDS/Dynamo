@@ -6,29 +6,29 @@ namespace DynamoPython
 {
     public static class PythonEngine
     {
-        public delegate FScheme.Value EvaluationDelegate(bool dirty, string script, IEnumerable<Binding> bindings);
+        public delegate FScheme.Value EvaluationDelegate(bool dirty, string script, IEnumerable<KeyValuePair<string, dynamic>> bindings);
         public delegate void DrawDelegate(FScheme.Value val, string id);
 
         public static EvaluationDelegate Evaluator;
 
         public static DrawDelegate Drawing;
 
-        private static DynPythonEngine engine = new DynPythonEngine();
+        private static readonly DynPythonEngine Engine = new DynPythonEngine();
 
         static PythonEngine()
         {
-            Evaluator = delegate(bool dirty, string script, IEnumerable<Binding> bindings)
+            Evaluator = delegate(bool dirty, string script, IEnumerable<KeyValuePair<string, dynamic>> bindings)
             {
                 if (dirty)
                 {
-                    engine.ProcessCode(script);
+                    Engine.ProcessCode(script);
                     dirty = false;
                 }
 
-                return engine.Evaluate(PythonBindings.Bindings.Concat(bindings));
+                return Engine.Evaluate(PythonBindings.Bindings.Concat(bindings));
             };
 
-            Drawing = delegate(FScheme.Value val, string id) { };
+            Drawing = delegate { };
         }
     }
 

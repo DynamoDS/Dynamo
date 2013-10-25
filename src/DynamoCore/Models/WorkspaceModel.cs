@@ -806,5 +806,9 @@ namespace Dynamo.Models
             }
         }
 
+        public void ReportPosition()
+        {
+            RaisePropertyChanged("Position");
+        }
     }
 }
