@@ -969,38 +969,6 @@ namespace Dynamo.Models
             return true;
         }
 
-        #region Undo/Redo Supporting Methods
-
-        internal void Undo(object parameters)
-        {
-            if (null != _cspace)
-                _cspace.Undo();
-
-            dynSettings.Controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
-            dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
-        }
-
-        internal bool CanUndo(object parameters)
-        {
-            return ((null == _cspace) ? false : _cspace.CanUndo);
-        }
-
-        internal void Redo(object parameters)
-        {
-            if (null != _cspace)
-                _cspace.Redo();
-
-            dynSettings.Controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
-            dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
-        }
-
-        internal bool CanRedo(object parameters)
-        {
-            return ((null == _cspace) ? false : _cspace.CanRedo);
-        }
-
-        #endregion
-
         /// <summary>
         /// Copy selected ISelectable objects to the clipboard.
         /// </summary>
@@ -1445,11 +1413,6 @@ namespace Dynamo.Models
             return true;
         }
 
-        internal bool CanDelete(object parameters)
-        {
-            return DynamoSelection.Instance.Selection.Count > 0;
-        }
-
         /// <summary>
         /// Called when a node is added to a workspace
         /// </summary>
@@ -1539,33 +1502,36 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Call this method to delete a given ModelBase, or all the models 
-        /// in the current selection set within the current active workspace.
+        /// After command framework is implemented, this method should now be only 
+        /// called from a menu item (i.e. Delete key). It should not be used as a 
+        /// way for any other code paths to create a note programmatically. For 
+        /// that we now have DeleteModelInternal which takes in more configurable 
+        /// arguments.
         /// </summary>
-        /// <param name="parameters">An instance of ModelBase to be deleted 
-        /// from the current workspace. If this parameter is null, then all 
-        /// the selected nodes will be deleted.</param>
-        public void Delete(object parameters)
+        /// <param name="parameters">This is not used and should always be null,
+        /// otherwise an ArgumentException will be thrown.</param>
+        /// 
+        internal void Delete(object parameters)
+        {
+            if (null != parameters) // See above for details of this exception.
+            {
+                var message = "Internal error, argument must be null";
+                throw new ArgumentException(message, "parameters");
+            }
+
+            var command = new DynCmd.DeleteModelCommand(Guid.Empty);
+            dynSettings.Controller.DynamoViewModel.ExecuteCommand(command);
+        }
+
+        internal bool CanDelete(object parameters)
+        {
+            return DynamoSelection.Instance.Selection.Count > 0;
+        }
+
+        internal void DeleteModelInternal(List<ModelBase> modelsToDelete)
         {
             if (null == this._cspace)
                 return;
-
-            var modelsToDelete = new List<ModelBase>();
-
-            if (null != parameters) // Something is specified in parameters.
-            {
-                if (parameters is ModelBase)
-                    modelsToDelete.Add(parameters as ModelBase);
-            }
-            else
-            {
-                // When 'parameters' is 'null', then it means all selected models.
-                foreach (ISelectable selectable in DynamoSelection.Instance.Selection)
-                {
-                    if (selectable is ModelBase)
-                        modelsToDelete.Add(selectable as ModelBase);
-                }
-            }
 
             this._cspace.RecordAndDeleteModels(modelsToDelete);
 
@@ -1575,7 +1541,7 @@ namespace Dynamo.Models
                 selection.Remove(model); // Remove from selection set.
                 if (model is NodeModel)
                     OnNodeDeleted(model as NodeModel);
-                if(model is ConnectorModel)
+                if (model is ConnectorModel)
                     OnConnectorDeleted(model as ConnectorModel);
             }
         }

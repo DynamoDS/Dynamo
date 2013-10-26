@@ -4,6 +4,7 @@ using Dynamo.Nodes;
 using Dynamo.Utilities;
 using NUnit.Framework;
 using System.Linq;
+using Dynamo.Models;
 
 namespace Dynamo.Tests
 {
@@ -317,7 +318,9 @@ namespace Dynamo.Tests
 
             //delete a node and ensure that the renderables are cleaned up
             var pointNode = model.Nodes.FirstOrDefault(x => x is Point3DNode);
-            model.Delete(pointNode);
+            List<ModelBase> modelsToDelete = new List<ModelBase>();
+            modelsToDelete.Add(pointNode);
+            model.DeleteModelInternal(modelsToDelete);
 
             viz.GetRenderableCounts(
                 out pointCount, out lineCount, out meshCount, out xCount, out yCount, out zCount);
