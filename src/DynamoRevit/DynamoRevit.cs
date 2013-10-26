@@ -23,6 +23,7 @@ using IWin32Window = System.Windows.Interop.IWin32Window;
 using MessageBox = System.Windows.Forms.MessageBox;
 using Rectangle = System.Drawing.Rectangle;
 using Dynamo.FSchemeInterop;
+using System.IO;
 
 namespace Dynamo.Applications
 {
@@ -127,6 +128,13 @@ namespace Dynamo.Applications
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
             AppDomain.CurrentDomain.AssemblyResolve += Dynamo.Utilities.AssemblyHelper.CurrentDomain_AssemblyResolve;
+
+            //Add an assembly load step for the System.Windows.Interactivity assembly
+            //Revit owns a version of this as well. Adding our step here prevents a duplicative
+            //load of the dll at a later time.
+            var assLoc = Assembly.GetExecutingAssembly().Location;
+            var interactivityPath = Path.Combine(Path.GetDirectoryName(assLoc), "System.Windows.Interactivity.dll");
+            var interactivityAss = Assembly.LoadFrom(interactivityPath);
 
             //When a user double-clicks the Dynamo icon, we need to make
             //sure that we don't create another instance of Dynamo.
