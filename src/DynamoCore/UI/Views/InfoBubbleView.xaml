@@ -19,10 +19,10 @@
 
         <Polygon Name="backgroundPolygon" Fill="{Binding Path=FrameFill}" Stroke="{Binding Path=FrameStrokeColor}" 
                  StrokeThickness="{Binding Path=FrameStrokeThickness}" Points="{Binding Path=FramePoints}"
-                 Margin="0, 0, 0, 0" MouseDown="InfoBubble_PreviewMouseDown">
+                 Margin="0, 0, 0, 0" MouseMove="InfoBubble_MouseMove" MouseEnter="InfoBubble_MouseEnter"  MouseDown="InfoBubble_PreviewMouseDown">
         </Polygon>
 
-        <StackPanel Name="ContentContainer" HorizontalAlignment="Center" VerticalAlignment="Center"
+        <StackPanel Name="ContentContainer" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                     MaxHeight="{Binding Path=MaxHeight}" MaxWidth="{Binding Path=MaxWidth}"
                     MinWidth="{Binding Path=MinWidth}" MinHeight="{Binding Path=MinHeight}"
                     MouseEnter="ContentContainer_MouseEnter">

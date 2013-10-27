@@ -20,8 +20,29 @@ namespace Dynamo.Views
     /// <summary>
     /// Interaction logic for dynWorkspaceView.xaml
     /// </summary>
+    /// 
     public partial class dynWorkspaceView : UserControl
     {
+        public enum CursorState
+        {
+            Pointer,
+            ArcAdding,
+            ArcRemoving,
+            ArcSelecting,
+            NodeCondensation,
+            NodeExpansion,
+            LibraryClick,
+            Drag,
+            Move,
+            Pan,
+            ActivePan,
+            UsualPointer,
+            RectangularSelection,
+            ResizeDiagonal,
+            ResizeVertical,
+            ResizeHorizontal
+        }
+
         // TODO(Ben): Remove this.
         private Dynamo.Controls.DragCanvas WorkBench = null;
         private ZoomAndPanControl zoomAndPanControl = null;
@@ -30,7 +51,11 @@ namespace Dynamo.Views
         private PortViewModel snappedPort = null;
         private DrawingVisual hitVisual = null;
         private List<DependencyObject> hitResultsList = new List<DependencyObject>();
+        private CursorState cursorState = CursorState.UsualPointer;
         private int minIndex = 0;
+
+
+        Dictionary<CursorState, String> cursorSet = new Dictionary<CursorState, string>();
 
         public WorkspaceViewModel ViewModel
         {
@@ -91,8 +116,33 @@ namespace Dynamo.Views
             binding.RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(TabControl), 1);
             endlessGrid.SetBinding(UIElement.VisibilityProperty, binding);
 
+            //============
+            //LoadCursorState();
+            //============
+
+
             Debug.WriteLine("Workspace loaded.");
             DynamoSelection.Instance.Selection.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
+        }
+
+        private void LoadCursorState()
+        {
+            cursorSet = new Dictionary<CursorState,string>();
+
+            cursorSet.Add(CursorState.ArcAdding, "arc_add.cur");
+            cursorSet.Add(CursorState.ArcRemoving, "arc_remove.cur");
+            cursorSet.Add(CursorState.UsualPointer, "pointer.cur");
+            cursorSet.Add(CursorState.RectangularSelection, "rectangular_selection.cur");
+            cursorSet.Add(CursorState.ResizeDiagonal, "resize_diagonal.cur");
+            cursorSet.Add(CursorState.ResizeHorizontal, "resize_horizontal.cur");
+            cursorSet.Add(CursorState.ResizeVertical, "resize_vertical.cur");
+            cursorSet.Add(CursorState.Pan, "hand_pan.cur");
+            cursorSet.Add(CursorState.ActivePan, "hand_pan_active.cur");
+            cursorSet.Add(CursorState.NodeExpansion, "expand.cur");
+            cursorSet.Add(CursorState.NodeCondensation, "condense.cur");
+            cursorSet.Add(CursorState.ArcRemoving, "arc_remove.cur");
+            cursorSet.Add(CursorState.LibraryClick, "hand.cur");
+
         }
 
         void Selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -123,6 +173,21 @@ namespace Dynamo.Views
             ViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
             ViewModel.WorkspacePropertyEditRequested += VmOnWorkspacePropertyEditRequested;
             ViewModel.RequestSelectionBoxUpdate += VmOnRequestSelectionBoxUpdate;
+
+            ViewModel.RequestChangeCursorDragging += new EventHandler(vm_ChangeCursorDragging);
+            ViewModel.RequestChangeCursorUsual += new EventHandler(vm_ChangeCursorUsual);
+        }
+
+        private void vm_ChangeCursorDragging(object sender, EventArgs e)
+        {
+            if (this.Cursor != CursorsLibrary.RectangularSelection)
+                this.Cursor = CursorsLibrary.RectangularSelection;
+        }
+
+        private void vm_ChangeCursorUsual(object sender, EventArgs e)
+        {
+            if (this.Cursor != CursorsLibrary.UsualPointer)
+                this.Cursor = CursorsLibrary.UsualPointer;
         }
 
         private void VmOnWorkspacePropertyEditRequested(WorkspaceModel workspace)
@@ -420,7 +485,9 @@ namespace Dynamo.Views
             if (this.snappedPort != null)
                 wvm.HandlePortClicked(this.snappedPort);
             else
+            {
                 wvm.HandleLeftButtonDown(this.WorkBench, e);
+            }
         }
 
         private void OnMouseRelease(object sender, MouseButtonEventArgs e)
@@ -433,6 +500,7 @@ namespace Dynamo.Views
         private void OnMouseMove(object sender, MouseEventArgs e)
         {
             this.snappedPort = null;
+
             bool snapToCursor = false;
             WorkspaceViewModel wvm = (DataContext as WorkspaceViewModel);
 
@@ -447,10 +515,26 @@ namespace Dynamo.Views
                     snapToCursor = true;
                     wvm.HandleMouseMove(this.WorkBench, this.snappedPort.Center);
                 }
+                this.Cursor = CursorsLibrary.ArcAdding;
             }
+            else if (Mouse.LeftButton == MouseButtonState.Pressed)
+            {
+                this.Cursor = CursorsLibrary.RectangularSelection;
+            }
+            else
+            {
+                Point mouse = e.GetPosition((UIElement)sender);
+                this.snappedPort = GetSnappedPort(mouse);
+                if (this.snappedPort != null && this.snappedPort.PortType != PortType.OUTPUT)
+                    this.Cursor = CursorsLibrary.ArcRemoving;
+                else
+                    this.Cursor = CursorsLibrary.UsualPointer;
+            }
+
 
             if (false == snapToCursor)
                 wvm.HandleMouseMove(this.WorkBench, e);
+
         }
 
         private PortViewModel GetSnappedPort(Point mouseCursor)
@@ -550,10 +634,16 @@ namespace Dynamo.Views
         {
             hitResultsList.Clear();
             EllipseGeometry expandedHitTestArea = new EllipseGeometry(mouse, 50.0, 7.0);
-
-            VisualTreeHelper.HitTest(this, null, new HitTestResultCallback(VisualCallBack), new GeometryHitTestParameters(expandedHitTestArea));
-            if (hitResultsList.Count > 0)
-                Debug.WriteLine("Number of visual hits: " + hitResultsList.Count);
+            try
+            {
+                VisualTreeHelper.HitTest(this, null, new HitTestResultCallback(VisualCallBack), new GeometryHitTestParameters(expandedHitTestArea));
+                //if (hitResultsList.Count > 0)
+                    //Debug.WriteLine("Number of visual hits: " + hitResultsList.Count);
+            }
+            catch
+            {
+                hitResultsList.Clear();
+            }
             return this.hitResultsList;
         }
 
@@ -565,10 +655,21 @@ namespace Dynamo.Views
             //if (result.VisualHit.GetType().IsAssignableFrom(typeof(Grid)))
             if (result.VisualHit.GetType() == typeof(Grid))
             {
-                Debug.WriteLine("CAUGHT GRID");
+                //Debug.WriteLine("CAUGHT GRID");
                 hitResultsList.Add(result.VisualHit);
             }
-            
+
+            if (result.VisualHit.GetType() == typeof(UserControl))
+            {
+                Debug.WriteLine("CAUGHT UC");
+            }
+
+            if (result.VisualHit.GetType() == typeof(Dynamo.Connectors.dynPortView))
+            {
+                Debug.WriteLine("CAUGHT dynPortView");
+            }
+
+
 
             return HitTestResultBehavior.Continue;
         }
