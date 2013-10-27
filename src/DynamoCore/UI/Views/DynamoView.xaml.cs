@@ -195,7 +195,9 @@ namespace Dynamo.Controls
             _vm.RequestUserSaveWorkflow += new WorkspaceSaveEventHandler(_vm_RequestUserSaveWorkflow);
 
             dynSettings.Controller.ClipBoard.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(ClipBoard_CollectionChanged);
-        
+
+            // Kick start the automation run, if possible.
+            _vm.BeginCommandPlayback(this);
         }
 
         private PackageManagerPublishView _pubPkgView;
