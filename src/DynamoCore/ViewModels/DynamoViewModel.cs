@@ -458,17 +458,8 @@ namespace Dynamo.ViewModels
 
             Controller = controller;
 
-            // Validate if the supplied commandFilePath is valid and the file exists.
-            if (string.IsNullOrEmpty(commandFilePath) || (!File.Exists(commandFilePath)))
-                commandFilePath = null;
-
-            // If there is no command file being specified, then that means it 
-            // is not in automation mode. The command recording will be enabled
-            // in a regular user scenario.
-            // 
-            this.commandFilePath = commandFilePath;
-            if (string.IsNullOrEmpty(commandFilePath))
-                this.recordedCommands = new List<DynamoViewModel.RecordableCommand>();
+            // Instantiate an AutomationSettings to handle record/playback.
+            automationSettings = new AutomationSettings(this, commandFilePath);
 
             OpenCommand = new DelegateCommand(_model.Open, _model.CanOpen);
             ShowOpenDialogAndOpenResultCommand = new DelegateCommand(_model.ShowOpenDialogAndOpenResult, _model.CanShowOpenDialogAndOpenResultCommand);
@@ -495,8 +486,8 @@ namespace Dynamo.ViewModels
             ShowSaveDialogIfNeededAndSaveResultCommand = new DelegateCommand(ShowSaveDialogIfNeededAndSaveResult, CanShowSaveDialogIfNeededAndSaveResultCommand);
             SaveImageCommand = new DelegateCommand(SaveImage, CanSaveImage);
             ShowSaveImageDialogAndSaveResultCommand = new DelegateCommand(ShowSaveImageDialogAndSaveResult, CanShowSaveImageDialogAndSaveResult);
-            UndoCommand = new DelegateCommand(_model.Undo, _model.CanUndo);
-            RedoCommand = new DelegateCommand(_model.Redo, _model.CanRedo);
+            UndoCommand = new DelegateCommand(Undo, CanUndo);
+            RedoCommand = new DelegateCommand(Redo, CanRedo);
             CopyCommand = new DelegateCommand(_model.Copy, _model.CanCopy);
             PasteCommand = new DelegateCommand(_model.Paste, _model.CanPaste);
             ToggleConsoleShowingCommand = new DelegateCommand(ToggleConsoleShowing, CanToggleConsoleShowing);
@@ -1026,6 +1017,17 @@ namespace Dynamo.ViewModels
         /// <returns>Whether the cleanup was completed or cancelled.</returns>
         public bool AskUserToSaveWorkspacesOrCancel(bool allowCancel = true)
         {
+            if (null != automationSettings)
+            {
+                // In an automation run, Dynamo should not be asking user to save 
+                // the modified file. Instead it should be shutting down, leaving 
+                // behind unsaved changes (if saving is desired, then the save command 
+                // should have been recorded for the test case to it can be replayed).
+                // 
+                if (automationSettings.CurrentMode == AutomationSettings.Mode.Playback)
+                    return true; // In playback mode, just exit without saving.
+            }
+
             foreach (var wvm in Workspaces.Where((wvm) => wvm.Model.HasUnsavedChanges))
             {
                 //if (!AskUserToSaveWorkspaceOrCancel(wvm.Model, allowCancel))
@@ -1083,6 +1085,30 @@ namespace Dynamo.ViewModels
         internal bool CanShowSaveImageDialogAndSaveResult(object parameter)
         {
             return true;
+        }
+
+        private void Undo(object parameter)
+        {
+            var command = new UndoRedoCommand(UndoRedoCommand.Operation.Undo);
+            this.ExecuteCommand(command);
+        }
+
+        private bool CanUndo(object parameter)
+        {
+            var workspace = _model.CurrentWorkspace;
+            return ((null == workspace) ? false : workspace.CanUndo);
+        }
+
+        private void Redo(object parameter)
+        {
+            var command = new UndoRedoCommand(UndoRedoCommand.Operation.Redo);
+            this.ExecuteCommand(command);
+        }
+
+        private bool CanRedo(object parameter)
+        {
+            var workspace = _model.CurrentWorkspace;
+            return ((null == workspace) ? false : workspace.CanRedo);
         }
 
         public void ToggleConsoleShowing(object parameter)
