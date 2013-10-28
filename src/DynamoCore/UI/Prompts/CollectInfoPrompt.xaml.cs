@@ -28,19 +28,9 @@ namespace Dynamo.UI.Prompts
 
         private void OnContinueClick(object sender, RoutedEventArgs e)
         {
-            Close();
-        }
-
-        private void OnWindowClose(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            Close();
-        }
-
-        private void OnWindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            this.CollectDataConsent = false;
             if (acceptCheck.IsChecked.HasValue)
                 this.CollectDataConsent = acceptCheck.IsChecked.Value;
+            Close();
         }
     }
 }
