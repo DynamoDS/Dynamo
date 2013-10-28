@@ -22,7 +22,7 @@
         KeyUp="DynamoView_KeyUp"
         ResizeMode="CanResizeWithGrip"
         Background="#FF353535"
-        FontFamily="Open Sans">
+        Style="{DynamicResource DynamoWindowStyle}">
 
     <Window.CommandBindings>
 
@@ -289,6 +289,11 @@
                         <MenuItem Focusable="False" Header="_Manage Packages..." Command="{Binding Path=DataContext.ShowInstalledPackagesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="showPMInstalled" />
                         <MenuItem Focusable="False" Header="_Publish Selected Nodes..." Command="{Binding Path=DataContext.PublishSelectedNodesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="publishSelected" />
                         <MenuItem Focusable="False" Header="_Publish Current Workspace..." Command="{Binding Path=DataContext.PublishCurrentWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="publishCurrent" />
+                    </MenuItem>
+                    
+                    <MenuItem Header="_Settings" Name="settingsMenu" Focusable="False">
+                        <MenuItem Header="_Enable usability data reporting" Command="{Binding ToggleCollectInfoCommand}" IsChecked="{Binding Path=CollectInfoOption, Mode=OneWay}" Name="CollectInfoCommand" Focusable="False"
+                                  IsCheckable="True"/>
                     </MenuItem>
 
                     <MenuItem Header="Help" Focusable="False">

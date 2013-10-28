@@ -8,6 +8,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using NUnit.Framework;
 using System.Windows;
+using Dynamo.Services;
 
 namespace Dynamo.Tests.UI
 {
@@ -18,17 +19,6 @@ namespace Dynamo.Tests.UI
         public void Start()
         {
             AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.CurrentDomain_AssemblyResolve;
-
-            Controller = DynamoController.MakeSandbox();
-
-            //create the view
-            Ui = new DynamoView();
-            Ui.DataContext = Controller.DynamoViewModel;
-            Vm = Controller.DynamoViewModel;
-            Controller.UIDispatcher = Ui.Dispatcher;
-            Ui.Show();
-
-            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
 
             string tempPath = Path.GetTempPath();
             TempFolder = Path.Combine(tempPath, "dynamoTmp");
@@ -41,6 +31,21 @@ namespace Dynamo.Tests.UI
             {
                 EmptyTempFolder();
             }
+
+            // Setup Temp PreferenceSetting Location for testing
+            PreferenceSettings.DYNAMO_TEST_PATH = Path.Combine(TempFolder, "UserPreferenceTest.xml");
+
+            Controller = DynamoController.MakeSandbox();
+            Controller.Testing = true;
+
+            //create the view
+            Ui = new DynamoView();
+            Ui.DataContext = Controller.DynamoViewModel;
+            Vm = Controller.DynamoViewModel;
+            Controller.UIDispatcher = Ui.Dispatcher;
+            Ui.Show();
+
+            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
         }
 
         [TearDown]
@@ -555,8 +560,124 @@ namespace Dynamo.Tests.UI
 
         #endregion
 
+        #region PreferenceSettings
+        [Test, RequiresSTA]
+        [Category("DynamoUI")]
+        public void PreferenceSetting()
+        {
+            // Test Case to ensure that the link for these persistent variable
+            // between DynamoViewModel, Controller is not broken or replaced.
+            #region FullscreenWatchShowing
+            bool expectedValue = !Controller.PreferenceSettings.FullscreenWatchShowing;
+            Vm.ToggleFullscreenWatchShowing(null);
+            Assert.AreEqual(expectedValue, Controller.PreferenceSettings.FullscreenWatchShowing);
+
+            expectedValue = !Controller.PreferenceSettings.FullscreenWatchShowing;
+            Vm.ToggleFullscreenWatchShowing(null);
+            Assert.AreEqual(expectedValue, Controller.PreferenceSettings.FullscreenWatchShowing);
+            #endregion
+
+            #region ShowConsole
+            expectedValue = !Controller.PreferenceSettings.ShowConsole;
+            Vm.ToggleConsoleShowing(null);
+            Assert.AreEqual(expectedValue, Controller.PreferenceSettings.ShowConsole);
+
+            expectedValue = !Controller.PreferenceSettings.ShowConsole;
+            Vm.ToggleConsoleShowing(null);
+            Assert.AreEqual(expectedValue, Controller.PreferenceSettings.ShowConsole);
+            #endregion
+
+            #region ConnectorType
+            ConnectorType expectedConnector = ConnectorType.BEZIER;
+            Vm.SetConnectorType("BEZIER");
+            Assert.AreEqual(expectedConnector, Controller.PreferenceSettings.ConnectorType);
+
+            expectedConnector = ConnectorType.POLYLINE;
+            Vm.SetConnectorType("POLYLINE");
+            Assert.AreEqual(expectedConnector, Controller.PreferenceSettings.ConnectorType);
+            #endregion
+
+            #region Collect Information Option
+            // First time run, check if dynamo did set it back to false after running
+            Assert.AreEqual(false, CollectInfoManager.Instance.FirstRun);
+            Assert.AreEqual(true, CollectInfoManager.Instance.NeverAgreeBefore);
+
+            // CollectionInfoOption To TRUE
+            CollectInfoManager.Instance.SetCollectInfoOption(true);
+            RestartTestSetup();
+            Assert.AreEqual(true, CollectInfoManager.Instance.CollectInfoOption);
+            Assert.AreEqual(false, CollectInfoManager.Instance.NeverAgreeBefore);
+
+            // CollectionInfoOption To FALSE
+            CollectInfoManager.Instance.SetCollectInfoOption(false);
+            RestartTestSetup();
+            Assert.AreEqual(false, CollectInfoManager.Instance.CollectInfoOption);
+            Assert.AreEqual(false, CollectInfoManager.Instance.NeverAgreeBefore);
+            #endregion
+
+            #region Save And Load of PreferenceSettings
+            // Test if variable can be serialize and deserialize without any issue
+            string tempPath = System.IO.Path.GetTempPath();
+            tempPath = Path.Combine(tempPath, "userPreference.xml");
+
+            // Force inital state
+            PreferenceSettings initalSetting = new PreferenceSettings();
+            PreferenceSettings resultSetting;
+
+            #region First Test
+
+            initalSetting.ConnectorType = ConnectorType.BEZIER;
+            initalSetting.ShowConsole = true;
+            initalSetting.FullscreenWatchShowing = true;
+
+            initalSetting.Save(tempPath);
+            resultSetting = PreferenceSettings.Load(tempPath);
+
+            Assert.AreEqual(resultSetting.FullscreenWatchShowing, initalSetting.FullscreenWatchShowing);
+            Assert.AreEqual(resultSetting.ConnectorType, initalSetting.ConnectorType);
+            Assert.AreEqual(resultSetting.ShowConsole, initalSetting.ShowConsole);
+            #endregion
+
+            #region Second Test
+            initalSetting.ConnectorType = ConnectorType.POLYLINE;
+            initalSetting.ShowConsole = false;
+            initalSetting.FullscreenWatchShowing = false;
+
+            initalSetting.Save(tempPath);
+            resultSetting = PreferenceSettings.Load(tempPath);
+
+            Assert.AreEqual(resultSetting.FullscreenWatchShowing, initalSetting.FullscreenWatchShowing);
+            Assert.AreEqual(resultSetting.ConnectorType, initalSetting.ConnectorType);
+            Assert.AreEqual(resultSetting.ShowConsole, initalSetting.ShowConsole);
+            #endregion
+
+            #endregion
+        }
+
+        private void RestartTestSetup()
+        {
+            // Shutdown Dynamo and restart it
+            Ui.Close();
+
+            // Setup Temp PreferenceSetting Location for testing
+            PreferenceSettings.DYNAMO_TEST_PATH = Path.Combine(TempFolder, "UserPreferenceTest.xml");
+
+            Controller = DynamoController.MakeSandbox();
+            Controller.Testing = true;
+
+            //create the view
+            Ui = new DynamoView();
+            Ui.DataContext = Controller.DynamoViewModel;
+            Vm = Controller.DynamoViewModel;
+            Controller.UIDispatcher = Ui.Dispatcher;
+            Ui.Show();
+
+            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+        }
+        #endregion
+
         #region InfoBubble
-        
+
         [Test]
         [Category("DynamoUI")]
         public void UpdateInfoBubble_LibItem()
