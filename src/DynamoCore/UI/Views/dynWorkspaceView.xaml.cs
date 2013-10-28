@@ -636,7 +636,7 @@ namespace Dynamo.Views
             EllipseGeometry expandedHitTestArea = new EllipseGeometry(mouse, 50.0, 7.0);
             try
             {
-                VisualTreeHelper.HitTest(this, null, new HitTestResultCallback(VisualCallBack), new GeometryHitTestParameters(expandedHitTestArea));
+                VisualTreeHelper.HitTest(this, new HitTestFilterCallback(HitTestFilter), new HitTestResultCallback(VisualCallBack), new GeometryHitTestParameters(expandedHitTestArea));
                 //if (hitResultsList.Count > 0)
                     //Debug.WriteLine("Number of visual hits: " + hitResultsList.Count);
             }
@@ -645,6 +645,18 @@ namespace Dynamo.Views
                 hitResultsList.Clear();
             }
             return this.hitResultsList;
+        }
+
+        private HitTestFilterBehavior HitTestFilter(DependencyObject o)
+        {
+            if (o.GetType() == typeof(Viewport3D))
+            {
+                return HitTestFilterBehavior.ContinueSkipSelfAndChildren;
+            }
+            else
+            {
+                return HitTestFilterBehavior.Continue;
+            }
         }
 
         private HitTestResultBehavior VisualCallBack(HitTestResult result)
