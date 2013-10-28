@@ -452,6 +452,7 @@ limitations under the License.
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Themes\Ports.xaml">
+    </Page>
     <Page Include="UI\Prompts\CollectInfoPrompt.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
