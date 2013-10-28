@@ -5,8 +5,7 @@
         SizeToContent="WidthAndHeight"
         WindowStyle="SingleBorderWindow" ResizeMode="NoResize"
         ShowInTaskbar="False" Topmost="True"
-        WindowStartupLocation="CenterOwner"
-        Closing="OnWindowClosing">
+        WindowStartupLocation="CenterOwner">
     <Window.Resources>
         <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoModern.xaml" />
     </Window.Resources>
@@ -17,7 +16,7 @@
             <RowDefinition Height="100"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="30"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="60"></RowDefinition>
         </Grid.RowDefinitions>
         <!-- The top banner image -->
         <Rectangle Width="544"
