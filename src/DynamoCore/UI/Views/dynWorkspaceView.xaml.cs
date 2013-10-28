@@ -652,24 +652,8 @@ namespace Dynamo.Views
             if (result == null || result.VisualHit == null)
                 throw new ArgumentNullException();
 
-            //if (result.VisualHit.GetType().IsAssignableFrom(typeof(Grid)))
             if (result.VisualHit.GetType() == typeof(Grid))
-            {
-                //Debug.WriteLine("CAUGHT GRID");
                 hitResultsList.Add(result.VisualHit);
-            }
-
-            if (result.VisualHit.GetType() == typeof(UserControl))
-            {
-                Debug.WriteLine("CAUGHT UC");
-            }
-
-            if (result.VisualHit.GetType() == typeof(Dynamo.Connectors.dynPortView))
-            {
-                Debug.WriteLine("CAUGHT dynPortView");
-            }
-
-
 
             return HitTestResultBehavior.Continue;
         }
