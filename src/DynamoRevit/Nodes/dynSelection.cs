@@ -103,6 +103,13 @@ namespace Dynamo.Nodes
         {
             OutPortData.Add(outPortData);
             RegisterAllPorts();
+
+            dynRevitSettings.Controller.RevitDocumentChanged += Controller_RevitDocumentChanged;
+        }
+
+        void Controller_RevitDocumentChanged(object sender, EventArgs e)
+        {
+            SelectedElement = null;
         }
 
         public override void SetupCustomUIElements(object ui)

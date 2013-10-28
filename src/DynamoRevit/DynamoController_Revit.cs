@@ -324,16 +324,22 @@ namespace Dynamo
             }
         }
 
+        public event EventHandler RevitDocumentChanged;
+        public virtual void OnRevitDocumentChanged()
+        {
+            if (RevitDocumentChanged != null)
+                RevitDocumentChanged(this, EventArgs.Empty);
+        }
+
         /// <summary>
         /// Clears all element collections on nodes and resets the visualization manager and the old value.
         /// </summary>
         private void ResetForNewDocument()
         {
             dynSettings.Controller.DynamoModel.Nodes.ToList().ForEach(x=>x.ResetOldValue());
-            dynSettings.Controller.DynamoModel.Nodes.Where(x => x is RevitTransactionNode).ToList()
-                .ForEach(x => (x as RevitTransactionNode).Elements.Clear());
-
             VisualizationManager.ClearVisualizations();
+
+            OnRevitDocumentChanged();
         }
 
         #region Python Nodes Revit Hooks
