@@ -193,7 +193,9 @@ namespace Dynamo.Tests
 
             var numNodes = model.CurrentWorkspace.Nodes.Count;
 
-            model.Delete(model.CurrentWorkspace.FirstNodeFromWorkspace<Addition>());
+            List<ModelBase> modelsToDelete = new List<ModelBase>();
+            modelsToDelete.Add(model.CurrentWorkspace.FirstNodeFromWorkspace<Addition>());
+            model.DeleteModelInternal(modelsToDelete);
 
             Assert.AreEqual(numNodes - 1, model.CurrentWorkspace.Nodes.Count);
         }

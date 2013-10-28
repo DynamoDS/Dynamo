@@ -45,6 +45,9 @@ namespace Dynamo.ViewModels
         public event SelectionEventHandler RequestSelectionBoxUpdate;
         public event WorkspacePropertyEditHandler WorkspacePropertyEditRequested;
 
+        public event EventHandler RequestChangeCursorDragging;
+        public event EventHandler RequestChangeCursorUsual;
+
         /// <summary>
         /// Convenience property
         /// </summary>
@@ -62,6 +65,18 @@ namespace Dynamo.ViewModels
                 Debug.WriteLine(string.Format("Setting current offset to {0}", e.Point));
                 CurrentOffsetChanged(this, e);
             }
+        }
+
+        private void OnRequestChangeCursorDragging(object sender, EventArgs e)
+        {
+            if (RequestChangeCursorDragging != null)
+                RequestChangeCursorDragging(this, e);
+        }
+
+        private void OnRequestChangeCursorUsual(object sender, EventArgs e)
+        {
+            if (RequestChangeCursorUsual != null)
+                RequestChangeCursorUsual(this, e);
         }
 
         /// <summary>
