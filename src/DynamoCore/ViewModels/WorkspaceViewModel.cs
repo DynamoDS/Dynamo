@@ -331,6 +331,11 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public bool CanShowInfoBubble
+        {
+            get { return this.stateMachine.CurrentState == StateMachine.State.None; }
+        }
+
         public Action FindNodesFromElements { get; set; }
 
         #endregion
