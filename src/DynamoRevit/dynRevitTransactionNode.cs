@@ -62,6 +62,13 @@ namespace Dynamo.Revit
         {
             ArgumentLacing = LacingStrategy.Longest;
             RegisterAllElementsDeleteHook();
+
+            dynRevitSettings.Controller.RevitDocumentChanged += Controller_RevitDocumentChanged;
+        }
+
+        void Controller_RevitDocumentChanged(object sender, EventArgs e)
+        {
+            Elements.Clear();
         }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)

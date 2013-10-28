@@ -150,8 +150,17 @@ namespace Dynamo.Nodes
         public SunPathDirection()
         {
             OutPortData.Add(new PortData("XYZ", "XYZ", typeof(Value.Container)));
-            RegisterAllPorts();  
+            RegisterAllPorts();
+
+            dynRevitSettings.Controller.RevitDocumentChanged += Controller_RevitDocumentChanged;
         }
+
+
+        void Controller_RevitDocumentChanged(object sender, EventArgs e)
+        {
+            pickedSunAndShadowSettings = null;
+        }
+
 
         public override void SetupCustomUIElements(object ui)
         {
@@ -268,6 +277,11 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
+            if (PickedSunAndShadowSettings == null)
+            {
+                throw new Exception("The sun and shadow settings have not been selected. Click to pick the sun and shadow settings from the active view.");
+            }
+                
             if (PickedSunAndShadowSettings.Id.IntegerValue == sunAndShadowSettingsID.IntegerValue) // sanity check
             {
 
