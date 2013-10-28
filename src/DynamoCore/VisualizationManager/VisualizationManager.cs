@@ -331,6 +331,7 @@ namespace Dynamo
         public void ClearVisualizations()
         {
             Visualizations.Clear();
+            OnVisualizationUpdateComplete(this, EventArgs.Empty);
         }
 
         /// <summary>
