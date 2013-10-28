@@ -39,8 +39,13 @@ namespace Dynamo.Nodes
         /// </summary>
         /// <param name="inputCode"></param>
         /// <returns></returns>
-        public string FormatUserText(string inputCode)
+        internal static string FormatUserText(string inputCode)
         {
+            if (inputCode == null)
+            {
+                return "";
+            }
+
             inputCode = inputCode.Trim();
 
             if (inputCode.Equals(""))
@@ -120,10 +125,13 @@ namespace Dynamo.Nodes
 
         protected override AssociativeNode GetIndexedOutputNode(int index)
         {
-            Dictionary<int, List<GraphToDSCompiler.VariableLine>> unboundIdentifiers;
-            unboundIdentifiers = new Dictionary<int, List<GraphToDSCompiler.VariableLine>>();
-            List<ProtoCore.AST.Node> resultNodes;
-            GraphToDSCompiler.GraphUtilities.ParseCodeBlockNodeStatements(Code, unboundIdentifiers, out resultNodes);
+            if (this.State == ElementState.ERROR)
+                return null;
+            List<string> unboundIdentifiers = new List<string>();
+            List<ProtoCore.AST.Node> resultNodes = new List<Node>();
+            List<ProtoCore.BuildData.ErrorEntry> errors;
+            List<ProtoCore.BuildData.WarningEntry> warnings;
+            GraphToDSCompiler.GraphUtilities.Parse(code, out resultNodes, out errors, out  warnings, unboundIdentifiers);
             BinaryExpressionNode indexedStatement = resultNodes[index] as BinaryExpressionNode;
             return indexedStatement.LeftNode as AssociativeNode;
         }
@@ -134,37 +142,23 @@ namespace Dynamo.Nodes
         {
 
             //Format user test
-            code = FormatUserText(code);
+            code = CodeBlockNodeModel.FormatUserText(code);
 
             //New code => Revamp everything
             codeStatements.Clear();
 
             if (Code.Equals("") || Code.Equals("Your Code Goes Here")) //If its null then remove all the ports
             {
-                SetPorts();
+                SetPorts(new List<string>());
                 return;
             }
 
             //Parse the text and assign each AST node to a statement instance
-            List<string> compiledCode;
-
-            //To allow for statements like a+b; which are not handled by the parser, enter a fake assigned
-            //variable and compute. Cannot handle comments as of now
-            GraphToDSCompiler.GraphUtilities.CompileExpression(Code, out compiledCode);
-            string fakeVariableName = "temp" + this.GUID.ToString().Remove(7);
-            string codeToParse = "";
-            for (int i = 0; i < compiledCode.Count; i++)
-            {
-                string singleExpression = compiledCode[i];
-                singleExpression = singleExpression.Replace("%t", fakeVariableName);
-                //singleExpression = singleExpression.Replace("\r\n","\n");
-                codeToParse += singleExpression;
-            }
-
-            Dictionary<int, List<GraphToDSCompiler.VariableLine>> unboundIdentifiers;
-            unboundIdentifiers = new Dictionary<int, List<GraphToDSCompiler.VariableLine>>();
-            List<ProtoCore.AST.Node> resultNodes;
-            if (GraphToDSCompiler.GraphUtilities.ParseCodeBlockNodeStatements(codeToParse, unboundIdentifiers, out resultNodes))
+            List<string> unboundIdentifiers = new List<string>();
+            List<ProtoCore.AST.Node> resultNodes = new List<Node>();
+            List<ProtoCore.BuildData.ErrorEntry> errors;
+            List<ProtoCore.BuildData.WarningEntry> warnings;
+            if(GraphToDSCompiler.GraphUtilities.Parse(code,out resultNodes,out errors,out  warnings, unboundIdentifiers) && resultNodes!=null)
             {
                 //Create an instance of statement for each code statement written by the user
                 foreach (Node node in resultNodes)
@@ -181,10 +175,10 @@ namespace Dynamo.Nodes
                 DisplayError();
             }
 
-            SetPorts(); //Set the input and output ports based on the statements
+            SetPorts(unboundIdentifiers); //Set the input and output ports based on the statements
         }
 
-        private void SetPorts()
+        private void SetPorts(List<string> unboundIdentifiers)
         {
             InPortData.Clear();
             OutPortData.Clear();
@@ -194,7 +188,7 @@ namespace Dynamo.Nodes
                 return;
             }
 
-            SetInputPorts();
+            SetInputPorts(unboundIdentifiers);
 
             //Since output ports need to be aligned with the statements, calculate the margins
             //needed based on the statement lines and add them to port data.
@@ -222,21 +216,11 @@ namespace Dynamo.Nodes
         }
 
         /// <summary>
-        /// Set a port for each different input parameter
+        /// Set a port for each different unbound identifier
         /// </summary>
-        private void SetInputPorts()
+        private void SetInputPorts(List<string> unboundIdentifier)
         {
-            List<string> uniqueInputs = new List<string>();
-            foreach (var singleStatement in codeStatements)
-            {
-                List<string> inputNames = Statement.GetReferencedVariableNames(singleStatement, true);
-                foreach (string name in inputNames)
-                {
-                    if (!uniqueInputs.Contains(name))
-                        uniqueInputs.Add(name);
-                }
-            }
-            foreach (string name in uniqueInputs)
+            foreach (string name in unboundIdentifier)
                 InPortData.Add(new PortData(name, "Input", typeof(object)));
         }
 
@@ -359,6 +343,11 @@ namespace Dynamo.Nodes
                 GetReferencedVariables(currentNode.FromNode, refVariableList);
                 GetReferencedVariables(currentNode.ToNode, refVariableList);
                 GetReferencedVariables(currentNode.StepNode, refVariableList);
+            }
+            else if (astNode is BinaryExpressionNode)
+            {
+                BinaryExpressionNode currentNode = astNode as BinaryExpressionNode;
+                GetReferencedVariables(currentNode.RightNode, refVariableList);
             }
             else
             {
