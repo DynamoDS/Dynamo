@@ -155,12 +155,10 @@ namespace Dynamo.Nodes
             dynRevitSettings.Controller.RevitDocumentChanged += Controller_RevitDocumentChanged;
         }
 
-
         void Controller_RevitDocumentChanged(object sender, EventArgs e)
         {
             pickedSunAndShadowSettings = null;
         }
-
 
         public override void SetupCustomUIElements(object ui)
         {
