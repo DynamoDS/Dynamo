@@ -87,7 +87,7 @@
                             <Setter Property="HorizontalAlignment" Value="Left"/>
                             <EventSetter Event="MouseEnter" Handler="InputPort_OnMouseEnter"/>
                             <EventSetter Event="MouseLeave" Handler="InputPort_OnMouseLeave"/>
-                            <EventSetter Event="MouseDown" Handler="InputPort_OnMouseDown"/>
+                            <EventSetter Event="PreviewMouseDown" Handler="InputPort_OnPreviewMouseDown"/>
                         </Style>
                     </ItemsControl.ItemContainerStyle>
                 </ItemsControl>
@@ -107,7 +107,7 @@
                             <Setter Property="HorizontalAlignment" Value="Right"/>
                             <EventSetter Event="MouseEnter" Handler="OutputPort_OnMouseEnter"/>
                             <EventSetter Event="MouseLeave" Handler="OutputPort_OnMouseLeave"/>
-                            <EventSetter Event="MouseDown" Handler="OutputPort_OnMouseDown"/>
+                            <EventSetter Event="PreviewMouseDown" Handler="OutputPort_OnPreviewMouseDown"/>
                         </Style>
                     </ItemsControl.ItemContainerStyle>
                 </ItemsControl>

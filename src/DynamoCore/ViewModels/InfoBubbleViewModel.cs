@@ -262,7 +262,8 @@ namespace Dynamo.ViewModels
 
         private void FadeIn(object parameter)
         {
-            if (dynSettings.Controller.DynamoViewModel.IsMouseDown)
+            if (dynSettings.Controller.DynamoViewModel.IsMouseDown || 
+                !dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.CanShowInfoBubble)
                 return;
             fadeOutTimer.Stop();
             fadeInTimer.Start();
