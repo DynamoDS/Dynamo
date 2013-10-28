@@ -10,6 +10,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using NUnit.Framework;
 using System.Windows;
+using Dynamo.Services;
 
 namespace Dynamo.Tests.UI
 {
@@ -33,10 +34,11 @@ namespace Dynamo.Tests.UI
                 EmptyTempFolder();
             }
 
-            // Setup Temper PreferenceSetting Location for the user to save user in
+            // Setup Temp PreferenceSetting Location for testing
             PreferenceSettings.DYNAMO_TEST_PATH = Path.Combine(TempFolder, "UserPreferenceTest.xml");
 
             Controller = DynamoController.MakeSandbox();
+            Controller.Testing = true;
 
             //create the view
             Ui = new DynamoView();
@@ -596,7 +598,24 @@ namespace Dynamo.Tests.UI
             expectedConnector = ConnectorType.POLYLINE;
             Vm.SetConnectorType("POLYLINE");
             Assert.AreEqual(expectedConnector, Controller.PreferenceSettings.ConnectorType);
-            Ui.Close();
+            #endregion
+
+            #region Collect Information Option
+            // First time run, check if dynamo did set it back to false after running
+            Assert.AreEqual(false, CollectInfoManager.Instance.FirstRun);
+            Assert.AreEqual(true, CollectInfoManager.Instance.NeverAgreeBefore);
+
+            // CollectionInfoOption To TRUE
+            CollectInfoManager.Instance.SetCollectInfoOption(true);
+            RestartTestSetup();
+            Assert.AreEqual(true, CollectInfoManager.Instance.CollectInfoOption);
+            Assert.AreEqual(false, CollectInfoManager.Instance.NeverAgreeBefore);
+
+            // CollectionInfoOption To FALSE
+            CollectInfoManager.Instance.SetCollectInfoOption(false);
+            RestartTestSetup();
+            Assert.AreEqual(false, CollectInfoManager.Instance.CollectInfoOption);
+            Assert.AreEqual(false, CollectInfoManager.Instance.NeverAgreeBefore);
             #endregion
 
             #region Save And Load of PreferenceSettings
@@ -636,6 +655,27 @@ namespace Dynamo.Tests.UI
             #endregion
 
             #endregion
+        }
+
+        private void RestartTestSetup()
+        {
+            // Shutdown Dynamo and restart it
+            Ui.Close();
+
+            // Setup Temp PreferenceSetting Location for testing
+            PreferenceSettings.DYNAMO_TEST_PATH = Path.Combine(TempFolder, "UserPreferenceTest.xml");
+
+            Controller = DynamoController.MakeSandbox();
+            Controller.Testing = true;
+
+            //create the view
+            Ui = new DynamoView();
+            Ui.DataContext = Controller.DynamoViewModel;
+            Vm = Controller.DynamoViewModel;
+            Controller.UIDispatcher = Ui.Dispatcher;
+            Ui.Show();
+
+            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
         }
         #endregion
 

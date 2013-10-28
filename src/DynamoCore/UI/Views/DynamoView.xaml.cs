@@ -26,6 +26,7 @@ using Dynamo.UI.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Dynamo.Core;
+using Dynamo.Services;
 
 namespace Dynamo.Controls
 {
@@ -164,6 +165,9 @@ namespace Dynamo.Controls
 
         private void dynBench_Activated(object sender, EventArgs e)
         {
+            // If first run, Collect Info Prompt will appear
+            CollectInfoManager.Instance.CheckFirstRun();
+
             this.WorkspaceTabs.SelectedIndex = 0;
             _vm = (DataContext as DynamoViewModel);
             _vm.Model.RequestLayoutUpdate += vm_RequestLayoutUpdate;
