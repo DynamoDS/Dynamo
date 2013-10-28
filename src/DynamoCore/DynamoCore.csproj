@@ -160,6 +160,7 @@ limitations under the License.
     <Compile Include="PackageManager\PackageManagerClient.cs" />
     <Compile Include="Search\SearchElements\CustomNodeSearchElement.cs" />
     <Compile Include="UI\Commands\AutomationSettings.cs" />
+    <Compile Include="Services\CollectInfoManager.cs" />
     <Compile Include="UI\Commands\BrowserItemCommands.cs" />
     <Compile Include="UI\Commands\Commands.cs" />
     <Compile Include="Core\DynamoLogger.cs" />
@@ -183,6 +184,9 @@ limitations under the License.
     </Compile>
     <Compile Include="UI\SharedResourceDictionary.cs" />
     <Compile Include="UI\HandlingEventTrigger.cs" />
+    <Compile Include="UI\Prompts\CollectInfoPrompt.xaml.cs">
+      <DependentUpon>CollectInfoPrompt.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Views\InfoBubbleView.xaml.cs">
       <DependentUpon>InfoBubbleView.xaml</DependentUpon>
     </Compile>
@@ -448,6 +452,7 @@ limitations under the License.
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Themes\Ports.xaml">
+    <Page Include="UI\Prompts\CollectInfoPrompt.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -645,6 +650,7 @@ limitations under the License.
     <Resource Include="UI\Images\resize_horizontal.png" />
     <Resource Include="UI\Images\resize_vertical.cur" />
     <Resource Include="UI\Images\resize_vertical.png" />
+    <Resource Include="UI\Images\consent_form_image.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

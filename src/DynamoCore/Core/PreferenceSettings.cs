@@ -21,6 +21,13 @@ namespace Dynamo
         const string DYNAMO_SETTINGS_FILE = "DynamoSettings.xml";
 
         // Variables of the settings that will be persistent
+
+        #region Collect Information Settings
+        public bool FirstRun { get; set; }
+        public bool NeverAgreeBefore { get; set; }
+        public bool CollectInfoOption { get; set; }
+        #endregion
+
         public bool ShowConsole { get; set; }
         public bool ShowConnector { get; set; }
         public ConnectorType ConnectorType { get; set; }
@@ -29,6 +36,9 @@ namespace Dynamo
         public PreferenceSettings()
         {
             // Default Settings
+            this.FirstRun = true;
+            this.NeverAgreeBefore = true;
+            this.CollectInfoOption = false;
             this.ShowConsole = false;
             this.ShowConnector = true;
             this.ConnectorType = ConnectorType.BEZIER;
