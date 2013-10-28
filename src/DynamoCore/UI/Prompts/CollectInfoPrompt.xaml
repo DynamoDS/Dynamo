@@ -4,7 +4,7 @@
         Title="Agreement to collect usability data on your use of Dynamo"
         SizeToContent="WidthAndHeight"
         WindowStyle="SingleBorderWindow" ResizeMode="NoResize"
-        ShowInTaskbar="False" Topmost="True"
+        ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner">
     <Window.Resources>
         <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoModern.xaml" />
