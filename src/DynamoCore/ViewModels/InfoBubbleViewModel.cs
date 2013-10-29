@@ -298,6 +298,16 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        private void InstantAppear(object parameter)
+        {
+            Opacity = 0.95;
+        }
+
+        private bool CanInstantAppear(object parameter)
+        {
+            return true;
+        }
+
         private void SetAlwaysVisible(object parameter)
         {
             alwaysVisible = (bool)parameter;
