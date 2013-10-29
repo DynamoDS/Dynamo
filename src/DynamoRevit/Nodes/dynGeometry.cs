@@ -2283,8 +2283,8 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("sweep path", "The curve loop to sweep along.", typeof(Value.Container)));
             InPortData.Add(new PortData("attachment curve index", "index of the curve where profile loop is attached", typeof(Value.Number)));
-            InPortData.Add(new PortData("attachment parameter", "end angle measured counter-clockwise from x-axis of transform", typeof(Value.Number)));
-            InPortData.Add(new PortData("profile loop", "The curve loop to sweep lie in orthogonal plane to path at attachement point.", typeof(Value.Container)));
+            InPortData.Add(new PortData("attachment parameter", "not-normalized parameter of attachment on its curve", typeof(Value.Number)));
+            InPortData.Add(new PortData("profile loop", "The curve loop to sweep to be put in orthogonal plane to path at attachment point.", typeof(Value.Container)));
             OutPortData.Add(new PortData("geometry", "The swept geometry.", typeof(Value.Container)));
 
             RegisterAllPorts();
@@ -2297,6 +2297,74 @@ namespace Dynamo.Nodes
             double attachementPar = ((Value.Number)args[2]).Item;
             Autodesk.Revit.DB.CurveLoop profileLoop = (Autodesk.Revit.DB.CurveLoop)((Value.Container)args[3]).Item;
             List<Autodesk.Revit.DB.CurveLoop> loopList = new List<Autodesk.Revit.DB.CurveLoop>();
+             
+            if (profileLoop.HasPlane())
+            {
+                Autodesk.Revit.DB.Plane profileLoopPlane = profileLoop.GetPlane();
+                Autodesk.Revit.DB.CurveLoopIterator CLiter = pathLoop.GetCurveLoopIterator();
+
+                for (int indexCurve = 0; indexCurve < attachementIndex && CLiter.MoveNext(); indexCurve++)
+                {
+                    CLiter.MoveNext();
+                }
+                
+                Autodesk.Revit.DB.Curve pathCurve = CLiter.Current;
+                if (pathCurve != null)
+                {
+                    double angleTolerance = Math.PI / 1800.0;
+                    Transform pathTrf = pathCurve.ComputeDerivatives(attachementPar, false);
+                    XYZ pathDerivative = pathTrf.BasisX.Normalize();
+                    double distAttachment = profileLoopPlane.Normal.DotProduct(profileLoopPlane.Origin - pathTrf.Origin);
+                    if (Math.Abs(distAttachment) > 0.000001 ||
+                         Math.Abs(profileLoopPlane.Normal.DotProduct(pathDerivative)) < 1.0 - angleTolerance * angleTolerance
+                       )
+                    {
+                       //put profile at proper plane
+                       double distOrigin = profileLoopPlane.Normal.DotProduct(profileLoopPlane.Origin);
+                       XYZ fromPoint = pathTrf.Origin;
+                       if (Math.Abs(distAttachment) > 0.000001 + Math.Abs(distOrigin))
+                           fromPoint = (-distOrigin) * profileLoopPlane.Normal;
+                       XYZ fromVecOne = profileLoopPlane.Normal;
+                       XYZ toVecOne = pathDerivative;
+                       XYZ fromVecTwo = XYZ.BasisZ.CrossProduct(profileLoopPlane.Normal);
+                       if (fromVecTwo.IsZeroLength())
+                           fromVecTwo = XYZ.BasisX;
+                       else
+                           fromVecTwo = fromVecTwo.Normalize();
+                       XYZ toVecTwo = XYZ.BasisZ.CrossProduct(pathDerivative);
+                       if (toVecTwo.IsZeroLength())
+                           toVecTwo = XYZ.BasisX;
+                       else
+                           toVecTwo = toVecTwo.Normalize();
+
+                       Transform trfToAttach = Transform.CreateTranslation(pathTrf.Origin);
+                       trfToAttach.BasisX = toVecOne;
+                       trfToAttach.BasisY = toVecTwo;
+                       trfToAttach.BasisZ = toVecOne.CrossProduct(toVecTwo);
+
+                       Transform trfToProfile = Transform.CreateTranslation(fromPoint);
+                       trfToProfile.BasisX = fromVecOne;
+                       trfToProfile.BasisY = fromVecTwo;
+                       trfToProfile.BasisZ = fromVecOne.CrossProduct(fromVecTwo);
+
+                       Transform trfFromProfile = trfToProfile.Inverse;
+
+                       Transform combineTrf = trfToAttach.Multiply(trfFromProfile);
+
+                       //now get new curve loop
+                       Autodesk.Revit.DB.CurveLoop transformedCurveLoop = new Autodesk.Revit.DB.CurveLoop();
+                       Autodesk.Revit.DB.CurveLoopIterator CLiterT = profileLoop.GetCurveLoopIterator();
+                       for (; CLiterT.MoveNext(); )
+                       {
+                           Curve curCurve = CLiterT.Current;
+                           Curve curCurveTransformed = curCurve.CreateTransformed(combineTrf);
+                            
+                           transformedCurveLoop.Append(curCurveTransformed);
+                       }
+                       profileLoop = transformedCurveLoop;
+                    }
+                }
+            }
             loopList.Add(profileLoop);
 
             Solid result = GeometryCreationUtilities.CreateSweptGeometry(pathLoop, attachementIndex, attachementPar, loopList);
