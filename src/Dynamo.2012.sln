@@ -47,6 +47,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoTestFramework", "Dyna
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FSchemeInterop2012", "FSchemeInterop\FSchemeInterop2012.csproj", "{126C6420-C7A2-43B0-8B08-206C6C4C1348}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSRevitNodes", "DSNodes\DSRevitNodes.csproj", "{0BC2A611-BD0E-4FCC-A1DE-81F14ED369B2}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Dynamo.vsmdi
@@ -285,6 +287,16 @@ Global
 		{126C6420-C7A2-43B0-8B08-206C6C4C1348}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{126C6420-C7A2-43B0-8B08-206C6C4C1348}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{126C6420-C7A2-43B0-8B08-206C6C4C1348}.Release|x86.ActiveCfg = Release|Any CPU
+		{0BC2A611-BD0E-4FCC-A1DE-81F14ED369B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BC2A611-BD0E-4FCC-A1DE-81F14ED369B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BC2A611-BD0E-4FCC-A1DE-81F14ED369B2}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{0BC2A611-BD0E-4FCC-A1DE-81F14ED369B2}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{0BC2A611-BD0E-4FCC-A1DE-81F14ED369B2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0BC2A611-BD0E-4FCC-A1DE-81F14ED369B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BC2A611-BD0E-4FCC-A1DE-81F14ED369B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BC2A611-BD0E-4FCC-A1DE-81F14ED369B2}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{0BC2A611-BD0E-4FCC-A1DE-81F14ED369B2}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{0BC2A611-BD0E-4FCC-A1DE-81F14ED369B2}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -37,9 +37,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LibGNet, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+    <Reference Include="ProtoGeometry">
+      <HintPath>..\..\extern\DesignScript\ProtoGeometry.dll</HintPath>
+    </Reference>
+    <Reference Include="ProtoInterface, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\DynamoAsm\LibGNet.dll</HintPath>
+      <HintPath>..\..\extern\DesignScript\ProtoInterface.dll</HintPath>
+    </Reference>
+    <Reference Include="RevitAPI">
+      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit Architecture 2014\RevitAPI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -50,8 +57,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Geometry.cs" />
+    <Compile Include="AdaptiveComponent.cs" />
+    <Compile Include="DividedPath.cs" />
+    <Compile Include="DivideSurface.cs" />
+    <Compile Include="FreeForm.cs" />
+    <Compile Include="Material.cs" />
+    <Compile Include="ModelCurve.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="FamilyInstance.cs" />
+    <Compile Include="Floor.cs" />
+    <Compile Include="Grid.cs" />
+    <Compile Include="Level.cs" />
+    <Compile Include="Parameter.cs" />
+    <Compile Include="ReferenceCurve.cs" />
+    <Compile Include="ReferencePoint.cs" />
+    <Compile Include="Selection.cs" />
+    <Compile Include="Solid.cs" />
+    <Compile Include="SpatialField.cs" />
+    <Compile Include="StucturalFraming.cs" />
+    <Compile Include="View.cs" />
+    <Compile Include="Wall.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
