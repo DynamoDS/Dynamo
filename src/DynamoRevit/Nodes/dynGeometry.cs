@@ -2283,7 +2283,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("sweep path", "The curve loop to sweep along.", typeof(Value.Container)));
             InPortData.Add(new PortData("attachment curve index", "index of the curve where profile loop is attached", typeof(Value.Number)));
-            InPortData.Add(new PortData("attachment parameter", "not-normalized parameter of attachment on its curve", typeof(Value.Number)));
+            InPortData.Add(new PortData("attachment parameter", "parameter of attachment point on its curve", typeof(Value.Number)));
             InPortData.Add(new PortData("profile loop", "The curve loop to sweep to be put in orthogonal plane to path at attachment point.", typeof(Value.Container)));
             OutPortData.Add(new PortData("geometry", "The swept geometry.", typeof(Value.Container)));
 
