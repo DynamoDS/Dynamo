@@ -9,6 +9,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand fadeInCommand;
         private DelegateCommand fadeOutCommand;
         private DelegateCommand instanctCollapseCommand;
+        private DelegateCommand instanctAppearCommand;
         private DelegateCommand setAlwaysVisibleCommand;
         private DelegateCommand resizeCommand;
 
@@ -59,6 +60,16 @@ namespace Dynamo.ViewModels
                 if (instanctCollapseCommand == null)
                     instanctCollapseCommand = new DelegateCommand(InstantCollapse, CanInstantCollapse);
                 return instanctCollapseCommand;
+            }
+        }
+
+        public DelegateCommand InstantAppearCommand
+        {
+            get
+            {
+                if (instanctAppearCommand == null)
+                    instanctAppearCommand = new DelegateCommand(InstantAppear, CanInstantAppear);
+                return instanctAppearCommand;
             }
         }
 
