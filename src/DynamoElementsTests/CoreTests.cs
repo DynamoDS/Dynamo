@@ -659,5 +659,31 @@ namespace Dynamo.Tests
             degrees = Convert.ToDouble(converter.Convert("3.14159", typeof(string), null, new System.Globalization.CultureInfo("en-US")));
             Assert.AreEqual(180.0, degrees, 0.01);
         }
+        [Test]
+        public void AngleConverterGerman()
+        {
+            RadianToDegreesConverter converter = new RadianToDegreesConverter();
+            double radians = Convert.ToDouble(converter.ConvertBack("90,0", typeof(string), null, new System.Globalization.CultureInfo("de-DE")));
+            Assert.AreEqual(1.57, radians, 0.01);
+
+            radians = Convert.ToDouble(converter.ConvertBack("180,0", typeof(string), null, new System.Globalization.CultureInfo("de-DE")));
+            Assert.AreEqual(3.14, radians, 0.01);
+
+            radians = Convert.ToDouble(converter.ConvertBack("360,0", typeof(string), null, new System.Globalization.CultureInfo("de-DE")));
+
+            Assert.AreEqual(6.28, radians, 0.01);
+
+            radians = Convert.ToDouble(converter.ConvertBack("-90,0", typeof(string), null, new System.Globalization.CultureInfo("de-DE")));
+            Assert.AreEqual(-1.57, radians, 0.01);
+
+            double degrees = Convert.ToDouble(converter.Convert("-1,570795", typeof(string), null, new System.Globalization.CultureInfo("de-DE")));
+            Assert.AreEqual(-90.0, degrees, 0.01);
+
+            degrees = Convert.ToDouble(converter.Convert("6,28318", typeof(string), null, new System.Globalization.CultureInfo("de-DE")));
+            Assert.AreEqual(360.0, degrees, 0.01);
+
+            degrees = Convert.ToDouble(converter.Convert("3,14159", typeof(string), null, new System.Globalization.CultureInfo("de-DE")));
+            Assert.AreEqual(180.0, degrees, 0.01);
+        }
     }
 }
