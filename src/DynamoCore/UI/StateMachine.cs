@@ -12,6 +12,7 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Views;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.ViewModels
 {
@@ -20,6 +21,10 @@ namespace Dynamo.ViewModels
         #region State Machine Related Methods/Data Members
 
         private StateMachine stateMachine = null;
+        private ConnectorViewModel activeConnector = null;
+        private List<DraggedNode> draggedNodes = new List<DraggedNode>();
+
+        internal bool IsConnecting { get { return null != this.activeConnector; } }
 
         internal bool HandleLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -36,6 +41,11 @@ namespace Dynamo.ViewModels
             return stateMachine.HandleMouseMove(sender, e);
         }
 
+        internal bool HandleMouseMove(object sender, Point mouseCursor)
+        {
+            return stateMachine.HandleMouseMove(sender, mouseCursor);
+        }
+
         internal bool HandlePortClicked(PortViewModel portViewModel)
         {
             return stateMachine.HandlePortClicked(portViewModel);
@@ -44,6 +54,183 @@ namespace Dynamo.ViewModels
         internal void CancelActiveState()
         {
             stateMachine.CancelActiveState();
+        }
+
+        internal void BeginDragSelection(Point mouseCursor)
+        {
+            // This represents the first mouse-move event after the mouse-down
+            // event. Note that a mouse-down event can either be followed by a
+            // mouse-move event or simply a mouse-up event. That means having 
+            // a click does not imply there will be a drag operation. That is 
+            // the reason the first mouse-move event is used to signal the 
+            // actual drag operation (as oppose to just click-and-release).
+            // Here each node in the selection is being recorded for undo right
+            // before they get updated by the drag operation.
+            // 
+            RecordSelectionForUndo();
+            foreach (ISelectable selectable in DynamoSelection.Instance.Selection)
+            {
+                ILocatable locatable = selectable as ILocatable;
+                if (null != locatable)
+                    draggedNodes.Add(new DraggedNode(locatable, mouseCursor));
+            }
+
+            if (draggedNodes.Count <= 0) // There is nothing to drag.
+            {
+                string message = "Shouldn't get here if nothing is dragged";
+                throw new InvalidOperationException(message);
+            }
+        }
+
+        internal void UpdateDraggedSelection(Point mouseCursor)
+        {
+            if (draggedNodes.Count <= 0)
+            {
+                throw new InvalidOperationException(
+                    "UpdateDraggedSelection cannot be called now");
+            }
+
+            foreach (DraggedNode draggedNode in draggedNodes)
+                draggedNode.Update(mouseCursor);
+        }
+
+        internal void EndDragSelection(Point mouseCursor)
+        {
+            UpdateDraggedSelection(mouseCursor); // Final position update.
+            draggedNodes.Clear(); // We are no longer dragging anything.
+        }
+
+        internal void BeginConnection(Guid nodeId, int portIndex, PortType portType)
+        {
+            int index = portIndex;
+            bool isInPort = portType == PortType.INPUT;
+
+            NodeModel node = _model.GetModelInternal(nodeId) as NodeModel;
+            PortModel portModel = isInPort ? node.InPorts[index] : node.OutPorts[index];
+
+            // Test if port already has a connection, if so grab it and begin connecting 
+            // to somewhere else (we don't allow the grabbing of the start connector).
+            if (portModel.Connectors.Count > 0 && portModel.Connectors[0].Start != portModel)
+            {
+                // Define the new active connector
+                var c = new ConnectorViewModel(portModel.Connectors[0].Start);
+                this.SetActiveConnector(c);
+
+                // Disconnect the connector model from its start and end ports
+                // and remove it from the connectors collection. This will also
+                // remove the view model.
+                ConnectorModel connector = portModel.Connectors[0];
+                if (_model.Connectors.Contains(connector))
+                {
+                    List<ModelBase> models = new List<ModelBase>();
+                    models.Add(connector);
+                    _model.RecordAndDeleteModels(models);
+                    connector.NotifyConnectedPortsOfDeletion();
+                }
+            }
+            else
+            {
+                try
+                {
+                    // Create a connector view model to begin drawing
+                    var connector = new ConnectorViewModel(portModel);
+                    this.SetActiveConnector(connector);
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                }
+            }
+        }
+
+        internal void EndConnection(Guid nodeId, int portIndex, PortType portType)
+        {
+            int index = portIndex;
+            bool isInPort = portType == PortType.INPUT;
+
+            NodeModel node = _model.GetModelInternal(nodeId) as NodeModel;
+            PortModel portModel = isInPort ? node.InPorts[index] : node.OutPorts[index];
+
+            // Remove connector if one already exists
+            if (portModel.Connectors.Count > 0 && portModel.PortType == PortType.INPUT)
+            {
+                var connToRemove = portModel.Connectors[0];
+                _model.Connectors.Remove(connToRemove);
+                portModel.Disconnect(connToRemove);
+                var startPort = connToRemove.Start;
+                startPort.Disconnect(connToRemove);
+            }
+
+            // Create the new connector model
+            var start = this.activeConnector.ActiveStartPort;
+            var end = portModel;
+
+            // We could either connect from an input port to an output port, or 
+            // another way around (in which case we swap first and second ports).
+            PortModel firstPort = start, second = end;
+            if (portModel.PortType != PortType.INPUT)
+            {
+                firstPort = end;
+                second = start;
+            }
+
+            ConnectorModel newConnectorModel = ConnectorModel.Make(firstPort.Owner,
+                second.Owner, firstPort.Index, second.Index, PortType.INPUT);
+
+            if (newConnectorModel != null) // Add to the current workspace
+                _model.Connectors.Add(newConnectorModel);
+
+            // Record the creation of connector in the undo recorder.
+            _model.RecordCreatedModel(newConnectorModel);
+            this.SetActiveConnector(null);
+        }
+
+        internal void CancelConnection()
+        {
+            this.SetActiveConnector(null);
+        }
+
+        internal void UpdateActiveConnector(Point mouseCursor)
+        {
+            if (null != this.activeConnector)
+                this.activeConnector.Redraw(mouseCursor);
+
+        }
+
+        private void SetActiveConnector(ConnectorViewModel connector)
+        {
+            if (null != connector)
+            {
+                System.Diagnostics.Debug.Assert(null == activeConnector);
+                this.WorkspaceElements.Add(connector);
+                this.activeConnector = connector;
+            }
+            else
+            {
+                System.Diagnostics.Debug.Assert(null != activeConnector);
+                this.WorkspaceElements.Remove(activeConnector);
+                this.activeConnector = null;
+            }
+
+            this.RaisePropertyChanged("ActiveConnector");
+        }
+
+        private void RecordSelectionForUndo()
+        {
+            // This is where we attempt to store all the models in undo recorder 
+            // before they are modified (i.e. being dragged around the canvas).
+            // Note that we only do this once when the first mouse-move occurs 
+            // after a mouse-down, because mouse-down can potentially be used 
+            // just to select a node (as opposed to moving the selected nodes), in 
+            // which case we don't want any of the nodes to be recorded for undo.
+            // 
+            List<ModelBase> models = DynamoSelection.Instance.Selection.
+                Where((x) => (x is ModelBase)).Cast<ModelBase>().ToList<ModelBase>();
+
+            this._model.RecordModelsForModification(models);
+            DynamoController controller = Dynamo.Utilities.dynSettings.Controller;
+            controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+            controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
         }
 
         #endregion
@@ -56,13 +243,6 @@ namespace Dynamo.ViewModels
         /// </summary>
         public class DraggedNode
         {
-            // TODO(Ben): The DragCanvas.AllowDragOutOfView property will be 
-            // made obsolete when infinite canvas is integrated in the release
-            // branch. That is the point "DraggedNode.region" data member needs
-            // to be removed.
-            // 
-            Rect region = default(Rect);
-
             double deltaX = 0, deltaY = 0;
             ILocatable locatable = null;
 
@@ -80,9 +260,8 @@ namespace Dynamo.ViewModels
             /// be moved. However, the movement of ILocatable will be limited by 
             /// region and that it cannot be moved beyond the region.</param>
             /// 
-            public DraggedNode(ILocatable locatable, Point mouseCursor, Rect region)
+            public DraggedNode(ILocatable locatable, Point mouseCursor)
             {
-                this.region = region;
                 this.locatable = locatable;
                 deltaX = mouseCursor.X - locatable.X;
                 deltaY = mouseCursor.Y - locatable.Y;
@@ -93,14 +272,9 @@ namespace Dynamo.ViewModels
                 // Make sure the nodes do not go beyond the region.
                 double x = mouseCursor.X - deltaX;
                 double y = mouseCursor.Y - deltaY;
-                locatable.X = ((x > region.X) ? x : region.X);
-                locatable.Y = ((y > region.Y) ? y : region.Y);
-
-                // Make sure the nodes do not go beyond the upper limits.
-                if ((locatable.X + locatable.Width) > region.Width)
-                    locatable.X = region.Width - locatable.Width;
-                if ((locatable.Y + locatable.Height) > region.Height)
-                    locatable.Y = region.Height - locatable.Height;
+                locatable.X = x;
+                locatable.Y = y;
+                locatable.ReportPosition();
             }
         }
 
@@ -125,10 +299,12 @@ namespace Dynamo.ViewModels
 
             private bool ignoreMouseClick = false;
             private State currentState = State.None;
+            internal State CurrentState
+            {
+                get { return this.currentState; }
+            }
             private Point mouseDownPos = new Point();
             private WorkspaceViewModel owningWorkspace = null;
-            private ConnectorViewModel activeConnector = null;
-            private List<DraggedNode> draggedNodes = new List<DraggedNode>();
 
             #endregion
 
@@ -165,8 +341,13 @@ namespace Dynamo.ViewModels
                 {
                     // Clicking on the canvas while connecting simply cancels 
                     // the operation and drop the temporary connector.
+                    var command = new DynCmd.MakeConnectionCommand(Guid.Empty, -1,
+                        PortType.INPUT, DynCmd.MakeConnectionCommand.Mode.Cancel);
+
+                    var dynamoViewModel = dynSettings.Controller.DynamoViewModel;
+                    dynamoViewModel.ExecuteCommand(command);
+
                     this.currentState = State.None;
-                    this.SetActiveConnector(null);
                     eventHandled = true; // Mouse event handled.
                 }
                 else if (this.currentState == State.None)
@@ -196,16 +377,27 @@ namespace Dynamo.ViewModels
 
                 if (this.currentState == State.WindowSelection)
                 {
+                    
                     SelectionBoxUpdateArgs args = null;
                     args = new SelectionBoxUpdateArgs(Visibility.Collapsed);
                     this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
                     this.currentState = State.None;
+
+                    this.owningWorkspace.RequestChangeCursorUsual(this, e);
+
                     return true; // Mouse event handled.
                 }
                 else if (this.currentState == State.NodeReposition)
                 {
-                    draggedNodes.Clear();
-                    this.currentState = State.None;
+                    Point mouseCursor = e.GetPosition(sender as IInputElement);
+                    var operation = DynCmd.DragSelectionCommand.Operation.EndDrag;
+                    var command = new DynCmd.DragSelectionCommand(mouseCursor, operation);
+                    var dynamoViewModel = dynSettings.Controller.DynamoViewModel;
+                    dynamoViewModel.ExecuteCommand(command);
+
+                    this.owningWorkspace.RequestChangeCursorUsual(this, e);
+
+                    this.currentState = State.None; // Dragging operation ended.
                 }
                 else if (this.currentState == State.DragSetup)
                     this.currentState = State.None;
@@ -213,29 +405,18 @@ namespace Dynamo.ViewModels
                 return false; // Mouse event not handled.
             }
 
-            internal bool HandleMouseMove(object sender, MouseEventArgs e)
+            internal bool HandleMouseMove(object sender, Point mouseCursor)
             {
-                IInputElement element = sender as IInputElement;
-                Point mouseCursor = e.GetPosition(element);
-
                 if (this.currentState == State.Connection)
                 {
                     // If we are currently connecting and there is an active 
                     // connector, redraw it to match the new mouse coordinates.
-                    // 
-                    if (null != this.activeConnector)
-                        this.activeConnector.Redraw(mouseCursor);
+
+                    owningWorkspace.UpdateActiveConnector(mouseCursor);
+
                 }
                 else if (this.currentState == State.WindowSelection)
                 {
-                    // TODO(Ben): Can we not only select those nodes that we 
-                    // have not previously selected? Of course that requires 
-                    // us to take deselection into consideration.
-                    // 
-                    // Clear the selected elements before reselecting 
-                    // all nodes that fall within the selection window.
-                    DynamoSelection.Instance.ClearSelection();
-
                     // When the mouse is held down, reposition the drag selection box.
                     double x = Math.Min(mouseDownPos.X, mouseCursor.X);
                     double y = Math.Min(mouseDownPos.Y, mouseCursor.Y);
@@ -258,54 +439,43 @@ namespace Dynamo.ViewModels
 
                     var rect = new Rect(x, y, width, height);
 
-                    if (isCrossSelection)
-                        owningWorkspace.CrossSelectCommand.Execute(rect);
-                    else
-                        owningWorkspace.ContainSelectCommand.Execute(rect);
+                    var command = new DynCmd.SelectInRegionCommand(rect, isCrossSelection);
+                    DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
+                    dynamoViewModel.ExecuteCommand(command);
+
                 }
                 else if (this.currentState == State.DragSetup)
                 {
-                    // Before the integration with infinite canvas work, we would 
-                    // prefer not to have the nodes move out of the canvas region.
-                    // Here at the beginning of a drag operation, we'll simply 
-                    // determine the region within which the nodes can move.
-                    // 
-                    var canvas = sender as Dynamo.Controls.DragCanvas;
-                    Rect region = new Rect(0, 0, canvas.ActualWidth, canvas.ActualHeight);
-
-                    // This represents the first mouse-move event after the mouse-down
-                    // event. Note that a mouse-down event can either be followed by a
-                    // mouse-move event or simply a mouse-up event. That means having 
-                    // a click does not imply there will be a drag operation. That is 
-                    // the reason the first mouse-move event is used to signal the 
-                    // actual drag operation (as oppose to just click-and-release).
-                    // Here each node in the selection is being recorded for undo right
-                    // before they get updated by the drag operation.
-                    // 
-                    RecordNodesForUndo();
-                    foreach (ISelectable selectable in DynamoSelection.Instance.Selection)
-                    {
-                        ILocatable locatable = selectable as ILocatable;
-                        if (null != locatable)
-                            draggedNodes.Add(new DraggedNode(locatable, mouseCursor, region));
-                    }
-
-                    if (draggedNodes.Count <= 0) // There is nothing to drag.
+                    // There are something in the selection, but none is ILocatable.
+                    if (!DynamoSelection.Instance.Selection.Any((x) => (x is ILocatable)))
                     {
                         this.currentState = State.None;
                         return false;
                     }
+
+                    // Record and begin the drag operation for selected nodes.
+                    var operation = DynCmd.DragSelectionCommand.Operation.BeginDrag;
+                    var command = new DynCmd.DragSelectionCommand(mouseCursor, operation);
+                    DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
+                    dynamoViewModel.ExecuteCommand(command);
 
                     this.currentState = State.NodeReposition;
                     return true;
                 }
                 else if (this.currentState == State.NodeReposition)
                 {
-                    foreach (DraggedNode draggedNode in draggedNodes)
-                        draggedNode.Update(mouseCursor);
+                    // Update the dragged nodes (note: this isn't recorded).
+                    owningWorkspace.UpdateDraggedSelection(mouseCursor);
                 }
 
                 return false; // Mouse event not handled.
+            }
+
+            internal bool HandleMouseMove(object sender, MouseEventArgs e)
+            {
+                IInputElement element = sender as IInputElement;
+                Point mouseCursor = e.GetPosition(element);
+                return HandleMouseMove(sender, mouseCursor);
             }
 
             internal bool HandlePortClicked(PortViewModel portViewModel)
@@ -316,89 +486,31 @@ namespace Dynamo.ViewModels
                     return false;
 
                 PortModel portModel = portViewModel.PortModel;
-
                 DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
-                WorkspaceModel workspaceModel = dynamoViewModel.CurrentSpace;
                 WorkspaceViewModel workspaceViewModel = dynamoViewModel.CurrentSpaceViewModel;
 
                 if (this.currentState != State.Connection) // Not in a connection attempt...
                 {
-                    // Test if port already has a connection, if so grab it and begin connecting 
-                    // to somewhere else (we don't allow the grabbing of the start connector).
-                    if (portModel.Connectors.Count > 0 && portModel.Connectors[0].Start != portModel)
-                    {
-                        // Define the new active connector
-                        var c = new ConnectorViewModel(portModel.Connectors[0].Start);
-                        this.SetActiveConnector(c);
-                        this.currentState = State.Connection;
+                    PortType portType = PortType.INPUT;
+                    Guid nodeId = portModel.Owner.GUID;
+                    int portIndex = portModel.Owner.GetPortIndex(portModel, out portType);
 
-                        // Disconnect the connector model from its start and end ports
-                        // and remove it from the connectors collection. This will also
-                        // remove the view model.
-                        ConnectorModel connector = portModel.Connectors[0];
-                        if (workspaceModel.Connectors.Contains(connector))
-                        {
-                            List<ModelBase> models = new List<ModelBase>();
-                            models.Add(connector);
-                            workspaceModel.RecordAndDeleteModels(models);
-                            connector.NotifyConnectedPortsOfDeletion();
-                        }
-                    }
-                    else
-                    {
-                        try
-                        {
-                            // Create a connector view model to begin drawing
-                            var connector = new ConnectorViewModel(portModel);
-                            this.SetActiveConnector(connector);
-                            this.currentState = State.Connection;
-                        }
-                        catch (Exception ex)
-                        {
-                            System.Diagnostics.Debug.WriteLine(ex.Message);
-                        }
-                    }
+                    dynamoViewModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
+                        nodeId, portIndex, portType, DynCmd.MakeConnectionCommand.Mode.Begin));
+
+                    if (owningWorkspace.IsConnecting)
+                        this.currentState = State.Connection;
                 }
                 else  // Attempt to complete the connection
                 {
-                    // Remove connector if one already exists
-                    if (portModel.Connectors.Count > 0 && portModel.PortType == PortType.INPUT)
-                    {
-                        var connToRemove = portModel.Connectors[0];
-                        workspaceModel.Connectors.Remove(connToRemove);
-                        portModel.Disconnect(connToRemove);
-                        var startPort = connToRemove.Start;
-                        startPort.Disconnect(connToRemove);
-                    }
+                    PortType portType = PortType.INPUT;
+                    Guid nodeId = portModel.Owner.GUID;
+                    int portIndex = portModel.Owner.GetPortIndex(portModel, out portType);
 
-                    // Create the new connector model
-                    var start = this.activeConnector.ActiveStartPort;
-                    var end = portModel;
+                    dynamoViewModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
+                        nodeId, portIndex, portType, DynCmd.MakeConnectionCommand.Mode.End));
 
-                    // We could either connect from an input port to an output port, or 
-                    // another way around (in which case we swap first and second ports).
-                    PortModel firstPort = start, second = end;
-                    if (portModel.PortType != PortType.INPUT)
-                    {
-                        firstPort = end;
-                        second = start;
-                    }
-
-                    ConnectorModel newConnectorModel = ConnectorModel.Make(
-                        firstPort.Owner, second.Owner, firstPort.Index, second.Index, 0);
-
-                    if (newConnectorModel == null) // The connector is invalid
-                        return false;
-
-                    // Add to the current workspace
-                    workspaceModel.Connectors.Add(newConnectorModel);
-
-                    // Cleanup
                     this.currentState = State.None;
-                    this.SetActiveConnector(null);
-
-                    // Record the creation of connector in the undo recorder.
-                    workspaceModel.RecordCreatedModel(newConnectorModel);
                 }
 
                 return true;
@@ -422,25 +534,6 @@ namespace Dynamo.ViewModels
                 return null;
             }
 
-            private void RecordNodesForUndo()
-            {
-                // This is where we attempt to store all the models in undo recorder 
-                // before they are modified (i.e. being dragged around the canvas).
-                // Note that we only do this once when the first mouse-move occurs 
-                // after a mouse-down, because mouse-down can potentially be used 
-                // just to select a node (as opposed to moving the selected nodes), in 
-                // which case we don't want any of the nodes to be recorded for undo.
-                // 
-                List<ModelBase> models = DynamoSelection.Instance.Selection.
-                    Where((x) => (x is ModelBase)).Cast<ModelBase>().ToList<ModelBase>();
-
-                WorkspaceModel workspaceModel = owningWorkspace.Model;
-                workspaceModel.RecordModelsForModification(models);
-                DynamoController controller = Dynamo.Utilities.dynSettings.Controller;
-                controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
-                controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
-            }
-
             private void InitiateDragSequence()
             {
                 // The state machine must be in idle state.
@@ -448,6 +541,8 @@ namespace Dynamo.ViewModels
                     throw new InvalidOperationException();
 
                 this.currentState = State.DragSetup;
+
+                this.owningWorkspace.RequestChangeCursorUsual(this, new EventArgs());
             }
 
             private void InitiateWindowSelectionSequence()
@@ -456,7 +551,10 @@ namespace Dynamo.ViewModels
                 if (this.currentState != State.None)
                     throw new InvalidOperationException();
 
-                DynamoSelection.Instance.ClearSelection();
+                // Clear existing selection set.
+                var selectNothing = new DynCmd.SelectModelCommand(Guid.Empty, ModifierKeys.None);
+                DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
+                dynamoViewModel.ExecuteCommand(selectNothing);
 
                 // Update the selection box and make it visible 
                 // but with an initial dimension of zero.
@@ -466,24 +564,7 @@ namespace Dynamo.ViewModels
 
                 this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
                 this.currentState = State.WindowSelection;
-            }
-
-            private void SetActiveConnector(ConnectorViewModel connector)
-            {
-                if (null != connector)
-                {
-                    System.Diagnostics.Debug.Assert(null == activeConnector);
-                    owningWorkspace.WorkspaceElements.Add(connector);
-                    this.activeConnector = connector;
-                }
-                else
-                {
-                    System.Diagnostics.Debug.Assert(null != activeConnector);
-                    owningWorkspace.WorkspaceElements.Remove(activeConnector);
-                    this.activeConnector = null;
-                }
-
-                owningWorkspace.RaisePropertyChanged("ActiveConnector");
+                this.owningWorkspace.RequestChangeCursorDragging(this, args);
             }
 
             #endregion

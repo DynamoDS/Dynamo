@@ -1,18 +1,4 @@
-﻿//Copyright 2013 Ian Keough
-
-//Licensed under the Apache License, Version 2.0 (the "License");
-//you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at
-
-//http://www.apache.org/licenses/LICENSE-2.0
-
-//Unless required by applicable law or agreed to in writing, software
-//distributed under the License is distributed on an "AS IS" BASIS,
-//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//See the License for the specific language governing permissions and
-//limitations under the License.
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Controls;
@@ -122,7 +108,6 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            string content = "";
             string prefix = "";
 
             int count = 0;
@@ -137,7 +122,7 @@ namespace Dynamo.Nodes
 
                     foreach (Value e in args)
                     {
-                        Root.Children.Add(Process(e, ref content, prefix, count));
+                        Root.Children.Add(Process(e, prefix, count));
                         count++;
                     }
 
@@ -155,13 +140,13 @@ namespace Dynamo.Nodes
 
         }
 
-        WatchNode Process(Value eIn, ref string content, string prefix, int count, bool isListMember = false)
+        WatchNode Process(Value eIn, string prefix, int count, bool isListMember = false)
         {
-            content += prefix + string.Format("[{0}]:", count.ToString());
+            //content += prefix + string.Format("[{0}]:", count.ToString());
 
             WatchNode node = null;
             
-            if (eIn == null)
+            if (eIn == null || eIn.IsDummy)
             {
                 node = new WatchNode("null");
                 return node;
@@ -171,7 +156,7 @@ namespace Dynamo.Nodes
             {
                 if ((eIn as Value.Container).Item != null)
                 {
-                    content += (eIn as Value.Container).Item.ToString();
+                    //content += (eIn as Value.Container).Item.ToString();
 
                     node = new WatchNode((eIn as Value.Container).Item.ToString(), isListMember, count);
 
@@ -182,12 +167,12 @@ namespace Dynamo.Nodes
             }
             else if (eIn.IsFunction)
             {
-                content += eIn.ToString() + "\n";
+                //content += eIn.ToString() + "\n";
                 node = new WatchNode("<function>", isListMember, count);
             }
             else if (eIn.IsList)
             {
-                content += "List\n";
+                //content += "List\n";
 
                 string newPrefix = prefix + "\t";
 
@@ -197,22 +182,22 @@ namespace Dynamo.Nodes
 
                 foreach (var e in list.Select((x, i) => new { Element = x, Index = i }))
                 {
-                    node.Children.Add( Process(e.Element, ref content, newPrefix, e.Index, true) );
+                    node.Children.Add( Process(e.Element, newPrefix, e.Index, true) );
                 }
             }
             else if (eIn.IsNumber)
             {
-                content += (eIn as Value.Number).Item.ToString() + "\n";
+                //content += (eIn as Value.Number).Item.ToString() + "\n";
                 node = new WatchNode((eIn as Value.Number).Item.ToString(), isListMember, count);
             }
             else if (eIn.IsString)
             {
-                content += (eIn as Value.String).Item.ToString() + "\n";
+                //content += (eIn as Value.String).Item.ToString() + "\n";
                 node = new WatchNode((eIn as Value.String).Item.ToString(), isListMember, count);
             }
             else if (eIn.IsSymbol)
             {
-                content += (eIn as Value.Symbol).Item.ToString() + "\n";
+                //content += (eIn as Value.Symbol).Item.ToString() + "\n";
                 node = new WatchNode((eIn as Value.Symbol).Item.ToString(), isListMember, count);
             }
 

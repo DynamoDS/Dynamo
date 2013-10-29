@@ -61,6 +61,16 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// A position defined by the x and y components.
+        /// Used for notification in situations where you don't
+        /// want to have property notifications for X and Y
+        /// </summary>
+        public Point Position
+        {
+            get{return new Point(x,y);}
+        }
+
+        /// <summary>
         /// The height of the node.
         /// </summary>
         public double Height
@@ -140,6 +150,11 @@ namespace Dynamo.Models
             IsSelected = false;
         }
 
+        public void ReportPosition()
+        {
+            RaisePropertyChanged("Position");
+        }
+
         #region Serialization/Deserialization Methods
 
         public XmlElement Serialize(XmlDocument xmlDocument, SaveContext context)
@@ -171,5 +186,6 @@ namespace Dynamo.Models
         Rect Rect { get; }
         double CenterX { get; set; }
         double CenterY { get; set; }
+        void ReportPosition();
     }
 }

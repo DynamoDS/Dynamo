@@ -1,0 +1,22 @@
+<dynWorkspace X="0" Y="0">
+  <dynElements>
+    <Dynamo.Nodes.dynFamilyInstanceParameterGetter type="Dynamo.Nodes.dynFamilyInstanceParameterGetter" guid="d1ae2fd3-3827-4a6c-975a-885dd044db58" nickname="Get Instance Parameter" x="455.25" y="137.75" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <Run />
+    </Dynamo.Nodes.dynFamilyInstanceParameterGetter>
+    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="4596a36c-40d1-4505-b3a8-9345d181ec04" nickname="Watch" x="667.25" y="108.75" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynFamilyInstanceCreatorSelection type="Dynamo.Nodes.dynFamilyInstanceCreatorSelection" guid="30b8c523-3b9e-45a9-bb84-a0343859b3ca" nickname="Select Family Instance" x="33.5530292961504" y="137.688255261368" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <instance id="58787572-65da-4342-9998-357576050f4e-00039c63" />
+    </Dynamo.Nodes.dynFamilyInstanceCreatorSelection>
+    <Dynamo.Nodes.dynFamilyInstanceParameterSelector type="Dynamo.Nodes.dynFamilyInstanceParameterSelector" guid="7ce26eeb-7678-4165-94df-c4301b488778" nickname="Select Fam Inst Param" x="167.0299604511" y="255.404295751897" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <familyid value="236643" />
+      <index value="5" />
+    </Dynamo.Nodes.dynFamilyInstanceParameterSelector>
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnectorModel start="d1ae2fd3-3827-4a6c-975a-885dd044db58" start_index="0" end="4596a36c-40d1-4505-b3a8-9345d181ec04" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="30b8c523-3b9e-45a9-bb84-a0343859b3ca" start_index="0" end="d1ae2fd3-3827-4a6c-975a-885dd044db58" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="30b8c523-3b9e-45a9-bb84-a0343859b3ca" start_index="0" end="7ce26eeb-7678-4165-94df-c4301b488778" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="7ce26eeb-7678-4165-94df-c4301b488778" start_index="0" end="d1ae2fd3-3827-4a6c-975a-885dd044db58" end_index="1" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>

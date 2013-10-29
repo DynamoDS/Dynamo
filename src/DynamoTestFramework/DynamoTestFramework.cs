@@ -5,12 +5,16 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Serialization;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using Dynamo.Applications;
+using Dynamo.Controls;
 using Dynamo.NUnit.Tests;
+using Dynamo.Utilities;
 using NUnit.Core;
 using NUnit.Core.Filters;
 
@@ -66,8 +70,15 @@ namespace Dynamo.Tests
         /// </summary>
         private string resultsPath = "";
 
+        /// <summary>
+        /// Should Dynamo be run?
+        /// </summary>
+        private bool runDynamo;
+
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
+            AppDomain.CurrentDomain.AssemblyResolve += Dynamo.Utilities.AssemblyHelper.CurrentDomain_AssemblyResolve;
+
             //Get the data map from the running journal file.
             IDictionary<string, string> dataMap = revit.JournalData;
 
@@ -96,6 +107,10 @@ namespace Dynamo.Tests
                     {
                         resultsPath = dataMap["resultsPath"];
                     }
+                    if (dataMap.ContainsKey("runDynamo"))
+                    {
+                        runDynamo = Convert.ToBoolean(dataMap["runDynamo"]);
+                    }
                 }
 
                 if (string.IsNullOrEmpty(testAssembly))
@@ -108,6 +123,11 @@ namespace Dynamo.Tests
                     throw new Exception("You must supply a path for the results file.");
                 }
 
+                if (runDynamo)
+                {
+                    StartDynamo();
+                }
+
                 //http://stackoverflow.com/questions/2798561/how-to-run-nunit-from-my-code
 
                 //Tests must be executed on the main thread in order to access the Revit API.
@@ -116,10 +136,12 @@ namespace Dynamo.Tests
                 CoreExtensions.Host.InitializeService();
                 var runner = new SimpleTestRunner();
                 var builder = new TestSuiteBuilder();
-                var package = new TestPackage("DynamoTestFramework", new List<string>() { testAssembly });
+                string testAssemblyLoc = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), testAssembly);
+
+                var package = new TestPackage("DynamoTestFramework", new List<string>() {testAssemblyLoc});
                 runner.Load(package);
                 TestSuite suite = builder.Build(package);
-                
+
                 TestFixture fixture = null;
                 FindFixtureByName(out fixture, suite, fixtureName);
                 if (fixture == null)
@@ -154,7 +176,21 @@ namespace Dynamo.Tests
                     var t = FindTestByName(fixture, testName);
                     if (t != null)
                     {
-                        runningResults.Add(RunTest(t));
+                        if (t is ParameterizedMethodSuite)
+                        {
+                            var paramSuite = t as ParameterizedMethodSuite;
+                            foreach (var tInner in paramSuite.Tests)
+                            {
+                                if (tInner is TestMethod)
+                                {
+                                    runningResults.Add(RunTest((TestMethod)tInner));
+                                }
+                            }
+                        }
+                        else if (t is TestMethod)
+                        {
+                            runningResults.Add(RunTest((TestMethod)t));
+                        } 
                     }
                     else
                     {
@@ -164,7 +200,7 @@ namespace Dynamo.Tests
                         resultsRoot.testsuite.result = "Error";
                     }
                 }
-                
+
                 fixtureResult.results.Items = runningResults.ToArray();
 
                 CalculateCaseTotalsOnSuite(fixtureResult);
@@ -172,7 +208,6 @@ namespace Dynamo.Tests
                 CalculateTotalsOnResultsRoot(resultsRoot);
 
                 SaveResults();
-
             }
             catch (Exception ex)
             {
@@ -185,6 +220,26 @@ namespace Dynamo.Tests
             return Result.Succeeded;
         }
 
+        private void StartDynamo()
+        {
+            Level defaultLevel = null;
+            var fecLevel = new FilteredElementCollector(RevitData.Document.Document);
+            fecLevel.OfClass(typeof(Level));
+
+            dynRevitSettings.Revit = RevitData.Application;
+            dynRevitSettings.Doc = RevitData.Document;
+            dynRevitSettings.DefaultLevel = defaultLevel;
+
+            //create dynamo
+            var r = new Regex(@"\b(Autodesk |Structure |MEP |Architecture )\b");
+            string context = r.Replace(RevitData.Application.Application.VersionName, "");
+
+            var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.Updater, typeof(DynamoRevitViewModel), context)
+                {
+                    Testing = true
+                };
+        }
+
         private void CalculateTotalsOnResultsRoot(resultType result)
         {
             var resultItems = result.testsuite.results.Items.ToList();
@@ -194,16 +249,22 @@ namespace Dynamo.Tests
                 .SelectMany(x => x.results.Items)
                 .Where(x => x.GetType() == typeof (testcaseType))
                 .Cast<testcaseType>();
-            result.errors = cases.Sum(x => x.result == "Failure" ? 1 : 0);
-            result.total = cases.Count();
 
-            result.ignored = cases.Sum(x => x.result == "Ignored" ? 1 : 0);
-            result.inconclusive = cases.Sum(x => x.result == "Inconclusive" ? 1 : 0);
-            result.invalid = cases.Sum(x => x.result == "Invalid" ? 1 : 0);
-            result.notrun = cases.Sum(x => x.executed == "NotRun" ? 1 : 0);
-            result.skipped = cases.Sum(x => x.result == "Skipped" ? 1 : 0);
-            result.errors = cases.Sum(x => x.result == "Error" ? 1 : 0);
-            result.failures = cases.Sum(x => x.result == "Failure" ? 1 : 0);
+            var testcaseTypes = cases as testcaseType[] ?? cases.ToArray();
+
+            if (!testcaseTypes.Any())
+                return;
+
+            result.errors = testcaseTypes.Sum(x => x.result == "Failure" ? 1 : 0);
+            result.total = testcaseTypes.Count();
+
+            result.ignored = testcaseTypes.Sum(x => x.result == "Ignored" ? 1 : 0);
+            result.inconclusive = testcaseTypes.Sum(x => x.result == "Inconclusive" ? 1 : 0);
+            result.invalid = testcaseTypes.Sum(x => x.result == "Invalid" ? 1 : 0);
+            result.notrun = testcaseTypes.Sum(x => x.executed == "NotRun" ? 1 : 0);
+            result.skipped = testcaseTypes.Sum(x => x.result == "Skipped" ? 1 : 0);
+            result.errors = testcaseTypes.Sum(x => x.result == "Error" ? 1 : 0);
+            result.failures = testcaseTypes.Sum(x => x.result == "Failure" ? 1 : 0);
         }
 
         private void CalculateSweetTotalsOnOuterSweet(testsuiteType suite)
@@ -447,11 +508,11 @@ namespace Dynamo.Tests
         /// <param name="fixture"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        private static TestMethod FindTestByName(TestFixture fixture, string name)
+        private static Test FindTestByName(TestFixture fixture, string name)
         {
-            return (from t in fixture.Tests.OfType<TestMethod>() 
-                    where (t as TestMethod).TestName.Name == name 
-                    select t as TestMethod).FirstOrDefault();
+            return (from t in fixture.Tests.OfType<Test>()
+                    where t.TestName.Name == name 
+                    select t).FirstOrDefault();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -11,7 +12,6 @@ using String = System.String;
 
 namespace Dynamo.Tests
 {
-    [TestFixture]
     internal class CoreDynTests : DynamoUnitTest
     {
         [Test]
@@ -70,6 +70,61 @@ namespace Dynamo.Tests
             Assert.AreEqual(9, listWatchVal[3].GetDoubleFromFSchemeValue());
             Assert.AreEqual(10, listWatchVal[4].GetDoubleFromFSchemeValue());
 
+        }
+
+        /// <summary>
+        /// Confirm that a node with multiple outputs evaluates successfully.
+        /// </summary>
+        [Test]
+        public void MultipleOutputs()
+        {
+            var model = Controller.DynamoModel;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\multiout");
+
+            string openPath = Path.Combine(examplePath, "multi.dyn");
+            model.Open(openPath);
+
+            dynSettings.Controller.RunExpression();
+
+            var splitListVal = model.CurrentWorkspace.FirstNodeFromWorkspace<DeCons>().OldValue;
+
+            Assert.IsInstanceOf<FScheme.Value.List>(splitListVal);
+
+            var outs = (splitListVal as FScheme.Value.List).Item;
+
+            Assert.AreEqual(2, outs.Length);
+
+            var out1 = outs[0];
+            Assert.IsInstanceOf<FScheme.Value.Number>(out1);
+            Assert.AreEqual(0, (out1 as FScheme.Value.Number).Item);
+
+            var out2 = outs[1];
+            Assert.IsInstanceOf<FScheme.Value.List>(out2);
+            Assert.IsTrue((out2 as FScheme.Value.List).Item.IsEmpty);
+        }
+
+        [Test]
+        public void PartialApplicationWithMultipleOutputs()
+        {
+            var model = Controller.DynamoModel;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\multiout");
+
+            string openPath = Path.Combine(examplePath, "partial-multi.dyn");
+            model.Open(openPath);
+
+            dynSettings.Controller.RunExpression();
+
+            var firstWatch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("3005609b-ceaa-451f-9b6c-6ca957358ad6");
+
+            Assert.IsInstanceOf<FScheme.Value.List>(firstWatch.OldValue);
+            Assert.IsInstanceOf<FScheme.Value.Number>((firstWatch.OldValue as FScheme.Value.List).Item[0]);
+            Assert.AreEqual(0, ((firstWatch.OldValue as FScheme.Value.List).Item[0] as FScheme.Value.Number).Item);
+
+            var restWatch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("2787f566-7612-41d1-8cec-8212fea58c8b");
+
+            Assert.IsInstanceOf<FScheme.Value.List>(restWatch.OldValue);
+            Assert.IsInstanceOf<FScheme.Value.List>((restWatch.OldValue as FScheme.Value.List).Item[0]);
+            Assert.IsTrue(((restWatch.OldValue as FScheme.Value.List).Item[0] as FScheme.Value.List).Item.IsEmpty);
         }
 
         [Test]
@@ -406,10 +461,7 @@ namespace Dynamo.Tests
         [Test]
         public void SliceList()
         {
-            var model = dynSettings.Controller.DynamoModel;
-
-            var data = new Dictionary<string, object> {{"name", "Partition List"}};
-            model.CreateNode(data);
+            dynSettings.Controller.DynamoModel.CreateNode(0, 0, "Partition List");
 
             //Create a List
             //For a list of 0..20, this will have 21 elements
@@ -469,8 +521,7 @@ namespace Dynamo.Tests
 
             var list = Utils.SequenceToFSharpList(Enumerable.Range(0, 20).Select(x => FScheme.Value.NewNumber(x)));
 
-            var data = new Dictionary<string, object> {{"name", "Diagonal Left List"}};
-            model.CreateNode(data);
+            model.CreateNode(0, 0, "Diagonal Left List");
 
             var leftNode = (DiagonalLeftList)dynSettings.Controller.DynamoModel.Nodes.First(x => x is DiagonalLeftList);
             var args = FSharpList<FScheme.Value>.Empty;
@@ -494,8 +545,7 @@ namespace Dynamo.Tests
             //3,9
             //4
 
-            data = new Dictionary<string, object> {{"name", "Diagonal Right List"}};
-            model.CreateNode(data);
+            model.CreateNode(0, 0, "Diagonal Right List");
 
             var rightNode = (DiagonalRightList)dynSettings.Controller.DynamoModel.Nodes.First(x => x is DiagonalRightList);
             args = FSharpList<FScheme.Value>.Empty;
@@ -583,6 +633,115 @@ namespace Dynamo.Tests
             {
                 Assert.AreEqual((watch.OldValue as FScheme.Value.Number).Item, 19);   
             }
+        }
+
+        [Test]
+        public void AndNode()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            var exPath = Path.Combine(GetTestDirectory(), @"core\customast");
+
+            model.Open(Path.Combine(exPath, @"and-test.dyn"));
+
+            dynSettings.Controller.RunExpression();
+
+            var watchValue = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>().OldValue;
+
+            Assert.IsAssignableFrom<FScheme.Value.Number>(watchValue);
+            Assert.AreEqual(0, (watchValue as FScheme.Value.Number).Item);
+        }
+
+        [Test]
+        public void OrNode()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            var exPath = Path.Combine(GetTestDirectory(), @"core\customast");
+
+            model.Open(Path.Combine(exPath, @"or-test.dyn"));
+
+            dynSettings.Controller.RunExpression();
+
+            var watchValue = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>().OldValue;
+
+            Assert.IsAssignableFrom<FScheme.Value.Number>(watchValue);
+            Assert.AreEqual(1, (watchValue as FScheme.Value.Number).Item);
+        }
+
+        [Test]
+        public void IfNode()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            var exPath = Path.Combine(GetTestDirectory(), @"core\customast");
+
+            model.Open(Path.Combine(exPath, @"if-test.dyn"));
+
+            dynSettings.Controller.RunExpression();
+
+            var watchValue = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>().OldValue;
+
+            Assert.IsAssignableFrom<FScheme.Value.String>(watchValue);
+            Assert.AreEqual("can't divide by 0", (watchValue as FScheme.Value.String).Item);
+        }
+
+        [Test]
+        public void PerformAllNode()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            var exPath = Path.Combine(GetTestDirectory(), @"core\customast");
+
+            model.Open(Path.Combine(exPath, @"begin-test.dyn"));
+
+            var textAndFileName = @"test.txt";
+
+            model.CurrentWorkspace.FirstNodeFromWorkspace<StringInput>().Value = textAndFileName;
+
+            dynSettings.Controller.RunExpression();
+
+            File.Delete(textAndFileName);
+
+            var watchValue = model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>().OldValue;
+
+            Assert.IsAssignableFrom<FScheme.Value.String>(watchValue);
+            Assert.AreEqual(textAndFileName, (watchValue as FScheme.Value.String).Item);
+        }
+
+        [Test]
+        public void Constants()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            var exPath = Path.Combine(GetTestDirectory(), @"core\customast");
+
+            model.Open(Path.Combine(exPath, @"constants-test.dyn"));
+
+            dynSettings.Controller.RunExpression();
+
+            Assert.Pass();
+        }
+
+        [Test]
+        public void Thunks()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            var exPath = Path.Combine(GetTestDirectory(), @"core\customast");
+
+            model.Open(Path.Combine(exPath, @"thunk-test.dyn"));
+
+            dynSettings.Controller.RunExpression();
+
+            Assert.Pass();
+        }
+
+        [Test]
+        public void MultithreadingWithFutureAndNow()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            var exPath = Path.Combine(GetTestDirectory(), @"core\multithreading");
+
+            model.Open(Path.Combine(exPath, @"multithread-test.dyn"));
+
+            dynSettings.Controller.RunExpression();
+
+            Assert.Pass();
         }
     }
 }

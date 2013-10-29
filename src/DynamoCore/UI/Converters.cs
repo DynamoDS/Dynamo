@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Windows;
@@ -10,6 +11,8 @@ using Dynamo.Models;
 using System.Web;
 using Dynamo.ViewModels;
 using Dynamo.PackageManager;
+using System.Windows.Controls;
+using Dynamo.Core;
 
 namespace Dynamo.Controls
 {
@@ -919,6 +922,24 @@ namespace Dynamo.Controls
         }
     }
 
+    public class ZoomToBooleanConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            double number = (double)System.Convert.ChangeType(value, typeof(double));
+
+            if (number <= .5)
+                return false;
+
+            return true;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
     public class PortNameToWidthConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -1092,7 +1113,6 @@ namespace Dynamo.Controls
             throw new NotImplementedException();
         }
     }
-
     public sealed class WarningLevelToColorConverter:IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -1117,6 +1137,82 @@ namespace Dynamo.Controls
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
+        }
+    }
+
+    public class TabSizeConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {           
+            TabControl tabControl = values[0] as TabControl;
+            
+            double tabControlActualWidth = tabControl.ActualWidth - Configurations.TabControlMenuWidth; // Need to factor in tabControlMenu
+
+            int visibleTabsNumber = tabControl.Items.Count;
+
+            if (visibleTabsNumber > Configurations.MinTabsBeforeClipping)
+                visibleTabsNumber = Configurations.MinTabsBeforeClipping;
+
+            double width = tabControlActualWidth / visibleTabsNumber;
+
+            if ((tabControlActualWidth - tabControl.Items.Count * Configurations.TabDefaultWidth) >= 0 || width > Configurations.TabDefaultWidth)
+                width = Configurations.TabDefaultWidth;
+            
+            //Subtract 1, otherwise we could overflow to two rows.
+            return (width <= Configurations.TabControlMenuWidth) ? Configurations.TabControlMenuWidth : (width - 1);
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    public class OpacityToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            double opacity = (double)value;
+            if (opacity <= 0)
+                return Visibility.Collapsed;
+            return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+
+        }
+    }
+
+    public class BoolToShowAllPreviewNameConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if ((bool)value)
+                return "Hide All Preview";
+            else
+                return "Show All Preview";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class InfoBubbleStyleToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if ((InfoBubbleViewModel.Style) value == InfoBubbleViewModel.Style.Preview)
+                return Visibility.Visible;
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
         }
     }
 }

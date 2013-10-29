@@ -15,10 +15,10 @@ using Dynamo.Selection;
 using Dynamo.ViewModels;
 using NUnit.Framework;
 using System.Windows;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Tests
 {
-    [TestFixture]
     internal class CoreTests : DynamoUnitTest
     {
         
@@ -67,31 +67,20 @@ namespace Dynamo.Tests
         public void CanAddANodeByName()
         {
             var model = dynSettings.Controller.DynamoModel;
-
-            var sumData = new Dictionary<string, object>();
-            sumData.Add("x", 400.0);
-            sumData.Add("y", 100.0);
-
-            sumData.Add("name", "Add");
-            model.CreateNode(sumData);
-
+            model.CreateNode(400.0, 100.0, "Add");
             Assert.AreEqual(Controller.DynamoViewModel.CurrentSpace.Nodes.Count, 1);
         }
 
         [Test]
         public void CanAddANote()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            // Create some test note data
+            Guid id = Guid.NewGuid();
+            DynCmd.CreateNoteCommand command = new DynCmd.CreateNoteCommand(
+                id, "This is a test note.", 200.0, 200.0, false);
 
-            //create some test note data
-            var inputs = new Dictionary<string, object>();
-            inputs.Add("x", 200.0);
-            inputs.Add("y", 200.0);
-            inputs.Add("text", "This is a test note.");
-            inputs.Add("workspace", Controller.DynamoViewModel.CurrentSpace);
-
-            model.AddNote(inputs);
-
+            var ws = Controller.DynamoViewModel.CurrentSpace;
+            dynSettings.Controller.DynamoModel.AddNoteInternal(command, ws);
             Assert.AreEqual(Controller.DynamoViewModel.CurrentSpace.Notes.Count, 1);
         }
 
@@ -125,10 +114,7 @@ namespace Dynamo.Tests
             // create 100 nodes, and select them as you go
             for (int i = 0; i < numNodes; i++)
             {
-                var sumData = new Dictionary<string, object>();
-
-                sumData.Add("name", "Add");
-                model.CreateNode(sumData);
+                model.CreateNode(0, 0, "Add");
 
                 Assert.AreEqual(i + 1, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
@@ -164,27 +150,11 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            var sumData = new Dictionary<string, object>();
-            var numData1 = new Dictionary<string, object>();
-            var numData2 = new Dictionary<string, object>();
-
-            sumData.Add("x", 400.0);
-            sumData.Add("y", 100.0);
-            sumData.Add("name", "Add");
-
-            numData1.Add("x", 100.0);
-            numData1.Add("y", 100.0);
-            numData1.Add("name", "Number");
-
-            numData2.Add("x", 100.0);
-            numData2.Add("y", 300.0);
-            numData2.Add("name", "Number");
-
             Assert.AreEqual(0, Controller.DynamoViewModel.Model.Nodes.Count());
 
-            model.CreateNode(sumData);
-            model.CreateNode(numData1);
-            model.CreateNode(numData2);
+            model.CreateNode(400.0, 100.0, "Add");
+            model.CreateNode(100.0, 100.0, "Number");
+            model.CreateNode(100.0, 300.0, "Number");
 
             Assert.AreEqual(3, Controller.DynamoViewModel.Model.Nodes.Count());
 
@@ -203,10 +173,7 @@ namespace Dynamo.Tests
             // create 100 nodes, and select them as you go
             for (int i = 0; i < numNodes; i++)
             {
-                var sumData = new Dictionary<string, object>();
-                sumData.Add("name", "Add");
-
-                model.CreateNode(sumData);
+                model.CreateNode(0, 0, "Add");
 
                 Assert.AreEqual(i + 1, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
@@ -230,10 +197,7 @@ namespace Dynamo.Tests
             // create 100 nodes, and select them as you go
             for (int i = 0; i < numNodes; i++)
             {
-                var sumData = new Dictionary<string, object>();
-                sumData.Add("name", "Add");
-
-                model.CreateNode(sumData);
+                model.CreateNode(0, 0, "Add");
 
                 Assert.AreEqual(i + 1, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
@@ -260,10 +224,7 @@ namespace Dynamo.Tests
             // create 100 nodes, and select them as you go
             for (int i = 0; i < numNodes; i++)
             {
-                var sumData = new Dictionary<string, object>();
-
-                sumData.Add("name", "Add");
-                model.CreateNode(sumData);
+                model.CreateNode(0, 0, "Add");
 
                 Assert.AreEqual(i + 1, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
@@ -290,11 +251,7 @@ namespace Dynamo.Tests
             // create 100 nodes, and select them as you go
             for (int i = 0; i < numNodes; i++)
             {
-                var sumData = new Dictionary<string, object>();
-
-                sumData.Add("name", "Add");
-
-                model.CreateNode(sumData);
+                model.CreateNode(0, 0, "Add");
                 Assert.AreEqual(i + 1, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
                 model.AddToSelection(Controller.DynamoViewModel.Model.Nodes[i]);
@@ -326,9 +283,7 @@ namespace Dynamo.Tests
             // create 100 nodes, and select them as you go
             for (int i = 0; i < numNodes; i++)
             {
-                var sumData = new Dictionary<string, object>();
-                sumData.Add("name", "Add");
-                model.CreateNode(sumData);
+                model.CreateNode(0, 0, "Add");
 
                 Assert.AreEqual(i + 1, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
@@ -376,10 +331,7 @@ namespace Dynamo.Tests
 
             for (int i = 0; i < numNodes; i++)
             {
-                var sumData = new Dictionary<string, object>();
-                sumData.Add("name", "Add");
-                model.CreateNode(sumData);
-
+                model.CreateNode(0, 0, "Add");
                 Assert.AreEqual(i + 1, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
             }
 
@@ -413,11 +365,7 @@ namespace Dynamo.Tests
 
             for (int i = 0; i < numNodes; i++)
             {
-                var sumData = new Dictionary<string, object>();
-                sumData.Add("name", "Add");
-
-                model.CreateNode(sumData);
-
+                model.CreateNode(0, 0, "Add");
                 Assert.AreEqual(i + 1, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
             }
 
@@ -549,31 +497,10 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            var sumData = new Dictionary<string, object>();
-            var numData1 = new Dictionary<string, object>();
-            var numData2 = new Dictionary<string, object>();
-
-            sumData.Add("x", 400.0);
-            sumData.Add("y", 100.0);
-            sumData.Add("name", "Dynamo.Nodes.Addition");
-
-            numData1.Add("x", 100.0);
-            numData1.Add("y", 100.0);
-            numData1.Add("name", "Number");
-
-            numData2.Add("x", 100.0);
-            numData2.Add("y", 300.0);
-            numData2.Add("name", "Number");
-
-            var watch = new Dictionary<string, object>();
-            watch.Add("x", 100.0);
-            watch.Add("y", 300.0);
-            watch.Add("name", "Dynamo.Nodes.Watch");
-
-            model.CreateNode(sumData);
-            model.CreateNode(numData1);
-            model.CreateNode(numData2);
-            model.CreateNode(watch);
+            model.CreateNode(400.0, 100.0, "Dynamo.Nodes.Addition");
+            model.CreateNode(100.0, 100.0, "Number");
+            model.CreateNode(100.0, 300.0, "Number");
+            model.CreateNode(100.0, 300.0, "Dynamo.Nodes.Watch");
 
             //update the layout so the following
             //connectors have visuals to transform to
@@ -636,9 +563,7 @@ namespace Dynamo.Tests
             // create 100 nodes, and select them as you go
             for (int i = 0; i < numNodes; i++)
             {
-                var sumData = new Dictionary<string, object>();
-                sumData.Add("name", "Add");
-                model.CreateNode(sumData);
+                model.CreateNode(0, 0, "Add");
 
                 Assert.AreEqual(i + 1, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
 
@@ -659,16 +584,11 @@ namespace Dynamo.Tests
         public void TestDraggedNode()
         {
             var model = dynSettings.Controller.DynamoModel;
-            var sumData = new Dictionary<string, object>();
-            sumData.Add("name", "Add");
-            model.CreateNode(sumData);
+            model.CreateNode(16, 32, "Add");
             NodeModel locatable = Controller.DynamoViewModel.Model.Nodes[0];
-            locatable.X = 16;
-            locatable.Y = 32;
 
-            Rect region = new Rect(-100, -100, 200, 200);
             Point startPoint = new Point(8, 64);
-            var dn = new WorkspaceViewModel.DraggedNode(locatable, startPoint, region);
+            var dn = new WorkspaceViewModel.DraggedNode(locatable, startPoint);
 
             // Initial node position.
             Assert.AreEqual(16, locatable.X);
@@ -678,36 +598,6 @@ namespace Dynamo.Tests
             dn.Update(new Point(-16, 72));
             Assert.AreEqual(-8, locatable.X);
             Assert.AreEqual(40, locatable.Y);
-        }
-
-        [Test]
-        public void TestDraggedNodeLimited()
-        {
-            var model = dynSettings.Controller.DynamoModel;
-            var sumData = new Dictionary<string, object>();
-            sumData.Add("name", "Add");
-            model.CreateNode(sumData);
-            NodeModel locatable = Controller.DynamoViewModel.Model.Nodes[0];
-            locatable.X = 10;
-            locatable.Y = 20;
-
-            Rect region = new Rect(-100, -200, 300, 400);
-            Point startPoint = new Point(15, 25);
-            var dn = new WorkspaceViewModel.DraggedNode(locatable, startPoint, region);
-
-            // Initial node position.
-            Assert.AreEqual(10, locatable.X);
-            Assert.AreEqual(20, locatable.Y);
-
-            // Move the mouse cursor to move node.
-            dn.Update(new Point(-500, -500));
-            Assert.AreEqual(-100, locatable.X);
-            Assert.AreEqual(-200, locatable.Y);
-
-            // Move the mouse cursor to move node.
-            dn.Update(new Point(500, 500));
-            Assert.AreEqual(300 - locatable.Width, locatable.X);
-            Assert.AreEqual(400 - locatable.Height, locatable.Y);
         }
 
         [Test]

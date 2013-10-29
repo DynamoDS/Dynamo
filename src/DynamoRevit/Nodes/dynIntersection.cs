@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Windows.Media.Media3D;
 using Autodesk.Revit.DB;
 using Dynamo.Models;
 using Microsoft.FSharp.Collections;
 
 using Value = Dynamo.FScheme.Value;
 using Dynamo.Revit;
-using Dynamo.Connectors;
 using Dynamo.Utilities;
 
 namespace Dynamo.Nodes

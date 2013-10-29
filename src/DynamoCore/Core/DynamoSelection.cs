@@ -69,7 +69,7 @@ namespace Dynamo.Selection
                 }
             }
 
-            Debug.WriteLine(string.Format("{0} elements in selection.", Selection.Count));
+            //Debug.WriteLine(string.Format("{0} elements in selection.", Selection.Count));
         }
 
         /// <summary>

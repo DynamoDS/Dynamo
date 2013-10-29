@@ -139,131 +139,14 @@ namespace Dynamo.ViewModels
             
         }
 
-        /// <summary>
-        /// Update the port model's center, triggering an update to all connectors
-        /// </summary>
-        /// <param name="center"></param>
-        public void UpdateCenter(Point center)
-        {
-            _port.Center = center;
-        }
-
         private void Connect(object parameter)
         {
             DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
             WorkspaceViewModel workspaceViewModel = dynamoViewModel.CurrentSpaceViewModel;
             workspaceViewModel.HandlePortClicked(this);
-
-#if false // TODO(Ben): Remove this after StateMachine has been fully tested.
-            DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
-            WorkspaceModel workspaceModel = dynamoViewModel.CurrentSpace;
-            WorkspaceViewModel workspaceViewModel = dynamoViewModel.CurrentSpaceViewModel;
-
-            // if this is a 
-            if (!workspaceViewModel.IsConnecting)
-            {
-                //test if port already has a connection if so grab it
-                //and begin connecting to somewhere else
-                //don't allow the grabbing of the start connector
-                if (_port.Connectors.Count > 0 && _port.Connectors[0].Start != _port)
-                {
-                    //define the new active connector
-                    var c = new ConnectorViewModel(_port.Connectors[0].Start);
-                    workspaceViewModel.ActiveConnector = c;
-                    workspaceViewModel.IsConnecting = true;
-
-                    //disconnect the connector model from its start and end ports
-                    //and remove it from the connectors collection. this will also
-                    //remove the view model
-                    ConnectorModel connector = _port.Connectors[0];
-                    if (workspaceModel.Connectors.Contains(connector))
-                    {
-                        List<ModelBase> models = new List<ModelBase>();
-                        models.Add(connector);
-                        workspaceModel.RecordAndDeleteModels(models);
-                        connector.NotifyConnectedPortsOfDeletion();
-                    }
-                }
-                else
-                {
-                    try
-                    {
-                        //Create a connector view model to begin drawing
-                        var c = new ConnectorViewModel(_port);
-                        dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.ActiveConnector = c;
-                        dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.IsConnecting = true;
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex.Message);
-                    }
-                }
-            }
-            else  // attempt to complete the connection
-            {
-                //remove connector if one already exists
-                if (_port.Connectors.Count > 0 && _port.PortType == PortType.INPUT)
-                {
-                    var connToRemove = _port.Connectors[0];
-                    workspaceModel.Connectors.Remove(connToRemove);
-                    _port.Disconnect(connToRemove);
-                    var startPort = connToRemove.Start;
-                    startPort.Disconnect(connToRemove);
-                }
-
-                // create the new connector model
-                var start = workspaceViewModel.ActiveConnector.ActiveStartPort;
-                var end = _port;
-
-                ConnectorModel newConnectorModel;
-                if (_port.PortType == PortType.INPUT)
-                    newConnectorModel = ConnectorModel.Make(start.Owner, end.Owner, start.Index, end.Index, 0);
-                else
-                {
-                    newConnectorModel = ConnectorModel.Make(end.Owner, start.Owner, end.Index, start.Index, 0);
-                }
-
-                // the connector is invalid
-                if (newConnectorModel == null)
-                {
-                    return;
-                }
-
-                // Add to the current workspace
-                workspaceModel.Connectors.Add(newConnectorModel);
-
-                // Cleanup
-                workspaceViewModel.IsConnecting = false;
-                workspaceViewModel.ActiveConnector = null;
-
-                // Record the creation of connector in the undo recorder.
-                workspaceModel.RecordCreatedModel(newConnectorModel);
-            }
-#endif
         }
 
         private bool CanConnect(object parameter)
-        {
-            return true;
-        }
-
-        private void Highlight(object parameter)
-        {
-           var connectorViewModels = dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Connectors.Where(
-                x => _port.Connectors.Contains(x.ConnectorModel));
-        }
-
-        private bool CanHighlight(object parameter)
-        {
-            return true;
-        }
-
-        private void UnHighlight(object parameter)
-        {
-            
-        }
-
-        private bool CanUnHighlight(object parameter)
         {
             return true;
         }

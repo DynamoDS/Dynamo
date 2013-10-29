@@ -40,100 +40,30 @@ namespace Dynamo
             Visualizers.Add(typeof(Autodesk.Revit.DB.CurveLoop), DrawCurveLoop);
         }
 
-        //public override void UpdateVisualizations()
-        //{
-        //    //only update those nodes which have been flagged for update
-        //    var toUpdate = Visualizations.Values.ToList().Where(x => x.RequiresUpdate == true);
-
-        //    var selIds =
-        //        DynamoSelection.Instance.Selection.Where(x => x is NodeModel)
-        //                       .Select(x => ((NodeModel)x).GUID.ToString());
-
-        //    var selected = Visualizations.Where(x => selIds.Contains(x.Key)).Select(x => x.Value);
-
-        //    var sw = new Stopwatch();
-        //    sw.Start();
-
-        //    foreach (var n in toUpdate)
-        //    {
-        //        var rd = n.Description;
-
-        //        //clear the render description
-        //        rd.Clear();
-
-        //        foreach (var obj in n.Geometry)
-        //        {
-        //            if (obj is Element)
-        //            {
-        //                DrawElement(obj, rd);
-        //            }
-        //            if (obj is Transform)
-        //            {
-        //                DrawTransform(obj, rd);
-        //            }
-        //            else if (obj is XYZ)
-        //            {
-        //                DrawXyz(obj, rd);
-        //            }
-        //            else if (obj is ParticleSystem)
-        //            {
-        //                DrawParticleSystem(obj, rd);
-        //            }
-        //            else if (obj is TriangleFace)
-        //            {
-        //                DrawTriangleFace(obj, rd);
-        //            }
-        //            else if (obj is GeometryObject)
-        //            {
-        //                //Draw Revit geometry
-        //                DrawGeometryObject(obj, rd);
-        //            }
-        //            else if (obj is GraphicItem)
-        //            {
-        //                //support drawing ASM visuals
-        //                //VisualizationManagerASM.DrawLibGGraphicItem((GraphicItem)obj, rd);
-        //            }
-        //        }
-
-        //        //set this flag to avoid processing again
-        //        //if not necessary
-        //        n.RequiresUpdate = false;
-        //    }
-
-        //    sw.Stop();
-
-        //    //generate an aggregated render description to send to the UI
-        //    var aggRd = AggregateRenderDescriptions();
-
-        //    LogVisualizationUpdateData(aggRd, sw.Elapsed.ToString());
-
-        //    OnVisualizationUpdateComplete(this, new VisualizationEventArgs(AggregateRenderDescriptions()));
-        //}
-
-        private void DrawElement(NodeModel node, object obj, RenderDescription rd)
+        private void DrawElement(NodeModel node, object obj, RenderDescription rd, Octree.OctreeSearch.Octree octree)
         {
             if (obj == null)
                 return;
 
             if (obj is CurveElement)
             {
-                DrawCurveElement(node, obj, rd);
+                DrawCurveElement(node, obj, rd, octree);
             }
             else if (obj is ReferencePoint)
             {
-                DrawReferencePoint(node, obj, rd);
+                DrawReferencePoint(node, obj, rd, octree);
             }
             else if (obj is Form)
             {
-                DrawForm(node, obj, rd);
+                DrawForm(node, obj, rd, octree);
             }
             else if (obj is GeometryElement)
             {
-                DrawGeometryElement(node, obj, rd);
+                DrawGeometryElement(node, obj, rd, octree);
             }
             else if (obj is GeometryObject)
             {
-                DrawGeometryObject(node, obj, rd);
+                DrawGeometryObject(node, obj, rd, octree);
             }
             else
             {
@@ -145,13 +75,13 @@ namespace Dynamo
 
                     if (geom != null)
                     {
-                        DrawGeometryObject(node, geom, rd);
+                        DrawGeometryObject(node, geom, rd, octree);
                     }
                 }
             }
         }
 
-        private void DrawFace(NodeModel node, object obj, RenderDescription rd)
+        private void DrawFace(NodeModel node, object obj, RenderDescription rd, Octree.OctreeSearch.Octree octree)
         {
             var face = obj as Face;
 
@@ -167,25 +97,25 @@ namespace Dynamo
 
             if (node.IsSelected)
             {
-                rd.SelectedMeshes.Add(RevitMeshToHelixMesh(mesh));
+                rd.SelectedMeshes.Add(RevitMeshToHelixMesh(mesh, octree, node));
             }
             else
             {
-                rd.Meshes.Add(RevitMeshToHelixMesh(mesh));
+                rd.Meshes.Add(RevitMeshToHelixMesh(mesh, octree,node));
             }
         }
 
-        private void DrawForm(NodeModel node, object obj, RenderDescription rd)
+        private void DrawForm(NodeModel node, object obj, RenderDescription rd, Octree.OctreeSearch.Octree octree)
         {
             var form = obj as Form;
 
             if (form == null)
                 return;
 
-            DrawGeometryElement(node, form.get_Geometry(new Options()), rd);
+            DrawGeometryElement(node, form.get_Geometry(new Options()), rd, octree);
         }
 
-        private void DrawGeometryElement(NodeModel node, object obj, RenderDescription rd)
+        private void DrawGeometryElement(NodeModel node, object obj, RenderDescription rd, Octree.OctreeSearch.Octree octree)
         {
             try
             {
@@ -193,7 +123,7 @@ namespace Dynamo
 
                 foreach (GeometryObject go in gelem)
                 {
-                    DrawGeometryObject(node, go, rd);
+                    DrawGeometryObject(node, go, rd, octree);
                 }
             }
             catch (Exception ex)
@@ -204,39 +134,39 @@ namespace Dynamo
 
         }
 
-        private void DrawGeometryObject(NodeModel node, object obj, RenderDescription rd)
+        private void DrawGeometryObject(NodeModel node, object obj, RenderDescription rd, Octree.OctreeSearch.Octree octree)
         {
             if (obj == null)
                 return;
 
             if (obj is XYZ)
             {
-                DrawXyz(node, obj, rd);
+                DrawXyz(node, obj, rd, octree);
             }
             if (obj is Curve)
             {
-                DrawCurve(node, obj, rd);
+                DrawCurve(node, obj, rd, octree);
             }
             else if (obj is Solid)
             {
-                DrawSolid(node, obj, rd);
+                DrawSolid(node, obj, rd, octree);
             }
             else if (obj is Face)
             {
-                DrawFace(node, obj, rd);
+                DrawFace(node, obj, rd, octree);
             }
             else
             {
-                DrawUndrawable(node, obj, rd);
+                DrawUndrawable(node, obj, rd, octree);
             }
         }
 
-        private void DrawUndrawable(NodeModel node, object obj, RenderDescription rd)
+        private void DrawUndrawable(NodeModel node, object obj, RenderDescription rd, Octree.OctreeSearch.Octree octree)
         {
             //TODO: write a message, throw an exception, draw a question mark
         }
 
-        private void DrawReferencePoint(NodeModel node, object obj, RenderDescription rd)
+        private void DrawReferencePoint(NodeModel node, object obj, RenderDescription rd, Octree.OctreeSearch.Octree octree)
         {
             var point = obj as ReferencePoint;
 
@@ -257,7 +187,7 @@ namespace Dynamo
             }
         }
 
-        private void DrawXyz(NodeModel node, object obj, RenderDescription rd)
+        private void DrawXyz(NodeModel node, object obj, RenderDescription rd, Octree.OctreeSearch.Octree octree)
         {
             var point = obj as XYZ;
             if (point == null)
@@ -269,7 +199,7 @@ namespace Dynamo
                 rd.Points.Add(new Point3D(point.X, point.Y, point.Z));
         }
 
-        private void DrawCurve(NodeModel node, object obj, RenderDescription rd)
+        private void DrawCurve(NodeModel node, object obj, RenderDescription rd, Octree.OctreeSearch.Octree octree)
         {
             var curve = obj as Curve;
 
@@ -300,17 +230,17 @@ namespace Dynamo
             }
         }
 
-        private void DrawCurveElement(NodeModel node, object obj, RenderDescription rd)
+        private void DrawCurveElement(NodeModel node, object obj, RenderDescription rd, Octree.OctreeSearch.Octree octree)
         {
             var elem = obj as CurveElement;
 
             if (elem == null)
                 return;
 
-            DrawCurve(node, elem.GeometryCurve, rd);
+            DrawCurve(node, elem.GeometryCurve, rd, octree);
         }
 
-        private void DrawSolid(NodeModel node, object obj, RenderDescription rd)
+        private void DrawSolid(NodeModel node, object obj, RenderDescription rd, Octree.OctreeSearch.Octree octree)
         {
             var solid = obj as Solid;
 
@@ -319,16 +249,16 @@ namespace Dynamo
 
             foreach (Face f in solid.Faces)
             {
-                DrawFace(node, f, rd);
+                DrawFace(node, f, rd, octree);
             }
 
             foreach (Edge edge in solid.Edges)
             {
-                DrawCurve(node, edge.AsCurve(), rd);
+                DrawCurve(node, edge.AsCurve(), rd, octree);
             }
         }
 
-        private void DrawTransform(NodeModel node, object obj, RenderDescription rd)
+        private void DrawTransform(NodeModel node, object obj, RenderDescription rd, Octree.OctreeSearch.Octree octree)
         {
             var t = obj as Transform;
             if (t == null)
@@ -352,7 +282,7 @@ namespace Dynamo
             rd.ZAxisPoints.Add(zEnd);
         }
 
-        private void DrawTriangleFace(NodeModel node, object obj, RenderDescription rd)
+        private void DrawTriangleFace(NodeModel node, object obj, RenderDescription rd, Octree.OctreeSearch.Octree octree)
         {
             var face = obj as TriangleFace;
             if (face == null)
@@ -380,7 +310,7 @@ namespace Dynamo
             }
         }
 
-        private void DrawParticleSystem(NodeModel node, object obj, RenderDescription rd)
+        private void DrawParticleSystem(NodeModel node, object obj, RenderDescription rd, Octree.OctreeSearch.Octree octree)
         {
             var ps = obj as ParticleSystem;
             if (ps == null)
@@ -423,7 +353,7 @@ namespace Dynamo
             }
         }
 
-        private void DrawCurveLoop(NodeModel node, object obj, RenderDescription rd)
+        private void DrawCurveLoop(NodeModel node, object obj, RenderDescription rd, Octree.OctreeSearch.Octree octree)
         {
             var cl = obj as Autodesk.Revit.DB.CurveLoop;
             if (cl == null)
@@ -431,11 +361,11 @@ namespace Dynamo
 
             foreach (var crv in cl)
             {
-                DrawCurve(node, crv, rd);
+                DrawCurve(node, crv, rd, octree);
             }
         }
 
-        private static MeshGeometry3D RevitMeshToHelixMesh(Mesh rmesh)
+        private static MeshGeometry3D RevitMeshToHelixMesh(Mesh rmesh, Octree.OctreeSearch.Octree octree, NodeModel node)
         {
             var builder = new MeshBuilder();
             var points = new Point3DCollection();
@@ -461,38 +391,34 @@ namespace Dynamo
                 {
                     var new_point = RevitPointToWindowsPoint(tri.get_Vertex(j));
 
-                    //find a matching point
-                    //compare the angle between the normals
-                    //to discern a 'break' angle for adjacent faces
-                    //int foundIndex = -1;
-                    //for (int k = 0; k < points.Count; k++)
-                    //{
-                    //    var testPt = points[k];
-                    //    var testNorm = norms[k];
-                    //    var ang = Vector3D.AngleBetween(normal, testNorm);
+                    int foundIndex = -1;
+                    for (int k = 0; k < points.Count; k++)
+                    {
+                        var testPt = points[k];
+                        var testNorm = norms[k];
 
-                    //    if (new_point.X == testPt.X &&
-                    //        new_point.Y == testPt.Y &&
-                    //        new_point.Z == testPt.Z &&
-                    //        ang > 90.0000)
-                    //    {
-                    //        foundIndex = k;
-                    //        //average the merged normals
-                    //        norms[k] = (testNorm + normal) / 2;
-                    //        break;
-                    //    }
-                    //}
+                        if (new_point.X == testPt.X &&
+                            new_point.Y == testPt.Y &&
+                            new_point.Z == testPt.Z)
+                        {
+                            foundIndex = k;
+                            //average the merged normals
+                            norms[k] = (testNorm + normal) / 2;
+                            break;
+                        }
+                    }
 
-                    //if (foundIndex != -1)
-                    //{
-                    //    tris.Add(foundIndex);
-                    //    continue;
-                    //}
+                    if (foundIndex != -1)
+                    {
+                        tris.Add(foundIndex);
+                        continue;
+                    }
 
                     tris.Add(points.Count);
                     points.Add(new_point);
                     norms.Add(normal);
                     tex.Add(new System.Windows.Point(0, 0));
+                    octree.AddNode(new_point.X, new_point.Y, new_point.Z, node.GUID.ToString());
                 }
 
                 builder.Append(points, tris, norms, tex);
