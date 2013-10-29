@@ -174,6 +174,10 @@ namespace Dynamo.ViewModels
             RedoCommand.RaiseCanExecuteChanged();
         }
 
+        private void UpdateModelPropertyImpl(UpdateModelPropertyCommand command)
+        {
+        }
+
         #endregion
     }
 }

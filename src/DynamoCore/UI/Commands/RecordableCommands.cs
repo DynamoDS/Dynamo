@@ -98,6 +98,8 @@ namespace Dynamo.ViewModels
                         return DeleteModelCommand.DeserializeCore(element);
                     case "UndoRedoCommand":
                         return UndoRedoCommand.DeserializeCore(element);
+                    case "UpdateModelPropertyCommand":
+                        return UpdateModelPropertyCommand.DeserializeCore(element);
                 }
 
                 string message = string.Format("Unknown command: {0}", element.Name);
@@ -554,6 +556,53 @@ namespace Dynamo.ViewModels
             #endregion
         }
 
+        internal class UpdateModelPropertyCommand : RecordableCommand
+        {
+            #region Public Class Methods
+
+            internal UpdateModelPropertyCommand(Guid modelGuid, string name, string value)
+            {
+                this.ModelGuid = modelGuid;
+                this.Name = name;
+                this.Value = value;
+            }
+
+            internal static UpdateModelPropertyCommand DeserializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                Guid modelGuid = helper.ReadGuid("ModelGuid");
+                string name = helper.ReadString("Name");
+                string value = helper.ReadString("Value");
+                return new UpdateModelPropertyCommand(modelGuid, name, value);
+            }
+
+            #endregion
+
+            #region Public Command Properties
+
+            internal Guid ModelGuid { get; private set; }
+            internal string Name { get; private set; }
+            internal string Value { get; private set; }
+
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+            {
+                dynamoViewModel.UpdateModelPropertyImpl(this);
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("ModelGuid", this.ModelGuid);
+                helper.SetAttribute("Name", this.Name);
+                helper.SetAttribute("Value", this.Value);
+            }
+
+            #endregion
+        }
     }
 
     // internal class XxxYyyCommand : RecordableCommand
