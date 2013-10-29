@@ -174,7 +174,7 @@ namespace Dynamo.ViewModels
             RedoCommand.RaiseCanExecuteChanged();
         }
 
-        private void UpdateModelPropertyImpl(UpdateModelPropertyCommand command)
+        private void UpdateModelPropertyImpl(UpdateModelValueCommand command)
         {
         }
 

@@ -98,8 +98,8 @@ namespace Dynamo.ViewModels
                         return DeleteModelCommand.DeserializeCore(element);
                     case "UndoRedoCommand":
                         return UndoRedoCommand.DeserializeCore(element);
-                    case "UpdateModelPropertyCommand":
-                        return UpdateModelPropertyCommand.DeserializeCore(element);
+                    case "UpdateModelValueCommand":
+                        return UpdateModelValueCommand.DeserializeCore(element);
                 }
 
                 string message = string.Format("Unknown command: {0}", element.Name);
@@ -556,24 +556,24 @@ namespace Dynamo.ViewModels
             #endregion
         }
 
-        internal class UpdateModelPropertyCommand : RecordableCommand
+        internal class UpdateModelValueCommand : RecordableCommand
         {
             #region Public Class Methods
 
-            internal UpdateModelPropertyCommand(Guid modelGuid, string name, string value)
+            internal UpdateModelValueCommand(Guid modelGuid, string name, string value)
             {
                 this.ModelGuid = modelGuid;
                 this.Name = name;
                 this.Value = value;
             }
 
-            internal static UpdateModelPropertyCommand DeserializeCore(XmlElement element)
+            internal static UpdateModelValueCommand DeserializeCore(XmlElement element)
             {
                 XmlElementHelper helper = new XmlElementHelper(element);
                 Guid modelGuid = helper.ReadGuid("ModelGuid");
                 string name = helper.ReadString("Name");
                 string value = helper.ReadString("Value");
-                return new UpdateModelPropertyCommand(modelGuid, name, value);
+                return new UpdateModelValueCommand(modelGuid, name, value);
             }
 
             #endregion
