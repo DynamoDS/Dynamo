@@ -438,7 +438,7 @@ namespace Dynamo.Models
                 if (identifier == null)
                 {
                     identifier = new IdentifierNode();
-                    identifier.Name = identifier.Value = AstBuilder.StringConstants.kVarPrefix + GUID.ToString().Replace("-", string.Empty);
+                    identifier.Name = identifier.Value = AstBuilder.StringConstants.VarPrefix + GUID.ToString().Replace("-", string.Empty);
                 }
                 return identifier;
             }
@@ -810,9 +810,9 @@ namespace Dynamo.Models
             return this.AstIdentifier;
         }
 
-        protected virtual AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputAstNodes)
+        protected virtual void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputAstNodes)
         {
-            return builder.Build(this, inputAstNodes);
+            builder.Build(this, inputAstNodes);
         }
 
         public void CompileToAstNode(AstBuilder builder)
@@ -862,12 +862,7 @@ namespace Dynamo.Models
             bool inputChanged = !inputIdentifiers.SequenceEqual(this.inputIdentifiers);                  
             if (isDirty || inputChanged)
             {
-                // build ast node for the corresponding node
-                var rhs = BuildAstNode(builder, inputAstNodes);
-                if (rhs != null)
-                {
-                    builder.BuildEvaluation(this, rhs);
-                }
+                BuildAstNode(builder, inputAstNodes);
                 isDirty = false;
             }
             this.inputIdentifiers = inputIdentifiers;
