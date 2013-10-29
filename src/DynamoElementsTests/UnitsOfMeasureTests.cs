@@ -4,7 +4,6 @@ using Dynamo.Measure;
 
 namespace Dynamo.Tests
 {
-    [TestFixture]
     internal class UnitsOfMeasureTests
     {
         [Test]

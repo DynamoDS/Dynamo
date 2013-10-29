@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:controls="clr-namespace:Dynamo.Controls;assembly=DynamoCore">
+                    xmlns:controls="clr-namespace:Dynamo.Controls">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml" />
@@ -60,7 +60,10 @@
     <controls:BoolToVisibilityCollapsedConverter x:Key="BooleanToVisibilityCollapsedConverter"/>
     <controls:InverseBooleanToVisibilityCollapsedConverter x:Key="InverseBoolToVisibilityCollapsedConverter"/>
     <controls:ZoomToVisibilityConverter x:Key="ZoomToVisibilityConverter"/>
+    <controls:ZoomToBooleanConverter x:Key="ZoomToBooleanConverter"/>
     <controls:PortNameToWidthConverter x:Key="PortNameToWidthConverter"/>
     <controls:TooltipLengthTruncater x:Key="TooltipLengthTruncater" />
+    <controls:TabSizeConverter x:Key="TabSizeConverter" />
     <controls:WarningLevelToColorConverter x:Key="WarningLevelToColorConverter"/>
+    <controls:BoolToShowAllPreviewNameConverter x:Key="BoolToShowAllPreviewNameConverter" />
 </ResourceDictionary>

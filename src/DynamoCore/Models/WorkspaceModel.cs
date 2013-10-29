@@ -322,17 +322,17 @@ namespace Dynamo.Models
         ///     Save to a specific file path, if the path is null or empty, does nothing.
         ///     If successful, the CurrentWorkspace.FilePath field is updated as a side effect
         /// </summary>
-        /// <param name="path">The path to save to</param>
-        public virtual bool SaveAs(string path)
+        /// <param name="newPath">The path to save to</param>
+        public virtual bool SaveAs(string newPath)
         {
-            if (String.IsNullOrEmpty(path)) return false;
+            if (String.IsNullOrEmpty(newPath)) return false;
 
-            DynamoLogger.Instance.Log("Saving " + path + "...");
+            DynamoLogger.Instance.Log("Saving " + newPath + "...");
             try
             {
                 var xmlDoc = this.GetXml();
-                xmlDoc.Save(path);
-                this.FileName = path;
+                xmlDoc.Save(newPath);
+                this.FileName = newPath;
 
                 this.OnWorkspaceSaved();
             }
@@ -458,6 +458,34 @@ namespace Dynamo.Models
             undoRecorder.EndActionGroup();
         }
 
+        internal void RecordModelsForUndo(Dictionary<ModelBase, UndoRedoRecorder.UserAction> models)
+        {
+            if (null == undoRecorder)
+                return;
+            if (!ShouldProceedWithRecording(models))
+                return;
+
+            undoRecorder.BeginActionGroup();
+            {
+                foreach (var modelPair in models)
+                {
+                    switch (modelPair.Value)
+                    {
+                        case UndoRedoRecorder.UserAction.Creation:
+                            undoRecorder.RecordCreationForUndo(modelPair.Key);
+                            break;
+                        case UndoRedoRecorder.UserAction.Deletion:
+                            undoRecorder.RecordDeletionForUndo(modelPair.Key);
+                            break;
+                        case UndoRedoRecorder.UserAction.Modification:
+                            undoRecorder.RecordModificationForUndo(modelPair.Key);
+                            break;
+                    }
+                }
+            }
+            undoRecorder.EndActionGroup();
+        }
+
         internal void RecordCreatedModel(ModelBase model)
         {
             if (null != model)
@@ -542,6 +570,15 @@ namespace Dynamo.Models
             return (null != models && (models.Count > 0));
         }
 
+        private static bool ShouldProceedWithRecording(
+            Dictionary<ModelBase, UndoRedoRecorder.UserAction> models)
+        {
+            if (null != models)
+                models.Remove(null);
+
+            return (null != models && (models.Count > 0));
+        }
+
         #endregion
 
         #region IUndoRedoRecorderClient Members
@@ -600,9 +637,7 @@ namespace Dynamo.Models
                     typeName = modelData.Attributes["name"].Value;
                 }
 #endif
-
-                DynamoModel dynamo = dynSettings.Controller.DynamoViewModel.Model;
-                NodeModel nodeModel = dynamo.CreateNode(typeName);
+                NodeModel nodeModel = DynamoModel.CreateNodeInstance(typeName);
                 nodeModel.WorkSpace = this;
                 nodeModel.Deserialize(modelData, SaveContext.Undo);
                 Nodes.Add(nodeModel);
@@ -777,5 +812,9 @@ namespace Dynamo.Models
             }
         }
 
+        public void ReportPosition()
+        {
+            RaisePropertyChanged("Position");
+        }
     }
 }

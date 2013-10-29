@@ -15,7 +15,7 @@ using String = System.String;
 namespace Dynamo.Tests
 {
     [TestFixture]
-    class ComparisonTests : DynamoUnitTest
+    public class ComparisonTests : DynamoUnitTest
     {
         private string logicTestFolder { get { return Path.Combine(GetTestDirectory(), "core", "logic", "comparison"); } }
 
@@ -77,10 +77,10 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(logicTestFolder, "testEqualInvalidInput.dyn");
 
             model.Open(testFilePath);
-            Assert.Throws<AssertionException>(() =>
-            {
-                dynSettings.Controller.RunExpression(null);
-            });
+            
+            dynSettings.Controller.RunExpression();
+
+            Assert.AreEqual(0, model.CurrentWorkspace.FirstNodeFromWorkspace<Equal>().OldValue.GetDoubleFromFSchemeValue());
         }
 
         [Test]
@@ -292,7 +292,7 @@ namespace Dynamo.Tests
     }
 
     [TestFixture]
-    class ConditionalTest : DynamoUnitTest
+    public class ConditionalTest : DynamoUnitTest
     {
         private string logicTestFolder { get { return Path.Combine(GetTestDirectory(), "core", "logic", "conditional"); } }
 

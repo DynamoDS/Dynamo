@@ -12,9 +12,29 @@ using Value = Dynamo.FScheme.Value;
 namespace Dynamo.Nodes
 {
      
+    internal abstract class DisplayAnalysisBase : RevitTransactionNodeWithOneOutput
+    {
+        protected Autodesk.Revit.DB.Analysis.SpatialFieldManager SpatialFieldManager { get; set; }
+
+        private List<int> _pastResultsIds = new List<int>();
+        public List<int> PastResultIds { get { return _pastResultsIds; } }
+
+        // TODO: this should be overriding OnEvaluate, but OnEvaluate is used differently throughout the codebase
+        // too late to test this for 0.6.2
+        protected void ClearPreviousResults()  
+        {
+            // remove the display results registered for this node
+            if (this.SpatialFieldManager != null)
+            {
+                PastResultIds.ForEach(SpatialFieldManager.RemoveSpatialFieldPrimitive);
+                PastResultIds.Clear();
+            }
+        }
+    }
+
     [NodeName("Spatial Field Manager")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
-    [NodeDescription("Gets or creates the spatial field manager on the active view.")]
+    [NodeDescription("Gets or creates the SpatialFieldManager on the active view.")]
     class SpatialFieldManager : RevitTransactionNodeWithOneOutput
     {
         //AnalysisDisplayStyle analysisDisplayStyle;
@@ -29,20 +49,20 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            Autodesk.Revit.DB.Analysis.SpatialFieldManager sfm;
+            Autodesk.Revit.DB.Analysis.SpatialFieldManager SpatialFieldManager;
 
-            sfm = Autodesk.Revit.DB.Analysis.SpatialFieldManager.GetSpatialFieldManager(dynRevitSettings.Doc.ActiveView);
+            SpatialFieldManager = Autodesk.Revit.DB.Analysis.SpatialFieldManager.GetSpatialFieldManager(dynRevitSettings.Doc.ActiveView);
             
-            if (sfm != null)
+            if (SpatialFieldManager != null)
             {
-                dynRevitSettings.SpatialFieldManagerUpdated = sfm;
+                dynRevitSettings.SpatialFieldManagerUpdated = SpatialFieldManager;
             }
             else
             {
-                sfm = Autodesk.Revit.DB.Analysis.SpatialFieldManager.CreateSpatialFieldManager(dynRevitSettings.Doc.ActiveView, (int) ((Value.Number)args[0]).Item );
+                SpatialFieldManager = Autodesk.Revit.DB.Analysis.SpatialFieldManager.CreateSpatialFieldManager(dynRevitSettings.Doc.ActiveView, (int) ((Value.Number)args[0]).Item );
             }
 
-            return Value.NewContainer(sfm);
+            return Value.NewContainer(SpatialFieldManager);
             
         }
     }
@@ -126,126 +146,19 @@ namespace Dynamo.Nodes
         }
     }
 
-    /*[NodeName("Vector Spatial Field")]
-    [NodeCategory(BuiltinNodeCategories.ANALYZE)]
-    [NodeDescription("Gets or creates the spatial field manager on the view.")]
-    [RequiresTransaction(true)]
-    class dynVectorSpatialField : dynNode
-    {
-        AnalysisDisplayStyle analysisDisplayStyle;
-
-        public dynVectorSpatialField()
-        {
-            InPortData.Add(new PortData("n", "Number of samples at a location.", typeof(int)));
-            OutPortData.Add(new PortData("sfm", "Spatial field manager for the active view", typeof(object));
-
-            NodeUI.RegisterInputsAndOutput();
-
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            SpatialFieldManager sfm;
-
-            if (analysisDisplayStyle == null)
-            {
-                CreateDisplayStyle();
-            }
-
-            sfm = SpatialFieldManager.GetSpatialFieldManager(dynRevitSettings.Doc.ActiveView);
-            
-            if (sfm != null)
-            {
-                dynSettings.Instance.SpatialFieldManagerUpdated = sfm;
-            }
-            else
-            {
-                sfm = SpatialFieldManager.CreateSpatialFieldManager(dynRevitSettings.Doc.ActiveView, Convert.ToInt16(((Value.Number)args[0]).Item));
-            }
-
-<<<<<<< HEAD
-            return Value.NewContainer(sfm);
-
-=======
-            return Value.NewContainer(sfm);
-            
->>>>>>> Now builds and runs!
-        }
-
-        void CreateDisplayStyle()
-        {
-            Document doc = dynRevitSettings.Doc.Document;
-
-            analysisDisplayStyle = null;
-            // Look for an existing analysis display style with a specific name
-            FilteredElementCollector collector1 = new FilteredElementCollector(doc);
-            ICollection<Element> collection =
-                collector1.OfClass(typeof(AnalysisDisplayStyle)).ToElements();
-            var displayStyle = from element in collection
-                               where element.Name == "Dynamo_Vector"
-                               select element;
-
-            // If display style does not already exist in the document, create it
-            if (displayStyle.Count() == 0)
-            {
-                AnalysisDisplayVectorSettings vectorSettings = new AnalysisDisplayVectorSettings();
-                vectorSettings.VectorPosition = AnalysisDisplayStyleVectorPosition.FromDataPoint;
-                vectorSettings.VectorOrientation = AnalysisDisplayStyleVectorOrientation.Linear;
-                vectorSettings.ArrowheadScale = AnalysisDisplayStyleVectorArrowheadScale.NoScaling;
-                vectorSettings.ArrowLineWeight = 5;
-
-                AnalysisDisplayColorSettings colorSettings = new AnalysisDisplayColorSettings();
-                Color orange = new Color(255, 205, 0);
-                Color purple = new Color(200, 0, 200);
-                colorSettings.MaxColor = orange;
-                colorSettings.MinColor = purple;
-
-                AnalysisDisplayLegendSettings legendSettings = new AnalysisDisplayLegendSettings();
-                legendSettings.NumberOfSteps = 10;
-                legendSettings.Rounding = 0.05;
-                legendSettings.ShowDataDescription = false;
-                legendSettings.ShowLegend = true;
-
-                FilteredElementCollector collector2 = new FilteredElementCollector(doc);
-                ICollection<Element> elementCollection = collector2.OfClass(typeof(TextNoteType)).ToElements();
-
-                var textElements = from element in collector2
-                                   select element;
-                // if LegendText exists, use it for this Display Style
-                if (textElements.Count() > 0)
-                {
-                    TextNoteType textType =
-                        textElements.Cast<TextNoteType>().ElementAt<TextNoteType>(0);
-                    legendSettings.TextTypeId = textType.Id;
-                }
-                analysisDisplayStyle = AnalysisDisplayStyle.CreateAnalysisDisplayStyle(doc, "Dynamo_Vector", vectorSettings, colorSettings, legendSettings);
-            }
-            else
-            {
-                analysisDisplayStyle =
-                    displayStyle.Cast<AnalysisDisplayStyle>().ElementAt<AnalysisDisplayStyle>(0);
-            }
-            // now assign the display style to the view
-            doc.ActiveView.AnalysisDisplayStyleId = analysisDisplayStyle.Id;
-        }
-    }*/
-
-    [NodeName("Spatial Field Face")]
+    [NodeName("Display Analysis Surface")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
-    [NodeDescription("Visualize analytical results at speficied UV values on a face.")]
+    [NodeDescription("Visualize analytical results at specified UV values on a face.")]
     [AlsoKnownAs("dynAnalysisResults", "AnalysisResults")]
-    class SpatialFieldFace : RevitTransactionNodeWithOneOutput  //, IClearable
+    class SpatialFieldFace : DisplayAnalysisBase 
     {
         const string DYNAMO_ANALYSIS_RESULTS_NAME = "Dynamo Analysis Results by Face";
-
-        List<int> idxs = new List<int>();
-        private Autodesk.Revit.DB.Analysis.SpatialFieldManager sfm;
 
         public SpatialFieldFace()
         {
             InPortData.Add(new PortData("vals", "List of values, corresponding in length, to the list of sample points.", typeof(Value.List)));
             InPortData.Add(new PortData("uvs", "Sample locations (UVs) on the face.", typeof(Value.List)));
-            InPortData.Add(new PortData("sfm", "A Spatial Field Manager object.", typeof(Value.Container)));
+            InPortData.Add(new PortData("sfm", "A SpatialFieldManager object.", typeof(Value.Container)));
             InPortData.Add(new PortData("face", "The face on which to map the analytical data.", typeof(Value.Container)));
             OutPortData.Add(new PortData("idx", "The index of the resulting analysis results object.", typeof(Value.Container)));
 
@@ -256,13 +169,15 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            sfm = ((Value.Container)args[2]).Item as Autodesk.Revit.DB.Analysis.SpatialFieldManager;
+            this.ClearPreviousResults();
+            SpatialFieldManager = ((Value.Container)args[2]).Item as Autodesk.Revit.DB.Analysis.SpatialFieldManager;
 
             var reference = (args[3] as Value.Container).Item as Reference;
             var face = (reference == null) ?
                 ((args[3] as Value.Container).Item as Face) :
                 dynRevitSettings.Doc.Document.GetElement(reference).GetGeometryObjectFromReference(reference) as Face;
 
+           
             //if we received a face instead of a reference
             //then use the reference from the face
             if (reference == null && face != null)
@@ -271,7 +186,7 @@ namespace Dynamo.Nodes
             if (reference == null)
                 throw new Exception("Could not resolved a referenced for the face.");
 
-            int idx = sfm.AddSpatialFieldPrimitive(reference);
+            int idx = SpatialFieldManager.AddSpatialFieldPrimitive(reference);
 
             //unwrap the sample locations
             IEnumerable<UV> pts = ((Value.List)args[1]).Item.Select(
@@ -291,12 +206,12 @@ namespace Dynamo.Nodes
             var sampleValues = new FieldValues(valList);
 
             int schemaIndex = 0;
-            if (!sfm.IsResultSchemaNameUnique(DYNAMO_ANALYSIS_RESULTS_NAME, -1))
+            if (!SpatialFieldManager.IsResultSchemaNameUnique(DYNAMO_ANALYSIS_RESULTS_NAME, -1))
             {
-                IList<int> arses = sfm.GetRegisteredResults();
+                IList<int> arses = SpatialFieldManager.GetRegisteredResults();
                 foreach (int i in arses)
                 {
-                    AnalysisResultSchema arsTest = sfm.GetResultSchema(i);
+                    AnalysisResultSchema arsTest = SpatialFieldManager.GetResultSchema(i);
                     if (arsTest.Name == DYNAMO_ANALYSIS_RESULTS_NAME)
                     {
                         schemaIndex = i;
@@ -307,45 +222,30 @@ namespace Dynamo.Nodes
             else
             {
                 var ars = new AnalysisResultSchema(DYNAMO_ANALYSIS_RESULTS_NAME, "Resulting analyses from Dynamo.");
-                schemaIndex = sfm.RegisterResult(ars);
+                schemaIndex = SpatialFieldManager.RegisterResult(ars);
             }
 
-            sfm.UpdateSpatialFieldPrimitive(idx, samplePts, sampleValues, schemaIndex);
+            SpatialFieldManager.UpdateSpatialFieldPrimitive(idx, samplePts, sampleValues, schemaIndex);
 
-            idxs.Add(idx);
+            PastResultIds.Add(idx);
 
             return Value.NewContainer(idx);
         }
 
-        public void ClearReferences()
-        {
-            if (idxs.Count > 0)
-            {
-                foreach (var id in idxs)
-                {
-                    sfm.RemoveSpatialFieldPrimitive(id);
-                }
-            }
-
-            idxs.Clear();
-        }
     }
 
-    [NodeName("Spatial Field Points")]
+    [NodeName("Display Analysis Points")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
-    [NodeDescription("Visualize analytical results at speficied XYZ locations.")]
-    class SpatialFieldPoints : RevitTransactionNodeWithOneOutput //, IClearable
+    [NodeDescription("Visualize analytical results at specified XYZ locations.")]
+    class SpatialFieldPoints : DisplayAnalysisBase
     {
         const string DYNAMO_ANALYSIS_RESULTS_NAME = "Dynamo Analysis Results at Points";
-
-        List<int> idxs = new List<int>();
-        private Autodesk.Revit.DB.Analysis.SpatialFieldManager sfm;
 
         public SpatialFieldPoints()
         {
             InPortData.Add(new PortData("vals", "A list of numeric values, corresponding in length, to the list of sample points.", typeof(Value.List)));
             InPortData.Add(new PortData("pts", "Locations (XYZs) of sample points.", typeof(Value.List)));
-            InPortData.Add(new PortData("sfm", "A Spatial Field Manager object.", typeof(Value.Container)));
+            InPortData.Add(new PortData("sfm", "A SpatialFieldManager object.", typeof(Value.Container)));
             OutPortData.Add(new PortData("idx", "The index of the resulting analysis results object.", typeof(Value.Container)));
 
             RegisterAllPorts();
@@ -355,6 +255,8 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
+            this.ClearPreviousResults();
+
             //unwrap the values
             IEnumerable<double> nvals = ((Value.List)args[0]).Item.Select(
                x => (double)((Value.Number)x).Item
@@ -364,9 +266,9 @@ namespace Dynamo.Nodes
             IEnumerable<XYZ> pts = ((Value.List)args[1]).Item.Select(
                x => (XYZ)((Value.Container)x).Item
             );
-            sfm = ((Value.Container)args[2]).Item as Autodesk.Revit.DB.Analysis.SpatialFieldManager;
+            SpatialFieldManager = ((Value.Container)args[2]).Item as Autodesk.Revit.DB.Analysis.SpatialFieldManager;
 
-            int idx = sfm.AddSpatialFieldPrimitive();
+            int idx = SpatialFieldManager.AddSpatialFieldPrimitive();
 
             var samplePts = new FieldDomainPointsByXYZ(pts.ToList<XYZ>());
 
@@ -377,12 +279,12 @@ namespace Dynamo.Nodes
             var sampleValues = new FieldValues(valList);
 
             int schemaIndex = 0;
-            if (!sfm.IsResultSchemaNameUnique(DYNAMO_ANALYSIS_RESULTS_NAME, -1))
+            if (!SpatialFieldManager.IsResultSchemaNameUnique(DYNAMO_ANALYSIS_RESULTS_NAME, -1))
             {
-                IList<int> arses = sfm.GetRegisteredResults();
+                IList<int> arses = SpatialFieldManager.GetRegisteredResults();
                 foreach (int i in arses)
                 {
-                    AnalysisResultSchema arsTest = sfm.GetResultSchema(i);
+                    AnalysisResultSchema arsTest = SpatialFieldManager.GetResultSchema(i);
                     if (arsTest.Name == DYNAMO_ANALYSIS_RESULTS_NAME)
                     {
                         schemaIndex = i;
@@ -393,45 +295,30 @@ namespace Dynamo.Nodes
             else
             {
                 var ars = new AnalysisResultSchema(DYNAMO_ANALYSIS_RESULTS_NAME, "Resulting analyses from Dynamo.");
-                schemaIndex = sfm.RegisterResult(ars);
+                schemaIndex = SpatialFieldManager.RegisterResult(ars);
             }
 
-            sfm.UpdateSpatialFieldPrimitive(idx, samplePts, sampleValues, schemaIndex);
+            SpatialFieldManager.UpdateSpatialFieldPrimitive(idx, samplePts, sampleValues, schemaIndex);
 
-            idxs.Add(idx);
+            PastResultIds.Add(idx);
 
             return Value.NewContainer(idx);
         }
 
-        public void ClearReferences()
-        {
-            if (idxs.Count > 0)
-            {
-                foreach (var id in idxs)
-                {
-                    sfm.RemoveSpatialFieldPrimitive(id);
-                }
-            }
-
-            idxs.Clear();
-        }
     }
 
-    [NodeName("Spatial Field Vectors")]
+    [NodeName("Display Analysis Vectors")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
-    [NodeDescription("Visualize analytical vectors speficied XYZ locations.")]
-    class SpatialFieldVectors : RevitTransactionNodeWithOneOutput //, IClearable
+    [NodeDescription("Visualize analytical vectors specified XYZ locations.")]
+    class SpatialFieldVectors : DisplayAnalysisBase
     {
         const string DYNAMO_ANALYSIS_RESULTS_NAME = "Dynamo Analysis Results Vectors";
-
-        List<int> idxs = new List<int>();
-        private Autodesk.Revit.DB.Analysis.SpatialFieldManager sfm;
 
         public SpatialFieldVectors()
         {
             InPortData.Add(new PortData("vals", "A list of XYZs corresponding in length, to the list of sample points.", typeof(Value.List)));
             InPortData.Add(new PortData("pts", "Locations (XYZs) of sample points.", typeof(Value.List)));
-            InPortData.Add(new PortData("sfm", "A Spatial Field Manager object.", typeof(Value.Container)));
+            InPortData.Add(new PortData("sfm", "A SpatialFieldManager object.", typeof(Value.Container)));
             OutPortData.Add(new PortData("idx", "The index of the resulting analysis results object.", typeof(Value.Container)));
 
             RegisterAllPorts();
@@ -441,6 +328,8 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
+            this.ClearPreviousResults();
+
             //unwrap the values
             IEnumerable<XYZ> nvals = ((Value.List)args[0]).Item.Select(
                x => (XYZ)((Value.Container)x).Item
@@ -450,9 +339,9 @@ namespace Dynamo.Nodes
             IEnumerable<XYZ> pts = ((Value.List)args[1]).Item.Select(
                x => (XYZ)((Value.Container)x).Item
             );
-            sfm = ((Value.Container)args[2]).Item as Autodesk.Revit.DB.Analysis.SpatialFieldManager;
+            SpatialFieldManager = ((Value.Container)args[2]).Item as Autodesk.Revit.DB.Analysis.SpatialFieldManager;
 
-            int idx = sfm.AddSpatialFieldPrimitive();
+            int idx = SpatialFieldManager.AddSpatialFieldPrimitive();
 
             var samplePts = new FieldDomainPointsByXYZ(pts.ToList<XYZ>());
 
@@ -463,12 +352,12 @@ namespace Dynamo.Nodes
             var sampleValues = new FieldValues(valList);
 
             int schemaIndex = 0;
-            if (!sfm.IsResultSchemaNameUnique(DYNAMO_ANALYSIS_RESULTS_NAME, -1))
+            if (!SpatialFieldManager.IsResultSchemaNameUnique(DYNAMO_ANALYSIS_RESULTS_NAME, -1))
             {
-                IList<int> arses = sfm.GetRegisteredResults();
+                IList<int> arses = SpatialFieldManager.GetRegisteredResults();
                 foreach (int i in arses)
                 {
-                    AnalysisResultSchema arsTest = sfm.GetResultSchema(i);
+                    AnalysisResultSchema arsTest = SpatialFieldManager.GetResultSchema(i);
                     if (arsTest.Name == DYNAMO_ANALYSIS_RESULTS_NAME)
                     {
                         schemaIndex = i;
@@ -479,142 +368,44 @@ namespace Dynamo.Nodes
             else
             {
                 var ars = new AnalysisResultSchema(DYNAMO_ANALYSIS_RESULTS_NAME, "Resulting analyses from Dynamo.");
-                schemaIndex = sfm.RegisterResult(ars);
+                schemaIndex = SpatialFieldManager.RegisterResult(ars);
             }
 
-            sfm.UpdateSpatialFieldPrimitive(idx, samplePts, sampleValues, schemaIndex);
+            SpatialFieldManager.UpdateSpatialFieldPrimitive(idx, samplePts, sampleValues, schemaIndex);
 
-            idxs.Add(idx);
+            PastResultIds.Add(idx);
 
             return Value.NewContainer(idx);
         }
 
         public void ClearReferences()
         {
-            if (idxs.Count > 0)
+            if (PastResultIds.Count > 0)
             {
-                foreach (var id in idxs)
+                foreach (var id in PastResultIds)
                 {
-                    sfm.RemoveSpatialFieldPrimitive(id);
+                    SpatialFieldManager.RemoveSpatialFieldPrimitive(id);
                 }
             }
 
-            idxs.Clear();
+            PastResultIds.Clear();
         }
     }
 
-    //It would be really nice if we could get this to work
-    //unfortunately mapping analysis results along a curve requires
-    //a curve reference, which we can only get from a model curve
-    //which requires a sketch plane. all of this adds additional complication
-    //for the user
-    /*
-    [NodeName("Spatial Field Curve Parameters")]
-    [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
-    [NodeDescription("Visualize analytical results at speficied XYZ locations.")]
-    [AlsoKnownAs("dynAnalysisResults")]
-    class dynSpatialFieldCurveParameters : dynRevitTransactionNodeWithOneOutput, IClearable
-    {
-        const string DYNAMO_ANALYSIS_RESULTS_NAME = "Dynamo Analysis Results at Points";
-
-        List<int> idxs = new List<int>();
-        private SpatialFieldManager sfm;
-
-        public dynSpatialFieldCurveParameters()
-        {
-            InPortData.Add(new PortData("vals", "List of values.", typeof(Value.List)));
-            InPortData.Add(new PortData("t", "Parameters along the curve.", typeof(Value.List)));
-            InPortData.Add(new PortData("sfm", "A Spatial Field Manager object.", typeof(Value.Container)));
-            InPortData.Add(new PortData("curve", "A curve on which to map the analysis results.", typeof(Value.Container)));
-            OutPortData.Add(new PortData("idx", "The index of the resulting analysis results object.", typeof(Value.Container)));
-
-            RegisterAllPorts();
-
-            ArgumentLacing = LacingStrategy.Longest;
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            //unwrap the values
-            IEnumerable<double> nvals = ((Value.List)args[0]).Item.Select(
-               x => (double)((Value.Number)x).Item
-            );
-
-            //unwrap the sample locations
-            IEnumerable<double> parameters = ((Value.List)args[1]).Item.Select(
-               x => ((Value.Number)x).Item
-            );
-            sfm = ((Value.Container)args[2]).Item as SpatialFieldManager;
-            var curve = (Curve) ((Value.Container) args[3]).Item;
-
-            int idx = sfm.AddSpatialFieldPrimitive(curve.Reference);
-
-            var samplePts = new FieldDomainPointsByParameter(parameters.ToList<double>());
-
-            //for every sample location add a list
-            //of valueatpoint objects. for now, we only
-            //support one value per point
-            IList<ValueAtPoint> valList = nvals.Select(n => new ValueAtPoint(new List<double> { n })).ToList();
-            var sampleValues = new FieldValues(valList);
-
-            int schemaIndex = 0;
-            if (!sfm.IsResultSchemaNameUnique(DYNAMO_ANALYSIS_RESULTS_NAME, -1))
-            {
-                IList<int> arses = sfm.GetRegisteredResults();
-                foreach (int i in arses)
-                {
-                    AnalysisResultSchema arsTest = sfm.GetResultSchema(i);
-                    if (arsTest.Name == DYNAMO_ANALYSIS_RESULTS_NAME)
-                    {
-                        schemaIndex = i;
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                var ars = new AnalysisResultSchema(DYNAMO_ANALYSIS_RESULTS_NAME, "Resulting analyses from Dynamo.");
-                schemaIndex = sfm.RegisterResult(ars);
-            }
-
-            sfm.UpdateSpatialFieldPrimitive(idx, samplePts, sampleValues, schemaIndex);
-
-            idxs.Add(idx);
-
-            return Value.NewContainer(idx);
-        }
-
-        public void ClearReferences()
-        {
-            if (idxs.Count > 0)
-            {
-                foreach (var id in idxs)
-                {
-                    sfm.RemoveSpatialFieldPrimitive(id);
-                }
-            }
-
-            idxs.Clear();
-        }
-    }
-    */
-
-    [NodeName("Spatial Field Curve")]
+    [NodeName("Display Analysis Curve")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
     [NodeDescription("Visualize analytical data along a curve.")]
-    class SpatialFieldCurve : RevitTransactionNodeWithOneOutput //, IClearable
+    class SpatialFieldCurve : DisplayAnalysisBase
     {
         const string DYNAMO_TEMP_CURVES_SCHEMA = "Dynamo Analysis Results by Curve";
 
-        List<int> idxs = new List<int>();
         int schemaId = -1;
-        private Autodesk.Revit.DB.Analysis.SpatialFieldManager sfm;
 
         public SpatialFieldCurve()
         {
             InPortData.Add(new PortData("vals", "List of analytical values along this curve.", typeof(Value.List)));
             InPortData.Add(new PortData("curve", "The curve on which to map the results.", typeof(Value.Container)));
-            InPortData.Add(new PortData("sfm", "A Spatial Field Manager object.", typeof(Value.Container)));
+            InPortData.Add(new PortData("sfm", "A SpatialFieldManager object.", typeof(Value.Container)));
             OutPortData.Add(new PortData("idx", "The index of the resulting analysis results object.", typeof(Value.Number)));
 
             RegisterAllPorts();
@@ -624,18 +415,20 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
+            this.ClearPreviousResults();
+
             //unwrap the values
             IEnumerable<double> nvals = ((Value.List)args[0]).Item.Select(q => (double)((Value.Number)q).Item);
 
             var curve = (Curve)((Value.Container)args[1]).Item;
-            sfm = (Autodesk.Revit.DB.Analysis.SpatialFieldManager)((Value.Container)args[2]).Item;
+            SpatialFieldManager = (Autodesk.Revit.DB.Analysis.SpatialFieldManager)((Value.Container)args[2]).Item;
 
-            if (!sfm.IsResultSchemaNameUnique(DYNAMO_TEMP_CURVES_SCHEMA, -1))
+            if (!SpatialFieldManager.IsResultSchemaNameUnique(DYNAMO_TEMP_CURVES_SCHEMA, -1))
             {
-                IList<int> arses = sfm.GetRegisteredResults();
+                IList<int> arses = SpatialFieldManager.GetRegisteredResults();
                 foreach (int i in arses)
                 {
-                    AnalysisResultSchema arsTest = sfm.GetResultSchema(i);
+                    AnalysisResultSchema arsTest = SpatialFieldManager.GetResultSchema(i);
                     if (arsTest.Name == DYNAMO_TEMP_CURVES_SCHEMA)
                     {
                         schemaId = i;
@@ -646,7 +439,7 @@ namespace Dynamo.Nodes
             else
             {
                 var ars = new AnalysisResultSchema(DYNAMO_TEMP_CURVES_SCHEMA, "Temporary curves from Dynamo.");
-                schemaId = sfm.RegisterResult(ars);
+                schemaId = SpatialFieldManager.RegisterResult(ars);
             }
 
             Transform trf = Transform.Identity;
@@ -683,7 +476,7 @@ namespace Dynamo.Nodes
                 double vSpan = domain.Max.V - domain.Min.V;
 
                 //analysis values
-                idx = sfm.AddSpatialFieldPrimitive(face, trf);
+                idx = SpatialFieldManager.AddSpatialFieldPrimitive(face, trf);
 
                 //a list to hold the analysis points
                 IList<UV> uvPts = new List<UV>();
@@ -734,27 +527,15 @@ namespace Dynamo.Nodes
                 var pnts = new FieldDomainPointsByUV(uvPts);
                 var vals = new FieldValues(valList);
 
-                sfm.UpdateSpatialFieldPrimitive(
+                SpatialFieldManager.UpdateSpatialFieldPrimitive(
                     idx, pnts, vals, schemaId);
 
-                idxs.Add(idx);
+                PastResultIds.Add(idx);
             }
 
             return Value.NewNumber(idx);
         }
 
-        public void ClearReferences()
-        {
-            if (idxs.Count > 0)
-            {
-                foreach (var id in idxs)
-                {
-                    sfm.RemoveSpatialFieldPrimitive(id);
-                }
-            }
-
-            idxs.Clear();
-        }
     }
 
     [NodeName("Ray Bounce")]
@@ -773,7 +554,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("origin", "The origin of the ray.", typeof(Value.Container)));
             InPortData.Add(new PortData("direction", "The direction of the ray.", typeof(Value.Container)));
-            InPortData.Add(new PortData("max. bounces.", "The maximum number of bounces allowed.", typeof(Value.Number)));
+            InPortData.Add(new PortData("maxBounces", "The maximum number of bounces allowed.", typeof(Value.Number)));
             InPortData.Add(new PortData("view", "The view in which to conduct the analysis.", typeof(Value.Container)));
 
             OutPortData.Add(intersections);
@@ -884,4 +665,205 @@ namespace Dynamo.Nodes
             return rClosest;
         }
     }
+
+
+    //It would be really nice if we could get this to work
+    //unfortunately mapping analysis results along a curve requires
+    //a curve reference, which we can only get from a model curve
+    //which requires a sketch plane. all of this adds additional complication
+    //for the user
+    /*
+    [NodeName("Spatial Field Curve Parameters")]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
+    [NodeDescription("Visualize analytical results at specified XYZ locations.")]
+    [AlsoKnownAs("dynAnalysisResults")]
+    class dynSpatialFieldCurveParameters : dynRevitTransactionNodeWithOneOutput, IClearable
+    {
+        const string DYNAMO_ANALYSIS_RESULTS_NAME = "Dynamo Analysis Results at Points";
+
+        List<int> Ids = new List<int>();
+        private SpatialFieldManager SpatialFieldManager;
+
+        public dynSpatialFieldCurveParameters()
+        {
+            InPortData.Add(new PortData("vals", "List of values.", typeof(Value.List)));
+            InPortData.Add(new PortData("t", "Parameters along the curve.", typeof(Value.List)));
+            InPortData.Add(new PortData("sfm", "A SpatialFieldManager object.", typeof(Value.Container)));
+            InPortData.Add(new PortData("curve", "A curve on which to map the analysis results.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("idx", "The index of the resulting analysis results object.", typeof(Value.Container)));
+
+            RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            //unwrap the values
+            IEnumerable<double> nvals = ((Value.List)args[0]).Item.Select(
+               x => (double)((Value.Number)x).Item
+            );
+
+            //unwrap the sample locations
+            IEnumerable<double> parameters = ((Value.List)args[1]).Item.Select(
+               x => ((Value.Number)x).Item
+            );
+            SpatialFieldManager = ((Value.Container)args[2]).Item as SpatialFieldManager;
+            var curve = (Curve) ((Value.Container) args[3]).Item;
+
+            int idx = SpatialFieldManager.AddSpatialFieldPrimitive(curve.Reference);
+
+            var samplePts = new FieldDomainPointsByParameter(parameters.ToList<double>());
+
+            //for every sample location add a list
+            //of valueatpoint objects. for now, we only
+            //support one value per point
+            IList<ValueAtPoint> valList = nvals.Select(n => new ValueAtPoint(new List<double> { n })).ToList();
+            var sampleValues = new FieldValues(valList);
+
+            int schemaIndex = 0;
+            if (!SpatialFieldManager.IsResultSchemaNameUnique(DYNAMO_ANALYSIS_RESULTS_NAME, -1))
+            {
+                IList<int> arses = SpatialFieldManager.GetRegisteredResults();
+                foreach (int i in arses)
+                {
+                    AnalysisResultSchema arsTest = SpatialFieldManager.GetResultSchema(i);
+                    if (arsTest.Name == DYNAMO_ANALYSIS_RESULTS_NAME)
+                    {
+                        schemaIndex = i;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                var ars = new AnalysisResultSchema(DYNAMO_ANALYSIS_RESULTS_NAME, "Resulting analyses from Dynamo.");
+                schemaIndex = SpatialFieldManager.RegisterResult(ars);
+            }
+
+            SpatialFieldManager.UpdateSpatialFieldPrimitive(idx, samplePts, sampleValues, schemaIndex);
+
+            Ids.Add(idx);
+
+            return Value.NewContainer(idx);
+        }
+
+        public void ClearReferences()
+        {
+            if (Ids.Count > 0)
+            {
+                foreach (var id in Ids)
+                {
+                    SpatialFieldManager.RemoveSpatialFieldPrimitive(id);
+                }
+            }
+
+            Ids.Clear();
+        }
+    }
+    */
+
+    /*[NodeName("Vector Spatial Field")]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE)]
+    [NodeDescription("Gets or creates the spatial field manager on the view.")]
+    [RequiresTransaction(true)]
+    class dynVectorSpatialField : dynNode
+    {
+        AnalysisDisplayStyle analysisDisplayStyle;
+
+        public dynVectorSpatialField()
+        {
+            InPortData.Add(new PortData("n", "Number of samples at a location.", typeof(int)));
+            OutPortData.Add(new PortData("sfm", "Spatial field manager for the active view", typeof(object));
+
+            NodeUI.RegisterInputsAndOutput();
+
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            SpatialFieldManager SpatialFieldManager;
+
+            if (analysisDisplayStyle == null)
+            {
+                CreateDisplayStyle();
+            }
+
+            SpatialFieldManager = SpatialFieldManager.GetSpatialFieldManager(dynRevitSettings.Doc.ActiveView);
+            
+            if (SpatialFieldManager != null)
+            {
+                dynSettings.Instance.SpatialFieldManagerUpdated = SpatialFieldManager;
+            }
+            else
+            {
+                SpatialFieldManager = SpatialFieldManager.CreateSpatialFieldManager(dynRevitSettings.Doc.ActiveView, Convert.ToInt16(((Value.Number)args[0]).Item));
+            }
+
+<<<<<<< HEAD
+            return Value.NewContainer(SpatialFieldManager);
+
+=======
+            return Value.NewContainer(SpatialFieldManager);
+            
+>>>>>>> Now builds and runs!
+        }
+
+        void CreateDisplayStyle()
+        {
+            Document doc = dynRevitSettings.Doc.Document;
+
+            analysisDisplayStyle = null;
+            // Look for an existing analysis display style with a specific name
+            FilteredElementCollector collector1 = new FilteredElementCollector(doc);
+            ICollection<Element> collection =
+                collector1.OfClass(typeof(AnalysisDisplayStyle)).ToElements();
+            var displayStyle = from element in collection
+                               where element.Name == "Dynamo_Vector"
+                               select element;
+
+            // If display style does not already exist in the document, create it
+            if (displayStyle.Count() == 0)
+            {
+                AnalysisDisplayVectorSettings vectorSettings = new AnalysisDisplayVectorSettings();
+                vectorSettings.VectorPosition = AnalysisDisplayStyleVectorPosition.FromDataPoint;
+                vectorSettings.VectorOrientation = AnalysisDisplayStyleVectorOrientation.Linear;
+                vectorSettings.ArrowheadScale = AnalysisDisplayStyleVectorArrowheadScale.NoScaling;
+                vectorSettings.ArrowLineWeight = 5;
+
+                AnalysisDisplayColorSettings colorSettings = new AnalysisDisplayColorSettings();
+                Color orange = new Color(255, 205, 0);
+                Color purple = new Color(200, 0, 200);
+                colorSettings.MaxColor = orange;
+                colorSettings.MinColor = purple;
+
+                AnalysisDisplayLegendSettings legendSettings = new AnalysisDisplayLegendSettings();
+                legendSettings.NumberOfSteps = 10;
+                legendSettings.Rounding = 0.05;
+                legendSettings.ShowDataDescription = false;
+                legendSettings.ShowLegend = true;
+
+                FilteredElementCollector collector2 = new FilteredElementCollector(doc);
+                ICollection<Element> elementCollection = collector2.OfClass(typeof(TextNoteType)).ToElements();
+
+                var textElements = from element in collector2
+                                   select element;
+                // if LegendText exists, use it for this Display Style
+                if (textElements.Count() > 0)
+                {
+                    TextNoteType textType =
+                        textElements.Cast<TextNoteType>().ElementAt<TextNoteType>(0);
+                    legendSettings.TextTypeId = textType.Id;
+                }
+                analysisDisplayStyle = AnalysisDisplayStyle.CreateAnalysisDisplayStyle(doc, "Dynamo_Vector", vectorSettings, colorSettings, legendSettings);
+            }
+            else
+            {
+                analysisDisplayStyle =
+                    displayStyle.Cast<AnalysisDisplayStyle>().ElementAt<AnalysisDisplayStyle>(0);
+            }
+            // now assign the display style to the view
+            doc.ActiveView.AnalysisDisplayStyleId = analysisDisplayStyle.Id;
+        }
+    }*/
 }

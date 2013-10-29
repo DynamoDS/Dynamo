@@ -1,18 +1,5 @@
-﻿//Copyright © Autodesk, Inc. 2012. All rights reserved.
-//
-//Licensed under the Apache License, Version 2.0 (the "License");
-//you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at
-//
-//http://www.apache.org/licenses/LICENSE-2.0
-//
-//Unless required by applicable law or agreed to in writing, software
-//distributed under the License is distributed on an "AS IS" BASIS,
-//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//See the License for the specific language governing permissions and
-//limitations under the License.
-
-using System;
+﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
@@ -20,8 +7,6 @@ using System.IO.Ports;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Microsoft.FSharp.Collections;
-
-using Dynamo.Connectors;
 using Dynamo.FSchemeInterop;
 using Value = Dynamo.FScheme.Value;
 
@@ -174,54 +159,36 @@ namespace Dynamo.Nodes
         int range;
         List<string> serialLine = new List<string>();
 
-
         public ArduinoRead()
         {
             InPortData.Add(new PortData("arduino", "Arduino serial connection", typeof(object)));
-            InPortData.Add(new PortData("range", "Number of lines to read", typeof(double)));
+            InPortData.Add(new PortData("delimiter", "The delimeter in your data coming from the Arduino.", typeof(Value.String)));
             OutPortData.Add(new PortData("output", "Serial output line", typeof(Value.List)));
 
             RegisterAllPorts();
         }
 
-        private List<string> GetArduinoData()
+        private string GetArduinoData(SerialPort port, string delim)
         {
             string data = port.ReadExisting();
-            List<string> serialRange = new List<string>();
 
-            string[] allData = data.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-            if (allData.Length > 2)
+            string[] allData = data.Split(delim.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            if (allData.Any())
             {
-
-
-                string lastData = allData[allData.Length - 2];
-                string[] values = lastData.Split(new char[]{'\t'}, StringSplitOptions.RemoveEmptyEntries);
-
-                //get the sensor values, tailing the values list and passing back a range from [range to count-2]
-                int start = allData.Length - range - 2; //get the second to last element as the last is often truncated
-                //int end = allData.Length - 2; 
-                try
-                {
-                    serialRange = allData.ToList<string>().GetRange(0, range);
-                    return serialRange;
-                }
-                catch
-                {
-                    return serialRange;
-                }
-
+                //don't return last value. it is often truncated
+                return allData[allData.Count()-2];
             }
 
-            return serialRange;
-
+            return string.Empty;
         }
 
 
         public override Value Evaluate(FSharpList<Value> args)
         {
             port = (SerialPort)((Value.Container)args[0]).Item;
-            range = (int)((Value.Number)args[1]).Item;
-            
+            var delim = ((Value.String) args[1]).Item;
+
+            var lastValue = string.Empty;
 
             if (port != null)
             {
@@ -235,21 +202,12 @@ namespace Dynamo.Nodes
                     }
 
                     //get the values from the serial port as a list of strings
-                    serialLine = GetArduinoData();
-
-
-                }
-                else if (isOpen == false)
-                {
-                    if (port.IsOpen)
-                        port.Close();
+                    lastValue = GetArduinoData(port, delim);
                 }
             }
 
-
-            return Value.NewList(Utils.SequenceToFSharpList(serialLine.Select(Value.NewString)));
+            return Value.NewString(lastValue);
         }
-
 
     }
 

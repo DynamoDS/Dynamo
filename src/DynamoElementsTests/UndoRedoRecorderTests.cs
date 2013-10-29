@@ -577,13 +577,9 @@ namespace Dynamo.Tests
         public void TestBasicAttributes()
         {
             var model = dynSettings.Controller.DynamoModel;
-
-            var sumData = new Dictionary<string, object>();
-            sumData.Add("name", "Dynamo.Nodes.Addition");
-            model.CreateNode(sumData);
+            model.CreateNode(400, 100, "Dynamo.Nodes.Addition");
             var sumNode = Controller.DynamoViewModel.Model.Nodes[0] as Addition;
-            sumNode.X = 400;
-            sumNode.Y = 100;
+
             //Assert inital values
             Assert.AreEqual(400, sumNode.X);
             Assert.AreEqual(100, sumNode.Y);
@@ -634,10 +630,8 @@ namespace Dynamo.Tests
         public void TestDoubleInput()
         {
             var model = dynSettings.Controller.DynamoModel;
+            model.CreateNode(400, 0, "Number");
 
-            var numData = new Dictionary<string, object>();
-            numData.Add("name", "Number");
-            model.CreateNode(numData);
             var numNode = Controller.DynamoViewModel.Model.Nodes[0] as DoubleInput;
             numNode.Value = "0.0";
             numNode.X = 400; //To check if base Serialization method is being called
@@ -666,10 +660,8 @@ namespace Dynamo.Tests
         public void TestDoubleSliderInput()
         {
             var model = dynSettings.Controller.DynamoModel;
+            model.CreateNode(400, 0, "Number Slider");
 
-            var numData = new Dictionary<string, object>();
-            numData.Add("name", "Number Slider");
-            model.CreateNode(numData);
             var numNode = Controller.DynamoViewModel.Model.Nodes[0] as DoubleSliderInput;
             numNode.X = 400; //To check if NodeModel base Serialization method is being called
             numNode.Value = 50.0; //To check if Double class's Serialization methods work
@@ -708,10 +700,8 @@ namespace Dynamo.Tests
         public void TestBool()
         {
             var model = dynSettings.Controller.DynamoModel;
+            model.CreateNode(0, 0, "Boolean");
 
-            var boolData = new Dictionary<string, object>();
-            boolData.Add("name", "Boolean");
-            model.CreateNode(boolData);
             var boolNode = Controller.DynamoViewModel.Model.Nodes[0] as BoolSelector;
             boolNode.Value = false;
             boolNode.X = 400; //To check if base Serialization method is being called
@@ -740,10 +730,8 @@ namespace Dynamo.Tests
         public void TestStringInput()
         {
             var model = dynSettings.Controller.DynamoModel;
+            model.CreateNode(0, 0, "String");
 
-            var strData = new Dictionary<string, object>();
-            strData.Add("name", "String");
-            model.CreateNode(strData);
             var strNode = Controller.DynamoViewModel.Model.Nodes[0] as StringInput;
             strNode.Value = "Enter";
             strNode.X = 400; //To check if base Serialization method is being called
@@ -772,10 +760,8 @@ namespace Dynamo.Tests
         public void TestStringFileName()
         {
             var model = dynSettings.Controller.DynamoModel;
+            model.CreateNode(0, 0, "Directory");
 
-            var strData = new Dictionary<string, object>();
-            strData.Add("name", "Directory");
-            model.CreateNode(strData);
             var strNode = Controller.DynamoViewModel.Model.Nodes[0] as StringDirectory;
             strNode.Value = "Enter";
             strNode.X = 400; //To check if base Serialization method is being called
@@ -804,10 +790,8 @@ namespace Dynamo.Tests
         public void TestVariableInput()
         {
             var model = dynSettings.Controller.DynamoModel;
+            model.CreateNode(0, 0, "List");
 
-            var listData = new Dictionary<string, object>();
-            listData.Add("name", "List");
-            model.CreateNode(listData);
             var listNode = Controller.DynamoViewModel.Model.Nodes[0] as NewList;
             listNode.X = 400; //To check if base Serialization method is being called
             listNode.InPortData.Add(new PortData("index 1", "Item Index #1", typeof(object)));
@@ -838,10 +822,8 @@ namespace Dynamo.Tests
         public void TestSublists()
         {
             var model = dynSettings.Controller.DynamoModel;
+            model.CreateNode(0, 0, "Build Sublists");
 
-            var strData = new Dictionary<string, object>();
-            strData.Add("name", "Build Sublists");
-            model.CreateNode(strData);
             var strNode = Controller.DynamoViewModel.Model.Nodes[0] as Sublists;
             strNode.Value = "Enter";
             strNode.X = 400; //To check if base Serialization method is being called
@@ -870,10 +852,8 @@ namespace Dynamo.Tests
         public void TestFormula()
         {
             var model = dynSettings.Controller.DynamoModel;
+            model.CreateNode(0, 0, "Formula");
 
-            var nodeData = new Dictionary<string, object>();
-            nodeData.Add("name", "Formula");
-            model.CreateNode(nodeData);
             var formulaNode = Controller.DynamoViewModel.Model.Nodes[0] as Formula;
             formulaNode.FormulaString = "x+y";
             formulaNode.X = 400; //To check if base Serialization method is being called
