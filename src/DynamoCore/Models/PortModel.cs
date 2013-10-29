@@ -32,7 +32,6 @@ namespace Dynamo.Models
         #endregion
 
         #region private fields
-        Point center;
         bool isConnected;
         NodeModel owner;
         int index;
