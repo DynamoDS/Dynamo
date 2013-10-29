@@ -2,7 +2,7 @@
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 
-namespace DS.Revit
+namespace DSRevitNodes
 {
     public class ReferencePoint
     {

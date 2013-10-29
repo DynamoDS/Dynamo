@@ -5,7 +5,7 @@ using Point = Autodesk.DesignScript.Geometry.Point;
 using Curve = Autodesk.DesignScript.Geometry.Curve;
 using Face = Autodesk.DesignScript.Geometry.Face;
 
-namespace Dynamo.Revit
+namespace DSRevitNodes
 {
     class FamilyInstance
     {

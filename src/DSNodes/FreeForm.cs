@@ -2,7 +2,7 @@
 using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 
-namespace Dynamo.Revit
+namespace DSRevitNodes
 {
     class FreeForm
     {
