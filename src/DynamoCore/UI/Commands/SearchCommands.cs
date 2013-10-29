@@ -1,5 +1,4 @@
-﻿using Dynamo.Search.Regions;
-using Dynamo.Utilities;
+﻿using Dynamo.Utilities;
 using Dynamo.ViewModels;
 
 namespace Dynamo.UI.Commands
@@ -10,6 +9,7 @@ namespace Dynamo.UI.Commands
             dynSettings.Controller.SearchViewModel;
 
         private static DelegateCommand focusSearch;
+
         public static DelegateCommand FocusSearchCommand
         {
             get
@@ -21,6 +21,7 @@ namespace Dynamo.UI.Commands
         }
 
         private static DelegateCommand search;
+
         public static DelegateCommand SearchCommand
         {
             get
@@ -32,6 +33,7 @@ namespace Dynamo.UI.Commands
         }
 
         private static DelegateCommand showSearch;
+
         public static DelegateCommand ShowSearchCommand
         {
             get
@@ -43,6 +45,7 @@ namespace Dynamo.UI.Commands
         }
 
         private static DelegateCommand hideSearch;
+
         public static DelegateCommand HideSearchCommand
         {
             get
@@ -54,138 +57,29 @@ namespace Dynamo.UI.Commands
         }
 
         private static DelegateCommand showLibItemInfoBubble;
+
         public static DelegateCommand ShowLibItemInfoBubbleCommand
         {
             get
             {
                 if (showLibItemInfoBubble == null)
-                    showLibItemInfoBubble = new DelegateCommand(_vm_search.ShowLibItemInfoBubble, _vm_search.CanShowLibItemInfoBubble);
+                    showLibItemInfoBubble = new DelegateCommand(_vm_search.ShowLibItemInfoBubble,
+                        _vm_search.CanShowLibItemInfoBubble);
                 return showLibItemInfoBubble;
             }
         }
 
         private static DelegateCommand hideLibItemInfoBubble;
+
         public static DelegateCommand HideLibItemInfoBubbleCommand
         {
             get
             {
                 if (hideLibItemInfoBubble == null)
-                    hideLibItemInfoBubble = new DelegateCommand(_vm_search.HideLibItemInfoBubble, _vm_search.CanHideLibItemInfoBubble);
+                    hideLibItemInfoBubble = new DelegateCommand(_vm_search.HideLibItemInfoBubble,
+                        _vm_search.CanHideLibItemInfoBubble);
                 return hideLibItemInfoBubble;
             }
         }
-    }
-
-//public class SearchCommand : ICommand
-//{
-//    public void Execute(object parameters)
-//    {
-//        dynSettings.Controller.SearchViewModel.SearchAndUpdateResults();
-//    }
-
-//    public event EventHandler CanExecuteChanged
-//    {
-//        add { CommandManager.RequerySuggested += value; }
-//        remove { CommandManager.RequerySuggested -= value; }
-//    }
-
-//    public bool CanExecute(object parameters)
-//    {
-//        return true;
-//    }
-//}
-
-//public class HideSearchCommand : ICommand
-//{
-
-//    public void Execute(object parameters)
-//    {
-//        if (dynSettings.Controller.PackageManagerLoginViewModel.Visible == Visibility.Visible)
-//        {
-//            dynSettings.Controller.PackageManagerLoginViewModel.Visible = Visibility.Collapsed;
-//            return;
-//        }
-
-//        if (dynSettings.Controller.PackageManagerPublishViewModel.Visible == Visibility.Visible)
-//        {
-//            dynSettings.Controller.PackageManagerPublishViewModel.Visible = Visibility.Collapsed;
-//            return;
-//        }
-
-//        dynSettings.Controller.SearchViewModel.Visible = Visibility.Collapsed;
-
-//    }
-
-//    public event EventHandler CanExecuteChanged
-//    {
-//        add { CommandManager.RequerySuggested += value; }
-//        remove { CommandManager.RequerySuggested -= value; }
-//    }
-
-//    public bool CanExecute(object parameters)
-//    {
-//        return (dynSettings.Controller.SearchViewModel.Visible == Visibility.Visible);
-//    }
-//}
-
-//public class FocusSearchCommand : ICommand {
-
-//    public void Execute(object parameters)
-//    {
-//        ShowSearchCommand.search.SearchTextBox.Focus();
-//    }
-
-//    public event EventHandler CanExecuteChanged
-//    {
-//        add { CommandManager.RequerySuggested += value; }
-//        remove { CommandManager.RequerySuggested -= value; }
-//    }
-
-//    public bool CanExecute(object parameters)
-//    {
-//        return true;
-//    }
-//}
-
-//public class ShowSearchCommand : ICommand
-//{
-//    public static SearchView search;
-
-//    public void Execute(object parameters)
-//    {
-
-//        search = new SearchView(dynSettings.Controller.SearchViewModel);
-
-//        dynSettings.Bench.sidebarGrid.Children.Add(search);
-//        dynSettings.Controller.SearchViewModel.Visible = Visibility.Visible;
-//    }
-
-//    public event EventHandler CanExecuteChanged
-//    {
-//        add { CommandManager.RequerySuggested += value; }
-//        remove { CommandManager.RequerySuggested -= value; }
-//    }
-
-//    public bool CanExecute(object parameters)
-//    {
-//        return (dynSettings.Controller.SearchViewModel.Visible != Visibility.Visible);
-//    }
-//}
-
-    
-}
-
-namespace Dynamo.ViewModels
-{
-    public partial class SearchViewModel
-    {
-        /// <summary>
-        ///     Regions property
-        /// </summary>
-        /// <value>
-        ///     Specifies different regions to search over.  The command toggles whether searching
-        ///     over that field or not.
-        /// </value>
-        public ObservableDictionary<string, RegionBase> Regions { get; set; }
     }
 }
