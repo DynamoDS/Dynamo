@@ -451,7 +451,7 @@ namespace Dynamo.ViewModels
                 if (ErrorBubble.Opacity != 0)
                 {
                     ErrorBubble.SetAlwaysVisibleCommand.Execute(false);
-                    ErrorBubble.FadeOutCommand.Execute(null);
+                    ErrorBubble.InstantCollapseCommand.Execute(null);
                 }
             }
             else
@@ -468,7 +468,7 @@ namespace Dynamo.ViewModels
                         return;
                     this.ErrorBubble.UpdateContentCommand.Execute(data);
                     this.ErrorBubble.SetAlwaysVisibleCommand.Execute(true);
-                    this.ErrorBubble.FadeInCommand.Execute(null);
+                    this.ErrorBubble.InstantAppearCommand.Execute(null);
                 })));
             }
         }
