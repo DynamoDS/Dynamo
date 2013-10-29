@@ -33,21 +33,20 @@ using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Nodes
 {
-    
     [NodeName("Python Script")]
     [NodeCategory(BuiltinNodeCategories.SCRIPTING_PYTHON)]
     [NodeDescription("Runs an embedded IronPython script")]
     public class Python : NodeWithOneOutput
     {
-        private bool dirty = true;
-        private Value lastEvalValue;
+        private bool _dirty = true;
+        private Value _lastEvalValue;
 
         /// <summary>
         /// Allows a scripter to have a persistent reference to previous runs.
         /// </summary>
-        private Dictionary<string, dynamic> stateDict = new Dictionary<string, dynamic>();
+        private readonly Dictionary<string, dynamic> _stateDict = new Dictionary<string, dynamic>();
 
-        private string script;
+        private string _script;
 
         public Python()
         {
@@ -62,35 +61,50 @@ namespace Dynamo.Nodes
 
         private void InitializeDefaultScript()
         {
-            script = "# Default imports\n";
+            _script = "# Default imports\n";
 
-            
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
             if (assemblies.Any(x => x.FullName.Contains("RevitAPI")) && assemblies.Any(x => x.FullName.Contains("RevitAPIUI")))
             {
-                script = script + "import clr\nclr.AddReference('RevitAPI')\nclr.AddReference('RevitAPIUI')\nfrom Autodesk.Revit.DB import *\nimport Autodesk\n";
+                _script = _script
+                    + "import clr\n"
+                    + "clr.AddReference('RevitAPI')\n"
+                    + "clr.AddReference('RevitAPIUI')\n"
+                    + "from Autodesk.Revit.DB import *\n"
+                    + "import Autodesk\n";
             }
 
-            string dll_dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\dll";
+            string dllDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\dll";
 
             if (!assemblies.Any(x => x.FullName.Contains("LibGNet")))
             {
                 //LibG could not be found, possibly because we haven't used a node
                 //that requires it yet. Let's load it...
-                string libGPath = Path.Combine(dll_dir, "LibGNet.dll");
-                var libG = Assembly.LoadFrom(libGPath);
+                string libGPath = Path.Combine(dllDir, "LibGNet.dll");
+                Assembly.LoadFrom(libGPath);
 
                 //refresh the collection of loaded assemblies
                 assemblies = AppDomain.CurrentDomain.GetAssemblies();
             }
 
             if (assemblies.Any(x => x.FullName.Contains("LibGNet")))
-            { 
-                script = script + "import sys\nimport clr\npath = r'C:\\Autodesk\\Dynamo\\Core'" + "\nexec_path = r'" + dll_dir + "'\nsys.path.append(path)\nsys.path.append(exec_path)\nclr.AddReference('LibGNet')\nfrom Autodesk.LibG import *\n";
+            {
+                _script = _script + "import sys\n"
+                    + "import clr\n"
+                    + "path = r'C:\\Autodesk\\Dynamo\\Core'\n"
+                    + "exec_path = r'" + dllDir + "'\n"
+                    + "sys.path.append(path)\n"
+                    + "sys.path.append(exec_path)\n"
+                    + "clr.AddReference('LibGNet')\n"
+                    + "from Autodesk.LibG import *\n";
             }
 
-            script = script + "\n#The input to this node will be stored in the IN variable.\ndataEnteringNode = IN\n\n#Assign your output to the OUT variable\nOUT = 0";
+            _script = _script + "\n"
+                + "#The input to this node will be stored in the IN variable.\n"
+                + "dataEnteringNode = IN\n\n"
+                + "#Assign your output to the OUT variable\n"
+                + "OUT = 0";
         }
 
         public override void SetupCustomUIElements(object ui)
@@ -102,9 +116,11 @@ namespace Dynamo.Nodes
 
             //add an edit window option to the 
             //main context window
-            var editWindowItem = new System.Windows.Controls.MenuItem();
-            editWindowItem.Header = "Edit...";
-            editWindowItem.IsCheckable = false;
+            var editWindowItem = new System.Windows.Controls.MenuItem
+            {
+                Header = "Edit...",
+                IsCheckable = false
+            };
             nodeUI.MainContextMenu.Items.Add(editWindowItem);
             editWindowItem.Click += editWindowItem_Click;
             nodeUI.UpdateLayout();
@@ -135,7 +151,7 @@ namespace Dynamo.Nodes
         {
             XmlElement script = xmlDoc.CreateElement("Script");
             //script.InnerText = this.tb.Text;
-            script.InnerText = this.script;
+            script.InnerText = _script;
             nodeElement.AppendChild(script);
         }
 
@@ -145,72 +161,72 @@ namespace Dynamo.Nodes
             {
                 if (subNode.Name == "Script")
                     //this.tb.Text = subNode.InnerText;
-                    script = subNode.InnerText;
+                    _script = subNode.InnerText;
             }
         }
 
-        private List<Binding> makeBindings(IEnumerable<Value> args)
+        private IEnumerable<KeyValuePair<string, dynamic>> makeBindings(IEnumerable<Value> args)
         {
             //Zip up our inputs
-            var bindings = this.InPortData
+            var bindings = InPortData
                .Select(x => x.NickName)
-               .Zip(args, (s, v) => new Binding(s, Converters.convertFromValue(v)))
+               .Zip(args, (s, v) => new KeyValuePair<string, dynamic>(s, Converters.convertFromValue(v)))
                .Concat(PythonBindings.Bindings)
                .ToList();
 
-            bindings.Add(new Binding("__persistent__", this.stateDict));
+            bindings.Add(new KeyValuePair<string, dynamic>("__persistent__", _stateDict));
 
             return bindings;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            Value result = PythonEngine.Evaluator(dirty, script, makeBindings(args));
-            lastEvalValue = result;
+            Value result = PythonEngine.Evaluator(_dirty, _script, makeBindings(args));
+            _lastEvalValue = result;
 
             Draw();
 
             return result;
         }
 
-        private dynScriptEditWindow editWindow;
-        private bool initWindow = false;
+        private dynScriptEditWindow _editWindow;
 
         void editWindowItem_Click(object sender, RoutedEventArgs e)
         {
-            if (!initWindow)
-            {
-                editWindow = new dynScriptEditWindow();
-                // callbacks for autocompletion
-                editWindow.editText.TextArea.TextEntering += textEditor_TextArea_TextEntering;
-                editWindow.editText.TextArea.TextEntered += textEditor_TextArea_TextEntered;
+            _editWindow = new dynScriptEditWindow();
+            // callbacks for autocompletion
+            _editWindow.editText.TextArea.TextEntering += textEditor_TextArea_TextEntering;
+            _editWindow.editText.TextArea.TextEntered += textEditor_TextArea_TextEntered;
 
-                const string pythonHighlighting = "ICSharpCode.PythonBinding.Resources.Python.xshd";
-                var elem = GetType().Assembly.GetManifestResourceStream("DynamoPython.Resources." + pythonHighlighting);
+            const string pythonHighlighting = "ICSharpCode.PythonBinding.Resources.Python.xshd";
+            var elem =
+                GetType()
+                    .Assembly.GetManifestResourceStream(
+                        "DynamoPython.Resources." + pythonHighlighting);
 
-                editWindow.editText.SyntaxHighlighting =
-                HighlightingLoader.Load(new XmlTextReader(elem ),
-                HighlightingManager.Instance);
-            }
+            _editWindow.editText.SyntaxHighlighting =
+                HighlightingLoader.Load(
+                    new XmlTextReader(elem),
+                    HighlightingManager.Instance);
 
             //set the text of the edit window to begin
-            editWindow.editText.Text = script;
+            _editWindow.editText.Text = _script;
 
-            if (editWindow.ShowDialog() != true)
+            if (_editWindow.ShowDialog() != true)
             {
                 return;
             }
 
             //set the value from the text in the box
-            script = editWindow.editText.Text;
+            _script = _editWindow.editText.Text;
 
-            this.dirty = true;
+            _dirty = true;
         }
 
         #region Autocomplete
 
-        CompletionWindow completionWindow;
-        private IronPythonCompletionProvider completionProvider = new IronPythonCompletionProvider();
+        CompletionWindow _completionWindow;
+        private readonly IronPythonCompletionProvider _completionProvider = new IronPythonCompletionProvider();
 
         void textEditor_TextArea_TextEntered(object sender, TextCompositionEventArgs e)
         {
@@ -218,12 +234,12 @@ namespace Dynamo.Nodes
             {
                 if (e.Text == ".")
                 {
-                    completionWindow = new CompletionWindow(editWindow.editText.TextArea);
-                    var data = completionWindow.CompletionList.CompletionData;
+                    _completionWindow = new CompletionWindow(_editWindow.editText.TextArea);
+                    var data = _completionWindow.CompletionList.CompletionData;
 
                     var completions =
-                        completionProvider.GetCompletionData(editWindow.editText.Text.Substring(0,
-                                                                                                editWindow.editText
+                        _completionProvider.GetCompletionData(_editWindow.editText.Text.Substring(0,
+                                                                                                _editWindow.editText
                                                                                                           .CaretOffset));
 
                     if (completions.Length == 0)
@@ -234,11 +250,11 @@ namespace Dynamo.Nodes
                         data.Add(ele);
                     }
 
-                    completionWindow.Show();
+                    _completionWindow.Show();
 
-                    completionWindow.Closed += delegate
+                    _completionWindow.Closed += delegate
                         {
-                            completionWindow = null;
+                            _completionWindow = null;
                         };
                 }
             }
@@ -253,11 +269,11 @@ namespace Dynamo.Nodes
         void textEditor_TextArea_TextEntering(object sender, TextCompositionEventArgs e)
         {
             try {
-                if (e.Text.Length > 0 && completionWindow != null)
+                if (e.Text.Length > 0 && _completionWindow != null)
                 {
                     if (!char.IsLetterOrDigit(e.Text[0]))
                     {
-                        completionWindow.CompletionList.RequestInsertion(e);
+                        _completionWindow.CompletionList.RequestInsertion(e);
                     }
                 }
             }
@@ -273,8 +289,8 @@ namespace Dynamo.Nodes
 
         public void Draw()
         {
-            if(lastEvalValue != null)
-                PythonEngine.Drawing(lastEvalValue, this.GUID.ToString());
+            if(_lastEvalValue != null)
+                PythonEngine.Drawing(_lastEvalValue, GUID.ToString());
         }
     }
 
@@ -287,7 +303,7 @@ namespace Dynamo.Nodes
         /// <summary>
         /// Allows a scripter to have a persistent reference to previous runs.
         /// </summary>
-        private Dictionary<string, dynamic> stateDict = new Dictionary<string, dynamic>();
+        private readonly Dictionary<string, dynamic> _stateDict = new Dictionary<string, dynamic>();
 
         public PythonString()
         {
@@ -300,17 +316,17 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        private List<Binding> makeBindings(IEnumerable<Value> args)
+        private IEnumerable<KeyValuePair<string, dynamic>> makeBindings(IEnumerable<Value> args)
         {
             //Zip up our inputs
             var bindings = 
-               this.InPortData
+               InPortData
                .Select(x => x.NickName)
-               .Zip(args, (s, v) => new Binding(s, Converters.convertFromValue(v)))
+               .Zip(args, (s, v) => new KeyValuePair<string, dynamic>(s, Converters.convertFromValue(v)))
                .Concat(PythonBindings.Bindings)
                .ToList();
 
-            bindings.Add(new Binding("__persistent__", this.stateDict));
+            bindings.Add(new KeyValuePair<string, dynamic>("__persistent__", _stateDict));
 
             return bindings;
         }
