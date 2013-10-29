@@ -47,7 +47,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoTestFramework", "Dyna
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FSchemeInterop2012", "FSchemeInterop\FSchemeInterop2012.csproj", "{126C6420-C7A2-43B0-8B08-206C6C4C1348}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSRevitNodes", "DSNodes\DSRevitNodes.csproj", "{0BC2A611-BD0E-4FCC-A1DE-81F14ED369B2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSRevitNodes", "DSRevitNodes\DSRevitNodes.csproj", "{0BC2A611-BD0E-4FCC-A1DE-81F14ED369B2}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
