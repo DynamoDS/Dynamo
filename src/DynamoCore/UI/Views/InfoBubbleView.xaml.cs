@@ -42,7 +42,8 @@ namespace Dynamo.Controls
 
         private void InfoBubbleView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            (DataContext as InfoBubbleViewModel).PropertyChanged += ViewModel_PropertyChanged;
+            if (DataContext != null && DataContext is InfoBubbleViewModel)
+                (DataContext as InfoBubbleViewModel).PropertyChanged += ViewModel_PropertyChanged;
             UpdateContent();
         }
 
@@ -255,7 +256,7 @@ namespace Dynamo.Controls
         private void InfoBubble_MouseMove(object sender, MouseEventArgs e)
         {
             Point mousePosition = e.GetPosition(this);
-            
+
             //Debug.WriteLine(this.GetType());
             //Debug.WriteLine(mousePosition.X + "  " + this.ActualWidth);
 
