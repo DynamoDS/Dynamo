@@ -25,7 +25,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Background="Black" >
+    <Grid Background="{StaticResource DynamoWindowBrush}" >
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -38,8 +38,13 @@
         <Button Click="OnLibraryClick" Template="{DynamicResource BackgroundButton}">
             <Button.Resources>
                 <ControlTemplate x:Key="BackgroundButton" TargetType="Button">
-                    <Border Name="border" BorderThickness="1" BorderBrush="Black" Background="#222222">
-                        <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                    <Border Name="border"
+                            BorderThickness="0"
+                            BorderBrush="Black"
+                            Background="{StaticResource WorkspaceBackgroundBrush}"
+                            Height="20"
+                            Margin="0,0,-1,0">
+                        <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
                     </Border>
                 </ControlTemplate>
             </Button.Resources>
@@ -47,17 +52,18 @@
                 <Grid Name="buttonGrid" Mouse.MouseEnter="Button_MouseEnter" Mouse.MouseLeave="buttonGrid_MouseLeave">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="32"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <Label Grid.Column="0" FontSize="13" FontWeight="SemiBold" Foreground="#AAAAAA" Background="#222222" HorizontalAlignment="Left">
+                    <Label Grid.Column="0" FontWeight="Normal" Margin="0" Padding="16,0,0,0" Foreground="#AAAAAA" VerticalAlignment="Center" HorizontalAlignment="Stretch">
                         Library
                     </Label>
-                    <Image Grid.Column="1" Source="/DynamoCore;component/UI/Images/collapsestate_normal.png">
+                    <Image Grid.Column="1"
+                           Source="/DynamoCore;component/UI/Images/expand_normal.png" Width="20" Height="20" RenderTransformOrigin="0.5, 0.5">
                         <Image.RenderTransform>
-                            <RotateTransform CenterX="16" CenterY="16" Angle="-90"/>
+                            <RotateTransform Angle="180"/>
                         </Image.RenderTransform>
                     </Image>
                 </Grid>
@@ -88,23 +94,163 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <TextBox Name="SearchTextBox" KeyboardNavigation.TabIndex="0" Foreground="WhiteSmoke" Background="#222" BorderThickness="0" FontSize ="12" Padding="10,12,5,8" Margin ="0"
+            <TextBox Name="SearchTextBox"
+                     KeyboardNavigation.TabIndex="0"
+                     Foreground="#DDD"
+                     Background="Transparent" BorderThickness="0" FontSize ="12" Padding="15,12,5,8" Margin ="0"
                        IsEnabled="True" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Stretch" Text="{Binding Path=SearchText,Mode=TwoWay}" Grid.Column="1" MinWidth="280">
             </TextBox>
-
-            <TextBlock FontSize ="12" IsHitTestVisible="False" Padding="15,12,5,8" Margin ="0" Foreground="#666" Grid.Column="1" Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}">Search Node Library...</TextBlock>
+            
+            <TextBlock FontSize ="12" IsHitTestVisible="False" Padding="17,12,5,8" Margin ="0" Foreground="#666" Grid.Column="1" Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}">Search Node Library...</TextBlock>
 
         </Grid>
 
         <ScrollViewer Visibility="{Binding BrowserVisibility, Converter={StaticResource BooleanToVisibilityConverter}}" HorizontalAlignment="Stretch" Margin="0" Name="BrowserScrollView" VerticalAlignment="Stretch" Focusable="False"
-                      VerticalScrollBarVisibility="Visible" Background="Black" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=SearchControl}" Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="2" MouseWheel="TreeViewScrollViewer_PreviewMouseWheel">
+                      VerticalScrollBarVisibility="Visible" Background="Transparent" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=SearchControl}" Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="2" MouseWheel="TreeViewScrollViewer_PreviewMouseWheel">
 
             <ScrollViewer.Resources>
 
+                <!--Scrollbar Thumbs-->
+                <Style x:Key="ScrollThumbs"
+                       TargetType="{x:Type Thumb}">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type Thumb}">
+                                <Grid x:Name="Grid">
+                                    <Rectangle HorizontalAlignment="Stretch"
+                                               VerticalAlignment="Stretch"
+                                               Width="Auto"
+                                               Height="Auto"
+                                               Fill="Transparent" />
+                                    <Border x:Name="Rectangle1"
+                                            CornerRadius="3"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Stretch"
+                                            Width="Auto"
+                                            Height="Auto"
+                                            Background="{TemplateBinding Background}" />
+                                </Grid>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="Tag"
+                                             Value="Horizontal">
+                                        <Setter TargetName="Rectangle1"
+                                                Property="Width"
+                                                Value="Auto" />
+                                        <Setter TargetName="Rectangle1"
+                                                Property="Height"
+                                                Value="7" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+                
+                <!--ScrollBars-->
+                <Style x:Key="{x:Type ScrollBar}"
+                       TargetType="{x:Type ScrollBar}">
+                    <Setter Property="Stylus.IsFlicksEnabled"
+                            Value="false" />
+                    <Setter Property="Foreground"
+                            Value="#8C8C8C" />
+                    <Setter Property="Background"
+                            Value="Transparent" />
+                    <Setter Property="Width"
+                            Value="5" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ScrollBar}">
+                                <Grid x:Name="GridRoot"
+                                      Width="6"
+                                      Background="{TemplateBinding Background}">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="0.00001*" />
+                                    </Grid.RowDefinitions>
+
+                                    <Track x:Name="PART_Track"
+                                           Grid.Row="0"
+                                           IsDirectionReversed="true"
+                                           Focusable="false">
+                                        <Track.Thumb>
+                                            <Thumb x:Name="Thumb"
+                                                   Background="{TemplateBinding Foreground}"
+                                                   Style="{DynamicResource ScrollThumbs}" />
+                                        </Track.Thumb>
+                                        <Track.IncreaseRepeatButton>
+                                            <RepeatButton x:Name="PageUp"
+                                                          Command="ScrollBar.PageDownCommand"
+                                                          Opacity="0"
+                                                          Focusable="false" />
+                                        </Track.IncreaseRepeatButton>
+                                        <Track.DecreaseRepeatButton>
+                                            <RepeatButton x:Name="PageDown"
+                                                          Command="ScrollBar.PageUpCommand"
+                                                          Opacity="0"
+                                                          Focusable="false" />
+                                        </Track.DecreaseRepeatButton>
+                                    </Track>
+                                </Grid>
+
+                                <ControlTemplate.Triggers>
+                                    <Trigger SourceName="Thumb"
+                                             Property="IsMouseOver"
+                                             Value="true">
+                                        <Setter Value="{DynamicResource ButtonSelectBrush}"
+                                                TargetName="Thumb"
+                                                Property="Background" />
+                                    </Trigger>
+                                    <Trigger SourceName="Thumb"
+                                             Property="IsDragging"
+                                             Value="true">
+                                        <Setter Value="{DynamicResource DarkBrush}"
+                                                TargetName="Thumb"
+                                                Property="Background" />
+                                    </Trigger>
+
+                                    <Trigger Property="IsEnabled"
+                                             Value="false">
+                                        <Setter TargetName="Thumb"
+                                                Property="Visibility"
+                                                Value="Collapsed" />
+                                    </Trigger>
+                                    <Trigger Property="Orientation"
+                                             Value="Horizontal">
+                                        <Setter TargetName="GridRoot"
+                                                Property="LayoutTransform">
+                                            <Setter.Value>
+                                                <RotateTransform Angle="-90" />
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter TargetName="PART_Track"
+                                                Property="LayoutTransform">
+                                            <Setter.Value>
+                                                <RotateTransform Angle="-90" />
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter Property="Width"
+                                                Value="Auto" />
+                                        <Setter Property="Height"
+                                                Value="8" />
+                                        <Setter TargetName="Thumb"
+                                                Property="Tag"
+                                                Value="Horizontal" />
+                                        <Setter TargetName="PageDown"
+                                                Property="Command"
+                                                Value="ScrollBar.PageLeftCommand" />
+                                        <Setter TargetName="PageUp"
+                                                Property="Command"
+                                                Value="ScrollBar.PageRightCommand" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+                
                 <Style x:Key="SearchTreeView" TargetType="{x:Type TreeView}">
                     <Setter Property="Focusable" Value="False"></Setter>
                     <Setter Property="Background" Value="Black"/>
-                    <Setter Property="Foreground" Value="WhiteSmoke"/>
+                    <Setter Property="Foreground" Value="#DDD"/>
                     <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
                     <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
                     <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -230,9 +376,9 @@
                                         <Setter Property="Margin" TargetName="NodeName" Value="10,7,5,5"/>
                                     </Trigger>
 
-                                    <Trigger Property="IsSelected" Value="true">
+                                    <!--<Trigger Property="IsSelected" Value="true">
                                         <Setter Property="Background" TargetName="Bd" Value="#555"/>
-                                    </Trigger>
+                                    </Trigger>-->
 
                                     <MultiTrigger>
                                         <MultiTrigger.Conditions>
@@ -291,13 +437,13 @@
                     
                     <HierarchicalDataTemplate DataType = "{x:Type search:BrowserRootElement}" ItemsSource="{Binding Path=Items}" >
 
-                        <TextBlock Foreground="WhiteSmoke" FontSize="14" Text="{Binding Path=Name}"/>
+                        <TextBlock Foreground="#DDD" FontSize="12" Text="{Binding Path=Name}"/>
 
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType = "{x:Type search:BrowserInternalElement}" ItemsSource="{Binding Path=Items}">
 
-                        <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}"/>
+                        <TextBlock Foreground="#DDD" Text="{Binding Path=Name}"/>
 
                     </HierarchicalDataTemplate>
 
@@ -319,7 +465,7 @@
                                 </StackPanel>
                             </StackPanel.ToolTip>
 
-                            <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" ToolTipService.InitialShowDelay="0" />
+                            <TextBlock Foreground="#DDD" Text="{Binding Path=Name}" ToolTipService.InitialShowDelay="0" />
 
                         </StackPanel>
 
@@ -357,7 +503,7 @@
                                 <TextBlock Foreground="Black" FontWeight="Bold" Padding="2" FontSize="9" Text="C" ToolTipService.InitialShowDelay="0" />
                             </Border>
 
-                            <TextBlock Foreground="WhiteSmoke" Text="{Binding Path=Name}" ToolTipService.InitialShowDelay="0" />
+                            <TextBlock Foreground="#DDD" Text="{Binding Path=Name}" ToolTipService.InitialShowDelay="0" />
 
                             <StackPanel.ContextMenu>
 
