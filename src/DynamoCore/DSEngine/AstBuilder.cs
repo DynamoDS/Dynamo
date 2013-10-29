@@ -104,16 +104,126 @@ namespace Dynamo.DSEngine
     }
 
     /// <summary>
+    /// SyncDataManager is to manage the state of a Dynamo node and the 
+    /// corresponding AST nodes of that Dynamo node. It is responsible for 
+    /// generating GraphSyncData that will be consumed by LiveRunner.
+    /// </summary>
+    internal class SyncDataManager
+    {
+        internal enum State
+        {
+            NoChange,
+            Added,
+            Modified,
+            Deleted
+        }
+
+        public SyncDataManager()
+        {
+        }
+
+        public GraphSyncData GetSyncData()
+        {
+            var added = GetSubtrees(State.Added);
+            var modified = GetSubtrees(State.Modified);
+            var deleted = GetSubtrees(State.Deleted);
+            return new GraphSyncData(deleted, added, modified);
+        }
+
+        /// <summary>
+        /// Get all active nodes.
+        /// </summary>
+        /// <returns></returns>
+        public List<Guid> GetNodes()
+        {
+            var nodes = states.Where(x => x.Value != State.Deleted)
+                              .Select(x => x.Key)
+                              .ToList();
+            return nodes;
+        }
+
+        /// <summary>
+        /// Reset states of all nodes to State.NoChange. It should be called
+        /// before each running. 
+        /// </summary>
+        public void ResetStates()
+        {
+            List<Guid> guids = new List<Guid>(states.Keys);
+            foreach (var guid in guids)
+            {
+                states[guid] = State.NoChange;
+            }
+        }
+
+        /// <summary>
+        /// Notify SyncDataManager that is going to add AST nodes.
+        /// </summary>
+        /// <param name="guid"></param>
+        public void MarkForAdding(Guid guid)
+        {
+            if (states.ContainsKey(guid))
+            {
+                states[guid] = State.Modified;
+            }
+            else
+            {
+                states[guid] = State.Added;
+            }
+            nodes.Removes(guid);
+        }
+
+        /// <summary>
+        /// Add an AST node to the existing AST node list.
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <param name="node"></param>
+        public void AddNode(Guid guid, AssociativeNode node)
+        {
+            nodes.AddItem(guid, node);
+        }
+
+        /// <summary>
+        /// Delete all AST nodes for this Dynamo node.
+        /// </summary>
+        /// <param name="guid"></param>
+        public void DeleteNodes(Guid guid)
+        {
+            states[guid] = State.Deleted;
+            nodes.Removes(guid);
+        }
+
+        private List<Subtree> GetSubtrees(State state)
+        {
+            List<Guid> guids = states.Where(x => x.Value == state)
+                                     .Select(x => x.Key)
+                                     .ToList();
+
+            List<Subtree> subtrees = new List<Subtree>();
+            foreach (var guid in guids)
+            {
+                Subtree tree = new Subtree(nodes.GetItems(guid), guid);
+                subtrees.Add(tree);
+            }
+
+            return subtrees;
+        }
+
+        private LinkedListOfList<Guid, AssociativeNode> nodes = new LinkedListOfList<Guid,AssociativeNode>();
+        private Dictionary<Guid, State> states = new Dictionary<Guid,State>();
+    }
+
+    /// <summary>
     /// Generate ast nodes
     /// </summary>
     public interface IAstBuilder
     {
-        AssociativeNode Build(NodeModel node, List<AssociativeNode> inputs);
-        AssociativeNode Build(Dynamo.Nodes.DSFunction node, List<AssociativeNode> inputs);
-        AssociativeNode Build(Dynamo.Nodes.Double node, List<AssociativeNode> inputs);
-        AssociativeNode Build(Dynamo.Nodes.Bool node, List<AssociativeNode> inputs);
-        AssociativeNode Build(Dynamo.Nodes.String node, List<AssociativeNode> inputs);
-        AssociativeNode Build(Dynamo.Nodes.CodeBlockNodeModel node, List<AssociativeNode> inputs);
+        void Build(NodeModel node, List<AssociativeNode> inputs);
+        void Build(Dynamo.Nodes.DSFunction node, List<AssociativeNode> inputs);
+        void Build(Dynamo.Nodes.Double node, List<AssociativeNode> inputs);
+        void Build(Dynamo.Nodes.Bool node, List<AssociativeNode> inputs);
+        void Build(Dynamo.Nodes.String node, List<AssociativeNode> inputs);
+        void Build(Dynamo.Nodes.DoubleInput node, List<AssociativeNode> inputs);
+        void Build(Dynamo.Nodes.CodeBlockNodeModel node, List<AssociativeNode> inputs);
     }
 
     /// <summary>
@@ -126,114 +236,54 @@ namespace Dynamo.DSEngine
     {
         internal class StringConstants
         {
-            public const string kParamPrefix = @"p_";
-            public const string kFunctionPrefix = @"func_";
-            public const string kVarPrefix = @"var_";
-        }
-
-        internal enum NodeState
-        {
-            NoChange,
-            Added,
-            Modified,
-            Deleted
+            public const string ParamPrefix = @"p_";
+            public const string FunctionPrefix = @"func_";
+            public const string VarPrefix = @"var_";
         }
 
         public static AstBuilder Instance = new AstBuilder();
-        private LinkedListOfList<Guid, AssociativeNode> astNodes;
-        private Dictionary<Guid, NodeState> nodeStates;
-
+        private SyncDataManager syncDataManager;
+        
         private AstBuilder()
         {
-            astNodes = new LinkedListOfList<Guid, AssociativeNode>();
-            nodeStates = new Dictionary<Guid, NodeState>();
-
+            syncDataManager = new SyncDataManager();
             dynSettings.Controller.DynamoModel.NodeDeleted += this.OnNodeDeleted;
-        }
-
-        private void AddNode(Guid dynamoNodeId, AssociativeNode astNode)
-        {
-            astNodes.AddItem(dynamoNodeId, astNode);
-        }
-
-        private void RemoveAstNodes(Guid dynamoNodeId)
-        {
-            astNodes.Removes(dynamoNodeId); 
-        }
-
-        private void ClearAstNodes(Guid dynamoNodeId)
-        {
-            astNodes.Clears(dynamoNodeId);
-        }
-
-        private List<Subtree> GetSubtreesForState(NodeState state)
-        {
-            List<Subtree> subtrees = new List<Subtree>();
-            List<Guid> addedGuids = nodeStates.Where(x => x.Value == state).Select(x => x.Key).ToList();
-            foreach (var guid in addedGuids)
-            {
-                var nodes = astNodes.GetItems(guid);
-                Subtree tree = new Subtree(nodes, guid);
-                subtrees.Add(tree);
-            }
-
-            return subtrees;
         }
 
         public List<Guid> ToBeQueriedNodes
         {
             get
             {
-                var nodes = nodeStates.Where(x => x.Value != NodeState.Deleted)
-                                    .Select(x => x.Key)
-                                    .ToList();
-                return nodes;
+                return syncDataManager.GetNodes();
             }
         }
 
-        public GraphSyncData SyncData
+        public GraphSyncData GetSyncData()
         {
-            get
-            {
-                var added = GetSubtreesForState(NodeState.Added);
-                var modified = GetSubtreesForState(NodeState.Modified);
-                var deleted = GetSubtreesForState(NodeState.Deleted);
-                GraphSyncData syncData = new GraphSyncData(deleted, added, modified);
-                return syncData;
-            }
-        }
-
-        /// <summary>
-        /// Dump code
-        /// </summary>
-        public string DumpCode()
-        {
-            List<AssociativeNode> allAstNodes = new List<AssociativeNode>();
-            foreach (var item in astNodes)
-            {
-                allAstNodes.AddRange(item);
-            }
-            ProtoCore.CodeGenDS codegen = new ProtoCore.CodeGenDS(allAstNodes);
-            string code = codegen.GenerateCode();
-            return code;
+            return syncDataManager.GetSyncData();
         }
 
         #region IAstBuilder interface
-        public AssociativeNode Build(NodeModel node, List<AssociativeNode> inputs)
+        public void Build(NodeModel node, List<AssociativeNode> inputs)
         {
-            return AstFactory.BuildNullNode();
+            syncDataManager.MarkForAdding(node.GUID);
+
+            var rhs = AstFactory.BuildNullNode();
+            var assignment = AstFactory.BuildAssignment(node.AstIdentifier, rhs);
+            syncDataManager.AddNode(node.GUID, assignment);
         }
 
-        public AssociativeNode Build(DSFunction node, List<AssociativeNode> inputs)
+        public void Build(DSFunction node, List<AssociativeNode> inputs)
         {
+            syncDataManager.MarkForAdding(node.GUID);
+
             string function = node.Definition.Name;
             AssociativeNode functionCall = AstFactory.BuildFunctionCall(function, inputs);
 
             if (node.IsStaticMember() || node.IsConstructor())
             {
                 IdentifierNode classNode = new IdentifierNode(node.Definition.ClassName);
-                AssociativeNode dotCallNode = CoreUtils.GenerateCallDotNode(classNode, functionCall as FunctionCallNode, LiveRunnerServices.Instance.Core);
-                return dotCallNode;
+                functionCall = CoreUtils.GenerateCallDotNode(classNode, functionCall as FunctionCallNode, LiveRunnerServices.Instance.Core);
             }
             else if (node.IsInstanceMember())
             {
@@ -244,37 +294,67 @@ namespace Dynamo.DSEngine
                     inputs.RemoveAt(0);  // remove this pointer
                 }
                 functionCall = AstFactory.BuildFunctionCall(function, inputs);
-                AssociativeNode dotCallNode = CoreUtils.GenerateCallDotNode(thisNode, functionCall as FunctionCallNode, LiveRunnerServices.Instance.Core);
-                return dotCallNode;
+                functionCall= CoreUtils.GenerateCallDotNode(thisNode, functionCall as FunctionCallNode, LiveRunnerServices.Instance.Core);
+            }
+
+            var assignment = AstFactory.BuildAssignment(node.AstIdentifier, functionCall);
+            syncDataManager.AddNode(node.GUID, assignment);
+        }
+
+        public void Build(Dynamo.Nodes.Double node, List<AssociativeNode> inputs)
+        {
+            syncDataManager.MarkForAdding(node.GUID);
+
+            var rhs = AstFactory.BuildDoubleNode(node.Value);
+            var assignment = AstFactory.BuildAssignment(node.AstIdentifier, rhs);
+            syncDataManager.AddNode(node.GUID, assignment);
+        }
+
+        public void Build(Dynamo.Nodes.DoubleInput node, List<AssociativeNode> inputs)
+        {
+            syncDataManager.MarkForAdding(node.GUID);
+
+            AssociativeNode rhs = null;
+            if (inputs.Count == 1)
+            {
+                rhs = inputs[0];
             }
             else
             {
-                return functionCall;
+                rhs = AstFactory.BuildExprList(inputs);
             }
+
+            var assignment = AstFactory.BuildAssignment(node.AstIdentifier, rhs);
+            syncDataManager.AddNode(node.GUID, assignment);
         }
 
-        public AssociativeNode Build(Dynamo.Nodes.Double node, List<AssociativeNode> inputs)
+        public void Build(Dynamo.Nodes.Bool node, List<AssociativeNode> inputs)
         {
-            return AstFactory.BuildDoubleNode(node.Value);
+            syncDataManager.MarkForAdding(node.GUID);
+
+            var rhs =  AstFactory.BuildBooleanNode(node.Value);
+            var assignment = AstFactory.BuildAssignment(node.AstIdentifier, rhs);
+            syncDataManager.AddNode(node.GUID, assignment);
         }
 
-        public AssociativeNode Build(Dynamo.Nodes.Bool node, List<AssociativeNode> inputs)
+        public void Build(Dynamo.Nodes.String node, List<AssociativeNode> inputs)
         {
-            return AstFactory.BuildBooleanNode(node.Value);
+            syncDataManager.MarkForAdding(node.GUID);
+
+            var rhs = AstFactory.BuildStringNode(node.Value);
+            var assignment = AstFactory.BuildAssignment(node.AstIdentifier, rhs);
+            syncDataManager.AddNode(node.GUID, assignment);
         }
 
-        public AssociativeNode Build(Dynamo.Nodes.String node, List<AssociativeNode> inputs)
-        {
-            return AstFactory.BuildStringNode(node.Value);
-        }
-
-        public AssociativeNode Build(Dynamo.Nodes.CodeBlockNodeModel node, List<AssociativeNode> inputs)
+        public void Build(Dynamo.Nodes.CodeBlockNodeModel node, List<AssociativeNode> inputs)
         {
             if (node.State == ElementState.ERROR)
             {
                 DynamoLogger.Instance.Log("Error in Code Block Node. Not sent for building and compiling");
-                return null;
             }
+
+            syncDataManager.MarkForAdding(node.GUID);
+
             List<string> unboundIdentifiers = new List<string>();
             List<ProtoCore.AST.Node> resultNodes = new List<Node>();
             List<ProtoCore.BuildData.ErrorEntry> errors;
@@ -282,10 +362,8 @@ namespace Dynamo.DSEngine
             GraphToDSCompiler.GraphUtilities.Parse(node.Code, out resultNodes, out errors, out  warnings, unboundIdentifiers);
             foreach (var astNode in resultNodes)
             {
-                AddNode(node.GUID, (astNode as AssociativeNode));
+                syncDataManager.AddNode(node.GUID, (astNode as AssociativeNode));
             }
-
-            return null;
         }
         #endregion
 
@@ -312,7 +390,7 @@ namespace Dynamo.DSEngine
             {
                 if (func.FormalArguments[i] == null)
                 {
-                    VarDeclNode param = AstFactory.BuildParamNode(AstBuilder.StringConstants.kParamPrefix + paramPostfix);
+                    VarDeclNode param = AstFactory.BuildParamNode(AstBuilder.StringConstants.ParamPrefix + paramPostfix);
                     partialArgs.Add(param);
 
                     func.FormalArguments[i] = param.NameNode;
@@ -338,7 +416,7 @@ namespace Dynamo.DSEngine
             partialFunc.IsExternLib = false;
             partialFunc.IsDNI = false;
             partialFunc.ExternLibName = null;
-            partialFunc.Name = StringConstants.kFunctionPrefix + Guid.NewGuid().ToString().Replace("-", string.Empty);
+            partialFunc.Name = StringConstants.FunctionPrefix + Guid.NewGuid().ToString().Replace("-", string.Empty);
             partialFunc.Singnature = new ArgumentSignatureNode();
             partialFunc.Singnature.Arguments = partialArgs;
             partialFunc.FunctionBody = funcBody;
@@ -346,24 +424,9 @@ namespace Dynamo.DSEngine
             return partialFunc;
         }
 
+        /*
         public void BuildEvaluation(NodeModel node, AssociativeNode rhs, bool isPartial = false)
         {
-            if (nodeStates.ContainsKey(node.GUID))
-            {
-                nodeStates[node.GUID] = NodeState.Modified;
-                ClearAstNodes(node.GUID);
-            }
-            else
-            {
-                nodeStates[node.GUID] = NodeState.Added;
-            }
-
-            /*
-            if (node is CodeBlockNodeModel)
-            {
-                return;
-            }
-
             // If it is a partially applied function, need to create a function 
             // definition and function pointer.
             if (isPartial && rhs is FunctionCallNode)
@@ -376,20 +439,15 @@ namespace Dynamo.DSEngine
                 // create a function pointer for this node
                 rhs = AstFactory.BuildIdentifier(newFunc.Name);
             }
-            */
 
             var assignment = AstFactory.BuildAssignment(node.AstIdentifier, rhs);
             AddNode(node.GUID, assignment);
         }
+        */
 
         public void BeginBuildingAst()
         {
-            List<Guid> keys = new List<Guid>(nodeStates.Keys);
-
-            foreach (var node in keys)
-            {
-                nodeStates[node] = NodeState.NoChange;
-            }
+            syncDataManager.ResetStates();
         }
 
         public void FinishBuildingAst()
@@ -399,7 +457,7 @@ namespace Dynamo.DSEngine
 
         public void OnNodeDeleted(NodeModel node)
         {
-            nodeStates[node.GUID] = NodeState.Deleted;
+            syncDataManager.DeleteNodes(node.GUID);
         }
     }
 }

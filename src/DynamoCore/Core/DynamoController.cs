@@ -332,7 +332,11 @@ namespace Dynamo
                 //asynchronously, as it will finish the 
                 //test before the evaluation (and the run)
                 //is complete
+#if USE_DSENGINE
+                DSEvaluationThread(null, null);
+#else
                 EvaluationThread(null, null);
+#endif
         }
 
         protected virtual void DSEvaluationThread(Object e, DoWorkEventArgs args)
@@ -346,7 +350,7 @@ namespace Dynamo
             }
 
             AstBuilder.Instance.FinishBuildingAst();
-            LiveRunnerServices.Instance.UpdateGraph(AstBuilder.Instance.SyncData);
+            LiveRunnerServices.Instance.UpdateGraph(AstBuilder.Instance.GetSyncData());
 
             List<Guid> nodes = AstBuilder.Instance.ToBeQueriedNodes;
             if (nodes != null)
@@ -355,7 +359,7 @@ namespace Dynamo
                 {
                     try
                     {
-                        string var = AstBuilder.StringConstants.kVarPrefix + node.ToString().Replace("-", string.Empty);
+                        string var = AstBuilder.StringConstants.VarPrefix + node.ToString().Replace("-", string.Empty);
                         DynamoLogger.Instance.Log(var + " = " + LiveRunnerServices.Instance.GetStringValue(var));
                     }
                     catch (Exception exp)
