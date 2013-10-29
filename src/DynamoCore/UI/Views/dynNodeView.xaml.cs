@@ -294,7 +294,7 @@ namespace Dynamo.Controls
             ViewModel.FadeOutTooltipCommand.Execute(null);
         }
 
-        private void InputPort_OnMouseDown(object sender, MouseButtonEventArgs e)
+        private void InputPort_OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             ViewModel.CollapseTooltipCommand.Execute(null);
         }
@@ -317,7 +317,7 @@ namespace Dynamo.Controls
             ViewModel.FadeOutTooltipCommand.Execute(null);
         }
 
-        private void OutputPort_OnMouseDown(object sender, MouseButtonEventArgs e)
+        private void OutputPort_OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             ViewModel.CollapseTooltipCommand.Execute(null);
         }
