@@ -19,139 +19,73 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace DSCoreNodes
 {
+    /// <summary>
+    /// All Custom-UI nodes inherit this.
+    /// </summary>
     public abstract class NodeWithUI : NodeModel
     {
         //We can remove this from NodeModel and only use it here.
         public abstract void SetupCustomUIElements(dynNodeView nodeUI);
     }
 
+    /// <summary>
+    /// Sample that contains a slider and produces a number.
+    /// </summary>
     public class NumberSlider : NodeWithUI
     {
         public NumberSlider()
         {
-            Min = 0.0;
-            Max = 100.0;
             Value = 50;
         }
 
+        /// <summary>
+        /// Builds the custom AST that contains information bound to the UI.
+        /// </summary>
         public AssociativeNode BuildAst()
         {
-            return new DoubleNode(Value.ToString());
+            return new DoubleNode(Value.ToString(CultureInfo.InvariantCulture));
         }
 
+        /// <summary>
+        /// UI is initialized and bindings are setup here.
+        /// </summary>
+        /// <param name="nodeUI">UI view that we can customize the UI of.</param>
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a slider control to the input grid of the control
-            var tbSlider = new DynamoSlider(this)
+            var slider = new DynamoSlider(this)
             {
-                HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
-                VerticalAlignment = System.Windows.VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
                 MinWidth = 150,
-                TickPlacement = System.Windows.Controls.Primitives.TickPlacement.None
-            };
-
-            tbSlider.PreviewMouseUp += delegate
-            {
-                dynSettings.ReturnFocusToSearch();
-            };
-
-            var mintb = new DynamoTextBox
-            {
-                Width = double.NaN,
-                Background =
-                    new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
-            };
-
-            // input value textbox
-            var valtb = new DynamoTextBox
-            {
-                Width = double.NaN,
-                Margin = new Thickness(0, 0, 10, 0)
-            };
-
-            var maxtb = new DynamoTextBox
-            {
-                Width = double.NaN,
-                Background =
-                    new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
+                TickPlacement = TickPlacement.None,
+                Minimum = -100,
+                Maximum = 100
             };
 
             var sliderGrid = new Grid();
             sliderGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
-            sliderGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
-            sliderGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            sliderGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
 
-            sliderGrid.Children.Add(valtb);
-            sliderGrid.Children.Add(mintb);
-            sliderGrid.Children.Add(tbSlider);
-            sliderGrid.Children.Add(maxtb);
+            sliderGrid.Children.Add(slider);
 
-            Grid.SetColumn(valtb, 0);
-            Grid.SetColumn(mintb, 1);
-            Grid.SetColumn(tbSlider, 2);
-            Grid.SetColumn(maxtb, 3);
+            Grid.SetColumn(slider, 0);
             nodeUI.inputGrid.Children.Add(sliderGrid);
 
-            maxtb.DataContext = this;
-            tbSlider.DataContext = this;
-            mintb.DataContext = this;
-            valtb.DataContext = this;
-
-            // value input
-            valtb.BindToProperty(new Binding("Value")
-            {
-                Mode = BindingMode.TwoWay,
-                Converter = new DoubleDisplay()
-            });
-
+            slider.DataContext = this;
+            
             // slider value 
             var sliderBinding = new Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
                 Source = this,
             };
-            tbSlider.SetBinding(RangeBase.ValueProperty, sliderBinding);
-
-            // max value
-            maxtb.BindToProperty(new Binding("Max")
-            {
-                Mode = BindingMode.TwoWay,
-                Converter = new DoubleDisplay(),
-                Source = this,
-                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            });
-
-            // max slider value
-            var bindingMaxSlider = new Binding("Max")
-            {
-                Mode = BindingMode.OneWay,
-                Source = this,
-                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            };
-            tbSlider.SetBinding(RangeBase.MaximumProperty, bindingMaxSlider);
-
-
-            // min value
-            mintb.BindToProperty(new Binding("Min")
-            {
-                Mode = BindingMode.TwoWay,
-                Converter = new DoubleDisplay(),
-                Source = this,
-                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            });
-
-            // min slider value
-            var bindingMinSlider = new Binding("Min")
-            {
-                Mode = BindingMode.OneWay,
-                Source = this,
-                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            };
-            tbSlider.SetBinding(RangeBase.MinimumProperty, bindingMinSlider);
+            slider.SetBinding(RangeBase.ValueProperty, sliderBinding);
         }
 
         private double _val;
+        /// <summary>
+        /// Current value of the slider, will be used as the value of the Number AST produced by this node.
+        /// </summary>
         public double Value
         {
             get
@@ -165,43 +99,11 @@ namespace DSCoreNodes
             }
         }
 
-        private double _max;
-        public double Max
-        {
-            get { return _max; }
-            set
-            {
-                _max = value;
-
-                if (_max < Value)
-                    Value = _max;
-
-                RaisePropertyChanged("Max");
-            }
-        }
-
-        private double _min;
-        public double Min
-        {
-            get { return _min; }
-            set
-            {
-                _min = value;
-
-                if (_min > Value)
-                    Value = _min;
-
-                RaisePropertyChanged("Min");
-            }
-        }
-
-        #region Serialize and Deserialize
+        #region Load/Save
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
             XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
             outEl.SetAttribute("value", Value.ToString(CultureInfo.InvariantCulture));
-            outEl.SetAttribute("min", Min.ToString(CultureInfo.InvariantCulture));
-            outEl.SetAttribute("max", Max.ToString(CultureInfo.InvariantCulture));
             nodeElement.AppendChild(outEl);
         }
 
@@ -212,8 +114,6 @@ namespace DSCoreNodes
                 if (subNode.Name.Equals(typeof(double).FullName))
                 {
                     double value = Value;
-                    double min = Min;
-                    double max = Max;
 
                     foreach (XmlAttribute attr in subNode.Attributes)
                     {
@@ -221,18 +121,8 @@ namespace DSCoreNodes
                         {
                             value = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
                         }
-                        else if (attr.Name.Equals("min"))
-                        {
-                            min = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
-                        }
-                        else if (attr.Name.Equals("max"))
-                        {
-                            max = Convert.ToDouble(attr.Value, CultureInfo.InvariantCulture);
-                        }
                     }
 
-                    Min = min;
-                    Max = max;
                     Value = value;
                 }
             }
