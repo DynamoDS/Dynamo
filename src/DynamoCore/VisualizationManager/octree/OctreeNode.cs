@@ -842,12 +842,11 @@ namespace Octree.OctreeSearch
         public ArrayList GetNodes(float x, float y, float z, double MinRadius, double MaxRadius)
         {
             ArrayList Nodes = new ArrayList();
-            double distance, minDistance = 1e32;
             if (branch == null)
             {
                 foreach (OctreeLeaf leaf in this.items)
                 {
-                    distance = Math.Sqrt(
+                    double distance = Math.Sqrt(
                                 Math.Pow(x - leaf.X, 2.0) +
                                 Math.Pow(y - leaf.Y, 2.0) +
                                 Math.Pow(z - leaf.Z, 2.0));
@@ -910,12 +909,11 @@ namespace Octree.OctreeSearch
         public ArrayList GetNodes(double x, double y, double z, double MinRadius, double MaxRadius)
         {
             ArrayList Nodes = new ArrayList();
-            double distance, minDistance = 1e32;
             if (branch == null)
             {
                 foreach (OctreeLeaf leaf in this.items)
                 {
-                    distance = Math.Sqrt(
+                    double distance = Math.Sqrt(
                                 Math.Pow(x - leaf.X, 2.0) +
                                 Math.Pow(y - leaf.Y, 2.0) +
                                 Math.Pow(z - leaf.Z, 2.0));

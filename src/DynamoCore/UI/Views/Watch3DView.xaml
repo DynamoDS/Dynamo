@@ -14,7 +14,7 @@
                 <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoModern.xaml" />
                 <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoConverters.xaml"/>
                 <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml" />
-                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/MainMenuStyleDictionary.xaml" />
+                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/MenuStyleDictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
