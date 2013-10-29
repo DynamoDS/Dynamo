@@ -419,12 +419,12 @@ namespace Dynamo.ViewModels
             if (dynSettings.Controller.IsShowPreviewByDefault)
             {
                 this.PreviewBubble.SetAlwaysVisibleCommand.Execute(true);
-                this.PreviewBubble.FadeInCommand.Execute(null);
+                this.PreviewBubble.InstantAppearCommand.Execute(null);
             }
             else
             {
                 this.PreviewBubble.SetAlwaysVisibleCommand.Execute(false);
-                this.PreviewBubble.FadeOutCommand.Execute(null);
+                this.PreviewBubble.InstantCollapseCommand.Execute(null);
             }
         }
 
@@ -808,7 +808,7 @@ namespace Dynamo.ViewModels
         {
             UpdatePreviewBubbleContent();
             this.PreviewBubble.ZIndex = 5;
-            this.PreviewBubble.FadeInCommand.Execute(null);
+            this.PreviewBubble.InstantAppearCommand.Execute(null);
         }
 
         private bool CanShowPreview(object parameter)
