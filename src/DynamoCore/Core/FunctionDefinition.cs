@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using Dynamo.DSEngine;
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Models;
 using Dynamo.Utilities;
+using ProtoCore;
+using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Nodes
 {
@@ -215,6 +218,160 @@ namespace Dynamo.Nodes
 
             return expression;
 
+        }
+
+
+        public AssociativeNode CompileToAstNode(AstBuilder builder)
+        {
+            //TODO
+            //This stuff needs to be refactored out. Only reason it's still here is for
+            //parity with existing Compile() method. Only reason it's still there as well
+            //is because someone else added it (Peter?) and I don't know what else it affects.
+            //Ideally, this would be a parameter.
+            #region Outputs and Inputs and UI updating crap
+
+            // Get the internal nodes for the function
+            WorkspaceModel functionWorkspace = this.WorkspaceModel;
+
+            #region Find outputs
+
+            // Find output elements for the node
+            List<Output> outputs = functionWorkspace.Nodes.OfType<Output>().ToList();
+
+            var topMost = new List<Tuple<int, NodeModel>>();
+
+            // if we found output nodes, add select their inputs
+            // these will serve as the function output
+            if (outputs.Any())
+            {
+                topMost.AddRange(
+                    outputs.Where(x => x.HasInput(0)).Select(x => x.Inputs[0]));
+            }
+            else
+            {
+                // if there are no explicitly defined output nodes
+                // get the top most nodes and set THEM as the output
+                IEnumerable<NodeModel> topMostNodes = functionWorkspace.GetTopMostNodes();
+
+                var outNames = new List<string>();
+
+                foreach (NodeModel topNode in topMostNodes)
+                {
+                    if (topNode is Function && (topNode as Function).Definition == this)
+                    {
+                        topMost.Add(Tuple.Create(0, topNode));
+                        outNames.Add("∞");
+                        continue;
+                    }
+
+                    foreach (int output in Enumerable.Range(0, topNode.OutPortData.Count))
+                    {
+                        if (!topNode.HasOutput(output))
+                        {
+                            topMost.Add(Tuple.Create(output, topNode));
+                            outNames.Add(topNode.OutPortData[output].NickName);
+                        }
+                    }
+                }
+            }
+
+            #endregion
+
+            // color the node to define its connectivity
+            foreach (var ele in topMost)
+            {
+                ele.Item2.ValidateConnections();
+            }
+
+            //Find function entry point, and then compile
+            var variables = functionWorkspace.Nodes.OfType<Symbol>().Select(x => x.GUID.ToString());
+
+            #endregion
+
+            //topMost - contains all of the outputs of the function
+            //outputs - all of the Output nodes
+
+            var functionBody = new CodeBlockNode();
+
+            // if the node has any explicit outputs (Output Nodes), we have to search for
+            // nodes that are hanging so that they are still executed, even if they are
+            // not being used as outputs.
+            if (outputs.Any())
+            {
+                List<NodeModel> hangingNodes = functionWorkspace.GetHangingNodes().ToList();
+
+                foreach (var tNode in hangingNodes.Select((x, index) => new { Index = index, Node = x }))
+                {
+                    //TODO: Get Ast for node to be evaluated in the body.
+                    AssociativeNode node = null; //tNode.CompileProtoAst or something
+
+                    functionBody.Body.Add(node);
+                }
+            }
+
+            AssociativeNode top;
+            
+            if (topMost.Count > 1)
+            {
+                top = AstFactory.BuildExprList(
+                    topMost.Select(
+                        node =>
+                        {
+                            //TODO: Get Ast for node to be stored in output list
+                            //Specifically, we need a way, given a node and an output index
+                            //(for multi-output nodes) to retreive the appropriate AST to store
+                            //in the output list.
+                            return null as AssociativeNode;
+                        }).ToList());
+            }
+            else if (topMost.Count == 1)
+            {
+                //TODO: Get Ast for node to be used as the function output.
+                //This should basically be the same as the above, except
+                //node = topMost[0]
+                top = null;
+            }
+            else
+            {
+                // if the custom node is empty, it will initially return null
+                top = AstFactory.BuildNullNode();
+            }
+
+            var returnNode = new ReturnNode { ReturnExpr = top };
+            functionBody.Body.Add(returnNode);
+
+            //Create a new function definition
+            var functionDef = new FunctionDefinitionNode
+            {
+                //name is the GUID of the custom node
+                Name = FunctionId.ToString(),
+
+                //signature is 
+                Singnature = new ArgumentSignatureNode
+                {
+                    Arguments = variables.Select(paramName => new VarDeclNode
+                    {
+                        NameNode = new IdentifierNode
+                        {
+                            Value = paramName,
+                            Name = paramName,
+                            datatype = new ProtoCore.Type
+                            {
+                                Name = "var",
+                                IsIndexable = false,
+                                rank = 0,
+                                UID = (int)PrimitiveType.kTypeVar
+                            }
+                        },
+                        ArgumentType = new ProtoCore.Type { Name = "var" }
+                    }).ToList()
+                },
+
+                //body is the compiled workspace
+                FunctionBody = functionBody
+            };
+
+            return functionDef;
         }
 
         public bool AddToSearch()

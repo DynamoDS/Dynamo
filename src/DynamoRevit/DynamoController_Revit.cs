@@ -35,12 +35,10 @@ namespace Dynamo
     {
         public RevitServicesUpdater Updater { get; private set; }
 
-        private dynamic _oldPyEval;
-
         public PredicateTraverser CheckManualTransaction { get; private set; }
         public PredicateTraverser CheckRequiresTransaction { get; private set; }
 
-        private ElementId keeperId = ElementId.InvalidElementId;
+        private ElementId _keeperId = ElementId.InvalidElementId;
 
         /// <summary>
         /// A visualization manager responsible for generating geometry for rendering.
@@ -61,7 +59,8 @@ namespace Dynamo
             }
         }
 
-        public DynamoController_Revit(ExecutionEnvironment env, RevitServicesUpdater updater, Type viewModelType,
+        public DynamoController_Revit(
+            ExecutionEnvironment env, RevitServicesUpdater updater, Type viewModelType,
             string context)
             : base(env, viewModelType, context)
         {
@@ -84,8 +83,10 @@ namespace Dynamo
             dynRevitSettings.Revit.Application.DocumentOpened += Application_DocumentOpened;
 
             //allow the showing of elements in context
-            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.CanFindNodesFromElements = true;
-            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.FindNodesFromElements = FindNodesFromSelection;
+            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.CanFindNodesFromElements =
+                true;
+            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.FindNodesFromElements =
+                FindNodesFromSelection;
 
             TransactionManager = new TransactionManager();
             TransactionManager.TransactionStarted += TransactionManager_TransactionCommitted;
@@ -101,10 +102,10 @@ namespace Dynamo
                 {
                     dynRevitSettings.Controller.InitTransaction();
 
-                    if (keeperId != ElementId.InvalidElementId)
+                    if (_keeperId != ElementId.InvalidElementId)
                     {
-                        dynRevitSettings.Doc.Document.Delete(keeperId);
-                        keeperId = ElementId.InvalidElementId;
+                        dynRevitSettings.Doc.Document.Delete(_keeperId);
+                        _keeperId = ElementId.InvalidElementId;
                     }
 
                     dynRevitSettings.Controller.EndTransaction();
@@ -117,7 +118,8 @@ namespace Dynamo
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void visualizationManager_VisualizationUpdateComplete(object sender, VisualizationEventArgs e)
+        private void visualizationManager_VisualizationUpdateComplete(
+            object sender, VisualizationEventArgs e)
         {
             //do not draw to geom keeper if the user has selected
             //not to draw to the alternate context or if it is not available
@@ -126,11 +128,13 @@ namespace Dynamo
                 return;
 
             var values = dynSettings.Controller.DynamoModel.Nodes
-                .Where(x => !(x is SelectionBase))
-                .Where(x => x.IsVisible)
-                .Where(x => x.OldValue != null)
-                .Where(x => x.OldValue is Value.Container || x.OldValue is Value.List)
-                .Select(x => x.OldValue);
+                                    .Where(x => !(x is SelectionBase))
+                                    .Where(x => x.IsVisible)
+                                    .Where(x => x.OldValue != null)
+                                    .Where(
+                                        x =>
+                                        x.OldValue is Value.Container || x.OldValue is Value.List)
+                                    .Select(x => x.OldValue);
 
             var geoms = values.ToList().SelectMany(RevitGeometryFromNodes).ToList();
 
@@ -148,7 +152,7 @@ namespace Dynamo
 
             if (value.IsList)
             {
-                foreach (var valInner in ((Value.List) value).Item)
+                foreach (var valInner in ((Value.List)value).Item)
                 {
                     geoms.AddRange(RevitGeometryFromNodes(valInner));
                 }
@@ -163,27 +167,29 @@ namespace Dynamo
             if (geom != null && !(geom is Face))
                 geoms.Add(geom);
 
-            var ps = ((Value.Container) value).Item as ParticleSystem;
+            var ps = ((Value.Container)value).Item as ParticleSystem;
             if (ps != null)
             {
                 geoms.AddRange(
                     ps.Springs.Select(
                         spring =>
-                            Line.CreateBound(spring.getOneEnd().getPosition(), spring.getTheOtherEnd().getPosition())));
+                        Line.CreateBound(
+                            spring.getOneEnd().getPosition(), spring.getTheOtherEnd().getPosition())));
             }
 
-            var cl = ((Value.Container) value).Item as CurveLoop;
+            var cl = ((Value.Container)value).Item as CurveLoop;
             if (cl != null)
             {
                 geoms.AddRange(cl);
             }
 
             //draw xyzs as Point objects
-            var pt = ((Value.Container) value).Item as XYZ;
+            var pt = ((Value.Container)value).Item as XYZ;
             if (pt != null)
             {
-                Type pointType = typeof (Point);
-                MethodInfo[] pointTypeMethods = pointType.GetMethods(BindingFlags.Static | BindingFlags.Public);
+                Type pointType = typeof(Point);
+                MethodInfo[] pointTypeMethods =
+                    pointType.GetMethods(BindingFlags.Static | BindingFlags.Public);
                 var method = pointTypeMethods.FirstOrDefault(x => x.Name == "CreatePoint");
 
                 if (method != null)
@@ -192,7 +198,7 @@ namespace Dynamo
                     args[0] = pt.X;
                     args[1] = pt.Y;
                     args[2] = pt.Z;
-                    geoms.Add((Point) method.Invoke(null, args));
+                    geoms.Add((Point)method.Invoke(null, args));
                 }
             }
 
@@ -201,11 +207,12 @@ namespace Dynamo
 
         private void DrawToAlternateContext(List<GeometryObject> geoms)
         {
-            Type geometryElementType = typeof (GeometryElement);
+            Type geometryElementType = typeof(GeometryElement);
             MethodInfo[] geometryElementTypeMethods =
                 geometryElementType.GetMethods(BindingFlags.Static | BindingFlags.Public);
 
-            var method = geometryElementTypeMethods.FirstOrDefault(x => x.Name == "SetForTransientDisplay");
+            var method =
+                geometryElementTypeMethods.FirstOrDefault(x => x.Name == "SetForTransientDisplay");
 
             if (method == null)
             {
@@ -213,7 +220,7 @@ namespace Dynamo
             }
 
             var styles = new FilteredElementCollector(dynRevitSettings.Doc.Document);
-            styles.OfClass(typeof (GraphicsStyle));
+            styles.OfClass(typeof(GraphicsStyle));
 
             var gStyle = styles.ToElements().FirstOrDefault(x => x.Name == "Dynamo");
 
@@ -222,10 +229,10 @@ namespace Dynamo
                 {
                     dynRevitSettings.Controller.InitTransaction();
 
-                    if (keeperId != ElementId.InvalidElementId)
+                    if (_keeperId != ElementId.InvalidElementId)
                     {
-                        dynRevitSettings.Doc.Document.Delete(keeperId);
-                        keeperId = ElementId.InvalidElementId;
+                        dynRevitSettings.Doc.Document.Delete(_keeperId);
+                        _keeperId = ElementId.InvalidElementId;
                     }
 
                     var argsM = new object[4];
@@ -237,7 +244,7 @@ namespace Dynamo
                     else
                         argsM[3] = ElementId.InvalidElementId;
 
-                    keeperId = (ElementId) method.Invoke(null, argsM);
+                    _keeperId = (ElementId)method.Invoke(null, argsM);
 
                     //keeperId = GeometryElement.SetForTransientDisplay(dynRevitSettings.Doc.Document, ElementId.InvalidElementId, geoms,
                     //                                       ElementId.InvalidElementId);
@@ -272,7 +279,7 @@ namespace Dynamo
         public Assembly LoadSSONet()
         {
             // get the location of RevitAPI assembly.  SSONet is in the same directory.
-            var revitAPIAss = Assembly.GetAssembly(typeof (XYZ)); // any type loaded from RevitAPI
+            var revitAPIAss = Assembly.GetAssembly(typeof(XYZ)); // any type loaded from RevitAPI
             var revitAPIDir = Path.GetDirectoryName(revitAPIAss.Location);
 
             //Retrieve the list of referenced assemblies in an array of AssemblyName.
@@ -285,14 +292,19 @@ namespace Dynamo
 
         private void FindNodesFromSelection()
         {
-            var selectedIds = dynRevitSettings.Doc.Selection.Elements.Cast<Element>().Select(x => x.Id);
-            var transNodes = dynSettings.Controller.DynamoModel.CurrentWorkspace.Nodes.OfType<RevitTransactionNode>();
-            var foundNodes = transNodes.Where(x => x.AllElements.Intersect(selectedIds).Any()).ToList();
+            var selectedIds =
+                dynRevitSettings.Doc.Selection.Elements.Cast<Element>().Select(x => x.Id);
+            var transNodes =
+                dynSettings.Controller.DynamoModel.CurrentWorkspace.Nodes
+                           .OfType<RevitTransactionNode>();
+            var foundNodes =
+                transNodes.Where(x => x.AllElements.Intersect(selectedIds).Any()).ToList();
 
             if (foundNodes.Any())
             {
-                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.OnRequestCenterViewOnElement(
-                    this, new ModelEventArgs(foundNodes.First()));
+                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel
+                           .OnRequestCenterViewOnElement(
+                               this, new ModelEventArgs(foundNodes.First()));
 
                 DynamoSelection.Instance.ClearSelection();
                 foundNodes.ForEach(DynamoSelection.Instance.Selection.Add);
@@ -327,8 +339,10 @@ namespace Dynamo
         #region Python Nodes Revit Hooks
 
         private delegate void LogDelegate(string msg);
-
         private delegate void SaveElementDelegate(Element e);
+
+        private FieldInfo _evaluatorField;
+        private dynamic _oldPyEval;
 
         private void AddPythonBindings()
         {
@@ -344,31 +358,28 @@ namespace Dynamo
                 {
                     ironPythonAssembly = Assembly.LoadFrom(path);
                 }
-                else if (File.Exists(path = Path.Combine(assemblyPath, "Packages", "IronPython", "DynamoPython.dll")))
+                else if (
+                    File.Exists(
+                        path =
+                        Path.Combine(assemblyPath, "Packages", "IronPython", "DynamoPython.dll")))
                 {
                     ironPythonAssembly = Assembly.LoadFrom(path);
                 }
 
                 if (ironPythonAssembly == null)
-                    throw new Exception();
+                    return;
 
                 var pythonBindings = ironPythonAssembly.GetType("DynamoPython.PythonBindings");
 
                 var pyBindingsProperty = pythonBindings.GetProperty("Bindings");
                 var pyBindings = pyBindingsProperty.GetValue(null, null);
 
-                var binding = ironPythonAssembly.GetType("DynamoPython.Binding");
-
-                Func<string, object, object> createBinding =
-                    (name, boundObject) =>
-                        Activator.CreateInstance(binding, new[] {name, boundObject});
-
                 Action<string, object> addToBindings =
                     (name, boundObject) =>
-                        pyBindings.GetType()
-                            .InvokeMember(
-                                "Add", BindingFlags.InvokeMethod, null, pyBindings,
-                                new[] {createBinding(name, boundObject)});
+                    pyBindings.GetType()
+                              .InvokeMember(
+                                  "Add", BindingFlags.InvokeMethod, null, pyBindings,
+                                  new[] { new KeyValuePair<string, dynamic>(name, boundObject) as object });
 
                 addToBindings("DynLog", new LogDelegate(DynamoLogger.Instance.Log)); //Logging
 
@@ -388,32 +399,32 @@ namespace Dynamo
                 addToBindings("__doc__", dynRevitSettings.Doc.Application.ActiveUIDocument.Document);
 
                 var pythonEngine = ironPythonAssembly.GetType("DynamoPython.PythonEngine");
-                var evaluatorField = pythonEngine.GetField("Evaluator");
+                _evaluatorField = pythonEngine.GetField("Evaluator");
 
-                _oldPyEval = evaluatorField.GetValue(null);
+                _oldPyEval = _evaluatorField.GetValue(null);
 
                 //var x = PythonEngine.GetMembers();
                 //foreach (var y in x)
                 //    Console.WriteLine(y);
 
-                var evalDelegateType = ironPythonAssembly.GetType("DynamoPython.PythonEngine+EvaluationDelegate");
+                var evalDelegateType =
+                    ironPythonAssembly.GetType("DynamoPython.PythonEngine+EvaluationDelegate");
 
                 Delegate d = Delegate.CreateDelegate(
                     evalDelegateType,
                     this,
-                    typeof (DynamoController_Revit)
+                    typeof(DynamoController_Revit)
                         .GetMethod("newEval", BindingFlags.NonPublic | BindingFlags.Instance));
 
-                evaluatorField.SetValue(
-                    null,
-                    d);
+                _evaluatorField.SetValue(null, d);
 
                 var drawingField = pythonEngine.GetField("Drawing");
-                var drawDelegateType = ironPythonAssembly.GetType("DynamoPython.PythonEngine+DrawDelegate");
+                var drawDelegateType =
+                    ironPythonAssembly.GetType("DynamoPython.PythonEngine+DrawDelegate");
                 Delegate draw = Delegate.CreateDelegate(
                     drawDelegateType,
                     this,
-                    typeof (DynamoController_Revit)
+                    typeof(DynamoController_Revit)
                         .GetMethod("DrawPython", BindingFlags.NonPublic | BindingFlags.Instance));
 
                 drawingField.SetValue(null, draw);
@@ -422,6 +433,20 @@ namespace Dynamo
                 //TODO: ADD BACK IN
                 //bindings.Add(new Binding("DynStoredElements", this.Elements));
 
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+                Debug.WriteLine(e.StackTrace);
+            }
+        }
+
+        private void RevertPythonBindings()
+        {
+            try
+            {
+                if (_evaluatorField != null && _oldPyEval != null)
+                    _evaluatorField.SetValue(null, _oldPyEval);
             }
             catch (Exception e)
             {
@@ -651,10 +676,10 @@ namespace Dynamo
                     var transaction = new Autodesk.Revit.DB.Transaction(dynRevitSettings.Doc.Document, "Dynamo Script");
                     transaction.Start();
 
-                    if (keeperId != ElementId.InvalidElementId)
+                    if (_keeperId != ElementId.InvalidElementId)
                     {
-                        dynRevitSettings.Doc.Document.Delete(keeperId);
-                        keeperId = ElementId.InvalidElementId;
+                        dynRevitSettings.Doc.Document.Delete(_keeperId);
+                        _keeperId = ElementId.InvalidElementId;
                     }
 
                     transaction.Commit();
@@ -663,6 +688,7 @@ namespace Dynamo
 
             base.ShutDown();
             Updater.UnRegisterAllChangeHooks();
+            RevertPythonBindings();
         }
 
         protected override void RunDS()
