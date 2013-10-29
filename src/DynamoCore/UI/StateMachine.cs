@@ -299,6 +299,10 @@ namespace Dynamo.ViewModels
 
             private bool ignoreMouseClick = false;
             private State currentState = State.None;
+            internal State CurrentState
+            {
+                get { return this.currentState; }
+            }
             private Point mouseDownPos = new Point();
             private WorkspaceViewModel owningWorkspace = null;
 

@@ -49,12 +49,7 @@ namespace Dynamo.Views
         private EndlessGrid endlessGrid = null;
 
         private PortViewModel snappedPort = null;
-        private DrawingVisual hitVisual = null;
         private List<DependencyObject> hitResultsList = new List<DependencyObject>();
-        private CursorState cursorState = CursorState.UsualPointer;
-        private int minIndex = 0;
-
-
         Dictionary<CursorState, String> cursorSet = new Dictionary<CursorState, string>();
 
         public WorkspaceViewModel ViewModel

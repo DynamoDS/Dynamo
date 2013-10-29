@@ -408,6 +408,10 @@ limitations under the License.
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UI\Themes\MenuStyleDictionary.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="UI\Themes\Connectors.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -425,10 +429,6 @@ limitations under the License.
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Prompts\CrashPrompt.xaml">
-    </Page>
-    <Page Include="UI\Themes\MainMenuStyleDictionary.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\Views\InstalledPackagesView.xaml">
       <SubType>Designer</SubType>
@@ -581,6 +581,8 @@ limitations under the License.
     <Resource Include="UI\Images\expand_normal.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\tabs_button_hover.png" />
+    <Resource Include="UI\Images\tabs_button_normal.png" />
     <Resource Include="UI\Images\screenshot_disabled.png" />
     <Resource Include="UI\Images\screenshot_hover.png" />
     <Resource Include="UI\Images\screenshot_normal.png" />
