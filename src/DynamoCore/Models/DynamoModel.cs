@@ -858,7 +858,7 @@ namespace Dynamo.Models
                 foreach (NodeModel e in CurrentWorkspace.Nodes)
                     e.EnableReporting();
 
-                http://www.japf.fr/2009/10/measure-rendering-time-in-a-wpf-application/comment-page-1/#comment-2892
+                // http://www.japf.fr/2009/10/measure-rendering-time-in-a-wpf-application/comment-page-1/#comment-2892
                 Dispatcher.CurrentDispatcher.BeginInvoke(
                     DispatcherPriority.Background,
                     new Action(() =>

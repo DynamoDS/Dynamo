@@ -108,7 +108,6 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            string content = "";
             string prefix = "";
 
             int count = 0;
