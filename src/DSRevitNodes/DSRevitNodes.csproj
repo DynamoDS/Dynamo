@@ -53,7 +53,7 @@
       <HintPath>..\..\extern\DesignScript\ProtoInterface.dll</HintPath>
     </Reference>
     <Reference Include="RevitAPI">
-      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit Architecture 2014\RevitAPI.dll</HintPath>
+      <HintPath>$(REVITAPI)\RevitAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -79,6 +79,7 @@
     <Compile Include="Grid.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="Parameter.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReferenceCurve.cs" />
     <Compile Include="ReferencePlane.cs" />
     <Compile Include="ReferencePoint.cs" />
@@ -106,6 +107,7 @@
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

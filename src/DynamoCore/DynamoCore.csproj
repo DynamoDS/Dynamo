@@ -312,10 +312,7 @@ limitations under the License.
     <Compile Include="Core\DynamoController.cs" />
     <Compile Include="Utilities\Guid.cs" />
     <Compile Include="Nodes\dynEnum.cs" />
-    <Compile Include="UI\Commands\Regions\RegionBase.cs" />
-    <Compile Include="UI\Commands\Regions\RevitAPIRegion.cs" />
     <Compile Include="UI\Commands\SearchCommands.cs" />
-    <Compile Include="UI\Commands\Regions\PackageManagerRegion.cs" />
     <Compile Include="Search\SearchElements\CategorySearchElement.cs" />
     <Compile Include="Search\SearchElements\NodeSearchElement.cs" />
     <Compile Include="PackageManager\UI\PackageManagerSearchElement.cs" />
