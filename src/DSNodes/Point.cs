@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
-using RevitServices;
+using RevitServices.Persistence;
 using DSNodeServices;
-using RevitPersistenceManager;
 using RevitServices.Transactions;
 
 namespace DSRevitNodes
@@ -16,7 +16,7 @@ namespace DSRevitNodes
     {
         public static Document Document
         {
-            get { return RevitPersistenceManager.DocumentManager.CurrentDoc; }
+            get { return DocumentManager.CurrentDoc; }
         }
 
 
