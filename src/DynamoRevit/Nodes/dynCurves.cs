@@ -844,152 +844,6 @@ namespace Dynamo.Nodes
         }
     }
      
-    /*
-    [NodeName("Offset Curve")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
-    [NodeDescription("Create an offset curve from a given curve.")]
-    public class dynOffsetCurve : dynCurveBase
-    {
-        public dynOffsetCurve()
-        {
-            InPortData.Add(new PortData("crv", "The curve to offset.", typeof(Value.Container)));
-            InPortData.Add(new PortData("d", "The distance to offset.", typeof(Value.Number)));
-            OutPortData.Add(new PortData("crv", "The offset curve.", typeof(Value.Container)));
-            RegisterAllPorts();
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            Curve cIn = (Curve)((Value.Container)args[0]).Item;
-            double dIn = ((Value.Number)args[1]).Item;
-
-            Curve cOut = null;
-
-            if(cIn is Arc)
-            {
-                Arc a = cIn as Arc;
-
-                Transform tStart = cIn.ComputeDerivatives(0, true);
-                Transform tEnd = cIn.ComputeDerivatives(1, true);
-                Transform tMid = cIn.ComputeDerivatives(.5, true);
-
-                XYZ startVec = tStart.BasisX.CrossProduct(tStart.BasisZ).Normalize();
-                XYZ endVec = tEnd.BasisX.CrossProduct(tEnd.BasisZ).Normalize();
-                XYZ midVec = tMid.BasisX.CrossProduct(tMid.BasisZ).Normalize();
-
-                XYZ start = a.Evaluate(0, true) + startVec*dIn;
-                XYZ end = a.Evaluate(1,true) + endVec*dIn;
-                XYZ mid = a.Evaluate(.5,true) + midVec*dIn;
-
-                cOut = dynRevitSettings.Revit.Application.Create.NewArc(start, end, mid);
-            }
-            else if (cIn is CylindricalHelix)
-            {
-                CylindricalHelix ch = cIn as CylindricalHelix;
-
-                cOut = CylindricalHelix.Create(ch.BasePoint, ch.Radius + dIn, ch.XVector, ch.ZVector, ch.Pitch, 0, Math.PI * 2);
-            }
-            else if (cIn is Ellipse)
-            {
-                Ellipse e = cIn as Ellipse;
-                cOut = dynRevitSettings.Revit.Application.Create.NewEllipse(e.Center, e.RadiusX+dIn, e.RadiusY+dIn, e.XDirection, e.YDirection, 0, Math.PI*2);
-            }
-            else if (cIn is HermiteSpline)
-            {
-                List<XYZ> newCtrlPoints = new List<XYZ>();
-                HermiteSpline hs = cIn as HermiteSpline;
-
-                double tStart = hs.get_EndParameter(0);
-                double tEnd = hs.get_EndParameter(1);
-
-                List<XYZ> newPts = new List<XYZ>();
-                double domain = tEnd - tStart;
-
-                for (double i = tStart; i <= tEnd; i += domain / 20)
-                {
-                    Transform t = hs.ComputeDerivatives(i, false);
-
-                    XYZ curveNormal = t.BasisX.CrossProduct(t.BasisZ).Normalize();
-
-                    if (t.BasisY.Normalize().GetLength() == 0)
-                        continue;
-
-                    double dot = t.BasisY.Normalize().DotProduct(curveNormal);
-                    if (dot > 0)
-                    {
-                        newPts.Add(t.Origin + curveNormal * dIn);
-                    }
-                    else
-                        newPts.Add(t.Origin + curveNormal * -dIn);
-
-                    Debug.WriteLine(string.Format("{0} : {1} : {2}", t.BasisY.Normalize(), newPts.Last(), dot));
-                }
-
-                cOut = dynRevitSettings.Revit.Application.Create.NewHermiteSpline(newPts, false);
-            }
-            else if (cIn is Line)
-            {
-                Line l = cIn as Line;
-                XYZ startVec = cIn.ComputeDerivatives(0, true).BasisZ.Normalize();
-                XYZ endVec = cIn.ComputeDerivatives(1, true).BasisZ.Normalize();
-                XYZ start = l.Evaluate(0, true) + startVec * dIn;
-                XYZ end = l.Evaluate(1, true) + endVec * dIn;
-
-                cOut = dynRevitSettings.Revit.Application.Create.NewLineBound(start, end);
-            }
-            else if (cIn is NurbSpline)
-            {
-                bool flip = false;
-                double lastMagnitude = 0.0;
-
-                List<XYZ> newCtrlPoints = new List<XYZ>();
-                NurbSpline ns = cIn as NurbSpline;
-
-                double tStart = ns.get_EndParameter(0);
-                double tEnd = ns.get_EndParameter(1);
-
-                List<XYZ> newPts = new List<XYZ>();
-                double domain = tEnd - tStart;
-
-                for (double i = tStart; i <= tEnd; i += domain / 20)
-                {
-                    Transform t = ns.ComputeDerivatives(i, false);
-
-                    XYZ curveNormal = t.BasisX.CrossProduct(t.BasisZ).Normalize();
-
-                    if (t.BasisY.Normalize().GetLength() == 0)
-                        continue;
-
-                    double deviation = t.BasisY.GetLength() - lastMagnitude;
-                    if(deviation < 0 + .0000001 && deviation > 0 - .0000001)
-                        continue;
-
-                    flip = deviation < 0;
-
-                    if (flip || i==tStart)
-                    {
-                        newPts.Add(t.Origin + curveNormal * dIn);
-                    }
-                    else
-                        newPts.Add(t.Origin + curveNormal * -dIn);
-
-                    Debug.WriteLine(string.Format("{0} : {1} : {2}", t.BasisY, newPts.Last(), t.BasisY.GetLength()));
-
-                    lastMagnitude = t.BasisY.GetLength();
-                }
-
-                cOut = dynRevitSettings.Revit.Application.Create.NewHermiteSpline(newPts, false);
-                
-            }
-
-            if (cOut != null)
-                VisualizationGeometry.Add(cOut);
-
-            return Value.NewContainer(cOut);
-        }
-    }
-    */
-
     [NodeName("Curve Loop")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates Curve Loop")]
@@ -1095,7 +949,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Curve Loop List")]
+    [NodeName("Curve Loop Components")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Extract a list of curves in the Curve Loop")]
     public class ListCurveLoop : RevitTransactionNodeWithOneOutput
@@ -1387,6 +1241,7 @@ namespace Dynamo.Nodes
             return Value.NewList(result);
         }
     }
+
     [NodeName("Equal Distanced XYZs On Curve")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a list of equal distanced XYZs along a curve.")]

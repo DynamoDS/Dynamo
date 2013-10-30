@@ -49,7 +49,7 @@ namespace Dynamo.Nodes
         public const string LOGIC_LOOP = "Logic.Loop";
 
         public const string CREATEGEOMETRY = "Create Geometry";
-        public const string CREATEGEOMETRY_POINT = "Create Geometry.Point";
+        public const string CREATEGEOMETRY_VECTOR = "Create Geometry.Vector";
         public const string CREATEGEOMETRY_CURVE = "Create Geometry.Curve";
         public const string CREATEGEOMETRY_SOLID = "Create Geometry.Solid";
         public const string CREATEGEOMETRY_SURFACE = "Create Geometry.Surface";
