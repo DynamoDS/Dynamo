@@ -1640,7 +1640,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Solid from Element")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID_PRIMITIVES)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID_EXTRACT)]
     [NodeDescription("Creates reference to the solid in the element's geometry objects.")]
     public class ElementSolid : GeometryBase
     {
@@ -2694,7 +2694,7 @@ namespace Dynamo.Nodes
     #region UV
 
     [NodeName("UV")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_UV)]
     [NodeDescription("Creates a UV from two double values.")]
     public class Uv : GeometryBase
     {
@@ -2719,7 +2719,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("UV Domain")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_UV)]
     [NodeDescription("Create a two dimensional domain specifying the Minimum and Maximum UVs.")]
     public class Domain2D : NodeWithOneOutput
     {
@@ -2745,7 +2745,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("UV Grid")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_UV)]
     [NodeDescription("Creates a grid of UVs from a domain.")]
     [NodeSearchTags("point", "array", "collection", "field", "uv")]
     public class UvGrid : NodeWithOneOutput
@@ -2792,7 +2792,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("UV Random")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_UV)]
     [NodeDescription("Creates a grid of UVs froma domain.")]
     [NodeSearchTags("point", "array", "collection", "field")]
     public class UvRandom : NodeWithOneOutput

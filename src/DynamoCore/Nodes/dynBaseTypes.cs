@@ -48,6 +48,7 @@ namespace Dynamo.Nodes
 
         public const string CREATEGEOMETRY = "Create Geometry";
         public const string CREATEGEOMETRY_VECTOR = "Create Geometry.Vector";
+        public const string CREATEGEOMETRY_UV = "Create Geometry.UV";
         public const string CREATEGEOMETRY_CURVE = "Create Geometry.Curve";
         public const string CREATEGEOMETRY_SOLID_BOOLEAN = "Create Geometry.Solid.Boolean";
         public const string CREATEGEOMETRY_SOLID_CREATE = "Create Geometry.Solid.Create";
@@ -68,6 +69,7 @@ namespace Dynamo.Nodes
         public const string REVIT_DATUMS = "Revit.Datums";
         public const string REVIT_FAMILIES = "Revit.Families";
         public const string REVIT_VIEW = "Revit.View";
+        public const string REVIT_REFERENCE = "Revit.Reference";
         public const string REVIT_SELECTION = "Revit.Selection";
         public const string REVIT_PARAMETERS = "Revit.Parameters";
         public const string REVIT_BAKE = "Revit.Bake";
