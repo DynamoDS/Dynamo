@@ -887,7 +887,7 @@ namespace Dynamo.Nodes
 
     #region Curve
 
-    [NodeName("Line")]
+    [NodeName("Line by 2 Points")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a geometric line.")]
     [NodeSearchTags("curve", "two point", "line")]
@@ -932,101 +932,6 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Arc By Start Middle and End")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
-    [NodeDescription("Creates a geometric arc given start, middle and end points in XYZ.")]
-    [NodeSearchTags("arc", "circle", "start", "middle", "end", "3 point", "three")]
-    public class ArcStartMiddleEnd : GeometryBase
-    {
-        public ArcStartMiddleEnd()
-        {
-            InPortData.Add(new PortData("start", "Start XYZ", typeof(Value.Container)));
-            InPortData.Add(new PortData("mid", "XYZ on Curve", typeof(Value.Container)));
-            InPortData.Add(new PortData("end", "End XYZ", typeof(Value.Container)));
-            OutPortData.Add(new PortData("arc", "Arc", typeof(Value.Container)));
-
-            RegisterAllPorts();
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-
-            Arc a = null;
-
-            var ptA = ((Value.Container)args[0]).Item;//start
-            var ptB = ((Value.Container)args[1]).Item;//middle
-            var ptC = ((Value.Container)args[2]).Item;//end
-
-            if (ptA is XYZ)
-            {
-
-                a = dynRevitSettings.Doc.Application.Application.Create.NewArc(
-                   (XYZ)ptA, (XYZ)ptC, (XYZ)ptB //start, end, middle 
-                );
-
-
-            }else if (ptA is ReferencePoint)
-            {
-                a = dynRevitSettings.Doc.Application.Application.Create.NewArc(
-                   (XYZ)((ReferencePoint)ptA).Position, (XYZ)((ReferencePoint)ptB).Position, (XYZ)((ReferencePoint)ptC).Position //start, end, middle 
-                );
-
-            }
-
-            return Value.NewContainer(a);
-        }
-    }
-
-    [NodeName("Arc by Center Point, Radius and Angle")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
-    [NodeDescription("Creates a geometric arc given a center point and two end parameters. Start and End Values may be between 0 and 2*PI in Radians")]
-    [NodeSearchTags("arc", "circle", "center", "radius")]
-    public class ArcCenter : GeometryBase
-    {
-        public ArcCenter()
-        {
-            InPortData.Add(new PortData("center", "Center XYZ or Coordinate System", typeof(Value.Container)));
-            InPortData.Add(new PortData("radius", "Radius", typeof(Value.Number)));
-            InPortData.Add(new PortData("start", "Start Param", typeof(Value.Number)));
-            InPortData.Add(new PortData("end", "End Param", typeof(Value.Number)));
-            OutPortData.Add(new PortData("arc", "Arc", typeof(Value.Container)));
-
-            RegisterAllPorts();
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            var ptA = ((Value.Container)args[0]).Item;
-            var radius = (double)((Value.Number)args[1]).Item;
-            var start = (double)((Value.Number)args[2]).Item;
-            var end = (double)((Value.Number)args[3]).Item;
-
-            Arc a = null;
-
-            if (ptA is XYZ)
-            {
-                a = dynRevitSettings.Doc.Application.Application.Create.NewArc(
-                   (XYZ)ptA, radius, start, end, XYZ.BasisX, XYZ.BasisY
-                );
-            }
-            else if (ptA is ReferencePoint)
-            {
-                a = dynRevitSettings.Doc.Application.Application.Create.NewArc(
-                   (XYZ)((ReferencePoint)ptA).Position, radius, start, end, XYZ.BasisX, XYZ.BasisY
-                );
-            }
-            else if (ptA is Transform)
-            {
-                Transform trf = ptA as Transform;
-                XYZ center = trf.Origin;
-                a = dynRevitSettings.Doc.Application.Application.Create.NewArc(
-                             center, radius, start, end, trf.BasisX, trf.BasisY
-                );
-            }
-
-            return Value.NewContainer(a);
-        }
-    }
 
     [NodeName("Transform Curve")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
@@ -1091,6 +996,103 @@ namespace Dynamo.Nodes
             }
 
             return Value.NewContainer(circle);
+        }
+    }
+
+    [NodeName("Arc by Start, Middle, End")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Creates a geometric arc given start, middle and end points in XYZ.")]
+    [NodeSearchTags("arc", "circle", "start", "middle", "end", "3 point", "three")]
+    public class ArcStartMiddleEnd : GeometryBase
+    {
+        public ArcStartMiddleEnd()
+        {
+            InPortData.Add(new PortData("start", "Start XYZ", typeof(Value.Container)));
+            InPortData.Add(new PortData("mid", "XYZ on Curve", typeof(Value.Container)));
+            InPortData.Add(new PortData("end", "End XYZ", typeof(Value.Container)));
+            OutPortData.Add(new PortData("arc", "Arc", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+
+            Arc a = null;
+
+            var ptA = ((Value.Container)args[0]).Item;//start
+            var ptB = ((Value.Container)args[1]).Item;//middle
+            var ptC = ((Value.Container)args[2]).Item;//end
+
+            if (ptA is XYZ)
+            {
+
+                a = dynRevitSettings.Doc.Application.Application.Create.NewArc(
+                   (XYZ)ptA, (XYZ)ptC, (XYZ)ptB //start, end, middle 
+                );
+
+
+            }
+            else if (ptA is ReferencePoint)
+            {
+                a = dynRevitSettings.Doc.Application.Application.Create.NewArc(
+                   (XYZ)((ReferencePoint)ptA).Position, (XYZ)((ReferencePoint)ptB).Position, (XYZ)((ReferencePoint)ptC).Position //start, end, middle 
+                );
+
+            }
+
+            return Value.NewContainer(a);
+        }
+    }
+
+    [NodeName("Arc by Center, Normal, Radius")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Creates a geometric arc given a center point and two end parameters. Start and End Values may be between 0 and 2*PI in Radians")]
+    [NodeSearchTags("arc", "circle", "center", "radius")]
+    public class ArcCenter : GeometryBase
+    {
+        public ArcCenter()
+        {
+            InPortData.Add(new PortData("center", "center XYZ or Coordinate System", typeof(Value.Container)));
+            InPortData.Add(new PortData("radius", "Radius", typeof(Value.Number)));
+            InPortData.Add(new PortData("start", "Start Param", typeof(Value.Number)));
+            InPortData.Add(new PortData("end", "End Param", typeof(Value.Number)));
+            OutPortData.Add(new PortData("arc", "Arc", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var ptA = ((Value.Container)args[0]).Item;
+            var radius = (double)((Value.Number)args[1]).Item;
+            var start = (double)((Value.Number)args[2]).Item;
+            var end = (double)((Value.Number)args[3]).Item;
+
+            Arc a = null;
+
+            if (ptA is XYZ)
+            {
+                a = dynRevitSettings.Doc.Application.Application.Create.NewArc(
+                   (XYZ)ptA, radius, start, end, XYZ.BasisX, XYZ.BasisY
+                );
+            }
+            else if (ptA is ReferencePoint)
+            {
+                a = dynRevitSettings.Doc.Application.Application.Create.NewArc(
+                   (XYZ)((ReferencePoint)ptA).Position, radius, start, end, XYZ.BasisX, XYZ.BasisY
+                );
+            }
+            else if (ptA is Transform)
+            {
+                Transform trf = ptA as Transform;
+                XYZ center = trf.Origin;
+                a = dynRevitSettings.Doc.Application.Application.Create.NewArc(
+                             center, radius, start, end, trf.BasisX, trf.BasisY
+                );
+            }
+
+            return Value.NewContainer(a);
         }
     }
 
@@ -1301,8 +1303,8 @@ namespace Dynamo.Nodes
 
     [NodeName("Polyline")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
-    [NodeDescription("Create a series of linear curves through a set of points.")]
-    [NodeSearchTags("lines", "line", "through", "passing", "thread", "xyz")]
+    [NodeDescription("Create a series of lines through a list of points.")]
+    [NodeSearchTags("line", "through", "passing", "thread")]
     public class CurvesThroughPoints : GeometryBase
     {
         public CurvesThroughPoints()
@@ -1896,7 +1898,6 @@ namespace Dynamo.Nodes
             return Value.NewContainer(mySolid);
         }
     }
-
 
     #endregion
 
