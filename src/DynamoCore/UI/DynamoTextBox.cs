@@ -78,6 +78,7 @@ namespace Dynamo.Nodes
             base.Text = initialText;
             this.Pending = false;
             Style = (Style)SharedDictionaryManager.DynamoModernDictionary["SZoomFadeTextBox"];
+            MinHeight = 20;
         }
 
         public void BindToProperty(System.Windows.Data.Binding binding)
