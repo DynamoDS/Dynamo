@@ -28,9 +28,9 @@ namespace Dynamo.Nodes
 
     #region Vectors
 
-    [NodeName("XYZ")]
+    [NodeName("XYZ From Coordinates")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
-    [NodeDescription("Creates an XYZ from three numbers.")]
+    [NodeDescription("Creates an XYZ from three coordinates.")]
     public class Xyz: GeometryBase
     {
         public Xyz()
