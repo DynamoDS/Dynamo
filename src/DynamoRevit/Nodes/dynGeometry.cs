@@ -2062,10 +2062,10 @@ namespace Dynamo.Nodes
     {
         public SolidCylinder()
         {
-            InPortData.Add(new PortData("axis", "Axis of cylinder", typeof(object)));
-            InPortData.Add(new PortData("origin", "Base point of cylinder", typeof(object)));
-            InPortData.Add(new PortData("radius", "Radius of cylinder", typeof(object)));
-            InPortData.Add(new PortData("height", "Height of cylinder", typeof(object)));
+            InPortData.Add(new PortData("axis", "Axis of cylinder", typeof(FScheme.Value.Container), FScheme.Value.NewContainer(new XYZ(0, 0, 1))));
+            InPortData.Add(new PortData("origin", "Base point of cylinder", typeof(FScheme.Value.Container), FScheme.Value.NewContainer(new XYZ(0, 0, 0))));
+            InPortData.Add(new PortData("radius", "Radius of cylinder", typeof(FScheme.Value.Number), FScheme.Value.NewNumber(1)));
+            InPortData.Add(new PortData("height", "Height of cylinder", typeof(FScheme.Value.Number), FScheme.Value.NewNumber(2)));
            
             OutPortData.Add(new PortData("cylinder", "Solid cylinder", typeof(object)));
 
@@ -2115,8 +2115,8 @@ namespace Dynamo.Nodes
 
         public SolidSphere()
         {
-            InPortData.Add(new PortData("center", "Center point of sphere", typeof(object)));
-            InPortData.Add(new PortData("radius", "Radius of sphere", typeof(object)));
+            InPortData.Add(new PortData("center", "Center point of sphere", typeof(FScheme.Value.Container), FScheme.Value.NewContainer(new XYZ(0, 0, 0))));
+            InPortData.Add(new PortData("radius", "Radius of sphere", typeof(FScheme.Value.Number), FScheme.Value.NewNumber(1)));
 
             OutPortData.Add(new PortData("sphere", "Solid sphere", typeof(object)));
 
@@ -2160,10 +2160,12 @@ namespace Dynamo.Nodes
     {
         public SolidTorus()
         {
-            InPortData.Add(new PortData("axis", "Axis of torus", typeof(object), FScheme.Value.NewContainer(new XYZ(0,0,1))));
-            InPortData.Add(new PortData("center", "Center point of torus", typeof(object)));
-            InPortData.Add(new PortData("radius", "The distance from the center to the cross-sectional center", typeof(object)));
-            InPortData.Add(new PortData("section radius", "The radius of the cross-section of the torus", typeof(object)));
+            InPortData.Add(new PortData("axis", "Axis of torus", typeof(FScheme.Value.Container), FScheme.Value.NewContainer(new XYZ(0,0,1))));
+            InPortData.Add(new PortData("center", "Center point of torus", typeof(object), FScheme.Value.NewContainer(new XYZ(0, 0, 1))));
+            InPortData.Add(new PortData("radius", "The distance from the center to the cross-sectional center", typeof(FScheme.Value.Number), 
+                FScheme.Value.NewNumber(1)));
+            InPortData.Add(new PortData("section radius", "The radius of the cross-section of the torus", typeof(FScheme.Value.Number), 
+                FScheme.Value.NewNumber(0.25)));
 
             OutPortData.Add(new PortData("torus", "Solid torus", typeof(object)));
 
@@ -2183,7 +2185,8 @@ namespace Dynamo.Nodes
             var yAxis = xAxis.CrossProduct(zAxis);
 
             // create circle
-            var circle = dynRevitSettings.Doc.Application.Application.Create.NewArc(center + radius * xAxis, radius, 0, 2 * Circle.RevitPI, xAxis, zAxis);
+            var circle = dynRevitSettings.Doc.Application.Application.Create.NewArc(center + radius * xAxis, radius, 
+                0, 2 * Circle.RevitPI, xAxis, zAxis);
 
             // create curve loop from cirle
             var circleLoop = Autodesk.Revit.DB.CurveLoop.Create(new List<Curve>() { circle });
@@ -2216,10 +2219,10 @@ namespace Dynamo.Nodes
     {
         public SolidBoxByTwoCorners()
         {
-            InPortData.Add(new PortData("bottom", "Bottom point of box", typeof(object)));
-            InPortData.Add(new PortData("top", "Top point of box", typeof(object)));
+            InPortData.Add(new PortData("bottom", "Bottom point of box", typeof(FScheme.Value.Container), FScheme.Value.NewContainer(new XYZ(-1, -1, -1))));
+            InPortData.Add(new PortData("top", "Top point of box", typeof(FScheme.Value.Container), FScheme.Value.NewContainer(new XYZ(1, 1, 1))));
 
-            OutPortData.Add(new PortData("box", "Solid box", typeof(object)));
+            OutPortData.Add(new PortData("box", "Solid box", typeof(FScheme.Value.Container)));
 
             RegisterAllPorts();
         }
@@ -2259,7 +2262,7 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             // unpack input
-            var bottom = (XYZ) ((Value.Container) args[0]).Item);
+            var bottom = (XYZ) ((Value.Container) args[0]).Item;
             var top = (XYZ)((Value.Container)args[1]).Item;
 
             // build and return geom
@@ -2274,12 +2277,12 @@ namespace Dynamo.Nodes
     {
         public SolidBoxByCenterAndDimensions()
         {
-            InPortData.Add(new PortData("center", "Center of box", typeof(object)));
-            InPortData.Add(new PortData("center", "Center of box", typeof(object)));
-            InPortData.Add(new PortData("center", "Center of box", typeof(object)));
-            InPortData.Add(new PortData("top", "Top point of box", typeof(object)));
+            InPortData.Add(new PortData("center", "Center of box", typeof(FScheme.Value.Container), FScheme.Value.NewContainer(new XYZ(0,0,0))));
+            InPortData.Add(new PortData("x", "Dimension of box in x direction", typeof(FScheme.Value.Number), FScheme.Value.NewNumber(1)));
+            InPortData.Add(new PortData("y", "Dimension of box in y direction", typeof(FScheme.Value.Number), FScheme.Value.NewNumber(1)));
+            InPortData.Add(new PortData("z", "Dimension of box in z direction", typeof(FScheme.Value.Number), FScheme.Value.NewNumber(1)));
 
-            OutPortData.Add(new PortData("box", "Solid box", typeof(object)));
+            OutPortData.Add(new PortData("box", "Solid box", typeof(FScheme.Value.Container)));
 
             RegisterAllPorts();
         }
@@ -2297,7 +2300,7 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             // unpack input
-            var center = (XYZ) ((Value.Container) args[0]).Item);
+            var center = (XYZ) ((Value.Container) args[0]).Item;
             var x  = ((Value.Number)args[1]).Item;
             var y  = ((Value.Number)args[2]).Item;
             var z  = ((Value.Number)args[3]).Item;
@@ -2305,8 +2308,6 @@ namespace Dynamo.Nodes
             // build and return geom
             return Value.NewContainer(AlignedBoxByCenterAndDimensions( center, x, y, z) );
         }
-    }
-
     }
 
 
