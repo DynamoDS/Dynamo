@@ -2056,10 +2056,9 @@ namespace Dynamo.Nodes
 
     [NodeName("Cylinder")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
-    [NodeDescription("Creates solid by boolean difference of two solids")]
+    [NodeDescription("Create a cylinder from the axis, origin, radius, and height")]
     public class SolidCylinder : GeometryBase
     {
-
         public SolidCylinder()
         {
             InPortData.Add(new PortData("axis", "Axis of cylinder", typeof(object)));
@@ -2067,7 +2066,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("radius", "Radius of cylinder", typeof(object)));
             InPortData.Add(new PortData("height", "Height of cylinder", typeof(object)));
            
-            OutPortData.Add(new PortData("cylinder", "Solid", typeof(object)));
+            OutPortData.Add(new PortData("cylinder", "Solid cylinder", typeof(object)));
 
             RegisterAllPorts();
 
@@ -2103,6 +2102,52 @@ namespace Dynamo.Nodes
             var height = ((Value.Number)args[3]).Item;
 
             return Value.NewContainer( CylinderByAxisOriginRadiusHeight(axis, origin, radius, height) );
+        }
+    }
+
+    [NodeName("Sphere")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
+    [NodeDescription("Creates solid by boolean difference of two solids")]
+    public class SolidSphere : GeometryBase
+    {
+
+        public SolidSphere()
+        {
+            InPortData.Add(new PortData("center", "Center point of sphere", typeof(object)));
+            InPortData.Add(new PortData("radius", "Radius of sphere", typeof(object)));
+
+            OutPortData.Add(new PortData("sphere", "Solid sphere", typeof(object)));
+
+            RegisterAllPorts();
+        }
+
+        public static Solid SphereByCenterRadius(XYZ center, double radius)
+        {
+
+            // create semicircular arc
+            var semicircle = dynRevitSettings.Doc.Application.Application.Create.NewArc(center, radius, 0, Circle.RevitPI, XYZ.BasisZ, XYZ.BasisX);
+
+            // create axis curve of cylinder - running from north to south pole
+            var axisCurve = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(new XYZ(0, 0, -radius),
+                new XYZ(0, 0, radius));
+
+            var circleLoop = Autodesk.Revit.DB.CurveLoop.Create(new List<Curve>() { semicircle, axisCurve });
+
+            // revolve arc to form sphere
+            return
+                GeometryCreationUtilities.CreateRevolvedGeometry(
+                    new Autodesk.Revit.DB.Frame(center, XYZ.BasisX, XYZ.BasisY, XYZ.BasisZ), circleLoop, 0,
+                    2 * Circle.RevitPI);
+
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            // unpack input
+            var center = (XYZ)((Value.Container)args[0]).Item;
+            var radius = ((Value.Number)args[1]).Item;
+
+            return Value.NewContainer( SphereByCenterRadius(center, radius) );
         }
     }
 
@@ -2937,4 +2982,4 @@ namespace Dynamo.Nodes
     }
 
     #endregion
-}
+} 
