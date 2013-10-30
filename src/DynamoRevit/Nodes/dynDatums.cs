@@ -11,7 +11,7 @@ namespace Dynamo.Nodes
 {
     [NodeName("Level")]
     [NodeCategory(BuiltinNodeCategories.REVIT_DATUMS)]
-    [NodeDescription("Creates a level datum.")]
+    [NodeDescription("Creates a level datum")]
     public class Level : RevitTransactionNodeWithOneOutput
     {
         public Level()
@@ -63,7 +63,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Select Level")]
     [NodeCategory(BuiltinNodeCategories.REVIT_DATUMS)]
-    [NodeDescription("Creates a level datum.")]
+    [NodeDescription("Select a level in the active document")]
     public class SelectLevel : DropDrownBase
     {
         public SelectLevel()
@@ -87,9 +87,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Ref Plane")]
+    [NodeName("Reference Plane")]
     [NodeCategory(BuiltinNodeCategories.REVIT_DATUMS)]
-    [NodeDescription("Creates a reference plane.")]
+    [NodeDescription("Creates a reference plane")]
     public class ReferencePlane : RevitTransactionNodeWithOneOutput
     {
         public ReferencePlane()
@@ -347,7 +347,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Column Grid")]
     [NodeCategory(BuiltinNodeCategories.REVIT_DATUMS)]
-    [NodeDescription("Creates a column grid datum.")]
+    [NodeDescription("Creates a column grid datum")]
     public class ColumnGrid : RevitTransactionNodeWithOneOutput
     {
         public ColumnGrid()
@@ -495,4 +495,5 @@ namespace Dynamo.Nodes
             }
         }
     }
+
 }
