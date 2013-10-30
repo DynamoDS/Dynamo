@@ -2324,6 +2324,8 @@ namespace Dynamo.Nodes
                        XYZ fromPoint = pathTrf.Origin;
                        if (Math.Abs(distAttachment) > 0.000001 + Math.Abs(distOrigin))
                            fromPoint = (-distOrigin) * profileLoopPlane.Normal;
+                       else
+                           fromPoint = pathTrf.Origin - distOrigin * profileLoopPlane.Normal;
                        XYZ fromVecOne = profileLoopPlane.Normal;
                        XYZ toVecOne = pathDerivative;
                        XYZ fromVecTwo = XYZ.BasisZ.CrossProduct(profileLoopPlane.Normal);
