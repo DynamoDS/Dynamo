@@ -51,10 +51,15 @@ namespace Dynamo.Nodes
         public const string CREATEGEOMETRY = "Create Geometry";
         public const string CREATEGEOMETRY_VECTOR = "Create Geometry.Vector";
         public const string CREATEGEOMETRY_CURVE = "Create Geometry.Curve";
+        public const string CREATEGEOMETRY_SOLID_BOOLEAN = "Create Geometry.Solid.Boolean";
+        public const string CREATEGEOMETRY_SOLID_CREATE = "Create Geometry.Solid.Create";
+        public const string CREATEGEOMETRY_SOLID_PRIMITIVES = "Create Geometry.Solid.Primitives";
+        public const string CREATEGEOMETRY_SOLID_EXTRACT = "Create Geometry.Solid.Extract";
         public const string CREATEGEOMETRY_SOLID = "Create Geometry.Solid";
         public const string CREATEGEOMETRY_SURFACE = "Create Geometry.Surface";
 
         public const string MODIFYGEOMETRY= "Modify Geometry";
+        public const string MODIFYGEOMETRY_SOLID = "Modify Geometry.Solid";
         public const string MODIFYGEOMETRY_INTERSECT = "Modify Geometry.Intersect";
         public const string MODIFYGEOMETRY_TRANSFORM = "Modify Geometry.Transform";
         public const string MODIFYGEOMETRY_TESSELATE = "Modify Geometry.Tesselate";
