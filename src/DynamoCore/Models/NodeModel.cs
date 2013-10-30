@@ -308,6 +308,40 @@ namespace Dynamo.Models
             RequiresRecalc = true;
         }
 
+        private bool isUpdated = false;
+
+        /// <summary>
+        /// If the node is updated in LiveRunner's execution
+        /// </summary>
+        public bool IsUpdated 
+        {
+            get
+            {
+                return IsUpdated;
+            }
+            set
+            {
+                isUpdated = value;
+                RaisePropertyChanged("IsUpdated");
+            }
+        }
+
+        /// <summary>
+        /// Return a variable whose value will be displayed in preview window.
+        /// Derived nodes may overwrite this function to display default value
+        /// of this node. E.g., code block node may want to display the value 
+        /// of the left hand side variable of last statement. 
+        /// </summary>
+        /// <returns></returns>
+        public virtual string VariableToPreview
+        {
+            get
+            {
+                var ident = AstIdentifier as IdentifierNode;
+                return (ident == null) ? null : ident.Name;
+            }
+        }
+
         protected internal ExecutionEnvironment macroEnvironment = null;
 
         //TODO: don't make this static (maybe)
@@ -1635,6 +1669,23 @@ namespace Dynamo.Models
         public void DispatchOnUIThread(Action a)
         {
             OnDispatchedToUI(this, new UIDispatcherEventArgs(a));
+        }
+
+        public static string PrintValue(string variableName, int currentListIndex, int maxListIndex, int currentDepth, int maxDepth, int maxStringLength = 20)
+        {
+            string previewValue = "<null>";
+            if (!string.IsNullOrEmpty(variableName))
+            {
+                try
+                {
+                    previewValue = LiveRunnerServices.Instance.GetStringValue(variableName);
+                }
+                catch (Exception ex)
+                {
+                    DynamoLogger.Instance.Log(ex.Message);
+                }
+            }
+            return previewValue;
         }
 
         public static string PrintValue(Value eIn, int currentListIndex, int maxListIndex, int currentDepth, int maxDepth, int maxStringLength = 20)

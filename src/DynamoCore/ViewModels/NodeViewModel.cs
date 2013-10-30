@@ -109,8 +109,19 @@ namespace Dynamo.ViewModels
                 {
                     return "Not available in custom nodes";
                 }
+
+#if USE_DSENGINE
+                return NodeModel.PrintValue(nodeLogic.VariableToPreview,
+                                            0,
+                                            Configurations.PreviewMaxListLength,
+                                            0,
+                                            Configurations.PreviewMaxListDepth,
+                                            Configurations.PreviewMaxLength);
+#else
                 return NodeModel.PrintValue(nodeLogic.OldValue, 0, Configurations.PreviewMaxListLength, 0, 
                     Configurations.PreviewMaxListDepth, Configurations.PreviewMaxLength);
+
+#endif
             }
         }
 
@@ -342,6 +353,9 @@ namespace Dynamo.ViewModels
                     break;
                 case "OldValue":
                     RaisePropertyChanged("OldValue");
+                    UpdatePreviewBubbleContent();
+                    break;
+                case "IsUpdated":
                     UpdatePreviewBubbleContent();
                     break;
                 case "X":
