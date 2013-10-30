@@ -13,7 +13,7 @@ using Value = Dynamo.FScheme.Value;
 namespace Dynamo.Nodes
 {
     [NodeName("Transaction")]
-    [NodeCategory(BuiltinNodeCategories.CORE_TIME)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_API)]
     [NodeDescription("Executes Expression inside of a Revit API transaction")]
     public class Transaction : NodeModel
     {
