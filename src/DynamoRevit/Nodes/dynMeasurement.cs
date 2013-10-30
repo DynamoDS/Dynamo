@@ -245,7 +245,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Length")]
-    [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Enter a length in project units.")]
     [NodeSearchTags("Imperial", "Metric", "Length", "Project", "units")]
     public class LengthInput : NodeWithOneOutput

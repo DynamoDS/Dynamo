@@ -356,7 +356,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Bounding Box XYZ")]
-    [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
     [NodeDescription("Create a bounding box.")]
     public class BoundingBoxXyz : NodeWithOneOutput
     {

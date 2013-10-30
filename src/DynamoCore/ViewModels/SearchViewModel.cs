@@ -232,12 +232,6 @@ namespace Dynamo.ViewModels
             _SearchText = "";
             IncludeRevitAPIElements = false; // revit api
 
-            //Regions = new ObservableDictionary<string, RegionBase<object>>();
-            ////Regions.Add("Include Nodes from Package Manager", DynamoCommands.PackageManagerRegionCommand );
-            //var region = new RevitAPIRegion<object>(RevitAPIRegionExecute, RevitAPIRegionCanExecute);
-            //region.RaiseCanExecuteChanged();
-            //Regions.Add("Include Experimental Revit API Nodes", new RevitAPIRegion<object>(RevitAPIRegionExecute, RevitAPIRegionCanExecute));
-
             _topResult = this.AddRootCategory("Top Result");
             this.AddRootCategory(BuiltinNodeCategories.CORE);
             this.AddRootCategory(BuiltinNodeCategories.LOGIC);
@@ -245,7 +239,6 @@ namespace Dynamo.ViewModels
             this.AddRootCategory(BuiltinNodeCategories.MODIFYGEOMETRY);
             this.AddRootCategory(BuiltinNodeCategories.REVIT);
             this.AddRootCategory(BuiltinNodeCategories.IO);
-            this.AddRootCategory(BuiltinNodeCategories.SCRIPTING);
             this.AddRootCategory(BuiltinNodeCategories.ANALYZE);
         }
 
