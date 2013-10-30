@@ -418,6 +418,7 @@ namespace Dynamo.ViewModels
 
         private void UpdateShape(Point topLeft, Point botRight)
         {
+            this.limitedDirection = Direction.None;
             switch (InfoBubbleStyle)
             {
                 case Style.LibraryItemPreview:

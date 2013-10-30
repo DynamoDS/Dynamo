@@ -347,6 +347,7 @@ namespace Dynamo.Views
         {
             if (e.MiddleButton == MouseButtonState.Pressed)
                 (DataContext as WorkspaceViewModel).SetCurrentOffsetCommand.Execute((sender as ZoomBorder).GetTranslateTransformOrigin());
+            dynSettings.Controller.DynamoViewModel.HideInfoBubble(null);
         }
 
         void vm_CurrentOffsetChanged(object sender, EventArgs e)

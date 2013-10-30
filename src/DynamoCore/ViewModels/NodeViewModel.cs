@@ -444,7 +444,7 @@ namespace Dynamo.ViewModels
 
         private void UpdateErrorBubbleContent()
         {
-            if (this.ErrorBubble == null)
+            if (this.ErrorBubble == null || dynSettings.Controller == null)
                 return;
             if (string.IsNullOrEmpty(NodeModel.ToolTipText))
             {
