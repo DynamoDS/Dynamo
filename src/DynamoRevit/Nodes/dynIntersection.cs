@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.Reflection;
 using Autodesk.Revit.DB;
 using Dynamo.Models;
-using Microsoft.FSharp.Collections;
-
-using Value = Dynamo.FScheme.Value;
 using Dynamo.Revit;
 using Dynamo.Utilities;
+using Microsoft.FSharp.Collections;
+using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Nodes
 {
-    [NodeName("Curve Face Intersection")]
+    [NodeName("Curve-Face Intersection")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_INTERSECT)]
     [NodeDescription("Calculates the intersection of a curve and a face.")]
     public class CurveFaceIntersection : RevitTransactionNode
@@ -209,7 +208,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Curve Curve Intersection")]
+    [NodeName("Curve-Curve Intersection")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_INTERSECT)]
     [NodeDescription("Calculates the intersection of two curves.")]
     public class CurveCurveIntersection : RevitTransactionNode
@@ -277,7 +276,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Face Face Intersection")]
+    [NodeName("Face-Face Intersection")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_INTERSECT)]
     [NodeDescription("Calculates the intersection of two faces.")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
@@ -340,79 +339,5 @@ namespace Dynamo.Nodes
                 throw new Exception("No suitable method found to perform intersection");
         }
     }
-
-    //[NodeName("Face Level Intersection")]
-    //[NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_INTERSECT)]
-    //[NodeDescription("Calculates the intersection of a face and a level.")]
-    //[DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
-    //public class dynFaceLevelIntersection : dynRevitTransactionNode
-    //{
-    //    public dynFaceLevelIntersection()
-    //    {
-    //        InPortData.Add(new PortData("face", "The first face to intersect.", typeof(Value.Container)));
-    //        InPortData.Add(new PortData("level", "The level to intersect with the face.", typeof(Value.Container)));
-
-    //        OutPortData.Add(new PortData("result", "The intersection result.", typeof(Value.String)));
-    //        OutPortData.Add(new PortData("curve", "A single Curve representing the intersection.", typeof(Value.Container)));
-
-    //        RegisterAllPorts();
-    //    }
-
-    //    public override Value Evaluate(FSharpList<Value> args)
-    //    {
-    //        var face1 = (Face)((Value.Container)args[0]).Item;
-    //        var level = (Level)((Value.Container)args[1]).Item;
-
-    //        Type faceType = typeof(Autodesk.Revit.DB.Face);
-    //        MethodInfo[] faceMethods = faceType.GetMethods(BindingFlags.Instance | BindingFlags.Public);
-    //        string nameOfMethodIntersect = "Intersect";
-
-    //        Face face2 = null;
-
-    //        var geometryOptions = new Options();
-    //        geometryOptions.ComputeReferences = true;
-    //        geometryOptions.DetailLevel = ViewDetailLevel.Medium;
-    //        geometryOptions.IncludeNonVisibleObjects = true;
-    //        var geomElem = level.get_Geometry(geometryOptions);
-
-    //        foreach (Autodesk.Revit.DB.GeometryObject geomObj in geomElem)
-    //        {
-    //            face2 = geomObj as Face;
-    //        }
-    //        if(face2 == null)
-    //            throw new Exception("A surface could not be derived from the level.");
-
-    //        Curve resultCurve = null;
-    //        var results = FSharpList<Value>.Empty;
-
-    //        foreach (MethodInfo mi in faceMethods)
-    //        {
-    //            //find a method that matches the name
-    //            if (mi.Name == nameOfMethodIntersect)
-    //            {
-    //                //find the method which matches the signature
-    //                ParameterInfo[] pi = mi.GetParameters();
-    //                if (pi.Length == 2 &&
-    //                    pi[0].ParameterType == typeof(Face) &&
-    //                    pi[1].ParameterType == typeof(Curve).MakeByRefType())
-    //                {
-    //                    object[] methodArgs = new object[2];
-    //                    methodArgs[0] = face2;
-    //                    methodArgs[1] = resultCurve;
-
-    //                    //var result = face1.Intersect(face2, out resultCurve);
-    //                    var result = mi.Invoke(face1, methodArgs);
-    //                    if (methodArgs[1] != null)
-    //                        curves.Add((Curve)methodArgs[1]);
-
-    //                    results = FSharpList<Value>.Cons(Value.NewContainer(methodArgs[1]), results);
-    //                    results = FSharpList<Value>.Cons(Value.NewString(result.ToString()), results);
-    //                }
-    //            }
-    //        }
-
-    //        return Value.NewList(results);
-    //    }
-    //}
 
 }
