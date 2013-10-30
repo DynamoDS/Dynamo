@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
-using System.Linq;
 using System.Xml;
 using Autodesk.Revit.DB;
 using Dynamo.Controls;
-using Dynamo.Models;
-using Dynamo.Utilities;
-using Dynamo.Revit.SyncedNodeExtensions; //Gives the RegisterEval... methods
-using Microsoft.FSharp.Collections;
-using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
+using Dynamo.Models;
+using Dynamo.Revit.SyncedNodeExtensions; //Gives the RegisterEval... methods
+using Dynamo.Utilities;
+using Microsoft.FSharp.Collections;
 using TextBox = System.Windows.Controls.TextBox;
+using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Nodes
 {
