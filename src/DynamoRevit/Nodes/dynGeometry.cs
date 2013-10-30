@@ -59,28 +59,117 @@ namespace Dynamo.Nodes
     [NodeName("XYZ From Polar")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
     [NodeDescription("Creates an XYZ from three numbers.")]
-    public class XyzPolar : GeometryBase
+    public class XyzFromPolar : GeometryBase
     {
-        public XyzPolar()
+        public XyzFromPolar()
         {
-            InPortData.Add(new PortData("X", "X", typeof(Value.Number), Value.NewNumber(0)));
-            InPortData.Add(new PortData("Y", "Y", typeof(Value.Number), Value.NewNumber(0)));
-            InPortData.Add(new PortData("Z", "Z", typeof(Value.Number), Value.NewNumber(0)));
-            OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
+            InPortData.Add(new PortData("radius", "Radius from origin in radians", typeof(Value.Number), FScheme.Value.NewNumber(1));
+            InPortData.Add(new PortData("xy rotation", "Rotation around Z axis in radians", typeof(Value.Number), FScheme.Value.NewNumber(0));
+            InPortData.Add(new PortData("z rotation", "Rotation from axis in radians", typeof(Value.Number), FScheme.Value.NewNumber(0));
+
+            OutPortData.Add(new PortData("xyz", "XYZ formed from polar coordinates", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
 
+        public static XYZ FromPolarCoordinates(double r, double theta, double phi)
+        {
+            if (Math.Abs(r) < System.Double.Epsilon)
+            {
+                return new XYZ();
+            }
+
+
+
+        }
+
         public override Value Evaluate(FSharpList<Value> args)
         {
-            double x, y, z;
-            x = ((Value.Number)args[0]).Item;
-            y = ((Value.Number)args[1]).Item;
-            z = ((Value.Number)args[2]).Item;
-
-            var pt = new XYZ(x, y, z);
-
+            var r = ((Value.Number)args[0]).Item;
+            var theta = ((Value.Number)args[1]).Item;
+            var phi = ((Value.Number)args[2]).Item;
+    
             return Value.NewContainer(pt);
+        }
+    }
+
+    [NodeName("XYZ To Polar")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
+    [NodeDescription("Creates an XYZ from three numbers.")]
+    public class XyzToPolar : NodeModel
+    {
+        private readonly PortData _rPort = new PortData("radius", "Radius from origin in radians", typeof(Value.Number));
+        private readonly PortData _thetaPort = new PortData("xy rotation", "Rotation around Z axis in radians", typeof(Value.Number));
+        private readonly PortData _phiPort = new PortData("z rotation", "Rotation from axis in radians (north pole is 0, south pole is PI)", typeof(Value.Number));
+
+        public XyzToPolar()
+        {
+            InPortData.Add(new PortData("xyz", "Input XYZ", typeof(Value.Number), Value.NewNumber(0)));
+            OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
+
+            this.ArgumentLacing = LacingStrategy.Longest;
+
+            RegisterAllPorts();
+        }
+
+        public static void ToPolarCoordinates(XYZ input, out double r, out double theta, out double phi)
+        {
+            // set length
+            r = input.GetLength();
+
+            // if the length is too small the angles will be degenerate, just set them as 0
+            if (Math.Abs(r) < System.Double.Epsilon)
+            {
+                theta = 0;
+                phi = 0;
+                return;
+            }
+
+            // get the length of the projection on the xy plane
+            var rInXYPlane = (new XYZ(input.X, input.Y, 0)).GetLength();
+
+            // if projected length is 0, xyz is pointing up, down, or is origin
+            if (Math.Abs(rInXYPlane) < System.Double.Epsilon)
+            {
+                // this should have already been detected when r is 0, but check anyway
+                if (Math.Abs(input.Z) < System.Double.Epsilon)
+                {
+                    theta = 0;
+                    phi = 0;
+                    return;
+                }
+                else // determine whether vector is above or below - if above phi is 0
+                {
+                    theta = 0;
+                    phi = input.Y > 0 ? 0 : Math.PI;
+                    return;
+                }
+            }
+            
+            // if x is 0, this indicates vector is at 90 or 270
+            if (Math.Abs(input.X) < System.Double.Epsilon)
+            {
+                theta = input.Y > 0 ? Math.PI/2 : 3*Math.PI/2;
+            }
+            else
+            {
+                theta = Math.Atan(input.Y / input.X);
+            }
+            
+            // phew...
+            phi = Math.Atan(input.Z / rInXYPlane);
+        }
+
+        public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
+        {
+            var xyz = ((XYZ)((Value.Container)args[0]).Item);
+            double r, theta, phi;
+
+            ToPolarCoordinates(xyz, out r, out theta, out phi);
+
+            outPuts[_rPort] = FScheme.Value.NewNumber(r);
+            outPuts[_thetaPort] = FScheme.Value.NewNumber(theta);
+            outPuts[_phiPort] = FScheme.Value.NewNumber(phi);
         }
     }
 
@@ -2336,7 +2425,6 @@ namespace Dynamo.Nodes
             return Value.NewContainer(AlignedBoxByCenterAndDimensions( center, x, y, z) );
         }
     }
-
 
     #endregion
 
