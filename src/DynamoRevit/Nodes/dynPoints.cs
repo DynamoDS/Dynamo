@@ -15,6 +15,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates a reference point.")]
     [NodeSearchTags("pt","ref")]
+    [Obsolete("Use ReferencePoint.ByPt")]
     public class ReferencePointByXyz : RevitTransactionNodeWithOneOutput
     {
         public ReferencePointByXyz()
@@ -58,6 +59,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates an element which owns a reference point on a selected edge.")]
     [NodeSearchTags("ref", "pt")]
+    [Obsolete("Use ReferencePoint.ByPtOnEdge")]
     public class PointOnEdge : RevitTransactionNodeWithOneOutput
     {
         public PointOnEdge()
@@ -111,6 +113,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Creates an element which owns a reference point on a selected face.")]
     [NodeSearchTags("ref", "pt")]
+    [Obsolete("Use ReferencePoint.ByPtOnFace")]
     public class PointOnFaceUv : RevitTransactionNodeWithOneOutput
     {
         public PointOnFaceUv()
@@ -171,6 +174,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
     [NodeDescription("Owns a reference point which is projected from a point by normal and distance.")]
     [NodeSearchTags("normal", "ref")]
+    [Obsolete("Use ReferencePoint.ByPtVectorDistance")]
     public class PointNormalDistance : RevitTransactionNodeWithOneOutput
     {
         public PointNormalDistance()
@@ -222,6 +226,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
     [NodeDescription("Extracts one of the primary Reference Planes from a Reference Point.")]
     [NodeSearchTags("ref")]
+    [Obsolete("Use properties on ReferencePlane")]
     public class PlaneFromRefPoint : RevitTransactionNodeWithOneOutput
     {
         ComboBox combo;
