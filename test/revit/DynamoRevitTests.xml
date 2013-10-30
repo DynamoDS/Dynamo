@@ -98,6 +98,7 @@
 				<test name="RevolveSolid" runDynamo="True" modelPath=".\empty.rfa"/>
 				<test name="SolidBySkeleton" runDynamo="True" modelPath=".\empty.rfa"/>
 				<test name="SweepToMakeSolid" runDynamo="True" modelPath=".\empty.rfa"/>
+        <test name="SweptBlend" runDynamo="True" modelPath=".\empty.rfa"/>
 			</testFixture>
 			<testFixture name="ViewTests">
 				<test name="AxonometricView" runDynamo="True" modelPath=".\AxonometricView.rfa"/>
