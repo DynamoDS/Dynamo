@@ -225,25 +225,25 @@ namespace Dynamo.Nodes
         }
     }
 
-    //[NodeName("Unit XYZ")]
-    //[NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
-    //[NodeDescription("Scale the given XYZ so its length is 1.")]
-    //[NodeSearchTags("normalize", "length","vector")]
-    //public class XyzNormalize : GeometryBase
-    //{
-    //    public XyzNormalize()
-    //    {
-    //        InPortData.Add(new PortData("xyz", "An XYZ to normalize", typeof(Value.Container)));
-    //        OutPortData.Add(new PortData("xyz", "The normalized XYZ", typeof(Value.Number)));
+    [NodeName("Unit XYZ")]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
+    [NodeDescription("Scale the given XYZ so its length is 1.")]
+    [NodeSearchTags("normalize", "length", "vector")]
+    public class XyzNormalize : GeometryBase
+    {
+        public XyzNormalize()
+        {
+            InPortData.Add(new PortData("xyz", "An XYZ to normalize", typeof(Value.Container)));
+            OutPortData.Add(new PortData("xyz", "The normalized XYZ", typeof(Value.Number)));
 
-    //        RegisterAllPorts();
-    //    }
+            RegisterAllPorts();
+        }
 
-    //    public override Value Evaluate(FSharpList<Value> args)
-    //    {
-    //        return Value.NewContainer(((XYZ)((Value.Container)args[0]).Item).GetLength());
-    //    }
-    //}
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            return Value.NewContainer(((XYZ)((Value.Container)args[0]).Item).Normalize());
+        }
+    }
 
     [NodeName("XYZ Is Zero Length")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
