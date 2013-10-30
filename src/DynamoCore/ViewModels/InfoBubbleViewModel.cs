@@ -389,10 +389,9 @@ namespace Dynamo.ViewModels
 
         private void UpdateStyle(InfoBubbleViewModel.Style style, Direction connectingDirection)
         {
-            if (infoBubbleStyle == style && this.ConnectingDirection == connectingDirection)
-                return;
             InfoBubbleStyle = style;
             ConnectingDirection = connectingDirection;
+            limitedDirection = Direction.None;
 
             switch (style)
             {
@@ -418,7 +417,6 @@ namespace Dynamo.ViewModels
 
         private void UpdateShape(Point topLeft, Point botRight)
         {
-            this.limitedDirection = Direction.None;
             switch (InfoBubbleStyle)
             {
                 case Style.LibraryItemPreview:
