@@ -498,7 +498,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Origin")]
+    [NodeName("XYZ Origin")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
     [NodeDescription("Creates an XYZ at the origin (0,0,0).")]
     [NodeSearchTags("xyz", "zero")]
@@ -1182,7 +1182,6 @@ namespace Dynamo.Nodes
     }
 
     #endregion
-
 
     #region Solid Creation
 
@@ -1995,69 +1994,10 @@ namespace Dynamo.Nodes
 
     #endregion
 
-    #region Solid Manipulation
-
-    [NodeName("Explode Solid")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_BAKE)]
-    [NodeDescription("Creates list of faces of solid or edges of face")]
-    public class GeometryObjectsFromRoot : NodeWithOneOutput
-    {
-
-        public GeometryObjectsFromRoot()
-        {
-            InPortData.Add(new PortData("Explode Geometry Object", "Solid to extract faces or face to extract edges", typeof(Value.Container)));
-            OutPortData.Add(new PortData("Exploded Geometry objects", "List", typeof(Value.List)));
-
-            RegisterAllPorts();
-
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            Solid thisSolid = null;
-            if (((Value.Container)args[0]).Item is Solid)
-                thisSolid = (Solid)((Value.Container)args[0]).Item;
-
-            Autodesk.Revit.DB.Face thisFace = thisSolid == null ? (Autodesk.Revit.DB.Face)(((Value.Container)args[0]).Item) : null;
-
-            var result = FSharpList<Value>.Empty;
-
-            if (thisSolid != null)
-            {
-                FaceArray faceArr = thisSolid.Faces;
-                var thisEnum = faceArr.GetEnumerator();
-                for (; thisEnum.MoveNext(); )
-                {
-                    Autodesk.Revit.DB.Face curFace = (Autodesk.Revit.DB.Face) thisEnum.Current;
-                    if (curFace != null)
-                        result = FSharpList<Value>.Cons(Value.NewContainer(curFace), result);   
-                 }
-            }
-            else if (thisFace != null)
-            {
-                EdgeArrayArray loops = thisFace.EdgeLoops;
-                var loopsEnum = loops.GetEnumerator();
-                for (; loopsEnum.MoveNext(); )
-                {
-                    EdgeArray thisArr = (EdgeArray) loopsEnum.Current;
-                    if (thisArr == null)
-                        continue;
-                    var oneLoopEnum = thisArr.GetEnumerator();
-                    for (; oneLoopEnum.MoveNext(); )
-                    {
-                        Edge curEdge = (Edge) oneLoopEnum.Current;
-                        if (curEdge != null)
-                            result = FSharpList<Value>.Cons(Value.NewContainer(curEdge), result);   
-                    }
-                }
-            }
-            
-            return Value.NewList(result);
-        }
-    }
+    #region Faces
 
     [NodeName("Faces Intersecting Line")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
+    [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_INTERSECT)]
     [NodeDescription("Creates list of faces of the solid intersecting given line.")]
     public class FacesByLine : NodeWithOneOutput
     {
@@ -2185,7 +2125,7 @@ namespace Dynamo.Nodes
                     argsM[5] = periodicU;
                     argsM[6] = periodicV;
 
-                    result = (Autodesk.Revit.DB.Face) m.Invoke(null, argsM);
+                    result = (Autodesk.Revit.DB.Face)m.Invoke(null, argsM);
 
                     break;
                 }
@@ -2194,7 +2134,70 @@ namespace Dynamo.Nodes
             return Value.NewContainer(result);
         }
     }
-    
+
+    #endregion
+
+    #region Solid Manipulation
+
+    [NodeName("Explode Solid")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID_EXTRACT)]
+    [NodeDescription("Creates list of faces of solid or edges of face")]
+    public class GeometryObjectsFromRoot : NodeWithOneOutput
+    {
+
+        public GeometryObjectsFromRoot()
+        {
+            InPortData.Add(new PortData("Explode Geometry Object", "Solid to extract faces or face to extract edges", typeof(Value.Container)));
+            OutPortData.Add(new PortData("Exploded Geometry objects", "List", typeof(Value.List)));
+
+            RegisterAllPorts();
+
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Solid thisSolid = null;
+            if (((Value.Container)args[0]).Item is Solid)
+                thisSolid = (Solid)((Value.Container)args[0]).Item;
+
+            Autodesk.Revit.DB.Face thisFace = thisSolid == null ? (Autodesk.Revit.DB.Face)(((Value.Container)args[0]).Item) : null;
+
+            var result = FSharpList<Value>.Empty;
+
+            if (thisSolid != null)
+            {
+                FaceArray faceArr = thisSolid.Faces;
+                var thisEnum = faceArr.GetEnumerator();
+                for (; thisEnum.MoveNext(); )
+                {
+                    Autodesk.Revit.DB.Face curFace = (Autodesk.Revit.DB.Face) thisEnum.Current;
+                    if (curFace != null)
+                        result = FSharpList<Value>.Cons(Value.NewContainer(curFace), result);   
+                 }
+            }
+            else if (thisFace != null)
+            {
+                EdgeArrayArray loops = thisFace.EdgeLoops;
+                var loopsEnum = loops.GetEnumerator();
+                for (; loopsEnum.MoveNext(); )
+                {
+                    EdgeArray thisArr = (EdgeArray) loopsEnum.Current;
+                    if (thisArr == null)
+                        continue;
+                    var oneLoopEnum = thisArr.GetEnumerator();
+                    for (; oneLoopEnum.MoveNext(); )
+                    {
+                        Edge curEdge = (Edge) oneLoopEnum.Current;
+                        if (curEdge != null)
+                            result = FSharpList<Value>.Cons(Value.NewContainer(curEdge), result);   
+                    }
+                }
+            }
+            
+            return Value.NewList(result);
+        }
+    }
+
     [NodeName("Transform Solid")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
     [NodeDescription("Creates solid by transforming solid")]
