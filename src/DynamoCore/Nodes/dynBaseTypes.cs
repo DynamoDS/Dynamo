@@ -4023,7 +4023,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Angle (deg.)")]
+    [NodeName("Angle")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("An angle in degrees. Outputs radians")]
     [NodeSearchTags("trigonometry", "angle", "degree")]
