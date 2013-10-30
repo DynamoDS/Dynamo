@@ -16,6 +16,7 @@ using Newtonsoft.Json;
 using Octree.OctreeSearch;
 using String = System.String;
 using Dynamo.DSEngine;
+using Dynamo.Nodes;
 
 //testing to see if github integration works.
 
