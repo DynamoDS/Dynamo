@@ -1,5 +1,4 @@
-﻿using Dynamo.Connectors;
-using Dynamo.Controls;
+﻿using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Revit;
 using Microsoft.FSharp.Collections;
