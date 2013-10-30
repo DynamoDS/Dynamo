@@ -10,7 +10,6 @@ using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.ViewModels;
 using Microsoft.FSharp.Collections;
-using System.Random;
 
 using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
@@ -35,6 +34,34 @@ namespace Dynamo.Nodes
     public class Xyz: GeometryBase
     {
         public Xyz()
+        {
+            InPortData.Add(new PortData("X", "X", typeof(Value.Number), Value.NewNumber(0)));
+            InPortData.Add(new PortData("Y", "Y", typeof(Value.Number), Value.NewNumber(0)));
+            InPortData.Add(new PortData("Z", "Z", typeof(Value.Number), Value.NewNumber(0)));
+            OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            double x, y, z;
+            x = ((Value.Number)args[0]).Item;
+            y = ((Value.Number)args[1]).Item;
+            z = ((Value.Number)args[2]).Item;
+
+            var pt = new XYZ(x, y, z);
+
+            return Value.NewContainer(pt);
+        }
+    }
+
+    [NodeName("XYZ From Polar")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
+    [NodeDescription("Creates an XYZ from three numbers.")]
+    public class XyzPolar : GeometryBase
+    {
+        public XyzPolar()
         {
             InPortData.Add(new PortData("X", "X", typeof(Value.Number), Value.NewNumber(0)));
             InPortData.Add(new PortData("Y", "Y", typeof(Value.Number), Value.NewNumber(0)));
@@ -2097,7 +2124,7 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             // unpack input
-            var axis = (XYZ) ((Value.Container) args[0]).Item);
+            var axis = (XYZ) ((Value.Container) args[0]).Item;
             var origin = (XYZ)((Value.Container)args[1]).Item;
             var radius = ((Value.Number)args[2]).Item;
             var height = ((Value.Number)args[3]).Item;
@@ -2202,7 +2229,7 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             // unpack input
-            var axis = (XYZ) ((Value.Container) args[0]).Item);
+            var axis = (XYZ) ((Value.Container) args[0]).Item;
             var center = (XYZ)((Value.Container)args[1]).Item;
             var radius = ((Value.Number)args[2]).Item;
             var sectionradius = ((Value.Number)args[3]).Item;
