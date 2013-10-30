@@ -124,12 +124,17 @@ namespace Dynamo.Nodes
     [NodeDescription("Get the components of an XYZ")]
     public class XyzComponents : NodeModel
     {
+
+        private readonly PortData _xPort = new PortData("x", "X value of given XYZ", typeof(Value.Number));
+        private readonly PortData _yPort = new PortData("y", "Y value of given XYZ", typeof (Value.Number));
+        private readonly PortData _zPort = new PortData("z", "Z value of given XYZ", typeof(Value.Number));
+
         public XyzComponents()
         {
             InPortData.Add(new PortData("xyz", "An XYZ", typeof(Value.Container)));
-            OutPortData.Add(new PortData("x", "X value of given XYZ", typeof(Value.Number)));
-            OutPortData.Add(new PortData("y", "Y value of given XYZ", typeof(Value.Number)));
-            OutPortData.Add(new PortData("z", "Z value of given XYZ", typeof(Value.Number)));
+            OutPortData.Add(_xPort);
+            OutPortData.Add(_yPort);
+            OutPortData.Add(_zPort);
             ArgumentLacing = LacingStrategy.Longest;
 
             RegisterAllPorts();
@@ -142,9 +147,9 @@ namespace Dynamo.Nodes
             var y = xyz.Y;
             var z = xyz.Z;
 
-            outPuts[this.InPortData[0]] = FScheme.Value.NewNumber(x);
-            outPuts[this.InPortData[1]] = FScheme.Value.NewNumber(y);
-            outPuts[this.InPortData[2]] = FScheme.Value.NewNumber(z);
+            outPuts[_xPort] = FScheme.Value.NewNumber(x);
+            outPuts[_yPort] = FScheme.Value.NewNumber(y);
+            outPuts[_zPort] = FScheme.Value.NewNumber(z);
         }
     }
 
@@ -2447,7 +2452,6 @@ namespace Dynamo.Nodes
             return Value.NewContainer(result);
         }
     }
-
 
     [NodeName("Holes in Solid")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
