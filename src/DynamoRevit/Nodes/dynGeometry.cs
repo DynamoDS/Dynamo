@@ -119,34 +119,34 @@ namespace Dynamo.Nodes
         }
     }
 
-    //[NodeName("XYZ Components")]
-    //[NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
-    //[NodeDescription("Fetches the X value of the given XYZ")]
-    //public class XyzComponents : NodeModel
-    //{
-    //    public XyzComponents()
-    //    {
-    //        InPortData.Add(new PortData("xyz", "An XYZ", typeof(Value.Container)));
-    //        OutPortData.Add(new PortData("x", "X value of given XYZ", typeof(Value.Number)));
-    //        OutPortData.Add(new PortData("y", "Y value of given XYZ", typeof(Value.Number)));
-    //        OutPortData.Add(new PortData("z", "Z value of given XYZ", typeof(Value.Number)));
-    //        ArgumentLacing = LacingStrategy.Longest;
+    [NodeName("XYZ Components")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
+    [NodeDescription("Fetches the X value of the given XYZ")]
+    public class XyzComponents : NodeModel
+    {
+        public XyzComponents()
+        {
+            InPortData.Add(new PortData("xyz", "An XYZ", typeof(Value.Container)));
+            OutPortData.Add(new PortData("x", "X value of given XYZ", typeof(Value.Number)));
+            OutPortData.Add(new PortData("y", "Y value of given XYZ", typeof(Value.Number)));
+            OutPortData.Add(new PortData("z", "Z value of given XYZ", typeof(Value.Number)));
+            ArgumentLacing = LacingStrategy.Longest;
 
-    //        RegisterAllPorts();
-    //    }
+            RegisterAllPorts();
+        }
 
-    //    public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
-    //    {
-    //        var xyz = ((XYZ) ((Value.Container) args[0]).Item);
-    //        var x = xyz.X;
-    //        var y = xyz.Y;
-    //        var z = xyz.Z;
+        public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
+        {
+            var xyz = ((XYZ)((Value.Container)args[0]).Item);
+            var x = xyz.X;
+            var y = xyz.Y;
+            var z = xyz.Z;
 
-    //        outPuts[this.InPortData[0]] = FScheme.Value.NewNumber(x);
-    //        outPuts[this.InPortData[1]] = FScheme.Value.NewNumber(y);
-    //        outPuts[this.InPortData[2]] = FScheme.Value.NewNumber(z);
-    //    }
-    //}
+            outPuts[this.InPortData[0]] = FScheme.Value.NewNumber(x);
+            outPuts[this.InPortData[1]] = FScheme.Value.NewNumber(y);
+            outPuts[this.InPortData[2]] = FScheme.Value.NewNumber(z);
+        }
+    }
 
     [NodeName("XYZ X")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
