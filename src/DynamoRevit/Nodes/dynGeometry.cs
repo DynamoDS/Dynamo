@@ -2160,8 +2160,8 @@ namespace Dynamo.Nodes
     {
         public SolidTorus()
         {
-            InPortData.Add(new PortData("axis", "Axis of torus", typeof(object)));
-            InPortData.Add(new PortData("center", "Canter point of torus", typeof(object)));
+            InPortData.Add(new PortData("axis", "Axis of torus", typeof(object), FScheme.Value.NewContainer(new XYZ(0,0,1))));
+            InPortData.Add(new PortData("center", "Center point of torus", typeof(object)));
             InPortData.Add(new PortData("radius", "The distance from the center to the cross-sectional center", typeof(object)));
             InPortData.Add(new PortData("section radius", "The radius of the cross-section of the torus", typeof(object)));
 
@@ -2209,7 +2209,106 @@ namespace Dynamo.Nodes
         }
     }
 
-    // sphere, cylinder, box, torus
+    [NodeName("Box by Two Corners")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
+    [NodeDescription("Create solid box aligned with the world coordinate system given two corner points")]
+    public class SolidBoxByTwoCorners : GeometryBase
+    {
+        public SolidBoxByTwoCorners()
+        {
+            InPortData.Add(new PortData("bottom", "Bottom point of box", typeof(object)));
+            InPortData.Add(new PortData("top", "Top point of box", typeof(object)));
+
+            OutPortData.Add(new PortData("box", "Solid box", typeof(object)));
+
+            RegisterAllPorts();
+        }
+
+        public static Solid AlignedBoxByTwoCorners(XYZ bottom, XYZ top)
+        {
+
+            // obtain coordinates of base rectangle
+            var p0 = bottom;
+            var p1 = p0 + new XYZ(top.X - bottom.X, 0, 0);
+            var p2 = p1 + new XYZ(0, top.Y - bottom.Y, 0);
+            var p3 = p2 - new XYZ(top.X - bottom.X, 0, 0);
+
+            // form edges of base rect
+            var l1 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p0, p1);
+            var l2 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p1, p2);
+            var l3 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p2, p3);
+            var l4 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p3, p0);
+
+            // form curve loop from lines of base rect
+            var cl = new Autodesk.Revit.DB.CurveLoop();
+            cl.Append(l1);
+            cl.Append(l2);
+            cl.Append(l3);
+            cl.Append(l4);
+
+            // get height of box
+            var height = top.Z - bottom.Z;
+
+            // extrude the curve and return
+            return
+                GeometryCreationUtilities.CreateExtrusionGeometry(new List<Autodesk.Revit.DB.CurveLoop>() { cl },
+                    XYZ.BasisZ, height);
+
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            // unpack input
+            var bottom = (XYZ) ((Value.Container) args[0]).Item);
+            var top = (XYZ)((Value.Container)args[1]).Item;
+
+            // build and return geom
+            return Value.NewContainer(AlignedBoxByTwoCorners(bottom, top));
+        }
+    }
+
+    [NodeName("Box by Center and Dimensions")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
+    [NodeDescription("Create solid box aligned with the world coordinate system given the center of the box and the length of its axes")]
+    public class SolidBoxByCenterAndDimensions : GeometryBase
+    {
+        public SolidBoxByCenterAndDimensions()
+        {
+            InPortData.Add(new PortData("center", "Center of box", typeof(object)));
+            InPortData.Add(new PortData("center", "Center of box", typeof(object)));
+            InPortData.Add(new PortData("center", "Center of box", typeof(object)));
+            InPortData.Add(new PortData("top", "Top point of box", typeof(object)));
+
+            OutPortData.Add(new PortData("box", "Solid box", typeof(object)));
+
+            RegisterAllPorts();
+        }
+
+        public static Solid AlignedBoxByCenterAndDimensions(XYZ center, double x, double y, double z)
+        {
+
+            var bottom = center - new XYZ(x/2, y/2, z/2);
+            var top = center + new XYZ(x/2, y/2, z/2);
+
+            return SolidBoxByTwoCorners.AlignedBoxByTwoCorners(bottom, top);
+
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            // unpack input
+            var center = (XYZ) ((Value.Container) args[0]).Item);
+            var x  = ((Value.Number)args[1]).Item;
+            var y  = ((Value.Number)args[2]).Item;
+            var z  = ((Value.Number)args[3]).Item;
+
+            // build and return geom
+            return Value.NewContainer(AlignedBoxByCenterAndDimensions( center, x, y, z) );
+        }
+    }
+
+    }
+
 
     #endregion
 
