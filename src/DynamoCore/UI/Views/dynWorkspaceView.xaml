@@ -4,11 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Dynamo.Controls" 
-             xmlns:views="clr-namespace:Dynamo.Nodes.Views"
-             xmlns:nodes="clr-namespace:Dynamo.Nodes"
-             xmlns:commands="clr-namespace:Dynamo.UI.Commands"
-             xmlns:viewModels="clr-namespace:Dynamo.ViewModels" xmlns:dynamo="clr-namespace:Dynamo"
-             xmlns:utilities="clr-namespace:Dynamo.Utilities"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              MouseLeftButtonDown="OnMouseLeftButtonDown"
@@ -16,15 +11,6 @@
              MouseMove="OnMouseMove" 
              KeyDown="dynWorkspaceView_KeyDown" KeyUp="dynWorkspaceView_KeyUp" 
              IsHitTestVisible="{Binding IsCurrentSpace}">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml" />
-                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoConverters.xaml" />
-                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoModern.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
 
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
 
@@ -50,30 +36,18 @@
 
                     <ItemsControl ItemsSource="{Binding WorkspaceElements}" Name="WorkspaceElements">
 
-                        <ItemsControl.Resources>
-
-                            <DataTemplate DataType="{x:Type viewModels:NodeViewModel}">
-                                <controls:dynNodeView></controls:dynNodeView>
-                            </DataTemplate>
-
-                            <DataTemplate DataType="{x:Type viewModels:NoteViewModel}">
-                                <nodes:dynNoteView></nodes:dynNoteView>
-                            </DataTemplate>
-
-                            <DataTemplate DataType="{x:Type viewModels:ConnectorViewModel}">
-                                <views:dynConnectorView></views:dynConnectorView>
-                            </DataTemplate>
-                        </ItemsControl.Resources>
+                        <!--Resources for the ItemsControl can now be found in DataTemplates.xml-->
                         
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <controls:DragCanvas
                                     UseLayoutRounding="True"
-                                    Width="100000" 
-                                    Height="100000" 
+                                    Width="2500" 
+                                    Height="2500" 
                                     x:Name="DragCanvas"
                                     Visibility="Visible"
                                     ContextMenuOpening="WorkBench_ContextMenuOpening" 
+                                    AllowDragOutOfView="True"
                                     Loaded="WorkBench_OnLoaded" IsItemsHost="True">
                                     <Canvas.Background>
                                         <SolidColorBrush Color="Transparent"/>

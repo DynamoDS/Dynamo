@@ -18,7 +18,6 @@ using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
-    [TestFixture]
     internal class PackageDependencyTests : DynamoUnitTest
     {
         [Test]

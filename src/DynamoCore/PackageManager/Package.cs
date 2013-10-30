@@ -217,7 +217,7 @@ namespace Dynamo.PackageManager
 
             try
             {
-                LoadedCustomNodes.ToList().ForEach(x => dynSettings.CustomNodeManager.Remove(x.Guid));
+                LoadedCustomNodes.ToList().ForEach(x => dynSettings.CustomNodeManager.RemoveFromDynamo(x.Guid));
                 dynSettings.PackageLoader.LocalPackages.Remove(this);
                 Directory.Delete(this.RootDirectory, true);
             }

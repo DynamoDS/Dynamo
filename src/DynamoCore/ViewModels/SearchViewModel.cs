@@ -584,7 +584,8 @@ namespace Dynamo.ViewModels
                                 _visibleSearchResults[0].IsSelected = true;
                             }
 
-
+                            SearchResults.Clear();
+                            _visibleSearchResults.ToList().ForEach(x => SearchResults.Add( (NodeSearchElement) x));
                         }
 
                     }
@@ -1007,6 +1008,26 @@ namespace Dynamo.ViewModels
         }
 
         internal bool CanFocusSearch(object parameter)
+        {
+            return true;
+        }
+
+        public void ShowLibItemInfoBubble(object parameter)
+        {
+            dynSettings.Controller.DynamoViewModel.ShowInfoBubble(parameter);
+        }
+
+        internal bool CanShowLibItemInfoBubble(object parameter)
+        {
+            return true;
+        }
+
+        public void HideLibItemInfoBubble(object parameter)
+        {
+            dynSettings.Controller.DynamoViewModel.HideInfoBubble(parameter);
+        }
+
+        internal bool CanHideLibItemInfoBubble(object parameter)
         {
             return true;
         }

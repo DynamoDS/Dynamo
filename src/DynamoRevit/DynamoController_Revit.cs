@@ -50,8 +50,10 @@ namespace Dynamo
                 if (visualizationManager == null)
                 {
                     visualizationManager = new VisualizationManagerRevit();
+
                     visualizationManager.VisualizationUpdateComplete +=
                         visualizationManager_VisualizationUpdateComplete;
+
                     visualizationManager.RequestAlternateContextClear += CleanupVisualizations;
                     dynSettings.Controller.DynamoModel.CleaningUp += CleanupVisualizations;
                 }
@@ -81,6 +83,7 @@ namespace Dynamo
 
             dynRevitSettings.Revit.Application.DocumentClosed += Application_DocumentClosed;
             dynRevitSettings.Revit.Application.DocumentOpened += Application_DocumentOpened;
+            dynRevitSettings.Revit.ViewActivated += Revit_ViewActivated;
 
             //allow the showing of elements in context
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.CanFindNodesFromElements =
@@ -93,7 +96,6 @@ namespace Dynamo
             TransactionManager.TransactionCancelled += TransactionManager_TransactionCancelled;
             TransactionManager.FailuresRaised += TransactionManager_FailuresRaised;
         }
-
 
         private void CleanupVisualizations(object sender, EventArgs e)
         {
@@ -119,7 +121,7 @@ namespace Dynamo
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void visualizationManager_VisualizationUpdateComplete(
-            object sender, VisualizationEventArgs e)
+            object sender, EventArgs e)
         {
             //do not draw to geom keeper if the user has selected
             //not to draw to the alternate context or if it is not available
@@ -318,6 +320,8 @@ namespace Dynamo
             {
                 dynRevitSettings.Doc = dynRevitSettings.Revit.ActiveUIDocument;
                 DynamoViewModel.RunEnabled = true;
+
+                ResetForNewDocument();
             }
         }
 
@@ -328,12 +332,46 @@ namespace Dynamo
             {
                 dynRevitSettings.Doc = null;
                 DynamoViewModel.RunEnabled = false;
+                DynamoLogger.Instance.LogWarning("Dynamo no longer has an active document.", WarningLevel.Moderate);
             }
             else
             {
                 dynRevitSettings.Doc = dynRevitSettings.Revit.ActiveUIDocument;
                 DynamoViewModel.RunEnabled = true;
+                DynamoLogger.Instance.LogWarning(string.Format("Dynamo is now pointing at document: {0}", dynRevitSettings.Doc.Document.PathName), WarningLevel.Moderate);
             }
+
+            ResetForNewDocument();
+        }
+
+        void Revit_ViewActivated(object sender, Autodesk.Revit.UI.Events.ViewActivatedEventArgs e)
+        {
+            //if Dynamo doesn't have a view, then latch onto this one
+            if (dynRevitSettings.Doc == null)
+            {
+                dynRevitSettings.Doc = dynRevitSettings.Revit.ActiveUIDocument;
+                DynamoLogger.Instance.LogWarning(string.Format("Dynamo is now pointing at document: {0}", dynRevitSettings.Doc.Document.PathName), WarningLevel.Moderate);
+
+                ResetForNewDocument();
+            }
+        }
+
+        public event EventHandler RevitDocumentChanged;
+        public virtual void OnRevitDocumentChanged()
+        {
+            if (RevitDocumentChanged != null)
+                RevitDocumentChanged(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Clears all element collections on nodes and resets the visualization manager and the old value.
+        /// </summary>
+        private void ResetForNewDocument()
+        {
+            dynSettings.Controller.DynamoModel.Nodes.ToList().ForEach(x=>x.ResetOldValue());
+            VisualizationManager.ClearVisualizations();
+
+            OnRevitDocumentChanged();
         }
 
         #region Python Nodes Revit Hooks
@@ -511,10 +549,7 @@ namespace Dynamo
                 var element = value as Element;
                 var id = element.Id;
 
-                node.Clicked += delegate
-                {
-                    dynRevitSettings.Doc.ShowElements(element);
-                };
+                node.Clicked += () => dynRevitSettings.Doc.ShowElements(element);
 
                 node.Link = id.IntegerValue.ToString(CultureInfo.InvariantCulture);
             }
@@ -714,7 +749,6 @@ namespace Dynamo
                     ProtoRunner.ProtoVMState state = runner.PreStart(demoScript);
                     runner.RunToNextBreakpoint(state);
                 });
-
         }
 
 

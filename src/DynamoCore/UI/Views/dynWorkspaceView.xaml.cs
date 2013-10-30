@@ -20,11 +20,37 @@ namespace Dynamo.Views
     /// <summary>
     /// Interaction logic for dynWorkspaceView.xaml
     /// </summary>
+    /// 
     public partial class dynWorkspaceView : UserControl
     {
+        public enum CursorState
+        {
+            Pointer,
+            ArcAdding,
+            ArcRemoving,
+            ArcSelecting,
+            NodeCondensation,
+            NodeExpansion,
+            LibraryClick,
+            Drag,
+            Move,
+            Pan,
+            ActivePan,
+            UsualPointer,
+            RectangularSelection,
+            ResizeDiagonal,
+            ResizeVertical,
+            ResizeHorizontal
+        }
+
         // TODO(Ben): Remove this.
         private Dynamo.Controls.DragCanvas WorkBench = null;
         private ZoomAndPanControl zoomAndPanControl = null;
+        private EndlessGrid endlessGrid = null;
+
+        private PortViewModel snappedPort = null;
+        private List<DependencyObject> hitResultsList = new List<DependencyObject>();
+        Dictionary<CursorState, String> cursorSet = new Dictionary<CursorState, string>();
 
         public WorkspaceViewModel ViewModel
         {
@@ -37,8 +63,22 @@ namespace Dynamo.Views
             }
         }
 
+        internal bool IsSnappedToPort
+        {
+            get
+            {
+                return (this.snappedPort != null);
+            }
+        }
+
         public dynWorkspaceView()
         {
+            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoModernDictionary);
+            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoColorsAndBrushesDictionary);
+            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DataTemplatesDictionary);
+            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoConvertersDictionary);
+            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.ConnectorsDictionary);
+
             InitializeComponent();
 
             selectionCanvas.Loaded += selectionCanvas_Loaded;
@@ -56,8 +96,48 @@ namespace Dynamo.Views
             zoomAndPanControl.Focusable = false;
             outerCanvas.Children.Add(zoomAndPanControl);
 
+            // Add EndlessGrid
+            endlessGrid = new EndlessGrid(outerCanvas);
+            selectionCanvas.Children.Add(endlessGrid);
+            zoomBorder.EndlessGrid = endlessGrid; // Register with ZoomBorder
+
+            // Binding for grid lines HitTest and Visibility
+            var binding = new Binding()
+            {
+                Path = new PropertyPath("DataContext.FullscreenWatchShowing"),
+                Converter = new InverseBoolToVisibilityConverter(),
+                Mode = BindingMode.OneWay,
+            };
+            binding.RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(TabControl), 1);
+            endlessGrid.SetBinding(UIElement.VisibilityProperty, binding);
+
+            //============
+            //LoadCursorState();
+            //============
+
+
             Debug.WriteLine("Workspace loaded.");
             DynamoSelection.Instance.Selection.CollectionChanged += Selection_CollectionChanged;
+        }
+
+        private void LoadCursorState()
+        {
+            cursorSet = new Dictionary<CursorState,string>();
+
+            cursorSet.Add(CursorState.ArcAdding, "arc_add.cur");
+            cursorSet.Add(CursorState.ArcRemoving, "arc_remove.cur");
+            cursorSet.Add(CursorState.UsualPointer, "pointer.cur");
+            cursorSet.Add(CursorState.RectangularSelection, "rectangular_selection.cur");
+            cursorSet.Add(CursorState.ResizeDiagonal, "resize_diagonal.cur");
+            cursorSet.Add(CursorState.ResizeHorizontal, "resize_horizontal.cur");
+            cursorSet.Add(CursorState.ResizeVertical, "resize_vertical.cur");
+            cursorSet.Add(CursorState.Pan, "hand_pan.cur");
+            cursorSet.Add(CursorState.ActivePan, "hand_pan_active.cur");
+            cursorSet.Add(CursorState.NodeExpansion, "expand.cur");
+            cursorSet.Add(CursorState.NodeCondensation, "condense.cur");
+            cursorSet.Add(CursorState.ArcRemoving, "arc_remove.cur");
+            cursorSet.Add(CursorState.LibraryClick, "hand.cur");
+
         }
 
         void Selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -73,6 +153,7 @@ namespace Dynamo.Views
         void dynWorkspaceView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             ViewModel.Loaded();
+
             ViewModel.CurrentOffsetChanged += vm_CurrentOffsetChanged;
             ViewModel.ZoomChanged += vm_ZoomChanged;
             ViewModel.RequestZoomToViewportCenter += vm_ZoomAtViewportCenter;
@@ -81,9 +162,29 @@ namespace Dynamo.Views
             ViewModel.RequestCenterViewOnElement += CenterViewOnElement;
             ViewModel.RequestNodeCentered += vm_RequestNodeCentered;
             ViewModel.RequestAddViewToOuterCanvas += vm_RequestAddViewToOuterCanvas;
+            ViewModel.RequestTogglePan -= vm_TogglePan;
+            ViewModel.RequestTogglePan += vm_TogglePan;
+            ViewModel.RequestStopPan -= vm_ExitPan;
+            ViewModel.RequestStopPan += vm_ExitPan;
+
             ViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
             ViewModel.WorkspacePropertyEditRequested += VmOnWorkspacePropertyEditRequested;
             ViewModel.RequestSelectionBoxUpdate += VmOnRequestSelectionBoxUpdate;
+
+            ViewModel.RequestChangeCursorDragging += new EventHandler(vm_ChangeCursorDragging);
+            ViewModel.RequestChangeCursorUsual += new EventHandler(vm_ChangeCursorUsual);
+        }
+
+        private void vm_ChangeCursorDragging(object sender, EventArgs e)
+        {
+            if (this.Cursor != CursorsLibrary.RectangularSelection)
+                this.Cursor = CursorsLibrary.RectangularSelection;
+        }
+
+        private void vm_ChangeCursorUsual(object sender, EventArgs e)
+        {
+            if (this.Cursor != CursorsLibrary.UsualPointer)
+                this.Cursor = CursorsLibrary.UsualPointer;
         }
 
         private void VmOnWorkspacePropertyEditRequested(WorkspaceModel workspace)
@@ -98,8 +199,8 @@ namespace Dynamo.Views
                 {
                     Name = newName,
                     Description = newDescription,
-                    Category = newCategory
-
+                    Category = newCategory,
+                    CanEditName = false
                 };
 
             dynSettings.Controller.DynamoModel.OnRequestsFunctionNamePrompt(this, args);
@@ -109,10 +210,10 @@ namespace Dynamo.Views
                 if (workspace is CustomNodeWorkspaceModel)
                 {
                     var def = (workspace as CustomNodeWorkspaceModel).FunctionDefinition;
-                    dynSettings.CustomNodeManager.Refactor(def.FunctionId, args.Name, args.Category, args.Description);
+                    dynSettings.CustomNodeManager.Refactor(def.FunctionId, args.CanEditName ? args.Name : workspace.Name, args.Category, args.Description);
                 }
-
-                workspace.Name = args.Name;
+                
+                if (args.CanEditName) workspace.Name = args.Name;
                 workspace.Description = args.Description;
                 workspace.Category = args.Category;
                 // workspace.Author = "";
@@ -157,11 +258,11 @@ namespace Dynamo.Views
 
         void selectionCanvas_Loaded(object sender, RoutedEventArgs e)
         {
-            var sw = new Stopwatch();
-            sw.Start();
-            DrawGrid();
-            sw.Stop();
-            DynamoLogger.Instance.Log(string.Format("{0} elapsed for drawing grid.", sw.Elapsed));
+            //Stopwatch sw = new Stopwatch();
+            //sw.Start();
+            //DrawGrid();
+            //sw.Stop();
+            //DynamoLogger.Instance.Log(string.Format("{0} elapsed for drawing grid.", sw.Elapsed));
         }
 
         void vm_RequestAddViewToOuterCanvas(object sender, EventArgs e)
@@ -170,6 +271,16 @@ namespace Dynamo.Views
             outerCanvas.Children.Add(view);
             Canvas.SetBottom(view, 0);
             Canvas.SetRight(view, 0);
+        }
+
+        private void vm_TogglePan(object sender, EventArgs e)
+        {
+            zoomBorder.PanMode = !zoomBorder.PanMode;
+        }
+
+        private void vm_ExitPan(object sender, EventArgs e)
+        {
+            zoomBorder.PanMode = false;
         }
 
         private double currentNodeCascadeOffset = 0.0;
@@ -225,6 +336,7 @@ namespace Dynamo.Views
 
             node.X = dropPt.X;
             node.Y = dropPt.Y;
+            node.ReportPosition();
         }
 
         void zoomBorder_MouseMove(object sender, MouseEventArgs e)
@@ -366,19 +478,106 @@ namespace Dynamo.Views
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             WorkspaceViewModel wvm = (DataContext as WorkspaceViewModel);
-            wvm.HandleLeftButtonDown(this.WorkBench, e);
+
+            if (this.snappedPort != null)
+                wvm.HandlePortClicked(this.snappedPort);
+            else
+            {
+                wvm.HandleLeftButtonDown(this.WorkBench, e);
+            }
         }
 
         private void OnMouseRelease(object sender, MouseButtonEventArgs e)
         {
+            this.snappedPort = null;
             WorkspaceViewModel wvm = (DataContext as WorkspaceViewModel);
             wvm.HandleMouseRelease(this.WorkBench, e);
         }
 
         private void OnMouseMove(object sender, MouseEventArgs e)
         {
+            this.snappedPort = null;
+
+            bool snapToCursor = false;
             WorkspaceViewModel wvm = (DataContext as WorkspaceViewModel);
-            wvm.HandleMouseMove(this.WorkBench, e);
+
+            //If we are currently connecting and there is an active connector,
+            //redraw it to match the new mouse coordinates.
+            if (wvm.IsConnecting)
+            {
+                Point mouse = e.GetPosition((UIElement)sender);
+                this.snappedPort = GetSnappedPort(mouse);
+                if (this.snappedPort != null)
+                {
+                    snapToCursor = true;
+                    wvm.HandleMouseMove(this.WorkBench, this.snappedPort.Center);
+                }
+                this.Cursor = CursorsLibrary.ArcAdding;
+            }
+            else if (Mouse.LeftButton == MouseButtonState.Pressed)
+            {
+                this.Cursor = CursorsLibrary.RectangularSelection;
+            }
+            else
+            {
+                Point mouse = e.GetPosition((UIElement)sender);
+                this.snappedPort = GetSnappedPort(mouse);
+                if (this.snappedPort != null && this.snappedPort.PortType != PortType.OUTPUT)
+                    this.Cursor = CursorsLibrary.ArcRemoving;
+                else
+                    this.Cursor = CursorsLibrary.UsualPointer;
+            }
+
+
+            if (false == snapToCursor)
+                wvm.HandleMouseMove(this.WorkBench, e);
+
+        }
+
+        private PortViewModel GetSnappedPort(Point mouseCursor)
+        {
+            if (this.FindNearestPorts(mouseCursor).Count <= 0)
+                return null;
+
+            double curDistance = 1000000;
+            PortViewModel nearestPort = null;
+
+            for (int i = 0; i < this.hitResultsList.Count; i++)
+            {
+                DependencyObject depObject = this.hitResultsList[i];
+                Grid grid = depObject as Grid;
+                if (grid == null)
+                    continue;
+
+                try
+                {
+                    UserControl uc = grid.Parent as UserControl;
+                    if (null == uc)
+                        continue;
+
+                    PortViewModel pvm = uc.DataContext as PortViewModel;
+                    if (pvm == null)
+                        continue;
+
+                    double distance = Distance(mouseCursor, pvm.Center);
+                    if (distance < curDistance)
+                    {
+                        curDistance = distance;
+                        nearestPort = pvm;
+                    }
+                }
+                catch
+                {
+                    continue;
+                }
+            }
+
+            return nearestPort;
+        }
+
+        private double Distance(Point mouse, Point point)
+        {
+            return Math.Sqrt(Math.Pow(mouse.X - point.X, 2) + Math.Pow(mouse.Y - point.Y, 2));
         }
 
         private void WorkBench_ContextMenuOpening(object sender, ContextMenuEventArgs e)
@@ -419,115 +618,53 @@ namespace Dynamo.Views
                 });
         }
 
-        private void DrawGrid()
-        {
-            selectionCanvas.UseLayoutRounding = true;
-
-            // vertical canvas edge line
-            var xLine = new Line
-                {
-                    Stroke = new SolidColorBrush(Color.FromArgb(255, 180, 180, 180)),
-                    X1 = 0,
-                    Y1 = 0,
-                    X2 = 0,
-                    Y2 = selectionCanvas.ActualHeight,
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    StrokeThickness = 1
-                };
-            selectionCanvas.Children.Add(xLine);
-
-            Line xLine2 = null;
-
-            xLine.Stroke = new SolidColorBrush(Color.FromArgb(255, 140, 140, 140));
-
-            // vertical canvas edge line thicker
-            xLine2 = new Line
-                {
-                    Stroke = new SolidColorBrush(Color.FromArgb(70, 180, 180, 180)),
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    StrokeThickness = 6,
-                    Y1 = xLine.Y1 + 6.5,
-                    X1 = xLine.X1 + 3.5,
-                    X2 = xLine.X2 + 3.5,
-                    Y2 = selectionCanvas.ActualHeight,
-                    IsHitTestVisible = false
-                };
-            selectionCanvas.Children.Add(xLine2);
- 
-            Dynamo.Controls.DragCanvas.SetCanBeDragged(xLine, false);
-            xLine.IsHitTestVisible = false;
-
-            var bindingX = new Binding() 
-            { 
-                Path = new PropertyPath("DataContext.FullscreenWatchShowing"), 
-                Converter = new InverseBoolToVisibilityConverter(),
-                Mode = BindingMode.OneWay,
-            };
-            bindingX.RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(TabControl),1);
-
-            xLine.SetBinding(UIElement.VisibilityProperty, bindingX);
-            if (xLine2 != null)
-            {
-                xLine2.SetBinding(UIElement.VisibilityProperty, bindingX);
-            }
-
-            // horizontal canvas edge line
-            var yLine = new Line
-                {
-                    Stroke = new SolidColorBrush(Color.FromArgb(255, 180, 180, 180)),
-                    X1 = -0.5,
-                    Y1 = 0,
-                    X2 = selectionCanvas.ActualWidth,
-                    Y2 = 0,
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    StrokeThickness = 1
-                };
-            selectionCanvas.Children.Add(yLine);
-
-            Line yLine2 = null;
-            yLine.Stroke = new SolidColorBrush(Color.FromArgb(255, 140, 140, 140));
-
-            // horizontal canvas edge line thicker
-            yLine2 = new Line
-                {
-                    Stroke = new SolidColorBrush(Color.FromArgb(70, 180, 180, 180)),
-                    StrokeThickness = 6,
-                    X1 = 0,
-                    X2 = selectionCanvas.ActualWidth,
-                    Y1 = yLine.Y1 + 3.5,
-                    Y2 = yLine.Y2 + 3.5,
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    IsHitTestVisible = false
-                };
-            selectionCanvas.Children.Add(yLine2);
-
-            yLine.IsHitTestVisible = false;
-
-            var bindingY = new Binding()
-            {
-                Path = new PropertyPath("DataContext.FullscreenWatchShowing"),
-                Converter = new InverseBoolToVisibilityConverter(),
-                Mode = BindingMode.OneWay,
-            };
-            bindingY.RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(TabControl), 1);
-
-            yLine.SetBinding(UIElement.VisibilityProperty, bindingY);
-            if (yLine2 != null)
-            {
-                yLine2.SetBinding(UIElement.VisibilityProperty, bindingY);
-            }
-            
-        }
-
         private void WorkBench_OnLoaded(object sender, RoutedEventArgs e)
         {
             WorkBench = sender as Dynamo.Controls.DragCanvas;
             WorkBench.owningWorkspace = this;
             //DrawGrid();
+        }
+
+
+        // TRON'S
+        private List<DependencyObject> FindNearestPorts(System.Windows.Point mouse)
+        {
+            hitResultsList.Clear();
+            EllipseGeometry expandedHitTestArea = new EllipseGeometry(mouse, 50.0, 7.0);
+            try
+            {
+                VisualTreeHelper.HitTest(this, new HitTestFilterCallback(HitTestFilter), new HitTestResultCallback(VisualCallBack), new GeometryHitTestParameters(expandedHitTestArea));
+                //if (hitResultsList.Count > 0)
+                    //Debug.WriteLine("Number of visual hits: " + hitResultsList.Count);
+            }
+            catch
+            {
+                hitResultsList.Clear();
+            }
+            return this.hitResultsList;
+        }
+
+        private HitTestFilterBehavior HitTestFilter(DependencyObject o)
+        {
+            if (o.GetType() == typeof(Viewport3D))
+            {
+                return HitTestFilterBehavior.ContinueSkipSelfAndChildren;
+            }
+            else
+            {
+                return HitTestFilterBehavior.Continue;
+            }
+        }
+
+        private HitTestResultBehavior VisualCallBack(HitTestResult result)
+        {
+            if (result == null || result.VisualHit == null)
+                throw new ArgumentNullException();
+
+            if (result.VisualHit.GetType() == typeof(Grid))
+                hitResultsList.Add(result.VisualHit);
+
+            return HitTestResultBehavior.Continue;
         }
     }
 }

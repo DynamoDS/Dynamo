@@ -1,18 +1,22 @@
-﻿using Dynamo.UI.Commands;
+﻿using System.Collections.Generic;
+using Dynamo.Nodes;
+using Dynamo.UI.Commands;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
 
 namespace Dynamo.ViewModels
 {
     public partial class WorkspaceViewModel
     {
         private DelegateCommand _hideCommand;
-        private DelegateCommand _crossSelectCommand;
-        private DelegateCommand _containSelectCommand;
         private DelegateCommand _setCurrentOffsetCommand;
         private DelegateCommand _nodeFromSelectionCommand;
         private DelegateCommand _setZoomCommand;
         private DelegateCommand _zoomInCommand;
         private DelegateCommand _zoomOutCommand;
         private DelegateCommand _fitViewCommand;
+        private DelegateCommand _resetFitViewToggleCommand;
+        private DelegateCommand _togglePanCommand;
         private DelegateCommand _findByIdCommand;
         private DelegateCommand _alignSelectedCommand;
         private DelegateCommand _findNodesFromSelectionCommand;
@@ -36,28 +40,6 @@ namespace Dynamo.ViewModels
                     _hideCommand = new DelegateCommand(Hide, CanHide);
 
                 return _hideCommand;
-            }
-        }
-
-        public DelegateCommand CrossSelectCommand
-        {
-            get
-            {
-                if(_crossSelectCommand == null)
-                    _crossSelectCommand = new DelegateCommand(CrossingSelect, CanCrossSelect);
-
-                return _crossSelectCommand;
-            }
-        }
-
-        public DelegateCommand ContainSelectCommand
-        {
-            get
-            {
-                if(_containSelectCommand == null)
-                    _containSelectCommand = new DelegateCommand(ContainSelect, CanContainSelect);
-
-                return _containSelectCommand;
             }
         }
 
@@ -123,6 +105,26 @@ namespace Dynamo.ViewModels
                 if (_fitViewCommand == null)
                     _fitViewCommand = new DelegateCommand(FitView, CanFitView);
                 return _fitViewCommand;
+            }
+        }
+
+        public DelegateCommand ResetFitViewToggleCommand
+        {
+            get
+            {
+                if (_resetFitViewToggleCommand == null)
+                    _resetFitViewToggleCommand = new DelegateCommand(ResetFitViewToggle, CanResetFitViewToggle);
+                return _resetFitViewToggleCommand;
+            }
+        }
+
+        public DelegateCommand TogglePanCommand
+        {
+            get
+            {
+                if (_togglePanCommand == null)
+                    _togglePanCommand = new DelegateCommand(TogglePan, CanTogglePan);
+                return _togglePanCommand;
             }
         }
 

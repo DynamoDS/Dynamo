@@ -1,18 +1,4 @@
-﻿//Copyright © Autodesk, Inc. 2012. All rights reserved.
-//
-//Licensed under the Apache License, Version 2.0 (the "License");
-//you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at
-//
-//http://www.apache.org/licenses/LICENSE-2.0
-//
-//Unless required by applicable law or agreed to in writing, software
-//distributed under the License is distributed on an "AS IS" BASIS,
-//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//See the License for the specific language governing permissions and
-//limitations under the License.
-
-using Dynamo.Search.Regions;
+﻿using Dynamo.Search.Regions;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 
@@ -64,6 +50,28 @@ namespace Dynamo.UI.Commands
                 if (hideSearch == null)
                     hideSearch = new DelegateCommand(_vm_search.HideSearch, _vm_search.CanHideSearch);
                 return hideSearch;
+            }
+        }
+
+        private static DelegateCommand showLibItemInfoBubble;
+        public static DelegateCommand ShowLibItemInfoBubbleCommand
+        {
+            get
+            {
+                if (showLibItemInfoBubble == null)
+                    showLibItemInfoBubble = new DelegateCommand(_vm_search.ShowLibItemInfoBubble, _vm_search.CanShowLibItemInfoBubble);
+                return showLibItemInfoBubble;
+            }
+        }
+
+        private static DelegateCommand hideLibItemInfoBubble;
+        public static DelegateCommand HideLibItemInfoBubbleCommand
+        {
+            get
+            {
+                if (hideLibItemInfoBubble == null)
+                    hideLibItemInfoBubble = new DelegateCommand(_vm_search.HideLibItemInfoBubble, _vm_search.CanHideLibItemInfoBubble);
+                return hideLibItemInfoBubble;
             }
         }
     }

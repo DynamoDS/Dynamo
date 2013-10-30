@@ -3,18 +3,17 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Threading;
 using System.Windows.Media.Media3D;
 using System.Linq;
 using Autodesk.LibG;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.Utilities;
 using HelixToolkit.Wpf;
 using Microsoft.Practices.Prism.ViewModel;
 using Newtonsoft.Json;
+using Octree.OctreeSearch;
 using String = System.String;
 using Dynamo.DSEngine;
 
@@ -22,9 +21,11 @@ using Dynamo.DSEngine;
 
 namespace Dynamo
 {
-    public delegate void VisualizationCompleteEventHandler(object sender, VisualizationEventArgs e);
+    public delegate void VisualizationCompleteEventHandler(object sender, EventArgs e);
 
-    public delegate void VisualizerDelegate(NodeModel node, object geom, RenderDescription target);
+    public delegate void ResultsReadyHandler(object sender, VisualizationEventArgs e);
+
+    public delegate void VisualizerDelegate(NodeModel node, object geom, RenderDescription target, Octree.OctreeSearch.Octree octree);
 
     /// <summary>
     /// Visualization manager consolidates functionality for creating visualizations 
@@ -44,6 +45,7 @@ namespace Dynamo
         private bool _drawToAlternateContext = true;
         private object myLock = new object();
         protected bool isUpdating = false;
+        private Octree.OctreeSearch.Octree octree;
 
         #endregion
 
@@ -110,7 +112,7 @@ namespace Dynamo
                     if (!_drawToAlternateContext)
                     {
                         _drawToAlternateContext = value;
-                        OnVisualizationUpdateComplete(this, new VisualizationEventArgs(AggregateRenderDescriptions()));
+                        OnVisualizationUpdateComplete(this, EventArgs.Empty);
                     }
                 }
             }
@@ -123,6 +125,12 @@ namespace Dynamo
         {
             get { return _alternateContextName; }
             set { _alternateContextName = value; }
+        }
+
+        public Octree.OctreeSearch.Octree Octree
+        {
+            get { return octree; }
+            set { octree = value; }
         }
 
         #endregion
@@ -139,6 +147,11 @@ namespace Dynamo
         /// </summary>
         public event EventHandler RequestAlternateContextClear;
 
+        /// <summary>
+        /// An event triggered when there are results to visualize
+        /// </summary>
+        public event ResultsReadyHandler ResultsReadyToVisualize;
+
         #endregion
 
         protected VisualizationManager()
@@ -149,11 +162,19 @@ namespace Dynamo
             DynamoSelection.Instance.Selection.CollectionChanged += Selection_CollectionChanged;
             dynSettings.Controller.DynamoModel.ModelCleared += DynamoModel_ModelCleared;
             dynSettings.Controller.DynamoModel.CleaningUp += DynamoModel_CleaningUp;
+            
+            dynSettings.Controller.DynamoModel.NodeDeleted += DynamoModel_NodeDeleted;
 
             Visualizers.Add(typeof(GraphicItem), VisualizationManagerASM.DrawLibGGraphicItem);
 #if USE_DSENGINE
             Visualizers.Add(typeof(Autodesk.DesignScript.Interfaces.IGraphicItem), VisualizationManagerDSGeometry.DrawDesignScriptGraphicItem);
 #endif
+            octree = new Octree.OctreeSearch.Octree(10000,-10000,10000,-10000,10000,-10000,10000000);
+        }
+
+        void DynamoModel_NodeDeleted(NodeModel node)
+        {
+            UpdateVisualizations();
         }
 
         void DynamoModel_CleaningUp(object sender, EventArgs e)
@@ -164,7 +185,7 @@ namespace Dynamo
         void DynamoModel_ModelCleared(object sender, EventArgs e)
         {
             ClearVisualizations();
-            OnVisualizationUpdateComplete(this, new VisualizationEventArgs(AggregateRenderDescriptions()));
+            OnVisualizationUpdateComplete(this, EventArgs.Empty);
         }
 
         void Selection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -184,7 +205,7 @@ namespace Dynamo
                                          .Where(
                                              x =>
                                              !DynamoSelection.Instance.Selection.Select(
-                                                 y => (y as NodeModel).GUID.ToString()).Contains(x.Key)).Select(x=>x.Value);
+                                                 y => (y as ModelBase).GUID.ToString()).Contains(x.Key)).Select(x=>x.Value);
             foreach (var viz in toRemove)
             {
                 viz.Points.AddRange(viz.SelectedPoints);
@@ -223,8 +244,11 @@ namespace Dynamo
             
             //don't trigger an update if the changes in the selection
             //had no effect on the current visualizations
-            if(movedItems > 0)
-                OnVisualizationUpdateComplete(this, new VisualizationEventArgs(AggregateRenderDescriptions()));
+            if (movedItems > 0)
+            {
+                OnVisualizationUpdateComplete(this, EventArgs.Empty);
+            }
+                
         }
 
         /// <summary>
@@ -263,7 +287,8 @@ namespace Dynamo
                 Visualizations.Remove(connector.End.Owner.GUID.ToString());
 
                 //tell the watches that they require re-binding.
-                OnVisualizationUpdateComplete(this, new VisualizationEventArgs(AggregateRenderDescriptions()));
+                //OnVisualizationUpdateComplete(this, new VisualizationEventArgs(AggregateRenderDescriptions()));
+                OnVisualizationUpdateComplete(this, EventArgs.Empty);
             }  
         }
 
@@ -310,6 +335,7 @@ namespace Dynamo
         public void ClearVisualizations()
         {
             Visualizations.Clear();
+            OnVisualizationUpdateComplete(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -333,49 +359,64 @@ namespace Dynamo
         }
 
         /// <summary>
-        /// Aggregates all upstream geometry for the given node.
+        /// Aggregates all upstream geometry for the given node then sends
+        /// a message that a visualization is ready
         /// </summary>
         /// <param name="node">The node whose upstream geometry you need.</param>
         /// <returns>A render description containing all upstream geometry.</returns>
-        public RenderDescription RenderUpstream(NodeModel node)
+        public void RenderUpstream(NodeModel node)
         {
+            var rd = new RenderDescription();
+
+            //send back just what the node needs
             var watch = new Stopwatch();
             watch.Start();
 
-            var drawables = GetUpstreamDrawableIds(node.Inputs);
-            
-            var ids = from viz in dynSettings.Controller.VisualizationManager.Visualizations
-                      where drawables.Contains(viz.Key)
-                      select viz;
+            if (node == null)
+            {
+                //send back everything
+                rd = AggregateRenderDescriptions();
 
-            var rd = new RenderDescription();
+                OnResultsReadyToVisualize(this, new VisualizationEventArgs(rd, string.Empty));
+            }
+            else
+            {
+                //send back renderables for the branch
+                var drawables = GetUpstreamDrawableIds(node.Inputs);
 
-            var keyValuePairs = ids as KeyValuePair<string, RenderDescription>[] ?? ids.ToArray();
+                var ids = from viz in dynSettings.Controller.VisualizationManager.Visualizations
+                          where drawables.Contains(viz.Key)
+                          select viz;
 
-            var pts = keyValuePairs.SelectMany(x => x.Value.Points);
-            var lines = keyValuePairs.SelectMany(x => x.Value.Lines);
-            var meshes = keyValuePairs.SelectMany(x => x.Value.Meshes);
-            var xs = keyValuePairs.SelectMany(x => x.Value.XAxisPoints);
-            var ys = keyValuePairs.SelectMany(x => x.Value.YAxisPoints);
-            var zs = keyValuePairs.SelectMany(x => x.Value.ZAxisPoints);
-            var pts_sel = keyValuePairs.SelectMany(x => x.Value.SelectedPoints);
-            var lines_sel = keyValuePairs.SelectMany(x => x.Value.SelectedLines);
-            var mesh_sel = keyValuePairs.SelectMany(x => x.Value.SelectedMeshes);
+                var keyValuePairs = ids as KeyValuePair<string, RenderDescription>[] ?? ids.ToArray();
 
-            rd.Points.AddRange(pts);
-            rd.Lines.AddRange(lines);
-            rd.Meshes.AddRange(meshes);
-            rd.XAxisPoints.AddRange(xs);
-            rd.YAxisPoints.AddRange(ys);
-            rd.ZAxisPoints.AddRange(zs);
-            rd.SelectedPoints.AddRange(pts_sel);
-            rd.SelectedLines.AddRange(lines_sel);
-            rd.SelectedMeshes.AddRange(mesh_sel);
+                var pts = keyValuePairs.SelectMany(x => x.Value.Points);
+                var lines = keyValuePairs.SelectMany(x => x.Value.Lines);
+                var meshes = keyValuePairs.SelectMany(x => x.Value.Meshes);
+                var xs = keyValuePairs.SelectMany(x => x.Value.XAxisPoints);
+                var ys = keyValuePairs.SelectMany(x => x.Value.YAxisPoints);
+                var zs = keyValuePairs.SelectMany(x => x.Value.ZAxisPoints);
+                var pts_sel = keyValuePairs.SelectMany(x => x.Value.SelectedPoints);
+                var lines_sel = keyValuePairs.SelectMany(x => x.Value.SelectedLines);
+                var mesh_sel = keyValuePairs.SelectMany(x => x.Value.SelectedMeshes);
+
+                rd.Points.AddRange(pts);
+                rd.Lines.AddRange(lines);
+                rd.Meshes.AddRange(meshes);
+                rd.XAxisPoints.AddRange(xs);
+                rd.YAxisPoints.AddRange(ys);
+                rd.ZAxisPoints.AddRange(zs);
+                rd.SelectedPoints.AddRange(pts_sel);
+                rd.SelectedLines.AddRange(lines_sel);
+                rd.SelectedMeshes.AddRange(mesh_sel);
+
+                OnResultsReadyToVisualize(this, new VisualizationEventArgs(rd, node.GUID.ToString()));
+            }
 
             watch.Stop();
             Debug.WriteLine(String.Format("{0} ellapsed for aggregating geometry for watch.", watch.Elapsed));
 
-            return rd;
+            //LogVisualizationUpdateData(rd, watch.Elapsed.ToString());
         }
 
         /// <summary>
@@ -449,7 +490,7 @@ namespace Dynamo
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public virtual void OnVisualizationUpdateComplete(object sender, VisualizationEventArgs e)
+        public virtual void OnVisualizationUpdateComplete(object sender, EventArgs e)
         {
             if (VisualizationUpdateComplete != null)
                 VisualizationUpdateComplete(sender, e);
@@ -545,7 +586,7 @@ namespace Dynamo
             //draw what's in the container
             if (viz.Value != null)
             {
-                viz.Value.Invoke(node, geom, rd);
+                viz.Value.Invoke(node, geom, rd, octree);
             }
         }
 
@@ -558,8 +599,11 @@ namespace Dynamo
         {
             try
             {
+
                 var sw = new Stopwatch();
                 sw.Start();
+
+                octree.Clear();
 
                 //get a dictionary of all nodes with drawable objects
                 var drawable_dict = GetAllDrawablesInModel();
@@ -568,6 +612,7 @@ namespace Dynamo
                 var drawableKeys = drawable_dict.Select(x => x.Key.GUID.ToString());
                 var toCleanup = Visualizations.Where(x => !drawableKeys.Contains(x.Key)).ToList();
                 toCleanup.ForEach(x=>Visualizations.Remove(x.Key));
+
                 Debug.WriteLine(string.Format("{0} drawables have been removed.", toCleanup.Count));
 
                 //add visualizations for nodes that have none
@@ -591,13 +636,8 @@ namespace Dynamo
                 sw.Stop();
                 Debug.WriteLine(String.Format("{0} elapsed for generating visualizations.", sw.Elapsed));
 
-                //generate an aggregated render description to send to the UI
-                var aggRd = AggregateRenderDescriptions();
-
-                LogVisualizationUpdateData(aggRd, sw.Elapsed.ToString());
-
                 //notify the UI of visualization completion
-                OnVisualizationUpdateComplete(this, new VisualizationEventArgs(aggRd));
+                OnVisualizationUpdateComplete(this, EventArgs.Empty);
             }
             catch (Exception e)
             {
@@ -617,6 +657,27 @@ namespace Dynamo
         {
             Visualizations.Add(kvp.Key.GUID.ToString(), new RenderDescription());
             kvp.Key.PropertyChanged += node_PropertyChanged;
+        }
+
+        public void LookupSelectedElement(double x, double y, double z)
+        {
+            var id = octree.GetNode(x, y, z);
+
+            if (id == null)
+                return;
+
+            var node = dynSettings.Controller.DynamoModel.Nodes.FirstOrDefault(n => n.GUID.ToString() == id.ToString());
+            if (node != null && !DynamoSelection.Instance.Selection.Contains(node))
+            {
+                DynamoSelection.Instance.ClearSelection();
+                DynamoSelection.Instance.Selection.Add(node);
+            }
+        }
+
+        public void OnResultsReadyToVisualize(object sender, VisualizationEventArgs e)
+        {
+            if (ResultsReadyToVisualize != null)
+                ResultsReadyToVisualize(sender, e);
         }
 
         #region utility methods
@@ -760,10 +821,20 @@ namespace Dynamo
 
     public class VisualizationEventArgs : EventArgs
     {
+        /// <summary>
+        /// The render description.
+        /// </summary>
         public RenderDescription Description { get; internal set; }
-        public VisualizationEventArgs(RenderDescription description)
+
+        /// <summary>
+        /// The id of the view for which the description belongs.
+        /// </summary>
+        public string Id { get; internal set; }
+
+        public VisualizationEventArgs(RenderDescription description, string viewId)
         {
             Description = description;
+            Id = viewId;
         }
     }
 }

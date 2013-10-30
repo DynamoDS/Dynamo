@@ -1,18 +1,4 @@
-﻿//Copyright 2013 Ian Keough
-
-//Licensed under the Apache License, Version 2.0 (the "License");
-//you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at
-
-//http://www.apache.org/licenses/LICENSE-2.0
-
-//Unless required by applicable law or agreed to in writing, software
-//distributed under the License is distributed on an "AS IS" BASIS,
-//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//See the License for the specific language governing permissions and
-//limitations under the License.
-
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Xml;
 using Dynamo.Utilities;
@@ -69,7 +55,7 @@ namespace Dynamo.Models
         /// <param name="endIndex"></param>
         /// <param name="portType"></param>
         /// <returns>The valid connector model or null if the connector is invalid</returns>
-        public static ConnectorModel Make(NodeModel start, NodeModel end, int startIndex, int endIndex, int portType)
+        public static ConnectorModel Make(NodeModel start, NodeModel end, int startIndex, int endIndex, PortType portType)
         {
             if (start != null && end != null && start != end && startIndex >= 0
                 && endIndex >= 0 && start.OutPorts.Count > startIndex && end.InPorts.Count > endIndex )
@@ -80,7 +66,7 @@ namespace Dynamo.Models
             return null;
         }
 
-        private ConnectorModel(NodeModel start, NodeModel end, int startIndex, int endIndex, int portType )
+        private ConnectorModel(NodeModel start, NodeModel end, int startIndex, int endIndex, PortType portType)
         {
             //Stopwatch sw = new Stopwatch();
             //sw.Start();
@@ -88,7 +74,7 @@ namespace Dynamo.Models
 
             PortModel endPort = null;
 
-            if (portType == 0)
+            if (portType == PortType.INPUT)
                 endPort = end.InPorts[endIndex];
 
             pStart.Connect(this);
