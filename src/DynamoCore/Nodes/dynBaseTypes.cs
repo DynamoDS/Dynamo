@@ -82,6 +82,7 @@ namespace Dynamo.Nodes
         public const string ANALYZE_MEASURE = "Analyze.Measure";
         public const string ANALYZE_DISPLAY = "Analyze.Display";
         public const string ANALYZE_SURFACE = "Analyze.Surface";
+        public const string ANALYZE_CURVE = "Analyze.Curve";
         public const string ANALYZE_STRUCTURE = "Analyze.Structure";
         public const string ANALYZE_CLIMATE = "Analyze.Climate";
         public const string ANALYZE_ACOUSTIC = "Analyze.Acoustic";
