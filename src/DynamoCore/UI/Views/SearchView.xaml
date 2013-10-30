@@ -98,7 +98,8 @@
                      KeyboardNavigation.TabIndex="0"
                      Foreground="#DDD"
                      Background="Transparent" BorderThickness="0" FontSize ="12" Padding="15,12,5,8" Margin ="0"
-                       IsEnabled="True" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Stretch" Text="{Binding Path=SearchText,Mode=TwoWay}" Grid.Column="1" MinWidth="280">
+                       IsEnabled="True" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Stretch" Text="{Binding Path=SearchText,Mode=TwoWay}" Grid.Column="1" MinWidth="280"
+                     CaretBrush="#DDD">
             </TextBox>
             
             <TextBlock FontSize ="12" IsHitTestVisible="False" Padding="17,12,5,8" Margin ="0" Foreground="#666" Grid.Column="1" Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}">Search Node Library...</TextBlock>
@@ -451,21 +452,7 @@
 
                         <StackPanel Orientation="Horizontal">
 
-                            <StackPanel.ToolTip>
-                                <StackPanel Width ="Auto" MaxWidth="235" MaxHeight="200" Height="Auto">
-                                    <TextBlock Name="type" TextWrapping="Wrap" HorizontalAlignment="Stretch" FontWeight="Bold" VerticalAlignment="Top" 
-                                                 Text="{Binding Path=Type}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" />
-
-                                    <TextBlock Name="name" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
-                                                 Text="{Binding Path=Description, Converter={StaticResource TooltipLengthTruncater}}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" Visibility="{Binding Path=Description, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
-
-                                    <TextBlock Foreground="Black" FontWeight="Bold" Padding="4" FontSize="9" Text="C">
-                                    </TextBlock>
-                                    
-                                </StackPanel>
-                            </StackPanel.ToolTip>
-
-                            <TextBlock Foreground="#DDD" Text="{Binding Path=Name}" ToolTipService.InitialShowDelay="0" />
+                            <TextBlock Foreground="#DDD" Text="{Binding Path=Name}"/>
 
                         </StackPanel>
 
@@ -475,35 +462,11 @@
 
                         <StackPanel Orientation="Horizontal">
 
-                            <StackPanel.ToolTip>
-                                <StackPanel Width ="Auto" MaxWidth="235" MaxHeight="200" Height="Auto">
-                                    <TextBlock Name="type" TextWrapping="Wrap" HorizontalAlignment="Stretch" FontWeight="Bold" VerticalAlignment="Top" 
-                                                 Text="{Binding Path=Type}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" />
-
-                                    <TextBlock Name="name" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
-                                                 Text="{Binding Path=Description, Converter={StaticResource TooltipLengthTruncater}}" FontSize="11" TextTrimming="WordEllipsis" Margin="2" 
-                                               Visibility="{Binding Path=Description, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
-                                    
-                                    <Separator Background="#BBB"></Separator>
-                                    
-                                    <TextBlock Name="path"
-                                                 Text="{Binding Path=Path, Converter={StaticResource FilePathDisplayConverter}}" Visibility="{Binding Path=Path, Converter={StaticResource EmptyStringToCollapsedConverter}}" FontSize="11" Margin="2">
-                                    </TextBlock>
-
-                                    <TextBlock Name="unsaved"
-                                                 Text="Unsaved" Visibility="{Binding Path=Path, Converter={StaticResource NonEmptyStringToCollapsedConverter}}" FontSize="11" Margin="2">
-                                    </TextBlock>
-                                    
-                                    <TextBlock Foreground="Black" FontWeight="Bold" Padding="4" FontSize="9" Text="C">
-                                    </TextBlock>
-                                </StackPanel>
-                            </StackPanel.ToolTip>
-
                             <Border Background="#444" Margin="0 0 10 0" CornerRadius="1" BorderThickness="1" BorderBrush="Black">
-                                <TextBlock Foreground="Black" FontWeight="Bold" Padding="2" FontSize="9" Text="C" ToolTipService.InitialShowDelay="0" />
+                                <TextBlock Foreground="Black" FontWeight="Bold" Padding="2" FontSize="9" Text="C"/>
                             </Border>
 
-                            <TextBlock Foreground="#DDD" Text="{Binding Path=Name}" ToolTipService.InitialShowDelay="0" />
+                            <TextBlock Foreground="#DDD" Text="{Binding Path=Name}"/>
 
                             <StackPanel.ContextMenu>
 
