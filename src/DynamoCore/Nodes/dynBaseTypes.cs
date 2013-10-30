@@ -4025,7 +4025,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Angle")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("An angle in degrees. Outputs radians")]
+    [NodeDescription("Convert angle from degrees to radians")]
     [NodeSearchTags("trigonometry", "angle", "degree")]
     public class AngleInput : DoubleInput
     {
