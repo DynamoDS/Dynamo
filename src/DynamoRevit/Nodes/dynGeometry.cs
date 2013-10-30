@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Collections.Generic;
 using System.Windows.Controls; //for boolean option
@@ -2101,13 +2102,14 @@ namespace Dynamo.Nodes
             var radius = ((Value.Number)args[2]).Item;
             var height = ((Value.Number)args[3]).Item;
 
+            // create and return geom
             return Value.NewContainer( CylinderByAxisOriginRadiusHeight(axis, origin, radius, height) );
         }
     }
 
     [NodeName("Sphere")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
-    [NodeDescription("Creates solid by boolean difference of two solids")]
+    [NodeDescription("Creates sphere from a center point and axis")]
     public class SolidSphere : GeometryBase
     {
 
@@ -2151,6 +2153,61 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Torus")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
+    [NodeDescription("Creates torus from axis, radius, and outer radius")]
+    public class SolidTorus : GeometryBase
+    {
+        public SolidTorus()
+        {
+            InPortData.Add(new PortData("axis", "Axis of torus", typeof(object)));
+            InPortData.Add(new PortData("center", "Canter point of torus", typeof(object)));
+            InPortData.Add(new PortData("radius", "The distance from the center to the cross-sectional center", typeof(object)));
+            InPortData.Add(new PortData("section radius", "The radius of the cross-section of the torus", typeof(object)));
+
+            OutPortData.Add(new PortData("torus", "Solid torus", typeof(object)));
+
+            RegisterAllPorts();
+        }
+
+        public static Solid TorusByAxisOriginRadiusCrossSectionRadius(XYZ zAxis, XYZ center, double radius, double sectionRadius)
+        {
+
+            // get axis that is perp to axis by first generating random vector
+            var r = new System.Random();
+            zAxis = zAxis.Normalize();
+            var randXyz = new XYZ(r.NextDouble(), r.NextDouble(), r.NextDouble());
+            var xAxis = randXyz.CrossProduct(zAxis).Normalize();
+
+            // get second axis that is perp to axis
+            var yAxis = xAxis.CrossProduct(zAxis);
+
+            // create circle
+            var circle = dynRevitSettings.Doc.Application.Application.Create.NewArc(center + radius * xAxis, radius, 0, 2 * Circle.RevitPI, xAxis, zAxis);
+
+            // create curve loop from cirle
+            var circleLoop = Autodesk.Revit.DB.CurveLoop.Create(new List<Curve>() { circle });
+
+            // extrude the curve and return
+            return 
+                GeometryCreationUtilities.CreateRevolvedGeometry(
+                    new Autodesk.Revit.DB.Frame(center, xAxis, yAxis, zAxis), new List<Autodesk.Revit.DB.CurveLoop>() { circleLoop }, 0,
+                    2 * Circle.RevitPI);
+
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            // unpack input
+            var axis = (XYZ) ((Value.Container) args[0]).Item);
+            var center = (XYZ)((Value.Container)args[1]).Item;
+            var radius = ((Value.Number)args[2]).Item;
+            var sectionradius = ((Value.Number)args[3]).Item;
+
+            // build and return geom
+            return Value.NewContainer(TorusByAxisOriginRadiusCrossSectionRadius(axis, center, radius, sectionradius));
+        }
+    }
 
     // sphere, cylinder, box, torus
 
