@@ -1216,7 +1216,7 @@ namespace Dynamo.Nodes
         public CreateRevolvedGeometry()
         {
             InPortData.Add(new PortData("profile", "The curve loop to use as a profile", typeof(Value.Container)));
-            InPortData.Add(new PortData("axis", "Coordinate system for revolve, loop should be in xy plane of this transform on the right side of z axis used for rotate.", typeof(Value.Container)));
+            InPortData.Add(new PortData("transform", "Coordinate system for revolve, loop should be in xy plane of this transform on the right side of z axis used for rotate.", typeof(Value.Container)));
             InPortData.Add(new PortData("angle domain", "start angle measured counter-clockwise from x-axis of transform", typeof(Value.Number)));
 
             OutPortData.Add(new PortData("solid", "The revolved geometry.", typeof(Value.Container)));
@@ -1228,14 +1228,13 @@ namespace Dynamo.Nodes
         {
             var cLoop = (Autodesk.Revit.DB.CurveLoop)((Value.Container)args[0]).Item;
             var trf = (Transform)((Value.Container)args[1]).Item;
-            var sAngle = ((Value.Number)args[2]).Item;
-            var eAngle = ((Value.Number)args[3]).Item;
+            var domain = (DSCoreNodes.Domain) ((Value.Container)args[2]).Item;
 
             var loopList = new List<Autodesk.Revit.DB.CurveLoop> {cLoop};
             var thisFrame = new Autodesk.Revit.DB.Frame();
             thisFrame.Transform(trf);
 
-            var result = GeometryCreationUtilities.CreateRevolvedGeometry(thisFrame, loopList, sAngle, eAngle);
+            var result = GeometryCreationUtilities.CreateRevolvedGeometry(thisFrame, loopList, domain.Min, domain.Max);
 
             return Value.NewContainer(result);
         }
