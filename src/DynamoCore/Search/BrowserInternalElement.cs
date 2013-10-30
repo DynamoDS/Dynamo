@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using Dynamo.Search;
 
@@ -31,6 +32,11 @@ namespace Dynamo.Nodes.Search
             this.Height = 32;
             this.Siblings = siblings;
             this._name = name;
+        }
+
+        public void SortChildren()
+        {
+            this.Items = new ObservableCollection<BrowserItem>(this.Items.OrderBy(x => x.Name));
         }
 
         public BrowserRootElement(string name)

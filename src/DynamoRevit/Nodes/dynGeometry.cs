@@ -1,21 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Collections.Generic;
+using System.Reflection;
 using System.Windows.Controls; //for boolean option
 using System.Xml;              //for boolean option  
-using System.Reflection;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Mechanical;
 using Dynamo.Controls;
-using Dynamo.Models;
-using Dynamo.ViewModels;
-using Microsoft.FSharp.Collections;
-
-using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
+using Dynamo.Models;
 using Dynamo.Revit;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
+using Microsoft.FSharp.Collections;
+using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Nodes
 {
