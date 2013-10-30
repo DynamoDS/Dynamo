@@ -63,9 +63,9 @@ namespace Dynamo.Nodes
     {
         public XyzFromPolar()
         {
-            InPortData.Add(new PortData("radius", "Radius from origin in radians", typeof(Value.Number), FScheme.Value.NewNumber(1));
-            InPortData.Add(new PortData("xy rotation", "Rotation around Z axis in radians", typeof(Value.Number), FScheme.Value.NewNumber(0));
-            InPortData.Add(new PortData("offset", "Offset from xy plane", typeof(Value.Number), FScheme.Value.NewNumber(1));
+            InPortData.Add(new PortData("radius", "Radius from origin in radians", typeof(Value.Number), FScheme.Value.NewNumber(1)));
+            InPortData.Add(new PortData("xy rotation", "Rotation around Z axis in radians", typeof(Value.Number), FScheme.Value.NewNumber(0)));
+            InPortData.Add(new PortData("offset", "Offset from xy plane", typeof(Value.Number), FScheme.Value.NewNumber(0)));
 
             OutPortData.Add(new PortData("xyz", "XYZ formed from polar coordinates", typeof(Value.Container)));
 
@@ -111,7 +111,7 @@ namespace Dynamo.Nodes
 
         public XyzToPolar()
         {
-            InPortData.Add(new PortData("xyz", "Input XYZ", typeof(Value.Number), Value.NewNumber(0)));
+            InPortData.Add(new PortData("xyz", "Input XYZ", typeof(Value.Container), Value.NewContainer(new XYZ(1,0,0))));
             
             OutPortData.Add(_rPort);
             OutPortData.Add(_thetaPort);
@@ -160,9 +160,9 @@ namespace Dynamo.Nodes
     {
         public XyzFromSpherical()
         {
-            InPortData.Add(new PortData("radius", "Radius from origin in radians", typeof(Value.Number), FScheme.Value.NewNumber(1));
-            InPortData.Add(new PortData("xy rotation", "Rotation around Z axis in radians", typeof(Value.Number), FScheme.Value.NewNumber(0));
-            InPortData.Add(new PortData("z rotation", "Rotation down form axis in radians", typeof(Value.Number), FScheme.Value.NewNumber(0));
+            InPortData.Add(new PortData("radius", "Radius from origin in radians", typeof(Value.Number), FScheme.Value.NewNumber(1)));
+            InPortData.Add(new PortData("xy rotation", "Rotation around Z axis in radians", typeof(Value.Number), FScheme.Value.NewNumber(0)));
+            InPortData.Add(new PortData("z rotation", "Rotation down form axis in radians", typeof(Value.Number), FScheme.Value.NewNumber(0)));
 
             OutPortData.Add(new PortData("xyz", "XYZ formed from polar coordinates", typeof(Value.Container)));
 
