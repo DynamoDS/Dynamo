@@ -29,7 +29,7 @@ namespace Dynamo.Nodes
     public static partial class BuiltinNodeCategories
     {
         public const string CORE = "Core";
-        public const string CORE_PRIMITIVES = "Core.Primitives";
+        public const string CORE_INPUT = "Core.Input";
         public const string CORE_STRINGS = "Core.Strings";
         public const string CORE_LISTS = "Core.Lists";
         public const string CORE_VIEW = "Core.View";
@@ -365,7 +365,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Identity")]
-    [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES )]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT )]
     [NodeDescription("Identity function")]
     public class Identity : NodeWithOneOutput
     {
@@ -3495,7 +3495,7 @@ namespace Dynamo.Nodes
     public delegate double ConversionDelegate(double value);
 
     [NodeName("Number")]
-    [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Creates a number.")]
     public partial class DoubleInput : NodeWithOneOutput
     {
@@ -4022,7 +4022,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Angle (deg.)")]
-    [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("An angle in degrees. Outputs radians")]
     [NodeSearchTags("trigonometry", "angle", "degree")]
     public class AngleInput : DoubleInput
@@ -4034,7 +4034,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Number Slider")]
-    [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Change a number value with a slider.")]
     public partial class DoubleSliderInput : Double
     {
@@ -4178,7 +4178,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Boolean")]
-    [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Selection between a true and false.")]
     [NodeSearchTags("true", "truth", "false")]
     public partial class BoolSelector : Bool
@@ -4203,7 +4203,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("String")]
-    [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Creates a string.")]
     public partial class StringInput : String
     {
@@ -4271,7 +4271,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Directory")]
-    [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Allows you to select a directory on the system to get its path.")]
     public partial class StringDirectory : StringFilename
     {
@@ -4290,7 +4290,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("File Path")]
-    [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Allows you to select a file on the system to get its filename.")]
     public partial class StringFilename : BasicInteractive<string>
     {

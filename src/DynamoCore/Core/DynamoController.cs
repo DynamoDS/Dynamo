@@ -251,8 +251,6 @@ namespace Dynamo
             DynamoLoader.ClearCachedAssemblies();
             DynamoLoader.LoadBuiltinTypes();
 
-
-
             //run tests
             if (FScheme.RunTests(DynamoLogger.Instance.Log))
             {
