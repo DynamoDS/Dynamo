@@ -17,8 +17,8 @@ namespace Dynamo.DSEngine
         private LiveRunnerServices()
         {
             liveRunner = new ProtoScript.Runners.LiveRunner();
-            liveRunner.DynamoGraphUpdateReady += OnGraphUpdateReady;
-            liveRunner.DynamoNodeValueReady += OnNodeValueReady;
+            liveRunner.GraphUpdateReady += OnGraphUpdateReady;
+            liveRunner.NodeValueReady += OnNodeValueReady;
             loadedLibraries = new List<string>();
 
             DSLibraryServices.Instance.LibraryLoaded += new DSLibraryServices.LibraryLoadedEventHandler(OnLoadLibrary);
@@ -26,11 +26,11 @@ namespace Dynamo.DSEngine
             loadedLibraries = new List<string>(DSLibraryServices.Instance.PreLoadedLibraries);
         }
       
-        private void OnGraphUpdateReady(object sender, DynamoGraphUpdateReadyEventArgs e)
+        private void OnGraphUpdateReady(object sender, GraphUpdateReadyEventArgs e)
         {
         }
 
-        private void OnNodeValueReady(object sender, DynamoNodeValueReadyEventArgs e)
+        private void OnNodeValueReady(object sender, NodeValueReadyEventArgs e)
         {
         }
 
