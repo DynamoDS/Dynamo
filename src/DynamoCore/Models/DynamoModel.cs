@@ -400,6 +400,9 @@ namespace Dynamo.Models
 
             DynamoLoader.LoadCustomNodes();
 
+            // sort all categories
+            dynSettings.Controller.SearchViewModel.BrowserRootCategories.ToList().ForEach(x=>x.RecursivelySort());
+
             DynamoLogger.Instance.Log("Welcome to Dynamo!");
 
             if (UnlockLoadPath != null && !OpenWorkspace(UnlockLoadPath))
