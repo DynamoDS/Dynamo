@@ -703,7 +703,7 @@ namespace Dynamo.Nodes
 
     #endregion
 
-    #region Surface
+    #region Plane
 
     [NodeName("Plane by Normal Origin")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
@@ -728,6 +728,71 @@ namespace Dynamo.Nodes
                ptA, ptB
             );
 
+            return Value.NewContainer(plane);
+        }
+    }
+
+    [NodeName("XY Plane")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
+    [NodeDescription("The plane containing the x and y axis")]
+    public class XyPlane : GeometryBase
+    {
+        public XyPlane()
+        {
+            OutPortData.Add(new PortData("plane", "The XY Plane", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var plane = dynRevitSettings.Doc.Application.Application.Create.NewPlane(
+               new XYZ(0,0,1), new XYZ()
+            );
+
+            return Value.NewContainer(plane);
+        }
+    }
+
+    [NodeName("XZ Plane")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
+    [NodeDescription("The plane containing the x and y axis")]
+    public class XzPlane : GeometryBase
+    {
+        public XzPlane()
+        {
+            OutPortData.Add(new PortData("plane", "The XZ Plane", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var plane = dynRevitSettings.Doc.Application.Application.Create.NewPlane(
+               new XYZ(0, 1, 0), new XYZ()
+            );
+
+            return Value.NewContainer(plane);
+        }
+    }
+
+    [NodeName("YZ Plane")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
+    [NodeDescription("The plane containing the x and y axis")]
+    public class YzPlane : GeometryBase
+    {
+        public YzPlane()
+        {
+            OutPortData.Add(new PortData("plane", "The YZ Plane", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var plane = dynRevitSettings.Doc.Application.Application.Create.NewPlane(
+               new XYZ(1,0,0), new XYZ()
+            );
             return Value.NewContainer(plane);
         }
     }
