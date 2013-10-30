@@ -949,7 +949,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Curve Loop List")]
+    [NodeName("Curve Loop Components")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Extract a list of curves in the Curve Loop")]
     public class ListCurveLoop : RevitTransactionNodeWithOneOutput
@@ -1241,6 +1241,7 @@ namespace Dynamo.Nodes
             return Value.NewList(result);
         }
     }
+
     [NodeName("Equal Distanced XYZs On Curve")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a list of equal distanced XYZs along a curve.")]
