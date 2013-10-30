@@ -35,12 +35,10 @@ namespace Dynamo.Nodes
         public const string CORE_LISTS = "Core.Lists";
         public const string CORE_VIEW = "Core.View";
         public const string CORE_ANNOTATE = "Core.Annotate";
-        public const string CORE_SELECTION = "Revit.Selection";
         public const string CORE_EVALUATE = "Core.Evaluate";
         public const string CORE_TIME = "Core.Time";
         public const string CORE_FUNCTIONS = "Core.Functions";
-        public const string CREATE_GEOMETRY_EXPERIMENTAL = "Create Geometry.Experimental";
-
+       
         public const string LOGIC = "Logic";
         public const string LOGIC_MATH = "Logic.Math";
         public const string LOGIC_EFFECT = "Logic.Effect";
@@ -57,6 +55,7 @@ namespace Dynamo.Nodes
         public const string CREATEGEOMETRY_SOLID_EXTRACT = "Create Geometry.Solid.Extract";
         public const string CREATEGEOMETRY_SOLID = "Create Geometry.Solid";
         public const string CREATEGEOMETRY_SURFACE = "Create Geometry.Surface";
+        public const string CREATE_GEOMETRY_EXPERIMENTAL = "Create Geometry.Experimental";
 
         public const string MODIFYGEOMETRY= "Modify Geometry";
         public const string MODIFYGEOMETRY_SOLID = "Modify Geometry.Solid";
@@ -69,6 +68,7 @@ namespace Dynamo.Nodes
         public const string REVIT_DATUMS = "Revit.Datums";
         public const string REVIT_FAMILIES = "Revit.Families";
         public const string REVIT_VIEW = "Revit.View";
+        public const string REVIT_SELECTION = "Revit.Selection";
         public const string REVIT_PARAMETERS = "Revit.Parameters";
         public const string REVIT_BAKE = "Revit.Bake";
         public const string REVIT_API = "Revit.API";
