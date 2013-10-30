@@ -15,6 +15,568 @@ using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace Dynamo.Nodes
 {
+
+    [NodeName("Line by 2 Points")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Creates a geometric line.")]
+    [NodeSearchTags("curve", "two point", "line")]
+    public class LineBound : GeometryBase
+    {
+        public LineBound()
+        {
+            InPortData.Add(new PortData("start", "Start XYZ", typeof(Value.Container)));
+            InPortData.Add(new PortData("end", "End XYZ", typeof(Value.Container)));
+            //InPortData.Add(new PortData("bound?", "Boolean: Is this line bounded?", typeof(bool)));
+
+            OutPortData.Add(new PortData("line", "Line", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var ptA = ((Value.Container)args[0]).Item;
+            var ptB = ((Value.Container)args[1]).Item;
+
+            Line line = null;
+
+            if (ptA is XYZ)
+            {
+
+                line = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(
+                  (XYZ)ptA, (XYZ)ptB
+                  );
+
+
+            }
+            else if (ptA is ReferencePoint)
+            {
+                line = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(
+                  (XYZ)((ReferencePoint)ptA).Position, (XYZ)((ReferencePoint)ptB).Position
+               );
+
+            }
+
+            return Value.NewContainer(line);
+        }
+    }
+
+    [NodeName("Transform Curve")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Returns the curve (c) transformed by the transform (t).")]
+    [NodeSearchTags("move", "transform", "curve", "line")]
+    public class CurveTransformed : GeometryBase
+    {
+        public CurveTransformed()
+        {
+            InPortData.Add(new PortData("cv", "Curve(Curve)", typeof(Value.Container)));
+            InPortData.Add(new PortData("t", "Transform(Transform)", typeof(Value.Container)));
+            OutPortData.Add(new PortData("tcv", "Transformed Curve", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var curve = (Curve)((Value.Container)args[0]).Item;
+            var trans = (Transform)((Value.Container)args[1]).Item;
+
+            var crvTrans = curve.get_Transformed(trans);
+
+            return Value.NewContainer(crvTrans);
+        }
+    }
+
+    [NodeName("Circle")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Creates a geometric circle.")]
+    public class Circle : GeometryBase
+    {
+        public Circle()
+        {
+            InPortData.Add(new PortData("center", "Start XYZ", typeof(Value.Container)));
+            InPortData.Add(new PortData("radius", "Radius", typeof(Value.Number)));
+            OutPortData.Add(new PortData("circle", "Circle CurveLoop", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public const double RevitPI = 3.14159265358979;
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var ptA = ((Value.Container)args[0]).Item;
+            var radius = (double)((Value.Number)args[1]).Item;
+
+            Curve circle = null;
+
+            if (ptA is XYZ)
+            {
+                //Curve circle = this.UIDocument.Application.Application.Create.NewArc(ptA, radius, 0, 2 * Math.PI, XYZ.BasisX, XYZ.BasisY);
+                circle = dynRevitSettings.Doc.Application.Application.Create.NewArc((XYZ)ptA, radius, 0, 2 * RevitPI, XYZ.BasisX, XYZ.BasisY);
+
+            }
+            else if (ptA is ReferencePoint)
+            {
+                //Curve circle = this.UIDocument.Application.Application.Create.NewArc(ptA, radius, 0, 2 * Math.PI, XYZ.BasisX, XYZ.BasisY);
+                circle = dynRevitSettings.Doc.Application.Application.Create.NewArc((XYZ)((ReferencePoint)ptA).Position, radius, 0, 2 * RevitPI, XYZ.BasisX, XYZ.BasisY);
+            }
+
+            return Value.NewContainer(circle);
+        }
+    }
+
+    [NodeName("Arc by Start, Middle, End")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Creates a geometric arc given start, middle and end points in XYZ.")]
+    [NodeSearchTags("arc", "circle", "start", "middle", "end", "3 point", "three")]
+    public class ArcStartMiddleEnd : GeometryBase
+    {
+        public ArcStartMiddleEnd()
+        {
+            InPortData.Add(new PortData("start", "Start XYZ", typeof(Value.Container)));
+            InPortData.Add(new PortData("mid", "XYZ on Curve", typeof(Value.Container)));
+            InPortData.Add(new PortData("end", "End XYZ", typeof(Value.Container)));
+            OutPortData.Add(new PortData("arc", "Arc", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+
+            Arc a = null;
+
+            var ptA = ((Value.Container)args[0]).Item;//start
+            var ptB = ((Value.Container)args[1]).Item;//middle
+            var ptC = ((Value.Container)args[2]).Item;//end
+
+            if (ptA is XYZ)
+            {
+
+                a = dynRevitSettings.Doc.Application.Application.Create.NewArc(
+                   (XYZ)ptA, (XYZ)ptC, (XYZ)ptB //start, end, middle 
+                );
+
+
+            }
+            else if (ptA is ReferencePoint)
+            {
+                a = dynRevitSettings.Doc.Application.Application.Create.NewArc(
+                   (XYZ)((ReferencePoint)ptA).Position, (XYZ)((ReferencePoint)ptB).Position, (XYZ)((ReferencePoint)ptC).Position //start, end, middle 
+                );
+
+            }
+
+            return Value.NewContainer(a);
+        }
+    }
+
+    [NodeName("Arc by Center, Normal, Radius")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Creates a geometric arc given a center point and two end parameters. Start and End Values may be between 0 and 2*PI in Radians")]
+    [NodeSearchTags("arc", "circle", "center", "radius")]
+    public class ArcCenter : GeometryBase
+    {
+        public ArcCenter()
+        {
+            InPortData.Add(new PortData("center", "center XYZ or Coordinate System", typeof(Value.Container)));
+            InPortData.Add(new PortData("radius", "Radius", typeof(Value.Number)));
+            InPortData.Add(new PortData("start", "Start Param", typeof(Value.Number)));
+            InPortData.Add(new PortData("end", "End Param", typeof(Value.Number)));
+            OutPortData.Add(new PortData("arc", "Arc", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var ptA = ((Value.Container)args[0]).Item;
+            var radius = (double)((Value.Number)args[1]).Item;
+            var start = (double)((Value.Number)args[2]).Item;
+            var end = (double)((Value.Number)args[3]).Item;
+
+            Arc a = null;
+
+            if (ptA is XYZ)
+            {
+                a = dynRevitSettings.Doc.Application.Application.Create.NewArc(
+                   (XYZ)ptA, radius, start, end, XYZ.BasisX, XYZ.BasisY
+                );
+            }
+            else if (ptA is ReferencePoint)
+            {
+                a = dynRevitSettings.Doc.Application.Application.Create.NewArc(
+                   (XYZ)((ReferencePoint)ptA).Position, radius, start, end, XYZ.BasisX, XYZ.BasisY
+                );
+            }
+            else if (ptA is Transform)
+            {
+                Transform trf = ptA as Transform;
+                XYZ center = trf.Origin;
+                a = dynRevitSettings.Doc.Application.Application.Create.NewArc(
+                             center, radius, start, end, trf.BasisX, trf.BasisY
+                );
+            }
+
+            return Value.NewContainer(a);
+        }
+    }
+
+    [NodeName("Ellipse")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Creates a geometric ellipse.")]
+    public class Ellipse : GeometryBase
+    {
+        public Ellipse()
+        {
+            InPortData.Add(new PortData("center", "Center XYZ or Coordinate System", typeof(Value.Container)));
+            InPortData.Add(new PortData("radX", "Major Radius", typeof(Value.Number)));
+            InPortData.Add(new PortData("radY", "Minor Radius", typeof(Value.Number)));
+            OutPortData.Add(new PortData("ell", "Ellipse", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        const double RevitPI = 3.14159265358979;
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var ptA = ((Value.Container)args[0]).Item;
+            var radX = (double)((Value.Number)args[1]).Item;
+            var radY = (double)((Value.Number)args[2]).Item;
+
+            Autodesk.Revit.DB.Ellipse ell = null;
+
+            if (ptA is XYZ)
+            {
+                ell = dynRevitSettings.Doc.Application.Application.Create.NewEllipse(
+                    //ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, 0, 2 * Math.PI
+                  (XYZ)ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, 0, 2 * RevitPI
+               );
+
+            }
+            else if (ptA is ReferencePoint)
+            {
+                ell = dynRevitSettings.Doc.Application.Application.Create.NewEllipse(
+                    //ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, 0, 2 * Math.PI
+               (XYZ)((ReferencePoint)ptA).Position, radX, radY, XYZ.BasisX, XYZ.BasisY, 0, 2 * RevitPI
+                );
+            }
+            else if (ptA is Transform)
+            {
+                Transform trf = ptA as Transform;
+                XYZ center = trf.Origin;
+                ell = dynRevitSettings.Doc.Application.Application.Create.NewEllipse(
+                    //ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, 0, 2 * Math.PI
+                     center, radX, radY, trf.BasisX, trf.BasisY, 0, 2 * RevitPI
+                  );
+            }
+
+            return Value.NewContainer(ell);
+        }
+    }
+
+    [NodeName("Ellipse Arc")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Creates a geometric elliptical arc. Start and End Values may be between 0 and 2*PI in Radians")]
+    public class EllipticalArc : GeometryBase
+    {
+        public EllipticalArc()
+        {
+            InPortData.Add(new PortData("center", "Center XYZ or Coordinate System", typeof(Value.Container)));
+            InPortData.Add(new PortData("radX", "Major Radius", typeof(Value.Number)));
+            InPortData.Add(new PortData("radY", "Minor Radius", typeof(Value.Number)));
+            InPortData.Add(new PortData("start", "Start Param", typeof(Value.Number)));
+            InPortData.Add(new PortData("end", "End Param", typeof(Value.Number)));
+            OutPortData.Add(new PortData("ell", "Ellipse", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var ptA = ((Value.Container)args[0]).Item;
+            var radX = (double)((Value.Number)args[1]).Item;
+            var radY = (double)((Value.Number)args[2]).Item;
+            var start = (double)((Value.Number)args[3]).Item;
+            var end = (double)((Value.Number)args[4]).Item;
+
+            Autodesk.Revit.DB.Ellipse ell = null;
+
+            if (ptA is XYZ)
+            {
+                ell = dynRevitSettings.Doc.Application.Application.Create.NewEllipse(
+                    //ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, 0, 2 * Math.PI
+                  (XYZ)ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, start, end
+               );
+
+            }
+            else if (ptA is ReferencePoint)
+            {
+                ell = dynRevitSettings.Doc.Application.Application.Create.NewEllipse(
+                    //ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, 0, 2 * Math.PI
+               (XYZ)((ReferencePoint)ptA).Position, radX, radY, XYZ.BasisX, XYZ.BasisY, start, end
+                );
+            }
+            else if (ptA is Transform)
+            {
+                Transform trf = ptA as Transform;
+                XYZ center = trf.Origin;
+                ell = dynRevitSettings.Doc.Application.Application.Create.NewEllipse(
+                    //ptA, radX, radY, XYZ.BasisX, XYZ.BasisY, 0, 2 * Math.PI
+                     center, radX, radY, trf.BasisX, trf.BasisY, start, end
+                  );
+            }
+
+            return Value.NewContainer(ell);
+        }
+    }
+
+    [NodeName("Line by Origin and Direction")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Creates a line in the direction of an XYZ normal.")]
+    public class LineVectorfromXyz : NodeWithOneOutput
+    {
+        public LineVectorfromXyz()
+        {
+            InPortData.Add(new PortData("normal", "Normal Point (XYZ)", typeof(Value.Container)));
+            InPortData.Add(new PortData("origin", "Origin Point (XYZ)", typeof(Value.Container)));
+            OutPortData.Add(new PortData("curve", "Curve", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var ptA = (XYZ)((Value.Container)args[0]).Item;
+            var ptB = (XYZ)((Value.Container)args[1]).Item;
+
+            // CurveElement c = MakeLine(this.UIDocument.Document, ptA, ptB);
+            CurveElement c = MakeLineCBP(dynRevitSettings.Doc.Document, ptA, ptB);
+
+            return FScheme.Value.NewContainer(c);
+        }
+
+
+        public Autodesk.Revit.DB.ModelCurve MakeLine(Document doc, XYZ ptA, XYZ ptB)
+        {
+            Autodesk.Revit.ApplicationServices.Application app = doc.Application;
+            // Create plane by the points
+            Line line = app.Create.NewLine(ptA, ptB, true);
+            XYZ norm = ptA.CrossProduct(ptB);
+            double length = norm.GetLength();
+            if (length == 0) norm = XYZ.BasisZ;
+            Autodesk.Revit.DB.Plane plane = app.Create.NewPlane(norm, ptB);
+            Autodesk.Revit.DB.SketchPlane skplane = doc.FamilyCreate.NewSketchPlane(plane);
+            // Create line here
+            Autodesk.Revit.DB.ModelCurve modelcurve = doc.FamilyCreate.NewModelCurve(line, skplane);
+            return modelcurve;
+        }
+
+        public Autodesk.Revit.DB.CurveByPoints MakeLineCBP(Document doc, XYZ ptA, XYZ ptB)
+        {
+            ReferencePoint sunRP = doc.FamilyCreate.NewReferencePoint(ptA);
+            ReferencePoint originRP = doc.FamilyCreate.NewReferencePoint(ptB);
+            ReferencePointArray sunRPArray = new ReferencePointArray();
+            sunRPArray.Append(sunRP);
+            sunRPArray.Append(originRP);
+            Autodesk.Revit.DB.CurveByPoints sunPath = doc.FamilyCreate.NewCurveByPoints(sunRPArray);
+            return sunPath;
+        }
+    }
+
+    [NodeName("Hermite Spline")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Creates a geometric hermite spline.")]
+    [NodeSearchTags("curve through points", "interpolate", "spline")]
+    public class HermiteSpline : GeometryBase
+    {
+        Autodesk.Revit.DB.HermiteSpline hs;
+
+        public HermiteSpline()
+        {
+            InPortData.Add(new PortData("xyzs", "List of pts.(List XYZ)", typeof(Value.List)));
+            OutPortData.Add(new PortData("spline", "Spline", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var pts = ((Value.List)args[0]).Item;
+
+            hs = null;
+
+            var containers = Utils.SequenceToFSharpList(pts);
+
+            var ctrlPts = new List<XYZ>();
+            foreach (Value e in containers)
+            {
+                if (e.IsContainer)
+                {
+                    XYZ pt = (XYZ)((Value.Container)(e)).Item;
+                    ctrlPts.Add(pt);
+                }
+            }
+            if (pts.Count() > 0)
+            {
+                hs = dynRevitSettings.Doc.Application.Application.Create.NewHermiteSpline(ctrlPts, false);
+            }
+
+            return Value.NewContainer(hs);
+        }
+    }
+
+    [NodeName("Polyline")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Create a series of lines through a list of points.")]
+    [NodeSearchTags("line", "through", "passing", "thread")]
+    public class CurvesThroughPoints : GeometryBase
+    {
+        public CurvesThroughPoints()
+        {
+            InPortData.Add(new PortData("xyzs", "List of points (xyz) through which to create lines.", typeof(Value.List)));
+            OutPortData.Add(new PortData("lines", "Lines created through points.", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            //Build a sequence that unwraps the input list from it's Value form.
+            var pts = ((Value.List)args[0]).Item.Select(
+               x => (XYZ)((Value.Container)x).Item
+            );
+
+            var results = FSharpList<Value>.Empty;
+
+            var enumerable = pts as XYZ[] ?? pts.ToArray();
+            for (var i = 1; i < enumerable.Count(); i++)
+            {
+                var l = dynRevitSettings.Revit.Application.Create.NewLineBound(enumerable.ElementAt(i), enumerable.ElementAt(i - 1));
+
+                results = FSharpList<Value>.Cons(Value.NewContainer(l), results);
+            }
+
+            return Value.NewList(results);
+        }
+    }
+
+    [NodeName("Rectangle")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Create a rectangle by specifying the center, width, height, and normal.  Outputs a CurveLoop object directed counter-clockwise from upper right.")]
+    public class Rectangle : GeometryBase
+    {
+        public Rectangle()
+        {
+            InPortData.Add(new PortData("transform", "The a transform for the rectangle.", typeof(Value.Container)));
+            InPortData.Add(new PortData("width", "The width of the rectangle.", typeof(Value.Number)));
+            InPortData.Add(new PortData("height", "The height of the rectangle.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("geometry", "The curve loop representing the rectangle.", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var t = (Transform)((Value.Container)args[0]).Item;
+            double width = ((Value.Number)args[1]).Item;
+            double height = ((Value.Number)args[2]).Item;
+
+            //ccw from upper right
+            var p0 = new XYZ(width / 2, height / 2, 0);
+            var p3 = new XYZ(-width / 2, height / 2, 0);
+            var p2 = new XYZ(-width / 2, -height / 2, 0);
+            var p1 = new XYZ(width / 2, -height / 2, 0);
+
+            p0 = t.OfPoint(p0);
+            p1 = t.OfPoint(p1);
+            p2 = t.OfPoint(p2);
+            p3 = t.OfPoint(p3);
+
+            var l1 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p0, p1);
+            var l2 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p1, p2);
+            var l3 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p2, p3);
+            var l4 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p3, p0);
+
+            var cl = new Autodesk.Revit.DB.CurveLoop();
+            cl.Append(l1);
+            cl.Append(l2);
+            cl.Append(l3);
+            cl.Append(l4);
+
+            return Value.NewContainer(cl);
+        }
+    }
+
+    [NodeName("Element Geometry Objects")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_BAKE)]
+    [NodeDescription("Creates list of geometry object references in the element.")]
+    public class ElementGeometryObjects : NodeWithOneOutput
+    {
+        List<GeometryObject> instanceGeometryObjects;
+
+        public ElementGeometryObjects()
+        {
+            InPortData.Add(new PortData("element", "element to create geometrical references to", typeof(Value.Container)));
+            OutPortData.Add(new PortData("list", "Geometry objects of the element", typeof(Value.List)));
+
+            RegisterAllPorts();
+
+            instanceGeometryObjects = null;
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Element thisElement = (Element)((Value.Container)args[0]).Item;
+
+            instanceGeometryObjects = new List<GeometryObject>();
+
+            var result = FSharpList<Value>.Empty;
+
+            Autodesk.Revit.DB.Options geoOptionsOne = new Autodesk.Revit.DB.Options();
+            geoOptionsOne.ComputeReferences = true;
+
+            GeometryObject geomObj = thisElement.get_Geometry(geoOptionsOne);
+            GeometryElement geomElement = geomObj as GeometryElement;
+
+            if ((thisElement is GenericForm) && (geomElement.Count() < 1))
+            {
+                GenericForm gF = (GenericForm)thisElement;
+                if (!gF.Combinations.IsEmpty)
+                {
+                    Autodesk.Revit.DB.Options geoOptionsTwo = new Autodesk.Revit.DB.Options();
+                    geoOptionsTwo.IncludeNonVisibleObjects = true;
+                    geoOptionsTwo.ComputeReferences = true;
+                    geomObj = thisElement.get_Geometry(geoOptionsTwo);
+                    geomElement = geomObj as GeometryElement;
+                }
+            }
+
+            foreach (GeometryObject geob in geomElement)
+            {
+                GeometryInstance ginsta = geob as GeometryInstance;
+                if (ginsta != null)
+                {
+                    GeometryElement instanceGeom = ginsta.GetInstanceGeometry();
+                    instanceGeometryObjects.Add(instanceGeom);
+                    foreach (GeometryObject geobInst in instanceGeom)
+                    {
+                        result = FSharpList<Value>.Cons(Value.NewContainer(geobInst), result);
+                    }
+                }
+                else
+                {
+                    result = FSharpList<Value>.Cons(Value.NewContainer(geob), result);
+                }
+            }
+
+            return Value.NewList(result);
+        }
+    }
+
     [NodeName("Model Curve")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a model curve.")]
