@@ -997,6 +997,85 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Transform Curve")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Returns the curve (c) transformed by the transform (t).")]
+    [NodeSearchTags("move", "transform", "curve", "line")]
+    public class CurveTransformed : GeometryBase
+    {
+        public CurveTransformed()
+        {
+            InPortData.Add(new PortData("cv", "Curve(Curve) or Curve Loop (Curve Loop)", typeof(Value.Container)));
+            InPortData.Add(new PortData("t", "Transform(Transform)", typeof(Value.Container)));
+            OutPortData.Add(new PortData("tcv", "Transformed Curve", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var trans = (Transform)((Value.Container)args[1]).Item;
+            if (((Value.Container)args[0]).Item is Curve)
+            {
+                var curve = (Curve)((Value.Container)args[0]).Item;
+
+                var crvTrans = curve.get_Transformed(trans);
+
+                return Value.NewContainer(crvTrans);
+            }
+            var cLoop = (Autodesk.Revit.DB.CurveLoop)((Value.Container)args[0]).Item;
+            Autodesk.Revit.DB.CurveLoop trfedCL = new Autodesk.Revit.DB.CurveLoop();
+            CurveLoopIterator CLiter = cLoop.GetCurveLoopIterator();
+
+            for (; CLiter.MoveNext(); )
+            {
+                trfedCL.Append(CLiter.Current.get_Transformed(trans));
+            }
+            return Value.NewContainer(trfedCL);
+
+        }
+    }
+
+    [NodeName("Circle")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Creates a geometric circle.")]
+    public class Circle : GeometryBase
+    {
+        public Circle()
+        {
+            InPortData.Add(new PortData("center", "Start XYZ", typeof(Value.Container)));
+            InPortData.Add(new PortData("rad", "Radius", typeof(Value.Number)));
+            OutPortData.Add(new PortData("circle", "Circle as Curve", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        const double RevitPI = 3.14159265358979;
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var ptA = ((Value.Container)args[0]).Item;
+            var radius = (double)((Value.Number)args[1]).Item;
+
+            Curve circle = null;
+
+            if (ptA is XYZ)
+            {
+                //Curve circle = this.UIDocument.Application.Application.Create.NewArc(ptA, radius, 0, 2 * Math.PI, XYZ.BasisX, XYZ.BasisY);
+                circle = dynRevitSettings.Doc.Application.Application.Create.NewArc((XYZ)ptA, radius, 0, 2 * RevitPI, XYZ.BasisX, XYZ.BasisY);
+
+            }
+            else if (ptA is ReferencePoint)
+            {
+                //Curve circle = this.UIDocument.Application.Application.Create.NewArc(ptA, radius, 0, 2 * Math.PI, XYZ.BasisX, XYZ.BasisY);
+                circle = dynRevitSettings.Doc.Application.Application.Create.NewArc((XYZ)((ReferencePoint)ptA).Position, radius, 0, 2 * RevitPI, XYZ.BasisX, XYZ.BasisY);
+            }
+
+            return Value.NewContainer(circle);
+        }
+    }
+
     [NodeName("Arc by Start, Middle, End")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a geometric arc given start, middle and end points in XYZ.")]
@@ -1094,85 +1173,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Transform Curve")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
-    [NodeDescription("Returns the curve (c) transformed by the transform (t).")]
-    [NodeSearchTags("move", "transform", "curve", "line")]
-    public class CurveTransformed: GeometryBase
-    {
-        public CurveTransformed()
-        {
-            InPortData.Add(new PortData("cv", "Curve(Curve) or Curve Loop (Curve Loop)", typeof(Value.Container)));
-            InPortData.Add(new PortData("t", "Transform(Transform)", typeof(Value.Container)));
-            OutPortData.Add(new PortData("tcv", "Transformed Curve", typeof(Value.Container)));
-
-            RegisterAllPorts();
-        }
-
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            var trans = (Transform)((Value.Container)args[1]).Item;
-            if (((Value.Container)args[0]).Item is Curve)
-            {
-                var curve = (Curve)((Value.Container)args[0]).Item;
-
-                var crvTrans = curve.get_Transformed(trans);
-
-                return Value.NewContainer(crvTrans);
-            }
-            var cLoop = (Autodesk.Revit.DB.CurveLoop)((Value.Container)args[0]).Item;
-            Autodesk.Revit.DB.CurveLoop trfedCL = new Autodesk.Revit.DB.CurveLoop();
-            CurveLoopIterator CLiter = cLoop.GetCurveLoopIterator();
-
-            for (; CLiter.MoveNext(); )
-            {
-                trfedCL.Append(CLiter.Current.get_Transformed(trans));
-            }
-            return Value.NewContainer(trfedCL);
-            
-        }
-    }
-
-    [NodeName("Circle")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
-    [NodeDescription("Creates a geometric circle.")]
-    public class Circle: GeometryBase
-    {
-        public Circle()
-        {
-            InPortData.Add(new PortData("center", "Start XYZ", typeof(Value.Container)));
-            InPortData.Add(new PortData("rad", "Radius", typeof(Value.Number)));
-            OutPortData.Add(new PortData("circle", "Circle CurveLoop", typeof(Value.Container)));
-
-            RegisterAllPorts();
-        }
-
-        const double RevitPI = 3.14159265358979;
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            var ptA = ((Value.Container)args[0]).Item;
-            var radius = (double)((Value.Number)args[1]).Item;
-
-            Curve circle = null;
-
-            if (ptA is XYZ)
-            {
-                //Curve circle = this.UIDocument.Application.Application.Create.NewArc(ptA, radius, 0, 2 * Math.PI, XYZ.BasisX, XYZ.BasisY);
-                circle = dynRevitSettings.Doc.Application.Application.Create.NewArc((XYZ)ptA, radius, 0, 2 * RevitPI, XYZ.BasisX, XYZ.BasisY);
-
-            }
-            else if (ptA is ReferencePoint)
-            {
-                //Curve circle = this.UIDocument.Application.Application.Create.NewArc(ptA, radius, 0, 2 * Math.PI, XYZ.BasisX, XYZ.BasisY);
-                circle = dynRevitSettings.Doc.Application.Application.Create.NewArc((XYZ)((ReferencePoint)ptA).Position, radius, 0, 2 * RevitPI, XYZ.BasisX, XYZ.BasisY);
-            }
-
-            return Value.NewContainer(circle);
-        }
-    }
-
+    
     [NodeName("Ellipse")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a geometric ellipse.")]
