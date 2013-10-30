@@ -370,21 +370,14 @@ namespace Dynamo
             AstBuilder.Instance.FinishBuildingAst();
             LiveRunnerServices.Instance.UpdateGraph(AstBuilder.Instance.GetSyncData());
 
-            List<Guid> nodes = AstBuilder.Instance.ToBeQueriedNodes;
-            if (nodes != null)
+            // Currently just use inefficient way to refresh preview values. 
+            // After we switch to async call, only those nodes that are really 
+            // updated in this execution session will be required to update 
+            // preview value.
+            var nodes = DynamoViewModel.Model.HomeSpace.Nodes;
+            foreach (NodeModel node in nodes)
             {
-                foreach (var node in nodes)
-                {
-                    try
-                    {
-                        string var = AstBuilder.StringConstants.VarPrefix + node.ToString().Replace("-", string.Empty);
-                        DynamoLogger.Instance.Log(var + " = " + LiveRunnerServices.Instance.GetStringValue(var));
-                    }
-                    catch (Exception exp)
-                    {
-                        DynamoLogger.Instance.Log(exp.Message);
-                    }
-                }
+                node.IsUpdated = true;
             }
 
             OnEvaluationCompleted(this, EventArgs.Empty);
