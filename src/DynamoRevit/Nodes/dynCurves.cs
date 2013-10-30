@@ -16,7 +16,7 @@ using MathNet.Numerics.LinearAlgebra.Double;
 namespace Dynamo.Nodes
 {
 
-    [NodeName("Line by 2 Points")]
+    [NodeName("Line by Endpoints")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Creates a geometric line.")]
     [NodeSearchTags("curve", "two point", "line")]

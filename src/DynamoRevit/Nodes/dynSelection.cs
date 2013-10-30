@@ -877,7 +877,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Select Point")]
+    [NodeName("Select Reference Point")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a reference point from the document.")]
     public class PointBySelection : ElementSelectionBase
@@ -966,7 +966,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Select XYZ on element")]
+    [NodeName("Select XYZ on Element")]
     [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
     [NodeDescription("Select a XYZ location on model face or edge of the element.")]
     public class XyzBySelection : ReferenceSelectionBase

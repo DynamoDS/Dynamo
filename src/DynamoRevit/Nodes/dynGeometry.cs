@@ -438,6 +438,29 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("XYZ Distance")]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
+    [NodeDescription("Returns the distance between a(XYZ) and b(XYZ).")]
+    public class XyzDistance : MeasurementBase
+    {
+        public XyzDistance()
+        {
+            InPortData.Add(new PortData("a", "Start (XYZ).", typeof(Value.Container)));//Ref to a face of a form
+            InPortData.Add(new PortData("b", "End (XYZ)", typeof(Value.Container)));//Ref to a face of a form
+            OutPortData.Add(new PortData("d", "The distance between the two XYZs (Number).", typeof(Value.Number)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var a = (XYZ)((Value.Container)args[0]).Item;
+            var b = (XYZ)((Value.Container)args[1]).Item;
+
+            return Value.NewNumber(a.DistanceTo(b));
+        }
+    }
+
     [NodeName("XYZ Length")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
     [NodeDescription("Gets the length of an XYZ")]
@@ -1431,7 +1454,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Solid Boolean")]
+    [NodeName("Boolean Operation")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID_BOOLEAN)]
     [NodeDescription("Creates solid by union, intersection or difference of two solids.")]
     public class BooleanOperation : GeometryBase
@@ -1590,7 +1613,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Boolean Intersection")]
+    [NodeName("Boolean Intersect")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID_BOOLEAN)]
     [NodeDescription("Creates solid by boolean difference of two solids")]
     public class SolidIntersection : GeometryBase

@@ -39,11 +39,11 @@ namespace Dynamo.Nodes
         public const string CORE_EVALUATE = "Core.Evaluate";
         public const string CORE_TIME = "Core.Time";
         public const string CORE_FUNCTIONS = "Core.Functions";
-        public const string CORE_GEOMETRY = "Core.Geometry";
-        public const string CORE_EXPERIMENTAL_GEOMETRY = "Core.Experimental.Geometry";
+        public const string CREATE_GEOMETRY_EXPERIMENTAL = "Create Geometry.Experimental";
 
         public const string LOGIC = "Logic";
         public const string LOGIC_MATH = "Logic.Math";
+        public const string LOGIC_EFFECT = "Logic.Effect";
         public const string LOGIC_COMPARISON = "Logic.Comparison";
         public const string LOGIC_CONDITIONAL = "Logic.Conditional";
         public const string LOGIC_LOOP = "Logic.Loop";
