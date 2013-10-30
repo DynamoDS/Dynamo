@@ -117,7 +117,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
             System.Reflection.Assembly revitAPIAssembly = System.Reflection.Assembly.GetAssembly(typeof(GenericForm));
-            var FreeFormType = revitAPIAssembly.GetType("Autodesk.Revit.DB.FreeFormElement", true);
+            var FreeFormType = revitAPIAssembly.GetType("Autodesk.Revit.DB.FreeFormElement", false);
             if (FreeFormType == null)
                 return;
 

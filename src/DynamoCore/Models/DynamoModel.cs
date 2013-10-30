@@ -390,9 +390,9 @@ namespace Dynamo.Models
 
         internal bool CanOpen(object parameters)
         {
-            if (string.IsNullOrEmpty(parameters.ToString()))
-                return false;
-            return true;
+            if (File.Exists(parameters.ToString()))
+                return true;
+            return false;
         }
 
         internal void PostUIActivation(object parameter)
