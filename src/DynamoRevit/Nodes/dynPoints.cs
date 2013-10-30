@@ -12,7 +12,7 @@ using Dynamo.Revit;
 namespace Dynamo.Nodes
 {
     [NodeName("Reference Point")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
     [NodeDescription("Creates a reference point.")]
     [NodeSearchTags("pt","ref")]
     public class ReferencePointByXyz : RevitTransactionNodeWithOneOutput
@@ -55,7 +55,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Reference Point On Edge")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
     [NodeDescription("Creates an element which owns a reference point on a selected edge.")]
     [NodeSearchTags("ref", "pt")]
     public class PointOnEdge : RevitTransactionNodeWithOneOutput
@@ -108,7 +108,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Reference Point On Face by UV")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
     [NodeDescription("Creates an element which owns a reference point on a selected face.")]
     [NodeSearchTags("ref", "pt")]
     public class PointOnFaceUv : RevitTransactionNodeWithOneOutput
@@ -168,7 +168,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Reference Point By Normal")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
     [NodeDescription("Owns a reference point which is projected from a point by normal and distance.")]
     [NodeSearchTags("normal", "ref")]
     public class PointNormalDistance : RevitTransactionNodeWithOneOutput
@@ -335,7 +335,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Evaluate curve or edge")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
     [NodeDescription("Evaluates curve or edge at parameter.")]
     public class XyzOnCurveOrEdge : GeometryBase
     {
@@ -410,7 +410,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Evaluate tangent transform of curve or edge")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
     [NodeDescription("Evaluates tangent vector of curve or edge at parameter.")]
     public class TangentTransformOnCurveOrEdge : GeometryBase
     {
@@ -456,7 +456,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Ref Point By Length")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_POINT)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
     [NodeDescription("Creates an ref point element on curve located by length from the start or end of the curve.")]
     [NodeSearchTags("ref", "pt", "curve")]
     public class PointOnCurveByLength : RevitTransactionNodeWithOneOutput
