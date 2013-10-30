@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Windows.Data;
 using System.Xml;
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
@@ -30,31 +29,37 @@ namespace Dynamo.Nodes
     public static partial class BuiltinNodeCategories
     {
         public const string CORE = "Core";
-        public const string CORE_PRIMITIVES = "Core.Primitives";
+        public const string CORE_INPUT = "Core.Input";
         public const string CORE_STRINGS = "Core.Strings";
         public const string CORE_LISTS = "Core.Lists";
         public const string CORE_VIEW = "Core.View";
         public const string CORE_ANNOTATE = "Core.Annotate";
-        public const string CORE_SELECTION = "Revit.Selection";
         public const string CORE_EVALUATE = "Core.Evaluate";
         public const string CORE_TIME = "Core.Time";
+        public const string CORE_SCRIPTING = "Core.Scripting";
         public const string CORE_FUNCTIONS = "Core.Functions";
-        public const string CORE_GEOMETRY = "Core.Geometry";
-        public const string CORE_EXPERIMENTAL_GEOMETRY = "Core.Experimental.Geometry";
-
+       
         public const string LOGIC = "Logic";
         public const string LOGIC_MATH = "Logic.Math";
+        public const string LOGIC_EFFECT = "Logic.Effect";
         public const string LOGIC_COMPARISON = "Logic.Comparison";
         public const string LOGIC_CONDITIONAL = "Logic.Conditional";
         public const string LOGIC_LOOP = "Logic.Loop";
 
         public const string CREATEGEOMETRY = "Create Geometry";
         public const string CREATEGEOMETRY_VECTOR = "Create Geometry.Vector";
+        public const string CREATEGEOMETRY_UV = "Create Geometry.UV";
         public const string CREATEGEOMETRY_CURVE = "Create Geometry.Curve";
+        public const string CREATEGEOMETRY_SOLID_BOOLEAN = "Create Geometry.Solid.Boolean";
+        public const string CREATEGEOMETRY_SOLID_CREATE = "Create Geometry.Solid.Create";
+        public const string CREATEGEOMETRY_SOLID_PRIMITIVES = "Create Geometry.Solid.Primitives";
+        public const string CREATEGEOMETRY_SOLID_EXTRACT = "Create Geometry.Solid.Extract";
         public const string CREATEGEOMETRY_SOLID = "Create Geometry.Solid";
         public const string CREATEGEOMETRY_SURFACE = "Create Geometry.Surface";
+        public const string CREATE_GEOMETRY_EXPERIMENTAL = "Create Geometry.Experimental";
 
         public const string MODIFYGEOMETRY= "Modify Geometry";
+        public const string MODIFYGEOMETRY_SOLID = "Modify Geometry.Solid";
         public const string MODIFYGEOMETRY_INTERSECT = "Modify Geometry.Intersect";
         public const string MODIFYGEOMETRY_TRANSFORM = "Modify Geometry.Transform";
         public const string MODIFYGEOMETRY_TESSELATE = "Modify Geometry.Tesselate";
@@ -62,8 +67,10 @@ namespace Dynamo.Nodes
         public const string REVIT = "Revit";
         public const string REVIT_DOCUMENT = "Revit.Document";
         public const string REVIT_DATUMS = "Revit.Datums";
-        public const string REVIT_FAMILYCREATION = "Revit.Family Creation";
+        public const string REVIT_FAMILIES = "Revit.Families";
         public const string REVIT_VIEW = "Revit.View";
+        public const string REVIT_REFERENCE = "Revit.Reference";
+        public const string REVIT_SELECTION = "Revit.Selection";
         public const string REVIT_PARAMETERS = "Revit.Parameters";
         public const string REVIT_BAKE = "Revit.Bake";
         public const string REVIT_API = "Revit.API";
@@ -76,7 +83,9 @@ namespace Dynamo.Nodes
         public const string ANALYZE = "Analyze";
         public const string ANALYZE_MEASURE = "Analyze.Measure";
         public const string ANALYZE_DISPLAY = "Analyze.Display";
+        public const string ANALYZE_COLOR = "Analyze.Color";
         public const string ANALYZE_SURFACE = "Analyze.Surface";
+        public const string ANALYZE_CURVE = "Analyze.Curve";
         public const string ANALYZE_STRUCTURE = "Analyze.Structure";
         public const string ANALYZE_CLIMATE = "Analyze.Climate";
         public const string ANALYZE_ACOUSTIC = "Analyze.Acoustic";
@@ -84,7 +93,6 @@ namespace Dynamo.Nodes
 
         public const string SCRIPTING = "Scripting";
         public const string SCRIPTING_CUSTOMNODES = "Scripting.Custom Nodes";
-        public const string SCRIPTING_PYTHON = "Scripting.Python";
         public const string SCRIPTING_DESIGNSCRIPT = "Scripting.DesignScript";
 
     }
@@ -526,7 +534,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Identity")]
-    [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES )]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT )]
     [NodeDescription("Identity function")]
     public class Identity : NodeWithOneOutput
     {
@@ -3656,7 +3664,7 @@ namespace Dynamo.Nodes
     public delegate double ConversionDelegate(double value);
 
     [NodeName("Number")]
-    [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Creates a number.")]
     public partial class DoubleInput : NodeWithOneOutput
     {
@@ -4182,9 +4190,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Angle (deg.)")]
-    [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
-    [NodeDescription("An angle in degrees. Outputs radians")]
+    [NodeName("Angle")]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeDescription("Convert angle from degrees to radians")]
     [NodeSearchTags("trigonometry", "angle", "degree")]
     public class AngleInput : DoubleInput
     {
@@ -4195,14 +4203,10 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Number Slider")]
-    [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Change a number value with a slider.")]
     public partial class DoubleSliderInput : Double
     {
-        //Slider tb_slider;
-        //dynTextBox mintb;
-        //dynTextBox maxtb;
-        //dynTextBox valtb;
 
         private double max;
         private double min;
@@ -4339,7 +4343,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Boolean")]
-    [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Selection between a true and false.")]
     [NodeSearchTags("true", "truth", "false")]
     public partial class BoolSelector : Bool
@@ -4364,7 +4368,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("String")]
-    [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Creates a string.")]
     public partial class StringInput : String
     {
@@ -4432,7 +4436,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Directory")]
-    [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Allows you to select a directory on the system to get its path.")]
     public partial class StringDirectory : StringFilename
     {
@@ -4451,7 +4455,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("File Path")]
-    [NodeCategory(BuiltinNodeCategories.CORE_PRIMITIVES)]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Allows you to select a file on the system to get its filename.")]
     public partial class StringFilename : BasicInteractive<string>
     {

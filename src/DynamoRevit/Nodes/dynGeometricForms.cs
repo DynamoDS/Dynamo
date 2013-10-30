@@ -13,9 +13,9 @@ using System.Xml;
 
 namespace Dynamo.Nodes
 {
-    [NodeName("Loft Form")]
+    [NodeName("Loft Surface")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
-    [NodeDescription("Creates a new loft form <doc.FamilyCreate.NewLoftForm>")]
+    [NodeDescription("Creates a new loft surface.  Internally this is a LoftForm element")]
     public class LoftForm : RevitTransactionNodeWithOneOutput
     {
         public LoftForm()
@@ -328,9 +328,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Free Form")]
-    [NodeCategory(BuiltinNodeCategories.REVIT)]
-    [NodeDescription("Creates a free form <FreeFormElement.Create>")]
+    [NodeName("Bake Solid as Revit Element")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_BAKE)]
+    [NodeDescription("Turn a solid into a revit element.  Internally this is a FreeForm element")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     public class FreeForm : RevitTransactionNodeWithOneOutput
     {
@@ -448,7 +448,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Ref Curve Chain")]
+    [NodeName("Reference Curve Chain")]
     [NodeCategory(BuiltinNodeCategories.REVIT_BAKE)]
     [NodeDescription("Creates continuous chain of reference curves ")]
     public class PlanarRefCurveChain : RevitTransactionNodeWithOneOutput
@@ -474,14 +474,14 @@ namespace Dynamo.Nodes
                                  )
                    ).ToList();
 
-            ModelCurveArray myModelCurves = new ModelCurveArray();
+            var myModelCurves = new ModelCurveArray();
       
             //Plane thisPlane = null;
             //Line oneLine = null;
 
-            List<ElementId> refIds = new List<ElementId>();
-            XYZ loopStart = new XYZ();
-            XYZ otherEnd = new XYZ();
+            var refIds = new List<ElementId>();
+            var loopStart = new XYZ();
+            var otherEnd = new XYZ();
             int index = 0;
             double tolerance = 0.000000001;
             foreach( var refCurve in refCurveList)
@@ -512,65 +512,6 @@ namespace Dynamo.Nodes
                             throw new Exception("Gap between curves in chain of reference curves.");
                     }                 
                 }
-                /* not needed check
-                if (refCurve.GeometryCurve is Line)
-                {
-                    Line thisLine = refCurve.GeometryCurve as Line;
-                    if (thisPlane != null)
-                    {
-                        if (Math.Abs(thisPlane.Normal.DotProduct(thisLine.Direction)) > tolerance)
-                            throw new Exception(" Planar Ref Curve Chain fails: not planar");
-                        if (Math.Abs(thisPlane.Normal.DotProduct(thisLine.Origin - thisPlane.Origin)) > tolerance)
-                            throw new Exception(" Planar Ref Curve Chain fails: not planar");
-                    }
-                    else if (oneLine == null)
-                        oneLine = thisLine;
-                    else
-                    {
-                        if (Math.Abs(oneLine.Direction.DotProduct(thisLine.Direction)) > 1.0 - tolerance)
-                        {
-                            double projAdjust = oneLine.Direction.DotProduct(oneLine.Origin - thisLine.Origin);
-                            XYZ adjustedOrigin = thisLine.Origin + projAdjust * oneLine.Direction;
-                            if (adjustedOrigin.DistanceTo(oneLine.Origin) > tolerance)
-                                throw new Exception(" Planar Ref Curve Chain fails: not planar");
-                        }
-                        else
-                        {
-                            XYZ norm = oneLine.Direction.CrossProduct(thisLine.Direction);
-                            norm = norm.Normalize();
-                            thisPlane = new Plane(norm, oneLine.Origin);
-                            if (Math.Abs(thisPlane.Normal.DotProduct(thisLine.Origin - thisPlane.Origin)) > tolerance)
-                                throw new Exception(" Planar Ref Curve Chain fails: not planar");
-                        }
-
-                    }
-                }
-                else
-                {
-                    CurveLoop curveLoop = new CurveLoop();
-                    curveLoop.Append(refCurve.GeometryCurve);
-                    if (!curveLoop.HasPlane())
-                        throw new Exception(" Planar Ref Curve Chain fails: curve is not planar.");
-                    Plane curvePlane = curveLoop.GetPlane();
-                    if (thisPlane == null && oneLine == null)
-                        thisPlane = curveLoop.GetPlane();
-                    else if (thisPlane != null)
-                    {
-                        if (Math.Abs(thisPlane.Normal.DotProduct(curvePlane.Normal)) < 1.0 - tolerance)
-                            throw new Exception(" Planar Ref Curve Chain fails: not planar");
-                        if (Math.Abs(thisPlane.Normal.DotProduct(curvePlane.Origin - thisPlane.Origin)) > tolerance)
-                            throw new Exception(" Planar Ref Curve Chain fails: not planar");
-                    }
-                    else if (oneLine != null)
-                    {
-                        thisPlane = curvePlane;
-                        if (Math.Abs(thisPlane.Normal.DotProduct(oneLine.Direction)) > tolerance)
-                            throw new Exception(" Planar Ref Curve Chain fails: not planar");
-                        if (Math.Abs(thisPlane.Normal.DotProduct(oneLine.Origin - thisPlane.Origin)) > tolerance)
-                            throw new Exception(" Planar Ref Curve Chain fails: not planar");
-                    }
-                }
-                */
 
                 refIds.Add(refCurve.Id);
                 myModelCurves.Append(refCurve);
