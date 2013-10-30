@@ -68,10 +68,12 @@ limitations under the License.
   <ItemGroup>
     <Compile Include="Elements\ModelUpdater.cs" />
     <Compile Include="Elements\ElementValidity.cs" />
+    <Compile Include="Persistence\Documentmanager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Threading\IdlePromise.cs" />
     <Compile Include="Transactions\TransactionManager.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

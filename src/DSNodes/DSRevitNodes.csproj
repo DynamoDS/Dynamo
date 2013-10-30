@@ -94,10 +94,6 @@
       <Project>{EF879A10-041D-4C68-83E7-3192685F1BAE}</Project>
       <Name>DSNodeServices</Name>
     </ProjectReference>
-    <ProjectReference Include="..\RevitPersistenceManager\RevitPersistenceManager.csproj">
-      <Project>{9D0B8EC8-DCDE-4FFA-BCF3-8592F835D316}</Project>
-      <Name>RevitPersistenceManager</Name>
-    </ProjectReference>
     <ProjectReference Include="..\RevitServices\RevitServices.csproj">
       <Project>{E4701F9E-41AB-4044-8166-85D924FEB632}</Project>
       <Name>RevitServices</Name>
