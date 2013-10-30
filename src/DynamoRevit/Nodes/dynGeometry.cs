@@ -1849,6 +1849,90 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Solid Boolean Difference")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
+    [NodeDescription("Creates solid by boolean difference of two solids")]
+    public class SolidDifference : GeometryBase
+    {
+
+        public SolidDifference()
+        {
+            InPortData.Add(new PortData("First Solid", "First solid input for boolean geometrical operation", typeof(object)));
+            InPortData.Add(new PortData("Second Solid", "Second solid input for boolean geometrical operation", typeof(object)));
+
+            OutPortData.Add(new PortData("solid in the element's geometry objects", "Solid", typeof(object)));
+
+            RegisterAllPorts();
+
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var firstSolid = (Solid)((Value.Container)args[0]).Item;
+            var secondSolid = (Solid)((Value.Container)args[1]).Item;
+
+            var result = BooleanOperationsUtils.ExecuteBooleanOperation(firstSolid, secondSolid, BooleanOperationsType.Difference);
+
+            return Value.NewContainer(result);
+        }
+    }
+
+    [NodeName("Solid Boolean Union")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
+    [NodeDescription("Creates solid by boolean union of two solids")]
+    public class SolidUnion : GeometryBase
+    {
+
+        public SolidUnion()
+        {
+            InPortData.Add(new PortData("First Solid", "First solid input for union", typeof(object)));
+            InPortData.Add(new PortData("Second Solid", "Second solid input for union", typeof(object)));
+
+            OutPortData.Add(new PortData("solid in the element's geometry objects", "Solid", typeof(object)));
+
+            RegisterAllPorts();
+
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var firstSolid = (Solid)((Value.Container)args[0]).Item;
+            var secondSolid = (Solid)((Value.Container)args[1]).Item;
+
+            var result = BooleanOperationsUtils.ExecuteBooleanOperation(firstSolid, secondSolid, BooleanOperationsType.Union);
+
+            return Value.NewContainer(result);
+        }
+    }
+
+    [NodeName("Solid Boolean Intersection")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
+    [NodeDescription("Creates solid by boolean difference of two solids")]
+    public class SolidIntersection : GeometryBase
+    {
+
+        public SolidIntersection()
+        {
+            InPortData.Add(new PortData("First Solid", "First solid input for intersection", typeof(object)));
+            InPortData.Add(new PortData("Second Solid", "Second solid input for intersection", typeof(object)));
+
+            OutPortData.Add(new PortData("solid in the element's geometry objects", "Solid", typeof(object)));
+
+            RegisterAllPorts();
+
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var firstSolid = (Solid)((Value.Container)args[0]).Item;
+            var secondSolid = (Solid)((Value.Container)args[1]).Item;
+
+            var result = BooleanOperationsUtils.ExecuteBooleanOperation(firstSolid, secondSolid, BooleanOperationsType.Intersect);
+
+            return Value.NewContainer(result);
+        }
+    }
+
     [NodeName("Solid from Element")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
     [NodeDescription("Creates reference to the solid in the element's geometry objects.")]
@@ -1967,6 +2051,9 @@ namespace Dynamo.Nodes
             return Value.NewContainer(mySolid);
         }
     }
+
+
+
 
     // sphere, cylinder, box, torus
 
