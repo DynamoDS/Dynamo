@@ -7,7 +7,9 @@ using System.Reflection;
 using Autodesk.Revit.DB;
 using Dynamo.Controls;
 using Dynamo.Models;
+using Dynamo.ViewModels;
 using Microsoft.FSharp.Collections;
+using System.Random;
 
 using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
@@ -1037,13 +1039,13 @@ namespace Dynamo.Nodes
         public Circle()
         {
             InPortData.Add(new PortData("center", "Start XYZ", typeof(Value.Container)));
-            InPortData.Add(new PortData("rad", "Radius", typeof(Value.Number)));
+            InPortData.Add(new PortData("radius", "Radius", typeof(Value.Number)));
             OutPortData.Add(new PortData("circle", "Circle CurveLoop", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
 
-        const double RevitPI = 3.14159265358979;
+        public const double RevitPI = 3.14159265358979;
 
         public override Value Evaluate(FSharpList<Value> args)
         {
@@ -1524,7 +1526,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Solid by Revolve")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
-    [NodeDescription("Creates a solid by revolving  closed curve loops lying in xy plane of Transform.")]
+    [NodeDescription("Creates a solid by revolving closed curve loops lying in xy plane of Transform.")]
     public class CreateRevolvedGeometry : GeometryBase
     {
         public CreateRevolvedGeometry()
@@ -1568,7 +1570,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("attachment curve index", "index of the curve where profile loop is attached", typeof(Value.Number)));
             InPortData.Add(new PortData("attachment parameter", "parameter of attachment point on its curve", typeof(Value.Number)));
             InPortData.Add(new PortData("profile loop", "The curve loop to sweep to be put in orthogonal plane to path at attachment point.", typeof(Value.Container)));
-            OutPortData.Add(new PortData("geometry", "The swept geometry.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("solid", "The swept geometry.", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -1668,7 +1670,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("profiles", "A list of curve loops to be extruded.", typeof(Value.List)));
             InPortData.Add(new PortData("direction", "The direction in which to extrude the profile.", typeof(Value.Container)));
             InPortData.Add(new PortData("distance", "The positive distance by which the loops are to be extruded.", typeof(Value.Number)));
-            OutPortData.Add(new PortData("geometry", "The extrusion.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("solid", "The extrusion.", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -1681,8 +1683,8 @@ namespace Dynamo.Nodes
             //incoming list will have two lists in it
             //each list will contain curves. convert the curves
             //into curve loops
-            FSharpList<Value> profileList = ((Value.List)args[0]).Item;
-            List<Autodesk.Revit.DB.CurveLoop> loops = new List<Autodesk.Revit.DB.CurveLoop>();
+            var profileList = ((Value.List)args[0]).Item;
+            var loops = new List<Autodesk.Revit.DB.CurveLoop>();
             foreach (var item in profileList)
             {
                 if (item.IsList)
@@ -1715,15 +1717,15 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("first loop", "The first curve loop. The loop must be a closed planar loop.", typeof(Value.Container)));
             InPortData.Add(new PortData("second loop", "The second curve loop, which also must be a closed planar loop.", typeof(Value.Container)));
-            OutPortData.Add(new PortData("geometry", "The blend geometry.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("solid", "The blend geometry.", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            Autodesk.Revit.DB.CurveLoop firstLoop = (Autodesk.Revit.DB.CurveLoop)((Value.Container)args[0]).Item;
-            Autodesk.Revit.DB.CurveLoop secondLoop = (Autodesk.Revit.DB.CurveLoop)((Value.Container)args[1]).Item;
+            var firstLoop = (Autodesk.Revit.DB.CurveLoop)((Value.Container)args[0]).Item;
+            var secondLoop = (Autodesk.Revit.DB.CurveLoop)((Value.Container)args[1]).Item;
 
             List<VertexPair> vertPairs = null;
 
@@ -2052,7 +2054,57 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Cylinder")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
+    [NodeDescription("Creates solid by boolean difference of two solids")]
+    public class SolidCylinder : GeometryBase
+    {
 
+        public SolidCylinder()
+        {
+            InPortData.Add(new PortData("axis", "Axis of cylinder", typeof(object)));
+            InPortData.Add(new PortData("origin", "Base point of cylinder", typeof(object)));
+            InPortData.Add(new PortData("radius", "Radius of cylinder", typeof(object)));
+            InPortData.Add(new PortData("height", "Height of cylinder", typeof(object)));
+           
+            OutPortData.Add(new PortData("cylinder", "Solid", typeof(object)));
+
+            RegisterAllPorts();
+
+        }
+
+        public static Solid CylinderByAxisOriginRadiusHeight(XYZ axis, XYZ origin, double radius, double height)
+        {
+            // get axis that is perp to axis by first generating random vector
+            var r = new System.Random();
+            axis = axis.Normalize();
+            var randXyz = new XYZ(r.NextDouble(), r.NextDouble(), r.NextDouble());
+            var axisPerp1 = randXyz.CrossProduct(axis).Normalize();
+
+            // get second axis that is perp to axis
+            var axisPerp2 = axisPerp1.CrossProduct(axis);
+
+            // create circle
+            var circle = dynRevitSettings.Doc.Application.Application.Create.NewArc(origin, radius, 0, 2 * Circle.RevitPI, axisPerp1, axisPerp2);
+
+            // create curve loop from cirle
+            var circleLoop = Autodesk.Revit.DB.CurveLoop.Create(new List<Curve>() { circle });
+
+            // extrude the curve and return
+            return GeometryCreationUtilities.CreateExtrusionGeometry(new List<Autodesk.Revit.DB.CurveLoop>() { circleLoop }, axis, height);
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            // unpack input
+            var axis = (XYZ) ((Value.Container) args[0]).Item);
+            var origin = (XYZ)((Value.Container)args[1]).Item;
+            var radius = ((Value.Number)args[2]).Item;
+            var height = ((Value.Number)args[3]).Item;
+
+            return Value.NewContainer( CylinderByAxisOriginRadiusHeight(axis, origin, radius, height) );
+        }
+    }
 
 
     // sphere, cylinder, box, torus
