@@ -16,7 +16,7 @@ using Dynamo.Revit;
 namespace Dynamo.Nodes
 {
     [NodeName("Select Family Type")]
-    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
     [NodeDescription("Select a Family Type from a drop down list.")]
     [IsInteractive(true)]
     public class FamilyTypeSelector : DropDrownBase
@@ -56,7 +56,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Get Family Parameter")]
-    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
     [NodeDescription("Given a Family Instance or Symbol, allows the user to select a parameter as a string.")]
     [NodeSearchTags("fam")]
     [IsInteractive(true)]
@@ -241,7 +241,7 @@ namespace Dynamo.Nodes
     }
     
     [NodeName("Create Family Instance")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILYCREATION)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
     [NodeDescription("Creates family instances at a given XYZ location.")]
     public class FamilyInstanceCreatorXyz : RevitTransactionNodeWithOneOutput
     {
@@ -346,8 +346,8 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Create Family Instance By Level")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILYCREATION)]
+    [NodeName("Create Family Instance at Level")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
     [NodeDescription("Creates family instances in the given level.")]
     public class FamilyInstanceCreatorLevel : RevitTransactionNodeWithOneOutput
     {
@@ -456,7 +456,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Curves from Family Instance")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILYCREATION)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
     [NodeDescription("Extracts curves from family instances.")]
     public class CurvesFromFamilyInstance : RevitTransactionNodeWithOneOutput
     {
@@ -651,9 +651,8 @@ namespace Dynamo.Nodes
         }
     }
 
-    //TODO: In Destroy(), have code that resets Elements back to their default.
     [NodeName("Set Family Instance Parameter")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_PARAMETERS)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
     [NodeDescription("Modifies a parameter on a family instance.")]
     public class FamilyInstanceParameterSetter : RevitTransactionNodeWithOneOutput
     {
@@ -773,7 +772,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Get Family Instance Parameter Value")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_PARAMETERS)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
     [NodeDescription("Fetches the value of a parameter of a Family Instance.")]
     public class FamilyInstanceParameterGetter : RevitTransactionNodeWithOneOutput
     {
@@ -888,7 +887,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Set Family Type Parameter")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_PARAMETERS)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
     [NodeDescription("Modifies a parameter on a family type.")]
     public class FamilyTypeParameterSetter : RevitTransactionNodeWithOneOutput
     {
@@ -1012,7 +1011,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Get Family Type Parameter")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_PARAMETERS)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
     [NodeDescription("Fetches the value of a parameter of a Family Type.")]
     public class FamilyTypeParameterGetter : RevitTransactionNodeWithOneOutput
     {
@@ -1126,8 +1125,8 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Get Family Instances By Type")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_DOCUMENT)]
+    [NodeName("Get Family Instances by Type")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
     [NodeDescription("Returns all family instances of the selected type in the active model.")]
     public class GetFamilyInstancesByType : NodeWithOneOutput
     {
@@ -1153,7 +1152,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Get Family Instance Location")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_DOCUMENT)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
     [NodeDescription("Returns all family instances of the selected type in the active model.")]
     public class GetFamilyInstanceLocation : NodeWithOneOutput
     {
