@@ -6,6 +6,7 @@ using System.Windows.Controls; //for boolean option
 using System.Xml;              //for boolean option  
 using System.Reflection;
 using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.Mechanical;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.ViewModels;
@@ -28,9 +29,10 @@ namespace Dynamo.Nodes
 
     #region Vectors
 
-    [NodeName("XYZ From Coordinates")]
+    [NodeName("XYZ")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
     [NodeDescription("Creates an XYZ from three coordinates.")]
+    [NodeSearchTags("vector", "point")]
     public class Xyz: GeometryBase
     {
         public Xyz()
@@ -56,7 +58,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("XYZ From Polar")]
+    [NodeName("XYZ by Polar")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
     [NodeDescription("Creates an XYZ from sphereical coordinates.")]
     public class XyzFromPolar : GeometryBase
@@ -100,7 +102,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("XYZ To Polar")]
+    [NodeName("XYZ to Polar")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
     [NodeDescription("Creates an XYZ from spherical coordinates.")]
     public class XyzToPolar : NodeModel
@@ -153,7 +155,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("XYZ From Spherical")]
+    [NodeName("XYZ by Spherical")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
     [NodeDescription("Creates an XYZ from spherical coordinates.")]
     public class XyzFromSpherical : GeometryBase
@@ -197,7 +199,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("XYZ To Spherical")]
+    [NodeName("XYZ to Spherical")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
     [NodeDescription("Decompose an XYZ into spherical coordinates.")]
     public class XyzToSpherical : NodeModel
@@ -322,7 +324,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("XYZ From Reference Point")]
+    [NodeName("XYZ from Reference Point")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
     [NodeDescription("Extracts an XYZ from a Reference Point.")]
     [NodeSearchTags("xyz", "derive", "from", "reference", "point")]
@@ -456,7 +458,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Unit XYZ")]
+    [NodeName("Unitize XYZ")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
     [NodeDescription("Scale the given XYZ so its length is 1.")]
     [NodeSearchTags("normalize", "length", "vector")]
@@ -1631,6 +1633,53 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Rectangle")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeDescription("Create a rectangle by specifying the center, width, height, and normal.  Outputs a CurveLoop object directed counter-clockwise from upper right.")]
+    public class Rectangle : GeometryBase
+    {
+        public Rectangle()
+        {
+            InPortData.Add(new PortData("transform", "The a transform for the rectangle.", typeof(Value.Container)));
+            InPortData.Add(new PortData("width", "The width of the rectangle.", typeof(Value.Number)));
+            InPortData.Add(new PortData("height", "The height of the rectangle.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("geometry", "The curve loop representing the rectangle.", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var t = (Transform)((Value.Container)args[0]).Item;
+            double width = ((Value.Number)args[1]).Item;
+            double height = ((Value.Number)args[2]).Item;
+
+            //ccw from upper right
+            var p0 = new XYZ(width / 2, height / 2, 0);
+            var p3 = new XYZ(-width / 2, height / 2, 0);
+            var p2 = new XYZ(-width / 2, -height / 2, 0);
+            var p1 = new XYZ(width / 2, -height / 2, 0);
+
+            p0 = t.OfPoint(p0);
+            p1 = t.OfPoint(p1);
+            p2 = t.OfPoint(p2);
+            p3 = t.OfPoint(p3);
+
+            var l1 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p0, p1);
+            var l2 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p1, p2);
+            var l3 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p2, p3);
+            var l4 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p3, p0);
+
+            var cl = new Autodesk.Revit.DB.CurveLoop();
+            cl.Append(l1);
+            cl.Append(l2);
+            cl.Append(l3);
+            cl.Append(l4);
+
+            return Value.NewContainer(cl);
+        }
+    }
+
     [NodeName("Element Geometry Objects")]
     [NodeCategory(BuiltinNodeCategories.REVIT_BAKE)]
     [NodeDescription("Creates list of geometry object references in the element.")]
@@ -1641,7 +1690,7 @@ namespace Dynamo.Nodes
         public ElementGeometryObjects()
         {
             InPortData.Add(new PortData("element", "element to create geometrical references to", typeof(Value.Container)));
-            OutPortData.Add(new PortData("Geometry objects of the element", "List", typeof(Value.List)));
+            OutPortData.Add(new PortData("list", "Geometry objects of the element", typeof(Value.List)));
 
             RegisterAllPorts();
 
@@ -1697,120 +1746,87 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Rectangle")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
-    [NodeDescription("Create a rectangle by specifying the center, width, height, and normal.  Outputs a CurveLoop object directed counter-clockwise from upper right.")]
-    public class Rectangle : GeometryBase
-    {
-        public Rectangle()
-        {
-            InPortData.Add(new PortData("transform", "The a transform for the rectangle.", typeof(Value.Container)));
-            InPortData.Add(new PortData("width", "The width of the rectangle.", typeof(Value.Number)));
-            InPortData.Add(new PortData("height", "The height of the rectangle.", typeof(Value.Number)));
-            OutPortData.Add(new PortData("geometry", "The curve loop representing the rectangle.", typeof(Value.Container)));
-
-            RegisterAllPorts();
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            var t = (Transform)((Value.Container)args[0]).Item;
-            double width = ((Value.Number)args[1]).Item;
-            double height = ((Value.Number)args[2]).Item;
-
-            //ccw from upper right
-            var p0 = new XYZ(width / 2, height/2, 0);
-            var p3 = new XYZ(-width / 2, height / 2, 0);
-            var p2 = new XYZ(-width / 2, -height / 2, 0);
-            var p1 = new XYZ(width / 2, -height / 2, 0);
-
-            p0 = t.OfPoint(p0);
-            p1 = t.OfPoint(p1);
-            p2 = t.OfPoint(p2);
-            p3 = t.OfPoint(p3);
-
-            var l1 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p0, p1);
-            var l2 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p1, p2);
-            var l3 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p2, p3);
-            var l4 = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(p3, p0);
-
-            var cl = new Autodesk.Revit.DB.CurveLoop();
-            cl.Append(l1);
-            cl.Append(l2);
-            cl.Append(l3);
-            cl.Append(l4);
-
-            return Value.NewContainer(cl);
-        }
-    }
-
     #endregion
 
     #region Solid Creation
 
-    [NodeName("Solid by Revolve")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
+    [NodeName("Revolve")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID_CREATE)]
     [NodeDescription("Creates a solid by revolving closed curve loops lying in xy plane of Transform.")]
     public class CreateRevolvedGeometry : GeometryBase
     {
         public CreateRevolvedGeometry()
         {
-            InPortData.Add(new PortData("curve loop", "The curve loop to revolve must be a closed planar loop.", typeof(Value.Container)));
-            InPortData.Add(new PortData("transform", "Coordinate system for revolve, loop should be in xy plane of this transform on the right side of z axis used for rotate.", typeof(Value.Container)));
-            InPortData.Add(new PortData("start angle", "start angle measured counter-clockwise from x-axis of transform", typeof(Value.Number)));
-            InPortData.Add(new PortData("end angle", "end angle measured counter-clockwise from x-axis of transform", typeof(Value.Number)));
-            OutPortData.Add(new PortData("geometry", "The revolved geometry.", typeof(Value.Container)));
+            InPortData.Add(new PortData("profile", "The curve loop to use as a profile", typeof(Value.Container)));
+            InPortData.Add(new PortData("axis", "Coordinate system for revolve, loop should be in xy plane of this transform on the right side of z axis used for rotate.", typeof(Value.Container)));
+            InPortData.Add(new PortData("angle domain", "start angle measured counter-clockwise from x-axis of transform", typeof(Value.Number)));
+
+            OutPortData.Add(new PortData("solid", "The revolved geometry.", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            Autodesk.Revit.DB.CurveLoop cLoop = (Autodesk.Revit.DB.CurveLoop)((Value.Container)args[0]).Item;
-            Transform trf = (Transform)((Value.Container)args[1]).Item;
-            double sAngle = ((Value.Number)args[2]).Item;
-            double eAngle = ((Value.Number)args[3]).Item;
+            var cLoop = (Autodesk.Revit.DB.CurveLoop)((Value.Container)args[0]).Item;
+            var trf = (Transform)((Value.Container)args[1]).Item;
+            var sAngle = ((Value.Number)args[2]).Item;
+            var eAngle = ((Value.Number)args[3]).Item;
 
-            List<Autodesk.Revit.DB.CurveLoop> loopList = new List<Autodesk.Revit.DB.CurveLoop>();
-            loopList.Add(cLoop);
-
-            Autodesk.Revit.DB.Frame thisFrame = new Autodesk.Revit.DB.Frame();
+            var loopList = new List<Autodesk.Revit.DB.CurveLoop> {cLoop};
+            var thisFrame = new Autodesk.Revit.DB.Frame();
             thisFrame.Transform(trf);
 
-            Solid result = GeometryCreationUtilities.CreateRevolvedGeometry(thisFrame, loopList, sAngle, eAngle);
+            var result = GeometryCreationUtilities.CreateRevolvedGeometry(thisFrame, loopList, sAngle, eAngle);
 
             return Value.NewContainer(result);
         }
     }
 
-    [NodeName("Solid by Sweep")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
+    [NodeName("Sweep")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID_CREATE)]
     [NodeDescription("Creates a solid by sweeping curve loop along the path")]
     public class CreateSweptGeometry : GeometryBase
     {
         public CreateSweptGeometry()
         {
-            InPortData.Add(new PortData("sweep path", "The curve loop to sweep along.", typeof(Value.Container)));
-            InPortData.Add(new PortData("attachment curve index", "index of the curve where profile loop is attached", typeof(Value.Number)));
-            InPortData.Add(new PortData("attachment parameter", "parameter of attachment point on its curve", typeof(Value.Number)));
-            InPortData.Add(new PortData("profile loop", "The curve loop to sweep to be put in orthogonal plane to path at attachment point.", typeof(Value.Container)));
+            InPortData.Add(new PortData("rail", "The rail curve to sweep along (a CurveLoop or Curve)", typeof(Value.Container)));
+            InPortData.Add(new PortData("profile", "A closed curve loop to sweep to be swept along curve", typeof(Value.Container)));
+            
             OutPortData.Add(new PortData("solid", "The swept geometry.", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
 
-        public override Value Evaluate(FSharpList<Value> args)
+        public static Autodesk.Revit.DB.CurveLoop CurveLoopFromContainer(FScheme.Value.Container curveOrCurveLoop)
         {
-            Autodesk.Revit.DB.CurveLoop pathLoop = (Autodesk.Revit.DB.CurveLoop)((Value.Container)args[0]).Item;
-            int attachementIndex = (int)((Value.Number)args[1]).Item;
-            double attachementPar = ((Value.Number)args[2]).Item;
-            Autodesk.Revit.DB.CurveLoop profileLoop = (Autodesk.Revit.DB.CurveLoop)((Value.Container)args[3]).Item;
-            List<Autodesk.Revit.DB.CurveLoop> loopList = new List<Autodesk.Revit.DB.CurveLoop>();
+            var pathLoopBoxed = curveOrCurveLoop.Item;
+            Autodesk.Revit.DB.CurveLoop curveLoop;
+            var loop = pathLoopBoxed as Autodesk.Revit.DB.CurveLoop;
+            if (loop != null)
+            {
+                curveLoop = loop;
+            }
+            else
+            {
+                curveLoop = new Autodesk.Revit.DB.CurveLoop();
+                curveLoop.Append((Autodesk.Revit.DB.Curve)pathLoopBoxed);
+            }
 
+            return curveLoop;
+        }
+
+        public static Solid SolidBySweep( Autodesk.Revit.DB.CurveLoop pathLoop, Autodesk.Revit.DB.CurveLoop profileLoop )
+        {
+            // these are the defaults
+            int attachementIndex = 0;
+            double attachementPar = 0.0;
+
+            // align profile to axis of curve
             if (profileLoop.HasPlane())
             {
-                Autodesk.Revit.DB.Plane profileLoopPlane = profileLoop.GetPlane();
-                Autodesk.Revit.DB.CurveLoopIterator CLiter = pathLoop.GetCurveLoopIterator();
+                var profileLoopPlane = profileLoop.GetPlane();
+                var CLiter = pathLoop.GetCurveLoopIterator();
 
                 for (int indexCurve = 0; indexCurve < attachementIndex && CLiter.MoveNext(); indexCurve++)
                 {
@@ -1848,27 +1864,27 @@ namespace Dynamo.Nodes
                         else
                             toVecTwo = toVecTwo.Normalize();
 
-                        Transform trfToAttach = Transform.CreateTranslation(pathTrf.Origin);
+                        var trfToAttach = Transform.CreateTranslation(pathTrf.Origin);
                         trfToAttach.BasisX = toVecOne;
                         trfToAttach.BasisY = toVecTwo;
                         trfToAttach.BasisZ = toVecOne.CrossProduct(toVecTwo);
 
-                        Transform trfToProfile = Transform.CreateTranslation(fromPoint);
+                        var trfToProfile = Transform.CreateTranslation(fromPoint);
                         trfToProfile.BasisX = fromVecOne;
                         trfToProfile.BasisY = fromVecTwo;
                         trfToProfile.BasisZ = fromVecOne.CrossProduct(fromVecTwo);
 
-                        Transform trfFromProfile = trfToProfile.Inverse;
+                        var trfFromProfile = trfToProfile.Inverse;
 
-                        Transform combineTrf = trfToAttach.Multiply(trfFromProfile);
+                        var combineTrf = trfToAttach.Multiply(trfFromProfile);
 
                         //now get new curve loop
-                        Autodesk.Revit.DB.CurveLoop transformedCurveLoop = new Autodesk.Revit.DB.CurveLoop();
+                        var transformedCurveLoop = new Autodesk.Revit.DB.CurveLoop();
                         Autodesk.Revit.DB.CurveLoopIterator CLiterT = profileLoop.GetCurveLoopIterator();
                         for (; CLiterT.MoveNext(); )
                         {
-                            Curve curCurve = CLiterT.Current;
-                            Curve curCurveTransformed = curCurve.CreateTransformed(combineTrf);
+                            var curCurve = CLiterT.Current;
+                            var curCurveTransformed = curCurve.CreateTransformed(combineTrf);
 
                             transformedCurveLoop.Append(curCurveTransformed);
                         }
@@ -1876,24 +1892,32 @@ namespace Dynamo.Nodes
                     }
                 }
             }
-            loopList.Add(profileLoop);
 
-            Solid result = GeometryCreationUtilities.CreateSweptGeometry(pathLoop, attachementIndex, attachementPar, loopList);
+            return GeometryCreationUtilities.CreateSweptGeometry(pathLoop, 0, 0, new List<Autodesk.Revit.DB.CurveLoop>(){profileLoop});
+        }
 
-            return Value.NewContainer(result);
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            // unbox
+            var path = CurveLoopFromContainer((FScheme.Value.Container) args[0]);
+            var profile = (Autodesk.Revit.DB.CurveLoop)((Value.Container)args[1]).Item;
+
+            return Value.NewContainer(SolidBySweep( path, profile ));
         }
     }
 
-    [NodeName("Solid by Extrude")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
-    [NodeDescription("Creates a solid by linearly extruding one or more closed coplanar curve loops.")]
+    [NodeName("Extrude")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID_CREATE)]
+    [NodeDescription("Creates a solid by linearly extruding a closed curve.")]
     public class CreateExtrusionGeometry : GeometryBase
     {
+
         public CreateExtrusionGeometry()
         {
-            InPortData.Add(new PortData("profiles", "A list of curve loops to be extruded.", typeof(Value.List)));
+            InPortData.Add(new PortData("profile", "The profile curve (Can be a Curve or CurveLoops", typeof(Value.Container)));
             InPortData.Add(new PortData("direction", "The direction in which to extrude the profile.", typeof(Value.Container)));
             InPortData.Add(new PortData("distance", "The positive distance by which the loops are to be extruded.", typeof(Value.Number)));
+
             OutPortData.Add(new PortData("solid", "The extrusion.", typeof(Value.Container)));
 
             RegisterAllPorts();
@@ -1901,8 +1925,8 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            XYZ direction = (XYZ)((Value.Container)args[1]).Item;
-            double distance = ((Value.Number)args[2]).Item;
+            var direction = (XYZ)((Value.Container)args[1]).Item;
+            var distance = ((Value.Number)args[2]).Item;
 
             //incoming list will have two lists in it
             //each list will contain curves. convert the curves
@@ -1932,8 +1956,8 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Solid by Loft")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
+    [NodeName("Blend")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID_CREATE)]
     [NodeDescription("Creates a solid by blending two closed curve loops lying in non-coincident planes.")]
     public class CreateBlendGeometry : GeometryBase
     {
@@ -1941,15 +1965,15 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("first loop", "The first curve loop. The loop must be a closed planar loop.", typeof(Value.Container)));
             InPortData.Add(new PortData("second loop", "The second curve loop, which also must be a closed planar loop.", typeof(Value.Container)));
-            OutPortData.Add(new PortData("solid", "The blend geometry.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("solid", "The blended geometry.", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var firstLoop = (Autodesk.Revit.DB.CurveLoop)((Value.Container)args[0]).Item;
-            var secondLoop = (Autodesk.Revit.DB.CurveLoop)((Value.Container)args[1]).Item;
+            var firstLoop = CreateSweptGeometry.CurveLoopFromContainer((Value.Container)args[0]);
+            var secondLoop = CreateSweptGeometry.CurveLoopFromContainer((Value.Container)args[1]);
 
             List<VertexPair> vertPairs = null;
 
@@ -1973,7 +1997,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Solid Boolean")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID_BOOLEAN)]
     [NodeDescription("Creates solid by union, intersection or difference of two solids.")]
     public class BooleanOperation : GeometryBase
     {
@@ -2075,8 +2099,8 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Solid Boolean Difference")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
+    [NodeName("Boolean Difference")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID_BOOLEAN)]
     [NodeDescription("Creates solid by boolean difference of two solids")]
     public class SolidDifference : GeometryBase
     {
@@ -2103,8 +2127,8 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Solid Boolean Union")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
+    [NodeName("Boolean Union")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID_BOOLEAN)]
     [NodeDescription("Creates solid by boolean union of two solids")]
     public class SolidUnion : GeometryBase
     {
@@ -2131,8 +2155,8 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Solid Boolean Intersection")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
+    [NodeName("Boolean Intersection")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID_BOOLEAN)]
     [NodeDescription("Creates solid by boolean difference of two solids")]
     public class SolidIntersection : GeometryBase
     {
@@ -2160,7 +2184,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Solid from Element")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID_PRIMITIVES)]
     [NodeDescription("Creates reference to the solid in the element's geometry objects.")]
     public class ElementSolid : GeometryBase
     {
@@ -2279,7 +2303,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Cylinder")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID_PRIMITIVES)]
     [NodeDescription("Create a cylinder from the axis, origin, radius, and height")]
     public class SolidCylinder : GeometryBase
     {
@@ -2331,7 +2355,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Sphere")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID_PRIMITIVES)]
     [NodeDescription("Creates sphere from a center point and axis")]
     public class SolidSphere : GeometryBase
     {
@@ -2377,7 +2401,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Torus")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID_PRIMITIVES)]
     [NodeDescription("Creates torus from axis, radius, and outer radius")]
     public class SolidTorus : GeometryBase
     {
@@ -2436,7 +2460,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Box by Two Corners")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID_PRIMITIVES)]
     [NodeDescription("Create solid box aligned with the world coordinate system given two corner points")]
     public class SolidBoxByTwoCorners : GeometryBase
     {
@@ -2494,7 +2518,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Box by Center and Dimensions")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID_PRIMITIVES)]
     [NodeDescription("Create solid box aligned with the world coordinate system given the center of the box and the length of its axes")]
     public class SolidBoxByCenterAndDimensions : GeometryBase
     {
@@ -2954,10 +2978,10 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            Solid thisSolid = (Solid)((Value.Container)args[0]).Item;
+            var thisSolid = (Solid)((Value.Container)args[0]).Item;
 
-            FSharpList<Value> vals = ((Value.List)args[1]).Item;
-            List<GeometryObject> edgesToBeReplaced = new List<GeometryObject>();
+            var vals = ((Value.List)args[1]).Item;
+            var edgesToBeReplaced = new List<GeometryObject>();
             var doc = dynRevitSettings.Doc;
 
             for (int ii = 0; ii < vals.Count(); ii++)
@@ -3018,7 +3042,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Holes in Solid")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
-    [NodeDescription("List onesided edges of solid as CurveLoops")]
+    [NodeDescription("List open faces of solid as CurveLoops")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
     public class OnesidedEdgesAsCurveLoops : NodeWithOneOutput
     {
