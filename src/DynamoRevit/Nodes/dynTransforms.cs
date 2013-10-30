@@ -25,7 +25,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Transform From Origin and Vectors")]
+    [NodeName("Transform from Origin and Vectors")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Returns a transformation with origin (o), up vector (u), and forward (f).")]
     [NodeSearchTags("move", "copy")]
