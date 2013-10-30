@@ -2136,7 +2136,7 @@ namespace Dynamo.Nodes
             // revolve arc to form sphere
             return
                 GeometryCreationUtilities.CreateRevolvedGeometry(
-                    new Autodesk.Revit.DB.Frame(center, XYZ.BasisX, XYZ.BasisY, XYZ.BasisZ), circleLoop, 0,
+                    new Autodesk.Revit.DB.Frame(center, XYZ.BasisX, XYZ.BasisY, XYZ.BasisZ), new List<Autodesk.Revit.DB.CurveLoop>() { circleLoop }, 0,
                     2 * Circle.RevitPI);
 
         }
