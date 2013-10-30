@@ -1454,7 +1454,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Boolean Operation")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID_BOOLEAN)]
-    [NodeDescription("Creates solid by union, intersection or difference of two solids.")]
+    [NodeDescription("Creates a solid by union, intersection or difference of two solids.")]
     public class BooleanOperation : GeometryBase
     {
         ComboBox combo;
@@ -1557,7 +1557,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Boolean Difference")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID_BOOLEAN)]
-    [NodeDescription("Creates solid by boolean difference of two solids")]
+    [NodeDescription("Creates a solid by boolean difference of two solids")]
     public class SolidDifference : GeometryBase
     {
 
@@ -1585,7 +1585,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Boolean Union")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID_BOOLEAN)]
-    [NodeDescription("Creates solid by boolean union of two solids")]
+    [NodeDescription("Creates a solid by boolean union of two solids")]
     public class SolidUnion : GeometryBase
     {
 
@@ -2556,7 +2556,7 @@ namespace Dynamo.Nodes
             return Value.NewList(result);
         }
     }
-
+     
     [NodeName("Cap Holes in Solid")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
     [NodeDescription("Patch set of faces as Solid ")]
