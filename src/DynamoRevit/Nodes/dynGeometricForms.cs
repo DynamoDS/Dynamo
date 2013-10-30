@@ -512,65 +512,6 @@ namespace Dynamo.Nodes
                             throw new Exception("Gap between curves in chain of reference curves.");
                     }                 
                 }
-                /* not needed check
-                if (refCurve.GeometryCurve is Line)
-                {
-                    Line thisLine = refCurve.GeometryCurve as Line;
-                    if (thisPlane != null)
-                    {
-                        if (Math.Abs(thisPlane.Normal.DotProduct(thisLine.Direction)) > tolerance)
-                            throw new Exception(" Planar Ref Curve Chain fails: not planar");
-                        if (Math.Abs(thisPlane.Normal.DotProduct(thisLine.Origin - thisPlane.Origin)) > tolerance)
-                            throw new Exception(" Planar Ref Curve Chain fails: not planar");
-                    }
-                    else if (oneLine == null)
-                        oneLine = thisLine;
-                    else
-                    {
-                        if (Math.Abs(oneLine.Direction.DotProduct(thisLine.Direction)) > 1.0 - tolerance)
-                        {
-                            double projAdjust = oneLine.Direction.DotProduct(oneLine.Origin - thisLine.Origin);
-                            XYZ adjustedOrigin = thisLine.Origin + projAdjust * oneLine.Direction;
-                            if (adjustedOrigin.DistanceTo(oneLine.Origin) > tolerance)
-                                throw new Exception(" Planar Ref Curve Chain fails: not planar");
-                        }
-                        else
-                        {
-                            XYZ norm = oneLine.Direction.CrossProduct(thisLine.Direction);
-                            norm = norm.Normalize();
-                            thisPlane = new Plane(norm, oneLine.Origin);
-                            if (Math.Abs(thisPlane.Normal.DotProduct(thisLine.Origin - thisPlane.Origin)) > tolerance)
-                                throw new Exception(" Planar Ref Curve Chain fails: not planar");
-                        }
-
-                    }
-                }
-                else
-                {
-                    CurveLoop curveLoop = new CurveLoop();
-                    curveLoop.Append(refCurve.GeometryCurve);
-                    if (!curveLoop.HasPlane())
-                        throw new Exception(" Planar Ref Curve Chain fails: curve is not planar.");
-                    Plane curvePlane = curveLoop.GetPlane();
-                    if (thisPlane == null && oneLine == null)
-                        thisPlane = curveLoop.GetPlane();
-                    else if (thisPlane != null)
-                    {
-                        if (Math.Abs(thisPlane.Normal.DotProduct(curvePlane.Normal)) < 1.0 - tolerance)
-                            throw new Exception(" Planar Ref Curve Chain fails: not planar");
-                        if (Math.Abs(thisPlane.Normal.DotProduct(curvePlane.Origin - thisPlane.Origin)) > tolerance)
-                            throw new Exception(" Planar Ref Curve Chain fails: not planar");
-                    }
-                    else if (oneLine != null)
-                    {
-                        thisPlane = curvePlane;
-                        if (Math.Abs(thisPlane.Normal.DotProduct(oneLine.Direction)) > tolerance)
-                            throw new Exception(" Planar Ref Curve Chain fails: not planar");
-                        if (Math.Abs(thisPlane.Normal.DotProduct(oneLine.Origin - thisPlane.Origin)) > tolerance)
-                            throw new Exception(" Planar Ref Curve Chain fails: not planar");
-                    }
-                }
-                */
 
                 refIds.Add(refCurve.Id);
                 myModelCurves.Append(refCurve);

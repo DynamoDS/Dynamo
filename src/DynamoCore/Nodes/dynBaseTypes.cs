@@ -67,7 +67,7 @@ namespace Dynamo.Nodes
         public const string REVIT = "Revit";
         public const string REVIT_DOCUMENT = "Revit.Document";
         public const string REVIT_DATUMS = "Revit.Datums";
-        public const string REVIT_FAMILYCREATION = "Revit.Family Creation";
+        public const string REVIT_FAMILIES = "Revit.Families";
         public const string REVIT_VIEW = "Revit.View";
         public const string REVIT_PARAMETERS = "Revit.Parameters";
         public const string REVIT_BAKE = "Revit.Bake";
