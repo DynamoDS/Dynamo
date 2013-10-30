@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Curve = Autodesk.DesignScript.Geometry.Curve;
 
-namespace Dynamo.Revit
+namespace DSRevitNodes
 {
     class Floor
     {

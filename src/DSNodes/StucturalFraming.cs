@@ -2,7 +2,7 @@
 using Autodesk.Revit.DB;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
-namespace Dynamo.Revit
+namespace DSRevitNodes
 {
     class StucturalFraming
     {

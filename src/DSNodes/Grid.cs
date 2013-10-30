@@ -1,11 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Autodesk.Revit.DB;
+using Autodesk.DesignScript.Geometry;
 
-namespace Dynamo.Revit
+namespace DSRevitNodes
 {
     class Grid
     {
+        static Grid ByStartPtEndPt(Point start, Point end)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
