@@ -6,7 +6,7 @@ using Autodesk.Revit.DB;
 
 namespace Dynamo.Nodes
 {
-    [NodeName("Get Material By Name")]
+    [NodeName("Get Material by Name")]
     [NodeCategory(BuiltinNodeCategories.REVIT_DOCUMENT)]
     [NodeDescription("Get a material from the active Revit document by name.")]
     public class Material : NodeWithOneOutput
