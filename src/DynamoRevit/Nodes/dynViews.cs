@@ -505,7 +505,7 @@ namespace Dynamo.Nodes
     
     [NodeName("Watch Image")]
     [NodeDescription("Previews an image")]
-    [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
+    [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
     public class WatchImage : NodeWithOneOutput
     {
 
