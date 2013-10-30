@@ -56,6 +56,9 @@
         <GradientStop Color="{DynamicResource ControlLightColor}" Offset="1" />
     </LinearGradientBrush>
 
+    <!-- Import -->
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    
     <!-- Embedded Font -->
     <!-- Open Sans (under Apache License, version 2.0)
          Link: http://www.google.com/fonts/specimen/Open+Sans -->
@@ -336,55 +339,53 @@
             </Setter>
         </Style>
 
-    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-    <Style x:Key="SDarkTextBox" TargetType="{x:Type TextBox}">
+    <Style x:Key="SDarkTextBox"
+           BasedOn="{StaticResource {x:Type TextBox}}"
+           TargetType="{x:Type TextBox}">
+        <Setter Property="Foreground" Value="#bbbbbb" />
+        <Setter Property="CaretBrush" Value="White" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="FontSize" Value="14px" />
+        <Setter Property="Padding" Value="5" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate>
+                <ControlTemplate TargetType="{x:Type TextBox}">
                     <Border Name="borderText"
                             BorderThickness="1px"
-                            BorderBrush="#444">
+                            BorderBrush="#444"
+                            Background="#2c2c2c">
                         <Grid>
-                            <TextBox Name="textBox"
-                                     HorizontalAlignment="Stretch"
-                                     Padding="5"
-                                     Background="#2c2c2c"
-                                     Foreground="#bbbbbb"
-                                     FontSize="14px"
-                                     AcceptsReturn="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=AcceptsReturn}"
-                                     MinLines="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=MinLines}"
-                                     MaxHeight="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=MaxHeight}"
-                                     IsEnabled="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsEnabled}"
-                                     CaretBrush="White"
-                                     VerticalAlignment="Stretch"
-                                     BorderThickness="0"
-                                     HorizontalScrollBarVisibility="Disabled"
-                                     VerticalScrollBarVisibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=VerticalScrollBarVisibility}"
-                                     TextWrapping="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TextWrapping}"
-                                     Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text}" />
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                             <TextBlock x:Name="previewText"
                                        Foreground="#555555"
                                        FontSize="12px"
                                        Padding="6"
+                                       Margin="4 0 0 0"
+                                       IsHitTestVisible="False"
                                        Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}"
                                        Text="{TemplateBinding Tag}" />
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsKeyboardFocusWithin"
-                                 Value="True">
+                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
                             <Setter TargetName="borderText"
                                     Property="BorderBrush"
                                     Value="#666666" />
                         </Trigger>
-                        <Trigger Property="IsEnabled"
-                                 Value="False">
-                            <Setter TargetName="textBox"
-                                    Property="Foreground"
+
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground"
                                     Value="#555555" />
                             <Setter TargetName="borderText"
                                     Property="BorderBrush"
                                     Value="#444444" />
+                        </Trigger>
+
+                        <Trigger Property="Text" Value="">
+                            <Setter Property="Visibility"
+                                    TargetName="previewText"
+                                    Value="Visible" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
