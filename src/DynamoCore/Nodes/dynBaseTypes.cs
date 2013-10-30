@@ -4040,10 +4040,6 @@ namespace Dynamo.Nodes
     [NodeDescription("Change a number value with a slider.")]
     public partial class DoubleSliderInput : Double
     {
-        //Slider tb_slider;
-        //dynTextBox mintb;
-        //dynTextBox maxtb;
-        //dynTextBox valtb;
 
         private double max;
         private double min;
