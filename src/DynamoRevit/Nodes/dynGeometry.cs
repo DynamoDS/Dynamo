@@ -121,7 +121,7 @@ namespace Dynamo.Nodes
 
     [NodeName("XYZ Components")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
-    [NodeDescription("Fetches the X value of the given XYZ")]
+    [NodeDescription("Get the components of an XYZ")]
     public class XyzComponents : NodeModel
     {
         public XyzComponents()
@@ -287,7 +287,7 @@ namespace Dynamo.Nodes
     [NodeName("Unit X")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
     [NodeDescription("Creates an XYZ representing the X basis (1,0,0).")]
-    [NodeSearchTags("axis")]
+    [NodeSearchTags("axis","xyz")]
     public class XyzBasisX : GeometryBase
     {
         public XyzBasisX()
@@ -307,7 +307,7 @@ namespace Dynamo.Nodes
     [NodeName("Unit Y")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
     [NodeDescription("Creates an XYZ representing the Y basis (0,1,0).")]
-    [NodeSearchTags("axis")]
+    [NodeSearchTags("axis", "xyz")]
     public class XyzBasisY : GeometryBase
     {
         public XyzBasisY()
@@ -327,7 +327,7 @@ namespace Dynamo.Nodes
     [NodeName("Unit Z")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
     [NodeDescription("Creates an XYZ representing the Z basis (0,0,1).")]
-    [NodeSearchTags("axis")]
+    [NodeSearchTags("axis", "xyz")]
     public class XyzBasisZ : GeometryBase
     {
         public XyzBasisZ()
@@ -341,6 +341,32 @@ namespace Dynamo.Nodes
         {
 
             XYZ pt = XYZ.BasisZ;
+            return Value.NewContainer(pt);
+        }
+    }
+
+    [NodeName("Scale XYZ")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
+    [NodeDescription("Multiplies each component of an XYZ by a number.")]
+    public class XyzScale : GeometryBase
+    {
+        public XyzScale()
+        {
+            InPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
+            InPortData.Add(new PortData("n", "Scale amount", typeof(Value.Number)));
+
+            OutPortData.Add(new PortData("xyz", "Scaled XYZ", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            XYZ xyz = (XYZ)((Value.Container)args[0]).Item;
+            double n = ((Value.Number)args[1]).Item;
+
+            XYZ pt = xyz.Multiply(n);
+
             return Value.NewContainer(pt);
         }
     }
@@ -368,32 +394,6 @@ namespace Dynamo.Nodes
             XYZ base_xyz = (XYZ)((Value.Container)args[2]).Item;
 
             XYZ pt = n * (xyz - base_xyz) + base_xyz;
-
-            return Value.NewContainer(pt);
-        }
-    }
-
-    [NodeName("Scale XYZ")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
-    [NodeDescription("Multiplies each component of an XYZ by a number.")]
-    public class XyzScale : GeometryBase
-    {
-        public XyzScale()
-        {
-            InPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
-            InPortData.Add(new PortData("n", "Scale amount", typeof(Value.Number)));
-
-            OutPortData.Add(new PortData("xyz", "Scaled XYZ", typeof(Value.Container)));
-
-            RegisterAllPorts();
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            XYZ xyz = (XYZ)((Value.Container)args[0]).Item;
-            double n = ((Value.Number)args[1]).Item;
-
-            XYZ pt = xyz.Multiply(n);
 
             return Value.NewContainer(pt);
         }
@@ -516,6 +516,30 @@ namespace Dynamo.Nodes
             XYZ b = (XYZ)((Value.Container)args[1]).Item;
 
             return Value.NewContainer(a.CrossProduct(b));
+        }
+    }
+
+    [NodeName("XYZ Dot Product")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
+    [NodeDescription("Calculate the dot product of two XYZs.")]
+    [NodeSearchTags("inner")]
+    public class XyzDotProduct : GeometryBase
+    {
+        public XyzDotProduct()
+        {
+            InPortData.Add(new PortData("a", "XYZ A.", typeof(Value.Container)));
+            InPortData.Add(new PortData("b", "XYZ B.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("xyz", "The dot product of vectors A and B. ", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            XYZ a = (XYZ)((Value.Container)args[0]).Item;
+            XYZ b = (XYZ)((Value.Container)args[1]).Item;
+
+            return Value.NewContainer(a.DotProduct(b));
         }
     }
 
