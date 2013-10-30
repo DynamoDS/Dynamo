@@ -997,7 +997,6 @@ namespace Dynamo.Nodes
         }
     }
 
-
     [NodeName("Transform Curve")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
     [NodeDescription("Returns the curve (c) transformed by the transform (t).")]
@@ -1383,16 +1382,16 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             //Build a sequence that unwraps the input list from it's Value form.
-            IEnumerable<XYZ> pts = ((Value.List)args[0]).Item.Select(
+            var pts = ((Value.List)args[0]).Item.Select(
                x => (XYZ)((Value.Container)x).Item
             );
 
             var results = FSharpList<Value>.Empty;
 
             var enumerable = pts as XYZ[] ?? pts.ToArray();
-            for (int i = 1; i < enumerable.Count(); i++)
+            for (var i = 1; i < enumerable.Count(); i++)
             {
-                Line l = dynRevitSettings.Revit.Application.Create.NewLineBound(enumerable.ElementAt(i), enumerable.ElementAt(i - 1));
+                var l = dynRevitSettings.Revit.Application.Create.NewLineBound(enumerable.ElementAt(i), enumerable.ElementAt(i - 1));
 
                 results = FSharpList<Value>.Cons(Value.NewContainer(l), results);
             }
