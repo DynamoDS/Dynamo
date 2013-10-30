@@ -397,9 +397,9 @@ namespace Dynamo
                         var testPt = points[k];
                         var testNorm = norms[k];
 
-                        if (new_point.X == testPt.X &&
-                            new_point.Y == testPt.Y &&
-                            new_point.Z == testPt.Z)
+                        if (Math.Abs(new_point.X - testPt.X) < 0.00001 &&
+                            Math.Abs(new_point.Y - testPt.Y) < 0.00001 &&
+                            Math.Abs(new_point.Z - testPt.Z) < 0.00001)
                         {
                             foundIndex = k;
                             //average the merged normals
@@ -420,9 +420,10 @@ namespace Dynamo
                     tex.Add(new System.Windows.Point(0, 0));
                     octree.AddNode(new_point.X, new_point.Y, new_point.Z, node.GUID.ToString());
                 }
-
-                builder.Append(points, tris, norms, tex);
             }
+
+            builder.Append(points, tris, norms, tex);
+            Debug.WriteLine(string.Format("Mesh had {0} faces coming in and {1} faces going out.", rmesh.NumTriangles, builder.TriangleIndices.Count / 3));
 
             return builder.ToMesh(true);
         }
