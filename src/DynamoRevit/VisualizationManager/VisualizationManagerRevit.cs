@@ -456,6 +456,9 @@ namespace Dynamo
             return builder.ToMesh(true);
         }
 
+        /// <summary>
+        /// A class for storing data about a point for mesh processing.
+        /// </summary>
         protected class PointData
         {
             internal List<Vector3D> Normals { get; set; }
