@@ -167,7 +167,7 @@ namespace Dynamo.Nodes
             results = Elements.Aggregate(results, (current, id) => FSharpList<Value>.Cons(Value.NewContainer(dynRevitSettings.Doc.Document.GetElement(id)), current));
             results.Reverse();
 
-            return Value.NewContainer(results);
+            return Value.NewList(results);
         }
         
     }
