@@ -16,6 +16,7 @@ namespace Dynamo.Nodes
     public partial class CodeBlockNodeModel : NodeModel
     {
         private string code = "Your Code Goes Here";
+        private string previewVariable = null;
         private List<Statement> codeStatements = new List<Statement>();
 
         #region Public Methods
@@ -135,6 +136,14 @@ namespace Dynamo.Nodes
             BinaryExpressionNode indexedStatement = resultNodes[index] as BinaryExpressionNode;
             return indexedStatement.LeftNode as AssociativeNode;
         }
+
+        public override string VariableToPreview
+        {
+            get
+            {
+                return previewVariable;
+            }
+        }
         #endregion
 
         #region Private Methods
@@ -168,6 +177,16 @@ namespace Dynamo.Nodes
                         tempStatement = Statement.CreateInstance(node, this.GUID);
                     }
                     codeStatements.Add(tempStatement);
+
+                    var binaryStatement = node as BinaryExpressionNode;
+                    if (binaryStatement != null && binaryStatement.Optr == ProtoCore.DSASM.Operator.assign)
+                    {
+                        var lhsIdent = binaryStatement.LeftNode as IdentifierNode;
+                        if (lhsIdent != null)
+                        {
+                            previewVariable = lhsIdent.Name;
+                        }
+                    }
                 }
             }
             else
