@@ -74,12 +74,19 @@ namespace Dynamo.Nodes
 
         public static XYZ FromPolarCoordinates(double r, double theta, double phi)
         {
+            // if degenerate, return 0
             if (Math.Abs(r) < System.Double.Epsilon)
             {
                 return new XYZ();
             }
 
+            // do some trig
+            var x = r * Math.Cos(theta);
+            var y = r * Math.Sin(theta);
+            var z = r * Math.Cos(phi);
 
+            // all done
+            return new XYZ(x, y, z);
 
         }
 
@@ -89,7 +96,7 @@ namespace Dynamo.Nodes
             var theta = ((Value.Number)args[1]).Item;
             var phi = ((Value.Number)args[2]).Item;
     
-            return Value.NewContainer(pt);
+            return Value.NewContainer(FromPolarCoordinates(r, theta, phi));
         }
     }
 
