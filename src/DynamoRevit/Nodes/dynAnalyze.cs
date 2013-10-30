@@ -146,4 +146,49 @@ namespace Dynamo.Nodes
 
     }
 
+    [NodeName("Frame on Curve")]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_CURVE)]
+    [NodeDescription("Evaluates tangent vector of curve or edge at parameter.")]
+    public class TangentTransformOnCurveOrEdge : GeometryBase
+    {
+        public TangentTransformOnCurveOrEdge()
+        {
+            InPortData.Add(new PortData("parameter", "The normalized parameter to evaluate at within 0..1 range except for closed curve", typeof(Value.Number)));
+            InPortData.Add(new PortData("curve or edge", "The geometry curve or edge to evaluate.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("transform", "tangent transform at parameter.", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var parameter = ((Value.Number)args[0]).Item;
+
+            var thisCurve = ((Value.Container)args[1]).Item as Curve;
+            var thisEdge = (thisCurve != null) ? null : (((Value.Container)args[1]).Item as Edge);
+
+            if (thisCurve == null && thisEdge == null && ((Value.Container)args[1]).Item is Reference)
+            {
+                Reference r = (Reference)((Value.Container)args[1]).Item;
+                if (r != null)
+                {
+                    Element refElem = dynRevitSettings.Doc.Document.GetElement(r.ElementId);
+                    if (refElem != null)
+                    {
+                        GeometryObject geob = refElem.GetGeometryObjectFromReference(r);
+                        thisEdge = geob as Edge;
+                        if (thisEdge == null)
+                            thisCurve = geob as Curve;
+                    }
+                }
+            }
+
+            Transform result = (thisCurve != null) ?
+                (!XyzOnCurveOrEdge.curveIsReallyUnbound(thisCurve) ? thisCurve.ComputeDerivatives(parameter, true) : thisCurve.ComputeDerivatives(parameter, false))
+                :
+                (thisEdge == null ? null : thisEdge.ComputeDerivatives(parameter));
+
+            return Value.NewContainer(result);
+        }
+    }
 }

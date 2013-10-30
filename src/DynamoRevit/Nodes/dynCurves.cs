@@ -15,6 +15,80 @@ using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace Dynamo.Nodes
 {
+    [NodeName("Evaluate Curve")]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_CURVE)]
+    [NodeDescription("Evaluates curve or edge at parameter.")]
+    public class XyzOnCurveOrEdge : GeometryBase
+    {
+        public XyzOnCurveOrEdge()
+        {
+            InPortData.Add(new PortData("parameter", "The normalized parameter to evaluate at within 0..1 range, any for closed curve.", typeof(Value.Number)));
+            InPortData.Add(new PortData("curve or edge", "The curve or edge to evaluate.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("XYZ", "XYZ at parameter.", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public static bool curveIsReallyUnbound(Curve curve)
+        {
+            if (!curve.IsBound)
+                return true;
+            if (!curve.IsCyclic)
+                return false;
+            double period = curve.Period;
+            if (curve.get_EndParameter(1) > curve.get_EndParameter(0) + period - 0.000000001)
+                return true;
+            return false;
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            double parameter = ((Value.Number)args[0]).Item;
+
+            Curve thisCurve = null;
+            Edge thisEdge = null;
+            if (((Value.Container)args[1]).Item is Curve)
+                thisCurve = ((Value.Container)args[1]).Item as Curve;
+            else if (((Value.Container)args[1]).Item is Edge)
+                thisEdge = ((Value.Container)args[1]).Item as Edge;
+            else if (((Value.Container)args[1]).Item is Reference)
+            {
+                Reference r = (Reference)((Value.Container)args[1]).Item;
+                if (r != null)
+                {
+                    Element refElem = dynRevitSettings.Doc.Document.GetElement(r.ElementId);
+                    if (refElem != null)
+                    {
+                        GeometryObject geob = refElem.GetGeometryObjectFromReference(r);
+                        thisEdge = geob as Edge;
+                        if (thisEdge == null)
+                            thisCurve = geob as Curve;
+                    }
+                    else
+                        throw new Exception("Could not accept second in-port for Evaluate curve or edge node");
+                }
+            }
+            else if (((Value.Container)args[1]).Item is CurveElement)
+            {
+                CurveElement cElem = ((Value.Container)args[1]).Item as CurveElement;
+                if (cElem != null)
+                {
+                    thisCurve = cElem.GeometryCurve;
+                }
+                else
+                    throw new Exception("Could not accept second in-port for Evaluate curve or edge node");
+
+            }
+            else
+                throw new Exception("Could not accept second in-port for Evaluate curve or edge node");
+
+            XYZ result = (thisCurve != null) ? (!curveIsReallyUnbound(thisCurve) ? thisCurve.Evaluate(parameter, true) : thisCurve.Evaluate(parameter, false))
+                :
+                (thisEdge == null ? null : thisEdge.Evaluate(parameter));
+
+            return Value.NewContainer(result);
+        }
+    }
 
     [NodeName("Line by Endpoints")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
