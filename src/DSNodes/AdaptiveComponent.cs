@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Autodesk.DesignScript.Geometry;
 
-namespace Dynamo.Revit
+namespace DSRevitNodes
 {
     public class AdaptiveComponent
     {

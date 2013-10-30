@@ -65,6 +65,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions.cs" />
+    <Compile Include="Face.cs" />
     <Compile Include="Point.cs" />
     <Compile Include="AdaptiveComponent.cs" />
     <Compile Include="DividedPath.cs" />
@@ -78,6 +80,7 @@
     <Compile Include="Level.cs" />
     <Compile Include="Parameter.cs" />
     <Compile Include="ReferenceCurve.cs" />
+    <Compile Include="ReferencePlane.cs" />
     <Compile Include="ReferencePoint.cs" />
     <Compile Include="Selection.cs" />
     <Compile Include="Solid.cs" />

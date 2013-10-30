@@ -3,14 +3,14 @@ using Autodesk.DesignScript.Geometry;
 
 namespace DSRevitNodes
 {
-    class DividedPath
+    class ReferencePlane
     {
-        static Autodesk.Revit.DB.DividedPath ByCurveAndEqualDivisions(Curve c, double divisions)
+        static Autodesk.Revit.DB.ReferencePlane ByLine(Line line)
         {
             throw new NotImplementedException();
         }
 
-        static Autodesk.Revit.DB.DividedPath ByCurveAndDivisionsOfLength(Curve c, double length)
+        static Autodesk.Revit.DB.ReferencePlane ByStartPtEndPt(Point start, Point end)
         {
             throw new NotImplementedException();
         }

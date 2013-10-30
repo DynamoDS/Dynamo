@@ -5,13 +5,13 @@ using Point = Autodesk.DesignScript.Geometry.Point;
 using Curve = Autodesk.DesignScript.Geometry.Curve;
 using Face = Autodesk.DesignScript.Geometry.Face;
 
-namespace Dynamo.Revit
+namespace DSRevitNodes
 {
     class FamilyInstance
     {
         public Point Location { get; set; }
 
-        static FamilyInstance ByPoint(FamilySymbol fs, Point p)
+        static FamilyInstance ByPt(FamilySymbol fs, Point p)
         {
             throw new NotImplementedException();
         }
@@ -21,12 +21,17 @@ namespace Dynamo.Revit
             throw new NotImplementedException();
         }
 
-        static FamilyInstance ByCoordinates(FamilySymbol fs, double x, double y, double z)
+        static FamilyInstance ByCoords(FamilySymbol fs, double x, double y, double z)
         {
             throw new NotImplementedException();
         }
 
-        static FamilyInstance ByUVPointOnFace(FamilySymbol fs, Vector uv, Face f)
+        static FamilyInstance ByUVPtOnFace(FamilySymbol fs, Vector uv, Face f)
+        {
+            throw new NotImplementedException();
+        }
+
+        static FamilyInstance ByPtAndLevel(Point p, Level l)
         {
             throw new NotImplementedException();
         }

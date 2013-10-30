@@ -4,7 +4,7 @@ using Autodesk.DesignScript.Geometry;
 using Curve = Autodesk.DesignScript.Geometry.Curve;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
-namespace Dynamo.Revit
+namespace DSRevitNodes
 {
     class Wall
     {

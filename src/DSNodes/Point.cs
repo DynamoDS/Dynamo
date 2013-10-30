@@ -32,15 +32,13 @@ namespace DSRevitNodes
     [RegisterForTrace]
     public class Point : AbstractGeometry
     {
-        protected ReferencePoint RefPoint;
+        protected Autodesk.Revit.DB.ReferencePoint RefPoint;
         protected ElementId ID;
 
         private Point()
         {
             
         }
-
-
 
         /// <summary>
         /// A sample property
@@ -79,7 +77,7 @@ namespace DSRevitNodes
             var transManager = new TransactionManager();
             var transaction = transManager.StartTransaction(Document);
 
-            ReferencePoint refPoint = Document.FamilyCreate.NewReferencePoint(new XYZ(x, y, z));
+            Autodesk.Revit.DB.ReferencePoint refPoint = Document.FamilyCreate.NewReferencePoint(new XYZ(x, y, z));
             ElementId elementId = refPoint.Id;
 
             transaction.CommitTransaction();
