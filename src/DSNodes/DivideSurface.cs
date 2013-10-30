@@ -1,11 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Autodesk.Revit.DB;
+using Face = Autodesk.DesignScript.Geometry.Face;
 
 namespace DSRevitNodes
 {
     class DivideSurface
     {
+        static DividedSurface ByFaceUVDivisions(Face f, double u, double v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
