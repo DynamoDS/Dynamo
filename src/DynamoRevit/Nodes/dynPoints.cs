@@ -54,7 +54,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Reference Point On Edge")]
+    [NodeName("Reference Point on Edge")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
     [NodeDescription("Creates an element which owns a reference point on a selected edge.")]
     [NodeSearchTags("ref", "pt")]
@@ -107,7 +107,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Reference Point On Face by UV")]
+    [NodeName("Reference Point on Face")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
     [NodeDescription("Creates an element which owns a reference point on a selected face.")]
     [NodeSearchTags("ref", "pt")]
@@ -167,7 +167,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Reference Point By Normal")]
+    [NodeName("Reference Point by Normal")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
     [NodeDescription("Owns a reference point which is projected from a point by normal and distance.")]
     [NodeSearchTags("normal", "ref")]
@@ -334,7 +334,7 @@ namespace Dynamo.Nodes
 
     }
 
-    [NodeName("Evaluate curve or edge")]
+    [NodeName("Evaluate Curve")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
     [NodeDescription("Evaluates curve or edge at parameter.")]
     public class XyzOnCurveOrEdge : GeometryBase
@@ -455,7 +455,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Ref Point By Length")]
+    [NodeName("Reference Point at Length")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
     [NodeDescription("Creates an ref point element on curve located by length from the start or end of the curve.")]
     [NodeSearchTags("ref", "pt", "curve")]
