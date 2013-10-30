@@ -52,7 +52,7 @@ namespace Dynamo.Utilities
             //Step 1: determine which nodes will be inputs to the new node
             var inputs = new HashSet<Tuple<NodeModel, int, Tuple<int, NodeModel>>>(
                 selectedNodeSet.SelectMany(
-                    node => Enumerable.Range(0, node.InPortData.Count).Where(node.HasInput)
+                    node => Enumerable.Range(0, node.InPortData.Count).Where(node.HasConnectedInput)
                         .Select(data => Tuple.Create(node, data, node.Inputs[data]))
                         .Where(input => !selectedNodeSet.Contains(input.Item3.Item2))));
 
@@ -305,7 +305,7 @@ namespace Dynamo.Utilities
                                                   inputReceiverNode,
                                                   0,
                                                   inputReceiverData,
-                                                  0 );
+                                                  PortType.INPUT);
 
                     if (conn1 != null)
                         newNodeWorkspace.Connectors.Add(conn1);
@@ -317,7 +317,7 @@ namespace Dynamo.Utilities
                                                      curriedNode.InnerNode,
                                                      0,
                                                      0,
-                                                     0);
+                                                     PortType.INPUT);
                     if (conn != null)
                         newNodeWorkspace.Connectors.Add(conn);
 
@@ -327,7 +327,7 @@ namespace Dynamo.Utilities
                         inputReceiverNode,
                         0,
                         inputReceiverData,
-                        0);
+                        PortType.INPUT);
 
                     if (conn2 != null)
                         newNodeWorkspace.Connectors.Add(conn2);
@@ -397,7 +397,7 @@ namespace Dynamo.Utilities
                                 node,
                                 outputSenderData,
                                 0,
-                                0 );
+                                PortType.INPUT);
                     
                     if (conn != null)
                         newNodeWorkspace.Connectors.Add(conn);
@@ -448,7 +448,7 @@ namespace Dynamo.Utilities
                         curriedNode.InnerNode,
                         outputSenderData,
                         targetPortIndex + 1,
-                        0);
+                        PortType.INPUT);
 
                     if (conn != null)
                         newNodeWorkspace.Connectors.Add(conn);
@@ -461,12 +461,8 @@ namespace Dynamo.Utilities
             newNodeDefinition.SyncWithWorkspace(true, true);
             dynSettings.Controller.DynamoModel.Workspaces.Add(newNodeWorkspace);
 
-            var collapsedNode = dynSettings.Controller.DynamoModel.CreateNode_Internal(new Dictionary<string, object>()
-                {
-                    {"name", newNodeDefinition.FunctionId.ToString() },
-                    {"x", avgX },
-                    {"y", avgY }
-                });
+            string name = newNodeDefinition.FunctionId.ToString();
+            var collapsedNode = dynSettings.Controller.DynamoModel.CreateNode(avgX, avgY, name);
 
             // place the node as intended, not centered
             collapsedNode.X = avgX;
@@ -481,7 +477,7 @@ namespace Dynamo.Utilities
                                     collapsedNode,
                                     nodeTuple.Item2,
                                     nodeTuple.Item3,
-                                    0 );
+                                    PortType.INPUT);
 
                 if (conn != null)
                     currentWorkspace.Connectors.Add(conn);
@@ -495,7 +491,7 @@ namespace Dynamo.Utilities
                                     nodeTuple.Item1,
                                     nodeTuple.Item2,
                                     nodeTuple.Item3,
-                                    0 );
+                                    PortType.INPUT);
 
                 if (conn != null)
                     currentWorkspace.Connectors.Add(conn);

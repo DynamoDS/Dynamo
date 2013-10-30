@@ -20,12 +20,12 @@ namespace Dynamo.ViewModels
 {
 
     public delegate void WorkspaceSaveEventHandler(object sender, WorkspaceSaveEventArgs e);
+
     public delegate void RequestPackagePublishDialogHandler(PublishPackageViewModel publishViewModel);
 
-    public class DynamoViewModel:ViewModelBase
+    public partial class DynamoViewModel : ViewModelBase, IWatchViewModel
     {
         #region events
-
 
         public event EventHandler RequestManagePackagesDialog;
         public virtual void OnRequestManagePackagesDialog(Object sender, EventArgs e)
@@ -86,6 +86,15 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public event EventHandler SidebarClosed;
+        public virtual void OnSidebarClosed(Object sender, EventArgs e)
+        {
+            if (SidebarClosed != null)
+            {
+                SidebarClosed(this, e);
+            }
+        }
+
         public event WorkspaceSaveEventHandler RequestUserSaveWorkflow;
         public virtual void OnRequestUserSaveWorkflow(Object sender, WorkspaceSaveEventArgs e)
         {
@@ -99,7 +108,7 @@ namespace Dynamo.ViewModels
 
         #region properties
 
-        private DynamoModel _model;        
+        private DynamoModel _model;
         private Point transformOrigin;
         private DynamoController controller;
         private bool runEnabled = true;
@@ -107,7 +116,7 @@ namespace Dynamo.ViewModels
         protected bool debug = false;
         protected bool dynamicRun = false;
 
-        private bool fullscreenWatchShowing = false;
+        private bool fullscreenWatchShowing = true;
         private bool canNavigateBackground = false;
         private bool _watchEscapeIsDown = false;
 
@@ -122,6 +131,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand PasteCommand { get; set; }
         public DelegateCommand AddToSelectionCommand { get; set; }
         public DelegateCommand ShowNewFunctionDialogCommand { get; set; }
+        public DelegateCommand SaveRecordedCommand { get; set; }
         public DelegateCommand ClearCommand { get; set; }
         public DelegateCommand GoHomeCommand { get; set; }
         public DelegateCommand ShowPackageManagerSearchCommand { get; set; }
@@ -163,6 +173,12 @@ namespace Dynamo.ViewModels
         public DelegateCommand ZoomInCommand { get; set; }
         public DelegateCommand ZoomOutCommand { get; set; }
         public DelegateCommand FitViewCommand { get; set; }
+        public DelegateCommand TogglePanCommand { get; set; }
+        public DelegateCommand EscapeCommand { get; set; }
+
+        public DelegateCommand SelectVisualizationInViewCommand { get; set; }
+        public DelegateCommand GetBranchVisualizationCommand { get; set; }
+        public DelegateCommand TogglePreviewBubbleVisibilityCommand { get; set; }
 
         public DelegateCommand ImportLibraryCommand { get; set; }
 
@@ -256,6 +272,9 @@ namespace Dynamo.ViewModels
             get { return _model.CurrentWorkspace; }
         }
 
+        public double WorkspaceActualHeight { get; set; }
+        public double WorkspaceActualWidth { get; set; }
+
         /// <summary>
         /// The index in the collection of workspaces of the current workspace.
         /// This property is bound to the SelectedIndex property in the workspaces tab control
@@ -287,8 +306,8 @@ namespace Dynamo.ViewModels
         public string EditName
         {
             get { return _model.editName; }
-            set 
-            { 
+            set
+            {
                 _model.editName = value;
                 RaisePropertyChanged("EditName");
             }
@@ -382,6 +401,13 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public bool IsMouseDown { get; set; }
+
+        public bool IsShowPreviewByDefault
+        {
+            get { return Controller.IsShowPreviewByDefault; }
+        }
+
         public ConnectorType ConnectorType
         {
             get { return dynSettings.Controller.ConnectorType; }
@@ -412,12 +438,14 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public bool WatchIsResizable { get; set; }
+
         #endregion
 
-        public DynamoViewModel(DynamoController controller)
+        public DynamoViewModel(DynamoController controller, string commandFilePath)
         {
             ConnectorType = ConnectorType.BEZIER;
-            
+
             //create the model
             _model = new DynamoModel();
             dynSettings.Controller.DynamoModel = _model;
@@ -433,6 +461,9 @@ namespace Dynamo.ViewModels
 
             Controller = controller;
 
+            // Instantiate an AutomationSettings to handle record/playback.
+            automationSettings = new AutomationSettings(this, commandFilePath);
+
             OpenCommand = new DelegateCommand(_model.Open, _model.CanOpen);
             ShowOpenDialogAndOpenResultCommand = new DelegateCommand(_model.ShowOpenDialogAndOpenResult, _model.CanShowOpenDialogAndOpenResultCommand);
             WriteToLogCmd = new DelegateCommand(_model.WriteToLog, _model.CanWriteToLog);
@@ -440,6 +471,7 @@ namespace Dynamo.ViewModels
             AddNoteCommand = new DelegateCommand(_model.AddNote, _model.CanAddNote);
             AddToSelectionCommand = new DelegateCommand(_model.AddToSelection, _model.CanAddToSelection);
             ShowNewFunctionDialogCommand = new DelegateCommand(_model.ShowNewFunctionDialogAndMakeFunction, _model.CanShowNewFunctionDialogCommand);
+            SaveRecordedCommand = new DelegateCommand(SaveRecordedCommands, CanSaveRecordedCommands);
             ClearCommand = new DelegateCommand(_model.Clear, _model.CanClear);
             GoHomeCommand = new DelegateCommand(GoHomeView, CanGoHomeView);
             SelectAllCommand = new DelegateCommand(SelectAll, CanSelectAll);
@@ -450,15 +482,15 @@ namespace Dynamo.ViewModels
             NewHomeWorkspaceCommand = new DelegateCommand(MakeNewHomeWorkspace, CanMakeNewHomeWorkspace);
             GoToWorkspaceCommand = new DelegateCommand(GoToWorkspace, CanGoToWorkspace);
             DeleteCommand = new DelegateCommand(_model.Delete, _model.CanDelete);
-            ExitCommand = new DelegateCommand(Exit,CanExit);
+            ExitCommand = new DelegateCommand(Exit, CanExit);
             ToggleFullscreenWatchShowingCommand = new DelegateCommand(ToggleFullscreenWatchShowing, CanToggleFullscreenWatchShowing);
             ToggleCanNavigateBackgroundCommand = new DelegateCommand(ToggleCanNavigateBackground, CanToggleCanNavigateBackground);
             AlignSelectedCommand = new DelegateCommand(AlignSelected, CanAlignSelected); ;
             ShowSaveDialogIfNeededAndSaveResultCommand = new DelegateCommand(ShowSaveDialogIfNeededAndSaveResult, CanShowSaveDialogIfNeededAndSaveResultCommand);
             SaveImageCommand = new DelegateCommand(SaveImage, CanSaveImage);
             ShowSaveImageDialogAndSaveResultCommand = new DelegateCommand(ShowSaveImageDialogAndSaveResult, CanShowSaveImageDialogAndSaveResult);
-            UndoCommand = new DelegateCommand(_model.Undo, _model.CanUndo);
-            RedoCommand = new DelegateCommand(_model.Redo, _model.CanRedo);
+            UndoCommand = new DelegateCommand(Undo, CanUndo);
+            RedoCommand = new DelegateCommand(Redo, CanRedo);
             CopyCommand = new DelegateCommand(_model.Copy, _model.CanCopy);
             PasteCommand = new DelegateCommand(_model.Paste, _model.CanPaste);
             ToggleConsoleShowingCommand = new DelegateCommand(ToggleConsoleShowing, CanToggleConsoleShowing);
@@ -483,6 +515,12 @@ namespace Dynamo.ViewModels
             ZoomInCommand = new DelegateCommand(ZoomIn, CanZoomIn);
             ZoomOutCommand = new DelegateCommand(ZoomOut, CanZoomOut);
             FitViewCommand = new DelegateCommand(FitView, CanFitView);
+            TogglePanCommand = new DelegateCommand(TogglePan, CanTogglePan);
+            EscapeCommand = new DelegateCommand(Escape, CanEscape);
+
+            SelectVisualizationInViewCommand = new DelegateCommand(SelectVisualizationInView, CanSelectVisualizationInView);
+            GetBranchVisualizationCommand = new DelegateCommand(GetBranchVisualization, CanGetBranchVisualization);
+            TogglePreviewBubbleVisibilityCommand = new DelegateCommand(TogglePreviewBubbleVisibility, CanTogglePreviewBubbleVisibility);
 
 #if USE_DSENGINE
             ImportLibraryCommand = new DelegateCommand(ImportLibrary, CanImportLibrary);
@@ -509,7 +547,8 @@ namespace Dynamo.ViewModels
                     dynSettings.Controller.SearchViewModel.SearchAndUpdateResultsSync();
                 }
             };
-        
+
+            WatchIsResizable = false;
         }
 
         void VisualizationManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -539,6 +578,9 @@ namespace Dynamo.ViewModels
                 case "IsUILocked":
                     RaisePropertyChanged("IsUILocked");
                     break;
+                case "IsShowPreviewByDefault":
+                    RaisePropertyChanged("IsShowPreviewByDefault");
+                    break;
             }
         }
 
@@ -566,7 +608,7 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("CurrentWorkspaceIndex");
                 RaisePropertyChanged("ViewingHomespace");
                 if (this.PublishCurrentWorkspaceCommand != null)
-                this.PublishCurrentWorkspaceCommand.RaiseCanExecuteChanged();
+                    this.PublishCurrentWorkspaceCommand.RaiseCanExecuteChanged();
                 RaisePropertyChanged("IsHomeSpace");
             }
         }
@@ -601,7 +643,7 @@ namespace Dynamo.ViewModels
             };
 
             string ext, fltr;
-            if ( workspace == _model.HomeSpace )
+            if (workspace == _model.HomeSpace)
             {
                 ext = ".dyn";
                 fltr = "Dynamo Workspace (*.dyn)|*.dyn";
@@ -662,7 +704,7 @@ namespace Dynamo.ViewModels
         }
 
         public bool exitInvoked = false;
-        
+
         internal bool CanVisibilityBeToggled(object parameters)
         {
             return true;
@@ -736,7 +778,7 @@ namespace Dynamo.ViewModels
 
             var newWs = symbol.WorkspaceModel;
 
-            if ( !this._model.Workspaces.Contains(newWs) )
+            if (!this._model.Workspaces.Contains(newWs))
                 this._model.Workspaces.Add(newWs);
 
             CurrentSpaceViewModel.CancelActiveState();
@@ -792,14 +834,14 @@ namespace Dynamo.ViewModels
             var dvm = dynSettings.Controller.DynamoViewModel;
             dvm.CurrentSpaceViewModel.OnRequestCenterViewOnElement(this, new ModelEventArgs(e));
         }
-        
+
         public void ShowSaveDialogIfNeededAndSaveResult(object parameter)
         {
             var vm = dynSettings.Controller.DynamoViewModel;
 
             if (vm.Model.CurrentWorkspace.FileName != null)
             {
-                if(_model.CanSave(parameter))
+                if (_model.CanSave(parameter))
                     _model.Save(parameter);
             }
             else
@@ -842,7 +884,7 @@ namespace Dynamo.ViewModels
         {
             return true;
         }
-        
+
         public void ToggleCanNavigateBackground(object parameter)
         {
             if (!FullscreenWatchShowing)
@@ -865,39 +907,7 @@ namespace Dynamo.ViewModels
 
         public void ToggleFullscreenWatchShowing(object parameter)
         {
-            if (FullscreenWatchShowing)
-            {
-                //delete the watches
-                //foreach (WorkspaceViewModel vm in dynSettings.Controller.DynamoViewModel.Workspaces)
-                //{
-                //    vm.Watch3DViewModels.Clear();
-                //}
-
-                FullscreenWatchShowing = false;
-            }
-            else
-            {
-                //construct a watch
-                //foreach (WorkspaceViewModel vm in dynSettings.Controller.DynamoViewModel.Workspaces)
-                //{
-                //    vm.Watch3DViewModels.Add(new Watch3DFullscreenViewModel(vm));
-                //}
-
-                //removed because we can reference the commands from here
-                //and also because this behavior was not great. instead we'll
-                //request just a redraw
-
-                //run the expression to refresh
-                //if (DynamoCommands.IsProcessingCommandQueue)
-                //    return;
-
-                //dynSettings.Controller.RunCommand(dynSettings.Controller.DynamoViewModel.RunExpressionCommand, null);
-                //RunExpression(null);
-
-                //dynSettings.Controller.OnRequestsRedraw(this, EventArgs.Empty);
-
-                FullscreenWatchShowing = true;
-            }
+            FullscreenWatchShowing = !FullscreenWatchShowing;
         }
 
         internal bool CanToggleFullscreenWatchShowing(object parameter)
@@ -961,7 +971,7 @@ namespace Dynamo.ViewModels
             if (!Model.HomeSpace.HasUnsavedChanges || AskUserToSaveWorkspaceOrCancel(this.Model.HomeSpace))
             {
                 Model.CurrentWorkspace = this.Model.HomeSpace;
-               
+
                 _model.Clear(null);
             }
         }
@@ -987,8 +997,6 @@ namespace Dynamo.ViewModels
             OnRequestClose(this, EventArgs.Empty);
 
             dynSettings.Controller.ShutDown();
-
-            DynamoLogger.Instance.FinishLogging();
         }
 
         internal bool CanExit(object allowCancel)
@@ -1017,6 +1025,17 @@ namespace Dynamo.ViewModels
         /// <returns>Whether the cleanup was completed or cancelled.</returns>
         public bool AskUserToSaveWorkspacesOrCancel(bool allowCancel = true)
         {
+            if (null != automationSettings)
+            {
+                // In an automation run, Dynamo should not be asking user to save 
+                // the modified file. Instead it should be shutting down, leaving 
+                // behind unsaved changes (if saving is desired, then the save command 
+                // should have been recorded for the test case to it can be replayed).
+                // 
+                if (automationSettings.CurrentMode == AutomationSettings.Mode.Playback)
+                    return true; // In playback mode, just exit without saving.
+            }
+
             foreach (var wvm in Workspaces.Where((wvm) => wvm.Model.HasUnsavedChanges))
             {
                 //if (!AskUserToSaveWorkspaceOrCancel(wvm.Model, allowCancel))
@@ -1074,6 +1093,30 @@ namespace Dynamo.ViewModels
         internal bool CanShowSaveImageDialogAndSaveResult(object parameter)
         {
             return true;
+        }
+
+        private void Undo(object parameter)
+        {
+            var command = new UndoRedoCommand(UndoRedoCommand.Operation.Undo);
+            this.ExecuteCommand(command);
+        }
+
+        private bool CanUndo(object parameter)
+        {
+            var workspace = _model.CurrentWorkspace;
+            return ((null == workspace) ? false : workspace.CanUndo);
+        }
+
+        private void Redo(object parameter)
+        {
+            var command = new UndoRedoCommand(UndoRedoCommand.Operation.Redo);
+            this.ExecuteCommand(command);
+        }
+
+        private bool CanRedo(object parameter)
+        {
+            var workspace = _model.CurrentWorkspace;
+            return ((null == workspace) ? false : workspace.CanRedo);
         }
 
         public void ToggleConsoleShowing(object parameter)
@@ -1188,6 +1231,7 @@ namespace Dynamo.ViewModels
             _model.CurrentWorkspace.Y = pt.Y;
 
             CurrentSpaceViewModel.OnCurrentOffsetChanged(this, new PointEventArgs(pt));
+            CurrentSpaceViewModel.ResetFitViewToggleCommand.Execute(parameter);
         }
 
         internal bool CanPan(object parameter)
@@ -1258,6 +1302,97 @@ namespace Dynamo.ViewModels
             return true;
         }
 #endif
+        public void TogglePan(object parameter)
+        {
+            CurrentSpaceViewModel.TogglePanCommand.Execute(parameter);
+        }
+
+        internal bool CanTogglePan(object parameter)
+        {
+            return CurrentSpaceViewModel.TogglePanCommand.CanExecute(parameter);
+        }
+
+        public void Escape(object parameter)
+        {
+            CurrentSpaceViewModel.OnRequestStopPan(this, null); // Escape Pan Mode
+        }
+
+        internal bool CanEscape(object parameter)
+        {
+            return true;
+        }
+
+        public void ShowInfoBubble(object parameter)
+        {
+            InfoBubbleDataPacket data = (InfoBubbleDataPacket)parameter;
+            controller.InfoBubbleViewModel.UpdateContentCommand.Execute(data);
+            controller.InfoBubbleViewModel.FadeInCommand.Execute(null);
+        }
+
+        internal bool CanShowInfoBubble(object parameter)
+        {
+            return true;
+        }
+
+        public void HideInfoBubble(object parameter)
+        {
+            controller.InfoBubbleViewModel.FadeOutCommand.Execute(null);
+        }
+
+        internal bool CanHideInfoBubble(object parameter)
+        {
+            return true;
+        }
+
+        public void TogglePreviewBubbleVisibility(object parameter)
+        {
+            this.Controller.IsShowPreviewByDefault = !this.Controller.IsShowPreviewByDefault;
+        }
+
+        internal bool CanTogglePreviewBubbleVisibility(object parameter)
+        {
+            return true;
+        }
+
+        #region IWatchViewModel interface
+
+        internal void SelectVisualizationInView(object parameters)
+        {
+            Debug.WriteLine("Selecting mesh from background watch.");
+
+            var arr = (double[])parameters;
+            double x = arr[0];
+            double y = arr[1];
+            double z = arr[2];
+
+            dynSettings.Controller.VisualizationManager.LookupSelectedElement(x, y, z);
+        }
+
+        internal bool CanSelectVisualizationInView(object parameters)
+        {
+            if (parameters != null)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public void GetBranchVisualization(object parameters)
+        {
+            dynSettings.Controller.VisualizationManager.RenderUpstream(null);
+        }
+
+        public bool CanGetBranchVisualization(object parameter)
+        {
+            if (FullscreenWatchShowing)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        #endregion
     }
 
     public class ZoomEventArgs : EventArgs
@@ -1419,5 +1554,12 @@ namespace Dynamo.ViewModels
         {
             Path = path;
         }
+    }
+
+    public interface IWatchViewModel
+    {
+        DelegateCommand SelectVisualizationInViewCommand { get; set; }
+        DelegateCommand GetBranchVisualizationCommand { get; set; }
+        bool WatchIsResizable { get; set; }
     }
 }

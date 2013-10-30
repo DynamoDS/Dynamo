@@ -47,6 +47,16 @@
     <NoWarn>618</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FScheme, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\AnyCPU\Debug\FScheme.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="FSchemeInterop, Version=0.5.3.42660, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\AnyCPU\Debug\FSchemeInterop.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="FSharp.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="GraphToDSCompiler, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
@@ -89,19 +99,6 @@
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\Newtonsoft.JsonBin\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.core">
-      <HintPath>$(NunitPath)\nunit.core.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.core.interfaces">
-      <HintPath>$(NunitPath)\nunit.core.interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(NunitPath)\nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.util">
-      <HintPath>$(NunitPath)\nunit.util.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
@@ -200,9 +197,6 @@
     <Compile Include="Nodes\Floors.cs" />
     <Compile Include="Nodes\Materials.cs" />
     <Compile Include="Nodes\Walls.cs" />
-    <Compile Include="NUnitResultTypes.cs">
-      <DependentUpon>NUnitResultTypes.xsd</DependentUpon>
-    </Compile>
     <Compile Include="OutOfSpaceException.cs" />
     <Compile Include="ParticleSystem\dynDynamicRelaxation.cs" />
     <Compile Include="ParticleSystem\dynParticle.cs" />
@@ -225,15 +219,6 @@
     <Compile Include="Views\Partials.cs" />
     <Compile Include="ViewModels\DynamoRevitViewModel.cs" />
     <Compile Include="VisualizationManager\VisualizationManagerRevit.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="NUnitResultTypes.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Resources\Nodes_32_32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Nodes_32_32_2.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -264,16 +249,6 @@
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
       <Name>DynamoUtilities</Name>
     </ProjectReference>
-    <ProjectReference Include="..\FSchemeInterop\FSchemeInterop.csproj">
-      <Project>{F25808D6-DF62-4732-9453-D4978079864C}</Project>
-      <Name>FSchemeInterop</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\FScheme\FScheme.fsproj">
-      <Project>{F0E5A3E5-BDD0-41AE-848E-DED9EFC5FA7F}</Project>
-      <Name>FScheme</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\RevitPersistenceManager\RevitPersistenceManager.csproj">
       <Project>{9D0B8EC8-DCDE-4FFA-BCF3-8592F835D316}</Project>
       <Name>RevitPersistenceManager</Name>
@@ -288,6 +263,8 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="addins\DynamoForVasari.addin" />
+    <Content Include="Resources\logo_square_32x32.png" />
+    <Content Include="Resources\logo_square_64x64.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

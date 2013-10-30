@@ -12,6 +12,7 @@ using Dynamo.FSchemeInterop;
 using Dynamo.ViewModels;
 using NUnit.Framework;
 using Enum = System.Enum;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Utilities
 {
@@ -53,7 +54,7 @@ namespace Dynamo.Utilities
         /// </summary>
         public event DefinitionLoadHandler DefinitionLoaded;
 
-        private Dictionary<Guid, FunctionDefinition> LoadedCustomNodes = new Dictionary<Guid, FunctionDefinition>();
+        public Dictionary<Guid, FunctionDefinition> LoadedCustomNodes = new Dictionary<Guid, FunctionDefinition>();
 
         /// <summary>
         /// NodeNames </summary>
@@ -130,7 +131,7 @@ namespace Dynamo.Utilities
 
             // the node has already been loaded
             // from somewhere else
-            if (Contains(guid))
+            if (this.Contains(guid))
             {
                 return GetNodeInfo(guid);
             }
@@ -159,18 +160,19 @@ namespace Dynamo.Utilities
         {
 
             var guidsToRemove = GetInfosFromFolder(path).Select(x => x.Guid);
-            guidsToRemove.ToList().ForEach(this.Remove);
+            guidsToRemove.ToList().ForEach(this.RemoveFromDynamo);
 
             return guidsToRemove.Any();
 
         }
 
-        public CustomNodeInfo RemoveFromCustomNodeManager(Guid guid)
+        public CustomNodeInfo Remove(Guid guid)
         {
             var nodeInfo = GetNodeInfo(guid);
 
             if (LoadedCustomNodes.ContainsKey(guid))
                 LoadedCustomNodes.Remove(guid);
+
             if (NodeInfos.ContainsKey(guid))
                 NodeInfos.Remove(guid);
 
@@ -181,9 +183,9 @@ namespace Dynamo.Utilities
         ///     Attempts to remove all traces of a particular custom node from Dynamo, assuming the node is not in a loaded workspace.
         /// </summary>
         /// <param name="guid"></param>
-        public void Remove(Guid guid)
+        public void RemoveFromDynamo(Guid guid)
         {
-            var nodeInfo = this.RemoveFromCustomNodeManager(guid);
+            var nodeInfo = this.Remove(guid);
 
             // remove from search
             dynSettings.Controller.SearchViewModel.RemoveNodeAndEmptyParentCategory(nodeInfo.Guid);
@@ -471,7 +473,7 @@ namespace Dynamo.Utilities
             Guid id;
             if (CustomNodeManager.GetHeaderFromPath(path, out id, out name, out category, out description))
             {
-                return new CustomNodeInfo(id, name, category, description, path);
+                return new CustomNodeInfo(id, Path.GetFileNameWithoutExtension(path), category, description, path);
             }
             else
             {
@@ -780,7 +782,7 @@ namespace Dynamo.Utilities
                     var guidEnd = new Guid(guidEndAttrib.Value);
                     int startIndex = Convert.ToInt16(intStartAttrib.Value);
                     int endIndex = Convert.ToInt16(intEndAttrib.Value);
-                    int portType = Convert.ToInt16(portTypeAttrib.Value);
+                    PortType portType = ((PortType)Convert.ToInt16(portTypeAttrib.Value));
 
                     //find the elements to connect
                     NodeModel start = null;
@@ -837,13 +839,9 @@ namespace Dynamo.Utilities
                         double x = Convert.ToDouble(xAttrib.Value, CultureInfo.InvariantCulture);
                         double y = Convert.ToDouble(yAttrib.Value, CultureInfo.InvariantCulture);
 
-                        var paramDict = new Dictionary<string, object>();
-                        paramDict.Add("x", x);
-                        paramDict.Add("y", y);
-                        paramDict.Add("text", text);
-                        paramDict.Add("workspace", ws);
-
-                        dynSettings.Controller.DynamoModel.AddNote(paramDict);
+                        Guid guid = Guid.NewGuid();
+                        var command = new DynCmd.CreateNoteCommand(guid, text, x, y, false);
+                        dynSettings.Controller.DynamoModel.AddNoteInternal(command, ws);
                     }
                 }
 

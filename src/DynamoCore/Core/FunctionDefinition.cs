@@ -7,11 +7,12 @@ using Dynamo.DSEngine;
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.Utilities;
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
 
-namespace Dynamo.Nodes
+namespace Dynamo
 {
     public class FunctionDefinition
     {
@@ -70,26 +71,15 @@ namespace Dynamo.Nodes
 
         public void CompileAndAddToEnvironment(ExecutionEnvironment env)
         {
-            IEnumerable<string> inputNames;
-            IEnumerable<string> outputNames;
-            var compiledFunction = this.Compile(out inputNames, out outputNames);
+            var compiledFunction = this.Compile();
 
             env.DefineSymbol( this.FunctionId.ToString(),compiledFunction);
         }
 
-        public void CompileAndAddToEnvironment(ExecutionEnvironment env, out IEnumerable<string> inputNames, out IEnumerable<string> outputNames)
+        public FScheme.Expression Compile()
         {
-            var compiledFunction = this.Compile(out inputNames, out outputNames);
-
-            env.DefineSymbol(
-                this.FunctionId.ToString(),
-                compiledFunction);
-        }
-
-        public FScheme.Expression Compile(out IEnumerable<string> inputNames, out IEnumerable<string> outputNames)
-        {
-            inputNames = null;
-            outputNames = null;
+            IEnumerable<string> inputNames = null;
+            IEnumerable<string> outputNames = null;
 
             // Get the internal nodes for the function
             WorkspaceModel functionWorkspace = this.WorkspaceModel;
@@ -116,14 +106,15 @@ namespace Dynamo.Nodes
                 // get the top most nodes and set THEM as the output
                 IEnumerable<NodeModel> topMostNodes = functionWorkspace.GetTopMostNodes();
 
+                NodeModel infinite = null;
+
                 var outNames = new List<string>();
 
                 foreach (NodeModel topNode in topMostNodes)
                 {
                     if (topNode is Function && (topNode as Function).Definition == this)
                     {
-                        topMost.Add(Tuple.Create(0, topNode));
-                        outNames.Add("∞");
+                        infinite = topNode;
                         continue;
                     }
 
@@ -135,6 +126,12 @@ namespace Dynamo.Nodes
                             outNames.Add(topNode.OutPortData[output].NickName);
                         }
                     }
+                }
+
+                if (infinite != null && outNames.Count == 0)
+                {
+                    topMost.Add(Tuple.Create(0, infinite));
+                    outNames.Add("∞");
                 }
 
                 outputNames = outNames;
@@ -151,6 +148,21 @@ namespace Dynamo.Nodes
             //Find function entry point, and then compile
             var variables = functionWorkspace.Nodes.OfType<Symbol>().ToList();
             inputNames = variables.Select(x => x.InputSymbol);
+
+            //Update existing function nodes which point to this function to match its changes
+            dynSettings.Controller.DynamoModel.AllNodes
+                .OfType<Function>()
+                .Where(el => el.Definition != null && el.Definition.FunctionId == this.FunctionId)
+                .ToList()
+                .ForEach(node =>
+                {
+                    node.SetInputs(inputNames);
+                    node.SetOutputs(outputNames);
+                    node.RegisterAllPorts();
+                });
+
+            //Call OnSave for all saved elements
+            functionWorkspace.Nodes.ToList().ForEach(x => x.onSave());
 
             INode top;
             var buildDict = new Dictionary<NodeModel, Dictionary<int, INode>>();
@@ -377,10 +389,20 @@ namespace Dynamo.Nodes
         public bool AddToSearch()
         {
             return
-                dynSettings.Controller.SearchViewModel.Add(new CustomNodeInfo(this.FunctionId, this.WorkspaceModel.Name,
-                                                                              this.WorkspaceModel.Category,
-                                                                              this.WorkspaceModel.Description,
-                                                                              this.WorkspaceModel.FileName ));
+                dynSettings.Controller.SearchViewModel.Add(new CustomNodeInfo(  this.FunctionId, 
+                                                                                this.WorkspaceModel.Name,
+                                                                                this.WorkspaceModel.Category,
+                                                                                this.WorkspaceModel.Description,
+                                                                                this.WorkspaceModel.FileName ));
+        }
+
+        public void UpdateCustomNodeManager()
+        {
+            dynSettings.CustomNodeManager.SetNodeInfo(new CustomNodeInfo(   this.FunctionId,
+                                                                            this.WorkspaceModel.Name,
+                                                                            this.WorkspaceModel.Category,
+                                                                            this.WorkspaceModel.Description,
+                                                                            this.WorkspaceModel.FileName));
         }
 
         public bool SyncWithWorkspace(bool addToSearch, bool compileFunction)
@@ -405,24 +427,7 @@ namespace Dynamo.Nodes
 
                 dynSettings.Controller.CustomNodeManager.SetNodeInfo(info);
 
-                IEnumerable<string> inputNames, outputNames;
-                this.CompileAndAddToEnvironment(dynSettings.Controller.FSchemeEnvironment, out inputNames, out outputNames);
-
-                //Update existing function nodes which point to this function to match its changes
-                dynSettings.Controller.DynamoModel.AllNodes
-                    .OfType<Function>()
-                    .Where(el => el.Definition.FunctionId == this.FunctionId)
-                    .ToList()
-                    .ForEach( node =>
-                        {
-                            node.SetInputs(inputNames);
-                            node.SetOutputs(outputNames);
-                            node.RegisterAllPorts();
-                        });
-
-                //Call OnSave for all saved elements
-               functionWorkspace.Nodes.ToList().ForEach(x=>x.onSave());
-
+                this.CompileAndAddToEnvironment(dynSettings.Controller.FSchemeEnvironment);
             }
             catch (Exception e)
             {

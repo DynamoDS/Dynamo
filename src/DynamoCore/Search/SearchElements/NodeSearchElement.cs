@@ -1,18 +1,4 @@
-﻿//Copyright © Autodesk, Inc. 2012. All rights reserved.
-//
-//Licensed under the Apache License, Version 2.0 (the "License");
-//you may not use this file except in compliance with the License.
-//You may obtain a copy of the License at
-//
-//http://www.apache.org/licenses/LICENSE-2.0
-//
-//Unless required by applicable law or agreed to in writing, software
-//distributed under the License is distributed on an "AS IS" BASIS,
-//WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//See the License for the specific language governing permissions and
-//limitations under the License.
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Windows.Input;
 using Dynamo.Models;
@@ -21,6 +7,7 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using String = System.String;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -136,14 +123,8 @@ namespace Dynamo.Search.SearchElements
         {
             // create node
             var guid = Guid.NewGuid();
-            var nodeParams = new Dictionary<string, object>()
-                {
-                    {"name", this.Name},
-                    {"transformFromOuterCanvasCoordinates", true},
-                    {"guid", guid}
-                };
-
-            dynSettings.Controller.DynamoModel.CreateNode(nodeParams);
+            dynSettings.Controller.DynamoViewModel.ExecuteCommand(
+                new DynCmd.CreateNodeCommand(guid, this.Name, 0, 0, true, true));
 
             // select node
             var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);

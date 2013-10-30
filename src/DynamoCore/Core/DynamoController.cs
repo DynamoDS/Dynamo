@@ -8,12 +8,10 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Windows.Threading;
-using Autodesk.LibG;
 using Dynamo.DSEngine;
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -70,6 +68,7 @@ namespace Dynamo
         public CustomNodeManager CustomNodeManager { get; internal set; }
         public SearchViewModel SearchViewModel { get; internal set; }
         public DynamoViewModel DynamoViewModel { get; internal set; }
+        public InfoBubbleViewModel InfoBubbleViewModel { get; internal set; }
         public DynamoModel DynamoModel { get; set; }
         public Dispatcher UIDispatcher { get; set; }
 
@@ -140,6 +139,13 @@ namespace Dynamo
             }
         }
 
+        private bool isShowPreViewByDefault = false;
+        public bool IsShowPreviewByDefault
+        {
+            get { return isShowPreViewByDefault;}
+            set { isShowPreViewByDefault = value; RaisePropertyChanged("IsShowPreviewByDefault"); }
+        }
+
         #endregion
 
         #region events
@@ -174,13 +180,6 @@ namespace Dynamo
                 RequestsRedraw(sender, e);
         }
 
-        public event DispatchedToUIThreadHandler DispatchedToUI;
-        public void OnDispatchedToUI(object sender, UIDispatcherEventArgs e)
-        {
-            if (DispatchedToUI != null)
-                DispatchedToUI(this, e);
-        }
-
         public delegate void CrashPromptHandler(object sender, DispatcherUnhandledExceptionEventArgs e);
         public event CrashPromptHandler RequestsCrashPrompt;
         public void OnRequestsCrashPrompt(object sender, DispatcherUnhandledExceptionEventArgs e)
@@ -193,16 +192,30 @@ namespace Dynamo
 
         #region Constructor and Initialization
 
-        public static DynamoController MakeSandbox()
+        public static DynamoController MakeSandbox(string commandFilePath = null)
         {
-            return new DynamoController(new ExecutionEnvironment(), typeof (DynamoViewModel), "None");
+            ExecutionEnvironment env = new ExecutionEnvironment();
+
+            // If a command file path is not specified or if it is invalid, then fallback.
+            if (string.IsNullOrEmpty(commandFilePath) || (File.Exists(commandFilePath) == false))
+                return new DynamoController(env, typeof(DynamoViewModel), "None");
+
+            return new DynamoController(env, typeof(DynamoViewModel), "None", commandFilePath);
+        }
+
+        public DynamoController(ExecutionEnvironment env, Type viewModelType, string context) : 
+            this(env, viewModelType, context, null)
+        {
         }
 
         /// <summary>
         ///     Class constructor
         /// </summary>
-        public DynamoController(ExecutionEnvironment env, Type viewModelType, string context)
+        public DynamoController(ExecutionEnvironment env,
+            Type viewModelType, string context, string commandFilePath)
         {
+            DynamoLogger.Instance.StartLogging();
+
             dynSettings.Controller = this;
 
             this.Context = context;
@@ -212,7 +225,8 @@ namespace Dynamo
 
             //create the view model to which the main window will bind
             //the DynamoModel is created therein
-            this.DynamoViewModel = (DynamoViewModel)Activator.CreateInstance(viewModelType,new object[]{this});
+            this.DynamoViewModel = (DynamoViewModel)Activator.CreateInstance(
+                viewModelType, new object[] { this, commandFilePath });
 
             // custom node loader
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -245,6 +259,8 @@ namespace Dynamo
                 DynamoLogger.Instance.Log("All Tests Passed. Core library loaded OK.");
             }
 
+            this.InfoBubbleViewModel = new InfoBubbleViewModel();
+
             AddPythonBindings();
         }
 
@@ -258,6 +274,8 @@ namespace Dynamo
             dynSettings.Controller = null;
             
             Selection.DynamoSelection.Instance.ClearSelection();
+
+            DynamoLogger.Instance.FinishLogging();
         }
 
         #region Running
@@ -514,14 +532,7 @@ namespace Dynamo
             {
                 /* Evaluation failed due to error */
 
-                if (dynSettings.Controller.UIDispatcher != null)
-                {
-                    //Print unhandled exception
-                    if (ex.Message.Length > 0)
-                    {
-                        dynSettings.Controller.DispatchOnUIThread(() => DynamoLogger.Instance.Log(ex));
-                    }
-                }
+                DynamoLogger.Instance.Log(ex);
 
                 OnRunCancelled(true);
                 RunCancelled = true;
@@ -565,16 +576,6 @@ namespace Dynamo
         public void RequestClearDrawables()
         {
             VisualizationManager.ClearRenderables();
-        }
-
-        /// <summary>
-        /// Called by nodes for behavior that they want to dispatch on the UI thread
-        /// Triggers event to be received by the UI. If no UI exists, behavior will not be executed.
-        /// </summary>
-        /// <param name="a"></param>
-        public void DispatchOnUIThread(Action a)
-        {
-            OnDispatchedToUI(this, new UIDispatcherEventArgs(a));
         }
 
         public void CancelRun(object parameter)

@@ -44,7 +44,7 @@ namespace Dynamo.UI.Commands
 
         public void Execute(object parameter)
         {
-            OnExecute(parameter);
+            //OnExecute(parameter);
             _execute(parameter);
         }
 
