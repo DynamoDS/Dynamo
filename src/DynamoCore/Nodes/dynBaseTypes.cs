@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Windows.Data;
 using System.Xml;
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
@@ -37,6 +36,7 @@ namespace Dynamo.Nodes
         public const string CORE_ANNOTATE = "Core.Annotate";
         public const string CORE_EVALUATE = "Core.Evaluate";
         public const string CORE_TIME = "Core.Time";
+        public const string CORE_SCRIPTING = "Core.Scripting";
         public const string CORE_FUNCTIONS = "Core.Functions";
        
         public const string LOGIC = "Logic";
@@ -90,7 +90,6 @@ namespace Dynamo.Nodes
 
         public const string SCRIPTING = "Scripting";
         public const string SCRIPTING_CUSTOMNODES = "Scripting.Custom Nodes";
-        public const string SCRIPTING_PYTHON = "Scripting.Python";
         public const string SCRIPTING_DESIGNSCRIPT = "Scripting.DesignScript";
 
     }
