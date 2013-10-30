@@ -184,7 +184,7 @@ namespace Dynamo.Nodes
             return Value.NewContainer(tpt);
         }
 
-        private XYZ GetPointTransformed(XYZ point, Transform transform)
+        public static XYZ GetPointTransformed(XYZ point, Transform transform)
         {
             double x = point.X;
             double y = point.Y;
