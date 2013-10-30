@@ -269,9 +269,9 @@ namespace Dynamo
                 return;
 
             var origin = new Point3D(t.Origin.X, t.Origin.Y, t.Origin.Z);
-            XYZ x1 = t.Origin + t.BasisX.Multiply(3);
-            XYZ y1 = t.Origin + t.BasisY.Multiply(3);
-            XYZ z1 = t.Origin + t.BasisZ.Multiply(3);
+            XYZ x1 = t.Origin + t.BasisX.Normalize();
+            XYZ y1 = t.Origin + t.BasisY.Normalize();
+            XYZ z1 = t.Origin + t.BasisZ.Normalize();
             var xEnd = new Point3D(x1.X, x1.Y, x1.Z);
             var yEnd = new Point3D(y1.X, y1.Y, y1.Z);
             var zEnd = new Point3D(z1.X, z1.Y, z1.Z);
