@@ -12,7 +12,7 @@ using Dynamo.Revit;
 namespace Dynamo.Nodes
 {
     [NodeName("Reference Point")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_REFERENCE)]
     [NodeDescription("Creates a reference point.")]
     [NodeSearchTags("pt","ref")]
     public class ReferencePointByXyz : RevitTransactionNodeWithOneOutput
@@ -54,8 +54,8 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Reference Point On Edge")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
+    [NodeName("Reference Point on Edge")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_REFERENCE)]
     [NodeDescription("Creates an element which owns a reference point on a selected edge.")]
     [NodeSearchTags("ref", "pt")]
     public class PointOnEdge : RevitTransactionNodeWithOneOutput
@@ -107,8 +107,8 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Reference Point On Face by UV")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
+    [NodeName("Reference Point on Face")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_REFERENCE)]
     [NodeDescription("Creates an element which owns a reference point on a selected face.")]
     [NodeSearchTags("ref", "pt")]
     public class PointOnFaceUv : RevitTransactionNodeWithOneOutput
@@ -167,8 +167,8 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Reference Point By Normal")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
+    [NodeName("Reference Point by Normal")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_REFERENCE)]
     [NodeDescription("Owns a reference point which is projected from a point by normal and distance.")]
     [NodeSearchTags("normal", "ref")]
     public class PointNormalDistance : RevitTransactionNodeWithOneOutput
@@ -219,7 +219,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Plane from Reference Point")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SURFACE)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_REFERENCE)]
     [NodeDescription("Extracts one of the primary Reference Planes from a Reference Point.")]
     [NodeSearchTags("ref")]
     public class PlaneFromRefPoint : RevitTransactionNodeWithOneOutput
@@ -334,129 +334,8 @@ namespace Dynamo.Nodes
 
     }
 
-    [NodeName("Evaluate curve or edge")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
-    [NodeDescription("Evaluates curve or edge at parameter.")]
-    public class XyzOnCurveOrEdge : GeometryBase
-    {
-        public XyzOnCurveOrEdge()
-        {
-            InPortData.Add(new PortData("parameter", "The normalized parameter to evaluate at within 0..1 range, any for closed curve.", typeof(Value.Number)));
-            InPortData.Add(new PortData("curve or edge", "The curve or edge to evaluate.", typeof(Value.Container)));
-            OutPortData.Add(new PortData("XYZ", "XYZ at parameter.", typeof(Value.Container)));
-
-            RegisterAllPorts();
-        }
-
-        public static bool curveIsReallyUnbound(Curve curve)
-        {
-            if (!curve.IsBound)
-                return true;
-            if (!curve.IsCyclic)
-                return false;
-            double period = curve.Period;
-            if (curve.get_EndParameter(1) > curve.get_EndParameter(0) + period - 0.000000001)
-                return true;
-            return false;
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            double parameter = ((Value.Number)args[0]).Item;
-
-            Curve thisCurve = null;
-            Edge thisEdge = null;
-            if (((Value.Container)args[1]).Item is Curve)
-                thisCurve = ((Value.Container)args[1]).Item as Curve;
-            else if (((Value.Container)args[1]).Item is Edge)
-                thisEdge = ((Value.Container)args[1]).Item as Edge;
-            else if (((Value.Container)args[1]).Item is Reference)
-            {
-                Reference r = (Reference)((Value.Container)args[1]).Item;
-                if (r != null)
-                {
-                    Element refElem = dynRevitSettings.Doc.Document.GetElement(r.ElementId);
-                    if (refElem != null)
-                    {
-                        GeometryObject geob = refElem.GetGeometryObjectFromReference(r);
-                        thisEdge = geob as Edge;
-                        if (thisEdge == null)
-                            thisCurve = geob as Curve;
-                    }
-                    else
-                        throw new Exception("Could not accept second in-port for Evaluate curve or edge node");
-                }
-            }
-            else if (((Value.Container)args[1]).Item is CurveElement)
-            {
-                CurveElement cElem = ((Value.Container)args[1]).Item as CurveElement;
-                if (cElem != null)
-                {
-                    thisCurve = cElem.GeometryCurve;
-                }
-                else
-                    throw new Exception("Could not accept second in-port for Evaluate curve or edge node");
-
-            }
-            else
-                throw new Exception("Could not accept second in-port for Evaluate curve or edge node");
-
-            XYZ result = (thisCurve != null) ? (!curveIsReallyUnbound(thisCurve) ? thisCurve.Evaluate(parameter, true) : thisCurve.Evaluate(parameter, false))
-                :  
-                (thisEdge == null ? null : thisEdge.Evaluate(parameter));
-
-            return Value.NewContainer(result);
-        }
-    }
-
-    [NodeName("Evaluate tangent transform of curve or edge")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
-    [NodeDescription("Evaluates tangent vector of curve or edge at parameter.")]
-    public class TangentTransformOnCurveOrEdge : GeometryBase
-    {
-        public TangentTransformOnCurveOrEdge()
-        {
-            InPortData.Add(new PortData("parameter", "The normalized parameter to evaluate at within 0..1 range except for closed curve", typeof(Value.Number)));
-            InPortData.Add(new PortData("curve or edge", "The geometry curve or edge to evaluate.", typeof(Value.Container)));
-            OutPortData.Add(new PortData("tangent transform", "tangent transform at parameter.", typeof(Value.Container)));
-
-            RegisterAllPorts();
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            double parameter = ((Value.Number)args[0]).Item;
-
-            Curve thisCurve = ((Value.Container)args[1]).Item as Curve;
-            Edge thisEdge = (thisCurve != null) ? null : (((Value.Container)args[1]).Item as Edge);
-
-            if (thisCurve == null && thisEdge == null && ((Value.Container)args[1]).Item is Reference)
-            {
-                Reference r = (Reference)((Value.Container)args[1]).Item;
-                if (r != null)
-                {
-                    Element refElem = dynRevitSettings.Doc.Document.GetElement(r.ElementId);
-                    if (refElem != null)
-                    {
-                        GeometryObject geob = refElem.GetGeometryObjectFromReference(r);
-                        thisEdge = geob as Edge;
-                        if (thisEdge == null)
-                            thisCurve = geob as Curve;
-                    }
-                }
-            }
-
-            Transform result = (thisCurve != null) ?
-                (!XyzOnCurveOrEdge.curveIsReallyUnbound(thisCurve) ? thisCurve.ComputeDerivatives(parameter, true) : thisCurve.ComputeDerivatives(parameter, false))
-                : 
-                (thisEdge == null ? null : thisEdge.ComputeDerivatives(parameter));
-
-            return Value.NewContainer(result);
-        }
-    }
-
-    [NodeName("Ref Point By Length")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
+    [NodeName("Reference Point at Length")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_REFERENCE)]
     [NodeDescription("Creates an ref point element on curve located by length from the start or end of the curve.")]
     [NodeSearchTags("ref", "pt", "curve")]
     public class PointOnCurveByLength : RevitTransactionNodeWithOneOutput
@@ -512,4 +391,5 @@ namespace Dynamo.Nodes
             return Value.NewContainer(p);
         }
     }
+
 }

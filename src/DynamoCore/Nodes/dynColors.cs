@@ -12,7 +12,7 @@ using Value = Dynamo.FScheme.Value;
 namespace Dynamo.Nodes
 {
     [NodeName("Color Brightness")]
-    [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_COLOR)]
     [NodeDescription("Calculates a color's brightness.")]
     class ColorBrightness : NodeWithOneOutput
     {
@@ -35,7 +35,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Color Saturation")]
-    [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_COLOR)]
     [NodeDescription("Calculates a color's saturation.")]
     class ColorSaturation : NodeWithOneOutput
     {
@@ -58,7 +58,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Color")]
-    [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_COLOR)]
     [NodeDescription("Make a color from its alpha, red, green, and blue components.")]
     [NodeSearchTags("argb")]
     class Color : NodeWithOneOutput
@@ -88,7 +88,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Color Components")]
-    [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_COLOR)]
     [NodeDescription("Separate a color into its alpha, red, green, and blue components.")]
     [NodeSearchTags("argb")]
     class ColorComponents : NodeModel
@@ -130,7 +130,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Color Hue")]
-    [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_COLOR)]
     [NodeDescription("Calculates a color's hue.")]
     class ColorHue : NodeWithOneOutput
     {
@@ -164,7 +164,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Color Range")]
-    [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_COLOR)]
     [NodeDescription("Get a color given a color range.")]
     class ColorRange : NodeWithOneOutput
     {

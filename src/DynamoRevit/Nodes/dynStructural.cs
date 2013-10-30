@@ -13,7 +13,7 @@ using Value = Dynamo.FScheme.Value;
 namespace Dynamo.Nodes
 {
     [NodeName("Select Structural Framing Type")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILYCREATION)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
     [NodeDescription("Create structural framing.")]
     public class StructuralFramingSelector: DropDrownBase
     {
@@ -45,7 +45,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Structural Framing")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILYCREATION)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
     [NodeDescription("Create structural framing.")]
     public class StructuralFraming : RevitTransactionNodeWithOneOutput
     {
