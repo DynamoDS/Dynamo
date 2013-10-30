@@ -58,14 +58,111 @@ namespace Dynamo.Nodes
 
     [NodeName("XYZ From Polar")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
-    [NodeDescription("Creates an XYZ from three numbers.")]
+    [NodeDescription("Creates an XYZ from sphereical coordinates.")]
     public class XyzFromPolar : GeometryBase
     {
         public XyzFromPolar()
         {
             InPortData.Add(new PortData("radius", "Radius from origin in radians", typeof(Value.Number), FScheme.Value.NewNumber(1));
             InPortData.Add(new PortData("xy rotation", "Rotation around Z axis in radians", typeof(Value.Number), FScheme.Value.NewNumber(0));
-            InPortData.Add(new PortData("z rotation", "Rotation from axis in radians", typeof(Value.Number), FScheme.Value.NewNumber(0));
+            InPortData.Add(new PortData("offset", "Offset from xy plane", typeof(Value.Number), FScheme.Value.NewNumber(1));
+
+            OutPortData.Add(new PortData("xyz", "XYZ formed from polar coordinates", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public static XYZ FromPolarCoordinates(double r, double theta, double offset)
+        {
+            // if degenerate, return 0
+            if (Math.Abs(r) < System.Double.Epsilon)
+            {
+                return new XYZ(0,0,offset);
+            }
+
+            // do some trig
+            var x = r * Math.Cos(theta);
+            var y = r * Math.Sin(theta);
+            var z = offset;
+
+            // all done
+            return new XYZ(x, y, z);
+
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var r = ((Value.Number)args[0]).Item;
+            var theta = ((Value.Number)args[1]).Item;
+            var phi = ((Value.Number)args[2]).Item;
+
+            return Value.NewContainer(FromPolarCoordinates(r, theta, phi));
+        }
+    }
+
+    [NodeName("XYZ To Polar")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
+    [NodeDescription("Creates an XYZ from spherical coordinates.")]
+    public class XyzToPolar : NodeModel
+    {
+        private readonly PortData _rPort = new PortData("radius", "Radius from origin in radians", typeof(Value.Number));
+        private readonly PortData _thetaPort = new PortData("xy rotation", "Rotation around Z axis in radians", typeof(Value.Number));
+        private readonly PortData _offsetPort = new PortData("offset", "Offset from the XY plane", typeof(Value.Number));
+
+        public XyzToPolar()
+        {
+            InPortData.Add(new PortData("xyz", "Input XYZ", typeof(Value.Number), Value.NewNumber(0)));
+            
+            OutPortData.Add(_rPort);
+            OutPortData.Add(_thetaPort);
+            OutPortData.Add(_offsetPort);
+
+            this.ArgumentLacing = LacingStrategy.Longest;
+
+            RegisterAllPorts();
+        }
+
+        public static void ToPolarCoordinates(XYZ input, out double r, out double theta, out double offset)
+        {
+            // this is easy
+            offset = input.Z;
+
+            // set length
+            r = (new XYZ(input.X, input.Y, 0)).GetLength();
+
+            // if the length is too small the angles will be degenerate, just set them as 0
+            if (Math.Abs(input.X) < System.Double.Epsilon)
+            {
+                theta = 0;
+                return;
+            }
+
+            theta = Math.Atan(input.Y / input.X);
+        }
+
+        public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
+        {
+            var xyz = ((XYZ)((Value.Container)args[0]).Item);
+            double r, theta, phi;
+
+            ToPolarCoordinates(xyz, out r, out theta, out phi);
+
+            outPuts[_rPort] = FScheme.Value.NewNumber(r);
+            outPuts[_thetaPort] = FScheme.Value.NewNumber(theta);
+            outPuts[_offsetPort] = FScheme.Value.NewNumber(phi);
+        }
+    }
+
+    [NodeName("XYZ From Spherical")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
+    [NodeDescription("Creates an XYZ from spherical coordinates.")]
+    public class XyzFromSpherical : GeometryBase
+    {
+        public XyzFromSpherical()
+        {
+            InPortData.Add(new PortData("radius", "Radius from origin in radians", typeof(Value.Number), FScheme.Value.NewNumber(1));
+            InPortData.Add(new PortData("xy rotation", "Rotation around Z axis in radians", typeof(Value.Number), FScheme.Value.NewNumber(0));
+            InPortData.Add(new PortData("z rotation", "Rotation down form axis in radians", typeof(Value.Number), FScheme.Value.NewNumber(0));
 
             OutPortData.Add(new PortData("xyz", "XYZ formed from polar coordinates", typeof(Value.Container)));
 
@@ -100,19 +197,22 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("XYZ To Polar")]
+    [NodeName("XYZ To Spherical")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
-    [NodeDescription("Creates an XYZ from three numbers.")]
-    public class XyzToPolar : NodeModel
+    [NodeDescription("Decompose an XYZ into spherical coordinates.")]
+    public class XyzToSpherical : NodeModel
     {
         private readonly PortData _rPort = new PortData("radius", "Radius from origin in radians", typeof(Value.Number));
         private readonly PortData _thetaPort = new PortData("xy rotation", "Rotation around Z axis in radians", typeof(Value.Number));
         private readonly PortData _phiPort = new PortData("z rotation", "Rotation from axis in radians (north pole is 0, south pole is PI)", typeof(Value.Number));
 
-        public XyzToPolar()
+        public XyzToSpherical()
         {
-            InPortData.Add(new PortData("xyz", "Input XYZ", typeof(Value.Number), Value.NewNumber(0)));
-            OutPortData.Add(new PortData("xyz", "XYZ", typeof(Value.Container)));
+            InPortData.Add(new PortData("xyz", "XYZ to decompose", typeof(Value.Container)));
+
+            OutPortData.Add(_rPort);
+            OutPortData.Add(_thetaPort);
+            OutPortData.Add(_phiPort);
 
             this.ArgumentLacing = LacingStrategy.Longest;
 
