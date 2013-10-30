@@ -54,7 +54,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Analysis Results by Selection")]
-    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select an analysis result object from the document.")]
     public class AnalysisResultsBySelection: NodeWithOneOutput
     {
