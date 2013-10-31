@@ -176,8 +176,8 @@ namespace Dynamo.Nodes
             }
 
             // do some trig
-            var x = r * Math.Cos(theta);
-            var y = r * Math.Sin(theta);
+            var x = r * Math.Cos(theta) * Math.Sin(phi);
+            var y = r * Math.Sin(theta) * Math.Sin(phi);
             var z = r * Math.Cos(phi);
 
             // all done
