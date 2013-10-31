@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Controls; //for boolean option
 using System.Xml;              //for boolean option  
 using Autodesk.Revit.DB;
-using Autodesk.Revit.DB.Mechanical;
 using Dynamo.Controls;
 using Dynamo.FSchemeInterop;
 using Dynamo.Models;
 using Dynamo.Revit;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
+
 
 namespace Dynamo.Nodes
 {
@@ -57,7 +55,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("XYZ by Polar")]
+    [NodeName("XYZ by Polar Coordinates")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
     [NodeDescription("Creates an XYZ from sphereical coordinates.")]
     public class XyzFromPolar : GeometryBase
@@ -101,7 +99,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("XYZ to Polar")]
+    [NodeName("XYZ to Polar Coordinates")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
     [NodeDescription("Creates an XYZ from spherical coordinates.")]
     public class XyzToPolar : NodeModel
@@ -154,7 +152,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("XYZ by Spherical")]
+    [NodeName("XYZ by Spherical Coordinates")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
     [NodeDescription("Creates an XYZ from spherical coordinates.")]
     public class XyzFromSpherical : GeometryBase
@@ -179,8 +177,8 @@ namespace Dynamo.Nodes
             }
 
             // do some trig
-            var x = r * Math.Cos(theta);
-            var y = r * Math.Sin(theta);
+            var x = r * Math.Cos(theta) * Math.Sin(phi);
+            var y = r * Math.Sin(theta) * Math.Sin(phi);
             var z = r * Math.Cos(phi);
 
             // all done
@@ -198,7 +196,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("XYZ to Spherical")]
+    [NodeName("XYZ to Spherical Coordinates")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
     [NodeDescription("Decompose an XYZ into spherical coordinates.")]
     public class XyzToSpherical : NodeModel
@@ -220,7 +218,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public static void ToPolarCoordinates(XYZ input, out double r, out double theta, out double phi)
+        public static void ToSphericalCoordinates(XYZ input, out double r, out double theta, out double phi)
         {
             // set length
             r = input.GetLength();
@@ -249,7 +247,7 @@ namespace Dynamo.Nodes
                 else // determine whether vector is above or below - if above phi is 0
                 {
                     theta = 0;
-                    phi = input.Y > 0 ? 0 : Math.PI;
+                    phi = input.Z > 0 ? 0 : Math.PI;
                     return;
                 }
             }
@@ -265,7 +263,7 @@ namespace Dynamo.Nodes
             }
             
             // phew...
-            phi = Math.Atan(input.Z / rInXYPlane);
+            phi = Math.Acos(input.Z/r);
         }
 
         public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
@@ -273,7 +271,7 @@ namespace Dynamo.Nodes
             var xyz = ((XYZ)((Value.Container)args[0]).Item);
             double r, theta, phi;
 
-            ToPolarCoordinates(xyz, out r, out theta, out phi);
+            ToSphericalCoordinates(xyz, out r, out theta, out phi);
 
             outPuts[_rPort] = FScheme.Value.NewNumber(r);
             outPuts[_thetaPort] = FScheme.Value.NewNumber(theta);
@@ -1214,9 +1212,10 @@ namespace Dynamo.Nodes
     {
         public CreateRevolvedGeometry()
         {
-            InPortData.Add(new PortData("profile", "The curve loop to use as a profile", typeof(Value.Container)));
+            InPortData.Add(new PortData("profile", "The Curve Loop or closed Curve to use as a profile", typeof(Value.Container)));
             InPortData.Add(new PortData("transform", "Coordinate system for revolve, loop should be in xy plane of this transform on the right side of z axis used for rotate.", typeof(Value.Container)));
-            InPortData.Add(new PortData("angle domain", "start angle measured counter-clockwise from x-axis of transform", typeof(Value.Number)));
+            InPortData.Add(new PortData("start angle", "start angle measured counter-clockwise from x-axis of transform", typeof(Value.Number)));
+            InPortData.Add(new PortData("end angle", "end angle measured counter-clockwise from x-axis of transform", typeof(Value.Number)));
 
             OutPortData.Add(new PortData("solid", "The revolved geometry.", typeof(Value.Container)));
 
@@ -1227,13 +1226,14 @@ namespace Dynamo.Nodes
         {
             var cLoop = (Autodesk.Revit.DB.CurveLoop)((Value.Container)args[0]).Item;
             var trf = (Transform)((Value.Container)args[1]).Item;
-            var domain = (DSCoreNodes.Domain) ((Value.Container)args[2]).Item;
+            var start = ((Value.Number)args[2]).Item;
+            var end = ((Value.Number)args[3]).Item;
 
             var loopList = new List<Autodesk.Revit.DB.CurveLoop> {cLoop};
             var thisFrame = new Autodesk.Revit.DB.Frame();
             thisFrame.Transform(trf);
 
-            var result = GeometryCreationUtilities.CreateRevolvedGeometry(thisFrame, loopList, domain.Min, domain.Max);
+            var result = GeometryCreationUtilities.CreateRevolvedGeometry(thisFrame, loopList, start, end);
 
             return Value.NewContainer(result);
         }
@@ -1246,10 +1246,11 @@ namespace Dynamo.Nodes
     {
         public CreateSweptGeometry()
         {
-            InPortData.Add(new PortData("rail", "The rail curve to sweep along (a CurveLoop or Curve)", typeof(Value.Container)));
-            InPortData.Add(new PortData("profile", "A closed curve loop to sweep to be swept along curve", typeof(Value.Container)));
-            
-            OutPortData.Add(new PortData("solid", "The swept geometry.", typeof(Value.Container)));
+            InPortData.Add(new PortData("sweep path", "The curve loop to sweep along.", typeof(Value.Container)));
+            InPortData.Add(new PortData("attachment curve index", "index of the curve where profile loop is attached", typeof(Value.Number), Value.NewNumber(0)));
+            InPortData.Add(new PortData("attachment parameter", "parameter of attachment point on its curve", typeof(Value.Number), Value.NewNumber(0)));
+            InPortData.Add(new PortData("profile loop", "The curve loop to sweep to be put in orthogonal plane to path at attachment point.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("geometry", "The swept geometry.", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -1272,17 +1273,18 @@ namespace Dynamo.Nodes
             return curveLoop;
         }
 
-        public static Solid SolidBySweep( Autodesk.Revit.DB.CurveLoop pathLoop, Autodesk.Revit.DB.CurveLoop profileLoop )
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            // these are the defaults
-            int attachementIndex = 0;
-            double attachementPar = 0.0;
+            var pathLoop = CurveLoopFromContainer((Value.Container)args[0]);
+            int attachementIndex = (int)((Value.Number)args[1]).Item;
+            double attachementPar = ((Value.Number)args[2]).Item;
+            Autodesk.Revit.DB.CurveLoop profileLoop = (Autodesk.Revit.DB.CurveLoop)((Value.Container)args[3]).Item;
+            List<Autodesk.Revit.DB.CurveLoop> loopList = new List<Autodesk.Revit.DB.CurveLoop>();
 
-            // align profile to axis of curve
             if (profileLoop.HasPlane())
             {
-                var profileLoopPlane = profileLoop.GetPlane();
-                var CLiter = pathLoop.GetCurveLoopIterator();
+                Autodesk.Revit.DB.Plane profileLoopPlane = profileLoop.GetPlane();
+                Autodesk.Revit.DB.CurveLoopIterator CLiter = pathLoop.GetCurveLoopIterator();
 
                 for (int indexCurve = 0; indexCurve < attachementIndex && CLiter.MoveNext(); indexCurve++)
                 {
@@ -1306,10 +1308,12 @@ namespace Dynamo.Nodes
                         if (Math.Abs(distAttachment) > 0.000001 + Math.Abs(distOrigin))
                             fromPoint = (-distOrigin) * profileLoopPlane.Normal;
                         else
-                            fromPoint = pathTrf.Origin - distOrigin * profileLoopPlane.Normal;
+                            fromPoint = pathTrf.Origin - (pathTrf.Origin -profileLoopPlane.Origin).DotProduct(profileLoopPlane.Normal) * profileLoopPlane.Normal;
                         XYZ fromVecOne = profileLoopPlane.Normal;
+                        if (fromVecOne.DotProduct(pathDerivative) < -angleTolerance)
+                            fromVecOne = -fromVecOne;
                         XYZ toVecOne = pathDerivative;
-                        XYZ fromVecTwo = XYZ.BasisZ.CrossProduct(profileLoopPlane.Normal);
+                        XYZ fromVecTwo = XYZ.BasisZ.CrossProduct(fromVecOne);
                         if (fromVecTwo.IsZeroLength())
                             fromVecTwo = XYZ.BasisX;
                         else
@@ -1319,28 +1323,30 @@ namespace Dynamo.Nodes
                             toVecTwo = XYZ.BasisX;
                         else
                             toVecTwo = toVecTwo.Normalize();
+                        if (toVecTwo.DotProduct(fromVecTwo) < -angleTolerance)
+                            toVecTwo = -toVecTwo;
 
-                        var trfToAttach = Transform.CreateTranslation(pathTrf.Origin);
+                        Transform trfToAttach = Transform.CreateTranslation(pathTrf.Origin);
                         trfToAttach.BasisX = toVecOne;
                         trfToAttach.BasisY = toVecTwo;
                         trfToAttach.BasisZ = toVecOne.CrossProduct(toVecTwo);
 
-                        var trfToProfile = Transform.CreateTranslation(fromPoint);
+                        Transform trfToProfile = Transform.CreateTranslation(fromPoint);
                         trfToProfile.BasisX = fromVecOne;
                         trfToProfile.BasisY = fromVecTwo;
                         trfToProfile.BasisZ = fromVecOne.CrossProduct(fromVecTwo);
 
-                        var trfFromProfile = trfToProfile.Inverse;
+                        Transform trfFromProfile = trfToProfile.Inverse;
 
-                        var combineTrf = trfToAttach.Multiply(trfFromProfile);
+                        Transform combineTrf = trfToAttach.Multiply(trfFromProfile);
 
                         //now get new curve loop
-                        var transformedCurveLoop = new Autodesk.Revit.DB.CurveLoop();
+                        Autodesk.Revit.DB.CurveLoop transformedCurveLoop = new Autodesk.Revit.DB.CurveLoop();
                         Autodesk.Revit.DB.CurveLoopIterator CLiterT = profileLoop.GetCurveLoopIterator();
                         for (; CLiterT.MoveNext(); )
                         {
-                            var curCurve = CLiterT.Current;
-                            var curCurveTransformed = curCurve.CreateTransformed(combineTrf);
+                            Curve curCurve = CLiterT.Current;
+                            Curve curCurveTransformed = curCurve.CreateTransformed(combineTrf);
 
                             transformedCurveLoop.Append(curCurveTransformed);
                         }
@@ -1348,19 +1354,14 @@ namespace Dynamo.Nodes
                     }
                 }
             }
+            loopList.Add(profileLoop);
 
-            return GeometryCreationUtilities.CreateSweptGeometry(pathLoop, 0, 0, new List<Autodesk.Revit.DB.CurveLoop>(){profileLoop});
-        }
+            Solid result = GeometryCreationUtilities.CreateSweptGeometry(pathLoop, attachementIndex, attachementPar, loopList);
 
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            // unbox
-            var path = CurveLoopFromContainer((FScheme.Value.Container) args[0]);
-            var profile = (Autodesk.Revit.DB.CurveLoop)((Value.Container)args[1]).Item;
-
-            return Value.NewContainer(SolidBySweep( path, profile ));
+            return Value.NewContainer(result);
         }
     }
+
 
     [NodeName("Extrude")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID_CREATE)]
@@ -1370,7 +1371,7 @@ namespace Dynamo.Nodes
 
         public CreateExtrusionGeometry()
         {
-            InPortData.Add(new PortData("profile", "The profile curve (Can be a Curve or CurveLoops", typeof(Value.Container)));
+            InPortData.Add(new PortData("profile", "The profile CurveLoop.", typeof(Value.Container)));
             InPortData.Add(new PortData("direction", "The direction in which to extrude the profile.", typeof(Value.Container)));
             InPortData.Add(new PortData("distance", "The positive distance by which the loops are to be extruded.", typeof(Value.Number)));
 
@@ -1381,32 +1382,11 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
+            var curveLoop = CreateSweptGeometry.CurveLoopFromContainer((Value.Container) args[0]);
             var direction = (XYZ)((Value.Container)args[1]).Item;
             var distance = ((Value.Number)args[2]).Item;
 
-            //incoming list will have two lists in it
-            //each list will contain curves. convert the curves
-            //into curve loops
-            var profileList = ((Value.List)args[0]).Item;
-            var loops = new List<Autodesk.Revit.DB.CurveLoop>();
-            foreach (var item in profileList)
-            {
-                if (item.IsList)
-                {
-                    var innerList = ((Value.List)item).Item;
-                    foreach (var innerItem in innerList)
-                    {
-                        loops.Add((Autodesk.Revit.DB.CurveLoop)((Value.Container)item).Item);
-                    }
-                }
-                else
-                {
-                    //we'll assume a container
-                    loops.Add((Autodesk.Revit.DB.CurveLoop)((Value.Container)item).Item);
-                }
-            }
-
-            var result = GeometryCreationUtilities.CreateExtrusionGeometry(loops, direction, distance);
+            var result = GeometryCreationUtilities.CreateExtrusionGeometry(new List<Autodesk.Revit.DB.CurveLoop>(){curveLoop}, direction, distance);
 
             return Value.NewContainer(result);
         }
@@ -1447,6 +1427,82 @@ namespace Dynamo.Nodes
             }
 
             var result = GeometryCreationUtilities.CreateBlendGeometry(firstLoop, secondLoop, vertPairs);
+
+            return Value.NewContainer(result);
+        }
+    }
+
+    [NodeName("Swept Blend")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID_CREATE)]
+    [NodeDescription("Creates a solid by sweeping and blending curve loop along a single curve")]
+    public class CreateSweptBlendGeometry : GeometryBase
+    {
+        public CreateSweptBlendGeometry()
+        {
+            InPortData.Add(new PortData("profile loops", "Closed planar curve loops located along the path in orthogonal plane to the path.", typeof(Value.List)));
+            InPortData.Add(new PortData("sweep path", "The curve to sweep along.", typeof(Value.Container)));
+            InPortData.Add(new PortData("attachment parameters", "parameter of attachment point on its curve", typeof(Value.List),  Value.NewList(FSharpList<Value>.Empty)));
+            
+            OutPortData.Add(new PortData("solid", "The swept geometry.", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Autodesk.Revit.DB.Curve pathCurve = (Autodesk.Revit.DB.Curve)((Value.Container)args[1]).Item;
+
+            List<Autodesk.Revit.DB.CurveLoop> profileLoops = new List<Autodesk.Revit.DB.CurveLoop>();
+            var input = (args[0] as Value.List).Item;
+            foreach (Value v in input)
+            {
+                Autodesk.Revit.DB.CurveLoop cL = ((Value.Container)v).Item as Autodesk.Revit.DB.CurveLoop;
+                profileLoops.Add(cL);
+            }
+
+            List<double> attachParams = new List<double>();
+            var inputPar = (args[2] as Value.List).Item;
+            if (inputPar.Length < profileLoops.Count)
+            {
+                //intersect plane of each curve loop with the pathCurve
+                double lastParam =  pathCurve.ComputeRawParameter(0.0);
+                foreach (Autodesk.Revit.DB.CurveLoop cLoop in profileLoops)
+                {
+                    Autodesk.Revit.DB.Plane planeOfCurveLoop = cLoop.GetPlane();
+                    if (planeOfCurveLoop == null)
+                        throw new Exception("Profile Curve Loop is not planar");
+                    Face face = Dynamo.Nodes.CurveFaceIntersection.buildFaceOnPlaneByCurveExtensions(pathCurve, planeOfCurveLoop);
+                    IntersectionResultArray xsects = null;
+                    face.Intersect(pathCurve, out xsects);
+                    if (xsects == null )
+                        throw new Exception("Could not find attachment point on path curve");
+                    if (xsects.Size > 1)
+                    {
+                        for (int indexInt = 0; indexInt < xsects.Size; indexInt++)
+                        {
+                            if (xsects.get_Item(indexInt).Parameter < lastParam + 0.0000001)
+                                continue;
+                            lastParam = xsects.get_Item(indexInt).Parameter;
+                            break;
+                        }
+                    }
+                    else
+                        lastParam = xsects.get_Item(0).Parameter;
+                    attachParams.Add(lastParam);
+                }
+            }
+            else
+            {
+                foreach (Value vPar in inputPar)
+                {
+                    double par = (double)((Value.Container)vPar).Item;
+                    attachParams.Add(par);
+                }
+            }
+            //check the parameter and set it if not right or not defined
+            List<ICollection<Autodesk.Revit.DB.VertexPair>> vertPairs = null;
+
+            Solid result = GeometryCreationUtilities.CreateSweptBlendGeometry(pathCurve, attachParams, profileLoops, vertPairs);
 
             return Value.NewContainer(result);
         }
@@ -1773,28 +1829,28 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("cylinder", "Solid cylinder", typeof(object)));
 
             RegisterAllPorts();
-
         }
 
         public static Solid CylinderByAxisOriginRadiusHeight(XYZ axis, XYZ origin, double radius, double height)
         {
             // get axis that is perp to axis by first generating random vector
-            var r = new System.Random();
-            axis = axis.Normalize();
-            var randXyz = new XYZ(r.NextDouble(), r.NextDouble(), r.NextDouble());
-            var axisPerp1 = randXyz.CrossProduct(axis).Normalize();
+            var zaxis = axis.Normalize();
+            var randXyz = new XYZ(1,0,0);
+            if ( axis.IsAlmostEqualTo(randXyz) ) randXyz = new XYZ(0,1,0);
+            var yaxis = zaxis.CrossProduct(randXyz).Normalize();
 
             // get second axis that is perp to axis
-            var axisPerp2 = axisPerp1.CrossProduct(axis);
+            var xaxis = yaxis.CrossProduct(zaxis);
 
-            // create circle
-            var circle = dynRevitSettings.Doc.Application.Application.Create.NewArc(origin, radius, 0, 2 * Circle.RevitPI, axisPerp1, axisPerp2);
+            // create circle (this is ridiculous, but curve loop doesn't work with a circle - you need two arcs)
+            var arc1 = dynRevitSettings.Doc.Application.Application.Create.NewEllipse(origin, radius, radius, xaxis, yaxis, 0, Circle.RevitPI);
+            var arc2 = dynRevitSettings.Doc.Application.Application.Create.NewEllipse(origin, radius, radius, xaxis, yaxis, Circle.RevitPI, 2*Circle.RevitPI);
 
             // create curve loop from cirle
-            var circleLoop = Autodesk.Revit.DB.CurveLoop.Create(new List<Curve>() { circle });
+            var circleLoop = Autodesk.Revit.DB.CurveLoop.Create(new List<Curve>() { arc1, arc2 });
 
             // extrude the curve and return
-            return GeometryCreationUtilities.CreateExtrusionGeometry(new List<Autodesk.Revit.DB.CurveLoop>() { circleLoop }, axis, height);
+            return GeometryCreationUtilities.CreateExtrusionGeometry(new List<Autodesk.Revit.DB.CurveLoop>() { circleLoop }, zaxis, height);
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -1879,25 +1935,28 @@ namespace Dynamo.Nodes
         {
 
             // get axis that is perp to axis by first generating random vector
-            var r = new System.Random();
-            zAxis = zAxis.Normalize();
-            var randXyz = new XYZ(r.NextDouble(), r.NextDouble(), r.NextDouble());
-            var xAxis = randXyz.CrossProduct(zAxis).Normalize();
+            var zaxis = zAxis.Normalize();
+            var randXyz = new XYZ(1, 0, 0);
+            if (zaxis.IsAlmostEqualTo(randXyz)) randXyz = new XYZ(0, 1, 0);
+            var yaxis = zaxis.CrossProduct(randXyz).Normalize();
 
             // get second axis that is perp to axis
-            var yAxis = xAxis.CrossProduct(zAxis);
+            var xaxis = yaxis.CrossProduct(zaxis);
 
-            // create circle
-            var circle = dynRevitSettings.Doc.Application.Application.Create.NewArc(center + radius * xAxis, radius, 
-                0, 2 * Circle.RevitPI, xAxis, zAxis);
+            // form origin of the arc
+            var origin = center + xaxis*radius;
+
+            // create circle (this is ridiculous but curve loop doesn't work with a circle
+            var arc1 = dynRevitSettings.Doc.Application.Application.Create.NewEllipse(origin, sectionRadius, sectionRadius, xaxis, zaxis, 0, Circle.RevitPI);
+            var arc2 = dynRevitSettings.Doc.Application.Application.Create.NewEllipse(origin, sectionRadius, sectionRadius, xaxis, zaxis, Circle.RevitPI, 2 * Circle.RevitPI);
 
             // create curve loop from cirle
-            var circleLoop = Autodesk.Revit.DB.CurveLoop.Create(new List<Curve>() { circle });
+            var circleLoop = Autodesk.Revit.DB.CurveLoop.Create(new List<Curve>() { arc1, arc2 });
 
             // extrude the curve and return
             return 
                 GeometryCreationUtilities.CreateRevolvedGeometry(
-                    new Autodesk.Revit.DB.Frame(center, xAxis, yAxis, zAxis), new List<Autodesk.Revit.DB.CurveLoop>() { circleLoop }, 0,
+                    new Autodesk.Revit.DB.Frame(center, xaxis, yaxis, zaxis), new List<Autodesk.Revit.DB.CurveLoop>() { circleLoop }, 0,
                     2 * Circle.RevitPI);
 
         }
