@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using Autodesk.Revit.DB;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
@@ -8,6 +9,7 @@ namespace DSRevitNodes
     /// <summary>
     /// Superclass of all geometry
     /// </summary>
+    [Browsable(false)]
     public abstract class AbstractGeometry : IDisposable
     {
         public static Document Document

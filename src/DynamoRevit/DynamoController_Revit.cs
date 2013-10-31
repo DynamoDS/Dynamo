@@ -732,35 +732,16 @@ namespace Dynamo
 
             if (!DynamoViewModel.RunInDebug)
             {
-                //Do we need manual transaction control?
-                bool manualTrans = topElements.Any(CheckManualTransaction.TraverseUntilAny);
-
-                //Can we avoid running everything in the Revit Idle thread?
-                bool noIdleThread = manualTrans ||
-                                    !topElements.Any(CheckRequiresTransaction.TraverseUntilAny);
-
-                //If we don't need to be in the idle thread...
-                if (noIdleThread || Testing)
-                {
-                    //DynamoLogger.Instance.Log("Running expression in evaluation thread...");
-                    TransMode = TransactionMode.Manual; //Manual transaction control
-
-                    if (Testing)
-                        TransMode = TransactionMode.Automatic;
-
-                    InIdleThread = false; //Not in idle thread at the moment
-                    base.Run(topElements, graphSyncData); //Just run the Run Delegate
-                }
-                else //otherwise...
-                {
-                    //DynamoLogger.Instance.Log("Running expression in Revit's Idle thread...");
-                    TransMode = TransactionMode.Automatic; //Automatic transaction control
-
-                    Debug.WriteLine("Adding a run to the idle stack.");
-                    InIdleThread = true; //Now in the idle thread.
-                    IdlePromise.ExecuteOnIdleSync(() => base.Run(topElements, graphSyncData)); //Execute the Run Delegate in the Idle thread.
-
-                }
+                // As we use a generic function node to represent all functions,
+                // we don't know if a node has something to do with Revit or 
+                // not, neither we know that the re-execution of a dirty node
+                // will trigger the update for a Revit related node. Now just
+                // run the execution in the idle thread until we find out a 
+                // way to control the execution.
+                TransMode = TransactionMode.Automatic; //Automatic transaction control
+                Debug.WriteLine("Adding a run to the idle stack.");
+                InIdleThread = true; //Now in the idle thread.
+                IdlePromise.ExecuteOnIdleSync(() => base.Run(topElements, graphSyncData));
             }
             else
             {
