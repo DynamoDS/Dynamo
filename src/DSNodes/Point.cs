@@ -1,29 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
-using RevitServices.Persistence;
 using DSNodeServices;
 using RevitServices.Transactions;
 
 namespace DSRevitNodes
 {
-
-    //TODO(Luke): Move me
-    public abstract class AbstractGeometry : IDisposable
-    {
-        public static Document Document
-        {
-            get { return DocumentManager.GetInstance().CurrentDBDocument; }
-        }
-
-
-        public abstract void Dispose();
-    }
-
-
     /// <summary>
     /// A sample geometry class
     /// Node that it needs to be reistered for trace in order to be able to
