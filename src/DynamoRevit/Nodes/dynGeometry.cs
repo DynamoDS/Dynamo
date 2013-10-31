@@ -217,7 +217,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public static void ToPolarCoordinates(XYZ input, out double r, out double theta, out double phi)
+        public static void ToSphericalCoordinates(XYZ input, out double r, out double theta, out double phi)
         {
             // set length
             r = input.GetLength();
@@ -270,7 +270,7 @@ namespace Dynamo.Nodes
             var xyz = ((XYZ)((Value.Container)args[0]).Item);
             double r, theta, phi;
 
-            ToPolarCoordinates(xyz, out r, out theta, out phi);
+            ToSphericalCoordinates(xyz, out r, out theta, out phi);
 
             outPuts[_rPort] = FScheme.Value.NewNumber(r);
             outPuts[_thetaPort] = FScheme.Value.NewNumber(theta);
