@@ -590,7 +590,7 @@ namespace Dynamo.ViewModels
 
             protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
             {
-                dynamoViewModel.UpdateModelPropertyImpl(this);
+                dynamoViewModel.UpdateModelValueImpl(this);
             }
 
             protected override void SerializeCore(XmlElement element)

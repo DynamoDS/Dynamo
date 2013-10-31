@@ -169,7 +169,6 @@ namespace Dynamo.Nodes
 
     public partial class Sublists : BasicInteractive<string>
     {
-
         public override void SetupCustomUIElements(object ui)
         {
             var nodeUI = ui as dynNodeView;
@@ -199,6 +198,19 @@ namespace Dynamo.Nodes
             });
         }
 
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (base.UpdateValueCore(name, value))
+                return true;
+
+            if (name == "Value")
+            {
+                this.Value = value;
+                return true;
+            }
+
+            return false; // Not handled here.
+        }
     }
 
     public partial class Breakpoint : NodeWithOneOutput
@@ -295,6 +307,19 @@ namespace Dynamo.Nodes
             });
         }
 
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (base.UpdateValueCore(name, value))
+                return true;
+
+            if (name == "Value")
+            {
+                this.Value = value;
+                return true;
+            }
+
+            return false; // Not handled here.
+        }
     }
 
     //public partial class AngleInput : DoubleInput

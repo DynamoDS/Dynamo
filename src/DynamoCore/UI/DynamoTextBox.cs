@@ -8,6 +8,7 @@ using Dynamo.Models;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Nodes
 {
@@ -83,6 +84,17 @@ namespace Dynamo.Nodes
 
         public void BindToProperty(System.Windows.Data.Binding binding)
         {
+            // DynamoTextBox allows for one-way binding from binding source (the 
+            // bound property on a NodeModel) to binding target (DynamoTextBox).
+            // When the text box content is updated, we do not want the source 
+            // to be updated automatically by WPF data-binding. Instead, we need
+            // a way to track this change and made it recordable in the command 
+            // framework. For that to work, DynamoTextBox explicitly disables 
+            // the update triggered by update on the UI. See "UpdateDataSource"
+            // method below for details on the way node update is recorded.
+            // 
+            binding.Mode = System.Windows.Data.BindingMode.OneWay;
+
             this.SetBinding(TextBox.TextProperty, binding);
             UpdateDataSource(false);
         }
@@ -157,10 +169,14 @@ namespace Dynamo.Nodes
                 var expr = GetBindingExpression(TextProperty);
                 if (expr != null)
                 {
+                    NodeModel nodeModel = GetBoundModel(expr.DataItem);
                     if (false != recordForUndo)
-                        PreUpdateModel(expr.DataItem);
+                        PreUpdateModel(nodeModel);
 
-                    expr.UpdateSource();
+                    // expr.UpdateSource();
+                    dynSettings.Controller.DynamoViewModel.ExecuteCommand(
+                        new DynCmd.UpdateModelValueCommand(
+                            nodeModel.GUID, "Value", this.Text));
                 }
 
                 if (OnChangeCommitted != null)
@@ -170,7 +186,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        private void PreUpdateModel(object dataItem)
+        private NodeModel GetBoundModel(object dataItem)
         {
             // Attempt get to the data-bound model (if there's any).
             NodeModel nodeModel = dataItem as NodeModel;
@@ -181,6 +197,11 @@ namespace Dynamo.Nodes
                     nodeModel = nodeViewModel.NodeModel;
             }
 
+            return nodeModel;
+        }
+
+        private void PreUpdateModel(NodeModel nodeModel)
+        {
             // If we do get a node/note, record it for undo.
             if (null != nodeModel)
             {
