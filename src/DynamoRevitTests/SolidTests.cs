@@ -112,5 +112,29 @@ namespace Dynamo.Tests
             Assert.Greater(actualVolume, volumeMin);
             Assert.Less(actualVolume, volumeMax);
         }
+        [Test]
+        public void SweptBlend()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            System.Reflection.Assembly revitAPIAssembly = System.Reflection.Assembly.GetAssembly(typeof(GenericForm));
+            var FreeFormType = revitAPIAssembly.GetType("Autodesk.Revit.DB.FreeFormElement", false);
+            if (FreeFormType == null)
+                return;
+
+            string samplePath = Path.Combine(_testPath, @".\SweptBlend.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+            dynSettings.Controller.RunExpression(true);
+
+            var fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            fec.OfClass(typeof(GenericForm));
+
+            //verify one loft created
+            int count = fec.ToElements().Count;
+
+            Assert.IsInstanceOf(FreeFormType, fec.ToElements().First());
+            Assert.AreEqual(1, count);
+        }
     }
 }

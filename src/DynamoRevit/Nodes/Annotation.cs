@@ -8,7 +8,7 @@ using Dynamo.Utilities;
 namespace Dynamo.Nodes
 {
     [NodeName("Model Text")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILYCREATION)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
     [NodeDescription("Creates a model text object.")]
     public class ModelText : RevitTransactionNodeWithOneOutput
     {

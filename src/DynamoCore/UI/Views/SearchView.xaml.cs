@@ -1,20 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Dynamo.Controls;
-using Dynamo.Search.Regions;
+using Dynamo.Search.SearchElements;
+using Dynamo.Selection;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using DynamoCommands = Dynamo.UI.Commands.DynamoCommands;
 using TextBox = System.Windows.Controls.TextBox;
 using UserControl = System.Windows.Controls.UserControl;
-using System.Windows.Media;
-using Dynamo.Utilities;
-using DynamoCommands = Dynamo.UI.Commands.DynamoCommands;
-using Dynamo.Search.SearchElements;
-using System.Collections.Generic;
-using System.Windows.Media.Imaging;
-using Dynamo.Selection;
 
 namespace Dynamo.Search
 {
@@ -52,13 +51,6 @@ namespace Dynamo.Search
 
             dynSettings.Controller.SearchViewModel.RequestFocusSearch += SearchViewModel_RequestFocusSearch;
             dynSettings.Controller.SearchViewModel.RequestReturnFocusToSearch += SearchViewModel_RequestReturnFocusToSearch;
-
-            //setup the regions on the view model
-            _viewModel.Regions = new ObservableDictionary<string, RegionBase>();
-            //Regions.Add("Include Nodes from Package Manager", DynamoCommands.PackageManagerRegionCommand );
-            //var region = new RevitAPIRegion(SearchViewModel.RevitAPIRegionExecute, SearchViewModel.RevitAPIRegionCanExecute);
-            //region.RaiseCanExecuteChanged();
-            //_viewModel.Regions.Add("Include Experimental Revit API Nodes", region);
 
         }
 
