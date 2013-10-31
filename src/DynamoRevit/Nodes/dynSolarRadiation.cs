@@ -15,7 +15,7 @@ using Dynamo.Revit.SyncedNodeExtensions;
 
 namespace Dynamo.Nodes
 {
-    [NodeName("Extract Solar Radiation Value")]
+    [NodeName("Solar Radiation Values from CSV")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_SOLAR)]
     [NodeDescription("Extracts and computes the average solar radiation value based on a CSV file.")]
     public class ComputeSolarRadiationValue: NodeWithOneOutput
@@ -54,7 +54,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Analysis Results by Selection")]
-    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select an analysis result object from the document.")]
     public class AnalysisResultsBySelection: NodeWithOneOutput
     {

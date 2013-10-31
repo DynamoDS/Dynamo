@@ -115,7 +115,7 @@ namespace Dynamo.Nodes
         private void deleteItem_Click(object sender, RoutedEventArgs e)
         {
             if (ViewModel != null)
-                dynSettings.Controller.DynamoViewModel.DeleteCommand.Execute(this.ViewModel.Model);
+                dynSettings.Controller.DynamoViewModel.DeleteCommand.Execute(null);
         }
 
         private void Note_MouseDown(object sender, MouseButtonEventArgs e)

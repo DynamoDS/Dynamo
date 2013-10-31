@@ -59,12 +59,16 @@ Source: Extra\fsharp_redist.exe; DestDir: {app}; Flags: ignoreversion overwriter
 Source: Extra\IronPython-2.7.3.msi; DestDir: {tmp}; Flags: deleteafterinstall;
 ;Training Files
 Source: temp\Samples\*.*; DestDir: {app}\samples; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
-Source: temp\dynamo_packages\*.dyf; DestDir: {app}\dynamo_packages; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
+Source: temp\dynamo_packages\*; DestDir: {app}\dynamo_packages; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
 
 [UninstallDelete]
 Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2013\Dynamo.addin"
 Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2014\Dynamo.addin"
 Type: files; Name: "{commonappdata}\Autodesk\Vasari\Addins\2014\Dynamo.addin"
+Type: files; Name: {app}\RevitRaaS.dll
+Type: files; Name: {app}\DynamoRaaS.dll
+Type: files; Name: {app}\SDF.dll
+Type: files; Name: {app}\JobMonitor.dll
 
 [Run]
 Filename: "{app}\fsharp_redist.exe"; Parameters: "/q"; Flags: runascurrentuser

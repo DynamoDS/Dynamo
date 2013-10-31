@@ -1015,9 +1015,9 @@ namespace Dynamo.Controls
             //source -> target
             //Convert radians to degrees
             double dbl;
-            if (double.TryParse(value as string, NumberStyles.Any, CultureInfo.CurrentCulture, out dbl))
+            if (double.TryParse(value as string, NumberStyles.Any, culture, out dbl))
             {
-                return System.Convert.ToDouble(value, culture) * 180.0 / Math.PI;
+                return dbl * 180.0 / Math.PI;
             }
             return value ?? "";
         }
@@ -1027,9 +1027,9 @@ namespace Dynamo.Controls
             //target -> source
             //Convert degrees to radians
             double dbl;
-            if (double.TryParse(value as string, NumberStyles.Any, CultureInfo.CurrentCulture, out dbl))
+            if (double.TryParse(value as string, NumberStyles.Any, culture, out dbl))
             {
-                return System.Convert.ToDouble(value, culture) * Math.PI / 180.0;
+                return dbl * Math.PI / 180.0;
             }
             return value ?? "";
         }

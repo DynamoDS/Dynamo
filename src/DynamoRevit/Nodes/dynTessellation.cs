@@ -11,7 +11,7 @@ using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Nodes
 {
-    [NodeName("Voronoi On Face")]
+    [NodeName("Voronoi on Face")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TESSELATE)]
     [NodeDescription("Create a Voronoi tesselation on a face.")]
     public class VoronoiOnFace : RevitTransactionNodeWithOneOutput
@@ -182,87 +182,6 @@ namespace Dynamo.Nodes
             return Value.NewList(result);
         }
     }
-
-    /*
-
-    // The results of this node seem correct, but we'll need to do more work to
-    // produce the cells and clip them inside of a bounding box
-     
-    [NodeName("Voronoi 3D")]
-    [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TESSELATE)]
-    [NodeDescription("Find the voronoi cells of a set of 3d points.")]
-    public class dynVoronoi3d : dynRevitTransactionNodeWithOneOutput
-    {
-        List<Line> _tessellationLines = new List<Line>();
-
-        public dynVoronoi3d()
-        {
-            InPortData.Add(new PortData("XYZs", "List of xyz's.", typeof(Value.List)));
-            OutPortData.Add(new PortData("out", "Tessellation data.", typeof(Value.List)));
-
-            RegisterAllPorts();
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            var input = args[0];
-            var result = FSharpList<Value>.Empty;
-
-            if (input.IsList)
-            {
-                var ptList = (input as Value.List).Item;
-                int length = ptList.Length;
-
-                var verts = new List<Vertex3>();
-
-                for (int i = 0; i < length; i++)
-                {
-                    var pt = (XYZ)((Value.Container)ptList[i]).Item;
-                    var vert = new Vertex3(pt.X, pt.Y, pt.Z);
-                    verts.Add(vert);
-                }
-
-                // make triangulation
-                var triResult = VoronoiMesh.Create<Vertex3, Cell3>(verts);
-
-                _tessellationLines.Clear();
-
-                // make edges
-                foreach (var edge in triResult.Edges)
-                {
-                    var source = edge.Source.Circumcenter.ToXYZ();
-                    var target = edge.Target.Circumcenter.ToXYZ();
-
-                    var l1 = this.UIDocument.Application.Application.Create.NewLineBound(source, target);
-                    _tessellationLines.Add(l1);
-
-                    result = FSharpList<Value>.Cons(Value.NewContainer(l1), result);
-                }
-
-                return Value.NewList(result);
-            }
-
-            return Value.NewList(result);
-        }
-
-        public override void Draw()
-        {
-            if (this.RenderDescription == null)
-                this.RenderDescription = new Nodes.RenderDescription();
-            else
-                this.RenderDescription.ClearAll();
-
-            foreach (Line l in _tessellationLines)
-            {
-                RenderDescription.lines.Add(new Point3D(l.get_EndPoint(0).X,
-                    l.get_EndPoint(0).Y, l.get_EndPoint(0).Z));
-                RenderDescription.lines.Add(new Point3D(l.get_EndPoint(1).X,
-                    l.get_EndPoint(1).Y, l.get_EndPoint(1).Z));
-            }
-        }
-    }
-
-     */
 
     [NodeName("Convex Hull 3D")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TESSELATE)]
