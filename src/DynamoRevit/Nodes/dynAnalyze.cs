@@ -7,7 +7,7 @@ using Dynamo.Utilities;
 namespace Dynamo.Nodes
 {
     [NodeName("Evaluate Surface")]
-    [NodeCategory(BuiltinNodeCategories.ANALYZE_SURFACE)]
+    [NodeCategory(BuiltinNodeCategories.SURFACE_QUERY)]
     [NodeDescription("Evaluate a parameter(UV) on a face to find the XYZ location.")]
     class XyzEvaluate : GeometryBase
     {
@@ -41,7 +41,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Surface Normal")]
-    [NodeCategory(BuiltinNodeCategories.ANALYZE_SURFACE)]
+    [NodeCategory(BuiltinNodeCategories.SURFACE_QUERY)]
     [NodeDescription("Evaluate a point on a face to find the normal.")]
     class NormalEvaluate : GeometryBase
     {
@@ -75,7 +75,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Surface Derivatives")]
-    [NodeCategory(BuiltinNodeCategories.ANALYZE_SURFACE)]
+    [NodeCategory(BuiltinNodeCategories.SURFACE_QUERY)]
     [NodeDescription("Returns a transform describing the face (f) at the parameter (uv).")]
     public class ComputeFaceDerivatives : GeometryBase
     {
