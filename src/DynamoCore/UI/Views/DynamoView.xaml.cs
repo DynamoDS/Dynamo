@@ -526,7 +526,9 @@ namespace Dynamo.Controls
 
             WorkspaceViewModel view_model = _vm.Workspaces[workspace_index];
 
-            dynSettings.Controller.DynamoViewModel.WatchEscapeIsDown = false;
+            DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
+            dynamoViewModel.WatchEscapeIsDown = false;
+            dynamoViewModel.EscapeCommand.Execute(null);
         }
 
         private void WorkspaceTabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
