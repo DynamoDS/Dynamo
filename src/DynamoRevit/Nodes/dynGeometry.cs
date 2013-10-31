@@ -1249,17 +1249,35 @@ namespace Dynamo.Nodes
         public CreateSweptGeometry()
         {
             InPortData.Add(new PortData("sweep path", "The curve loop to sweep along.", typeof(Value.Container)));
-            InPortData.Add(new PortData("attachment curve index", "index of the curve where profile loop is attached", typeof(Value.Number)));
-            InPortData.Add(new PortData("attachment parameter", "parameter of attachment point on its curve", typeof(Value.Number)));
+            InPortData.Add(new PortData("attachment curve index", "index of the curve where profile loop is attached", typeof(Value.Number), Value.NewNumber(0)));
+            InPortData.Add(new PortData("attachment parameter", "parameter of attachment point on its curve", typeof(Value.Number), Value.NewNumber(0)));
             InPortData.Add(new PortData("profile loop", "The curve loop to sweep to be put in orthogonal plane to path at attachment point.", typeof(Value.Container)));
             OutPortData.Add(new PortData("geometry", "The swept geometry.", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
 
+        public static Autodesk.Revit.DB.CurveLoop CurveLoopFromContainer(FScheme.Value.Container curveOrCurveLoop)
+        {
+            var pathLoopBoxed = curveOrCurveLoop.Item;
+            Autodesk.Revit.DB.CurveLoop curveLoop;
+            var loop = pathLoopBoxed as Autodesk.Revit.DB.CurveLoop;
+            if (loop != null)
+            {
+                curveLoop = loop;
+            }
+            else
+            {
+                curveLoop = new Autodesk.Revit.DB.CurveLoop();
+                curveLoop.Append((Autodesk.Revit.DB.Curve)pathLoopBoxed);
+            }
+
+            return curveLoop;
+        }
+
         public override Value Evaluate(FSharpList<Value> args)
         {
-            Autodesk.Revit.DB.CurveLoop pathLoop = (Autodesk.Revit.DB.CurveLoop)((Value.Container)args[0]).Item;
+            var pathLoop = CurveLoopFromContainer((Value.Container)args[0]);
             int attachementIndex = (int)((Value.Number)args[1]).Item;
             double attachementPar = ((Value.Number)args[2]).Item;
             Autodesk.Revit.DB.CurveLoop profileLoop = (Autodesk.Revit.DB.CurveLoop)((Value.Container)args[3]).Item;
