@@ -21,6 +21,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand showPreviewCommand;
         private DelegateCommand hidePreviewCommand;
         private DelegateCommand _setModelSizeCommand;
+        private DelegateCommand _gotoWorkspaceCommand;
 
         public DelegateCommand RenameCommand
         {
@@ -209,6 +210,16 @@ namespace Dynamo.ViewModels
                 if (_setModelSizeCommand == null)
                     _setModelSizeCommand = new DelegateCommand(SetModelSize, CanSetModelSize);
                 return _setModelSizeCommand;
+            }
+        }
+
+        public DelegateCommand GotoWorkspaceCommand
+        {
+            get
+            {
+                if (_gotoWorkspaceCommand == null)
+                    _gotoWorkspaceCommand = new DelegateCommand(GotoWorkspace, CanGotoWorkspace);
+                return _gotoWorkspaceCommand;
             }
         }
    }

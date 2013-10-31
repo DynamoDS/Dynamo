@@ -533,24 +533,6 @@ namespace Dynamo.ViewModels
 
         private void ShowRename(object parameter)
         {
-            //var editWindow = new dynEditWindow { DataContext = this };
-
-            //var bindingVal = new Binding("NickName")
-            //{
-            //    Mode = BindingMode.TwoWay,
-            //    NotifyOnValidationError = false,
-            //    Source = this,
-            //    UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            //};
-            //editWindow.editText.SetBinding(TextBox.TextProperty, bindingVal);
-
-            //editWindow.Title = "Edit Node Name";
-
-            //if (editWindow.ShowDialog() != true)
-            //{
-            //    return;
-            //}
-
             OnRequestShowNodeRename(this, EventArgs.Empty);
         }
 
@@ -841,6 +823,21 @@ namespace Dynamo.ViewModels
             }
 
             return NodeModel.Width != size[0] || NodeModel.Height != size[1];
+        }
+
+        private void GotoWorkspace(object parameters)
+        {
+            dynSettings.Controller.DynamoViewModel.GoToWorkspace((NodeLogic as Function).Definition.FunctionId);
+        }
+
+        private bool CanGotoWorkspace(object parameters)
+        {
+            if (NodeLogic is Function)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 
