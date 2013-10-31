@@ -728,7 +728,7 @@ namespace Dynamo
 
         protected override void RunDS()
         {
-            DocumentManager.CurrentDoc = dynRevitSettings.Doc.Document;
+            DocumentManager.GetInstance().CurrentDBDocument = dynRevitSettings.Doc.Document;
 
 
             //This is prototype grade only
