@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Controls; //for boolean option
 using System.Xml;              //for boolean option  
 using Autodesk.Revit.DB;
-using Autodesk.Revit.DB.Mechanical;
 using Dynamo.Controls;
 using Dynamo.FSchemeInterop;
 using Dynamo.Models;
 using Dynamo.Revit;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
 
@@ -1843,28 +1840,28 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("cylinder", "Solid cylinder", typeof(object)));
 
             RegisterAllPorts();
-
         }
 
         public static Solid CylinderByAxisOriginRadiusHeight(XYZ axis, XYZ origin, double radius, double height)
         {
             // get axis that is perp to axis by first generating random vector
-            var r = new System.Random();
-            axis = axis.Normalize();
-            var randXyz = new XYZ(r.NextDouble(), r.NextDouble(), r.NextDouble());
-            var axisPerp1 = randXyz.CrossProduct(axis).Normalize();
+            var zaxis = axis.Normalize();
+            var randXyz = new XYZ(1,0,0);
+            if ( axis.IsAlmostEqualTo(randXyz) ) randXyz = new XYZ(0,1,0);
+            var yaxis = zaxis.CrossProduct(randXyz).Normalize();
 
             // get second axis that is perp to axis
-            var axisPerp2 = axisPerp1.CrossProduct(axis);
+            var xaxis = yaxis.CrossProduct(zaxis);
 
-            // create circle
-            var circle = dynRevitSettings.Doc.Application.Application.Create.NewArc(origin, radius, 0, 2 * Circle.RevitPI, axisPerp1, axisPerp2);
+            // create circle (this is ridiculous, but curve loop doesn't work with a circle - you need two arcs)
+            var arc1 = dynRevitSettings.Doc.Application.Application.Create.NewEllipse(origin, radius, radius, xaxis, yaxis, 0, Circle.RevitPI);
+            var arc2 = dynRevitSettings.Doc.Application.Application.Create.NewEllipse(origin, radius, radius, xaxis, yaxis, Circle.RevitPI, 2*Circle.RevitPI);
 
             // create curve loop from cirle
-            var circleLoop = Autodesk.Revit.DB.CurveLoop.Create(new List<Curve>() { circle });
+            var circleLoop = Autodesk.Revit.DB.CurveLoop.Create(new List<Curve>() { arc1, arc2 });
 
             // extrude the curve and return
-            return GeometryCreationUtilities.CreateExtrusionGeometry(new List<Autodesk.Revit.DB.CurveLoop>() { circleLoop }, axis, height);
+            return GeometryCreationUtilities.CreateExtrusionGeometry(new List<Autodesk.Revit.DB.CurveLoop>() { circleLoop }, zaxis, height);
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -1949,25 +1946,28 @@ namespace Dynamo.Nodes
         {
 
             // get axis that is perp to axis by first generating random vector
-            var r = new System.Random();
-            zAxis = zAxis.Normalize();
-            var randXyz = new XYZ(r.NextDouble(), r.NextDouble(), r.NextDouble());
-            var xAxis = randXyz.CrossProduct(zAxis).Normalize();
+            var zaxis = zAxis.Normalize();
+            var randXyz = new XYZ(1, 0, 0);
+            if (zaxis.IsAlmostEqualTo(randXyz)) randXyz = new XYZ(0, 1, 0);
+            var yaxis = zaxis.CrossProduct(randXyz).Normalize();
 
             // get second axis that is perp to axis
-            var yAxis = xAxis.CrossProduct(zAxis);
+            var xaxis = yaxis.CrossProduct(zaxis);
 
-            // create circle
-            var circle = dynRevitSettings.Doc.Application.Application.Create.NewArc(center + radius * xAxis, radius, 
-                0, 2 * Circle.RevitPI, xAxis, zAxis);
+            // form origin of the arc
+            var origin = center + xaxis*radius;
+
+            // create circle (this is ridiculous but curve loop doesn't work with a circle
+            var arc1 = dynRevitSettings.Doc.Application.Application.Create.NewEllipse(origin, sectionRadius, sectionRadius, xaxis, zaxis, 0, Circle.RevitPI);
+            var arc2 = dynRevitSettings.Doc.Application.Application.Create.NewEllipse(origin, sectionRadius, sectionRadius, xaxis, zaxis, Circle.RevitPI, 2 * Circle.RevitPI);
 
             // create curve loop from cirle
-            var circleLoop = Autodesk.Revit.DB.CurveLoop.Create(new List<Curve>() { circle });
+            var circleLoop = Autodesk.Revit.DB.CurveLoop.Create(new List<Curve>() { arc1, arc2 });
 
             // extrude the curve and return
             return 
                 GeometryCreationUtilities.CreateRevolvedGeometry(
-                    new Autodesk.Revit.DB.Frame(center, xAxis, yAxis, zAxis), new List<Autodesk.Revit.DB.CurveLoop>() { circleLoop }, 0,
+                    new Autodesk.Revit.DB.Frame(center, xaxis, yaxis, zaxis), new List<Autodesk.Revit.DB.CurveLoop>() { circleLoop }, 0,
                     2 * Circle.RevitPI);
 
         }
