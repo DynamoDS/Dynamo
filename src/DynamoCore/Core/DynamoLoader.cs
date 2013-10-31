@@ -129,6 +129,10 @@ namespace Dynamo.Utilities
                 LoadDSFunctionsFromLibrary(library);
             }
             DSLibraryServices.Instance.LibraryLoaded += new DSLibraryServices.LibraryLoadedEventHandler(OnLoadDSLibrary);
+
+            // TODO: need a controller to coordinate the initialization order of
+            // these subcomponents. 
+            var dummy = LiveRunnerServices.Instance;
 #endif
             AppDomain.CurrentDomain.AssemblyResolve -= resolver;
 

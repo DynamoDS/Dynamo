@@ -926,12 +926,5 @@ namespace Dynamo.Controls
         {
             dynSettings.ReturnFocusToSearch();
         }
-
-        private void RunDSButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            dynSettings.ReturnFocusToSearch();
-
-
-        }
     }
 }
