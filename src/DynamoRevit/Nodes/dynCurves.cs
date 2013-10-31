@@ -15,83 +15,9 @@ using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace Dynamo.Nodes
 {
-    [NodeName("Evaluate Curve")]
-    [NodeCategory(BuiltinNodeCategories.ANALYZE_CURVE)]
-    [NodeDescription("Evaluates curve or edge at parameter.")]
-    public class XyzOnCurveOrEdge : GeometryBase
-    {
-        public XyzOnCurveOrEdge()
-        {
-            InPortData.Add(new PortData("parameter", "The normalized parameter to evaluate at within 0..1 range, any for closed curve.", typeof(Value.Number)));
-            InPortData.Add(new PortData("curve or edge", "The curve or edge to evaluate.", typeof(Value.Container)));
-            OutPortData.Add(new PortData("XYZ", "XYZ at parameter.", typeof(Value.Container)));
-
-            RegisterAllPorts();
-        }
-
-        public static bool curveIsReallyUnbound(Curve curve)
-        {
-            if (!curve.IsBound)
-                return true;
-            if (!curve.IsCyclic)
-                return false;
-            double period = curve.Period;
-            if (curve.get_EndParameter(1) > curve.get_EndParameter(0) + period - 0.000000001)
-                return true;
-            return false;
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            double parameter = ((Value.Number)args[0]).Item;
-
-            Curve thisCurve = null;
-            Edge thisEdge = null;
-            if (((Value.Container)args[1]).Item is Curve)
-                thisCurve = ((Value.Container)args[1]).Item as Curve;
-            else if (((Value.Container)args[1]).Item is Edge)
-                thisEdge = ((Value.Container)args[1]).Item as Edge;
-            else if (((Value.Container)args[1]).Item is Reference)
-            {
-                Reference r = (Reference)((Value.Container)args[1]).Item;
-                if (r != null)
-                {
-                    Element refElem = dynRevitSettings.Doc.Document.GetElement(r.ElementId);
-                    if (refElem != null)
-                    {
-                        GeometryObject geob = refElem.GetGeometryObjectFromReference(r);
-                        thisEdge = geob as Edge;
-                        if (thisEdge == null)
-                            thisCurve = geob as Curve;
-                    }
-                    else
-                        throw new Exception("Could not accept second in-port for Evaluate curve or edge node");
-                }
-            }
-            else if (((Value.Container)args[1]).Item is CurveElement)
-            {
-                CurveElement cElem = ((Value.Container)args[1]).Item as CurveElement;
-                if (cElem != null)
-                {
-                    thisCurve = cElem.GeometryCurve;
-                }
-                else
-                    throw new Exception("Could not accept second in-port for Evaluate curve or edge node");
-
-            }
-            else
-                throw new Exception("Could not accept second in-port for Evaluate curve or edge node");
-
-            XYZ result = (thisCurve != null) ? (!curveIsReallyUnbound(thisCurve) ? thisCurve.Evaluate(parameter, true) : thisCurve.Evaluate(parameter, false))
-                :
-                (thisEdge == null ? null : thisEdge.Evaluate(parameter));
-
-            return Value.NewContainer(result);
-        }
-    }
 
     [NodeName("Line by Endpoints")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE_CREATE)]
     [NodeDescription("Creates a geometric line.")]
     [NodeSearchTags("curve", "two point", "line")]
     public class LineBound : GeometryBase
@@ -136,7 +62,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Transform Curve")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Returns the curve (c) transformed by the transform (t).")]
     [NodeSearchTags("move", "transform", "curve", "line")]
     public class CurveTransformed : GeometryBase
@@ -163,7 +89,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Circle")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE_CREATE)]
     [NodeDescription("Creates a geometric circle.")]
     public class Circle : GeometryBase
     {
@@ -202,7 +128,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Arc by Start, Middle, End")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE_CREATE)]
     [NodeDescription("Creates a geometric arc given start, middle and end points in XYZ.")]
     [NodeSearchTags("arc", "circle", "start", "middle", "end", "3 point", "three")]
     public class ArcStartMiddleEnd : GeometryBase
@@ -248,7 +174,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Arc by Center, Normal, Radius")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE_CREATE)]
     [NodeDescription("Creates a geometric arc given a center point and two end parameters. Start and End Values may be between 0 and 2*PI in Radians")]
     [NodeSearchTags("arc", "circle", "center", "radius")]
     public class ArcCenter : GeometryBase
@@ -299,7 +225,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Ellipse")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE_CREATE)]
     [NodeDescription("Creates a geometric ellipse.")]
     public class Ellipse : GeometryBase
     {
@@ -353,7 +279,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Ellipse Arc")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE_CREATE)]
     [NodeDescription("Creates a geometric elliptical arc. Start and End Values may be between 0 and 2*PI in Radians")]
     public class EllipticalArc : GeometryBase
     {
@@ -409,7 +335,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Line by Origin and Direction")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE_CREATE)]
     [NodeDescription("Creates a line in the direction of an XYZ normal.")]
     public class LineVectorfromXyz : NodeWithOneOutput
     {
@@ -462,7 +388,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Hermite Spline")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE_CREATE)]
     [NodeDescription("Creates a geometric hermite spline.")]
     [NodeSearchTags("curve through points", "interpolate", "spline")]
     public class HermiteSpline : GeometryBase
@@ -504,7 +430,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Polyline")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE_CREATE)]
     [NodeDescription("Create a series of lines through a list of points.")]
     [NodeSearchTags("line", "through", "passing", "thread")]
     public class CurvesThroughPoints : GeometryBase
@@ -538,8 +464,8 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Rectangle")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeName("Rectangle Curve Loop")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE_ELEMENTS)]
     [NodeDescription("Create a rectangle by specifying the center, width, height, and normal.  Outputs a CurveLoop object directed counter-clockwise from upper right.")]
     public class Rectangle : GeometryBase
     {
@@ -652,7 +578,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Model Curve")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE_ELEMENTS)]
     [NodeDescription("Creates a model curve.")]
     public class ModelCurve : RevitTransactionNodeWithOneOutput
     {
@@ -869,7 +795,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Reference Curve")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_REFERENCE)]
     [NodeDescription("Creates a reference curve.")]
     public class ReferenceCurve : RevitTransactionNodeWithOneOutput
     {
@@ -978,7 +904,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Curve By Points")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_REFERENCE)]
     [NodeDescription("Create a new Curve by Points by passing in a list of Reference Points")]
     public class CurveByPoints : RevitTransactionNodeWithOneOutput
     {
@@ -1038,8 +964,8 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Curve By Points By Curve")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeName("Curve by Points by Curve")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_REFERENCE)]
     [NodeDescription("Create a new Curve by Points by passing in a geometry line in 3d space")]
     [AlsoKnownAsAttribute("Curve By Points By Line")]
     public class CurveByPointsByLine : RevitTransactionNodeWithOneOutput
@@ -1258,7 +1184,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Curve Reference")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_REFERENCE)]
     [NodeDescription("Takes in a Model Curve or Geometry Curve, returns a Curve Reference")]
     public class CurveRef : RevitTransactionNodeWithOneOutput
     {
@@ -1325,7 +1251,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Geometry Curve From Model Curve")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_REFERENCE)]
     [NodeDescription("Takes in a model curve and extracts a geometry curve")]
     [NodeSearchTags("Convert", "Extract", "Geometry", "Curve", "Model", "Reference")]
     public class CurveFromModelCurve : RevitTransactionNodeWithOneOutput
@@ -1391,7 +1317,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Nurbs Spline Model Curve")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_REFERENCE)]
     [NodeDescription("Node to create a planar nurbs spline model curve.")]
     public class ModelCurveNurbSpline : RevitTransactionNodeWithOneOutput
     {
@@ -1451,7 +1377,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Nurbs Spline")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE_CREATE)]
     [NodeDescription("Node to create a planar nurbs spline curve.")]
     public class GeometryCurveNurbSpline : GeometryBase
     {
@@ -1481,7 +1407,7 @@ namespace Dynamo.Nodes
     }
      
     [NodeName("Curve Loop")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE_CREATE)]
     [NodeDescription("Creates Curve Loop")]
     public class CurveLoop : GeometryBase
     {
@@ -1558,7 +1484,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Thicken Curve")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE_CREATE)]
     [NodeDescription("Creates Curve Loop by thickening a curve")]
     public class ThickenCurveLoop : GeometryBase
     {
@@ -1586,7 +1512,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Curve Loop Components")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE_QUERY)]
     [NodeDescription("Extract a list of curves in the Curve Loop")]
     public class ListCurveLoop : RevitTransactionNodeWithOneOutput
     {
@@ -1620,7 +1546,7 @@ namespace Dynamo.Nodes
     }
      
     [NodeName("Offset Curve")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE_CREATE)]
     [NodeDescription("Creates curve by offseting curve")]
     public class OffsetCrv : GeometryBase
     {
@@ -1663,7 +1589,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Bound Curve")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_REFERENCE)]
     [NodeDescription("Creates Curve by bounding original by two points")]
     public class BoundCurve : RevitTransactionNodeWithOneOutput
     {
@@ -1682,7 +1608,6 @@ namespace Dynamo.Nodes
             Curve curve = (Curve)((Value.Container)args[0]).Item;
             XYZ newStart = (XYZ) ((Value.Container)args[1]).Item;
             XYZ newEnd = (XYZ) ((Value.Container)args[2]).Item;
-
 
             IntersectionResult projectStart = curve.Project(newStart);
             IntersectionResult projectEnd = curve.Project(newEnd);
@@ -1715,7 +1640,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Bisector Line")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_REFERENCE)]
     [NodeDescription("Creates bisector of two lines")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
     public class Bisector : RevitTransactionNodeWithOneOutput
@@ -1757,129 +1682,8 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Best Fit Arc")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
-    [NodeDescription("Creates best fit arc through points")]
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
-    public class BestFitArc : RevitTransactionNodeWithOneOutput
-    {
-        public BestFitArc()
-        {
-            InPortData.Add(new PortData("points", "Points to Fit Arc Through", typeof(Value.List)));
-            OutPortData.Add(new PortData("arc", "Best Fit Arc", typeof(Value.Container)));
-
-            RegisterAllPorts();
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            List<XYZ> xyzList = new List<XYZ>();
-
-            FSharpList<Value> vals = ((Value.List)args[0]).Item;
-            var doc = dynRevitSettings.Doc;
-
-            for (int ii = 0; ii < vals.Count(); ii++)
-            {
-                var item = ((Value.Container)vals[ii]).Item;
-
-                if (item is ReferencePoint)
-                {
-                    ReferencePoint refPoint = (ReferencePoint)item;
-                    XYZ thisXYZ = refPoint.GetCoordinateSystem().Origin;
-                    xyzList.Add(thisXYZ);
-                }
-                else if (item is XYZ)
-                {
-                    XYZ thisXYZ = (XYZ)item;
-                    xyzList.Add(thisXYZ);
-                }
-            }
-
-            if (xyzList.Count <= 1)
-            {
-                throw new Exception("Not enough reference points to make a curve.");
-            }
-
-
-            Type ArcType = typeof(Autodesk.Revit.DB.Arc);
-
-            MethodInfo[] arcStaticMethods = ArcType.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
-
-            System.String nameOfMethodCreateByFit = "CreateByFit";
-            Arc result = null;
-
-            foreach (MethodInfo m in arcStaticMethods)
-            {
-                if (m.Name == nameOfMethodCreateByFit)
-                {
-                    object[] argsM = new object[1];
-                    argsM[0] = xyzList;
-
-                    result = (Arc)m.Invoke(null, argsM);
-
-                    break;
-                }
-            }
-
-            return Value.NewContainer(result);
-        }
-    }
-
-    [NodeName("Approximate By Tangent Arcs")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
-    [NodeDescription("Appoximates curve by sequence of tangent arcs.")]
-    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
-    public class ApproximateByTangentArcs : RevitTransactionNodeWithOneOutput
-    {
-        public ApproximateByTangentArcs()
-        {
-            InPortData.Add(new PortData("curve", "Curve to Approximate by Tangent Arcs", typeof(Value.Container)));
-            OutPortData.Add(new PortData("arcs", "List of Approximating Arcs", typeof(Value.List)));
-
-            RegisterAllPorts();
-        }
-
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            Curve thisCurve = (Curve)((Value.Container)args[0]).Item;
-
-            if (thisCurve == null)
-            {
-                throw new Exception("Not enough reference points to make a curve.");
-            }
-
-
-            Type CurveType = typeof(Autodesk.Revit.DB.Curve);
-
-            MethodInfo[] curveInstanceMethods = CurveType.GetMethods(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
-
-            System.String nameOfMethodApproximateByTangentArcs = "ApproximateByTangentArcs";
-            List <Curve> resultArcs = null;
-            var result = FSharpList<Value>.Empty;
-
-            foreach (MethodInfo m in curveInstanceMethods)
-            {
-                if (m.Name == nameOfMethodApproximateByTangentArcs)
-                {
-                    object[] argsM = new object[0];
-
-                    resultArcs = (List<Curve>)m.Invoke(thisCurve, argsM);
-
-                    break;
-                }
-            }
-            for (int indexCurve = resultArcs.Count - 1; indexCurve > -1; indexCurve--)
-            {
-                result = FSharpList<Value>.Cons(Value.NewContainer(resultArcs[indexCurve]), result);   
-            }
-
-            return Value.NewList(result);
-        }
-    }
-
     [NodeName("Equal Distanced XYZs On Curve")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TESSELATE)]
     [NodeDescription("Creates a list of equal distanced XYZs along a curve.")]
     public class EqualDistXyzAlongCurve : GeometryBase
     {
@@ -2057,5 +1861,81 @@ namespace Dynamo.Nodes
             );
         }
     }
+
+    [NodeName("Evaluate Curve")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE_QUERY)]
+    [NodeDescription("Evaluates curve or edge at parameter.")]
+    public class XyzOnCurveOrEdge : GeometryBase
+    {
+        public XyzOnCurveOrEdge()
+        {
+            InPortData.Add(new PortData("parameter", "The normalized parameter to evaluate at within 0..1 range, any for closed curve.", typeof(Value.Number)));
+            InPortData.Add(new PortData("curve or edge", "The curve or edge to evaluate.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("XYZ", "XYZ at parameter.", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public static bool curveIsReallyUnbound(Curve curve)
+        {
+            if (!curve.IsBound)
+                return true;
+            if (!curve.IsCyclic)
+                return false;
+            double period = curve.Period;
+            if (curve.get_EndParameter(1) > curve.get_EndParameter(0) + period - 0.000000001)
+                return true;
+            return false;
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            double parameter = ((Value.Number)args[0]).Item;
+
+            Curve thisCurve = null;
+            Edge thisEdge = null;
+            if (((Value.Container)args[1]).Item is Curve)
+                thisCurve = ((Value.Container)args[1]).Item as Curve;
+            else if (((Value.Container)args[1]).Item is Edge)
+                thisEdge = ((Value.Container)args[1]).Item as Edge;
+            else if (((Value.Container)args[1]).Item is Reference)
+            {
+                Reference r = (Reference)((Value.Container)args[1]).Item;
+                if (r != null)
+                {
+                    Element refElem = dynRevitSettings.Doc.Document.GetElement(r.ElementId);
+                    if (refElem != null)
+                    {
+                        GeometryObject geob = refElem.GetGeometryObjectFromReference(r);
+                        thisEdge = geob as Edge;
+                        if (thisEdge == null)
+                            thisCurve = geob as Curve;
+                    }
+                    else
+                        throw new Exception("Could not accept second in-port for Evaluate curve or edge node");
+                }
+            }
+            else if (((Value.Container)args[1]).Item is CurveElement)
+            {
+                CurveElement cElem = ((Value.Container)args[1]).Item as CurveElement;
+                if (cElem != null)
+                {
+                    thisCurve = cElem.GeometryCurve;
+                }
+                else
+                    throw new Exception("Could not accept second in-port for Evaluate curve or edge node");
+
+            }
+            else
+                throw new Exception("Could not accept second in-port for Evaluate curve or edge node");
+
+            XYZ result = (thisCurve != null) ? (!curveIsReallyUnbound(thisCurve) ? thisCurve.Evaluate(parameter, true) : thisCurve.Evaluate(parameter, false))
+                :
+                (thisEdge == null ? null : thisEdge.Evaluate(parameter));
+
+            return Value.NewContainer(result);
+        }
+    }
+
 }
 

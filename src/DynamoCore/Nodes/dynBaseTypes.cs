@@ -57,14 +57,23 @@ namespace Dynamo.Nodes
         public const string CREATEGEOMETRY = "Create Geometry";
         public const string CREATEGEOMETRY_VECTOR = "Create Geometry.Vector";
         public const string CREATEGEOMETRY_UV = "Create Geometry.UV";
-        public const string CREATEGEOMETRY_CURVE = "Create Geometry.Curve";
+        public const string CREATEGEOMETRY_CURVE_FIT = "Create Geometry.Curve.Fit";
+        public const string CREATEGEOMETRY_CURVE_ELEMENTS = "Create Geometry.Curve.Elements";
+        public const string CREATEGEOMETRY_CURVE_CREATE = "Create Geometry.Curve.Create";
+        public const string CREATEGEOMETRY_CURVE_PRIMITIVES = "Create Geometry.Curve.Primitives";
+        public const string CREATEGEOMETRY_CURVE_QUERY = "Create Geometry.Curve.Query";
         public const string CREATEGEOMETRY_SOLID_BOOLEAN = "Create Geometry.Solid.Boolean";
         public const string CREATEGEOMETRY_SOLID_CREATE = "Create Geometry.Solid.Create";
         public const string CREATEGEOMETRY_SOLID_PRIMITIVES = "Create Geometry.Solid.Primitives";
         public const string CREATEGEOMETRY_SOLID_EXTRACT = "Create Geometry.Solid.Extract";
         public const string CREATEGEOMETRY_SOLID = "Create Geometry.Solid";
         public const string CREATEGEOMETRY_SURFACE = "Create Geometry.Surface";
-        public const string CREATE_GEOMETRY_EXPERIMENTAL = "Create Geometry.Experimental";
+        public const string CREATEGEOMETRY_EXPERIMENTAL_PRIMITIVES = "Create Geometry.Experimental.Primitives";
+        public const string CREATEGEOMETRY_EXPERIMENTAL_SURFACE = "Create Geometry.Experimental.Surface";
+        public const string CREATEGEOMETRY_EXPERIMENTAL_CURVE = "Create Geometry.Experimental.Curve";
+        public const string CREATEGEOMETRY_EXPERIMENTAL_SOLID = "Create Geometry.Experimental.Solid";
+        public const string CREATEGEOMETRY_EXPERIMENTAL_MODIFY = "Create Geometry.Experimental.Modify";
+        public const string CREATEGEOMETRY_EXPERIMENTAL_VIEW = "Create Geometry.Experimental.View";
 
         public const string MODIFYGEOMETRY= "Modify Geometry";
         public const string MODIFYGEOMETRY_SOLID = "Modify Geometry.Solid";
