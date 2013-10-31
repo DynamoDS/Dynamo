@@ -330,7 +330,7 @@ namespace Dynamo.ViewModels
         {
             Point p2 = (Point)parameter;
 
-            _curvePoint3 = p2;
+            CurvePoint3 = p2;
 
             var offset = 0.0;
             double distance = 0;
@@ -345,14 +345,14 @@ namespace Dynamo.ViewModels
                 offset = distance / 2;
             }
             
-            _curvePoint1 = new Point(CurvePoint0.X + offset, CurvePoint0.Y);
-            _curvePoint2 = new Point(p2.X - offset, p2.Y);
+            CurvePoint1 = new Point(CurvePoint0.X + offset, CurvePoint0.Y);
+            CurvePoint2 = new Point(p2.X - offset, p2.Y);
 
             //if connector is dragged from an input port
             if (ActiveStartPort != null && ActiveStartPort.PortType == PortType.INPUT)
             {
-                _curvePoint1 = new Point(CurvePoint0.X - offset, CurvePoint1.Y); ;
-                _curvePoint2 = new Point(p2.X + offset, p2.Y);
+                CurvePoint1 = new Point(CurvePoint0.X - offset, CurvePoint1.Y); ;
+                CurvePoint2 = new Point(p2.X + offset, p2.Y);
             }
 
             _dotTop = CurvePoint3.Y - EndDotSize / 2;
@@ -360,7 +360,7 @@ namespace Dynamo.ViewModels
 
             //Update all the bindings at once.
             //http://stackoverflow.com/questions/4651466/good-way-to-refresh-databinding-on-all-properties-of-a-viewmodel-when-model-chan
-            RaisePropertyChanged(string.Empty);
+            //RaisePropertyChanged(string.Empty);
         }
 
         private bool CanRedraw(object parameter)

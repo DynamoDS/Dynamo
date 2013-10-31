@@ -5,7 +5,7 @@ using Microsoft.FSharp.Collections;
 namespace Dynamo.Nodes
 {
     [NodeName("Domain")]
-    [NodeCategory(BuiltinNodeCategories.CORE_GEOMETRY)]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_UV)]
     [NodeDescription("Create a domain specifying the Minimum and Maximum UVs.")]
     public class Domain : NodeWithOneOutput
     {

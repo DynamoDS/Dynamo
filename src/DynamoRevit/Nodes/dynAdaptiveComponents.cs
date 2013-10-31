@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Autodesk.Revit.DB;
 using Dynamo.Models;
@@ -14,7 +13,7 @@ using Dynamo.Revit;
 namespace Dynamo.Nodes
 {
     [NodeName("Adaptive Component by XYZs")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILYCREATION)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
     [NodeDescription("Given a list of XYZs and a family type, creates an adaptive component at that location.")]
     public class AdaptiveComponentByPoints : RevitTransactionNodeWithOneOutput
     {
@@ -81,7 +80,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Adaptive Component by UVs on Face")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILYCREATION)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
     [NodeDescription("Given a list of XYZs and a family type, creates an adaptive component at that location on the face.")]
     public class AdaptiveComponentByUvsOnFace : RevitTransactionNodeWithOneOutput
     {
@@ -160,7 +159,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Adaptive Component by Parameter on Curve")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILYCREATION)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
     [NodeDescription("Given a list of parameters and a family type, creates an adaptive component at that location on the curve.")]
     public class AdaptiveComponentByParametersOnCurve : RevitTransactionNodeWithOneOutput
     {

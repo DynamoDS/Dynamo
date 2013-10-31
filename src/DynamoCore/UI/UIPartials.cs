@@ -104,6 +104,69 @@ namespace Dynamo.Nodes
 
     }
 
+    public partial class VariableInputAndOutput : NodeModel
+    {
+        public override void SetupCustomUIElements(object ui)
+        {
+            var nodeUI = ui as dynNodeView;
+
+            System.Windows.Controls.Button addButton = new dynNodeButton();
+            addButton.Content = "+";
+            addButton.Width = 20;
+            addButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+            addButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+
+            System.Windows.Controls.Button subButton = new dynNodeButton();
+            subButton.Content = "-";
+            subButton.Width = 20;
+            subButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+            subButton.VerticalAlignment = System.Windows.VerticalAlignment.Top;
+
+            var wp = new WrapPanel
+            {
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = HorizontalAlignment.Center
+            };
+            wp.Children.Add(addButton);
+            wp.Children.Add(subButton);
+
+            nodeUI.inputGrid.Children.Add(wp);
+
+            addButton.Click += delegate
+            {
+                this.WorkSpace.RecordModelForModification(this);
+                AddInput();
+                RegisterAllPorts();
+            };
+            subButton.Click += delegate
+            {
+                RecordModels();
+                RemoveInput();
+                RegisterAllPorts();
+            };
+        }
+
+        private void RecordModels()
+        {
+            var connectors = InPorts[InPorts.Count - 1].Connectors;
+            if (connectors.Count != 0)
+            {
+                if (connectors.Count != 1)
+                {
+                    throw new InvalidOperationException(
+                        "There should be only one connection to an input port");
+                }
+                Dictionary<ModelBase, UndoRedoRecorder.UserAction> models;
+                models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();
+                models.Add(connectors[0], UndoRedoRecorder.UserAction.Deletion);
+                models.Add(this, UndoRedoRecorder.UserAction.Modification);
+                this.WorkSpace.RecordModelsForUndo(models);
+            }
+            else
+                this.WorkSpace.RecordModelForModification(this);
+        }
+    }
+
     public partial class Sublists : BasicInteractive<string>
     {
 
