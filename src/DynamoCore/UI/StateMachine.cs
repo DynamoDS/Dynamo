@@ -360,6 +360,8 @@ namespace Dynamo.ViewModels
                     // then the state machine should initiate a drag operation.
                     if (null != GetSelectableFromPoint(mouseDownPos))
                         InitiateDragSequence();
+                    else if (e.ClickCount == 2)
+                        CreateCodeBlockNode();
                     else
                         InitiateWindowSelectionSequence();
 
@@ -370,6 +372,29 @@ namespace Dynamo.ViewModels
                 return eventHandled;
             }
 
+            private void CreateCodeBlockNode()
+            {
+                // create node
+                var guid = Guid.NewGuid();
+                dynSettings.Controller.DynamoViewModel.ExecuteCommand(
+                  new DynCmd.CreateNodeCommand(guid, "Code Block", 0, 0, true, true));
+
+                // select node
+                var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
+                if (placedNode != null)
+                {
+                    DynamoSelection.Instance.ClearSelection();
+                    DynamoSelection.Instance.Selection.Add(placedNode);
+                }
+
+                //correct node position
+                if (placedNode != null)
+                {
+                    placedNode.X = (int)mouseDownPos.X - 92;
+                    placedNode.Y = (int)mouseDownPos.Y - 31;
+                }
+            }
+
             internal bool HandleMouseRelease(object sender, MouseButtonEventArgs e)
             {
                 if (e.ChangedButton != MouseButton.Left)
@@ -377,7 +402,7 @@ namespace Dynamo.ViewModels
 
                 if (this.currentState == State.WindowSelection)
                 {
-                    
+
                     SelectionBoxUpdateArgs args = null;
                     args = new SelectionBoxUpdateArgs(Visibility.Collapsed);
                     this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
