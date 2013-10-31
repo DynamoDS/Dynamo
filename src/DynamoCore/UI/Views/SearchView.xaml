@@ -23,8 +23,8 @@
                 <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-    </UserControl.Resources>
-
+    </UserControl.Resources>    
+    
     <Grid Background="{StaticResource DynamoWindowBrush}" >
 
         <Grid.RowDefinitions>
@@ -107,7 +107,9 @@
         </Grid>
 
         <ScrollViewer Visibility="{Binding BrowserVisibility, Converter={StaticResource BooleanToVisibilityConverter}}" HorizontalAlignment="Stretch" Margin="0" Name="BrowserScrollView" VerticalAlignment="Stretch" Focusable="False"
-                      VerticalScrollBarVisibility="Visible" Background="Transparent" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=SearchControl}" Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="2" MouseWheel="TreeViewScrollViewer_PreviewMouseWheel">
+                      VerticalScrollBarVisibility="{Binding Path=SearchScrollBarVisibility, Converter={StaticResource BoolToScrollBarVisibilityConverter}}"
+                      HorizontalScrollBarVisibility="{Binding Path=SearchScrollBarVisibility, Converter={StaticResource BoolToScrollBarVisibilityConverter}}" 
+                      Background="Transparent" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=SearchControl}" Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="2" MouseWheel="TreeViewScrollViewer_PreviewMouseWheel">
 
             <ScrollViewer.Resources>
 
@@ -252,8 +254,8 @@
                     <Setter Property="Focusable" Value="False"></Setter>
                     <Setter Property="Background" Value="Black"/>
                     <Setter Property="Foreground" Value="#DDD"/>
-                    <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
-                    <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+                    <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="{Binding Path=SearchScrollBarVisibility, Converter={StaticResource BoolToScrollBarVisibilityConverter}}"/>
+                    <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="{Binding Path=SearchScrollBarVisibility, Converter={StaticResource BoolToScrollBarVisibilityConverter}}"/>
                     <Setter Property="VerticalContentAlignment" Value="Center"/>
 
                     <Setter Property="Template">
@@ -267,7 +269,6 @@
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
-
                 </Style>
 
                 <Style x:Key="ExpandCollapseToggleStyle" TargetType="{x:Type ToggleButton}">
@@ -426,7 +427,7 @@
 
             <!--CATEGORIES-->
 
-            <TreeView Background="Blue" ItemsSource="{Binding Path=BrowserRootCategories}" Style="{StaticResource SearchTreeView}" BorderThickness="0" Grid.Column="0" Grid.ColumnSpan="1" >
+            <TreeView Name="SearchTreeView" Background="Blue" ItemsSource="{Binding Path=BrowserRootCategories}" Style="{StaticResource SearchTreeView}" BorderThickness="0" Grid.Column="0" Grid.ColumnSpan="1" >
 
                 <TreeView.Template>
                     <ControlTemplate>
