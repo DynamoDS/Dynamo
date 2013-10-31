@@ -1,6 +1,7 @@
 ﻿using System;
 using Autodesk.Revit.DB;
 using RevitServices.Persistence;
+using RevitServices.Transactions;
 
 namespace DSRevitNodes
 {
@@ -14,7 +15,20 @@ namespace DSRevitNodes
             get { return DocumentManager.GetInstance().CurrentDBDocument; }
         }
 
+        protected ElementId InternalID;
 
-        public abstract void Dispose();
+        /// <summary>
+        /// Default implementation of dispose that removes the element from the
+        /// document
+        /// </summary>
+        public virtual void Dispose()
+        {
+            var transManager = new TransactionManager();
+            var transaction = transManager.StartTransaction(Document);
+
+            Document.Delete(InternalID);
+
+            transaction.CommitTransaction();
+        }
     }
 }

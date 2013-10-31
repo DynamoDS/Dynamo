@@ -1,18 +1,72 @@
 ﻿using System;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
+using Autodesk.Revit.DB;
+using DSNodeServices;
+using RevitServices.Transactions;
+using Edge = Autodesk.DesignScript.Geometry.Edge;
+using Plane = Autodesk.DesignScript.Geometry.Plane;
 
 namespace DSRevitNodes
 {
-    public class ReferencePoint
-    {
-        private Autodesk.Revit.DB.ReferencePoint _refPt;
 
+    /// <summary>
+    /// A Revit Reference Point
+    /// </summary>
+    [RegisterForTrace]
+    public class ReferencePoint : AbstractGeometry
+    {
+        private Autodesk.Revit.DB.ReferencePoint internalRefPt;
+
+        /// <summary>
+        /// Internal constructor for the ReferencePoint
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
+        private ReferencePoint(double x, double y, double z)
+        {
+            var transaction = new TransactionManager().StartTransaction(Document);
+
+            internalRefPt = Document.FamilyCreate.NewReferencePoint(new XYZ(x, y, z));
+            this.InternalID = internalRefPt.Id;
+
+            transaction.CommitTransaction();
+        }
+
+        private void SetPosition(XYZ xyz)
+        {
+            var transaction = new TransactionManager().StartTransaction(Document);
+            internalRefPt.Position = xyz;
+            transaction.CommitTransaction();
+        }
+
+        public double X { 
+            get { return internalRefPt.Position.X; } 
+            set { SetPosition(new XYZ(value, Y, Z)); }
+        }
+
+
+
+        public double Y
+        {
+            get { return internalRefPt.Position.Y; }
+            set { SetPosition(new XYZ(X, value, Z)); }
+        }
+
+
+        public double Z
+        {
+            get { return internalRefPt.Position.Z; }
+            set { SetPosition(new XYZ(X, Y, value)); }
+        }
+
+        
         public Plane XYPlane
         {
             get
             {
-                var cs = _refPt.GetCoordinateSystem();
+                var cs = internalRefPt.GetCoordinateSystem();
                 var xy = new Autodesk.Revit.DB.Plane(cs.BasisX, cs.BasisY);
                 return xy.ToPlane();
             }
@@ -22,7 +76,7 @@ namespace DSRevitNodes
         {
             get
             {
-                var cs = _refPt.GetCoordinateSystem();
+                var cs = internalRefPt.GetCoordinateSystem();
                 var yz = new Autodesk.Revit.DB.Plane(cs.BasisY, cs.BasisZ);
                 return yz.ToPlane();
             }
@@ -32,7 +86,7 @@ namespace DSRevitNodes
         {
             get
             {
-                var cs = _refPt.GetCoordinateSystem();
+                var cs = internalRefPt.GetCoordinateSystem();
                 var xz = new Autodesk.Revit.DB.Plane(cs.BasisX, cs.BasisZ);
                 return xz.ToPlane();
             }
@@ -47,7 +101,7 @@ namespace DSRevitNodes
         /// <returns></returns>
         static ReferencePoint ByCoords(double x, double y, double z)
         {
-            throw new NotImplementedException();
+           return new ReferencePoint(x,y,z);
         }
 
         /// <summary>
@@ -55,7 +109,7 @@ namespace DSRevitNodes
         /// </summary>
         /// <param name="p"></param>
         /// <returns></returns>
-        static ReferencePoint ByPt(Point p)
+        static ReferencePoint ByPt(Point pt)
         {
             throw new NotImplementedException();
         }
