@@ -1,9 +1,11 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.DesignScript.Geometry;
 using Line = Autodesk.Revit.DB.Line;
+using System.ComponentModel;
 
 namespace DSRevitNodes
 {
+    [Browsable(false)]
     public static class Extensions
     {
         /// <summary>
