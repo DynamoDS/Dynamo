@@ -252,7 +252,7 @@ namespace Dynamo.ViewModels
 
         public void RemoveEmptyCategories()
         {
-            this.BrowserRootCategories = new ObservableCollection<BrowserRootElement>(BrowserRootCategories.Where(x => x.Items.Any()));
+            this.BrowserRootCategories = new ObservableCollection<BrowserRootElement>(BrowserRootCategories.Where(x => x.Items.Any() || x.Name == "Top Result"));
         }
 
         public void SortCategoryChildren()
