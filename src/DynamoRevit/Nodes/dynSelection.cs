@@ -16,7 +16,6 @@ using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using RevitServices.Threading;
 using Value = Dynamo.FScheme.Value;
-using Dynamo.FSchemeInterop;
 using TextBox = System.Windows.Controls.TextBox;
 
 namespace Dynamo.Nodes
