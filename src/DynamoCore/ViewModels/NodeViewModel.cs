@@ -829,8 +829,7 @@ namespace Dynamo.ViewModels
         private void SetModelSize(object parameter)
         {
             var size = parameter as double[];
-            NodeModel.Width = size[0];
-            NodeModel.Height = size[1];
+            NodeModel.SetSize(size[0], size[1]);
         }
 
         private bool CanSetModelSize(object parameter)
