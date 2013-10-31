@@ -235,14 +235,30 @@ namespace Dynamo.ViewModels
             _topResult = this.AddRootCategory("Top Result");
             this.AddRootCategory(BuiltinNodeCategories.CORE);
             this.AddRootCategory(BuiltinNodeCategories.LOGIC);
-            this.AddRootCategory(BuiltinNodeCategories.CREATEGEOMETRY);
-            this.AddRootCategory(BuiltinNodeCategories.MODIFYGEOMETRY);
+            this.AddRootCategory(BuiltinNodeCategories.VECTORPOINT);
+            this.AddRootCategory(BuiltinNodeCategories.CURVE);
+            this.AddRootCategory(BuiltinNodeCategories.SURFACE);
+            this.AddRootCategory(BuiltinNodeCategories.SOLID);
+            this.AddRootCategory(BuiltinNodeCategories.TRANSFORM);
             this.AddRootCategory(BuiltinNodeCategories.REVIT);
-            this.AddRootCategory(BuiltinNodeCategories.IO);
             this.AddRootCategory(BuiltinNodeCategories.ANALYZE);
+            this.AddRootCategory(BuiltinNodeCategories.IO);
+
+            this.AddRootCategory(BuiltinNodeCategories.EXPERIMENTAL);
+            
         }
 
         private const char CATEGORY_DELIMITER = '.';
+
+        public void RemoveEmptyCategories()
+        {
+            this.BrowserRootCategories = new ObservableCollection<BrowserRootElement>(BrowserRootCategories.Where(x => x.Items.Any()));
+        }
+
+        public void SortCategoryChildren()
+        {
+            dynSettings.Controller.SearchViewModel.BrowserRootCategories.ToList().ForEach(x => x.RecursivelySort());
+        }
 
         public void RemoveEmptyRootCategory(string categoryName)
         {
