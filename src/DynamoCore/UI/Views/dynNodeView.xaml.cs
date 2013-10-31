@@ -60,12 +60,12 @@ namespace Dynamo.Controls
         {
             if (ViewModel != null)
             {
-                //Debug.WriteLine("Node layout updated.");
                 if (ViewModel.NodeLogic.Height != this.ActualHeight ||
                     ViewModel.NodeLogic.Width != this.ActualWidth)
                 {
-                    ViewModel.NodeLogic.Height = this.ActualHeight;
-                    ViewModel.NodeLogic.Width = this.ActualWidth;
+                    var size = new double[] { ActualWidth, ActualHeight };
+                    ViewModel.SetModelSizeCommand.Execute(size);
+
                 }
             }
 
