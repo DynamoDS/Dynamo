@@ -927,11 +927,6 @@ namespace Dynamo.Controls
             dynSettings.ReturnFocusToSearch();
         }
 
-        private void RunDSButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            dynSettings.ReturnFocusToSearch();
-        }
-
         private void DynamoView_OnDrop(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))

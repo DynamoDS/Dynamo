@@ -726,31 +726,53 @@ namespace Dynamo
             RevertPythonBindings();
         }
 
-        protected override void RunDS()
+        protected override void Run(List<NodeModel> topElements, GraphSyncData graphSyncData)
         {
             DocumentManager.GetInstance().CurrentDBDocument = dynRevitSettings.Doc.Document;
 
+            if (!DynamoViewModel.RunInDebug)
+            {
+                //Do we need manual transaction control?
+                bool manualTrans = topElements.Any(CheckManualTransaction.TraverseUntilAny);
 
-            //This is prototype grade only
-            ProtoRunner runner = new ProtoRunner();
-            
-            string demoScript = 
-                "import(\"DSRevitNodes.dll\");" +
-                "y = 40..50..2;" +
-                "z = 0..10..5;" +
-                "pt = Point.ByCoordinates(10, y<1>, z<2>);" +
-                "pt2 = Point.ByCoordinates(10, 10, 10);";
+                //Can we avoid running everything in the Revit Idle thread?
+                bool noIdleThread = manualTrans ||
+                                    !topElements.Any(CheckRequiresTransaction.TraverseUntilAny);
 
-
-
-            //IdlePromise.ExecuteOnIdleAsync(() => DSRevitNodes.Point.ByCoordinates(10, 10, 10));
-            IdlePromise.ExecuteOnIdleAsync(() =>
+                //If we don't need to be in the idle thread...
+                if (noIdleThread || Testing)
                 {
-                    ProtoRunner.ProtoVMState state = runner.PreStart(demoScript);
-                    runner.RunToNextBreakpoint(state);
-                });
-        }
+                    //DynamoLogger.Instance.Log("Running expression in evaluation thread...");
+                    TransMode = TransactionMode.Manual; //Manual transaction control
 
+                    if (Testing)
+                        TransMode = TransactionMode.Automatic;
+
+                    InIdleThread = false; //Not in idle thread at the moment
+                    base.Run(topElements, graphSyncData); //Just run the Run Delegate
+                }
+                else //otherwise...
+                {
+                    //DynamoLogger.Instance.Log("Running expression in Revit's Idle thread...");
+                    TransMode = TransactionMode.Automatic; //Automatic transaction control
+
+                    Debug.WriteLine("Adding a run to the idle stack.");
+                    InIdleThread = true; //Now in the idle thread.
+                    IdlePromise.ExecuteOnIdleSync(() => base.Run(topElements, graphSyncData)); //Execute the Run Delegate in the Idle thread.
+
+                }
+            }
+            else
+            {
+                TransMode = TransactionMode.Debug; //Debug transaction control
+                InIdleThread = true; //Everything will be evaluated in the idle thread.
+
+                DynamoLogger.Instance.Log("Running expression in debug.");
+
+                //Execute the Run Delegate.
+                base.Run(topElements, graphSyncData);
+            }
+        }
 
         protected override void Run(List<NodeModel> topElements, FScheme.Expression runningExpression)
         {
