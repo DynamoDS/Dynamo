@@ -39,7 +39,7 @@ namespace Dynamo.Core
         public static double PreviewFrameStrokeThickness = 1;
         public static SolidColorBrush PreviewFrameStrokeColor = new SolidColorBrush(Color.FromRgb(153, 153, 153));
 
-        public static double PreviewTextFontSize = 13;
+        public static double PreviewTextFontSize = 11;
         public static FontWeight PreviewTextFontWeight = FontWeights.Light;
         public static SolidColorBrush PreviewTextForeground = new SolidColorBrush(Color.FromRgb(153, 153, 153));
         public static TextWrapping PreviewContentWrapping = TextWrapping.Wrap;
@@ -47,13 +47,13 @@ namespace Dynamo.Core
 
         public static double PreviewMaxWidth = 500;
         public static double PreviewMaxHeight;
-        public static double PreviewMinWidth = 200;
+        public static double PreviewMinWidth = 220;
         public static double PreviewMinHeight = 50;
         public static double PreviewDefaultMaxWidth = 300;
         public static double PreviewDefaultMaxHeight = 200;
 
-        public static double PreviewCondensedMaxWidth = 150;
-        public static double PreviewCondensedMinWidth = 35;
+        public static double PreviewCondensedMaxWidth = 250;
+        public static double PreviewCondensedMinWidth = 40;
         public static double PreviewCondensedMaxHeight = 200;
         public static double PreviewCondensedMinHeight = 0;
         public static double PreviewCondensedContentMaxWidth = PreviewCondensedMaxWidth - 10;
@@ -113,7 +113,7 @@ namespace Dynamo.Core
 
         #endregion
 
-        #region Libbrary Item Tooltip
+        #region Library Item Tooltip
 
         public static SolidColorBrush LibraryTooltipFrameFill = new SolidColorBrush(Color.FromRgb(255, 255, 255));
         public static double LibraryTooltipFrameStrokeThickness = 1;
