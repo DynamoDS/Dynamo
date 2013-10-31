@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Controls; //for boolean option
 using System.Xml;              //for boolean option  
 using Autodesk.Revit.DB;
-using Autodesk.Revit.DB.Mechanical;
 using Dynamo.Controls;
 using Dynamo.FSchemeInterop;
 using Dynamo.Models;
 using Dynamo.Revit;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
+
 
 namespace Dynamo.Nodes
 {
@@ -57,7 +55,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("XYZ by Polar")]
+    [NodeName("XYZ by Polar Coordinates")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
     [NodeDescription("Creates an XYZ from sphereical coordinates.")]
     public class XyzFromPolar : GeometryBase
@@ -101,7 +99,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("XYZ to Polar")]
+    [NodeName("XYZ to Polar Coordinates")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
     [NodeDescription("Creates an XYZ from spherical coordinates.")]
     public class XyzToPolar : NodeModel
@@ -154,7 +152,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("XYZ by Spherical")]
+    [NodeName("XYZ by Spherical Coordinates")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
     [NodeDescription("Creates an XYZ from spherical coordinates.")]
     public class XyzFromSpherical : GeometryBase
@@ -179,8 +177,8 @@ namespace Dynamo.Nodes
             }
 
             // do some trig
-            var x = r * Math.Cos(theta);
-            var y = r * Math.Sin(theta);
+            var x = r * Math.Cos(theta) * Math.Sin(phi);
+            var y = r * Math.Sin(theta) * Math.Sin(phi);
             var z = r * Math.Cos(phi);
 
             // all done
@@ -198,7 +196,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("XYZ to Spherical")]
+    [NodeName("XYZ to Spherical Coordinates")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
     [NodeDescription("Decompose an XYZ into spherical coordinates.")]
     public class XyzToSpherical : NodeModel
@@ -220,7 +218,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public static void ToPolarCoordinates(XYZ input, out double r, out double theta, out double phi)
+        public static void ToSphericalCoordinates(XYZ input, out double r, out double theta, out double phi)
         {
             // set length
             r = input.GetLength();
@@ -249,7 +247,7 @@ namespace Dynamo.Nodes
                 else // determine whether vector is above or below - if above phi is 0
                 {
                     theta = 0;
-                    phi = input.Y > 0 ? 0 : Math.PI;
+                    phi = input.Z > 0 ? 0 : Math.PI;
                     return;
                 }
             }
@@ -265,7 +263,7 @@ namespace Dynamo.Nodes
             }
             
             // phew...
-            phi = Math.Atan(input.Z / rInXYPlane);
+            phi = Math.Acos(input.Z/r);
         }
 
         public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
@@ -273,7 +271,7 @@ namespace Dynamo.Nodes
             var xyz = ((XYZ)((Value.Container)args[0]).Item);
             double r, theta, phi;
 
-            ToPolarCoordinates(xyz, out r, out theta, out phi);
+            ToSphericalCoordinates(xyz, out r, out theta, out phi);
 
             outPuts[_rPort] = FScheme.Value.NewNumber(r);
             outPuts[_thetaPort] = FScheme.Value.NewNumber(theta);
@@ -1373,7 +1371,7 @@ namespace Dynamo.Nodes
 
         public CreateExtrusionGeometry()
         {
-            InPortData.Add(new PortData("profile", "The profile curve (Can be a Curve or CurveLoops", typeof(Value.Container)));
+            InPortData.Add(new PortData("profile", "The profile CurveLoop.", typeof(Value.Container)));
             InPortData.Add(new PortData("direction", "The direction in which to extrude the profile.", typeof(Value.Container)));
             InPortData.Add(new PortData("distance", "The positive distance by which the loops are to be extruded.", typeof(Value.Number)));
 
@@ -1384,32 +1382,11 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
+            var curveLoop = CreateSweptGeometry.CurveLoopFromContainer((Value.Container) args[0]);
             var direction = (XYZ)((Value.Container)args[1]).Item;
             var distance = ((Value.Number)args[2]).Item;
 
-            //incoming list will have two lists in it
-            //each list will contain curves. convert the curves
-            //into curve loops
-            var profileList = ((Value.List)args[0]).Item;
-            var loops = new List<Autodesk.Revit.DB.CurveLoop>();
-            foreach (var item in profileList)
-            {
-                if (item.IsList)
-                {
-                    var innerList = ((Value.List)item).Item;
-                    foreach (var innerItem in innerList)
-                    {
-                        loops.Add((Autodesk.Revit.DB.CurveLoop)((Value.Container)item).Item);
-                    }
-                }
-                else
-                {
-                    //we'll assume a container
-                    loops.Add((Autodesk.Revit.DB.CurveLoop)((Value.Container)item).Item);
-                }
-            }
-
-            var result = GeometryCreationUtilities.CreateExtrusionGeometry(loops, direction, distance);
+            var result = GeometryCreationUtilities.CreateExtrusionGeometry(new List<Autodesk.Revit.DB.CurveLoop>(){curveLoop}, direction, distance);
 
             return Value.NewContainer(result);
         }
@@ -1848,28 +1825,28 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("cylinder", "Solid cylinder", typeof(object)));
 
             RegisterAllPorts();
-
         }
 
         public static Solid CylinderByAxisOriginRadiusHeight(XYZ axis, XYZ origin, double radius, double height)
         {
             // get axis that is perp to axis by first generating random vector
-            var r = new System.Random();
-            axis = axis.Normalize();
-            var randXyz = new XYZ(r.NextDouble(), r.NextDouble(), r.NextDouble());
-            var axisPerp1 = randXyz.CrossProduct(axis).Normalize();
+            var zaxis = axis.Normalize();
+            var randXyz = new XYZ(1,0,0);
+            if ( axis.IsAlmostEqualTo(randXyz) ) randXyz = new XYZ(0,1,0);
+            var yaxis = zaxis.CrossProduct(randXyz).Normalize();
 
             // get second axis that is perp to axis
-            var axisPerp2 = axisPerp1.CrossProduct(axis);
+            var xaxis = yaxis.CrossProduct(zaxis);
 
-            // create circle
-            var circle = dynRevitSettings.Doc.Application.Application.Create.NewArc(origin, radius, 0, 2 * Circle.RevitPI, axisPerp1, axisPerp2);
+            // create circle (this is ridiculous, but curve loop doesn't work with a circle - you need two arcs)
+            var arc1 = dynRevitSettings.Doc.Application.Application.Create.NewEllipse(origin, radius, radius, xaxis, yaxis, 0, Circle.RevitPI);
+            var arc2 = dynRevitSettings.Doc.Application.Application.Create.NewEllipse(origin, radius, radius, xaxis, yaxis, Circle.RevitPI, 2*Circle.RevitPI);
 
             // create curve loop from cirle
-            var circleLoop = Autodesk.Revit.DB.CurveLoop.Create(new List<Curve>() { circle });
+            var circleLoop = Autodesk.Revit.DB.CurveLoop.Create(new List<Curve>() { arc1, arc2 });
 
             // extrude the curve and return
-            return GeometryCreationUtilities.CreateExtrusionGeometry(new List<Autodesk.Revit.DB.CurveLoop>() { circleLoop }, axis, height);
+            return GeometryCreationUtilities.CreateExtrusionGeometry(new List<Autodesk.Revit.DB.CurveLoop>() { circleLoop }, zaxis, height);
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -1954,25 +1931,28 @@ namespace Dynamo.Nodes
         {
 
             // get axis that is perp to axis by first generating random vector
-            var r = new System.Random();
-            zAxis = zAxis.Normalize();
-            var randXyz = new XYZ(r.NextDouble(), r.NextDouble(), r.NextDouble());
-            var xAxis = randXyz.CrossProduct(zAxis).Normalize();
+            var zaxis = zAxis.Normalize();
+            var randXyz = new XYZ(1, 0, 0);
+            if (zaxis.IsAlmostEqualTo(randXyz)) randXyz = new XYZ(0, 1, 0);
+            var yaxis = zaxis.CrossProduct(randXyz).Normalize();
 
             // get second axis that is perp to axis
-            var yAxis = xAxis.CrossProduct(zAxis);
+            var xaxis = yaxis.CrossProduct(zaxis);
 
-            // create circle
-            var circle = dynRevitSettings.Doc.Application.Application.Create.NewArc(center + radius * xAxis, radius, 
-                0, 2 * Circle.RevitPI, xAxis, zAxis);
+            // form origin of the arc
+            var origin = center + xaxis*radius;
+
+            // create circle (this is ridiculous but curve loop doesn't work with a circle
+            var arc1 = dynRevitSettings.Doc.Application.Application.Create.NewEllipse(origin, sectionRadius, sectionRadius, xaxis, zaxis, 0, Circle.RevitPI);
+            var arc2 = dynRevitSettings.Doc.Application.Application.Create.NewEllipse(origin, sectionRadius, sectionRadius, xaxis, zaxis, Circle.RevitPI, 2 * Circle.RevitPI);
 
             // create curve loop from cirle
-            var circleLoop = Autodesk.Revit.DB.CurveLoop.Create(new List<Curve>() { circle });
+            var circleLoop = Autodesk.Revit.DB.CurveLoop.Create(new List<Curve>() { arc1, arc2 });
 
             // extrude the curve and return
             return 
                 GeometryCreationUtilities.CreateRevolvedGeometry(
-                    new Autodesk.Revit.DB.Frame(center, xAxis, yAxis, zAxis), new List<Autodesk.Revit.DB.CurveLoop>() { circleLoop }, 0,
+                    new Autodesk.Revit.DB.Frame(center, xaxis, yaxis, zaxis), new List<Autodesk.Revit.DB.CurveLoop>() { circleLoop }, 0,
                     2 * Circle.RevitPI);
 
         }
