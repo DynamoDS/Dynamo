@@ -1214,9 +1214,10 @@ namespace Dynamo.Nodes
     {
         public CreateRevolvedGeometry()
         {
-            InPortData.Add(new PortData("profile", "The curve loop to use as a profile", typeof(Value.Container)));
+            InPortData.Add(new PortData("profile", "The Curve Loop or closed Curve to use as a profile", typeof(Value.Container)));
             InPortData.Add(new PortData("transform", "Coordinate system for revolve, loop should be in xy plane of this transform on the right side of z axis used for rotate.", typeof(Value.Container)));
-            InPortData.Add(new PortData("angle domain", "start angle measured counter-clockwise from x-axis of transform", typeof(Value.Number)));
+            InPortData.Add(new PortData("start angle", "start angle measured counter-clockwise from x-axis of transform", typeof(Value.Number)));
+            InPortData.Add(new PortData("end angle", "end angle measured counter-clockwise from x-axis of transform", typeof(Value.Number)));
 
             OutPortData.Add(new PortData("solid", "The revolved geometry.", typeof(Value.Container)));
 
@@ -1227,13 +1228,14 @@ namespace Dynamo.Nodes
         {
             var cLoop = (Autodesk.Revit.DB.CurveLoop)((Value.Container)args[0]).Item;
             var trf = (Transform)((Value.Container)args[1]).Item;
-            var domain = (DSCoreNodes.Domain) ((Value.Container)args[2]).Item;
+            var start = ((Value.Number)args[2]).Item;
+            var end = ((Value.Number)args[3]).Item;
 
             var loopList = new List<Autodesk.Revit.DB.CurveLoop> {cLoop};
             var thisFrame = new Autodesk.Revit.DB.Frame();
             thisFrame.Transform(trf);
 
-            var result = GeometryCreationUtilities.CreateRevolvedGeometry(thisFrame, loopList, domain.Min, domain.Max);
+            var result = GeometryCreationUtilities.CreateRevolvedGeometry(thisFrame, loopList, start, end);
 
             return Value.NewContainer(result);
         }
@@ -1246,10 +1248,11 @@ namespace Dynamo.Nodes
     {
         public CreateSweptGeometry()
         {
-            InPortData.Add(new PortData("rail", "The rail curve to sweep along (a CurveLoop or Curve)", typeof(Value.Container)));
-            InPortData.Add(new PortData("profile", "A closed curve loop to sweep to be swept along curve", typeof(Value.Container)));
-            
-            OutPortData.Add(new PortData("solid", "The swept geometry.", typeof(Value.Container)));
+            InPortData.Add(new PortData("sweep path", "The curve loop to sweep along.", typeof(Value.Container)));
+            InPortData.Add(new PortData("attachment curve index", "index of the curve where profile loop is attached", typeof(Value.Number), Value.NewNumber(0)));
+            InPortData.Add(new PortData("attachment parameter", "parameter of attachment point on its curve", typeof(Value.Number), Value.NewNumber(0)));
+            InPortData.Add(new PortData("profile loop", "The curve loop to sweep to be put in orthogonal plane to path at attachment point.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("geometry", "The swept geometry.", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -1272,17 +1275,18 @@ namespace Dynamo.Nodes
             return curveLoop;
         }
 
-        public static Solid SolidBySweep( Autodesk.Revit.DB.CurveLoop pathLoop, Autodesk.Revit.DB.CurveLoop profileLoop )
+        public override Value Evaluate(FSharpList<Value> args)
         {
-            // these are the defaults
-            int attachementIndex = 0;
-            double attachementPar = 0.0;
+            var pathLoop = CurveLoopFromContainer((Value.Container)args[0]);
+            int attachementIndex = (int)((Value.Number)args[1]).Item;
+            double attachementPar = ((Value.Number)args[2]).Item;
+            Autodesk.Revit.DB.CurveLoop profileLoop = (Autodesk.Revit.DB.CurveLoop)((Value.Container)args[3]).Item;
+            List<Autodesk.Revit.DB.CurveLoop> loopList = new List<Autodesk.Revit.DB.CurveLoop>();
 
-            // align profile to axis of curve
             if (profileLoop.HasPlane())
             {
-                var profileLoopPlane = profileLoop.GetPlane();
-                var CLiter = pathLoop.GetCurveLoopIterator();
+                Autodesk.Revit.DB.Plane profileLoopPlane = profileLoop.GetPlane();
+                Autodesk.Revit.DB.CurveLoopIterator CLiter = pathLoop.GetCurveLoopIterator();
 
                 for (int indexCurve = 0; indexCurve < attachementIndex && CLiter.MoveNext(); indexCurve++)
                 {
@@ -1324,27 +1328,27 @@ namespace Dynamo.Nodes
                         if (toVecTwo.DotProduct(fromVecTwo) < -angleTolerance)
                             toVecTwo = -toVecTwo;
 
-                        var trfToAttach = Transform.CreateTranslation(pathTrf.Origin);
+                        Transform trfToAttach = Transform.CreateTranslation(pathTrf.Origin);
                         trfToAttach.BasisX = toVecOne;
                         trfToAttach.BasisY = toVecTwo;
                         trfToAttach.BasisZ = toVecOne.CrossProduct(toVecTwo);
 
-                        var trfToProfile = Transform.CreateTranslation(fromPoint);
+                        Transform trfToProfile = Transform.CreateTranslation(fromPoint);
                         trfToProfile.BasisX = fromVecOne;
                         trfToProfile.BasisY = fromVecTwo;
                         trfToProfile.BasisZ = fromVecOne.CrossProduct(fromVecTwo);
 
-                        var trfFromProfile = trfToProfile.Inverse;
+                        Transform trfFromProfile = trfToProfile.Inverse;
 
-                        var combineTrf = trfToAttach.Multiply(trfFromProfile);
+                        Transform combineTrf = trfToAttach.Multiply(trfFromProfile);
 
                         //now get new curve loop
-                        var transformedCurveLoop = new Autodesk.Revit.DB.CurveLoop();
+                        Autodesk.Revit.DB.CurveLoop transformedCurveLoop = new Autodesk.Revit.DB.CurveLoop();
                         Autodesk.Revit.DB.CurveLoopIterator CLiterT = profileLoop.GetCurveLoopIterator();
                         for (; CLiterT.MoveNext(); )
                         {
-                            var curCurve = CLiterT.Current;
-                            var curCurveTransformed = curCurve.CreateTransformed(combineTrf);
+                            Curve curCurve = CLiterT.Current;
+                            Curve curCurveTransformed = curCurve.CreateTransformed(combineTrf);
 
                             transformedCurveLoop.Append(curCurveTransformed);
                         }
@@ -1352,17 +1356,11 @@ namespace Dynamo.Nodes
                     }
                 }
             }
+            loopList.Add(profileLoop);
 
-            return GeometryCreationUtilities.CreateSweptGeometry(pathLoop, 0, 0, new List<Autodesk.Revit.DB.CurveLoop>(){profileLoop});
-        }
+            Solid result = GeometryCreationUtilities.CreateSweptGeometry(pathLoop, attachementIndex, attachementPar, loopList);
 
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            // unbox
-            var path = CurveLoopFromContainer((FScheme.Value.Container) args[0]);
-            var profile = (Autodesk.Revit.DB.CurveLoop)((Value.Container)args[1]).Item;
-
-            return Value.NewContainer(SolidBySweep( path, profile ));
+            return Value.NewContainer(result);
         }
     }
 
@@ -1522,6 +1520,78 @@ namespace Dynamo.Nodes
             }
 
             var result = GeometryCreationUtilities.CreateBlendGeometry(firstLoop, secondLoop, vertPairs);
+
+            return Value.NewContainer(result);
+        }
+    }
+
+    [NodeName("Swept Blend")]
+    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID_CREATE)]
+    [NodeDescription("Creates a solid by sweeping and blending curve loop along a single curve")]
+    public class CreateSweptBlendGeometry : GeometryBase
+    {
+
+        FScheme.Value defaultEmpty = null;
+        List<Value> emptyParameterList = null;
+
+        public CreateSweptBlendGeometry()
+        {
+            if (defaultEmpty == null)
+            {
+                emptyParameterList = new List<Value>();
+                defaultEmpty = Value.NewList(Utils.SequenceToFSharpList(emptyParameterList));
+            }
+            InPortData.Add(new PortData("profile loops", "Closed planar curve loops located along the path in orthogonal plane to the path.", typeof(Value.List)));
+            InPortData.Add(new PortData("sweep path", "The curve to sweep along.", typeof(Value.Container)));
+            InPortData.Add(new PortData("attachment parameters", "parameter of attachment point on its curve", typeof(Value.List), defaultEmpty));
+            
+            OutPortData.Add(new PortData("solid", "The swept geometry.", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Autodesk.Revit.DB.Curve pathCurve = (Autodesk.Revit.DB.Curve)((Value.Container)args[1]).Item;
+
+            List<Autodesk.Revit.DB.CurveLoop> profileLoops = new List<Autodesk.Revit.DB.CurveLoop>();
+            var input = (args[0] as Value.List).Item;
+            foreach (Value v in input)
+            {
+                Autodesk.Revit.DB.CurveLoop cL = ((Value.Container)v).Item as Autodesk.Revit.DB.CurveLoop;
+                profileLoops.Add(cL);
+            }
+
+            List<double> attachParams = new List<double>();
+            var inputPar = (args[2] as Value.List).Item;
+            if (inputPar.Length < profileLoops.Count)
+            {
+                //intersect plane of each curve loop with the pathCurve
+                foreach (Autodesk.Revit.DB.CurveLoop cLoop in profileLoops)
+                {
+                    Autodesk.Revit.DB.Plane planeOfCurveLoop = cLoop.GetPlane();
+                    if (planeOfCurveLoop == null)
+                        throw new Exception("Profile Curve Loop is not planar");
+                    Face face = Dynamo.Nodes.CurveFaceIntersection.buildFaceOnPlaneByCurveExtensions(pathCurve, planeOfCurveLoop);
+                    IntersectionResultArray xsects = null;
+                    face.Intersect(pathCurve, out xsects);
+                    if (xsects == null || xsects.Size != 1)
+                        throw new Exception("Could not find attachment point on path curve");
+                    attachParams.Add(xsects.get_Item(0).Parameter);
+                }
+            }
+            else
+            {
+                foreach (Value vPar in inputPar)
+                {
+                    double par = (double)((Value.Container)vPar).Item;
+                    attachParams.Add(par);
+                }
+            }
+            //check the parameter and set it if not right or not defined
+            List<ICollection<Autodesk.Revit.DB.VertexPair>> vertPairs = null;
+
+            Solid result = GeometryCreationUtilities.CreateSweptBlendGeometry(pathCurve, attachParams, profileLoops, vertPairs);
 
             return Value.NewContainer(result);
         }
