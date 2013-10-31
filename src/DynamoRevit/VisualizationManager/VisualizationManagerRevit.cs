@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Windows.Input;
 using System.Windows.Media.Media3D;
 using Autodesk.Revit.DB;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using HelixToolkit.Wpf;
+using Octree.Tools.Point;
+using Octree.Tools.Vector;
 using Curve = Autodesk.Revit.DB.Curve;
 using Solid = Autodesk.Revit.DB.Solid;
 using Face = Autodesk.Revit.DB.Face;
@@ -265,9 +269,9 @@ namespace Dynamo
                 return;
 
             var origin = new Point3D(t.Origin.X, t.Origin.Y, t.Origin.Z);
-            XYZ x1 = t.Origin + t.BasisX.Multiply(3);
-            XYZ y1 = t.Origin + t.BasisY.Multiply(3);
-            XYZ z1 = t.Origin + t.BasisZ.Multiply(3);
+            XYZ x1 = t.Origin + t.BasisX.Normalize();
+            XYZ y1 = t.Origin + t.BasisY.Normalize();
+            XYZ z1 = t.Origin + t.BasisZ.Normalize();
             var xEnd = new Point3D(x1.X, x1.Y, x1.Z);
             var yEnd = new Point3D(y1.X, y1.Y, y1.Z);
             var zEnd = new Point3D(z1.X, z1.Y, z1.Z);
@@ -365,6 +369,16 @@ namespace Dynamo
             }
         }
 
+        /// <summary>
+        /// Convert a Revit mesh to a Helix mesh for visualization.
+        /// In order to merge mesh vertices, this method uses a dictionary with a string key formed as x:y:z of the point.
+        /// This assumes that where vertices are the "same" in the Revit mesh, they will have the same coordinates. This
+        /// is NOT a safe strategy to use in other mesh-processing contexts where vertices might have small discrepancies.
+        /// </summary>
+        /// <param name="rmesh"></param>
+        /// <param name="octree"></param>
+        /// <param name="node"></param>
+        /// <returns></returns>
         private static MeshGeometry3D RevitMeshToHelixMesh(Mesh rmesh, Octree.OctreeSearch.Octree octree, NodeModel node)
         {
             var builder = new MeshBuilder();
@@ -373,10 +387,12 @@ namespace Dynamo
             var norms = new Vector3DCollection();
             var tris = new List<int>();
 
+            //A dictionary which will contain a point, a normal, and an index
+            //keyed on the location of the point as a hash
+            var pointDict = new Dictionary<string, PointData>();
             for (int i = 0; i < rmesh.NumTriangles; ++i)
             {
                 var tri = rmesh.get_Triangle(i);
-
                 //calculate the face normal by
                 //getting the cross product of two edges
                 var a = tri.get_Vertex(0);
@@ -389,42 +405,72 @@ namespace Dynamo
 
                 for (int j = 0; j < 3; j++)
                 {
-                    var new_point = RevitPointToWindowsPoint(tri.get_Vertex(j));
-
-                    int foundIndex = -1;
-                    for (int k = 0; k < points.Count; k++)
+                    var pt = RevitPointToWindowsPoint(tri.get_Vertex(j));
+                    var key = pt.X + ":" + pt.Y + ":" + pt.Z;
+                    if (!pointDict.ContainsKey(key))
                     {
-                        var testPt = points[k];
-                        var testNorm = norms[k];
-
-                        if (new_point.X == testPt.X &&
-                            new_point.Y == testPt.Y &&
-                            new_point.Z == testPt.Z)
-                        {
-                            foundIndex = k;
-                            //average the merged normals
-                            norms[k] = (testNorm + normal) / 2;
-                            break;
-                        }
+                        //if the dictionary doesn't contain the key
+                        var pd = new PointData(pt.X,pt.Y,pt.Z);
+                        pd.Normals.Add(normal);
+                        pd.Index = pointDict.Count;
+                        pointDict.Add(key, pd);
+                        tris.Add(pd.Index);
                     }
-
-                    if (foundIndex != -1)
+                    else
                     {
-                        tris.Add(foundIndex);
-                        continue;
+                        //add an index to our tris array
+                        //add a normal to our internal collection
+                        //for post processing
+                        var data = pointDict[key];
+                        tris.Add(data.Index);
+                        data.Normals.Add(normal);
                     }
-
-                    tris.Add(points.Count);
-                    points.Add(new_point);
-                    norms.Add(normal);
-                    tex.Add(new System.Windows.Point(0, 0));
-                    octree.AddNode(new_point.X, new_point.Y, new_point.Z, node.GUID.ToString());
                 }
-
-                builder.Append(points, tris, norms, tex);
             }
 
+            var lst = pointDict.ToList();
+            lst.ForEach(x => points.Add(x.Value.Position));
+            lst.ForEach(x=>octree.AddNode(x.Value.Position.X, x.Value.Position.Y, x.Value.Position.Z, node.GUID.ToString()));
+            lst.ForEach(x=>tex.Add(x.Value.Tex));
+
+            //merge the normals
+            foreach (var pd in lst)
+            {
+                var avg = new Vector3D();
+                var nList = pd.Value.Normals;
+                foreach (var n in nList)
+                {
+                    avg.X += n.X;
+                    avg.Y += n.Y;
+                    avg.Z += n.Z;
+                }
+                avg.X = avg.X / nList.Count;
+                avg.Y = avg.Y / nList.Count;
+                avg.Z = avg.Z / nList.Count;
+                norms.Add(avg);
+            }
+
+            builder.Append(points, tris, norms, tex);
+            Debug.WriteLine(string.Format("Mesh had {0} faces coming in and {1} faces going out.", rmesh.NumTriangles, builder.TriangleIndices.Count / 3));
+
             return builder.ToMesh(true);
+        }
+
+        /// <summary>
+        /// A class for storing data about a point for mesh processing.
+        /// </summary>
+        protected class PointData
+        {
+            internal List<Vector3D> Normals { get; set; }
+            internal int Index { get; set; }
+            internal Point3D Position { get; set; }
+            internal System.Windows.Point Tex { get; set; }
+            internal PointData(double x, double y, double z)
+            {
+                Position = new Point3D(x,y,z);
+                Tex = new System.Windows.Point(0, 0);
+                Normals = new List<Vector3D>();
+            }
         }
 
         private static Point3D RevitPointToWindowsPoint(XYZ xyz)

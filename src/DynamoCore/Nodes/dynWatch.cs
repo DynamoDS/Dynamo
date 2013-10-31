@@ -17,7 +17,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Watch")]
-    [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
+    [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
     [NodeDescription("Visualize the output of node. ")]
     [NodeSearchTags("print", "output", "display")]
     public partial class Watch: NodeWithOneOutput

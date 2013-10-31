@@ -279,6 +279,9 @@ namespace Dynamo.Controls
         {
             ContentPresenter inputPort = sender as ContentPresenter;
             string content = (inputPort.Content as PortViewModel).ToolTipContent;
+            if (string.IsNullOrWhiteSpace(content))
+                return;
+
             UIElement containingWorkspace = WPF.FindUpVisualTree<TabControl>(this);
             Point topLeft = inputPort.TranslatePoint(new Point(0, 0), containingWorkspace);
             double actualWidth = inputPort.ActualWidth * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
@@ -302,6 +305,9 @@ namespace Dynamo.Controls
         {
             ContentPresenter outputPort = sender as ContentPresenter;
             string content = (outputPort.Content as PortViewModel).ToolTipContent;
+            if (string.IsNullOrWhiteSpace(content))
+                return;
+
             UIElement containingWorkspace = WPF.FindUpVisualTree<TabControl>(this);
             Point topLeft = outputPort.TranslatePoint(new Point(0, 0), containingWorkspace);
             double actualWidth = outputPort.ActualWidth * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;

@@ -1,19 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!--
-Copyright © Autodesk, Inc. 2012. All rights reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
--->
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Dynamo.CS.props" />
@@ -23,13 +8,16 @@ limitations under the License.
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{E4701F9E-41AB-4044-8166-85D924FEB632}</ProjectGuid>
+    <ProjectGuid>{0BC2A611-BD0E-4FCC-A1DE-81F14ED369B2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RevitServices</RootNamespace>
-    <AssemblyName>RevitServices</AssemblyName>
+    <RootNamespace>DSRevitNodes</RootNamespace>
+    <AssemblyName>DSRevitNodes</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -41,13 +29,12 @@ limitations under the License.
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>full</DebugType>
+    <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>$(OutputPath)</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="RevitAPI">
@@ -56,6 +43,18 @@ limitations under the License.
     </Reference>
     <Reference Include="RevitAPIUI">
       <HintPath>$(REVITAPI)\RevitAPIUI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ProtoGeometry">
+      <HintPath>..\..\extern\DesignScript\ProtoGeometry.dll</HintPath>
+    </Reference>
+    <Reference Include="ProtoInterface, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\DesignScript\ProtoInterface.dll</HintPath>
+    </Reference>
+    <Reference Include="RevitAPI">
+      <HintPath>$(REVITAPI)\RevitAPI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -66,12 +65,44 @@ limitations under the License.
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Elements\ModelUpdater.cs" />
-    <Compile Include="Elements\ElementValidity.cs" />
-    <Compile Include="Persistence\Documentmanager.cs" />
+    <Compile Include="AbstractGeometry.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="Face.cs" />
+    <Compile Include="Point.cs" />
+    <Compile Include="AdaptiveComponent.cs" />
+    <Compile Include="DividedPath.cs" />
+    <Compile Include="DivideSurface.cs" />
+    <Compile Include="FreeForm.cs" />
+    <Compile Include="Material.cs" />
+    <Compile Include="ModelCurve.cs" />
+    <Compile Include="FamilyInstance.cs" />
+    <Compile Include="Floor.cs" />
+    <Compile Include="Grid.cs" />
+    <Compile Include="Level.cs" />
+    <Compile Include="Parameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Threading\IdlePromise.cs" />
-    <Compile Include="Transactions\TransactionManager.cs" />
+    <Compile Include="ReferenceCurve.cs" />
+    <Compile Include="ReferencePlane.cs" />
+    <Compile Include="ReferencePoint.cs" />
+    <Compile Include="Selection.cs" />
+    <Compile Include="Solid.cs" />
+    <Compile Include="SpatialField.cs" />
+    <Compile Include="StucturalFraming.cs" />
+    <Compile Include="View.cs" />
+    <Compile Include="Wall.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DSNodeServices\DSNodeServices.csproj">
+      <Project>{EF879A10-041D-4C68-83E7-3192685F1BAE}</Project>
+      <Name>DSNodeServices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RevitServices\RevitServices.csproj">
+      <Project>{E4701F9E-41AB-4044-8166-85D924FEB632}</Project>
+      <Name>RevitServices</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
