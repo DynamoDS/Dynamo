@@ -19,9 +19,9 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Greg;
 using ProtoScript.Runners;
-using RevitPersistenceManager;
 using RevitServices;
 using RevitServices.Elements;
+using RevitServices.Persistence;
 using RevitServices.Threading;
 using RevitServices.Transactions;
 using ChangeType = RevitServices.Elements.ChangeType;
@@ -728,7 +728,8 @@ namespace Dynamo
 
         protected override void Run(List<NodeModel> topElements, GraphSyncData graphSyncData)
         {
-            DocumentManager.CurrentDoc = dynRevitSettings.Doc.Document;
+            DocumentManager.GetInstance().CurrentDBDocument = dynRevitSettings.Doc.Document;
+
             if (!DynamoViewModel.RunInDebug)
             {
                 //Do we need manual transaction control?

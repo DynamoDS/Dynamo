@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
 using Dynamo.PackageManager;
 using Dynamo.Search.SearchElements;
@@ -12,6 +13,15 @@ namespace Dynamo.Nodes.Search
     {
 
         public abstract ObservableCollection<BrowserItem> Items { get; set; }
+
+        /// <summary>
+        /// Sort this items children and then tell its children and recurse on children
+        /// </summary>
+        public void RecursivelySort()
+        {
+            this.Items = new ObservableCollection<BrowserItem>(this.Items.OrderBy(x => x.Name));
+            this.Items.ToList().ForEach(x=>x.RecursivelySort());
+        }
 
         /// <summary>
         ///     If this is a leaf and visible, add to items, otherwise, recurse on children

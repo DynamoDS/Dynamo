@@ -156,7 +156,6 @@ namespace Dynamo.Nodes
     public class ArduinoRead : NodeWithOneOutput
     {
         SerialPort port;
-        int range;
         List<string> serialLine = new List<string>();
 
         public ArduinoRead()

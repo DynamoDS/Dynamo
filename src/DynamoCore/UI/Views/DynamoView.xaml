@@ -362,7 +362,7 @@
                 Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="3"
                 SizeChanged="Workspace_SizeChanged">
 
-            <Grid>
+            <Grid AllowDrop="True" Drop="DynamoView_OnDrop">
                 <TabControl ItemsSource="{Binding Path=Workspaces, NotifyOnTargetUpdated=True}"
                             Name="WorkspaceTabs"
                             SelectedIndex="{Binding CurrentWorkspaceIndex}"

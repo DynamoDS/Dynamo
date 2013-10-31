@@ -7,7 +7,7 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Nodes
 {
-    [NodeName("Wall By Curve")]
+    [NodeName("Wall by Curve")]
     [NodeCategory(BuiltinNodeCategories.REVIT_DOCUMENT)]
     [NodeDescription("Get a material from the active Revit document by name.")]
     public class WallByCurve : RevitTransactionNodeWithOneOutput
@@ -63,7 +63,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Select Wall Type")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_DOCUMENT)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a wall type.")]
     public class SelectWallType : DropDrownBase
     {
