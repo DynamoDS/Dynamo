@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
-using System.Linq;
 using System.Xml;
 using Autodesk.Revit.DB;
 using Dynamo.Controls;
+using Dynamo.FSchemeInterop;
 using Dynamo.Models;
-using Dynamo.Utilities;
 using Dynamo.Revit.SyncedNodeExtensions; //Gives the RegisterEval... methods
+using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using RevitServices.Threading;
 using Value = Dynamo.FScheme.Value;
@@ -511,7 +512,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Select Family Instance")]
-    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a family instance from the document.")]
     public class FamilyInstanceCreatorSelection : ElementSelectionBase
     {
@@ -541,7 +542,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Select Divided Surface Families")]
-    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a all families on a divided surface by picking the underlying form.")]
     [NodeSearchTags("Curtain Panel", "Divided", "surface", "component", "family")]
     public class DividedSurfaceBySelection : ElementSelectionBase
@@ -634,7 +635,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Select Face")]
-    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a face from the document.")]
     public class FormElementBySelection : ReferenceSelectionBase
     {
@@ -727,7 +728,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Select Edge")]
-    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select an edge from the document.")]
     public class EdgeOnElementBySelection : ReferenceSelectionBase
     {
@@ -779,7 +780,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Select Curve")]
-    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a curve from the document.")] //or set of curves in the future
     public class CurvesBySelection : ElementSelectionBase
     {
@@ -834,7 +835,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Select Elements")]
-    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Box select a collection of Revit Elements from the document.")]
     public class MultipleCurvesBySelection : MultipleElementSelectionBase
     {
@@ -878,8 +879,8 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Select Point")]
-    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
+    [NodeName("Select Reference Point")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a reference point from the document.")]
     public class PointBySelection : ElementSelectionBase
     {
@@ -908,7 +909,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Select Level")]
-    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a level from the document.")]
     public class LevelBySelection : ElementSelectionBase
     {
@@ -937,7 +938,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Select Model Element")]
-    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a model element from the document.")]
     public class ModelElementSelection : ElementSelectionBase
     {
@@ -967,8 +968,8 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Select XYZ on element")]
-    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
+    [NodeName("Select XYZ on Element")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a XYZ location on model face or edge of the element.")]
     public class XyzBySelection : ReferenceSelectionBase
     {

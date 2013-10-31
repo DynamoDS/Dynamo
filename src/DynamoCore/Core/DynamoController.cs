@@ -389,6 +389,9 @@ namespace Dynamo
 
         protected virtual void EvaluationThread(object s, DoWorkEventArgs args)
         {
+            var sw = new Stopwatch();
+            sw.Start();
+
             //Get our entry points (elements with nothing connected to output)
             List<NodeModel> topElements = DynamoViewModel.Model.HomeSpace.GetTopMostNodes().ToList();
 
@@ -482,6 +485,9 @@ namespace Dynamo
                 {
                     OnRunCompleted(this, true);
                 }
+
+                sw.Stop();
+                DynamoLogger.Instance.Log(string.Format("Evaluation completed in {0}", sw.Elapsed.ToString()));
             }
         }
 

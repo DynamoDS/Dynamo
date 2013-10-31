@@ -52,7 +52,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Project Point On Face/Plane")]
+    [NodeName("Project Point On Face or Plane")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_INTERSECT)]
     [NodeDescription("Project a point onto a face or plane.")]
     public class ProjectPointOnFace : RevitTransactionNode
