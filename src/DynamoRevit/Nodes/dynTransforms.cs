@@ -25,7 +25,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Transform From Origin and Vectors")]
+    [NodeName("Transform from Origin and Vectors")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
     [NodeDescription("Returns a transformation with origin (o), up vector (u), and forward (f).")]
     [NodeSearchTags("move", "copy")]
@@ -35,7 +35,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("o", "Origin(XYZ)", typeof(Value.Container)));
             InPortData.Add(new PortData("u", "Up(XYZ)", typeof(Value.Container)));
-            InPortData.Add(new PortData("forward", "Up(XYZ)", typeof(Value.Container)));
+            InPortData.Add(new PortData("forward", "Forward(XYZ)", typeof(Value.Container)));
             OutPortData.Add(new PortData("t", "Transform", typeof(Value.Container)));
 
             RegisterAllPorts();
@@ -59,9 +59,83 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Transform From-To")]
+    [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
+    [NodeDescription("Returns a transformation from origin, up, forward vectors to another triple of vectors. Normalizes vectors if needed.")]
+    [NodeSearchTags("move", "copy")]
+    public class TransFromTo : GeometryBase
+    {
+        public TransFromTo()
+        {
+            InPortData.Add(new PortData("o-from", "Origin(XYZ)", typeof(Value.Container)));
+            InPortData.Add(new PortData("u-from", "Up(XYZ)", typeof(Value.Container)));
+            InPortData.Add(new PortData("f-from", "Up(XYZ)", typeof(Value.Container)));
+            InPortData.Add(new PortData("o-to", "Origin(XYZ)", typeof(Value.Container)));
+            InPortData.Add(new PortData("u-to", "Up(XYZ)", typeof(Value.Container)));
+            InPortData.Add(new PortData("f-to", "Up(XYZ)", typeof(Value.Container)));
+            OutPortData.Add(new PortData("t", "Transform", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var originF = (XYZ)((Value.Container)args[0]).Item;
+            var upF = (XYZ)((Value.Container)args[1]).Item;
+            var forwardF = (XYZ)((Value.Container)args[2]).Item;
+
+            var originT = (XYZ)((Value.Container)args[3]).Item;
+            var upT = (XYZ)((Value.Container)args[4]).Item;
+            var forwardT = (XYZ)((Value.Container)args[5]).Item;
+
+            Transform tF = Transform.Identity;
+            tF.Origin = originF;
+            tF.BasisZ = upF.Normalize();
+            tF.BasisY = forwardF.Normalize();
+            tF.BasisX = forwardF.CrossProduct(upF).Normalize();
+            tF.BasisY = tF.BasisZ.CrossProduct(tF.BasisX).Normalize();
+
+            Transform tT = Transform.Identity;
+            tT.Origin = originT;
+            tT.BasisZ = upT.Normalize();
+            tT.BasisY = forwardT.Normalize();
+            tT.BasisX = forwardT.CrossProduct(upT).Normalize();
+            tT.BasisY = tT.BasisZ.CrossProduct(tT.BasisX).Normalize();
+
+            Transform t = tT.Multiply(tF.Inverse);
+
+            return Value.NewContainer(
+               t
+            );
+        }
+    }
+
+    [NodeName("Inverse Transform")]
+    [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
+    [NodeDescription("Returns the inverse transformation.")]
+    public class InverseTransform : GeometryBase
+    {
+        public InverseTransform()
+        {
+            InPortData.Add(new PortData("t", "TransformToInverse(Transform)", typeof(Value.Container)));
+            OutPortData.Add(new PortData("ts", "Inversed Transform. (Transform)", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var transform = (Transform)((Value.Container)args[0]).Item;
+
+            Transform t = transform.Inverse;
+
+            return Value.NewContainer(t);
+        }
+    }
+
     [NodeName("Scale Transform")]
     [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
-    [NodeDescription("Returns the identity transformation.")]
+    [NodeDescription("Returns the scale transformation.")]
     public class TransformScaleBasis : GeometryBase
     {
         public TransformScaleBasis()
@@ -184,7 +258,7 @@ namespace Dynamo.Nodes
             return Value.NewContainer(tpt);
         }
 
-        private XYZ GetPointTransformed(XYZ point, Transform transform)
+        public static XYZ GetPointTransformed(XYZ point, Transform transform)
         {
             double x = point.X;
             double y = point.Y;

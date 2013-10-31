@@ -356,7 +356,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Bounding Box XYZ")]
-    [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TRANSFORM)]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
     [NodeDescription("Create a bounding box.")]
     public class BoundingBoxXyz : NodeWithOneOutput
     {
@@ -505,7 +505,7 @@ namespace Dynamo.Nodes
     
     [NodeName("Watch Image")]
     [NodeDescription("Previews an image")]
-    [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
+    [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
     public class WatchImage : NodeWithOneOutput
     {
 

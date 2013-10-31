@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Reflection;
 using Dynamo.Controls;
+using Dynamo.Models;
 using Dynamo.ViewModels;
 
 namespace Dynamo.Tests.UI
@@ -13,6 +14,8 @@ namespace Dynamo.Tests.UI
         
         protected static DynamoView Ui { get; set; }
         
+        protected static DynamoModel Model { get; set; }
+
         protected static string ExecutingDirectory
         {
             get { return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location); }
