@@ -1,0 +1,34 @@
+<Workspace Version="0.6.2.17383" X="187.466666666666" Y="142" zoom="0.8" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="83cd8356-d89d-44c4-92b4-1f03e3cb03b0" nickname="Number" x="-40.7222222222219" y="-37.5694444444444" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="e3c00b7a-5aff-4233-a9c7-948a5f9a074d" nickname="Number" x="-24.4722222222219" y="177.291666666667" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <System.Double value="0..PI..0.1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.PiTimes2 type="Dynamo.Nodes.PiTimes2" guid="ea8606c2-24eb-4e62-9ae6-f9c0a0d476a9" nickname="2*Pi" x="-255.166666666667" y="194.583333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.XyzFromSpherical type="Dynamo.Nodes.XyzFromSpherical" guid="8e868a19-10d6-4d3c-a86d-e94cfa0c4899" nickname="XYZ by Spherical" x="280.527777777778" y="51.5277777777777" isVisible="true" isUpstreamVisible="true" lacing="CrossProduct">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.XyzFromSpherical>
+    <Dynamo.Nodes.Watch3D type="Dynamo.Nodes.Watch3D" guid="048408bc-71b0-49b8-8546-0e820212087f" nickname="Watch 3D" x="613.166666666667" y="81.875" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <view width="210" height="257">
+        <camera pos_x="-6.06080985119029" pos_y="0.26462067289216" pos_z="2.08959674824274" look_x="6.06080985119029" look_y="-0.26462067289216" look_z="-2.09059674824275" />
+      </view>
+    </Dynamo.Nodes.Watch3D>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="d62574c6-a12a-4766-bd2c-9242f326bac0" nickname="Number" x="83.0277777777781" y="281.041666666667" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <System.Double value="0..PI..0.1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Pi type="Dynamo.Nodes.Pi" guid="37acee7d-6506-4427-a895-acf77b3d232a" nickname="Pi" x="-156.833333333333" y="280.625" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="83cd8356-d89d-44c4-92b4-1f03e3cb03b0" start_index="0" end="8e868a19-10d6-4d3c-a86d-e94cfa0c4899" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e3c00b7a-5aff-4233-a9c7-948a5f9a074d" start_index="0" end="8e868a19-10d6-4d3c-a86d-e94cfa0c4899" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ea8606c2-24eb-4e62-9ae6-f9c0a0d476a9" start_index="0" end="e3c00b7a-5aff-4233-a9c7-948a5f9a074d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8e868a19-10d6-4d3c-a86d-e94cfa0c4899" start_index="0" end="048408bc-71b0-49b8-8546-0e820212087f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d62574c6-a12a-4766-bd2c-9242f326bac0" start_index="0" end="8e868a19-10d6-4d3c-a86d-e94cfa0c4899" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="37acee7d-6506-4427-a895-acf77b3d232a" start_index="0" end="d62574c6-a12a-4766-bd2c-9242f326bac0" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
