@@ -262,7 +262,7 @@ namespace Dynamo.Nodes
             }
             
             // phew...
-            phi = Math.Atan(input.Z / rInXYPlane);
+            phi = Math.Acos(input.Z/r);
         }
 
         public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
