@@ -1985,8 +1985,19 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public static Solid AlignedBoxByTwoCorners(XYZ bottom, XYZ top)
+        public static Solid AlignedBoxByTwoCorners(XYZ bottomInput, XYZ topInput)
         {
+            XYZ top, bottom;
+            if (bottomInput.Z > topInput.Z)
+            {
+                top = bottomInput;
+                bottom = topInput;
+            }
+            else
+            {
+                top = topInput;
+                bottom = bottomInput;
+            }
 
             // obtain coordinates of base rectangle
             var p0 = bottom;

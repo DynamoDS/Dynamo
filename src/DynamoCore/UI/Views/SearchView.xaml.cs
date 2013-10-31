@@ -236,9 +236,6 @@ namespace Dynamo.Search
 
         private void SearchTextBox_OnGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
-            Console.WriteLine("YO");
-            // select everything in text box
-            // highlight bg
             SearchTextBox.SelectAll();
             var bc = new BrushConverter();
             SearchTextGrid.Background = (Brush)bc.ConvertFromString("#111");
