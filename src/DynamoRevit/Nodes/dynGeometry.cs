@@ -54,7 +54,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("XYZ by Polar")]
+    [NodeName("XYZ by Polar Coordinates")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
     [NodeDescription("Creates an XYZ from sphereical coordinates.")]
     public class XyzFromPolar : GeometryBase
@@ -98,7 +98,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("XYZ to Polar")]
+    [NodeName("XYZ to Polar Coordinates")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
     [NodeDescription("Creates an XYZ from spherical coordinates.")]
     public class XyzToPolar : NodeModel
@@ -151,7 +151,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("XYZ by Spherical")]
+    [NodeName("XYZ by Spherical Coordinates")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
     [NodeDescription("Creates an XYZ from spherical coordinates.")]
     public class XyzFromSpherical : GeometryBase
@@ -195,7 +195,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("XYZ to Spherical")]
+    [NodeName("XYZ to Spherical Coordinates")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_VECTOR)]
     [NodeDescription("Decompose an XYZ into spherical coordinates.")]
     public class XyzToSpherical : NodeModel
