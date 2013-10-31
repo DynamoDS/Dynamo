@@ -1365,7 +1365,7 @@ namespace Dynamo.Nodes
 
         public CreateExtrusionGeometry()
         {
-            InPortData.Add(new PortData("profile", "The profile curve (Can be a Curve or CurveLoops", typeof(Value.Container)));
+            InPortData.Add(new PortData("profile", "The profile CurveLoop.", typeof(Value.Container)));
             InPortData.Add(new PortData("direction", "The direction in which to extrude the profile.", typeof(Value.Container)));
             InPortData.Add(new PortData("distance", "The positive distance by which the loops are to be extruded.", typeof(Value.Number)));
 
@@ -1376,32 +1376,11 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
+            var curveLoop = CreateSweptGeometry.CurveLoopFromContainer((Value.Container) args[0]);
             var direction = (XYZ)((Value.Container)args[1]).Item;
             var distance = ((Value.Number)args[2]).Item;
 
-            //incoming list will have two lists in it
-            //each list will contain curves. convert the curves
-            //into curve loops
-            var profileList = ((Value.List)args[0]).Item;
-            var loops = new List<Autodesk.Revit.DB.CurveLoop>();
-            foreach (var item in profileList)
-            {
-                if (item.IsList)
-                {
-                    var innerList = ((Value.List)item).Item;
-                    foreach (var innerItem in innerList)
-                    {
-                        loops.Add((Autodesk.Revit.DB.CurveLoop)((Value.Container)item).Item);
-                    }
-                }
-                else
-                {
-                    //we'll assume a container
-                    loops.Add((Autodesk.Revit.DB.CurveLoop)((Value.Container)item).Item);
-                }
-            }
-
-            var result = GeometryCreationUtilities.CreateExtrusionGeometry(loops, direction, distance);
+            var result = GeometryCreationUtilities.CreateExtrusionGeometry(new List<Autodesk.Revit.DB.CurveLoop>(){curveLoop}, direction, distance);
 
             return Value.NewContainer(result);
         }
