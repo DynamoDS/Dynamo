@@ -113,7 +113,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Curve Derivatives")]
-    [NodeCategory(BuiltinNodeCategories.ANALYZE_CURVE)]
+    [NodeCategory(BuiltinNodeCategories.CURVE_QUERY)]
     [NodeDescription("Returns a transform describing the face (f) at the parameter (uv).")]
     public class ComputeCurveDerivatives : GeometryBase
     {
@@ -147,7 +147,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Transform on Curve")]
-    [NodeCategory(BuiltinNodeCategories.ANALYZE_CURVE)]
+    [NodeCategory(BuiltinNodeCategories.CURVE_QUERY)]
     [NodeDescription("Evaluates tangent vector of curve or edge at parameter.")]
     public class TangentTransformOnCurveOrEdge : GeometryBase
     {

@@ -27,7 +27,7 @@ namespace Dynamo.Nodes
     #region Vectors
 
     [NodeName("XYZ")]
-    [NodeCategory(BuiltinNodeCategories.VECTOR_CREATE)]
+    [NodeCategory(BuiltinNodeCategories.VECTORPOINT_CREATE)]
     [NodeDescription("Creates an XYZ from three coordinates.")]
     [NodeSearchTags("vector", "point")]
     public class Xyz: GeometryBase
@@ -56,7 +56,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("XYZ by Polar Coordinates")]
-    [NodeCategory(BuiltinNodeCategories.VECTOR_CREATE)]
+    [NodeCategory(BuiltinNodeCategories.VECTORPOINT_CREATE)]
     [NodeDescription("Creates an XYZ from sphereical coordinates.")]
     public class XyzFromPolar : GeometryBase
     {
@@ -100,7 +100,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("XYZ to Polar Coordinates")]
-    [NodeCategory(BuiltinNodeCategories.VECTOR_QUERY)]
+    [NodeCategory(BuiltinNodeCategories.VECTORPOINT_QUERY)]
     [NodeDescription("Creates an XYZ from spherical coordinates.")]
     public class XyzToPolar : NodeModel
     {
@@ -153,7 +153,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("XYZ by Spherical Coordinates")]
-    [NodeCategory(BuiltinNodeCategories.VECTOR_CREATE)]
+    [NodeCategory(BuiltinNodeCategories.VECTORPOINT_CREATE)]
     [NodeDescription("Creates an XYZ from spherical coordinates.")]
     public class XyzFromSpherical : GeometryBase
     {
@@ -197,7 +197,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("XYZ to Spherical Coordinates")]
-    [NodeCategory(BuiltinNodeCategories.VECTOR_QUERY)]
+    [NodeCategory(BuiltinNodeCategories.VECTORPOINT_QUERY)]
     [NodeDescription("Decompose an XYZ into spherical coordinates.")]
     public class XyzToSpherical : NodeModel
     {
@@ -280,7 +280,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("XYZ from List of Numbers")]
-    [NodeCategory(BuiltinNodeCategories.VECTOR_CREATE)]
+    [NodeCategory(BuiltinNodeCategories.VECTORPOINT_CREATE)]
     [NodeDescription("Creates a list of XYZs by taking sets of 3 numbers from an list.")]
     public class XyzFromListOfNumbers : GeometryBase
     {
@@ -322,7 +322,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("XYZ from Reference Point")]
-    [NodeCategory(BuiltinNodeCategories.VECTOR_CREATE)]
+    [NodeCategory(BuiltinNodeCategories.VECTORPOINT_CREATE)]
     [NodeDescription("Extracts an XYZ from a Reference Point.")]
     [NodeSearchTags("xyz", "derive", "from", "reference", "point")]
     public class XyzFromReferencePoint : GeometryBase
@@ -345,7 +345,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("XYZ Components")]
-    [NodeCategory(BuiltinNodeCategories.VECTOR_QUERY)]
+    [NodeCategory(BuiltinNodeCategories.VECTORPOINT_QUERY)]
     [NodeDescription("Get the components of an XYZ")]
     public class XyzComponents : NodeModel
     {
@@ -379,7 +379,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("XYZ X")]
-    [NodeCategory(BuiltinNodeCategories.VECTOR_QUERY)]
+    [NodeCategory(BuiltinNodeCategories.VECTORPOINT_QUERY)]
     [NodeDescription("Fetches the X value of the given XYZ")]
     public class XyzGetX: GeometryBase
     { 
@@ -398,7 +398,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("XYZ Y")]
-    [NodeCategory(BuiltinNodeCategories.VECTOR_QUERY)]
+    [NodeCategory(BuiltinNodeCategories.VECTORPOINT_QUERY)]
     [NodeDescription("Fetches the Y value of the given XYZ")]
     public class XyzGetY : GeometryBase
     {
@@ -417,7 +417,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("XYZ Z")]
-    [NodeCategory(BuiltinNodeCategories.VECTOR_QUERY)]
+    [NodeCategory(BuiltinNodeCategories.VECTORPOINT_QUERY)]
     [NodeDescription("Fetches the Z value of the given XYZ")]
     public class XyzGetZ : GeometryBase
     {
@@ -436,7 +436,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("XYZ Distance")]
-    [NodeCategory(BuiltinNodeCategories.VECTOR_QUERY)]
+    [NodeCategory(BuiltinNodeCategories.VECTORPOINT_QUERY)]
     [NodeDescription("Returns the distance between a(XYZ) and b(XYZ).")]
     public class XyzDistance : MeasurementBase
     {
@@ -459,7 +459,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("XYZ Length")]
-    [NodeCategory(BuiltinNodeCategories.VECTOR_QUERY)]
+    [NodeCategory(BuiltinNodeCategories.VECTORPOINT_QUERY)]
     [NodeDescription("Gets the length of an XYZ")]
     [NodeSearchTags("vector", "magnitude", "amplitude")]
     public class XyzLength : GeometryBase
@@ -479,7 +479,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Unitize XYZ")]
-    [NodeCategory(BuiltinNodeCategories.VECTOR_MODIFY)]
+    [NodeCategory(BuiltinNodeCategories.VECTORPOINT_MODIFY)]
     [NodeDescription("Scale the given XYZ so its length is 1.")]
     [NodeSearchTags("normalize", "length", "vector")]
     public class XyzNormalize : GeometryBase
@@ -499,7 +499,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("XYZ Is Zero Length")]
-    [NodeCategory(BuiltinNodeCategories.VECTOR_QUERY)]
+    [NodeCategory(BuiltinNodeCategories.VECTORPOINT_QUERY)]
     [NodeDescription("Determines whether an XYZ has zero length")]
     [NodeSearchTags("vector", "length", "xyz", "magnitude", "amplitude")]
     public class XyzIsZeroLength : GeometryBase
@@ -519,7 +519,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("XYZ Origin")]
-    [NodeCategory(BuiltinNodeCategories.VECTOR_CREATE)]
+    [NodeCategory(BuiltinNodeCategories.VECTORPOINT_CREATE)]
     [NodeDescription("Creates an XYZ at the origin (0,0,0).")]
     [NodeSearchTags("xyz", "zero")]
     public class XyzZero: GeometryBase
@@ -538,7 +538,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Unit X")]
-    [NodeCategory(BuiltinNodeCategories.VECTOR_CREATE)]
+    [NodeCategory(BuiltinNodeCategories.VECTORPOINT_CREATE)]
     [NodeDescription("Creates an XYZ representing the X basis (1,0,0).")]
     [NodeSearchTags("axis","xyz")]
     public class XyzBasisX : GeometryBase
@@ -558,7 +558,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Unit Y")]
-    [NodeCategory(BuiltinNodeCategories.VECTOR_CREATE)]
+    [NodeCategory(BuiltinNodeCategories.VECTORPOINT_CREATE)]
     [NodeDescription("Creates an XYZ representing the Y basis (0,1,0).")]
     [NodeSearchTags("axis", "xyz")]
     public class XyzBasisY : GeometryBase
@@ -578,7 +578,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Unit Z")]
-    [NodeCategory(BuiltinNodeCategories.VECTOR_CREATE)]
+    [NodeCategory(BuiltinNodeCategories.VECTORPOINT_CREATE)]
     [NodeDescription("Creates an XYZ representing the Z basis (0,0,1).")]
     [NodeSearchTags("axis", "xyz")]
     public class XyzBasisZ : GeometryBase
@@ -599,7 +599,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Scale XYZ")]
-    [NodeCategory(BuiltinNodeCategories.VECTOR_MODIFY)]
+    [NodeCategory(BuiltinNodeCategories.VECTORPOINT_MODIFY)]
     [NodeDescription("Multiplies each component of an XYZ by a number.")]
     public class XyzScale : GeometryBase
     {
@@ -625,7 +625,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Scale XYZ with Base Point")]
-    [NodeCategory(BuiltinNodeCategories.VECTOR_MODIFY)]
+    [NodeCategory(BuiltinNodeCategories.VECTORPOINT_MODIFY)]
     [NodeDescription("Scales an XYZ relative to the supplies base point.")]
     public class XyzScaleOffset : GeometryBase
     {
@@ -653,7 +653,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Add XYZs")]
-    [NodeCategory(BuiltinNodeCategories.VECTOR_MODIFY)]
+    [NodeCategory(BuiltinNodeCategories.VECTORPOINT_MODIFY)]
     [NodeDescription("Adds the components of two XYZs.")]
     public class XyzAdd: GeometryBase
     {
@@ -677,8 +677,8 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Subtract Vectors")]
-    [NodeCategory(BuiltinNodeCategories.VECTOR_MODIFY)]
+    [NodeName("Subtract XYZs")]
+    [NodeCategory(BuiltinNodeCategories.VECTORPOINT_MODIFY)]
     [NodeDescription("Subtracts the components of two XYZs.")]
     public class XyzSubtract : GeometryBase
     {
@@ -703,7 +703,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Average XYZs")]
-    [NodeCategory(BuiltinNodeCategories.VECTOR_QUERY)]
+    [NodeCategory(BuiltinNodeCategories.VECTORPOINT_QUERY)]
     [NodeDescription("Averages a list of XYZs.")]
     public class XyzAverage : GeometryBase
     {
@@ -729,7 +729,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Negate XYZ")]
-    [NodeCategory(BuiltinNodeCategories.VECTOR_MODIFY)]
+    [NodeCategory(BuiltinNodeCategories.VECTORPOINT_MODIFY)]
     [NodeDescription("Negate an XYZ.")]
     public class XyzNegate : GeometryBase
     {
@@ -750,7 +750,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("XYZ Cross Product")]
-    [NodeCategory(BuiltinNodeCategories.VECTOR_MODIFY)]
+    [NodeCategory(BuiltinNodeCategories.VECTORPOINT_MODIFY)]
     [NodeDescription("Calculate the cross product of two XYZs.")]
     public class XyzCrossProduct : GeometryBase
     {
@@ -773,7 +773,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("XYZ Dot Product")]
-    [NodeCategory(BuiltinNodeCategories.VECTOR_MODIFY)]
+    [NodeCategory(BuiltinNodeCategories.VECTORPOINT_MODIFY)]
     [NodeDescription("Calculate the dot product of two XYZs.")]
     [NodeSearchTags("inner")]
     public class XyzDotProduct : GeometryBase
@@ -797,7 +797,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Direction to XYZ")]
-    [NodeCategory(BuiltinNodeCategories.VECTOR_MODIFY)]
+    [NodeCategory(BuiltinNodeCategories.VECTORPOINT_MODIFY)]
     [NodeDescription("Calculate the normalized vector from one xyz to another.")]
     [NodeSearchTags("unitized", "normalized", "vector")]
     public class XyzStartEndVector : GeometryBase
@@ -821,7 +821,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("XYZ Grid")]
-    [NodeCategory(BuiltinNodeCategories.VECTOR_GRID)]
+    [NodeCategory(BuiltinNodeCategories.VECTORPOINT_GRID)]
     [NodeDescription("Creates a grid of XYZs.")]
     [NodeSearchTags("point", "array", "collection", "field")]
     public class ReferencePtGrid: GeometryBase
@@ -887,7 +887,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("XYZ Array On Curve")]
-    [NodeCategory(BuiltinNodeCategories.CURVE_TESSELATE)]
+    [NodeCategory(BuiltinNodeCategories.CURVE_DIVIDE)]
     [NodeDescription("Creates a list of XYZs along a curve.")]
     [NodeSearchTags("divide", "array", "curve", "repeat")]
     public class XyzArrayAlongCurve : GeometryBase
@@ -959,7 +959,7 @@ namespace Dynamo.Nodes
     #region Plane
 
     [NodeName("Plane by Normal Origin")]
-    [NodeCategory(BuiltinNodeCategories.SURFACE)]
+    [NodeCategory(BuiltinNodeCategories.SURFACE_PLANE)]
     [NodeDescription("Creates a geometric plane.")]
     public class Plane: GeometryBase
     {
@@ -986,7 +986,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("XY Plane")]
-    [NodeCategory(BuiltinNodeCategories.SURFACE)]
+    [NodeCategory(BuiltinNodeCategories.SURFACE_PLANE)]
     [NodeDescription("The plane containing the x and y axis")]
     public class XyPlane : GeometryBase
     {
@@ -1008,7 +1008,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("XZ Plane")]
-    [NodeCategory(BuiltinNodeCategories.SURFACE)]
+    [NodeCategory(BuiltinNodeCategories.SURFACE_PLANE)]
     [NodeDescription("The plane containing the x and y axis")]
     public class XzPlane : GeometryBase
     {
@@ -1030,7 +1030,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("YZ Plane")]
-    [NodeCategory(BuiltinNodeCategories.SURFACE)]
+    [NodeCategory(BuiltinNodeCategories.SURFACE_PLANE)]
     [NodeDescription("The plane containing the x and y axis")]
     public class YzPlane : GeometryBase
     {
@@ -1051,7 +1051,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Sketch Plane from Plane")]
-    [NodeCategory(BuiltinNodeCategories.SURFACE)]
+    [NodeCategory(BuiltinNodeCategories.SURFACE_PLANE)]
     [NodeDescription("Creates a geometric sketch plane.")]
     public class SketchPlane : RevitTransactionNodeWithOneOutput
     {
@@ -1691,7 +1691,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Solid from Element")]
-    [NodeCategory(BuiltinNodeCategories.SOLID_EXTRACT)]
+    [NodeCategory(BuiltinNodeCategories.SOLID_QUERY)]
     [NodeDescription("Creates reference to the solid in the element's geometry objects.")]
     public class ElementSolid : GeometryBase
     {
@@ -2083,7 +2083,7 @@ namespace Dynamo.Nodes
     #region Faces
 
     [NodeName("Faces Intersecting Line")]
-    [NodeCategory(BuiltinNodeCategories.INTERSECT)]
+    [NodeCategory(BuiltinNodeCategories.SURFACE_INTERSECT)]
     [NodeDescription("Creates list of faces of the solid intersecting given line.")]
     public class FacesByLine : NodeWithOneOutput
     {
@@ -2145,7 +2145,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Face From Points")]
-    [NodeCategory(BuiltinNodeCategories.SURFACE)]
+    [NodeCategory(BuiltinNodeCategories.SURFACE_CREATE)]
     [NodeDescription("Creates face on grid of points")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
     public class FaceThroughPoints : NodeWithOneOutput
@@ -2226,7 +2226,7 @@ namespace Dynamo.Nodes
     #region Solid Manipulation
 
     [NodeName("Explode Solid")]
-    [NodeCategory(BuiltinNodeCategories.SOLID_EXTRACT)]
+    [NodeCategory(BuiltinNodeCategories.SOLID_QUERY)]
     [NodeDescription("Creates list of faces of solid or edges of face")]
     public class GeometryObjectsFromRoot : NodeWithOneOutput
     {
@@ -2285,7 +2285,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Transform Solid")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
+    [NodeCategory(BuiltinNodeCategories.TRANSFORM_APPLY)]
     [NodeDescription("Creates solid by transforming solid")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
     public class TransformSolid : GeometryBase
@@ -2351,7 +2351,7 @@ namespace Dynamo.Nodes
     }
     
     [NodeName("Replace Solid Faces")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
+    [NodeCategory(BuiltinNodeCategories.SOLID_MODIFY)]
     [NodeDescription("Build solid replacing faces of input solid by supplied faces")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
     public class ReplaceFacesOfSolid : GeometryBase
@@ -2404,7 +2404,7 @@ namespace Dynamo.Nodes
     }
     
     [NodeName("Fillet Solid Edges")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
+    [NodeCategory(BuiltinNodeCategories.SOLID_MODIFY)]
     [NodeDescription("Build solid by replace edges with round blends")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
     public class BlendEdges : GeometryBase
@@ -2485,7 +2485,7 @@ namespace Dynamo.Nodes
     }
     
     [NodeName("Chamfer Solid Edges")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID)]
+    [NodeCategory(BuiltinNodeCategories.SOLID_MODIFY)]
     [NodeDescription("Build solid by replace edges with chamfers")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
     public class ChamferEdges : GeometryBase
@@ -2565,8 +2565,8 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Holes in Solid")]
-    [NodeCategory(BuiltinNodeCategories.SURFACE)]
+    [NodeName("Find Missing Solid Face Boundaries")]
+    [NodeCategory(BuiltinNodeCategories.SOLID_REPAIR)]
     [NodeDescription("List open faces of solid as CurveLoops")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
     public class OnesidedEdgesAsCurveLoops : NodeWithOneOutput
@@ -2622,8 +2622,8 @@ namespace Dynamo.Nodes
         }
     }
      
-    [NodeName("Cap Holes in Solid")]
-    [NodeCategory(BuiltinNodeCategories.SURFACE)]
+    [NodeName("Replace Missing Solid Faces")]
+    [NodeCategory(BuiltinNodeCategories.SOLID_REPAIR)]
     [NodeDescription("Patch set of faces as Solid ")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
     public class PatchSolid : GeometryBase
@@ -2631,7 +2631,7 @@ namespace Dynamo.Nodes
 
         public PatchSolid()
         {
-            InPortData.Add(new PortData("Incomplete Solid", "Geoemtry to check for being Solid", typeof(object)));
+            InPortData.Add(new PortData("Incomplete Solid", "Geometry to check for being Solid", typeof(object)));
             InPortData.Add(new PortData("CurveLoops", "Additional curve loops ready for patching", typeof(Value.List)));
             InPortData.Add(new PortData("Faces", "Faces to exclude", typeof(Value.List)));
 
@@ -2680,8 +2680,8 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Solid From Curve Loops")]
-    [NodeCategory(BuiltinNodeCategories.SURFACE)]
-    [NodeDescription("Created a ")]
+    [NodeCategory(BuiltinNodeCategories.SOLID_CREATE)]
+    [NodeDescription("Build a solid from a collection of curve loops")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
     public class SkinCurveLoops : GeometryBase
     {

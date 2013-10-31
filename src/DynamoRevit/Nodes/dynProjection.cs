@@ -11,7 +11,7 @@ using Dynamo.Utilities;
 namespace Dynamo.Nodes
 {
     [NodeName("Project Point On Curve")]
-    [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_INTERSECT)]
+    [NodeCategory(BuiltinNodeCategories.CURVE_QUERY)]
     [NodeDescription("Project a point onto a curve.")]
     public class ProjectPointOnCurve : RevitTransactionNode
     {
@@ -53,7 +53,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Project Point On Face or Plane")]
-    [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_INTERSECT)]
+    [NodeCategory(BuiltinNodeCategories.SURFACE_QUERY)]
     [NodeDescription("Project a point onto a face or plane.")]
     public class ProjectPointOnFace : RevitTransactionNode
     {
