@@ -1,11 +1,11 @@
 ﻿using System;
 using Autodesk.DesignScript.Geometry;
-using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
 using DSNodeServices;
 using RevitServices.Transactions;
 using Edge = Autodesk.DesignScript.Geometry.Edge;
 using Plane = Autodesk.DesignScript.Geometry.Plane;
+using Point = Autodesk.DesignScript.Geometry.Point;
 
 namespace DSRevitNodes
 {
@@ -99,7 +99,7 @@ namespace DSRevitNodes
         /// <param name="y"></param>
         /// <param name="z"></param>
         /// <returns></returns>
-        static ReferencePoint ByCoords(double x, double y, double z)
+        public static ReferencePoint ByCoords(double x, double y, double z)
         {
            return new ReferencePoint(x,y,z);
         }
