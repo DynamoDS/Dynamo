@@ -549,11 +549,8 @@ namespace Dynamo.Views
 
                 try
                 {
-                    UserControl uc = grid.Parent as UserControl;
-                    if (null == uc)
-                        continue;
+                    PortViewModel pvm = (PortViewModel)grid.DataContext;
 
-                    PortViewModel pvm = uc.DataContext as PortViewModel;
                     if (pvm == null)
                         continue;
 
