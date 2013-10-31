@@ -246,7 +246,7 @@ namespace Dynamo.Nodes
                 else // determine whether vector is above or below - if above phi is 0
                 {
                     theta = 0;
-                    phi = input.Y > 0 ? 0 : Math.PI;
+                    phi = input.Z > 0 ? 0 : Math.PI;
                     return;
                 }
             }
