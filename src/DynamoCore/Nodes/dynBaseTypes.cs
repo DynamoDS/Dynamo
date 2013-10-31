@@ -367,6 +367,172 @@ namespace Dynamo.Nodes
         }
     }
 
+    public abstract partial class VariableInputAndOutput : NodeModel
+    {
+        protected VariableInputAndOutput()
+        {
+        }
+
+        protected abstract string GetInputRootName();
+        protected abstract string GetOutputRootName();
+        protected abstract string GetTooltipRootName();
+
+        protected virtual int GetInputNameIndex()
+        {
+            return InPortData.Count;
+        }
+
+        private int _lastEvaledAmt;
+        public override bool RequiresRecalc
+        {
+            get
+            {
+                return _lastEvaledAmt != InPortData.Count || base.RequiresRecalc;
+            }
+            set
+            {
+                base.RequiresRecalc = value;
+            }
+        }
+
+        protected virtual void RemoveInput()
+        {
+            var count = InPortData.Count;
+            if (count > 0)
+            {
+                InPortData.RemoveAt(count - 1);
+                OutPortData.RemoveAt(count - 1);
+            }
+        }
+
+        protected internal virtual void AddInput()
+        {
+            var idx = GetInputNameIndex();
+            InPortData.Add(new PortData(GetInputRootName() + idx, GetTooltipRootName() + idx, typeof(object)));
+            OutPortData.Add(new PortData(GetOutputRootName() + idx, GetTooltipRootName() + idx, typeof(object)));
+        }
+
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        {
+            //Debug.WriteLine(pd.Object.GetType().ToString());
+            foreach (var inport in InPortData)
+            {
+                XmlElement input = xmlDoc.CreateElement("Input");
+
+                input.SetAttribute("name", inport.NickName);
+
+                nodeElement.AppendChild(input);
+            }
+
+            foreach (var outport in OutPortData)
+            {
+                XmlElement output = xmlDoc.CreateElement("Output");
+
+                output.SetAttribute("name", outport.NickName);
+
+                nodeElement.AppendChild(output);
+            }
+        }
+
+        protected override void LoadNode(XmlNode nodeElement)
+        {
+            int i = InPortData.Count;
+            foreach (XmlNode subNode in nodeElement.ChildNodes)
+            {
+                if (i > 0)
+                {
+                    i--;
+                    continue;
+                }
+
+                if (subNode.Name == "Input")
+                {
+                    InPortData.Add(new PortData(subNode.Attributes["name"].Value, "", typeof(object)));
+                }
+                else if (subNode.Name == "Output")
+                {
+                    OutPortData.Add(new PortData(subNode.Attributes["name"].Value, "", typeof(object)));
+                }
+            }
+            RegisterAllPorts();
+        }
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            XmlDocument xmlDoc = element.OwnerDocument;
+            foreach (var inport in InPortData)
+            {
+                XmlElement input = xmlDoc.CreateElement("Input");
+                input.SetAttribute("name", inport.NickName);
+                element.AppendChild(input);
+            }
+            foreach (var outport in OutPortData)
+            {
+                XmlElement output = xmlDoc.CreateElement("Output");
+                output.SetAttribute("name", outport.NickName);
+                element.AppendChild(output);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+
+            if (context == SaveContext.Undo)
+            {
+                //Reads in the new number of ports required from the data stored in the Xml Element
+                //during Serialize (nextLength). Changes the current In Port Data to match the
+                //required size by adding or removing port data.
+
+                // INPUTS
+                int currLength = InPortData.Count;
+                XmlNodeList inNodes = element.SelectNodes("Input");
+                int nextLength = inNodes.Count;
+                if (nextLength > currLength)
+                {
+                    for (; currLength < nextLength; currLength++)
+                    {
+                        XmlNode subNode = inNodes.Item(currLength);
+                        string nickName = subNode.Attributes["name"].Value;
+                        InPortData.Add(new PortData(nickName, "", typeof(object)));
+                    }
+                }
+                else if (nextLength < currLength)
+                    InPortData.RemoveRange(nextLength, currLength - nextLength);
+
+                // OUTPUTS
+                currLength = OutPortData.Count;
+                XmlNodeList outNodes = element.SelectNodes("Output");
+                nextLength = outNodes.Count;
+                if (nextLength > currLength)
+                {
+                    for (; currLength < nextLength; currLength++)
+                    {
+                        XmlNode subNode = outNodes.Item(currLength);
+                        string nickName = subNode.Attributes["name"].Value;
+                        OutPortData.Add(new PortData(nickName, "", typeof(object)));
+                    }
+                }
+                else if (nextLength < currLength)
+                    OutPortData.RemoveRange(nextLength, currLength - nextLength);
+
+                RegisterAllPorts();
+            }
+        }
+
+        #endregion
+
+        protected override void OnEvaluate()
+        {
+            base.OnEvaluate();
+
+            _lastEvaledAmt = InPortData.Count;
+        }
+    }
+
     [NodeName("Identity")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT )]
     [NodeDescription("Identity function")]

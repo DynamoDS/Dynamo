@@ -1202,6 +1202,69 @@ namespace Dynamo.Nodes
             throw new Exception("A location could not be found for the selected family instance(s).");
         }
     }
+
+    [NodeName("Get Parameters")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_DOCUMENT)]
+    [NodeDescription("Get parameters on an element by name.")]
+    public class GetParameters : VariableInputAndOutput
+    {
+        public GetParameters()
+        {
+            InPortData.Add(new PortData("element", "The element from which to get parameters.",
+                                        typeof (Value.Container)));
+            RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
+        }
+
+        public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
+        {
+            var element = (Element)((Value.Container) args[0]).Item;
+            var results = FSharpList<Value>.Empty;
+
+            for(int i=args.Count()-1; i>0; i--)
+            {
+                var paramName = ((Value.String) args[i]).Item;
+                var param = element.get_Parameter(paramName);
+                if (param != null)
+                {
+                    var pd = OutPortData[i - 1];
+                    outPuts[pd] = FScheme.Value.NewString(param.AsValueString());
+                }
+            }
+        }
+
+        protected override void RemoveInput()
+        {
+            var count = InPortData.Count;
+            if (count > 0)
+            {
+                InPortData.RemoveAt(count - 1);
+
+                //this node will always have one input
+                //so the inputs collection will be one larger
+                //than the outputs
+                OutPortData.RemoveAt(count - 2);
+            }
+        }
+
+        protected override string GetInputRootName()
+        {
+            return "parameter";
+        }
+
+        protected override string GetOutputRootName()
+        {
+            return "value";
+        }
+
+        protected override string GetTooltipRootName()
+        {
+            return "parameter";
+        }
+
+    }
+
 }
 
 
