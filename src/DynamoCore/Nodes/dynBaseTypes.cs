@@ -43,9 +43,10 @@ namespace Dynamo.Nodes
         public const string CORE_FUNCTIONS = "Core.Functions";
        
         public const string LOGIC = "Logic";
+        public const string LOGIC_MATH_ARITHMETIC = "Logic.Math.Arithmetic";
         public const string LOGIC_MATH_ROUNDING = "Logic.Math.Rounding";
         public const string LOGIC_MATH_CONSTANTS = "Logic.Math.Constants";
-        public const string LOGIC_MATH_ARITHMETIC = "Logic.Math.Arithmetic";
+
         public const string LOGIC_MATH_TRIGONOMETRY = "Logic.Math.Trigonometry";
         public const string LOGIC_MATH_RANDOM = "Logic.Math.Random";
         public const string LOGIC_MATH_OPTIMIZE = "Logic.Math.Optimize";
@@ -54,63 +55,60 @@ namespace Dynamo.Nodes
         public const string LOGIC_CONDITIONAL = "Logic.Conditional";
         public const string LOGIC_LOOP = "Logic.Loop";
 
-        public const string CREATEGEOMETRY = "Create Geometry";
-        public const string CREATEGEOMETRY_VECTOR = "Create Geometry.Vector";
-        public const string CREATEGEOMETRY_UV = "Create Geometry.UV";
-        public const string CREATEGEOMETRY_CURVE_FIT = "Create Geometry.Curve.Fit";
-        public const string CREATEGEOMETRY_CURVE_ELEMENTS = "Create Geometry.Curve.Elements";
-        public const string CREATEGEOMETRY_CURVE_CREATE = "Create Geometry.Curve.Create";
-        public const string CREATEGEOMETRY_CURVE_PRIMITIVES = "Create Geometry.Curve.Primitives";
-        public const string CREATEGEOMETRY_CURVE_QUERY = "Create Geometry.Curve.Query";
-        public const string CREATEGEOMETRY_SOLID_BOOLEAN = "Create Geometry.Solid.Boolean";
-        public const string CREATEGEOMETRY_SOLID_CREATE = "Create Geometry.Solid.Create";
-        public const string CREATEGEOMETRY_SOLID_PRIMITIVES = "Create Geometry.Solid.Primitives";
-        public const string CREATEGEOMETRY_SOLID_EXTRACT = "Create Geometry.Solid.Extract";
-        public const string CREATEGEOMETRY_SOLID = "Create Geometry.Solid";
-        public const string CREATEGEOMETRY_SURFACE = "Create Geometry.Surface";
-        public const string CREATEGEOMETRY_EXPERIMENTAL_PRIMITIVES = "Create Geometry.Experimental.Primitives";
-        public const string CREATEGEOMETRY_EXPERIMENTAL_SURFACE = "Create Geometry.Experimental.Surface";
-        public const string CREATEGEOMETRY_EXPERIMENTAL_CURVE = "Create Geometry.Experimental.Curve";
-        public const string CREATEGEOMETRY_EXPERIMENTAL_SOLID = "Create Geometry.Experimental.Solid";
-        public const string CREATEGEOMETRY_EXPERIMENTAL_MODIFY = "Create Geometry.Experimental.Modify";
-        public const string CREATEGEOMETRY_EXPERIMENTAL_VIEW = "Create Geometry.Experimental.View";
+        public const string VECTOR_CREATE = "Vector.Create";
+        public const string VECTOR_MODIFY = "Vector.Modify";
+        public const string VECTOR_QUERY = "Vector.Query";
+        public const string CURVE_FIT = "Curve.Fit";
+        public const string CURVE_ELEMENTS = "Curve.Elements";
+        public const string CURVE_CREATE = "Curve.Create";
+        public const string CURVE_PRIMITIVES = "Curve.Primitives";
+        public const string CURVE_QUERY = "Curve.Query";
 
-        public const string MODIFYGEOMETRY= "Modify Geometry";
-        public const string MODIFYGEOMETRY_SOLID = "Modify Geometry.Solid";
-        public const string MODIFYGEOMETRY_INTERSECT = "Modify Geometry.Intersect";
-        public const string MODIFYGEOMETRY_TRANSFORM = "Modify Geometry.Transform";
-        public const string MODIFYGEOMETRY_TESSELATE = "Modify Geometry.Tesselate";
+        public const string SOLID_BOOLEAN = "Solid.Boolean";
+        public const string SOLID_CREATE = "Solid.Create";
+        public const string SOLID_PRIMITIVES = "Solid.Primitives";
+        public const string SOLID_EXTRACT = "Solid.Extract";
+
+        public const string SURFACE = "Surface";
+        public const string SURFACE_QUERY = "Analyze.Surface";
+        public const string SURFACE_UV = "Surface.UV";
+
+        public const string INTERSECT = "Modify Geometry.Intersect";
+        public const string TRANSFORM = "Modify Geometry.Transform";
 
         public const string REVIT = "Revit";
         public const string REVIT_DOCUMENT = "Revit.Document";
         public const string REVIT_DATUMS = "Revit.Datums";
         public const string REVIT_FAMILIES = "Revit.Families";
+        public const string REVIT_SELECTION = "Revit.Selection";
         public const string REVIT_VIEW = "Revit.View";
         public const string REVIT_REFERENCE = "Revit.Reference";
-        public const string REVIT_SELECTION = "Revit.Selection";
+        
         public const string REVIT_PARAMETERS = "Revit.Parameters";
         public const string REVIT_BAKE = "Revit.Bake";
         public const string REVIT_API = "Revit.API";
+
+        public const string ANALYZE = "Analyze";
+        public const string ANALYZE_MEASURE = "Analyze.Measure";
+        public const string ANALYZE_DISPLAY = "Analyze.Display";
+        public const string ANALYZE_COLOR = "Analyze.Color";
+        public const string ANALYZE_STRUCTURE = "Analyze.Structure";
+        public const string ANALYZE_CLIMATE = "Analyze.Climate";
+        public const string ANALYZE_ACOUSTIC = "Analyze.Acoustic";
+        public const string ANALYZE_SOLAR = "Analyze.Solar";
 
         public const string IO = "Input/Output";
         public const string IO_FILE = "Input/Output.File";
         public const string IO_NETWORK = "Input/Output.Network";
         public const string IO_HARDWARE = "Input/Output.Hardware";
 
-        public const string ANALYZE = "Analyze";
-        public const string ANALYZE_MEASURE = "Analyze.Measure";
-        public const string ANALYZE_DISPLAY = "Analyze.Display";
-        public const string ANALYZE_COLOR = "Analyze.Color";
-        public const string ANALYZE_SURFACE = "Analyze.Surface";
-        public const string ANALYZE_CURVE = "Analyze.Curve";
-        public const string ANALYZE_STRUCTURE = "Analyze.Structure";
-        public const string ANALYZE_CLIMATE = "Analyze.Climate";
-        public const string ANALYZE_ACOUSTIC = "Analyze.Acoustic";
-        public const string ANALYZE_SOLAR = "Analyze.Solar";
-
-        public const string SCRIPTING = "Scripting";
-        public const string SCRIPTING_CUSTOMNODES = "Scripting.Custom Nodes";
-        public const string SCRIPTING_DESIGNSCRIPT = "Scripting.DesignScript";
+        public const string EXPERIMENTAL_PRIMITIVES = "Experimental.Primitives";
+        public const string EXPERIMENTAL_SURFACE = "Experimental.Surface";
+        public const string EXPERIMENTAL_CURVE = "Experimental.Curve";
+        public const string EXPERIMENTAL_SOLID = "Experimental.Solid";
+        public const string EXPERIMENTAL_MODIFY = "Experimental.Modify";
+        public const string EXPERIMENTAL_VIEW = "Experimental.View";
+        public const string EXPERIMENTAL = "Experimental";
 
     }
 

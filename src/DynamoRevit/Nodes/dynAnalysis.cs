@@ -32,7 +32,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Spatial Field Manager")]
+    [NodeName("Analysis Display Manager")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_DISPLAY)]
     [NodeDescription("Gets or creates the SpatialFieldManager on the active view.")]
     class SpatialFieldManager : RevitTransactionNodeWithOneOutput
@@ -41,8 +41,8 @@ namespace Dynamo.Nodes
 
         public SpatialFieldManager()
         {
-            InPortData.Add(new PortData("n", "Number of samples to be stored in the spatial field manager.", typeof(Value.Number)));
-            OutPortData.Add(new PortData("sfm", "Spatial field manager for the active view", typeof(Value.Container)));
+            InPortData.Add(new PortData("n", "The number of values to be stored at each point of the analysis display", typeof(Value.Number)));
+            OutPortData.Add(new PortData("manager", "Spatial field manager for the active view", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -158,7 +158,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("vals", "List of values, corresponding in length, to the list of sample points.", typeof(Value.List)));
             InPortData.Add(new PortData("uvs", "Sample locations (UVs) on the face.", typeof(Value.List)));
-            InPortData.Add(new PortData("sfm", "A SpatialFieldManager object.", typeof(Value.Container)));
+            InPortData.Add(new PortData("manager", "A SpatialFieldManager object.", typeof(Value.Container)));
             InPortData.Add(new PortData("face", "The face on which to map the analytical data.", typeof(Value.Container)));
             OutPortData.Add(new PortData("idx", "The index of the resulting analysis results object.", typeof(Value.Container)));
 
@@ -245,7 +245,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("vals", "A list of numeric values, corresponding in length, to the list of sample points.", typeof(Value.List)));
             InPortData.Add(new PortData("pts", "Locations (XYZs) of sample points.", typeof(Value.List)));
-            InPortData.Add(new PortData("sfm", "A SpatialFieldManager object.", typeof(Value.Container)));
+            InPortData.Add(new PortData("manager", "A SpatialFieldManager object.", typeof(Value.Container)));
             OutPortData.Add(new PortData("idx", "The index of the resulting analysis results object.", typeof(Value.Container)));
 
             RegisterAllPorts();
@@ -318,7 +318,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("vals", "A list of XYZs corresponding in length, to the list of sample points.", typeof(Value.List)));
             InPortData.Add(new PortData("pts", "Locations (XYZs) of sample points.", typeof(Value.List)));
-            InPortData.Add(new PortData("sfm", "A SpatialFieldManager object.", typeof(Value.Container)));
+            InPortData.Add(new PortData("manager", "A SpatialFieldManager object.", typeof(Value.Container)));
             OutPortData.Add(new PortData("idx", "The index of the resulting analysis results object.", typeof(Value.Container)));
 
             RegisterAllPorts();
@@ -405,7 +405,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("vals", "List of analytical values along this curve.", typeof(Value.List)));
             InPortData.Add(new PortData("curve", "The curve on which to map the results.", typeof(Value.Container)));
-            InPortData.Add(new PortData("sfm", "A SpatialFieldManager object.", typeof(Value.Container)));
+            InPortData.Add(new PortData("manager", "A SpatialFieldManager object.", typeof(Value.Container)));
             OutPortData.Add(new PortData("idx", "The index of the resulting analysis results object.", typeof(Value.Number)));
 
             RegisterAllPorts();
@@ -539,7 +539,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Ray Bounce")]
-    [NodeCategory(BuiltinNodeCategories.ANALYZE_SURFACE)]
+    [NodeCategory(BuiltinNodeCategories.SURFACE_QUERY)]
     [NodeDescription("Conduct a ray trace analysis from an origin and direction, providing the maximum number of bounces.")]
     class RayBounce:RevitTransactionNode
     {
