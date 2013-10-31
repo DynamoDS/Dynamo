@@ -573,9 +573,6 @@ namespace Dynamo.Models
         private static bool ShouldProceedWithRecording(
             Dictionary<ModelBase, UndoRedoRecorder.UserAction> models)
         {
-            if (null != models)
-                models.Remove(null);
-
             return (null != models && (models.Count > 0));
         }
 
