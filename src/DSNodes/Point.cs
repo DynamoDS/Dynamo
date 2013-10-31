@@ -16,7 +16,7 @@ namespace DSRevitNodes
     {
         public static Document Document
         {
-            get { return DocumentManager.CurrentDoc; }
+            get { return DocumentManager.GetInstance().CurrentDBDocument; }
         }
 
 
