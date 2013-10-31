@@ -811,19 +811,12 @@ namespace Dynamo.Controls
             var bc = new BrushConverter();
             tb.Foreground = (Brush)bc.ConvertFrom("#cccccc");
             Image collapseIcon = (Image)g.Children[0];
-            var imageUri = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/collapse_hover.png");
+            var imageUri = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/expand_hover.png");
 
             BitmapImage hover = new BitmapImage(imageUri);
             // hover.Rotation = Rotation.Rotate180;
 
-            TransformedBitmap transform = new TransformedBitmap();
-            transform.BeginInit();
-            transform.Source = hover;
-            RotateTransform rt = new RotateTransform(180, 0, 0);
-            transform.Transform = rt;
-            transform.EndInit();
-
-            collapseIcon.Source = transform;
+            collapseIcon.Source = hover;
         }
 
 		private void Button_Click(object sender, EventArgs e)
@@ -858,17 +851,10 @@ namespace Dynamo.Controls
             Image collapseIcon = (Image)g.Children[0];
 
             // Change the collapse icon and rotate
-            var imageUri = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/collapse_normal.png");
+            var imageUri = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/expand_normal.png");
             BitmapImage hover = new BitmapImage(imageUri);
 
-            TransformedBitmap transform = new TransformedBitmap();
-            transform.BeginInit();
-            transform.Source = hover;
-            RotateTransform rt = new RotateTransform(180, 0, 0);
-            transform.Transform = rt;
-            transform.EndInit();
-
-            collapseIcon.Source = transform;
+            collapseIcon.Source = hover;
         }
 
         private double restoreWidth = 0;
