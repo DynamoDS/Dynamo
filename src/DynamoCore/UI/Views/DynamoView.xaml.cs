@@ -930,8 +930,23 @@ namespace Dynamo.Controls
         private void RunDSButton_OnClick(object sender, RoutedEventArgs e)
         {
             dynSettings.ReturnFocusToSearch();
+        }
 
+        private void DynamoView_OnDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                // Note that you can have more than one file.
+                var files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
+                if (_vm.OpenCommand.CanExecute(files[0]))
+                {
+                    _vm.OpenCommand.Execute(files[0]);
+                }
+                
+            }
+
+            e.Handled = true;
         }
     }
 }
