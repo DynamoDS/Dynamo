@@ -155,6 +155,37 @@ namespace Dynamo.Models
             RaisePropertyChanged("Position");
         }
 
+        #region Command Framework Supporting Methods
+
+        public void UpdateValue(string name, string value)
+        {
+            this.UpdateValueCore(name, value);
+        }
+
+        /// <summary>
+        /// This method is supplied as a generic way for command framework to update
+        /// a given named-value in a ModelBase (which has to work under both user 
+        /// and playback scenarios). During playback, the command framework issues 
+        /// pre-recorded UpdateModelValueCommand that targets a model. Since there
+        /// is no data-binding at play here, there will not be IValueConverter. This
+        /// method takes only string input (the way they appear in DynamoTextBox),
+        /// which overridden method can use for value conversion.
+        /// </summary>
+        /// <param name="name">The name of a property/value to update.</param>
+        /// <param name="value">The new value to be set. This value comes directly
+        /// from DynamoTextBox after user commits it. Overridden methods then use 
+        /// a specific IValueConverter to turn this string into another data type 
+        /// that it expects.</param>
+        /// <returns>Returns true if the call has been handled, or false otherwise.
+        /// </returns>
+        /// 
+        protected virtual bool UpdateValueCore(string name, string value)
+        {
+            return false; // Base class does not handle this.
+        }
+
+        #endregion
+
         #region Serialization/Deserialization Methods
 
         public XmlElement Serialize(XmlDocument xmlDocument, SaveContext context)
@@ -174,7 +205,6 @@ namespace Dynamo.Models
         protected abstract void DeserializeCore(XmlElement element, SaveContext context);
 
         #endregion
-
     }
 
     public interface ILocatable
