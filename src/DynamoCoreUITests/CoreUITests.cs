@@ -637,6 +637,8 @@ namespace Dynamo.Tests.UI
             
             //verify the note was created
             Assert.AreEqual(1, Model.CurrentWorkspace.Notes.Count);
+
+            Vm.CurrentSpaceViewModel.Model.HasUnsavedChanges = false;
         }
 
         [Test]
@@ -657,6 +659,8 @@ namespace Dynamo.Tests.UI
             //delete the note
             Vm.DeleteCommand.Execute(null);
             Assert.AreEqual(0,Model.CurrentWorkspace.Notes.Count);
+
+            Vm.CurrentSpaceViewModel.Model.HasUnsavedChanges = false;
         }
 
 
