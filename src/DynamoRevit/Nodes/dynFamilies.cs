@@ -15,7 +15,7 @@ using Dynamo.Revit;
 namespace Dynamo.Nodes
 {
     [NodeName("Select Family Type")]
-    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
     [NodeDescription("Select a Family Type from a drop down list.")]
     [IsInteractive(true)]
     public class FamilyTypeSelector : DropDrownBase
@@ -54,8 +54,8 @@ namespace Dynamo.Nodes
 
     }
 
-    [NodeName("Get Parameter")]
-    [NodeCategory(BuiltinNodeCategories.CORE_SELECTION)]
+    [NodeName("Get Family Parameter")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
     [NodeDescription("Given a Family Instance or Symbol, allows the user to select a parameter as a string.")]
     [NodeSearchTags("fam")]
     [IsInteractive(true)]
@@ -238,381 +238,9 @@ namespace Dynamo.Nodes
             }
         }
     }
-
-    #region Disabled ParameterMapper
-
-    //[NodeName("Instance Parameter Mapper")]
-    //[NodeCategory(BuiltinNodeCategories.REVIT)]
-    //[NodeDescription("Maps the parameters of a Family Type.")]
-    //[RequiresTransaction(true)]
-    //public class dynInstanceParameterMapper : dynElement
-    //{
-    //   Hashtable parameterMap = new Hashtable();
-
-    //   public Hashtable ParameterMap
-    //   {
-    //      get { return parameterMap; }
-    //   }
-
-    //   public dynInstanceParameterMapper()
-    //   {
-
-    //      this.topControl.Width = 300;
-
-    //      InPortData.Add(new PortData(null, "fi", "The family instance(s) to map.", typeof(dynElement)));
-    //      OutPortData.Add(new PortData(null, "", "A map of parameter values on the instance.", typeof(dynInstanceParameterMapper)));
-    //      OutPortData[0].Object = parameterMap;
-
-    //      //add a button to the inputGrid on the dynElement
-    //      System.Windows.Controls.Button paramMapButt = new System.Windows.Controls.Button();
-    //      this.inputGrid.Children.Add(paramMapButt);
-    //      paramMapButt.Margin = new System.Windows.Thickness(0, 0, 0, 0);
-    //      paramMapButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-    //      paramMapButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-    //      paramMapButt.Click += new System.Windows.RoutedEventHandler(paramMapButt_Click);
-    //      paramMapButt.Content = "Map";
-    //      paramMapButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-    //      paramMapButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-
-    //      NodeUI.RegisterInputsAndOutput();
-
-    //   }
-
-    //   void paramMapButt_Click(object sender, System.Windows.RoutedEventArgs e)
-    //   {
-    //      //read from the state objects
-    //      if (CheckInputs())
-    //      {
-    //         CleanupOldPorts();
-
-    //         DataTree treeIn = InPortData[0].Object as DataTree;
-    //         if (treeIn != null)
-    //         {
-    //            //find the first family instance in the tree
-    //            //and map it
-    //            FamilyInstance fi = treeIn.Trunk.FindFirst() as FamilyInstance;
-    //            if (fi != null)
-    //            {
-    //               MapPorts(fi);
-    //            }
-
-    //         }
-    //      }
-    //   }
-
-    //   private void MapPorts(FamilyInstance fi)
-    //   {
-    //      parameterMap.Clear();
-
-    //      foreach (Parameter p in fi.Parameters)
-    //      {
-    //         if (!p.IsReadOnly)  //don't want it if it is read only
-    //         {
-    //            if (p.StorageType == StorageType.Double) //MDJ 11-23-11 - ian just had doubles but we need to add Ints, should convert to a switch case if we need more
-    //            {
-    //               string paramName = p.Definition.Name;
-
-    //               PortData pd = new PortData(null,
-    //                   p.Definition.Name.Substring(0, Math.Min(p.Definition.Name.Length, 3)),
-    //                   paramName,
-    //                   typeof(dynDouble));
-    //               InPortData.Add(pd);
-    //               parameterMap.Add(paramName, pd.Object);
-    //            }
-    //            else if (p.StorageType == StorageType.Integer)
-    //            {
-    //               string paramName = p.Definition.Name;
-
-    //               PortData pd = new PortData(null,
-    //                   p.Definition.Name.Substring(0, Math.Min(p.Definition.Name.Length, 3)),
-    //                   paramName,
-    //                   typeof(double));
-    //               InPortData.Add(pd);
-    //               parameterMap.Add(paramName, pd.Object);
-    //            }
-    //            else if (p.StorageType == StorageType.String)
-    //            {
-    //               string paramName = p.Definition.Name;
-
-    //               PortData pd = new PortData(null,
-    //                   p.Definition.Name.Substring(0, Math.Min(p.Definition.Name.Length, 3)),
-    //                   paramName,
-    //                   typeof(dynString));
-    //               InPortData.Add(pd);
-    //               parameterMap.Add(paramName, pd.Object);
-    //            }
-    //         }
-    //      }
-
-    //      //add back new ports
-    //      for (int i = 1; i < InPortData.Count; i++)
-    //      {
-    //         dynElement el = InPortData[i].Object as dynElement;
-
-    //         RowDefinition rd = new RowDefinition();
-    //         gridLeft.RowDefinitions.Add(rd);
-
-    //         //add a port for each input
-    //         //distribute the ports along the 
-    //         //edges of the icon
-    //         AddPort(el, PortType.INPUT, InPortData[i].NickName, i);
-    //      }
-
-    //      //resize this thing
-    //      base.ResizeElementForInputs();
-
-    //      base.SetToolTips();
-    //   }
-
-    //   private void CleanupOldPorts()
-    //   {
-
-    //      //clear all the inputs but the first one
-    //      //which is the family instance
-    //      //first kill all the connectors
-    //      for (int i = 1; i < InPortData.Count; i++)
-    //      {
-    //         dynPort p = InPorts[i];
-
-    //         //must remove the connectors iteratively
-    //         //do not use a foreach here!
-    //         while (p.Connectors.Count > 0)
-    //         {
-    //            dynConnector c = p.Connectors[p.Connectors.Count - 1] as dynConnector;
-    //            c.NotifyConnectedPortsOfDeletion();
-    //         }
-    //      }
-
-    //      //then remove all the ports
-    //      while (InPorts.Count > 1)
-    //      {
-    //         InPorts.RemoveAt(InPorts.Count - 1);
-    //         InPortData.RemoveAt(InPortData.Count - 1);
-    //      }
-
-    //      while (gridLeft.RowDefinitions.Count > 1)
-    //      {
-    //         //remove the port from the children list
-    //         gridLeft.Children.RemoveAt(gridLeft.RowDefinitions.Count - 1);
-    //         gridLeft.RowDefinitions.RemoveAt(gridLeft.RowDefinitions.Count - 1);
-
-    //      }
-
-    //   }
-
-    //   //sets the values on the family instances
-    //   public override void Draw()
-    //   {
-    //      DataTree familyInstTree = InPortData[0].Object as DataTree;
-
-    //      //skip the first port data because it's the family instances
-    //      for (int i = 1; i < InPortData.Count; i++)
-    //      {
-    //         PortData pd = InPortData[i];
-    //         //parameter value keys are the tooltip - the name 
-    //         //of the parameter
-    //         //set the objects on the parameter map
-    //         parameterMap[pd.ToolTipString] = pd.Object;
-
-    //         //start by assuming that you've got matching data trees
-    //         DataTree doubleTree = pd.Object as DataTree;
-
-    //         if (familyInstTree != null)
-    //         {
-    //            if (doubleTree != null)
-    //            {
-    //               //get the parameter represented by the port data
-    //               Process(familyInstTree.Trunk, doubleTree.Trunk, pd.ToolTipString);
-    //            }
-    //            else
-    //            {
-    //               //if the incoming object is not null
-    //               //then let's try to use it.
-    //               if (pd.Object != null)
-    //               {
-    //                  //we've got a single value incoming
-    //                  ProcessSingleValue(familyInstTree.Trunk, pd.Object, pd.ToolTipString);
-    //               }
-    //            }
-    //         }
-
-    //      }
-
-    //   }
-
-    //   public void Process(DataTreeBranch familyBranch, DataTreeBranch doubleBranch, string paramName)
-    //   {
-    //      int leafCount = 0;
-    //      foreach (object o in familyBranch.Leaves)
-    //      {
-    //         FamilyInstance fi = o as FamilyInstance;
-    //         if (fi != null)
-    //         {
-    //            Parameter p = fi.get_Parameter(paramName);
-    //            if (p != null)
-    //            {
-    //               if (p.StorageType == StorageType.Double) //MDJ 11-23-11 - ian just had doubles but we need to add Ints, should convert to a switch case if we need more
-    //               {
-    //                  p.Set(Convert.ToDouble(doubleBranch.Leaves[leafCount]));
-    //               }
-    //               else if (p.StorageType == StorageType.Integer)
-    //               {
-    //                  p.Set(Convert.ToInt32(doubleBranch.Leaves[leafCount]));
-    //               }
-    //               else if (p.StorageType == StorageType.String)
-    //               {
-    //                  p.Set(Convert.ToString(doubleBranch.Leaves[leafCount]));
-    //               }
-    //            }
-    //         }
-    //         leafCount++;
-    //      }
-
-    //      int subBranchCount = 0;
-    //      foreach (DataTreeBranch nextBranch in familyBranch.Branches)
-    //      {
-    //         //don't do this if the double tree doesn't
-    //         //have a member in the same location
-    //         if (doubleBranch.Branches.Count - 1 >= subBranchCount)
-    //         {
-    //            Process(nextBranch, doubleBranch.Branches[subBranchCount], paramName);
-    //         }
-    //         subBranchCount++;
-    //      }
-    //   }
-
-    //   public void ProcessSingleValue(DataTreeBranch familyBranch, object value, string paramName)
-    //   {
-    //      int leafCount = 0;
-    //      foreach (object o in familyBranch.Leaves)
-    //      {
-    //         FamilyInstance fi = o as FamilyInstance;
-    //         if (fi != null)
-    //         {
-    //            Parameter p = fi.get_Parameter(paramName);
-    //            if (p != null)
-    //            {
-    //               if (p.StorageType == StorageType.Double) //MDJ 11-23-11 - ian just had doubles but we need to add Ints, should convert to a switch case if we need more
-    //               {
-    //                  p.Set(Convert.ToDouble(value));
-    //               }
-    //               else if (p.StorageType == StorageType.Integer)
-    //               {
-    //                  p.Set(Convert.ToInt32(value));
-    //               }
-    //               else if (p.StorageType == StorageType.String)
-    //               {
-    //                  p.Set(Convert.ToString(value));
-    //               }
-    //            }
-    //         }
-    //         leafCount++;
-    //      }
-
-    //      foreach (DataTreeBranch nextBranch in familyBranch.Branches)
-    //      {
-    //         ProcessSingleValue(nextBranch, value, paramName);
-    //      }
-    //   }
-
-    //   public override void Update()
-    //   {
-    //      OnDynElementReadyToBuild(EventArgs.Empty);
-    //   }
-
-    //   public override void Destroy()
-    //   {
-    //      base.Destroy();
-    //   }
-    //}
-
-    //[NodeName("Family Instance Parameter Evaluation")]
-    //[NodeCategory(BuiltinNodeCategories.REVIT)]
-    //[NodeDescription("Modifies parameters on family instances.")]
-    //[RequiresTransaction(true)]
-    //public class dynFamilyInstanceParameterEvaluation : dynElement
-    //{
-
-    //   public dynFamilyInstanceParameterEvaluation()
-    //   {
-
-    //      InPortData.Add(new PortData(null, "fi", "Family instances.", typeof(dynElement)));
-    //      InPortData.Add(new PortData(null, "map", "Parameter map.", typeof(dynInstanceParameterMapper)));
-
-    //      NodeUI.RegisterInputsAndOutput();
-
-    //   }
-
-    //   public override void Draw()
-    //   {
-    //      if (CheckInputs())
-    //      {
-    //         DataTree treeIn = InPortData[0].Object as DataTree;
-    //         if (treeIn != null)
-    //         {
-    //            Hashtable parameterMap = InPortData[1].Object as Hashtable;
-    //            if (parameterMap != null)
-    //               ProcessState(treeIn.Trunk, parameterMap);
-    //         }
-    //      }
-
-    //      base.Draw();
-    //   }
-
-    //   private void ProcessState(DataTreeBranch bIn, Hashtable parameterMap)
-    //   {
-    //      foreach (object o in bIn.Leaves)
-    //      {
-    //         FamilyInstance fi = o as FamilyInstance;
-    //         if (fi != null)
-    //         {
-    //            foreach (DictionaryEntry de in parameterMap)
-    //            {
-    //               if (de.Value != null)
-    //               {
-    //                  //find the parameter on the family instance
-    //                  Parameter p = fi.get_Parameter(de.Key.ToString());
-    //                  if (p != null)
-    //                  {
-    //                     if (p.StorageType == StorageType.Double)
-    //                     {
-    //                        p.Set((double)de.Value);
-    //                     }
-    //                     else if (p.StorageType == StorageType.Integer)
-    //                     {
-    //                        p.Set((int)de.Value);
-    //                     }
-    //                     else if (p.StorageType == StorageType.String)
-    //                     {
-    //                        p.Set((string)de.Value);
-    //                     }
-    //                  }
-    //               }
-    //            }
-    //         }
-    //      }
-
-    //      foreach (DataTreeBranch nextBranch in bIn.Branches)
-    //      {
-    //         ProcessState(nextBranch, parameterMap);
-    //      }
-    //   }
-
-    //   public override void Update()
-    //   {
-    //      OnDynElementReadyToBuild(EventArgs.Empty);
-    //   }
-
-    //   public override void Destroy()
-    //   {
-    //      base.Destroy();
-    //   }
-    //}
-
-    #endregion
-
+    
     [NodeName("Create Family Instance")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILYCREATION)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
     [NodeDescription("Creates family instances at a given XYZ location.")]
     public class FamilyInstanceCreatorXyz : RevitTransactionNodeWithOneOutput
     {
@@ -717,8 +345,8 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Create Family Instance By Level")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILYCREATION)]
+    [NodeName("Create Family Instance at Level")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
     [NodeDescription("Creates family instances in the given level.")]
     public class FamilyInstanceCreatorLevel : RevitTransactionNodeWithOneOutput
     {
@@ -827,7 +455,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Curves from Family Instance")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILYCREATION)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
     [NodeDescription("Extracts curves from family instances.")]
     public class CurvesFromFamilyInstance : RevitTransactionNodeWithOneOutput
     {
@@ -1022,9 +650,8 @@ namespace Dynamo.Nodes
         }
     }
 
-    //TODO: In Destroy(), have code that resets Elements back to their default.
     [NodeName("Set Family Instance Parameter")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_PARAMETERS)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
     [NodeDescription("Modifies a parameter on a family instance.")]
     public class FamilyInstanceParameterSetter : RevitTransactionNodeWithOneOutput
     {
@@ -1144,7 +771,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Get Family Instance Parameter Value")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_PARAMETERS)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
     [NodeDescription("Fetches the value of a parameter of a Family Instance.")]
     public class FamilyInstanceParameterGetter : RevitTransactionNodeWithOneOutput
     {
@@ -1259,7 +886,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Set Family Type Parameter")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_PARAMETERS)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
     [NodeDescription("Modifies a parameter on a family type.")]
     public class FamilyTypeParameterSetter : RevitTransactionNodeWithOneOutput
     {
@@ -1383,7 +1010,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Get Family Type Parameter")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_PARAMETERS)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
     [NodeDescription("Fetches the value of a parameter of a Family Type.")]
     public class FamilyTypeParameterGetter : RevitTransactionNodeWithOneOutput
     {
@@ -1497,8 +1124,8 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Get Family Instances By Type")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_DOCUMENT)]
+    [NodeName("Get Family Instances by Type")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
     [NodeDescription("Returns all family instances of the selected type in the active model.")]
     public class GetFamilyInstancesByType : NodeWithOneOutput
     {
@@ -1524,7 +1151,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Get Family Instance Location")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_DOCUMENT)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
     [NodeDescription("Returns all family instances of the selected type in the active model.")]
     public class GetFamilyInstanceLocation : NodeWithOneOutput
     {
@@ -1574,6 +1201,69 @@ namespace Dynamo.Nodes
             throw new Exception("A location could not be found for the selected family instance(s).");
         }
     }
+
+    [NodeName("Get Parameters")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_DOCUMENT)]
+    [NodeDescription("Get parameters on an element by name.")]
+    public class GetParameters : VariableInputAndOutput
+    {
+        public GetParameters()
+        {
+            InPortData.Add(new PortData("element", "The element from which to get parameters.",
+                                        typeof (Value.Container)));
+            RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
+        }
+
+        public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
+        {
+            var element = (Element)((Value.Container) args[0]).Item;
+            var results = FSharpList<Value>.Empty;
+
+            for(int i=args.Count()-1; i>0; i--)
+            {
+                var paramName = ((Value.String) args[i]).Item;
+                var param = element.get_Parameter(paramName);
+                if (param != null)
+                {
+                    var pd = OutPortData[i - 1];
+                    outPuts[pd] = FScheme.Value.NewString(param.AsValueString());
+                }
+            }
+        }
+
+        protected override void RemoveInput()
+        {
+            var count = InPortData.Count;
+            if (count > 0)
+            {
+                InPortData.RemoveAt(count - 1);
+
+                //this node will always have one input
+                //so the inputs collection will be one larger
+                //than the outputs
+                OutPortData.RemoveAt(count - 2);
+            }
+        }
+
+        protected override string GetInputRootName()
+        {
+            return "parameter";
+        }
+
+        protected override string GetOutputRootName()
+        {
+            return "value";
+        }
+
+        protected override string GetTooltipRootName()
+        {
+            return "parameter";
+        }
+
+    }
+
 }
 
 

@@ -434,12 +434,12 @@ namespace Dynamo.ViewModels
             if (dynSettings.Controller.IsShowPreviewByDefault)
             {
                 this.PreviewBubble.SetAlwaysVisibleCommand.Execute(true);
-                this.PreviewBubble.FadeInCommand.Execute(null);
+                this.PreviewBubble.InstantAppearCommand.Execute(null);
             }
             else
             {
                 this.PreviewBubble.SetAlwaysVisibleCommand.Execute(false);
-                this.PreviewBubble.FadeOutCommand.Execute(null);
+                this.PreviewBubble.InstantCollapseCommand.Execute(null);
             }
         }
 
@@ -466,7 +466,7 @@ namespace Dynamo.ViewModels
                 if (ErrorBubble.Opacity != 0)
                 {
                     ErrorBubble.SetAlwaysVisibleCommand.Execute(false);
-                    ErrorBubble.FadeOutCommand.Execute(null);
+                    ErrorBubble.InstantCollapseCommand.Execute(null);
                 }
             }
             else
@@ -483,7 +483,7 @@ namespace Dynamo.ViewModels
                         return;
                     this.ErrorBubble.UpdateContentCommand.Execute(data);
                     this.ErrorBubble.SetAlwaysVisibleCommand.Execute(true);
-                    this.ErrorBubble.FadeInCommand.Execute(null);
+                    this.ErrorBubble.InstantAppearCommand.Execute(null);
                 })));
             }
         }
@@ -823,7 +823,7 @@ namespace Dynamo.ViewModels
         {
             UpdatePreviewBubbleContent();
             this.PreviewBubble.ZIndex = 5;
-            this.PreviewBubble.FadeInCommand.Execute(null);
+            this.PreviewBubble.InstantAppearCommand.Execute(null);
         }
 
         private bool CanShowPreview(object parameter)

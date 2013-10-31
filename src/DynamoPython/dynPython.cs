@@ -20,7 +20,7 @@ using Value = Dynamo.FScheme.Value;
 namespace Dynamo.Nodes
 {
     [NodeName("Python Script")]
-    [NodeCategory(BuiltinNodeCategories.SCRIPTING_PYTHON)]
+    [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
     [NodeDescription("Runs an embedded IronPython script")]
     public class Python : NodeWithOneOutput
     {
@@ -281,7 +281,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Python Script From String")]
-    [NodeCategory(BuiltinNodeCategories.SCRIPTING_PYTHON)]
+    [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
     [NodeDescription("Runs a IronPython script from a string")]
     public class PythonString : NodeWithOneOutput
     {
