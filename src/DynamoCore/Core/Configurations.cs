@@ -39,7 +39,7 @@ namespace Dynamo.Core
         public static double PreviewFrameStrokeThickness = 1;
         public static SolidColorBrush PreviewFrameStrokeColor = new SolidColorBrush(Color.FromRgb(153, 153, 153));
 
-        public static double PreviewTextFontSize = 11;
+        public static double PreviewTextFontSize = 10;
         public static FontWeight PreviewTextFontWeight = FontWeights.Light;
         public static SolidColorBrush PreviewTextForeground = new SolidColorBrush(Color.FromRgb(153, 153, 153));
         public static TextWrapping PreviewContentWrapping = TextWrapping.Wrap;
@@ -52,7 +52,7 @@ namespace Dynamo.Core
         public static double PreviewDefaultMaxWidth = 300;
         public static double PreviewDefaultMaxHeight = 200;
 
-        public static double PreviewCondensedMaxWidth = 250;
+        public static double PreviewCondensedMaxWidth = 300;
         public static double PreviewCondensedMinWidth = 40;
         public static double PreviewCondensedMaxHeight = 200;
         public static double PreviewCondensedMinHeight = 0;
@@ -97,7 +97,7 @@ namespace Dynamo.Core
         public static double NodeTooltipContentMaxWidth = NodeTooltipMaxWidth - 10;
         public static double NodeTooltipContentMaxHeight = NodeTooltipMaxHeight - 16;
 
-        public static double NodeTooltipTextFontSize = 12;
+        public static double NodeTooltipTextFontSize = 11;
         public static FontWeight NodeTooltipTextFontWeight = FontWeights.Light;
         public static SolidColorBrush NodeTooltipTextForeground = new SolidColorBrush(Color.FromRgb(98, 140, 153));
         public static TextWrapping NodeTooltipContentWrapping = TextWrapping.Wrap;
@@ -124,7 +124,7 @@ namespace Dynamo.Core
         public static double LibraryTooltipContentMaxWidth = LibraryTooltipMaxWidth - 10;
         public static double LibraryTooltipContentMaxHeight = LibraryTooltipMaxHeight - 17;
 
-        public static double LibraryTooltipTextFontSize = 13;
+        public static double LibraryTooltipTextFontSize = 11;
         public static SolidColorBrush LibraryTooltipTextForeground = new SolidColorBrush(Color.FromRgb(51, 51, 51));
         public static FontWeight LibraryTooltipTextFontWeight = FontWeights.Normal;
         public static TextWrapping LibraryTooltipContentWrapping = TextWrapping.Wrap;

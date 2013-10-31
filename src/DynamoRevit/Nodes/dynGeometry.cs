@@ -887,7 +887,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("XYZ Array On Curve")]
-    [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_CURVE)]
+    [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TESSELATE)]
     [NodeDescription("Creates a list of XYZs along a curve.")]
     [NodeSearchTags("divide", "array", "curve", "repeat")]
     public class XyzArrayAlongCurve : GeometryBase
