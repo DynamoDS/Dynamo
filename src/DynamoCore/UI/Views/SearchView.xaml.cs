@@ -45,6 +45,9 @@ namespace Dynamo.Search
         {
             DataContext = _viewModel = dynSettings.Controller.SearchViewModel;
 
+            this.MouseEnter += SearchView_MouseEnter;
+            this.MouseLeave += SearchView_MouseLeave;
+
             PreviewKeyDown += KeyHandler;
             this.SearchTextBox.PreviewKeyDown += new KeyEventHandler(OnSearchBoxPreviewKeyDown);
             this.SearchTextBox.KeyDown += new KeyEventHandler(OnSearchBoxKeyDown);
@@ -52,6 +55,16 @@ namespace Dynamo.Search
             dynSettings.Controller.SearchViewModel.RequestFocusSearch += new EventHandler(SearchViewModel_RequestFocusSearch);
             dynSettings.Controller.SearchViewModel.RequestReturnFocusToSearch += new EventHandler(SearchViewModel_RequestReturnFocusToSearch);
 
+        }
+
+        void SearchView_MouseLeave(object sender, MouseEventArgs e)
+        {
+            _viewModel.SearchScrollBarVisibility = false;
+        }
+
+        void SearchView_MouseEnter(object sender, MouseEventArgs e)
+        {
+            _viewModel.SearchScrollBarVisibility = true;
         }
 
         void OnSearchBoxKeyDown(object sender, KeyEventArgs e)
