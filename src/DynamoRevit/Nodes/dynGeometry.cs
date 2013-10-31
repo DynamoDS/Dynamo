@@ -1362,7 +1362,6 @@ namespace Dynamo.Nodes
         }
     }
 
-
     [NodeName("Extrude")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID_CREATE)]
     [NodeDescription("Creates a solid by linearly extruding a closed curve.")]
