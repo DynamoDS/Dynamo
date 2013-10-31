@@ -1308,10 +1308,12 @@ namespace Dynamo.Nodes
                         if (Math.Abs(distAttachment) > 0.000001 + Math.Abs(distOrigin))
                             fromPoint = (-distOrigin) * profileLoopPlane.Normal;
                         else
-                            fromPoint = pathTrf.Origin - distOrigin * profileLoopPlane.Normal;
+                            fromPoint = pathTrf.Origin - (pathTrf.Origin -profileLoopPlane.Origin).DotProduct(profileLoopPlane.Normal) * profileLoopPlane.Normal;
                         XYZ fromVecOne = profileLoopPlane.Normal;
+                        if (fromVecOne.DotProduct(pathDerivative) < -angleTolerance)
+                            fromVecOne = -fromVecOne;
                         XYZ toVecOne = pathDerivative;
-                        XYZ fromVecTwo = XYZ.BasisZ.CrossProduct(profileLoopPlane.Normal);
+                        XYZ fromVecTwo = XYZ.BasisZ.CrossProduct(fromVecOne);
                         if (fromVecTwo.IsZeroLength())
                             fromVecTwo = XYZ.BasisX;
                         else
@@ -1321,6 +1323,8 @@ namespace Dynamo.Nodes
                             toVecTwo = XYZ.BasisX;
                         else
                             toVecTwo = toVecTwo.Normalize();
+                        if (toVecTwo.DotProduct(fromVecTwo) < -angleTolerance)
+                            toVecTwo = -toVecTwo;
 
                         Transform trfToAttach = Transform.CreateTranslation(pathTrf.Origin);
                         trfToAttach.BasisX = toVecOne;
@@ -1357,6 +1361,7 @@ namespace Dynamo.Nodes
             return Value.NewContainer(result);
         }
     }
+
 
     [NodeName("Extrude")]
     [NodeCategory(BuiltinNodeCategories.CREATEGEOMETRY_SOLID_CREATE)]
