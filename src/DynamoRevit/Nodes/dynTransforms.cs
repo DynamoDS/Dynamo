@@ -285,6 +285,46 @@ namespace Dynamo.Nodes
 
     }
 
+    [NodeName("Transform to Curve Point")]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_TRANSFORM_MODIFY)]
+    [NodeDescription("Returns a transformation of XY plane to plane at point on curve perpendicular to curve tangent direction.")]
+    [NodeSearchTags("move", "copy")]
+    public class TransToCurve : GeometryBase
+    {
+        public TransToCurve()
+        {
+            InPortData.Add(new PortData("c", "Curve(Curve)", typeof(Value.Container)));
+            InPortData.Add(new PortData("p", "Raw Parameter(Number)", typeof(Value.Container)));
+            OutPortData.Add(new PortData("t", "Transform to point on Curve", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+
+            Curve crv = (Curve)((Value.Container)args[0]).Item;
+            double parameter = ((Value.Number)args[1]).Item;
+
+
+            Transform tCurve = crv.ComputeDerivatives(parameter, false);
+             
+
+            Transform tF = Transform.Identity;
+            tF.Origin = tCurve.Origin;
+            tF.BasisZ = tCurve.BasisX.Normalize();
+
+            tF.BasisX = XYZ.BasisZ.CrossProduct(tF.BasisZ);
+            if (tF.BasisX.IsZeroLength())
+               tF.BasisX = XYZ.BasisX;
+            tF.BasisY = tF.BasisZ.CrossProduct(tF.BasisX);
+
+            return Value.NewContainer(
+               tF
+            );
+        }
+    }
+
     [NodeName("Inverse Transform")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_TRANSFORM_MODIFY)]
     [NodeDescription("Returns the inverse transformation.")]
@@ -300,12 +340,13 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
+
             var transform = (Transform)((Value.Container)args[0]).Item;
 
             Transform t = transform.Inverse;
 
             return Value.NewContainer(t);
+
         }
     }
-
 }
