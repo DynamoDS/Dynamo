@@ -1,5 +1,6 @@
 ﻿using System;
 using Autodesk.DesignScript.Geometry;
+using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
 using DSNodeServices;
 using RevitServices.Transactions;
@@ -14,7 +15,7 @@ namespace DSRevitNodes
     /// A Revit Reference Point
     /// </summary>
     [RegisterForTrace]
-    public class ReferencePoint : AbstractGeometry
+    public class ReferencePoint : AbstractGeometry, IGraphicItem
     {
         private Autodesk.Revit.DB.ReferencePoint internalRefPt;
 
@@ -148,5 +149,9 @@ namespace DSRevitNodes
             throw new NotImplementedException();
         }
 
+        void IGraphicItem.Tessellate(IRenderPackage package)
+        {
+            package.PushPointVertex(this.X, this.Y, this.Z);
+        }
     }
 }

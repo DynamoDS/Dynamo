@@ -167,6 +167,11 @@ namespace Dynamo.Utilities
             {
                 LoadDSFunctionsFromLibrary(e.LibraryPath);
             }
+
+            foreach (var node in dynSettings.Controller.DynamoViewModel.Model.HomeSpace.Nodes)
+            {
+                node.MarkDirty(); 
+            }
         }
 #endif
         /// <summary>
