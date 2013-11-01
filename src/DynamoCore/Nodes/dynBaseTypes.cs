@@ -31,7 +31,10 @@ namespace Dynamo.Nodes
         public const string CORE = "Core";
         public const string CORE_INPUT = "Core.Input";
         public const string CORE_STRINGS = "Core.Strings";
-        public const string CORE_LISTS = "Core.Lists";
+        public const string CORE_LISTS_CREATE = "Core.Lists.Create";
+        public const string CORE_LISTS_MODIFY = "Core.Lists.Modify";
+        public const string CORE_LISTS_EVALUATE = "Core.Lists.Evaluate";
+        public const string CORE_LISTS_QUERY = "Core.Lists.Query";
         public const string CORE_VIEW = "Core.View";
         public const string CORE_ANNOTATE = "Core.Annotate";
         public const string CORE_EVALUATE = "Core.Evaluate";
@@ -40,7 +43,12 @@ namespace Dynamo.Nodes
         public const string CORE_FUNCTIONS = "Core.Functions";
        
         public const string LOGIC = "Logic";
-        public const string LOGIC_MATH = "Logic.Math";
+        public const string LOGIC_MATH_ROUNDING = "Logic.Math.Rounding";
+        public const string LOGIC_MATH_CONSTANTS = "Logic.Math.Constants";
+        public const string LOGIC_MATH_ARITHMETIC = "Logic.Math.Arithmetic";
+        public const string LOGIC_MATH_TRIGONOMETRY = "Logic.Math.Trigonometry";
+        public const string LOGIC_MATH_RANDOM = "Logic.Math.Random";
+        public const string LOGIC_MATH_OPTIMIZE = "Logic.Math.Optimize";
         public const string LOGIC_EFFECT = "Logic.Effect";
         public const string LOGIC_COMPARISON = "Logic.Comparison";
         public const string LOGIC_CONDITIONAL = "Logic.Conditional";
@@ -582,7 +590,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Reverse")]
     [NodeDescription("Reverses a list")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_MODIFY)]
     public class Reverse : BuiltinFunction
     {
         public Reverse()
@@ -597,7 +605,7 @@ namespace Dynamo.Nodes
 
     [NodeName("List")]
     [NodeDescription("Makes a new list out of the given inputs")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
     public class NewList : VariableInput
     {
         public NewList()
@@ -641,24 +649,70 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Sort With Comparitor")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
-    [NodeDescription("Returns a sorted list, using the given comparitor.")]
+    [NodeName("Sort with Comparator")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_MODIFY)]
+    [NodeDescription("Returns a sorted list, using the given comparator function.")]
     public class SortWith : BuiltinFunction
     {
         public SortWith()
             : base(FScheme.SortWith)
         {
-            InPortData.Add(new PortData("c(x, y)", "Comparitor", typeof(object)));
+            InPortData.Add(new PortData("c(x, y)", "Comparator", typeof(object)));
             InPortData.Add(new PortData("list", "List to sort", typeof(Value.List)));
             OutPortData.Add(new PortData("sorted", "Sorted list", typeof(Value.List)));
 
             RegisterAllPorts();
         }
+
+        protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
+        {
+            return builder.Build(this, inputs);
+        }
+    }
+
+    [NodeName("Sort by Key")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_MODIFY)]
+    [NodeDescription("Returns a sorted list, using the given key mapper. The key mapper must return either all numbers or all strings.")]
+    public class SortBy : BuiltinFunction
+    {
+        public SortBy()
+            : base(FScheme.SortBy)
+        {
+            InPortData.Add(new PortData("f(x)", "Key Mapper", typeof(object), Value.NewFunction(Utils.ConvertToFSchemeFunc(FScheme.Identity))));
+            InPortData.Add(new PortData("list", "List to sort", typeof(Value.List)));
+            OutPortData.Add(new PortData("sorted", "Sorted list", typeof(Value.List)));
+
+            RegisterAllPorts();
+        }
+
+        protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
+        {
+            return builder.Build(this, inputs);
+        }
+    }
+
+    [NodeName("Sort")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_MODIFY)]
+    [NodeDescription("Returns a sorted list of numbers or strings.")]
+    public class Sort : BuiltinFunction
+    {
+        public Sort()
+            : base(FScheme.Sort)
+        {
+            InPortData.Add(new PortData("list", "List of numbers or strings to sort", typeof(Value.List)));
+            OutPortData.Add(new PortData("sorted", "Sorted list", typeof(Value.List)));
+
+            RegisterAllPorts();
+        }
+
+        protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
+        {
+            return builder.Build(this, inputs);
+        }
     }
 
     [NodeName("List Minimum")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_QUERY)]
     [NodeDescription("Returns the minimum value of a list, using the given key mapper. For all elements in the list, the key mapper must return either all numbers or all strings.")]
     public class ListMin : BuiltinFunction
     {
@@ -674,7 +728,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("List Maximum")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_QUERY)]
     [NodeDescription("Returns the maximum value of a list, using the given key mapper. For all elements in the list, the key mapper must return either all numbers or all strings.")]
     public class ListMax : BuiltinFunction
     {
@@ -690,7 +744,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Reduce")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Reduces a list into a new value by combining each element with an accumulated result.")]
     [NodeSearchTags("foldl")]
     public class Fold : BuiltinFunction
@@ -708,7 +762,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Filter")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Filters a sequence by a given predicate \"p\" such that for an arbitrary element \"x\" p(x) = True.")]
     public class Filter : BuiltinFunction
     {
@@ -724,7 +778,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Filter Out")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Filters a sequence by a given predicate \"p\" such that for an arbitrary element \"x\" p(x) = False.")]
     public class FilterOut : NodeWithOneOutput
     {
@@ -748,7 +802,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Number Range")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
     [NodeDescription("Creates a sequence of numbers in the specified range.")]
     [AlsoKnownAs("Dynamo.Nodes.dynBuildSeq", "Dynamo.Nodes.BuildSeq")]
     public class NumberRange : BuiltinFunction
@@ -768,7 +822,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Number Sequence")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
     [NodeDescription("Creates a sequence of numbers.")]
     public class NumberSeq : NodeWithOneOutput
     {
@@ -804,7 +858,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Combine")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Applies a combinator to each element in two sequences")]
     [NodeSearchTags("zip")]
     public class Combine : VariableInput
@@ -948,7 +1002,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Cartesian Product")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Applies a combinator to each pair in the cartesian product of two sequences")]
     [NodeSearchTags("cross")]
     public class CartProd : LacerBase
@@ -957,7 +1011,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Lace Shortest")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Applies a combinator to each pair resulting from a shortest lacing of the input lists. All lists are truncated to the length of the shortest input.")]
     public class LaceShortest : LacerBase
     {
@@ -965,7 +1019,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Lace Longest")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Applies a combinator to each pair resulting from a longest lacing of the input lists. All lists have their last element repeated to match the length of the longest input.")]
     public class LaceLongest : LacerBase
     {
@@ -973,7 +1027,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Map")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Applies a function over all elements of a list, generating a new list from the results.")]
     public class Map : BuiltinFunction
     {
@@ -989,7 +1043,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("For Each")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Performs a computation on each element of a list. Does not accumulate results.")]
     public class ForEach : BuiltinFunction
     {
@@ -1005,7 +1059,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("True For All")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_QUERY)]
     [NodeDescription("Tests to see if all elements in a sequence satisfy the given predicate.")]
     public class AndMap : BuiltinFunction
     {
@@ -1021,7 +1075,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("True For Any")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_QUERY)]
     [NodeDescription("Tests to see if any elements in a sequence satisfy the given predicate.")]
     public class OrMap : BuiltinFunction
     {
@@ -1037,7 +1091,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Split List")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_MODIFY)]
     [NodeDescription("Deconstructs a list pair.")]
     public class DeCons : NodeModel
     {
@@ -1060,7 +1114,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Add to List")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_MODIFY)]
     [NodeDescription("Adds an element to the beginning of a list.")]
     [NodeSearchTags("cons", "pair")]
     public class List : BuiltinFunction
@@ -1076,8 +1130,8 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Take From List")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeName("Take from List")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_MODIFY)]
     [NodeDescription("Takes elements from a list")]
     public class TakeList : BuiltinFunction
     {
@@ -1092,15 +1146,15 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Drop From List")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeName("Drop from List")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_MODIFY)]
     [NodeDescription("Drops elements from a list")]
     public class DropList : BuiltinFunction
     {
         public DropList()
             : base(FScheme.Drop)
         {
-            InPortData.Add(new PortData("amt", "Amount of elements to drop", typeof(object)));
+            InPortData.Add(new PortData("amt", "Amount of elements to remote", typeof(object)));
             InPortData.Add(new PortData("list", "The list to drop elements from", typeof(Value.List)));
             OutPortData.Add(new PortData("elements", "List of remaining elements", typeof(Value.List)));
 
@@ -1108,8 +1162,8 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Shift List Indeces")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeName("Shift List Indices")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_MODIFY)]
     [NodeDescription("Shifts the indeces of a list by a given amount.")]
     public class ShiftList : NodeWithOneOutput
     {
@@ -1145,9 +1199,8 @@ namespace Dynamo.Nodes
         }
     }
 
-
-    [NodeName("Get From List")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeName("Get from List")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_QUERY)]
     [NodeDescription("Gets an element from a list at a specified index.")]
     public class GetFromList : NodeWithOneOutput
     {
@@ -1187,7 +1240,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Slice List")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_MODIFY)]
     [NodeDescription("Get a sublist from a given list.")]
     public class SliceList : NodeWithOneOutput
     {
@@ -1212,7 +1265,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Remove From List")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_MODIFY)]
     [NodeDescription("Removes an element from a list at a specified index.")]
     public class RemoveFromList : NodeWithOneOutput
     {
@@ -1254,7 +1307,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Drop Every Nth")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_MODIFY)]
     [NodeDescription("Removes every nth element from a list.")]
     public class RemoveEveryNth : NodeWithOneOutput
     {
@@ -1279,7 +1332,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Take Every Nth")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_MODIFY)]
     [NodeDescription("Extracts every nth element from a list.")]
     public class TakeEveryNth : NodeWithOneOutput
     {
@@ -1304,7 +1357,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Empty List")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
     [NodeDescription("An empty list")]
     [IsInteractive(false)]
     public class Empty : NodeModel
@@ -1339,7 +1392,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Is Empty List?")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_QUERY)]
     [NodeDescription("Checks to see if the given list is empty.")]
     public class IsEmpty : BuiltinFunction
     {
@@ -1354,7 +1407,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("List Length")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_QUERY)]
     [NodeDescription("Gets the length of a list")]
     [NodeSearchTags("count")]
     public class Length : BuiltinFunction
@@ -1369,10 +1422,10 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Concatenate Lists")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeName("Join Lists")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_MODIFY)]
     [NodeDescription("Concatenates two lists.")]
-    [NodeSearchTags("append", "extend")]
+    [NodeSearchTags("append", "extend", "concat")]
     public class Append : BuiltinFunction
     {
         public Append()
@@ -1387,7 +1440,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("First of List")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_QUERY)]
     [NodeDescription("Gets the Head of a list")]
     [NodeSearchTags("car")]
     public class First : BuiltinFunction
@@ -1403,7 +1456,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Rest of List")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_QUERY)]
     [NodeDescription("Gets the Tail of a list (list with the first element removed).")]
     [NodeSearchTags("cdr")]
     public class Rest : BuiltinFunction
@@ -1419,7 +1472,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Partition List")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_MODIFY)]
     [NodeDescription("Create a lists of lists with each sub-list containing n elements.")]
     public class Slice : NodeWithOneOutput
     {
@@ -1478,7 +1531,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Diagonal Right List")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_MODIFY)]
     [NodeDescription("Create a diagonal lists of lists from top left to lower right.")]
     public class DiagonalRightList : NodeWithOneOutput
     {
@@ -1558,7 +1611,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Diagonal Left List")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_MODIFY)]
     [NodeDescription("Create a diagonal lists of lists from top right to lower left.")]
     public class DiagonalLeftList : NodeWithOneOutput
     {
@@ -1638,7 +1691,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Transpose Lists")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_MODIFY)]
     [NodeDescription("Swaps rows and columns in a list of lists.")]
     public class Transpose : BuiltinFunction
     {
@@ -1653,7 +1706,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Build Sublists")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
     [NodeDescription("Build sublists from a list using a list-building syntax.")]
     public partial class Sublists : BasicInteractive<string>
     {
@@ -1863,7 +1916,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Repeat")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
     [NodeDescription("Construct a list of a given item repeated a given number of times.")]
     public class Repeat : NodeWithOneOutput
     {
@@ -1889,9 +1942,8 @@ namespace Dynamo.Nodes
         }
     }
 
-
     [NodeName("Flatten Completely")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_MODIFY)]
     [NodeDescription("Flatten nested lists into one list.")]
     public class FlattenList : NodeWithOneOutput
     {
@@ -1943,7 +1995,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Flatten")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_MODIFY)]
     [NodeDescription("Flatten nested lists into one list.")]
     public class FlattenListAmt : NodeWithOneOutput
     {
@@ -2207,7 +2259,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Add")]
-    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH_ARITHMETIC)]
     [NodeDescription("Adds two numbers.")]
     [NodeSearchTags("plus", "sum", "+")]
     public class Addition : MathBase
@@ -2230,7 +2282,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Subtract")]
-    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH_ARITHMETIC)]
     [NodeDescription("Subtracts two numbers.")]
     [NodeSearchTags("minus", "difference", "-")]
     public class Subtraction : MathBase
@@ -2253,7 +2305,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Multiply")]
-    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH_ARITHMETIC)]
     [NodeDescription("Multiplies two numbers.")]
     [NodeSearchTags("times", "product", "*")]
     public class Multiplication : MathBase
@@ -2276,7 +2328,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Divide")]
-    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH_ARITHMETIC)]
     [NodeDescription("Divides two numbers.")]
     [NodeSearchTags("division", "quotient", "/")]
     public class Division : MathBase
@@ -2299,7 +2351,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Modulo")]
-    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH_ARITHMETIC)]
     [NodeDescription("Remainder of division of two numbers.")]
     [NodeSearchTags("%", "remainder")]
     public class Modulo : MathBase
@@ -2323,7 +2375,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Power")]
-    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH_ARITHMETIC)]
     [NodeDescription("Raises a number to the power of another.")]
     [NodeSearchTags("pow", "exponentiation", "^")]
     public class Pow : MathBase
@@ -2347,7 +2399,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Round")]
-    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH_ROUNDING)]
     [NodeDescription("Rounds a number to the nearest integer value.")]
     public class Round : MathBase
     {
@@ -2368,7 +2420,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Floor")]
-    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH_ROUNDING)]
     [NodeDescription("Rounds a number to the nearest smaller integer.")]
     [NodeSearchTags("round")]
     public class Floor : MathBase
@@ -2390,7 +2442,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Ceiling")]
-    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH_ROUNDING)]
     [NodeDescription("Rounds a number to the nearest larger integer value.")]
     [NodeSearchTags("round")]
     public class Ceiling : MathBase
@@ -2412,7 +2464,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Random Number By Seed")]
-    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH_RANDOM)]
     [NodeDescription("Generates a uniform random number in the range [0.0, 1.0).")]
     public class RandomSeed : NodeWithOneOutput
     {
@@ -2434,7 +2486,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Random Number")]
-    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH_RANDOM)]
     [NodeDescription("Generates a uniform random number in the range [0.0, 1.0).")]
     public class Random : NodeWithOneOutput
     {
@@ -2462,7 +2514,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Random Number List")]
-    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH_RANDOM)]
     [NodeDescription("Generates a list of uniform random numbers in the range [0.0, 1.0).")]
     public class RandomList : NodeWithOneOutput
     {
@@ -2498,7 +2550,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("e")]
-    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH_CONSTANTS)]
     [NodeDescription("e (base of natural logarithm) constant")]
     [NodeSearchTags("statistics", "natural", "logarithm")]
     [IsInteractive(false)]
@@ -2543,7 +2595,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Pi")]
-    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH_CONSTANTS)]
     [NodeDescription("Pi constant")]
     [NodeSearchTags("trigonometry", "circle", "π")]
     [IsInteractive(false)]
@@ -2588,7 +2640,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("2*Pi")]
-    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH_CONSTANTS)]
     [NodeDescription("Pi constant")]
     [NodeSearchTags("trigonometry", "circle", "π")]
     [IsInteractive(false)]
@@ -2634,7 +2686,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Sine")]
-    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH_TRIGONOMETRY)]
     [NodeDescription("Computes the sine of the given angle.")]
     public class Sin : MathBase
     {
@@ -2670,7 +2722,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Cosine")]
-    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH_TRIGONOMETRY)]
     [NodeDescription("Computes the cosine of the given angle.")]
     public class Cos : MathBase
     {
@@ -2706,7 +2758,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Tangent")]
-    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH_TRIGONOMETRY)]
     [NodeDescription("Computes the tangent of the given angle.")]
     public class Tan : MathBase
     {
@@ -2742,7 +2794,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Average")]
-    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_QUERY)]
     [NodeDescription("Averages a list of numbers.")]
     [NodeSearchTags("avg")]
     public class Average : MathBase
@@ -2769,13 +2821,8 @@ namespace Dynamo.Nodes
         }
     }
 
-    /// <summary>
-    /// keeps a simple moving average to smooth out noisy values over time. 
-    /// https://en.wikipedia.org/wiki/Moving_average
-    /// 
-    /// </summary>
     [NodeName("Smooth")]
-    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_QUERY)]
     [NodeDescription("Smooths a list of numbers using a running average.")]
     [NodeSearchTags("running average", "moving average", "sma")]
     public class Smooth : MathBase
