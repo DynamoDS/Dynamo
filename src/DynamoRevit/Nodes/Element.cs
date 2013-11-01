@@ -71,4 +71,57 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewList(result);
         }
     }
+
+    [NodeName("Height")]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
+    [NodeDescription("Returns the height in z of an element.")]
+    public class Height : MeasurementBase
+    {
+        public Height()
+        {
+            InPortData.Add(new PortData("elem", "Level, Family Instance, RefPoint, XYZ", typeof(FScheme.Value.Container)));//add elements here when adding switch statements 
+            OutPortData.Add(new PortData("h", "The height of an element in z relative to project 0.", typeof(FScheme.Value.Number)));
+
+            RegisterAllPorts();
+        }
+
+        private static double getHeight(object elem)
+        {
+            double h = 0;
+
+            if (elem is Autodesk.Revit.DB.Level)
+            {
+                h = ((Autodesk.Revit.DB.Level)elem).Elevation;
+                return h;
+            }
+            else if (elem is ReferencePoint)
+            {
+                h = ((ReferencePoint)elem).Position.Z;
+                return h;
+            }
+            else if (elem is FamilyInstance)
+            {
+                LocationPoint loc = (LocationPoint)((FamilyInstance)elem).Location;
+                h = loc.Point.Z;
+                return h;
+            }
+            else if (elem is XYZ)
+            {
+                h = ((XYZ)elem).Z;
+                return h;
+            }
+            else
+            {
+                return h;
+            }
+
+        }
+
+        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+        {
+            var a = ((FScheme.Value.Container)args[0]).Item;
+
+            return FScheme.Value.NewNumber(getHeight(a));
+        }
+    }
 }
