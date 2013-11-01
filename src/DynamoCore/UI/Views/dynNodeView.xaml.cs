@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -22,6 +23,8 @@ namespace Dynamo.Controls
         public delegate void SetToolTipDelegate(string message);
         public delegate void UpdateLayoutDelegate(FrameworkElement el);
 
+        private NodeViewModel viewModel;
+
         public dynNodeView TopControl
         {
             get { return topControl; }
@@ -32,7 +35,17 @@ namespace Dynamo.Controls
             get { return inputGrid; }
         }
 
-        public NodeViewModel ViewModel { get; set; }
+        public NodeViewModel ViewModel
+        {
+            get
+            {
+                return this.DataContext as NodeViewModel;
+            }
+            set
+            {
+                viewModel = value;
+            }
+        }
 
         #region constructors
 
@@ -46,31 +59,35 @@ namespace Dynamo.Controls
 
             InitializeComponent();
 
-            this.Loaded += dynNodeView_Loaded;
-            inputGrid.Loaded += inputGrid_Loaded;
-            this.LayoutUpdated += OnLayoutUpdated;
+            this.Loaded += new RoutedEventHandler(dynNodeView_Loaded);
+            inputGrid.Loaded += new RoutedEventHandler(inputGrid_Loaded);
 
+            this.LayoutUpdated += OnLayoutUpdated;
+            this.SizeChanged += OnSizeChanged;
             
             Canvas.SetZIndex(this, 1);
         }
 
         #endregion
 
-        private void OnLayoutUpdated(object sender, EventArgs eventArgs)
+        /// <summary>
+        /// Called when the size of the node changes. Communicates changes down to the view model 
+        /// then to the model.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventArgs"></param>
+        private void OnSizeChanged(object sender, EventArgs eventArgs)
         {
             if (ViewModel != null)
             {
-                //Debug.WriteLine("Node layout updated.");
-                if (ViewModel.NodeLogic.Height != this.ActualHeight ||
-                    ViewModel.NodeLogic.Width != this.ActualWidth)
+                var size = new double[] { ActualWidth, ActualHeight };
+                if (ViewModel.SetModelSizeCommand.CanExecute(size))
                 {
-                    ViewModel.NodeLogic.Height = this.ActualHeight;
-                    ViewModel.NodeLogic.Width = this.ActualWidth;
+                    Debug.WriteLine(string.Format("Updating {2} node size {0}:{1}", size[0], size[1], ViewModel.NodeLogic.GetType().ToString()));
+                    ViewModel.SetModelSizeCommand.Execute(size);
                 }
             }
-
         }
-
 
         void dynNodeView_Loaded(object sender, RoutedEventArgs e)
         {
@@ -187,11 +204,6 @@ namespace Dynamo.Controls
             }
 
             ViewModel.ValidateConnectionsCommand.Execute(null);
-        }
-
-        public void CallUpdateLayout(FrameworkElement el)
-        {
-            el.UpdateLayout();
         }
 
         private void topControl_Loaded(object sender, RoutedEventArgs e)
