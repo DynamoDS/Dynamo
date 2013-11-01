@@ -1229,7 +1229,38 @@ namespace Dynamo.Nodes
                 if (param != null)
                 {
                     var pd = OutPortData[i - 1];
-                    outPuts[pd] = FScheme.Value.NewString(param.AsValueString());
+                    switch (param.StorageType)
+                    {
+                        case StorageType.Double:
+                            outPuts[pd] = FScheme.Value.NewNumber(param.AsDouble());
+                            break;
+                        case StorageType.ElementId:
+                            outPuts[pd] = FScheme.Value.NewContainer(param.AsElementId());
+                            break;
+                        case StorageType.Integer:
+                            outPuts[pd] = FScheme.Value.NewNumber(param.AsInteger());
+                            break;
+                        case StorageType.String:
+                            if (string.IsNullOrEmpty(param.AsString()))
+                            {
+                                outPuts[pd] = FScheme.Value.NewString(string.Empty);
+                            }
+                            else
+                            {
+                                outPuts[pd] = FScheme.Value.NewString(param.AsString());
+                            }
+                            break;
+                        default:
+                            if (string.IsNullOrEmpty(param.AsValueString()))
+                            {
+                                outPuts[pd] = FScheme.Value.NewString(string.Empty);
+                            }
+                            else
+                            {
+                                outPuts[pd] = FScheme.Value.NewString(param.AsValueString());
+                            }
+                            break;
+                    }
                 }
             }
         }
