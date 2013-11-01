@@ -133,9 +133,6 @@ namespace Dynamo.Utilities
 
                             node.RegisterAllPorts();
 
-                            //MVVM: don't call update layout here
-                            //dynSettings.Bench.WorkBench.UpdateLayout();
-
                             return new
                             {
                                 OuterNode = outerNode,
@@ -283,14 +280,6 @@ namespace Dynamo.Utilities
 
                     node.DisableReporting();
 
-                    //MVVM : Do not add view directly to canvas
-                    /*dynSettings.Bench.WorkBench.Children.Add(nodeUI);
-
-                    //Place it in an appropriate spot
-                    Canvas.SetLeft(nodeUI, 0);
-                    Canvas.SetTop(nodeUI, inputIndex * (50 + node.NodeUI.Height));
-
-                    dynSettings.Bench.WorkBench.UpdateLayout();*/
                     node.X = 0;
                     node.Y = inputIndex * (50 + node.Height);
 
@@ -379,15 +368,6 @@ namespace Dynamo.Utilities
                     node.WorkSpace = newNodeWorkspace;
 
                     node.DisableReporting();
-
-                    //MVVM : Do not add view directly to canvas
-                    /*dynSettings.Bench.WorkBench.Children.Add(nodeUI);
-
-                    //Place it in an appropriate spot
-                    Canvas.SetLeft(nodeUI, rightMost + 75 - leftShift);
-                    Canvas.SetTop(nodeUI, i * (50 + node.NodeUI.Height));
-
-                    dynSettings.Bench.WorkBench.UpdateLayout();*/
 
                     node.X = rightMost + 75 - leftShift;
                     node.Y = i*(50 + node.Height);
