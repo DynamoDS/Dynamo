@@ -246,5 +246,23 @@ namespace Dynamo.Search
                 return;
             DynamoCommands.HideLibItemInfoBubbleCommand.Execute(null);
         }
+
+        private void SearchTextBoxGrid_MouseEnter(object sender, MouseEventArgs e)
+        {
+            var searchIconSource = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/search_hover.png");
+            SearchIcon.Source = new BitmapImage(searchIconSource);
+        }
+
+        private void SearchTextBoxGrid_MouseLeave(object sender, MouseEventArgs e)
+        {
+            var searchIconSource = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/search_normal.png");
+            SearchIcon.Source = new BitmapImage(searchIconSource);
+        }
+
+        private void SearchCancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            SearchTextBox.Text = "";
+            Keyboard.Focus(SearchTextBox);
+        }
     }
 }
