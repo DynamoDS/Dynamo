@@ -664,9 +664,9 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
+        protected override void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
         {
-            return builder.Build(this, inputs);
+            builder.Build(this, inputs);
         }
     }
 
@@ -685,9 +685,9 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
+        protected override void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
         {
-            return builder.Build(this, inputs);
+             builder.Build(this, inputs);
         }
     }
 
@@ -705,9 +705,9 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
+        protected override void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
         {
-            return builder.Build(this, inputs);
+            builder.Build(this, inputs);
         }
     }
 

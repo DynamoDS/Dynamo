@@ -62,7 +62,6 @@ namespace Dynamo.Controls
             this.Loaded += new RoutedEventHandler(dynNodeView_Loaded);
             inputGrid.Loaded += new RoutedEventHandler(inputGrid_Loaded);
 
-            this.LayoutUpdated += OnLayoutUpdated;
             this.SizeChanged += OnSizeChanged;
             
             Canvas.SetZIndex(this, 1);

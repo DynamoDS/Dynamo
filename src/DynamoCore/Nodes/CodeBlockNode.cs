@@ -11,7 +11,7 @@ using Dynamo.Utilities;
 namespace Dynamo.Nodes
 {
     [NodeName("Code Block")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Allows for code to be written")] //<--Change the descp :|
     public partial class CodeBlockNodeModel : NodeModel
     {
