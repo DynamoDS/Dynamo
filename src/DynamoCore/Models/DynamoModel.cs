@@ -1057,13 +1057,6 @@ namespace Dynamo.Models
                 createdModels.Add(CreateNode(newGuid, node.X, node.Y + 100, nodeName, dynEl));
             }
 
-            //process the command queue so we have 
-            //nodes to connect to
-            //DynamoCommands.ProcessCommandQueue();
-
-            //update the layout to ensure that the visuals
-            //are present in the tree to connect to
-            //dynSettings.Bench.UpdateLayout();
             OnRequestLayoutUpdate(this, EventArgs.Empty);
 
             foreach (ConnectorModel c in connectors)
