@@ -284,7 +284,10 @@ namespace Dynamo.Controls
 
         private void NickNameBlock_OnMouseLeave(object sender, MouseEventArgs e)
         {
-            ViewModel.FadeOutTooltipCommand.Execute(null);
+            if (ViewModel != null)
+                ViewModel.FadeOutTooltipCommand.Execute(null);
+            else if (dynSettings.Controller != null)
+                dynSettings.Controller.DynamoViewModel.HideInfoBubble(null);
         }
 
         private void InputPort_OnMouseEnter(object sender, MouseEventArgs e)
@@ -305,7 +308,10 @@ namespace Dynamo.Controls
 
         private void InputPort_OnMouseLeave(object sender, MouseEventArgs e)
         {
-            ViewModel.FadeOutTooltipCommand.Execute(null);
+            if (ViewModel != null)
+                ViewModel.FadeOutTooltipCommand.Execute(null);
+            else if (dynSettings.Controller != null)
+                dynSettings.Controller.DynamoViewModel.HideInfoBubble(null);
         }
 
         private void InputPort_OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -331,7 +337,10 @@ namespace Dynamo.Controls
 
         private void OutputPort_OnMouseLeave(object sender, MouseEventArgs e)
         {
-            ViewModel.FadeOutTooltipCommand.Execute(null);
+            if (ViewModel != null)
+                ViewModel.FadeOutTooltipCommand.Execute(null);
+            else if (dynSettings.Controller != null)
+                dynSettings.Controller.DynamoViewModel.HideInfoBubble(null);
         }
 
         private void OutputPort_OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
