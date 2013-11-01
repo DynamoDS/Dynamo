@@ -130,13 +130,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converters.cs" />
-    <Compile Include="CygonRectanglePacker.cs" />
+    <Compile Include="Packing\CygonRectanglePacker.cs" />
     <Compile Include="DynamoController_Revit.cs" />
-    <Compile Include="dynFunctionWithRevit.cs" />
-    <Compile Include="dynRevitAPINode.cs" />
-    <Compile Include="dynRevitSettings.cs" />
-    <Compile Include="dynRevitTransactionNode.cs" />
-    <Compile Include="dynRevitUtils.cs" />
+    <Compile Include="FunctionWithRevit.cs" />
+    <Compile Include="RevitAPINode.cs" />
+    <Compile Include="RevitSettings.cs" />
+    <Compile Include="RevitTransactionNode.cs" />
+    <Compile Include="RevitUtils.cs" />
     <Compile Include="ElementsContainer.cs" />
     <Compile Include="DynamoRevit.cs" />
     <Compile Include="Nodes\Annotation.cs" />
@@ -163,7 +163,7 @@
     <Compile Include="Nodes\GeometryBase.cs" />
     <Compile Include="Nodes\Intersect.cs" />
     <Compile Include="Nodes\MeasurementBase.cs" />
-    <Compile Include="dynModelUpdater.cs" />
+    <Compile Include="ModelUpdater.cs" />
     <Compile Include="Nodes\ReferencePoint.cs" />
     <Compile Include="Nodes\Project.cs" />
     <Compile Include="Nodes\Selection.cs" />
@@ -188,10 +188,10 @@
     <Compile Include="Nodes\Wall.cs" />
     <Compile Include="Nodes\XYZ.cs" />
     <Compile Include="OutOfSpaceException.cs" />
-    <Compile Include="ParticleSystem\dynDynamicRelaxation.cs" />
-    <Compile Include="ParticleSystem\dynParticle.cs" />
-    <Compile Include="ParticleSystem\dynParticleSpring.cs" />
-    <Compile Include="ParticleSystem\dynParticleSystem.cs" />
+    <Compile Include="ParticleSystem\DynamicRelaxation.cs" />
+    <Compile Include="ParticleSystem\Particle.cs" />
+    <Compile Include="ParticleSystem\ParticleSpring.cs" />
+    <Compile Include="ParticleSystem\ParticleSystem.cs" />
     <Compile Include="ParticleSystem\VerletIntegrator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -199,7 +199,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="RectanglePacker.cs" />
+    <Compile Include="Packing\RectanglePacker.cs" />
     <Compile Include="Resource_en_us.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
