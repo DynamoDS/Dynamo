@@ -79,7 +79,7 @@ namespace Dynamo.Models
             set
             {
                 height = value;
-                RaisePropertyChanged("Height");
+                //RaisePropertyChanged("Height");
             }
         }
 
@@ -90,9 +90,10 @@ namespace Dynamo.Models
         {
             get { return width; }
             set
+
             {
                 width = value;
-                RaisePropertyChanged("Width");
+                //RaisePropertyChanged("Width");
             }
         }
 
@@ -152,6 +153,19 @@ namespace Dynamo.Models
 
         public void ReportPosition()
         {
+            RaisePropertyChanged("Position");
+        }
+
+        /// <summary>
+        /// Set the width and the height of the node model
+        /// and report once.
+        /// </summary>
+        /// <param name="w"></param>
+        /// <param name="h"></param>
+        public void SetSize(double w, double h)
+        {
+            width = w;
+            height = h;
             RaisePropertyChanged("Position");
         }
 
