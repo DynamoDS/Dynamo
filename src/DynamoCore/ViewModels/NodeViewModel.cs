@@ -448,11 +448,8 @@ namespace Dynamo.ViewModels
                 return;
             if (string.IsNullOrEmpty(NodeModel.ToolTipText))
             {
-                if (ErrorBubble.Opacity != 0)
-                {
-                    ErrorBubble.SetAlwaysVisibleCommand.Execute(false);
-                    ErrorBubble.InstantCollapseCommand.Execute(null);
-                }
+                ErrorBubble.SetAlwaysVisibleCommand.Execute(false);
+                ErrorBubble.InstantCollapseCommand.Execute(null);
             }
             else
             {
@@ -467,9 +464,9 @@ namespace Dynamo.ViewModels
                     if (!dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Errors.Contains(this.ErrorBubble))
                         return;
                     this.ErrorBubble.UpdateContentCommand.Execute(data);
-                    this.ErrorBubble.SetAlwaysVisibleCommand.Execute(true);
-                    this.ErrorBubble.InstantAppearCommand.Execute(null);
                 })));
+                this.ErrorBubble.SetAlwaysVisibleCommand.Execute(true);
+                this.ErrorBubble.InstantAppearCommand.Execute(null);
             }
         }
 

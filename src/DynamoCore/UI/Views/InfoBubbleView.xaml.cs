@@ -43,8 +43,15 @@ namespace Dynamo.Controls
         private void InfoBubbleView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (DataContext != null && DataContext is InfoBubbleViewModel)
+            {
                 (DataContext as InfoBubbleViewModel).PropertyChanged += ViewModel_PropertyChanged;
-            UpdateContent();
+                if (!string.IsNullOrEmpty(ViewModel.Content))
+                {
+                    UpdateContent();
+                    ViewModel.UpdateShapeCommand.Execute(null);
+                    ViewModel.UpdatePositionCommand.Execute(null);
+                }
+            }
         }
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -52,6 +59,8 @@ namespace Dynamo.Controls
             if (e.PropertyName == "Content")
             {
                 UpdateContent();
+                ViewModel.UpdateShapeCommand.Execute(null);
+                ViewModel.UpdatePositionCommand.Execute(null);
             }
         }
 
