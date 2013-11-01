@@ -1,27 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection; 
+using System.Reflection;
 using Autodesk.Revit.DB;
-using Dynamo.FSchemeInterop;
 using Dynamo.Models;
-using Dynamo.Revit;
-using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
-using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Nodes
 {
-    public abstract class GeometryBase : NodeWithOneOutput
-    {
-        protected GeometryBase()
-        {
-            ArgumentLacing = LacingStrategy.Longest;
-        }
-    }
-
-    #region Faces
-
     [NodeName("Faces Intersecting Line")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_INTERSECT)]
     [NodeDescription("Creates list of faces of the solid intersecting given line.")]
@@ -29,18 +15,18 @@ namespace Dynamo.Nodes
     {
         public FacesByLine()
         {
-            InPortData.Add(new PortData("solid", "solid to extract faces from", typeof(Value.Container)));
-            InPortData.Add(new PortData("line", "line to extract faces from", typeof(Value.Container)));
+            InPortData.Add(new PortData("solid", "solid to extract faces from", typeof(FScheme.Value.Container)));
+            InPortData.Add(new PortData("line", "line to extract faces from", typeof(FScheme.Value.Container)));
             OutPortData.Add(new PortData("faces of solid along the line", "extracted list of faces", typeof(object)));
 
             RegisterAllPorts();
 
         }
 
-        public override Value Evaluate(FSharpList<Value> args)
+        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
-            Solid thisSolid = (Solid)((Value.Container)args[0]).Item;
-            Line selectLine = (Line)((Value.Container)args[1]).Item;
+            Solid thisSolid = (Solid)((FScheme.Value.Container)args[0]).Item;
+            Line selectLine = (Line)((FScheme.Value.Container)args[1]).Item;
 
             FaceArray faceArr = thisSolid.Faces;
             var thisEnum = faceArr.GetEnumerator();
@@ -71,16 +57,16 @@ namespace Dynamo.Nodes
                 intersectingFaces.Add(linePar, thisFace);
             }
 
-            var result = FSharpList<Value>.Empty;
+            var result = FSharpList<FScheme.Value>.Empty;
 
             var intersectingFacesEnum = intersectingFaces.Reverse().GetEnumerator();
             for (; intersectingFacesEnum.MoveNext(); )
             {
                 Autodesk.Revit.DB.Face faceObj = intersectingFacesEnum.Current.Value;
-                result = FSharpList<Value>.Cons(Value.NewContainer(faceObj), result);
+                result = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewContainer(faceObj), result);
             }
 
-            return Value.NewList(result);
+            return FScheme.Value.NewList(result);
         }
     }
 
@@ -93,7 +79,7 @@ namespace Dynamo.Nodes
 
         public FaceThroughPoints()
         {
-            InPortData.Add(new PortData("Points", "Points to create face, list or list of lists", typeof(Value.List)));
+            InPortData.Add(new PortData("Points", "Points to create face, list or list of lists", typeof(FScheme.Value.List)));
             InPortData.Add(new PortData("NumberOfRows", "Number of rows in the grid of the face", typeof(object)));
             OutPortData.Add(new PortData("face", "Face", typeof(object)));
 
@@ -101,10 +87,10 @@ namespace Dynamo.Nodes
 
         }
 
-        public override Value Evaluate(FSharpList<Value> args)
+        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
-            var listIn = ((Value.List)args[0]).Item.Select(
-                    x => ((XYZ)((Value.Container)x).Item)
+            var listIn = ((FScheme.Value.List)args[0]).Item.Select(
+                    x => ((XYZ)((FScheme.Value.Container)x).Item)
                        ).ToList();
             /* consider passing n x m grid of points instead of flat list
             var in1 = ((Value.Container)args[0]).Item;
@@ -124,7 +110,7 @@ namespace Dynamo.Nodes
             }
             */
 
-            int numberOfRows = (int)((Value.Number)args[1]).Item;
+            int numberOfRows = (int)((FScheme.Value.Number)args[1]).Item;
             if (numberOfRows < 2 || listIn.Count % numberOfRows != 0)
                 throw new Exception("number of rows should  match number of points Face Through Points node");
 
@@ -157,9 +143,7 @@ namespace Dynamo.Nodes
                 }
             }
 
-            return Value.NewContainer(result);
+            return FScheme.Value.NewContainer(result);
         }
     }
-
-    #endregion
-} 
+}
