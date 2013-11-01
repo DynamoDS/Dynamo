@@ -7,7 +7,7 @@ using Dynamo.Revit;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 
-namespace Dynamo.Applications.Nodes
+namespace Dynamo.Nodes
 {
     [NodeName("Plane by Normal Origin")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_SURFACE_CREATE)]
