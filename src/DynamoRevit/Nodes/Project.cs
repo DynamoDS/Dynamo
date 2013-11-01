@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using Autodesk.Revit.DB;
 using Dynamo.Models;
 using Microsoft.FSharp.Collections;
-
 using Value = Dynamo.FScheme.Value;
 using Dynamo.Revit;
-using Dynamo.Utilities;
 
 namespace Dynamo.Nodes
 {
