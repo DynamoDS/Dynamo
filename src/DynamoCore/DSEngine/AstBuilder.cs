@@ -131,18 +131,6 @@ namespace Dynamo.DSEngine
         }
 
         /// <summary>
-        /// Get all active nodes.
-        /// </summary>
-        /// <returns></returns>
-        public List<Guid> GetNodes()
-        {
-            var nodes = states.Where(x => x.Value != State.Deleted)
-                              .Select(x => x.Key)
-                              .ToList();
-            return nodes;
-        }
-
-        /// <summary>
         /// Reset states of all nodes to State.NoChange. It should be called
         /// before each running. 
         /// </summary>
@@ -250,14 +238,6 @@ namespace Dynamo.DSEngine
             dynSettings.Controller.DynamoModel.NodeDeleted += this.OnNodeDeleted;
         }
 
-        public List<Guid> ToBeQueriedNodes
-        {
-            get
-            {
-                return syncDataManager.GetNodes();
-            }
-        }
-
         public GraphSyncData GetSyncData()
         {
             return syncDataManager.GetSyncData();
@@ -278,7 +258,7 @@ namespace Dynamo.DSEngine
             syncDataManager.MarkForAdding(node.GUID);
 
             string function = node.Definition.Name;
-            AssociativeNode functionCall = AstFactory.BuildFunctionCall(function, inputs);
+            var functionCall = AstFactory.BuildFunctionCall(function, inputs);
 
             if (node.IsStaticMember() || node.IsConstructor())
             {
@@ -423,27 +403,6 @@ namespace Dynamo.DSEngine
 
             return partialFunc;
         }
-
-        /*
-        public void BuildEvaluation(NodeModel node, AssociativeNode rhs, bool isPartial = false)
-        {
-            // If it is a partially applied function, need to create a function 
-            // definition and function pointer.
-            if (isPartial && rhs is FunctionCallNode)
-            {
-                FunctionCallNode funcCall = rhs as FunctionCallNode;
-                // create a function definition for it
-                var newFunc = BuildPartialFunction(funcCall);
-                AddNode(node.GUID, newFunc);
-
-                // create a function pointer for this node
-                rhs = AstFactory.BuildIdentifier(newFunc.Name);
-            }
-
-            var assignment = AstFactory.BuildAssignment(node.AstIdentifier, rhs);
-            AddNode(node.GUID, assignment);
-        }
-        */
 
         public void BeginBuildingAst()
         {
