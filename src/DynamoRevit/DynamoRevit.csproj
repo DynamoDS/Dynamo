@@ -142,7 +142,8 @@
     <Compile Include="Nodes\Annotation.cs" />
     <Compile Include="Nodes\AdaptiveComponents.cs" />
     <Compile Include="Nodes\DividedSurface.cs" />
-    <Compile Include="Nodes\dynAnalysis.cs" />
+    <Compile Include="Nodes\ReferencePoint.cs" />
+    <Compile Include="Nodes\SpatialField.cs" />
     <Compile Include="Nodes\dynCurves.cs" />
     <Compile Include="Nodes\Grid.cs" />
     <Compile Include="Nodes\DividedCurve.cs" />
@@ -157,7 +158,7 @@
     <Compile Include="Nodes\dynAnalyze.cs" />
     <Compile Include="Nodes\dynPoints.cs" />
     <Compile Include="Nodes\Project.cs" />
-    <Compile Include="Nodes\dynSelection.cs" />
+    <Compile Include="Nodes\Selection.cs" />
     <Compile Include="Nodes\dynSimplexNoise.cs" />
     <Compile Include="Nodes\Level.cs" />
     <Compile Include="Nodes\RayBounce.cs" />
