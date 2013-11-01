@@ -140,11 +140,12 @@
     <Compile Include="ElementsContainer.cs" />
     <Compile Include="DynamoRevit.cs" />
     <Compile Include="Nodes\Annotation.cs" />
-    <Compile Include="Nodes\dynAdaptiveComponents.cs" />
+    <Compile Include="Nodes\AdaptiveComponents.cs" />
+    <Compile Include="Nodes\DividedSurface.cs" />
     <Compile Include="Nodes\dynAnalysis.cs" />
     <Compile Include="Nodes\dynCurves.cs" />
     <Compile Include="Nodes\dynDatums.cs" />
-    <Compile Include="Nodes\dynDivide.cs" />
+    <Compile Include="Nodes\DividedCurve.cs" />
     <Compile Include="Nodes\dynFamilies.cs" />
     <Compile Include="Nodes\dynGeometricForms.cs" />
     <Compile Include="Nodes\dynGeometry.cs" />
