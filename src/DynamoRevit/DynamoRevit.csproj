@@ -151,7 +151,6 @@
     <Compile Include="Nodes\DividedCurve.cs" />
     <Compile Include="Nodes\Face.cs" />
     <Compile Include="Nodes\FamilyInstance.cs" />
-    <Compile Include="Nodes\dynGeometricForms.cs" />
     <Compile Include="Nodes\GeometryBase.cs" />
     <Compile Include="Nodes\Intersect.cs" />
     <Compile Include="Nodes\dynPointAnalysis.cs" />

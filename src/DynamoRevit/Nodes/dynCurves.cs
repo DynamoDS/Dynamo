@@ -15,7 +15,6 @@ using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace Dynamo.Nodes
 {
-
     [NodeName("Line by Endpoints")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_CREATE)]
     [NodeDescription("Creates a geometric line.")]
@@ -794,115 +793,6 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Reference Curve")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_REFERENCE)]
-    [NodeDescription("Creates a reference curve.")]
-    public class ReferenceCurve : RevitTransactionNodeWithOneOutput
-    {
-        public ReferenceCurve()
-        {
-            InPortData.Add(new PortData("c", "A Geometric Curve.", typeof(Value.Container)));
-            OutPortData.Add(new PortData("rc", "Reference Curve", typeof(Value.Container)));
-
-            RegisterAllPorts();
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            var c = (Curve)((Value.Container)args[0]).Item;
-            Autodesk.Revit.DB.ModelCurve mc = null;
-
-            Curve flattenCurve = null;
-            Autodesk.Revit.DB.Plane plane = dynRevitUtils.GetPlaneFromCurve(c, false);
-
-            //instead of changing Revit curve keep it "as is"
-            //user might have trouble modifying curve in Revit if it is off the sketch plane
-
-            if (this.Elements.Any())
-            {
-                bool needsRemake = false;
-                if (dynUtils.TryGetElement(this.Elements[0], out mc))
-                {
-                    ElementId idSpUnused = ModelCurve.resetSketchPlaneMethod(mc, c, plane, out needsRemake);
-
-                    if (idSpUnused != ElementId.InvalidElementId)
-                    {
-                        this.DeleteElement(idSpUnused);
-                    }
-                    //mc.SketchPlane = sp;
-                    if (!needsRemake)
-                    {
-                        if (!mc.GeometryCurve.IsBound && c.IsBound)
-                        {
-                            c = c.Clone();
-                            c.MakeUnbound();
-                        }
-                        ModelCurve.setCurveMethod(mc, c);  //mc.GeometryCurve = c;
-                    }
-                }
-                else
-                    needsRemake = true;
-                if (needsRemake)
-                {
-                    var sp = dynRevitUtils.GetSketchPlaneFromCurve(c);
-
-                    if (dynRevitUtils.GetPlaneFromCurve(c, true) == null)
-                    {
-                        flattenCurve = dynRevitUtils.Flatten3dCurveOnPlane(c, plane);
-                        mc = this.UIDocument.Document.IsFamilyDocument
-                             ? this.UIDocument.Document.FamilyCreate.NewModelCurve(flattenCurve, sp)
-                                : this.UIDocument.Document.Create.NewModelCurve(flattenCurve, sp);
-
-                        ModelCurve.setCurveMethod(mc, c); 
-                    }
-                    else
-                        mc = this.UIDocument.Document.IsFamilyDocument
-                       ? this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
-                       : this.UIDocument.Document.Create.NewModelCurve(c, sp);
-                    mc.ChangeToReferenceLine();
-                    this.Elements[0] = mc.Id;
-                    //mc.SketchPlane = sp;
-                    if (mc.SketchPlane.Id != sp.Id)
-                    {
-                        //THIS BIZARRE as Revit could use different existing SP, so if Revit had found better plane  this sketch plane has no use
-                        this.DeleteElement(sp.Id);
-                    }
-                    this.Elements[0] = mc.Id;
-                }
-            }
-            else
-            {
-                var sp = dynRevitUtils.GetSketchPlaneFromCurve(c);
-
-                if (dynRevitUtils.GetPlaneFromCurve(c, true) == null)
-                {
-                    flattenCurve = dynRevitUtils.Flatten3dCurveOnPlane(c, plane);
-                    mc = this.UIDocument.Document.IsFamilyDocument
-                         ? this.UIDocument.Document.FamilyCreate.NewModelCurve(flattenCurve, sp)
-                            : this.UIDocument.Document.Create.NewModelCurve(flattenCurve, sp);
-
-                    ModelCurve.setCurveMethod(mc, c);
-                }
-                else
-                {
-                    mc = this.UIDocument.Document.IsFamilyDocument
-                       ? this.UIDocument.Document.FamilyCreate.NewModelCurve(c, sp)
-                       : this.UIDocument.Document.Create.NewModelCurve(c, sp);
-                }
-                this.Elements.Add(mc.Id);
-                mc.ChangeToReferenceLine();
-                //mc.SketchPlane = sp;
-                if (mc.SketchPlane.Id != sp.Id)
-                {
-                    //found better plane
-                    this.DeleteElement(sp.Id);
-                }
-            }
-
-            return Value.NewContainer(mc);
-        }
-    }
-
     [NodeName("Curve By Points")]
     [NodeCategory(BuiltinNodeCategories.REVIT_REFERENCE)]
     [NodeDescription("Create a new Curve by Points by passing in a list of Reference Points")]
@@ -1314,66 +1204,6 @@ namespace Dynamo.Nodes
             }
         }
 
-    }
-
-    [NodeName("Nurbs Spline Model Curve")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_REFERENCE)]
-    [NodeDescription("Node to create a planar nurbs spline model curve.")]
-    public class ModelCurveNurbSpline : RevitTransactionNodeWithOneOutput
-    {
-        public ModelCurveNurbSpline()
-        {
-            InPortData.Add(new PortData("pts", "The points from which to create the nurbs curve", typeof(Value.List)));
-            OutPortData.Add(new PortData("cv", "The nurbs spline model curve created by this operation.", typeof(Value.Container)));
-
-            RegisterAllPorts();
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            var pts = ((Value.List)args[0]).Item.Select(
-               x => ((ReferencePoint)((Value.Container)x).Item).Position
-            ).ToList();
-
-            if (pts.Count <= 1)
-            {
-                throw new Exception("Not enough reference points to make a curve.");
-            }
-
-            var ns = UIDocument.Application.Application.Create.NewNurbSpline(
-                    pts, Enumerable.Repeat(1.0, pts.Count).ToList());
-
-            ModelNurbSpline c;
-
-            if (Elements.Any() && dynUtils.TryGetElement(Elements[0], out c))
-            {
-                ModelCurve.setCurveMethod(c, ns); //c.GeometryCurve = ns;
-            }
-            else
-            {
-                Elements.Clear();
-
-                double rawParam = ns.ComputeRawParameter(.5);
-                Transform t = ns.ComputeDerivatives(rawParam, false);
-
-                XYZ norm = t.BasisZ;
-
-                if (norm.GetLength() == 0)
-                {
-                    norm = XYZ.BasisZ;
-                }
-
-                Autodesk.Revit.DB.Plane p = new Autodesk.Revit.DB.Plane(norm, t.Origin);
-                Autodesk.Revit.DB.SketchPlane sp = this.UIDocument.Document.FamilyCreate.NewSketchPlane(p);
-                //sps.Add(sp);
-
-                c = UIDocument.Document.FamilyCreate.NewModelCurve(ns, sp) as ModelNurbSpline;
-
-                Elements.Add(c.Id);
-            }
-
-            return Value.NewContainer(c);
-        }
     }
 
     [NodeName("Nurbs Spline")]
