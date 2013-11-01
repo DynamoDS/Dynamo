@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
@@ -397,5 +397,32 @@ namespace Dynamo.Controls
         #endregion // UpdateZOrder
 
         #endregion // Private Helpers
+
+        #region Infinite Canvas Implementation
+        /*
+        protected override void OnInitialized(EventArgs e)
+        {
+            base.OnInitialized(e);
+
+            this.Loaded += DragCanvas_Loaded;
+        }
+
+        void DragCanvas_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Add EndlessGrid
+            EndlessGrid endlessGrid = new EndlessGrid();
+            this.Children.Add(endlessGrid);
+
+            // Binding for grid lines HitTest and Visibility
+            var binding = new Binding()
+            {
+                Path = new PropertyPath("DataContext.FullscreenWatchShowing"),
+                Converter = new InverseBoolToVisibilityConverter(),
+                Mode = BindingMode.OneWay,
+            };
+            binding.Source = Dynamo.Utilities.dynSettings.Controller.DynamoViewModel;
+            endlessGrid.SetBinding(UIElement.VisibilityProperty, binding);
+        }*/
+        #endregion
     }
 }

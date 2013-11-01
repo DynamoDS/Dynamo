@@ -336,6 +336,10 @@ namespace Dynamo.ViewModels
             var errorsColl = new CollectionContainer { Collection = Errors };
             _workspaceElements.Add(errorsColl);
 
+            // Add EndlessGrid
+            var endlessGrid = new EndlessGridViewModel(this);
+            _workspaceElements.Add(endlessGrid);
+
             //respond to collection changes on the model by creating new view models
             //currently, view models are added for notes and nodes
             //connector view models are added during connection

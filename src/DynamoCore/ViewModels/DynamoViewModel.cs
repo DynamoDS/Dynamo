@@ -271,6 +271,12 @@ namespace Dynamo.ViewModels
 
         public double WorkspaceActualHeight { get; set; }
         public double WorkspaceActualWidth { get; set; }
+        public void WorkspaceActualSize(double width, double height)
+        {
+            WorkspaceActualWidth = width;
+            WorkspaceActualHeight = height;
+            RaisePropertyChanged("WorkspaceActualSize");
+        }
 
         /// <summary>
         /// The index in the collection of workspaces of the current workspace.
