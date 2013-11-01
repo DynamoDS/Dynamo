@@ -25,7 +25,6 @@ namespace Dynamo.Views
     {
         public enum CursorState
         {
-            Pointer,
             ArcAdding,
             ArcRemoving,
             ArcSelecting,
