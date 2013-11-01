@@ -142,6 +142,9 @@
     <Compile Include="Nodes\Annotation.cs" />
     <Compile Include="Nodes\AdaptiveComponents.cs" />
     <Compile Include="Nodes\DividedSurface.cs" />
+    <Compile Include="Nodes\FreeForm.cs" />
+    <Compile Include="Nodes\ModelCurve.cs" />
+    <Compile Include="Nodes\ReferenceCurve.cs" />
     <Compile Include="Nodes\SpatialField.cs" />
     <Compile Include="Nodes\dynCurves.cs" />
     <Compile Include="Nodes\Grid.cs" />
@@ -158,7 +161,7 @@
     <Compile Include="Nodes\ReferencePoint.cs" />
     <Compile Include="Nodes\Project.cs" />
     <Compile Include="Nodes\Selection.cs" />
-    <Compile Include="Nodes\dynSimplexNoise.cs" />
+    <Compile Include="Nodes\SimplexNoise.cs" />
     <Compile Include="Nodes\Level.cs" />
     <Compile Include="Nodes\RayBounce.cs" />
     <Compile Include="Nodes\ReferencePlane.cs" />
@@ -167,7 +170,7 @@
     <Compile Include="Nodes\Plane.cs" />
     <Compile Include="Nodes\Solid.cs" />
     <Compile Include="Nodes\StructuralFraming.cs" />
-    <Compile Include="Nodes\dynTessellation.cs" />
+    <Compile Include="Nodes\Tesselation.cs" />
     <Compile Include="Nodes\Transaction.cs" />
     <Compile Include="Nodes\SunPath.cs" />
     <Compile Include="Nodes\Transform.cs" />
