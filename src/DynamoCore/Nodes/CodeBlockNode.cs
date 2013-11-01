@@ -15,15 +15,14 @@ namespace Dynamo.Nodes
     [NodeDescription("Allows for code to be written")] //<--Change the descp :|
     public partial class CodeBlockNodeModel : NodeModel
     {
-        private string code = "Your Code Goes Here";
+        private string code = "";
         private string previewVariable = null;
         private List<Statement> codeStatements = new List<Statement>();
+        private bool shouldFocus = true;
 
         #region Public Methods
         public CodeBlockNodeModel()
         {
-            codeStatements = new List<Statement>();
-            code = "Your Code Goes Here";
             this.ArgumentLacing = LacingStrategy.Disabled;
         }
 
@@ -107,6 +106,7 @@ namespace Dynamo.Nodes
             base.SerializeCore(element, context);
             XmlElementHelper helper = new XmlElementHelper(element);
             helper.SetAttribute("CodeText", code);
+            helper.SetAttribute("ShouldFocus", shouldFocus);
         }
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
@@ -116,6 +116,7 @@ namespace Dynamo.Nodes
             {
                 XmlElementHelper helper = new XmlElementHelper(element as XmlElement);
                 Code = helper.ReadString("CodeText");
+                shouldFocus = helper.ReadBoolean("ShouldFocus");
             }
         }
 

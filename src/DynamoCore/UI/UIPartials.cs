@@ -748,8 +748,11 @@ namespace Dynamo.Nodes
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             });
 
-            tb.Focus();
-            tb.SelectAll();
+            if (shouldFocus)
+            {
+                tb.Focus();
+                shouldFocus = false;
+            }
         }
     }
 
