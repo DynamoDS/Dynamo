@@ -77,6 +77,7 @@ namespace Dynamo.Nodes
             GotFocus += OnGotFocus;
             LostFocus += OnLostFocus;
             LostKeyboardFocus += OnLostFocus;
+            Padding = new Thickness(3);
             base.Text = initialText;
             this.Pending = false;
             Style = (Style)SharedDictionaryManager.DynamoModernDictionary["SZoomFadeTextBox"];
