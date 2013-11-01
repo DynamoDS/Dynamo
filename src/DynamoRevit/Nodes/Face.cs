@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Autodesk.LibG;
 using Autodesk.Revit.DB;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
+using Line = Autodesk.Revit.DB.Line;
+using Solid = Autodesk.Revit.DB.Solid;
 
 namespace Dynamo.Nodes
 {
@@ -251,6 +254,82 @@ namespace Dynamo.Nodes
             }
 
             return FScheme.Value.NewContainer(norm);
+        }
+    }
+
+    [NodeName("Surface Area")]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
+    [NodeDescription("An element which measures the surface area of a face (f)")]
+    public class SurfaceArea : MeasurementBase
+    {
+        public SurfaceArea()
+        {
+            InPortData.Add(new PortData("f", "The face whose surface area you wish to calculate (Reference).", typeof(FScheme.Value.Container)));//Ref to a face of a form
+            OutPortData.Add(new PortData("a", "The surface area of the face (Number).", typeof(FScheme.Value.Number)));
+
+            RegisterAllPorts();
+        }
+
+        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+        {
+            double area = 0.0;
+
+            object arg0 = ((FScheme.Value.Container)args[0]).Item;
+
+            Autodesk.Revit.DB.Face f;
+
+            Reference faceRef = arg0 as Reference;
+            if (faceRef != null)
+                f = dynRevitSettings.Doc.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
+            else
+                f = arg0 as Autodesk.Revit.DB.Face;
+
+            if (f != null)
+            {
+                area = f.Area;
+            }
+
+            //Fin
+            return FScheme.Value.NewNumber(area);
+        }
+    }
+
+    [NodeName("Get Surface Domain")]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
+    [NodeDescription("Measure the domain of a surface in U and V.")]
+    public class SurfaceDomain : NodeWithOneOutput
+    {
+        public SurfaceDomain()
+        {
+            InPortData.Add(new PortData("f", "The surface whose domain you wish to calculate (Reference).", typeof(FScheme.Value.Container)));//Ref to a face of a form
+            OutPortData.Add(new PortData("domain", "The surface's domain.", typeof(FScheme.Value.List)));
+
+            RegisterAllPorts();
+        }
+
+        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+        {
+            BoundingBoxUV bbox = null;
+
+            object arg0 = ((FScheme.Value.Container)args[0]).Item;
+
+            Autodesk.Revit.DB.Face f;
+
+            var faceRef = arg0 as Reference;
+            if (faceRef != null)
+                f = dynRevitSettings.Doc.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
+            else
+                f = arg0 as Autodesk.Revit.DB.Face;
+
+            if (f != null)
+            {
+                bbox = f.GetBoundingBox();
+            }
+
+            var min = Vector.by_coordinates(bbox.Min.U, bbox.Min.V);
+            var max = Vector.by_coordinates(bbox.Max.U, bbox.Max.V);
+
+            return FScheme.Value.NewContainer(DSCoreNodes.Domain2D.ByMinimumAndMaximum(min, max));
         }
     }
 }

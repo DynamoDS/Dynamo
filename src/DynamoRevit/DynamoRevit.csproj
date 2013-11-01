@@ -148,6 +148,7 @@
     <Compile Include="Nodes\Ellipse.cs" />
     <Compile Include="Nodes\FreeForm.cs" />
     <Compile Include="Nodes\HermiteSpline.cs" />
+    <Compile Include="Nodes\Length.cs" />
     <Compile Include="Nodes\Line.cs" />
     <Compile Include="Nodes\ModelCurve.cs" />
     <Compile Include="Nodes\NurbsSpline.cs" />
@@ -161,8 +162,7 @@
     <Compile Include="Nodes\FamilyInstance.cs" />
     <Compile Include="Nodes\GeometryBase.cs" />
     <Compile Include="Nodes\Intersect.cs" />
-    <Compile Include="Nodes\dynPointAnalysis.cs" />
-    <Compile Include="Nodes\dynMeasurement.cs" />
+    <Compile Include="Nodes\MeasurementBase.cs" />
     <Compile Include="dynModelUpdater.cs" />
     <Compile Include="Nodes\ReferencePoint.cs" />
     <Compile Include="Nodes\Project.cs" />

@@ -1113,5 +1113,46 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Get Curve Domain")]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
+    [NodeDescription("Measure the domain of a curve.")]
+    public class CurveDomain : NodeWithOneOutput
+    {
+        public CurveDomain()
+        {
+            InPortData.Add(new PortData("curve", "The curve whose domain you wish to calculate.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("domain", "The curve's domain.", typeof(Value.Number)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var curveRef = ((Value.Container)args[0]).Item as Reference;
+
+            Curve curve = null;
+
+            var el = ((Value.Container)args[0]).Item as CurveElement;
+            if (el != null)
+            {
+                var crvEl = el;
+                curve = crvEl.GeometryCurve;
+            }
+            else
+            {
+                curve = curveRef == null
+                              ? (Curve)((Value.Container)args[0]).Item
+                              : (Curve)
+                                dynRevitSettings.Doc.Document.GetElement(curveRef.ElementId)
+                                                .GetGeometryObjectFromReference(curveRef);
+            }
+
+
+            var start = curve.get_EndParameter(0);
+            var end = curve.get_EndParameter(1);
+
+            return Value.NewContainer(DSCoreNodes.Domain.ByMinimumAndMaximum(start, end));
+        }
+    }
 }
 
