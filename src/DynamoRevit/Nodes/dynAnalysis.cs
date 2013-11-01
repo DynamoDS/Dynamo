@@ -539,7 +539,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Ray Bounce")]
-    [NodeCategory(BuiltinNodeCategories.SURFACE_QUERY)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_SURFACE_QUERY)]
     [NodeDescription("Conduct a ray trace analysis from an origin and direction, providing the maximum number of bounces.")]
     class RayBounce:RevitTransactionNode
     {

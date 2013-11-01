@@ -17,7 +17,7 @@ namespace Dynamo.Nodes
 {
 
     [NodeName("Line by Endpoints")]
-    [NodeCategory(BuiltinNodeCategories.CURVE_CREATE)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_CREATE)]
     [NodeDescription("Creates a geometric line.")]
     [NodeSearchTags("curve", "two point", "line")]
     public class LineBound : GeometryBase
@@ -62,7 +62,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Transform Curve")]
-    [NodeCategory(BuiltinNodeCategories.TRANSFORM_APPLY)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_TRANSFORM_APPLY)]
     [NodeDescription("Returns the curve (c) transformed by the transform (t).")]
     [NodeSearchTags("move", "transform", "curve", "line")]
     public class CurveTransformed : GeometryBase
@@ -89,7 +89,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Circle")]
-    [NodeCategory(BuiltinNodeCategories.CURVE_CREATE)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_CREATE)]
     [NodeDescription("Creates a geometric circle.")]
     public class Circle : GeometryBase
     {
@@ -128,7 +128,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Arc by Start, Middle, End")]
-    [NodeCategory(BuiltinNodeCategories.CURVE_CREATE)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_CREATE)]
     [NodeDescription("Creates a geometric arc given start, middle and end points in XYZ.")]
     [NodeSearchTags("arc", "circle", "start", "middle", "end", "3 point", "three")]
     public class ArcStartMiddleEnd : GeometryBase
@@ -174,7 +174,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Arc by Center, Normal, Radius")]
-    [NodeCategory(BuiltinNodeCategories.CURVE_CREATE)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_CREATE)]
     [NodeDescription("Creates a geometric arc given a center point and two end parameters. Start and End Values may be between 0 and 2*PI in Radians")]
     [NodeSearchTags("arc", "circle", "center", "radius")]
     public class ArcCenter : GeometryBase
@@ -225,7 +225,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Ellipse")]
-    [NodeCategory(BuiltinNodeCategories.CURVE_CREATE)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_CREATE)]
     [NodeDescription("Creates a geometric ellipse.")]
     public class Ellipse : GeometryBase
     {
@@ -279,7 +279,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Ellipse Arc")]
-    [NodeCategory(BuiltinNodeCategories.CURVE_CREATE)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_CREATE)]
     [NodeDescription("Creates a geometric elliptical arc. Start and End Values may be between 0 and 2*PI in Radians")]
     public class EllipticalArc : GeometryBase
     {
@@ -335,7 +335,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Line by Origin and Direction")]
-    [NodeCategory(BuiltinNodeCategories.CURVE_CREATE)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_CREATE)]
     [NodeDescription("Creates a line in the direction of an XYZ normal.")]
     public class LineVectorfromXyz : NodeWithOneOutput
     {
@@ -388,7 +388,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Hermite Spline")]
-    [NodeCategory(BuiltinNodeCategories.CURVE_CREATE)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_CREATE)]
     [NodeDescription("Creates a geometric hermite spline.")]
     [NodeSearchTags("curve through points", "interpolate", "spline")]
     public class HermiteSpline : GeometryBase
@@ -430,7 +430,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Polyline")]
-    [NodeCategory(BuiltinNodeCategories.CURVE_CREATE)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_CREATE)]
     [NodeDescription("Create a series of lines through a list of points.")]
     [NodeSearchTags("line", "through", "passing", "thread")]
     public class CurvesThroughPoints : GeometryBase
@@ -465,7 +465,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Rectangle Curve Loop")]
-    [NodeCategory(BuiltinNodeCategories.CURVE_CREATE)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_CREATE)]
     [NodeDescription("Create a rectangle by specifying the center, width, height, and normal.  Outputs a CurveLoop object directed counter-clockwise from upper right.")]
     public class Rectangle : GeometryBase
     {
@@ -578,7 +578,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Model Curve")]
-    [NodeCategory(BuiltinNodeCategories.CURVE_CREATE)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_CREATE)]
     [NodeDescription("Creates a model curve.")]
     public class ModelCurve : RevitTransactionNodeWithOneOutput
     {
@@ -1377,7 +1377,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Nurbs Spline")]
-    [NodeCategory(BuiltinNodeCategories.CURVE_CREATE)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_CREATE)]
     [NodeDescription("Node to create a planar nurbs spline curve.")]
     public class GeometryCurveNurbSpline : GeometryBase
     {
@@ -1407,7 +1407,7 @@ namespace Dynamo.Nodes
     }
      
     [NodeName("Curve Loop")]
-    [NodeCategory(BuiltinNodeCategories.CURVE_CREATE)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_CREATE)]
     [NodeDescription("Creates Curve Loop")]
     public class CurveLoop : GeometryBase
     {
@@ -1484,7 +1484,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Thicken Curve")]
-    [NodeCategory(BuiltinNodeCategories.CURVE_CREATE)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_CREATE)]
     [NodeDescription("Creates Curve Loop by thickening a curve")]
     public class ThickenCurveLoop : GeometryBase
     {
@@ -1512,7 +1512,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Curve Loop Components")]
-    [NodeCategory(BuiltinNodeCategories.CURVE_QUERY)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_QUERY)]
     [NodeDescription("Extract a list of curves in the Curve Loop")]
     public class ListCurveLoop : RevitTransactionNodeWithOneOutput
     {
@@ -1546,7 +1546,7 @@ namespace Dynamo.Nodes
     }
      
     [NodeName("Offset Curve")]
-    [NodeCategory(BuiltinNodeCategories.CURVE_CREATE)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_CREATE)]
     [NodeDescription("Creates curve by offseting curve")]
     public class OffsetCrv : GeometryBase
     {
@@ -1683,7 +1683,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Equal Distanced XYZs On Curve")]
-    [NodeCategory(BuiltinNodeCategories.CURVE_DIVIDE)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_DIVIDE)]
     [NodeDescription("Creates a list of equal distanced XYZs along a curve.")]
     public class EqualDistXyzAlongCurve : GeometryBase
     {
@@ -1863,7 +1863,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Evaluate Curve")]
-    [NodeCategory(BuiltinNodeCategories.CURVE_QUERY)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_QUERY)]
     [NodeDescription("Evaluates curve or edge at parameter.")]
     public class XyzOnCurveOrEdge : GeometryBase
     {

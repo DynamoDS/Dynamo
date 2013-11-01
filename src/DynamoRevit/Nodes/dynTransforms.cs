@@ -6,7 +6,7 @@ using Value = Dynamo.FScheme.Value;
 namespace Dynamo.Nodes
 {
     [NodeName("Identity Transform")]
-    [NodeCategory(BuiltinNodeCategories.TRANSFORM_CREATE)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_TRANSFORM_CREATE)]
     [NodeDescription("Returns the identity transformation.")]
     public class TransformIdentity: GeometryBase
     {
@@ -26,7 +26,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Transform from Origin and Vectors")]
-    [NodeCategory(BuiltinNodeCategories.TRANSFORM_CREATE)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_TRANSFORM_CREATE)]
     [NodeDescription("Returns a transformation with origin (o), up vector (u), and forward (f).")]
     [NodeSearchTags("move", "copy")]
     public class TransformOriginAndVectors : GeometryBase
@@ -60,7 +60,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Transform From-To")]
-    [NodeCategory(BuiltinNodeCategories.TRANSFORM_CREATE)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_TRANSFORM_CREATE)]
     [NodeDescription("Returns a transformation from origin, up, forward vectors to another triple of vectors. Normalizes vectors if needed.")]
     [NodeSearchTags("move", "copy")]
     public class TransFromTo : GeometryBase
@@ -112,7 +112,7 @@ namespace Dynamo.Nodes
 
 
     [NodeName("Scale Transform")]
-    [NodeCategory(BuiltinNodeCategories.TRANSFORM_CREATE)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_TRANSFORM_CREATE)]
     [NodeDescription("Returns the scale transformation.")]
     public class TransformScaleBasis : GeometryBase
     {
@@ -137,7 +137,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Rotate Transform")]
-    [NodeCategory(BuiltinNodeCategories.TRANSFORM_CREATE)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_TRANSFORM_CREATE)]
     [NodeDescription("Returns a transform that rotates by the specified angle about the specified axis and point.")]
     public class TransformRotation : GeometryBase
     {
@@ -164,7 +164,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Translate Transform")]
-    [NodeCategory(BuiltinNodeCategories.TRANSFORM_CREATE)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_TRANSFORM_CREATE)]
     [NodeDescription("Returns he transformation that translates by the specified vector.")]
     [NodeSearchTags("copy", "move")]
     public class TransformTranslation : GeometryBase
@@ -188,7 +188,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Reflect Transform")]
-    [NodeCategory(BuiltinNodeCategories.TRANSFORM_CREATE)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_TRANSFORM_CREATE)]
     [NodeDescription("Returns the transformation that reflects about the specified plane.")]
     [NodeSearchTags("mirror", "symmetric")]
     public class TransformReflection : GeometryBase
@@ -212,7 +212,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Transform Point")]
-    [NodeCategory(BuiltinNodeCategories.TRANSFORM_APPLY)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_TRANSFORM_APPLY)]
     [NodeDescription("Transform a point with a transform.")]
     [NodeSearchTags("move", "copy", "xyz")]
     public class TransformPoint : GeometryBase
@@ -260,7 +260,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Multiply Transform")]
-    [NodeCategory(BuiltinNodeCategories.TRANSFORM_MODIFY)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_TRANSFORM_MODIFY)]
     [NodeDescription("Multiply two transforms.")]
     public class Multiplytransform : GeometryBase
     {
@@ -286,7 +286,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Inverse Transform")]
-    [NodeCategory(BuiltinNodeCategories.TRANSFORM_MODIFY)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_TRANSFORM_MODIFY)]
     [NodeDescription("Returns the inverse transformation.")]
     public class InverseTransform : GeometryBase
     {

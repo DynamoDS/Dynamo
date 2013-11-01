@@ -14,7 +14,7 @@ using System.Xml;
 namespace Dynamo.Nodes
 {
     [NodeName("Loft Surface")]
-    [NodeCategory(BuiltinNodeCategories.SURFACE_CREATE)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_SURFACE_CREATE)]
     [NodeDescription("Creates a new loft surface.  Internally this is a LoftForm element")]
     public class LoftForm : RevitTransactionNodeWithOneOutput
     {

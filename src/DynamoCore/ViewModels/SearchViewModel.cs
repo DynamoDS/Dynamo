@@ -235,16 +235,10 @@ namespace Dynamo.ViewModels
             _topResult = this.AddRootCategory("Top Result");
             this.AddRootCategory(BuiltinNodeCategories.CORE);
             this.AddRootCategory(BuiltinNodeCategories.LOGIC);
-            this.AddRootCategory(BuiltinNodeCategories.VECTORPOINT);
-            this.AddRootCategory(BuiltinNodeCategories.CURVE);
-            this.AddRootCategory(BuiltinNodeCategories.SURFACE);
-            this.AddRootCategory(BuiltinNodeCategories.SOLID);
-            this.AddRootCategory(BuiltinNodeCategories.TRANSFORM);
+            this.AddRootCategory(BuiltinNodeCategories.GEOMETRY);
             this.AddRootCategory(BuiltinNodeCategories.REVIT);
             this.AddRootCategory(BuiltinNodeCategories.ANALYZE);
             this.AddRootCategory(BuiltinNodeCategories.IO);
-
-            this.AddRootCategory(BuiltinNodeCategories.EXPERIMENTAL);
             
         }
 
