@@ -549,7 +549,7 @@ namespace Dynamo.Views
 
                 try
                 {
-                    PortViewModel pvm = (PortViewModel)grid.DataContext;
+                    PortViewModel pvm = grid.DataContext as PortViewModel;
 
                     if (pvm == null)
                         continue;
