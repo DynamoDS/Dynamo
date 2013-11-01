@@ -168,7 +168,7 @@
     <Compile Include="Nodes\Solid.cs" />
     <Compile Include="Nodes\StructuralFraming.cs" />
     <Compile Include="Nodes\dynTessellation.cs" />
-    <Compile Include="Nodes\dynTransactions.cs" />
+    <Compile Include="Nodes\Transaction.cs" />
     <Compile Include="Nodes\SunPath.cs" />
     <Compile Include="Nodes\Transform.cs" />
     <Compile Include="Nodes\UV.cs" />
