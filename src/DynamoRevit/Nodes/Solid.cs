@@ -6,13 +6,330 @@ using System.Windows.Controls;
 using System.Xml;
 using Autodesk.Revit.DB;
 using Dynamo.Controls;
+using Dynamo.FSchemeInterop;
 using Dynamo.Models;
+using Dynamo.Revit;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 
 namespace Dynamo.Nodes
 {
     #region Solid Creation
+
+    [NodeName("Loft Surface")]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_SURFACE_CREATE)]
+    [NodeDescription("Creates a new loft surface.  Internally this is a LoftForm element")]
+    public class LoftForm : RevitTransactionNodeWithOneOutput
+    {
+        public LoftForm()
+        {
+            InPortData.Add(new PortData("solid/void", "Indicates if the Form is Solid or Void. Use True for solid and false for void.", typeof(FScheme.Value.Number)));
+            InPortData.Add(new PortData("list", "A list of profiles for the Loft Form. The recommended way is to use list of Planar Ref Curve Chains, list of lists and list of curves are supported for legacy graphs.", typeof(FScheme.Value.List)));
+            InPortData.Add(new PortData("surface?", "Create a single surface or an extrusion if one loop", typeof(FScheme.Value.Container)));
+
+            OutPortData.Add(new PortData("form", "Loft Form", typeof(object)));
+
+            RegisterAllPorts();
+            if (_formId == null)
+                _formId = ElementId.InvalidElementId;
+        }
+
+        Dictionary<ElementId, ElementId> _sformCurveToReferenceCurveMap;
+        ElementId _formId;
+        bool _preferSurfaceForOneLoop;
+
+        protected override bool AcceptsListOfLists(FScheme.Value value)
+        {
+            if (Utils.IsListOfListsOfLists(value))
+                return false;
+
+            FSharpList<FScheme.Value> vals = ((FScheme.Value.List)value).Item;
+            if (!vals.Any() || !(vals[0] is FScheme.Value.List))
+                return true;
+            FSharpList<FScheme.Value> firstListInList = ((FScheme.Value.List)vals[0]).Item;
+            if (!firstListInList.Any() || !(firstListInList[0] is FScheme.Value.Container))
+                return true;
+            var var1 = ((FScheme.Value.Container)firstListInList[0]).Item;
+            if (var1 is ModelCurveArray)
+                return false;
+
+            return true;
+        }
+
+        bool matchOrAddFormCurveToReferenceCurveMap(Form formElement, ReferenceArrayArray refArrArr, bool doMatch)
+        {
+            if (formElement.Id != _formId && doMatch)
+            {
+                return false;
+            }
+            else if (!doMatch)
+                _formId = formElement.Id;
+
+            if (doMatch && _sformCurveToReferenceCurveMap.Count == 0)
+                return false;
+            else if (!doMatch)
+                _sformCurveToReferenceCurveMap = new Dictionary<ElementId, ElementId>();
+
+            for (int indexRefArr = 0; indexRefArr < refArrArr.Size; indexRefArr++)
+            {
+                if (indexRefArr >= refArrArr.Size)
+                {
+                    if (!doMatch)
+                        _sformCurveToReferenceCurveMap.Clear();
+                    return false;
+                }
+
+                if (refArrArr.get_Item(indexRefArr).Size != formElement.get_CurveLoopReferencesOnProfile(indexRefArr, 0).Size)
+                {
+                    if (!doMatch)
+                        _sformCurveToReferenceCurveMap.Clear();
+                    return false;
+                }
+                for (int indexRef = 0; indexRef < refArrArr.get_Item(indexRefArr).Size; indexRef++)
+                {
+                    Reference oldRef = formElement.get_CurveLoopReferencesOnProfile(indexRefArr, 0).get_Item(indexRef);
+                    Reference newRef = refArrArr.get_Item(indexRefArr).get_Item(indexRef);
+
+                    if ((oldRef.ElementReferenceType != ElementReferenceType.REFERENCE_TYPE_NONE &&
+                            oldRef.ElementReferenceType != ElementReferenceType.REFERENCE_TYPE_LINEAR) ||
+                            (newRef.ElementReferenceType != ElementReferenceType.REFERENCE_TYPE_NONE &&
+                             newRef.ElementReferenceType != ElementReferenceType.REFERENCE_TYPE_LINEAR) ||
+                            oldRef.ElementReferenceType != newRef.ElementReferenceType)
+                    {
+                        if (!doMatch)
+                            _sformCurveToReferenceCurveMap.Clear();
+                        return false;
+                    }
+                    ElementId oldRefId = oldRef.ElementId;
+                    ElementId newRefId = newRef.ElementId;
+
+                    if (doMatch && (!_sformCurveToReferenceCurveMap.ContainsKey(newRefId) ||
+                                    _sformCurveToReferenceCurveMap[newRefId] != oldRefId)
+                       )
+                    {
+                        return false;
+                    }
+                    else if (!doMatch)
+                        _sformCurveToReferenceCurveMap[newRefId] = oldRefId;
+                }
+            }
+            return true;
+        }
+
+
+        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+        {
+            //Solid argument
+            bool isSolid = ((FScheme.Value.Number)args[0]).Item == 1;
+
+            //Surface argument
+            bool isSurface = ((FScheme.Value.Number)args[2]).Item == 1;
+
+            //Build up our list of list of references for the form by...
+            var curvesListList = (FScheme.Value.List)args[1];
+            //Now we add all of those references into ReferenceArrays
+            ReferenceArrayArray refArrArr = new ReferenceArrayArray();
+
+            FSharpList<FScheme.Value> vals = ((FScheme.Value.List)curvesListList).Item;
+
+            if (vals.Any() && (vals[0] is FScheme.Value.Container) && ((FScheme.Value.Container)vals[0]).Item is ModelCurveArray)
+            {
+                //Build a sequence that unwraps the input list from it's Value form.
+                IEnumerable<ModelCurveArray> modelCurveArrays = ((FScheme.Value.List)args[1]).Item.Select(
+                   x => (ModelCurveArray)((FScheme.Value.Container)x).Item
+                );
+
+                foreach (var modelCurveArray in modelCurveArrays)
+                {
+                    var refArr = new ReferenceArray();
+                    foreach (Autodesk.Revit.DB.ModelCurve modelCurve in modelCurveArray)
+                    {
+                        refArr.Append(modelCurve.GeometryCurve.Reference);
+                    }
+                    refArrArr.Append(refArr);
+                }
+            }
+            else
+            {
+                IEnumerable<IEnumerable<Reference>> refArrays = (curvesListList).Item.Select(
+                    //...first selecting everything in the topmost list...
+                   delegate(FScheme.Value x)
+                   {
+                       //If the element in the topmost list is a sub-list...
+                       if (x.IsList)
+                       {
+                           //...then we return a new IEnumerable of References by converting the sub list.
+                           return (x as FScheme.Value.List).Item.Select(
+                              delegate(FScheme.Value y)
+                              {
+                                  //Since we're in a sub-list, we can assume it's a container.
+                                  var item = ((FScheme.Value.Container)y).Item;
+                                  if (item is CurveElement)
+                                      return (item as CurveElement).GeometryCurve.Reference;
+                                  else
+                                      return (Reference)item;
+                              }
+                           );
+                       }
+                       //If the element is not a sub-list, then just assume it's a container.
+                       else
+                       {
+                           var obj = ((FScheme.Value.Container)x).Item;
+                           Reference r;
+                           if (obj is CurveElement)
+                           {
+                               r = (obj as CurveElement).GeometryCurve.Reference;
+                           }
+                           else
+                           {
+                               r = (Reference)obj;
+                           }
+                           //We return a list here since it's expecting an IEnumerable<Reference>. In reality,
+                           //just passing the element by itself instead of a sub-list is a shortcut for having
+                           //a list with one element, so this is just performing that for the user.
+                           return new List<Reference>() { r };
+                       }
+                   }
+                );
+
+                //Now we add all of those references into ReferenceArrays
+
+                foreach (IEnumerable<Reference> refs in refArrays.Where(x => x.Any()))
+                {
+                    var refArr = new ReferenceArray();
+                    foreach (Reference r in refs)
+                        refArr.Append(r);
+                    refArrArr.Append(refArr);
+                }
+            }
+            //If we already have a form stored...
+            if (this.Elements.Any())
+            {
+                Form oldF;
+                //is this same element?
+                if (dynUtils.TryGetElement(this.Elements[0], out oldF))
+                {
+                    if (oldF.IsSolid == isSolid &&
+                        _preferSurfaceForOneLoop == isSurface
+                        && matchOrAddFormCurveToReferenceCurveMap(oldF, refArrArr, true))
+                    {
+                        return FScheme.Value.NewContainer(oldF);
+                    }
+                }
+
+                //Dissolve it, we will re-make it later.
+                if (FormUtils.CanBeDissolved(this.UIDocument.Document, this.Elements.Take(1).ToList()))
+                    FormUtils.DissolveForms(this.UIDocument.Document, this.Elements.Take(1).ToList());
+                //And register the form for deletion. Since we've already deleted it here manually, we can 
+                //pass "true" as the second argument.
+                this.DeleteElement(this.Elements[0], true);
+
+            }
+            else if (this._formId != ElementId.InvalidElementId)
+            {
+                Form oldF;
+                if (dynUtils.TryGetElement(this._formId, out oldF))
+                {
+                    if (oldF.IsSolid == isSolid
+                        && _preferSurfaceForOneLoop == isSurface
+                        && matchOrAddFormCurveToReferenceCurveMap(oldF, refArrArr, true))
+                    {
+                        return FScheme.Value.NewContainer(oldF);
+                    }
+                }
+            }
+
+            _preferSurfaceForOneLoop = isSurface;
+
+            //We use the ReferenceArrayArray to make the form, and we store it for later runs.
+
+            Form f;
+            //if we only have a single refArr, we can make a capping surface or an extrusion
+            if (refArrArr.Size == 1)
+            {
+                ReferenceArray refArr = refArrArr.get_Item(0);
+
+                if (isSurface) // make a capping surface
+                {
+                    f = this.UIDocument.Document.FamilyCreate.NewFormByCap(true, refArr);
+                }
+                else  // make an extruded surface
+                {
+                    // The extrusion form direction
+                    XYZ direction = new XYZ(0, 0, 50);
+                    f = this.UIDocument.Document.FamilyCreate.NewExtrusionForm(true, refArr, direction);
+                }
+            }
+            else // make a lofted surface
+            {
+                f = this.UIDocument.Document.FamilyCreate.NewLoftForm(isSolid, refArrArr);
+            }
+
+            matchOrAddFormCurveToReferenceCurveMap(f, refArrArr, false);
+            this.Elements.Add(f.Id);
+
+            return FScheme.Value.NewContainer(f);
+        }
+
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        {
+            nodeElement.SetAttribute("FormId", _formId.ToString());
+            nodeElement.SetAttribute("PreferSurfaceForOneLoop", _preferSurfaceForOneLoop.ToString());
+
+            System.String mapAsString = "";
+
+            if (_sformCurveToReferenceCurveMap != null)
+            {
+                var enumMap = _sformCurveToReferenceCurveMap.GetEnumerator();
+                for (; enumMap.MoveNext(); )
+                {
+                    ElementId keyId = enumMap.Current.Key;
+                    ElementId valueId = enumMap.Current.Value;
+
+                    mapAsString = mapAsString + keyId.ToString() + "=" + valueId.ToString() + ";";
+                }
+            }
+            nodeElement.SetAttribute("FormCurveToReferenceCurveMap", mapAsString);
+        }
+
+        protected override void LoadNode(XmlNode nodeElement)
+        {
+            try
+            {
+                _formId = new ElementId(Convert.ToInt32(nodeElement.Attributes["FormId"].Value));
+                var thisIsSurface = nodeElement.Attributes["PreferSurfaceForOneLoop"];
+                if (thisIsSurface != null)
+                    _preferSurfaceForOneLoop = Convert.ToBoolean(thisIsSurface.Value);
+                else //used to be able to make only surface, so init to more likely value
+                    _preferSurfaceForOneLoop = true;
+
+                string mapAsString = nodeElement.Attributes["FormCurveToReferenceCurveMap"].Value;
+                _sformCurveToReferenceCurveMap = new Dictionary<ElementId, ElementId>();
+                if (mapAsString != "")
+                {
+
+                    string[] curMap = mapAsString.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                    int mapSize = curMap.Length;
+                    for (int iMap = 0; iMap < mapSize; iMap++)
+                    {
+                        string[] thisMap = curMap[iMap].Split(new char[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
+                        if (thisMap.Length != 2)
+                        {
+                            _sformCurveToReferenceCurveMap = new Dictionary<ElementId, ElementId>();
+                            break;
+                        }
+                        ElementId keyId = new ElementId(Convert.ToInt32(thisMap[0]));
+                        ElementId valueId = new ElementId(Convert.ToInt32(thisMap[1]));
+                        _sformCurveToReferenceCurveMap[keyId] = valueId;
+                    }
+                }
+            }
+            catch
+            {
+                _sformCurveToReferenceCurveMap = new Dictionary<ElementId, ElementId>();
+            }
+        }
+    }
 
     [NodeName("Revolve")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_SOLID_CREATE)]
@@ -892,7 +1209,6 @@ namespace Dynamo.Nodes
     }
 
     #endregion
-
 
     #region Solid Manipulation
 
