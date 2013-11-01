@@ -645,5 +645,65 @@
     <clr:Int32 x:Key="connector_stroke_thickness">2</clr:Int32>
     <clr:Double x:Key="connector_stroke_opacity">0.6</clr:Double>
     <clr:Double x:Key="connector_bezier_offset">20.0</clr:Double>
+    
+    <!-- CodeBlockNode Text Box Watermark -->
+
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+    <Style x:Key="CodeBlockNodeTextBox"
+           BasedOn="{StaticResource {x:Type TextBox}}"
+           TargetType="{x:Type TextBox}">
+        <Setter Property="Foreground" Value="#444" />
+        <Setter Property="CaretBrush" Value="#333" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="FontSize" Value="16.61px" />
+        <Setter Property="Padding" Value="3" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TextBox}">
+                    <Border Name="borderText"
+                            BorderThickness="1px"
+                            BorderBrush="#444"
+                            Background="#88FFFFFF">
+                        <Grid>
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                            <TextBlock x:Name="previewText"
+                                       Foreground="#777777"
+                                       FontSize="16.61px"
+                                       Padding="3"
+                                       Margin="4 0 4 0"
+                                       IsHitTestVisible="False"
+                                       Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                       Text="{TemplateBinding Tag}" />
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                            <Setter TargetName="borderText"
+                                    Property="BorderBrush"
+                                    Value="#666" />
+                            <Setter Property="Background"
+                                    Value="#aaa" />
+                        </Trigger>
+
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground"
+                                    Value="#444" />
+                            <Setter TargetName="borderText"
+                                    Property="BorderBrush"
+                                    Value="#444" />
+                        </Trigger>
+
+                        <Trigger Property="Text" Value="">
+                            <Setter Property="Visibility"
+                                    TargetName="previewText"
+                                    Value="Visible" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
 </ResourceDictionary>
