@@ -34,7 +34,6 @@ namespace Dynamo.Models
         #region private fields
         bool isConnected;
         NodeModel owner;
-        int index;
         PortType portType;
         string name;
         ObservableCollection<ConnectorModel> connectors = new ObservableCollection<ConnectorModel>();
@@ -83,8 +82,7 @@ namespace Dynamo.Models
 
         public int Index
         {
-            get { return index; }
-            set { index = value; }
+            get { return owner.GetPortIndex(this, out portType); }
         }
 
         public bool IsConnected
@@ -106,11 +104,11 @@ namespace Dynamo.Models
                 {
                     if (PortType == PortType.INPUT)
                     {
-                        return Owner.InPortData[index].ToolTipString;
+                        return Owner.InPortData[Index].ToolTipString;
                     }
                     else
                     {
-                        return Owner.OutPortData[index].ToolTipString;
+                        return Owner.OutPortData[Index].ToolTipString;
                     }
                 }
                 return "";
@@ -123,7 +121,7 @@ namespace Dynamo.Models
             {
                 if (PortType == PortType.INPUT && Owner != null)
                 {
-                    var port = Owner.InPortData[index];
+                    var port = Owner.InPortData[Index];
                     if (port.HasDefaultValue)
                         return FScheme.print(port.DefaultValue);
                 }
@@ -142,13 +140,14 @@ namespace Dynamo.Models
             get
             {
                 var pt = new Point();
+                double height = owner.GetPortVerticalOffset(this);
                 if (portType == PortType.INPUT)
                 {
-                    pt = new Point(owner.X, owner.Y + _headerHeight + 5 + _portHeight/2 + _portHeight*Index+1);
+                    pt = new Point(owner.X, owner.Y + _headerHeight + 5 + _portHeight/2 + height+1);
                 }
                 else if (portType == PortType.OUTPUT)
                 {
-                    pt = new Point(owner.X + owner.Width, owner.Y + _headerHeight + 5 + _portHeight / 2 + _portHeight * Index);
+                    pt = new Point(owner.X + owner.Width, owner.Y + _headerHeight + 5 + _portHeight / 2 + height);
                 }
 
                 return pt;
@@ -196,9 +195,8 @@ namespace Dynamo.Models
 
         #endregion
 
-        public PortModel(int index, PortType portType, NodeModel owner, string name)
+        public PortModel(PortType portType, NodeModel owner, string name)
         {
-            Index = index;
             IsConnected = false;
             PortType = portType;
             Owner = owner;
