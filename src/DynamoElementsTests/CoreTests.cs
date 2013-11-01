@@ -502,13 +502,6 @@ namespace Dynamo.Tests
             model.CreateNode(100.0, 300.0, "Number");
             model.CreateNode(100.0, 300.0, "Dynamo.Nodes.Watch");
 
-            //update the layout so the following
-            //connectors have visuals to transform to
-            //we were experiencing a problem in tests with TransfromToAncestor
-            //calls not being valid because entities weren't in the tree yet.
-            //dynSettings.Bench.Dispatcher.Invoke(
-            //    new Action(delegate { controller.Bench.UpdateLayout(); }), DispatcherPriority.Render, null);
-
             var num1 = Controller.DynamoViewModel.Model.Nodes[1] as DoubleInput;
             num1.Value = "2";
             var num2 = Controller.DynamoViewModel.Model.Nodes[2] as DoubleInput;

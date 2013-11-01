@@ -5,9 +5,8 @@ using Microsoft.FSharp.Collections;
 
 namespace Dynamo.Nodes
 {
-
     [NodeName("Find Root")]
-    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH_OPTIMIZE)]
     [NodeSearchTags("optimize", "newton")]
     [NodeDescription("Find the minimum of a 1 dimensional function without providing a derivative using Newton's method.")]
     public class NewtonRootFind1DNoDeriv : NodeWithOneOutput
@@ -64,7 +63,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Find Root With Derivative")]
-    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH)]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH_OPTIMIZE)]
     [NodeSearchTags("optimize", "newton")]
     [NodeDescription("Find the minimum of a 1 dimensional function while providing a derivative using Newton's method.")]
     public class NewtonRootFind1DWithDeriv : NodeWithOneOutput

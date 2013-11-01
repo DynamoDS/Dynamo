@@ -56,7 +56,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            Reference faceRef = (args[1] as Value.Container).Item as Reference;
+            var faceRef = (args[1] as Value.Container).Item as Reference;
             Autodesk.Revit.DB.Face f = (faceRef == null) ?
                 ((args[1] as Value.Container).Item as Autodesk.Revit.DB.Face) :
                 dynRevitSettings.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
@@ -146,7 +146,7 @@ namespace Dynamo.Nodes
 
     }
 
-    [NodeName("Frame on Curve")]
+    [NodeName("Transform on Curve")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_CURVE)]
     [NodeDescription("Evaluates tangent vector of curve or edge at parameter.")]
     public class TangentTransformOnCurveOrEdge : GeometryBase
@@ -169,10 +169,10 @@ namespace Dynamo.Nodes
 
             if (thisCurve == null && thisEdge == null && ((Value.Container)args[1]).Item is Reference)
             {
-                Reference r = (Reference)((Value.Container)args[1]).Item;
+                var r = (Reference)((Value.Container)args[1]).Item;
                 if (r != null)
                 {
-                    Element refElem = dynRevitSettings.Doc.Document.GetElement(r.ElementId);
+                    var refElem = dynRevitSettings.Doc.Document.GetElement(r.ElementId);
                     if (refElem != null)
                     {
                         GeometryObject geob = refElem.GetGeometryObjectFromReference(r);
@@ -183,10 +183,13 @@ namespace Dynamo.Nodes
                 }
             }
 
-            Transform result = (thisCurve != null) ?
+            var result = (thisCurve != null) ?
                 (!XyzOnCurveOrEdge.curveIsReallyUnbound(thisCurve) ? thisCurve.ComputeDerivatives(parameter, true) : thisCurve.ComputeDerivatives(parameter, false))
                 :
                 (thisEdge == null ? null : thisEdge.ComputeDerivatives(parameter));
+
+            
+             
 
             return Value.NewContainer(result);
         }
