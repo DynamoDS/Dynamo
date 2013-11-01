@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.UI.Commands;
@@ -330,14 +331,14 @@ namespace Dynamo.Controls
         protected double viewingZoom;
         protected double viewingWidth;
         protected double viewingHeight;
-
+        protected Binding binding;
         #endregion
 
-        public EndlessGrid(FrameworkElement viewingRegion)
+        public EndlessGrid(FrameworkElement viewingRegion, Binding binding)
         {
             this.viewingRegion = viewingRegion;
             this.RenderTransform = new TranslateTransform();
-            
+            this.binding = binding;
             this.Loaded += EndlessGrid_Loaded;
         }
 
@@ -396,6 +397,7 @@ namespace Dynamo.Controls
                 xLine.HorizontalAlignment = HorizontalAlignment.Left;
                 xLine.VerticalAlignment = VerticalAlignment.Center;
                 this.Children.Add(xLine);
+                xLine.SetBinding(UIElement.VisibilityProperty, binding);
             }
 
             // Draw Horizontal Grid Lines
@@ -411,6 +413,7 @@ namespace Dynamo.Controls
                 yLine.HorizontalAlignment = HorizontalAlignment.Left;
                 yLine.VerticalAlignment = VerticalAlignment.Center;
                 this.Children.Add(yLine);
+                yLine.SetBinding(UIElement.VisibilityProperty, binding);
             }
         }
 
