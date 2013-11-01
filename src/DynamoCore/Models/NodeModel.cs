@@ -1323,6 +1323,37 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// Since the ports can have a margin (offset) so that they can moved vertically from its 
+        /// initial position, the center of the port needs to be calculted differently and not only 
+        /// based on the index. The function adds the height of other nodes as well as their margins
+        /// </summary>
+        /// <param name="portModel"> The portModel whose height is to be found</param>
+        /// <returns> Returns the offset of the given port from the top of the ports </returns>
+        internal double GetPortVerticalOffset(PortModel portModel)
+        {
+            double verticalOffset = 2.9;
+            PortType portType;
+            int index = GetPortIndex(portModel, out portType);
+            if (portType == PortType.INPUT)
+            {
+                for (int i = 0; i < index; i++)
+                {
+                    verticalOffset += inPorts[i].MarginThickness.Top + 20;
+                }
+                verticalOffset += inPorts[index].MarginThickness.Top;
+            }
+            else if (portType == PortType.OUTPUT)
+            {
+                for (int i = 0; i < index; i++)
+                {
+                    verticalOffset += outPorts[i].MarginThickness.Top + 20;
+                }
+                verticalOffset += outPorts[index].MarginThickness.Top;
+            }
+            return verticalOffset;
+        }
+
+        /// <summary>
         /// Attempts to get the input for a certain port.
         /// </summary>
         /// <param name="data">PortData to look for an input for.</param>
@@ -1430,7 +1461,7 @@ namespace Dynamo.Models
                         return p;
                     }
 
-                    p = new PortModel(index, portType, this, data.NickName)
+                    p = new PortModel(portType, this, data.NickName)
                     {
                         UsingDefaultValue = data.HasDefaultValue,
                         DefaultValueEnabled = data.HasDefaultValue
@@ -1459,7 +1490,7 @@ namespace Dynamo.Models
                         return p;
                     }
 
-                    p = new PortModel(index, portType, this, data.NickName)
+                    p = new PortModel(portType, this, data.NickName)
                     {
                         UsingDefaultValue = false,
                         MarginThickness = new Thickness(0,data.VerticalMargin,0,0)
