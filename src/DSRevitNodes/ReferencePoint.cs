@@ -149,6 +149,10 @@ namespace DSRevitNodes
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Tessellate Reference Point to render package for visualization.
+        /// </summary>
+        /// <param name="package"></param>
         void IGraphicItem.Tessellate(IRenderPackage package)
         {
             package.PushPointVertex(this.X, this.Y, this.Z);
