@@ -1436,20 +1436,11 @@ namespace Dynamo.Nodes
     [NodeDescription("Creates a solid by sweeping and blending curve loop along a single curve")]
     public class CreateSweptBlendGeometry : GeometryBase
     {
-
-        FScheme.Value defaultEmpty = null;
-        List<Value> emptyParameterList = null;
-
         public CreateSweptBlendGeometry()
         {
-            if (defaultEmpty == null)
-            {
-                emptyParameterList = new List<Value>();
-                defaultEmpty = Value.NewList(Utils.SequenceToFSharpList(emptyParameterList));
-            }
             InPortData.Add(new PortData("profile loops", "Closed planar curve loops located along the path in orthogonal plane to the path.", typeof(Value.List)));
             InPortData.Add(new PortData("sweep path", "The curve to sweep along.", typeof(Value.Container)));
-            InPortData.Add(new PortData("attachment parameters", "parameter of attachment point on its curve", typeof(Value.List), defaultEmpty));
+            InPortData.Add(new PortData("attachment parameters", "parameter of attachment point on its curve", typeof(Value.List),  Value.NewList(FSharpList<Value>.Empty)));
             
             OutPortData.Add(new PortData("solid", "The swept geometry.", typeof(Value.Container)));
 
@@ -1473,6 +1464,7 @@ namespace Dynamo.Nodes
             if (inputPar.Length < profileLoops.Count)
             {
                 //intersect plane of each curve loop with the pathCurve
+                double lastParam =  pathCurve.ComputeRawParameter(0.0);
                 foreach (Autodesk.Revit.DB.CurveLoop cLoop in profileLoops)
                 {
                     Autodesk.Revit.DB.Plane planeOfCurveLoop = cLoop.GetPlane();
@@ -1481,9 +1473,21 @@ namespace Dynamo.Nodes
                     Face face = Dynamo.Nodes.CurveFaceIntersection.buildFaceOnPlaneByCurveExtensions(pathCurve, planeOfCurveLoop);
                     IntersectionResultArray xsects = null;
                     face.Intersect(pathCurve, out xsects);
-                    if (xsects == null || xsects.Size != 1)
+                    if (xsects == null )
                         throw new Exception("Could not find attachment point on path curve");
-                    attachParams.Add(xsects.get_Item(0).Parameter);
+                    if (xsects.Size > 1)
+                    {
+                        for (int indexInt = 0; indexInt < xsects.Size; indexInt++)
+                        {
+                            if (xsects.get_Item(indexInt).Parameter < lastParam + 0.0000001)
+                                continue;
+                            lastParam = xsects.get_Item(indexInt).Parameter;
+                            break;
+                        }
+                    }
+                    else
+                        lastParam = xsects.get_Item(0).Parameter;
+                    attachParams.Add(lastParam);
                 }
             }
             else
