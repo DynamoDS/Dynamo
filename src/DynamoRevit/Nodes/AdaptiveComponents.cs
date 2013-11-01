@@ -262,8 +262,9 @@ namespace Dynamo.Nodes
                 throw new Exception("The selected element is not an Adaptive Component.");
             }
 
-            var pts = ac.GetFamilyPointPlacementReferences();
-            var containers = pts.Select(x=>Value.NewContainer(x.PointReference.GlobalPoint));
+            var ptIds = AdaptiveComponentInstanceUtils.GetInstancePlacementPointElementRefIds(ac);
+            var pts = ptIds.ToList().Select(x =>(ReferencePoint)dynRevitSettings.Doc.Document.GetElement(x));
+            var containers = pts.Select(x => Value.NewContainer(x.Position));
             return Value.NewList(Utils.SequenceToFSharpList(containers));
         }
     }
