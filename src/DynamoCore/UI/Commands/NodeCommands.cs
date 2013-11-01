@@ -21,6 +21,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand showPreviewCommand;
         private DelegateCommand hidePreviewCommand;
         private DelegateCommand _setModelSizeCommand;
+        private DelegateCommand refreshErrorAndPreviewPositionCommand;
 
         public DelegateCommand RenameCommand
         {
@@ -209,6 +210,16 @@ namespace Dynamo.ViewModels
                 if (_setModelSizeCommand == null)
                     _setModelSizeCommand = new DelegateCommand(SetModelSize, CanSetModelSize);
                 return _setModelSizeCommand;
+            }
+        }
+
+        public DelegateCommand RefreshErrorAndPreviewPositionCommand
+        {
+            get
+            {
+                if (refreshErrorAndPreviewPositionCommand == null)
+                    refreshErrorAndPreviewPositionCommand = new DelegateCommand(RefreshErrorAndPreviewPosition, CanRefreshErrorAndPreviewPosition);
+                return refreshErrorAndPreviewPositionCommand;
             }
         }
    }

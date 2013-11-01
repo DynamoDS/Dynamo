@@ -102,7 +102,7 @@ namespace Dynamo.Controls
             ViewModel.RequestsSelection += new EventHandler(ViewModel_RequestsSelection);
 
             ViewModel.NodeLogic.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(NodeLogic_PropertyChanged);
-            
+            ViewModel.RefreshErrorAndPreviewPositionCommand.Execute(null);
         }
 
         void NodeLogic_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

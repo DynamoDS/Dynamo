@@ -840,6 +840,20 @@ namespace Dynamo.ViewModels
 
             return NodeModel.Width != size[0] || NodeModel.Height != size[1];
         }
+
+        private void RefreshErrorAndPreviewPosition(object parameter)
+        {
+            InfoBubbleDataPacket data = new InfoBubbleDataPacket();
+            data.TopLeft = new Point(NodeModel.X, NodeModel.Y);
+            data.BotRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
+            ErrorBubble.UpdatePositionCommand.Execute(data);
+            PreviewBubble.UpdatePositionCommand.Execute(data);
+        }
+
+        private bool CanRefreshErrorAndPreviewPosition(object parameter)
+        {
+            return true;
+        }
     }
 
     public class NodeHelpEventArgs : EventArgs
