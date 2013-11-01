@@ -7,7 +7,7 @@ using Dynamo.Utilities;
 namespace Dynamo.Nodes
 {
     [NodeName("Evaluate Surface")]
-    [NodeCategory(BuiltinNodeCategories.SURFACE_QUERY)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_SURFACE_QUERY)]
     [NodeDescription("Evaluate a parameter(UV) on a face to find the XYZ location.")]
     class XyzEvaluate : GeometryBase
     {
@@ -41,7 +41,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Surface Normal")]
-    [NodeCategory(BuiltinNodeCategories.SURFACE_QUERY)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_SURFACE_QUERY)]
     [NodeDescription("Evaluate a point on a face to find the normal.")]
     class NormalEvaluate : GeometryBase
     {
@@ -75,7 +75,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Surface Derivatives")]
-    [NodeCategory(BuiltinNodeCategories.SURFACE_QUERY)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_SURFACE_QUERY)]
     [NodeDescription("Returns a transform describing the face (f) at the parameter (uv).")]
     public class ComputeFaceDerivatives : GeometryBase
     {
@@ -113,7 +113,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Curve Derivatives")]
-    [NodeCategory(BuiltinNodeCategories.CURVE_QUERY)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_QUERY)]
     [NodeDescription("Returns a transform describing the face (f) at the parameter (uv).")]
     public class ComputeCurveDerivatives : GeometryBase
     {
@@ -147,7 +147,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Transform on Curve")]
-    [NodeCategory(BuiltinNodeCategories.CURVE_QUERY)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_QUERY)]
     [NodeDescription("Evaluates tangent vector of curve or edge at parameter.")]
     public class TangentTransformOnCurveOrEdge : GeometryBase
     {

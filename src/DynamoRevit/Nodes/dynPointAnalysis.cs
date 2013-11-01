@@ -14,7 +14,7 @@ using Dynamo.Utilities;
 namespace Dynamo.Nodes
 {
     [NodeName("Best Fit Line")]
-    [NodeCategory(BuiltinNodeCategories.CURVE_FIT)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_FIT)]
     [NodeDescription("Determine the best fit line for a set of points.  This line minimizes the sum of the distances between the line and the point set.")]
     internal class BestFitLine : NodeModel
     {
@@ -93,7 +93,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Best Fit Plane")]
-    [NodeCategory(BuiltinNodeCategories.SURFACE_PLANE)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_SURFACE_CREATE)]
     [NodeDescription("Determine the best fit plane for a set of points.  This line minimizes the sum of the distances between the line and the point set.")]
     internal class BestFitPlane : NodeModel
     {
@@ -156,7 +156,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Best Fit Arc")]
-    [NodeCategory(BuiltinNodeCategories.CURVE_FIT)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_FIT)]
     [NodeDescription("Creates best fit arc through points")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
     public class BestFitArc : RevitTransactionNodeWithOneOutput
@@ -224,7 +224,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Approximate By Tangent Arcs")]
-    [NodeCategory(BuiltinNodeCategories.CURVE_FIT)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_FIT)]
     [NodeDescription("Appoximates curve by sequence of tangent arcs.")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
     public class ApproximateByTangentArcs : RevitTransactionNodeWithOneOutput

@@ -14,7 +14,7 @@ using Dynamo.Revit;
 namespace Dynamo.Nodes
 {
     [NodeName("Divided Path")]
-    [NodeCategory(BuiltinNodeCategories.CURVE_DIVIDE)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_DIVIDE)]
     [NodeDescription("Divides curves or edges and makes a DividedPath.")]
     public class DividedPath : RevitTransactionNodeWithOneOutput
     {
@@ -204,7 +204,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Divided Surface")]
-    [NodeCategory(BuiltinNodeCategories.SURFACE_DIVIDE)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_SURFACE_DIVIDE)]
     [NodeDescription("An element which divides surfaces into patterns and faces")]
     public class DividedSurface : RevitTransactionNodeWithOneOutput
     {
