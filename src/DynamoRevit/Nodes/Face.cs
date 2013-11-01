@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Autodesk.Revit.DB;
 using Dynamo.Models;
+using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 
 namespace Dynamo.Nodes
@@ -144,6 +145,112 @@ namespace Dynamo.Nodes
             }
 
             return FScheme.Value.NewContainer(result);
+        }
+    }
+
+    [NodeName("Surface Derivatives")]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_SURFACE_QUERY)]
+    [NodeDescription("Returns a transform describing the face (f) at the parameter (uv).")]
+    public class ComputeFaceDerivatives : GeometryBase
+    {
+        public ComputeFaceDerivatives()
+        {
+            InPortData.Add(new PortData("f", "The face to evaluate(Face)", typeof(FScheme.Value.Container)));
+            InPortData.Add(new PortData("uv", "The parameter to evaluate(UV)", typeof(FScheme.Value.Container)));
+            OutPortData.Add(new PortData("t", "Transform describing the face at the parameter(Transform)", typeof(FScheme.Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+        {
+            var faceRef = ((FScheme.Value.Container)args[0]).Item as Reference;
+            var uv = (UV)((FScheme.Value.Container)args[1]).Item;
+
+            var t = Transform.Identity;
+
+            Autodesk.Revit.DB.Face f = (faceRef == null) ?
+                ((Autodesk.Revit.DB.Face)((FScheme.Value.Container)args[0]).Item) :
+                (dynRevitSettings.Doc.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face);
+
+            if (f != null)
+            {
+                t = f.ComputeDerivatives(uv);
+                t.BasisX = t.BasisX.Normalize();
+                t.BasisZ = t.BasisZ.Normalize();
+                t.BasisY = t.BasisX.CrossProduct(t.BasisZ);
+            }
+
+            return FScheme.Value.NewContainer(t);
+        }
+
+    }
+
+    [NodeName("Evaluate Surface")]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_SURFACE_QUERY)]
+    [NodeDescription("Evaluate a parameter(UV) on a face to find the XYZ location.")]
+    class XyzEvaluate : GeometryBase
+    {
+        public XyzEvaluate()
+        {
+            InPortData.Add(new PortData("uv", "The point to evaluate.", typeof(FScheme.Value.Container)));
+            InPortData.Add(new PortData("face", "The face to evaluate.", typeof(FScheme.Value.Container)));
+            OutPortData.Add(new PortData("XYZ", "The location.", typeof(FScheme.Value.Container)));
+            RegisterAllPorts();
+        }
+
+        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+        {
+            Reference faceRef = (args[1] as FScheme.Value.Container).Item as Reference;
+            Autodesk.Revit.DB.Face f = (faceRef == null) ?
+                ((args[1] as FScheme.Value.Container).Item as Autodesk.Revit.DB.Face) :
+                dynRevitSettings.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
+
+
+            XYZ face_point = null;
+
+            if (f != null)
+            {
+                //each item in the list will be a reference point
+                UV param = (UV)(args[0] as FScheme.Value.Container).Item;
+                face_point = f.Evaluate(param);
+            }
+
+            return FScheme.Value.NewContainer(face_point);
+        }
+    }
+
+    [NodeName("Surface Normal")]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_SURFACE_QUERY)]
+    [NodeDescription("Evaluate a point on a face to find the normal.")]
+    class NormalEvaluate : GeometryBase
+    {
+        public NormalEvaluate()
+        {
+            InPortData.Add(new PortData("uv", "The point to evaluate.", typeof(FScheme.Value.Container)));
+            InPortData.Add(new PortData("face", "The face to evaluate.", typeof(FScheme.Value.Container)));
+            OutPortData.Add(new PortData("XYZ", "The normal.", typeof(FScheme.Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+        {
+            var faceRef = (args[1] as FScheme.Value.Container).Item as Reference;
+            Autodesk.Revit.DB.Face f = (faceRef == null) ?
+                ((args[1] as FScheme.Value.Container).Item as Autodesk.Revit.DB.Face) :
+                dynRevitSettings.Doc.Document.GetElement(faceRef).GetGeometryObjectFromReference(faceRef) as Autodesk.Revit.DB.Face;
+
+            XYZ norm = null;
+
+            if (f != null)
+            {
+                //each item in the list will be a reference point
+                UV uv = (UV)(args[0] as FScheme.Value.Container).Item;
+                norm = f.ComputeNormal(uv);
+            }
+
+            return FScheme.Value.NewContainer(norm);
         }
     }
 }
