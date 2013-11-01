@@ -444,7 +444,7 @@ namespace Dynamo.ViewModels
 
         private void UpdateErrorBubbleContent()
         {
-            if (this.ErrorBubble == null)
+            if (this.ErrorBubble == null || dynSettings.Controller == null)
                 return;
             if (string.IsNullOrEmpty(NodeModel.ToolTipText))
             {
@@ -487,7 +487,7 @@ namespace Dynamo.ViewModels
 
         private void UpdatePreviewBubbleContent()
         {
-            if (this.PreviewBubble == null || this.NodeModel is Watch)
+            if (this.PreviewBubble == null || this.NodeModel is Watch || dynSettings.Controller == null)
                 return;
 
             //create data packet to send to preview bubble
@@ -768,7 +768,8 @@ namespace Dynamo.ViewModels
 
         private void FadeOutTooltip(object parameter)
         {
-            dynSettings.Controller.DynamoViewModel.HideInfoBubble(parameter);
+            if (dynSettings.Controller != null)
+                dynSettings.Controller.DynamoViewModel.HideInfoBubble(parameter);
         }
 
         private bool CanFadeOutTooltip(object parameter)

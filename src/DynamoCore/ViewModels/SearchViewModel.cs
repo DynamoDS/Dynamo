@@ -197,6 +197,13 @@ namespace Dynamo.ViewModels
         /// </summary>
         private List<BrowserItem> _visibleSearchResults = new List<BrowserItem>();
 
+        private bool searchScrollBarVisibility = true;
+        public bool SearchScrollBarVisibility
+        {
+            get { return searchScrollBarVisibility; }
+            set { searchScrollBarVisibility = value; RaisePropertyChanged("SearchScrollBarVisibility"); }
+        }
+
         #endregion
 
         #region events
