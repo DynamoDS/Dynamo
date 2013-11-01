@@ -164,7 +164,6 @@
     <Compile Include="Nodes\dynPointAnalysis.cs" />
     <Compile Include="Nodes\dynMeasurement.cs" />
     <Compile Include="dynModelUpdater.cs" />
-    <Compile Include="Nodes\dynAnalyze.cs" />
     <Compile Include="Nodes\ReferencePoint.cs" />
     <Compile Include="Nodes\Project.cs" />
     <Compile Include="Nodes\Selection.cs" />

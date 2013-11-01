@@ -1,5 +1,10 @@
-﻿using Autodesk.Revit.DB;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using Autodesk.Revit.DB;
 using Dynamo.Models;
+using Dynamo.Revit;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 
@@ -99,6 +104,74 @@ namespace Dynamo.Nodes
             }
 
             return FScheme.Value.NewContainer(a);
+        }
+    }
+
+    [NodeName("Best Fit Arc")]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_FIT)]
+    [NodeDescription("Creates best fit arc through points")]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
+    public class BestFitArc : RevitTransactionNodeWithOneOutput
+    {
+        public BestFitArc()
+        {
+            InPortData.Add(new PortData("points", "Points to Fit Arc Through", typeof(FScheme.Value.List)));
+            OutPortData.Add(new PortData("arc", "Best Fit Arc", typeof(FScheme.Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+        {
+            List<XYZ> xyzList = new List<XYZ>();
+
+            FSharpList<FScheme.Value> vals = ((FScheme.Value.List)args[0]).Item;
+            var doc = dynRevitSettings.Doc;
+
+            for (int ii = 0; ii < vals.Count(); ii++)
+            {
+                var item = ((FScheme.Value.Container)vals[ii]).Item;
+
+                if (item is ReferencePoint)
+                {
+                    ReferencePoint refPoint = (ReferencePoint)item;
+                    XYZ thisXYZ = refPoint.GetCoordinateSystem().Origin;
+                    xyzList.Add(thisXYZ);
+                }
+                else if (item is XYZ)
+                {
+                    XYZ thisXYZ = (XYZ)item;
+                    xyzList.Add(thisXYZ);
+                }
+            }
+
+            if (xyzList.Count <= 1)
+            {
+                throw new Exception("Not enough reference points to make a curve.");
+            }
+
+
+            Type ArcType = typeof(Autodesk.Revit.DB.Arc);
+
+            MethodInfo[] arcStaticMethods = ArcType.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+
+            System.String nameOfMethodCreateByFit = "CreateByFit";
+            Arc result = null;
+
+            foreach (MethodInfo m in arcStaticMethods)
+            {
+                if (m.Name == nameOfMethodCreateByFit)
+                {
+                    object[] argsM = new object[1];
+                    argsM[0] = xyzList;
+
+                    result = (Arc)m.Invoke(null, argsM);
+
+                    break;
+                }
+            }
+
+            return FScheme.Value.NewContainer(result);
         }
     }
 }

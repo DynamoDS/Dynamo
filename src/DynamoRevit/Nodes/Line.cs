@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Autodesk.Revit.DB;
 using Dynamo.Models;
 using Dynamo.Revit;
 using Dynamo.Utilities;
+using MathNet.Numerics.LinearAlgebra.Double;
+using MathNet.Numerics.LinearAlgebra.Generic;
 using Microsoft.FSharp.Collections;
 
 namespace Dynamo.Nodes
@@ -148,4 +152,84 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewContainer(result);
         }
     }
+
+    [NodeName("Best Fit Line")]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_FIT)]
+    [NodeDescription("Determine the best fit line for a set of points.  This line minimizes the sum of the distances between the line and the point set.")]
+    internal class BestFitLine : NodeModel
+    {
+        private readonly PortData _axisPort = new PortData(
+            "axis", "A normalized vector representing the axis of the best fit line.",
+            typeof(FScheme.Value.Container));
+
+        private readonly PortData _avgPort = new PortData(
+            "avg", "The average (mean) of the point list.", typeof(FScheme.Value.Container));
+
+        public BestFitLine()
+        {
+            InPortData.Add(new PortData("XYZs", "A List of XYZ's.", typeof(FScheme.Value.List)));
+            OutPortData.Add(_axisPort);
+            OutPortData.Add(_avgPort);
+
+            ArgumentLacing = LacingStrategy.Longest;
+            RegisterAllPorts();
+        }
+
+        public static List<T> AsGenericList<T>(FSharpList<FScheme.Value> list)
+        {
+            return list.Cast<FScheme.Value.Container>().Select(x => x.Item).Cast<T>().ToList();
+        }
+
+        public static XYZ MeanXYZ(List<XYZ> pts)
+        {
+            return pts.Aggregate(new XYZ(), (i, p) => i.Add(p)).Divide(pts.Count);
+        }
+
+        public static XYZ MakeXYZ(Vector<double> vec)
+        {
+            return new XYZ(vec[0], vec[1], vec[2]);
+        }
+
+        public static void PrincipalComponentsAnalysis(List<XYZ> pts, out XYZ meanXYZ, out List<XYZ> orderEigenvectors)
+        {
+            var meanPt = MeanXYZ(pts);
+            meanXYZ = meanPt;
+
+            var l = pts.Count();
+            var ctrdMat = DenseMatrix.Create(3, l, (r, c) => pts[c][r] - meanPt[r]);
+            var covarMat = (1 / ((double)pts.Count - 1)) * ctrdMat * ctrdMat.Transpose();
+
+            var eigen = covarMat.Evd();
+
+            var valPairs = new List<Tuple<double, Vector<double>>>
+                {
+                    new Tuple<double, Vector<double>>(eigen.EigenValues()[0].Real, eigen.EigenVectors().Column(0)),
+                    new Tuple<double, Vector<double>>(eigen.EigenValues()[1].Real, eigen.EigenVectors().Column(1)),
+                    new Tuple<double, Vector<double>>(eigen.EigenValues()[2].Real, eigen.EigenVectors().Column(2))
+                };
+
+            var sortEigVecs = valPairs.OrderByDescending((x) => x.Item1).ToList();
+
+            orderEigenvectors = new List<XYZ>
+                {
+                    MakeXYZ( sortEigVecs[0].Item2 ),
+                    MakeXYZ( sortEigVecs[1].Item2 ),
+                    MakeXYZ( sortEigVecs[2].Item2 )
+                };
+        }
+
+        public override void Evaluate(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
+        {
+            var pts = ((FScheme.Value.List)args[0]).Item;
+
+            var ptList = AsGenericList<XYZ>(pts);
+            XYZ meanPt;
+            List<XYZ> orderedEigenvectors;
+            PrincipalComponentsAnalysis(ptList, out meanPt, out orderedEigenvectors);
+
+            outPuts[_axisPort] = FScheme.Value.NewContainer(orderedEigenvectors[0]);
+            outPuts[_avgPort] = FScheme.Value.NewContainer(meanPt);
+        }
+    }
+
 }

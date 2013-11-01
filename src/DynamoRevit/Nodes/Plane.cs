@@ -1,8 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Autodesk.Revit.DB;
 using Dynamo.FSchemeInterop;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Revit;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
@@ -250,6 +251,69 @@ namespace Dynamo.Nodes
 
                 return FScheme.Value.NewContainer(sp);
             }
+        }
+    }
+
+    [NodeName("Best Fit Plane")]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_SURFACE_CREATE)]
+    [NodeDescription("Determine the best fit plane for a set of points.  This line minimizes the sum of the distances between the line and the point set.")]
+    internal class BestFitPlane : NodeModel
+    {
+        private readonly PortData _normalPort = new PortData(
+            "normal", "A normalized vector representing the axis of the best fit line.",
+            typeof(FScheme.Value.Container));
+
+        private readonly PortData _originPort = new PortData(
+            "origin", "The average (mean) of the point list.", typeof(FScheme.Value.Container));
+
+        private readonly PortData _planePort = new PortData(
+    "plane", "The plane representing the output.", typeof(FScheme.Value.Container));
+
+        public BestFitPlane()
+        {
+            InPortData.Add(new PortData("XYZs", "A List of XYZ's.", typeof(FScheme.Value.List)));
+            OutPortData.Add(_planePort);
+            OutPortData.Add(_normalPort);
+            OutPortData.Add(_originPort);
+
+            ArgumentLacing = LacingStrategy.Longest;
+            RegisterAllPorts();
+        }
+
+        public override void Evaluate(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
+        {
+            var pts = ((FScheme.Value.List)args[0]).Item;
+
+            if (pts.Length < 3)
+                throw new Exception("3 or more XYZs are necessary to form the best fit plane.");
+
+            var ptList = BestFitLine.AsGenericList<XYZ>(pts);
+            XYZ meanPt;
+            List<XYZ> orderedEigenvectors;
+            BestFitLine.PrincipalComponentsAnalysis(ptList, out meanPt, out orderedEigenvectors);
+
+            var normal = orderedEigenvectors[0].CrossProduct(orderedEigenvectors[1]);
+
+            var plane = dynRevitSettings.Doc.Application.Application.Create.NewPlane(normal, meanPt);
+
+            // take first 3 pts to form simplified normal 
+            var bma = ptList[1] - ptList[0];
+            var cma = ptList[2] - ptList[0];
+
+            var simplifiedNorm = bma.CrossProduct(cma);
+
+            // find sign of normal that maximizes the dot product pca normal and simplfied normal 
+            var dotProd = simplifiedNorm.DotProduct(normal);
+
+            if (dotProd < 0)
+            {
+                normal = -1 * normal;
+            }
+
+            outPuts[_planePort] = FScheme.Value.NewContainer(plane);
+            outPuts[_normalPort] = FScheme.Value.NewContainer(normal);
+            outPuts[_originPort] = FScheme.Value.NewContainer(meanPt);
+
         }
     }
 }
