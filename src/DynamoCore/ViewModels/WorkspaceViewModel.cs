@@ -91,6 +91,7 @@ namespace Dynamo.ViewModels
                 //Debug.WriteLine(string.Format("Setting zoom to {0}", e.Zoom));
                 ZoomChanged(this, e);
             }
+            dynSettings.Controller.DynamoViewModel.HideInfoBubble(null);
         }
 
         /// <summary>

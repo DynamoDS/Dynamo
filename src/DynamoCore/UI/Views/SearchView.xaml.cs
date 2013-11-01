@@ -45,6 +45,9 @@ namespace Dynamo.Search
         {
             DataContext = _viewModel = dynSettings.Controller.SearchViewModel;
 
+            this.MouseEnter += SearchView_MouseEnter;
+            this.MouseLeave += SearchView_MouseLeave;
+
             PreviewKeyDown += KeyHandler;
             this.SearchTextBox.PreviewKeyDown += new KeyEventHandler(OnSearchBoxPreviewKeyDown);
             this.SearchTextBox.KeyDown += new KeyEventHandler(OnSearchBoxKeyDown);
@@ -52,6 +55,16 @@ namespace Dynamo.Search
             dynSettings.Controller.SearchViewModel.RequestFocusSearch += new EventHandler(SearchViewModel_RequestFocusSearch);
             dynSettings.Controller.SearchViewModel.RequestReturnFocusToSearch += new EventHandler(SearchViewModel_RequestReturnFocusToSearch);
 
+        }
+
+        void SearchView_MouseLeave(object sender, MouseEventArgs e)
+        {
+            _viewModel.SearchScrollBarVisibility = false;
+        }
+
+        void SearchView_MouseEnter(object sender, MouseEventArgs e)
+        {
+            _viewModel.SearchScrollBarVisibility = true;
         }
 
         void OnSearchBoxKeyDown(object sender, KeyEventArgs e)
@@ -234,18 +247,22 @@ namespace Dynamo.Search
             DynamoCommands.HideLibItemInfoBubbleCommand.Execute(null);
         }
 
-        private void SearchTextBox_OnGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        private void SearchTextBoxGrid_MouseEnter(object sender, MouseEventArgs e)
         {
-            SearchTextBox.SelectAll();
-            var bc = new BrushConverter();
-            SearchTextGrid.Background = (Brush)bc.ConvertFromString("#111");
+            var searchIconSource = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/search_hover.png");
+            SearchIcon.Source = new BitmapImage(searchIconSource);
         }
 
-        private void SearchTextBox_OnLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        private void SearchTextBoxGrid_MouseLeave(object sender, MouseEventArgs e)
         {
-            var bc = new BrushConverter();
-            SearchTextGrid.Background = (Brush)bc.ConvertFromString("#191919");
+            var searchIconSource = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/search_normal.png");
+            SearchIcon.Source = new BitmapImage(searchIconSource);
         }
 
+        private void SearchCancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            SearchTextBox.Text = "";
+            Keyboard.Focus(SearchTextBox);
+        }
     }
 }
