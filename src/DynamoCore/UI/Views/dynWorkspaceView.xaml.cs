@@ -96,6 +96,7 @@ namespace Dynamo.Views
             zoomAndPanControl.Focusable = false;
             outerCanvas.Children.Add(zoomAndPanControl);
 
+            /*
             // Add EndlessGrid
             endlessGrid = new EndlessGrid(outerCanvas);
             selectionCanvas.Children.Add(endlessGrid);
@@ -109,7 +110,7 @@ namespace Dynamo.Views
                 Mode = BindingMode.OneWay,
             };
             binding.RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(TabControl), 1);
-            endlessGrid.SetBinding(UIElement.VisibilityProperty, binding);
+            endlessGrid.SetBinding(UIElement.VisibilityProperty, binding);*/
 
             //============
             //LoadCursorState();

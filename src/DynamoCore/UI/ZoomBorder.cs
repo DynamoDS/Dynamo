@@ -13,6 +13,7 @@ using System.Windows.Resources;
 using System;
 using System.Windows.Shapes;
 using Dynamo.Core;
+using System.Windows.Data;
 
 namespace Dynamo.Controls
 {
@@ -34,7 +35,6 @@ namespace Dynamo.Controls
         private UIElement child = null;
         private Point origin;
         private Point start;
-        public EndlessGrid EndlessGrid {set; get;}
 
         private bool _panMode;
         public bool PanMode
@@ -129,8 +129,6 @@ namespace Dynamo.Controls
                 var tt = GetTranslateTransform(child);
                 tt.X = 0.0;
                 tt.Y = 0.0;
-
-                updateGrid();
             }
         }
 
@@ -139,8 +137,6 @@ namespace Dynamo.Controls
             var tt = GetTranslateTransform(child);
             tt.X += x;
             tt.Y += y;
-
-            updateGrid();
         }
 
         public Point GetTranslateTransformOrigin()
@@ -154,8 +150,6 @@ namespace Dynamo.Controls
             var tt = GetTranslateTransform(child);
             tt.X = p.X;
             tt.Y = p.Y;
-
-            updateGrid();
         }
 
         public void SetZoom(double zoom)
@@ -163,16 +157,6 @@ namespace Dynamo.Controls
             var st = GetScaleTransform(child);
             st.ScaleX = zoom;
             st.ScaleY = zoom;
-        }
-
-        private void updateGrid()
-        {
-            if (EndlessGrid != null)
-            {
-                var tt = GetTranslateTransform(child);
-                var st = GetScaleTransform(child);
-                EndlessGrid.TranslateAndZoomChanged(tt, st.ScaleX);
-            }
         }
 
         #region Child Events
@@ -258,8 +242,6 @@ namespace Dynamo.Controls
                     tt.X = origin.X - v.X;
                     tt.Y = origin.Y - v.Y;
 
-                    updateGrid();
-
                     // Reset Fit View Toggle
                     WorkspaceViewModel vm = DataContext as WorkspaceViewModel;
                     if (vm.ResetFitViewToggleCommand.CanExecute(null))
@@ -271,169 +253,68 @@ namespace Dynamo.Controls
         #endregion
     }
 
-    public class EndlessGrid : Canvas
+    public class EndlessGrid : Canvas 
     {
-        #region Dependency Properties
+        private ItemsControl itemsControl;
 
-        public static readonly DependencyProperty GridSpacingProperty;
-        public static readonly DependencyProperty GridThicknessProperty;
-        public static readonly DependencyProperty GridLineColorProperty;
-
-        #endregion // Dependency Properties
-
-        #region Static Constructor
-
-        static EndlessGrid()
+        public EndlessGrid()
         {
-            GridSpacingProperty = DependencyProperty.Register(
-                "GridSpacing", typeof(int), typeof(EndlessGrid),
-                new PropertyMetadata(Configurations.GridSpacing));
-
-            GridThicknessProperty = DependencyProperty.Register(
-                "GridThickness", typeof(int), typeof(EndlessGrid),
-                new PropertyMetadata(Configurations.GridThickness));
-
-            GridLineColorProperty = DependencyProperty.Register(
-                "GridLineColor", typeof(Color), typeof(EndlessGrid),
-                new PropertyMetadata(Configurations.GridLineColor));
-        }
-
-        #endregion
-
-        #region Public Properties
-
-        public int GridSpacing
-        {
-            get { return (int)base.GetValue(GridSpacingProperty); }
-            set { base.SetValue(GridSpacingProperty, value); }
-        }
-
-        public int GridThickness
-        {
-            get { return (int)base.GetValue(GridThicknessProperty); }
-            set { base.SetValue(GridThicknessProperty, value); }
-        }
-
-        public Color GridLineColor
-        {
-            get { return (Color)base.GetValue(GridLineColorProperty); }
-            set { base.SetValue(GridLineColorProperty, value); }
-        }
-
-        #endregion
-
-        #region Protected Properties
-
-        protected int offset;
-        protected FrameworkElement viewingRegion;
-        protected TranslateTransform viewingTranslate;
-        protected double viewingZoom;
-        protected double viewingWidth;
-        protected double viewingHeight;
-
-        #endregion
-
-        public EndlessGrid(FrameworkElement viewingRegion)
-        {
-            this.viewingRegion = viewingRegion;
             this.RenderTransform = new TranslateTransform();
-            
             this.Loaded += EndlessGrid_Loaded;
         }
 
-        public void TranslateAndZoomChanged(TranslateTransform actualTranslate, double zoom)
-        {
-            viewingTranslate = actualTranslate;
-            viewingZoom = zoom;
-
-            RecalculateGridPosition();
-        }
-
-        #region Event Handling
-
         void EndlessGrid_Loaded(object sender, RoutedEventArgs e)
         {
-            DisplayRegion_SizeChanged(null, null);
+            // Create ItemsControl in Canvas to bind the grid line onto it
+            this.itemsControl = new ItemsControl();
 
-            CreateGrid();
-            this.viewingRegion.SizeChanged += DisplayRegion_SizeChanged;
+            FrameworkElementFactory factoryPanel = new FrameworkElementFactory(typeof(Canvas));
+            factoryPanel.SetValue(StackPanel.IsItemsHostProperty, true);
+
+            ItemsPanelTemplate template = new ItemsPanelTemplate();
+            template.VisualTree = factoryPanel;
+
+            itemsControl.ItemsPanel = template;
+            
+
+            this.Children.Add(itemsControl);
+
+            this.Background = Brushes.Transparent;
+            // Styling
+            ((EndlessGridViewModel)this.DataContext).RunCommand.Execute(null);
+
+            CreateBinding();
         }
-
-        private void DisplayRegion_SizeChanged(object sender, SizeChangedEventArgs e)
+		
+		private void CreateBinding()
         {
-            ViewingSizeChanged(viewingRegion.ActualWidth, viewingRegion.ActualHeight);
-        }
-
-        #endregion
-
-        #region Helper Methods
-
-        protected void CreateGrid()
-        {
-            this.Children.Clear();
-
-            Background = new SolidColorBrush(Colors.Transparent);
-
-            offset = (int)Math.Ceiling(GridSpacing * 2 / WorkspaceModel.ZOOM_MINIMUM);
-
-            this.Width = viewingWidth / WorkspaceModel.ZOOM_MINIMUM + offset * 2;
-            this.Height = viewingHeight / WorkspaceModel.ZOOM_MINIMUM + offset * 2;
-
-            TranslateTransform tt = (this.RenderTransform as TranslateTransform);
-            tt.X = -offset;
-            tt.Y = -offset;
-
-            // Draw Vertical Grid Lines
-            for (double i = 0; i < this.Width; i += GridSpacing)
+            // Visibility Binding
+            this.itemsControl.SetBinding(FrameworkElement.VisibilityProperty, new Binding("FullscreenWatchShowing")
             {
-                var xLine = new Line();
-                xLine.Stroke = new SolidColorBrush(GridLineColor);
-                xLine.StrokeThickness = GridThickness;
-                xLine.X1 = i;
-                xLine.Y1 = 0;
-                xLine.X2 = i;
-                xLine.Y2 = Height;
-                xLine.HorizontalAlignment = HorizontalAlignment.Left;
-                xLine.VerticalAlignment = VerticalAlignment.Center;
-                this.Children.Add(xLine);
-            }
+                Converter = new InverseBoolToVisibilityConverter(),
+                Mode = BindingMode.OneWay
+            });
 
-            // Draw Horizontal Grid Lines
-            for (double i = 0; i < this.Height; i += GridSpacing)
+            // Size Binding
+            this.SetBinding(EndlessGrid.WidthProperty, new Binding("Width")
             {
-                var yLine = new Line();
-                yLine.Stroke = new SolidColorBrush(GridLineColor);
-                yLine.StrokeThickness = GridThickness;
-                yLine.X1 = 0;
-                yLine.Y1 = i;
-                yLine.X2 = Width;
-                yLine.Y2 = i;
-                yLine.HorizontalAlignment = HorizontalAlignment.Left;
-                yLine.VerticalAlignment = VerticalAlignment.Center;
-                this.Children.Add(yLine);
-            }
-        }
+                Mode = BindingMode.OneWay
+            });
 
-        protected void RecalculateGridPosition()
-        {
-            TranslateTransform tt = (this.RenderTransform as TranslateTransform);
-            if (viewingZoom != 0)
+            this.SetBinding(EndlessGrid.HeightProperty, new Binding("Height")
             {
-                double scaledGridSpacing = GridSpacing * viewingZoom;
-                tt.X = -offset - ((int)(viewingTranslate.X / scaledGridSpacing)) * GridSpacing;
-                tt.Y = -offset - ((int)(viewingTranslate.Y / scaledGridSpacing)) * GridSpacing;
-            }
+                Mode = BindingMode.OneWay
+            });
+
+            // GridLine binds to ItemsControl
+            this.itemsControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("GridLines"){
+                Mode = BindingMode.OneWay
+            });
+
+            this.SetBinding(EndlessGrid.RenderTransformProperty, new Binding("Transform")
+            {
+                Mode = BindingMode.OneWay
+            });
         }
-
-        protected void ViewingSizeChanged(double viewWidth, double viewHeight)
-        {
-            viewingWidth = viewWidth;
-            viewingHeight = viewHeight;
-
-            CreateGrid();
-            RecalculateGridPosition();
-        }
-
-        #endregion
     }
 }
