@@ -1059,5 +1059,59 @@ namespace Dynamo.Nodes
             return Value.NewContainer(result);
         }
     }
+
+    [NodeName("Approximate By Tangent Arcs")]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_FIT)]
+    [NodeDescription("Appoximates curve by sequence of tangent arcs.")]
+    [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
+    public class ApproximateByTangentArcs : RevitTransactionNodeWithOneOutput
+    {
+        public ApproximateByTangentArcs()
+        {
+            InPortData.Add(new PortData("curve", "Curve to Approximate by Tangent Arcs", typeof(Value.Container)));
+            OutPortData.Add(new PortData("arcs", "List of Approximating Arcs", typeof(Value.List)));
+
+            RegisterAllPorts();
+        }
+
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Curve thisCurve = (Curve)((Value.Container)args[0]).Item;
+
+            if (thisCurve == null)
+            {
+                throw new Exception("Not enough reference points to make a curve.");
+            }
+
+
+            Type CurveType = typeof(Autodesk.Revit.DB.Curve);
+
+            MethodInfo[] curveInstanceMethods = CurveType.GetMethods(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+
+            System.String nameOfMethodApproximateByTangentArcs = "ApproximateByTangentArcs";
+            List<Curve> resultArcs = null;
+            var result = FSharpList<Value>.Empty;
+
+            foreach (MethodInfo m in curveInstanceMethods)
+            {
+                if (m.Name == nameOfMethodApproximateByTangentArcs)
+                {
+                    object[] argsM = new object[0];
+
+                    resultArcs = (List<Curve>)m.Invoke(thisCurve, argsM);
+
+                    break;
+                }
+            }
+            for (int indexCurve = resultArcs.Count - 1; indexCurve > -1; indexCurve--)
+            {
+                result = FSharpList<Value>.Cons(Value.NewContainer(resultArcs[indexCurve]), result);
+            }
+
+            return Value.NewList(result);
+        }
+    }
+
 }
 
