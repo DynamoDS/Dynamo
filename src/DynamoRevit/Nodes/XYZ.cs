@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using Autodesk.Revit.DB;
 using Dynamo.FSchemeInterop;
 using Dynamo.Models;
+using Dynamo.Utilities;
+using MathNet.Numerics.LinearAlgebra.Double;
+using MathNet.Numerics.LinearAlgebra.Generic;
 using Microsoft.FSharp.Collections;
 
 namespace Dynamo.Nodes
@@ -932,6 +935,261 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewList(
                ListModule.Reverse(result)
             );
+        }
+    }
+
+    [NodeName("Equal Distanced XYZs On Curve")]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_DIVIDE)]
+    [NodeDescription("Creates a list of equal distanced XYZs along a curve.")]
+    public class EqualDistXyzAlongCurve : GeometryBase
+    {
+        public EqualDistXyzAlongCurve()
+        {
+            InPortData.Add(new PortData("curve", "Curve", typeof(FScheme.Value.Container)));
+            InPortData.Add(new PortData("count", "Number", typeof(FScheme.Value.Number))); // just divide equally for now, dont worry about spacing and starting point
+            OutPortData.Add(new PortData("XYZs", "List of equal distanced XYZs", typeof(FScheme.Value.List)));
+
+            RegisterAllPorts();
+        }
+
+        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+        {
+
+            double xi;//, x0, xs;
+            xi = ((FScheme.Value.Number)args[1]).Item;// Number
+            xi = Math.Round(xi);
+            if (xi < System.Double.Epsilon)
+                throw new Exception("The point count must be larger than 0.");
+
+            //x0 = ((Value.Number)args[2]).Item;// Starting Coord
+            //xs = ((Value.Number)args[3]).Item;// Spacing
+
+
+            var result = FSharpList<FScheme.Value>.Empty;
+
+            Curve crvRef = null;
+
+            if (((FScheme.Value.Container)args[0]).Item is CurveElement)
+            {
+                var c = (CurveElement)((FScheme.Value.Container)args[0]).Item; // Curve 
+                crvRef = c.GeometryCurve;
+            }
+            else
+            {
+                crvRef = (Curve)((FScheme.Value.Container)args[0]).Item; // Curve 
+            }
+
+            double t = 0.0;
+
+            XYZ startPoint = !XyzOnCurveOrEdge.curveIsReallyUnbound(crvRef) ? crvRef.Evaluate(t, true) : crvRef.Evaluate(t * crvRef.Period, false);
+
+            result = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewContainer(startPoint), result);
+
+            t = 1.0;
+            XYZ endPoint = !XyzOnCurveOrEdge.curveIsReallyUnbound(crvRef) ? crvRef.Evaluate(t, true) : crvRef.Evaluate(t * crvRef.Period, false);
+
+            if (xi > 2.0 + System.Double.Epsilon)
+            {
+                int numParams = Convert.ToInt32(xi - 2.0);
+
+                var curveParams = new List<double>();
+
+                for (int ii = 0; ii < numParams; ii++)
+                {
+                    curveParams.Add((ii + 1.0) / (xi - 1.0));
+                }
+
+                int maxIterNum = 15;
+                bool bUnbound = XyzOnCurveOrEdge.curveIsReallyUnbound(crvRef);
+
+                int iterNum = 0;
+                for (; iterNum < maxIterNum; iterNum++)
+                {
+                    XYZ prevPoint = startPoint;
+                    XYZ thisXYZ = null;
+                    XYZ nextXYZ = null;
+
+                    Vector<double> distValues = DenseVector.Create(numParams, (c) => 0.0);
+
+                    Matrix<double> iterMat = DenseMatrix.Create(numParams, numParams, (r, c) => 0.0);
+                    double maxDistVal = -1.0;
+                    for (int iParam = 0; iParam < numParams; iParam++)
+                    {
+                        t = curveParams[iParam];
+
+                        if (nextXYZ != null)
+                            thisXYZ = nextXYZ;
+                        else
+                            thisXYZ = !bUnbound ? crvRef.Evaluate(t, true) : crvRef.Evaluate(t * crvRef.Period, false);
+
+                        double tNext = (iParam == numParams - 1) ? 1.0 : curveParams[iParam + 1];
+                        nextXYZ = (iParam == numParams - 1) ? endPoint :
+                                   !bUnbound ? crvRef.Evaluate(tNext, true) : crvRef.Evaluate(tNext * crvRef.Period, false);
+
+                        distValues[iParam] = thisXYZ.DistanceTo(prevPoint) - thisXYZ.DistanceTo(nextXYZ);
+
+                        if (Math.Abs(distValues[iParam]) > maxDistVal)
+                            maxDistVal = Math.Abs(distValues[iParam]);
+                        Transform thisDerivTrf = !bUnbound ? crvRef.ComputeDerivatives(t, true) : crvRef.ComputeDerivatives(t * crvRef.Period, false);
+                        XYZ derivThis = thisDerivTrf.BasisX;
+                        if (bUnbound)
+                            derivThis = derivThis.Multiply(crvRef.Period);
+                        double distPrev = thisXYZ.DistanceTo(prevPoint);
+                        if (distPrev > System.Double.Epsilon)
+                        {
+                            double valDeriv = (thisXYZ - prevPoint).DotProduct(derivThis) / distPrev;
+                            iterMat[iParam, iParam] += valDeriv;
+                            if (iParam > 0)
+                            {
+                                iterMat[iParam - 1, iParam] -= valDeriv;
+                            }
+                        }
+                        double distNext = thisXYZ.DistanceTo(nextXYZ);
+                        if (distNext > System.Double.Epsilon)
+                        {
+                            double valDeriv = (thisXYZ - nextXYZ).DotProduct(derivThis) / distNext;
+
+                            iterMat[iParam, iParam] -= valDeriv;
+                            if (iParam < numParams - 1)
+                            {
+                                iterMat[iParam + 1, iParam] += valDeriv;
+                            }
+                        }
+                        prevPoint = thisXYZ;
+                    }
+
+                    Matrix<double> iterMatInvert = iterMat.Inverse();
+                    Vector<double> changeValues = iterMatInvert.Multiply(distValues);
+
+                    double dampingFactor = 1.0;
+
+                    for (int iParam = 0; iParam < numParams; iParam++)
+                    {
+                        curveParams[iParam] -= dampingFactor * changeValues[iParam];
+
+                        if (iParam == 0 && curveParams[iParam] < 0.000000001)
+                        {
+                            double oldValue = dampingFactor * changeValues[iParam] + curveParams[iParam];
+                            while (curveParams[iParam] < 0.000000001)
+                                curveParams[iParam] = 0.5 * (dampingFactor * changeValues[iParam] + curveParams[iParam]);
+                            changeValues[iParam] = (oldValue - curveParams[iParam]) / dampingFactor;
+                        }
+                        else if (iParam > 0 && curveParams[iParam] < 0.000000001 + curveParams[iParam - 1])
+                        {
+                            for (; iParam > -1; iParam--)
+                                curveParams[iParam] = dampingFactor * changeValues[iParam] + curveParams[iParam];
+
+                            dampingFactor *= 0.5;
+                            continue;
+                        }
+                        else if (iParam == numParams - 1 && curveParams[iParam] > 1.0 - 0.000000001)
+                        {
+                            double oldValue = dampingFactor * changeValues[iParam] + curveParams[iParam];
+                            while (curveParams[iParam] > 1.0 - 0.000000001)
+                                curveParams[iParam] = 0.5 * (1.0 + dampingFactor * changeValues[iParam] + curveParams[iParam]);
+                            changeValues[iParam] = (oldValue - curveParams[iParam]) / dampingFactor;
+                        }
+                    }
+                    if (maxDistVal < 0.000000001)
+                    {
+                        for (int iParam = 0; iParam < numParams; iParam++)
+                        {
+                            t = curveParams[iParam];
+                            thisXYZ = !XyzOnCurveOrEdge.curveIsReallyUnbound(crvRef) ? crvRef.Evaluate(t, true) : crvRef.Evaluate(t * crvRef.Period, false);
+                            result = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewContainer(thisXYZ), result);
+
+                        }
+                        break;
+                    }
+                }
+
+                if (iterNum == maxIterNum)
+                    throw new Exception("could not solve for equal distances");
+
+            }
+
+            if (xi > 1.0 + System.Double.Epsilon)
+            {
+                result = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewContainer(endPoint), result);
+            }
+            return FScheme.Value.NewList(
+               ListModule.Reverse(result)
+            );
+        }
+    }
+
+    [NodeName("Evaluate Curve")]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_QUERY)]
+    [NodeDescription("Evaluates curve or edge at parameter.")]
+    public class XyzOnCurveOrEdge : GeometryBase
+    {
+        public XyzOnCurveOrEdge()
+        {
+            InPortData.Add(new PortData("parameter", "The normalized parameter to evaluate at within 0..1 range, any for closed curve.", typeof(FScheme.Value.Number)));
+            InPortData.Add(new PortData("curve or edge", "The curve or edge to evaluate.", typeof(FScheme.Value.Container)));
+            OutPortData.Add(new PortData("XYZ", "XYZ at parameter.", typeof(FScheme.Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public static bool curveIsReallyUnbound(Curve curve)
+        {
+            if (!curve.IsBound)
+                return true;
+            if (!curve.IsCyclic)
+                return false;
+            double period = curve.Period;
+            if (curve.get_EndParameter(1) > curve.get_EndParameter(0) + period - 0.000000001)
+                return true;
+            return false;
+        }
+
+        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+        {
+            double parameter = ((FScheme.Value.Number)args[0]).Item;
+
+            Curve thisCurve = null;
+            Edge thisEdge = null;
+            if (((FScheme.Value.Container)args[1]).Item is Curve)
+                thisCurve = ((FScheme.Value.Container)args[1]).Item as Curve;
+            else if (((FScheme.Value.Container)args[1]).Item is Edge)
+                thisEdge = ((FScheme.Value.Container)args[1]).Item as Edge;
+            else if (((FScheme.Value.Container)args[1]).Item is Reference)
+            {
+                Reference r = (Reference)((FScheme.Value.Container)args[1]).Item;
+                if (r != null)
+                {
+                    Element refElem = dynRevitSettings.Doc.Document.GetElement(r.ElementId);
+                    if (refElem != null)
+                    {
+                        GeometryObject geob = refElem.GetGeometryObjectFromReference(r);
+                        thisEdge = geob as Edge;
+                        if (thisEdge == null)
+                            thisCurve = geob as Curve;
+                    }
+                    else
+                        throw new Exception("Could not accept second in-port for Evaluate curve or edge node");
+                }
+            }
+            else if (((FScheme.Value.Container)args[1]).Item is CurveElement)
+            {
+                CurveElement cElem = ((FScheme.Value.Container)args[1]).Item as CurveElement;
+                if (cElem != null)
+                {
+                    thisCurve = cElem.GeometryCurve;
+                }
+                else
+                    throw new Exception("Could not accept second in-port for Evaluate curve or edge node");
+
+            }
+            else
+                throw new Exception("Could not accept second in-port for Evaluate curve or edge node");
+
+            XYZ result = (thisCurve != null) ? (!curveIsReallyUnbound(thisCurve) ? thisCurve.Evaluate(parameter, true) : thisCurve.Evaluate(parameter, false))
+                :
+                (thisEdge == null ? null : thisEdge.Evaluate(parameter));
+
+            return FScheme.Value.NewContainer(result);
         }
     }
 }
