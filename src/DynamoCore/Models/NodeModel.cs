@@ -1753,6 +1753,10 @@ namespace Dynamo.Models
                 RaisePropertyChanged("ArgumentLacing");
                 RaisePropertyChanged("IsVisible");
                 RaisePropertyChanged("IsUpstreamVisible");
+
+                // Notify listeners that the position of the node has changed,
+                // then all connected connectors will also redraw themselves.
+                this.ReportPosition();
             }
         }
 
