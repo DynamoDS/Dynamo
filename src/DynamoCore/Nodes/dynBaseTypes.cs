@@ -3155,6 +3155,90 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Inverse Sine")]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH_TRIGONOMETRY)]
+    [NodeDescription("Computes the inverse sine of the given angle.")]
+    [NodeSearchTags("asin", "arcsine")]
+    public class Asin : MathBase
+    {
+        public Asin()
+        {
+            InPortData.Add(new PortData("θ", "Angle in radians", typeof(Value.Number)));
+            OutPortData.Add(new PortData("asin(θ)", "Arcsine value of the given angle", typeof(Value.Number)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var input = args[0];
+
+            double theta = ((Value.Number)input).Item;
+            return Value.NewNumber(Math.Asin(theta));
+        }
+
+        protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
+        {
+            return builder.Build(this, inputs);
+        }
+    }
+
+    [NodeName("Inverse Cosine")]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH_TRIGONOMETRY)]
+    [NodeDescription("Computes the inverse cosine of the given angle.")]
+    [NodeSearchTags("acos", "arccos")]
+    public class Acos : MathBase
+    {
+        public Acos()
+        {
+            InPortData.Add(new PortData("θ", "Angle in radians", typeof(Value.Number)));
+            OutPortData.Add(new PortData("acos(θ)", "Arccosine value of the given angle", typeof(Value.Number)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var input = args[0];
+
+            double theta = ((Value.Number)input).Item;
+            return Value.NewNumber(Math.Acos(theta));
+        }
+
+        protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
+        {
+            return builder.Build(this, inputs);
+        }
+    }
+
+    [NodeName("Inverse Tangent")]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH_TRIGONOMETRY)]
+    [NodeDescription("Computes the secant of the given angle.")]
+    [NodeSearchTags("atan", "arctangent")]
+    public class Atan : MathBase
+    {
+        public Atan()
+        {
+            InPortData.Add(new PortData("θ", "Angle in radians", typeof(Value.Number)));
+            OutPortData.Add(new PortData("atan(θ)", "Arctangent value of the given angle", typeof(Value.Number)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var input = args[0];
+
+            double theta = ((Value.Number)input).Item;
+            return Value.NewNumber(Math.Atan(theta));
+        }
+
+        protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
+        {
+            return builder.Build(this, inputs);
+        }
+    }
+
     [NodeName("Average")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_QUERY)]
     [NodeDescription("Averages a list of numbers.")]
