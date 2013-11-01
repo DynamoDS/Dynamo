@@ -5,6 +5,7 @@ namespace Dynamo.ViewModels
     public partial class InfoBubbleViewModel : ViewModelBase
     {
         private DelegateCommand updateContentCommand;
+        private DelegateCommand updateShapeCommand;
         private DelegateCommand updatePositionCommand;
         private DelegateCommand fadeInCommand;
         private DelegateCommand fadeOutCommand;
@@ -20,6 +21,16 @@ namespace Dynamo.ViewModels
                 if (updateContentCommand == null)
                     updateContentCommand = new DelegateCommand(UpdateInfoBubbleContent, CanUpdateInfoBubbleCommand);
                 return updateContentCommand;
+            }
+        }
+
+        public DelegateCommand UpdateShapeCommand
+        {
+            get
+            {
+                if (updateShapeCommand == null)
+                    updateShapeCommand = new DelegateCommand(UpdateShape, CanUpdateShape);
+                return updateShapeCommand;
             }
         }
 

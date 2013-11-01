@@ -238,9 +238,8 @@ namespace Dynamo.ViewModels
             InfoBubbleDataPacket data = (InfoBubbleDataPacket)parameter;
 
             UpdateStyle(data.Style, data.ConnectingDirection);
+            SaveParameter(data.TopLeft, data.BotRight);
             UpdateContent(data.Text);
-            UpdateShape(data.TopLeft, data.BotRight);
-            UpdatePosition(data.TopLeft, data.BotRight);
         }
 
         private bool CanUpdateInfoBubbleCommand(object parameter)
@@ -248,11 +247,28 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        private void UpdateShape(object parameter)
+        {
+            UpdateShape(this.TargetTopLeft, this.TargetBotRight);
+        }
+
+        private bool CanUpdateShape(object parameter)
+        {
+            return true;
+        }
+
         private void UpdatePosition(object parameter)
         {
-            InfoBubbleDataPacket data = (InfoBubbleDataPacket)parameter;
-            SaveParameter(data.TopLeft, data.BotRight);
-            UpdatePosition(data.TopLeft, data.BotRight);
+            if (parameter != null)
+            {
+                InfoBubbleDataPacket data = (InfoBubbleDataPacket)parameter;
+                SaveParameter(data.TopLeft, data.BotRight);
+                UpdatePosition(data.TopLeft, data.BotRight);
+            }
+            else
+            {
+                UpdatePosition(this.TargetTopLeft, this.TargetBotRight);
+            }
         }
 
         private bool CanUpdatePosition(object parameter)
@@ -337,9 +353,6 @@ namespace Dynamo.ViewModels
             }
 
             UpdateContent(FullContent);
-            UpdateShape(TargetTopLeft, TargetBotRight);
-            UpdatePosition(this.TargetTopLeft, this.TargetBotRight);
-
             this.preview_LastMaxWidth = MaxWidth;
             this.preview_LastMaxHeight = MaxHeight;
         }
@@ -688,7 +701,6 @@ namespace Dynamo.ViewModels
             {
                 limitedDirection = Direction.Top;
                 ContentMargin = Configurations.NodeTooltipContentMarginLeft;
-                UpdateContent(Content);
 
                 pointCollection.Add(new Point(EstimatedWidth, 0));
                 pointCollection.Add(new Point(0, 0));
@@ -700,7 +712,6 @@ namespace Dynamo.ViewModels
             {
                 limitedDirection = Direction.TopRight;
                 ContentMargin = Configurations.NodeTooltipContentMarginRight;
-                UpdateContent(Content);
 
                 pointCollection.Add(new Point(EstimatedWidth, 0));
                 pointCollection.Add(new Point(0, 0));
@@ -720,7 +731,6 @@ namespace Dynamo.ViewModels
             {
                 limitedDirection = Direction.Right;
                 ContentMargin = Configurations.NodeTooltipContentMarginRight;
-                UpdateContent(Content);
                 pointCollection = GetFramePoints_NodeTooltipConnectRight(topLeft, botRight);
             }
             else
@@ -746,7 +756,6 @@ namespace Dynamo.ViewModels
             {
                 limitedDirection = Direction.Left;
                 ContentMargin = Configurations.NodeTooltipContentMarginLeft;
-                UpdateContent(Content);
                 pointCollection = GetFramePoints_NodeTooltipConnectLeft(topLeft, botRight);
             }
             else

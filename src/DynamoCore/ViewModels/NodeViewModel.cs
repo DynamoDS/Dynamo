@@ -448,11 +448,8 @@ namespace Dynamo.ViewModels
                 return;
             if (string.IsNullOrEmpty(NodeModel.ToolTipText))
             {
-                if (ErrorBubble.Opacity != 0)
-                {
-                    ErrorBubble.SetAlwaysVisibleCommand.Execute(false);
-                    ErrorBubble.InstantCollapseCommand.Execute(null);
-                }
+                ErrorBubble.SetAlwaysVisibleCommand.Execute(false);
+                ErrorBubble.InstantCollapseCommand.Execute(null);
             }
             else
             {
@@ -467,9 +464,9 @@ namespace Dynamo.ViewModels
                     if (!dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Errors.Contains(this.ErrorBubble))
                         return;
                     this.ErrorBubble.UpdateContentCommand.Execute(data);
-                    this.ErrorBubble.SetAlwaysVisibleCommand.Execute(true);
-                    this.ErrorBubble.InstantAppearCommand.Execute(null);
                 })));
+                this.ErrorBubble.SetAlwaysVisibleCommand.Execute(true);
+                this.ErrorBubble.InstantAppearCommand.Execute(null);
             }
         }
 
@@ -842,6 +839,20 @@ namespace Dynamo.ViewModels
             }
 
             return NodeModel.Width != size[0] || NodeModel.Height != size[1];
+        }
+
+        private void RefreshErrorAndPreviewPosition(object parameter)
+        {
+            InfoBubbleDataPacket data = new InfoBubbleDataPacket();
+            data.TopLeft = new Point(NodeModel.X, NodeModel.Y);
+            data.BotRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
+            ErrorBubble.UpdatePositionCommand.Execute(data);
+            PreviewBubble.UpdatePositionCommand.Execute(data);
+        }
+
+        private bool CanRefreshErrorAndPreviewPosition(object parameter)
+        {
+            return true;
         }
     }
 
