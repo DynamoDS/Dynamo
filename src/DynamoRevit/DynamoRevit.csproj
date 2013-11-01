@@ -160,10 +160,13 @@
     <Compile Include="Nodes\dynSimplexNoise.cs" />
     <Compile Include="Nodes\dynSolarRadiation.cs" />
     <Compile Include="Nodes\FamilyType.cs" />
+    <Compile Include="Nodes\Plane.cs" />
+    <Compile Include="Nodes\Solid.cs" />
     <Compile Include="Nodes\StructuralFraming.cs" />
     <Compile Include="Nodes\dynTessellation.cs" />
     <Compile Include="Nodes\dynTransactions.cs" />
     <Compile Include="Nodes\Transform.cs" />
+    <Compile Include="Nodes\UV.cs" />
     <Compile Include="Nodes\View.cs" />
     <Compile Include="IdlePromise.cs" />
     <Compile Include="Nodes\Floor.cs" />
