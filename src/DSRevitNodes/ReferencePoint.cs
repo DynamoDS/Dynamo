@@ -14,7 +14,7 @@ namespace DSRevitNodes
     /// A Revit Reference Point
     /// </summary>
     [RegisterForTrace]
-    [ShortName("RefPt")]
+    [ShortName("refPt")]
     public class ReferencePoint : AbstractGeometry
     {
         /// <summary>
@@ -30,6 +30,8 @@ namespace DSRevitNodes
         /// <param name="z"></param>
         private ReferencePoint(double x, double y, double z)
         {
+
+
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
             internalRefPt = Document.FamilyCreate.NewReferencePoint(new XYZ(x, y, z));
