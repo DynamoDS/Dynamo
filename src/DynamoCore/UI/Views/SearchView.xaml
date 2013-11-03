@@ -84,9 +84,7 @@
                 </ControlTemplate>
             </Button.Template>-->
             </Button>
-        
-        
-        
+
         <Grid Name="SearchTextBoxGrid" Grid.Row="1" Height="30" VerticalAlignment="Center" MouseEnter="SearchTextBoxGrid_MouseEnter" MouseLeave="SearchTextBoxGrid_MouseLeave">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>

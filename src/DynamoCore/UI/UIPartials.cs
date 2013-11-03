@@ -701,25 +701,6 @@ namespace Dynamo.Nodes
         }
     }
 
-    public partial class Function
-    {
-        public override void SetupCustomUIElements(object ui)
-        {
-            var nodeUI = ui as dynNodeView;
-
-            nodeUI.MouseDoubleClick += ui_MouseDoubleClick;
-        }
-
-        void ui_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            //Don't attempt to go to the workspace if the definition is
-            //null. If the function is missing  
-            Controller.DynamoViewModel.GoToWorkspace(_def.FunctionId);
-            e.Handled = true;
-        }
-
-    }
-
     public partial class Output
     {
         public override void SetupCustomUIElements(object ui)

@@ -233,13 +233,22 @@ namespace Dynamo.Controls
             if (ViewModel == null) return;
 
             dynSettings.ReturnFocusToSearch();
-            //dynSettings.Bench.mainGrid.Focus();
+
             var view = WPF.FindUpVisualTree<DynamoView>(this);
             view.mainGrid.Focus();
 
             Guid nodeGuid = this.ViewModel.NodeModel.GUID;
             dynSettings.Controller.DynamoViewModel.ExecuteCommand(
                 new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers));
+
+            if (e.ClickCount == 2)
+            {
+                if (ViewModel.GotoWorkspaceCommand.CanExecute(null))
+                {
+                    ViewModel.GotoWorkspaceCommand.Execute(null);
+                }
+                e.Handled = true;
+            }
         }
 
         private void topControl_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
@@ -248,23 +257,16 @@ namespace Dynamo.Controls
             e.Handled = true;
         }
 
-        //private void dynNodeView_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
-        //{
-        //    var viewModel = DataContext as dynNodeViewModel;
-        //    if (viewModel != null)
-        //        viewModel.ViewCustomNodeWorkspaceCommand.Execute();
-        //}
-
         private void NickNameBlock_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             ViewModel.CollapseTooltipCommand.Execute(null);
-            if (e.ClickCount > 1)
+            if (e.ClickCount == 2)
             {
+                Debug.WriteLine("Nickname double clicked!");
                 if (this.ViewModel != null && this.ViewModel.RenameCommand.CanExecute(null))
                 {
                     this.ViewModel.RenameCommand.Execute(null);
                 }
-
                 e.Handled = true;
             }
         }

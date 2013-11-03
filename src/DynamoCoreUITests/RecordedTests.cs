@@ -19,6 +19,7 @@ namespace Dynamo.Tests.UI
     {
         // For access within test cases.
         private WorkspaceModel workspace = null;
+        private WorkspaceViewModel workspaceViewModel = null;
         private DynamoController controller = null;
 
         [SetUp]
@@ -86,6 +87,28 @@ namespace Dynamo.Tests.UI
             VerifyModelExistence(nodeExistenceMap);
         }
 
+        [Test, RequiresSTA]
+        public void Defect_MAGN_491()
+        {
+            RunCommandsFromFile("Defect-MAGN-491.xml");
+            var connectors = workspaceViewModel.Connectors;
+            Assert.NotNull(connectors);
+            Assert.AreEqual(2, connectors.Count);
+
+            // Get to the only two connectors in the session.
+            ConnectorViewModel firstConnector = connectors[0];
+            ConnectorViewModel secondConnector = connectors[1];
+
+            // Find out the corresponding ports they connect to.
+            Point firstPoint = firstConnector.ConnectorModel.End.Center;
+            Point secondPoint = secondConnector.ConnectorModel.End.Center;
+
+            Assert.AreEqual(firstPoint.X, firstConnector.CurvePoint3.X);
+            Assert.AreEqual(firstPoint.Y, firstConnector.CurvePoint3.Y);
+            Assert.AreEqual(secondPoint.X, secondConnector.CurvePoint3.X);
+            Assert.AreEqual(secondPoint.Y, secondConnector.CurvePoint3.Y);
+        }
+
         private void VerifyModelExistence(Dictionary<string, bool> modelExistenceMap)
         {
             var nodes = workspace.Nodes;
@@ -117,6 +140,7 @@ namespace Dynamo.Tests.UI
             Assert.IsNotNull(controller.DynamoModel);
             Assert.IsNotNull(controller.DynamoModel.CurrentWorkspace);
             workspace = controller.DynamoModel.CurrentWorkspace;
+            workspaceViewModel = controller.DynamoViewModel.CurrentSpaceViewModel;
         }
     }
 }
