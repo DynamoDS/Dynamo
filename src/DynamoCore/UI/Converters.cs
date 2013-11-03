@@ -1215,4 +1215,24 @@ namespace Dynamo.Controls
             return null;
         }
     }
+
+    public class BoolToScrollBarVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if ((bool)value)
+            {
+                return ScrollBarVisibility.Auto;
+            }
+            else if (parameter != null && parameter.ToString() == "Disabled")
+                return ScrollBarVisibility.Disabled;
+
+            return ScrollBarVisibility.Hidden;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
 }

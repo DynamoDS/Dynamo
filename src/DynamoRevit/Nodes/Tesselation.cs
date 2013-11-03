@@ -12,7 +12,7 @@ using Value = Dynamo.FScheme.Value;
 namespace Dynamo.Nodes
 {
     [NodeName("Voronoi on Face")]
-    [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TESSELATE)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_SURFACE_DIVIDE)]
     [NodeDescription("Create a Voronoi tesselation on a face.")]
     public class VoronoiOnFace : RevitTransactionNodeWithOneOutput
     {
@@ -90,7 +90,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Delaunay On Face")]
-    [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TESSELATE)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_SURFACE_DIVIDE)]
     [NodeDescription("Create a Delaunay triangulation on a face.")]
     public class DelaunayOnFace : RevitTransactionNodeWithOneOutput
     {
@@ -184,7 +184,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Convex Hull 3D")]
-    [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TESSELATE)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_POINT_TESSELATE)]
     [NodeDescription("Find the convex hull of a set of XYZs.")]
     public class ConvexHull3D : RevitTransactionNodeWithOneOutput
     {
@@ -277,7 +277,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Delaunay 3D")]
-    [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_TESSELATE)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_POINT_TESSELATE)]
     [NodeDescription("Create a 3d delaunay tesselation of XYZs.")]
     public class Delaunay3D : RevitTransactionNodeWithOneOutput
     {
