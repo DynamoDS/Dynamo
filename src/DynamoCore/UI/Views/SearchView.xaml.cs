@@ -45,6 +45,9 @@ namespace Dynamo.Search
         {
             DataContext = _viewModel = dynSettings.Controller.SearchViewModel;
 
+            this.MouseEnter += SearchView_MouseEnter;
+            this.MouseLeave += SearchView_MouseLeave;
+
             PreviewKeyDown += KeyHandler;
             this.SearchTextBox.PreviewKeyDown += new KeyEventHandler(OnSearchBoxPreviewKeyDown);
             this.SearchTextBox.KeyDown += new KeyEventHandler(OnSearchBoxKeyDown);
@@ -52,6 +55,16 @@ namespace Dynamo.Search
             dynSettings.Controller.SearchViewModel.RequestFocusSearch += SearchViewModel_RequestFocusSearch;
             dynSettings.Controller.SearchViewModel.RequestReturnFocusToSearch += SearchViewModel_RequestReturnFocusToSearch;
 
+        }
+
+        void SearchView_MouseLeave(object sender, MouseEventArgs e)
+        {
+            _viewModel.SearchScrollBarVisibility = false;
+        }
+
+        void SearchView_MouseEnter(object sender, MouseEventArgs e)
+        {
+            _viewModel.SearchScrollBarVisibility = true;
         }
 
         void OnSearchBoxKeyDown(object sender, KeyEventArgs e)
@@ -232,6 +245,24 @@ namespace Dynamo.Search
             if (nodeSearchElement == null)
                 return;
             DynamoCommands.HideLibItemInfoBubbleCommand.Execute(null);
+        }
+
+        private void SearchTextBoxGrid_MouseEnter(object sender, MouseEventArgs e)
+        {
+            var searchIconSource = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/search_hover.png");
+            SearchIcon.Source = new BitmapImage(searchIconSource);
+        }
+
+        private void SearchTextBoxGrid_MouseLeave(object sender, MouseEventArgs e)
+        {
+            var searchIconSource = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/search_normal.png");
+            SearchIcon.Source = new BitmapImage(searchIconSource);
+        }
+
+        private void SearchCancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            SearchTextBox.Text = "";
+            Keyboard.Focus(SearchTextBox);
         }
     }
 }

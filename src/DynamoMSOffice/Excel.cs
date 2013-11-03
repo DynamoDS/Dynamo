@@ -419,7 +419,7 @@ namespace Dynamo.Nodes
             var worksheet = wb.Worksheets.Add();
             worksheet.Name = name;
 
-            return FScheme.Value.NewContainer(wb);
+            return FScheme.Value.NewContainer(worksheet);
         }
 
     }
