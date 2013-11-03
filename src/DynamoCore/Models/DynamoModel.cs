@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using System.Windows.Threading;
 using System.Xml;
 using Dynamo.Nodes;
+using Dynamo.Nodes.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.Selection;
@@ -400,8 +401,8 @@ namespace Dynamo.Models
 
             DynamoLoader.LoadCustomNodes();
 
-            // sort all categories
-            dynSettings.Controller.SearchViewModel.BrowserRootCategories.ToList().ForEach(x=>x.RecursivelySort());
+            dynSettings.Controller.SearchViewModel.RemoveEmptyCategories();
+            dynSettings.Controller.SearchViewModel.SortCategoryChildren();
 
             DynamoLogger.Instance.Log("Welcome to Dynamo!");
 
