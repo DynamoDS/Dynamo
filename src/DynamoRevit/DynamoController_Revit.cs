@@ -336,7 +336,9 @@ namespace Dynamo
         /// </summary>
         private void ResetForNewDocument()
         {
-            dynSettings.Controller.DynamoModel.Nodes.ToList().ForEach(x=>x.ResetOldValue());
+            if(dynSettings.Controller != null)
+                dynSettings.Controller.DynamoModel.Nodes.ToList().ForEach(x=>x.ResetOldValue());
+
             VisualizationManager.ClearVisualizations();
 
             OnRevitDocumentChanged();
