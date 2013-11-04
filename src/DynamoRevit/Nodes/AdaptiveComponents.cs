@@ -18,7 +18,7 @@ namespace Dynamo.Nodes
     {
         public AdaptiveComponentByPoints()
         {
-            InPortData.Add(new PortData("xyzs", "The XYZs that define the locations of your adaptive points.", typeof(Value.Container)));
+            InPortData.Add(new PortData("xyzs", "The XYZs that define the locations of your adaptive points.", typeof(Value.List)));
             InPortData.Add(new PortData("fs", "The family type to create the adaptive component.", typeof(Value.Container)));
             OutPortData.Add(new PortData("ac", "The adaptive component.", typeof(Value.Container)));
 
