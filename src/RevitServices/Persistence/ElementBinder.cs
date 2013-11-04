@@ -1,13 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
 using Autodesk.Revit.DB;
 using DSNodeServices;
 
 namespace RevitServices.Persistence
 {
+    [Serializable]
+    internal class SerializableId : ISerializable
+    {
+        public String stringID { get; set; }
+        public int intID { get; set; }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public class ElementBinder
     {
         private const string REVIT_TRACE_ID = "{0459D869-0C72-447F-96D8-08A7FB92214B}-REVIT";
@@ -25,11 +34,16 @@ namespace RevitServices.Persistence
 
             //Get the element ID that was cached in the callsite
             ISerializable traceData = TraceUtils.GetTraceData(REVIT_TRACE_ID);
-            
 
-            //TODO(DE-Serialise)
+            SerializableId id = traceData as SerializableId;
+            if (id == null)
+                return null; //There was no usable data in the trace cache
 
-            String traceDataStr = null;
+
+            //@TODO(Luke): make this work with hot swapping ids and guids rather than
+            //always using GUIDs
+
+            String traceDataStr = id.stringID;
 
             T ret;
 
@@ -49,14 +63,13 @@ namespace RevitServices.Persistence
         public static void SetElementForTrace(ElementId elementId)
         {
 
-
-            //TODO(Serialise the ID into a string)
-
-            ISerializable traceData = null;
-
+            SerializableId id = new SerializableId();
+            id.intID = elementId.IntegerValue;
+       
+            //TODO(Push the GUID into the object)
 
             //Set the element ID cached in the callsite
-            TraceUtils.SetTraceData(REVIT_TRACE_ID, traceData);
+            TraceUtils.SetTraceData(REVIT_TRACE_ID, id);
         }
 
 
