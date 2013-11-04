@@ -5,14 +5,14 @@ using NUnit.Framework;
 namespace Dynamo.Tests
 {
     [TestFixture]
-    class BugTests:DynamoRevitUnitTestBase
+    class LengthTests:DynamoRevitUnitTestBase
     {
         [Test]
-        public void MAGN_66()
+        public void Length()
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\\Bugs\MAGN_66.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Length\Length.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
