@@ -8,14 +8,14 @@ using NUnit.Framework;
 namespace Dynamo.Tests
 {
     [TestFixture]
-    class DatumsTests:DynamoRevitUnitTestBase
+    class LevelTests:DynamoRevitUnitTestBase
     {
         [Test]
         public void Level()
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\Level.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Level\Level.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);

@@ -1,24 +1,17 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using Autodesk.Revit.DB;
-using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Utilities;
-using Microsoft.FSharp.Collections;
 using NUnit.Framework;
-using Transaction = Autodesk.Revit.DB.Transaction;
 
 namespace Dynamo.Tests
 {
     [TestFixture]
-    public class PointTests :DynamoRevitUnitTestBase
+    public class ReferencePointTests : DynamoRevitUnitTestBase
     {
-        [Test]
-        public void SanitCheck()
-        {
-            Assert.Equals(0, 0);
-        }
-
         [Test]
         public void CanCreateAndDeleteAReferencePoint()
         {
@@ -53,35 +46,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(3, dynSettings.Controller.DynamoModel.Nodes.Count);
 
             dynSettings.Controller.RunExpression(true);
-        }
-
-        [Test]
-        public void XYZFromReferencePoint()
-        {
-            var model = dynSettings.Controller.DynamoModel;
-
-            string samplePath = Path.Combine(_testPath, @".\XYZFromReferencePoint.dyn");
-            string testPath = Path.GetFullPath(samplePath);
-
-            model.Open(testPath);
-            ReferencePoint rp;
-            using (_trans = new Transaction(dynRevitSettings.Doc.Document))
-            {
-                _trans.Start("Create a reference point.");
-
-                rp = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(new XYZ());
-
-                _trans.Commit();
-
-            }
-            FSharpList<FScheme.Value> args = FSharpList<FScheme.Value>.Empty;
-            args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewContainer(rp), args);
-
-            //find the XYZFromReferencePoint node
-            var node = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is XyzFromReferencePoint).First();
-
-            FScheme.Value v = ((NodeWithOneOutput)node).Evaluate(args);
-            Assert.IsInstanceOf(typeof(XYZ), ((FScheme.Value.Container)v).Item);
         }
     }
 }

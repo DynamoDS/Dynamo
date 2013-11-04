@@ -49,7 +49,7 @@ namespace Dynamo.Tests
 
             var fi = new FileInfo(Assembly.GetExecutingAssembly().Location);
             string assDir = fi.DirectoryName;
-            string testsLoc = Path.Combine(assDir, @"..\..\..\test\revit\regression\");
+            string testsLoc = Path.Combine(assDir, @"..\..\..\test\revit\Regression\");
             var regTestPath = Path.GetFullPath(testsLoc);
 
             DynamoLogger.Instance.Log(string.Format("Using regression path: {0}", regTestPath), LogLevel.File);
