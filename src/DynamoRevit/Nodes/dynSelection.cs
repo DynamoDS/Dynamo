@@ -78,8 +78,7 @@ namespace Dynamo.Nodes
                         {
                             _selected = null;
                             SelectedElement = null;
-                        }
-                        );
+                        });
 
                     SelectButtonContent = "Change";
                 }
