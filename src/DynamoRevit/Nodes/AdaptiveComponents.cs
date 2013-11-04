@@ -236,34 +236,4 @@ namespace Dynamo.Nodes
         }
 
     }
-
-    [NodeName("Adpative Component Placement Points")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
-    [NodeDescription("Return the placement point locations for an Adaptive Component")]
-    public class AdaptiveComponentPlacementPoints : NodeWithOneOutput
-    {
-        public AdaptiveComponentPlacementPoints()
-        {
-            InPortData.Add(new PortData("adaptive component", "Adaptive Component for which you want to return the placement point locations.", typeof(Value.Container)));
-            OutPortData.Add(new PortData("points", "Locations of Adaptive Component placement points.", typeof(Value.Container)));
-            RegisterAllPorts();
-
-            ArgumentLacing = LacingStrategy.Longest;
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            var ac = (FamilyInstance) ((Value.Container) args[0]).Item;
-
-            if (!AdaptiveComponentFamilyUtils.IsAdaptiveComponentFamily(ac.Symbol.Family))
-            {
-                throw new Exception("The selected element is not an Adaptive Component.");
-            }
-
-            var ptIds = AdaptiveComponentInstanceUtils.GetInstancePlacementPointElementRefIds(ac);
-            var pts = ptIds.ToList().Select(x =>(ReferencePoint)dynRevitSettings.Doc.Document.GetElement(x));
-            var containers = pts.Select(x => Value.NewContainer(x.Position));
-            return Value.NewList(Utils.SequenceToFSharpList(containers));
-        }
-    }
 }
