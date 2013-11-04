@@ -2,6 +2,7 @@
 using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using DSNodeServices;
+using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Edge = Autodesk.DesignScript.Geometry.Edge;
 using Plane = Autodesk.DesignScript.Geometry.Plane;
@@ -30,8 +31,19 @@ namespace DSRevitNodes
         /// <param name="z"></param>
         private ReferencePoint(double x, double y, double z)
         {
+            //Phase 1 - Check to see if the object exists and should be rebound
+            Autodesk.Revit.DB.ReferencePoint oldRefPt = 
+                ElementBinder.GetElementFromTrace<Autodesk.Revit.DB.ReferencePoint>(Document);
 
+            //There was a point, rebind to that, and adjust its position
+            if (oldRefPt != null)
+            {
+                internalRefPt = oldRefPt;
+                InternalSetPosition(new XYZ(x, y, z));
+                return;
+            }
 
+            //Phase 2- There was no existing point, create one
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
             internalRefPt = Document.FamilyCreate.NewReferencePoint(new XYZ(x, y, z));
