@@ -66,5 +66,11 @@ namespace Dynamo.Tests
             Assert.AreEqual(3, acs.Count());
 
         }
+
+        [Test]
+        public void AdaptiveComponentPlacementPoints()
+        {
+            Assert.Inconclusive("Finish me!");
+        }
     }
 }
