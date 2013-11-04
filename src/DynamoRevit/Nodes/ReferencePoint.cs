@@ -392,4 +392,50 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Reference Point Distance")]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
+    [NodeSearchTags("Distance", "dist", "norm")]
+    [NodeDescription("Measures a distance between point(s).")]
+    public class DistanceBetweenPoints : MeasurementBase
+    {
+        public DistanceBetweenPoints()
+        {
+            InPortData.Add(new PortData("ptA", "Element to measure to.", typeof(Value.Container)));
+            InPortData.Add(new PortData("ptB", "A Reference point.", typeof(Value.Container)));
+
+            OutPortData.Add(new PortData("dist", "Distance between points.", typeof(Value.Number)));
+
+            RegisterAllPorts();
+        }
+
+        private XYZ getXYZ(object arg)
+        {
+            if (arg is ReferencePoint)
+            {
+                return (arg as ReferencePoint).Position;
+            }
+            else if (arg is FamilyInstance)
+            {
+                return ((arg as FamilyInstance).Location as LocationPoint).Point;
+            }
+            else if (arg is XYZ)
+            {
+                return arg as XYZ;
+            }
+            else
+            {
+                throw new Exception("Cannot cast argument to ReferencePoint or FamilyInstance or XYZ.");
+            }
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            //Grab our inputs and turn them into XYZs.
+            XYZ ptA = this.getXYZ(((Value.Container)args[0]).Item);
+            XYZ ptB = this.getXYZ(((Value.Container)args[1]).Item);
+
+            //Return the calculated distance.
+            return Value.NewNumber(ptA.DistanceTo(ptB));
+        }
+    }
 }

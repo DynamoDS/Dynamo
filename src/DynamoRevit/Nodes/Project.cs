@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using Autodesk.Revit.DB;
 using Dynamo.Models;
 using Microsoft.FSharp.Collections;
-
 using Value = Dynamo.FScheme.Value;
 using Dynamo.Revit;
-using Dynamo.Utilities;
 
 namespace Dynamo.Nodes
 {
     [NodeName("Project Point On Curve")]
-    [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_INTERSECT)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_QUERY)]
     [NodeDescription("Project a point onto a curve.")]
     public class ProjectPointOnCurve : RevitTransactionNode
     {
@@ -53,7 +51,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Project Point On Face or Plane")]
-    [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_INTERSECT)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_SURFACE_QUERY)]
     [NodeDescription("Project a point onto a face or plane.")]
     public class ProjectPointOnFace : RevitTransactionNode
     {
