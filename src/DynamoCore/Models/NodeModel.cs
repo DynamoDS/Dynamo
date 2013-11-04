@@ -1013,8 +1013,12 @@ namespace Dynamo.Models
         {
 
         }
-        
+
         protected virtual void __eval_internal(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
+        {
+            __eval_internal_recursive(args, outPuts);
+        }
+        protected virtual void __eval_internal_recursive(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts, int level = 0)
         {
             var argSets = new List<FSharpList<FScheme.Value>>();
 
@@ -1084,7 +1088,46 @@ namespace Dynamo.Models
                 {
                     evalDict.Clear();
 
-                    Evaluate(Utils.SequenceToFSharpList(argList), evalDict);
+                    var thisArgsAsFSharpList = Utils.SequenceToFSharpList(argList);
+
+                    var portComparisonLaced = thisArgsAsFSharpList.Zip(InPortData, (first, second) => new Tuple<Type, Type>(first.GetType(), second.PortType)).ToList();
+                    
+                    int jj = 0;
+                    bool bHasListNotExpecting = false;
+                    foreach (var argLaced in argList)
+                    {
+                        //incoming value is list and expecting single
+                        if (ArgumentLacing != LacingStrategy.Disabled && thisArgsAsFSharpList.Any() && 
+                            portComparisonLaced.ElementAt(jj).Item1 == typeof(Value.List) &&
+                            portComparison.ElementAt(jj).Item2 != typeof(Value.List) &&
+                            (!AcceptsListOfLists(argLaced) || !Utils.IsListOfLists(argLaced)) 
+                           )
+                        {
+                            bHasListNotExpecting = true;
+                            break;
+                        }
+                        jj++;
+                    }
+                    if (bHasListNotExpecting)
+                    {
+                        if (level > 20)
+                            throw new Exception("Too deep recursive list containment by lists, only 21 are allowed");
+                        Dictionary<PortData, FScheme.Value> outPutsLevelPlusOne = new Dictionary<PortData, FScheme.Value>();
+
+                        __eval_internal_recursive(Utils.SequenceToFSharpList(argList), outPutsLevelPlusOne, level + 1);
+                        //pack result back
+                       
+                        foreach (var dataLaced in outPutsLevelPlusOne)
+                        {
+                            var dataL = dataLaced.Key;
+                            var valueL = outPutsLevelPlusOne[dataL];
+                            evalResult[dataL] = FSharpList<Value>.Cons(valueL, evalResult[dataL]);
+                        }
+                        continue;
+                    }
+                    else
+                       Evaluate(Utils.SequenceToFSharpList(argList), evalDict);
+
                     OnEvaluate();
 
                     foreach (var data in OutPortData)
