@@ -867,6 +867,7 @@ namespace Dynamo.Nodes
         {
             var instance = (FamilyInstance) ((Value.Container) args[0]).Item;
 
+            // ADAPTIVE COMPONENT
             if (AdaptiveComponentInstanceUtils.IsAdaptiveComponentInstance(instance))
             {
                 var refPtIds = AdaptiveComponentInstanceUtils.GetInstancePlacementPointElementRefIds(instance);
@@ -879,15 +880,27 @@ namespace Dynamo.Nodes
                 return Value.NewList(Utils.SequenceToFSharpList(refPts.Reverse()));
             }
 
+            // INSTANCE WITH PLACEMENT POINT
+            var ptRefs = instance.GetFamilyPointPlacementReferences();
+            if (ptRefs.Any())
+            {
+                var pts = ptRefs.Select(x => x.Location.Origin);
+                var containers = pts.Select(Value.NewContainer);
+                return Value.NewList(Utils.SequenceToFSharpList(containers));
+            }
+
             LocationPoint point = null;
             LocationCurve c = null;
 
+            // INSTANCE WITH LOCATION POINT
             point = instance.Location as LocationPoint;
             if (point != null)
             {
                 return Value.NewContainer(point.Point);
             }
             
+
+            //INSTANCE WITH LOCATION CURVE
             c = instance.Location as LocationCurve;
             if (c != null)
             {
