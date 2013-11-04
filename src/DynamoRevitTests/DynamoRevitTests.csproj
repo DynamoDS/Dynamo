@@ -61,6 +61,7 @@
       <HintPath>$(NunitPath)\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
+    <Reference Include="ProtoCore, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64" />
     <Reference Include="RevitAPI">
       <HintPath>$(REVITAPI)\RevitAPI.dll</HintPath>
       <Private>False</Private>
@@ -86,6 +87,7 @@
     <Compile Include="IntersectionTests.cs" />
     <Compile Include="MeasureTests.cs" />
     <Compile Include="MiscTests.cs" />
+    <Compile Include="NewNodeSampleTests.cs" />
     <Compile Include="PointTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PythonTests.cs" />
