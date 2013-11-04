@@ -20,7 +20,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\SanityCheck.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Core\SanityCheck.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
@@ -32,7 +32,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\LacingTest.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Core\LacingTest.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
@@ -78,7 +78,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string testPath = Path.Combine(_testPath, "ReferencePoint.dyn");
+            string testPath = Path.Combine(_testPath, @".\ReferencePoint\ReferencePoint.dyn");
             model.Open(testPath);
             Assert.AreEqual(3, dynSettings.Controller.DynamoModel.Nodes.Count);
 
@@ -128,7 +128,7 @@ namespace Dynamo.Tests
             var model = dynSettings.Controller.DynamoModel;
 
             //open the workflow and run the expression
-            string testPath = Path.Combine(_testPath, "ReferencePointTest.dyn");
+            string testPath = Path.Combine(_testPath, @".\ReferencePoint\ReferencePoint.dyn");
             model.Open(testPath);
             Assert.AreEqual(3, dynSettings.Controller.DynamoModel.Nodes.Count());
             dynSettings.Controller.RunExpression(true);

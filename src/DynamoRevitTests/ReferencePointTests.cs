@@ -41,7 +41,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string testPath = Path.Combine(_testPath, "ReferencePoint.dyn");
+            string testPath = Path.Combine(_testPath, @".\ReferencePoint\ReferencePoint.dyn");
             model.Open(testPath);
             Assert.AreEqual(3, dynSettings.Controller.DynamoModel.Nodes.Count);
 
