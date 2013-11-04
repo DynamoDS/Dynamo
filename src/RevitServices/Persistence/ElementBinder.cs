@@ -47,7 +47,7 @@ namespace RevitServices.Persistence
 
             T ret;
 
-            if (Elements.ElementValidity.TryGetElement(document, traceDataStr, out ret))
+            if (Elements.ElementUtils.TryGetElement(document, traceDataStr, out ret))
                 return ret;
             else
                 return null;
