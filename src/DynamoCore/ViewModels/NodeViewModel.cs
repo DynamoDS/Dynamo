@@ -444,7 +444,7 @@ namespace Dynamo.ViewModels
 
         private void UpdateErrorBubbleContent()
         {
-            if (this.ErrorBubble == null)
+            if (this.ErrorBubble == null || dynSettings.Controller == null)
                 return;
             if (string.IsNullOrEmpty(NodeModel.ToolTipText))
             {
@@ -487,7 +487,7 @@ namespace Dynamo.ViewModels
 
         private void UpdatePreviewBubbleContent()
         {
-            if (this.PreviewBubble == null || this.NodeModel is Watch)
+            if (this.PreviewBubble == null || this.NodeModel is Watch || dynSettings.Controller == null)
                 return;
 
             //create data packet to send to preview bubble
@@ -533,24 +533,6 @@ namespace Dynamo.ViewModels
 
         private void ShowRename(object parameter)
         {
-            //var editWindow = new dynEditWindow { DataContext = this };
-
-            //var bindingVal = new Binding("NickName")
-            //{
-            //    Mode = BindingMode.TwoWay,
-            //    NotifyOnValidationError = false,
-            //    Source = this,
-            //    UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            //};
-            //editWindow.editText.SetBinding(TextBox.TextProperty, bindingVal);
-
-            //editWindow.Title = "Edit Node Name";
-
-            //if (editWindow.ShowDialog() != true)
-            //{
-            //    return;
-            //}
-
             OnRequestShowNodeRename(this, EventArgs.Empty);
         }
 
@@ -786,7 +768,8 @@ namespace Dynamo.ViewModels
 
         private void FadeOutTooltip(object parameter)
         {
-            dynSettings.Controller.DynamoViewModel.HideInfoBubble(parameter);
+            if (dynSettings.Controller != null)
+                dynSettings.Controller.DynamoViewModel.HideInfoBubble(parameter);
         }
 
         private bool CanFadeOutTooltip(object parameter)
@@ -826,6 +809,37 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        private void SetModelSize(object parameter)
+        {
+            var size = parameter as double[];
+            NodeModel.SetSize(size[0], size[1]);
+        }
+
+        private bool CanSetModelSize(object parameter)
+        {
+            var size = parameter as double[];
+            if (size == null)
+            {
+                return false;
+            }
+
+            return NodeModel.Width != size[0] || NodeModel.Height != size[1];
+        }
+
+        private void GotoWorkspace(object parameters)
+        {
+            dynSettings.Controller.DynamoViewModel.GoToWorkspace((NodeLogic as Function).Definition.FunctionId);
+        }
+
+        private bool CanGotoWorkspace(object parameters)
+        {
+            if (NodeLogic is Function)
+            {
+                return true;
+            }
+
+            return false;
+        }
     }
 
     public class NodeHelpEventArgs : EventArgs

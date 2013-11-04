@@ -8,7 +8,6 @@ using Microsoft.FSharp.Collections;
 
 namespace Dynamo.Nodes
 {
-
     [NodeName("1D Noise Field")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_EFFECT)]
     [NodeDescription("Creates a randomly varying 1 field generated using simplex noise.")]

@@ -11,7 +11,7 @@ using Value = Dynamo.FScheme.Value;
 namespace Dynamo.Nodes
 {
     [NodeName("Curve-Face Intersection")]
-    [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_INTERSECT)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_INTERSECT)]
     [NodeDescription("Calculates the intersection of a curve and a face.")]
     public class CurveFaceIntersection : RevitTransactionNode
     {
@@ -219,7 +219,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Curve-Curve Intersection")]
-    [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_INTERSECT)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_INTERSECT)]
     [NodeDescription("Calculates the intersection of two curves.")]
     public class CurveCurveIntersection : RevitTransactionNode
     {
@@ -287,7 +287,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Face-Face Intersection")]
-    [NodeCategory(BuiltinNodeCategories.MODIFYGEOMETRY_INTERSECT)]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_INTERSECT)]
     [NodeDescription("Calculates the intersection of two faces.")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     public class FaceFaceIntersection : RevitTransactionNode

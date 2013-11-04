@@ -5,7 +5,6 @@ using Autodesk.Revit.DB;
 using Dynamo.Models;
 using Dynamo.Revit;
 using Dynamo.Utilities;
-using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Nodes
