@@ -3,9 +3,9 @@
 	<testAssemblies>
 		<testAssembly name="DynamoRevitTester.dll">
 			<testFixture name="AdaptiveComponentTests">
-				<test name="AdaptiveComponentByFace" runDynamo="True" modelPath=".\AdaptiveComponents\AdaptiveComponentByFace.rfa"/>
-				<test name="AdaptiveComponentByCurve" runDynamo="True" modelPath=".\AdaptiveComponents\AdaptiveComponentByCurve.rfa"/>
-				<test name="AdaptiveComponent" runDynamo="True" modelPath=".\AdaptiveComponents\AdaptiveComponent.rfa"/>
+				<test name="AdaptiveComponentByFace" runDynamo="True" modelPath=".\AdaptiveComponent\AdaptiveComponentByFace.rfa"/>
+				<test name="AdaptiveComponentByCurve" runDynamo="True" modelPath=".\AdaptiveComponent\AdaptiveComponentByCurve.rfa"/>
+				<test name="AdaptiveComponent" runDynamo="True" modelPath=".\AdaptiveComponent\AdaptiveComponent.rfa"/>
 			</testFixture>
 			<testFixture name="BugTests">
 				<test name="MAGN_66" runDynamo="True" modelPath=".\Bugs\MAGN_66.rfa"/>
@@ -37,7 +37,6 @@
 				<test name="GetSurfaceDomain" runDynamo="True" modelPath=".\Face\GetSurfaceDomain.rvt"/>
 			</testFixture>
 			<testFixture name="FamilyTests">
-				<test name="FamilyTypeSelectorNode" runDynamo="True" modelPath=".\empty.rfa"/>
 				<test name="GetFamilyInstancesByType" runDynamo="True" modelPath=".\Family\GetFamilyInstancesByType.rvt"/>
 				<test name="GetFamilyInstanceLocation" runDynamo="True" modelPath=".\Family\GetFamilyInstanceLocation.rvt"/>
 				<test name="CanLocateAdaptiveComponent" runDynamo="True" modelPath=".\empty.rfa"/>
@@ -99,6 +98,9 @@
 				<test name="Transforms_TranslateAndRotate" runDynamo="True" modelPath=".\empty.rfa"/>
 				<test name="Formulas_FormulaCurve" runDynamo="True" modelPath=".\empty.rfa"/>
 				<test name="Spreadsheets_CSVToStuff" runDynamo="True" modelPath=".\empty.rfa"/>
+			</testFixture>
+			<testFixture name="SelectionTests">
+				<test name="FamilyTypeSelectorNode" runDynamo="True" modelPath=".\empty.rfa"/>
 			</testFixture>
 			<testFixture name="SolidTests">
 				<test name="BlendSolid" runDynamo="True" modelPath=".\empty.rfa"/>
