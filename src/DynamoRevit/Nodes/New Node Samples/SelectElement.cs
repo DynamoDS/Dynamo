@@ -1,18 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using Autodesk.Revit.UI.Selection;
 using DSCoreNodes;
 using Dynamo.Controls;
-using Dynamo.Nodes;
 using Dynamo.Utilities;
-using ProtoCore.AST;
+using GraphToDSCompiler;
 using ProtoCore.AST.AssociativeAST;
 using RevitServices.Threading;
 using Autodesk.Revit.DB;
 using Binding = System.Windows.Data.Binding;
 using Grid = System.Windows.Controls.Grid;
+using Node = ProtoCore.AST.Node;
 
 namespace Dynamo.Nodes
 {
@@ -104,19 +105,12 @@ namespace Dynamo.Nodes
         {
             return new FunctionCallNode
             {
-                Function = new IdentifierNode("Dynamo.Nodes.SelectElement.CreateElementIdFromInt"),
+                Function = new IdentifierNode("DSRevitNodes.ElementId.ElementIdByInt"),
                 FormalArguments = new List<AssociativeNode>
                 {
                     new IntNode(SelectedElement.IntegerValue.ToString())
                 }
             };
-        }
-
-        //Convenience wrapper for calling the ElementId constructor.
-        //TODO: Replace with direct constructor call.
-        public static ElementId CreateElementIdFromInt(int id)
-        {
-            return new ElementId(id);
         }
     }
 }
