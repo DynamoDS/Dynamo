@@ -565,7 +565,7 @@ namespace Dynamo.Tests
 
             Autodesk.LibG.Surface patchedsurface = geometry1 as Autodesk.LibG.Surface;
             Assert.AreNotEqual(null, patchedsurface);
-            Assert.AreEqual(975.75638786954767, patchedsurface.area());
+            Assert.AreEqual(975.75638786954767, patchedsurface.area(), 0.000000001);
             Assert.IsFalse(patchedsurface.closed_u());
             Assert.IsTrue(patchedsurface.closed_v());
 
@@ -593,7 +593,7 @@ namespace Dynamo.Tests
 
             Autodesk.LibG.Surface bSplineSurface1 = geometry1 as Autodesk.LibG.Surface;
             Assert.AreNotEqual(null, bSplineSurface1);
-            Assert.AreEqual(38.202015536467101, bSplineSurface1.area());
+            Assert.AreEqual(38.202015536467101, bSplineSurface1.area(), 0.000000001);
             Assert.IsFalse(bSplineSurface1.closed_u());
             Assert.IsTrue(bSplineSurface1.closed_v());
 
@@ -604,7 +604,7 @@ namespace Dynamo.Tests
 
             Autodesk.LibG.Surface bSplineSurface2 = geometry1 as Autodesk.LibG.Surface;
             Assert.AreNotEqual(null, bSplineSurface2);
-            Assert.AreEqual(38.202015536467101, bSplineSurface2.area());
+            Assert.AreEqual(38.202015536467101, bSplineSurface2.area(), 0.000000001);
             Assert.IsFalse(bSplineSurface2.closed_u());
             Assert.IsTrue(bSplineSurface2.closed_v());
         }
@@ -659,7 +659,7 @@ namespace Dynamo.Tests
 
             Autodesk.LibG.Surface sweptSurface = geometry1 as Autodesk.LibG.Surface;
             Assert.AreNotEqual(null, sweptSurface);
-            Assert.AreEqual(182.24579120015983, sweptSurface.area());
+            Assert.AreEqual(182.24579120015983, sweptSurface.area(), 0.000000001);
             Assert.IsTrue(sweptSurface.closed_u());
             Assert.IsFalse(sweptSurface.closed_v());
 
@@ -687,9 +687,9 @@ namespace Dynamo.Tests
 
             Autodesk.LibG.Solid thickenSolid = geometry1 as Autodesk.LibG.Solid;
             Assert.AreNotEqual(null, thickenSolid);
-            Assert.AreEqual(217.12607751804401, thickenSolid.area());
-            Assert.AreEqual(42.74408242616218, thickenSolid.volume());
-            Assert.AreEqual(-4.4489040318494073, thickenSolid.center_of_gravity().x());
+            Assert.AreEqual(217.12607751804401, thickenSolid.area(), 0.000000001);
+            Assert.AreEqual(42.74408242616218, thickenSolid.volume(), 0.000000001);
+            Assert.AreEqual(-4.4489040318494073, thickenSolid.center_of_gravity().x(), 0.000000001);
 
         }
 
@@ -775,44 +775,110 @@ namespace Dynamo.Tests
 
             Autodesk.LibG.Surface sweptSurface = geometry1 as Autodesk.LibG.Surface;
             Assert.AreNotEqual(null, sweptSurface);
-            Assert.AreEqual(88.30416734641004, sweptSurface.area());
+            Assert.AreEqual(88.30416734641004, sweptSurface.area(), 0.000000001);
             Assert.IsFalse(sweptSurface.closed_u());
             Assert.IsFalse(sweptSurface.closed_v());
 
         }
 
-        //[Test]
-        //public void VectorTest()
-        //{
-        //    var model = dynSettings.Controller.DynamoModel;
+        [Test]
+        public void VectorTest()
+        {
+            var model = dynSettings.Controller.DynamoModel;
 
-        //    string openPath = Path.Combine(GetTestDirectory(), @"core\GeometryTestFiles\VectorTest.dyn");
-        //    model.Open(openPath);
+            string openPath = Path.Combine(GetTestDirectory(), @"core\GeometryTestFiles\VectorTest.dyn");
+            model.Open(openPath);
 
-        //    // check all the nodes and connectors are loaded
-        //    Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
-        //    Assert.AreEqual(15, model.CurrentWorkspace.Connectors.Count);
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(15, model.CurrentWorkspace.Connectors.Count);
 
-        //    // run the expression
-        //    dynSettings.Controller.RunExpression(null);
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
 
-        //    // Verification for Vector node.
-        //    Autodesk.LibG.Geometry geometry1 = null;
-        //    var getGeometry1 = model.CurrentWorkspace.NodeFromWorkspace<VectorNode>("c55236e7-e844-409c-bb99-510681aa6dba");
-        //    Assert.IsTrue(Utils.Convert(getGeometry1.GetValue(0), ref geometry1));
+            //// Verification for Vector node.
+            //Autodesk.LibG.Geometry geometry1 = null;
+            //var getGeometry1 = model.CurrentWorkspace.NodeFromWorkspace<VectorNode>("c55236e7-e844-409c-bb99-510681aa6dba");
+            //Assert.IsTrue(Utils.Convert(getGeometry1.GetValue(0), ref geometry1));
 
-        //    Autodesk.LibG.Vector vector = geometry1 as Autodesk.LibG.Vector;
-        //    Assert.AreNotEqual(null, vector);
+            //Autodesk.LibG.Vector vector = geometry1 as Autodesk.LibG.Vector;
+            //Assert.AreNotEqual(null, vector);
 
-        //    double xValue = vector.x();
-        //    double yValue = vector.y();
-        //    double zValue = vector.z();
+            //double xValue = vector.x();
+            //double yValue = vector.y();
+            //double zValue = vector.z();
 
-        //    Assert.AreEqual(88.30416734641004, xValue);
-        //    Assert.AreEqual(1, yValue);
-        //    Assert.AreEqual(1, zValue);
+            //Assert.AreEqual(88.30416734641004, xValue);
+            //Assert.AreEqual(1, yValue);
+            //Assert.AreEqual(1, zValue);
 
-        //}
+        }
+
+        [Test]
+        public void Vector_UsingCrossProduct()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\GeometryTestFiles\Vector_UsingCrossProduct.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            //// Verification for Vector node.
+            //Autodesk.LibG.Geometry geometry1 = null;
+            //var getGeometry1 = model.CurrentWorkspace.NodeFromWorkspace<VectorNode>("c55236e7-e844-409c-bb99-510681aa6dba");
+            //Assert.IsTrue(Utils.Convert(getGeometry1.GetValue(0), ref geometry1));
+
+            //Autodesk.LibG.Vector vector = geometry1 as Autodesk.LibG.Vector;
+            //Assert.AreNotEqual(null, vector);
+
+            //double xValue = vector.x();
+            //double yValue = vector.y();
+            //double zValue = vector.z();
+
+            //Assert.AreEqual(88.30416734641004, xValue);
+            //Assert.AreEqual(1, yValue);
+            //Assert.AreEqual(1, zValue);
+
+        }
+
+        [Test]
+        public void Vector_PropertiesTest()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\GeometryTestFiles\Vector_PropertiesTest.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(7, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(6, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            //// Verification for Vector node.
+            //Autodesk.LibG.Geometry geometry1 = null;
+            //var getGeometry1 = model.CurrentWorkspace.NodeFromWorkspace<VectorNode>("c55236e7-e844-409c-bb99-510681aa6dba");
+            //Assert.IsTrue(Utils.Convert(getGeometry1.GetValue(0), ref geometry1));
+
+            //Autodesk.LibG.Vector vector = geometry1 as Autodesk.LibG.Vector;
+            //Assert.AreNotEqual(null, vector);
+
+            //double xValue = vector.x();
+            //double yValue = vector.y();
+            //double zValue = vector.z();
+
+            //Assert.AreEqual(88.30416734641004, xValue);
+            //Assert.AreEqual(1, yValue);
+            //Assert.AreEqual(1, zValue);
+
+        }
 
         [Test]
         public void PlaneTest()
@@ -867,14 +933,41 @@ namespace Dynamo.Tests
             double yValue = point.y();
             double zValue = point.z();
             Assert.AreEqual(10, xValue);
-            Assert.AreEqual(5.5978213925456739, yValue);
-            Assert.AreEqual(-2.506439789083756, zValue);
+            Assert.AreEqual(5.5978213925456739, yValue, 0.000000001);
+            Assert.AreEqual(-2.506439789083756, zValue, 0.000000001);
 
             //Autodesk.LibG.Geometry pointAtDistance = null;
             //var pointAtDistance1 = model.CurrentWorkspace.NodeFromWorkspace<PointAtDistanceNode>("877369eb-1b97-4d05-a4d4-61d37b803562");
             //Assert.IsTrue(Utils.Convert(pointAtDistance1.GetValue(0), ref pointAtDistance));
 
             //Autodesk.LibG.Point point1 = pointAtDistance as Autodesk.LibG.Point;
+        }
+
+        [Test]
+        public void PointAtParameter_SimpleTest()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\GeometryTestFiles\PointAtParameter_SimpleTest.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(21, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(22, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            // Verification for Line created using output of PointAtParameter node.
+            Autodesk.LibG.Geometry geometry1 = null;
+            var getGeometry1 = model.CurrentWorkspace.NodeFromWorkspace<LineNode>("9629d1a1-f1b5-41a8-9086-90c09b2477b7");
+            Assert.IsTrue(Utils.Convert(getGeometry1.GetValue(0), ref geometry1));
+
+            Autodesk.LibG.Line line = geometry1 as Autodesk.LibG.Line;
+            Assert.AreNotEqual(null, line);
+
+            Assert.AreEqual(284.39273535941936, line.length(), 0.000000001);
+
         }
 
         [Test]
@@ -902,16 +995,39 @@ namespace Dynamo.Tests
             double xValue = point.x();
             double yValue = point.y();
             double zValue = point.z();
-            Assert.AreEqual(-6.3977743135825484, xValue);
-            Assert.AreEqual(-16.869544438947674, yValue);
-            Assert.AreEqual(-10.633850246828377, zValue);
+            Assert.AreEqual(-6.3977743135825484, xValue, 0.000000001);
+            Assert.AreEqual(-16.869544438947674, yValue, 0.000000001);
+            Assert.AreEqual(-10.633850246828377, zValue, 0.000000001);
 
-            //Autodesk.LibG.Geometry pointAtDistance = null;
-            //var pointAtDistance1 = model.CurrentWorkspace.NodeFromWorkspace<PointAtUvParameterNode>("877369eb-1b97-4d05-a4d4-61d37b803562");
-            //Assert.IsTrue(Utils.Convert(pointAtDistance1.GetValue(0), ref pointAtDistance));
-
-            //Autodesk.LibG.Point point1 = pointAtDistance as Autodesk.LibG.Point;
         }
+
+        [Test]
+        public void PointAtUVParameter_AnotherScenarioTest()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\GeometryTestFiles\PointAtUVParameter_SimpleTest.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(54, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(72, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            // Verification for Line created using output of PointAtUVParameter node.
+            Autodesk.LibG.Geometry geometry1 = null;
+            var getGeometry1 = model.CurrentWorkspace.NodeFromWorkspace<LineNode>("bf3b9aca-78c5-4f1a-a426-eda2b6cc7f73");
+            Assert.IsTrue(Utils.Convert(getGeometry1.GetValue(0), ref geometry1));
+
+            Autodesk.LibG.Line line = geometry1 as Autodesk.LibG.Line;
+            Assert.AreNotEqual(null, line);
+
+            Assert.AreEqual(13.620728681577987, line.length(), 0.000000001);
+
+        }
+
 
         [Test]
         public void SweeAsSurface_AnotherTest()
@@ -935,7 +1051,7 @@ namespace Dynamo.Tests
 
             Autodesk.LibG.Surface surface = geometry1 as Autodesk.LibG.Surface;
             Assert.AreNotEqual(null, surface);
-            Assert.AreEqual(66.591667947439021, surface.area());
+            Assert.AreEqual(66.591667947439021, surface.area(), 0.000000001);
             Assert.IsFalse(surface.closed_u());
             Assert.IsTrue(surface.closed_v());
 
@@ -964,7 +1080,7 @@ namespace Dynamo.Tests
 
             Autodesk.LibG.Surface surface = geometry1 as Autodesk.LibG.Surface;
             Assert.AreNotEqual(null, surface);
-            Assert.AreEqual(1.280984238447507, surface.area());
+            Assert.AreEqual(1.280984238447507, surface.area(), 0.000000001);
             Assert.IsFalse(surface.closed_u());
             Assert.IsFalse(surface.closed_v());
 
@@ -992,7 +1108,7 @@ namespace Dynamo.Tests
 
             Autodesk.LibG.Surface surface = geometry1 as Autodesk.LibG.Surface;
             Assert.AreNotEqual(null, surface);
-            Assert.AreEqual(125.66370614359172, surface.area());
+            Assert.AreEqual(125.66370614359172, surface.area(), 0.000000001);
             Assert.IsFalse(surface.closed_u());
             Assert.IsTrue(surface.closed_v());
 
@@ -1020,7 +1136,7 @@ namespace Dynamo.Tests
 
             Autodesk.LibG.Surface surface = geometry1 as Autodesk.LibG.Surface;
             Assert.AreNotEqual(null, surface);
-            Assert.AreEqual(11.188272457045143, surface.area());
+            Assert.AreEqual(11.188272457045143, surface.area(), 0.000000001);
             Assert.IsFalse(surface.closed_u());
             Assert.IsFalse(surface.closed_v());
 
@@ -1129,6 +1245,144 @@ namespace Dynamo.Tests
             Assert.AreEqual(5468.2219186769089, thikenSolid.area(), 0.000000001);
             Assert.AreEqual(24.601521194889756, thikenSolid.volume(), 0.000000001);
             Assert.AreEqual(9.4206816962888951, thikenSolid.center_of_gravity().x());
+
+        }
+
+        [Test]
+        public void Intersect_CuboidAndCuboid()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\GeometryTestFiles\Intersect_CuboidAndCuboid.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(29, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(40, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            // Verification for Solid created using "Intersect" node.
+            Autodesk.LibG.Geometry geometry1 = null;
+            var getGeometry1 = model.CurrentWorkspace.NodeFromWorkspace<IntersectNode>("6c707733-7616-47b3-9240-eb42ddc66def");
+            Assert.IsTrue(Utils.Convert(getGeometry1.GetValue(0), ref geometry1));
+
+            Autodesk.LibG.Solid sweepedSolid = geometry1 as Autodesk.LibG.Solid;
+            Assert.AreNotEqual(null, sweepedSolid);
+            Assert.AreEqual(24, sweepedSolid.area());
+            Assert.AreEqual(8, sweepedSolid.volume());
+            Assert.AreEqual(1.0, sweepedSolid.center_of_gravity().x());
+
+            // Verification for translated Solid
+            Autodesk.LibG.Geometry geometry2 = null;
+            var getGeometry2 = model.CurrentWorkspace.NodeFromWorkspace<TranslateNode>("e87d2dee-bf39-46ea-bcd9-b688ab85f821");
+            Assert.IsTrue(Utils.Convert(getGeometry2.GetValue(0), ref geometry2));
+
+            Autodesk.LibG.Solid translatedSolid = geometry1 as Autodesk.LibG.Solid;
+            Assert.AreNotEqual(null, translatedSolid);
+            Assert.AreEqual(24, translatedSolid.area());
+            Assert.AreEqual(8, translatedSolid.volume());
+            Assert.AreEqual(1.0, translatedSolid.center_of_gravity().x());
+
+        }
+
+        [Test]
+        public void Intersect_SurfaceAndCuboid()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\GeometryTestFiles\Intersect_SurfaceAndCuboid.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(25, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(34, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            // Verification for Solid created using "Intersect" node.
+            Autodesk.LibG.Geometry geometry1 = null;
+            var getGeometry1 = model.CurrentWorkspace.NodeFromWorkspace<IntersectNode>("24e632b7-bfe5-4b91-be80-f78afa8e11c6");
+            Assert.IsTrue(Utils.Convert(getGeometry1.GetValue(0), ref geometry1));
+
+            Autodesk.LibG.Solid sweepedSolid = geometry1 as Autodesk.LibG.Solid;
+            Assert.AreNotEqual(null, sweepedSolid);
+            Assert.AreEqual(8, sweepedSolid.area());
+            Assert.AreEqual(0, sweepedSolid.volume()); // need to revisit this test case, because Volume cannot be zero for Solid.
+            Assert.AreEqual(0, sweepedSolid.center_of_gravity().x());
+
+            // Verification for translated Solid
+            Autodesk.LibG.Geometry geometry2 = null;
+            var getGeometry2 = model.CurrentWorkspace.NodeFromWorkspace<TranslateNode>("e87d2dee-bf39-46ea-bcd9-b688ab85f821");
+            Assert.IsTrue(Utils.Convert(getGeometry2.GetValue(0), ref geometry2));
+
+            Autodesk.LibG.Solid translatedSolid = geometry1 as Autodesk.LibG.Solid;
+            Assert.AreNotEqual(null, translatedSolid);
+            Assert.AreEqual(8, translatedSolid.area());
+            Assert.AreEqual(0, translatedSolid.volume()); // need to revisit this test case, because Volume cannot be zero for Solid.
+            Assert.AreEqual(0, translatedSolid.center_of_gravity().x());
+
+        }
+
+        [Test]
+        public void Trim_UsingPlaneAndCuboid()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\GeometryTestFiles\Trim_UsingPlaneAndCuboid.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(19, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(27, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            // Will add verification once we fix the defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-501
+
+            //// Verification for Solid created using "Trim" node.
+            //Autodesk.LibG.Geometry geometry1 = null;
+            //var getGeometry1 = model.CurrentWorkspace.NodeFromWorkspace<TrimNode>("e48b775c-d469-49d7-9c0b-ccabf4d24d69");
+            //Assert.IsTrue(Utils.Convert(getGeometry1.GetValue(0), ref geometry1));
+
+            //Autodesk.LibG.Solid sweepedSolid = geometry1 as Autodesk.LibG.Solid;
+            //Assert.AreNotEqual(null, sweepedSolid);
+            //Assert.AreEqual(8, sweepedSolid.area());
+            //Assert.AreEqual(0, sweepedSolid.volume()); 
+            //Assert.AreEqual(0, sweepedSolid.center_of_gravity().x());
+
+        }
+
+        [Test]
+        public void Trim_UsingPSurfaceAndCuboid()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\GeometryTestFiles\Trim_UsingPSurfaceAndCuboid.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(27, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(38, model.CurrentWorkspace.Connectors.Count);
+
+            // run the expression
+            dynSettings.Controller.RunExpression(null);
+
+            // Will add verification once we fix the defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-501
+
+            //// Verification for Solid created using "Trim" node.
+            //Autodesk.LibG.Geometry geometry1 = null;
+            //var getGeometry1 = model.CurrentWorkspace.NodeFromWorkspace<TrimNode>("e48b775c-d469-49d7-9c0b-ccabf4d24d69");
+            //Assert.IsTrue(Utils.Convert(getGeometry1.GetValue(0), ref geometry1));
+
+            //Autodesk.LibG.Solid sweepedSolid = geometry1 as Autodesk.LibG.Solid;
+            //Assert.AreNotEqual(null, sweepedSolid);
+            //Assert.AreEqual(8, sweepedSolid.area());
+            //Assert.AreEqual(0, sweepedSolid.volume()); // need to revisit this test case, because Volume cannot be zero for Solid.
+            //Assert.AreEqual(0, sweepedSolid.center_of_gravity().x());
 
         }
 

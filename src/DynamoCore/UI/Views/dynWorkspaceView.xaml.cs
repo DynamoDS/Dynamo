@@ -116,7 +116,6 @@ namespace Dynamo.Views
             //LoadCursorState();
             //============
 
-
             Debug.WriteLine("Workspace loaded.");
             DynamoSelection.Instance.Selection.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
         }

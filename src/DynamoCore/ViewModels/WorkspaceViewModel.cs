@@ -91,6 +91,7 @@ namespace Dynamo.ViewModels
                 //Debug.WriteLine(string.Format("Setting zoom to {0}", e.Zoom));
                 ZoomChanged(this, e);
             }
+            dynSettings.Controller.DynamoViewModel.HideInfoBubble(null);
         }
 
         /// <summary>
@@ -621,47 +622,40 @@ namespace Dynamo.ViewModels
             IEnumerable<ModelBase> models = selection.OfType<ModelBase>();
             _model.RecordModelsForModification(models.ToList());
 
+            var toAlign = DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                           .Cast<ILocatable>()
+                           .ToList();
+
             if (alignType == "HorizontalCenter")  // make vertial line of elements
             {
                 var xAll = GetSelectionAverageX();
-                DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
-                           .Cast<ILocatable>()
-                           .ToList().ForEach((x) => { x.CenterX = xAll; });
+                toAlign.ForEach((x) => { x.CenterX = xAll; });
             }
             else if (alignType == "HorizontalLeft")
             {
                 var xAll = GetSelectionMinX();
-                DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
-                           .Cast<ILocatable>()
-                           .ToList().ForEach((x) => { x.X = xAll; });
+                toAlign.ForEach((x) => { x.X = xAll; });
             }
             else if (alignType == "HorizontalRight")
             {
                 var xAll = GetSelectionMaxX();
-                DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
-                           .Cast<ILocatable>()
-                           .ToList().ForEach((x) => { x.X = xAll - x.Width; });
+                toAlign.ForEach((x) => { x.X = xAll - x.Width; });
             }
             else if (alignType == "VerticalCenter")
             {
                 var yAll = GetSelectionAverageY();
-                DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
-                           .Cast<ILocatable>()
-                           .ToList().ForEach((x) => { x.CenterY = yAll; });
+                toAlign.ForEach((x) => { x.CenterY = yAll; });
+
             }
             else if (alignType == "VerticalTop")
             {
                 var yAll = GetSelectionMinY();
-                DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
-                           .Cast<ILocatable>()
-                           .ToList().ForEach((x) => { x.Y = yAll; });
+                toAlign.ForEach((x) => { x.Y = yAll; });
             }
             else if (alignType == "VerticalBottom")
             {
                 var yAll = GetSelectionMaxY();
-                DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
-                           .Cast<ILocatable>()
-                           .ToList().ForEach((x) => { x.Y = yAll - x.Height; });
+                toAlign.ForEach((x) => { x.Y = yAll - x.Height; });
             }
             else if (alignType == "VerticalDistribute")
             {
@@ -672,9 +666,7 @@ namespace Dynamo.ViewModels
                 var spacing = (yMax - yMin) / (DynamoSelection.Instance.Selection.Count - 1);
                 int count = 0;
 
-                DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
-                           .Cast<ILocatable>()
-                           .OrderBy((x) => x.Y)
+                toAlign.OrderBy((x) => x.Y)
                            .ToList()
                            .ForEach((x) => x.Y = yMin + spacing * count++);
             }
@@ -687,12 +679,12 @@ namespace Dynamo.ViewModels
                 var spacing = (xMax - xMin) / (DynamoSelection.Instance.Selection.Count - 1);
                 int count = 0;
 
-                DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
-                           .Cast<ILocatable>()
-                           .OrderBy((x) => x.X)
+                toAlign.OrderBy((x) => x.X)
                            .ToList()
                            .ForEach((x) => x.X = xMin + spacing * count++);
             }
+
+            toAlign.ForEach(x=>x.ReportPosition());
         }
 
         private bool CanAlignSelected(string alignType)

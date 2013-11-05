@@ -582,9 +582,9 @@ namespace Dynamo.Tests.UI
         [Category("DynamoUI")]
         public void UpdateInfoBubble_NodeTooltip()
         {
-            InfoBubbleViewModel infoBubble = new InfoBubbleViewModel();
+            var infoBubble = new InfoBubbleViewModel();
             string content = "This is the test infoBubble";
-            InfoBubbleDataPacket inputData_NodeTooltip = new InfoBubbleDataPacket(InfoBubbleViewModel.Style.NodeTooltip,
+            var inputData_NodeTooltip = new InfoBubbleDataPacket(InfoBubbleViewModel.Style.NodeTooltip,
                 new Point(0, 0), new Point(0, 0), content, InfoBubbleViewModel.Direction.Right);
 
             if (infoBubble.UpdateContentCommand.CanExecute(null))

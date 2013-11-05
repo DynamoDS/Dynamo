@@ -14,7 +14,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\BlendSolid.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Solid\BlendSolid.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
@@ -34,7 +34,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\Loft.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Solid\Loft.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
@@ -54,7 +54,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\RevolveSolid.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Solid\RevolveSolid.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
@@ -77,7 +77,7 @@ namespace Dynamo.Tests
             {
                 var model = dynSettings.Controller.DynamoModel;
 
-                string samplePath = Path.Combine(_testPath, @".\SolidBySkeleton.dyn");
+                string samplePath = Path.Combine(_testPath, @".\Solid\SolidBySkeleton.dyn");
                 string testPath = Path.GetFullPath(samplePath);
 
                 model.Open(testPath);
@@ -98,7 +98,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\SweepToMakeSolid.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Solid\SweepToMakeSolid.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
@@ -112,6 +112,7 @@ namespace Dynamo.Tests
             Assert.Greater(actualVolume, volumeMin);
             Assert.Less(actualVolume, volumeMax);
         }
+
         [Test]
         public void SweptBlend()
         {
@@ -119,9 +120,9 @@ namespace Dynamo.Tests
             System.Reflection.Assembly revitAPIAssembly = System.Reflection.Assembly.GetAssembly(typeof(GenericForm));
             var FreeFormType = revitAPIAssembly.GetType("Autodesk.Revit.DB.FreeFormElement", false);
             if (FreeFormType == null)
-                return;
+                Assert.Inconclusive("FreeFormType not available.");
 
-            string samplePath = Path.Combine(_testPath, @".\SweptBlend.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Solid\SweptBlend.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
