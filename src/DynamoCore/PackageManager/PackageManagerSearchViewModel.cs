@@ -226,16 +226,14 @@ namespace Dynamo.PackageManager
 
         public void ClearCompleted()
         {
-            PackageManagerClient.Downloads
-                .Where(x => x.DownloadState == PackageDownloadHandle.State.Installed)
-                .ToList()
-                .ForEach(x=>PackageManagerClient.Downloads.Remove(x));
+            PackageManagerClient.ClearCompletedDownloads();
         }
 
         public bool CanClearCompleted()
         {
             return PackageManagerClient.Downloads
-                                       .Any(x => x.DownloadState == PackageDownloadHandle.State.Installed);
+                                       .Any(x => x.DownloadState == PackageDownloadHandle.State.Installed 
+                                           || x.DownloadState == PackageDownloadHandle.State.Error);
         }
 
         /// <summary>
