@@ -192,6 +192,7 @@
     <Compile Include="Nodes\dynViews.cs" />
     <Compile Include="Nodes\Floors.cs" />
     <Compile Include="Nodes\Materials.cs" />
+    <Compile Include="Nodes\New Node Samples\SelectElement.cs" />
     <Compile Include="Nodes\Walls.cs" />
     <Compile Include="OutOfSpaceException.cs" />
     <Compile Include="ParticleSystem\dynDynamicRelaxation.cs" />
@@ -258,6 +259,7 @@
     <Content Include="Resources\logo_square_32x32.png" />
     <Content Include="Resources\logo_square_64x64.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

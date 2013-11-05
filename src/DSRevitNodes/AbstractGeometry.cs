@@ -25,12 +25,11 @@ namespace DSRevitNodes
         /// </summary>
         public virtual void Dispose()
         {
-            var transManager = new TransactionManager();
-            var transaction = transManager.StartTransaction(Document);
+            TransactionManager.GetInstance().EnsureInTransaction(Document);
 
             Document.Delete(InternalID);
 
-            transaction.CommitTransaction();
+            TransactionManager.GetInstance().TransactionTaskDone();
         }
     }
 }

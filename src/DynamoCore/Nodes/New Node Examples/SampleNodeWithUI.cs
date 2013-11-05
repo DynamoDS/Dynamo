@@ -1,20 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Xml;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Utilities;
-using Microsoft.Practices.Prism.ViewModel;
+using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
 
 namespace DSCoreNodes
@@ -26,6 +20,8 @@ namespace DSCoreNodes
     {
         //We can remove this from NodeModel and only use it here.
         public abstract void SetupCustomUIElements(dynNodeView nodeUI);
+
+        public abstract Node BuildAst();
     }
 
     /// <summary>
@@ -41,7 +37,7 @@ namespace DSCoreNodes
         /// <summary>
         /// Builds the custom AST that contains information bound to the UI.
         /// </summary>
-        public AssociativeNode BuildAst()
+        public override Node BuildAst()
         {
             return new DoubleNode(Value.ToString(CultureInfo.InvariantCulture));
         }
