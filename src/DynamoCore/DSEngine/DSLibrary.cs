@@ -352,11 +352,6 @@ namespace Dynamo.DSEngine
 
         private void ImportClass(ClassNode classNode, string libraryPath, List<DSFunctionItem> functions)
         {
-            if (!classNode.IsImportedClass)
-            {
-                return;
-            }
-
             string category = GetCategory(classNode);
             foreach (var proc in classNode.vtable.procList)
             {
