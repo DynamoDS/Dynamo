@@ -80,7 +80,7 @@ namespace Dynamo.Nodes
                                 return _node.OldValue;
                             }
                             
-                            return IdlePromise<Value>.ExecuteOnIdle(
+                            return RevitServices.Threading.IdlePromise<Value>.ExecuteOnIdle(
                                 () =>
                                     {
                                         _node.OldValue = f.Invoke(FSharpList<Value>.Empty);

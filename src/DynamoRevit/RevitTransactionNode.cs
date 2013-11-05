@@ -14,6 +14,7 @@ using RevitServices.Elements;
 using RevitServices.Threading;
 using ChangeType = RevitServices.Elements.ChangeType;
 using Value = Dynamo.FScheme.Value;
+using RevThread = RevitServices.Threading;
 
 namespace Dynamo.Revit
 {
@@ -242,7 +243,7 @@ namespace Dynamo.Revit
 
                 DynamoLogger.Instance.Log("Starting a debug transaction for element: " + NickName);
 
-                IdlePromise.ExecuteOnIdleSync(
+                RevThread.IdlePromise.ExecuteOnIdleSync(
                    delegate
                    {
                        controller.InitTransaction();
@@ -297,7 +298,7 @@ namespace Dynamo.Revit
         {
             var controller = dynRevitSettings.Controller;
 
-            IdlePromise.ExecuteOnIdleAsync(
+            RevThread.IdlePromise.ExecuteOnIdleAsync(
                delegate
                {
                    controller.InitTransaction();
