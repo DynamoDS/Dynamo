@@ -262,6 +262,11 @@ namespace Dynamo.Applications
         {
             args.Handled = true;
 
+            if (args.Exception.InnerException.GetType() == typeof (TypeInitializationException))
+            {
+                return;
+            }
+
             // only handle a single crash per Dynamo sesh, this should be reset in the initial command
             if (handledCrash)
             {
