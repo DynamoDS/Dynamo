@@ -91,7 +91,7 @@ namespace Dynamo
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.FindNodesFromElements =
                 FindNodesFromSelection;
 
-            TransactionManager = new TransactionManager();
+            TransactionManager = new TransactionWrapper();
             TransactionManager.TransactionStarted += TransactionManager_TransactionCommitted;
             TransactionManager.TransactionCancelled += TransactionManager_TransactionCancelled;
             TransactionManager.FailuresRaised += TransactionManager_FailuresRaised;
@@ -603,9 +603,9 @@ namespace Dynamo
 
         #region Revit Transaction Management
 
-        private TransactionManager.TransactionHandle _transaction;
+        private TransactionWrapper.TransactionHandle _transaction;
 
-        public TransactionManager TransactionManager { get; private set; }
+        public TransactionWrapper TransactionManager { get; private set; }
 
         private void TransactionManager_TransactionCancelled()
         {

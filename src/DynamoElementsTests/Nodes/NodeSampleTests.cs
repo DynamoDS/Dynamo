@@ -12,7 +12,7 @@ namespace Dynamo.Nodes
     class NodeSampleTests : DynamoUnitTest
     {
         [Test]
-        public void SliderAstGeneration()
+        public void SliderASTGeneration()
         {
             var sliderNode = new NumberSlider { Value = 10 };
             var buildOutput = sliderNode.BuildAst();

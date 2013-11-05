@@ -3,6 +3,7 @@ using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
 using DSNodeServices;
+using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Edge = Autodesk.DesignScript.Geometry.Edge;
 using Plane = Autodesk.DesignScript.Geometry.Plane;
@@ -11,12 +12,16 @@ using Point = Autodesk.DesignScript.Geometry.Point;
 namespace DSRevitNodes
 {
 
-    /// <summary>
-    /// A Revit Reference Point
-    /// </summary>
-    [RegisterForTrace]
+/// <summary>
+/// A Revit Reference Point
+/// </summary>
+[RegisterForTrace]
+    [ShortName("refPt")]
     public class ReferencePoint : AbstractGeometry, IGraphicItem
     {
+        /// <summary>
+        /// Internal variable containing the wrapped Revit object
+        /// </summary>
         private Autodesk.Revit.DB.ReferencePoint internalRefPt;
 
         /// <summary>
@@ -27,24 +32,40 @@ namespace DSRevitNodes
         /// <param name="z"></param>
         private ReferencePoint(double x, double y, double z)
         {
-            var transaction = new TransactionManager().StartTransaction(Document);
+            //Phase 1 - Check to see if the object exists and should be rebound
+            Autodesk.Revit.DB.ReferencePoint oldRefPt = 
+                ElementBinder.GetElementFromTrace<Autodesk.Revit.DB.ReferencePoint>(Document);
+
+            //There was a point, rebind to that, and adjust its position
+            if (oldRefPt != null)
+            {
+                internalRefPt = oldRefPt;
+                InternalSetPosition(new XYZ(x, y, z));
+                return;
+            }
+
+            //Phase 2- There was no existing point, create one
+            TransactionManager.GetInstance().EnsureInTransaction(Document);
 
             internalRefPt = Document.FamilyCreate.NewReferencePoint(new XYZ(x, y, z));
             this.InternalID = internalRefPt.Id;
 
-            transaction.CommitTransaction();
+            TransactionManager.GetInstance().TransactionTaskDone();
         }
 
-        private void SetPosition(XYZ xyz)
+        private void InternalSetPosition(XYZ xyz)
         {
-            var transaction = new TransactionManager().StartTransaction(Document);
+            TransactionManager.GetInstance().EnsureInTransaction(Document);
+
             internalRefPt.Position = xyz;
-            transaction.CommitTransaction();
+
+            TransactionManager.GetInstance().TransactionTaskDone();
+            
         }
 
         public double X { 
             get { return internalRefPt.Position.X; } 
-            set { SetPosition(new XYZ(value, Y, Z)); }
+            set { InternalSetPosition(new XYZ(value, Y, Z)); }
         }
 
 
@@ -52,14 +73,14 @@ namespace DSRevitNodes
         public double Y
         {
             get { return internalRefPt.Position.Y; }
-            set { SetPosition(new XYZ(X, value, Z)); }
+            set { InternalSetPosition(new XYZ(X, value, Z)); }
         }
 
 
         public double Z
         {
             get { return internalRefPt.Position.Z; }
-            set { SetPosition(new XYZ(X, Y, value)); }
+            set { InternalSetPosition(new XYZ(X, Y, value)); }
         }
 
         
@@ -108,11 +129,11 @@ namespace DSRevitNodes
         /// <summary>
         /// Create a Reference Point from a point.
         /// </summary>
-        /// <param name="p"></param>
+        /// <param name="pt"></param>
         /// <returns></returns>
         static ReferencePoint ByPt(Point pt)
         {
-            throw new NotImplementedException();
+            return new ReferencePoint(pt.X, pt.Y, pt.Z);
         }
 
         /// <summary>

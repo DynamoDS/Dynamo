@@ -77,6 +77,7 @@ namespace Dynamo.Nodes
             GotFocus += OnGotFocus;
             LostFocus += OnLostFocus;
             LostKeyboardFocus += OnLostFocus;
+            Padding = new Thickness(3);
             base.Text = initialText;
             this.Pending = false;
             Style = (Style)SharedDictionaryManager.DynamoModernDictionary["SZoomFadeTextBox"];
@@ -247,6 +248,10 @@ namespace Dynamo.Nodes
             //Allow for event processing after textbook has been focused to
             //help set the Caret position
             selectAllWhenFocused = false;
+
+            //Set style for Watermark
+            this.SetResourceReference(TextBox.StyleProperty, "CodeBlockNodeTextBox");
+            this.Tag = "Your code goes here";
         }
 
         /// <summary>
@@ -283,12 +288,16 @@ namespace Dynamo.Nodes
         }
         #endregion
 
-        /// <summary>
-        /// Set font size so that text size matches port (for alignment)
-        /// </summary>
-        protected override void OnGotFocus(RoutedEventArgs e)
+        protected override void OnTextChanged(TextChangedEventArgs e)
         {
-            this.FontSize = 19.1 / this.FontFamily.LineSpacing;
+            ;//hide base
+        }
+
+        protected override void OnLostFocus(RoutedEventArgs e)
+        {
+            if (!this.Text.Equals((DataContext as CodeBlockNodeModel).Code))
+                Pending = true;
+            base.OnLostFocus(e);
         }
     }
 }

@@ -19,7 +19,7 @@ namespace RevitServicesTests
         [Test]
         public void MakePoint()
         {
-            var transManager = new TransactionManager();
+            var transManager = new TransactionWrapper();
             var t = transManager.StartTransaction(Document);
 
             var id = Document.FamilyCreate.NewReferencePoint(new XYZ(0, 0, 0)).Id;
@@ -34,7 +34,7 @@ namespace RevitServicesTests
         [Test]
         public void MakePointThenCancel()
         {
-            var transManager = new TransactionManager();
+            var transManager = new TransactionWrapper();
             var t = transManager.StartTransaction(Document);
 
             var id = Document.FamilyCreate.NewReferencePoint(new XYZ(0, 0, 0)).Id;
@@ -50,7 +50,7 @@ namespace RevitServicesTests
         {
             bool eventWasFired = false;
 
-            var transManager = new TransactionManager();
+            var transManager = new TransactionWrapper();
             transManager.TransactionStarted += delegate { eventWasFired = true; };
 
             Assert.IsFalse(eventWasFired);
@@ -65,7 +65,7 @@ namespace RevitServicesTests
         {
             bool eventWasFired = false;
 
-            var transManager = new TransactionManager();
+            var transManager = new TransactionWrapper();
             transManager.TransactionCommitted += delegate { eventWasFired = true; };
 
             Assert.IsFalse(eventWasFired);
@@ -82,7 +82,7 @@ namespace RevitServicesTests
         {
             bool eventWasFired = false;
 
-            var transManager = new TransactionManager();
+            var transManager = new TransactionWrapper();
             transManager.TransactionCancelled += delegate { eventWasFired = true; };
 
             Assert.IsFalse(eventWasFired);
@@ -97,7 +97,7 @@ namespace RevitServicesTests
         [Test]
         public void TransactionActive()
         {
-            var transManager = new TransactionManager();
+            var transManager = new TransactionWrapper();
             Assert.IsFalse(transManager.TransactionActive);
 
             var t = transManager.StartTransaction(Document);
@@ -116,7 +116,7 @@ namespace RevitServicesTests
         [Test]
         public void TransactionHandleStatus()
         {
-            var transManager = new TransactionManager();
+            var transManager = new TransactionWrapper();
 
             var t = transManager.StartTransaction(Document);
             Assert.AreEqual(TransactionStatus.Started, t.Status);

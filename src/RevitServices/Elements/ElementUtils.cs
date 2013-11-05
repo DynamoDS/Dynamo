@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using Autodesk.Revit.DB;
 
 namespace RevitServices.Elements
 {
-    public static class ElementValidity
+    public static class ElementUtils
     {
         /// <summary>
         /// Attempts to fetch the Element corresponding to the given Unique Identifier in the given
