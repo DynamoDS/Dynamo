@@ -109,6 +109,8 @@
 				<test name="SolidBySkeleton" runDynamo="True" modelPath=".\empty.rfa"/>
 				<test name="SweepToMakeSolid" runDynamo="True" modelPath=".\empty.rfa"/>
         		<test name="SweptBlend" runDynamo="True" modelPath=".\empty.rfa"/>
+        		<test name="BoxByCenterAndDimensions" runDynamo="True" modelPath=".\empty.rfa"/>
+        		<test name="BoxByTwoCorners" runDynamo="True" modelPath=".\empty.rfa"/>
 			</testFixture>
 			<testFixture name="UVTests">
 				<test name="UVRandom" runDynamo="True" modelPath=".\empty.rfa"/>
