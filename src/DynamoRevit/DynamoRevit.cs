@@ -24,6 +24,7 @@ using RevitServices.Threading;
 using IWin32Window = System.Windows.Interop.IWin32Window;
 using MessageBox = System.Windows.Forms.MessageBox;
 using Rectangle = System.Drawing.Rectangle;
+using RevThread = RevitServices.Threading;
 using Dynamo.FSchemeInterop;
 using System.IO;
 
@@ -65,7 +66,7 @@ namespace Dynamo.Applications
                 pushButton.LargeImage = bitmapSource;
                 pushButton.Image = bitmapSource;
 
-                IdlePromise.RegisterIdle(application);
+                RevThread.IdlePromise.RegisterIdle(application);
 
                 Updater = new RevitServicesUpdater(/*application.ActiveAddInId, */application.ControlledApplication);
                 //if (!UpdaterRegistry.IsUpdaterRegistered(Updater.GetUpdaterId()))
@@ -173,7 +174,7 @@ namespace Dynamo.Applications
                 //TODO: has to be changed when we handle multiple docs
                 DynamoRevitApp.Updater.DocumentToWatch = m_doc.Document;
                 
-                IdlePromise.ExecuteOnIdleAsync(delegate
+                RevThread.IdlePromise.ExecuteOnIdleAsync(delegate
                 {
                     //get window handle
                     IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
@@ -353,8 +354,8 @@ namespace Dynamo.Applications
             dynamoViewY = dynamoView.Top;
             dynamoViewWidth = dynamoView.ActualWidth;
             dynamoViewHeight = dynamoView.ActualHeight;
-            IdlePromise.ClearPromises();
-            IdlePromise.Shutdown();
+            RevThread.IdlePromise.ClearPromises();
+            RevThread.IdlePromise.Shutdown();
         }
 
         /// <summary>

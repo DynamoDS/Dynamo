@@ -17,6 +17,7 @@ using Microsoft.FSharp.Collections;
 using RevitServices.Threading;
 using Value = Dynamo.FScheme.Value;
 using TextBox = System.Windows.Controls.TextBox;
+using RevThread = RevitServices.Threading;
 
 namespace Dynamo.Nodes
 {
@@ -176,7 +177,7 @@ namespace Dynamo.Nodes
         private void selectButton_Click(object sender, RoutedEventArgs e)
         {
             CanSelect = false;
-            IdlePromise.ExecuteOnIdleAsync(
+            RevThread.IdlePromise.ExecuteOnIdleAsync(
                 delegate
                 {
                     OnSelectClick();
@@ -385,7 +386,7 @@ namespace Dynamo.Nodes
         private void selectButton_Click(object sender, RoutedEventArgs e)
         {
             _selectButton.IsEnabled = false;
-            IdlePromise.ExecuteOnIdleAsync(
+            RevThread.IdlePromise.ExecuteOnIdleAsync(
                 delegate
                 {
                     OnSelectClick();

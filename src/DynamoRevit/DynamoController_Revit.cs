@@ -28,6 +28,7 @@ using ChangeType = RevitServices.Elements.ChangeType;
 using CurveLoop = Autodesk.Revit.DB.CurveLoop;
 using Transaction = Dynamo.Nodes.Transaction;
 using Value = Dynamo.FScheme.Value;
+using RevThread = RevitServices.Threading;
 
 namespace Dynamo
 {
@@ -99,7 +100,7 @@ namespace Dynamo
 
         private void CleanupVisualizations(object sender, EventArgs e)
         {
-            IdlePromise.ExecuteOnIdleAsync(
+            RevThread.IdlePromise.ExecuteOnIdleAsync(
                 () =>
                 {
                     dynRevitSettings.Controller.InitTransaction();
@@ -226,7 +227,7 @@ namespace Dynamo
 
             var gStyle = styles.ToElements().FirstOrDefault(x => x.Name == "Dynamo");
 
-            IdlePromise.ExecuteOnIdleAsync(
+            RevThread.IdlePromise.ExecuteOnIdleAsync(
                 () =>
                 {
                     dynRevitSettings.Controller.InitTransaction();
@@ -523,7 +524,7 @@ namespace Dynamo
         {
             return InIdleThread
                 ? _oldPyEval(dirty, script, bindings)
-                : IdlePromise<Value>.ExecuteOnIdle(() => _oldPyEval(dirty, script, bindings));
+                : RevThread.IdlePromise<Value>.ExecuteOnIdle(() => _oldPyEval(dirty, script, bindings));
         }
 
         #endregion
@@ -696,7 +697,7 @@ namespace Dynamo
             //from the idle thread. Otherwise, just run it in this thread.
             if (dynSettings.Controller.DynamoViewModel.RunInDebug || !InIdleThread && !Testing)
             {
-                IdlePromise.ExecuteOnIdleSync(cleanup);
+                RevThread.IdlePromise.ExecuteOnIdleSync(cleanup);
             }
             else
                 cleanup();
@@ -705,7 +706,7 @@ namespace Dynamo
 
         public override void ShutDown()
         {
-            IdlePromise.ExecuteOnShutdown(
+            RevThread.IdlePromise.ExecuteOnShutdown(
                 delegate
                 {
                     var transaction = new Autodesk.Revit.DB.Transaction(dynRevitSettings.Doc.Document, "Dynamo Script");
@@ -741,7 +742,7 @@ namespace Dynamo
                 TransMode = TransactionMode.Automatic; //Automatic transaction control
                 Debug.WriteLine("Adding a run to the idle stack.");
                 InIdleThread = true; //Now in the idle thread.
-                IdlePromise.ExecuteOnIdleSync(() => base.Run(topElements, graphSyncData));
+                RevThread.IdlePromise.ExecuteOnIdleSync(() => base.Run(topElements, graphSyncData));
             }
             else
             {
@@ -788,7 +789,7 @@ namespace Dynamo
 
                     Debug.WriteLine("Adding a run to the idle stack.");
                     InIdleThread = true; //Now in the idle thread.
-                    IdlePromise.ExecuteOnIdleSync(() => base.Run(topElements, runningExpression)); //Execute the Run Delegate in the Idle thread.
+                    RevThread.IdlePromise.ExecuteOnIdleSync(() => base.Run(topElements, runningExpression)); //Execute the Run Delegate in the Idle thread.
 
                 }
             }
