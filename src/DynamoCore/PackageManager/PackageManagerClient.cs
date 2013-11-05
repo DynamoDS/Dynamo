@@ -4,15 +4,12 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Security.Authentication;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
 using Greg;
 using Greg.Requests;
 using Greg.Responses;
@@ -306,13 +303,10 @@ namespace Dynamo.PackageManager
             set { _downloads = value; }
         }
 
-        internal void ClearCompletedDownloads()
+        public void ClearCompletedDownloads()
         {
-            foreach (
-                var ele in Downloads.Where((x) => x.DownloadState == PackageDownloadHandle.State.Installed || x.DownloadState == PackageDownloadHandle.State.Error ).ToList())
-            {
-                Downloads.Remove(ele);
-            }
+            Downloads.Where((x) => x.DownloadState == PackageDownloadHandle.State.Installed ||
+                x.DownloadState == PackageDownloadHandle.State.Error).ToList().ForEach(x=>Downloads.Remove(x));
         }
 
         internal void DownloadAndInstall(PackageDownloadHandle packageDownloadHandle)
