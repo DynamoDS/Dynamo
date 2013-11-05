@@ -159,7 +159,7 @@ namespace Dynamo.Utilities
                         //only load types that are in the right namespace, are not abstract
                         //and have the elementname attribute
                         var attribs = t.GetCustomAttributes(typeof (NodeNameAttribute), false);
-                        var isDeprecated = t.GetCustomAttributes(typeof (ApiDeprecatedAttribute), true).Any();
+                        var isDeprecated = t.GetCustomAttributes(typeof (NodeDeprecatedAttribute), true).Any();
 
                         if (!IsNodeSubType(t)) /*&& attribs.Length > 0*/
                             continue;
