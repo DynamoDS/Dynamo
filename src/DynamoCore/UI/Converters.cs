@@ -258,6 +258,19 @@ namespace Dynamo.Controls
         }
     }
 
+    public class PathToSaveStateConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return (value is string && !string.IsNullOrEmpty(value as string)) ? "Saved" : "Unsaved";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     public class WorkspaceTypeConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,
