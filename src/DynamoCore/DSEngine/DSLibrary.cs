@@ -115,12 +115,8 @@ namespace Dynamo.DSEngine
             public string LibraryPath { get; private set; }
         }
 
-        public delegate void LibraryLoadingEventHandler(object sender, LibraryLoadingEventArgs e);
-        public event LibraryLoadingEventHandler LibraryLoading = delegate {};
-
-        public delegate void LibraryLoadedEventHandler(object sender, LibraryLoadedEventArgs e);
-        public event LibraryLoadedEventHandler LibraryLoaded = delegate {};
-
+        public event EventHandler<LibraryLoadingEventArgs> LibraryLoading;
+        public event EventHandler<LibraryLoadedEventArgs> LibraryLoaded;
         public static DSLibraryServices Instance = new DSLibraryServices();
 
         /// <summary>
@@ -190,7 +186,7 @@ namespace Dynamo.DSEngine
                 return;
             }
 
-            LibraryLoading(this, new LibraryLoadingEventArgs(libraryPath));
+            OnLibraryLoading(new LibraryLoadingEventArgs(libraryPath));
             List<DSFunctionItem> functions = new List<DSFunctionItem>();
 
             try
@@ -206,7 +202,7 @@ namespace Dynamo.DSEngine
                         DynamoLogger.Instance.LogWarning(error.Message, WarningLevel.Moderate);
                     }
 
-                    LibraryLoaded(this, new LibraryLoadedEventArgs(libraryPath, LibraryLoadStatus.Failed, errorMessage));
+                    OnLibraryLoaded(new LibraryLoadedEventArgs(libraryPath, LibraryLoadStatus.Failed, errorMessage));
                     return;
                 }
 
@@ -217,11 +213,11 @@ namespace Dynamo.DSEngine
             }
             catch (Exception e)
             {
-                LibraryLoaded(this, new LibraryLoadedEventArgs(libraryPath, LibraryLoadStatus.Failed, e.Message));
+                OnLibraryLoaded(new LibraryLoadedEventArgs(libraryPath, LibraryLoadStatus.Failed, e.Message));
             }
 
             AddToLibraryList(libraryPath, functions);
-            LibraryLoaded(this, new LibraryLoadedEventArgs(libraryPath, LibraryLoadStatus.Ok, null));
+            OnLibraryLoaded(new LibraryLoadedEventArgs(libraryPath, LibraryLoadStatus.Ok, null));
         }
 
         private Dictionary<string, List<DSFunctionItem>> libraryFunctionMap;
@@ -389,6 +385,24 @@ namespace Dynamo.DSEngine
             foreach (var keyValue in importedFunctions)
             {
                 AddToLibraryList(keyValue.Key, keyValue.Value); 
+            }
+        }
+
+        private void OnLibraryLoading(LibraryLoadingEventArgs e)
+        {
+            EventHandler<LibraryLoadingEventArgs> handler = LibraryLoading;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        private void OnLibraryLoaded(LibraryLoadedEventArgs e)
+        {
+            EventHandler<LibraryLoadedEventArgs> handler = LibraryLoaded;
+            if (handler != null)
+            {
+                handler(this, e);
             }
         }
 
