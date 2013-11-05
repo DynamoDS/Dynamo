@@ -2832,9 +2832,9 @@ namespace Dynamo.Nodes
             return Value.NewNumber(Math.Asin(theta));
         }
 
-        protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
+        protected override void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
         {
-            return builder.Build(this, inputs);
+            builder.Build(this, inputs);
         }
     }
 
@@ -2860,9 +2860,9 @@ namespace Dynamo.Nodes
             return Value.NewNumber(Math.Acos(theta));
         }
 
-        protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
+        protected override void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
         {
-            return builder.Build(this, inputs);
+            builder.Build(this, inputs);
         }
     }
 
@@ -2888,9 +2888,9 @@ namespace Dynamo.Nodes
             return Value.NewNumber(Math.Atan(theta));
         }
 
-        protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
+        protected override void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
         {
-            return builder.Build(this, inputs);
+            builder.Build(this, inputs);
         }
     }
 
