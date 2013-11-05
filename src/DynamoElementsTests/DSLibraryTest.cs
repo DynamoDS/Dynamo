@@ -27,10 +27,10 @@ namespace Dynamo.Tests
         [Test]
         public void TestLoadLibrary()
         {
-            EventHandler<Dynamo.DSEngine.DSLibraryServices.LibraryLoadedEventArgs> onLoaded =
-                (sender, e) => Assert.IsTrue(e.Status == DSLibraryServices.LibraryLoadStatus.Ok);
+            EventHandler<Dynamo.DSEngine.DSLibraryServices.LibraryLoadFailedEventArgs> libraryLoadFailed =
+                (sender, e) => Assert.Fail("Failed to load library: " + e.LibraryPath);
 
-            DSLibraryServices.Instance.LibraryLoaded += onLoaded;
+            DSLibraryServices.Instance.LibraryLoadFailed += libraryLoadFailed;
             string libraryPath = Path.Combine(GetTestDirectory(), @"core\library\MultiReturnTest.dll");
             DSLibraryServices.Instance.ImportLibrary(libraryPath);
 
@@ -38,16 +38,16 @@ namespace Dynamo.Tests
             Assert.IsNotNull(functions);
             Assert.IsTrue(functions.Count > 0);
 
-            DSLibraryServices.Instance.LibraryLoaded -= onLoaded;
+            DSLibraryServices.Instance.LibraryLoadFailed -= libraryLoadFailed;
         }
 
         [Test]
         public void TestLoadDSFile()
         {
-            EventHandler<DSLibraryServices.LibraryLoadedEventArgs> onLoaded =
-                (sender, e) => Assert.IsTrue(e.Status == DSLibraryServices.LibraryLoadStatus.Ok);
+            EventHandler<DSLibraryServices.LibraryLoadFailedEventArgs> libraryLoadFailed =
+                (sender, e) => Assert.Fail("Failed to load library: " + e.LibraryPath);
 
-            DSLibraryServices.Instance.LibraryLoaded += onLoaded;
+            DSLibraryServices.Instance.LibraryLoadFailed += libraryLoadFailed;
             string libraryPath = Path.Combine(GetTestDirectory(), @"core\library\Dummy.ds");
             DSLibraryServices.Instance.ImportLibrary(libraryPath);
 
@@ -55,7 +55,7 @@ namespace Dynamo.Tests
             Assert.IsNotNull(functions);
             Assert.IsTrue(functions.Count > 0);
 
-            DSLibraryServices.Instance.LibraryLoaded -= onLoaded;
+            DSLibraryServices.Instance.LibraryLoadFailed -= libraryLoadFailed;
         }
     }
 }
