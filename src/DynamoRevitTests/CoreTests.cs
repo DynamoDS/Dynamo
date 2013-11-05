@@ -110,7 +110,7 @@ namespace Dynamo.Tests
             dynSettings.Controller.RunExpression();
 
             var multipleValues = ((FScheme.Value.List)refPtNode.OldValue).Item;
-            Assert.AreEqual(10, multipleValues.Length);
+            Assert.AreEqual(11, multipleValues.Length);
             Assert.IsTrue(multipleValues.Any(x => ((ReferencePoint)((FScheme.Value.Container)x).Item).Id == oldId));
 
             refPtNode.ResetOldValue();
