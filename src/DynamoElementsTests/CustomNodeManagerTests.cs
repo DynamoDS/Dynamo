@@ -7,17 +7,17 @@ using Dynamo.Tests;
 using Dynamo.Utilities;
 using NUnit.Framework;
 
-namespace Dynamo
-{
-    class CustomNodeManagerTests : DynamoUnitTest
-    {
-        [Test]
-        public void Get()
-        {
+//namespace Dynamo
+//{
+//    class CustomNodeManagerTests : DynamoUnitTest
+//    {
+//        //[Test]
+//        //public void CanGetDependenciesOnLoad()
+//        //{
             
-        }
-    }
-}
+//        //}
+//    }
+//}
     // need tests for
 
         //public Guid GuidFromPath(string path)
