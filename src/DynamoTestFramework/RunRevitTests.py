@@ -63,7 +63,7 @@ def run_tests(tests):
 		journal = generate_journal_file(test)
 
 		#Run Revit passing the journal file as a parameter
-		print 'running ' + journal
+		print 'running ' + test.fixtureName + ':' + test.testName
 		run_cmd( ['Revit', os.path.abspath(journal)] )
 
 		#Cleanup temporary journal file

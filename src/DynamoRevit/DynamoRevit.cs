@@ -251,44 +251,6 @@ namespace Dynamo.Applications
             }
         }
 
-
-        /// <summary>
-        /// Handler for the ViewActivated event.
-        /// Used to query whether Dynamo can be run on the active view.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void Application_ViewActivated(object sender, Autodesk.Revit.UI.Events.ViewActivatedEventArgs e)
-        {
-            if (dynSettings.Controller != null)
-            {
-                if (e.CurrentActiveView is View3D)
-                {
-                    var view = e.CurrentActiveView as View3D;
-                    var previousView = e.PreviousActiveView as View3D;
-
-                    if (view.IsPerspective)
-                    {
-                        //warn user that Dynamo can't be run in perspective 
-                        //and disable the run
-                        DynamoLogger.Instance.LogWarning(
-                            "Dynamo is not available in a perspective view. Please switch to another view to Run.", WarningLevel.Moderate);
-                        dynSettings.Controller.DynamoViewModel.RunEnabled = false;
-                    }
-                    else if ( !view.IsPerspective && (previousView == null || previousView.IsPerspective) )
-                    {
-                        DynamoLogger.Instance.ResetWarning();
-                        dynSettings.Controller.DynamoViewModel.RunEnabled = true;
-                    }
-                }
-                else
-                {
-                    DynamoLogger.Instance.LogWarning(string.Format("Active view is now {0}", e.CurrentActiveView.Name), WarningLevel.Mild);
-                    dynSettings.Controller.DynamoViewModel.RunEnabled = true;
-                }
-            }
-        }
-
         /// <summary>
         /// A method to deal with unhandle exceptions.  Executes right before Revit crashes.
         /// Dynamo is still valid at this time, but further work may cause corruption.  Here, 
@@ -299,6 +261,15 @@ namespace Dynamo.Applications
         private void DispatcherOnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs args)
         {
             args.Handled = true;
+
+            /// MAGN-550
+            /// Revit throws type initialization errors from the UI thread and we catch them.
+            /// Swallowing these is dangerous because we'll avoid exiting when Dynamo throws this type of
+            /// error. But, it's better than crashing whenever Revit throws this error - which is a lot.
+            if (args.Exception.InnerException.GetType() == typeof (TypeInitializationException))
+            {
+                return;
+            }
 
             // only handle a single crash per Dynamo sesh, this should be reset in the initial command
             if (handledCrash)
