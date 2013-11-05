@@ -62,6 +62,9 @@ limitations under the License.
     <WarningLevel>4</WarningLevel>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(ExecutionEngine)' != 'FScheme' ">
+    <DefineConstants>$DefineConstants;USE_DSENGINE</DefineConstants>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="FScheme, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

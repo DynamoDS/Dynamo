@@ -11,6 +11,7 @@ using ProtoCore.Mirror;
 
 namespace Dynamo.Tests
 {
+    [Category("DSExecution")]
     class DSFunctionNodeTest: DynamoUnitTest
     {
         [Test]
