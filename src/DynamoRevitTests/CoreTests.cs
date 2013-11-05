@@ -82,9 +82,10 @@ namespace Dynamo.Tests
             model.Open(testPath);
             Assert.AreEqual(3, dynSettings.Controller.DynamoModel.Nodes.Count);
 
-            dynSettings.Controller.RunExpression();
-
             var refPtNode = model.CurrentWorkspace.FirstNodeFromWorkspace<ReferencePointByXyz>();
+            refPtNode.ArgumentLacing = LacingStrategy.Longest;
+
+            dynSettings.Controller.RunExpression();
 
             var oldVal = (ReferencePoint)((FScheme.Value.Container)refPtNode.OldValue).Item;
             refPtNode.ResetOldValue();
