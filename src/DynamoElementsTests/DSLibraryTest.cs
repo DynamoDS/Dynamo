@@ -27,11 +27,10 @@ namespace Dynamo.Tests
         [Test]
         public void TestLoadLibrary()
         {
-            Action<object, DSLibraryServices.LibraryLoadedEventArgs> onLoaded =
+            EventHandler<Dynamo.DSEngine.DSLibraryServices.LibraryLoadedEventArgs> onLoaded =
                 (sender, e) => Assert.IsTrue(e.Status == DSLibraryServices.LibraryLoadStatus.Ok);
-            var loadedEventHandler = new DSLibraryServices.LibraryLoadedEventHandler(onLoaded);
 
-            DSLibraryServices.Instance.LibraryLoaded += loadedEventHandler;
+            DSLibraryServices.Instance.LibraryLoaded += onLoaded;
             string libraryPath = Path.Combine(GetTestDirectory(), @"core\library\MultiReturnTest.dll");
             DSLibraryServices.Instance.ImportLibrary(libraryPath);
 
@@ -39,17 +38,16 @@ namespace Dynamo.Tests
             Assert.IsNotNull(functions);
             Assert.IsTrue(functions.Count > 0);
 
-            DSLibraryServices.Instance.LibraryLoaded -= loadedEventHandler;
+            DSLibraryServices.Instance.LibraryLoaded -= onLoaded;
         }
 
         [Test]
         public void TestLoadDSFile()
         {
-            Action<object, DSLibraryServices.LibraryLoadedEventArgs> onLoaded =
+            EventHandler<DSLibraryServices.LibraryLoadedEventArgs> onLoaded =
                 (sender, e) => Assert.IsTrue(e.Status == DSLibraryServices.LibraryLoadStatus.Ok);
-            var loadedEventHandler = new DSLibraryServices.LibraryLoadedEventHandler(onLoaded);
 
-            DSLibraryServices.Instance.LibraryLoaded += loadedEventHandler;
+            DSLibraryServices.Instance.LibraryLoaded += onLoaded;
             string libraryPath = Path.Combine(GetTestDirectory(), @"core\library\Dummy.ds");
             DSLibraryServices.Instance.ImportLibrary(libraryPath);
 
@@ -57,7 +55,7 @@ namespace Dynamo.Tests
             Assert.IsNotNull(functions);
             Assert.IsTrue(functions.Count > 0);
 
-            DSLibraryServices.Instance.LibraryLoaded -= loadedEventHandler;
+            DSLibraryServices.Instance.LibraryLoaded -= onLoaded;
         }
     }
 }
