@@ -1334,6 +1334,11 @@ namespace Dynamo.Models
             double verticalOffset = 2.9;
             PortType portType;
             int index = GetPortIndex(portModel, out portType);
+
+            //If the port was not found, then it should have just been deleted. Return from function
+            if (index == -1)
+                return verticalOffset;
+
             if (portType == PortType.INPUT)
             {
                 for (int i = 0; i < index; i++)
