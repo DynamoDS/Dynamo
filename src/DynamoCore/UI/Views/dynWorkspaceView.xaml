@@ -42,8 +42,8 @@
                             <ItemsPanelTemplate>
                                 <controls:DragCanvas
                                     UseLayoutRounding="True"
-                                    Width="1000" 
-                                    Height="1000" 
+                                    Width="{Binding Path=ActualWidth, ElementName=outerCanvas}" 
+                                    Height="{Binding Path=ActualHeight, ElementName=outerCanvas}"
                                     x:Name="DragCanvas"
                                     Visibility="Visible"
                                     ContextMenuOpening="WorkBench_ContextMenuOpening" 
