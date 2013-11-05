@@ -42,15 +42,9 @@
       <Input name="index2" />
     </Dynamo.Nodes.NewList>
     <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="29d60c62-8759-4783-aa10-776aed6b7f93" nickname="Watch" x="734.5" y="253.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.FreeForm type="Dynamo.Nodes.FreeForm" guid="c8bf9c57-e0a3-4d0c-b2aa-8d100466c2db" nickname="Free Form" x="755.5" y="527" isVisible="true" isUpstreamVisible="true" lacing="Longest">
-      <Run>
-        <Element>d4bed930-a6db-46e4-9db4-58b3f9782cb6-00000fea</Element>
-      </Run>
-    </Dynamo.Nodes.FreeForm>
   </Elements>
   <Connectors>
     <Dynamo.Models.ConnectorModel start="7a8eb5f7-083e-435b-935b-3a2284061542" start_index="0" end="29d60c62-8759-4783-aa10-776aed6b7f93" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="7a8eb5f7-083e-435b-935b-3a2284061542" start_index="0" end="c8bf9c57-e0a3-4d0c-b2aa-8d100466c2db" end_index="0" portType="0" />
     <Dynamo.Models.ConnectorModel start="233c0808-2d01-41c2-8470-3c86281507fb" start_index="0" end="4d2ba7d7-43f6-4232-8abe-868df71788ff" end_index="0" portType="0" />
     <Dynamo.Models.ConnectorModel start="233c0808-2d01-41c2-8470-3c86281507fb" start_index="0" end="7f15f47f-98fe-4280-b38d-e0891a607fbf" end_index="1" portType="0" />
     <Dynamo.Models.ConnectorModel start="233c0808-2d01-41c2-8470-3c86281507fb" start_index="0" end="0782608b-e5fb-4e2d-aa83-21afbd58b169" end_index="1" portType="0" />
