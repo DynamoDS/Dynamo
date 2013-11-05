@@ -153,8 +153,10 @@
                     FontStyle="Normal" 
                     Foreground="LightGray"
                     Style="{StaticResource SZoomFadeText}"
-            Grid.Row="0" Grid.Column="0"
-                  MouseDown="NickNameBlock_OnMouseDown" MouseEnter="NickNameBlock_OnMouseEnter" MouseLeave="NickNameBlock_OnMouseLeave">
+                    Grid.Row="0" Grid.Column="0"
+                    MouseDown="NickNameBlock_OnMouseDown" 
+                    MouseEnter="NickNameBlock_OnMouseEnter" 
+                    MouseLeave="NickNameBlock_OnMouseLeave">
         </TextBlock>
 
         <!-- CENTER CANVAS -->

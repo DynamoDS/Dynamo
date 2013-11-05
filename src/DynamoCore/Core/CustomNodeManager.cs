@@ -652,7 +652,7 @@ namespace Dynamo.Utilities
                 var ws = new CustomNodeWorkspaceModel(
                     funName, category.Length > 0
                     ? category
-                    : BuiltinNodeCategories.SCRIPTING_CUSTOMNODES, description, cx, cy)
+                    : "Custom Nodes", description, cx, cy)
                 {
                     WatchChanges = false,
                     FileName = xmlPath,

@@ -384,7 +384,7 @@ namespace Dynamo
                     pyBindings.GetType()
                               .InvokeMember(
                                   "Add", BindingFlags.InvokeMethod, null, pyBindings,
-                                  new[] { new KeyValuePair<string, dynamic>(name, boundObject) as object });
+                                  new[] { name, boundObject });
 
                 addToBindings("DynLog", new LogDelegate(DynamoLogger.Instance.Log)); //Logging
 
