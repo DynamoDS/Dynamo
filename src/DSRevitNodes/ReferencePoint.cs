@@ -1,5 +1,6 @@
 ﻿using System;
 using Autodesk.DesignScript.Geometry;
+using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
 using DSNodeServices;
 using RevitServices.Persistence;
@@ -11,12 +12,12 @@ using Point = Autodesk.DesignScript.Geometry.Point;
 namespace DSRevitNodes
 {
 
-    /// <summary>
-    /// A Revit Reference Point
-    /// </summary>
-    [RegisterForTrace]
+/// <summary>
+/// A Revit Reference Point
+/// </summary>
+[RegisterForTrace]
     [ShortName("refPt")]
-    public class ReferencePoint : AbstractGeometry
+    public class ReferencePoint : AbstractGeometry, IGraphicItem
     {
         /// <summary>
         /// Internal variable containing the wrapped Revit object
@@ -169,5 +170,13 @@ namespace DSRevitNodes
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Tessellate Reference Point to render package for visualization.
+        /// </summary>
+        /// <param name="package"></param>
+        void IGraphicItem.Tessellate(IRenderPackage package)
+        {
+            package.PushPointVertex(this.X, this.Y, this.Z);
+        }
     }
 }

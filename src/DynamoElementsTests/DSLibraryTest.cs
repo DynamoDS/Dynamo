@@ -8,6 +8,7 @@ using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
+    [Category("DSExecution")]
     class DSLibraryTest : DynamoUnitTest
     {
         [Test]
