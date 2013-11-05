@@ -116,9 +116,9 @@
 				<test name="UVRandom" runDynamo="True" modelPath=".\empty.rfa"/>
 			</testFixture>
 			<testFixture name="ViewTests">
-				<test name="AxonometricView" runDynamo="True" modelPath=".\AxonometricView.rfa"/>
-				<test name="OverrideElementColorInView" runDynamo="True" modelPath=".\OverrideElementColorInView.rvt"/>
-				<test name="PerspectiveView" runDynamo="True" modelPath=".\PerspectiveView.rfa"/>
+				<test name="AxonometricView" runDynamo="True" modelPath=".\View\AxonometricView.rfa"/>
+				<test name="OverrideElementColorInView" runDynamo="True" modelPath=".\View\OverrideElementColorInView.rvt"/>
+				<test name="PerspectiveView" runDynamo="True" modelPath=".\View\PerspectiveView.rfa"/>
 			</testFixture>
 			<testFixture name="XYZTests">
 				<test name="XYZFromReferencePoint" runDynamo="True" modelPath=".\empty.rfa"/>
