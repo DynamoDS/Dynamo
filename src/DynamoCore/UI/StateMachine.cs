@@ -13,6 +13,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Views;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using Dynamo.Core;
 
 namespace Dynamo.ViewModels
 {
@@ -150,15 +151,16 @@ namespace Dynamo.ViewModels
 
             NodeModel node = _model.GetModelInternal(nodeId) as NodeModel;
             PortModel portModel = isInPort ? node.InPorts[index] : node.OutPorts[index];
+            ConnectorModel connectorToRemove = null;
 
             // Remove connector if one already exists
             if (portModel.Connectors.Count > 0 && portModel.PortType == PortType.INPUT)
             {
-                var connToRemove = portModel.Connectors[0];
-                _model.Connectors.Remove(connToRemove);
-                portModel.Disconnect(connToRemove);
-                var startPort = connToRemove.Start;
-                startPort.Disconnect(connToRemove);
+                connectorToRemove = portModel.Connectors[0];
+                _model.Connectors.Remove(connectorToRemove);
+                portModel.Disconnect(connectorToRemove);
+                var startPort = connectorToRemove.Start;
+                startPort.Disconnect(connectorToRemove);
             }
 
             // Create the new connector model
@@ -181,7 +183,11 @@ namespace Dynamo.ViewModels
                 _model.Connectors.Add(newConnectorModel);
 
             // Record the creation of connector in the undo recorder.
-            _model.RecordCreatedModel(newConnectorModel);
+            var models = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();
+            if (connectorToRemove != null)
+                models.Add(connectorToRemove, UndoRedoRecorder.UserAction.Deletion);
+            models.Add(newConnectorModel, UndoRedoRecorder.UserAction.Creation);
+            _model.RecordModelsForUndo(models);
             this.SetActiveConnector(null);
         }
 
@@ -377,7 +383,7 @@ namespace Dynamo.ViewModels
 
                 if (this.currentState == State.WindowSelection)
                 {
-                    
+
                     SelectionBoxUpdateArgs args = null;
                     args = new SelectionBoxUpdateArgs(Visibility.Collapsed);
                     this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
