@@ -24,7 +24,10 @@ namespace Dynamo.ViewModels
         private ConnectorViewModel activeConnector = null;
         private List<DraggedNode> draggedNodes = new List<DraggedNode>();
 
-        internal bool IsConnecting { get { return null != this.activeConnector; } }
+        internal StateMachine.State CurrentState
+        {
+            get { return stateMachine.CurrentState; }
+        }
 
         internal bool HandleLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -284,7 +287,7 @@ namespace Dynamo.ViewModels
         /// things that we don't expose beyond WorkspaceViewModel object, but 
         /// should still be readily accessible by the StateMachine class.
         /// </summary>
-        class StateMachine
+        internal class StateMachine
         {
             #region Private Class Data Members
 
@@ -377,14 +380,12 @@ namespace Dynamo.ViewModels
 
                 if (this.currentState == State.WindowSelection)
                 {
-                    
                     SelectionBoxUpdateArgs args = null;
                     args = new SelectionBoxUpdateArgs(Visibility.Collapsed);
                     this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
                     this.currentState = State.None;
 
-                    this.owningWorkspace.RequestChangeCursorUsual(this, e);
-
+                    this.owningWorkspace.OnRequestChangeCursorUsual(this, e);
                     return true; // Mouse event handled.
                 }
                 else if (this.currentState == State.NodeReposition)
@@ -395,8 +396,7 @@ namespace Dynamo.ViewModels
                     var dynamoViewModel = dynSettings.Controller.DynamoViewModel;
                     dynamoViewModel.ExecuteCommand(command);
 
-                    this.owningWorkspace.RequestChangeCursorUsual(this, e);
-
+                    this.owningWorkspace.OnRequestChangeCursorUsual(this, e);
                     this.currentState = State.None; // Dragging operation ended.
                 }
                 else if (this.currentState == State.DragSetup)
@@ -498,7 +498,7 @@ namespace Dynamo.ViewModels
                     dynamoViewModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
                         nodeId, portIndex, portType, DynCmd.MakeConnectionCommand.Mode.Begin));
 
-                    if (owningWorkspace.IsConnecting)
+                    if (null != owningWorkspace.activeConnector)
                         this.currentState = State.Connection;
                 }
                 else  // Attempt to complete the connection
@@ -541,8 +541,7 @@ namespace Dynamo.ViewModels
                     throw new InvalidOperationException();
 
                 this.currentState = State.DragSetup;
-
-                this.owningWorkspace.RequestChangeCursorUsual(this, new EventArgs());
+                this.owningWorkspace.OnRequestChangeCursorUsual(this, new EventArgs());
             }
 
             private void InitiateWindowSelectionSequence()
