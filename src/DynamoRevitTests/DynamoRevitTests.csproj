@@ -76,11 +76,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdaptiveComponentTests.cs" />
-    <Compile Include="AnalysisTests.cs" />
+    <Compile Include="MaterialTests.cs" />
+    <Compile Include="ModelCurveTests.cs" />
+    <Compile Include="RayBounceTests.cs" />
     <Compile Include="BugTests.cs" />
     <Compile Include="CoreTests.cs" />
     <Compile Include="CurveTests.cs" />
-    <Compile Include="DatumsTests.cs" />
+    <Compile Include="FaceTests.cs" />
+    <Compile Include="LevelTests.cs" />
     <Compile Include="DividedSurfaceTests.cs" />
     <Compile Include="DynamoRevitTests.cs" />
     <Compile Include="FamilyTests.cs" />
@@ -89,12 +92,19 @@
     <Compile Include="MiscTests.cs" />
     <Compile Include="NewNodeSampleTests.cs" />
     <Compile Include="PointTests.cs" />
+    <Compile Include="LengthTests.cs" />
+    <Compile Include="ModelTextTests.cs" />
+    <Compile Include="ReferenceCurveTests.cs" />
+    <Compile Include="SelectionTests.cs" />
+    <Compile Include="XYZTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PythonTests.cs" />
+    <Compile Include="ReferencePointTests.cs" />
     <Compile Include="RegressionTests.cs" />
     <Compile Include="SampleTests.cs" />
     <Compile Include="SolidTests.cs" />
     <Compile Include="TestUtils.cs" />
+    <Compile Include="UVTests.cs" />
     <Compile Include="ViewTests.cs" />
   </ItemGroup>
   <ItemGroup>

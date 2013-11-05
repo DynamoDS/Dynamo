@@ -7,14 +7,14 @@ using NUnit.Framework;
 namespace Dynamo.Tests
 {
     [TestFixture]
-    class AnalysisTests:DynamoRevitUnitTestBase
+    class RayBounceTests:DynamoRevitUnitTestBase
     {
         [Test]
         public void RayBounce()
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\RayBounce.dyn");
+            string samplePath = Path.Combine(_testPath, @".\RayBounce\RayBounce.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
