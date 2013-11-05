@@ -11,11 +11,11 @@ namespace Dynamo
 {
     class CustomNodeManagerTests : DynamoUnitTest
     {
-        //[Test]
-        //public void Get()
-        //{
+        [Test]
+        public void Get()
+        {
             
-        //}
+        }
     }
 }
     // need tests for
