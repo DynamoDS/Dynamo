@@ -85,12 +85,6 @@ namespace Dynamo.DSEngine
             public const string Operators = "Opertors";
         }
 
-        public enum LibraryLoadStatus
-        {
-            Ok,
-            Failed
-        }
-
         public class LibraryLoadedEventArgs : EventArgs
         {
             public LibraryLoadedEventArgs(string libraryPath)
