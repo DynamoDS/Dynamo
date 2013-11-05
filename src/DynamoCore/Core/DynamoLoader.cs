@@ -119,7 +119,7 @@ namespace Dynamo.Utilities
             {
                 LoadDSFunctionsFromLibrary(library);
             }
-            DSLibraryServices.Instance.LibraryLoaded += OnLoadDSLibrary;
+            DSLibraryServices.Instance.LibraryLoaded += DSLibraryLoaded;
 
             // TODO: need a controller to coordinate the initialization order of
             // these subcomponents. 
@@ -152,12 +152,9 @@ namespace Dynamo.Utilities
             }
         }
 
-        private static void OnLoadDSLibrary(object sender, DSLibraryServices.LibraryLoadedEventArgs e)
+        private static void DSLibraryLoaded(object sender, DSLibraryServices.LibraryLoadedEventArgs e)
         {
-            if (e.Status == DSLibraryServices.LibraryLoadStatus.Ok)
-            {
-                LoadDSFunctionsFromLibrary(e.LibraryPath);
-            }
+            LoadDSFunctionsFromLibrary(e.LibraryPath);
 
             foreach (var node in dynSettings.Controller.DynamoViewModel.Model.HomeSpace.Nodes)
             {

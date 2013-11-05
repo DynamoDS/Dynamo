@@ -93,16 +93,24 @@ namespace Dynamo.DSEngine
 
         public class LibraryLoadedEventArgs : EventArgs
         {
-            public LibraryLoadedEventArgs(string libraryPath, LibraryLoadStatus status, string message)
+            public LibraryLoadedEventArgs(string libraryPath)
             {
                 LibraryPath = libraryPath;
-                Status = status;
-                Message = message;
             }
 
             public string LibraryPath { get; private set; }
-            public LibraryLoadStatus Status { get; private set; }
-            public string Message { get; private set;}
+        }
+
+        public class LibraryLoadFailedEventArgs : EventArgs
+        {
+            public LibraryLoadFailedEventArgs(string libraryPath, string reason)
+            {
+                LibraryPath = libraryPath; ;
+                Reason = reason;
+            }
+
+            public string LibraryPath { get; private set; }
+            public string Reason { get; private set; }
         }
 
         public class LibraryLoadingEventArgs : EventArgs
@@ -116,6 +124,7 @@ namespace Dynamo.DSEngine
         }
 
         public event EventHandler<LibraryLoadingEventArgs> LibraryLoading;
+        public event EventHandler<LibraryLoadFailedEventArgs> LibraryLoadFailed;
         public event EventHandler<LibraryLoadedEventArgs> LibraryLoaded;
         public static DSLibraryServices Instance = new DSLibraryServices();
 
@@ -200,9 +209,10 @@ namespace Dynamo.DSEngine
                     foreach (var error in GraphToDSCompiler.GraphUtilities.BuildStatus.Errors)
                     {
                         DynamoLogger.Instance.LogWarning(error.Message, WarningLevel.Moderate);
+                        errorMessage += error.Message + "\n";
                     }
 
-                    OnLibraryLoaded(new LibraryLoadedEventArgs(libraryPath, LibraryLoadStatus.Failed, errorMessage));
+                    OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(libraryPath, errorMessage));
                     return;
                 }
 
@@ -213,11 +223,11 @@ namespace Dynamo.DSEngine
             }
             catch (Exception e)
             {
-                OnLibraryLoaded(new LibraryLoadedEventArgs(libraryPath, LibraryLoadStatus.Failed, e.Message));
+                OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(libraryPath, e.Message));
             }
 
             AddToLibraryList(libraryPath, functions);
-            OnLibraryLoaded(new LibraryLoadedEventArgs(libraryPath, LibraryLoadStatus.Ok, null));
+            OnLibraryLoaded(new LibraryLoadedEventArgs(libraryPath));
         }
 
         private Dictionary<string, List<DSFunctionItem>> libraryFunctionMap;
@@ -391,6 +401,15 @@ namespace Dynamo.DSEngine
         private void OnLibraryLoading(LibraryLoadingEventArgs e)
         {
             EventHandler<LibraryLoadingEventArgs> handler = LibraryLoading;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        private void OnLibraryLoadFailed(LibraryLoadFailedEventArgs e)
+        {
+            EventHandler<LibraryLoadFailedEventArgs> handler = LibraryLoadFailed;
             if (handler != null)
             {
                 handler(this, e);
