@@ -14,46 +14,6 @@ using Dynamo.Revit;
 
 namespace Dynamo.Nodes
 {
-    [NodeName("Select Family Type")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
-    [NodeDescription("Select a Family Type from a drop down list.")]
-    [IsInteractive(true)]
-    public class FamilyTypeSelector : DropDrownBase
-    {
-        public FamilyTypeSelector()
-        {
-            OutPortData.Add(new PortData("", "Family type", typeof (Value.Container)));
-            RegisterAllPorts();
-
-            PopulateItems();
-        }
-
-        public override void PopulateItems()
-        {
-            Items.Clear();
-
-            //load all the currently loaded types into the combo list
-            var fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
-            fec.OfClass(typeof (Family));
-            foreach (Family f in fec.ToElements())
-            {
-                foreach (FamilySymbol fs in f.Symbols)
-                {
-                    Items.Add(new DynamoDropDownItem(f.Name + ":" + fs.Name, fs));
-                }
-            }
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            if (SelectedIndex < 0)
-                throw new Exception("Nothing selected!");
-
-            return Value.NewContainer(Items[SelectedIndex].Item);
-        }
-
-    }
-
     [NodeName("Get Family Parameter")]
     [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
     [NodeDescription("Given a Family Instance or Symbol, allows the user to select a parameter as a string.")]
@@ -885,271 +845,6 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Set Family Type Parameter")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
-    [NodeDescription("Modifies a parameter on a family type.")]
-    public class FamilyTypeParameterSetter : RevitTransactionNodeWithOneOutput
-    {
-        public FamilyTypeParameterSetter()
-        {
-            InPortData.Add(new PortData("ft", "Family type.", typeof (Value.Container)));
-            InPortData.Add(new PortData("param", "Parameter to modify.", typeof (Value.String)));
-            InPortData.Add(new PortData("value", "Value to set the parameter to.", typeof (object)));
-            OutPortData.Add(new PortData("ft", "Modified family type.", typeof (Value.Container)));
-
-            RegisterAllPorts();
-        }
-
-        private static Value setParam(FamilySymbol fi, string paramName, Value valueExpr)
-        {
-            var p = fi.get_Parameter(paramName);
-            if (p != null)
-            {
-                return _setParam(fi, p, valueExpr);
-            }
-            throw new Exception("Parameter \"" + paramName + "\" was not found!");
-        }
-
-        private static Value setParam(FamilySymbol fi, Definition paramDef, Value valueExpr)
-        {
-            var p = fi.get_Parameter(paramDef);
-            if (p != null)
-            {
-                return _setParam(fi, p, valueExpr);
-            }
-            throw new Exception("Parameter \"" + paramDef.Name + "\" was not found!");
-        }
-
-        private static Value _setParam(FamilySymbol ft, Parameter p, Value valueExpr)
-        {
-            if (p.StorageType == StorageType.Double)
-            {
-                p.Set(((Value.Number) valueExpr).Item);
-            }
-            else if (p.StorageType == StorageType.Integer)
-            {
-                p.Set((int) ((Value.Number) valueExpr).Item);
-            }
-            else if (p.StorageType == StorageType.String)
-            {
-                p.Set(((Value.String) valueExpr).Item);
-            }
-            else if (valueExpr.IsNumber)
-            {
-                p.Set(new ElementId((int) (valueExpr as Value.Number).Item));
-            }
-            else
-            {
-                p.Set((ElementId) ((Value.Container) valueExpr).Item);
-            }
-            return Value.NewContainer(ft);
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            var valueExpr = args[2];
-
-            var param = args[1];
-            if (param.IsString)
-            {
-                var paramName = ((Value.String) param).Item;
-
-                var input = args[0];
-                if (input.IsList)
-                {
-                    var fiList = (input as Value.List).Item;
-                    return Value.NewList(
-                        Utils.SequenceToFSharpList(
-                            fiList.Select(
-                                x =>
-                                setParam(
-                                    (FamilySymbol) ((Value.Container) x).Item,
-                                    paramName,
-                                    valueExpr
-                                    )
-                                )
-                            )
-                        );
-                }
-                else
-                {
-                    var fs = (FamilySymbol) ((Value.Container) input).Item;
-
-                    return setParam(fs, paramName, valueExpr);
-                }
-            }
-            else
-            {
-                var paramDef = (Definition) ((Value.Container) param).Item;
-
-                var input = args[0];
-                if (input.IsList)
-                {
-                    var fiList = (input as Value.List).Item;
-                    return Value.NewList(
-                        Utils.SequenceToFSharpList(
-                            fiList.Select(
-                                x =>
-                                setParam(
-                                    (FamilySymbol) ((Value.Container) x).Item,
-                                    paramDef,
-                                    valueExpr
-                                    )
-                                )
-                            )
-                        );
-                }
-                else
-                {
-                    var fs = (FamilySymbol) ((Value.Container) input).Item;
-
-                    return setParam(fs, paramDef, valueExpr);
-                }
-            }
-        }
-    }
-
-    [NodeName("Get Family Type Parameter")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
-    [NodeDescription("Fetches the value of a parameter of a Family Type.")]
-    public class FamilyTypeParameterGetter : RevitTransactionNodeWithOneOutput
-    {
-        public FamilyTypeParameterGetter()
-        {
-            InPortData.Add(new PortData("ft", "Family type.", typeof (Value.Container)));
-            InPortData.Add(new PortData("param", "Parameter to fetch (string).", typeof (Value.String)));
-
-            OutPortData.Add(new PortData("val", "Parameter value.", typeof (object)));
-
-            RegisterAllPorts();
-        }
-
-        private static Value getParam(FamilySymbol fi, string paramName)
-        {
-            var p = fi.get_Parameter(paramName);
-            if (p != null)
-            {
-                return _getParam(fi, p);
-            }
-            throw new Exception("Parameter \"" + paramName + "\" was not found!");
-        }
-
-        private static Value getParam(FamilySymbol fi, Definition paramDef)
-        {
-            var p = fi.get_Parameter(paramDef);
-            if (p != null)
-            {
-                return _getParam(fi, p);
-            }
-            throw new Exception("Parameter \"" + paramDef.Name + "\" was not found!");
-        }
-
-        private static Value _getParam(FamilySymbol fi, Parameter p)
-        {
-            if (p.StorageType == StorageType.Double)
-            {
-                return Value.NewNumber(p.AsDouble());
-            }
-            else if (p.StorageType == StorageType.Integer)
-            {
-                return Value.NewNumber(p.AsInteger());
-            }
-            else if (p.StorageType == StorageType.String)
-            {
-                return Value.NewString(p.AsString());
-            }
-            else
-            {
-                return Value.NewContainer(p.AsElementId());
-            }
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            var param = args[1];
-            if (param.IsString)
-            {
-                var paramName = ((Value.String) param).Item;
-
-                var input = args[0];
-                if (input.IsList)
-                {
-                    var fiList = (input as Value.List).Item;
-                    return Value.NewList(
-                        Utils.SequenceToFSharpList(
-                            fiList.Select(
-                                x =>
-                                getParam(
-                                    (FamilySymbol) ((Value.Container) x).Item,
-                                    paramName
-                                    )
-                                )
-                            )
-                        );
-                }
-                else
-                {
-                    var fi = (FamilySymbol) ((Value.Container) input).Item;
-
-                    return getParam(fi, paramName);
-                }
-            }
-            else
-            {
-                var paramDef = (Definition) ((Value.Container) param).Item;
-
-                var input = args[0];
-                if (input.IsList)
-                {
-                    var fiList = (input as Value.List).Item;
-                    return Value.NewList(
-                        Utils.SequenceToFSharpList(
-                            fiList.Select(
-                                x =>
-                                getParam(
-                                    (FamilySymbol) ((Value.Container) x).Item,
-                                    paramDef
-                                    )
-                                )
-                            )
-                        );
-                }
-                else
-                {
-                    var fi = (FamilySymbol) ((Value.Container) input).Item;
-
-                    return getParam(fi, paramDef);
-                }
-            }
-        }
-    }
-
-    [NodeName("Get Family Instances by Type")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
-    [NodeDescription("Returns all family instances of the selected type in the active model.")]
-    public class GetFamilyInstancesByType : NodeWithOneOutput
-    {
-        public GetFamilyInstancesByType()
-        {
-            InPortData.Add(new PortData("type", "The type of the family you want to find.", typeof (Value.Container)));
-            OutPortData.Add(new PortData("instances", "The instance(s) of the selected type found in the active model.",
-                                         typeof (Value.List)));
-            RegisterAllPorts();
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-            var symbol = (FamilySymbol) ((Value.Container) args[0]).Item;
-            var collector = new FilteredElementCollector(dynRevitSettings.Doc.Document);
-            collector.OfClass(typeof (FamilyInstance));
-            var fis = collector.ToElements().Where(x => x is FamilyInstance).Cast<FamilyInstance>().Where(x=>x.Symbol.Name == symbol.Name);
-            var results = fis.Aggregate(FSharpList<Value>.Empty,
-                                        (current, fi) => FSharpList<Value>.Cons(Value.NewContainer(fi), current));
-
-            return Value.NewList(Utils.SequenceToFSharpList(results.Reverse()));
-        }
-    }
-
     [NodeName("Get Family Instance Location")]
     [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
     [NodeDescription("Returns all family instances of the selected type in the active model.")]
@@ -1228,7 +923,38 @@ namespace Dynamo.Nodes
                 if (param != null)
                 {
                     var pd = OutPortData[i - 1];
-                    outPuts[pd] = FScheme.Value.NewString(param.AsValueString());
+                    switch (param.StorageType)
+                    {
+                        case StorageType.Double:
+                            outPuts[pd] = FScheme.Value.NewNumber(param.AsDouble());
+                            break;
+                        case StorageType.ElementId:
+                            outPuts[pd] = FScheme.Value.NewContainer(param.AsElementId());
+                            break;
+                        case StorageType.Integer:
+                            outPuts[pd] = FScheme.Value.NewNumber(param.AsInteger());
+                            break;
+                        case StorageType.String:
+                            if (string.IsNullOrEmpty(param.AsString()))
+                            {
+                                outPuts[pd] = FScheme.Value.NewString(string.Empty);
+                            }
+                            else
+                            {
+                                outPuts[pd] = FScheme.Value.NewString(param.AsString());
+                            }
+                            break;
+                        default:
+                            if (string.IsNullOrEmpty(param.AsValueString()))
+                            {
+                                outPuts[pd] = FScheme.Value.NewString(string.Empty);
+                            }
+                            else
+                            {
+                                outPuts[pd] = FScheme.Value.NewString(param.AsValueString());
+                            }
+                            break;
+                    }
                 }
             }
         }
