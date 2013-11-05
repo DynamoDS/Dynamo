@@ -41,5 +41,23 @@ namespace Dynamo.Tests
 
             DSLibraryServices.Instance.LibraryLoaded -= loadedEventHandler;
         }
+
+        [Test]
+        public void TestLoadDSFile()
+        {
+            Action<object, DSLibraryServices.LibraryLoadedEventArgs> onLoaded =
+                (sender, e) => Assert.IsTrue(e.Status == DSLibraryServices.LibraryLoadStatus.Ok);
+            var loadedEventHandler = new DSLibraryServices.LibraryLoadedEventHandler(onLoaded);
+
+            DSLibraryServices.Instance.LibraryLoaded += loadedEventHandler;
+            string libraryPath = Path.Combine(GetTestDirectory(), @"core\library\Dummy.ds");
+            DSLibraryServices.Instance.ImportLibrary(libraryPath);
+
+            List<DSFunctionItem> functions = DSLibraryServices.Instance[libraryPath];
+            Assert.IsNotNull(functions);
+            Assert.IsTrue(functions.Count > 0);
+
+            DSLibraryServices.Instance.LibraryLoaded -= loadedEventHandler;
+        }
     }
 }
