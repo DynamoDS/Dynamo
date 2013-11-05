@@ -262,15 +262,6 @@ namespace Dynamo.Applications
         {
             args.Handled = true;
 
-            /// MAGN-550
-            /// Revit throws type initialization errors from the UI thread and we catch them.
-            /// Swallowing these is dangerous because we'll avoid exiting when Dynamo throws this type of
-            /// error. But, it's better than crashing whenever Revit throws this error - which is a lot.
-            if (args.Exception.InnerException.GetType() == typeof (TypeInitializationException))
-            {
-                return;
-            }
-
             // only handle a single crash per Dynamo sesh, this should be reset in the initial command
             if (handledCrash)
             {
