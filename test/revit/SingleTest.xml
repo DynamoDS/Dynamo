@@ -2,8 +2,13 @@
 <tests pluginClass='Dynamo.Tests.DynamoTestFramework' pluginGUID='487f9ff0-5b34-4e7e-97bf-70fbff69194f'>
 	<testAssemblies>
 		<testAssembly name="DynamoRevitTester.dll">
-			<testFixture name="SampleTests">
-				<test name="InstParam2MassesSample" runDynamo="True" modelPath="..\..\doc\distrib\Samples\08 Get Set Family Params\inst param mass families.rvt"/>
+			<testFixture name="SolidTests">
+				<test name="BlendSolid" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="Loft" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="RevolveSolid" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="SolidBySkeleton" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="SweepToMakeSolid" runDynamo="True" modelPath=".\empty.rfa"/>
+        		<test name="SweptBlend" runDynamo="True" modelPath=".\empty.rfa"/>
 			</testFixture>
 		</testAssembly>
 	</testAssemblies>

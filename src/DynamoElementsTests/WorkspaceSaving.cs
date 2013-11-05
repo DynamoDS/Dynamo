@@ -44,7 +44,7 @@ namespace Dynamo.Tests
 
             var dynamoModel = Controller.DynamoModel;
             var nodeName = "Cool node";
-            var catName = BuiltinNodeCategories.SCRIPTING_CUSTOMNODES;
+            var catName = "Custom Nodes";
 
             var def = dynamoModel.NewCustomNodeWorkspace(Guid.NewGuid(), nodeName, catName, "", true);
                 
@@ -121,7 +121,7 @@ namespace Dynamo.Tests
 
             var dynamoModel = Controller.DynamoModel;
             var nodeName = "Cool node";
-            var catName = BuiltinNodeCategories.SCRIPTING_CUSTOMNODES;
+            var catName = "Custom Nodes";
 
             var def = dynamoModel.NewCustomNodeWorkspace(Guid.NewGuid(), nodeName, catName, "", true);
 
@@ -153,7 +153,7 @@ namespace Dynamo.Tests
 
             var dynamoModel = Controller.DynamoModel;
             var nodeName = "Cool node";
-            var catName = BuiltinNodeCategories.SCRIPTING_CUSTOMNODES;
+            var catName = "Custom Nodes";
 
             var def = dynamoModel.NewCustomNodeWorkspace(Guid.NewGuid(), nodeName, catName, "", true);
 
@@ -190,7 +190,7 @@ namespace Dynamo.Tests
 
             var dynamoModel = Controller.DynamoModel;
             var nodeName = "Cool node";
-            var catName = BuiltinNodeCategories.SCRIPTING_CUSTOMNODES;
+            var catName = "Custom Nodes";
 
             var def = dynamoModel.NewCustomNodeWorkspace(Guid.NewGuid(), nodeName, catName, "", true);
 
@@ -237,7 +237,7 @@ namespace Dynamo.Tests
 
             var dynamoModel = Controller.DynamoModel;
             var nodeName = "Cool node";
-            var catName = BuiltinNodeCategories.SCRIPTING_CUSTOMNODES;
+            var catName = "Custom Nodes";
 
             var def = dynamoModel.NewCustomNodeWorkspace(Guid.NewGuid(), nodeName, catName, "", true);
 
@@ -298,7 +298,7 @@ namespace Dynamo.Tests
 
             var dynamoModel = Controller.DynamoModel;
             var nodeName = "Cool node";
-            var catName = BuiltinNodeCategories.SCRIPTING_CUSTOMNODES;
+            var catName = "Custom Nodes";
 
             var def = dynamoModel.NewCustomNodeWorkspace(Guid.NewGuid(), nodeName, catName, "", true);
 
@@ -369,7 +369,7 @@ namespace Dynamo.Tests
 
             var dynamoModel = Controller.DynamoModel;
             var nodeName = "Cool node";
-            var catName = BuiltinNodeCategories.SCRIPTING_CUSTOMNODES;
+            var catName = "Custom Nodes";
 
             var def = dynamoModel.NewCustomNodeWorkspace(Guid.NewGuid(), nodeName, catName, "", true);
 
@@ -434,7 +434,7 @@ namespace Dynamo.Tests
 
             var dynamoModel = Controller.DynamoModel;
             var nodeName = "Cool node";
-            var catName = BuiltinNodeCategories.SCRIPTING_CUSTOMNODES;
+            var catName = "Custom Nodes";
 
             var def = dynamoModel.NewCustomNodeWorkspace(Guid.NewGuid(), nodeName, catName, "", true);
             Assert.IsFalse(def.WorkspaceModel.HasUnsavedChanges);
@@ -462,7 +462,7 @@ namespace Dynamo.Tests
 
             var dynamoModel = Controller.DynamoModel;
             var nodeName = "Cool node";
-            var catName = BuiltinNodeCategories.SCRIPTING_CUSTOMNODES;
+            var catName = "Custom Nodes";
 
             var def = dynamoModel.NewCustomNodeWorkspace(Guid.NewGuid(), nodeName, catName, "", true);
             var workspace = def.WorkspaceModel;
@@ -817,7 +817,7 @@ namespace Dynamo.Tests
 
             var dynamoModel = Controller.DynamoModel;
             var nodeName = "Cool node";
-            var catName = BuiltinNodeCategories.SCRIPTING_CUSTOMNODES;
+            var catName = "Custom Nodes";
 
             var def = dynamoModel.NewCustomNodeWorkspace(Guid.NewGuid(), nodeName, catName, "", true);
             var workspace = def.WorkspaceModel;
