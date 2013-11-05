@@ -25,7 +25,6 @@ namespace Dynamo.Views
     {
         public enum CursorState
         {
-            Pointer,
             ArcAdding,
             ArcRemoving,
             ArcSelecting,
@@ -548,11 +547,8 @@ namespace Dynamo.Views
 
                 try
                 {
-                    UserControl uc = grid.Parent as UserControl;
-                    if (null == uc)
-                        continue;
+                    PortViewModel pvm = grid.DataContext as PortViewModel;
 
-                    PortViewModel pvm = uc.DataContext as PortViewModel;
                     if (pvm == null)
                         continue;
 
