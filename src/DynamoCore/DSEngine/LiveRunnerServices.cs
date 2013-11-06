@@ -21,7 +21,7 @@ namespace Dynamo.DSEngine
             liveRunner.NodeValueReady += OnNodeValueReady;
             loadedLibraries = new List<string>();
 
-            DSLibraryServices.Instance.LibraryLoaded += new DSLibraryServices.LibraryLoadedEventHandler(OnLoadLibrary);
+            DSLibraryServices.Instance.LibraryLoaded += OnLoadLibrary;
             liveRunner.ResetVMAndResyncGraph(DSLibraryServices.Instance.PreLoadedLibraries);
             loadedLibraries = new List<string>(DSLibraryServices.Instance.PreLoadedLibraries);
         }

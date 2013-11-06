@@ -1270,7 +1270,9 @@ namespace Dynamo.ViewModels
 #if USE_DSENGINE
         public void ImportLibrary(object parameter)
         {
-            string fileFilter = "Assembly Library Files (*.dll)|*.dll|"
+            string fileFilter = "Library Files (*.dll, *.ds)|*.dll;*.ds|"
+                              + "Assembly Library Files (*.dll)|*.dll|"
+                              + "DesignScript Files (*.ds)|*.ds|"
                               + "All Files (*.*)|*.*";
 
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -1284,13 +1286,11 @@ namespace Dynamo.ViewModels
             {
                 foreach (string filePath in openFileDialog.FileNames)
                 {
-                    if (!filePath.ToLower().EndsWith(".dll") && !filePath.ToLower().EndsWith(".ds"))
+                    if (filePath.EndsWith(".dll", StringComparison.InvariantCultureIgnoreCase) || 
+                        filePath.EndsWith(".ds", StringComparison.InvariantCultureIgnoreCase))
                     {
-                        return;
-                    }
-
-                    if (filePath.ToLower().EndsWith(".dll"))
                         Dynamo.DSEngine.DSLibraryServices.Instance.ImportLibrary(filePath);
+                    }
                 }
             }
         }

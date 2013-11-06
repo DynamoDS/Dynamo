@@ -119,7 +119,7 @@ namespace Dynamo.Utilities
             {
                 LoadDSFunctionsFromLibrary(library);
             }
-            DSLibraryServices.Instance.LibraryLoaded += new DSLibraryServices.LibraryLoadedEventHandler(OnLoadDSLibrary);
+            DSLibraryServices.Instance.LibraryLoaded += OnLoadDSLibrary;
 
             // TODO: need a controller to coordinate the initialization order of
             // these subcomponents. 
