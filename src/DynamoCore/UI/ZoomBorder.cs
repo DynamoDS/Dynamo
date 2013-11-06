@@ -157,11 +157,9 @@ namespace Dynamo.Controls
 
         private void child_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            WorkspaceViewModel vm = DataContext as WorkspaceViewModel;
-
             if (child != null &&
                 ( e.ChangedButton == MouseButton.Middle
-                || e.ChangedButton == MouseButton.Left && vm.IsPanMode ))
+                || e.ChangedButton == MouseButton.Left && IsPanMode()))
             {
                 var tt = GetTranslateTransform(child);
                 start = e.GetPosition(this);
@@ -172,11 +170,9 @@ namespace Dynamo.Controls
 
         private void child_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            WorkspaceViewModel vm = DataContext as WorkspaceViewModel;
-
             if (child != null && 
                 ( e.ChangedButton == MouseButton.Middle
-                || e.ChangedButton == MouseButton.Left && vm.IsPanMode ))
+                || e.ChangedButton == MouseButton.Left && IsPanMode()))
             {
                 child.ReleaseMouseCapture();
             }
@@ -199,6 +195,12 @@ namespace Dynamo.Controls
                         vm.ResetFitViewToggleCommand.Execute(null);
                 }
             }
+        }
+
+        private bool IsPanMode()
+        {
+            WorkspaceViewModel vm = DataContext as WorkspaceViewModel;
+            return vm.CurrentState == WorkspaceViewModel.StateMachine.State.PanMode;
         }
 
         #endregion
