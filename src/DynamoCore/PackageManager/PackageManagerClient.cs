@@ -4,14 +4,12 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Security.Authentication;
-using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
 using Greg;
 using Greg.Requests;
 using Greg.Responses;
@@ -248,52 +246,51 @@ namespace Dynamo.PackageManager
                                                     PackageUploadHandle packageUploadHandle )
         {
 
-            ThreadStart start = () =>
+            Task.Factory.StartNew(() =>
+            {
+                try
                 {
-                    try
+                    int maxRetries = 5;
+                    int count = 0;
+                    ResponseBody ret = null;
+                    if (isNewVersion)
                     {
-                        int maxRetries = 5;
-                        int count = 0;
-                        ResponseBody ret = null;
-                        if (isNewVersion)
+                        var pkg = PackageUploadBuilder.NewPackageVersion(l, files, packageUploadHandle);
+                        while (ret == null && count < maxRetries)
                         {
-                            var pkg = PackageUploadBuilder.NewPackageVersion(l, files, packageUploadHandle);
-                            while (ret == null && count < maxRetries)
-                            {
-                                count++;
-                                ret = Client.ExecuteAndDeserialize(pkg);
-                            }
+                            count++;
+                            ret = Client.ExecuteAndDeserialize(pkg);
                         }
-                        else
-                        {
-                            var pkg = PackageUploadBuilder.NewPackage(l, files, packageUploadHandle);
-                            while (ret == null && count < maxRetries)
-                            {
-                                count++;
-                                ret = Client.ExecuteAndDeserialize(pkg);
-                            }
-                        }
-                        if (ret == null)
-                        {
-                            packageUploadHandle.Error("Failed to submit.  Try again later.");
-                            return;
-                        }
-
-                        if (ret != null && !ret.success)
-                        {
-                            packageUploadHandle.Error(ret.message);
-                            return;
-                        }
-
-                        packageUploadHandle.Done(null);
-
                     }
-                    catch (Exception e)
+                    else
                     {
-                        packageUploadHandle.Error(e.GetType() + ": " + e.Message);
+                        var pkg = PackageUploadBuilder.NewPackage(l, files, packageUploadHandle);
+                        while (ret == null && count < maxRetries)
+                        {
+                            count++;
+                            ret = Client.ExecuteAndDeserialize(pkg);
+                        }
                     }
-                };
-            new Thread(start).Start();
+                    if (ret == null)
+                    {
+                        packageUploadHandle.Error("Failed to submit.  Try again later.");
+                        return;
+                    }
+
+                    if (ret != null && !ret.success)
+                    {
+                        packageUploadHandle.Error(ret.message);
+                        return;
+                    }
+
+                    packageUploadHandle.Done(null);
+
+                }
+                catch (Exception e)
+                {
+                    packageUploadHandle.Error(e.GetType() + ": " + e.Message);
+                }
+            });
 
             return packageUploadHandle;
 
@@ -306,13 +303,10 @@ namespace Dynamo.PackageManager
             set { _downloads = value; }
         }
 
-        internal void ClearCompletedDownloads()
+        public void ClearCompletedDownloads()
         {
-            foreach (
-                var ele in Downloads.Where((x) => x.DownloadState == PackageDownloadHandle.State.Installed || x.DownloadState == PackageDownloadHandle.State.Error ).ToList())
-            {
-                Downloads.Remove(ele);
-            }
+            Downloads.Where((x) => x.DownloadState == PackageDownloadHandle.State.Installed ||
+                x.DownloadState == PackageDownloadHandle.State.Error).ToList().ForEach(x=>Downloads.Remove(x));
         }
 
         internal void DownloadAndInstall(PackageDownloadHandle packageDownloadHandle)
@@ -321,7 +315,7 @@ namespace Dynamo.PackageManager
             var pkgDownload = new PackageDownload(packageDownloadHandle.Header._id, packageDownloadHandle.VersionName);
             Downloads.Add( packageDownloadHandle );
 
-            ThreadStart start = () =>
+            Task.Factory.StartNew(() =>
             {
                 try
                 {
@@ -361,8 +355,8 @@ namespace Dynamo.PackageManager
                 {
                     packageDownloadHandle.Error(e.Message);
                 }
-            };
-            new Thread(start).Start();
+            });
+
         }
         
         public class PackageManagerResult

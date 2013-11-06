@@ -24,6 +24,7 @@ using RevitServices.Threading;
 using IWin32Window = System.Windows.Interop.IWin32Window;
 using MessageBox = System.Windows.Forms.MessageBox;
 using Rectangle = System.Drawing.Rectangle;
+using RevThread = RevitServices.Threading;
 using Dynamo.FSchemeInterop;
 using System.IO;
 
@@ -65,7 +66,7 @@ namespace Dynamo.Applications
                 pushButton.LargeImage = bitmapSource;
                 pushButton.Image = bitmapSource;
 
-                IdlePromise.RegisterIdle(application);
+                RevThread.IdlePromise.RegisterIdle(application);
 
                 Updater = new RevitServicesUpdater(/*application.ActiveAddInId, */application.ControlledApplication);
                 //if (!UpdaterRegistry.IsUpdaterRegistered(Updater.GetUpdaterId()))
@@ -173,7 +174,7 @@ namespace Dynamo.Applications
                 //TODO: has to be changed when we handle multiple docs
                 DynamoRevitApp.Updater.DocumentToWatch = m_doc.Document;
                 
-                IdlePromise.ExecuteOnIdleAsync(delegate
+                RevThread.IdlePromise.ExecuteOnIdleAsync(delegate
                 {
                     //get window handle
                     IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
@@ -212,7 +213,7 @@ namespace Dynamo.Applications
                     dynamoView.Closing += dynamoView_Closing;
                     dynamoView.Closed += dynamoView_Closed;
 
-                    revit.Application.ViewActivated += Application_ViewActivated;
+                    //revit.Application.ViewActivated += new EventHandler<Autodesk.Revit.UI.Events.ViewActivatedEventArgs>(Application_ViewActivated);
                     revit.Application.ViewActivating += Application_ViewActivating;
                 });
             }
@@ -253,44 +254,6 @@ namespace Dynamo.Applications
                 //alert the user of the new active view and enable the run button
                 DynamoLogger.Instance.LogWarning(string.Format("Active view is now {0}", e.NewActiveView.Name), WarningLevel.Mild);
                 dynSettings.Controller.DynamoViewModel.RunEnabled = true;
-            }
-        }
-
-
-        /// <summary>
-        /// Handler for the ViewActivated event.
-        /// Used to query whether Dynamo can be run on the active view.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void Application_ViewActivated(object sender, Autodesk.Revit.UI.Events.ViewActivatedEventArgs e)
-        {
-            if (dynSettings.Controller != null)
-            {
-                if (e.CurrentActiveView is View3D)
-                {
-                    var view = e.CurrentActiveView as View3D;
-                    var previousView = e.PreviousActiveView as View3D;
-
-                    if (view.IsPerspective)
-                    {
-                        //warn user that Dynamo can't be run in perspective 
-                        //and disable the run
-                        DynamoLogger.Instance.LogWarning(
-                            "Dynamo is not available in a perspective view. Please switch to another view to Run.", WarningLevel.Moderate);
-                        dynSettings.Controller.DynamoViewModel.RunEnabled = false;
-                    }
-                    else if ( !view.IsPerspective && (previousView == null || previousView.IsPerspective) )
-                    {
-                        DynamoLogger.Instance.ResetWarning();
-                        dynSettings.Controller.DynamoViewModel.RunEnabled = true;
-                    }
-                }
-                else
-                {
-                    DynamoLogger.Instance.LogWarning(string.Format("Active view is now {0}", e.CurrentActiveView.Name), WarningLevel.Mild);
-                    dynSettings.Controller.DynamoViewModel.RunEnabled = true;
-                }
             }
         }
 
@@ -353,8 +316,8 @@ namespace Dynamo.Applications
             dynamoViewY = dynamoView.Top;
             dynamoViewWidth = dynamoView.ActualWidth;
             dynamoViewHeight = dynamoView.ActualHeight;
-            IdlePromise.ClearPromises();
-            IdlePromise.Shutdown();
+            RevThread.IdlePromise.ClearPromises();
+            RevThread.IdlePromise.Shutdown();
         }
 
         /// <summary>
