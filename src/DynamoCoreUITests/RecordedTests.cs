@@ -63,6 +63,11 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(cmdOne.Y, cmdTwo.Y, 0.000001);
             Assert.AreEqual(cmdOne.DefaultPosition, cmdTwo.DefaultPosition);
             Assert.AreEqual(cmdOne.TransformCoordinates, cmdTwo.TransformCoordinates);
+
+            // A RecordableCommand should be created in "recording mode" by default, 
+            // and only deserialized commands should be marked as "in playback mode".
+            Assert.AreEqual(false, cmdOne.IsInPlaybackMode);
+            Assert.AreEqual(true, cmdTwo.IsInPlaybackMode);
         }
 
         [Test, RequiresSTA]
