@@ -137,5 +137,29 @@ namespace Dynamo.Tests
             Assert.IsInstanceOf(FreeFormType, fec.ToElements().First());
             Assert.AreEqual(1, count);
         }
+
+        [Test]
+        public void BoxByCenterAndDimensions()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\Solid\BoxByCenterAndDimensions.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+        }
+
+        [Test]
+        public void BoxByTwoCorners()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\Solid\BoxByTwoCorners.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+        }
     }
 }
