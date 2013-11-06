@@ -59,6 +59,9 @@
 			<testFixture name="ModelTextTests">
 				<test name="ModelText" runDynamo="True" modelPath=".\ModelText\ModelText.rfa"/>
 			</testFixture>
+			<!-- <testFixture name="PythonTests">
+				<test name="CanAddTwoInputsWithPython" runDynamo="True" modelPath=".\empty.rfa"/>
+			</testFixture> -->
 			<testFixture name="RayBounceTests">
 				<test name="RayBounce" runDynamo="True" modelPath=".\RayBounce\RayBounce.rvt"/>
 			</testFixture>
