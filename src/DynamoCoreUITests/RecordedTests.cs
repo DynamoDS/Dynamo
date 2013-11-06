@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows;
+using System.Windows.Input;
 using System.Xml;
 using Dynamo.Controls;
 using Dynamo.Models;
@@ -48,13 +49,14 @@ namespace Dynamo.Tests.UI
             // two instances of the same command.
             // 
             Guid nodeId = Guid.NewGuid();
+            string name = randomizer.Next().ToString();
             double x = randomizer.NextDouble() * 1000;
             double y = randomizer.NextDouble() * 1000;
             bool defaultPos = randomizer.Next(2) == 0;
             bool transfPos = randomizer.Next(2) == 0;
 
             var cmdOne = new DynCmd.CreateNodeCommand(
-                nodeId, "Number", x, y, defaultPos, transfPos);
+                nodeId, name, x, y, defaultPos, transfPos);
 
             var cmdTwo = DuplicateAndCompare(cmdOne);
             Assert.AreEqual(cmdOne.NodeId, cmdTwo.NodeId);
@@ -68,6 +70,135 @@ namespace Dynamo.Tests.UI
             // and only deserialized commands should be marked as "in playback mode".
             Assert.AreEqual(false, cmdOne.IsInPlaybackMode);
             Assert.AreEqual(true, cmdTwo.IsInPlaybackMode);
+        }
+
+        [Test, RequiresSTA]
+        public void TestCreateNoteCommand()
+        {
+            // Create the command in completely unpredictable states. These 
+            // states should properly be serialized and deserialized across 
+            // two instances of the same command.
+            // 
+            Guid nodeId = Guid.NewGuid();
+            string text = randomizer.Next().ToString();
+            double x = randomizer.NextDouble() * 1000;
+            double y = randomizer.NextDouble() * 1000;
+            bool defaultPos = randomizer.Next(2) == 0;
+
+            var cmdOne = new DynCmd.CreateNoteCommand(nodeId, text, x, y, defaultPos);
+            var cmdTwo = DuplicateAndCompare(cmdOne);
+
+            Assert.AreEqual(cmdOne.NodeId, cmdTwo.NodeId);
+            Assert.AreEqual(cmdOne.NoteText, cmdTwo.NoteText);
+            Assert.AreEqual(cmdOne.X, cmdTwo.X, 0.000001);
+            Assert.AreEqual(cmdOne.Y, cmdTwo.Y, 0.000001);
+            Assert.AreEqual(cmdOne.DefaultPosition, cmdTwo.DefaultPosition);
+        }
+
+        [Test, RequiresSTA]
+        public void TestSelectModelCommand()
+        {
+            Guid modelGuid = Guid.NewGuid();
+            ModifierKeys modifiers = ((randomizer.Next(2) == 0) ?
+                ModifierKeys.Control : ModifierKeys.Alt);
+
+            var cmdOne = new DynCmd.SelectModelCommand(modelGuid, modifiers);
+            var cmdTwo = DuplicateAndCompare(cmdOne);
+
+            Assert.AreEqual(cmdOne.ModelGuid, cmdTwo.ModelGuid);
+            Assert.AreEqual(cmdOne.Modifiers, cmdTwo.Modifiers);
+        }
+
+        [Test, RequiresSTA]
+        public void TestSelectInRegionCommand()
+        {
+            Rect region = new Rect(
+                randomizer.NextDouble() * 100,
+                randomizer.NextDouble() * 100,
+                randomizer.NextDouble() * 100,
+                randomizer.NextDouble() * 100);
+
+            bool isCrossSelection = randomizer.Next(2) == 0;
+
+            var cmdOne = new DynCmd.SelectInRegionCommand(region, isCrossSelection);
+            var cmdTwo = DuplicateAndCompare(cmdOne);
+
+            Assert.AreEqual(cmdOne.Region.X, cmdTwo.Region.X, 0.000001);
+            Assert.AreEqual(cmdOne.Region.Y, cmdTwo.Region.Y, 0.000001);
+            Assert.AreEqual(cmdOne.Region.Width, cmdTwo.Region.Width, 0.000001);
+            Assert.AreEqual(cmdOne.Region.Height, cmdTwo.Region.Height, 0.000001);
+            Assert.AreEqual(cmdOne.IsCrossSelection, cmdTwo.IsCrossSelection);
+        }
+
+        [Test, RequiresSTA]
+        public void TestDragSelectionCommand()
+        {
+            Point point = new Point(
+                randomizer.NextDouble() * 100,
+                randomizer.NextDouble() * 100);
+
+            var operation = ((randomizer.Next(2) == 0) ?
+                DynCmd.DragSelectionCommand.Operation.BeginDrag :
+                DynCmd.DragSelectionCommand.Operation.EndDrag);
+
+            var cmdOne = new DynCmd.DragSelectionCommand(point, operation);
+            var cmdTwo = DuplicateAndCompare(cmdOne);
+
+            Assert.AreEqual(cmdOne.MouseCursor.X, cmdTwo.MouseCursor.X, 0.000001);
+            Assert.AreEqual(cmdOne.MouseCursor.Y, cmdTwo.MouseCursor.Y, 0.000001);
+            Assert.AreEqual(cmdOne.DragOperation, cmdTwo.DragOperation);
+        }
+
+        [Test, RequiresSTA]
+        public void TestMakeConnectionCommand()
+        {
+            Guid nodeId = Guid.NewGuid();
+            int portIndex = randomizer.Next();
+            var portType = ((PortType)randomizer.Next(2));
+            var mode = ((DynCmd.MakeConnectionCommand.Mode)randomizer.Next(3));
+
+            var cmdOne = new DynCmd.MakeConnectionCommand(
+                nodeId, portIndex, portType, mode);
+
+            var cmdTwo = DuplicateAndCompare(cmdOne);
+
+            Assert.AreEqual(cmdOne.NodeId, cmdTwo.NodeId);
+            Assert.AreEqual(cmdOne.PortIndex, cmdTwo.PortIndex);
+            Assert.AreEqual(cmdOne.Type, cmdTwo.Type);
+            Assert.AreEqual(cmdOne.ConnectionMode, cmdTwo.ConnectionMode);
+        }
+
+        [Test, RequiresSTA]
+        public void TestDeleteModelCommand()
+        {
+            Guid modelGuid = Guid.NewGuid();
+            var cmdOne = new DynCmd.DeleteModelCommand(modelGuid);
+            var cmdTwo = DuplicateAndCompare(cmdOne);
+            Assert.AreEqual(cmdOne.ModelGuid, cmdTwo.ModelGuid);
+        }
+
+        [Test, RequiresSTA]
+        public void TestUndoRedoCommand()
+        {
+            var operation = ((DynCmd.UndoRedoCommand.Operation)randomizer.Next(2));
+            var cmdOne = new DynCmd.UndoRedoCommand(operation);
+            var cmdTwo = DuplicateAndCompare(cmdOne);
+            Assert.AreEqual(cmdOne.CmdOperation, cmdTwo.CmdOperation);
+        }
+
+        [Test, RequiresSTA]
+        public void TestUpdateModelValueCommand()
+        {
+            Guid modelGuid = Guid.NewGuid();
+            string name = randomizer.Next().ToString();
+            string value = randomizer.Next().ToString();
+
+            var cmdOne = new DynCmd.UpdateModelValueCommand(modelGuid, name, value);
+            var cmdTwo = DuplicateAndCompare(cmdOne);
+
+            Assert.AreEqual(cmdOne.ModelGuid, cmdTwo.ModelGuid);
+            Assert.AreEqual(cmdOne.Name, cmdTwo.Name);
+            Assert.AreEqual(cmdOne.Value, cmdTwo.Value);
         }
 
         [Test, RequiresSTA]
