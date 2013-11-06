@@ -44,12 +44,6 @@ namespace Dynamo.DSEngine
             return liveRunner.InspectNodeValue(var);
         }
 
-        public string GetStringValue(string var)
-        {
-            RuntimeMirror mirror = liveRunner.InspectNodeValue(var);
-            return (mirror == null) ? "null" : mirror.GetStringData();
-        }
-
         /// <summary>
         /// Update graph with graph sync data.
         /// </summary>
