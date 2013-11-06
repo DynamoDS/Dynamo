@@ -369,7 +369,9 @@ namespace Dynamo
         /// </summary>
         private void ResetForNewDocument()
         {
-            dynSettings.Controller.DynamoModel.Nodes.ToList().ForEach(x=>x.ResetOldValue());
+            if(dynSettings.Controller != null)
+                dynSettings.Controller.DynamoModel.Nodes.ToList().ForEach(x=>x.ResetOldValue());
+
             VisualizationManager.ClearVisualizations();
 
             OnRevitDocumentChanged();
@@ -418,7 +420,7 @@ namespace Dynamo
                     pyBindings.GetType()
                               .InvokeMember(
                                   "Add", BindingFlags.InvokeMethod, null, pyBindings,
-                                  new[] { new KeyValuePair<string, dynamic>(name, boundObject) as object });
+                                  new[] { name, boundObject });
 
                 addToBindings("DynLog", new LogDelegate(DynamoLogger.Instance.Log)); //Logging
 

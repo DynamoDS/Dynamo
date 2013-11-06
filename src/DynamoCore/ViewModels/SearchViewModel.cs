@@ -398,6 +398,10 @@ namespace Dynamo.ViewModels
         /// <returns>The newly created item</returns>
         public BrowserItem AddCategory(string categoryName)
         {
+            if (string.IsNullOrEmpty(categoryName))
+            {
+                return this.TryAddRootCategory("Uncategorized");
+            }
 
             if ( ContainsCategory(categoryName) )
             {
@@ -416,6 +420,11 @@ namespace Dynamo.ViewModels
             if (splitCat.Count == 1)
             {
                 return this.TryAddRootCategory(categoryName);
+            }
+
+            if (splitCat.Count == 0)
+            {
+                return null;
             }
 
             // attempt to add root category
