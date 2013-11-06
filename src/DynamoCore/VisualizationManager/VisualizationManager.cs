@@ -45,10 +45,28 @@ namespace Dynamo
         private object myLock = new object();
         protected bool isUpdating = false;
         private Octree.OctreeSearch.Octree octree;
+        private bool updatingPaused = false;
 
         #endregion
 
         #region public properties
+
+        /// <summary>
+        /// Flag allows us to pause visualization updates.
+        /// </summary>
+        public bool UpdatingPaused
+        {
+            get { return updatingPaused; }
+            set
+            {
+                if (!value && updatingPaused)
+                {
+                    OnVisualizationUpdateComplete(this, EventArgs.Empty);
+                }
+
+                updatingPaused = value;
+            }
+        }
 
         /// <summary>
         /// A dictionary of objects to be stored for visualization.
@@ -240,7 +258,8 @@ namespace Dynamo
             
             //don't trigger an update if the changes in the selection
             //had no effect on the current visualizations
-            if (movedItems > 0)
+            //don't trigger an update either if the paused flag is set
+            if (movedItems > 0 && !updatingPaused)
             {
                 OnVisualizationUpdateComplete(this, EventArgs.Empty);
             }
