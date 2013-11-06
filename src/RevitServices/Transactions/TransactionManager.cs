@@ -12,7 +12,6 @@ namespace RevitServices.Transactions
         private static Object mutex = new Object();
         internal ITransactionStrategy strategy;               
 
-
         /// <summary>
         /// Setup a manager with a default strategy
         /// </summary>
