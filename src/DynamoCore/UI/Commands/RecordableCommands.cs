@@ -33,6 +33,16 @@ namespace Dynamo.ViewModels
             #region Public Class Operational Methods
 
             /// <summary>
+            /// Constructs an instance of RecordableCommand derived class. This 
+            /// constructor is made protected to indicate that the class instance 
+            /// can only be instantiated through a derived class.
+            /// </summary>
+            protected RecordableCommand()
+            {
+                this.IsInPlaybackMode = false;
+            }
+
+            /// <summary>
             /// Call this method to execute a RecordableCommand. A RecordableCommand 
             /// must be executed in the context of an existing DynamoViewModel.
             /// </summary>
@@ -80,26 +90,43 @@ namespace Dynamo.ViewModels
                 if (string.IsNullOrEmpty(element.Name))
                     throw new ArgumentException("XmlElement without name");
 
+                RecordableCommand command = null;
+
                 switch (element.Name)
                 {
                     case "CreateNodeCommand":
-                        return CreateNodeCommand.DeserializeCore(element);
+                        command = CreateNodeCommand.DeserializeCore(element);
+                        break;
                     case "SelectModelCommand":
-                        return SelectModelCommand.DeserializeCore(element);
+                        command = SelectModelCommand.DeserializeCore(element);
+                        break;
                     case "CreateNoteCommand":
-                        return CreateNoteCommand.DeserializeCore(element);
+                        command = CreateNoteCommand.DeserializeCore(element);
+                        break;
                     case "SelectInRegionCommand":
-                        return SelectInRegionCommand.DeserializeCore(element);
+                        command = SelectInRegionCommand.DeserializeCore(element);
+                        break;
                     case "DragSelectionCommand":
-                        return DragSelectionCommand.DeserializeCore(element);
+                        command = DragSelectionCommand.DeserializeCore(element);
+                        break;
                     case "MakeConnectionCommand":
-                        return MakeConnectionCommand.DeserializeCore(element);
+                        command = MakeConnectionCommand.DeserializeCore(element);
+                        break;
                     case "DeleteModelCommand":
-                        return DeleteModelCommand.DeserializeCore(element);
+                        command = DeleteModelCommand.DeserializeCore(element);
+                        break;
                     case "UndoRedoCommand":
-                        return UndoRedoCommand.DeserializeCore(element);
+                        command = UndoRedoCommand.DeserializeCore(element);
+                        break;
                     case "UpdateModelValueCommand":
-                        return UpdateModelValueCommand.DeserializeCore(element);
+                        command = UpdateModelValueCommand.DeserializeCore(element);
+                        break;
+                }
+
+                if (null != command)
+                {
+                    command.IsInPlaybackMode = true;
+                    return command;
                 }
 
                 string message = string.Format("Unknown command: {0}", element.Name);
@@ -120,6 +147,17 @@ namespace Dynamo.ViewModels
             /// be recorded for playback.
             /// </summary>
             internal bool Redundant { get { return this.redundant; } }
+
+            /// <summary>
+            /// This flag will be set to true only during playback. Derived classes
+            /// can use this to decide their actions accordingly. For example, 
+            /// UpdateModelValueCommand doesn't change the value of a property 
+            /// during recording time, it is created for the sole purpose of being
+            /// recorded. During playback, then UpdateModelValueCommand will update
+            /// the property that it is bound to. This is a runtime flag, it is not 
+            /// serialized in anyway.
+            /// </summary>
+            internal bool IsInPlaybackMode { get; private set; }
 
             #endregion
 
