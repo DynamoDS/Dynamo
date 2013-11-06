@@ -14,7 +14,7 @@
 				<test name="SanityCheck" runDynamo="True" modelPath=".\empty.rfa"/>
 				<test name="CanChangeLacingAndHaveElementsUpdate" runDynamo="True" modelPath=".\empty.rfa"/>
 				<test name="ElementNodeReassociation" runDynamo="True" modelPath=".\empty.rfa"/>
-				<test name="SwitchDocuments" runDynamo="False" modelPath=".\empty.rfa"/>
+				<test name="SwitchDocuments" runDynamo="True" modelPath=".\empty.rfa"/>
 			</testFixture>
 			<testFixture name="CurveTests">
 				<test name="CurveByPoints" runDynamo="True" modelPath=".\empty.rfa"/>
@@ -85,15 +85,17 @@
 				<test name="GraphFunctionAndConnectPointsSample" runDynamo="True" modelPath=".\empty.rfa"/>
 				<test name="ScalableGraphFunctionSample" runDynamo="True" modelPath=".\empty.rfa"/>
 				<test name="GraphFunctionSample" runDynamo="True" modelPath=".\empty.rfa"/>
-				<test name="InstParamSample" runDynamo="True" modelPath=".\empty.rfa"/>
-				<test name="InstParam2MassesSample" runDynamo="True" modelPath=".\empty.rfa"/>
-				<test name="InstParam2MassesDrivingEachOtherSample" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="InstParamSample" runDynamo="True" modelPath="..\..\doc\distrib\Samples\08 Get Set Family Params\inst param.rvt"/>
+				<test name="InstParam2MassesSample" runDynamo="True" modelPath="..\..\doc\distrib\Samples\08 Get Set Family Params\inst param mass families.rvt"/>
+				<test name="InstParam2MassesDrivingEachOtherSample" runDynamo="True" modelPath="..\..\doc\distrib\Samples\08 Get Set Family Params\inst param mass families.rvt"/>
 				<test name="Attractor_1" runDynamo="True" modelPath=".\empty.rfa"/>
 				<test name="Attractor_2" runDynamo="True" modelPath=".\empty.rfa"/>
 				<test name="IndexedFamilyInstances" runDynamo="True" modelPath="..\..\doc\distrib\Samples\11 Indexed Family Instances\IndexedFamilyInstances.rfa"/>
-				<test name="Tesselation_1" runDynamo="True" modelPath=".\empty.rfa"/>
-				<test name="Tesselation_2" runDynamo="True" modelPath=".\empty.rfa"/>
-				<test name="Tesselation_3" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="AdaptiveComponentPlacement" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="Tesselation_1" runDynamo="True" modelPath="..\..\doc\distrib\Samples\16 Tesselation\tesselation.rfa"/>
+				<test name="Tesselation_2" runDynamo="True" modelPath="..\..\doc\distrib\Samples\16 Tesselation\tesselation.rfa"/>
+				<test name="Tesselation_3" runDynamo="True" modelPath="..\..\doc\distrib\Samples\16 Tesselation\tesselation.rfa"/>
+				<test name="Tesselation_4" runDynamo="True" modelPath="..\..\doc\distrib\Samples\16 Tesselation\tesselation.rfa"/>
 				<test name="Transforms_TranslateAndRotatesequence" runDynamo="True" modelPath=".\empty.rfa"/>
 				<test name="Transforms_TranslateAndRotate" runDynamo="True" modelPath=".\empty.rfa"/>
 				<test name="Formulas_FormulaCurve" runDynamo="True" modelPath=".\empty.rfa"/>
@@ -109,14 +111,16 @@
 				<test name="SolidBySkeleton" runDynamo="True" modelPath=".\empty.rfa"/>
 				<test name="SweepToMakeSolid" runDynamo="True" modelPath=".\empty.rfa"/>
         		<test name="SweptBlend" runDynamo="True" modelPath=".\empty.rfa"/>
+        		<test name="BoxByCenterAndDimensions" runDynamo="True" modelPath=".\empty.rfa"/>
+        		<test name="BoxByTwoCorners" runDynamo="True" modelPath=".\empty.rfa"/>
 			</testFixture>
 			<testFixture name="UVTests">
 				<test name="UVRandom" runDynamo="True" modelPath=".\empty.rfa"/>
 			</testFixture>
 			<testFixture name="ViewTests">
-				<test name="AxonometricView" runDynamo="True" modelPath=".\AxonometricView.rfa"/>
-				<test name="OverrideElementColorInView" runDynamo="True" modelPath=".\OverrideElementColorInView.rvt"/>
-				<test name="PerspectiveView" runDynamo="True" modelPath=".\PerspectiveView.rfa"/>
+				<test name="AxonometricView" runDynamo="True" modelPath=".\View\AxonometricView.rfa"/>
+				<test name="OverrideElementColorInView" runDynamo="True" modelPath=".\View\OverrideElementColorInView.rvt"/>
+				<test name="PerspectiveView" runDynamo="True" modelPath=".\View\PerspectiveView.rfa"/>
 			</testFixture>
 			<testFixture name="XYZTests">
 				<test name="XYZFromReferencePoint" runDynamo="True" modelPath=".\empty.rfa"/>
