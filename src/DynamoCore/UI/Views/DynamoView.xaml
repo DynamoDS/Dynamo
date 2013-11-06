@@ -586,14 +586,22 @@
                                                                         </ControlTemplate.Triggers>
                                                                     </ControlTemplate>
                                                                 </Style.Resources>
-                                                                
-                                                                <Setter Property="Header"
-                                                                        Value="{Binding Path=Name}" />
 
                                                                 <EventSetter Event="Click"
                                                                              Handler="TabControlMenuItem_Click" />
 
                                                                 <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}"
+                                                                                 Value="Unsaved">
+                                                                        <Setter Property="Header"
+                                                                                Value="{Binding Name}" />
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}"
+                                                                                 Value="Saved">
+                                                                        <Setter Property="Header"
+                                                                                Value="{Binding FileName, Converter={StaticResource PathToFileNameConverter}}" />
+                                                                    </DataTrigger>
+                                                                    
                                                                     <Trigger Property="Role"
                                                                              Value="SubmenuHeader">
                                                                         <Setter Property="Template"
