@@ -25,7 +25,6 @@ namespace Dynamo.Views
     {
         public enum CursorState
         {
-            Pointer,
             ArcAdding,
             ArcRemoving,
             ArcSelecting,
@@ -121,7 +120,7 @@ namespace Dynamo.Views
 
         private void LoadCursorState()
         {
-            cursorSet = new Dictionary<CursorState,string>();
+            cursorSet = new Dictionary<CursorState, string>();
 
             cursorSet.Add(CursorState.ArcAdding, "arc_add.cur");
             cursorSet.Add(CursorState.ArcRemoving, "arc_remove.cur");
@@ -202,14 +201,14 @@ namespace Dynamo.Views
 
             dynSettings.Controller.DynamoModel.OnRequestsFunctionNamePrompt(this, args);
 
-            if(args.Success)
+            if (args.Success)
             {
                 if (workspace is CustomNodeWorkspaceModel)
                 {
                     var def = (workspace as CustomNodeWorkspaceModel).FunctionDefinition;
                     dynSettings.CustomNodeManager.Refactor(def.FunctionId, args.CanEditName ? args.Name : workspace.Name, args.Category, args.Description);
                 }
-                
+
                 if (args.CanEditName) workspace.Name = args.Name;
                 workspace.Description = args.Description;
                 workspace.Category = args.Category;
@@ -315,9 +314,9 @@ namespace Dynamo.Views
                 {
                     var a = outerCanvas.TransformToDescendant(WorkBench);
                     dropPt = a.Transform(dropPt);
-                } 
+                }
             }
-            
+
             // center the node at the drop point
             if (!Double.IsNaN(node.Width))
                 dropPt.X -= (node.Width / 2.0);
@@ -338,7 +337,7 @@ namespace Dynamo.Views
 
         void zoomBorder_MouseMove(object sender, MouseEventArgs e)
         {
-            if(e.MiddleButton == MouseButtonState.Pressed)
+            if (e.MiddleButton == MouseButtonState.Pressed)
                 (DataContext as WorkspaceViewModel).SetCurrentOffsetCommand.Execute((sender as ZoomBorder).GetTranslateTransformOrigin());
         }
 
@@ -495,40 +494,54 @@ namespace Dynamo.Views
         {
             this.snappedPort = null;
 
-            bool snapToCursor = false;
+            bool mouseMessageHandled = false;
             WorkspaceViewModel wvm = (DataContext as WorkspaceViewModel);
+            var currentState = wvm.CurrentState;
 
-            //If we are currently connecting and there is an active connector,
-            //redraw it to match the new mouse coordinates.
-            if (wvm.IsConnecting)
+            switch (wvm.CurrentState)
             {
-                Point mouse = e.GetPosition((UIElement)sender);
-                this.snappedPort = GetSnappedPort(mouse);
-                if (this.snappedPort != null)
-                {
-                    snapToCursor = true;
-                    wvm.HandleMouseMove(this.WorkBench, this.snappedPort.Center);
-                }
-                this.Cursor = CursorsLibrary.ArcAdding;
-            }
-            else if (Mouse.LeftButton == MouseButtonState.Pressed)
-            {
-                this.Cursor = CursorsLibrary.RectangularSelection;
-            }
-            else
-            {
-                Point mouse = e.GetPosition((UIElement)sender);
-                this.snappedPort = GetSnappedPort(mouse);
-                if (this.snappedPort != null && this.snappedPort.PortType != PortType.OUTPUT)
-                    this.Cursor = CursorsLibrary.ArcRemoving;
-                else
-                    this.Cursor = CursorsLibrary.UsualPointer;
+                // If we are currently connecting and there is an active 
+                // connector, redraw it to match the new mouse coordinates.
+                case WorkspaceViewModel.StateMachine.State.Connection:
+                    {
+                        Point mouse = e.GetPosition((UIElement)sender);
+                        this.snappedPort = GetSnappedPort(mouse);
+                        if (this.snappedPort != null)
+                        {
+                            mouseMessageHandled = true;
+                            wvm.HandleMouseMove(this.WorkBench, this.snappedPort.Center);
+                        }
+
+                        this.Cursor = CursorsLibrary.ArcAdding;
+                        break;
+                    }
+
+                case WorkspaceViewModel.StateMachine.State.WindowSelection:
+                    this.Cursor = CursorsLibrary.RectangularSelection;
+                    break;
+
+                default:
+                    {
+                        // Find the dependency object directly under the mouse 
+                        // cursor, then see if it represents a port. If it does,
+                        // then determine its type, we would like to show the 
+                        // "ArcRemoving" cursor when the mouse is over an out port.
+                        // 
+                        Point mouse = e.GetPosition((UIElement)sender);
+                        var dependencyObject = ElementUnderMouseCursor(mouse);
+                        PortViewModel pvm = PortFromHitTestResult(dependencyObject);
+
+                        if (null != pvm && (pvm.PortType == PortType.INPUT))
+                            this.Cursor = CursorsLibrary.ArcRemoving;
+                        else
+                            this.Cursor = CursorsLibrary.UsualPointer;
+
+                        break;
+                    }
             }
 
-
-            if (false == snapToCursor)
+            if (false == mouseMessageHandled)
                 wvm.HandleMouseMove(this.WorkBench, e);
-
         }
 
         private PortViewModel GetSnappedPort(Point mouseCursor)
@@ -541,18 +554,11 @@ namespace Dynamo.Views
 
             for (int i = 0; i < this.hitResultsList.Count; i++)
             {
-                DependencyObject depObject = this.hitResultsList[i];
-                Grid grid = depObject as Grid;
-                if (grid == null)
-                    continue;
-
                 try
                 {
-                    UserControl uc = grid.Parent as UserControl;
-                    if (null == uc)
-                        continue;
+                    DependencyObject depObject = this.hitResultsList[i];
+                    PortViewModel pvm = PortFromHitTestResult(depObject);
 
-                    PortViewModel pvm = uc.DataContext as PortViewModel;
                     if (pvm == null)
                         continue;
 
@@ -588,7 +594,7 @@ namespace Dynamo.Views
         /// <param name="e"></param>
         internal void CenterViewOnElement(object sender, EventArgs e)
         {
-            this.Dispatcher.BeginInvoke((Action) delegate
+            this.Dispatcher.BeginInvoke((Action)delegate
                 {
 
                     var vm = (DataContext as WorkspaceViewModel);
@@ -599,7 +605,7 @@ namespace Dynamo.Views
                     {
                         var b = WorkBench.TransformToAncestor(outerCanvas);
 
-                        Point outerCenter = new Point(outerCanvas.ActualWidth/2, outerCanvas.ActualHeight/2);
+                        Point outerCenter = new Point(outerCanvas.ActualWidth / 2, outerCanvas.ActualHeight / 2);
                         Point nodeCenterInCanvas = new Point(n.X + n.Width / 2, n.Y + n.Height / 2);
                         Point nodeCenterInOverlay = b.Transform(nodeCenterInCanvas);
 
@@ -611,7 +617,7 @@ namespace Dynamo.Views
                         //vm.CurrentOffset = offset;
 
                         zoomBorder.SetTranslateTransformOrigin(new Point(vm.Model.X - deltaX, vm.Model.Y - deltaY));
-                    } 
+                    }
                 });
         }
 
@@ -619,25 +625,45 @@ namespace Dynamo.Views
         {
             WorkBench = sender as Dynamo.Controls.DragCanvas;
             WorkBench.owningWorkspace = this;
-            //DrawGrid();
         }
 
+        private PortViewModel PortFromHitTestResult(DependencyObject depObject)
+        {
+            Grid grid = depObject as Grid;
+            if (null != grid)
+                return grid.DataContext as PortViewModel;
 
-        // TRON'S
+            return null;
+        }
+
+        private DependencyObject ElementUnderMouseCursor(Point mouseCursor)
+        {
+            hitResultsList.Clear();
+            var hitParams = new PointHitTestParameters(mouseCursor);
+            VisualTreeHelper.HitTest(this, null,
+                new HitTestResultCallback(DirectHitTestCallback),
+                new PointHitTestParameters(mouseCursor));
+
+            return ((hitResultsList.Count > 0) ? hitResultsList[0] : null);
+        }
+
         private List<DependencyObject> FindNearestPorts(System.Windows.Point mouse)
         {
             hitResultsList.Clear();
             EllipseGeometry expandedHitTestArea = new EllipseGeometry(mouse, 50.0, 7.0);
+
             try
             {
-                VisualTreeHelper.HitTest(this, new HitTestFilterCallback(HitTestFilter), new HitTestResultCallback(VisualCallBack), new GeometryHitTestParameters(expandedHitTestArea));
-                //if (hitResultsList.Count > 0)
-                    //Debug.WriteLine("Number of visual hits: " + hitResultsList.Count);
+                VisualTreeHelper.HitTest(this,
+                    new HitTestFilterCallback(HitTestFilter),
+                    new HitTestResultCallback(VisualCallback),
+                    new GeometryHitTestParameters(expandedHitTestArea));
             }
             catch
             {
                 hitResultsList.Clear();
             }
+
             return this.hitResultsList;
         }
 
@@ -653,13 +679,24 @@ namespace Dynamo.Views
             }
         }
 
-        private HitTestResultBehavior VisualCallBack(HitTestResult result)
+        private HitTestResultBehavior VisualCallback(HitTestResult result)
         {
             if (result == null || result.VisualHit == null)
                 throw new ArgumentNullException();
 
             if (result.VisualHit.GetType() == typeof(Grid))
                 hitResultsList.Add(result.VisualHit);
+
+            return HitTestResultBehavior.Continue;
+        }
+
+        private HitTestResultBehavior DirectHitTestCallback(HitTestResult result)
+        {
+            if (null != result && (null != result.VisualHit))
+            {
+                hitResultsList.Add(result.VisualHit);
+                return HitTestResultBehavior.Stop;
+            }
 
             return HitTestResultBehavior.Continue;
         }
