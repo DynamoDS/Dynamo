@@ -25,7 +25,6 @@ namespace RevitServices.Persistence
 
                 return instance;
             }
-
         }
 
         private DocumentManager()

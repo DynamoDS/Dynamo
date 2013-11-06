@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
+using DSNodeServices;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Curve = Autodesk.DesignScript.Geometry.Curve;
@@ -11,24 +12,39 @@ using Point = Autodesk.DesignScript.Geometry.Point;
 
 namespace DSRevitNodes
 {
+    /// <summary>
+    /// A Revit Adaptive Component
+    /// </summary>
+    [RegisterForTrace]
     public class AdaptiveComponent : AbstractGeometry
     {
+        #region Properties
 
+        /// <summary>
+        /// Internal variable containing the wrapped Revit object
+        /// </summary>
         public Autodesk.Revit.DB.FamilyInstance InternalFamilyInstance
         {
             get; private set;
         }
 
+        #endregion
+
+        #region Private constructors
+
         /// <summary>
         /// Internal constructor for the AdaptiveComponent wrapper
         /// </summary>
         /// <param name="pts">Points to use as reference</param>
-        /// <param name="fs">Family symbol to extract</param>
-        private AdaptiveComponent(List<Point> pts, FamilySymbol fs)
+        /// <param name="fs">FamilySymbol to place</param>
+        private AdaptiveComponent(Point[] pts, FamilySymbol fs)
         {
+
+            // if the family instance is present in trace...
             var oldFam =
                 ElementBinder.GetElementFromTrace<Autodesk.Revit.DB.FamilyInstance>(Document);
 
+            // just mutate it...
             if (oldFam != null)
             {
                 InternalFamilyInstance = oldFam;
@@ -36,7 +52,77 @@ namespace DSRevitNodes
                 return;
             }
 
-            //Phase 2- There was no existing point, create one
+            // otherwise create a new family instance...
+            TransactionManager.GetInstance().EnsureInTransaction(Document);
+
+            InternalFamilyInstance = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(AbstractGeometry.Document, fs);
+
+            if (InternalFamilyInstance == null)
+                throw new Exception("An adaptive component could not be found or created.");
+
+            this.InternalID = InternalFamilyInstance.Id;
+            InternalSetPositions(pts.ToXyzs());
+
+            TransactionManager.GetInstance().TransactionTaskDone();
+
+        }
+
+        /// <summary>
+        /// Internal constructor for the AdaptiveComponent wrapper
+        /// </summary>
+        /// <param name="pts">Points to use as reference</param>
+        /// <param name="f">Face to use as reference</param>
+        /// <param name="fs">FamilySymbol to place</param>
+        private AdaptiveComponent(double[][] pts, Face f, FamilySymbol fs)
+        {
+            // if the family instance is present in trace...
+            var oldFam =
+                ElementBinder.GetElementFromTrace<Autodesk.Revit.DB.FamilyInstance>(Document);
+
+            // just mutate it...
+            if (oldFam != null)
+            {
+                InternalFamilyInstance = oldFam;
+                InternalSetUvsAndFace(pts.ToUvs(), f.InternalFace );
+                return;
+            }
+
+            // otherwise create a new family instance...
+            TransactionManager.GetInstance().EnsureInTransaction(Document);
+
+            InternalFamilyInstance = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(AbstractGeometry.Document, fs);
+
+            if (InternalFamilyInstance == null)
+                throw new Exception("An adaptive component could not be found or created.");
+
+            this.InternalID = InternalFamilyInstance.Id;
+            InternalSetUvsAndFace(pts.ToUvs(), f.InternalFace);
+
+            TransactionManager.GetInstance().TransactionTaskDone();
+
+        }
+
+        /// <summary>
+        /// Internal constructor for the AdaptiveComponent wrapper
+        /// </summary>
+        /// <param name="parms">Params on curve to reference</param>
+        /// <param name="c">Curve to use as reference</param>
+        /// <param name="fs">FamilySymbol to place</param>
+        private AdaptiveComponent(double[] parms, Curve c, FamilySymbol fs)
+        {
+            // if the family instance is present in trace...
+            var oldFam =
+                ElementBinder.GetElementFromTrace<Autodesk.Revit.DB.FamilyInstance>(Document);
+
+            // just mutate it...
+            if (oldFam != null)
+            {
+                InternalFamilyInstance = oldFam;
+                InternalSetParamsAndCurve(parms, c.InternalCurve);
+                return;
+            }
+
+            // otherwise create a new family instance...
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
             InternalFamilyInstance = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(AbstractGeometry.Document, fs);
@@ -46,17 +132,25 @@ namespace DSRevitNodes
 
             this.InternalID = InternalFamilyInstance.Id;
 
-            InternalSetPositions(pts.ToXyzs());
+            // set its internal properties...
+            InternalSetParamsAndCurve(parms, c.InternalCurve);
+
             TransactionManager.GetInstance().TransactionTaskDone();
 
         }
+
+        #endregion
+
+        #region Internal mutators
 
         /// <summary>
         /// Set the positions of the internal family instance from a list of XYZ points
         /// </summary>
         /// <param name="points"></param>
-        private void InternalSetPositions( List<Autodesk.Revit.DB.XYZ> points )
+        private void InternalSetPositions( XYZ[] points )
         {
+            TransactionManager.GetInstance().EnsureInTransaction(Document);
+
             IList<ElementId> placePointIds = AdaptiveComponentInstanceUtils.GetInstancePlacementPointElementRefIds(InternalFamilyInstance);
 
             if (placePointIds.Count() != points.Count())
@@ -70,14 +164,78 @@ namespace DSRevitNodes
                 point.Position = points[i];
                 i++;
             }
+
+            TransactionManager.GetInstance().TransactionTaskDone();
         }
 
         /// <summary>
-        /// Create an adaptive component from a list of points.
+        /// Set the positions of the InternalFamilyInstace from an array of uvs
         /// </summary>
-        /// <param name="pts"></param>
+        /// <param name="points"></param>
+        private void InternalSetUvsAndFace( UV[] uvs, Autodesk.Revit.DB.Face f)
+        {
+            TransactionManager.GetInstance().EnsureInTransaction(Document);
+
+            var placePointIds = AdaptiveComponentInstanceUtils.GetInstancePlacementPointElementRefIds(InternalFamilyInstance);
+
+            if (placePointIds.Count() != uvs.Length)
+                throw new Exception("The input list of UVs does not have the same number of values required by the adaptive component.");
+
+            // Set the position of each placement point
+            int i = 0;
+            foreach (var id in placePointIds)
+            {
+                var uv = uvs[i];
+                var point = Document.GetElement(id) as Autodesk.Revit.DB.ReferencePoint;
+                var peref = Document.Application.Create.NewPointOnFace(f.Reference, uv);
+                point.SetPointElementReference(peref);
+                i++;
+            }
+
+            TransactionManager.GetInstance().TransactionTaskDone();
+        }
+
+        /// <summary>
+        /// Set the positions of the InternalFamilyInstace from an array of parameters and curve
+        /// </summary>
+        /// <param name="points"></param>
+        private void InternalSetParamsAndCurve(double[] parms, Autodesk.Revit.DB.Curve c)
+        {
+            TransactionManager.GetInstance().EnsureInTransaction(Document);
+
+            var placePointIds = AdaptiveComponentInstanceUtils.GetInstancePlacementPointElementRefIds(InternalFamilyInstance);
+
+            if (placePointIds.Count() != parms.Length)
+                throw new Exception("The input list of parameters does not have the same number of values required by the adaptive component.");
+
+            // Set the position of each placement point
+            int i = 0;
+            foreach (ElementId id in placePointIds)
+            {
+                var t = parms[i];
+                var point = Document.GetElement(id) as Autodesk.Revit.DB.ReferencePoint;
+                var ploc = new PointLocationOnCurve(PointOnCurveMeasurementType.NonNormalizedCurveParameter, t,
+                                                    PointOnCurveMeasureFrom.Beginning);
+                var peref = Document.Application.Create.NewPointOnEdge(c.Reference, ploc);
+                point.SetPointElementReference(peref);
+                i++;
+            }
+
+            TransactionManager.GetInstance().TransactionTaskDone();
+        }
+
+
+        #endregion
+
+        #region Static constructors
+
+        /// <summary>
+        /// Create an AdaptiveComponent from a list of points.
+        /// </summary>
+        /// <param name="pts">The points to reference in the AdaptiveComponent</param>
+        /// <param name="fs">The family symbol to use to build the AdaptiveComponent</param>
         /// <returns></returns>
-        static AdaptiveComponent ByPoints(List<Point> pts, FamilySymbol fs)
+        static AdaptiveComponent ByPoints( Point[] pts, FamilySymbol fs )
         {
             return new AdaptiveComponent(pts, fs);
         }
@@ -85,187 +243,28 @@ namespace DSRevitNodes
         /// <summary>
         /// Create an adaptive component by uv points on a face.
         /// </summary>
-        /// <param name="pts"></param>
-        /// <param name="f"></param>
+        /// <param name="uvs">An array of UV pairs</param>
+        /// <param name="f">The face on which to place the AdaptiveComponent</param>
+        /// <param name="f">The face on which to place the AdaptiveComponent</param>
         /// <returns></returns>
-        static AdaptiveComponent ByPointsOnFace(List<UV> pts, Face f, FamilySymbol fs)
+        static AdaptiveComponent ByPointsOnFace(double[][] uvs, Face f, FamilySymbol fs)
         {
-            throw new NotImplementedException();
+            return new AdaptiveComponent(uvs, f, fs);
         }
 
         /// <summary>
-        /// Create an adaptive component by uv points on a face.
+        /// Create an adaptive component referencing the parameters on a ReferenceCurve
         /// </summary>
-        /// <param name="pts"></param>
-        /// <param name="f"></param>
+        /// <param name="parms">The parameters on the curve</param>
+        /// <param name="curve">The curve to reference</param>
+        /// <param name="fs">The family symbol to construct</param>
         /// <returns></returns>
-        static AdaptiveComponent ByPointsOnFace(List<double> parms, ReferenceCurve f, FamilySymbol fs)
+        static AdaptiveComponent ByPointsOnCurve(double[] parms, Curve curve, FamilySymbol fs)
         {
-            throw new NotImplementedException();
+            return new AdaptiveComponent(parms,  curve, fs);
         }
+
+        #endregion
+
     }
 }
-
-
-//namespace Dynamo.Nodes
-//{
-
-//    [NodeName("Adaptive Component by UVs on Face")]
-//    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
-//    [NodeDescription("Given a list of XYZs and a family type, creates an adaptive component at that location on the face.")]
-//    public class AdaptiveComponentByUvsOnFace : RevitTransactionNodeWithOneOutput
-//    {
-//        public AdaptiveComponentByUvsOnFace()
-//        {
-//            InPortData.Add(new PortData("uvs", "The UVs that define the locations of your adaptive points on the face.", typeof(Value.List)));
-//            InPortData.Add(new PortData("face", "The face on which to host your Adaptive Component instance.", typeof(Value.Container)));
-//            InPortData.Add(new PortData("fs", "The family type to create the adaptive component.", typeof(Value.Container)));
-//            OutPortData.Add(new PortData("ac", "The adaptive component.", typeof(Value.Container)));
-
-//            RegisterAllPorts();
-//        }
-
-//        public override Value Evaluate(FSharpList<Value> args)
-//        {
-//            if(!args[0].IsList)
-//                throw new Exception("A list of UVs is required to place the Adaptive Component.");
-
-//            FSharpList<Value> uvs = ((Value.List)args[0]).Item;
-
-//            var faceRef = ((Value.Container) args[1]).Item as Reference;
-//            var f = faceRef == null
-//                         ? (Autodesk.Revit.DB.Face) ((Value.Container) args[1]).Item
-//                         : (Autodesk.Revit.DB.Face)dynRevitSettings.Doc.Document.GetElement(faceRef.ElementId).GetGeometryObjectFromReference(faceRef);
-
-//            var fs = (FamilySymbol)((Value.Container)args[2]).Item;
-
-//            FamilyInstance ac = null;
-
-//            //if the adapative component already exists, then move the points
-//            if (Elements.Any())
-//            {
-//                //mutate
-//                //...we attempt to fetch it from the document...
-//                if (dynUtils.TryGetElement(this.Elements[0], out ac))
-//                {
-//                    ac.Symbol = fs;
-//                }
-//                else
-//                {
-//                    //create
-//                    ac = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(dynRevitSettings.Doc.Document, fs);
-//                    Elements[0] = ac.Id;
-//                }
-//            }
-//            else
-//            {
-//                //create
-//                ac = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(dynRevitSettings.Doc.Document, fs);
-//                Elements.Add(ac.Id);
-//            }
-
-//            if (ac == null)
-//                throw new Exception("An adaptive component could not be found or created.");
-
-//            IList<ElementId> placePointIds = new List<ElementId>();
-//            placePointIds = AdaptiveComponentInstanceUtils.GetInstancePlacementPointElementRefIds(ac);
-
-//            if (placePointIds.Count() != uvs.Count())
-//                throw new Exception("The input list of UVs does not have the same number of values required by the adaptive component.");
-
-//            // Set the position of each placement point
-//            int i = 0;
-//            foreach (ElementId id in placePointIds)
-//            {
-//                var uv = (UV)((Value.Container)uvs.ElementAt(i)).Item;
-//                var point = dynRevitSettings.Doc.Document.GetElement(id) as ReferencePoint;
-//                var peref = dynRevitSettings.Revit.Application.Create.NewPointOnFace(f.Reference, uv);
-//                point.SetPointElementReference(peref);
-//                i++;
-//            }
-
-//            return Value.NewContainer(ac);
-//        }
-
-//    }
-
-//    [NodeName("Adaptive Component by Parameter on Curve")]
-//    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
-//    [NodeDescription("Given a list of parameters and a family type, creates an adaptive component at that location on the curve.")]
-//    public class AdaptiveComponentByParametersOnCurve : RevitTransactionNodeWithOneOutput
-//    {
-//        public AdaptiveComponentByParametersOnCurve()
-//        {
-//            InPortData.Add(new PortData("params", "The parameters that define the locations of your adaptive points on the curve.", typeof(Value.List)));
-//            InPortData.Add(new PortData("curve", "The curve on which to host your Adaptive Component instance.", typeof(Value.Container)));
-//            InPortData.Add(new PortData("fs", "The family type to create the adaptive component.", typeof(Value.Container)));
-//            OutPortData.Add(new PortData("ac", "The adaptive component.", typeof(Value.Container)));
-
-//            RegisterAllPorts();
-//        }
-
-//        public override Value Evaluate(FSharpList<Value> args)
-//        {
-//            if (!args[0].IsList)
-//                throw new Exception("A list of UVs is required to place the Adaptive Component.");
-
-//            FSharpList<Value> parameters = ((Value.List)args[0]).Item;
-
-//            var curveRef = ((Value.Container)args[1]).Item as Reference;
-//            var c = curveRef == null
-//                         ? (Autodesk.Revit.DB.Curve)((Value.Container)args[1]).Item
-//                         : (Autodesk.Revit.DB.Curve)dynRevitSettings.Doc.Document.GetElement(curveRef.ElementId).GetGeometryObjectFromReference(curveRef);
-
-//            var fs = (FamilySymbol)((Value.Container)args[2]).Item;
-
-//            FamilyInstance ac = null;
-
-//            //if the adapative component already exists, then move the points
-//            if (Elements.Any())
-//            {
-//                //...we attempt to fetch it from the document...
-//                if (dynUtils.TryGetElement(this.Elements[0], out ac))
-//                {
-//                    ac.Symbol = fs;
-//                }
-//                else
-//                {
-//                    //create
-//                    ac = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(dynRevitSettings.Doc.Document, fs);
-//                    Elements[0] = ac.Id;
-//                }
-//            }
-//            else
-//            {
-//                //create
-//                ac = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(dynRevitSettings.Doc.Document, fs);
-//                Elements.Add(ac.Id);
-//            }
-
-//            if (ac == null)
-//                throw new Exception("An adaptive component could not be found or created.");
-
-//            IList<ElementId> placePointIds = new List<ElementId>();
-//            placePointIds = AdaptiveComponentInstanceUtils.GetInstancePlacementPointElementRefIds(ac);
-
-//            if (placePointIds.Count() != parameters.Count())
-//                throw new Exception("The input list of UVs does not have the same number of values required by the adaptive component.");
-
-//            // Set the position of each placement point
-//            int i = 0;
-//            foreach (ElementId id in placePointIds)
-//            {
-//                var t = ((Value.Number)parameters.ElementAt(i)).Item;
-//                var point = dynRevitSettings.Doc.Document.GetElement(id) as ReferencePoint;
-//                var ploc = new PointLocationOnCurve(PointOnCurveMeasurementType.NonNormalizedCurveParameter, t,
-//                                                    PointOnCurveMeasureFrom.Beginning);
-//                var peref = dynRevitSettings.Revit.Application.Create.NewPointOnEdge(c.Reference, ploc);
-//                point.SetPointElementReference(peref);
-//                i++;
-//            }
-
-//            return Value.NewContainer(ac);
-//        }
-
-//    }
-//}

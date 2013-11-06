@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.DesignScript.Geometry;
 using Line = Autodesk.Revit.DB.Line;
@@ -9,6 +11,112 @@ namespace DSRevitNodes
     [Browsable(false)]
     public static class Extensions
     {
+
+        #region Proto -> Revit types
+
+        /// <summary>
+        /// Convert a Point to an XYZ
+        /// </summary>
+        /// <param name="pt"></param>
+        /// <returns></returns>
+        public static Autodesk.Revit.DB.XYZ ToXyz(this Autodesk.DesignScript.Geometry.Point pt)
+        {
+            return new XYZ(pt.X, pt.Y, pt.Z);
+        }
+
+        /// <summary>
+        /// Convert a Vector to an XYZ.
+        /// </summary>
+        /// <param name="vec"></param>
+        /// <returns></returns>
+        public static Autodesk.Revit.DB.XYZ ToXyz(this Vector vec)
+        {
+            return new XYZ(vec.X, vec.Y, vec.Z);
+        }
+
+        /// <summary>
+        /// Convert a ReferencePoint to an XYZ.
+        /// </summary>
+        /// <param name="refPt"></param>
+        /// <returns></returns>
+        public static Autodesk.Revit.DB.XYZ ToXyz(this Autodesk.Revit.DB.ReferencePoint refPt)
+        {
+            return refPt.Position;
+        }
+
+        /// <summary>
+        /// Convert a CoordinateSystem to a Transform
+        /// </summary>
+        /// <param name="cs"></param>
+        /// <returns></returns>
+        public static Autodesk.Revit.DB.Transform ToTransform(this CoordinateSystem cs)
+        {
+            var trans = Transform.Identity;
+            trans.Origin = cs.Origin.ToXyz();
+            trans.BasisX = cs.XAxis.ToXyz();
+            trans.BasisY = cs.YAxis.ToXyz();
+            trans.BasisZ = cs.ZAxis.ToXyz();
+            return trans;
+        }
+
+        /// <summary>
+        /// Convert a DS Plane to a Revit Plane.
+        /// </summary>
+        /// <param name="plane"></param>
+        /// <returns></returns>
+        public static Autodesk.Revit.DB.Plane ToPlane(this Autodesk.DesignScript.Geometry.Plane plane)
+        {
+            return new Autodesk.Revit.DB.Plane(plane.Normal.ToXyz(), plane.Origin.ToXyz());
+        }
+
+        /// <summary>
+        /// Convert list of points to list of xyz's
+        /// </summary>
+        /// <param name="list">The list to convert</param>
+        /// <returns></returns>
+        public static List<XYZ> ToXyzs(this List<Autodesk.DesignScript.Geometry.Point> list)
+        {
+            return list.ConvertAll((x) => new XYZ(x.X, x.Y, x.Z));
+        }
+
+        /// <summary>
+        /// Convert array of points to list of xyz's
+        /// </summary>
+        /// <param name="list">The list to convert</param>
+        /// <returns></returns>
+        public static XYZ[] ToXyzs(this Autodesk.DesignScript.Geometry.Point[] list)
+        {
+            return list.ToList().ConvertAll((x) => new XYZ(x.X, x.Y, x.Z)).ToArray();
+        }
+
+        /// <summary>
+        /// Convert a 2d array of doubles into an array of UV
+        /// </summary>
+        /// <param name="uvArr"></param>
+        /// <returns></returns>
+        public static UV[] ToUvs(this double[][] uvArr)
+        {
+            var uvs = new UV[uvArr.Length];
+            var count = 0;
+            foreach (var row in uvArr)
+            {
+                if (row.Length != 2)
+                {
+                    throw new Exception("Each element of the input array should be length 2") 
+                }
+                else
+                {
+                    uvs[count++] = new Autodesk.Revit.DB.UV(row[0], row[1]);
+                }
+            }
+
+            return uvs;
+        }
+
+        #endregion
+
+        #region Revit -> Proto types
+
         /// <summary>
         /// Convert an XYZ to a Point
         /// </summary>
@@ -17,26 +125,6 @@ namespace DSRevitNodes
         public static Autodesk.DesignScript.Geometry.Point ToPoint(this XYZ xyz )
         {
             return Autodesk.DesignScript.Geometry.Point.ByCoordinates(xyz.X, xyz.Y, xyz.Z);
-        }
-
-        /// <summary>
-        /// Convert a Point to an XYZ
-        /// </summary>
-        /// <param name="pt"></param>
-        /// <returns></returns>
-        public static XYZ ToXyzs(this Autodesk.DesignScript.Geometry.Point pt)
-        {
-            return new XYZ(pt.X, pt.Y, pt.Z);
-        }
-
-        /// <summary>
-        /// Convert a ReferencePoint to an XYZ.
-        /// </summary>
-        /// <param name="refPt"></param>
-        /// <returns></returns>
-        public static XYZ ToXyzs(this Autodesk.Revit.DB.ReferencePoint refPt)
-        {
-            return refPt.Position;
         }
 
         /// <summary>
@@ -49,15 +137,6 @@ namespace DSRevitNodes
             return Vector.ByCoordinates(xyz.X, xyz.Y, xyz.Z);
         }
 
-        /// <summary>
-        /// Convert a Vector to an XYZ.
-        /// </summary>
-        /// <param name="vec"></param>
-        /// <returns></returns>
-        public static XYZ ToXyzs(this Vector vec)
-        {
-            return new XYZ(vec.X, vec.Y, vec.Z);
-        }
 
         /// <summary>
         /// Convert a Revit Plane to a DS Plane.
@@ -69,15 +148,6 @@ namespace DSRevitNodes
             return Autodesk.DesignScript.Geometry.Plane.ByOriginNormal(plane.Origin.ToPoint(), plane.Normal.ToVector());
         }
 
-        /// <summary>
-        /// Convert a DS Plane to a Revit Plane.
-        /// </summary>
-        /// <param name="plane"></param>
-        /// <returns></returns>
-        public static Autodesk.Revit.DB.Plane ToPlane(this Autodesk.DesignScript.Geometry.Plane plane)
-        {
-            return new Autodesk.Revit.DB.Plane(plane.Normal.ToXyzs(), plane.Origin.ToXyzs());
-        }
 
         /// <summary>
         /// Convert a Transform to a CoordinateSystem
@@ -87,21 +157,6 @@ namespace DSRevitNodes
         public static CoordinateSystem ToCoordinateSystem(this Transform t)
         {
             return CoordinateSystem.ByOriginVectors(t.Origin.ToPoint(), t.BasisX.ToVector(), t.BasisY.ToVector());
-        }
-
-        /// <summary>
-        /// Convert a CoordinateSystem to a Transform
-        /// </summary>
-        /// <param name="cs"></param>
-        /// <returns></returns>
-        public static Transform ToTransform(this CoordinateSystem cs)
-        {
-            var trans = Transform.Identity;
-            trans.Origin = cs.Origin.ToXyzs();
-            trans.BasisX = cs.XAxis.ToXyzs();
-            trans.BasisY = cs.YAxis.ToXyzs();
-            trans.BasisZ = cs.ZAxis.ToXyzs();
-            return trans;
         }
 
         /// <summary>
@@ -115,17 +170,6 @@ namespace DSRevitNodes
                 line.get_EndPoint(0).ToPoint(), line.get_EndPoint(1).ToPoint());
         }
 
-
-        /// <summary>
-        /// Convert list of points to list of xyz's
-        /// </summary>
-        /// <param name="list">The list to convert</param>
-        /// <returns></returns>
-        public static List<XYZ> ToXyzs(this List<Autodesk.DesignScript.Geometry.Point> list)
-        {
-            return list.ConvertAll((x) => new XYZ(x.X, x.Y, x.Z));
-        }
-
         /// <summary>
         /// Convert list of points to list of xyz's
         /// </summary>
@@ -135,5 +179,8 @@ namespace DSRevitNodes
         {
             return list.ConvertAll((x) => Autodesk.DesignScript.Geometry.Point.ByCoordinates(x.X, x.Y, x.Z));
         }
+
+        #endregion
+
     }
 }

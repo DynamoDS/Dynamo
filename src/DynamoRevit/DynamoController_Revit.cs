@@ -272,7 +272,7 @@ namespace Dynamo
         }
 
         /// <summary>
-        /// Delay loading of the SSONet.dll, which is used by the package manager for 
+        /// Delay loading of the SSONet.dll, which is used by the package manager to
         /// get authentication information.  Internally uses Assembly.LoadFrom so the DLL
         /// will be loaded into the Load From context or extracted from the Load context
         /// if already present there.

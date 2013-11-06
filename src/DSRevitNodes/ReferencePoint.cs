@@ -63,14 +63,13 @@ namespace DSRevitNodes
             InternalReferencePoint.Position = xyz;
 
             TransactionManager.GetInstance().TransactionTaskDone();
-            
         }
 
-        public double X { 
-            get { return InternalReferencePoint.Position.X; } 
+        public double X
+        {
+            get { return InternalReferencePoint.Position.X; }
             set { InternalSetPosition(new XYZ(value, Y, Z)); }
         }
-
 
 
         public double Y
