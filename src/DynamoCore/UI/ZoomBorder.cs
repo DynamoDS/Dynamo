@@ -37,24 +37,6 @@ namespace Dynamo.Controls
         private Point origin;
         private Point start;
 
-        private bool _panMode;
-        public bool PanMode
-        {
-            get
-            {
-                return _panMode;
-            }
-
-            set
-            {
-                if (value)
-                    this.Cursor = CursorsLibrary.HandPan;
-                else
-                    this.Cursor = Cursors.Arrow;
-                _panMode = value;
-            }
-        }
-
         public TranslateTransform GetChildTranslateTransform()
         {
             return GetTranslateTransform(child);
@@ -100,10 +82,6 @@ namespace Dynamo.Controls
                 group.Children.Add(tt);
                 child.RenderTransform = group;
                 child.RenderTransformOrigin = new Point(0.0, 0.0);
-                //this.MouseLeftButtonDown += child_MouseLeftButtonDown;
-                //this.MouseLeftButtonUp += child_MouseLeftButtonUp;
-                //this.PreviewMouseRightButtonDown += new MouseButtonEventHandler(
-                //  child_PreviewMouseRightButtonDown);
                 Loaded += ZoomBorder_Loaded;
             }
         }
@@ -177,60 +155,32 @@ namespace Dynamo.Controls
             }
         }
 
-        //private void child_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        //{
-        //    if (child != null)
-        //    {
-        //        var tt = GetTranslateTransform(child);
-        //        start = e.GetPosition(this);
-        //        origin = new Point(tt.X, tt.Y);
-        //        this.Cursor = Cursors.Hand;
-        //        child.CaptureMouse();
-        //    }
-        //}
-
-        //private void child_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        //{
-        //    if (child != null)
-        //    {
-        //        child.ReleaseMouseCapture();
-        //        this.Cursor = Cursors.Arrow;
-        //    }
-        //}
-
         private void child_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            WorkspaceViewModel vm = DataContext as WorkspaceViewModel;
+
             if (child != null &&
                 ( e.ChangedButton == MouseButton.Middle
-                || e.ChangedButton == MouseButton.Left && _panMode ))
+                || e.ChangedButton == MouseButton.Left && vm.IsPanMode ))
             {
                 var tt = GetTranslateTransform(child);
                 start = e.GetPosition(this);
                 origin = new Point(tt.X, tt.Y);
-                this.Cursor = CursorsLibrary.HandPanActive;
                 child.CaptureMouse();
             }
         }
 
         private void child_MouseUp(object sender, MouseButtonEventArgs e)
         {
+            WorkspaceViewModel vm = DataContext as WorkspaceViewModel;
+
             if (child != null && 
                 ( e.ChangedButton == MouseButton.Middle
-                || e.ChangedButton == MouseButton.Left && _panMode ))
+                || e.ChangedButton == MouseButton.Left && vm.IsPanMode ))
             {
                 child.ReleaseMouseCapture();
-
-                if (!_panMode)
-                    this.Cursor = Cursors.Arrow;
-                else
-                    this.Cursor = CursorsLibrary.HandPan;
             }
         }
-
-        //void child_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
-        //{
-        //    this.Reset();
-        //}
 
         private void child_MouseMove(object sender, MouseEventArgs e)
         {

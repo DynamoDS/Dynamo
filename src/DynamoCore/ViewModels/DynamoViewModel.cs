@@ -1279,7 +1279,7 @@ namespace Dynamo.ViewModels
 
         public void Escape(object parameter)
         {
-            CurrentSpaceViewModel.OnRequestStopPan(this, null); // Escape Pan Mode
+            CurrentSpaceViewModel.CancelActiveState();
         }
 
         internal bool CanEscape(object parameter)
