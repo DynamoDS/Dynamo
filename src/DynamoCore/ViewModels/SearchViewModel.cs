@@ -237,7 +237,7 @@ namespace Dynamo.ViewModels
             MaxNumSearchResults = 20;
             Visible = false;
             _SearchText = "";
-            IncludeRevitAPIElements = false; // revit api
+            IncludeRevitAPIElements = true; // revit api
 
             _topResult = this.AddRootCategory("Top Result");
             this.AddRootCategory(BuiltinNodeCategories.CORE);
