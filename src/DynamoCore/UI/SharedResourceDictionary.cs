@@ -5,9 +5,6 @@ using System.Windows.Markup;
 
 namespace Dynamo.UI
 {
-    [assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation",
-"WPFTutorial.Utils")]
-
     /// <summary>
     /// The shared resource dictionary is a specialized resource dictionary
     /// that loads it content only once. If a second instance with the same source

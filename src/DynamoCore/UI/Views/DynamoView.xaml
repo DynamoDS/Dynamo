@@ -104,7 +104,7 @@
                                 Modifiers="Control"
                                 Command="{Binding Path=DataContext.HomeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
         <KeyBinding Key="Up"
-                                Modifiers="Control+Alt"
+                                Modifiers="Control+Shift"
                                 Command="{Binding Path=DataContext.ToggleConsoleShowingCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
         <KeyBinding Key="F4"
                 Modifiers="Alt"
@@ -805,17 +805,49 @@
                                                             Value="Normal" />
                                                 </DataTrigger>
 
-                                                <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}"
-                                                             Value="{x:Type models:HomeWorkspaceModel}">
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}"
+                                                                   Value="{x:Type models:HomeWorkspaceModel}" />
+                                                        <Condition Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}"
+                                                                   Value="Unsaved" />
+                                                    </MultiDataTrigger.Conditions>
                                                     <Setter Property="Text"
                                                             Value="Home" />
-                                                </DataTrigger>
-
-                                                <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}"
-                                                             Value="{x:Type models:CustomNodeWorkspaceModel}">
+                                                </MultiDataTrigger>
+                                                
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}"
+                                                                   Value="{x:Type models:HomeWorkspaceModel}" />
+                                                        <Condition Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}"
+                                                                   Value="Saved" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Text"
+                                                            Value="{Binding Path=FileName, Converter={StaticResource PathToFileNameConverter}}" />
+                                                </MultiDataTrigger>
+                                                
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}"
+                                                                   Value="{x:Type models:CustomNodeWorkspaceModel}" />
+                                                        <Condition Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}"
+                                                                   Value="Unsaved" />
+                                                    </MultiDataTrigger.Conditions>
                                                     <Setter Property="Text"
                                                             Value="{Binding Name}" />
-                                                </DataTrigger>
+                                                </MultiDataTrigger>
+                                                
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}"
+                                                                   Value="{x:Type models:CustomNodeWorkspaceModel}" />
+                                                        <Condition Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}"
+                                                                   Value="Saved" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Text"
+                                                            Value="{Binding Path=FileName, Converter={StaticResource PathToFileNameConverter}}" />
+                                                </MultiDataTrigger>
 
                                             </Style.Triggers>
                                         </Style>
