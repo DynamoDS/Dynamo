@@ -1,4 +1,5 @@
-﻿using Autodesk.Revit.DB;
+﻿using System.Collections.Generic;
+using Autodesk.Revit.DB;
 using Autodesk.DesignScript.Geometry;
 using Line = Autodesk.Revit.DB.Line;
 using System.ComponentModel;
@@ -112,6 +113,17 @@ namespace DSRevitNodes
         {
             return Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint(
                 line.get_EndPoint(0).ToPoint(), line.get_EndPoint(1).ToPoint());
+        }
+
+
+        /// <summary>
+        /// Convert list of points to list of xyz's
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        public static List<XYZ> ToXyz(this List<Autodesk.DesignScript.Geometry.Point> list)
+        {
+            return list.ConvertAll((x) => new XYZ(x.X, x.Y, x.Z));
         }
     }
 }

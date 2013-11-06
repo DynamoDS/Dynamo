@@ -132,6 +132,7 @@ namespace Dynamo.Utilities
         }
 
 #if USE_DSENGINE
+
         private static void LoadDSFunctionsFromLibrary(string library)
         {
             List<DSFunctionItem> functions = DSLibraryServices.Instance[library];
@@ -165,6 +166,7 @@ namespace Dynamo.Utilities
             }
         }
 #endif
+
         /// <summary>
         ///     Determine if a Type is a node.  Used by LoadNodesFromAssembly to figure
         ///     out what nodes to load from other libraries (.dlls).

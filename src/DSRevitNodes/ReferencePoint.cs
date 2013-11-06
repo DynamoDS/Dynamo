@@ -12,10 +12,10 @@ using Point = Autodesk.DesignScript.Geometry.Point;
 namespace DSRevitNodes
 {
 
-/// <summary>
-/// A Revit Reference Point
-/// </summary>
-[RegisterForTrace]
+    /// <summary>
+    /// A Revit Reference Point
+    /// </summary>
+    [RegisterForTrace]
     [ShortName("refPt")]
     public class ReferencePoint : AbstractGeometry, IGraphicItem
     {
@@ -131,7 +131,7 @@ namespace DSRevitNodes
         /// </summary>
         /// <param name="pt"></param>
         /// <returns></returns>
-        static ReferencePoint ByPt(Point pt)
+        static ReferencePoint ByPoint(Point pt)
         {
             return new ReferencePoint(pt.X, pt.Y, pt.Z);
         }
@@ -142,7 +142,7 @@ namespace DSRevitNodes
         /// <param name="f"></param>
         /// <param name="v"></param>
         /// <returns></returns>
-        static ReferencePoint ByPtOnFace(Face f, Vector v)
+        static ReferencePoint ByPointOnFace(Face f, Vector v)
         {
             throw new NotImplementedException();
         }
@@ -165,7 +165,7 @@ namespace DSRevitNodes
         /// <param name="normal"></param>
         /// <param name="distance"></param>
         /// <returns></returns>
-        static ReferencePoint ByPtVectorDistance(Point p, Vector vec, double distance)
+        static ReferencePoint ByPointVectorDistance(Point p, Vector vec, double distance)
         {
             throw new NotImplementedException();
         }
