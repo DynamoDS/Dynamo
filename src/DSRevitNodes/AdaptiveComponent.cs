@@ -55,7 +55,7 @@ namespace DSRevitNodes
             // otherwise create a new family instance...
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
-            InternalFamilyInstance = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(AbstractGeometry.Document, fs);
+            InternalFamilyInstance = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(AbstractGeometry.Document, fs.InternalFamilySymbol);
 
             if (InternalFamilyInstance == null)
                 throw new Exception("An adaptive component could not be found or created.");
@@ -90,7 +90,7 @@ namespace DSRevitNodes
             // otherwise create a new family instance...
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
-            InternalFamilyInstance = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(AbstractGeometry.Document, fs);
+            InternalFamilyInstance = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(AbstractGeometry.Document, fs.InternalFamilySymbol);
 
             if (InternalFamilyInstance == null)
                 throw new Exception("An adaptive component could not be found or created.");
@@ -125,7 +125,7 @@ namespace DSRevitNodes
             // otherwise create a new family instance...
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
-            InternalFamilyInstance = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(AbstractGeometry.Document, fs);
+            InternalFamilyInstance = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(AbstractGeometry.Document, fs.InternalFamilySymbol);
 
             if (InternalFamilyInstance == null)
                 throw new Exception("An adaptive component could not be found or created.");

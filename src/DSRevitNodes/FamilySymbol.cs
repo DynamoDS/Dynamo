@@ -7,5 +7,11 @@ namespace DSRevitNodes
 {
     class FamilySymbol
     {
+        public Autodesk.Revit.DB.FamilySymbol InternalFamilySymbol
+        {
+            get;
+            private set;
+        }
+
     }
 }

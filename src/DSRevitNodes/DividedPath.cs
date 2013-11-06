@@ -9,7 +9,7 @@ using Curve = Autodesk.DesignScript.Geometry.Curve;
 namespace DSRevitNodes
 {   
     /// <summary>
-    /// A Revit Adaptive Component
+    /// A Revit DividedPath
     /// </summary>
     [RegisterForTrace]
     class DividedPath: AbstractGeometry
