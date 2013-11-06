@@ -161,10 +161,6 @@ namespace Dynamo.Views
             ViewModel.RequestCenterViewOnElement += new NodeEventHandler(CenterViewOnElement);
             ViewModel.RequestNodeCentered += new NodeEventHandler(vm_RequestNodeCentered);
             ViewModel.RequestAddViewToOuterCanvas += new ViewEventHandler(vm_RequestAddViewToOuterCanvas);
-            ViewModel.RequestTogglePan -= new EventHandler(vm_TogglePan);
-            ViewModel.RequestTogglePan += new EventHandler(vm_TogglePan);
-            ViewModel.RequestStopPan -= new EventHandler(vm_ExitPan);
-            ViewModel.RequestStopPan += new EventHandler(vm_ExitPan);
             ViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
             ViewModel.WorkspacePropertyEditRequested += VmOnWorkspacePropertyEditRequested;
             ViewModel.RequestSelectionBoxUpdate += VmOnRequestSelectionBoxUpdate;
@@ -269,16 +265,6 @@ namespace Dynamo.Views
             outerCanvas.Children.Add(view);
             Canvas.SetBottom(view, 0);
             Canvas.SetRight(view, 0);
-        }
-
-        private void vm_TogglePan(object sender, EventArgs e)
-        {
-            zoomBorder.PanMode = !zoomBorder.PanMode;
-        }
-
-        private void vm_ExitPan(object sender, EventArgs e)
-        {
-            zoomBorder.PanMode = false;
         }
 
         private double currentNodeCascadeOffset = 0.0;
