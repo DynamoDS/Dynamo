@@ -24,7 +24,7 @@ namespace DSRevitNodes
         /// </summary>
         /// <param name="pt"></param>
         /// <returns></returns>
-        public static XYZ ToXyz(this Autodesk.DesignScript.Geometry.Point pt)
+        public static XYZ ToXyzs(this Autodesk.DesignScript.Geometry.Point pt)
         {
             return new XYZ(pt.X, pt.Y, pt.Z);
         }
@@ -34,7 +34,7 @@ namespace DSRevitNodes
         /// </summary>
         /// <param name="refPt"></param>
         /// <returns></returns>
-        public static XYZ ToXyz(this Autodesk.Revit.DB.ReferencePoint refPt)
+        public static XYZ ToXyzs(this Autodesk.Revit.DB.ReferencePoint refPt)
         {
             return refPt.Position;
         }
@@ -54,7 +54,7 @@ namespace DSRevitNodes
         /// </summary>
         /// <param name="vec"></param>
         /// <returns></returns>
-        public static XYZ ToXyz(this Vector vec)
+        public static XYZ ToXyzs(this Vector vec)
         {
             return new XYZ(vec.X, vec.Y, vec.Z);
         }
@@ -76,7 +76,7 @@ namespace DSRevitNodes
         /// <returns></returns>
         public static Autodesk.Revit.DB.Plane ToPlane(this Autodesk.DesignScript.Geometry.Plane plane)
         {
-            return new Autodesk.Revit.DB.Plane(plane.Normal.ToXyz(), plane.Origin.ToXyz());
+            return new Autodesk.Revit.DB.Plane(plane.Normal.ToXyzs(), plane.Origin.ToXyzs());
         }
 
         /// <summary>
@@ -97,10 +97,10 @@ namespace DSRevitNodes
         public static Transform ToTransform(this CoordinateSystem cs)
         {
             var trans = Transform.Identity;
-            trans.Origin = cs.Origin.ToXyz();
-            trans.BasisX = cs.XAxis.ToXyz();
-            trans.BasisY = cs.YAxis.ToXyz();
-            trans.BasisZ = cs.ZAxis.ToXyz();
+            trans.Origin = cs.Origin.ToXyzs();
+            trans.BasisX = cs.XAxis.ToXyzs();
+            trans.BasisY = cs.YAxis.ToXyzs();
+            trans.BasisZ = cs.ZAxis.ToXyzs();
             return trans;
         }
 
@@ -119,11 +119,21 @@ namespace DSRevitNodes
         /// <summary>
         /// Convert list of points to list of xyz's
         /// </summary>
-        /// <param name="line"></param>
+        /// <param name="list">The list to convert</param>
         /// <returns></returns>
-        public static List<XYZ> ToXyz(this List<Autodesk.DesignScript.Geometry.Point> list)
+        public static List<XYZ> ToXyzs(this List<Autodesk.DesignScript.Geometry.Point> list)
         {
             return list.ConvertAll((x) => new XYZ(x.X, x.Y, x.Z));
+        }
+
+        /// <summary>
+        /// Convert list of points to list of xyz's
+        /// </summary>
+        /// <param name="list">The list to convert</param>
+        /// <returns></returns>
+        public static List<Autodesk.DesignScript.Geometry.Point> ToPoints(this List<XYZ> list)
+        {
+            return list.ConvertAll((x) => Autodesk.DesignScript.Geometry.Point.ByCoordinates(x.X, x.Y, x.Z));
         }
     }
 }

@@ -22,7 +22,10 @@ namespace DSRevitNodes
         /// <summary>
         /// Internal variable containing the wrapped Revit object
         /// </summary>
-        private Autodesk.Revit.DB.ReferencePoint internalRefPt;
+        public Autodesk.Revit.DB.ReferencePoint InternalReferencePoint
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Internal constructor for the ReferencePoint
@@ -39,7 +42,7 @@ namespace DSRevitNodes
             //There was a point, rebind to that, and adjust its position
             if (oldRefPt != null)
             {
-                internalRefPt = oldRefPt;
+                InternalReferencePoint = oldRefPt;
                 InternalSetPosition(new XYZ(x, y, z));
                 return;
             }
@@ -47,8 +50,8 @@ namespace DSRevitNodes
             //Phase 2- There was no existing point, create one
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
-            internalRefPt = Document.FamilyCreate.NewReferencePoint(new XYZ(x, y, z));
-            this.InternalID = internalRefPt.Id;
+            InternalReferencePoint = Document.FamilyCreate.NewReferencePoint(new XYZ(x, y, z));
+            this.InternalID = InternalReferencePoint.Id;
 
             TransactionManager.GetInstance().TransactionTaskDone();
         }
@@ -57,14 +60,14 @@ namespace DSRevitNodes
         {
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
-            internalRefPt.Position = xyz;
+            InternalReferencePoint.Position = xyz;
 
             TransactionManager.GetInstance().TransactionTaskDone();
             
         }
 
         public double X { 
-            get { return internalRefPt.Position.X; } 
+            get { return InternalReferencePoint.Position.X; } 
             set { InternalSetPosition(new XYZ(value, Y, Z)); }
         }
 
@@ -72,14 +75,14 @@ namespace DSRevitNodes
 
         public double Y
         {
-            get { return internalRefPt.Position.Y; }
+            get { return InternalReferencePoint.Position.Y; }
             set { InternalSetPosition(new XYZ(X, value, Z)); }
         }
 
 
         public double Z
         {
-            get { return internalRefPt.Position.Z; }
+            get { return InternalReferencePoint.Position.Z; }
             set { InternalSetPosition(new XYZ(X, Y, value)); }
         }
 
@@ -88,7 +91,7 @@ namespace DSRevitNodes
         {
             get
             {
-                var cs = internalRefPt.GetCoordinateSystem();
+                var cs = InternalReferencePoint.GetCoordinateSystem();
                 var xy = new Autodesk.Revit.DB.Plane(cs.BasisX, cs.BasisY);
                 return xy.ToPlane();
             }
@@ -98,7 +101,7 @@ namespace DSRevitNodes
         {
             get
             {
-                var cs = internalRefPt.GetCoordinateSystem();
+                var cs = InternalReferencePoint.GetCoordinateSystem();
                 var yz = new Autodesk.Revit.DB.Plane(cs.BasisY, cs.BasisZ);
                 return yz.ToPlane();
             }
@@ -108,7 +111,7 @@ namespace DSRevitNodes
         {
             get
             {
-                var cs = internalRefPt.GetCoordinateSystem();
+                var cs = InternalReferencePoint.GetCoordinateSystem();
                 var xz = new Autodesk.Revit.DB.Plane(cs.BasisX, cs.BasisZ);
                 return xz.ToPlane();
             }
