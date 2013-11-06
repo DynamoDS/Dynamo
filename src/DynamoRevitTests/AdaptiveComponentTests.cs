@@ -14,7 +14,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\AdaptiveComponentByFace.dyn");
+            string samplePath = Path.Combine(_testPath, @".\AdaptiveComponent\AdaptiveComponentByFace.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
@@ -26,7 +26,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\AdaptiveComponentByCurve.dyn");
+            string samplePath = Path.Combine(_testPath, @".\AdaptiveComponent\AdaptiveComponentByCurve.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
@@ -42,7 +42,7 @@ namespace Dynamo.Tests
             //string modelPath = Path.GetFullPath(path);
             //SwapCurrentModel(modelPath);
 
-            string samplePath = Path.Combine(_testPath, @".\AdaptiveComponent.dyn");
+            string samplePath = Path.Combine(_testPath, @".\AdaptiveComponent\AdaptiveComponent.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);

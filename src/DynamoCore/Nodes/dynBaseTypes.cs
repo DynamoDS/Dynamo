@@ -43,9 +43,9 @@ namespace Dynamo.Nodes
         public const string CORE_FUNCTIONS = "Core.Functions";
        
         public const string LOGIC = "Logic";
+        public const string LOGIC_MATH_ARITHMETIC = "Logic.Math.Arithmetic";
         public const string LOGIC_MATH_ROUNDING = "Logic.Math.Rounding";
         public const string LOGIC_MATH_CONSTANTS = "Logic.Math.Constants";
-        public const string LOGIC_MATH_ARITHMETIC = "Logic.Math.Arithmetic";
         public const string LOGIC_MATH_TRIGONOMETRY = "Logic.Math.Trigonometry";
         public const string LOGIC_MATH_RANDOM = "Logic.Math.Random";
         public const string LOGIC_MATH_OPTIMIZE = "Logic.Math.Optimize";
@@ -54,54 +54,71 @@ namespace Dynamo.Nodes
         public const string LOGIC_CONDITIONAL = "Logic.Conditional";
         public const string LOGIC_LOOP = "Logic.Loop";
 
-        public const string CREATEGEOMETRY = "Create Geometry";
-        public const string CREATEGEOMETRY_VECTOR = "Create Geometry.Vector";
-        public const string CREATEGEOMETRY_UV = "Create Geometry.UV";
-        public const string CREATEGEOMETRY_CURVE = "Create Geometry.Curve";
-        public const string CREATEGEOMETRY_SOLID_BOOLEAN = "Create Geometry.Solid.Boolean";
-        public const string CREATEGEOMETRY_SOLID_CREATE = "Create Geometry.Solid.Create";
-        public const string CREATEGEOMETRY_SOLID_PRIMITIVES = "Create Geometry.Solid.Primitives";
-        public const string CREATEGEOMETRY_SOLID_EXTRACT = "Create Geometry.Solid.Extract";
-        public const string CREATEGEOMETRY_SOLID = "Create Geometry.Solid";
-        public const string CREATEGEOMETRY_SURFACE = "Create Geometry.Surface";
-        public const string CREATE_GEOMETRY_EXPERIMENTAL = "Create Geometry.Experimental";
 
-        public const string MODIFYGEOMETRY= "Modify Geometry";
-        public const string MODIFYGEOMETRY_SOLID = "Modify Geometry.Solid";
-        public const string MODIFYGEOMETRY_INTERSECT = "Modify Geometry.Intersect";
-        public const string MODIFYGEOMETRY_TRANSFORM = "Modify Geometry.Transform";
-        public const string MODIFYGEOMETRY_TESSELATE = "Modify Geometry.Tesselate";
+        public const string GEOMETRY = "Geometry";
+
+            public const string GEOMETRY_CURVE_CREATE = "Geometry.Curve.Create";
+            public const string GEOMETRY_CURVE_DIVIDE = "Geometry.Curve.Divide";
+            public const string GEOMETRY_CURVE_PRIMITIVES = "Geometry.Curve.Primitives";
+            public const string GEOMETRY_CURVE_QUERY = "Geometry.Curve.Query";
+            public const string GEOMETRY_CURVE_FIT = "Geometry.Curve.Fit";
+
+            public const string GEOMETRY_POINT_CREATE = "Geometry.Point.Create";
+            public const string GEOMETRY_POINT_MODIFY = "Geometry.Point.Modify";
+            public const string GEOMETRY_POINT_QUERY = "Geometry.Point.Query";
+            public const string GEOMETRY_POINT_GRID = "Geometry.Point.Grid";
+            public const string GEOMETRY_POINT_TESSELATE = "Geometry.Point.Tesselate";
+
+            public const string GEOMETRY_SOLID_BOOLEAN = "Geometry.Solid.Boolean";
+            public const string GEOMETRY_SOLID_CREATE = "Geometry.Solid.Create";
+            public const string GEOMETRY_SOLID_MODIFY = "Geometry.Solid.Modify";
+            public const string GEOMETRY_SOLID_PRIMITIVES = "Geometry.Solid.Primitives";
+            public const string GEOMETRY_SOLID_QUERY = "Geometry.Solid.Extract";
+            public const string GEOMETRY_SOLID_REPAIR = "Geometry.Solid.Repair";
+
+            public const string GEOMETRY_SURFACE_CREATE = "Geometry.Surface.Create";
+            public const string GEOMETRY_SURFACE_QUERY = "Geometry.Surface.Query";
+            public const string GEOMETRY_SURFACE_UV = "Geometry.Surface.UV";
+            public const string GEOMETRY_SURFACE_DIVIDE = "Geometry.Surface.Divide";
+
+            public const string GEOMETRY_TRANSFORM_APPLY = "Geometry.Transform.Apply";
+            public const string GEOMETRY_TRANSFORM_MODIFY = "Geometry.Transform.Modify";
+            public const string GEOMETRY_TRANSFORM_CREATE = "Geometry.Transform.Create";
+
+            public const string GEOMETRY_INTERSECT = "Geometry.Intersect";
+
+            public const string GEOMETRY_EXPERIMENTAL_PRIMITIVES = "Geometry.Experimental.Primitives";
+            public const string GEOMETRY_EXPERIMENTAL_SURFACE = "Geometry.Experimental.Surface";
+            public const string GEOMETRY_EXPERIMENTAL_CURVE = "Geometry.Experimental.Curve";
+            public const string GEOMETRY_EXPERIMENTAL_SOLID = "Geometry.Experimental.Solid";
+            public const string GEOMETRY_EXPERIMENTAL_MODIFY = "Geometry.Experimental.Modify";
+            public const string GEOMETRY_EXPERIMENTAL_VIEW = "Geometry.Experimental.View";
 
         public const string REVIT = "Revit";
         public const string REVIT_DOCUMENT = "Revit.Document";
         public const string REVIT_DATUMS = "Revit.Datums";
         public const string REVIT_FAMILIES = "Revit.Families";
+        public const string REVIT_SELECTION = "Revit.Selection";
         public const string REVIT_VIEW = "Revit.View";
         public const string REVIT_REFERENCE = "Revit.Reference";
-        public const string REVIT_SELECTION = "Revit.Selection";
         public const string REVIT_PARAMETERS = "Revit.Parameters";
         public const string REVIT_BAKE = "Revit.Bake";
         public const string REVIT_API = "Revit.API";
+
+        public const string ANALYZE = "Analyze";
+        public const string ANALYZE_MEASURE = "Analyze.Measure";
+        public const string ANALYZE_DISPLAY = "Analyze.Display";
+        public const string ANALYZE_COLOR = "Analyze.Color";
+        public const string ANALYZE_STRUCTURE = "Analyze.Structure";
+        public const string ANALYZE_CLIMATE = "Analyze.Climate";
+        public const string ANALYZE_ACOUSTIC = "Analyze.Acoustic";
+        public const string ANALYZE_SOLAR = "Analyze.Solar";
 
         public const string IO = "Input/Output";
         public const string IO_FILE = "Input/Output.File";
         public const string IO_NETWORK = "Input/Output.Network";
         public const string IO_HARDWARE = "Input/Output.Hardware";
 
-        public const string ANALYZE = "Analyze";
-        public const string ANALYZE_MEASURE = "Analyze.Measure";
-        public const string ANALYZE_DISPLAY = "Analyze.Display";
-        public const string ANALYZE_COLOR = "Analyze.Color";
-        public const string ANALYZE_SURFACE = "Analyze.Surface";
-        public const string ANALYZE_CURVE = "Analyze.Curve";
-        public const string ANALYZE_STRUCTURE = "Analyze.Structure";
-        public const string ANALYZE_CLIMATE = "Analyze.Climate";
-        public const string ANALYZE_ACOUSTIC = "Analyze.Acoustic";
-        public const string ANALYZE_SOLAR = "Analyze.Solar";
-
-        public const string SCRIPTING = "Scripting";
-        public const string SCRIPTING_CUSTOMNODES = "Scripting.Custom Nodes";
-        public const string SCRIPTING_DESIGNSCRIPT = "Scripting.DesignScript";
 
     }
 
@@ -2790,6 +2807,90 @@ namespace Dynamo.Nodes
                 double theta = ((Value.Number)input).Item;
                 return Value.NewNumber(Math.Tan(theta));
             }
+        }
+    }
+
+    [NodeName("Inverse Sine")]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH_TRIGONOMETRY)]
+    [NodeDescription("Computes the inverse sine of the given angle.")]
+    [NodeSearchTags("asin", "arcsine")]
+    public class Asin : MathBase
+    {
+        public Asin()
+        {
+            InPortData.Add(new PortData("θ", "Angle in radians", typeof(Value.Number)));
+            OutPortData.Add(new PortData("asin(θ)", "Arcsine value of the given angle", typeof(Value.Number)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var input = args[0];
+
+            double theta = ((Value.Number)input).Item;
+            return Value.NewNumber(Math.Asin(theta));
+        }
+
+        protected override void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
+        {
+            builder.Build(this, inputs);
+        }
+    }
+
+    [NodeName("Inverse Cosine")]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH_TRIGONOMETRY)]
+    [NodeDescription("Computes the inverse cosine of the given angle.")]
+    [NodeSearchTags("acos", "arccos")]
+    public class Acos : MathBase
+    {
+        public Acos()
+        {
+            InPortData.Add(new PortData("θ", "Angle in radians", typeof(Value.Number)));
+            OutPortData.Add(new PortData("acos(θ)", "Arccosine value of the given angle", typeof(Value.Number)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var input = args[0];
+
+            double theta = ((Value.Number)input).Item;
+            return Value.NewNumber(Math.Acos(theta));
+        }
+
+        protected override void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
+        {
+            builder.Build(this, inputs);
+        }
+    }
+
+    [NodeName("Inverse Tangent")]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_MATH_TRIGONOMETRY)]
+    [NodeDescription("Computes the secant of the given angle.")]
+    [NodeSearchTags("atan", "arctangent")]
+    public class Atan : MathBase
+    {
+        public Atan()
+        {
+            InPortData.Add(new PortData("θ", "Angle in radians", typeof(Value.Number)));
+            OutPortData.Add(new PortData("atan(θ)", "Arctangent value of the given angle", typeof(Value.Number)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var input = args[0];
+
+            double theta = ((Value.Number)input).Item;
+            return Value.NewNumber(Math.Atan(theta));
+        }
+
+        protected override void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
+        {
+            builder.Build(this, inputs);
         }
     }
 
