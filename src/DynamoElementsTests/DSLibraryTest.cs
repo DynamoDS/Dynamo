@@ -29,10 +29,14 @@ namespace Dynamo.Tests
         public void TestLoadLibrary()
         {
             LibraryServices libraryServices = new LibraryServices();
-            libraryServices.LibraryLoaded += (sender, e) => Assert.Fail("Failed to load library: " + e.LibraryPath);
+            bool libraryLoaded = false;
+
+            libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
+            libraryServices.LibraryLoadFailed += (sender, e) => Assert.Fail("Failed to load library: " + e.LibraryPath);
             
             string libraryPath = Path.Combine(GetTestDirectory(), @"core\library\MultiReturnTest.dll");
             libraryServices.ImportLibrary(libraryPath);
+            Assert.IsTrue(libraryLoaded);
 
             List<FunctionItem> functions = libraryServices[libraryPath];
             Assert.IsNotNull(functions);
@@ -43,10 +47,14 @@ namespace Dynamo.Tests
         public void TestLoadDSFile()
         {
             LibraryServices libraryServices = new LibraryServices();
+            bool libraryLoaded = false;
+
+            libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
             libraryServices.LibraryLoadFailed += (sender, e) => Assert.Fail("Failed to load library: " + e.LibraryPath); 
 
             string libraryPath = Path.Combine(GetTestDirectory(), @"core\library\Dummy.ds");
             libraryServices.ImportLibrary(libraryPath);
+            Assert.IsTrue(libraryLoaded);
 
             List<FunctionItem> functions = libraryServices[libraryPath];
             Assert.IsNotNull(functions);
