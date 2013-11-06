@@ -82,7 +82,7 @@ namespace Dynamo.DSEngine
         public static class BuiltInCategories
         {
             public const string BuiltIns = "Builtin Functions";
-            public const string Operators = "Opertors";
+            public const string Operators = "Operators";
         }
 
         public enum LibraryLoadStatus
