@@ -74,7 +74,6 @@ namespace DSRevitNodes
 
         #endregion
 
-
         #region Static constructors
 
         static DividedSurface ByFaceUVDivisions(Face f, int uDivs, int vDivs)
