@@ -59,7 +59,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Select Level")]
+    [NodeName("Select Level From List")]
     [NodeCategory(BuiltinNodeCategories.REVIT_DATUMS)]
     [NodeDescription("Select a level in the active document")]
     public class SelectLevel : DropDrownBase
