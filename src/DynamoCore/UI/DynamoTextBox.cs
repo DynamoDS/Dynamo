@@ -152,6 +152,25 @@ namespace Dynamo.Nodes
 
         private void OnTargetUpdated(object sender, DataTransferEventArgs e)
         {
+            // If "pending" is "false", then it means this event is being triggered 
+            // by binding DynamoTextBox to the data source for the first time. This 
+            // happens when DynamoTextBox is first bound to a NodeModel property, 
+            // it does not mean there is an actual update on the text box by user.
+            // In this case, we should not attempt to generate a command and record 
+            // it.
+            if (false == this.pending)
+                return;
+
+            var expr = GetBindingExpression(TextProperty);
+            if (null != expr)
+            {
+                string propName = expr.ParentBinding.Path.Path;
+                NodeModel nodeModel = GetBoundModel(expr.DataItem);
+
+                dynSettings.Controller.DynamoViewModel.ExecuteCommand(
+                    new DynCmd.UpdateModelValueCommand(
+                        nodeModel.GUID, propName, this.Text));
+            }
         }
 
         #endregion
@@ -165,33 +184,28 @@ namespace Dynamo.Nodes
                 var expr = GetBindingExpression(TextProperty);
                 if (expr != null)
                 {
-                    // There are two ways in which the bound data source can be 
-                    // updated: when it is first bound to the target (text box),
-                    // and when it is explicitly updated by text box losing its 
-                    // focus. In the first way, even though the bound data source 
-                    // is updated, its actual value does not get changed. In this 
-                    // case there is no need for undo recording. However, it is 
-                    // deemed as a user commit when text box loses its focus, in 
-                    // which case undo recording has to be done. It is in the 
-                    // second case a command is being sent to actually update the 
-                    // data source (also record the update for undo).
-                    // 
-                    NodeModel nodeModel = GetBoundModel(expr.DataItem);
-                    if (false == recordForUndo)
-                        expr.UpdateSource();
-                    else
-                    {
-                        string propName = expr.ParentBinding.Path.Path;
-                        dynSettings.Controller.DynamoViewModel.ExecuteCommand(
-                            new DynCmd.UpdateModelValueCommand(
-                                nodeModel.GUID, propName, this.Text));
-                    }
+                    if (false != recordForUndo)
+                        PreUpdateModel(GetBoundModel(expr.DataItem));
+
+                    expr.UpdateSource();
                 }
 
                 if (OnChangeCommitted != null)
                     OnChangeCommitted();
 
                 Pending = false;
+            }
+        }
+
+        private void PreUpdateModel(NodeModel nodeModel)
+        {
+            if (null != nodeModel)
+            {
+                DynamoModel dynamo = dynSettings.Controller.DynamoModel;
+                dynamo.CurrentWorkspace.RecordModelForModification(nodeModel);
+
+                dynSettings.Controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+                dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
             }
         }
 
