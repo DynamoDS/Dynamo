@@ -119,7 +119,7 @@ namespace Dynamo.Utilities
             {
                 LoadDSFunctionsFromLibrary(library);
             }
-            DSLibraryServices.Instance.LibraryLoaded += new DSLibraryServices.LibraryLoadedEventHandler(OnLoadDSLibrary);
+            DSLibraryServices.Instance.LibraryLoaded += OnLoadDSLibrary;
 
             // TODO: need a controller to coordinate the initialization order of
             // these subcomponents. 
@@ -206,7 +206,8 @@ namespace Dynamo.Utilities
                     {
                         //only load types that are in the right namespace, are not abstract
                         //and have the elementname attribute
-                        object[] attribs = t.GetCustomAttributes(typeof (NodeNameAttribute), false);
+                        var attribs = t.GetCustomAttributes(typeof (NodeNameAttribute), false);
+                        var isDeprecated = t.GetCustomAttributes(typeof (NodeDeprecatedAttribute), true).Any();
 
                         if (!IsNodeSubType(t)) /*&& attribs.Length > 0*/
                             continue;
@@ -254,11 +255,11 @@ namespace Dynamo.Utilities
 
                         string typeName;
 
-                        if (attribs.Length > 0)
+                        if (attribs.Length > 0 && !isDeprecated)
                         {
                             searchViewModel.Add(t);
                             typeName = (attribs[0] as NodeNameAttribute).Name;
-                            
+  
                         }
                         else
                         {

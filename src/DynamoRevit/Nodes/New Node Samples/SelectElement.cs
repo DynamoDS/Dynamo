@@ -14,6 +14,7 @@ using Autodesk.Revit.DB;
 using Binding = System.Windows.Data.Binding;
 using Grid = System.Windows.Controls.Grid;
 using Node = ProtoCore.AST.Node;
+using RevThread = RevitServices.Threading;
 
 namespace Dynamo.Nodes
 {
@@ -75,7 +76,7 @@ namespace Dynamo.Nodes
         {
             //Disable the button once it's been clicked...
             CanSelect = false;
-            IdlePromise.ExecuteOnIdleAsync(
+            RevThread.IdlePromise.ExecuteOnIdleAsync(
                 delegate
                 {
                     OnSelectClick();

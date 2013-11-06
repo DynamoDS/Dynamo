@@ -12,7 +12,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\CurveCurveIntersection.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Intersect\CurveCurveIntersection.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
@@ -24,7 +24,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\CurveFaceIntersection.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Intersect\CurveFaceIntersection.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
@@ -36,7 +36,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\FaceFaceIntersection.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Intersect\FaceFaceIntersection.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);

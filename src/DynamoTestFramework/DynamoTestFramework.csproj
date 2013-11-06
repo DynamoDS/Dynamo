@@ -98,6 +98,7 @@
     <ProjectReference Include="..\DynamoRevit\DynamoRevit.csproj">
       <Project>{FD56AE51-739E-4893-8DE4-925D60C7097C}</Project>
       <Name>DynamoRevit</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\RevitServices\RevitServices.csproj">
       <Project>{E4701F9E-41AB-4044-8166-85D924FEB632}</Project>
