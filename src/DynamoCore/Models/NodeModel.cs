@@ -2045,6 +2045,14 @@ namespace Dynamo.Models
     }
 
     /// <summary>
+    /// Flag to hide deprecated nodes in search, but allow in workflows
+    /// </summary>
+    [AttributeUsage(AttributeTargets.All, Inherited = true)]
+    public class NodeDeprecatedAttribute : System.Attribute
+    {
+    }
+
+    /// <summary>
     /// The AlsoKnownAs attribute allows the node implementor to
     /// define an array of names that this node might have had
     /// in the past.

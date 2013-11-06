@@ -102,10 +102,10 @@ namespace Dynamo.Search
             if (e.KeyboardDevice.IsKeyDown(Key.LeftCtrl) || 
                 e.KeyboardDevice.IsKeyDown(Key.RightCtrl) || 
                 e.KeyboardDevice.IsKeyDown(Key.LeftAlt) || 
-                e.KeyboardDevice.IsKeyDown(Key.RightAlt))
+                e.KeyboardDevice.IsKeyDown(Key.RightAlt) )
             {
                 return;
-            }
+            } 
 
             switch (e.Key)
             {

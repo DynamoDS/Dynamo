@@ -56,7 +56,7 @@ namespace Dynamo.Tests
             _samplesPath = Path.GetFullPath(samplesLoc);
 
             //set the custom node loader search path
-            string defsLoc = Path.Combine(assDir, @".\definitions\");
+            string defsLoc = Path.Combine(assDir, @".\dynamo_packages\Dynamo Sample Custom Nodes\dyf\");
             _defsPath = Path.GetFullPath(defsLoc);
 
             _emptyModelPath = Path.Combine(_testPath, "empty.rfa");

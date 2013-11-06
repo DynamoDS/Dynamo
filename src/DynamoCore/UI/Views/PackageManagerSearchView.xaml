@@ -228,7 +228,7 @@
 
             <StackPanel Name="Controls" Grid.Row="1" Orientation="Horizontal" FlowDirection="RightToLeft" Background="#222" Visibility="{Binding Path=HasDownloads, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
 
-                <Button Name="ClearCompletedButton" Margin="1, 0, 1, 0" ToolTip="Clear Downloads" Content="Clear Completed"
+                <Button Name="ClearCompletedButton" Margin="1, 0, 1, 0" ToolTip="Clear Downloads" Content="Clear"
                       Style="{DynamicResource ResourceKey=SBadgeButton}" Command="{Binding Path=ClearCompletedCommand}"/>
 
             </StackPanel>

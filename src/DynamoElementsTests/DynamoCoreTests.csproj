@@ -89,6 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CodeBlockNodeTests.cs" />
+    <Compile Include="CustomNodeManagerTests.cs" />
     <Compile Include="CustomNodeWorkspaceOpening.cs" />
     <Compile Include="DSFunctionNodeTest.cs" />
     <Compile Include="DSLibraryTest.cs" />
