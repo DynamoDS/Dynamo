@@ -213,7 +213,7 @@ namespace Dynamo.Applications
                     dynamoView.Closing += dynamoView_Closing;
                     dynamoView.Closed += dynamoView_Closed;
 
-                    revit.Application.ViewActivated += Application_ViewActivated;
+                    //revit.Application.ViewActivated += new EventHandler<Autodesk.Revit.UI.Events.ViewActivatedEventArgs>(Application_ViewActivated);
                     revit.Application.ViewActivating += Application_ViewActivating;
                 });
             }
