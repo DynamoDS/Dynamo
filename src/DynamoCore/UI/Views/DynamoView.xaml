@@ -551,17 +551,24 @@
                                                                                      TargetType="MenuItem">
                                                                         <Border Name="Border"
                                                                                 Height="25">
-                                                                            <Grid>
+                                                                            <Grid MinWidth="200">
                                                                                 <Grid.ColumnDefinitions>
-                                                                                    <ColumnDefinition Width="*"
-                                                                                                      MinWidth="200" />
+                                                                                    <ColumnDefinition Width="Auto" />
+                                                                                    <ColumnDefinition Width="*" />
                                                                                 </Grid.ColumnDefinitions>
                                                                                 <ContentPresenter Name="HeaderHost"
                                                                                                   Grid.Column="0"
-                                                                                                  Margin="5,0"
+                                                                                                  Margin="5,0,0,0"
                                                                                                   HorizontalAlignment="Stretch"
                                                                                                   VerticalAlignment="Center"
                                                                                                   ContentSource="Header"
+                                                                                                  RecognizesAccessKey="True" />
+                                                                                <ContentPresenter Name="SaveStateHost"
+                                                                                                  Grid.Column="1"
+                                                                                                  Margin="0,0,5,0"
+                                                                                                  HorizontalAlignment="Stretch"
+                                                                                                  VerticalAlignment="Center"
+                                                                                                  ContentSource="Tag"
                                                                                                   RecognizesAccessKey="True" />
                                                                             </Grid>
                                                                         </Border>
@@ -600,6 +607,18 @@
                                                                                  Value="Saved">
                                                                         <Setter Property="Header"
                                                                                 Value="{Binding FileName, Converter={StaticResource PathToFileNameConverter}}" />
+                                                                    </DataTrigger>
+
+                                                                    <DataTrigger Binding="{Binding HasUnsavedChanges}"
+                                                                                 Value="True">
+                                                                        <Setter Property="Tag"
+                                                                                Value="*" />
+                                                                    </DataTrigger>
+
+                                                                    <DataTrigger Binding="{Binding HasUnsavedChanges}"
+                                                                                 Value="False">
+                                                                        <Setter Property="Tag"
+                                                                                Value="" />
                                                                     </DataTrigger>
                                                                     
                                                                     <Trigger Property="Role"
