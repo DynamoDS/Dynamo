@@ -7,6 +7,7 @@ using System.Windows.Media.Media3D;
 using System.Linq;
 using Autodesk.LibG;
 using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.Utilities;
@@ -566,6 +567,8 @@ namespace Dynamo
                     SelectedMeshes = descriptions.SelectMany(x => x.SelectedMeshes).ToThreadSafeList()
                 };
 
+            StripDuplicates(rd);
+
             return rd;
         }
 
@@ -614,7 +617,6 @@ namespace Dynamo
         {
             try
             {
-
                 var sw = new Stopwatch();
                 sw.Start();
 
@@ -662,6 +664,52 @@ namespace Dynamo
             {
                 isUpdating = false;
             }
+        }
+
+        /// <summary>
+        /// Strips all duplicates from a render description.
+        /// </summary>
+        /// <param name="rd">A render description</param>
+        private void StripDuplicates(RenderDescription rd)
+        {
+            //POINTS
+            var strippedPoints = rd.Points.Distinct().ToList();
+
+            //SELECTED POINTS
+            var strippedSelPoints = rd.SelectedPoints.Distinct().ToList();
+
+            //LINES
+            var strippedLines = StripLines(rd.Lines.ToList());
+
+            //SELECTED LINES
+            var strippedSelLines = StripLines(rd.SelectedLines.ToList());
+
+            rd.Points.Clear();
+            rd.SelectedPoints.Clear();
+            rd.Lines.Clear();
+            rd.SelectedLines.Clear();
+
+            rd.Points.AddRange(strippedPoints);
+            rd.SelectedPoints.AddRange(strippedSelPoints);
+            rd.Lines.AddRange(strippedLines);
+            rd.SelectedLines.AddRange(strippedSelLines);
+        }
+
+        private static IEnumerable<Point3D> StripLines(List<Point3D> lines)
+        {
+            var tupsSel = new List<Tuple<Point3D, Point3D>>();
+            for (int i = 0; i < lines.Count; i += 2)
+            {
+                var lineSelTup = new Tuple<Point3D, Point3D>(lines[i], lines[i + 1]);
+                tupsSel.Add(lineSelTup);
+            }
+            var strippedSelLines = new List<Point3D>();
+            foreach (var t in tupsSel.Distinct())
+            {
+                strippedSelLines.Add(t.Item1);
+                strippedSelLines.Add(t.Item2);
+            }
+            return strippedSelLines;
         }
 
         /// <summary>

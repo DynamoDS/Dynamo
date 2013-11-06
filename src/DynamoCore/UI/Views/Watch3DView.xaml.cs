@@ -303,7 +303,7 @@ namespace Dynamo.Controls
                     var sb = new StringBuilder();
                     sb.AppendLine();
                     sb.AppendLine(string.Format("Rendering complete:"));
-                    sb.AppendLine(string.Format("Points: {0}", rd.Points.Count / 2 + rd.SelectedPoints.Count / 2));
+                    sb.AppendLine(string.Format("Points: {0}", rd.Points.Count + rd.SelectedPoints.Count));
                     sb.AppendLine(string.Format("Line segments: {0}", rd.Lines.Count / 2 + rd.SelectedLines.Count / 2));
                     sb.AppendLine(string.Format("Mesh vertices: {0}",
                         rd.Meshes.SelectMany(x => x.Positions).Count() +
