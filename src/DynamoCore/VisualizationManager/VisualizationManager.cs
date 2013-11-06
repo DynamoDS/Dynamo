@@ -395,6 +395,8 @@ namespace Dynamo
             {
                 //send back everything
                 rd = AggregateRenderDescriptions();
+                
+                StripDuplicates(rd);
 
                 OnResultsReadyToVisualize(this, new VisualizationEventArgs(rd, string.Empty));
             }
@@ -428,6 +430,8 @@ namespace Dynamo
                 rd.SelectedPoints.AddRange(pts_sel);
                 rd.SelectedLines.AddRange(lines_sel);
                 rd.SelectedMeshes.AddRange(mesh_sel);
+                
+                StripDuplicates(rd);
 
                 OnResultsReadyToVisualize(this, new VisualizationEventArgs(rd, node.GUID.ToString()));
             }
@@ -570,8 +574,6 @@ namespace Dynamo
                     SelectedMeshes = descriptions.SelectMany(x => x.SelectedMeshes).ToThreadSafeList()
                 };
 
-            StripDuplicates(rd);
-
             return rd;
         }
 
@@ -675,6 +677,9 @@ namespace Dynamo
         /// <param name="rd">A render description</param>
         private void StripDuplicates(RenderDescription rd)
         {
+            var sw = new Stopwatch();
+            sw.Start();
+
             Debug.WriteLine(string.Format("{0} line segments before stripping", rd.Lines.Count/2));
 
             var comp = new Point3DEqualityComparer();
@@ -702,6 +707,9 @@ namespace Dynamo
             rd.SelectedLines.AddRange(strippedSelLines);
 
             Debug.WriteLine(string.Format("{0} line segments after stripping", rd.Lines.Count / 2));
+
+            sw.Stop();
+            Debug.WriteLine(string.Format("{0} elapsed for stripping duplicate geometry.", sw.Elapsed));
         }
 
         private static IEnumerable<Point3D> StripLines(List<Point3D> lines)
@@ -888,8 +896,6 @@ namespace Dynamo
 
     class Point3DTupleEqualityComparer : IEqualityComparer<Tuple<Point3D, Point3D>>
     {
-        private const double epsilon = 0.1;
-
         public bool Equals(Tuple<Point3D, Point3D> x, Tuple<Point3D, Point3D> y)
         {
             var comp = new Point3DEqualityComparer();
@@ -914,7 +920,7 @@ namespace Dynamo
 
     class Point3DEqualityComparer : IEqualityComparer<Point3D>
     {
-        private const double epsilon = 0.001;
+        private const double epsilon = 0.0001;
 
         public bool Equals(Point3D x, Point3D y)
         {
