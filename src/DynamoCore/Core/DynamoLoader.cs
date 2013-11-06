@@ -115,15 +115,7 @@ namespace Dynamo.Utilities
             }
 
 #if USE_DSENGINE
-            foreach (var library in DSLibraryServices.Instance.Libraries)
-            {
-                LoadDSFunctionsFromLibrary(library);
-            }
-            DSLibraryServices.Instance.LibraryLoaded += DSLibraryLoaded;
-
-            // TODO: need a controller to coordinate the initialization order of
-            // these subcomponents. 
-            var dummy = LiveRunnerServices.Instance;
+            EngineController.Instance.LoadBuiltinLibraries();
 #endif
             AppDomain.CurrentDomain.AssemblyResolve -= resolver;
 
@@ -131,37 +123,6 @@ namespace Dynamo.Utilities
 
         }
 
-#if USE_DSENGINE
-        private static void LoadDSFunctionsFromLibrary(string library)
-        {
-            List<DSFunctionItem> functions = DSLibraryServices.Instance[library];
-            if (functions != null)
-            {
-                var searchViewModel = dynSettings.Controller.SearchViewModel;
-                var controller = dynSettings.Controller;
-
-                foreach (var function in functions)
-                {
-                    searchViewModel.Add(function);
-
-                    if (!controller.DSImportedFunctions.ContainsKey(function.DisplayName))
-                    {
-                        controller.DSImportedFunctions.Add(function.DisplayName, function);
-                    }
-                }
-            }
-        }
-
-        private static void DSLibraryLoaded(object sender, DSLibraryServices.LibraryLoadedEventArgs e)
-        {
-            LoadDSFunctionsFromLibrary(e.LibraryPath);
-
-            foreach (var node in dynSettings.Controller.DynamoViewModel.Model.HomeSpace.Nodes)
-            {
-                node.MarkDirty(); 
-            }
-        }
-#endif
         /// <summary>
         ///     Determine if a Type is a node.  Used by LoadNodesFromAssembly to figure
         ///     out what nodes to load from other libraries (.dlls).

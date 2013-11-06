@@ -162,6 +162,7 @@ limitations under the License.
     <Compile Include="Core\Configurations.cs" />
     <Compile Include="DSEngine\AstBuilder.cs" />
     <Compile Include="DSEngine\DSLibrary.cs" />
+    <Compile Include="DSEngine\EngineController.cs" />
     <Compile Include="DSEngine\LiveRunnerServices.cs" />
     <Compile Include="Models\CustomNodeWorkspaceModel.cs" />
     <Compile Include="Models\HomeWorkspaceModel.cs" />

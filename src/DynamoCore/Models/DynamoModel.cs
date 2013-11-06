@@ -1312,7 +1312,7 @@ namespace Dynamo.Models
             if (dynSettings.Controller.DSImportedFunctions.ContainsKey(name))
             {
                 var functionData  = dynSettings.Controller.DSImportedFunctions[name];
-                result = new DSFunction(functionData as DSFunctionItem);
+                result = new DSFunction(functionData as FunctionItem);
             }
             else if (dynSettings.Controller.BuiltInTypesByName.ContainsKey(name))
             {

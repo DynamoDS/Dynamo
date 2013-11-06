@@ -8,32 +8,29 @@ using ProtoScript.Runners;
 
 namespace Dynamo.DSEngine
 {
+    internal class LiveRunnerFactory
+    {
+        internal static ILiveRunner CreateLiveRunner(EngineController controller)
+        {
+            LiveRunner.Options option = new LiveRunner.Options();
+            return new LiveRunner(option);
+        }
+    }
+
     public class LiveRunnerServices
     {
-        public static LiveRunnerServices Instance = new LiveRunnerServices();
         private ILiveRunner liveRunner;
-        private List<string> loadedLibraries;
+        private EngineController controller;
 
-        private LiveRunnerServices()
+        public LiveRunnerServices(EngineController controller)
         {
-            liveRunner = new ProtoScript.Runners.LiveRunner();
-            liveRunner.GraphUpdateReady += OnGraphUpdateReady;
-            liveRunner.NodeValueReady += OnNodeValueReady;
-            loadedLibraries = new List<string>();
+            this.controller = controller;
+            liveRunner = LiveRunnerFactory.CreateLiveRunner(controller);
 
-            DSLibraryServices.Instance.LibraryLoaded += OnLoadLibrary;
-            liveRunner.ResetVMAndResyncGraph(DSLibraryServices.Instance.PreLoadedLibraries);
-            loadedLibraries = new List<string>(DSLibraryServices.Instance.PreLoadedLibraries);
+            liveRunner.GraphUpdateReady += GraphUpdateReady;
+            liveRunner.NodeValueReady += NodeValueReady;
         }
       
-        private void OnGraphUpdateReady(object sender, GraphUpdateReadyEventArgs e)
-        {
-        }
-
-        private void OnNodeValueReady(object sender, NodeValueReadyEventArgs e)
-        {
-        }
-
         public ProtoCore.Core Core
         {
             get
@@ -53,23 +50,47 @@ namespace Dynamo.DSEngine
             return (mirror == null) ? "null" : mirror.GetStringData();
         }
 
+        /// <summary>
+        /// Update graph with graph sync data.
+        /// </summary>
+        /// <param name="graphData"></param>
         public void UpdateGraph(GraphSyncData graphData)
         {
-            try
+            liveRunner.UpdateGraph(graphData);
+        }
+
+        /// <summary>
+        /// Each time when a new library is imported, LiveRunner need to reload
+        /// all libraries and reset VM.
+        /// </summary>
+        /// <param name="libraries"></param>
+        public void ReloadAllLibraries(List<string> libraries)
+        {
+            liveRunner.ResetVMAndResyncGraph(libraries);
+        }
+
+        /// <summary>
+        /// GraphUpdateReady event handler.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void GraphUpdateReady(object sender, GraphUpdateReadyEventArgs e)
+        {
+            if (EventStatus.OK == e.ResultStatus)
             {
-                liveRunner.UpdateGraph(graphData);
-            }
-            catch (Exception e)
-            {
-                DynamoLogger.Instance.LogWarning("Update graph failed: " + e.Message, WarningLevel.Severe);
             }
         }
 
-        private void OnLoadLibrary(object sender, DSLibraryServices.LibraryLoadedEventArgs e)
+        /// <summary>
+        /// NodeValueReady event handler.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void NodeValueReady(object sender, NodeValueReadyEventArgs e)
         {
-            string newLibraryPath = e.LibraryPath;
-            loadedLibraries.Add(newLibraryPath);
-            liveRunner.ResetVMAndResyncGraph(loadedLibraries);
+            if (EventStatus.OK == e.ResultStatus)
+            {
+            }
         }
     }
 }
