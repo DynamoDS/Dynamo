@@ -96,11 +96,6 @@ namespace Dynamo.Views
             zoomAndPanControl.Focusable = false;
             outerCanvas.Children.Add(zoomAndPanControl);
 
-            // Add EndlessGrid
-            endlessGrid = new EndlessGrid(outerCanvas);
-            selectionCanvas.Children.Add(endlessGrid);
-            zoomBorder.EndlessGrid = endlessGrid; // Register with ZoomBorder
-
             // Binding for grid lines HitTest and Visibility
             var binding = new Binding()
             {
@@ -109,12 +104,16 @@ namespace Dynamo.Views
                 Mode = BindingMode.OneWay,
             };
             binding.RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(TabControl), 1);
-            endlessGrid.SetBinding(UIElement.VisibilityProperty, binding);
+            //endlessGrid.SetBinding(UIElement.VisibilityProperty, binding);
+
+            // Add EndlessGrid
+            endlessGrid = new EndlessGrid(outerCanvas, binding);
+            selectionCanvas.Children.Add(endlessGrid);
+            zoomBorder.EndlessGrid = endlessGrid; // Register with ZoomBorder
 
             //============
             //LoadCursorState();
             //============
-
 
             Debug.WriteLine("Workspace loaded.");
             DynamoSelection.Instance.Selection.CollectionChanged += Selection_CollectionChanged;

@@ -69,7 +69,7 @@ namespace Dynamo.Nodes
                             this.Definition.FunctionId].Description;
                 else
                 {
-                    return BuiltinNodeCategories.SCRIPTING_CUSTOMNODES;
+                    return "Custom Nodes";
                 }
             }
         }
@@ -466,7 +466,7 @@ namespace Dynamo.Nodes
             {
                 WorkspaceModel =
                     new CustomNodeWorkspaceModel(
-                        NickName, BuiltinNodeCategories.SCRIPTING_CUSTOMNODES)
+                        NickName, "Custom Nodes")
                     {
                         FileName = null
                     }

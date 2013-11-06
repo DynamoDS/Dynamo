@@ -14,78 +14,11 @@ namespace Dynamo.Tests
     class CurveTests:DynamoRevitUnitTestBase
     {
         [Test]
-        public void ModelCurve()
-        {
-            var model = dynSettings.Controller.DynamoModel;
-
-            string samplePath = Path.Combine(_testPath, @".\ModelCurve.dyn");
-            string testPath = Path.GetFullPath(samplePath);
-
-            model.Open(testPath);
-            dynSettings.Controller.RunExpression(true);
-
-            var fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
-            fec.OfClass(typeof(CurveElement));
-
-            //verify five model curves created
-            int count = fec.ToElements().Count;
-            Assert.IsInstanceOf(typeof(ModelCurve), fec.ToElements().First());
-            Assert.AreEqual(5, count);
-
-            ElementId id = fec.ToElements().First().Id;
-
-            //update any number node and verify 
-            //that the element gets updated not recreated
-            var doubleNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is DoubleInput);
-            var node = doubleNodes.First() as DoubleInput;
-
-            Assert.IsNotNull(node);
-
-            node.Value = node.Value + .1;
-            dynSettings.Controller.RunExpression(true);
-            Assert.AreEqual(5, fec.ToElements().Count);
-        }
-
-        [Test]
-        public void ReferenceCurve()
-        {
-            var model = dynSettings.Controller.DynamoModel;
-
-            string samplePath = Path.Combine(_testPath, @".\ReferenceCurve.dyn");
-            string testPath = Path.GetFullPath(samplePath);
-
-            model.Open(testPath);
-            dynSettings.Controller.RunExpression(true);
-
-            FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
-            fec.OfClass(typeof(CurveElement));
-
-            //verify five model curves created
-            int count = fec.ToElements().Count;
-            Assert.IsInstanceOf(typeof(ModelCurve), fec.ToElements().First());
-            Assert.IsTrue(((ModelCurve)fec.ToElements().First()).IsReferenceLine);
-            Assert.AreEqual(5, count);
-
-            ElementId id = fec.ToElements().First().Id;
-
-            //update any number node and verify 
-            //that the element gets updated not recreated
-            var doubleNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is DoubleInput);
-            var node = doubleNodes.First() as DoubleInput;
-
-            Assert.IsNotNull(node);
-
-            node.Value = node.Value + .1;
-            dynSettings.Controller.RunExpression(true);
-            Assert.AreEqual(5, fec.ToElements().Count);
-        }
-
-        [Test]
         public void CurveByPoints()
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\CurveByPoints.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Curve\CurveByPoints.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
@@ -142,7 +75,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\CurveLoop.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Curve\CurveLoop.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
@@ -154,7 +87,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\CurvebyPointsArc.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Curve\CurvebyPointsArc.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
@@ -173,7 +106,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\OffsetCurve.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Curve\OffsetCurve.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
@@ -185,7 +118,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\ThickenCurve.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Curve\ThickenCurve.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
@@ -200,7 +133,7 @@ namespace Dynamo.Tests
 
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\CurveByPointsByLine.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Curve\CurveByPointsByLine.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
@@ -230,7 +163,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\ClosedCurve.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Curve\ClosedCurve.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
@@ -251,7 +184,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\CurvebyPointsEllipse.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Curve\CurvebyPointsEllipse.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
@@ -264,6 +197,18 @@ namespace Dynamo.Tests
             Assert.AreEqual(fec.ToElements().Count(), 1);
 
             CurveByPoints mc = (CurveByPoints)fec.ToElements().ElementAt(0);
+        }
+
+        [Test]
+        public void GetCurveDomain()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\Curve\GetCurveDomain.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
     }
 }
