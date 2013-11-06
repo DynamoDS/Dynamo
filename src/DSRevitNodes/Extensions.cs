@@ -102,7 +102,7 @@ namespace DSRevitNodes
             {
                 if (row.Length != 2)
                 {
-                    throw new Exception("Each element of the input array should be length 2") 
+                    throw new Exception("Each element of the input array should be length 2");
                 }
                 else
                 {

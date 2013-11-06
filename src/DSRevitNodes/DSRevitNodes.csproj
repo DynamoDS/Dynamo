@@ -66,11 +66,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractGeometry.cs" />
+    <Compile Include="Curve.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Face.cs" />
     <Compile Include="AdaptiveComponent.cs" />
     <Compile Include="DividedPath.cs" />
-    <Compile Include="DivideSurface.cs" />
+    <Compile Include="DividedSurface.cs" />
+    <Compile Include="FamilySymbol.cs" />
     <Compile Include="FreeForm.cs" />
     <Compile Include="Material.cs" />
     <Compile Include="ModelCurve.cs" />
