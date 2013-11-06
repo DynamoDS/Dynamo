@@ -6,17 +6,21 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows;
+using System.Xml;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using NUnit.Framework;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Tests.UI
 {
     [TestFixture]
     public class RecordedTests
     {
+        private Random randomizer = null;
+
         // For access within test cases.
         private WorkspaceModel workspace = null;
         private WorkspaceViewModel workspaceViewModel = null;
@@ -25,12 +29,40 @@ namespace Dynamo.Tests.UI
         [SetUp]
         public void Start()
         {
+            // Instantiate random number generator 
+            // using system-supplied value as seed.
+            randomizer = new Random();
         }
 
         [TearDown]
         public void Exit()
         {
             this.controller = null;
+        }
+
+        [Test, RequiresSTA]
+        public void TestCreateNodeCommand()
+        {
+            // Create the command in completely unpredictable states. These 
+            // states should properly be serialized and deserialized across 
+            // two instances of the same command.
+            // 
+            Guid nodeId = Guid.NewGuid();
+            double x = randomizer.NextDouble() * 1000;
+            double y = randomizer.NextDouble() * 1000;
+            bool defaultPos = randomizer.Next(2) == 0;
+            bool transfPos = randomizer.Next(2) == 0;
+
+            var cmdOne = new DynCmd.CreateNodeCommand(
+                nodeId, "Number", x, y, defaultPos, transfPos);
+
+            var cmdTwo = DuplicateAndCompare(cmdOne);
+            Assert.AreEqual(cmdOne.NodeId, cmdTwo.NodeId);
+            Assert.AreEqual(cmdOne.NodeName, cmdTwo.NodeName);
+            Assert.AreEqual(cmdOne.X, cmdTwo.X, 0.000001);
+            Assert.AreEqual(cmdOne.Y, cmdTwo.Y, 0.000001);
+            Assert.AreEqual(cmdOne.DefaultPosition, cmdTwo.DefaultPosition);
+            Assert.AreEqual(cmdOne.TransformCoordinates, cmdTwo.TransformCoordinates);
         }
 
         [Test, RequiresSTA]
@@ -141,6 +173,23 @@ namespace Dynamo.Tests.UI
             Assert.IsNotNull(controller.DynamoModel.CurrentWorkspace);
             workspace = controller.DynamoModel.CurrentWorkspace;
             workspaceViewModel = controller.DynamoViewModel.CurrentSpaceViewModel;
+        }
+
+        private CmdType DuplicateAndCompare<CmdType>(CmdType command)
+            where CmdType : DynCmd.RecordableCommand
+        {
+            Assert.IsNotNull(command); // Ensure we have an input command.
+
+            // Serialize the command into an XmlElement.
+            XmlDocument xmlDocument = new XmlDocument();
+            XmlElement element = command.Serialize(xmlDocument);
+            Assert.IsNotNull(element);
+
+            // Deserialized the XmlElement into a new instance of the command.
+            var duplicate = DynCmd.RecordableCommand.Deserialize(element);
+            Assert.IsNotNull(duplicate);
+            Assert.IsTrue(duplicate is CmdType);
+            return duplicate as CmdType;
         }
     }
 }
