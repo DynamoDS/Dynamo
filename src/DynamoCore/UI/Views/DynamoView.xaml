@@ -802,15 +802,17 @@
                                 <MouseBinding Gesture="MiddleClick" Command="{Binding HideCommand}" />
                             </Button.InputBindings>-->
 
-                            <DockPanel Margin="0,0,5,0"
-                                       Height="20"
-                                       HorizontalAlignment="Stretch">
-
+                            <Grid Height="20">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                
                                 <TextBlock Name="WorkspaceName"
-                                           Margin="8,2,0,0"
+                                           Margin="8,0,0,0"
                                            Padding="0,0,0,0"
-                                           DockPanel.Dock="Left"
                                            HorizontalAlignment="Stretch"
+                                           VerticalAlignment="Center"
                                            TextTrimming="CharacterEllipsis">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
@@ -882,8 +884,9 @@
                                 </TextBlock>
 
                                 <TextBlock Name="WorkspaceSaveState"
-                                           Margin="0,2,0,0"
-                                           DockPanel.Dock="Left">
+                                           Grid.Column="1"
+                                           Margin="0,0,0,0"
+                                           VerticalAlignment="Center">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Style.Triggers>
@@ -918,8 +921,7 @@
                                         </Style>
                                     </TextBlock.Style>
                                 </TextBlock>
-                            </DockPanel>
-
+                            </Grid>
                             <!--</Button>-->
 
                         </DataTemplate>
