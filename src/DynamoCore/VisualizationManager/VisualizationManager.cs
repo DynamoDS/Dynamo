@@ -697,23 +697,14 @@ namespace Dynamo
                 if (node is DSFunction)
                 {
                     string varName = node.AstIdentifier.Name;
-                    var mirror = Dynamo.DSEngine.LiveRunnerServices.Instance.GetMirror(varName);
-                    if (mirror != null)
+                    var graphItems = EngineController.Instance.GetGraphicItems(varName);
+                    if (graphItems != null)
                     {
-                        var graphItems = mirror.GetData().GetGraphicsItems();
-                        if (graphItems != null)
-                        {
-                            List<object> drawableItems = new List<object>();
-                            foreach (var item in graphItems)
-                            {
-                                drawableItems.Add(item); 
-                            }
-                            drawables.Add(node, drawableItems);
-                        }
+                        List<object> drawableItems = graphItems.ConvertAll(item => (object)item);
+                        drawables.Add(node, drawableItems);
                     }
                 }
             }
-
             return drawables;
 #else
             //get a list of tuples node,drawables

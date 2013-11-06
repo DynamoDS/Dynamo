@@ -774,7 +774,7 @@ namespace Dynamo.ViewModels
         ///     Adds a DesignScript function
         /// </summary>
         /// <param name="funcItem"></param>
-        public void Add(DSFunctionItem funcItem)
+        public void Add(FunctionItem funcItem)
         {
             string name = funcItem.DisplayName;
             string cat = funcItem.Category;
