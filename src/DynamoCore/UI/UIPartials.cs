@@ -206,7 +206,7 @@ namespace Dynamo.Nodes
             if (name == "Value")
             {
                 this.Value = value;
-                return true;
+                return true; // UpdateValueCore handled.
             }
 
             return false; // Not handled here.
@@ -315,7 +315,7 @@ namespace Dynamo.Nodes
             if (name == "Value")
             {
                 this.Value = value;
-                return true;
+                return true; // UpdateValueCore handled.
             }
 
             return false; // Not handled here.
@@ -461,6 +461,28 @@ namespace Dynamo.Nodes
             };
             tb_slider.SetBinding(Slider.MinimumProperty, bindingMinSlider);
         }
+
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (base.UpdateValueCore(name, value))
+                return true;
+
+            var converter = new DoubleDisplay();
+            switch (name)
+            {
+                case "Value":
+                    this.Value = ((double)converter.ConvertBack(value, typeof(double), null, null));
+                    return true; // UpdateValueCore handled.
+                case "Max":
+                    this.Max = ((double)converter.ConvertBack(value, typeof(double), null, null));
+                    return true; // UpdateValueCore handled.
+                case "Min":
+                    this.Min = ((double)converter.ConvertBack(value, typeof(double), null, null));
+                    return true; // UpdateValueCore handled.
+            }
+
+            return false;
+        }
     }
 
     public partial class BoolSelector : Bool
@@ -557,6 +579,20 @@ namespace Dynamo.Nodes
             });
         }
 
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (base.UpdateValueCore(name, value))
+                return true;
+
+            if (name == "Value")
+            {
+                var converter = new StringDisplay();
+                this.Value = ((string)converter.ConvertBack(value, typeof(string), null, null));
+                return true; // UpdateValueCore handled.
+            }
+
+            return false;
+        }
     }
 
     public partial class StringFilename : BasicInteractive<string>
@@ -724,6 +760,20 @@ namespace Dynamo.Nodes
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             });
         }
+
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (base.UpdateValueCore(name, value))
+                return true;
+
+            if (name == "FormulaString")
+            {
+                this.FormulaString = value;
+                return true; // UpdateValueCore handled.
+            }
+
+            return false;
+        }
     }
 
     public partial class Output
@@ -750,6 +800,20 @@ namespace Dynamo.Nodes
                 Mode = BindingMode.TwoWay,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             });
+        }
+
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (base.UpdateValueCore(name, value))
+                return true;
+
+            if (name == "Symbol")
+            {
+                this.Symbol = value;
+                return true; // UpdateValueCore handled.
+            }
+
+            return false;
         }
     }
 
@@ -779,6 +843,19 @@ namespace Dynamo.Nodes
             });
         }
 
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (base.UpdateValueCore(name, value))
+                return true;
+
+            if (name == "InputSymbol")
+            {
+                this.InputSymbol = value;
+                return true; // UpdateValueCore handled.
+            }
+
+            return false;
+        }
     }
 
     public partial class Watch : NodeWithOneOutput
