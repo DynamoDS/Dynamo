@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.Models;
@@ -84,7 +85,9 @@ namespace Dynamo.Nodes
 
         public void BindToProperty(System.Windows.Data.Binding binding)
         {
+            binding.NotifyOnTargetUpdated = true;
             this.SetBinding(TextBox.TextProperty, binding);
+            this.TargetUpdated += OnTargetUpdated;
             UpdateDataSource(false);
         }
 
@@ -145,6 +148,10 @@ namespace Dynamo.Nodes
         protected override void OnLostFocus(RoutedEventArgs e)
         {
             UpdateDataSource(true);
+        }
+
+        private void OnTargetUpdated(object sender, DataTransferEventArgs e)
+        {
         }
 
         #endregion
