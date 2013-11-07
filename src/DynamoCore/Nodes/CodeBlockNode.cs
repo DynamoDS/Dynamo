@@ -7,6 +7,9 @@ using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
 using Dynamo.Models;
 using Dynamo.Utilities;
+using Dynamo.UI.Commands;
+using Dynamo.ViewModels;
+using System.Windows;
 
 namespace Dynamo.Nodes
 {
@@ -16,6 +19,7 @@ namespace Dynamo.Nodes
     public partial class CodeBlockNodeModel : NodeModel
     {
         private string code = "";
+        private string codeToParse = "";
         private string previewVariable = null;
         private List<Statement> codeStatements = new List<Statement>();
         private bool shouldFocus = true;
@@ -26,10 +30,22 @@ namespace Dynamo.Nodes
             this.ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        public void DisplayError()
+        public void DisplayError(string errorMessage)
         {
+            //Log an error. TODO Ambi : Remove this later
             DynamoLogger.Instance.Log("Error in Code Block Node");
-            this.State = ElementState.ERROR;
+
+            //Remove all ports
+            int size = InPortData.Count;
+            for (int i = 0; i < size; i++)
+                InPortData.RemoveAt(0);
+            size = OutPortData.Count;
+            for (int i = 0; i < size; i++)
+                OutPortData.RemoveAt(0);
+            RegisterAllPorts();
+
+            //Set the node state in error and display the message
+            Error(errorMessage);
         }
 
         /// <summary>
@@ -52,7 +68,7 @@ namespace Dynamo.Nodes
                 return inputCode;
 
             //Add the ';' if required
-            if (inputCode[inputCode.Length-1] != ';')
+            if (inputCode[inputCode.Length - 1] != ';')
                 return inputCode.Insert(inputCode.Length, ";");
             else
                 return inputCode;
@@ -85,6 +101,30 @@ namespace Dynamo.Nodes
                     }
                 }
             }
+        }
+
+        public bool VariableAlreadyDeclared(Statement stmnt)
+        {
+            string varName = stmnt.DefinedVariable.Name;
+            foreach (var node in this.WorkSpace.Nodes)
+            {
+                if (node is CodeBlockNodeModel)
+                {
+                    foreach (var x in (node as CodeBlockNodeModel).codeStatements)
+                    {
+                        if (x == stmnt)
+                            continue;
+                        if (x.DefinedVariable.Name.Equals(varName))
+                            return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public string CodeToParse
+        {
+            get { return codeToParse; }
         }
         #endregion
 
@@ -134,7 +174,7 @@ namespace Dynamo.Nodes
             List<ProtoCore.AST.Node> resultNodes = new List<Node>();
             List<ProtoCore.BuildData.ErrorEntry> errors;
             List<ProtoCore.BuildData.WarningEntry> warnings;
-            GraphToDSCompiler.GraphUtilities.Parse(code, out resultNodes, out errors, out  warnings, unboundIdentifiers);
+            GraphToDSCompiler.GraphUtilities.Parse(ref codeToParse, out resultNodes, out errors, out  warnings, unboundIdentifiers);
             BinaryExpressionNode indexedStatement = resultNodes[index] as BinaryExpressionNode;
             return indexedStatement.LeftNode as AssociativeNode;
         }
@@ -165,20 +205,27 @@ namespace Dynamo.Nodes
             }
 
             //Parse the text and assign each AST node to a statement instance
+            codeToParse = code;
             List<string> unboundIdentifiers = new List<string>();
             List<ProtoCore.AST.Node> resultNodes = new List<Node>();
             List<ProtoCore.BuildData.ErrorEntry> errors;
             List<ProtoCore.BuildData.WarningEntry> warnings;
-            if(GraphToDSCompiler.GraphUtilities.Parse(code,out resultNodes,out errors,out  warnings, unboundIdentifiers) && resultNodes!=null)
+            if (GraphToDSCompiler.GraphUtilities.Parse(ref codeToParse, out resultNodes, out errors, out  warnings, unboundIdentifiers) && resultNodes != null)
             {
                 //Create an instance of statement for each code statement written by the user
                 foreach (Node node in resultNodes)
                 {
                     Statement tempStatement;
+                    try
                     {
                         tempStatement = Statement.CreateInstance(node, this.GUID);
+                        codeStatements.Add(tempStatement);
                     }
-                    codeStatements.Add(tempStatement);
+                    catch (Exception e)
+                    {
+                        DisplayError(e.Message);
+                        previewVariable = null;
+                    }
 
                     var binaryStatement = node as BinaryExpressionNode;
                     if (binaryStatement != null && binaryStatement.Optr == ProtoCore.DSASM.Operator.assign)
@@ -193,7 +240,24 @@ namespace Dynamo.Nodes
             }
             else
             {
-                DisplayError();
+                string errorMessage = "";
+                int i = 0;
+                for (; i < errors.Count - 1; i++)
+                    errorMessage += (errors[i].Message + "\n");
+                errorMessage += errors[i].Message;
+                DisplayError(errorMessage);
+                return;
+            }
+
+            foreach (var singleStatement in codeStatements)
+            {
+                if (VariableAlreadyDeclared(singleStatement))
+                {
+                    string varName = singleStatement.DefinedVariable.Name;
+                    string errorMessage = varName + " is already declared.";
+                    DisplayError(errorMessage);
+                    return;
+                }
             }
 
             SetPorts(unboundIdentifiers); //Set the input and output ports based on the statements
