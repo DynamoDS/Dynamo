@@ -732,7 +732,6 @@ namespace Dynamo
         protected override void Run(List<NodeModel> topElements, GraphSyncData graphSyncData)
         {
             DocumentManager.GetInstance().CurrentDBDocument = dynRevitSettings.Doc.Document;
-
             if (!DynamoViewModel.RunInDebug)
             {
                 // As we use a generic function node to represent all functions,

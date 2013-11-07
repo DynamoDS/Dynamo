@@ -21,7 +21,6 @@ namespace RevitServices.Persistence
     {
         private const string REVIT_TRACE_ID = "{0459D869-0C72-447F-96D8-08A7FB92214B}-REVIT";
 
-
         /// <summary>
         /// Get the element associated with the current operation from trace
         /// null if there is no object, or it's of the wrong type etc.
@@ -40,14 +39,15 @@ namespace RevitServices.Persistence
                 return null; //There was no usable data in the trace cache
 
 
-            //@TODO(Luke): make this work with hot swapping ids and guids rather than
-            //always using GUIDs
+            //@TODO(Luke): Extend for using guids
 
-            String traceDataStr = id.stringID;
+            // PB: only works for ElementIds now
+            var traceDataInt = id.intID;
+            var eleId = new Autodesk.Revit.DB.ElementId(traceDataInt);
 
             T ret;
 
-            if (Elements.ElementUtils.TryGetElement(document, traceDataStr, out ret))
+            if (Elements.ElementUtils.TryGetElement(document, eleId, out ret))
                 return ret;
             else
                 return null;

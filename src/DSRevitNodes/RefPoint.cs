@@ -52,10 +52,11 @@ namespace DSRevitNodes
 
             InternalReferencePoint = Document.FamilyCreate.NewReferencePoint(new XYZ(x, y, z));
             this.InternalID = InternalReferencePoint.Id;
-
+            
             TransactionManager.GetInstance().TransactionTaskDone();
 
-            //ElementBinder.SetElementForTrace(this.InternalID);
+            ElementBinder.SetElementForTrace(this.InternalID);
+
         }
 
         private void InternalSetPosition(XYZ xyz)
@@ -127,15 +128,7 @@ namespace DSRevitNodes
         /// <returns></returns>
         public static RefPoint ByCoordinates(double x, double y, double z)
         {
-            try
-            {
-                var pt = new RefPoint(x, y, z);
-                return pt;
-            }
-            catch (Exception e)
-            {
-                return null;
-            }
+            return new RefPoint(x, y, z);
         }
 
         /// <summary>
