@@ -55,7 +55,8 @@ namespace DSRevitNodes
             
             TransactionManager.GetInstance().TransactionTaskDone();
 
-            //ElementBinder.SetElementForTrace(this.InternalID);
+            ElementBinder.SetElementForTrace(this.InternalID);
+
 
         }
 
