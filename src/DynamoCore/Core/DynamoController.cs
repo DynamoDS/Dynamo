@@ -17,6 +17,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Microsoft.Practices.Prism.ViewModel;
 using NUnit.Framework;
+using ProtoScript.Runners;
 using String = System.String;
 
 namespace Dynamo
@@ -294,24 +295,6 @@ namespace Dynamo
             runAgain = true;
         }
 
-
-        public void RunDSExpression(bool showErrors = true)
-        {
-
-            MessageBox.Show("DS Pre-exec");
-
-            RunDS();
-
-
-            MessageBox.Show("DS Post-exec");
-
-        }
-
-        protected virtual void RunDS()
-        {
-            throw new NotImplementedException();
-        }
-
         public void RunExpression(bool showErrors = true)
         {
             //DynamoLogger.Instance.LogWarning("Running expression", WarningLevel.Mild);
@@ -334,11 +317,7 @@ namespace Dynamo
             {
                 //Setup background worker
                 var worker = new BackgroundWorker();
-#if USE_DSENGINE
-                worker.DoWork += DSEvaluationThread;
-#else
                 worker.DoWork += EvaluationThread;
-#endif
 
                 DynamoViewModel.RunEnabled = false;
 
@@ -350,63 +329,35 @@ namespace Dynamo
                 //asynchronously, as it will finish the 
                 //test before the evaluation (and the run)
                 //is complete
-#if USE_DSENGINE
-                DSEvaluationThread(null, null);
-#else
                 EvaluationThread(null, null);
-#endif
-        }
-
-        protected virtual void DSEvaluationThread(Object e, DoWorkEventArgs args)
-        {
-            AstBuilder.Instance.BeginBuildingAst();
-
-            List<NodeModel> topElements = DynamoViewModel.Model.HomeSpace.GetTopMostNodes().ToList();
-            foreach (NodeModel topMost in topElements)
-            {
-                topMost.CompileToAstNode(AstBuilder.Instance);
-            }
-
-            AstBuilder.Instance.FinishBuildingAst();
-            LiveRunnerServices.Instance.UpdateGraph(AstBuilder.Instance.GetSyncData());
-
-            List<Guid> nodes = AstBuilder.Instance.ToBeQueriedNodes;
-            if (nodes != null)
-            {
-                foreach (var node in nodes)
-                {
-                    try
-                    {
-                        string var = AstBuilder.StringConstants.VarPrefix + node.ToString().Replace("-", string.Empty);
-                        DynamoLogger.Instance.Log(var + " = " + LiveRunnerServices.Instance.GetStringValue(var));
-                    }
-                    catch (Exception exp)
-                    {
-                        DynamoLogger.Instance.Log(exp.Message);
-                    }
-                }
-            }
-
-            OnEvaluationCompleted(this, EventArgs.Empty);
-            DynamoViewModel.RunEnabled = true;
-            Running = false;
-            OnRunCompleted(this, true);
-            return;
         }
 
         protected virtual void EvaluationThread(object s, DoWorkEventArgs args)
         {
+            var sw = new Stopwatch();
+            sw.Start();
+
             //Get our entry points (elements with nothing connected to output)
             List<NodeModel> topElements = DynamoViewModel.Model.HomeSpace.GetTopMostNodes().ToList();
 
+#if !USE_DSENGINE
             //Mark the topmost as dirty/clean
             foreach (NodeModel topMost in topElements)
             {
                 topMost.MarkDirty();
             }
-
+#endif
             try
             {
+
+#if USE_DSENGINE
+                EngineController.Instance.ResetAstBuildingState();
+                foreach (NodeModel topMost in topElements)
+                {
+                    topMost.CompileToAstNode(EngineController.Instance.Builder);
+                }
+                Run(topElements, EngineController.Instance.GetSyncData());
+#else
                 var topNode = new BeginNode(new List<string>());
                 int i = 0;
                 var buildDict = new Dictionary<NodeModel, Dictionary<int, INode>>();
@@ -428,6 +379,7 @@ namespace Dynamo
                 // inform any objects that a run has happened
 
                 //DynamoLogger.Instance.Log(runningExpression);
+#endif
             }
             catch (CancelEvaluationException ex)
             {
@@ -489,7 +441,59 @@ namespace Dynamo
                 {
                     OnRunCompleted(this, true);
                 }
+
+                sw.Stop();
+                DynamoLogger.Instance.Log(string.Format("Evaluation completed in {0}", sw.Elapsed.ToString()));
             }
+        }
+
+        protected virtual void Run(List<NodeModel> topElements, GraphSyncData graphData)
+        {
+            //Print some stuff if we're in debug mode
+            if (DynamoViewModel.RunInDebug)
+            {
+            }
+
+            try
+            {
+                EngineController.Instance.UpdateGraph(graphData);
+
+                // Currently just use inefficient way to refresh preview values. 
+                // After we switch to async call, only those nodes that are really 
+                // updated in this execution session will be required to update 
+                // preview value.
+                var nodes = DynamoViewModel.Model.HomeSpace.Nodes;
+                foreach (NodeModel node in nodes)
+                {
+                    node.IsUpdated = true;
+                }
+            }
+            catch (CancelEvaluationException ex)
+            {
+                /* Evaluation was cancelled */
+                OnRunCancelled(false);
+                RunCancelled = false;
+                if (ex.Force)
+                    runAgain = false;
+            }
+            catch (Exception ex)
+            {
+                /* Evaluation failed due to error */
+
+                DynamoLogger.Instance.Log(ex);
+
+                OnRunCancelled(true);
+                RunCancelled = true;
+                runAgain = false;
+
+                //If we are testing, we need to throw an exception here
+                //which will, in turn, throw an Assert.Fail in the 
+                //Evaluation thread.
+                if (Testing)
+                    throw new Exception(ex.Message);
+            }
+
+            OnEvaluationCompleted(this, EventArgs.Empty);
         }
 
         protected virtual void Run(List<NodeModel> topElements, FScheme.Expression runningExpression)
@@ -592,12 +596,6 @@ namespace Dynamo
         {
             RunExpression(Convert.ToBoolean(parameters));
         }
-
-        public void RunDSExpression(object parameters)
-        {
-            RunDSExpression(Convert.ToBoolean(parameters));
-        }
-
 
         internal bool CanRunExpression(object parameters)
         {

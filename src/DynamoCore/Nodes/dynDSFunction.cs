@@ -23,30 +23,30 @@ namespace Dynamo.Nodes
     [NodeSearchableAttribute(false)]
     public class DSFunction : NodeModel
     {
-        public DSFunctionItem Definition { get; set; }
+        public FunctionItem Definition { get; set; }
 
         public bool IsInstanceMember()
         {
-            return Definition.Type == DSLibraryItemType.InstanceMethod ||
-                   Definition.Type == DSLibraryItemType.InstanceProperty;
+            return Definition.Type == LibraryItemType.InstanceMethod ||
+                   Definition.Type == LibraryItemType.InstanceProperty;
         }
 
         public bool IsStaticMember()
         {
-            return Definition.Type == DSLibraryItemType.StaticMethod ||
-                   Definition.Type == DSLibraryItemType.StaticProperty;
+            return Definition.Type == LibraryItemType.StaticMethod ||
+                   Definition.Type == LibraryItemType.StaticProperty;
         }
 
         public bool IsConstructor()
         {
-            return Definition.Type == DSLibraryItemType.Constructor;
+            return Definition.Type == LibraryItemType.Constructor;
         }
 
         public DSFunction()
         {
         }
 
-        public DSFunction(DSFunctionItem definition)
+        public DSFunction(FunctionItem definition)
         {
             Initialize(definition);
         }
@@ -67,7 +67,7 @@ namespace Dynamo.Nodes
         /// Initialize a DS function node.
         /// </summary>
         /// <param name="funcDef"></param>
-        private void Initialize(DSFunctionItem funcDef)
+        private void Initialize(FunctionItem funcDef)
         {
             Definition = funcDef;
 
@@ -109,7 +109,7 @@ namespace Dynamo.Nodes
         /// <param name="context"></param>
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
-            XmlElement def = xmlDoc.CreateElement(typeof(DSFunctionItem).FullName);
+            XmlElement def = xmlDoc.CreateElement(typeof(FunctionItem).FullName);
 
             def.SetAttribute("Assembly", Definition.Assembly ?? "");
             def.SetAttribute("Category", Definition.Category ?? "");
@@ -135,7 +135,7 @@ namespace Dynamo.Nodes
                 return;
             }
 
-            foreach (XmlElement subNode in nodeElement.ChildNodes.Cast<XmlElement>().Where(subNode => subNode.Name.Equals(typeof(DSFunctionItem).FullName)))
+            foreach (XmlElement subNode in nodeElement.ChildNodes.Cast<XmlElement>().Where(subNode => subNode.Name.Equals(typeof(FunctionItem).FullName)))
             {
                 XmlElementHelper helper = new XmlElementHelper(subNode);
 
@@ -144,8 +144,8 @@ namespace Dynamo.Nodes
                 var className = helper.ReadString("ClassName", "");
                 var name = helper.ReadString("Name", "");
                 var displayName = helper.ReadString("DisplayName");
-                var strType = helper.ReadString("Type", DSLibraryItemType.GenericFunction.ToString());
-                var type = (DSLibraryItemType)System.Enum.Parse(typeof(DSLibraryItemType), strType);
+                var strType = helper.ReadString("Type", LibraryItemType.GenericFunction.ToString());
+                var type = (LibraryItemType)System.Enum.Parse(typeof(LibraryItemType), strType);
 
                 List<string> arguments = null;
                 var argumentValue = helper.ReadString("Arguments", null);
@@ -171,9 +171,9 @@ namespace Dynamo.Nodes
 
                 if (!string.IsNullOrEmpty(assembly))
                 {
-                    DSLibraryServices.Instance.ImportLibrary(assembly);
+                    EngineController.Instance.ImportLibraries(new List<string> { assembly });
                 }
-                DSFunctionItem item = new DSFunctionItem(assembly, category, className, name, displayName, type, arguments, returnKeys);
+                FunctionItem item = new FunctionItem(assembly, category, className, name, displayName, type, arguments, returnKeys);
                 Initialize(item);
 
                 return;
@@ -207,7 +207,7 @@ namespace Dynamo.Nodes
         }
 
         protected override void BuildAstNode(DSEngine.IAstBuilder builder, 
-                                                        List<ProtoCore.AST.AssociativeAST.AssociativeNode> inputs)
+                                              List<ProtoCore.AST.AssociativeAST.AssociativeNode> inputs)
         {
             builder.Build(this, inputs);
         }

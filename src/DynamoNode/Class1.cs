@@ -1,5 +1,4 @@
-﻿using Dynamo.Connectors;
-using Dynamo.Controls;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Revit;
 using Microsoft.FSharp.Collections;
@@ -10,7 +9,7 @@ namespace Dynamo.Nodes
     ///     Create a custom node.
     /// </summary>
     [NodeName("My Node")]
-    [NodeCategory(BuiltinNodeCategories.SCRIPTING_CUSTOMNODES)]
+    [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
     [NodeDescription("A description for your node which will appear in the tooltip.")]
     public class CustomNode : NodeWithOneOutput
     {

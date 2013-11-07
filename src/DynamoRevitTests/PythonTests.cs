@@ -1,10 +1,24 @@
-﻿using NUnit.Framework;
+﻿using System.IO;
+using Dynamo.Utilities;
+using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
     [TestFixture]
     class PythonTests : DynamoRevitUnitTestBase
     {
+        [Test]
+        public void CanAddTwoInputsWithPython()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string graph = Path.Combine(_testPath, @".\Python\Python_add.dyn");
+            string testPath = Path.GetFullPath(graph);
+
+            model.Open(testPath);
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+        }
+
         [Test]
         public void ConnectTwoPointArraysWithoutPython()
         {

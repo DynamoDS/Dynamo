@@ -156,7 +156,6 @@ namespace Dynamo.ViewModels
         public DelegateCommand ShowPackageManagerCommand { get; set; }
         public DelegateCommand CancelRunCommand { get; set; }
         public DelegateCommand RunExpressionCommand { get; set; }
-        public DelegateCommand RunDSExpressionCommand { get; set; }
         public DelegateCommand DisplayFunctionCommand { get; set; }
         public DelegateCommand SetConnectorTypeCommand { get; set; }
         public DelegateCommand ReportABugCommand { get; set; }
@@ -496,7 +495,6 @@ namespace Dynamo.ViewModels
             ToggleConsoleShowingCommand = new DelegateCommand(ToggleConsoleShowing, CanToggleConsoleShowing);
             CancelRunCommand = new DelegateCommand(Controller.CancelRun, Controller.CanCancelRun);
             RunExpressionCommand = new DelegateCommand(Controller.RunExpression, Controller.CanRunExpression);
-            RunDSExpressionCommand = new DelegateCommand(Controller.RunDSExpression, Controller.CanRunExpression);
             DisplayFunctionCommand = new DelegateCommand(Controller.DisplayFunction, Controller.CanDisplayFunction);
             SetConnectorTypeCommand = new DelegateCommand(SetConnectorType, CanSetConnectorType);
             ReportABugCommand = new DelegateCommand(Controller.ReportABug, Controller.CanReportABug);
@@ -1272,7 +1270,9 @@ namespace Dynamo.ViewModels
 #if USE_DSENGINE
         public void ImportLibrary(object parameter)
         {
-            string fileFilter = "Assembly Library Files (*.dll)|*.dll|"
+            string fileFilter = "Library Files (*.dll, *.ds)|*.dll;*.ds|"
+                              + "Assembly Library Files (*.dll)|*.dll|"
+                              + "DesignScript Files (*.ds)|*.ds|"
                               + "All Files (*.*)|*.*";
 
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -1284,16 +1284,7 @@ namespace Dynamo.ViewModels
             DialogResult result = openFileDialog.ShowDialog();
             if (result == DialogResult.OK)
             {
-                foreach (string filePath in openFileDialog.FileNames)
-                {
-                    if (!filePath.ToLower().EndsWith(".dll") && !filePath.ToLower().EndsWith(".ds"))
-                    {
-                        return;
-                    }
-
-                    if (filePath.ToLower().EndsWith(".dll"))
-                        Dynamo.DSEngine.DSLibraryServices.Instance.ImportLibrary(filePath);
-                }
+                DSEngine.EngineController.Instance.ImportLibraries(openFileDialog.FileNames.ToList());
             }
         }
 
