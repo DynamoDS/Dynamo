@@ -171,7 +171,7 @@ namespace Dynamo.Tests
 
             var extrudeNode = dynSettings.Controller.DynamoModel.Nodes.First(x => x is CreateExtrusionGeometry);
 
-            var result = (Solid)VisualizationManager.GetDrawablesFromNode(extrudeNode).Keys.First();
+            var result = (Solid)VisualizationManager.GetDrawablesFromNode(extrudeNode).Values.First();
             double volumeMin = 3850;
             double volumeMax = 4050;
             double actualVolume = result.Volume;
