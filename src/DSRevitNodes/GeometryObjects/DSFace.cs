@@ -1,0 +1,33 @@
+﻿using System;
+using Autodesk.DesignScript.Interfaces;
+using Autodesk.Revit.DB;
+
+namespace DSRevitNodes
+{
+    // how 
+    class DSFace : AbstractGeometry
+    {
+        public Autodesk.Revit.DB.Face InternalFace
+        {
+            get; private set;
+        }
+
+        internal DSFace(Autodesk.Revit.DB.Face face)
+        {
+            InternalSetFace(face);
+        }
+
+        private void InternalSetFace(Autodesk.Revit.DB.Face face)
+        {
+            Face
+        }
+
+        public bool IsTwoSided
+        {
+            get
+            {
+                return InternalFace.IsTwoSided;
+            }
+        }
+    }
+}

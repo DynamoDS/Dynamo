@@ -11,7 +11,7 @@ namespace DSRevitNodes
     {
         public Point Location { get; set; }
 
-        static DSFamilyInstance ByPt(DSFamilySymbol fs, Point p)
+        static DSFamilyInstance ByPoint(DSFamilySymbol fs, Point p)
         {
             throw new NotImplementedException();
         }
@@ -21,17 +21,17 @@ namespace DSRevitNodes
             throw new NotImplementedException();
         }
 
-        static DSFamilyInstance ByCoords(DSFamilySymbol fs, double x, double y, double z)
+        static DSFamilyInstance ByCoordinates(DSFamilySymbol fs, double x, double y, double z)
         {
             throw new NotImplementedException();
         }
 
-        static DSFamilyInstance ByUVPtOnFace(DSFamilySymbol fs, Vector uv, DSFace f)
+        static DSFamilyInstance ByUvsOnFace(DSFamilySymbol fs, Vector uv, DSFace f)
         {
             throw new NotImplementedException();
         }
 
-        static DSFamilyInstance ByPtAndLevel(Point p, DSLevel l)
+        static DSFamilyInstance ByPointAndLevel(Point p, DSLevel l)
         {
             throw new NotImplementedException();
         }
