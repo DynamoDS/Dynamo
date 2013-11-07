@@ -238,7 +238,7 @@ namespace Dynamo.ViewModels
             MaxNumSearchResults = 20;
             Visible = false;
             _SearchText = "";
-            IncludeRevitAPIElements = false; // revit api
+            IncludeRevitAPIElements = true; // revit api
 
             _topResult = this.AddRootCategory("Top Result");
             this.AddRootCategory(BuiltinNodeCategories.CORE);
@@ -800,7 +800,7 @@ namespace Dynamo.ViewModels
         ///     Adds a DesignScript function
         /// </summary>
         /// <param name="funcItem"></param>
-        public void Add(DSFunctionItem funcItem)
+        public void Add(FunctionItem funcItem)
         {
             string name = funcItem.DisplayName;
             string cat = funcItem.Category;

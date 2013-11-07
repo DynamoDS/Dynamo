@@ -1284,14 +1284,7 @@ namespace Dynamo.ViewModels
             DialogResult result = openFileDialog.ShowDialog();
             if (result == DialogResult.OK)
             {
-                foreach (string filePath in openFileDialog.FileNames)
-                {
-                    if (filePath.EndsWith(".dll", StringComparison.InvariantCultureIgnoreCase) || 
-                        filePath.EndsWith(".ds", StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        Dynamo.DSEngine.DSLibraryServices.Instance.ImportLibrary(filePath);
-                    }
-                }
+                DSEngine.EngineController.Instance.ImportLibraries(openFileDialog.FileNames.ToList());
             }
         }
 
