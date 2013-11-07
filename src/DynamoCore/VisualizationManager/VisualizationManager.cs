@@ -656,7 +656,7 @@ namespace Dynamo
 
                     if (node.IsVisible)
                     {
-                        drawable.Value.ToList().ForEach(x => VisualizeGeometry(node, x.Key, x.Value, rd));
+                        drawable.Value.ToList().ForEach(x => VisualizeGeometry(node, x.Value, x.Key, rd));
                     }
                 }
 
@@ -775,7 +775,7 @@ namespace Dynamo
         /// keyed by node. Filters the 
         /// </summary>
         /// <returns></returns>
-        public static Dictionary<NodeModel,Dictionary<object,string>> GetAllDrawablesInModel()
+        public static Dictionary<NodeModel,Dictionary<string,object>> GetAllDrawablesInModel()
         {
             //get a list of tuples node,drawables
             var nodeTuples = dynSettings.Controller.DynamoModel.Nodes
@@ -785,7 +785,7 @@ namespace Dynamo
                                             x.OldValue.IsList ||
                                             x.OldValue.GetType() == typeof (FScheme.Value.Container))
                                         .Where(x => x.GetType().Name != "Watch3D" && x.GetType().Name != "Watch")
-                                        .Select(x => new Tuple<NodeModel, Dictionary<object,string>>(x, GetDrawablesFromNode(x)));
+                                        .Select(x => new Tuple<NodeModel, Dictionary<string,object>>(x, GetDrawablesFromNode(x)));
 
             //convert the tuple list to a dictionary, only adding
             //the lists which have items.
@@ -799,7 +799,7 @@ namespace Dynamo
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
-        public static Dictionary<object, string> GetDrawablesFromNode(NodeModel node)
+        public static Dictionary<string, object> GetDrawablesFromNode(NodeModel node)
         {
             return GetDrawableFromValue(new List<int>(), node.OldValue);
         }
@@ -832,10 +832,10 @@ namespace Dynamo
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static Dictionary<object,string> GetDrawableFromValue(List<int> chain, FScheme.Value value)
+        public static Dictionary<string,object> GetDrawableFromValue(List<int> chain, FScheme.Value value)
         {
             //var drawables = new List<object>();
-            var drawables = new Dictionary<object, string>();
+            var drawables = new Dictionary<string, object>();
 
             if (value == null)
             {
@@ -872,7 +872,7 @@ namespace Dynamo
 
                 if (visualizer.Value != null)
                 {
-                    drawables.Add(obj, TagFromList(chain));
+                    drawables.Add(TagFromList(chain),obj);
                 }
             }
 
@@ -895,7 +895,7 @@ namespace Dynamo
         
         public static NodeModel FindNodeWithDrawable(object drawable)
         {
-            return GetDrawableNodesInModel().FirstOrDefault(x => GetDrawableFromValue(new List<int>(), x.OldValue).ContainsKey(drawable));
+            return GetDrawableNodesInModel().FirstOrDefault(x => GetDrawableFromValue(new List<int>(), x.OldValue).ContainsValue(drawable));
         }
 
         #endregion
