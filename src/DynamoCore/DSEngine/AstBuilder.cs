@@ -410,15 +410,14 @@ namespace Dynamo.DSEngine
             OnAstBuilding(buildingEventArgs);
 
             List<string> unboundIdentifiers = new List<string>();
-            List<ProtoCore.AST.Node> resultNodes = new List<Node>();
-            List<ProtoCore.BuildData.ErrorEntry> errors;
-            List<ProtoCore.BuildData.WarningEntry> warnings;
-            GraphToDSCompiler.GraphUtilities.Parse(node.Code, out resultNodes, out errors, out  warnings, unboundIdentifiers);
-            
-            List<AssociativeNode> astNodes = resultNodes.ConvertAll(n => n as AssociativeNode);
-            ASTBuiltEventArgs builtEventArgs = new ASTBuiltEventArgs(node, astNodes);
-            OnAstBuilt(builtEventArgs);
+            CodeBlockNode commentNode = null;
+            CodeBlockNode codeBlock = GraphToDSCompiler.GraphUtilities.Parse(node.Code, out commentNode) as CodeBlockNode;
 
+            if (codeBlock != null)
+            {
+                ASTBuiltEventArgs builtEventArgs = new ASTBuiltEventArgs(node, codeBlock.Body);
+                OnAstBuilt(builtEventArgs);
+            }
         }
         #endregion
 
