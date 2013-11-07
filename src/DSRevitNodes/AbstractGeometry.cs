@@ -18,6 +18,7 @@ namespace DSRevitNodes
         }
 
         protected ElementId InternalID;
+        protected Guid UniqueId;
 
         /// <summary>
         /// Default implementation of dispose that removes the element from the
