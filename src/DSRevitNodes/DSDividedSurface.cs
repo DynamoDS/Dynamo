@@ -12,7 +12,7 @@ namespace DSRevitNodes
     /// A Revit DividedSurface
     /// </summary>
     [RegisterForTrace]
-    class DividedSurface : AbstractGeometry
+    class DSDividedSurface : AbstractGeometry
     {
         #region Properties
 
@@ -28,7 +28,7 @@ namespace DSRevitNodes
 
         #region Private constructors
 
-        private DividedSurface(Face face, int uDivs, int vDivs)
+        private DSDividedSurface(Face face, int uDivs, int vDivs)
         {
             // if the family instance is present in trace...
             var oldEle =
@@ -37,7 +37,7 @@ namespace DSRevitNodes
             // just mutate it...
             if (oldEle != null)
             {
-                InternalDividedSurface = oldEle;
+                InternalSetDividedSurface(oldEle);
                 InternalSetDivisions(uDivs, vDivs);
                 return;
             }
@@ -45,12 +45,9 @@ namespace DSRevitNodes
             // otherwise create a new family instance...
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
-            InternalDividedSurface = Document.FamilyCreate.NewDividedSurface(face.InternalFace.Reference);
+            var divSurf = Document.FamilyCreate.NewDividedSurface(face.InternalFace.Reference);
 
-            if (InternalDividedSurface == null)
-                throw new Exception("Revit unexpectedly failed to create the DividedSurface.");
-
-            this.InternalID = InternalDividedSurface.Id;
+            InternalSetDividedSurface(divSurf);
             InternalSetDivisions(uDivs, vDivs);
 
             TransactionManager.GetInstance().TransactionTaskDone();
@@ -59,6 +56,13 @@ namespace DSRevitNodes
         #endregion
 
         #region Private mutators
+
+        private void InternalSetDividedSurface(Autodesk.Revit.DB.DividedSurface divSurf)
+        {
+            this.InternalDividedSurface = divSurf;
+            this.InternalID = divSurf.Id;
+            this.InternalUniqueId = divSurf.UniqueId;
+        }
 
         private void InternalSetDivisions(int uDivs, int vDivs)
         {
@@ -76,9 +80,9 @@ namespace DSRevitNodes
 
         #region Static constructors
 
-        static DividedSurface ByFaceUVDivisions(Face f, int uDivs, int vDivs)
+        static DSDividedSurface ByFaceUVDivisions(Face f, int uDivs, int vDivs)
         {
-            return new DividedSurface(f, uDivs, vDivs);
+            return new DSDividedSurface(f, uDivs, vDivs);
         }
 
         #endregion
