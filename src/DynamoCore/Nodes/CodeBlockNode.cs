@@ -79,6 +79,7 @@ namespace Dynamo.Nodes
                         RaisePropertyChanged("Code");
                         RequiresRecalc = true;
                         EnableReporting();
+                        this.ReportPosition();
                         if (WorkSpace != null)
                             WorkSpace.Modified();
                     }
