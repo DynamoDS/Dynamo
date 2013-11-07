@@ -18,7 +18,7 @@ namespace DSRevitNodes
         }
 
         protected ElementId InternalID;
-        protected Guid UniqueId;
+        protected string InternalUniqueId;
 
         /// <summary>
         /// Default implementation of dispose that removes the element from the
@@ -26,11 +26,7 @@ namespace DSRevitNodes
         /// </summary>
         public virtual void Dispose()
         {
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
-
-            Document.Delete(InternalID);
-
-            TransactionManager.GetInstance().TransactionTaskDone();
+            DocumentManager.GetInstance().DeleteElement(this.InternalID);
         }
     }
 }

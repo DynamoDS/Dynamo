@@ -17,14 +17,14 @@ namespace DSRevitNodes
     /// </summary>
     [RegisterForTrace]
     [ShortName("refPt")]
-    public class RefPoint : AbstractGeometry, IGraphicItem
+    public class DSReferencePoint : AbstractGeometry, IGraphicItem
     {
         /// <summary>
         /// Internal variable containing the wrapped Revit object
         /// </summary>
-        public Autodesk.Revit.DB.ReferencePoint InternalReferencePoint
+        protected Autodesk.Revit.DB.ReferencePoint InternalReferencePoint
         {
-            get; set;
+            get; private set;
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace DSRevitNodes
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <param name="z"></param>
-        private RefPoint(double x, double y, double z)
+        private DSReferencePoint(double x, double y, double z)
         {
             //Phase 1 - Check to see if the object exists and should be rebound
             var oldRefPt = 
@@ -50,13 +50,11 @@ namespace DSRevitNodes
             //Phase 2- There was no existing point, create one
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
-            InternalReferencePoint = Document.FamilyCreate.NewReferencePoint(new XYZ(x, y, z));
-            this.InternalID = InternalReferencePoint.Id;
-            
+            InternalSetReferencePoint(Document.FamilyCreate.NewReferencePoint(new XYZ(x, y, z)));
+
             TransactionManager.GetInstance().TransactionTaskDone();
 
             ElementBinder.SetElementForTrace(this.InternalID);
-
 
         }
 
@@ -67,6 +65,14 @@ namespace DSRevitNodes
             InternalReferencePoint.Position = xyz;
 
             TransactionManager.GetInstance().TransactionTaskDone();
+        }
+
+        private void InternalSetReferencePoint(ReferencePoint p)
+        {
+
+            InternalReferencePoint = p;
+            this.InternalID = InternalReferencePoint.Id;
+            this.InternalUniqueId = InternalReferencePoint.UniqueId;
         }
 
         public double X
@@ -127,9 +133,9 @@ namespace DSRevitNodes
         /// <param name="y"></param>
         /// <param name="z"></param>
         /// <returns></returns>
-        public static RefPoint ByCoordinates(double x, double y, double z)
+        public static DSReferencePoint ByCoordinates(double x, double y, double z)
         {
-            return new RefPoint(x, y, z);
+            return new DSReferencePoint(x, y, z);
         }
 
         /// <summary>
@@ -137,9 +143,9 @@ namespace DSRevitNodes
         /// </summary>
         /// <param name="pt"></param>
         /// <returns></returns>
-        static RefPoint ByPoint(Point pt)
+        static DSReferencePoint ByPoint(Point pt)
         {
-            return new RefPoint(pt.X, pt.Y, pt.Z);
+            return new DSReferencePoint(pt.X, pt.Y, pt.Z);
         }
 
         /// <summary>
@@ -148,7 +154,7 @@ namespace DSRevitNodes
         /// <param name="f"></param>
         /// <param name="v"></param>
         /// <returns></returns>
-        static RefPoint ByPointOnFace(Face f, Vector v)
+        static DSReferencePoint ByPointOnFace(Face f, Vector v)
         {
             throw new NotImplementedException();
         }
@@ -159,7 +165,7 @@ namespace DSRevitNodes
         /// <param name="e"></param>
         /// <param name="t"></param>
         /// <returns></returns>
-        static RefPoint ByPointOnEdge(Edge e, double t)
+        static DSReferencePoint ByPointOnEdge(Edge e, double t)
         {
             throw new NotImplementedException();
         }
@@ -171,7 +177,7 @@ namespace DSRevitNodes
         /// <param name="normal"></param>
         /// <param name="distance"></param>
         /// <returns></returns>
-        static RefPoint ByPointVectorDistance(Point p, Vector vec, double distance)
+        static DSReferencePoint ByPointVectorDistance(Point p, Vector vec, double distance)
         {
             throw new NotImplementedException();
         }

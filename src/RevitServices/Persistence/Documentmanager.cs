@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Autodesk.Revit.DB;
+using RevitServices.Transactions;
 
 namespace RevitServices.Persistence
 {
@@ -30,6 +31,19 @@ namespace RevitServices.Persistence
         private DocumentManager()
         {
                 
+        }
+
+        /// <summary>
+        /// Delete an element from the current document given the ElementId
+        /// </summary>
+        /// <param name="element">The id of the element to delete</param>
+        public void DeleteElement(ElementId element)
+        {
+            TransactionManager.GetInstance().EnsureInTransaction(this.CurrentDBDocument);
+
+            this.CurrentDBDocument.Delete(element);
+
+            TransactionManager.GetInstance().TransactionTaskDone();
         }
 
         /// <summary>

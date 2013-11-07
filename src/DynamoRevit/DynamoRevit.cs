@@ -57,7 +57,6 @@ namespace Dynamo.Applications
 
                 Bitmap dynamoIcon = Resources.logo_square_32x32;
 
-
                 BitmapSource bitmapSource = Imaging.CreateBitmapSourceFromHBitmap(
                     dynamoIcon.GetHbitmap(),
                     IntPtr.Zero,
