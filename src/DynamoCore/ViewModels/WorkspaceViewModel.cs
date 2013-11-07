@@ -343,7 +343,7 @@ namespace Dynamo.ViewModels
             _model.Nodes.CollectionChanged += Nodes_CollectionChanged;
             _model.Notes.CollectionChanged += Notes_CollectionChanged;
             _model.Connectors.CollectionChanged += Connectors_CollectionChanged;
-            _model.PropertyChanged += ModelPropertyChanged;
+             
 
             // sync collections
             Nodes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Nodes));
