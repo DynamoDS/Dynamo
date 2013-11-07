@@ -5,7 +5,7 @@ using Autodesk.Revit.DB;
 namespace DSRevitNodes
 {
     // how 
-    class DSFace : AbstractGeometry
+    class DSFace : AbstractElement
     {
         public Autodesk.Revit.DB.Face InternalFace
         {
@@ -19,7 +19,7 @@ namespace DSRevitNodes
 
         private void InternalSetFace(Autodesk.Revit.DB.Face face)
         {
-            Face
+            this.InternalFace = face;
         }
 
         public bool IsTwoSided
