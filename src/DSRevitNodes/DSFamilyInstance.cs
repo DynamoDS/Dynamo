@@ -7,31 +7,31 @@ using Face = Autodesk.DesignScript.Geometry.Face;
 
 namespace DSRevitNodes
 {
-    class FamilyInstance
+    class DSFamilyInstance
     {
         public Point Location { get; set; }
 
-        static FamilyInstance ByPt(FamilySymbol fs, Point p)
+        static DSFamilyInstance ByPt(DSFamilySymbol fs, Point p)
         {
             throw new NotImplementedException();
         }
 
-        static FamilyInstance ByCurve(FamilySymbol fs, Curve c)
+        static DSFamilyInstance ByCurve(DSFamilySymbol fs, DSCurve c)
         {
             throw new NotImplementedException();
         }
 
-        static FamilyInstance ByCoords(FamilySymbol fs, double x, double y, double z)
+        static DSFamilyInstance ByCoords(DSFamilySymbol fs, double x, double y, double z)
         {
             throw new NotImplementedException();
         }
 
-        static FamilyInstance ByUVPtOnFace(FamilySymbol fs, Vector uv, DSFace f)
+        static DSFamilyInstance ByUVPtOnFace(DSFamilySymbol fs, Vector uv, DSFace f)
         {
             throw new NotImplementedException();
         }
 
-        static FamilyInstance ByPtAndLevel(Point p, Level l)
+        static DSFamilyInstance ByPtAndLevel(Point p, DSLevel l)
         {
             throw new NotImplementedException();
         }

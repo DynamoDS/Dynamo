@@ -5,16 +5,13 @@ using System.Text;
 
 namespace DSRevitNodes
 {
-
-    // Stub until we resolve how we'll convert between Revit and Proto curves
-
-    class Curve
+    class DSFamilySymbol
     {
-        public Autodesk.Revit.DB.Curve InternalCurve
+        public Autodesk.Revit.DB.FamilySymbol InternalFamilySymbol
         {
             get;
             private set;
         }
-    }
 
+    }
 }

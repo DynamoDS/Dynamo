@@ -66,31 +66,31 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractGeometry.cs" />
-    <Compile Include="Curve.cs" />
+    <Compile Include="DSCurve.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="DSFace.cs" />
     <Compile Include="DSAdaptiveComponent.cs" />
     <Compile Include="DSDividedPath.cs" />
     <Compile Include="DSDividedSurface.cs" />
-    <Compile Include="FamilySymbol.cs" />
-    <Compile Include="FreeForm.cs" />
-    <Compile Include="Material.cs" />
-    <Compile Include="ModelCurve.cs" />
-    <Compile Include="FamilyInstance.cs" />
-    <Compile Include="Floor.cs" />
-    <Compile Include="Grid.cs" />
-    <Compile Include="Level.cs" />
-    <Compile Include="Parameter.cs" />
+    <Compile Include="DSFamilySymbol.cs" />
+    <Compile Include="DSFreeForm.cs" />
+    <Compile Include="DSMaterial.cs" />
+    <Compile Include="DSModelCurve.cs" />
+    <Compile Include="DSFamilyInstance.cs" />
+    <Compile Include="DSFloor.cs" />
+    <Compile Include="DSGrid.cs" />
+    <Compile Include="DSLevel.cs" />
+    <Compile Include="DSParameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReferenceCurve.cs" />
-    <Compile Include="ReferencePlane.cs" />
+    <Compile Include="DSReferenceCurve.cs" />
+    <Compile Include="DSReferencePlane.cs" />
     <Compile Include="DSReferencePoint.cs" />
-    <Compile Include="Selection.cs" />
-    <Compile Include="Solid.cs" />
-    <Compile Include="SpatialField.cs" />
-    <Compile Include="StucturalFraming.cs" />
-    <Compile Include="View.cs" />
-    <Compile Include="Wall.cs" />
+    <Compile Include="DSSelection.cs" />
+    <Compile Include="DSSolid.cs" />
+    <Compile Include="DSSpatialField.cs" />
+    <Compile Include="DSStucturalFraming.cs" />
+    <Compile Include="DSView.cs" />
+    <Compile Include="DSWall.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DSNodeServices\DSNodeServices.csproj">

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace DSRevitNodes
 {
-    class SpatialField
+    class DSView
     {
     }
 }

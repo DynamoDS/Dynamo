@@ -4,9 +4,9 @@ using Autodesk.Revit.DB;
 
 namespace DSRevitNodes
 {
-    class FreeForm
+    class DSFreeForm
     {
-        static FreeForm BySolid(Autodesk.Revit.DB.Solid s)
+        static DSFreeForm BySolid(Autodesk.Revit.DB.Solid s)
         {
             throw new NotImplementedException();
         }

@@ -6,14 +6,14 @@ using Point = Autodesk.DesignScript.Geometry.Point;
 
 namespace DSRevitNodes
 {
-    class Wall
+    class DSWall
     {
-        static Wall ByStartEndPoints(Point start, Point end, Autodesk.Revit.DB.Level bottom, Autodesk.Revit.DB.Level top)
+        static DSWall ByStartEndPoints(Point start, Point end, Autodesk.Revit.DB.Level bottom, Autodesk.Revit.DB.Level top)
         {
             throw new NotImplementedException();
         }
 
-        static Wall ByCurve(Curve c, Autodesk.Revit.DB.Level bottom, Autodesk.Revit.DB.Level top)
+        static DSWall ByCurve(DSCurve c, Autodesk.Revit.DB.Level bottom, Autodesk.Revit.DB.Level top)
         {
             throw new NotImplementedException();
         }
