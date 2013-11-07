@@ -204,7 +204,10 @@ namespace Dynamo
             else
                 rd.Points.Add(pt);
 
-            rd.Text.Add(new BillboardTextItem{Text = tag, Position = pt});
+            if (node.DisplayLabels)
+            {
+                rd.Text.Add(new BillboardTextItem { Text = tag, Position = pt });
+            }
         }
 
         private void DrawCurve(NodeModel node, object obj, RenderDescription rd, Octree.OctreeSearch.Octree octree)
