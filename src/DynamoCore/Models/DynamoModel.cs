@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using System.Windows.Threading;
 using System.Xml;
 using Dynamo.Nodes;
+using Dynamo.Nodes.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.Selection;
@@ -391,15 +392,18 @@ namespace Dynamo.Models
 
         internal bool CanOpen(object parameters)
         {
-            if (string.IsNullOrEmpty(parameters.ToString()))
-                return false;
-            return true;
+            if (File.Exists(parameters.ToString()))
+                return true;
+            return false;
         }
 
         internal void PostUIActivation(object parameter)
         {
 
             DynamoLoader.LoadCustomNodes();
+
+            dynSettings.Controller.SearchViewModel.RemoveEmptyCategories();
+            dynSettings.Controller.SearchViewModel.SortCategoryChildren();
 
             DynamoLogger.Instance.Log("Welcome to Dynamo!");
 
@@ -1059,13 +1063,6 @@ namespace Dynamo.Models
                 createdModels.Add(CreateNode(newGuid, node.X, node.Y + 100, nodeName, dynEl));
             }
 
-            //process the command queue so we have 
-            //nodes to connect to
-            //DynamoCommands.ProcessCommandQueue();
-
-            //update the layout to ensure that the visuals
-            //are present in the tree to connect to
-            //dynSettings.Bench.UpdateLayout();
             OnRequestLayoutUpdate(this, EventArgs.Empty);
 
             foreach (ConnectorModel c in connectors)
@@ -1316,7 +1313,7 @@ namespace Dynamo.Models
             if (dynSettings.Controller.DSImportedFunctions.ContainsKey(name))
             {
                 var functionData  = dynSettings.Controller.DSImportedFunctions[name];
-                result = new DSFunction(functionData as DSFunctionItem);
+                result = new DSFunction(functionData as FunctionItem);
             }
             else if (dynSettings.Controller.BuiltInTypesByName.ContainsKey(name))
             {
@@ -1332,7 +1329,6 @@ namespace Dynamo.Models
                 TypeLoadData tld = dynSettings.Controller.BuiltInTypesByNickname[name];
                 try
                 {
-
                     ObjectHandle obj = Activator.CreateInstanceFrom(tld.Assembly.Location, tld.Type.FullName);
                     var newEl = (NodeModel)obj.Unwrap();
                     newEl.DisableInteraction();

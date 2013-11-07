@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -22,6 +23,8 @@ namespace Dynamo.Controls
         public delegate void SetToolTipDelegate(string message);
         public delegate void UpdateLayoutDelegate(FrameworkElement el);
 
+        private NodeViewModel viewModel;
+
         public dynNodeView TopControl
         {
             get { return topControl; }
@@ -32,7 +35,17 @@ namespace Dynamo.Controls
             get { return inputGrid; }
         }
 
-        public NodeViewModel ViewModel { get; set; }
+        public NodeViewModel ViewModel
+        {
+            get
+            {
+                return this.DataContext as NodeViewModel;
+            }
+            set
+            {
+                viewModel = value;
+            }
+        }
 
         #region constructors
 
@@ -46,31 +59,34 @@ namespace Dynamo.Controls
 
             InitializeComponent();
 
-            this.Loaded += dynNodeView_Loaded;
-            inputGrid.Loaded += inputGrid_Loaded;
-            this.LayoutUpdated += OnLayoutUpdated;
+            this.Loaded += new RoutedEventHandler(dynNodeView_Loaded);
+            inputGrid.Loaded += new RoutedEventHandler(inputGrid_Loaded);
 
+            this.SizeChanged += OnSizeChanged;
             
             Canvas.SetZIndex(this, 1);
         }
 
         #endregion
 
-        private void OnLayoutUpdated(object sender, EventArgs eventArgs)
+        /// <summary>
+        /// Called when the size of the node changes. Communicates changes down to the view model 
+        /// then to the model.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventArgs"></param>
+        private void OnSizeChanged(object sender, EventArgs eventArgs)
         {
             if (ViewModel != null)
             {
-                //Debug.WriteLine("Node layout updated.");
-                if (ViewModel.NodeLogic.Height != this.ActualHeight ||
-                    ViewModel.NodeLogic.Width != this.ActualWidth)
+                var size = new double[] { ActualWidth, ActualHeight };
+                if (ViewModel.SetModelSizeCommand.CanExecute(size))
                 {
-                    ViewModel.NodeLogic.Height = this.ActualHeight;
-                    ViewModel.NodeLogic.Width = this.ActualWidth;
+                    Debug.WriteLine(string.Format("Updating {2} node size {0}:{1}", size[0], size[1], ViewModel.NodeLogic.GetType().ToString()));
+                    ViewModel.SetModelSizeCommand.Execute(size);
                 }
             }
-
         }
-
 
         void dynNodeView_Loaded(object sender, RoutedEventArgs e)
         {
@@ -189,11 +205,6 @@ namespace Dynamo.Controls
             ViewModel.ValidateConnectionsCommand.Execute(null);
         }
 
-        public void CallUpdateLayout(FrameworkElement el)
-        {
-            el.UpdateLayout();
-        }
-
         private void topControl_Loaded(object sender, RoutedEventArgs e)
         {
 
@@ -221,13 +232,22 @@ namespace Dynamo.Controls
             if (ViewModel == null) return;
 
             dynSettings.ReturnFocusToSearch();
-            //dynSettings.Bench.mainGrid.Focus();
+
             var view = WPF.FindUpVisualTree<DynamoView>(this);
             view.mainGrid.Focus();
 
             Guid nodeGuid = this.ViewModel.NodeModel.GUID;
             dynSettings.Controller.DynamoViewModel.ExecuteCommand(
                 new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers));
+
+            if (e.ClickCount == 2)
+            {
+                if (ViewModel.GotoWorkspaceCommand.CanExecute(null))
+                {
+                    ViewModel.GotoWorkspaceCommand.Execute(null);
+                }
+                e.Handled = true;
+            }
         }
 
         private void topControl_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
@@ -236,23 +256,16 @@ namespace Dynamo.Controls
             e.Handled = true;
         }
 
-        //private void dynNodeView_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
-        //{
-        //    var viewModel = DataContext as dynNodeViewModel;
-        //    if (viewModel != null)
-        //        viewModel.ViewCustomNodeWorkspaceCommand.Execute();
-        //}
-
         private void NickNameBlock_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             ViewModel.CollapseTooltipCommand.Execute(null);
-            if (e.ClickCount > 1)
+            if (e.ClickCount == 2)
             {
+                Debug.WriteLine("Nickname double clicked!");
                 if (this.ViewModel != null && this.ViewModel.RenameCommand.CanExecute(null))
                 {
                     this.ViewModel.RenameCommand.Execute(null);
                 }
-
                 e.Handled = true;
             }
         }
@@ -272,7 +285,10 @@ namespace Dynamo.Controls
 
         private void NickNameBlock_OnMouseLeave(object sender, MouseEventArgs e)
         {
-            ViewModel.FadeOutTooltipCommand.Execute(null);
+            if (ViewModel != null)
+                ViewModel.FadeOutTooltipCommand.Execute(null);
+            else if (dynSettings.Controller != null)
+                dynSettings.Controller.DynamoViewModel.HideInfoBubble(null);
         }
 
         private void InputPort_OnMouseEnter(object sender, MouseEventArgs e)
@@ -293,7 +309,10 @@ namespace Dynamo.Controls
 
         private void InputPort_OnMouseLeave(object sender, MouseEventArgs e)
         {
-            ViewModel.FadeOutTooltipCommand.Execute(null);
+            if (ViewModel != null)
+                ViewModel.FadeOutTooltipCommand.Execute(null);
+            else if (dynSettings.Controller != null)
+                dynSettings.Controller.DynamoViewModel.HideInfoBubble(null);
         }
 
         private void InputPort_OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -319,7 +338,10 @@ namespace Dynamo.Controls
 
         private void OutputPort_OnMouseLeave(object sender, MouseEventArgs e)
         {
-            ViewModel.FadeOutTooltipCommand.Execute(null);
+            if (ViewModel != null)
+                ViewModel.FadeOutTooltipCommand.Execute(null);
+            else if (dynSettings.Controller != null)
+                dynSettings.Controller.DynamoViewModel.HideInfoBubble(null);
         }
 
         private void OutputPort_OnPreviewMouseDown(object sender, MouseButtonEventArgs e)

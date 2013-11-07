@@ -1,9 +1,11 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Windows.Threading;
 using Dynamo.Controls;
 using Dynamo.Models;
+using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using NUnit.Framework;
@@ -25,6 +27,7 @@ namespace Dynamo.Tests.UI
             Ui = new DynamoView();
             Ui.DataContext = Controller.DynamoViewModel;
             Vm = Controller.DynamoViewModel;
+            Model = Controller.DynamoModel;
             Controller.UIDispatcher = Ui.Dispatcher;
             Ui.Show();
 
@@ -579,9 +582,9 @@ namespace Dynamo.Tests.UI
         [Category("DynamoUI")]
         public void UpdateInfoBubble_NodeTooltip()
         {
-            InfoBubbleViewModel infoBubble = new InfoBubbleViewModel();
+            var infoBubble = new InfoBubbleViewModel();
             string content = "This is the test infoBubble";
-            InfoBubbleDataPacket inputData_NodeTooltip = new InfoBubbleDataPacket(InfoBubbleViewModel.Style.NodeTooltip,
+            var inputData_NodeTooltip = new InfoBubbleDataPacket(InfoBubbleViewModel.Style.NodeTooltip,
                 new Point(0, 0), new Point(0, 0), content, InfoBubbleViewModel.Direction.Right);
 
             if (infoBubble.UpdateContentCommand.CanExecute(null))
@@ -621,6 +624,46 @@ namespace Dynamo.Tests.UI
         }
 
 	    #endregion
-        
+
+        #region Notes
+
+        [Test]
+        [Category("DynamoUI")]
+        public void CanCreateANote()
+        {
+            Vm.AddNoteCommand.Execute(null);
+            var note = Model.CurrentWorkspace.Notes.FirstOrDefault();
+            Assert.IsNotNull(note);
+            
+            //verify the note was created
+            Assert.AreEqual(1, Model.CurrentWorkspace.Notes.Count);
+
+            Vm.CurrentSpaceViewModel.Model.HasUnsavedChanges = false;
+        }
+
+        [Test]
+        [Category("DynamoUI")]
+        public void CanDeleteANote()
+        {
+            Vm.AddNoteCommand.Execute(null);
+            var note = Model.CurrentWorkspace.Notes.FirstOrDefault();
+            Assert.IsNotNull(note);
+
+            //verify the note was created
+            Assert.AreEqual(1, Model.CurrentWorkspace.Notes.Count);
+
+            //select the note for deletion
+            DynamoSelection.Instance.Selection.Add(note);
+            Assert.AreEqual(1, DynamoSelection.Instance.Selection.Count);
+
+            //delete the note
+            Vm.DeleteCommand.Execute(null);
+            Assert.AreEqual(0,Model.CurrentWorkspace.Notes.Count);
+
+            Vm.CurrentSpaceViewModel.Model.HasUnsavedChanges = false;
+        }
+
+
+        #endregion
     }
 }

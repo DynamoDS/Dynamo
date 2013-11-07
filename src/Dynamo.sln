@@ -56,16 +56,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoTestFramework", "Dyna
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSNodeServices", "DSNodeServices\DSNodeServices.csproj", "{EF879A10-041D-4C68-83E7-3192685F1BAE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RevitPersistenceManager", "RevitPersistenceManager\RevitPersistenceManager.csproj", "{9D0B8EC8-DCDE-4FFA-BCF3-8592F835D316}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSNodeServicesTest", "DSNodeServicesTest\DSNodeServicesTest.csproj", "{1B8062D6-941C-4FF5-96FF-F1D6E0D92588}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSRevitNodes", "DSNodes\DSRevitNodes.csproj", "{0BC2A611-BD0E-4FCC-A1DE-81F14ED369B2}"
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5A0047AF-ED33-47DD-9257-FE458ED3337D}"
 	ProjectSection(SolutionItems) = preProject
 		Config.xml = Config.xml
 		HtmlConfig.xml = HtmlConfig.xml
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSRevitNodes", "DSRevitNodes\DSRevitNodes.csproj", "{0BC2A611-BD0E-4FCC-A1DE-81F14ED369B2}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
@@ -338,16 +337,6 @@ Global
 		{EF879A10-041D-4C68-83E7-3192685F1BAE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{EF879A10-041D-4C68-83E7-3192685F1BAE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{EF879A10-041D-4C68-83E7-3192685F1BAE}.Release|x86.ActiveCfg = Release|Any CPU
-		{9D0B8EC8-DCDE-4FFA-BCF3-8592F835D316}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9D0B8EC8-DCDE-4FFA-BCF3-8592F835D316}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9D0B8EC8-DCDE-4FFA-BCF3-8592F835D316}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{9D0B8EC8-DCDE-4FFA-BCF3-8592F835D316}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{9D0B8EC8-DCDE-4FFA-BCF3-8592F835D316}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{9D0B8EC8-DCDE-4FFA-BCF3-8592F835D316}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9D0B8EC8-DCDE-4FFA-BCF3-8592F835D316}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9D0B8EC8-DCDE-4FFA-BCF3-8592F835D316}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{9D0B8EC8-DCDE-4FFA-BCF3-8592F835D316}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{9D0B8EC8-DCDE-4FFA-BCF3-8592F835D316}.Release|x86.ActiveCfg = Release|Any CPU
 		{1B8062D6-941C-4FF5-96FF-F1D6E0D92588}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1B8062D6-941C-4FF5-96FF-F1D6E0D92588}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B8062D6-941C-4FF5-96FF-F1D6E0D92588}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU

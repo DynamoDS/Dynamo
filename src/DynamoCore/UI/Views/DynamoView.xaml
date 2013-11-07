@@ -104,7 +104,7 @@
                                 Modifiers="Control"
                                 Command="{Binding Path=DataContext.HomeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
         <KeyBinding Key="Up"
-                                Modifiers="Control+Alt"
+                                Modifiers="Control+Shift"
                                 Command="{Binding Path=DataContext.ToggleConsoleShowingCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
         <KeyBinding Key="F4"
                 Modifiers="Alt"
@@ -138,9 +138,6 @@
         <KeyBinding Key="D0"
                     Modifiers="Ctrl"
                     Command="{Binding Path=DataContext.FitViewCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
-        <KeyBinding Key="Escape"
-                    Command="{Binding Path=DataContext.EscapeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
-
     </Window.InputBindings>
 
     <Grid Name="mainGrid" FocusManager.IsFocusScope="True" PreviewMouseDown="Window_PreviewMouseDown" PreviewMouseUp="Window_PreviewMouseUp">
@@ -346,7 +343,8 @@
                 </Canvas.Background>
             </Canvas>
             <controls:Watch3DView Margin="0,20,0,0"
-                                          Visibility="{Binding FullscreenWatchShowing, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                          Visibility="{Binding FullscreenWatchShowing, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                            IsHitTestVisible="{Binding CanNavigateBackground}">
 
             </controls:Watch3DView>
         </Grid>
@@ -362,7 +360,7 @@
                 Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="3"
                 SizeChanged="Workspace_SizeChanged">
 
-            <Grid>
+            <Grid AllowDrop="True" Drop="DynamoView_OnDrop">
                 <TabControl ItemsSource="{Binding Path=Workspaces, NotifyOnTargetUpdated=True}"
                             Name="WorkspaceTabs"
                             SelectedIndex="{Binding CurrentWorkspaceIndex}"
@@ -987,14 +985,6 @@
                     Command="{Binding RunExpressionCommand}"
                     CommandParameter="{Binding Path=RunInDebug}"
                     IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" Focusable="False"/>
-
-                <Button Name="RunDSButton" Width="100" Content="Run DS" 
- Margin="5" Style="{DynamicResource ResourceKey=STextButton}" 
-                    Click="RunDSButton_OnClick"
-                    Command="{Binding RunDSExpressionCommand}"
-                    CommandParameter="{Binding Path=RunInDebug}"
-                    IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" Focusable="False"/>
-
 
                 <Button Name="cancelButton" Width="100" Content="Cancel" Focusable="False" Style="{DynamicResource ResourceKey=STextButton}" 
 

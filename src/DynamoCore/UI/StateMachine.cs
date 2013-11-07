@@ -1,23 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Shapes;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
-using Dynamo.Views;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.ViewModels
 {
     partial class WorkspaceViewModel
     {
+        #region events
+        public event EventHandler DragSelectionStarted;
+        public event EventHandler DragSelectionEnded;
+        #endregion
+
         #region State Machine Related Methods/Data Members
 
         private StateMachine stateMachine = null;
@@ -54,6 +54,8 @@ namespace Dynamo.ViewModels
         internal void CancelActiveState()
         {
             stateMachine.CancelActiveState();
+
+            OnDragSelectionEnded(this, EventArgs.Empty);
         }
 
         internal void BeginDragSelection(Point mouseCursor)
@@ -233,6 +235,20 @@ namespace Dynamo.ViewModels
             controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
         }
 
+        private void OnDragSelectionStarted(object sender, EventArgs e)
+        {
+            Debug.WriteLine("Drag started : Visualization paused.");
+            if (DragSelectionStarted != null)
+                DragSelectionStarted(sender, e);
+        }
+
+        private void OnDragSelectionEnded(object sender, EventArgs e)
+        {
+            Debug.WriteLine("Drag ended : Visualization unpaused.");
+            if (DragSelectionEnded != null)
+                DragSelectionEnded(sender, e);
+        }
+
         #endregion
 
         /// <summary>
@@ -360,6 +376,8 @@ namespace Dynamo.ViewModels
                     // then the state machine should initiate a drag operation.
                     if (null != GetSelectableFromPoint(mouseDownPos))
                         InitiateDragSequence();
+                    else if (e.ClickCount == 2)
+                        CreateCodeBlockNode();
                     else
                         InitiateWindowSelectionSequence();
 
@@ -370,6 +388,29 @@ namespace Dynamo.ViewModels
                 return eventHandled;
             }
 
+            private void CreateCodeBlockNode()
+            {
+                // create node
+                var guid = Guid.NewGuid();
+                dynSettings.Controller.DynamoViewModel.ExecuteCommand(
+                  new DynCmd.CreateNodeCommand(guid, "Code Block", 0, 0, true, true));
+
+                // select node
+                var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
+                if (placedNode != null)
+                {
+                    DynamoSelection.Instance.ClearSelection();
+                    DynamoSelection.Instance.Selection.Add(placedNode);
+                }
+
+                //correct node position
+                if (placedNode != null)
+                {
+                    placedNode.X = (int)mouseDownPos.X - 92;
+                    placedNode.Y = (int)mouseDownPos.Y - 31;
+                }
+            }
+
             internal bool HandleMouseRelease(object sender, MouseButtonEventArgs e)
             {
                 if (e.ChangedButton != MouseButton.Left)
@@ -377,13 +418,14 @@ namespace Dynamo.ViewModels
 
                 if (this.currentState == State.WindowSelection)
                 {
-                    
                     SelectionBoxUpdateArgs args = null;
                     args = new SelectionBoxUpdateArgs(Visibility.Collapsed);
                     this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
                     this.currentState = State.None;
 
                     this.owningWorkspace.RequestChangeCursorUsual(this, e);
+
+                    this.owningWorkspace.OnDragSelectionEnded(this, EventArgs.Empty);
 
                     return true; // Mouse event handled.
                 }
@@ -565,6 +607,8 @@ namespace Dynamo.ViewModels
                 this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
                 this.currentState = State.WindowSelection;
                 this.owningWorkspace.RequestChangeCursorDragging(this, args);
+
+                this.owningWorkspace.OnDragSelectionStarted(this, EventArgs.Empty);
             }
 
             #endregion

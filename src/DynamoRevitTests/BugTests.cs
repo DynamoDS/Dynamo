@@ -12,7 +12,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\MAGN_66.dyn");
+            string samplePath = Path.Combine(_testPath, @".\\Bugs\MAGN_66.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);

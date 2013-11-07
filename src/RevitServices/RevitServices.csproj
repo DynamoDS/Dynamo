@@ -66,11 +66,19 @@ limitations under the License.
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Elements\ElementUtils.cs" />
     <Compile Include="Elements\ModelUpdater.cs" />
-    <Compile Include="Elements\ElementValidity.cs" />
+    <Compile Include="Persistence\Documentmanager.cs" />
+    <Compile Include="Persistence\ElementBinder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Threading\IdlePromise.cs" />
     <Compile Include="Transactions\TransactionManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DSNodeServices\DSNodeServices.csproj">
+      <Project>{EF879A10-041D-4C68-83E7-3192685F1BAE}</Project>
+      <Name>DSNodeServices</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

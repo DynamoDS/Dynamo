@@ -4,16 +4,174 @@ using Autodesk.Revit.DB;
 namespace RevitServices.Transactions
 {
     /// <summary>
+    /// Transaction helper for nodes
+    /// </summary>
+    public class TransactionManager : ITransactionStrategy
+    {
+        private static TransactionManager manager;
+        private static Object mutex = new Object();
+        internal ITransactionStrategy strategy;               
+
+        /// <summary>
+        /// Setup a manager with a default strategy
+        /// </summary>
+        public static void SetupManager()
+        {
+            manager = new TransactionManager();
+        }
+
+        /// <summary>
+        /// Setup a manager with a specified strategy
+        /// </summary>
+        public static void SetupManager(ITransactionStrategy strategy)
+        {
+            manager = new TransactionManager(strategy);
+        }
+
+
+        /// <summary>
+        /// Get the current transaction manager
+        /// </summary>
+        /// <returns></returns>
+        public static TransactionManager GetInstance()
+        {
+            if (manager == null)
+            {
+                throw new InvalidOperationException("TransactionManager must be setup before use. Call SetupManager with a choice of strategy");
+            }
+
+
+            return manager;
+        }
+
+
+        /// <summary>
+        /// Construct a new manager with a default transaction strategy
+        /// </summary>
+        private TransactionManager()
+        {
+            this.strategy = new DebugTransactionStrategy();
+        }
+
+
+        /// <summary>
+        /// Construct a new manager with a given strategy
+        /// </summary>
+        /// <param name="strategy"></param>
+        private TransactionManager(ITransactionStrategy strategy)
+        {
+            if (strategy == null)
+                throw new ArgumentNullException("strategy", 
+                    "Strategy must not be null, to use a default call the overload with no arguments");
+            this.strategy = strategy;
+        }
+
+
+
+
+        /// <summary>
+        /// Ensure that there is a valid transaction active
+        /// </summary>
+        public void EnsureInTransaction(Document document)
+        {
+            //Hand off the behaviour to the strategy
+            strategy.EnsureInTransaction(document);
+        }
+
+        /// <summary>
+        /// Notify that the transaction system that the operations
+        /// requiring a transaction are complete
+        /// </summary>
+        public void TransactionTaskDone()
+        {
+            //Hand off the behaviour to the strategy
+            strategy.TransactionTaskDone();
+        }
+
+
+        /// <summary>
+        /// Require that the current transaction is recycled
+        /// </summary>
+        public void ForceCloseTransaction()
+        {
+            //Hand off the behaviour to the strategy
+            strategy.ForceCloseTransaction();
+            
+        }
+
+
+    }
+
+
+    public interface ITransactionStrategy
+    {
+        /// <summary>
+        /// Ensure that there is a valid transaction active
+        /// </summary>
+        void EnsureInTransaction(Document document);
+
+        /// <summary>
+        /// Notify that the transaction system that the operations
+        /// requiring a transaction are complete
+        /// </summary>
+        void TransactionTaskDone();
+
+        /// <summary>
+        /// Require that the current transaction is recycled
+        /// </summary>
+        void ForceCloseTransaction();
+    }
+
+
+    /// <summary>
+    /// Basic handling transaction handling strategy that opens
+    /// a new transaction for every operation
+    /// </summary>
+    public class DebugTransactionStrategy : ITransactionStrategy
+    {
+        private readonly TransactionWrapper wrapper = new TransactionWrapper();
+        private TransactionWrapper.TransactionHandle transaction = null;
+
+
+        public void EnsureInTransaction(Document document)
+        {
+            if (transaction == null)
+                transaction = wrapper.StartTransaction(document);
+        }
+
+        public void TransactionTaskDone()
+        {
+            if (transaction != null)
+            {
+                transaction.CommitTransaction();
+                transaction = null;
+            }
+        }
+
+        public void ForceCloseTransaction()
+        {
+            if (transaction != null)
+            {
+                transaction.CommitTransaction();
+                transaction = null;
+            }
+        }
+    }
+
+
+
+
+    /// <summary>
     /// Wraps Revit Transaction methods and provides events for transaction initialization
     /// and completion.
     /// </summary>
-    public class TransactionManager
+    public class TransactionWrapper
     {
         private Transaction Transaction { get; set; }
         private readonly WarningHandler _handler;
         private readonly TransactionHandle _handle;
 
-        public TransactionManager()
+        public TransactionWrapper()
         {
             _handler = new WarningHandler(this);
             _handle = new TransactionHandle(this);
@@ -102,9 +260,9 @@ namespace RevitServices.Transactions
         #region Failures Preprocessor
         private class WarningHandler : IFailuresPreprocessor
         {
-            private readonly TransactionManager _tm;
+            private readonly TransactionWrapper _tm;
 
-            internal WarningHandler(TransactionManager transactionManager)
+            internal WarningHandler(TransactionWrapper transactionManager)
             {
                 _tm = transactionManager;
             }
@@ -120,9 +278,9 @@ namespace RevitServices.Transactions
 
         public class TransactionHandle
         {
-            private readonly TransactionManager _manager;
+            private readonly TransactionWrapper _manager;
 
-            internal TransactionHandle(TransactionManager t)
+            internal TransactionHandle(TransactionWrapper t)
             {
                 _manager = t;
             }

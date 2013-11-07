@@ -16,7 +16,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\DividedSurface.dyn");
+            string samplePath = Path.Combine(_testPath, @".\DividedSurface\DividedSurface.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             //var shellPath = Path.Combine(_testPath, "shell.rfa");

@@ -96,11 +96,6 @@ namespace Dynamo.Views
             zoomAndPanControl.Focusable = false;
             outerCanvas.Children.Add(zoomAndPanControl);
 
-            // Add EndlessGrid
-            endlessGrid = new EndlessGrid(outerCanvas);
-            selectionCanvas.Children.Add(endlessGrid);
-            zoomBorder.EndlessGrid = endlessGrid; // Register with ZoomBorder
-
             // Binding for grid lines HitTest and Visibility
             var binding = new Binding()
             {
@@ -109,15 +104,50 @@ namespace Dynamo.Views
                 Mode = BindingMode.OneWay,
             };
             binding.RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(TabControl), 1);
-            endlessGrid.SetBinding(UIElement.VisibilityProperty, binding);
+            //endlessGrid.SetBinding(UIElement.VisibilityProperty, binding);
+
+            // Add EndlessGrid
+            endlessGrid = new EndlessGrid(outerCanvas, binding);
+            selectionCanvas.Children.Add(endlessGrid);
+            zoomBorder.EndlessGrid = endlessGrid; // Register with ZoomBorder
 
             //============
             //LoadCursorState();
             //============
 
-
             Debug.WriteLine("Workspace loaded.");
-            DynamoSelection.Instance.Selection.CollectionChanged += Selection_CollectionChanged;
+            DynamoSelection.Instance.Selection.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
+
+            ViewModel.DragSelectionStarted += ViewModel_DragSelectionStarted;
+            ViewModel.DragSelectionEnded += ViewModel_DragSelectionEnded;
+        }
+
+        /// <summary>
+        /// Handler for the state machine's drag start event.
+        /// Instructs the visualization manager to bypass updating the visualization.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void ViewModel_DragSelectionEnded(object sender, EventArgs e)
+        {
+            if (ViewModel.PauseVisualizationManagerUpdatesCommand.CanExecute(false))
+            {
+                ViewModel.PauseVisualizationManagerUpdatesCommand.Execute(false);
+            }
+        }
+
+        /// <summary>
+        /// Handler for the state machine's drag end event.
+        /// Instructs the visualization manager to update visualizations and begin tracking selections again.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void ViewModel_DragSelectionStarted(object sender, EventArgs e)
+        {
+            if (ViewModel.PauseVisualizationManagerUpdatesCommand.CanExecute(true))
+            {
+                ViewModel.PauseVisualizationManagerUpdatesCommand.Execute(true);
+            }
         }
 
         private void LoadCursorState()

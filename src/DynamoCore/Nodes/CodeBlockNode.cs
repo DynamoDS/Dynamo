@@ -11,18 +11,18 @@ using Dynamo.Utilities;
 namespace Dynamo.Nodes
 {
     [NodeName("Code Block")]
-    [NodeCategory(BuiltinNodeCategories.CORE_LISTS)]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Allows for code to be written")] //<--Change the descp :|
     public partial class CodeBlockNodeModel : NodeModel
     {
-        private string code = "Your Code Goes Here";
+        private string code = "";
+        private string previewVariable = null;
         private List<Statement> codeStatements = new List<Statement>();
+        private bool shouldFocus = true;
 
         #region Public Methods
         public CodeBlockNodeModel()
         {
-            codeStatements = new List<Statement>();
-            code = "Your Code Goes Here";
             this.ArgumentLacing = LacingStrategy.Disabled;
         }
 
@@ -79,6 +79,7 @@ namespace Dynamo.Nodes
                         RaisePropertyChanged("Code");
                         RequiresRecalc = true;
                         EnableReporting();
+                        this.ReportPosition();
                         if (WorkSpace != null)
                             WorkSpace.Modified();
                     }
@@ -106,6 +107,7 @@ namespace Dynamo.Nodes
             base.SerializeCore(element, context);
             XmlElementHelper helper = new XmlElementHelper(element);
             helper.SetAttribute("CodeText", code);
+            helper.SetAttribute("ShouldFocus", shouldFocus);
         }
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
@@ -115,6 +117,7 @@ namespace Dynamo.Nodes
             {
                 XmlElementHelper helper = new XmlElementHelper(element as XmlElement);
                 Code = helper.ReadString("CodeText");
+                shouldFocus = helper.ReadBoolean("ShouldFocus");
             }
         }
 
@@ -134,6 +137,14 @@ namespace Dynamo.Nodes
             GraphToDSCompiler.GraphUtilities.Parse(code, out resultNodes, out errors, out  warnings, unboundIdentifiers);
             BinaryExpressionNode indexedStatement = resultNodes[index] as BinaryExpressionNode;
             return indexedStatement.LeftNode as AssociativeNode;
+        }
+
+        public override string VariableToPreview
+        {
+            get
+            {
+                return previewVariable;
+            }
         }
         #endregion
 
@@ -168,6 +179,16 @@ namespace Dynamo.Nodes
                         tempStatement = Statement.CreateInstance(node, this.GUID);
                     }
                     codeStatements.Add(tempStatement);
+
+                    var binaryStatement = node as BinaryExpressionNode;
+                    if (binaryStatement != null && binaryStatement.Optr == ProtoCore.DSASM.Operator.assign)
+                    {
+                        var lhsIdent = binaryStatement.LeftNode as IdentifierNode;
+                        if (lhsIdent != null)
+                        {
+                            previewVariable = lhsIdent.Name;
+                        }
+                    }
                 }
             }
             else

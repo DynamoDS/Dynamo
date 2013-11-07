@@ -19,15 +19,16 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Greg;
 using ProtoScript.Runners;
-using RevitPersistenceManager;
 using RevitServices;
 using RevitServices.Elements;
+using RevitServices.Persistence;
 using RevitServices.Threading;
 using RevitServices.Transactions;
 using ChangeType = RevitServices.Elements.ChangeType;
 using CurveLoop = Autodesk.Revit.DB.CurveLoop;
 using Transaction = Dynamo.Nodes.Transaction;
 using Value = Dynamo.FScheme.Value;
+using RevThread = RevitServices.Threading;
 
 namespace Dynamo
 {
@@ -91,7 +92,7 @@ namespace Dynamo
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.FindNodesFromElements =
                 FindNodesFromSelection;
 
-            TransactionManager = new TransactionManager();
+            TransactionManager = new TransactionWrapper();
             TransactionManager.TransactionStarted += TransactionManager_TransactionCommitted;
             TransactionManager.TransactionCancelled += TransactionManager_TransactionCancelled;
             TransactionManager.FailuresRaised += TransactionManager_FailuresRaised;
@@ -99,7 +100,7 @@ namespace Dynamo
 
         private void CleanupVisualizations(object sender, EventArgs e)
         {
-            IdlePromise.ExecuteOnIdleAsync(
+            RevThread.IdlePromise.ExecuteOnIdleAsync(
                 () =>
                 {
                     dynRevitSettings.Controller.InitTransaction();
@@ -226,7 +227,7 @@ namespace Dynamo
 
             var gStyle = styles.ToElements().FirstOrDefault(x => x.Name == "Dynamo");
 
-            IdlePromise.ExecuteOnIdleAsync(
+            RevThread.IdlePromise.ExecuteOnIdleAsync(
                 () =>
                 {
                     dynRevitSettings.Controller.InitTransaction();
@@ -272,7 +273,7 @@ namespace Dynamo
         }
 
         /// <summary>
-        /// Delay loading of the SSONet.dll, which is used by the package manager for 
+        /// Delay loading of the SSONet.dll, which is used by the package manager to
         /// get authentication information.  Internally uses Assembly.LoadFrom so the DLL
         /// will be loaded into the Load From context or extracted from the Load context
         /// if already present there.
@@ -368,7 +369,9 @@ namespace Dynamo
         /// </summary>
         private void ResetForNewDocument()
         {
-            dynSettings.Controller.DynamoModel.Nodes.ToList().ForEach(x=>x.ResetOldValue());
+            if(dynSettings.Controller != null)
+                dynSettings.Controller.DynamoModel.Nodes.ToList().ForEach(x=>x.ResetOldValue());
+
             VisualizationManager.ClearVisualizations();
 
             OnRevitDocumentChanged();
@@ -417,7 +420,7 @@ namespace Dynamo
                     pyBindings.GetType()
                               .InvokeMember(
                                   "Add", BindingFlags.InvokeMethod, null, pyBindings,
-                                  new[] { new KeyValuePair<string, dynamic>(name, boundObject) as object });
+                                  new[] { name, boundObject });
 
                 addToBindings("DynLog", new LogDelegate(DynamoLogger.Instance.Log)); //Logging
 
@@ -523,7 +526,7 @@ namespace Dynamo
         {
             return InIdleThread
                 ? _oldPyEval(dirty, script, bindings)
-                : IdlePromise<Value>.ExecuteOnIdle(() => _oldPyEval(dirty, script, bindings));
+                : RevThread.IdlePromise<Value>.ExecuteOnIdle(() => _oldPyEval(dirty, script, bindings));
         }
 
         #endregion
@@ -603,9 +606,9 @@ namespace Dynamo
 
         #region Revit Transaction Management
 
-        private TransactionManager.TransactionHandle _transaction;
+        private TransactionWrapper.TransactionHandle _transaction;
 
-        public TransactionManager TransactionManager { get; private set; }
+        public TransactionWrapper TransactionManager { get; private set; }
 
         private void TransactionManager_TransactionCancelled()
         {
@@ -696,7 +699,7 @@ namespace Dynamo
             //from the idle thread. Otherwise, just run it in this thread.
             if (dynSettings.Controller.DynamoViewModel.RunInDebug || !InIdleThread && !Testing)
             {
-                IdlePromise.ExecuteOnIdleSync(cleanup);
+                RevThread.IdlePromise.ExecuteOnIdleSync(cleanup);
             }
             else
                 cleanup();
@@ -705,7 +708,7 @@ namespace Dynamo
 
         public override void ShutDown()
         {
-            IdlePromise.ExecuteOnShutdown(
+            RevThread.IdlePromise.ExecuteOnShutdown(
                 delegate
                 {
                     var transaction = new Autodesk.Revit.DB.Transaction(dynRevitSettings.Doc.Document, "Dynamo Script");
@@ -726,31 +729,33 @@ namespace Dynamo
             RevertPythonBindings();
         }
 
-        protected override void RunDS()
+        protected override void Run(List<NodeModel> topElements, GraphSyncData graphSyncData)
         {
-            DocumentManager.CurrentDoc = dynRevitSettings.Doc.Document;
+            DocumentManager.GetInstance().CurrentDBDocument = dynRevitSettings.Doc.Document;
+            if (!DynamoViewModel.RunInDebug)
+            {
+                // As we use a generic function node to represent all functions,
+                // we don't know if a node has something to do with Revit or 
+                // not, neither we know that the re-execution of a dirty node
+                // will trigger the update for a Revit related node. Now just
+                // run the execution in the idle thread until we find out a 
+                // way to control the execution.
+                TransMode = TransactionMode.Automatic; //Automatic transaction control
+                Debug.WriteLine("Adding a run to the idle stack.");
+                InIdleThread = true; //Now in the idle thread.
+                RevThread.IdlePromise.ExecuteOnIdleSync(() => base.Run(topElements, graphSyncData));
+            }
+            else
+            {
+                TransMode = TransactionMode.Debug; //Debug transaction control
+                InIdleThread = true; //Everything will be evaluated in the idle thread.
 
+                DynamoLogger.Instance.Log("Running expression in debug.");
 
-            //This is prototype grade only
-            ProtoRunner runner = new ProtoRunner();
-            
-            string demoScript = 
-                "import(\"DSRevitNodes.dll\");" +
-                "y = 40..50..2;" +
-                "z = 0..10..5;" +
-                "pt = Point.ByCoordinates(10, y<1>, z<2>);" +
-                "pt2 = Point.ByCoordinates(10, 10, 10);";
-
-
-
-            //IdlePromise.ExecuteOnIdleAsync(() => DSRevitNodes.Point.ByCoordinates(10, 10, 10));
-            IdlePromise.ExecuteOnIdleAsync(() =>
-                {
-                    ProtoRunner.ProtoVMState state = runner.PreStart(demoScript);
-                    runner.RunToNextBreakpoint(state);
-                });
+                //Execute the Run Delegate.
+                base.Run(topElements, graphSyncData);
+            }
         }
-
 
         protected override void Run(List<NodeModel> topElements, FScheme.Expression runningExpression)
         {
@@ -785,7 +790,7 @@ namespace Dynamo
 
                     Debug.WriteLine("Adding a run to the idle stack.");
                     InIdleThread = true; //Now in the idle thread.
-                    IdlePromise.ExecuteOnIdleSync(() => base.Run(topElements, runningExpression)); //Execute the Run Delegate in the Idle thread.
+                    RevThread.IdlePromise.ExecuteOnIdleSync(() => base.Run(topElements, runningExpression)); //Execute the Run Delegate in the Idle thread.
 
                 }
             }

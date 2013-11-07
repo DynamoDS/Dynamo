@@ -198,6 +198,13 @@ namespace Dynamo.ViewModels
         /// </summary>
         private List<BrowserItem> _visibleSearchResults = new List<BrowserItem>();
 
+        private bool searchScrollBarVisibility = true;
+        public bool SearchScrollBarVisibility
+        {
+            get { return searchScrollBarVisibility; }
+            set { searchScrollBarVisibility = value; RaisePropertyChanged("SearchScrollBarVisibility"); }
+        }
+
         #endregion
 
         #region events
@@ -231,26 +238,29 @@ namespace Dynamo.ViewModels
             MaxNumSearchResults = 20;
             Visible = false;
             _SearchText = "";
-            IncludeRevitAPIElements = false; // revit api
-
-            //Regions = new ObservableDictionary<string, RegionBase<object>>();
-            ////Regions.Add("Include Nodes from Package Manager", DynamoCommands.PackageManagerRegionCommand );
-            //var region = new RevitAPIRegion<object>(RevitAPIRegionExecute, RevitAPIRegionCanExecute);
-            //region.RaiseCanExecuteChanged();
-            //Regions.Add("Include Experimental Revit API Nodes", new RevitAPIRegion<object>(RevitAPIRegionExecute, RevitAPIRegionCanExecute));
+            IncludeRevitAPIElements = true; // revit api
 
             _topResult = this.AddRootCategory("Top Result");
             this.AddRootCategory(BuiltinNodeCategories.CORE);
             this.AddRootCategory(BuiltinNodeCategories.LOGIC);
-            this.AddRootCategory(BuiltinNodeCategories.CREATEGEOMETRY);
-            this.AddRootCategory(BuiltinNodeCategories.MODIFYGEOMETRY);
+            this.AddRootCategory(BuiltinNodeCategories.GEOMETRY);
             this.AddRootCategory(BuiltinNodeCategories.REVIT);
-            this.AddRootCategory(BuiltinNodeCategories.IO);
-            this.AddRootCategory(BuiltinNodeCategories.SCRIPTING);
             this.AddRootCategory(BuiltinNodeCategories.ANALYZE);
+            this.AddRootCategory(BuiltinNodeCategories.IO);
+            
         }
 
         private const char CATEGORY_DELIMITER = '.';
+
+        public void RemoveEmptyCategories()
+        {
+            this.BrowserRootCategories = new ObservableCollection<BrowserRootElement>(BrowserRootCategories.Where(x => x.Items.Any() || x.Name == "Top Result"));
+        }
+
+        public void SortCategoryChildren()
+        {
+            dynSettings.Controller.SearchViewModel.BrowserRootCategories.ToList().ForEach(x => x.RecursivelySort());
+        }
 
         public void RemoveEmptyRootCategory(string categoryName)
         {
@@ -388,6 +398,10 @@ namespace Dynamo.ViewModels
         /// <returns>The newly created item</returns>
         public BrowserItem AddCategory(string categoryName)
         {
+            if (string.IsNullOrEmpty(categoryName))
+            {
+                return this.TryAddRootCategory("Uncategorized");
+            }
 
             if ( ContainsCategory(categoryName) )
             {
@@ -406,6 +420,11 @@ namespace Dynamo.ViewModels
             if (splitCat.Count == 1)
             {
                 return this.TryAddRootCategory(categoryName);
+            }
+
+            if (splitCat.Count == 0)
+            {
+                return null;
             }
 
             // attempt to add root category
@@ -781,7 +800,7 @@ namespace Dynamo.ViewModels
         ///     Adds a DesignScript function
         /// </summary>
         /// <param name="funcItem"></param>
-        public void Add(DSFunctionItem funcItem)
+        public void Add(FunctionItem funcItem)
         {
             string name = funcItem.DisplayName;
             string cat = funcItem.Category;

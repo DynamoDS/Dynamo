@@ -70,10 +70,6 @@ namespace Dynamo.Utilities
                                 Directory.GetFiles(location, "*.dll") as IEnumerable<string>, 
                                 Enumerable.Concat);
 
-#if USE_DSENGINE
-            List<string> excludedAssemblies = new List<String>() { "ManagedAsmGeometry.dll", "ManagedAsmPersistentManager.dll" };
-#endif
-
             var resolver = new ResolveEventHandler(delegate(object sender, ResolveEventArgs args)
             {
                 Assembly result;
@@ -89,11 +85,6 @@ namespace Dynamo.Utilities
 
                 if (fn == null)
                     continue;
-
-#if USE_DSENGINE
-                if (excludedAssemblies.Contains(Path.GetFileName(fn)))
-                    continue;
-#endif
 
                 if (LoadedAssemblyNames.Contains(fn))
                     continue;
@@ -124,11 +115,7 @@ namespace Dynamo.Utilities
             }
 
 #if USE_DSENGINE
-            foreach (var library in DSLibraryServices.Instance.Libraries)
-            {
-                LoadDSFunctionsFromLibrary(library);
-            }
-            DSLibraryServices.Instance.LibraryLoaded += new DSLibraryServices.LibraryLoadedEventHandler(OnLoadDSLibrary);
+            EngineController.Instance.LoadBuiltinLibraries();
 #endif
             AppDomain.CurrentDomain.AssemblyResolve -= resolver;
 
@@ -136,35 +123,6 @@ namespace Dynamo.Utilities
 
         }
 
-#if USE_DSENGINE
-        private static void LoadDSFunctionsFromLibrary(string library)
-        {
-            List<DSFunctionItem> functions = DSLibraryServices.Instance[library];
-            if (functions != null)
-            {
-                var searchViewModel = dynSettings.Controller.SearchViewModel;
-                var controller = dynSettings.Controller;
-
-                foreach (var function in functions)
-                {
-                    searchViewModel.Add(function);
-
-                    if (!controller.DSImportedFunctions.ContainsKey(function.DisplayName))
-                    {
-                        controller.DSImportedFunctions.Add(function.DisplayName, function);
-                    }
-                }
-            }
-        }
-
-        private static void OnLoadDSLibrary(object sender, DSLibraryServices.LibraryLoadedEventArgs e)
-        {
-            if (e.Status == DSLibraryServices.LibraryLoadStatus.Ok)
-            {
-                LoadDSFunctionsFromLibrary(e.LibraryPath);
-            }
-        }
-#endif
         /// <summary>
         ///     Determine if a Type is a node.  Used by LoadNodesFromAssembly to figure
         ///     out what nodes to load from other libraries (.dlls).
@@ -204,7 +162,8 @@ namespace Dynamo.Utilities
                     {
                         //only load types that are in the right namespace, are not abstract
                         //and have the elementname attribute
-                        object[] attribs = t.GetCustomAttributes(typeof (NodeNameAttribute), false);
+                        var attribs = t.GetCustomAttributes(typeof (NodeNameAttribute), false);
+                        var isDeprecated = t.GetCustomAttributes(typeof (NodeDeprecatedAttribute), true).Any();
 
                         if (!IsNodeSubType(t)) /*&& attribs.Length > 0*/
                             continue;
@@ -252,11 +211,11 @@ namespace Dynamo.Utilities
 
                         string typeName;
 
-                        if (attribs.Length > 0)
+                        if (attribs.Length > 0 && !isDeprecated)
                         {
                             searchViewModel.Add(t);
                             typeName = (attribs[0] as NodeNameAttribute).Name;
-                            
+  
                         }
                         else
                         {

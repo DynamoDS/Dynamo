@@ -308,6 +308,40 @@ namespace Dynamo.Models
             RequiresRecalc = true;
         }
 
+        private bool isUpdated = false;
+
+        /// <summary>
+        /// If the node is updated in LiveRunner's execution
+        /// </summary>
+        public bool IsUpdated 
+        {
+            get
+            {
+                return IsUpdated;
+            }
+            set
+            {
+                isUpdated = value;
+                RaisePropertyChanged("IsUpdated");
+            }
+        }
+
+        /// <summary>
+        /// Return a variable whose value will be displayed in preview window.
+        /// Derived nodes may overwrite this function to display default value
+        /// of this node. E.g., code block node may want to display the value 
+        /// of the left hand side variable of last statement. 
+        /// </summary>
+        /// <returns></returns>
+        public virtual string VariableToPreview
+        {
+            get
+            {
+                var ident = AstIdentifier as IdentifierNode;
+                return (ident == null) ? null : ident.Name;
+            }
+        }
+
         protected internal ExecutionEnvironment macroEnvironment = null;
 
         //TODO: don't make this static (maybe)
@@ -1046,8 +1080,12 @@ namespace Dynamo.Models
         {
 
         }
-        
+
         protected virtual void __eval_internal(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
+        {
+            __eval_internal_recursive(args, outPuts);
+        }
+        protected virtual void __eval_internal_recursive(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts, int level = 0)
         {
             var argSets = new List<FSharpList<FScheme.Value>>();
 
@@ -1117,7 +1155,46 @@ namespace Dynamo.Models
                 {
                     evalDict.Clear();
 
-                    Evaluate(Utils.SequenceToFSharpList(argList), evalDict);
+                    var thisArgsAsFSharpList = Utils.SequenceToFSharpList(argList);
+
+                    var portComparisonLaced = thisArgsAsFSharpList.Zip(InPortData, (first, second) => new Tuple<Type, Type>(first.GetType(), second.PortType)).ToList();
+                    
+                    int jj = 0;
+                    bool bHasListNotExpecting = false;
+                    foreach (var argLaced in argList)
+                    {
+                        //incoming value is list and expecting single
+                        if (ArgumentLacing != LacingStrategy.Disabled && thisArgsAsFSharpList.Any() && 
+                            portComparisonLaced.ElementAt(jj).Item1 == typeof(Value.List) &&
+                            portComparison.ElementAt(jj).Item2 != typeof(Value.List) &&
+                            (!AcceptsListOfLists(argLaced) || !Utils.IsListOfLists(argLaced)) 
+                           )
+                        {
+                            bHasListNotExpecting = true;
+                            break;
+                        }
+                        jj++;
+                    }
+                    if (bHasListNotExpecting)
+                    {
+                        if (level > 20)
+                            throw new Exception("Too deep recursive list containment by lists, only 21 are allowed");
+                        Dictionary<PortData, FScheme.Value> outPutsLevelPlusOne = new Dictionary<PortData, FScheme.Value>();
+
+                        __eval_internal_recursive(Utils.SequenceToFSharpList(argList), outPutsLevelPlusOne, level + 1);
+                        //pack result back
+                       
+                        foreach (var dataLaced in outPutsLevelPlusOne)
+                        {
+                            var dataL = dataLaced.Key;
+                            var valueL = outPutsLevelPlusOne[dataL];
+                            evalResult[dataL] = FSharpList<Value>.Cons(valueL, evalResult[dataL]);
+                        }
+                        continue;
+                    }
+                    else
+                       Evaluate(Utils.SequenceToFSharpList(argList), evalDict);
+
                     OnEvaluate();
 
                     foreach (var data in OutPortData)
@@ -1289,6 +1366,42 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// Since the ports can have a margin (offset) so that they can moved vertically from its 
+        /// initial position, the center of the port needs to be calculted differently and not only 
+        /// based on the index. The function adds the height of other nodes as well as their margins
+        /// </summary>
+        /// <param name="portModel"> The portModel whose height is to be found</param>
+        /// <returns> Returns the offset of the given port from the top of the ports </returns>
+        internal double GetPortVerticalOffset(PortModel portModel)
+        {
+            double verticalOffset = 2.9;
+            PortType portType;
+            int index = GetPortIndex(portModel, out portType);
+
+            //If the port was not found, then it should have just been deleted. Return from function
+            if (index == -1)
+                return verticalOffset;
+
+            if (portType == PortType.INPUT)
+            {
+                for (int i = 0; i < index; i++)
+                {
+                    verticalOffset += inPorts[i].MarginThickness.Top + 20;
+                }
+                verticalOffset += inPorts[index].MarginThickness.Top;
+            }
+            else if (portType == PortType.OUTPUT)
+            {
+                for (int i = 0; i < index; i++)
+                {
+                    verticalOffset += outPorts[i].MarginThickness.Top + 20;
+                }
+                verticalOffset += outPorts[index].MarginThickness.Top;
+            }
+            return verticalOffset;
+        }
+
+        /// <summary>
         /// Attempts to get the input for a certain port.
         /// </summary>
         /// <param name="data">PortData to look for an input for.</param>
@@ -1396,7 +1509,7 @@ namespace Dynamo.Models
                         return p;
                     }
 
-                    p = new PortModel(index, portType, this, data.NickName)
+                    p = new PortModel(portType, this, data.NickName)
                     {
                         UsingDefaultValue = data.HasDefaultValue,
                         DefaultValueEnabled = data.HasDefaultValue
@@ -1425,7 +1538,7 @@ namespace Dynamo.Models
                         return p;
                     }
 
-                    p = new PortModel(index, portType, this, data.NickName)
+                    p = new PortModel(portType, this, data.NickName)
                     {
                         UsingDefaultValue = false,
                         MarginThickness = new Thickness(0,data.VerticalMargin,0,0)
@@ -1637,6 +1750,23 @@ namespace Dynamo.Models
             OnDispatchedToUI(this, new UIDispatcherEventArgs(a));
         }
 
+        public static string PrintValue(string variableName, int currentListIndex, int maxListIndex, int currentDepth, int maxDepth, int maxStringLength = 20)
+        {
+            string previewValue = "<null>";
+            if (!string.IsNullOrEmpty(variableName))
+            {
+                try
+                {
+                    previewValue = EngineController.Instance.GetStringValue(variableName);
+                }
+                catch (Exception ex)
+                {
+                    DynamoLogger.Instance.Log(ex.Message);
+                }
+            }
+            return previewValue;
+        }
+
         public static string PrintValue(Value eIn, int currentListIndex, int maxListIndex, int currentDepth, int maxDepth, int maxStringLength = 20)
         {
             if (eIn == null)
@@ -1788,6 +1918,10 @@ namespace Dynamo.Models
                 RaisePropertyChanged("ArgumentLacing");
                 RaisePropertyChanged("IsVisible");
                 RaisePropertyChanged("IsUpstreamVisible");
+
+                // Notify listeners that the position of the node has changed,
+                // then all connected connectors will also redraw themselves.
+                this.ReportPosition();
             }
         }
 
@@ -1908,6 +2042,14 @@ namespace Dynamo.Models
         {
             this.Values = values;
         }
+    }
+
+    /// <summary>
+    /// Flag to hide deprecated nodes in search, but allow in workflows
+    /// </summary>
+    [AttributeUsage(AttributeTargets.All, Inherited = true)]
+    public class NodeDeprecatedAttribute : System.Attribute
+    {
     }
 
     /// <summary>
