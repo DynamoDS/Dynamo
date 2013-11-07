@@ -7,17 +7,17 @@ using RevitServices.Transactions;
 namespace DSRevitNodes
 {
     /// <summary>
-    /// Superclass of all geometry
+    /// Superclass of all Revit element wrappers
     /// </summary>
     [Browsable(false)]
-    public abstract class AbstractGeometry : IDisposable
+    public abstract class AbstractElement : IDisposable
     {
         public static Document Document
         {
             get { return DocumentManager.GetInstance().CurrentDBDocument; }
         }
 
-        protected ElementId InternalID;
+        protected ElementId InternalId;
         protected string InternalUniqueId;
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace DSRevitNodes
         /// </summary>
         public virtual void Dispose()
         {
-            DocumentManager.GetInstance().DeleteElement(this.InternalID);
+            DocumentManager.GetInstance().DeleteElement(this.InternalId);
         }
     }
 }

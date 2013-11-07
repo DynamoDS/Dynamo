@@ -12,7 +12,7 @@ namespace DSRevitNodes
     /// A Revit DividedPath
     /// </summary>
     [RegisterForTrace]
-    class DSDividedPath: AbstractGeometry
+    class DSDividedPath: AbstractElement
     {
         #region Properties
 
@@ -68,7 +68,7 @@ namespace DSRevitNodes
         private void InternalSetDividedPath(Autodesk.Revit.DB.DividedPath divPath)
         {
             InternalDividedPath = divPath;
-            InternalID = divPath.Id;
+            InternalId = divPath.Id;
             InternalUniqueId = divPath.UniqueId;
         }
 
@@ -87,6 +87,5 @@ namespace DSRevitNodes
         }
 
         #endregion
-
     }
 }
