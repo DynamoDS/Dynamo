@@ -7,6 +7,11 @@
 				<test name="AdaptiveComponentByCurve" runDynamo="True" modelPath=".\AdaptiveComponent\AdaptiveComponentByCurve.rfa"/>
 				<test name="AdaptiveComponent" runDynamo="True" modelPath=".\AdaptiveComponent\AdaptiveComponent.rfa"/>
 			</testFixture>
+			<testFixture name="AnalysisDisplayTests">
+				<test name="AnalysisDisplayPoints" runDynamo="True" modelPath=".\AnalysisDisplay\AD_Points.rvt"/>
+				<test name="AnalysisDisplaySurface" runDynamo="True" modelPath=".\AnalysisDisplay\AD_Surface.rvt"/>
+				<test name="AnalysisDisplayVectors" runDynamo="True" modelPath=".\AnalysisDisplay\AD_Vector.rvt"/>
+			</testFixture>
 			<testFixture name="BugTests">
 				<test name="MAGN_66" runDynamo="True" modelPath=".\Bugs\MAGN_66.rfa"/>
 			</testFixture>
