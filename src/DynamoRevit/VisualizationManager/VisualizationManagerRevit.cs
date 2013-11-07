@@ -2,15 +2,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Windows.Input;
 using System.Windows.Media.Media3D;
 using Autodesk.Revit.DB;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using HelixToolkit.Wpf;
-using Octree.Tools.Point;
-using Octree.Tools.Vector;
 using Curve = Autodesk.Revit.DB.Curve;
 using Solid = Autodesk.Revit.DB.Solid;
 using Face = Autodesk.Revit.DB.Face;
