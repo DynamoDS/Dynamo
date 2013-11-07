@@ -116,6 +116,37 @@ namespace Dynamo.Views
 
             Debug.WriteLine("Workspace loaded.");
             DynamoSelection.Instance.Selection.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
+
+            ViewModel.DragSelectionStarted += ViewModel_DragSelectionStarted;
+            ViewModel.DragSelectionEnded += ViewModel_DragSelectionEnded;
+        }
+
+        /// <summary>
+        /// Handler for the state machine's drag start event.
+        /// Instructs the visualization manager to bypass updating the visualization.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void ViewModel_DragSelectionEnded(object sender, EventArgs e)
+        {
+            if (ViewModel.PauseVisualizationManagerUpdatesCommand.CanExecute(false))
+            {
+                ViewModel.PauseVisualizationManagerUpdatesCommand.Execute(false);
+            }
+        }
+
+        /// <summary>
+        /// Handler for the state machine's drag end event.
+        /// Instructs the visualization manager to update visualizations and begin tracking selections again.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void ViewModel_DragSelectionStarted(object sender, EventArgs e)
+        {
+            if (ViewModel.PauseVisualizationManagerUpdatesCommand.CanExecute(true))
+            {
+                ViewModel.PauseVisualizationManagerUpdatesCommand.Execute(true);
+            }
         }
 
         private void LoadCursorState()

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -7,6 +8,7 @@ using System.Windows.Media.Media3D;
 using System.Linq;
 using Autodesk.LibG;
 using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.Utilities;
@@ -14,6 +16,8 @@ using HelixToolkit.Wpf;
 using Microsoft.Practices.Prism.ViewModel;
 using Newtonsoft.Json;
 using Octree.OctreeSearch;
+using Octree.Tools.Point;
+using Double = System.Double;
 using String = System.String;
 
 //testing to see if github integration works.
@@ -45,10 +49,28 @@ namespace Dynamo
         private object myLock = new object();
         protected bool isUpdating = false;
         private Octree.OctreeSearch.Octree octree;
+        private bool updatingPaused = false;
 
         #endregion
 
         #region public properties
+
+        /// <summary>
+        /// Flag allows us to pause visualization updates.
+        /// </summary>
+        public bool UpdatingPaused
+        {
+            get { return updatingPaused; }
+            set
+            {
+                if (!value && updatingPaused)
+                {
+                    OnVisualizationUpdateComplete(this, EventArgs.Empty);
+                }
+
+                updatingPaused = value;
+            }
+        }
 
         /// <summary>
         /// A dictionary of objects to be stored for visualization.
@@ -240,7 +262,8 @@ namespace Dynamo
             
             //don't trigger an update if the changes in the selection
             //had no effect on the current visualizations
-            if (movedItems > 0)
+            //don't trigger an update either if the paused flag is set
+            if (movedItems > 0 && !updatingPaused)
             {
                 OnVisualizationUpdateComplete(this, EventArgs.Empty);
             }
@@ -372,6 +395,8 @@ namespace Dynamo
             {
                 //send back everything
                 rd = AggregateRenderDescriptions();
+                
+                StripDuplicates(rd);
 
                 OnResultsReadyToVisualize(this, new VisualizationEventArgs(rd, string.Empty));
             }
@@ -405,6 +430,8 @@ namespace Dynamo
                 rd.SelectedPoints.AddRange(pts_sel);
                 rd.SelectedLines.AddRange(lines_sel);
                 rd.SelectedMeshes.AddRange(mesh_sel);
+                
+                StripDuplicates(rd);
 
                 OnResultsReadyToVisualize(this, new VisualizationEventArgs(rd, node.GUID.ToString()));
             }
@@ -595,7 +622,6 @@ namespace Dynamo
         {
             try
             {
-
                 var sw = new Stopwatch();
                 sw.Start();
 
@@ -643,6 +669,67 @@ namespace Dynamo
             {
                 isUpdating = false;
             }
+        }
+
+        /// <summary>
+        /// Strips all duplicates from a render description.
+        /// </summary>
+        /// <param name="rd">A render description</param>
+        private void StripDuplicates(RenderDescription rd)
+        {
+            var sw = new Stopwatch();
+            sw.Start();
+
+            Debug.WriteLine(string.Format("{0} line segments before stripping", rd.Lines.Count/2));
+
+            var comp = new Point3DEqualityComparer();
+
+            //POINTS
+            var strippedPoints = rd.Points.Distinct(comp).ToList();
+
+            //SELECTED POINTS
+            var strippedSelPoints = rd.SelectedPoints.Distinct(comp).ToList();
+
+            //LINES
+            var strippedLines = StripLines(rd.Lines.ToList());
+
+            //SELECTED LINES
+            var strippedSelLines = StripLines(rd.SelectedLines.ToList());
+
+            rd.Points.Clear();
+            rd.SelectedPoints.Clear();
+            rd.Lines.Clear();
+            rd.SelectedLines.Clear();
+
+            rd.Points.AddRange(strippedPoints);
+            rd.SelectedPoints.AddRange(strippedSelPoints);
+            rd.Lines.AddRange(strippedLines);
+            rd.SelectedLines.AddRange(strippedSelLines);
+
+            Debug.WriteLine(string.Format("{0} line segments after stripping", rd.Lines.Count / 2));
+
+            sw.Stop();
+            Debug.WriteLine(string.Format("{0} elapsed for stripping duplicate geometry.", sw.Elapsed));
+        }
+
+        private static IEnumerable<Point3D> StripLines(List<Point3D> lines)
+        {
+            var tupSet = new HashSet<Tuple<Point3D, Point3D>>();
+            var tupComp = new Point3DTupleEqualityComparer();
+
+            for (int i = 0; i < lines.Count; i += 2)
+            {
+                var lineSelTup = new Tuple<Point3D, Point3D>(lines[i], lines[i + 1]);
+                if(!tupSet.Contains(lineSelTup, tupComp))
+                    tupSet.Add(lineSelTup);
+            }
+            var strippedSelLines = new List<Point3D>();
+            foreach (var t in tupSet)
+            {
+                strippedSelLines.Add(t.Item1);
+                strippedSelLines.Add(t.Item2);
+            }
+            return strippedSelLines;
         }
 
         /// <summary>
@@ -804,6 +891,53 @@ namespace Dynamo
         {
             Description = description;
             Id = viewId;
+        }
+    }
+
+    class Point3DTupleEqualityComparer : IEqualityComparer<Tuple<Point3D, Point3D>>
+    {
+        public bool Equals(Tuple<Point3D, Point3D> x, Tuple<Point3D, Point3D> y)
+        {
+            var comp = new Point3DEqualityComparer();
+
+            //if a1 and b1 are equal and a2 and b2 are equal or
+            //a1 and b2 are equal and a2 and b1 are equal
+            if ((comp.Equals(x.Item1, y.Item1) && comp.Equals(x.Item2, y.Item2)) ||
+                (comp.Equals(x.Item1, y.Item2) && comp.Equals(x.Item2, y.Item1)))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public int GetHashCode(Tuple<Point3D, Point3D> obj)
+        {
+            double hCode = obj.Item1.X + obj.Item1.Y + obj.Item1.Z + obj.Item2.X + obj.Item2.Y + obj.Item2.Z;
+            return hCode.GetHashCode();
+        }
+    }
+
+    class Point3DEqualityComparer : IEqualityComparer<Point3D>
+    {
+        private const double epsilon = 0.0001;
+
+        public bool Equals(Point3D x, Point3D y)
+        {
+            if (Math.Abs(x.X - y.X) < epsilon &&
+                Math.Abs(x.Y - y.Y) < epsilon &&
+                Math.Abs(x.Z - y.Z) < epsilon)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public int GetHashCode(Point3D obj)
+        {
+            double hCode = obj.X + obj.Y + obj.Z;
+            return hCode.GetHashCode();
         }
     }
 }
