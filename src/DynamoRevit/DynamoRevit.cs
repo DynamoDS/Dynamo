@@ -21,6 +21,7 @@ using Dynamo.Controls;
 using Dynamo.Utilities;
 using RevitServices.Elements;
 using RevitServices.Threading;
+using RevitServices.Transactions;
 using IWin32Window = System.Windows.Interop.IWin32Window;
 using MessageBox = System.Windows.Forms.MessageBox;
 using Rectangle = System.Drawing.Rectangle;
@@ -68,28 +69,9 @@ namespace Dynamo.Applications
 
                 RevThread.IdlePromise.RegisterIdle(application);
 
-                Updater = new RevitServicesUpdater(/*application.ActiveAddInId, */application.ControlledApplication);
-                //if (!UpdaterRegistry.IsUpdaterRegistered(Updater.GetUpdaterId()))
-                //    UpdaterRegistry.RegisterUpdater(Updater);
+                Updater = new RevitServicesUpdater(application.ControlledApplication);
 
-                //var SpatialFieldFilter = new ElementClassFilter(typeof (SpatialFieldManager));
-                //var familyFilter = new ElementClassFilter(typeof (FamilyInstance));
-                //var refPointFilter = new ElementCategoryFilter(BuiltInCategory.OST_ReferencePoints);
-                //var modelCurveFilter = new ElementClassFilter(typeof (CurveElement));
-                //var sunFilter = new ElementClassFilter(typeof (SunAndShadowSettings));
-                //IList<ElementFilter> filterList = new List<ElementFilter>();
-
-                //filterList.Add(SpatialFieldFilter);
-                //filterList.Add(familyFilter);
-                //filterList.Add(modelCurveFilter);
-                //filterList.Add(refPointFilter);
-                //filterList.Add(sunFilter);
-
-                //ElementFilter filter = new LogicalOrFilter(filterList);
-
-                //UpdaterRegistry.AddTrigger(Updater.GetUpdaterId(), filter, Element.GetChangeTypeAny());
-                //UpdaterRegistry.AddTrigger(Updater.GetUpdaterId(), filter, Element.GetChangeTypeElementDeletion());
-                //UpdaterRegistry.AddTrigger(Updater.GetUpdaterId(), filter, Element.GetChangeTypeElementAddition());
+                TransactionManager.SetupManager(new DebugTransactionStrategy());
 
                 env = new ExecutionEnvironment();
 

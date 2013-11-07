@@ -36,7 +36,7 @@ namespace DSRevitNodes
         private ReferencePoint(double x, double y, double z)
         {
             //Phase 1 - Check to see if the object exists and should be rebound
-            Autodesk.Revit.DB.ReferencePoint oldRefPt = 
+            var oldRefPt = 
                 ElementBinder.GetElementFromTrace<Autodesk.Revit.DB.ReferencePoint>(Document);
 
             //There was a point, rebind to that, and adjust its position
@@ -54,6 +54,8 @@ namespace DSRevitNodes
             this.InternalID = InternalReferencePoint.Id;
 
             TransactionManager.GetInstance().TransactionTaskDone();
+
+            //ElementBinder.SetElementForTrace(this.InternalID);
         }
 
         private void InternalSetPosition(XYZ xyz)
@@ -125,7 +127,15 @@ namespace DSRevitNodes
         /// <returns></returns>
         public static ReferencePoint ByCoords(double x, double y, double z)
         {
-           return new ReferencePoint(x,y,z);
+            try
+            {
+                var pt = new ReferencePoint(x, y, z);
+                return pt;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
         }
 
         /// <summary>

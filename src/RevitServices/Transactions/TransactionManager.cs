@@ -76,8 +76,6 @@ namespace RevitServices.Transactions
         {
             //Hand off the behaviour to the strategy
             strategy.EnsureInTransaction(document);
-
-            
         }
 
         /// <summary>
