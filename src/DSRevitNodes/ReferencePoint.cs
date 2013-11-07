@@ -54,6 +54,8 @@ namespace DSRevitNodes
             this.InternalID = InternalReferencePoint.Id;
 
             TransactionManager.GetInstance().TransactionTaskDone();
+            ElementBinder.SetElementForTrace(InternalReferencePoint.Id);
+
         }
 
         private void InternalSetPosition(XYZ xyz)
