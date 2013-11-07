@@ -172,7 +172,7 @@ namespace DSRevitNodes
         /// <param name="f"></param>
         /// <param name="v"></param>
         /// <returns></returns>
-        static DSReferencePoint ByPointOnFace(Face f, Vector v)
+        static DSReferencePoint ByPointOnFace(DSFace f, Vector v)
         {
             throw new NotImplementedException();
         }

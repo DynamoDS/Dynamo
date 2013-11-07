@@ -68,10 +68,10 @@
     <Compile Include="AbstractGeometry.cs" />
     <Compile Include="Curve.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="Face.cs" />
-    <Compile Include="AdaptiveComponent.cs" />
+    <Compile Include="DSFace.cs" />
+    <Compile Include="DSAdaptiveComponent.cs" />
     <Compile Include="DSDividedPath.cs" />
-    <Compile Include="DividedSurface.cs" />
+    <Compile Include="DSDividedSurface.cs" />
     <Compile Include="FamilySymbol.cs" />
     <Compile Include="FreeForm.cs" />
     <Compile Include="Material.cs" />

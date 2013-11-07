@@ -14,7 +14,7 @@ namespace DSRevitNodes
     [RegisterForTrace]
     class DSDividedSurface : AbstractGeometry
     {
-        #region Properties
+        #region Private Properties
 
         /// <summary>
         /// Internal variable containing the wrapped Revit object
@@ -28,7 +28,7 @@ namespace DSRevitNodes
 
         #region Private constructors
 
-        private DSDividedSurface(Face face, int uDivs, int vDivs)
+        private DSDividedSurface(DSFace dsFace, int uDivs, int vDivs)
         {
             // if the family instance is present in trace...
             var oldEle =
@@ -45,12 +45,15 @@ namespace DSRevitNodes
             // otherwise create a new family instance...
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
-            var divSurf = Document.FamilyCreate.NewDividedSurface(face.InternalFace.Reference);
+            var divSurf = Document.FamilyCreate.NewDividedSurface(dsFace.InternalFace.Reference);
 
             InternalSetDividedSurface(divSurf);
             InternalSetDivisions(uDivs, vDivs);
 
             TransactionManager.GetInstance().TransactionTaskDone();
+
+            // remember this new value
+            ElementBinder.SetElementForTrace(this.InternalID);
         }
 
         #endregion
@@ -80,7 +83,7 @@ namespace DSRevitNodes
 
         #region Static constructors
 
-        static DSDividedSurface ByFaceUVDivisions(Face f, int uDivs, int vDivs)
+        static DSDividedSurface ByFaceUVDivisions(DSFace f, int uDivs, int vDivs)
         {
             return new DSDividedSurface(f, uDivs, vDivs);
         }

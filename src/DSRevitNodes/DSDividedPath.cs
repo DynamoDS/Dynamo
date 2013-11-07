@@ -29,10 +29,15 @@ namespace DSRevitNodes
 
         #region Private constructors
 
+        /// <summary>
+        /// Private constructor to build a DividedPath
+        /// </summary>
+        /// <param name="c">Host curve</param>
+        /// <param name="divs">Number of divisions</param>
         private DSDividedPath(Curve c, int divs)
         {
-            // Note: This constructor always *recreates* the divided path.
-            // Mutating the divided path would requireobtaining the referenced 
+            // PB: This constructor always *recreates* the divided path.
+            // Mutating the divided path would require obtaining the referenced 
             // curve from the DividedPath, which does not look to be possible 
             // (without an expensive reverse lookup)
 
@@ -48,7 +53,7 @@ namespace DSRevitNodes
 
             TransactionManager.GetInstance().TransactionTaskDone();
 
-            // delete any cached id and set this new one
+            // delete any cached ele and set this new one
             ElementBinder.CleanupAndSetElementForTrace(Document, InternalDividedPath.Id);
         }
 
@@ -56,6 +61,10 @@ namespace DSRevitNodes
 
         #region Private mutators
 
+        /// <summary>
+        /// Set the internal object and update the id's
+        /// </summary>
+        /// <param name="divPath">The divided path</param>
         private void InternalSetDividedPath(Autodesk.Revit.DB.DividedPath divPath)
         {
             InternalDividedPath = divPath;
