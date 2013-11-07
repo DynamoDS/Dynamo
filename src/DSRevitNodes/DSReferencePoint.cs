@@ -19,6 +19,9 @@ namespace DSRevitNodes
     [ShortName("refPt")]
     public class DSReferencePoint : AbstractGeometry, IGraphicItem
     {
+
+        #region Internal properties
+
         /// <summary>
         /// Internal variable containing the wrapped Revit object
         /// </summary>
@@ -26,6 +29,10 @@ namespace DSRevitNodes
         {
             get; private set;
         }
+
+        #endregion
+
+        #region Private constructors
 
         /// <summary>
         /// Internal constructor for the ReferencePoint
@@ -55,8 +62,11 @@ namespace DSRevitNodes
             TransactionManager.GetInstance().TransactionTaskDone();
 
             ElementBinder.SetElementForTrace(this.InternalID);
-
         }
+
+        #endregion
+
+        #region Private mutators
 
         private void InternalSetPosition(XYZ xyz)
         {
@@ -74,6 +84,10 @@ namespace DSRevitNodes
             this.InternalID = InternalReferencePoint.Id;
             this.InternalUniqueId = InternalReferencePoint.UniqueId;
         }
+
+        #endregion
+
+        #region Public properties
 
         public double X
         {
@@ -125,6 +139,10 @@ namespace DSRevitNodes
                 return xz.ToPlane();
             }
         }
+
+        #endregion
+
+        #region Static constructors
 
         /// <summary>
         /// Create a Reference Point by x,y, and z coordinates.
@@ -182,6 +200,10 @@ namespace DSRevitNodes
             throw new NotImplementedException();
         }
 
+        #endregion
+
+        #region Tesselation
+
         /// <summary>
         /// Tessellate Reference Point to render package for visualization.
         /// </summary>
@@ -190,5 +212,8 @@ namespace DSRevitNodes
         {
             package.PushPointVertex(this.X, this.Y, this.Z);
         }
+
+        #endregion
+
     }
 }
