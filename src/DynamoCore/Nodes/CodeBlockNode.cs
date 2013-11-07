@@ -7,6 +7,9 @@ using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
 using Dynamo.Models;
 using Dynamo.Utilities;
+using Dynamo.UI.Commands;
+using Dynamo.ViewModels;
+using System.Windows;
 
 namespace Dynamo.Nodes
 {
@@ -26,15 +29,22 @@ namespace Dynamo.Nodes
             this.ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        public void DisplayError()
+        public void DisplayError(string errorMessage)
         {
+            //Log an error. TODO Ambi : Remove this later
             DynamoLogger.Instance.Log("Error in Code Block Node");
-            this.State = ElementState.ERROR;
-            for (int i = 0; i < InPortData.Count; i++)
+            
+            //Remove all ports
+            int size = InPortData.Count;
+            for (int i = 0; i < size; i++)
                 InPortData.RemoveAt(0);
-            for (int i = 0; i < OutPortData.Count; i++)
+            size = OutPortData.Count;
+            for (int i = 0; i < size; i++)
                 OutPortData.RemoveAt(0);
             RegisterAllPorts();
+
+            //Set the node state in error and display the message
+            Error(errorMessage);
         }
 
         /// <summary>
@@ -217,7 +227,10 @@ namespace Dynamo.Nodes
             }
             else
             {
-                DisplayError();
+                string errorMessage = "";
+                foreach (var error in errors)
+                    errorMessage += (error.Message + "\n");
+                DisplayError(errorMessage);
                 return;
             }
 
@@ -225,7 +238,9 @@ namespace Dynamo.Nodes
             {
                 if (VariableAlreadyDeclared(singleStatement))
                 {
-                    DisplayError();
+                    string varName = singleStatement.DefinedVariable.Name;
+                    string errorMessage = varName + " is already declared.";
+                    DisplayError(errorMessage);
                     return;
                 }
             }
