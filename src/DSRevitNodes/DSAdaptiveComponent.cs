@@ -16,7 +16,7 @@ namespace DSRevitNodes
     /// A Revit Adaptive Component
     /// </summary>
     [RegisterForTrace]
-    public class AdaptiveComponent : AbstractGeometry
+    public class DSAdaptiveComponent : AbstractGeometry
     {
         #region Properties
 
@@ -37,7 +37,7 @@ namespace DSRevitNodes
         /// </summary>
         /// <param name="pts">Points to use as reference</param>
         /// <param name="fs">FamilySymbol to place</param>
-        private AdaptiveComponent(Point[] pts, FamilySymbol fs)
+        private DSAdaptiveComponent(Point[] pts, FamilySymbol fs)
         {
 
             // if the family instance is present in trace...
@@ -47,7 +47,7 @@ namespace DSRevitNodes
             // just mutate it...
             if (oldFam != null)
             {
-                InternalFamilyInstance = oldFam;
+                InternalSetFamilyInstance(oldFam);
                 InternalSetPositions(pts.ToXyzs());
                 return;
             }
@@ -55,16 +55,18 @@ namespace DSRevitNodes
             // otherwise create a new family instance...
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
-            InternalFamilyInstance = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(AbstractGeometry.Document, fs.InternalFamilySymbol);
+            var fam = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(AbstractGeometry.Document, fs.InternalFamilySymbol);
 
-            if (InternalFamilyInstance == null)
+            if (fam == null)
                 throw new Exception("An adaptive component could not be found or created.");
 
-            this.InternalID = InternalFamilyInstance.Id;
+            InternalSetFamilyInstance(fam);
             InternalSetPositions(pts.ToXyzs());
 
             TransactionManager.GetInstance().TransactionTaskDone();
 
+            // remember this value
+            ElementBinder.SetElementForTrace(this.InternalID);
         }
 
         /// <summary>
@@ -73,7 +75,7 @@ namespace DSRevitNodes
         /// <param name="pts">Points to use as reference</param>
         /// <param name="f">Face to use as reference</param>
         /// <param name="fs">FamilySymbol to place</param>
-        private AdaptiveComponent(double[][] pts, Face f, FamilySymbol fs)
+        private DSAdaptiveComponent(double[][] pts, DSFace f, FamilySymbol fs)
         {
             // if the family instance is present in trace...
             var oldFam =
@@ -82,7 +84,7 @@ namespace DSRevitNodes
             // just mutate it...
             if (oldFam != null)
             {
-                InternalFamilyInstance = oldFam;
+                InternalSetFamilyInstance(oldFam);
                 InternalSetUvsAndFace(pts.ToUvs(), f.InternalFace );
                 return;
             }
@@ -90,12 +92,12 @@ namespace DSRevitNodes
             // otherwise create a new family instance...
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
-            InternalFamilyInstance = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(AbstractGeometry.Document, fs.InternalFamilySymbol);
+            var fam = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(AbstractGeometry.Document, fs.InternalFamilySymbol);
 
-            if (InternalFamilyInstance == null)
+            if (fam == null)
                 throw new Exception("An adaptive component could not be found or created.");
 
-            this.InternalID = InternalFamilyInstance.Id;
+            InternalSetFamilyInstance(fam);
             InternalSetUvsAndFace(pts.ToUvs(), f.InternalFace);
 
             TransactionManager.GetInstance().TransactionTaskDone();
@@ -108,7 +110,7 @@ namespace DSRevitNodes
         /// <param name="parms">Params on curve to reference</param>
         /// <param name="c">Curve to use as reference</param>
         /// <param name="fs">FamilySymbol to place</param>
-        private AdaptiveComponent(double[] parms, Curve c, FamilySymbol fs)
+        private DSAdaptiveComponent(double[] parms, Curve c, FamilySymbol fs)
         {
             // if the family instance is present in trace...
             var oldFam =
@@ -117,7 +119,7 @@ namespace DSRevitNodes
             // just mutate it...
             if (oldFam != null)
             {
-                InternalFamilyInstance = oldFam;
+                InternalSetFamilyInstance(oldFam);
                 InternalSetParamsAndCurve(parms, c.InternalCurve);
                 return;
             }
@@ -125,14 +127,12 @@ namespace DSRevitNodes
             // otherwise create a new family instance...
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
-            InternalFamilyInstance = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(AbstractGeometry.Document, fs.InternalFamilySymbol);
+            var fam = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(AbstractGeometry.Document, fs.InternalFamilySymbol);
 
-            if (InternalFamilyInstance == null)
+            if (fam == null)
                 throw new Exception("An adaptive component could not be found or created.");
 
-            this.InternalID = InternalFamilyInstance.Id;
-
-            // set its internal properties...
+            InternalSetFamilyInstance(fam);
             InternalSetParamsAndCurve(parms, c.InternalCurve);
 
             TransactionManager.GetInstance().TransactionTaskDone();
@@ -142,6 +142,17 @@ namespace DSRevitNodes
         #endregion
 
         #region Internal mutators
+
+        /// <summary>
+        /// Set the internal object and update the id's
+        /// </summary>
+        /// <param name="ele">The new adaptive component</param>
+        private void InternalSetFamilyInstance(Autodesk.Revit.DB.FamilyInstance ele)
+        {
+            InternalFamilyInstance = ele;
+            InternalID = ele.Id;
+            InternalUniqueId = ele.UniqueId;
+        }
 
         /// <summary>
         /// Set the positions of the internal family instance from a list of XYZ points
@@ -235,9 +246,9 @@ namespace DSRevitNodes
         /// <param name="pts">The points to reference in the AdaptiveComponent</param>
         /// <param name="fs">The family symbol to use to build the AdaptiveComponent</param>
         /// <returns></returns>
-        static AdaptiveComponent ByPoints( Point[] pts, FamilySymbol fs )
+        static DSAdaptiveComponent ByPoints( Point[] pts, FamilySymbol fs )
         {
-            return new AdaptiveComponent(pts, fs);
+            return new DSAdaptiveComponent(pts, fs);
         }
 
         /// <summary>
@@ -247,9 +258,9 @@ namespace DSRevitNodes
         /// <param name="f">The face on which to place the AdaptiveComponent</param>
         /// <param name="f">The face on which to place the AdaptiveComponent</param>
         /// <returns></returns>
-        static AdaptiveComponent ByPointsOnFace(double[][] uvs, Face f, FamilySymbol fs)
+        static DSAdaptiveComponent ByPointsOnFace(double[][] uvs, DSFace f, FamilySymbol fs)
         {
-            return new AdaptiveComponent(uvs, f, fs);
+            return new DSAdaptiveComponent(uvs, f, fs);
         }
 
         /// <summary>
@@ -259,9 +270,9 @@ namespace DSRevitNodes
         /// <param name="curve">The curve to reference</param>
         /// <param name="fs">The family symbol to construct</param>
         /// <returns></returns>
-        static AdaptiveComponent ByPointsOnCurve(double[] parms, Curve curve, FamilySymbol fs)
+        static DSAdaptiveComponent ByPointsOnCurve(double[] parms, Curve curve, FamilySymbol fs)
         {
-            return new AdaptiveComponent(parms,  curve, fs);
+            return new DSAdaptiveComponent(parms,  curve, fs);
         }
 
         #endregion

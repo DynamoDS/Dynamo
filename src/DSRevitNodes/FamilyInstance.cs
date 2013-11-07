@@ -26,7 +26,7 @@ namespace DSRevitNodes
             throw new NotImplementedException();
         }
 
-        static FamilyInstance ByUVPtOnFace(FamilySymbol fs, Vector uv, Face f)
+        static FamilyInstance ByUVPtOnFace(FamilySymbol fs, Vector uv, DSFace f)
         {
             throw new NotImplementedException();
         }
