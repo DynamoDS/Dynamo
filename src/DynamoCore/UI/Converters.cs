@@ -981,6 +981,25 @@ namespace Dynamo.Controls
         }
     }
 
+    [ValueConversion(typeof(int), typeof(String))]
+    public class IntegerDisplay : IValueConverter
+    {
+        public virtual object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            //source -> target
+            string val = ((int)value).ToString("0", CultureInfo.CurrentCulture);
+            return value == null ? "" : val;
+        }
+
+        public virtual object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            //target -> source
+            int val = 0;
+            int.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.CurrentCulture, out val);
+            return val;
+        }
+    }
+
     public class DoubleInputDisplay : DoubleDisplay
     {
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
