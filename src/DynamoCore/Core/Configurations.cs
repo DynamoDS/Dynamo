@@ -9,6 +9,11 @@ namespace Dynamo.Core
 {
     public class Configurations
     {
+        #region Dynamo Universal Constants
+        // Add 0.5 to place the point in the middle of a pixel to sharpen it
+        public static readonly double PixelSharpeningConstant = 0.5;
+        #endregion
+
         #region Canvas Configurations
         //public static readonly double Minimum
 
@@ -59,8 +64,8 @@ namespace Dynamo.Core
         public static double PreviewCondensedContentMaxWidth = PreviewCondensedMaxWidth - 10;
         public static double PreviewCondensedContentMaxHeight = PreviewCondensedMaxHeight - 17;
 
-        public static double PreviewArrowWidth = 14;
-        public static double PreviewArrowHeight = 7;
+        public static double PreviewArrowWidth = 12;
+        public static double PreviewArrowHeight = 6;
 
         #endregion
 
@@ -130,8 +135,8 @@ namespace Dynamo.Core
         public static TextWrapping LibraryTooltipContentWrapping = TextWrapping.Wrap;
         public static Thickness LibraryTooltipContentMargin = new Thickness(12, 5, 5, 5);
 
-        public static double LibraryTooltipArrowHeight = 14;
-        public static double LibraryTooltipArrowWidth = 7;
+        public static double LibraryTooltipArrowHeight = 12;
+        public static double LibraryTooltipArrowWidth = 6;
 
         #endregion
 
