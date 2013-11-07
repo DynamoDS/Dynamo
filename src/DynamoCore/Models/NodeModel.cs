@@ -1563,6 +1563,104 @@ namespace Dynamo.Models
             return null;
         }
 
+#region trying for connection reassignment
+        //public PortModel AddPort2(PortType portType, PortData data, int index)
+        //{
+        //    PortModel p;
+        //    switch (portType)
+        //    {
+        //        case PortType.INPUT:
+        //            if (inPorts.Count > index)
+        //            {
+        //                p = inPorts[index];
+        //
+        //                //update the name on the node
+        //                //e.x. when the node is being re-registered during a custom
+        //                //node save
+        //                p.PortName = data.NickName;
+        //                if (data.HasDefaultValue)
+        //                {
+        //                    p.UsingDefaultValue = true;
+        //                    p.DefaultValueEnabled = true;
+        //                }
+        //
+        //                return p;
+        //            }
+        //
+        //            p = new PortModel(index, portType, this, data.NickName)
+        //            {
+        //                UsingDefaultValue = data.HasDefaultValue,
+        //                DefaultValueEnabled = data.HasDefaultValue
+        //            };
+        //
+        //            p.PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
+        //            {
+        //                if (args.PropertyName == "UsingDefaultValue")
+        //                    RequiresRecalc = true;
+        //            };
+        //
+        //            InPorts.Add(p);
+        //
+        //            //register listeners on the port
+        //            p.PortConnected += p_PortConnected;
+        //            p.PortDisconnected += p_PortDisconnected;
+        //
+        //            return p;
+        //
+        //        case PortType.OUTPUT:
+        //            if (outPorts.Count > index)
+        //            {
+        //                for (int i = 0; i < outPorts.Count; i++)
+        //                {
+        //                    if (portDataDict[outPorts[i]].ToolTipString.Equals(data.ToolTipString))
+        //                    {
+        //                        PortSwap(i, index);
+        //                        break;
+        //                    }
+        //                }
+        //                p = outPorts[index];
+        //                p.PortName = data.NickName;
+        //                p.MarginThickness = new Thickness(0, data.VerticalMargin, 0, 0);
+        //                return p;
+        //            }
+        //
+        //            p = new PortModel(index, portType, this, data.NickName)
+        //            {
+        //                UsingDefaultValue = false,
+        //                MarginThickness = new Thickness(0, data.VerticalMargin, 0, 0)
+        //            };
+        //
+        //            OutPorts.Add(p);
+        //
+        //            //register listeners on the port
+        //            p.PortConnected += p_PortConnected;
+        //            p.PortDisconnected += p_PortDisconnected;
+        //
+        //            return p;
+        //    }
+        //
+        //    return null;
+        //}
+        //
+        //private void PortSwap(int x,int y)
+        //{
+        //    //ObservableCollection<ConnectorModel> temp = outPorts[x].Connectors;
+        //    //outPorts[x].Connectors = outPorts[y].Connectors;
+        //    //outPorts[y].Connectors = temp;
+        //    //foreach (var c in outPorts[x].Connectors)
+        //    //{
+        //    //    c.Start = outPorts[x];
+        //    //}
+        //    //foreach (var c in outPorts[y].Connectors)
+        //    //{
+        //    //    c.Start = outPorts[y];
+        //    //}
+        //    int temp = outPorts[x].Index;
+        //    outPorts[x].Index = outPorts[y].Index;
+        //    outPorts[y].Index = temp;
+        //}
+#endregion
+
         //TODO: call connect and disconnect for dynNode
 
         /// <summary>
@@ -1603,7 +1701,7 @@ namespace Dynamo.Models
             }
         }
 
-        private void DestroyConnectors(PortModel port)
+        protected void DestroyConnectors(PortModel port)
         {
             while (port.Connectors.Any())
             {

@@ -10,6 +10,7 @@ using Dynamo.Utilities;
 using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
 using System.Windows;
+using System.Collections.ObjectModel;
 
 namespace Dynamo.Nodes
 {
@@ -107,11 +108,25 @@ namespace Dynamo.Nodes
             {
                 if (code == null || !code.Equals(value))
                 {
-                    code = value;
+
                     if (value != null)
                     {
                         DisableReporting();
-                        ProcessCode();
+                        {
+                            this.WorkSpace.UndoXRecorder.BeginActionGroup();
+
+                            var portConnections = new Dictionary<string, List<PortModel>>();
+                            //Save the connectors so that we can recreate them at the correct positions
+                            SaveAndDeleteConnectors(portConnections);
+
+                            this.WorkSpace.UndoXRecorder.RecordModificationForUndo(this);
+                            code = value;
+                            ProcessCode();
+
+                            //Recreate connectors that can be reused
+                            LoadAndCreateConnectors(portConnections);
+                            this.WorkSpace.UndoXRecorder.EndActionGroup();
+                        }
                         RaisePropertyChanged("Code");
                         RequiresRecalc = true;
                         EnableReporting();
@@ -119,6 +134,8 @@ namespace Dynamo.Nodes
                         if (WorkSpace != null)
                             WorkSpace.Modified();
                     }
+                    else
+                        code = null;
                 }
             }
         }
@@ -157,8 +174,13 @@ namespace Dynamo.Nodes
             if (context == SaveContext.Undo)
             {
                 XmlElementHelper helper = new XmlElementHelper(element as XmlElement);
-                Code = helper.ReadString("CodeText");
                 shouldFocus = helper.ReadBoolean("ShouldFocus");
+                code = helper.ReadString("CodeText");
+                ProcessCode();
+                RaisePropertyChanged("Code");
+                RequiresRecalc = true;
+                if (WorkSpace != null)
+                    WorkSpace.Modified();
             }
         }
 
@@ -199,7 +221,7 @@ namespace Dynamo.Nodes
             //New code => Revamp everything
             codeStatements.Clear();
 
-            if (Code.Equals("") || Code.Equals("Your Code Goes Here")) //If its null then remove all the ports
+            if (Code.Equals("")) //If its null then remove all the ports
             {
                 SetPorts(new List<string>());
                 return;
@@ -262,7 +284,10 @@ namespace Dynamo.Nodes
                 }
             }
 
+            var portConnectors = new Dictionary<string, List<PortModel>>();
+            SaveAndDeleteConnectors(portConnectors); //Save the connectors so that we can recreate them at the correct positions
             SetPorts(unboundIdentifiers); //Set the input and output ports based on the statements
+            LoadAndCreateConnectors(portConnectors);
         }
 
         private void SetPorts(List<string> unboundIdentifiers)
@@ -293,11 +318,70 @@ namespace Dynamo.Nodes
                 Statement s = codeStatements[i];
                 if (s.DefinedVariable != null)
                 {
-                    OutPortData.Add(new PortData(">", "Output", typeof(object))
+                    string nickName = s.DefinedVariable.Name;
+                    if (nickName.Contains("temp") && nickName.Length > 9) // Do a better check
                     {
-                        VerticalMargin = verticalMargin[outportCount]
-                    });
+                        OutPortData.Add(new PortData(">", "Statement Output", typeof(object))
+                        {
+                            VerticalMargin = verticalMargin[outportCount]
+                        });
+                    }
+                    else
+                    {
+                        OutPortData.Add(new PortData(">", nickName, typeof(object))
+                        {
+                            VerticalMargin = verticalMargin[outportCount]
+                        });
+                    }
                     outportCount++;
+                }
+            }
+        }
+
+        private void SaveAndDeleteConnectors(Dictionary<string, List<PortModel>> portConnectors)
+        {
+            for(int i=0;i<OutPorts.Count;i++)
+            {
+                var portModel = OutPorts[i];
+                if (portModel.Connectors.Count != 0)
+                {
+                    string portName = portModel.ToolTipContent;
+                    if(portModel.ToolTipContent.Equals("Statement Output"))
+                        portName += i.ToString();
+                    portConnectors[portName] = new List<PortModel>();
+                    foreach (var connector in portModel.Connectors)
+                    {
+                        portConnectors[portName].Add(connector.End);
+                    }
+                }
+            }
+            
+            //Delete the connectors
+            foreach (var outport in OutPorts)
+                DestroyConnectors(outport);
+
+            //Clear out all the port models
+            for (int i = OutPorts.Count - 1; i >= 0; i--)
+                OutPorts.RemoveAt(i);
+        }
+
+        /// <summary>
+        /// Now that the portData has been set for the new ports, we recreate the connections we
+        /// so mercilessly destroyed restoring peace and balance to the world once again.
+        /// </summary>
+        /// <param name="portConnectors"> List of the connections that were killed</param>
+        private void LoadAndCreateConnectors(Dictionary<string, List<PortModel>> portConnectors)
+        {
+            for (int i = 0; i < OutPortData.Count; i++)
+            {
+                if (portConnectors.Keys.Contains(OutPortData[i].ToolTipString))
+                {
+                    foreach (var endPortModel in portConnectors[OutPortData[i].ToolTipString])
+                    {
+                        PortType p;
+                        var connector = ConnectorModel.Make(this, endPortModel.Owner, i, endPortModel.Owner.GetPortIndex(endPortModel,out p), PortType.INPUT);
+                        this.WorkSpace.Connectors.Add(connector);
+                    }
                 }
             }
         }
@@ -340,6 +424,84 @@ namespace Dynamo.Nodes
                 initialMarginRequired = 0;
             }
             return result;
+        }
+
+        /// <summary>
+        /// Deletes all the connections and saves their data (the start and end port)
+        /// so that they can be recreated if needed.
+        /// </summary>
+        /// <param name="portConnections">A list of connections that will be destroyed</param>
+        private void SaveAndDeleteConnectors(Dictionary<string, List<PortModel>> portConnections)
+        {
+            for (int i = 0; i < OutPorts.Count; i++)
+            {
+                var portModel = OutPorts[i];
+                if (portModel.Connectors.Count != 0)
+                {
+                    string portName = portModel.ToolTipContent;
+                    if (portModel.ToolTipContent.Equals("Statement Output"))
+                        portName += i.ToString();
+                    portConnections[portName] = new List<PortModel>();
+                    foreach (var connector in portModel.Connectors)
+                    {
+                        portConnections[portName].Add(connector.End);
+                        this.WorkSpace.UndoXRecorder.RecordDeletionForUndo(connector);
+                    }
+                }
+            }
+
+            //Delete the connectors
+            foreach (var outport in OutPorts)
+                DestroyConnectors(outport);
+
+            //Clear out all the port models
+            for (int i = OutPorts.Count - 1; i >= 0; i--)
+                OutPorts.RemoveAt(i);
+        }
+
+        /// <summary>
+        /// Now that the portData has been set for the new ports, we recreate the connections we
+        /// so mercilessly destroyed, restoring peace and balance to the world once again.
+        /// </summary>
+        /// <param name="portConnections"> List of the connections that were killed</param>
+        private void LoadAndCreateConnectors(Dictionary<string, List<PortModel>> portConnections)
+        {
+            List<int> undefinedIndices = new List<int>();
+            for (int i = 0; i < OutPortData.Count; i++)
+            {
+                string varName = OutPortData[i].ToolTipString;
+                if (portConnections.Keys.Contains(varName))
+                {
+                    foreach (var endPortModel in portConnections[varName])
+                    {
+                        PortType p;
+                        NodeModel endNode = endPortModel.Owner;
+                        var connector = ConnectorModel.Make(this, endNode, i,
+                            endNode.GetPortIndex(endPortModel, out p), PortType.INPUT);
+                        this.WorkSpace.Connectors.Add(connector);
+                        this.WorkSpace.UndoXRecorder.RecordCreationForUndo(connector);
+                    }
+                    portConnections.Remove(varName);
+                }
+                else
+                    undefinedIndices.Add(i);
+            }
+
+            while (undefinedIndices.Count > 0 && portConnections.Count > 0)
+            {
+                var kvp = portConnections.First();
+                foreach (var endPortModel in kvp.Value)
+                {
+                    PortType p;
+                    NodeModel endNode = endPortModel.Owner;
+                    var connector = ConnectorModel.Make(this, endNode, undefinedIndices[0],
+                        endNode.GetPortIndex(endPortModel, out p), PortType.INPUT);
+                    this.WorkSpace.Connectors.Add(connector);
+                    this.WorkSpace.UndoXRecorder.RecordCreationForUndo(connector);
+                }
+                portConnections.Remove(kvp.Key);
+                undefinedIndices.RemoveAt(0);
+            }
         }
         #endregion
 
