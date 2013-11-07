@@ -5,8 +5,7 @@ using System.Text;
 
 namespace DSRevitNodes
 {
-    class Material
+    class DSParameter
     {
-
     }
 }

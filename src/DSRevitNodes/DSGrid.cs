@@ -1,12 +1,13 @@
 ﻿using System;
 using Autodesk.Revit.DB;
+using Autodesk.DesignScript.Geometry;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
 namespace DSRevitNodes
 {
-    class StucturalFraming
+    class DSGrid
     {
-        static FamilyInstance ByStartEndPoints(Point start, Point end, FamilySymbol framing_type)
+        static DSGrid ByStartPtEndPt(Point start, Point end)
         {
             throw new NotImplementedException();
         }

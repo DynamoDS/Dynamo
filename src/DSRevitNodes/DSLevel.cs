@@ -2,14 +2,14 @@
 
 namespace DSRevitNodes
 {
-    class Level
+    class DSLevel
     {
         static Autodesk.Revit.DB.Level ByElevationAndName(double elevation, string name)
         {
             throw new NotImplementedException();
         }
 
-        static Autodesk.Revit.DB.Level ByLevelAndOffset(Level l, double offset)
+        static Autodesk.Revit.DB.Level ByLevelAndOffset(DSLevel l, double offset)
         {
             throw new NotImplementedException();
         }

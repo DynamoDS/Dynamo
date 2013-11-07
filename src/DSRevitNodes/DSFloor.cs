@@ -4,9 +4,9 @@ using Curve = Autodesk.DesignScript.Geometry.Curve;
 
 namespace DSRevitNodes
 {
-    class Floor
+    class DSFloor
     {
-        static Floor ByOutline(List<Curve> outline, Level level)
+        static DSFloor ByOutline(List<DSCurve> outline, DSLevel dsLevel)
         {
             throw new NotImplementedException();
         }

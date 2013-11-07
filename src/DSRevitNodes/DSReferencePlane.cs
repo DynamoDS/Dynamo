@@ -3,7 +3,7 @@ using Autodesk.DesignScript.Geometry;
 
 namespace DSRevitNodes
 {
-    class ReferencePlane
+    class DSReferencePlane
     {
         static Autodesk.Revit.DB.ReferencePlane ByLine(Line line)
         {

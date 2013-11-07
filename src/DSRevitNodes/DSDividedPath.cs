@@ -34,7 +34,7 @@ namespace DSRevitNodes
         /// </summary>
         /// <param name="c">Host curve</param>
         /// <param name="divs">Number of divisions</param>
-        private DSDividedPath(Curve c, int divs)
+        private DSDividedPath(DSCurve c, int divs)
         {
             // PB: This constructor always *recreates* the divided path.
             // Mutating the divided path would require obtaining the referenced 
@@ -76,12 +76,12 @@ namespace DSRevitNodes
 
         #region Static constructors
 
-        static DSDividedPath ByCurveAndEqualDivisions(Curve c, int divisions)
+        static DSDividedPath ByCurveAndEqualDivisions(DSCurve c, int divisions)
         {
             return new DSDividedPath(c, divisions);
         }
 
-        static DSDividedPath ByCurveAndDivisionsOfLength(Curve c, double length)
+        static DSDividedPath ByCurveAndDivisionsOfLength(DSCurve c, double length)
         {
             throw new NotImplementedException();
         }
