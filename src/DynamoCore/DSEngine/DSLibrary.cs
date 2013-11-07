@@ -11,7 +11,7 @@ using ProtoFFI;
 
 namespace Dynamo.DSEngine
 {
-    public enum DSLibraryItemType
+    public enum LibraryItemType
     {
         GenericFunction,
         Constructor,
@@ -24,14 +24,14 @@ namespace Dynamo.DSEngine
     /// <summary>
     /// Describe a DesignScript library item.
     /// </summary>
-    public abstract class DSLibraryItem
+    public abstract class LibraryItem
     {
         public string Assembly { get; set; }
         public string Category { get; set; }
         public string ClassName { get; set; }
         public string Name { get; set; }
         public string DisplayName { get; set; }
-        public DSLibraryItemType Type { get; set; }
+        public LibraryItemType Type { get; set; }
         public string QualifiedName
         {
             get
@@ -40,7 +40,7 @@ namespace Dynamo.DSEngine
             }
         }
 
-        public DSLibraryItem(string assembly, string category, string className, string name, string displayName, DSLibraryItemType type)
+        public LibraryItem(string assembly, string category, string className, string name, string displayName, LibraryItemType type)
         {
             Assembly = assembly;
             Category = category;
@@ -54,19 +54,19 @@ namespace Dynamo.DSEngine
     /// <summary>
     /// Describe a DesignScript function in a imported library
     /// </summary>
-    public class DSFunctionItem : DSLibraryItem
+    public class FunctionItem : LibraryItem
     {
         public List<string> Arguments { get; set; }
         public List<string> ReturnKeys { get; set; }
 
-        public DSFunctionItem(string assembly,
-                                    string category,
-                                    string className,
-                                    string name,
-                                    string displayName,
-                                    DSLibraryItemType type,
-                                    List<string> arguments,
-                                    List<string> returnKeys = null) :
+        public FunctionItem(string assembly,
+                            string category,
+                            string className,
+                            string name,
+                            string displayName,
+                            LibraryItemType type,
+                            List<string> arguments,
+                            List<string> returnKeys = null) :
             base(assembly, category, className, name, displayName, type)
         {
             this.Arguments = arguments;
@@ -77,7 +77,7 @@ namespace Dynamo.DSEngine
     /// <summary>
     /// A helper class to get some information from DesignScript core.
     /// </summary>
-    public class DSLibraryServices
+    public class LibraryServices
     {
         public static class BuiltInCategories
         {
@@ -85,24 +85,26 @@ namespace Dynamo.DSEngine
             public const string Operators = "Operators";
         }
 
-        public enum LibraryLoadStatus
-        {
-            Ok,
-            Failed
-        }
-
         public class LibraryLoadedEventArgs : EventArgs
         {
-            public LibraryLoadedEventArgs(string libraryPath, LibraryLoadStatus status, string message)
+            public LibraryLoadedEventArgs(string libraryPath)
             {
                 LibraryPath = libraryPath;
-                Status = status;
-                Message = message;
             }
 
             public string LibraryPath { get; private set; }
-            public LibraryLoadStatus Status { get; private set; }
-            public string Message { get; private set;}
+        }
+
+        public class LibraryLoadFailedEventArgs : EventArgs
+        {
+            public LibraryLoadFailedEventArgs(string libraryPath, string reason)
+            {
+                LibraryPath = libraryPath; ;
+                Reason = reason;
+            }
+
+            public string LibraryPath { get; private set; }
+            public string Reason { get; private set; }
         }
 
         public class LibraryLoadingEventArgs : EventArgs
@@ -116,8 +118,17 @@ namespace Dynamo.DSEngine
         }
 
         public event EventHandler<LibraryLoadingEventArgs> LibraryLoading;
+        public event EventHandler<LibraryLoadFailedEventArgs> LibraryLoadFailed;
         public event EventHandler<LibraryLoadedEventArgs> LibraryLoaded;
-        public static DSLibraryServices Instance = new DSLibraryServices();
+
+        public LibraryServices()
+        {
+            GraphToDSCompiler.GraphUtilities.PreloadAssembly(this.BuiltinLibraries);
+            libraryFunctionMap = new Dictionary<string, List<FunctionItem>>(new LibraryPathComparer());
+            PopulateBuiltIns();
+            PopulateOperators();
+            PopulateBuiltinLibraries();
+        }
 
         /// <summary>
         /// Get a list of imported libraries.
@@ -135,16 +146,21 @@ namespace Dynamo.DSEngine
             }
         }
 
-        private List<string> preLoadedLibraries;
-        public List<string> PreLoadedLibraries
+        private List<string> builtinLibraries = new List<string> { "Math.dll", "ProtoGeometry.dll"};
+        public List<string> BuiltinLibraries
         {
             get
             {
-                if (preLoadedLibraries == null)
-                {
-                    preLoadedLibraries = new List<string> { "Math.dll", "ProtoGeometry.dll" };
-                }
-                return preLoadedLibraries;
+                return builtinLibraries;
+            }
+        }
+
+        private List<string> importedLibraries = new List<string>();
+        public List<string> ImportedLibraries
+        {
+            get
+            {
+                return importedLibraries;
             }
         }
 
@@ -153,7 +169,7 @@ namespace Dynamo.DSEngine
         /// </summary>
         /// <param name="library"></param>
         /// <returns></returns>
-        public List<DSFunctionItem> this[string library]
+        public List<FunctionItem> this[string library]
         {
             get
             {
@@ -162,7 +178,7 @@ namespace Dynamo.DSEngine
                     return null;
                 }
 
-                List<DSFunctionItem> functions = null;;
+                List<FunctionItem> functions = null;;
                 libraryFunctionMap.TryGetValue(library, out functions);
                 return functions;
             }
@@ -177,17 +193,20 @@ namespace Dynamo.DSEngine
             if (!File.Exists(libraryPath))
             {
                 string errorMessage = string.Format("Cannot find library path: {0}.", libraryPath);
-                throw new FileNotFoundException(errorMessage);
+                OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(libraryPath, errorMessage));
+                return;
             }
 
             libraryPath = Path.GetFullPath(libraryPath);
-            if (this.Libraries.Any(path => string.Compare(libraryPath, path, true) == 0))
+            if (this.libraryFunctionMap.ContainsKey(libraryPath))
             {
+                string errorMessage = string.Format("Library {0} has been loaded.", libraryPath);
+                OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(libraryPath, errorMessage));
                 return;
             }
 
             OnLibraryLoading(new LibraryLoadingEventArgs(libraryPath));
-            List<DSFunctionItem> functions = new List<DSFunctionItem>();
+            List<FunctionItem> functions = new List<FunctionItem>();
 
             try
             {
@@ -200,9 +219,10 @@ namespace Dynamo.DSEngine
                     foreach (var error in GraphToDSCompiler.GraphUtilities.BuildStatus.Errors)
                     {
                         DynamoLogger.Instance.LogWarning(error.Message, WarningLevel.Moderate);
+                        errorMessage += error.Message + "\n";
                     }
 
-                    OnLibraryLoaded(new LibraryLoadedEventArgs(libraryPath, LibraryLoadStatus.Failed, errorMessage));
+                    OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(libraryPath, errorMessage));
                     return;
                 }
 
@@ -213,16 +233,30 @@ namespace Dynamo.DSEngine
             }
             catch (Exception e)
             {
-                OnLibraryLoaded(new LibraryLoadedEventArgs(libraryPath, LibraryLoadStatus.Failed, e.Message));
+                OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(libraryPath, e.Message));
+                return;
             }
 
             AddToLibraryList(libraryPath, functions);
-            OnLibraryLoaded(new LibraryLoadedEventArgs(libraryPath, LibraryLoadStatus.Ok, null));
+            OnLibraryLoaded(new LibraryLoadedEventArgs(libraryPath));
         }
 
-        private Dictionary<string, List<DSFunctionItem>> libraryFunctionMap;
+        private class LibraryPathComparer: IEqualityComparer<string>
+        {
+            public bool Equals(string x, string y)
+            {
+                return string.Compare(x, y, StringComparison.InvariantCultureIgnoreCase) == 0;
+            }
 
-        private void AddToLibraryList(string libraryPath, List<DSFunctionItem> functions)
+            public int GetHashCode(string obj)
+            {
+                return obj.ToUpper().GetHashCode();
+            }
+        }
+
+        private Dictionary<string, List<FunctionItem>> libraryFunctionMap;
+
+        private void AddToLibraryList(string libraryPath, List<FunctionItem> functions)
         {
             if (string.IsNullOrEmpty(libraryPath))
             {
@@ -242,13 +276,13 @@ namespace Dynamo.DSEngine
         private void PopulateBuiltIns()
         {
             string category = BuiltInCategories.BuiltIns;
-            List<DSFunctionItem> builtInFunctions = new List<DSFunctionItem>();
+            List<FunctionItem> builtInFunctions = new List<FunctionItem>();
             List<ProcedureNode> builtins = GraphToDSCompiler.GraphUtilities.BuiltInMethods;
 
             foreach (var method in builtins)
             {
                 List<string> arguments = method.argInfoList.Select(x => x.Name).ToList();
-                builtInFunctions.Add(new DSFunctionItem(null, category, null, method.name, method.name, DSLibraryItemType.GenericFunction, arguments, null));
+                builtInFunctions.Add(new FunctionItem(null, category, null, method.name, method.name, LibraryItemType.GenericFunction, arguments, null));
             }
 
             AddToLibraryList(category, builtInFunctions);
@@ -257,13 +291,13 @@ namespace Dynamo.DSEngine
         private void PopulateOperators()
         {
             string category = BuiltInCategories.Operators;
-            List<DSFunctionItem> opFunctions = new List<DSFunctionItem>();
+            List<FunctionItem> opFunctions = new List<FunctionItem>();
 
             List<string> args = new List<string> { "operand1", "operand2" };
-            opFunctions.Add(new DSFunctionItem(null, category, null, Op.GetOpFunction(Operator.add), Op.GetOpSymbol(Operator.add), DSLibraryItemType.GenericFunction, args, null));
-            opFunctions.Add(new DSFunctionItem(null, category, null, Op.GetOpFunction(Operator.sub), Op.GetOpSymbol(Operator.sub), DSLibraryItemType.GenericFunction, args, null));
-            opFunctions.Add(new DSFunctionItem(null, category, null, Op.GetOpFunction(Operator.mul), Op.GetOpSymbol(Operator.mul), DSLibraryItemType.GenericFunction, args, null));
-            opFunctions.Add(new DSFunctionItem(null, category, null, Op.GetOpFunction(Operator.div), Op.GetOpSymbol(Operator.div), DSLibraryItemType.GenericFunction, args, null));
+            opFunctions.Add(new FunctionItem(null, category, null, Op.GetOpFunction(Operator.add), Op.GetOpSymbol(Operator.add), LibraryItemType.GenericFunction, args, null));
+            opFunctions.Add(new FunctionItem(null, category, null, Op.GetOpFunction(Operator.sub), Op.GetOpSymbol(Operator.sub), LibraryItemType.GenericFunction, args, null));
+            opFunctions.Add(new FunctionItem(null, category, null, Op.GetOpFunction(Operator.mul), Op.GetOpSymbol(Operator.mul), LibraryItemType.GenericFunction, args, null));
+            opFunctions.Add(new FunctionItem(null, category, null, Op.GetOpFunction(Operator.div), Op.GetOpSymbol(Operator.div), LibraryItemType.GenericFunction, args, null));
 
             AddToLibraryList(category, opFunctions);
         }
@@ -275,7 +309,7 @@ namespace Dynamo.DSEngine
             return category;
         }
 
-        private DSFunctionItem ImportProcedure(string library, string category, string className, ProcedureNode proc)
+        private FunctionItem ImportProcedure(string library, string category, string className, ProcedureNode proc)
         {
             bool isGenericFunction = string.IsNullOrEmpty(className);
             if (!isGenericFunction)
@@ -293,10 +327,10 @@ namespace Dynamo.DSEngine
             }
 
             string displayName = proc.name;
-            DSLibraryItemType type = DSLibraryItemType.GenericFunction;
+            LibraryItemType type = LibraryItemType.GenericFunction;
             if (CoreUtils.IsGetterSetter(proc.name))
             {
-                type = proc.isStatic ? DSLibraryItemType.StaticProperty : DSLibraryItemType.InstanceProperty;
+                type = proc.isStatic ? LibraryItemType.StaticProperty : LibraryItemType.InstanceProperty;
                 CoreUtils.TryGetPropertyName(proc.name, out displayName);
 
                 // temporary add prefix to distinguish getter/setter until the
@@ -314,19 +348,19 @@ namespace Dynamo.DSEngine
             {
                 if (proc.isConstructor)
                 {
-                    type = DSLibraryItemType.Constructor;
+                    type = LibraryItemType.Constructor;
                 }
                 else if (proc.isStatic)
                 {
-                    type = DSLibraryItemType.StaticMethod;
+                    type = LibraryItemType.StaticMethod;
                 }
                 else if (!string.IsNullOrEmpty(className))
                 {
-                    type = DSLibraryItemType.InstanceMethod;
+                    type = LibraryItemType.InstanceMethod;
                 }
                 else
                 {
-                    type = DSLibraryItemType.GenericFunction;
+                    type = LibraryItemType.GenericFunction;
                 }
             }
             
@@ -342,11 +376,11 @@ namespace Dynamo.DSEngine
                 returnKeys = proc.MethodAttribute.MutilReturnMap.Keys.ToList();
             }
 
-            var function = new DSFunctionItem(library, category, className, proc.name, displayName, type, arguments, returnKeys);
+            var function = new FunctionItem(library, category, className, proc.name, displayName, type, arguments, returnKeys);
             return function;
         }
 
-        private void ImportClass(ClassNode classNode, string libraryPath, List<DSFunctionItem> functions)
+        private void ImportClass(ClassNode classNode, string libraryPath, List<FunctionItem> functions)
         {
             string category = GetCategory(classNode);
             foreach (var proc in classNode.vtable.procList)
@@ -359,25 +393,24 @@ namespace Dynamo.DSEngine
             }
         }
 
-        private void PopulatePreLoadedLibaries()
+        private void PopulateBuiltinLibraries()
         {
-            Dictionary<string, List<DSFunctionItem>> importedFunctions = new Dictionary<string, List<DSFunctionItem>>();
-            foreach (var library in PreLoadedLibraries)
+            var importedFunctions = new Dictionary<string, List<FunctionItem>>(new LibraryPathComparer());
+            foreach (var library in BuiltinLibraries)
             {
-                string libraryPath = Path.GetFullPath(library);
-                importedFunctions[libraryPath] = new List<DSFunctionItem>();
+                importedFunctions[library] = new List<FunctionItem>();
             }
 
             foreach (var classNode in GraphToDSCompiler.GraphUtilities.ClassTable.ClassNodes)
             {
                 if (classNode.IsImportedClass && !string.IsNullOrEmpty(classNode.ExternLib))
                 {
-                    string libraryPath = Path.GetFullPath(classNode.ExternLib);
-                    List<DSFunctionItem> functions = null;
+                    string library = Path.GetFileName(classNode.ExternLib);
+                    List<FunctionItem> functions = null;
 
-                    if (importedFunctions.TryGetValue(libraryPath, out functions))
+                    if (importedFunctions.TryGetValue(library, out functions))
                     {
-                        ImportClass(classNode, libraryPath, functions);
+                        ImportClass(classNode, library, functions);
                     }
                 }
             }
@@ -397,23 +430,24 @@ namespace Dynamo.DSEngine
             }
         }
 
-        private void OnLibraryLoaded(LibraryLoadedEventArgs e)
+        private void OnLibraryLoadFailed(LibraryLoadFailedEventArgs e)
         {
-            EventHandler<LibraryLoadedEventArgs> handler = LibraryLoaded;
+            EventHandler<LibraryLoadFailedEventArgs> handler = LibraryLoadFailed;
             if (handler != null)
             {
                 handler(this, e);
             }
         }
 
-        private DSLibraryServices()
+        private void OnLibraryLoaded(LibraryLoadedEventArgs e)
         {
-            GraphToDSCompiler.GraphUtilities.PreloadAssembly(this.PreLoadedLibraries);
+            importedLibraries.Add(e.LibraryPath);
 
-            libraryFunctionMap = new Dictionary<string, List<DSFunctionItem>>();
-            PopulateBuiltIns();
-            PopulateOperators();
-            PopulatePreLoadedLibaries();
+            EventHandler<LibraryLoadedEventArgs> handler = LibraryLoaded;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
         }
     }
 }

@@ -14,8 +14,9 @@ namespace Dynamo.Tests
         [Test]
         public void TestPreLoadedLibrary()
         {
-            List<string> loadedLibs = DSLibraryServices.Instance.PreLoadedLibraries;
-            List<string> libs = DSLibraryServices.Instance.Libraries.Select(
+            LibraryServices libraryServices = new LibraryServices();
+            List<string> loadedLibs = libraryServices.BuiltinLibraries;
+            List<string> libs = libraryServices.Libraries.Select(
                 lib => {return Path.GetFileName(lib);}).ToList();
 
             foreach (var lib in loadedLibs)
@@ -27,35 +28,37 @@ namespace Dynamo.Tests
         [Test]
         public void TestLoadLibrary()
         {
-            EventHandler<Dynamo.DSEngine.DSLibraryServices.LibraryLoadedEventArgs> onLoaded =
-                (sender, e) => Assert.IsTrue(e.Status == DSLibraryServices.LibraryLoadStatus.Ok);
+            LibraryServices libraryServices = new LibraryServices();
+            bool libraryLoaded = false;
 
-            DSLibraryServices.Instance.LibraryLoaded += onLoaded;
+            libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
+            libraryServices.LibraryLoadFailed += (sender, e) => Assert.Fail("Failed to load library: " + e.LibraryPath);
+            
             string libraryPath = Path.Combine(GetTestDirectory(), @"core\library\MultiReturnTest.dll");
-            DSLibraryServices.Instance.ImportLibrary(libraryPath);
+            libraryServices.ImportLibrary(libraryPath);
+            Assert.IsTrue(libraryLoaded);
 
-            List<DSFunctionItem> functions = DSLibraryServices.Instance[libraryPath];
+            List<FunctionItem> functions = libraryServices[libraryPath];
             Assert.IsNotNull(functions);
             Assert.IsTrue(functions.Count > 0);
-
-            DSLibraryServices.Instance.LibraryLoaded -= onLoaded;
         }
 
         [Test]
         public void TestLoadDSFile()
         {
-            EventHandler<DSLibraryServices.LibraryLoadedEventArgs> onLoaded =
-                (sender, e) => Assert.IsTrue(e.Status == DSLibraryServices.LibraryLoadStatus.Ok);
+            LibraryServices libraryServices = new LibraryServices();
+            bool libraryLoaded = false;
 
-            DSLibraryServices.Instance.LibraryLoaded += onLoaded;
+            libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
+            libraryServices.LibraryLoadFailed += (sender, e) => Assert.Fail("Failed to load library: " + e.LibraryPath); 
+
             string libraryPath = Path.Combine(GetTestDirectory(), @"core\library\Dummy.ds");
-            DSLibraryServices.Instance.ImportLibrary(libraryPath);
+            libraryServices.ImportLibrary(libraryPath);
+            Assert.IsTrue(libraryLoaded);
 
-            List<DSFunctionItem> functions = DSLibraryServices.Instance[libraryPath];
+            List<FunctionItem> functions = libraryServices[libraryPath];
             Assert.IsNotNull(functions);
             Assert.IsTrue(functions.Count > 0);
-
-            DSLibraryServices.Instance.LibraryLoaded -= onLoaded;
         }
     }
 }

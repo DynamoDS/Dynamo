@@ -947,6 +947,16 @@ namespace Dynamo.ViewModels
         {
             RaisePropertyChanged("IsHomeSpace");
         }
+
+        private void PauseVisualizationManagerUpdates(object parameter)
+        {
+            dynSettings.Controller.VisualizationManager.UpdatingPaused = (bool) parameter;
+        }
+
+        private bool CanPauseVisualizationManagerUpdates(object parameter)
+        {
+            return true;
+        }
     }
 
     public class ViewModelEventArgs : EventArgs
