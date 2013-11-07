@@ -55,6 +55,11 @@ namespace Dynamo.ViewModels
             return stateMachine.HandlePortClicked(portViewModel);
         }
 
+        internal void RequestTogglePanMode()
+        {
+            stateMachine.RequestTogglePanMode();
+        }
+
         internal void CancelActiveState()
         {
             stateMachine.CancelActiveState();
@@ -313,13 +318,19 @@ namespace Dynamo.ViewModels
         {
             #region Private Class Data Members
 
+            /// <summary>
+            /// PanMode: Left mouse button will be use for panning instead
+            ///     - Mouse cursor changed, disable all node interaction
+            /// </summary>
+
             internal enum State
             {
                 None,
                 WindowSelection,
                 DragSetup,
                 NodeReposition,
-                Connection
+                Connection,
+                PanMode
             }
 
             private bool ignoreMouseClick = false;
@@ -327,7 +338,15 @@ namespace Dynamo.ViewModels
             internal State CurrentState
             {
                 get { return this.currentState; }
+                private set
+                {
+                    this.currentState = value;
+
+                    // Update Changes
+                    dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.TogglePanCommand.RaiseCanExecuteChanged();
+                }
             }
+
             private Point mouseDownPos = new Point();
             private WorkspaceViewModel owningWorkspace = null;
 
@@ -345,8 +364,34 @@ namespace Dynamo.ViewModels
             /// </summary>
             internal void CancelActiveState()
             {
+                if (currentState == State.Connection)
+                {
+                    var command = new DynCmd.MakeConnectionCommand(Guid.Empty, -1,
+                        PortType.INPUT, DynCmd.MakeConnectionCommand.Mode.Cancel);
+
+                    var dynamoViewModel = dynSettings.Controller.DynamoViewModel;
+                    dynamoViewModel.ExecuteCommand(command);
+                }
                 currentState = State.None;
                 ignoreMouseClick = true;
+            }
+
+            /// <summary>
+            /// The owning 
+            /// </summary>
+            internal void RequestTogglePanMode()
+            {
+                // In pan mode, left mouse click shall not be handled
+                if (currentState == State.PanMode)
+                {
+                    // TODO(Robin) : Unrequest mouse drag
+                    currentState = State.None;
+                }
+                else // no matter in which state, can go PanMode directly
+                {
+                    // TODO(Robin) : Request mouse changes
+                    currentState = State.PanMode;
+                }
             }
 
             #endregion
@@ -390,6 +435,10 @@ namespace Dynamo.ViewModels
 
                     eventHandled = true; // Mouse event handled.
                 }
+                else if (this.currentState == State.PanMode)
+                {
+                    // TODO(Robin) : Request for drag active mouse pointer
+                }
 
                 dynSettings.ReturnFocusToSearch();
                 return eventHandled;
@@ -426,6 +475,10 @@ namespace Dynamo.ViewModels
                 }
                 else if (this.currentState == State.DragSetup)
                     this.currentState = State.None;
+                else if (this.currentState == State.PanMode)
+                {
+                    // TODO(Robin) : Unrequest mouse cursor changes for drag active
+                }
 
                 return false; // Mouse event not handled.
             }
