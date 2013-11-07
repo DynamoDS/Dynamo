@@ -122,6 +122,10 @@ namespace Dynamo.DSEngine
         {
         }
 
+        /// <summary>
+        /// Return graph sync data that will be executed by LiveRunner.
+        /// </summary>
+        /// <returns></returns>
         public GraphSyncData GetSyncData()
         {
             var added = GetSubtrees(State.Added);
@@ -216,9 +220,6 @@ namespace Dynamo.DSEngine
 
     /// <summary>
     /// AstBuilder is a factory class to create different kinds of AST nodes.
-    /// 
-    /// Internally it keeps a mapping between Dynamo node and the corresponding
-    /// DesignScript AST nodes. 
     /// </summary>
     public class AstBuilder : IAstBuilder
     {
@@ -229,33 +230,62 @@ namespace Dynamo.DSEngine
             public const string VarPrefix = @"var_";
         }
 
-        public static AstBuilder Instance = new AstBuilder();
-        private SyncDataManager syncDataManager;
-        
-        private AstBuilder()
+        public class ASTBuildingEventArgs : EventArgs
         {
-            syncDataManager = new SyncDataManager();
-            dynSettings.Controller.DynamoModel.NodeDeleted += this.OnNodeDeleted;
+            public ASTBuildingEventArgs(NodeModel node)
+            {
+                this.Node = node;
+            }
+
+            public NodeModel Node { get; private set; }
         }
 
-        public GraphSyncData GetSyncData()
+        public class ASTBuiltEventArgs: EventArgs
         {
-            return syncDataManager.GetSyncData();
+            public ASTBuiltEventArgs(NodeModel node, List<AssociativeNode> astNodes)
+            {
+                this.Node = node;
+                this.AstNodes = astNodes;
+            }
+
+            public NodeModel Node { get; private set;}
+            public List<AssociativeNode> AstNodes { get; private set;}
+        }
+
+        public event EventHandler<ASTBuildingEventArgs> AstBuilding;
+        public event EventHandler<ASTBuiltEventArgs> AstBuilt;
+        
+        public AstBuilder()
+        {
         }
 
         #region IAstBuilder interface
+        /// <summary>
+        /// Build default AST node for Dynamo node.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="inputs"></param>
         public void Build(NodeModel node, List<AssociativeNode> inputs)
         {
-            syncDataManager.MarkForAdding(node.GUID);
+            ASTBuildingEventArgs buildingEventArgs = new ASTBuildingEventArgs(node);
+            OnAstBuilding(buildingEventArgs);
 
             var rhs = AstFactory.BuildNullNode();
             var assignment = AstFactory.BuildAssignment(node.AstIdentifier, rhs);
-            syncDataManager.AddNode(node.GUID, assignment);
+
+            ASTBuiltEventArgs builtEventArgs = new ASTBuiltEventArgs(node, new List<AssociativeNode> { assignment });
+            OnAstBuilt(builtEventArgs);
         }
 
+        /// <summary>
+        /// Build AST node for DSFunction node.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="inputs"></param>
         public void Build(DSFunction node, List<AssociativeNode> inputs)
         {
-            syncDataManager.MarkForAdding(node.GUID);
+            ASTBuildingEventArgs buildingEventArgs = new ASTBuildingEventArgs(node);
+            OnAstBuilding(buildingEventArgs);
 
             string function = node.Definition.Name;
             var functionCall = AstFactory.BuildFunctionCall(function, inputs);
@@ -263,7 +293,9 @@ namespace Dynamo.DSEngine
             if (node.IsStaticMember() || node.IsConstructor())
             {
                 IdentifierNode classNode = new IdentifierNode(node.Definition.ClassName);
-                functionCall = CoreUtils.GenerateCallDotNode(classNode, functionCall as FunctionCallNode, LiveRunnerServices.Instance.Core);
+                functionCall = CoreUtils.GenerateCallDotNode(classNode, 
+                    functionCall as FunctionCallNode, 
+                    EngineController.Instance.LiveRunnerCore);
             }
             else if (node.IsInstanceMember())
             {
@@ -274,25 +306,43 @@ namespace Dynamo.DSEngine
                     inputs.RemoveAt(0);  // remove this pointer
                 }
                 functionCall = AstFactory.BuildFunctionCall(function, inputs);
-                functionCall= CoreUtils.GenerateCallDotNode(thisNode, functionCall as FunctionCallNode, LiveRunnerServices.Instance.Core);
+                functionCall= CoreUtils.GenerateCallDotNode(thisNode, 
+                    functionCall as FunctionCallNode, 
+                    EngineController.Instance.LiveRunnerCore);
             }
 
             var assignment = AstFactory.BuildAssignment(node.AstIdentifier, functionCall);
-            syncDataManager.AddNode(node.GUID, assignment);
+
+            ASTBuiltEventArgs builtEventArgs = new ASTBuiltEventArgs(node, new List<AssociativeNode> { assignment });
+            OnAstBuilt(builtEventArgs);
         }
 
+        /// <summary>
+        /// Build AST node for Double node.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="inputs"></param>
         public void Build(Dynamo.Nodes.Double node, List<AssociativeNode> inputs)
         {
-            syncDataManager.MarkForAdding(node.GUID);
+            ASTBuildingEventArgs buildingEventArgs = new ASTBuildingEventArgs(node);
+            OnAstBuilding(buildingEventArgs);
 
             var rhs = AstFactory.BuildDoubleNode(node.Value);
             var assignment = AstFactory.BuildAssignment(node.AstIdentifier, rhs);
-            syncDataManager.AddNode(node.GUID, assignment);
+
+            ASTBuiltEventArgs builtEventArgs = new ASTBuiltEventArgs(node, new List<AssociativeNode> { assignment });
+            OnAstBuilt(builtEventArgs);
         }
 
+        /// <summary>
+        /// Build AST node for DoubleInput node.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="inputs"></param>
         public void Build(Dynamo.Nodes.DoubleInput node, List<AssociativeNode> inputs)
         {
-            syncDataManager.MarkForAdding(node.GUID);
+            ASTBuildingEventArgs buildingEventArgs = new ASTBuildingEventArgs(node);
+            OnAstBuilding(buildingEventArgs);
 
             AssociativeNode rhs = null;
             if (inputs.Count == 1)
@@ -305,27 +355,50 @@ namespace Dynamo.DSEngine
             }
 
             var assignment = AstFactory.BuildAssignment(node.AstIdentifier, rhs);
-            syncDataManager.AddNode(node.GUID, assignment);
+
+            ASTBuiltEventArgs builtEventArgs = new ASTBuiltEventArgs(node, new List<AssociativeNode> { assignment });
+            OnAstBuilt(builtEventArgs);
         }
 
+        /// <summary>
+        /// Build AST node for bool node.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="inputs"></param>
         public void Build(Dynamo.Nodes.Bool node, List<AssociativeNode> inputs)
         {
-            syncDataManager.MarkForAdding(node.GUID);
+            ASTBuildingEventArgs buildingEventArgs = new ASTBuildingEventArgs(node);
+            OnAstBuilding(buildingEventArgs);
 
             var rhs =  AstFactory.BuildBooleanNode(node.Value);
             var assignment = AstFactory.BuildAssignment(node.AstIdentifier, rhs);
-            syncDataManager.AddNode(node.GUID, assignment);
+
+            ASTBuiltEventArgs builtEventArgs = new ASTBuiltEventArgs(node, new List<AssociativeNode> { assignment });
+            OnAstBuilt(builtEventArgs);
         }
 
+        /// <summary>
+        /// Build AST node for String node.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="inputs"></param>
         public void Build(Dynamo.Nodes.String node, List<AssociativeNode> inputs)
         {
-            syncDataManager.MarkForAdding(node.GUID);
+            ASTBuildingEventArgs buildingEventArgs = new ASTBuildingEventArgs(node);
+            OnAstBuilding(buildingEventArgs);
 
             var rhs = AstFactory.BuildStringNode(node.Value);
             var assignment = AstFactory.BuildAssignment(node.AstIdentifier, rhs);
-            syncDataManager.AddNode(node.GUID, assignment);
+
+            ASTBuiltEventArgs builtEventArgs = new ASTBuiltEventArgs(node, new List<AssociativeNode> { assignment });
+            OnAstBuilt(builtEventArgs);
         }
 
+        /// <summary>
+        /// Build AST node for code block node.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="inputs"></param>
         public void Build(Dynamo.Nodes.CodeBlockNodeModel node, List<AssociativeNode> inputs)
         {
             if (node.State == ElementState.ERROR)
@@ -333,17 +406,19 @@ namespace Dynamo.DSEngine
                 DynamoLogger.Instance.Log("Error in Code Block Node. Not sent for building and compiling");
             }
 
-            syncDataManager.MarkForAdding(node.GUID);
+            ASTBuildingEventArgs buildingEventArgs = new ASTBuildingEventArgs(node);
+            OnAstBuilding(buildingEventArgs);
 
             List<string> unboundIdentifiers = new List<string>();
             List<ProtoCore.AST.Node> resultNodes = new List<Node>();
             List<ProtoCore.BuildData.ErrorEntry> errors;
             List<ProtoCore.BuildData.WarningEntry> warnings;
             GraphToDSCompiler.GraphUtilities.Parse(node.Code, out resultNodes, out errors, out  warnings, unboundIdentifiers);
-            foreach (var astNode in resultNodes)
-            {
-                syncDataManager.AddNode(node.GUID, (astNode as AssociativeNode));
-            }
+            
+            List<AssociativeNode> astNodes = resultNodes.ConvertAll(n => n as AssociativeNode);
+            ASTBuiltEventArgs builtEventArgs = new ASTBuiltEventArgs(node, astNodes);
+            OnAstBuilt(builtEventArgs);
+
         }
         #endregion
 
@@ -404,19 +479,28 @@ namespace Dynamo.DSEngine
             return partialFunc;
         }
 
-        public void BeginBuildingAst()
+        /// <summary>
+        /// Dispatch AstBuilding event to event handlers.
+        /// </summary>
+        /// <param name="e"></param>
+        private void OnAstBuilding(ASTBuildingEventArgs e)
         {
-            syncDataManager.ResetStates();
+            if (AstBuilding != null)
+            {
+                AstBuilding(this, e);
+            }
         }
 
-        public void FinishBuildingAst()
+        /// <summary>
+        /// Dispatch AstBuilt event to event handlers.
+        /// </summary>
+        /// <param name="e"></param>
+        private void OnAstBuilt(ASTBuiltEventArgs e)
         {
-
-        }
-
-        public void OnNodeDeleted(NodeModel node)
-        {
-            syncDataManager.DeleteNodes(node.GUID);
+            if (AstBuilt != null)
+            {
+                AstBuilt(this, e);
+            }
         }
     }
 }
