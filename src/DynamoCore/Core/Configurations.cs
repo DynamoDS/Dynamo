@@ -122,7 +122,7 @@ namespace Dynamo.Core
 
         public static SolidColorBrush LibraryTooltipFrameFill = new SolidColorBrush(Color.FromRgb(255, 255, 255));
         public static double LibraryTooltipFrameStrokeThickness = 1;
-        public static SolidColorBrush LibraryTooltipFrameStrokeColor = new SolidColorBrush(Color.FromRgb(10, 93, 30));
+        public static SolidColorBrush LibraryTooltipFrameStrokeColor = new SolidColorBrush(Color.FromRgb(165, 209, 226));
 
         public static double LibraryTooltipMaxWidth = 400;
         public static double LibraryTooltipMaxHeight = 200;
