@@ -36,20 +36,25 @@ namespace DSRevitNodes
             // curve from the DividedPath, which does not look to be possible 
             // (without an expensive reverse lookup)
 
-            // let's create the new curve
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
+            // build the divided path
             var divPath = Autodesk.Revit.DB.DividedPath.Create(Document,
                 new List<Reference>() {c.InternalCurve.Reference});
             divPath.FixedNumberOfPoints = divs;
+
+            // set internally
             InternalSetDividedPath(divPath);
 
             TransactionManager.GetInstance().TransactionTaskDone();
 
+            // delete any cached id and set this new one
             ElementBinder.CleanupAndSetElementForTrace(Document, InternalDividedPath.Id);
         }
 
         #endregion
+
+        #region Private mutators
 
         private void InternalSetDividedPath(Autodesk.Revit.DB.DividedPath divPath)
         {
@@ -57,6 +62,8 @@ namespace DSRevitNodes
             InternalID = divPath.Id;
             InternalUniqueId = divPath.UniqueId;
         }
+
+        #endregion
 
         #region Static constructors
 
