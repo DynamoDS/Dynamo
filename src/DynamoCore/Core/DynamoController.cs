@@ -351,14 +351,12 @@ namespace Dynamo
             {
 
 #if USE_DSENGINE
-                AstBuilder.Instance.BeginBuildingAst();
+                EngineController.Instance.ResetAstBuildingState();
                 foreach (NodeModel topMost in topElements)
                 {
-                    topMost.CompileToAstNode(AstBuilder.Instance);
+                    topMost.CompileToAstNode(EngineController.Instance.Builder);
                 }
-                AstBuilder.Instance.FinishBuildingAst();
-
-                Run(topElements, AstBuilder.Instance.GetSyncData());
+                Run(topElements, EngineController.Instance.GetSyncData());
 #else
                 var topNode = new BeginNode(new List<string>());
                 int i = 0;
@@ -458,7 +456,7 @@ namespace Dynamo
 
             try
             {
-                LiveRunnerServices.Instance.UpdateGraph(graphData);
+                EngineController.Instance.UpdateGraph(graphData);
 
                 // Currently just use inefficient way to refresh preview values. 
                 // After we switch to async call, only those nodes that are really 
