@@ -73,6 +73,26 @@ namespace Dynamo.Nodes
             else
                 return inputCode;
         }
+
+
+        public bool VariableAlreadyDeclared(Statement stmnt)
+        {
+            string varName = stmnt.DefinedVariable.Name;
+            foreach (var node in this.WorkSpace.Nodes)
+            {
+                if (node is CodeBlockNodeModel)
+                {
+                    foreach (var x in (node as CodeBlockNodeModel).codeStatements)
+                    {
+                        if (x == stmnt)
+                            continue;
+                        if (x.DefinedVariable.Name.Equals(varName))
+                            return true;
+                    }
+                }
+            }
+            return false;
+        }
         #endregion
 
         #region Properties
@@ -101,25 +121,6 @@ namespace Dynamo.Nodes
                     }
                 }
             }
-        }
-
-        public bool VariableAlreadyDeclared(Statement stmnt)
-        {
-            string varName = stmnt.DefinedVariable.Name;
-            foreach (var node in this.WorkSpace.Nodes)
-            {
-                if (node is CodeBlockNodeModel)
-                {
-                    foreach (var x in (node as CodeBlockNodeModel).codeStatements)
-                    {
-                        if (x == stmnt)
-                            continue;
-                        if (x.DefinedVariable.Name.Equals(varName))
-                            return true;
-                    }
-                }
-            }
-            return false;
         }
 
         public string CodeToParse
@@ -210,6 +211,7 @@ namespace Dynamo.Nodes
             List<ProtoCore.AST.Node> resultNodes = new List<Node>();
             List<ProtoCore.BuildData.ErrorEntry> errors;
             List<ProtoCore.BuildData.WarningEntry> warnings;
+
             if (GraphToDSCompiler.GraphUtilities.Parse(ref codeToParse, out resultNodes, out errors, out  warnings, unboundIdentifiers) && resultNodes != null)
             {
                 //Create an instance of statement for each code statement written by the user
