@@ -21,6 +21,25 @@ namespace RevitServices.Persistence
     {
         private const string REVIT_TRACE_ID = "{0459D869-0C72-447F-96D8-08A7FB92214B}-REVIT";
 
+
+        /// <summary>
+        /// Get an ElementId from trace
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static ElementId GetElementIdFromTrace(Document document)
+        {
+            //Get the element ID that was cached in the callsite
+            ISerializable traceData = TraceUtils.GetTraceData(REVIT_TRACE_ID);
+
+            SerializableId id = traceData as SerializableId;
+            if (id == null)
+                return null; //There was no usable data in the trace cache
+
+            var traceDataInt = id.intID;
+            return new Autodesk.Revit.DB.ElementId(traceDataInt);
+        }
+
         /// <summary>
         /// Get the element associated with the current operation from trace
         /// null if there is no object, or it's of the wrong type etc.
@@ -30,28 +49,36 @@ namespace RevitServices.Persistence
         public static T GetElementFromTrace<T>(Document document)
             where T : Autodesk.Revit.DB.Element
         {
-
-            //Get the element ID that was cached in the callsite
-            ISerializable traceData = TraceUtils.GetTraceData(REVIT_TRACE_ID);
-
-            SerializableId id = traceData as SerializableId;
-            if (id == null)
-                return null; //There was no usable data in the trace cache
-
-
-            //@TODO(Luke): Extend for using guids
-
-            // PB: only works for ElementIds now
-            var traceDataInt = id.intID;
-            var eleId = new Autodesk.Revit.DB.ElementId(traceDataInt);
-
+            var eleId = GetElementIdFromTrace(document);
+            // TODO: extend for UniqueId's
+ 
             T ret;
 
             if (Elements.ElementUtils.TryGetElement(document, eleId, out ret))
                 return ret;
             else
                 return null;
+        }
 
+        /// <summary>
+        /// Cleanup a possibly outdated Revit element and set new element for trace.  
+        /// This method should be called if the element could not be mutated on a 
+        /// second run and the old value must be destroyed.  
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static void CleanupAndSetElementForTrace(Document document, ElementId newTraceId)
+        {
+            // if the element id has changed on a subsequent run, that means we
+            // couldn't mutate the element - hence we need to delete the old
+            // element
+            var oldId = GetElementIdFromTrace(document);
+            if (oldId != null && oldId.IntegerValue != newTraceId.IntegerValue)
+            {
+                DocumentManager.GetInstance().DeleteElement(oldId);
+            }
+
+            SetElementForTrace(newTraceId);
         }
 
         /// <summary>
@@ -62,13 +89,15 @@ namespace RevitServices.Persistence
         /// <returns></returns>
         public static void SetElementForTrace(ElementId elementId)
         {
-
             SerializableId id = new SerializableId();
             id.intID = elementId.IntegerValue;
-       
-            //TODO(Push the GUID into the object)
 
-            //Set the element ID cached in the callsite
+            // if we're mutating the current Element id, that means we need to 
+            // clean up the old object
+            
+            // TODO(Push the GUID into the object)
+
+            // Set the element ID cached in the callsite
             TraceUtils.SetTraceData(REVIT_TRACE_ID, id);
         }
 

@@ -37,7 +37,8 @@ namespace DSNodeServices
         /// <param name="value"></param>
         public static void SetTraceData(string key, ISerializable value)
         {
-            Thread.SetData(Thread.GetNamedDataSlot(key), value);
+            // PB: do not store data in TLS until the VM is able to handle this
+            // Thread.SetData(Thread.GetNamedDataSlot(key), value);
         }
     }
 }

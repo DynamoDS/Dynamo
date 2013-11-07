@@ -70,7 +70,7 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="Face.cs" />
     <Compile Include="AdaptiveComponent.cs" />
-    <Compile Include="DividedPath.cs" />
+    <Compile Include="DSDividedPath.cs" />
     <Compile Include="DividedSurface.cs" />
     <Compile Include="FamilySymbol.cs" />
     <Compile Include="FreeForm.cs" />
@@ -84,7 +84,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReferenceCurve.cs" />
     <Compile Include="ReferencePlane.cs" />
-    <Compile Include="RefPoint.cs" />
+    <Compile Include="DSReferencePoint.cs" />
     <Compile Include="Selection.cs" />
     <Compile Include="Solid.cs" />
     <Compile Include="SpatialField.cs" />
