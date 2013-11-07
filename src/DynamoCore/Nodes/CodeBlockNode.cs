@@ -16,6 +16,7 @@ namespace Dynamo.Nodes
     public partial class CodeBlockNodeModel : NodeModel
     {
         private string code = "";
+        private string codeToParse = "";
         private string previewVariable = null;
         private List<Statement> codeStatements = new List<Statement>();
         private bool shouldFocus = true;
@@ -85,6 +86,11 @@ namespace Dynamo.Nodes
                 }
             }
         }
+
+        public string CodeToParse
+        {
+            get { return codeToParse; }
+        }
         #endregion
 
         #region Protected Methods
@@ -133,7 +139,7 @@ namespace Dynamo.Nodes
             List<ProtoCore.AST.Node> resultNodes = new List<Node>();
             List<ProtoCore.BuildData.ErrorEntry> errors;
             List<ProtoCore.BuildData.WarningEntry> warnings;
-            GraphToDSCompiler.GraphUtilities.Parse(code, out resultNodes, out errors, out  warnings, unboundIdentifiers);
+            GraphToDSCompiler.GraphUtilities.Parse(ref codeToParse, out resultNodes, out errors, out  warnings, unboundIdentifiers);
             BinaryExpressionNode indexedStatement = resultNodes[index] as BinaryExpressionNode;
             return indexedStatement.LeftNode as AssociativeNode;
         }
@@ -164,11 +170,12 @@ namespace Dynamo.Nodes
             }
 
             //Parse the text and assign each AST node to a statement instance
+            codeToParse = code;
             List<string> unboundIdentifiers = new List<string>();
             List<ProtoCore.AST.Node> resultNodes = new List<Node>();
             List<ProtoCore.BuildData.ErrorEntry> errors;
             List<ProtoCore.BuildData.WarningEntry> warnings;
-            if(GraphToDSCompiler.GraphUtilities.Parse(code,out resultNodes,out errors,out  warnings, unboundIdentifiers) && resultNodes!=null)
+            if(GraphToDSCompiler.GraphUtilities.Parse(ref codeToParse,out resultNodes,out errors,out  warnings, unboundIdentifiers) && resultNodes!=null)
             {
                 //Create an instance of statement for each code statement written by the user
                 foreach (Node node in resultNodes)
