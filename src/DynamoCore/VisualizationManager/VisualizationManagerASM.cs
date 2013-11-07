@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using Autodesk.LibG;
 using Dynamo.Models;
 using Dynamo.Selection;
 using HelixToolkit.Wpf;
+using Microsoft.FSharp.Collections;
 
 namespace Dynamo
 {
@@ -16,7 +18,7 @@ namespace Dynamo
             DrawToAlternateContext = false;
         }
 
-        public static void DrawLibGGraphicItem(NodeModel node, object geom, RenderDescription rd,  Octree.OctreeSearch.Octree octree)
+        public static void DrawLibGGraphicItem(NodeModel node, object geom, string tag, RenderDescription rd,  Octree.OctreeSearch.Octree octree)
         {
             var selected = DynamoSelection.Instance.Selection.Contains(node);
             var g = geom as GraphicItem;
@@ -66,16 +68,19 @@ namespace Dynamo
 
                 for (int i = 0; i < point_vertices.Count; i += 3)
                 {
+                    var pos = new Point3D(point_vertices[i],
+                        point_vertices[i + 1], point_vertices[i + 2]);
+
                     if (selected)
                     {
-                        rd.SelectedPoints.Add(new Point3D(point_vertices[i],
-                                                          point_vertices[i + 1], point_vertices[i + 2]));
+                        rd.SelectedPoints.Add(pos);
                     }
                     else
                     {
-                        rd.Points.Add(new Point3D(point_vertices[i],
-                                                  point_vertices[i + 1], point_vertices[i + 2]));
+                        rd.Points.Add(pos);
                     }
+
+                    rd.Text.Add(new BillboardTextItem{Text = tag, Position = pos});
                 }
 
                 #endregion
