@@ -228,8 +228,10 @@ namespace Dynamo.Nodes
             else
             {
                 string errorMessage = "";
-                foreach (var error in errors)
-                    errorMessage += (error.Message + "\n");
+                int i=0;
+                for (; i < errors.Count - 1; i++)
+                    errorMessage += (errors[i].Message + "\n");
+                errorMessage += errors[i].Message;
                 DisplayError(errorMessage);
                 return;
             }
