@@ -781,15 +781,12 @@ namespace Dynamo
             Dictionary<NodeModel, List<object>> drawables = new Dictionary<NodeModel, List<object>>();
             foreach (var node in dynSettings.Controller.DynamoModel.Nodes)
             {
-                if (node is DSFunction)
+                string varName = node.VariableToPreview;
+                var graphItems = EngineController.Instance.GetGraphicItems(varName);
+                if (graphItems != null)
                 {
-                    string varName = node.AstIdentifier.Name;
-                    var graphItems = EngineController.Instance.GetGraphicItems(varName);
-                    if (graphItems != null)
-                    {
-                        List<object> drawableItems = graphItems.ConvertAll(item => (object)item);
-                        drawables.Add(node, drawableItems);
-                    }
+                    List<object> drawableItems = graphItems.ConvertAll(item => (object)item);
+                    drawables.Add(node, drawableItems);
                 }
             }
             return drawables;
