@@ -339,7 +339,8 @@ namespace Dynamo.DSEngine
             List<ProtoCore.AST.Node> resultNodes = new List<Node>();
             List<ProtoCore.BuildData.ErrorEntry> errors;
             List<ProtoCore.BuildData.WarningEntry> warnings;
-            GraphToDSCompiler.GraphUtilities.Parse(node.Code, out resultNodes, out errors, out  warnings, unboundIdentifiers);
+            string codeToParse = node.CodeToParse;
+            GraphToDSCompiler.GraphUtilities.Parse(ref codeToParse, out resultNodes, out errors, out  warnings, unboundIdentifiers);
             foreach (var astNode in resultNodes)
             {
                 syncDataManager.AddNode(node.GUID, (astNode as AssociativeNode));
