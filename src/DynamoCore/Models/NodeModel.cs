@@ -1757,7 +1757,7 @@ namespace Dynamo.Models
             {
                 try
                 {
-                    previewValue = LiveRunnerServices.Instance.GetStringValue(variableName);
+                    previewValue = EngineController.Instance.GetStringValue(variableName);
                 }
                 catch (Exception ex)
                 {
