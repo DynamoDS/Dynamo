@@ -322,7 +322,8 @@ namespace Dynamo
         void node_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "IsVisible" ||
-                e.PropertyName == "IsUpstreamVisible")
+                e.PropertyName == "IsUpstreamVisible" ||
+                e.PropertyName == "DisplayLabels")
             {
                 UpdateVisualizations();
             }
@@ -878,6 +879,11 @@ namespace Dynamo
             return drawables;
         }
 
+        /// <summary>
+        /// Build a string tag from a list of ints. i.e "1,2,3,4"
+        /// </summary>
+        /// <param name="tags"></param>
+        /// <returns></returns>
         private static string TagFromList(List<int> tags)
         {
             var sb = new StringBuilder();

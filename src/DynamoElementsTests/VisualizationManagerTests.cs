@@ -389,5 +389,17 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(0, lineCount);
         }
+
+        [Test]
+        public void CanDrawNodeIndices()
+        {
+            Assert.Fail("Finish me!");
+        }
+
+        [Test]
+        public void NodeIndiceDisplayInSyncWithSetting()
+        {
+            Assert.Fail("Finish me!");
+        }
     }
 }

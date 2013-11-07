@@ -80,7 +80,10 @@ namespace Dynamo
                         rd.Points.Add(pos);
                     }
 
-                    rd.Text.Add(new BillboardTextItem{Text = tag, Position = pos});
+                    if (node.DisplayLabels)
+                    {
+                        rd.Text.Add(new BillboardTextItem { Text = tag, Position = pos });
+                    }
                 }
 
                 #endregion
