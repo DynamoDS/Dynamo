@@ -30,6 +30,11 @@ namespace Dynamo.Nodes
         {
             DynamoLogger.Instance.Log("Error in Code Block Node");
             this.State = ElementState.ERROR;
+            for (int i = 0; i < InPortData.Count; i++)
+                InPortData.RemoveAt(0);
+            for (int i = 0; i < OutPortData.Count; i++)
+                OutPortData.RemoveAt(0);
+            RegisterAllPorts();
         }
 
         /// <summary>
@@ -85,6 +90,25 @@ namespace Dynamo.Nodes
                     }
                 }
             }
+        }
+
+        public bool VariableAlreadyDeclared(Statement stmnt)
+        {
+            string varName = stmnt.DefinedVariable.Name;
+            foreach (var node in this.WorkSpace.Nodes)
+            {
+                if (node is CodeBlockNodeModel)
+                {
+                    foreach (var x in (node as CodeBlockNodeModel).codeStatements)
+                    {
+                        if (x == stmnt)
+                            continue;
+                        if (x.DefinedVariable.Name.Equals(varName))
+                            return true;
+                    }
+                }
+            }
+            return false;
         }
         #endregion
 
@@ -194,6 +218,16 @@ namespace Dynamo.Nodes
             else
             {
                 DisplayError();
+                return;
+            }
+
+            foreach (var singleStatement in codeStatements)
+            {
+                if (VariableAlreadyDeclared(singleStatement))
+                {
+                    DisplayError();
+                    return;
+                }
             }
 
             SetPorts(unboundIdentifiers); //Set the input and output ports based on the statements
