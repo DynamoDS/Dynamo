@@ -39,7 +39,7 @@
       <HintPath>..\..\bin\AnyCPU\Debug\FScheme.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="FSharp.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="FSharp.Core"/>
     <Reference Include="HelixToolkit.Wpf, Version=2012.4.24.1, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
