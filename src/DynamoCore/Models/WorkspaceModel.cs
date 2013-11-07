@@ -294,6 +294,11 @@ namespace Dynamo.Models
             }
         }
 
+        public UndoRedoRecorder UndoXRecorder
+        {
+            get { return undoRecorder; }
+        }
+
         #endregion
 
         protected WorkspaceModel(
