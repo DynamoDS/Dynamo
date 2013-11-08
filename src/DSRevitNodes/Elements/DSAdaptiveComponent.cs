@@ -10,7 +10,7 @@ using Curve = Autodesk.DesignScript.Geometry.Curve;
 using Face = Autodesk.DesignScript.Geometry.Face;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
-namespace DSRevitNodes
+namespace DSRevitNodes.Elements
 {
     /// <summary>
     /// A Revit Adaptive Component
@@ -23,7 +23,7 @@ namespace DSRevitNodes
         /// <summary>
         /// Internal variable containing the wrapped Revit object
         /// </summary>
-        protected Autodesk.Revit.DB.FamilyInstance InternalFamilyInstance
+        internal Autodesk.Revit.DB.FamilyInstance InternalFamilyInstance
         {
             get; private set;
         }

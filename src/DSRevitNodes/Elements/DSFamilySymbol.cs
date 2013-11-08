@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using Autodesk.DesignScript.Geometry;
-using Autodesk.DesignScript.Runtime;
+using DSNodeServices;
 using DSRevitNodes.Elements;
 using RevitServices.Transactions;
 
@@ -14,12 +14,12 @@ namespace DSRevitNodes
     /// A Revit FamilySymbol
     /// </summary>
     [RegisterForTrace]
-    class DSFamilySymbol: AbstractElement
+    public class DSFamilySymbol: AbstractElement
     {
 
         #region internal Properties
 
-        protected Autodesk.Revit.DB.FamilySymbol InternalFamilySymbol
+        internal Autodesk.Revit.DB.FamilySymbol InternalFamilySymbol
         {
             get;
             private set;

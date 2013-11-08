@@ -6,20 +6,20 @@ using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Face = Autodesk.DesignScript.Geometry.Face;
 
-namespace DSRevitNodes
+namespace DSRevitNodes.Elements
 {
     /// <summary>
     /// A Revit DividedSurface
     /// </summary>
     [RegisterForTrace]
-    class DSDividedSurface : AbstractElement
+    public class DSDividedSurface : AbstractElement
     {
         #region Private Properties
 
         /// <summary>
         /// Internal variable containing the wrapped Revit object
         /// </summary>
-        protected Autodesk.Revit.DB.DividedSurface InternalDividedSurface
+        internal Autodesk.Revit.DB.DividedSurface InternalDividedSurface
         {
             get; private set;
         }
