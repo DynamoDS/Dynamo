@@ -551,17 +551,24 @@
                                                                                      TargetType="MenuItem">
                                                                         <Border Name="Border"
                                                                                 Height="25">
-                                                                            <Grid>
+                                                                            <Grid MinWidth="200">
                                                                                 <Grid.ColumnDefinitions>
-                                                                                    <ColumnDefinition Width="*"
-                                                                                                      MinWidth="200" />
+                                                                                    <ColumnDefinition Width="Auto" />
+                                                                                    <ColumnDefinition Width="*" />
                                                                                 </Grid.ColumnDefinitions>
                                                                                 <ContentPresenter Name="HeaderHost"
                                                                                                   Grid.Column="0"
-                                                                                                  Margin="5,0"
+                                                                                                  Margin="5,0,0,0"
                                                                                                   HorizontalAlignment="Stretch"
                                                                                                   VerticalAlignment="Center"
                                                                                                   ContentSource="Header"
+                                                                                                  RecognizesAccessKey="True" />
+                                                                                <ContentPresenter Name="SaveStateHost"
+                                                                                                  Grid.Column="1"
+                                                                                                  Margin="0,0,5,0"
+                                                                                                  HorizontalAlignment="Stretch"
+                                                                                                  VerticalAlignment="Center"
+                                                                                                  ContentSource="Tag"
                                                                                                   RecognizesAccessKey="True" />
                                                                             </Grid>
                                                                         </Border>
@@ -586,14 +593,34 @@
                                                                         </ControlTemplate.Triggers>
                                                                     </ControlTemplate>
                                                                 </Style.Resources>
-                                                                
-                                                                <Setter Property="Header"
-                                                                        Value="{Binding Path=Name}" />
 
                                                                 <EventSetter Event="Click"
                                                                              Handler="TabControlMenuItem_Click" />
 
                                                                 <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}"
+                                                                                 Value="Unsaved">
+                                                                        <Setter Property="Header"
+                                                                                Value="{Binding Name}" />
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}"
+                                                                                 Value="Saved">
+                                                                        <Setter Property="Header"
+                                                                                Value="{Binding FileName, Converter={StaticResource PathToFileNameConverter}}" />
+                                                                    </DataTrigger>
+
+                                                                    <DataTrigger Binding="{Binding HasUnsavedChanges}"
+                                                                                 Value="True">
+                                                                        <Setter Property="Tag"
+                                                                                Value="*" />
+                                                                    </DataTrigger>
+
+                                                                    <DataTrigger Binding="{Binding HasUnsavedChanges}"
+                                                                                 Value="False">
+                                                                        <Setter Property="Tag"
+                                                                                Value="" />
+                                                                    </DataTrigger>
+                                                                    
                                                                     <Trigger Property="Role"
                                                                              Value="SubmenuHeader">
                                                                         <Setter Property="Template"
@@ -775,15 +802,17 @@
                                 <MouseBinding Gesture="MiddleClick" Command="{Binding HideCommand}" />
                             </Button.InputBindings>-->
 
-                            <DockPanel Margin="0,0,5,0"
-                                       Height="20"
-                                       HorizontalAlignment="Stretch">
-
+                            <Grid Height="20">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                
                                 <TextBlock Name="WorkspaceName"
-                                           Margin="8,2,0,0"
+                                           Margin="8,0,0,0"
                                            Padding="0,0,0,0"
-                                           DockPanel.Dock="Left"
                                            HorizontalAlignment="Stretch"
+                                           VerticalAlignment="Center"
                                            TextTrimming="CharacterEllipsis">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
@@ -855,8 +884,9 @@
                                 </TextBlock>
 
                                 <TextBlock Name="WorkspaceSaveState"
-                                           Margin="0,2,0,0"
-                                           DockPanel.Dock="Left">
+                                           Grid.Column="1"
+                                           Margin="0,0,0,0"
+                                           VerticalAlignment="Center">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Style.Triggers>
@@ -891,8 +921,7 @@
                                         </Style>
                                     </TextBlock.Style>
                                 </TextBlock>
-                            </DockPanel>
-
+                            </Grid>
                             <!--</Button>-->
 
                         </DataTemplate>

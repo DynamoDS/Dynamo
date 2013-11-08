@@ -37,8 +37,7 @@ namespace Dynamo.ViewModels
         public event ZoomEventHandler RequestZoomToViewportCenter;
         public event ZoomEventHandler RequestZoomToViewportPoint;
         public event ZoomEventHandler RequestZoomToFitView;
-        public event EventHandler RequestTogglePan;
-        public event EventHandler RequestStopPan;
+       
         public event NodeEventHandler RequestCenterViewOnElement;
         public event NodeEventHandler RequestNodeCentered;
         public event ViewEventHandler RequestAddViewToOuterCanvas;
@@ -130,22 +129,6 @@ namespace Dynamo.ViewModels
             if (RequestZoomToFitView != null)
             {
                 RequestZoomToFitView(this, e);
-            }
-        }
-
-        public virtual void OnRequestTogglePan(object sender, EventArgs e)
-        {
-            if (RequestTogglePan != null)
-            {
-                RequestTogglePan(this, e);
-            }
-        }
-
-        public virtual void OnRequestStopPan(object sender, EventArgs e)
-        {
-            if (RequestStopPan != null)
-            {
-                RequestStopPan(this, e);
             }
         }
 
@@ -336,6 +319,10 @@ namespace Dynamo.ViewModels
 
             var errorsColl = new CollectionContainer { Collection = Errors };
             _workspaceElements.Add(errorsColl);
+
+            // Add EndlessGrid
+            var endlessGrid = new EndlessGridViewModel(this);
+            _workspaceElements.Add(endlessGrid);
 
             //respond to collection changes on the model by creating new view models
             //currently, view models are added for notes and nodes
@@ -849,20 +836,10 @@ namespace Dynamo.ViewModels
 
         private void TogglePan(object o)
         {
-            OnRequestTogglePan(this, null);
+            RequestTogglePanMode();
         }
 
         private bool CanTogglePan(object o)
-        {
-            return true;
-        }
-
-        private void StopPan(object o)
-        {
-            OnRequestStopPan(this, null);
-        }
-
-        private bool CanStopPan(object o)
         {
             return true;
         }
