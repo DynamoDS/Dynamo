@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using Autodesk.DesignScript.Interfaces;
+using Dynamo.Models;
 using HelixToolkit.Wpf;
 
 namespace Dynamo.DSEngine
@@ -94,7 +95,7 @@ namespace Dynamo.DSEngine
             triangleNormals.Add(z);
         }
 
-        public void AddToRenderDescription(RenderDescription rd)
+        public void AddToRenderDescription(NodeModel node, RenderDescription rd, Octree.OctreeSearch.Octree octree)
         {
             var points = selected ? rd.SelectedPoints : rd.Points;
             for (int i = 0; i < pointVertices.Count(); i += 3)
@@ -134,6 +135,8 @@ namespace Dynamo.DSEngine
                 triangles.Add(point);
                 norms.Add(normal);
                 tex.Add(new System.Windows.Point(0, 0));
+
+                octree.AddNode(point.X, point.Y, point.Z, node.GUID.ToString());
             }
 
             builder.Append(triangles, tris, norms, tex);
