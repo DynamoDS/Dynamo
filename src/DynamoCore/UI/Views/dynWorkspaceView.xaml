@@ -24,7 +24,9 @@
             <controls:ZoomBorder ClipToBounds="True" MouseWheel="zoomBorder_MouseWheel" BorderThickness="0"
                                  MouseMove="zoomBorder_MouseMove" x:Name="zoomBorder"
                                  Width="{Binding Path=ActualWidth, ElementName=outerCanvas}"
-                                 Height="{Binding Path=ActualHeight, ElementName=outerCanvas}">
+                                 Height="{Binding Path=ActualHeight, ElementName=outerCanvas}"
+                                 Cursor="{Binding CurrentCursor}"
+                                 ForceCursor="{Binding IsCursorForced}">
                 <Grid>
                     <Canvas Name="selectionCanvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                 <Rectangle

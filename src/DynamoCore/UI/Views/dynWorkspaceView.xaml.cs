@@ -194,21 +194,6 @@ namespace Dynamo.Views
             ViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
             ViewModel.WorkspacePropertyEditRequested += VmOnWorkspacePropertyEditRequested;
             ViewModel.RequestSelectionBoxUpdate += VmOnRequestSelectionBoxUpdate;
-
-            ViewModel.RequestChangeCursorDragging += new EventHandler(vm_ChangeCursorDragging);
-            ViewModel.RequestChangeCursorUsual += new EventHandler(vm_ChangeCursorUsual);
-        }
-
-        private void vm_ChangeCursorDragging(object sender, EventArgs e)
-        {
-            if (this.Cursor != CursorsLibrary.RectangularSelection)
-                this.Cursor = CursorsLibrary.RectangularSelection;
-        }
-
-        private void vm_ChangeCursorUsual(object sender, EventArgs e)
-        {
-            if (this.Cursor != CursorsLibrary.UsualPointer)
-                this.Cursor = CursorsLibrary.UsualPointer;
         }
 
         private void VmOnWorkspacePropertyEditRequested(WorkspaceModel workspace)
@@ -521,41 +506,39 @@ namespace Dynamo.Views
                 // If we are currently connecting and there is an active 
                 // connector, redraw it to match the new mouse coordinates.
                 case WorkspaceViewModel.StateMachine.State.Connection:
+                {
+                    // TODO(Robin) : Need to prevent snapping for wrong connection
+                    // TODO(Robin) : Cursor should be handled by StateMachine
+                    //this.Cursor = CursorsLibrary.ArcAdding;
+
+                    Point mouse = e.GetPosition((UIElement)sender);
+                    this.snappedPort = GetSnappedPort(mouse);
+                    if (this.snappedPort != null)
                     {
-                        Point mouse = e.GetPosition((UIElement)sender);
-                        this.snappedPort = GetSnappedPort(mouse);
-                        if (this.snappedPort != null)
-                        {
-                            mouseMessageHandled = true;
-                            wvm.HandleMouseMove(this.WorkBench, this.snappedPort.Center);
-                        }
-
-                        this.Cursor = CursorsLibrary.ArcAdding;
-                        break;
+                        mouseMessageHandled = true;
+                        wvm.HandleMouseMove(this.WorkBench, this.snappedPort.Center);
                     }
-
-                case WorkspaceViewModel.StateMachine.State.WindowSelection:
-                    this.Cursor = CursorsLibrary.RectangularSelection;
+                    
                     break;
+                }
 
-                default:
-                    {
-                        // Find the dependency object directly under the mouse 
-                        // cursor, then see if it represents a port. If it does,
-                        // then determine its type, we would like to show the 
-                        // "ArcRemoving" cursor when the mouse is over an out port.
-                        // 
-                        Point mouse = e.GetPosition((UIElement)sender);
-                        var dependencyObject = ElementUnderMouseCursor(mouse);
-                        PortViewModel pvm = PortFromHitTestResult(dependencyObject);
+                case WorkspaceViewModel.StateMachine.State.None:
+                {
+                    // Find the dependency object directly under the mouse 
+                    // cursor, then see if it represents a port. If it does,
+                    // then determine its type, we would like to show the 
+                    // "ArcRemoving" cursor when the mouse is over an out port.
+                    Point mouse = e.GetPosition((UIElement)sender);
+                    var dependencyObject = ElementUnderMouseCursor(mouse);
+                    PortViewModel pvm = PortFromHitTestResult(dependencyObject);
 
-                        if (null != pvm && (pvm.PortType == PortType.INPUT))
-                            this.Cursor = CursorsLibrary.ArcRemoving;
-                        else
-                            this.Cursor = CursorsLibrary.UsualPointer;
+                    if (null != pvm && (pvm.PortType == PortType.INPUT))
+                        this.Cursor = CursorLibrary.GetCursor(CursorSet.ArcRemoving);
+                    else
+                        this.Cursor = null;
 
-                        break;
-                    }
+                    break;
+                }
             }
 
             if (false == mouseMessageHandled)
