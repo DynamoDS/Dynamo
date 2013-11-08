@@ -109,6 +109,15 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(secondPoint.Y, secondConnector.CurvePoint3.Y);
         }
 
+        [Test, RequiresSTA]
+        public void Defect_MAGN_225()
+        {
+            RunCommandsFromFile("TestConnectionReplacementUndo.xml");
+            var nodes = workspaceViewModel.Nodes;
+            Assert.NotNull(nodes);
+            Assert.AreEqual(3, nodes.Count);
+        }
+
         private void VerifyModelExistence(Dictionary<string, bool> modelExistenceMap)
         {
             var nodes = workspace.Nodes;
