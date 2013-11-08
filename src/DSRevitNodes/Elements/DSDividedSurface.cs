@@ -53,7 +53,7 @@ namespace DSRevitNodes.Elements
             TransactionManager.GetInstance().TransactionTaskDone();
 
             // remember this new value
-            ElementBinder.SetElementForTrace(this.InternalId);
+            ElementBinder.SetElementForTrace(this.InternalElementId);
         }
 
         #endregion
@@ -63,7 +63,7 @@ namespace DSRevitNodes.Elements
         private void InternalSetDividedSurface(Autodesk.Revit.DB.DividedSurface divSurf)
         {
             this.InternalDividedSurface = divSurf;
-            this.InternalId = divSurf.Id;
+            this.InternalElementId = divSurf.Id;
             this.InternalUniqueId = divSurf.UniqueId;
         }
 
@@ -83,7 +83,7 @@ namespace DSRevitNodes.Elements
 
         #region Static constructors
 
-        static DSDividedSurface ByFaceUVDivisions(DSFace f, int uDivs, int vDivs)
+        public static DSDividedSurface ByFaceUVDivisions(DSFace f, int uDivs, int vDivs)
         {
             return new DSDividedSurface(f, uDivs, vDivs);
         }

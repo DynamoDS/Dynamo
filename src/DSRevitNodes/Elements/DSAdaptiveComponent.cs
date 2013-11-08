@@ -6,8 +6,6 @@ using Autodesk.Revit.DB;
 using DSNodeServices;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
-using Curve = Autodesk.DesignScript.Geometry.Curve;
-using Face = Autodesk.DesignScript.Geometry.Face;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
 namespace DSRevitNodes.Elements
@@ -66,7 +64,7 @@ namespace DSRevitNodes.Elements
             TransactionManager.GetInstance().TransactionTaskDone();
 
             // remember this value
-            ElementBinder.SetElementForTrace(this.InternalId);
+            ElementBinder.SetElementForTrace(this.InternalElementId);
         }
 
         /// <summary>
@@ -150,7 +148,7 @@ namespace DSRevitNodes.Elements
         private void InternalSetFamilyInstance(Autodesk.Revit.DB.FamilyInstance ele)
         {
             InternalFamilyInstance = ele;
-            InternalId = ele.Id;
+            InternalElementId = ele.Id;
             InternalUniqueId = ele.UniqueId;
         }
 
@@ -246,7 +244,7 @@ namespace DSRevitNodes.Elements
         /// <param name="pts">The points to reference in the AdaptiveComponent</param>
         /// <param name="fs">The family symbol to use to build the AdaptiveComponent</param>
         /// <returns></returns>
-        static DSAdaptiveComponent ByPoints( Point[] pts, DSFamilySymbol fs )
+        public static DSAdaptiveComponent ByPoints( Point[] pts, DSFamilySymbol fs )
         {
             return new DSAdaptiveComponent(pts, fs);
         }
@@ -258,7 +256,7 @@ namespace DSRevitNodes.Elements
         /// <param name="f">The face on which to place the AdaptiveComponent</param>
         /// <param name="f">The face on which to place the AdaptiveComponent</param>
         /// <returns></returns>
-        static DSAdaptiveComponent ByPointsOnFace(double[][] uvs, DSFace f, DSFamilySymbol fs)
+        public static DSAdaptiveComponent ByPointsOnFace(double[][] uvs, DSFace f, DSFamilySymbol fs)
         {
             return new DSAdaptiveComponent(uvs, f, fs);
         }
@@ -270,7 +268,7 @@ namespace DSRevitNodes.Elements
         /// <param name="dsCurve">The curve to reference</param>
         /// <param name="fs">The family symbol to construct</param>
         /// <returns></returns>
-        static DSAdaptiveComponent ByPointsOnCurve(double[] parms, DSCurve dsCurve, DSFamilySymbol fs)
+        public static DSAdaptiveComponent ByPointsOnCurve(double[] parms, DSCurve dsCurve, DSFamilySymbol fs)
         {
             return new DSAdaptiveComponent(parms,  dsCurve, fs);
         }

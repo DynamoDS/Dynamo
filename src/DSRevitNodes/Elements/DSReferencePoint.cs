@@ -61,7 +61,7 @@ namespace DSRevitNodes
 
             TransactionManager.GetInstance().TransactionTaskDone();
 
-            ElementBinder.SetElementForTrace(this.InternalId);
+            ElementBinder.SetElementForTrace(this.InternalElementId);
         }
 
         #endregion
@@ -81,7 +81,7 @@ namespace DSRevitNodes
         {
 
             InternalReferencePoint = p;
-            this.InternalId = InternalReferencePoint.Id;
+            this.InternalElementId = InternalReferencePoint.Id;
             this.InternalUniqueId = InternalReferencePoint.UniqueId;
         }
 
