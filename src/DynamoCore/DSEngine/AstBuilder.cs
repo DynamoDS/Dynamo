@@ -411,7 +411,7 @@ namespace Dynamo.DSEngine
 
             List<string> unboundIdentifiers = new List<string>();
             CodeBlockNode commentNode = null;
-            CodeBlockNode codeBlock = GraphToDSCompiler.GraphUtilities.Parse(node.Code, out commentNode) as CodeBlockNode;
+            CodeBlockNode codeBlock = GraphToDSCompiler.GraphUtilities.Parse(node.CodeToParse, out commentNode) as CodeBlockNode;
 
             if (codeBlock != null)
             {
