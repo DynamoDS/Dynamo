@@ -206,7 +206,8 @@ namespace Dynamo.Search
             BitmapImage bmi = new BitmapImage(collapsestateSource);
             RotateTransform rotateTransform = new RotateTransform(-90, 16, 16);
             collapsestate.Source = new BitmapImage(collapsestateSource);
-            this.Cursor = CursorsLibrary.LibraryClick;
+            
+            this.Cursor = CursorLibrary.GetCursor(CursorSet.LinkSelect);
         }
 
         private void buttonGrid_MouseLeave(object sender, MouseEventArgs e)
@@ -218,7 +219,8 @@ namespace Dynamo.Search
             Image collapsestate = (Image)g.Children[1];
             var collapsestateSource = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/expand_normal.png");
             collapsestate.Source = new BitmapImage(collapsestateSource);
-            this.Cursor = CursorsLibrary.UsualPointer;
+            
+            this.Cursor = null;
         }
 
         private void LibraryItem_OnMouseEnter(object sender, MouseEventArgs e)

@@ -109,16 +109,6 @@ namespace Dynamo.ViewModels
             get { return workspaceVM._model.Zoom; }
         }
 
-        private double gridSpacing
-        {
-            get { return Configurations.GridSpacing; }
-        }
-
-        public double gridThickness
-        {
-            get { return Configurations.GridThickness; }
-        }
-
         public Color gridLineColor
         {
             get { return Configurations.GridLineColor; }
@@ -198,13 +188,13 @@ namespace Dynamo.ViewModels
 
         protected void RecalculateX()
         {
-            X = -requiredSpareGridSize - ((int)(WorkspaceX / gridSpacingScaled)) * gridSpacing;
+            X = -requiredSpareGridSize - ((int)(WorkspaceX / gridSpacingScaled)) * Configurations.GridSpacing;
             UpdateTransform();
         }
 
         protected void RecalculateY()
         {
-            Y = -requiredSpareGridSize - ((int)(WorkspaceY / gridSpacingScaled)) * gridSpacing;
+            Y = -requiredSpareGridSize - ((int)(WorkspaceY / gridSpacingScaled)) * Configurations.GridSpacing;
             UpdateTransform();
         }
 
@@ -218,7 +208,7 @@ namespace Dynamo.ViewModels
 
         protected void RecalculateZoom()
         {
-            gridSpacingScaled = gridSpacing * WorkspaceZoom;
+            gridSpacingScaled = Configurations.GridSpacing * WorkspaceZoom;
         }
 
         protected void RecalculateSize()
@@ -226,7 +216,7 @@ namespace Dynamo.ViewModels
             RecalculateZoom();
 
             // Calculate the required spare grid size for panning certain distance
-            requiredSpareGridSize = (int)Math.Ceiling(gridSpacing * 2 / WorkspaceModel.ZOOM_MINIMUM);
+            requiredSpareGridSize = (int)Math.Ceiling(Configurations.GridSpacing * 2 / WorkspaceModel.ZOOM_MINIMUM);
 
             this.Width = this.WorkspaceWidth / WorkspaceModel.ZOOM_MINIMUM + requiredSpareGridSize * 2;
             this.Height = this.WorkspaceHeight / WorkspaceModel.ZOOM_MINIMUM + requiredSpareGridSize * 2;
@@ -244,11 +234,11 @@ namespace Dynamo.ViewModels
             ObservableCollection<Line> collection = new ObservableCollection<Line>();
             
             // Draw Vertical Grid Lines
-            for (double i = 0; i < this.Width; i += gridSpacing)
+            for (double i = 0; i < this.Width; i += Configurations.GridSpacing)
             {
                 var xLine = new Line();
                 xLine.Stroke = new SolidColorBrush(gridLineColor);
-                xLine.StrokeThickness = gridThickness;
+                xLine.StrokeThickness = Configurations.GridThickness;
                 xLine.X1 = i;
                 xLine.Y1 = 0;
                 xLine.X2 = i;
@@ -259,11 +249,11 @@ namespace Dynamo.ViewModels
             }
 
             // Draw Horizontal Grid Lines
-            for (double i = 0; i < this.Height; i += gridSpacing)
+            for (double i = 0; i < this.Height; i += Configurations.GridSpacing)
             {
                 var yLine = new Line();
                 yLine.Stroke = new SolidColorBrush(gridLineColor);
-                yLine.StrokeThickness = gridThickness;
+                yLine.StrokeThickness = Configurations.GridThickness;
                 yLine.X1 = 0;
                 yLine.Y1 = i;
                 yLine.X2 = this.Width;
