@@ -10,7 +10,7 @@ namespace Dynamo.DSEngine
 {
     class VisualizationManagerDSGeometry: VisualizationManager
     {
-        public static void DrawDesignScriptGraphicItem(NodeModel node, object geom, RenderDescription rd, Octree.OctreeSearch.Octree octree)
+        public static void DrawDesignScriptGraphicItem(NodeModel node, object geom, string tag, RenderDescription rd, Octree.OctreeSearch.Octree octree)
         {
             IGraphicItem graphItem = geom as IGraphicItem;
             if (graphItem == null)
