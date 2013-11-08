@@ -43,6 +43,7 @@ def main():
 	print resultsPath
 
 	fixture = ''
+	name=''
 	if args['fixture'] is not None:
 		fixture = args['fixture']
 	if args['name'] is not None:
