@@ -5,7 +5,7 @@ using System.Text;
 
 namespace DSRevitNodes.Elements
 {
-    class DSFamily : AbstractElement
+    public class DSFamily : AbstractElement
     {
         internal Autodesk.Revit.DB.Family InternalFamily
         {

@@ -25,7 +25,7 @@ namespace DSRevitNodes
         /// <summary>
         /// Internal variable containing the wrapped Revit object
         /// </summary>
-        protected Autodesk.Revit.DB.ReferencePoint InternalReferencePoint
+        internal Autodesk.Revit.DB.ReferencePoint InternalReferencePoint
         {
             get; private set;
         }

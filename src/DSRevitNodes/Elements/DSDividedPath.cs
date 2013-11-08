@@ -6,20 +6,20 @@ using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Curve = Autodesk.DesignScript.Geometry.Curve;
 
-namespace DSRevitNodes
+namespace DSRevitNodes.Elements
 {   
     /// <summary>
     /// A Revit DividedPath
     /// </summary>
     [RegisterForTrace]
-    class DSDividedPath: AbstractElement
+    public class DSDividedPath: AbstractElement
     {
         #region Properties
 
         /// <summary>
         /// Internal variable containing the wrapped Revit object
         /// </summary>
-        protected Autodesk.Revit.DB.DividedPath InternalDividedPath
+        internal Autodesk.Revit.DB.DividedPath InternalDividedPath
         {
             get;
             private set;

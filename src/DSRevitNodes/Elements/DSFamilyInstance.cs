@@ -1,15 +1,21 @@
 ﻿using System;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
+using DSRevitNodes.Elements;
 using Point = Autodesk.DesignScript.Geometry.Point;
 using Curve = Autodesk.DesignScript.Geometry.Curve;
 using Face = Autodesk.DesignScript.Geometry.Face;
 
 namespace DSRevitNodes
 {
-    class DSFamilyInstance
+    public class DSFamilyInstance
     {
         public Point Location { get; set; }
+
+        private DSFamilyInstance()
+        {
+            
+        }
 
         static DSFamilyInstance ByPoint(DSFamilySymbol fs, Point p)
         {
