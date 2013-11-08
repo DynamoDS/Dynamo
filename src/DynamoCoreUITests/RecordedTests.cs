@@ -288,6 +288,22 @@ namespace Dynamo.Tests.UI
         }
 
         [Test, RequiresSTA]
+        public void TestVerifyRuntimeValues()
+        {
+            RunCommandsFromFile("VerifyRuntimeValues.xml", true);
+            Assert.AreEqual(2, workspace.Connectors.Count);
+            Assert.AreEqual(3, workspace.Nodes.Count);
+
+            var number1 = GetNode("76b951e9-a815-4fb9-bec1-fbd1178fa113") as DoubleInput;
+            var number2 = GetNode("1a3efb71-52df-46e8-95ab-a130e9a885ce") as DoubleInput;
+            var addition = GetNode("9182323d-a4fd-40eb-905b-8ec415d17926") as Addition;
+
+            Assert.AreEqual(12.34, (number1.OldValue as FScheme.Value.Number).Item);
+            Assert.AreEqual(56.78, (number2.OldValue as FScheme.Value.Number).Item);
+            Assert.AreEqual(69.12, (addition.OldValue as FScheme.Value.Number).Item);
+        }
+
+        [Test, RequiresSTA]
         public void Defect_MAGN_491()
         {
             RunCommandsFromFile("Defect-MAGN-491.xml");
@@ -327,7 +343,7 @@ namespace Dynamo.Tests.UI
             }
         }
 
-        private void RunCommandsFromFile(string commandFileName)
+        private void RunCommandsFromFile(string commandFileName, bool autoRun = false)
         {
             string commandFilePath = DynamoTestUI.GetTestDirectory();
             commandFilePath = Path.Combine(commandFilePath, @"core\recorded\");
@@ -335,6 +351,7 @@ namespace Dynamo.Tests.UI
 
             // Create the controller to run alongside the view.
             controller = DynamoController.MakeSandbox(commandFilePath);
+            controller.DynamoViewModel.DynamicRunEnabled = autoRun;
 
             // Create the view.
             var dynamoView = new DynamoView();
