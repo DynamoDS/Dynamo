@@ -28,14 +28,15 @@ namespace Dynamo.ViewModels
 
         ObservableCollection<PortViewModel> inPorts = new ObservableCollection<PortViewModel>();
         ObservableCollection<PortViewModel> outPorts = new ObservableCollection<PortViewModel>();
-
         NodeModel nodeLogic;
-        public NodeModel NodeModel { get { return nodeLogic; } private set { nodeLogic = value; } }
-
         private bool isFullyConnected = false;
+        private double zIndex = 3;
+
         #endregion
 
         #region public members
+
+        public NodeModel NodeModel { get { return nodeLogic; } private set { nodeLogic = value; } }
 
         public bool IsFullyConnected
         {
@@ -135,14 +136,6 @@ namespace Dynamo.ViewModels
             get { return nodeLogic.Description; }
         }
 
-        //public double DropShadowOpacity
-        //{
-        //    get
-        //    {
-        //        return nodeLogic.IsCustomFunction? 1:0;
-        //    }
-        //}
-
         public bool IsCustomFunction
         {
             get { return nodeLogic.IsCustomFunction ? true : false; }
@@ -174,8 +167,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private double zIndex = 3;
-         public double ZIndex
+        public double ZIndex
          {
             get { return zIndex; }
             set { zIndex = value; RaisePropertyChanged("ZIndex"); }
@@ -234,6 +226,25 @@ namespace Dynamo.ViewModels
             {
                 return !this.PreviewBubble.IsShowPreviewByDefault;
             }
+        }
+
+        /// <summary>
+        /// Enable or disable text labels on nodes.
+        /// </summary>
+        public bool IsDisplayingLabels
+        {
+            get 
+            { return nodeLogic.DisplayLabels; }
+            set
+            {
+                nodeLogic.DisplayLabels = value;
+                RaisePropertyChanged("IsDisplayingLabels");
+            }
+        }
+
+        public bool CanDisplayLabels
+        {
+            get { return nodeLogic.OldValue != null; }
         }
 
         #endregion
@@ -354,6 +365,7 @@ namespace Dynamo.ViewModels
                 case "OldValue":
                     RaisePropertyChanged("OldValue");
                     UpdatePreviewBubbleContent();
+                    RaisePropertyChanged("CanDisplayLabels");
                     break;
                 case "IsUpdated":
                     UpdatePreviewBubbleContent();
@@ -381,18 +393,15 @@ namespace Dynamo.ViewModels
                 case "ArgumentLacing":
                     RaisePropertyChanged("ArgumentLacing");
                     break;
-
                 case "ToolTipText":
                     UpdateErrorBubbleContent();
                     break;
                 case "IsVisible":
                     RaisePropertyChanged("IsVisible");
                     break;
-
                 case "IsUpstreamVisible":
                     RaisePropertyChanged("IsUpstreamVisible");
                     break;
-
                 case "Width":
                     RaisePropertyChanged("Width");
                     UpdateErrorBubblePosition();
@@ -402,6 +411,9 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("Height");
                     UpdateErrorBubblePosition();
                     UpdatePreviewBubblePosition();
+                    break;
+                case "DisplayLabels":
+                    RaisePropertyChanged("IsDisplayingLables");
                     break;
             }
         }
@@ -567,7 +579,7 @@ namespace Dynamo.ViewModels
             dynSettings.Controller.DynamoViewModel.ExecuteCommand(command);
         }
 
-        void SetLacingType(object param)
+        private void SetLacingType(object param)
         {
             // Record the state of this node before changes.
             DynamoModel dynamo = dynSettings.Controller.DynamoModel;
@@ -584,7 +596,7 @@ namespace Dynamo.ViewModels
             dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
         }
 
-        bool CanSetLacingType(object param)
+        private bool CanSetLacingType(object param)
         {
             // Only allow setting of lacing strategy when it is not disabled.
             return (this.ArgumentLacing != LacingStrategy.Disabled);
@@ -602,26 +614,26 @@ namespace Dynamo.ViewModels
             return nodeLogic.IsCustomFunction;
         }
 
-        private void SetLayout(object parameters)
-        {
-            var dict = parameters as Dictionary<string,
-            double>;
-            nodeLogic.X = dict["X"];
-            nodeLogic.Y = dict["Y"];
-            nodeLogic.Height = dict["Height"];
-            nodeLogic.Width = dict["Width"];
-        }
+        //private void SetLayout(object parameters)
+        //{
+        //    var dict = parameters as Dictionary<string,
+        //    double>;
+        //    nodeLogic.X = dict["X"];
+        //    nodeLogic.Y = dict["Y"];
+        //    nodeLogic.Height = dict["Height"];
+        //    nodeLogic.Width = dict["Width"];
+        //}
 
-        private bool CanSetLayout(object parameters)
-        {
-            var dict = parameters as Dictionary<string,
-            double>;
-            if (dict == null)
-                return false;
-            return true;
-        }
+        //private bool CanSetLayout(object parameters)
+        //{
+        //    var dict = parameters as Dictionary<string,
+        //    double>;
+        //    if (dict == null)
+        //        return false;
+        //    return true;
+        //}
 
-        void inports_collectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void inports_collectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             //The visual height of the node is bound to preferred height.
             //PreferredHeight = Math.Max(inPorts.Count * 20 + 10, outPorts.Count * 20 + 10); //spacing for inputs + title space + bottom space
@@ -645,7 +657,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        void outports_collectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void outports_collectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             //The visual height of the node is bound to preferred height.
             //PreferredHeight = Math.Max(inPorts.Count * 20 + 10, outPorts.Count * 20 + 10); //spacing for inputs + title space + bottom space
