@@ -356,7 +356,8 @@ namespace Dynamo
                 {
                     topMost.CompileToAstNode(EngineController.Instance.Builder);
                 }
-                Run(topElements, EngineController.Instance.GetSyncData());
+                var engineSyncData = EngineController.Instance.GetSyncData();
+                Run(topElements, engineSyncData);
 #else
                 var topNode = new BeginNode(new List<string>());
                 int i = 0;
