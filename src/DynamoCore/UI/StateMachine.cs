@@ -219,7 +219,7 @@ namespace Dynamo.ViewModels
 
             // No self connection
             // No start to start or end or end connection
-            if (srcPortM != desPortM && srcPortM.PortType != desPortM.PortType)
+            if (srcPortM.Owner != desPortM.Owner && srcPortM.PortType != desPortM.PortType)
             {
                 // Change cursor to show compatible port connection
                 CurrentCursor = CursorLibrary.GetCursor(CursorSet.ArcAdding);
@@ -643,16 +643,20 @@ namespace Dynamo.ViewModels
                 }
                 else  // Attempt to complete the connection
                 {
-                    PortType portType = PortType.INPUT;
-                    Guid nodeId = portModel.Owner.GUID;
-                    int portIndex = portModel.Owner.GetPortIndex(portModel, out portType);
+                    // Check if connection is valid
+                    if (owningWorkspace.CheckActiveConnectorCompatibility(portViewModel))
+                    {
+                        PortType portType = PortType.INPUT;
+                        Guid nodeId = portModel.Owner.GUID;
+                        int portIndex = portModel.Owner.GetPortIndex(portModel, out portType);
 
-                    dynamoViewModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
-                        nodeId, portIndex, portType, DynCmd.MakeConnectionCommand.Mode.End));
+                        dynamoViewModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
+                            nodeId, portIndex, portType, DynCmd.MakeConnectionCommand.Mode.End));
 
-                    owningWorkspace.CurrentCursor = null;
-                    owningWorkspace.IsCursorForced = false;
-                    this.currentState = State.None;
+                        owningWorkspace.CurrentCursor = null;
+                        owningWorkspace.IsCursorForced = false;
+                        this.currentState = State.None;
+                    }
                 }
 
                 return true;
