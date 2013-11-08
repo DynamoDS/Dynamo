@@ -55,7 +55,7 @@ namespace Dynamo.Core
         ModelBase GetModelForElement(XmlElement modelData);
     }
 
-    internal class UndoRedoRecorder
+    public class UndoRedoRecorder
     {
         #region Private Class Data Members
 
