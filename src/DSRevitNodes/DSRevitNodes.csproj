@@ -65,32 +65,33 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbstractGeometry.cs" />
-    <Compile Include="DSCurve.cs" />
+    <Compile Include="AbstractElement.cs" />
+    <Compile Include="AbstractGeometryObject.cs" />
+    <Compile Include="GeometryObjects\DSCurve.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="DSFace.cs" />
-    <Compile Include="DSAdaptiveComponent.cs" />
-    <Compile Include="DSDividedPath.cs" />
-    <Compile Include="DSDividedSurface.cs" />
-    <Compile Include="DSFamilySymbol.cs" />
-    <Compile Include="DSFreeForm.cs" />
-    <Compile Include="DSMaterial.cs" />
-    <Compile Include="DSModelCurve.cs" />
-    <Compile Include="DSFamilyInstance.cs" />
-    <Compile Include="DSFloor.cs" />
-    <Compile Include="DSGrid.cs" />
-    <Compile Include="DSLevel.cs" />
-    <Compile Include="DSParameter.cs" />
+    <Compile Include="GeometryObjects\DSFace.cs" />
+    <Compile Include="Elements\DSAdaptiveComponent.cs" />
+    <Compile Include="Elements\DSDividedPath.cs" />
+    <Compile Include="Elements\DSDividedSurface.cs" />
+    <Compile Include="Elements\DSFamilySymbol.cs" />
+    <Compile Include="Elements\DSFreeForm.cs" />
+    <Compile Include="Elements\DSMaterial.cs" />
+    <Compile Include="Elements\DSModelCurve.cs" />
+    <Compile Include="Elements\DSFamilyInstance.cs" />
+    <Compile Include="Elements\DSFloor.cs" />
+    <Compile Include="Elements\DSGrid.cs" />
+    <Compile Include="Elements\DSLevel.cs" />
+    <Compile Include="Interactivity\DSParameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="DSReferenceCurve.cs" />
-    <Compile Include="DSReferencePlane.cs" />
-    <Compile Include="DSReferencePoint.cs" />
-    <Compile Include="DSSelection.cs" />
-    <Compile Include="DSSolid.cs" />
-    <Compile Include="DSSpatialField.cs" />
-    <Compile Include="DSStucturalFraming.cs" />
-    <Compile Include="DSView.cs" />
-    <Compile Include="DSWall.cs" />
+    <Compile Include="Elements\DSReferenceCurve.cs" />
+    <Compile Include="Elements\DSReferencePlane.cs" />
+    <Compile Include="Elements\DSReferencePoint.cs" />
+    <Compile Include="Interactivity\DSSelection.cs" />
+    <Compile Include="GeometryObjects\DSSolid.cs" />
+    <Compile Include="Elements\DSSpatialField.cs" />
+    <Compile Include="Elements\DSStucturalFraming.cs" />
+    <Compile Include="Elements\DSView.cs" />
+    <Compile Include="Elements\DSWall.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DSNodeServices\DSNodeServices.csproj">
