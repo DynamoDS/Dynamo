@@ -12,7 +12,7 @@ namespace DSRevitNodes
     /// A Revit DividedSurface
     /// </summary>
     [RegisterForTrace]
-    class DSDividedSurface : AbstractGeometry
+    class DSDividedSurface : AbstractElement
     {
         #region Private Properties
 
@@ -53,7 +53,7 @@ namespace DSRevitNodes
             TransactionManager.GetInstance().TransactionTaskDone();
 
             // remember this new value
-            ElementBinder.SetElementForTrace(this.InternalID);
+            ElementBinder.SetElementForTrace(this.InternalId);
         }
 
         #endregion
@@ -63,7 +63,7 @@ namespace DSRevitNodes
         private void InternalSetDividedSurface(Autodesk.Revit.DB.DividedSurface divSurf)
         {
             this.InternalDividedSurface = divSurf;
-            this.InternalID = divSurf.Id;
+            this.InternalId = divSurf.Id;
             this.InternalUniqueId = divSurf.UniqueId;
         }
 

@@ -17,7 +17,7 @@ namespace DSRevitNodes
     /// </summary>
     [RegisterForTrace]
     [ShortName("refPt")]
-    public class DSReferencePoint : AbstractGeometry, IGraphicItem
+    public class DSReferencePoint : AbstractElement, IGraphicItem
     {
 
         #region Internal properties
@@ -61,7 +61,7 @@ namespace DSRevitNodes
 
             TransactionManager.GetInstance().TransactionTaskDone();
 
-            ElementBinder.SetElementForTrace(this.InternalID);
+            ElementBinder.SetElementForTrace(this.InternalId);
         }
 
         #endregion
@@ -81,7 +81,7 @@ namespace DSRevitNodes
         {
 
             InternalReferencePoint = p;
-            this.InternalID = InternalReferencePoint.Id;
+            this.InternalId = InternalReferencePoint.Id;
             this.InternalUniqueId = InternalReferencePoint.UniqueId;
         }
 
