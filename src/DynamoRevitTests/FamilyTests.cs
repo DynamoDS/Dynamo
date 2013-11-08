@@ -3,6 +3,7 @@ using System.Linq;
 using Autodesk.Revit.DB;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
+using Microsoft.FSharp.Collections;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -11,51 +12,11 @@ namespace Dynamo.Tests
     class FamilyTests:DynamoRevitUnitTestBase
     {
         [Test]
-        public void FamilyTypeSelectorNode()
-        {
-            var model = dynSettings.Controller.DynamoModel;
-
-            string samplePath = Path.Combine(_testPath, @"SelectFamily.dyn");
-            string testPath = Path.GetFullPath(samplePath);
-
-            //open the test file
-            model.Open(testPath);
-
-            //first assert that we have only one node
-            var nodeCount = dynSettings.Controller.DynamoModel.Nodes.Count;
-            Assert.AreEqual(1, nodeCount);
-
-            //assert that we have the right number of family symbols
-            //in the node's items source
-            FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
-            fec.OfClass(typeof(Family));
-            int count = 0;
-            foreach (Family f in fec.ToElements())
-            {
-                foreach (FamilySymbol fs in f.Symbols)
-                {
-                    count++;
-                }
-            }
-
-            FamilyTypeSelector typeSelNode = (FamilyTypeSelector)dynSettings.Controller.DynamoModel.Nodes.First();
-            Assert.AreEqual(typeSelNode.Items.Count, count);
-
-            //assert that the selected index is correct
-            Assert.AreEqual(typeSelNode.SelectedIndex, 3);
-
-            //now try and set the selected index to something
-            //greater than what is possible
-            typeSelNode.SelectedIndex = count + 5;
-            Assert.AreEqual(typeSelNode.SelectedIndex, -1);
-        }
-
-        [Test]
         public void GetFamilyInstancesByType()
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\GetFamilyInstancesByType.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Family\GetFamilyInstancesByType.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
@@ -74,11 +35,58 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\GetFamilyInstanceLocation.dyn");
+            string samplePath = Path.Combine(_testPath, @".\Family\GetFamilyInstanceLocation.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+        }
+
+        [Test]
+        public void CanLocateAdaptiveComponent()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\Family\AC_locationStandAlone.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+
+            //ensure that the collection of points
+            //returned has the 4 corner points
+            var locNode = model.AllNodes.FirstOrDefault(x => x is GetFamilyInstanceLocation);
+            Assert.IsNotNull(locNode);
+            var locs = locNode.OldValue.GetListFromFSchemeValue();
+            Assert.AreEqual(4, locs.Count());
+
+            //asert that the list is full of XYZs
+            var xyzs = locs.Select(x=>x.GetObjectFromFSchemeValue<XYZ>());
+        }
+
+        [Test]
+        public void CanLocateAdaptiveComponentInDividedSurface()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\Family\AC_locationInDividedSurface.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+
+            //ensure that you get a list of lists
+            //with 5 lists each with 5 lists of 4 points
+            var locNode = model.AllNodes.FirstOrDefault(x => x is GetFamilyInstanceLocation);
+            Assert.IsNotNull(locNode);
+            var rows = locNode.OldValue.GetListFromFSchemeValue();
+            Assert.AreEqual(5, rows.Count());
+
+            var column = rows.First().GetListFromFSchemeValue();
+            Assert.AreEqual(5, column.Count());
+
+            var cell = column.First().GetListFromFSchemeValue();
+            Assert.AreEqual(4, cell.Count());
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Windows.Media.Media3D;
+using HelixToolkit.Wpf;
 
 namespace Dynamo
 {
@@ -60,6 +61,11 @@ namespace Dynamo
         /// </summary>
         public ThreadSafeList<Point3D> ZAxisPoints { get; internal set; }
 
+        /// <summary>
+        /// A collection of text items with locations.
+        /// </summary>
+        public ThreadSafeList<BillboardTextItem> Text { get; internal set; }
+ 
         public RenderDescription()
         {
             Points = new ThreadSafeList<Point3D>();
@@ -72,6 +78,8 @@ namespace Dynamo
             SelectedPoints = new ThreadSafeList<Point3D>();
             SelectedLines = new ThreadSafeList<Point3D>();
             SelectedMeshes = new ThreadSafeList<MeshGeometry3D>();
+
+            Text = new ThreadSafeList<BillboardTextItem>();
         }
 
         public void Clear()
@@ -85,6 +93,7 @@ namespace Dynamo
             SelectedPoints.Clear();
             SelectedLines.Clear();
             SelectedMeshes.Clear();
+            Text.Clear();
         }
     }
 

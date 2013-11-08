@@ -71,7 +71,8 @@ namespace Dynamo.Revit
             Elements.Clear();
         }
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        protected override void 
+            SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
             //Don't copy over stored references
             if (context == SaveContext.Copy)

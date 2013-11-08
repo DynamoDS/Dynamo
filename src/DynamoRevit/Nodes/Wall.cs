@@ -9,15 +9,15 @@ namespace Dynamo.Nodes
 {
     [NodeName("Wall by Curve")]
     [NodeCategory(BuiltinNodeCategories.REVIT_DOCUMENT)]
-    [NodeDescription("Get a material from the active Revit document by name.")]
+    [NodeDescription("Create a wall given a curve, a level, a wall type, and a height.")]
     public class WallByCurve : RevitTransactionNodeWithOneOutput
     {
         public WallByCurve()
         {
-            InPortData.Add(new PortData("curve", "A list of curves representing the edges of the floor.", typeof(FScheme.Value.Container)));
+            InPortData.Add(new PortData("curve", "A curve.", typeof(FScheme.Value.Container)));
             InPortData.Add(new PortData("level", "A level to associate this wall with.", typeof(FScheme.Value.Container)));
-            InPortData.Add(new PortData("wall type", "A level to associate this floor with.", typeof(FScheme.Value.Container)));
-            InPortData.Add(new PortData("height", "The floor type to use for floor creation.", typeof(FScheme.Value.Number)));
+            InPortData.Add(new PortData("wall type", "The wall type to use for the wall.", typeof(FScheme.Value.Container)));
+            InPortData.Add(new PortData("height", "The height of the wall.", typeof(FScheme.Value.Number)));
 
             OutPortData.Add(new PortData("wall", "The wall.", typeof(FScheme.Value.Container)));
 

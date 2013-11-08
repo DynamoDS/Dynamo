@@ -27,8 +27,8 @@ def main():
 
 	#http://stackoverflow.com/questions/7427101/dead-simple-argparse-example-wanted-1-argument-3-results
 	parser = argparse.ArgumentParser(description='Run Revit Tests')
-	# parser.add_argument('-n','--name', help='Name of a test to run.', required=False)
-	# parser.add_argument('-f','--fixture', help='Name of fixture to run.', required=False)
+	parser.add_argument('-n','--name', help='Name of a test to run.', required=False)
+	parser.add_argument('-f','--fixture', help='Name of fixture to run.', required=False)
 	# parser.add_argument('-a','--assembly', help='Path of the assembly containing tests.', required=False)
 	parser.add_argument('-r','--results', nargs='?', const=1, default='DynamoTestResults.xml', help='Output location of the results file.', required=True)
 	# parser.add_argument('-m','--model', help='Path of the model file for open.', required=False)
@@ -41,7 +41,14 @@ def main():
 	tests = []
 	resultsPath = os.path.abspath(args['results'])
 	print resultsPath
-	tests = parse_input_file(args['input'], resultsPath)
+
+	fixture = ''
+	name=''
+	if args['fixture'] is not None:
+		fixture = args['fixture']
+	if args['name'] is not None:
+		name = args['name']
+	tests = parse_input_file(args['input'], resultsPath, fixture, name)
 
 	#cleanup existing results file
 	if os.path.exists(args['results']):
@@ -63,13 +70,13 @@ def run_tests(tests):
 		journal = generate_journal_file(test)
 
 		#Run Revit passing the journal file as a parameter
-		print 'running ' + journal
+		print 'running ' + test.fixtureName + ':' + test.testName
 		run_cmd( ['Revit', os.path.abspath(journal)] )
 
 		#Cleanup temporary journal file
 	 	os.remove(journal)
 
-def parse_input_file(inputFile, resultsPath):
+def parse_input_file(inputFile, resultsPath, requestedFixture, requestedTest):
 	tests = []
 	tree = ET.parse(inputFile)
 	testRoot = tree.getroot()
@@ -80,10 +87,16 @@ def parse_input_file(inputFile, resultsPath):
 			assemblyName = testAssembly_data.get('name')
 			for fixture in testAssembly_data.findall('testFixture'):
 				fixtureName = fixture.get('name')
+				# if we've passed in the name of a fixture
+				# and this fixture is not it, then do not process
+				if len(requestedFixture)>0 and fixtureName != requestedFixture:
+					continue
 				for test in fixture.findall('test'):
 					testName = test.get('name')
 					runDynamo = test.get('runDynamo')
 					modelPath = test.get('modelPath')
+					if len(requestedTest)>0 and testName != requestedTest:
+						continue
 					test = Test(testName, fixtureName, assemblyName, resultsPath, modelPath, pluginGUID, pluginClass,runDynamo)
 					# print repr(test)
 					tests.append(test)

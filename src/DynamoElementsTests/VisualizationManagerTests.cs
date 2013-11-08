@@ -2,6 +2,7 @@
 using System.IO;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
 using NUnit.Framework;
 using System.Linq;
 using Dynamo.Models;
@@ -388,6 +389,46 @@ namespace Dynamo.Tests
                 out pointCount, out lineCount, out meshCount, out xCount, out yCount, out zCount);
 
             Assert.AreEqual(0, lineCount);
+        }
+
+        [Test]
+        public void CanDrawNodeLabels()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            var viz = dynSettings.Controller.VisualizationManager;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\Labels.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count);
+
+            //before we run the expression, confirm that all nodes
+            //have label display set to false - the default
+            Assert.IsTrue(model.AllNodes.All(x => x.DisplayLabels != true));
+
+            // run the expression
+            Assert.DoesNotThrow(()=>dynSettings.Controller.RunExpression(null));
+
+            Assert.AreEqual(4, viz.Visualizations.SelectMany(x=>x.Value.Points).Count());
+
+            //label displayed should be possible now because
+            //some nodes have values. toggle on label display
+            var ptNode = model.Nodes.FirstOrDefault(x => x is Point3DNode);
+            Assert.IsNotNull(ptNode);
+            ptNode.DisplayLabels = true;
+
+            Assert.AreEqual(viz.Visualizations.SelectMany(x=>x.Value.Text).Count(), 4);
+
+            //change the lacing to cross product 
+            //ensure that the labels update to match
+            ptNode.ArgumentLacing = LacingStrategy.CrossProduct;
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(null));
+            Assert.AreEqual(64, viz.Visualizations.SelectMany(x => x.Value.Points).Count());
+            Assert.AreEqual(64, viz.Visualizations.SelectMany(x => x.Value.Text).Count());
+
+            ptNode.DisplayLabels = false;
+            Assert.AreEqual(0, viz.Visualizations.SelectMany(x => x.Value.Text).Count());
         }
     }
 }

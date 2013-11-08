@@ -21,6 +21,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand _alignSelectedCommand;
         private DelegateCommand _findNodesFromSelectionCommand;
         private DelegateCommand _selectAllCommand;
+        private DelegateCommand _pauseVisualizationManagerUpdateCommand;
 
         public DelegateCommand SelectAllCommand
         {
@@ -158,6 +159,17 @@ namespace Dynamo.ViewModels
                     _findNodesFromSelectionCommand = new DelegateCommand(FindNodesFromSelection, CanFindNodesFromSelection);
 
                 return _findNodesFromSelectionCommand;
+            }
+        }
+
+        public DelegateCommand PauseVisualizationManagerUpdatesCommand
+        {
+            get
+            {
+                if (_pauseVisualizationManagerUpdateCommand == null)
+                    _pauseVisualizationManagerUpdateCommand = new DelegateCommand(PauseVisualizationManagerUpdates, CanPauseVisualizationManagerUpdates);
+
+                return _pauseVisualizationManagerUpdateCommand;
             }
         }
     }
