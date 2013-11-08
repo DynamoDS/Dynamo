@@ -27,6 +27,18 @@ namespace Dynamo.Nodes
         protected string _selectionMessage;
         private Element _selected;
         protected string _selectionText;
+        private bool _buttonEnabled;
+
+        protected SelectionBase()
+        {
+            dynRevitSettings.Revit.ViewActivated += Revit_ViewActivated;
+            CanSelect = dynRevitSettings.Revit.ActiveUIDocument.Document == dynRevitSettings.Doc.Document;
+        }
+
+        void Revit_ViewActivated(object sender, Autodesk.Revit.UI.Events.ViewActivatedEventArgs e)
+        {
+            CanSelect = e.CurrentActiveView.Document == dynRevitSettings.Doc.Document;
+        }
 
         public bool CanSelect
         {
@@ -99,7 +111,7 @@ namespace Dynamo.Nodes
         /// </summary>
         public abstract string SelectionText { get; set; }
 
-        protected SelectionBase(PortData outPortData)
+        protected SelectionBase(PortData outPortData) : this()
         {
             OutPortData.Add(outPortData);
             RegisterAllPorts();
@@ -297,6 +309,26 @@ namespace Dynamo.Nodes
     [IsInteractive(true)]
     public abstract class MultipleElementSelectionBase : NodeWithOneOutput
     {
+        protected MultipleElementSelectionBase()
+        {
+            dynRevitSettings.Revit.ViewActivated += Revit_ViewActivated;
+            CanSelect = dynRevitSettings.Revit.ActiveUIDocument == dynRevitSettings.Doc;
+        }
+
+        void Revit_ViewActivated(object sender, Autodesk.Revit.UI.Events.ViewActivatedEventArgs e)
+        {
+            CanSelect = e.CurrentActiveView.Document == dynRevitSettings.Doc.Document;
+        }
+
+        public bool CanSelect
+        {
+            get { return _canSelect; }
+            set { 
+                _canSelect = value;
+                RaisePropertyChanged("CanSelect");
+            }
+        }
+
         private TextBlock _tb;
         private Button _selectButton;
 
@@ -380,6 +412,12 @@ namespace Dynamo.Nodes
                 Mode = BindingMode.TwoWay,
             };
             _selectButton.SetBinding(ContentControl.ContentProperty, buttonTextBinding);
+
+            var buttonEnabledBinding = new System.Windows.Data.Binding("CanSelect")
+            {
+                Mode = BindingMode.TwoWay,
+            };
+            _selectButton.SetBinding(Button.IsEnabledProperty, buttonEnabledBinding);
         }
 
         private void selectButton_Click(object sender, RoutedEventArgs e)
@@ -401,6 +439,7 @@ namespace Dynamo.Nodes
         protected abstract void OnSelectClick();
 
         private IList<Element> _selected;
+        private bool _canSelect;
 
         /// <summary>
         /// The Element which is selected. Setting this property will automatically register the Element
