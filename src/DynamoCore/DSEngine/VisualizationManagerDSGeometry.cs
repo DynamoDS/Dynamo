@@ -22,7 +22,7 @@ namespace Dynamo.DSEngine
             using (var renderPackage = new RenderPackage(selected))
             {
                 graphItem.Tessellate(renderPackage);
-                renderPackage.AddToRenderDescription(rd);
+                renderPackage.AddToRenderDescription(node, rd, octree);
             }
         }
     }
