@@ -1,19 +1,18 @@
 ﻿using System;
 using Autodesk.Revit.DB;
 using Autodesk.DesignScript.Geometry;
-using Curve = Autodesk.DesignScript.Geometry.Curve;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
 namespace DSRevitNodes
 {
     class DSWall
     {
-        static DSWall ByStartEndPoints(Point start, Point end, Autodesk.Revit.DB.Level bottom, Autodesk.Revit.DB.Level top)
+        public static DSWall ByStartEndPoints(Point start, Point end, Autodesk.Revit.DB.Level bottom, Autodesk.Revit.DB.Level top)
         {
             throw new NotImplementedException();
         }
 
-        static DSWall ByCurve(DSCurve c, Autodesk.Revit.DB.Level bottom, Autodesk.Revit.DB.Level top)
+        public static DSWall ByCurve(DSCurve c, Autodesk.Revit.DB.Level bottom, Autodesk.Revit.DB.Level top)
         {
             throw new NotImplementedException();
         }

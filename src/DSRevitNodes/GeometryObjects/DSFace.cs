@@ -5,9 +5,9 @@ using Autodesk.Revit.DB;
 namespace DSRevitNodes
 {
     // how 
-    class DSFace : AbstractElement
+    public class DSFace : AbstractGeometryObject
     {
-        public Autodesk.Revit.DB.Face InternalFace
+        internal Autodesk.Revit.DB.Face InternalFace
         {
             get; private set;
         }

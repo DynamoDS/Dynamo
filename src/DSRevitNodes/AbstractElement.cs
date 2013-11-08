@@ -17,7 +17,7 @@ namespace DSRevitNodes
             get { return DocumentManager.GetInstance().CurrentDBDocument; }
         }
 
-        protected ElementId InternalId;
+        protected ElementId InternalElementId;
         protected string InternalUniqueId;
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace DSRevitNodes
         /// </summary>
         public virtual void Dispose()
         {
-            DocumentManager.GetInstance().DeleteElement(this.InternalId);
+            DocumentManager.GetInstance().DeleteElement(this.InternalElementId);
         }
     }
 }

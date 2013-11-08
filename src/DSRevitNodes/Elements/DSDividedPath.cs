@@ -4,7 +4,6 @@ using Autodesk.Revit.DB;
 using DSNodeServices;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
-using Curve = Autodesk.DesignScript.Geometry.Curve;
 
 namespace DSRevitNodes.Elements
 {   
@@ -68,7 +67,7 @@ namespace DSRevitNodes.Elements
         private void InternalSetDividedPath(Autodesk.Revit.DB.DividedPath divPath)
         {
             InternalDividedPath = divPath;
-            InternalId = divPath.Id;
+            InternalElementId = divPath.Id;
             InternalUniqueId = divPath.UniqueId;
         }
 
@@ -76,12 +75,12 @@ namespace DSRevitNodes.Elements
 
         #region Static constructors
 
-        static DSDividedPath ByCurveAndEqualDivisions(DSCurve c, int divisions)
+        public static DSDividedPath ByCurveAndEqualDivisions(DSCurve c, int divisions)
         {
             return new DSDividedPath(c, divisions);
         }
 
-        static DSDividedPath ByCurveAndDivisionsOfLength(DSCurve c, double length)
+        public static DSDividedPath ByCurveAndDivisionsOfLength(DSCurve c, double length)
         {
             throw new NotImplementedException();
         }
