@@ -69,6 +69,9 @@
     <Compile Include="AbstractGeometryObject.cs" />
     <Compile Include="GeometryObjects\DSCurve.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="GeometryObjects\DSCurve.cs" />
+    <Compile Include="GeometryObjects\DSSolid.cs" />
     <Compile Include="GeometryObjects\DSFace.cs" />
     <Compile Include="Elements\DSAdaptiveComponent.cs" />
     <Compile Include="Elements\DSDividedPath.cs" />
@@ -92,6 +95,16 @@
     <Compile Include="Elements\DSStucturalFraming.cs" />
     <Compile Include="Elements\DSView.cs" />
     <Compile Include="Elements\DSWall.cs" />
+    <Compile Include="Elements\DSReferenceCurve.cs" />
+    <Compile Include="Elements\DSReferencePlane.cs" />
+    <Compile Include="Elements\DSReferencePoint.cs" />
+    <Compile Include="Elements\DSSpatialField.cs" />
+    <Compile Include="Elements\DSStucturalFraming.cs" />
+    <Compile Include="Elements\DSView.cs" />
+    <Compile Include="Elements\DSWall.cs" />
+    <Compile Include="Interactivity\DSSelection.cs" />
+    <Compile Include="Interactivity\DSParameter.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DSNodeServices\DSNodeServices.csproj">

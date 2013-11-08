@@ -8,6 +8,10 @@ using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
 using Dynamo;
 using Dynamo.Nodes;
+using Dynamo.Utilities;
+using Dynamo.DSEngine;
+using ProtoCore.Mirror;
+using ProtoCore.DSASM;
 
 
 namespace Dynamo.Tests
@@ -259,6 +263,36 @@ b = c[w][x][y][z];";
             userText = "\n   \n   \n    \n";
             compilableText = CodeBlockNodeModel.FormatUserText(userText);
             Assert.AreEqual("", compilableText);
+        }
+
+        [Test]
+        [Category("DSExecution")]
+        [Category("Regression")]
+        public void RegressMAGN592()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\cbn\magn592.dyn");
+            model.Open(openPath);
+
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(null));
+
+            // a = 1..10;
+            // b = (1..10..1)..5;
+            // v1 = Count(a);
+            // v2 = Count(Flatten(b));
+            // v3 = v1 + v2; 
+            // 
+            // To verify v3 == 45;
+
+            var node = model.CurrentWorkspace.NodeFromWorkspace("9ee31295-11a0-450d-951d-ed61ad9ce159");
+            string var = node.VariableToPreview;
+            RuntimeMirror mirror = null;
+            Assert.DoesNotThrow(() => mirror = EngineController.Instance.GetMirror(var));
+            Assert.IsNotNull(mirror);
+
+            StackValue value = mirror.GetData().GetStackValue();
+            Assert.AreEqual(value.opdata, 45);
         }
     }
 }

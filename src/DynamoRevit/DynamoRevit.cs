@@ -221,9 +221,12 @@ namespace Dynamo.Applications
         /// <param name="e"></param>
         private void Application_ViewActivating(object sender, ViewActivatingEventArgs e)
         {
-            View3D view = e.NewActiveView as View3D;
+            var view = e.NewActiveView as View3D;
 
-            if (view != null && view.IsPerspective)
+            if (view != null 
+                && view.IsPerspective
+                && dynSettings.Controller.Context != Context.VASARI_2013
+                && dynSettings.Controller.Context != Context.VASARI_2014)
             {
                 DynamoLogger.Instance.LogWarning(
                     "Dynamo is not available in a perspective view. Please switch to another view to Run.",
