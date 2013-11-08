@@ -110,7 +110,6 @@ namespace DSRevitNodes
         /// <returns></returns>
         public static DSFamilySymbol ByName(string name)
         {
-            
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
             // look up the loaded family
