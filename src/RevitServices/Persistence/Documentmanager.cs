@@ -52,5 +52,30 @@ namespace RevitServices.Persistence
         /// </summary>
         public Document CurrentDBDocument { get; set; }
 
+        /// <summary>
+        /// A method to clear some elements from the CurrentDBDocument.  This is intended
+        /// only as a temporary fix until trace properly handles model cleanup
+        /// </summary>
+        public void ClearCurrentDocument()
+        {
+            TransactionManager.GetInstance().EnsureInTransaction(this.CurrentDBDocument);
+
+            var collector = new FilteredElementCollector(CurrentDBDocument);
+
+            var filter = new LogicalOrFilter(new List<ElementFilter>()
+            {
+                new ElementCategoryFilter(BuiltInCategory.OST_ReferencePoints),
+                new ElementCategoryFilter(BuiltInCategory.OST_AdaptivePoints),
+                new ElementCategoryFilter(BuiltInCategory.OST_DividedPath),
+                new ElementCategoryFilter(BuiltInCategory.OST_DividedSurface),
+
+                new ElementClassFilter(typeof (FamilyInstance)),
+                new ElementClassFilter(typeof (CurveElement))
+            });
+
+            collector.WherePasses(filter).ToList().ForEach(x=> CurrentDBDocument.Delete(x.Id));
+
+            TransactionManager.GetInstance().TransactionTaskDone();
+        }
     }
 }

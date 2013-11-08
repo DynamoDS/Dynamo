@@ -74,6 +74,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DSRevitNodes\DSRevitNodes.csproj">
+      <Project>{0bc2a611-bd0e-4fcc-a1de-81f14ed369b2}</Project>
+      <Name>DSRevitNodes</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
@@ -85,6 +89,14 @@
     <ProjectReference Include="..\DynamoRevit\DynamoRevit.csproj">
       <Project>{fd56ae51-739e-4893-8de4-925d60c7097c}</Project>
       <Name>DynamoRevit</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FSchemeInterop\FSchemeInterop2012.csproj">
+      <Project>{126c6420-c7a2-43b0-8b08-206c6c4c1348}</Project>
+      <Name>FSchemeInterop2012</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FScheme\FScheme.2012.fsproj">
+      <Project>{f0e5a3e5-bdd0-41ae-848e-ded9efc5fa7f}</Project>
+      <Name>FScheme.2012</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
