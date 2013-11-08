@@ -783,19 +783,22 @@ namespace Dynamo
         public static Dictionary<NodeModel,Dictionary<string,object>> GetAllDrawablesInModel()
         {
 #if USE_DSENGINE
-            // Dictionary<NodeModel, List<object>> drawables = new Dictionary<NodeModel, List<object>>();
-            // foreach (var node in dynSettings.Controller.DynamoModel.Nodes)
-            // {
-            //     string varName = node.VariableToPreview;
-            //     var graphItems = EngineController.Instance.GetGraphicItems(varName);
-            //     if (graphItems != null)
-            //     {
-            //         List<object> drawableItems = graphItems.ConvertAll(item => (object)item);
-            //         drawables.Add(node, drawableItems);
-            //     }
-            // }
-            // return drawables;
-            return null; // TODO: This should be updated to match the latest signature.
+            var drawables = new Dictionary<NodeModel, Dictionary<string, object>>();
+            foreach (var node in dynSettings.Controller.DynamoModel.Nodes)
+            {
+                string varName = node.VariableToPreview;
+                var graphItems = EngineController.Instance.GetGraphicItems(varName);
+                if (graphItems != null)
+                {
+                    var drawableItems = new Dictionary<string, object>();
+                    for (int i = 0; i < graphItems.Count(); ++i)
+                    {
+                        drawableItems.Add(i.ToString(), graphItems[i]);
+                    }
+                    drawables.Add(node, drawableItems);
+                }
+            }
+            return drawables;
 #else
             //get a list of tuples node,drawables
             var nodeTuples = dynSettings.Controller.DynamoModel.Nodes
