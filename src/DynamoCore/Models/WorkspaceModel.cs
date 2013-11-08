@@ -733,7 +733,7 @@ namespace Dynamo.Models
                 {
                     foreach (var connector in port.Connectors)
                     {
-                        if (connector.End.Owner is Output)
+                        if (connector.End.Owner!= null && connector.End.Owner is Output)
                             return true;
                     }
                     return false;

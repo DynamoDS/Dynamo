@@ -152,6 +152,7 @@ namespace Dynamo.Nodes
             base.SaveNode(xmlDoc, nodeElement, context);
             XmlElementHelper helper = new XmlElementHelper(nodeElement);
             helper.SetAttribute("CodeText", code);
+            helper.SetAttribute("ShouldFocus", shouldFocus);
         }
 
         protected override void LoadNode(XmlNode nodeElement)
@@ -159,6 +160,7 @@ namespace Dynamo.Nodes
             base.LoadNode(nodeElement);
             XmlElementHelper helper = new XmlElementHelper(nodeElement as XmlElement);
             Code = helper.ReadString("CodeText");
+            shouldFocus = helper.ReadBoolean("ShouldFocus");
         }
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
@@ -285,9 +287,7 @@ namespace Dynamo.Nodes
             }
 
             var portConnectors = new Dictionary<string, List<PortModel>>();
-            SaveAndDeleteConnectors(portConnectors); //Save the connectors so that we can recreate them at the correct positions
             SetPorts(unboundIdentifiers); //Set the input and output ports based on the statements
-            LoadAndCreateConnectors(portConnectors);
         }
 
         private void SetPorts(List<string> unboundIdentifiers)
@@ -334,54 +334,6 @@ namespace Dynamo.Nodes
                         });
                     }
                     outportCount++;
-                }
-            }
-        }
-
-        private void SaveAndDeleteConnectors(Dictionary<string, List<PortModel>> portConnectors)
-        {
-            for(int i=0;i<OutPorts.Count;i++)
-            {
-                var portModel = OutPorts[i];
-                if (portModel.Connectors.Count != 0)
-                {
-                    string portName = portModel.ToolTipContent;
-                    if(portModel.ToolTipContent.Equals("Statement Output"))
-                        portName += i.ToString();
-                    portConnectors[portName] = new List<PortModel>();
-                    foreach (var connector in portModel.Connectors)
-                    {
-                        portConnectors[portName].Add(connector.End);
-                    }
-                }
-            }
-            
-            //Delete the connectors
-            foreach (var outport in OutPorts)
-                DestroyConnectors(outport);
-
-            //Clear out all the port models
-            for (int i = OutPorts.Count - 1; i >= 0; i--)
-                OutPorts.RemoveAt(i);
-        }
-
-        /// <summary>
-        /// Now that the portData has been set for the new ports, we recreate the connections we
-        /// so mercilessly destroyed restoring peace and balance to the world once again.
-        /// </summary>
-        /// <param name="portConnectors"> List of the connections that were killed</param>
-        private void LoadAndCreateConnectors(Dictionary<string, List<PortModel>> portConnectors)
-        {
-            for (int i = 0; i < OutPortData.Count; i++)
-            {
-                if (portConnectors.Keys.Contains(OutPortData[i].ToolTipString))
-                {
-                    foreach (var endPortModel in portConnectors[OutPortData[i].ToolTipString])
-                    {
-                        PortType p;
-                        var connector = ConnectorModel.Make(this, endPortModel.Owner, i, endPortModel.Owner.GetPortIndex(endPortModel,out p), PortType.INPUT);
-                        this.WorkSpace.Connectors.Add(connector);
-                    }
                 }
             }
         }
