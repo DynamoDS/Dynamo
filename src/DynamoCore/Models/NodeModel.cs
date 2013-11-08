@@ -1603,7 +1603,7 @@ namespace Dynamo.Models
             }
         }
 
-        private void DestroyConnectors(PortModel port)
+        protected void DestroyConnectors(PortModel port)
         {
             while (port.Connectors.Any())
             {
