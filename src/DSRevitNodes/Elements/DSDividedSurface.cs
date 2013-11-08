@@ -19,7 +19,7 @@ namespace DSRevitNodes
         /// <summary>
         /// Internal variable containing the wrapped Revit object
         /// </summary>
-        public Autodesk.Revit.DB.DividedSurface InternalDividedSurface
+        protected Autodesk.Revit.DB.DividedSurface InternalDividedSurface
         {
             get; private set;
         }

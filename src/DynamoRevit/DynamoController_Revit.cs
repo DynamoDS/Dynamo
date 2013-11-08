@@ -732,6 +732,8 @@ namespace Dynamo
         protected override void Run(List<NodeModel> topElements, GraphSyncData graphSyncData)
         {
             DocumentManager.GetInstance().CurrentDBDocument = dynRevitSettings.Doc.Document;
+            
+
             if (!DynamoViewModel.RunInDebug)
             {
                 // As we use a generic function node to represent all functions,
@@ -743,7 +745,13 @@ namespace Dynamo
                 TransMode = TransactionMode.Automatic; //Automatic transaction control
                 Debug.WriteLine("Adding a run to the idle stack.");
                 InIdleThread = true; //Now in the idle thread.
-                RevThread.IdlePromise.ExecuteOnIdleSync(() => base.Run(topElements, graphSyncData));
+                RevThread.IdlePromise.ExecuteOnIdleSync(() =>
+                {
+                    // Clear the active document.  This is a temporary fix 
+                    // until the trace cleanup is in place
+                    DocumentManager.GetInstance().ClearCurrentDocument();
+                    base.Run(topElements, graphSyncData);
+                });
             }
             else
             {

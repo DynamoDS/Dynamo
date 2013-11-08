@@ -7,5 +7,12 @@ namespace DSRevitNodes
 {
     class DSParameter
     {
+        private object param;
+
+        public DSParameter(object param)
+        {
+            // TODO: Complete member initialization
+            this.param = param;
+        }
     }
 }

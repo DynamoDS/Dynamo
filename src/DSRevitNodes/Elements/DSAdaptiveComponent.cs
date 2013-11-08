@@ -23,7 +23,7 @@ namespace DSRevitNodes
         /// <summary>
         /// Internal variable containing the wrapped Revit object
         /// </summary>
-        public Autodesk.Revit.DB.FamilyInstance InternalFamilyInstance
+        protected Autodesk.Revit.DB.FamilyInstance InternalFamilyInstance
         {
             get; private set;
         }

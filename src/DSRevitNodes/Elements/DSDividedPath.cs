@@ -19,7 +19,7 @@ namespace DSRevitNodes
         /// <summary>
         /// Internal variable containing the wrapped Revit object
         /// </summary>
-        public Autodesk.Revit.DB.DividedPath InternalDividedPath
+        protected Autodesk.Revit.DB.DividedPath InternalDividedPath
         {
             get;
             private set;

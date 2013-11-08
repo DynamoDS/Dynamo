@@ -3,6 +3,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Remoting.Contexts;
+using DSRevitNodes;
+using Dynamo;
 using Dynamo.Nodes;
 using Dynamo.Tests;
 using Dynamo.Utilities;
@@ -27,7 +29,19 @@ namespace DSRevitNodesTests
 
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
-            // make some assertions here
+            var node = model.CurrentWorkspace.Nodes.First(x => x.Name == "DSReferencePoint.ByCoordinates");
+
+            //Assert.NotNull(node);
+
+            //var ptObj = ((FScheme.Value.Container)node.OldValue).Item;
+
+            //Assert.IsAssignableFrom(typeof(DSRevitNodes.DSReferencePoint), ptObj);
+
+            //var pt = (DSReferencePoint)ptObj;
+
+            //Assert.AreEqual(5, pt.X);
+            //Assert.AreEqual(6, pt.Y);
+            //Assert.AreEqual(7, pt.Z);
 
         }
     }
