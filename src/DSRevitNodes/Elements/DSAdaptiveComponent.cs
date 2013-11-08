@@ -16,7 +16,7 @@ namespace DSRevitNodes
     /// A Revit Adaptive Component
     /// </summary>
     [RegisterForTrace]
-    public class DSAdaptiveComponent : AbstractGeometry
+    public class DSAdaptiveComponent : AbstractElement
     {
         #region Properties
 
@@ -55,7 +55,7 @@ namespace DSRevitNodes
             // otherwise create a new family instance...
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
-            var fam = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(AbstractGeometry.Document, fs.InternalFamilySymbol);
+            var fam = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(AbstractElement.Document, fs.InternalFamilySymbol);
 
             if (fam == null)
                 throw new Exception("An adaptive component could not be found or created.");
@@ -66,7 +66,7 @@ namespace DSRevitNodes
             TransactionManager.GetInstance().TransactionTaskDone();
 
             // remember this value
-            ElementBinder.SetElementForTrace(this.InternalID);
+            ElementBinder.SetElementForTrace(this.InternalId);
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace DSRevitNodes
             // otherwise create a new family instance...
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
-            var fam = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(AbstractGeometry.Document, fs.InternalFamilySymbol);
+            var fam = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(AbstractElement.Document, fs.InternalFamilySymbol);
 
             if (fam == null)
                 throw new Exception("An adaptive component could not be found or created.");
@@ -127,7 +127,7 @@ namespace DSRevitNodes
             // otherwise create a new family instance...
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
-            var fam = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(AbstractGeometry.Document, fs.InternalFamilySymbol);
+            var fam = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(AbstractElement.Document, fs.InternalFamilySymbol);
 
             if (fam == null)
                 throw new Exception("An adaptive component could not be found or created.");
@@ -150,7 +150,7 @@ namespace DSRevitNodes
         private void InternalSetFamilyInstance(Autodesk.Revit.DB.FamilyInstance ele)
         {
             InternalFamilyInstance = ele;
-            InternalID = ele.Id;
+            InternalId = ele.Id;
             InternalUniqueId = ele.UniqueId;
         }
 
