@@ -27,7 +27,7 @@ def main():
 
 	#http://stackoverflow.com/questions/7427101/dead-simple-argparse-example-wanted-1-argument-3-results
 	parser = argparse.ArgumentParser(description='Run Revit Tests')
-	# parser.add_argument('-n','--name', help='Name of a test to run.', required=False)
+	parser.add_argument('-n','--name', help='Name of a test to run.', required=False)
 	parser.add_argument('-f','--fixture', help='Name of fixture to run.', required=False)
 	# parser.add_argument('-a','--assembly', help='Path of the assembly containing tests.', required=False)
 	parser.add_argument('-r','--results', nargs='?', const=1, default='DynamoTestResults.xml', help='Output location of the results file.', required=True)
@@ -43,10 +43,12 @@ def main():
 	print resultsPath
 
 	fixture = ''
+	name=''
 	if args['fixture'] is not None:
 		fixture = args['fixture']
-		print fixture
-	tests = parse_input_file(args['input'], resultsPath, fixture)
+	if args['name'] is not None:
+		name = args['name']
+	tests = parse_input_file(args['input'], resultsPath, fixture, name)
 
 	#cleanup existing results file
 	if os.path.exists(args['results']):
@@ -74,7 +76,7 @@ def run_tests(tests):
 		#Cleanup temporary journal file
 	 	os.remove(journal)
 
-def parse_input_file(inputFile, resultsPath, requestedFixture):
+def parse_input_file(inputFile, resultsPath, requestedFixture, requestedTest):
 	tests = []
 	tree = ET.parse(inputFile)
 	testRoot = tree.getroot()
@@ -93,6 +95,8 @@ def parse_input_file(inputFile, resultsPath, requestedFixture):
 					testName = test.get('name')
 					runDynamo = test.get('runDynamo')
 					modelPath = test.get('modelPath')
+					if len(requestedTest)>0 and testName != requestedTest:
+						continue
 					test = Test(testName, fixtureName, assemblyName, resultsPath, modelPath, pluginGUID, pluginClass,runDynamo)
 					# print repr(test)
 					tests.append(test)

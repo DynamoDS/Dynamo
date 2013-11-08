@@ -222,5 +222,5 @@ namespace Dynamo.ViewModels
                 return _gotoWorkspaceCommand;
             }
         }
-   }
+    }
 }

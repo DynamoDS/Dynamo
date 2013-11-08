@@ -21,7 +21,7 @@ namespace Dynamo.Tests
             dynSettings.Controller.RunExpression(true);
 
             var blendNode = dynSettings.Controller.DynamoModel.Nodes.First(x => x is CreateBlendGeometry);
-            var result = (Solid)VisualizationManager.GetDrawablesFromNode(blendNode).First();
+            var result = (Solid)VisualizationManager.GetDrawablesFromNode(blendNode).Values.First();
             double volumeMin = 3700000.0;
             double volumeMax = 3900000.0;
             double actualVolume = result.Volume;
@@ -61,7 +61,7 @@ namespace Dynamo.Tests
             dynSettings.Controller.RunExpression(true);
 
             var revolveNode = dynSettings.Controller.DynamoModel.Nodes.First(x => x is CreateRevolvedGeometry);
-            var result = (Solid)VisualizationManager.GetDrawablesFromNode(revolveNode).First();
+            var result = (Solid)VisualizationManager.GetDrawablesFromNode(revolveNode).Values.First();
             double volumeMin = 13300.0;
             double volumeMax = 13550.0;
             double actualVolume = result.Volume;
@@ -84,7 +84,7 @@ namespace Dynamo.Tests
                 dynSettings.Controller.RunExpression(true);
 
                 var skeletonNode = dynSettings.Controller.DynamoModel.Nodes.First(x => x is SkinCurveLoops);
-                var result = (Solid)VisualizationManager.GetDrawablesFromNode(skeletonNode).First();
+                var result = (Solid)VisualizationManager.GetDrawablesFromNode(skeletonNode).Values.First();
                 double volumeMin = 82500.0;
                 double volumeMax = 84500.0;
                 double actualVolume = result.Volume;
@@ -105,7 +105,7 @@ namespace Dynamo.Tests
             dynSettings.Controller.RunExpression(true);
 
             var sweepNode = dynSettings.Controller.DynamoModel.Nodes.First(x => x is CreateSweptGeometry);
-            var result = (Solid)VisualizationManager.GetDrawablesFromNode(sweepNode).First();
+            var result = (Solid)VisualizationManager.GetDrawablesFromNode(sweepNode).Values.First();
             double volumeMin = 11800.0;
             double volumeMax = 12150.0;
             double actualVolume = result.Volume;

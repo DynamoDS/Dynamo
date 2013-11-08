@@ -46,7 +46,8 @@ namespace Dynamo.Controls
         public ThreadSafeList<Point3D> _linesCacheSelected = new ThreadSafeList<Point3D>();
         public MeshGeometry3D _meshCacheSelected = new MeshGeometry3D();
         private ThreadSafeList<Point3D> _gridCache = new ThreadSafeList<Point3D>();
-  
+        private ThreadSafeList<BillboardTextItem> _text = new ThreadSafeList<BillboardTextItem>();
+
         public Material HelixMeshMaterial
         {
             get { return Materials.White; }
@@ -149,6 +150,19 @@ namespace Dynamo.Controls
             {
                 _meshCacheSelected = value;
                 NotifyPropertyChanged("HelixMeshSelected");
+            }
+        }
+
+        public ThreadSafeList<BillboardTextItem> HelixText
+        {
+            get
+            {
+                return _text;
+            }
+            set
+            {
+                _text = value;
+                NotifyPropertyChanged("HelixText");
             }
         }
 
@@ -284,6 +298,7 @@ namespace Dynamo.Controls
             HelixPointsSelected = null;
             HelixLinesSelected = null;
             HelixMeshSelected = null;
+            HelixText = null;
 
             HelixPoints = rd.Points;
             HelixLines = rd.Lines;
@@ -294,16 +309,17 @@ namespace Dynamo.Controls
             HelixZAxes = rd.ZAxisPoints;
             HelixMesh = VisualizationManager.MergeMeshes(rd.Meshes);
             HelixMeshSelected = VisualizationManager.MergeMeshes(rd.SelectedMeshes);
+            HelixText = rd.Text;
 
             // http://www.japf.fr/2009/10/measure-rendering-time-in-a-wpf-application/comment-page-1/#comment-2892
-            Dispatcher.CurrentDispatcher.BeginInvoke(
-                DispatcherPriority.Background,
-                new Action(() =>
-                {
+            //Dispatcher.CurrentDispatcher.BeginInvoke(
+            //    DispatcherPriority.Background,
+            //    new Action(() =>
+            //    {
                     var sb = new StringBuilder();
                     sb.AppendLine();
                     sb.AppendLine(string.Format("Rendering complete:"));
-                    sb.AppendLine(string.Format("Points: {0}", rd.Points.Count / 2 + rd.SelectedPoints.Count / 2));
+                    sb.AppendLine(string.Format("Points: {0}", rd.Points.Count + rd.SelectedPoints.Count));
                     sb.AppendLine(string.Format("Line segments: {0}", rd.Lines.Count / 2 + rd.SelectedLines.Count / 2));
                     sb.AppendLine(string.Format("Mesh vertices: {0}",
                         rd.Meshes.SelectMany(x => x.Positions).Count() +
@@ -311,11 +327,13 @@ namespace Dynamo.Controls
                     sb.Append(string.Format("Mesh faces: {0}",
                         rd.Meshes.SelectMany(x => x.TriangleIndices).Count() / 3 +
                         rd.SelectedMeshes.SelectMany(x => x.TriangleIndices).Count() / 3));
-                    DynamoLogger.Instance.Log(sb.ToString());
-
+                    //DynamoLogger.Instance.Log(sb.ToString());
+                    Debug.WriteLine(sb.ToString());
                     sw.Stop();
-                    DynamoLogger.Instance.Log(string.Format("{0} ellapsed for updating background preview.", sw.Elapsed));
-                }));
+                    //DynamoLogger.Instance.Log(string.Format("{0} ellapsed for updating background preview.", sw.Elapsed));
+
+                    Debug.WriteLine(string.Format("{0} ellapsed for updating background preview.", sw.Elapsed));
+                //}));
 
         }
 

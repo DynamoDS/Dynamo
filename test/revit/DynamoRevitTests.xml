@@ -7,6 +7,11 @@
 				<test name="AdaptiveComponentByCurve" runDynamo="True" modelPath=".\AdaptiveComponent\AdaptiveComponentByCurve.rfa"/>
 				<test name="AdaptiveComponent" runDynamo="True" modelPath=".\AdaptiveComponent\AdaptiveComponent.rfa"/>
 			</testFixture>
+			<testFixture name="AnalysisDisplayTests">
+				<test name="AnalysisDisplayPoints" runDynamo="True" modelPath=".\AnalysisDisplay\AD_Points.rvt"/>
+				<test name="AnalysisDisplaySurface" runDynamo="True" modelPath=".\AnalysisDisplay\AD_Surface.rvt"/>
+				<test name="AnalysisDisplayVectors" runDynamo="True" modelPath=".\AnalysisDisplay\AD_Vector.rvt"/>
+			</testFixture>
 			<testFixture name="BugTests">
 				<test name="MAGN_66" runDynamo="True" modelPath=".\Bugs\MAGN_66.rfa"/>
 			</testFixture>
@@ -15,6 +20,7 @@
 				<test name="CanChangeLacingAndHaveElementsUpdate" runDynamo="True" modelPath=".\empty.rfa"/>
 				<test name="ElementNodeReassociation" runDynamo="True" modelPath=".\empty.rfa"/>
 				<test name="SwitchDocuments" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="CanCopyAndPasteAllNodesOnRevit" runDynamo="True" modelPath=".\empty.rfa"/>
 			</testFixture>
 			<testFixture name="CurveTests">
 				<test name="CurveByPoints" runDynamo="True" modelPath=".\empty.rfa"/>
@@ -39,8 +45,8 @@
 			<testFixture name="FamilyTests">
 				<test name="GetFamilyInstancesByType" runDynamo="True" modelPath=".\Family\GetFamilyInstancesByType.rvt"/>
 				<test name="GetFamilyInstanceLocation" runDynamo="True" modelPath=".\Family\GetFamilyInstanceLocation.rvt"/>
-				<test name="CanLocateAdaptiveComponent" runDynamo="True" modelPath=".\empty.rfa"/>
-				<test name="CanLocateAdaptiveComponentInDividedSurface" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="CanLocateAdaptiveComponent" runDynamo="True" modelPath=".\Family\AC_locationStandAlone.rfa"/>
+				<test name="CanLocateAdaptiveComponentInDividedSurface" runDynamo="True" modelPath=".\Family\AC_locationInDividedSurface.rfa"/>
 			</testFixture>
 			<testFixture name="IntersectionTests">
 				<test name="CurveCurveIntersection" runDynamo="True" modelPath=".\Intersect\CurveCurveIntersection.rfa"/>
@@ -59,6 +65,9 @@
 			<testFixture name="ModelTextTests">
 				<test name="ModelText" runDynamo="True" modelPath=".\ModelText\ModelText.rfa"/>
 			</testFixture>
+			<!-- <testFixture name="PythonTests">
+				<test name="CanAddTwoInputsWithPython" runDynamo="True" modelPath=".\empty.rfa"/>
+			</testFixture> -->
 			<testFixture name="RayBounceTests">
 				<test name="RayBounce" runDynamo="True" modelPath=".\RayBounce\RayBounce.rvt"/>
 			</testFixture>
