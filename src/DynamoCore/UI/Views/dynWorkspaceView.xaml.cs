@@ -507,17 +507,23 @@ namespace Dynamo.Views
                 // connector, redraw it to match the new mouse coordinates.
                 case WorkspaceViewModel.StateMachine.State.Connection:
                 {
-                    // TODO(Robin) : Need to prevent snapping for wrong connection
-                    // TODO(Robin) : Cursor should be handled by StateMachine
-                    //this.Cursor = CursorsLibrary.ArcAdding;
-
                     Point mouse = e.GetPosition((UIElement)sender);
                     this.snappedPort = GetSnappedPort(mouse);
+
+                    // Check for nearby port to snap
                     if (this.snappedPort != null)
                     {
-                        mouseMessageHandled = true;
-                        wvm.HandleMouseMove(this.WorkBench, this.snappedPort.Center);
+                        // Nearby port must be compatible for connection
+                        if (wvm.CheckActiveConnectorCompatibility(this.snappedPort))
+                        {
+                            mouseMessageHandled = true;
+                            wvm.HandleMouseMove(this.WorkBench, this.snappedPort.Center);
+                        }
+                        else
+                            this.snappedPort = null; // remove non-compatible port
                     }
+                    else
+                        wvm.CurrentCursor = CursorLibrary.GetCursor(CursorSet.ArcSelect);
                     
                     break;
                 }
@@ -533,7 +539,7 @@ namespace Dynamo.Views
                     PortViewModel pvm = PortFromHitTestResult(dependencyObject);
 
                     if (null != pvm && (pvm.PortType == PortType.INPUT))
-                        this.Cursor = CursorLibrary.GetCursor(CursorSet.ArcRemoving);
+                        this.Cursor = CursorLibrary.GetCursor(CursorSet.ArcSelect);
                     else
                         this.Cursor = null;
 

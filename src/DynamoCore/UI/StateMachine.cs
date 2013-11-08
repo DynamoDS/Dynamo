@@ -30,6 +30,11 @@ namespace Dynamo.ViewModels
             get { return stateMachine.CurrentState; }
         }
 
+        internal ConnectorViewModel ActiveConnector
+        {
+            get { return activeConnector; }
+        }
+
         internal bool HandleLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             return stateMachine.HandleLeftButtonDown(sender, e);
@@ -199,6 +204,33 @@ namespace Dynamo.ViewModels
             models.Add(newConnectorModel, UndoRedoRecorder.UserAction.Creation);
             _model.RecordModelsForUndo(models);
             this.SetActiveConnector(null);
+        }
+
+        internal bool CheckActiveConnectorCompatibility(PortViewModel portVM)
+        {
+            // Check if required ports exist
+            if ( this.activeConnector == null || portVM == null )
+                return false;
+
+            PortModel srcPortM = this.activeConnector.ActiveStartPort;
+            PortModel desPortM = portVM.PortModel;
+
+            bool isCompatible = false;
+
+            // No self connection
+            // No start to start or end or end connection
+            if (srcPortM != desPortM && srcPortM.PortType != desPortM.PortType)
+            {
+                // Change cursor to show compatible port connection
+                CurrentCursor = CursorLibrary.GetCursor(CursorSet.ArcAdding);
+                return true;
+            }
+            else
+            {
+                // Change cursor to show not compatible
+                CurrentCursor = CursorLibrary.GetCursor(CursorSet.ArcSelect);
+                return false;
+            }
         }
 
         internal void CancelConnection()
@@ -625,7 +657,6 @@ namespace Dynamo.ViewModels
 
                 return true;
             }
-
             #endregion
 
             #region Cancel State Methods

@@ -45,9 +45,8 @@ namespace Dynamo.ViewModels
         public event SelectionEventHandler RequestSelectionBoxUpdate;
         public event WorkspacePropertyEditHandler WorkspacePropertyEditRequested;
 
-        // TODO(Robin) : 
         /// <summary>
-        /// Cursor Property Binding
+        /// Cursor Property Binding for WorkspaceView
         /// </summary>
         private Cursor currentCursor = null;
         public Cursor CurrentCursor
@@ -55,9 +54,9 @@ namespace Dynamo.ViewModels
             get { return currentCursor; }
             set { currentCursor = value; RaisePropertyChanged("CurrentCursor"); }
         }
-        // TODO(Robin) : 
+
         /// <summary>
-        /// Force Cursor Property Binding
+        /// Force Cursor Property Binding for WorkspaceView
         /// </summary>
         private bool isCursorForced = false;
         public bool IsCursorForced
