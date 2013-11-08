@@ -20,6 +20,7 @@
 				<test name="CanChangeLacingAndHaveElementsUpdate" runDynamo="True" modelPath=".\empty.rfa"/>
 				<test name="ElementNodeReassociation" runDynamo="True" modelPath=".\empty.rfa"/>
 				<test name="SwitchDocuments" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="CanCopyAndPasteAllNodesOnRevit" runDynamo="True" modelPath=".\empty.rfa"/>
 			</testFixture>
 			<testFixture name="CurveTests">
 				<test name="CurveByPoints" runDynamo="True" modelPath=".\empty.rfa"/>
