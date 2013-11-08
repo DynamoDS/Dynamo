@@ -183,7 +183,7 @@
     <Compile Include="Nodes\NurbsSpline.cs" />
     <Compile Include="Nodes\Rectangle.cs" />
     <Compile Include="Nodes\ReferenceCurve.cs" />
-    <Compile Include="Nodes\SpatialField.cs" />
+    <Compile Include="Nodes\AnalysisDisplay.cs" />
     <Compile Include="Nodes\Curve.cs" />
     <Compile Include="Nodes\Grid.cs" />
     <Compile Include="Nodes\DividedCurve.cs" />

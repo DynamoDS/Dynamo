@@ -43,7 +43,7 @@ namespace Dynamo.Models
          * Incorporate INode in here somewhere
          */
 
-        #region Abstract Members
+        #region abstract members
 
         /// <summary>
         /// The dynElement's Evaluation Logic.
@@ -57,50 +57,66 @@ namespace Dynamo.Models
 
         #endregion
 
-        #region Properties
+        #region private members
 
-        public event DispatchedToUIThreadHandler DispatchedToUI;
-        public void OnDispatchedToUI(object sender, UIDispatcherEventArgs e)
-        {
-            if (DispatchedToUI != null)
-                DispatchedToUI(this, e);
-        }
+        private string _description;
+        private bool interactionEnabled = true;
+        internal bool isVisible;
+        internal bool isUpstreamVisible;
+        private readonly Dictionary<int, Tuple<int, NodeModel>> previousInputPortMappings =
+            new Dictionary<int, Tuple<int, NodeModel>>();
+        private readonly Dictionary<int, HashSet<Tuple<int, NodeModel>>> previousOutputPortMappings =
+            new Dictionary<int, HashSet<Tuple<int, NodeModel>>>();
+        readonly Dictionary<PortModel, PortData> portDataDict = new Dictionary<PortModel, PortData>();
+        ObservableCollection<PortModel> inPorts = new ObservableCollection<PortModel>();
+        ObservableCollection<PortModel> outPorts = new ObservableCollection<PortModel>();
+        private LacingStrategy argumentLacing = LacingStrategy.First;
+        private string nickName;
+        ElementState state;
+        string toolTipText = "";
+        private IdentifierNode identifier = null;
+        private List<string> inputIdentifiers = new List<String>();
+        private bool _overrideNameWithNickName = false;
+
+        /// <summary>
+        /// Should changes be reported to the containing workspace?
+        /// </summary>
+        private bool _report = true;
+
+        /// <summary>
+        /// Get the last computed value from the node.
+        /// </summary>
+        private FScheme.Value _oldValue = null;
+
+        protected internal ExecutionEnvironment macroEnvironment = null;
+        private bool _isDirty = true;
+        private const string FailureString = "Node evaluation failed";
+        private Dictionary<PortData, FScheme.Value> _evaluationDict;
+        private bool displayLabels = false;
+
+        #endregion
+
+        #region public members
 
         // TODO(Ben): Move this up to ModelBase (it makes sense for connector as well).
         public WorkspaceModel WorkSpace;
 
+        #endregion
+
+        #region events
+        public event DispatchedToUIThreadHandler DispatchedToUI;
+        #endregion
+
+        #region public properties
+
         public ObservableCollection<PortData> InPortData { get; private set; }
         public ObservableCollection<PortData> OutPortData { get; private set; }
-        readonly Dictionary<PortModel, PortData> portDataDict = new Dictionary<PortModel, PortData>();
-        
-//MVVM : node should not reference its view directly
-        //public dynNodeView NodeUI;
         
         public Dictionary<int, Tuple<int, NodeModel>> Inputs = 
             new Dictionary<int, Tuple<int, NodeModel>>();
         public Dictionary<int, HashSet<Tuple<int, NodeModel>>> Outputs =
             new Dictionary<int, HashSet<Tuple<int, NodeModel>>>();
 
-        private readonly Dictionary<int, Tuple<int, NodeModel>> previousInputPortMappings = 
-            new Dictionary<int, Tuple<int, NodeModel>>();
-        private readonly Dictionary<int, HashSet<Tuple<int, NodeModel>>> previousOutputPortMappings =
-            new Dictionary<int, HashSet<Tuple<int, NodeModel>>>();
-        ObservableCollection<PortModel> inPorts = new ObservableCollection<PortModel>();
-        ObservableCollection<PortModel> outPorts = new ObservableCollection<PortModel>();
-        private LacingStrategy argumentLacing  = LacingStrategy.First;
-        private string nickName;
-        ElementState state;
-        string toolTipText = "";
-        //bool isSelected = false;
-
-        private bool interactionEnabled = true;
-        internal bool isVisible;
-        internal bool isUpstreamVisible;
-
-        private IdentifierNode identifier = null;
-        private List<string> inputIdentifiers = new List<String>();
-       // protected AssociativeNode defaultAstExpression = null;
- 
         /// <summary>
         /// Returns whether this node represents a built-in or custom function.
         /// </summary>
@@ -183,7 +199,6 @@ namespace Dynamo.Models
             }
         }
 
-        private bool _overrideNameWithNickName = false;
         public bool OverrideNameWithNickName { get { return _overrideNameWithNickName; } set { this._overrideNameWithNickName = value; RaisePropertyChanged("OverrideNameWithNickName"); } }
 
         public string NickName
@@ -258,8 +273,6 @@ namespace Dynamo.Models
             }
         }
 
-
-
         /// <summary>
         ///     Category property
         /// </summary>
@@ -283,15 +296,6 @@ namespace Dynamo.Models
             }
         }
 
-        /// <summary>
-        /// Should changes be reported to the containing workspace?
-        /// </summary>
-        private bool _report = true;
-
-        /// <summary>
-        /// Get the last computed value from the node.
-        /// </summary>
-        private FScheme.Value _oldValue = null;
         public virtual FScheme.Value OldValue
         {
             get { return _oldValue; }
@@ -308,6 +312,7 @@ namespace Dynamo.Models
             RequiresRecalc = true;
         }
 
+<<<<<<< HEAD
         private bool isUpdated = false;
 
         /// <summary>
@@ -350,12 +355,12 @@ namespace Dynamo.Models
         //    get { return dynSettings.Bench; }
         //}
 
+=======
+>>>>>>> master
         protected DynamoController Controller
         {
             get { return dynSettings.Controller; }
         }
-
-        private bool _isDirty = true;
 
         ///<summary>
         ///Does this Element need to be regenerated? Setting this to true will trigger a modification event
@@ -437,7 +442,6 @@ namespace Dynamo.Models
             }
         }
 
-        private string _description;
         public virtual string Description
         {
             get
@@ -489,6 +493,25 @@ namespace Dynamo.Models
             }
         }
 
+<<<<<<< HEAD
+=======
+        /// <summary>
+        /// Enable or disable label display. Default is false.
+        /// </summary>
+        public bool DisplayLabels
+        {
+            get { return displayLabels; }
+            set
+            {
+                if (displayLabels != value)
+                {
+                    displayLabels = value;
+                    RaisePropertyChanged("DisplayLabels");
+                }
+            }
+        }
+        
+>>>>>>> master
         #endregion
 
         protected NodeModel()
@@ -1073,9 +1096,6 @@ namespace Dynamo.Models
             return result.Value ?? Value.NewString(FailureString);
         }
 
-        private const string FailureString = "Node evaluation failed";
-        private Dictionary<PortData, FScheme.Value> _evaluationDict;
-
         protected virtual void OnRunCancelled()
         {
 
@@ -1085,6 +1105,7 @@ namespace Dynamo.Models
         {
             __eval_internal_recursive(args, outPuts);
         }
+        
         protected virtual void __eval_internal_recursive(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts, int level = 0)
         {
             var argSets = new List<FSharpList<FScheme.Value>>();
@@ -1844,6 +1865,12 @@ namespace Dynamo.Models
             return accString;
         }
 
+        public void OnDispatchedToUI(object sender, UIDispatcherEventArgs e)
+        {
+            if (DispatchedToUI != null)
+                DispatchedToUI(this, e);
+        }
+
         #region ISelectable Interface
 
         public override void Deselect()
@@ -1926,6 +1953,7 @@ namespace Dynamo.Models
         }
 
         #endregion
+
     }
 
     public abstract class NodeWithOneOutput : NodeModel
