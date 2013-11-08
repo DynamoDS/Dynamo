@@ -10,6 +10,7 @@ using System.Windows.Input;
 using System.Xml;
 using Dynamo.Controls;
 using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using NUnit.Framework;
@@ -20,7 +21,7 @@ namespace Dynamo.Tests.UI
     [TestFixture]
     public class RecordedTests
     {
-        private Random randomizer = null;
+        private System.Random randomizer = null;
 
         // For access within test cases.
         private WorkspaceModel workspace = null;
@@ -32,7 +33,7 @@ namespace Dynamo.Tests.UI
         {
             // Instantiate random number generator 
             // using system-supplied value as seed.
-            randomizer = new Random();
+            randomizer = new System.Random();
         }
 
         [TearDown]
@@ -256,6 +257,37 @@ namespace Dynamo.Tests.UI
         }
 
         [Test, RequiresSTA]
+        public void TestUpdateNodeContents()
+        {
+            RunCommandsFromFile("UpdateNodeContents.xml");
+            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(5, workspace.Nodes.Count);
+
+            var number = GetNode("2ba65a2e-c3dd-4d27-9d18-9bf123835fb8") as DoubleInput;
+            var slider = GetNode("2279f845-4ba9-4300-a6c3-a566cd8b4a32") as DoubleSliderInput;
+            var strIn = GetNode("d33abcb6-50fd-4d18-ac89-87adb2d28053") as StringInput;
+            var formula = GetNode("540fffbb-4f5b-4496-9231-eba5b04e388c") as Formula;
+            var sublist = GetNode("0a60f132-25a0-4b7c-85f2-3c31f39ef9da") as Sublists;
+
+            Assert.IsNotNull(number);
+            Assert.IsNotNull(slider);
+            Assert.IsNotNull(strIn);
+            Assert.IsNotNull(formula);
+            Assert.IsNotNull(sublist);
+
+            Assert.AreEqual("12.34", number.Value);
+            Assert.AreEqual(23.45, slider.Min, 0.000001);
+            Assert.AreEqual(34.56, slider.Value, 0.000001);
+            Assert.AreEqual(45.67, slider.Max, 0.000001);
+            Assert.AreEqual("Test String Input", strIn.Value);
+            Assert.AreEqual("d", sublist.Value);
+
+            Assert.AreEqual("a+b+c", formula.FormulaString);
+            Assert.AreEqual(3, formula.InPorts.Count);
+            Assert.AreEqual(1, formula.OutPorts.Count);
+        }
+
+        [Test, RequiresSTA]
         public void Defect_MAGN_491()
         {
             RunCommandsFromFile("Defect-MAGN-491.xml");
@@ -275,6 +307,12 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(firstPoint.Y, firstConnector.CurvePoint3.Y);
             Assert.AreEqual(secondPoint.X, secondConnector.CurvePoint3.X);
             Assert.AreEqual(secondPoint.Y, secondConnector.CurvePoint3.Y);
+        }
+
+        private NodeModel GetNode(string guid)
+        {
+            Guid id = Guid.Parse(guid);
+            return (workspace.GetModelInternal(id) as NodeModel);
         }
 
         private void VerifyModelExistence(Dictionary<string, bool> modelExistenceMap)
