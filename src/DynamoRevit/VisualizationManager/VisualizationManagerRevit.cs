@@ -218,22 +218,25 @@ namespace Dynamo
 
             bool selected = node.IsSelected;
 
-            for (int i = 0; i < points.Count; ++i)
+            for (int i = 0; i < points.Count-1; ++i)
             {
-                XYZ xyz = points[i];
+                XYZ start = points[i];
+                XYZ end = points[i+1];
 
-                rd.Lines.Add(new Point3D(xyz.X, xyz.Y, xyz.Z));
+                //rd.Lines.Add(new Point3D(xyz.X, xyz.Y, xyz.Z));
 
-                if (i == 0 || i == (points.Count - 1))
-                    continue;
+                //if (i == 0 || i == (points.Count - 1))
+                    //continue;
 
                 if (selected)
                 {
-                    rd.SelectedLines.Add(new Point3D(xyz.X, xyz.Y, xyz.Z));
+                    rd.SelectedLines.Add(new Point3D(start.X, start.Y, start.Z));
+                    rd.SelectedLines.Add(new Point3D(end.X, end.Y, end.Z));
                 }
                 else
                 {
-                    rd.Lines.Add(new Point3D(xyz.X, xyz.Y, xyz.Z));
+                    rd.Lines.Add(new Point3D(start.X, start.Y, start.Z));
+                    rd.Lines.Add(new Point3D(end.X, end.Y, end.Z));
                 }
             }
         }
