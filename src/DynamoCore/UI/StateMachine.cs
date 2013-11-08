@@ -30,6 +30,11 @@ namespace Dynamo.ViewModels
             get { return stateMachine.CurrentState; }
         }
 
+        internal ConnectorViewModel ActiveConnector
+        {
+            get { return activeConnector; }
+        }
+
         internal bool HandleLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             return stateMachine.HandleLeftButtonDown(sender, e);
@@ -201,6 +206,33 @@ namespace Dynamo.ViewModels
             this.SetActiveConnector(null);
         }
 
+        internal bool CheckActiveConnectorCompatibility(PortViewModel portVM)
+        {
+            // Check if required ports exist
+            if ( this.activeConnector == null || portVM == null )
+                return false;
+
+            PortModel srcPortM = this.activeConnector.ActiveStartPort;
+            PortModel desPortM = portVM.PortModel;
+
+            bool isCompatible = false;
+
+            // No self connection
+            // No start to start or end or end connection
+            if (srcPortM.Owner != desPortM.Owner && srcPortM.PortType != desPortM.PortType)
+            {
+                // Change cursor to show compatible port connection
+                CurrentCursor = CursorLibrary.GetCursor(CursorSet.ArcAdding);
+                return true;
+            }
+            else
+            {
+                // Change cursor to show not compatible
+                CurrentCursor = CursorLibrary.GetCursor(CursorSet.ArcSelect);
+                return false;
+            }
+        }
+
         internal void CancelConnection()
         {
             this.SetActiveConnector(null);
@@ -338,13 +370,6 @@ namespace Dynamo.ViewModels
             internal State CurrentState
             {
                 get { return this.currentState; }
-                private set
-                {
-                    this.currentState = value;
-
-                    // Update Changes
-                    dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.TogglePanCommand.RaiseCanExecuteChanged();
-                }
             }
 
             private Point mouseDownPos = new Point();
@@ -372,26 +397,71 @@ namespace Dynamo.ViewModels
                     var dynamoViewModel = dynSettings.Controller.DynamoViewModel;
                     dynamoViewModel.ExecuteCommand(command);
                 }
-                currentState = State.None;
+                SetCurrentState(State.None);
                 ignoreMouseClick = true;
             }
 
             /// <summary>
-            /// The owning 
+            /// The owning WorkspaceViewModel calls this method in an attempt to
+            /// place the StateMachine into view panning mode. Note that as a 
+            /// result of calling this method, the StateMachine may be kicked
+            /// out of its existing state.
             /// </summary>
             internal void RequestTogglePanMode()
             {
                 // In pan mode, left mouse click shall not be handled
                 if (currentState == State.PanMode)
+                    SetCurrentState(State.None);
+
+                else // no matter in which state, goes to PanMode directly
+                    SetCurrentState(State.PanMode);
+            }
+
+            private void SetCurrentState(State newState)
+            {
+                if (newState == this.currentState)
+                    return; // No state changes
+
+                // Exiting from current state
+                if (State.None != this.currentState)
                 {
-                    // TODO(Robin) : Unrequest mouse drag
-                    currentState = State.None;
+                    switch (this.currentState)
+                    {
+                        case State.WindowSelection:
+                            CancelWindowSelection();
+                            break;
+                        case State.Connection:
+                            CancelConnection();
+                            break;
+                    }
                 }
-                else // no matter in which state, can go PanMode directly
+
+                // Entering into state
+                switch (newState)
                 {
-                    // TODO(Robin) : Request mouse changes
-                    currentState = State.PanMode;
+                    case State.WindowSelection:
+                        // Change cursor for window selection
+                        owningWorkspace.CurrentCursor = CursorLibrary.GetCursor(CursorSet.RectangularSelection);
+                        owningWorkspace.IsCursorForced = true;
+                        break;
+                    case State.Connection:
+                        // Change cursor for connection
+                        owningWorkspace.CurrentCursor = CursorLibrary.GetCursor(CursorSet.ArcAdding);
+                        owningWorkspace.IsCursorForced = true;
+                        break;
+                    case State.PanMode:
+                        // change cursor for pan mode
+                        owningWorkspace.CurrentCursor = CursorLibrary.GetCursor(CursorSet.HandPan);
+                        owningWorkspace.IsCursorForced = true;
+                        break;
+                    case State.None:
+                        // Change cursor to follow default mouse set at the parent
+                        owningWorkspace.CurrentCursor = null;
+                        owningWorkspace.IsCursorForced = false;
+                        break;
                 }
+
+                this.currentState = newState; // update state
             }
 
             #endregion
@@ -411,13 +481,8 @@ namespace Dynamo.ViewModels
                 {
                     // Clicking on the canvas while connecting simply cancels 
                     // the operation and drop the temporary connector.
-                    var command = new DynCmd.MakeConnectionCommand(Guid.Empty, -1,
-                        PortType.INPUT, DynCmd.MakeConnectionCommand.Mode.Cancel);
+                    SetCurrentState(State.None);
 
-                    var dynamoViewModel = dynSettings.Controller.DynamoViewModel;
-                    dynamoViewModel.ExecuteCommand(command);
-
-                    this.currentState = State.None;
                     eventHandled = true; // Mouse event handled.
                 }
                 else if (this.currentState == State.None)
@@ -437,7 +502,7 @@ namespace Dynamo.ViewModels
                 }
                 else if (this.currentState == State.PanMode)
                 {
-                    // TODO(Robin) : Request for drag active mouse pointer
+                    owningWorkspace.CurrentCursor = CursorLibrary.GetCursor(CursorSet.HandPanActive);
                 }
 
                 dynSettings.ReturnFocusToSearch();
@@ -451,15 +516,8 @@ namespace Dynamo.ViewModels
 
                 if (this.currentState == State.WindowSelection)
                 {
-                    SelectionBoxUpdateArgs args = null;
-                    args = new SelectionBoxUpdateArgs(Visibility.Collapsed);
-                    this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
-                    this.currentState = State.None;
-
-                    this.owningWorkspace.OnRequestChangeCursorUsual(this, e);
-
-                    this.owningWorkspace.OnDragSelectionEnded(this, EventArgs.Empty);
-
+                    CancelWindowSelection();
+                    SetCurrentState(State.None);
                     return true; // Mouse event handled.
                 }
                 else if (this.currentState == State.NodeReposition)
@@ -470,14 +528,14 @@ namespace Dynamo.ViewModels
                     var dynamoViewModel = dynSettings.Controller.DynamoViewModel;
                     dynamoViewModel.ExecuteCommand(command);
 
-                    this.owningWorkspace.OnRequestChangeCursorUsual(this, e);
-                    this.currentState = State.None; // Dragging operation ended.
+                    SetCurrentState(State.None); // Dragging operation ended.
                 }
                 else if (this.currentState == State.DragSetup)
-                    this.currentState = State.None;
+                    SetCurrentState(State.None);
                 else if (this.currentState == State.PanMode)
                 {
-                    // TODO(Robin) : Unrequest mouse cursor changes for drag active
+                    // Change cursor back to Pan
+                    owningWorkspace.CurrentCursor = CursorLibrary.GetCursor(CursorSet.HandPan);
                 }
 
                 return false; // Mouse event not handled.
@@ -527,7 +585,7 @@ namespace Dynamo.ViewModels
                     // There are something in the selection, but none is ILocatable.
                     if (!DynamoSelection.Instance.Selection.Any((x) => (x is ILocatable)))
                     {
-                        this.currentState = State.None;
+                        SetCurrentState(State.None);
                         return false;
                     }
 
@@ -537,7 +595,7 @@ namespace Dynamo.ViewModels
                     DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
                     dynamoViewModel.ExecuteCommand(command);
 
-                    this.currentState = State.NodeReposition;
+                    SetCurrentState(State.NodeReposition);
                     return true;
                 }
                 else if (this.currentState == State.NodeReposition)
@@ -577,23 +635,50 @@ namespace Dynamo.ViewModels
                         nodeId, portIndex, portType, DynCmd.MakeConnectionCommand.Mode.Begin));
 
                     if (null != owningWorkspace.activeConnector)
+                    {
                         this.currentState = State.Connection;
+                        owningWorkspace.CurrentCursor = CursorLibrary.GetCursor(CursorSet.ArcSelect);
+                        owningWorkspace.IsCursorForced = false;
+                    }
                 }
                 else  // Attempt to complete the connection
                 {
-                    PortType portType = PortType.INPUT;
-                    Guid nodeId = portModel.Owner.GUID;
-                    int portIndex = portModel.Owner.GetPortIndex(portModel, out portType);
+                    // Check if connection is valid
+                    if (owningWorkspace.CheckActiveConnectorCompatibility(portViewModel))
+                    {
+                        PortType portType = PortType.INPUT;
+                        Guid nodeId = portModel.Owner.GUID;
+                        int portIndex = portModel.Owner.GetPortIndex(portModel, out portType);
 
-                    dynamoViewModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
-                        nodeId, portIndex, portType, DynCmd.MakeConnectionCommand.Mode.End));
+                        dynamoViewModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
+                            nodeId, portIndex, portType, DynCmd.MakeConnectionCommand.Mode.End));
 
-                    this.currentState = State.None;
+                        owningWorkspace.CurrentCursor = null;
+                        owningWorkspace.IsCursorForced = false;
+                        this.currentState = State.None;
+                    }
                 }
 
                 return true;
             }
+            #endregion
 
+            #region Cancel State Methods
+            private void CancelConnection()
+            {
+                var command = new DynCmd.MakeConnectionCommand(Guid.Empty, -1,
+                        PortType.INPUT, DynCmd.MakeConnectionCommand.Mode.Cancel);
+
+                var dynamoViewModel = dynSettings.Controller.DynamoViewModel;
+                dynamoViewModel.ExecuteCommand(command);
+            }
+
+            private void CancelWindowSelection()
+            {
+                SelectionBoxUpdateArgs args = null;
+                args = new SelectionBoxUpdateArgs(Visibility.Collapsed);
+                this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
+            }
             #endregion
 
             #region Private Class Helper Method
@@ -618,8 +703,7 @@ namespace Dynamo.ViewModels
                 if (this.currentState != State.None)
                     throw new InvalidOperationException();
 
-                this.currentState = State.DragSetup;
-                this.owningWorkspace.OnRequestChangeCursorUsual(this, new EventArgs());
+                SetCurrentState(State.DragSetup);
             }
 
             private void InitiateWindowSelectionSequence()
@@ -640,10 +724,8 @@ namespace Dynamo.ViewModels
                 args.SetVisibility(Visibility.Visible);
 
                 this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
-                this.currentState = State.WindowSelection;
-                this.owningWorkspace.RequestChangeCursorDragging(this, args);
 
-                this.owningWorkspace.OnDragSelectionStarted(this, EventArgs.Empty);
+                SetCurrentState(State.WindowSelection);
             }
 
             #endregion
