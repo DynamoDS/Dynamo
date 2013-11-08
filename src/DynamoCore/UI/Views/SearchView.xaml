@@ -85,15 +85,18 @@
             </Button.Template>-->
             </Button>
 
-        <Grid Name="SearchTextBoxGrid" Grid.Row="1" Height="30" VerticalAlignment="Center" MouseEnter="SearchTextBoxGrid_MouseEnter" MouseLeave="SearchTextBoxGrid_MouseLeave">
-            <Grid.ColumnDefinitions>
+        <Border BorderThickness="0,0,0,1"
+                BorderBrush="#3F3F3F"
+                Grid.Row="1">
+            <Grid Name="SearchTextBoxGrid"  Height="30" VerticalAlignment="Center" MouseEnter="SearchTextBoxGrid_MouseEnter" MouseLeave="SearchTextBoxGrid_MouseLeave">
+                                    <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <Image x:Name="SearchIcon"
+                                        <Image x:Name="SearchIcon"
                    Grid.Column="0"
                    Source="/DynamoCore;component/UI/Images/search_normal.png"
                    Width="25"
@@ -101,51 +104,52 @@
                    Margin="10,0,0,0"
                    VerticalAlignment="Center"/>
             
-            <TextBox Name="SearchTextBox"
-                     KeyboardNavigation.TabIndex="0"
-                     Foreground="#DDD"
-                     Background="Transparent" BorderThickness="0" FontSize ="14" Padding="0,0,5,0" Margin ="0"
-                     IsEnabled="True" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Center" Text="{Binding Path=SearchText,Mode=TwoWay}"
-                     Grid.Column="1" MinWidth="280" CaretBrush="#DDD">
-            </TextBox>
+                <TextBox Name="SearchTextBox"
+                         KeyboardNavigation.TabIndex="0"
+                         Foreground="#DDD"
+                         Background="Transparent" BorderThickness="0" FontSize ="14" Padding="0,0,5,0" Margin ="0"
+                         IsEnabled="True" TextChanged="SearchTextBox_TextChanged" VerticalAlignment="Center" Text="{Binding Path=SearchText,Mode=TwoWay}"
+                         Grid.Column="1" MinWidth="280" CaretBrush="#DDD">
+                </TextBox>
             
-            <TextBlock FontSize ="14" IsHitTestVisible="False" Padding="2,0,5,0" Margin ="0" Foreground="#666" Grid.Column="1" VerticalAlignment="Center" 
-                       Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}">Search Node Library...</TextBlock>
+                <TextBlock FontSize ="14" IsHitTestVisible="False" Padding="2,0,5,0" Margin ="0" Foreground="#666" Grid.Column="1" VerticalAlignment="Center" 
+                           Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}">Search</TextBlock>
             
-            <Button Name="SearchCancelButton" Grid.Column="2"
-                    Visibility="{Binding Path=SearchText, Converter={StaticResource EmptyStringToCollapsedConverter}}"
-                    Click="SearchCancelButton_Click"
-                    VerticalAlignment="Center">
-                <Button.Style>
-                    <Style TargetType="Button">
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="Button">
-                                    <Image Name="SearchCancelImage"
+                <Button Name="SearchCancelButton" Grid.Column="2"
+                        Visibility="{Binding Path=SearchText, Converter={StaticResource EmptyStringToCollapsedConverter}}"
+                        Click="SearchCancelButton_Click"
+                        VerticalAlignment="Center">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                                    <Image Name="SearchCancelImage"
                                            Source="/DynamoCore;component/UI/Images/searchcancel_normal.png"
                                            Width="20"
                                            Height="20"/>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver"
-                                                 Value="True">
-                                            <Setter TargetName="SearchCancelImage"
-                                                    Property="Source"
-                                                    Value="/DynamoCore;component/UI/Images/searchcancel_hover.png" />
-                                        </Trigger>
-                                        <Trigger Property="IsMouseOver"
-                                                 Value="False">
-                                            <Setter TargetName="SearchCancelImage"
-                                                    Property="Source"
-                                                    Value="/DynamoCore;component/UI/Images/searchcancel_normal.png" />
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </Button.Style>
-            </Button>
-        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver"
+                                                     Value="True">
+                                                <Setter TargetName="SearchCancelImage"
+                                                        Property="Source"
+                                                        Value="/DynamoCore;component/UI/Images/searchcancel_hover.png" />
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver"
+                                                     Value="False">
+                                                <Setter TargetName="SearchCancelImage"
+                                                        Property="Source"
+                                                        Value="/DynamoCore;component/UI/Images/searchcancel_normal.png" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </Grid>
+        </Border>
 
         <ScrollViewer Visibility="{Binding BrowserVisibility, Converter={StaticResource BooleanToVisibilityConverter}}" HorizontalAlignment="Stretch" Margin="0" Name="BrowserScrollView" VerticalAlignment="Stretch" Focusable="False"
                       VerticalScrollBarVisibility="{Binding Path=SearchScrollBarVisibility, Converter={StaticResource BoolToScrollBarVisibilityConverter}}"
@@ -196,7 +200,7 @@
                     <Setter Property="Stylus.IsFlicksEnabled"
                             Value="false" />
                     <Setter Property="Foreground"
-                            Value="#8C8C8C" />
+                            Value="#968C8C8C" />
                     <Setter Property="Background"
                             Value="Transparent" />
                     <Setter Property="Width"
@@ -401,8 +405,8 @@
                                         </ControlTemplate>
                                     </Button.Template>
 
-                                    <Border Name="ContainerLight" BorderThickness="3,0,0,0" BorderBrush="#222">
-                                        <Border Name="Bd" BorderThickness="0,1,0,0" BorderBrush="#222" >
+                                    <Border Name="ContainerLight" BorderThickness="1,0,0,0" BorderBrush="#444444">
+                                        <Border Name="Bd" BorderThickness="0,2,0,0" BorderBrush="Transparent" >
 
                                             <Grid>
 
@@ -427,7 +431,7 @@
 
                                                     <ToggleButton Margin="5,0,0,0" Grid.Row="0" VerticalAlignment="Center" x:Name="Expander" Background="Transparent" Style="{StaticResource ExpandCollapseToggleStyle}" ClickMode="Press" IsChecked="{Binding IsExpanded}"/>
 
-                                                    <Border Margin="5,7,5,5" Name="NodeName" Grid.Column="1" Grid.ColumnSpan="2" VerticalAlignment="Center" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
+                                                    <Border Margin="5,0,5,0" Name="NodeName" Grid.Column="1" Grid.ColumnSpan="2" VerticalAlignment="Center" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
                                                         <ContentPresenter Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" ContentSource="Header"/>
                                                     </Border>
 
@@ -458,7 +462,7 @@
 
                                     <Trigger Property="HasItems" Value="false">
                                         <Setter Property="Visibility" TargetName="Expander" Value="Collapsed"/>
-                                        <Setter Property="Margin" TargetName="NodeName" Value="10,7,5,5"/>
+                                        <Setter Property="Margin" TargetName="NodeName" Value="40,0,5,0"/>
                                     </Trigger>
 
                                     <!--<Trigger Property="IsSelected" Value="true">
@@ -522,13 +526,17 @@
                     
                     <HierarchicalDataTemplate DataType = "{x:Type search:BrowserRootElement}" ItemsSource="{Binding Path=Items}" >
 
-                        <TextBlock Foreground="#DDD" FontSize="12" Text="{Binding Path=Name}"/>
+                        <Border Height="30" BorderThickness="0,0,0,2" BorderBrush="#2F2F2F">
+                            <TextBlock Foreground="#DDD" FontSize="13" Text="{Binding Path=Name}" VerticalAlignment="Center" />
+                        </Border>
 
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType = "{x:Type search:BrowserInternalElement}" ItemsSource="{Binding Path=Items}">
 
-                        <TextBlock Foreground="#DDD" Text="{Binding Path=Name}"/>
+                        <Border Height="30">
+                            <TextBlock Foreground="#DDD" FontSize="13" Text="{Binding Path=Name}" VerticalAlignment="Center" />
+                        </Border>
 
                     </HierarchicalDataTemplate>
 
@@ -536,7 +544,9 @@
 
                         <StackPanel Orientation="Horizontal">
 
-                            <TextBlock Foreground="#DDD" Text="{Binding Path=Name}"/>
+                            <Border Height="30">
+                                <TextBlock Foreground="#DDD" FontSize="13" Text="{Binding Path=Name}" VerticalAlignment="Center" />
+                            </Border>
 
                         </StackPanel>
 
@@ -550,7 +560,9 @@
                                 <TextBlock Foreground="Black" FontWeight="Bold" Padding="2" FontSize="9" Text="C"/>
                             </Border>
 
-                            <TextBlock Foreground="#DDD" Text="{Binding Path=Name}"/>
+                            <Border Height="30">
+                                <TextBlock Foreground="#DDD" FontSize="13" Text="{Binding Path=Name}" VerticalAlignment="Center" />
+                            </Border>
 
                             <StackPanel.ContextMenu>
 
@@ -569,6 +581,53 @@
             </TreeView>
 
         </ScrollViewer>
+
+        <Button Name="NoMatchFoundButton"
+                Grid.Column="0"
+                Grid.ColumnSpan="1"
+                Grid.Row="2"
+                Height="20"
+                Click="SearchCancelButton_Click">
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="OverridesDefaultStyle"
+                            Value="True" />
+                    <Setter Property="FontSize"
+                            Value="13" />
+                    <Setter Property="BorderThickness"
+                            Value="0" />
+                    <Setter Property="Background"
+                            Value="Transparent" />
+                    <Setter Property="Foreground"
+                            Value="#666" />
+                    <Setter Property="VerticalAlignment"
+                            Value="Top" />
+                    <Setter Property="HorizontalAlignment"
+                            Value="Center" />
+                    <Setter Property="Content"
+                            Value="No matches found" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type Button}">
+                                <Border x:Name="Border"
+                                        Background="Transparent"
+                                        BorderThickness="0 0 0 0">
+                                    <ContentPresenter Margin="0 1 0 0" />
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="Visibility">
+                        <Setter.Value>
+                            <MultiBinding Converter="{StaticResource SearchResultsToVisibilityConverter}">
+                                <Binding Path="SearchResults.Count" />
+                                <Binding ElementName="SearchTextBox" Path="Text" />
+                            </MultiBinding>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Button.Style>
+        </Button>
         <!--<TextBlock Visibility="Visible" Grid.Row="2">
                 Library
                 <TextBlock.RenderTransform>
