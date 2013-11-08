@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Text;
 using System.Windows.Media.Media3D;
 using System.Linq;
 using Autodesk.LibG;
 using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.Utilities;
@@ -14,6 +17,8 @@ using HelixToolkit.Wpf;
 using Microsoft.Practices.Prism.ViewModel;
 using Newtonsoft.Json;
 using Octree.OctreeSearch;
+using Octree.Tools.Point;
+using Double = System.Double;
 using String = System.String;
 
 //testing to see if github integration works.
@@ -24,7 +29,7 @@ namespace Dynamo
 
     public delegate void ResultsReadyHandler(object sender, VisualizationEventArgs e);
 
-    public delegate void VisualizerDelegate(NodeModel node, object geom, RenderDescription target, Octree.OctreeSearch.Octree octree);
+    public delegate void VisualizerDelegate(NodeModel node, object geom, string tag, RenderDescription target, Octree.OctreeSearch.Octree octree);
 
     /// <summary>
     /// Visualization manager consolidates functionality for creating visualizations 
@@ -45,10 +50,28 @@ namespace Dynamo
         private object myLock = new object();
         protected bool isUpdating = false;
         private Octree.OctreeSearch.Octree octree;
+        private bool updatingPaused = false;
 
         #endregion
 
         #region public properties
+
+        /// <summary>
+        /// Flag allows us to pause visualization updates.
+        /// </summary>
+        public bool UpdatingPaused
+        {
+            get { return updatingPaused; }
+            set
+            {
+                if (!value && updatingPaused)
+                {
+                    OnVisualizationUpdateComplete(this, EventArgs.Empty);
+                }
+
+                updatingPaused = value;
+            }
+        }
 
         /// <summary>
         /// A dictionary of objects to be stored for visualization.
@@ -240,7 +263,8 @@ namespace Dynamo
             
             //don't trigger an update if the changes in the selection
             //had no effect on the current visualizations
-            if (movedItems > 0)
+            //don't trigger an update either if the paused flag is set
+            if (movedItems > 0 && !updatingPaused)
             {
                 OnVisualizationUpdateComplete(this, EventArgs.Empty);
             }
@@ -298,7 +322,8 @@ namespace Dynamo
         void node_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "IsVisible" ||
-                e.PropertyName == "IsUpstreamVisible")
+                e.PropertyName == "IsUpstreamVisible" ||
+                e.PropertyName == "DisplayLabels")
             {
                 UpdateVisualizations();
             }
@@ -372,6 +397,8 @@ namespace Dynamo
             {
                 //send back everything
                 rd = AggregateRenderDescriptions();
+                
+                StripDuplicates(rd);
 
                 OnResultsReadyToVisualize(this, new VisualizationEventArgs(rd, string.Empty));
             }
@@ -395,6 +422,7 @@ namespace Dynamo
                 var pts_sel = keyValuePairs.SelectMany(x => x.Value.SelectedPoints);
                 var lines_sel = keyValuePairs.SelectMany(x => x.Value.SelectedLines);
                 var mesh_sel = keyValuePairs.SelectMany(x => x.Value.SelectedMeshes);
+                var text = keyValuePairs.SelectMany(x => x.Value.Text);
 
                 rd.Points.AddRange(pts);
                 rd.Lines.AddRange(lines);
@@ -405,6 +433,9 @@ namespace Dynamo
                 rd.SelectedPoints.AddRange(pts_sel);
                 rd.SelectedLines.AddRange(lines_sel);
                 rd.SelectedMeshes.AddRange(mesh_sel);
+                rd.Text.AddRange(text);
+
+                StripDuplicates(rd);
 
                 OnResultsReadyToVisualize(this, new VisualizationEventArgs(rd, node.GUID.ToString()));
             }
@@ -544,7 +575,8 @@ namespace Dynamo
                     YAxisPoints = descriptions.SelectMany(x => x.YAxisPoints).ToThreadSafeList(),
                     ZAxisPoints = descriptions.SelectMany(x => x.ZAxisPoints).ToThreadSafeList(),
                     Meshes = descriptions.SelectMany(x => x.Meshes).ToThreadSafeList(),
-                    SelectedMeshes = descriptions.SelectMany(x => x.SelectedMeshes).ToThreadSafeList()
+                    SelectedMeshes = descriptions.SelectMany(x => x.SelectedMeshes).ToThreadSafeList(),
+                    Text = descriptions.SelectMany(x=>x.Text).ToThreadSafeList()
                 };
 
             return rd;
@@ -573,7 +605,7 @@ namespace Dynamo
             //Debug.WriteLine(renderData);
         }
 
-        internal void VisualizeGeometry(NodeModel node, object geom, RenderDescription rd)
+        internal void VisualizeGeometry(NodeModel node, object geom, string tag, RenderDescription rd)
         {
             var t = geom.GetType();
 
@@ -582,7 +614,7 @@ namespace Dynamo
             //draw what's in the container
             if (viz.Value != null)
             {
-                viz.Value.Invoke(node, geom, rd, octree);
+                viz.Value.Invoke(node, geom, tag, rd, octree);
             }
         }
 
@@ -595,7 +627,6 @@ namespace Dynamo
         {
             try
             {
-
                 var sw = new Stopwatch();
                 sw.Start();
 
@@ -613,7 +644,7 @@ namespace Dynamo
 
                 //add visualizations for nodes that have none
                 var toAdd = drawable_dict.Where(x => !Visualizations.ContainsKey(x.Key.GUID.ToString())).ToList();
-                toAdd.ForEach(RegisterNodeForVisualization);
+                toAdd.ForEach(x=>RegisterNodeForVisualization(x.Key));
                 Debug.WriteLine(string.Format("{0} drawables have been added.", toAdd.Count));
 
                 foreach (var drawable in drawable_dict)
@@ -625,7 +656,7 @@ namespace Dynamo
 
                     if (node.IsVisible)
                     {
-                        drawable.Value.ForEach(x => VisualizeGeometry(node, x, rd));
+                        drawable.Value.ToList().ForEach(x => VisualizeGeometry(node, x.Value, x.Key, rd));
                     }
                 }
 
@@ -646,13 +677,74 @@ namespace Dynamo
         }
 
         /// <summary>
+        /// Strips all duplicates from a render description.
+        /// </summary>
+        /// <param name="rd">A render description</param>
+        private void StripDuplicates(RenderDescription rd)
+        {
+            var sw = new Stopwatch();
+            sw.Start();
+
+            Debug.WriteLine(string.Format("{0} line segments before stripping", rd.Lines.Count/2));
+
+            var comp = new Point3DEqualityComparer();
+
+            //POINTS
+            var strippedPoints = rd.Points.Distinct(comp).ToList();
+
+            //SELECTED POINTS
+            var strippedSelPoints = rd.SelectedPoints.Distinct(comp).ToList();
+
+            //LINES
+            var strippedLines = StripLines(rd.Lines.ToList());
+
+            //SELECTED LINES
+            var strippedSelLines = StripLines(rd.SelectedLines.ToList());
+
+            rd.Points.Clear();
+            rd.SelectedPoints.Clear();
+            rd.Lines.Clear();
+            rd.SelectedLines.Clear();
+
+            rd.Points.AddRange(strippedPoints);
+            rd.SelectedPoints.AddRange(strippedSelPoints);
+            rd.Lines.AddRange(strippedLines);
+            rd.SelectedLines.AddRange(strippedSelLines);
+
+            Debug.WriteLine(string.Format("{0} line segments after stripping", rd.Lines.Count / 2));
+
+            sw.Stop();
+            Debug.WriteLine(string.Format("{0} elapsed for stripping duplicate geometry.", sw.Elapsed));
+        }
+
+        private static IEnumerable<Point3D> StripLines(List<Point3D> lines)
+        {
+            var tupSet = new HashSet<Tuple<Point3D, Point3D>>();
+            var tupComp = new Point3DTupleEqualityComparer();
+
+            for (int i = 0; i < lines.Count; i += 2)
+            {
+                var lineSelTup = new Tuple<Point3D, Point3D>(lines[i], lines[i + 1]);
+                if(!tupSet.Contains(lineSelTup, tupComp))
+                    tupSet.Add(lineSelTup);
+            }
+            var strippedSelLines = new List<Point3D>();
+            foreach (var t in tupSet)
+            {
+                strippedSelLines.Add(t.Item1);
+                strippedSelLines.Add(t.Item2);
+            }
+            return strippedSelLines;
+        }
+
+        /// <summary>
         /// Adds a visualization to the dictionary and adds a handler for node property changes.
         /// </summary>
         /// <param name="kvp"></param>
-        private void RegisterNodeForVisualization(KeyValuePair<NodeModel,List<object>> kvp)
+        private void RegisterNodeForVisualization(NodeModel node)
         {
-            Visualizations.Add(kvp.Key.GUID.ToString(), new RenderDescription());
-            kvp.Key.PropertyChanged += node_PropertyChanged;
+            Visualizations.Add(node.GUID.ToString(), new RenderDescription());
+            node.PropertyChanged += node_PropertyChanged;
         }
 
         public void LookupSelectedElement(double x, double y, double z)
@@ -683,7 +775,7 @@ namespace Dynamo
         /// keyed by node. Filters the 
         /// </summary>
         /// <returns></returns>
-        public static Dictionary<NodeModel,List<object>> GetAllDrawablesInModel()
+        public static Dictionary<NodeModel,Dictionary<string,object>> GetAllDrawablesInModel()
         {
             //get a list of tuples node,drawables
             var nodeTuples = dynSettings.Controller.DynamoModel.Nodes
@@ -693,7 +785,7 @@ namespace Dynamo
                                             x.OldValue.IsList ||
                                             x.OldValue.GetType() == typeof (FScheme.Value.Container))
                                         .Where(x => x.GetType().Name != "Watch3D" && x.GetType().Name != "Watch")
-                                        .Select(x => new Tuple<NodeModel, List<object>>(x, GetDrawablesFromNode(x)));
+                                        .Select(x => new Tuple<NodeModel, Dictionary<string,object>>(x, GetDrawablesFromNode(x)));
 
             //convert the tuple list to a dictionary, only adding
             //the lists which have items.
@@ -707,9 +799,9 @@ namespace Dynamo
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
-        public static List<object> GetDrawablesFromNode(NodeModel node)
+        public static Dictionary<string, object> GetDrawablesFromNode(NodeModel node)
         {
-            return GetDrawableFromValue(node.OldValue);
+            return GetDrawableFromValue(new List<int>(), node.OldValue);
         }
 
         /// <summary>
@@ -735,14 +827,15 @@ namespace Dynamo
         }
 
         /// <summary>
-        /// Returns the objects from a Value type which have associated visualizers.
+        /// Returns the objects from a Value type which have associated visualizers 
+        /// along with a string tag representing the array index of the value, i.e. [0][5][3]
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static List<object> GetDrawableFromValue(FScheme.Value value)
+        public static Dictionary<string,object> GetDrawableFromValue(List<int> chain, FScheme.Value value)
         {
-            
-            var drawables = new List<object>();
+            //var drawables = new List<object>();
+            var drawables = new Dictionary<string, object>();
 
             if (value == null)
             {
@@ -753,9 +846,15 @@ namespace Dynamo
 
             if (value.IsList)
             {
+                int count = 0;
                 foreach (var val_inner in ((FScheme.Value.List)value).Item)
                 {
-                    drawables.AddRange(GetDrawableFromValue(val_inner));
+                    var subChain = new List<int>(chain);
+                    subChain.Add(count);
+                    var innerDrawables = GetDrawableFromValue(subChain, val_inner);
+                    innerDrawables.ToList().ForEach(x=>drawables.Add(x.Key, x.Value));
+
+                    count++;
                 }
                 return drawables;
             }
@@ -773,16 +872,30 @@ namespace Dynamo
 
                 if (visualizer.Value != null)
                 {
-                    drawables.Add(obj);
+                    drawables.Add(TagFromList(chain),obj);
                 }
             }
 
             return drawables;
         }
 
+        /// <summary>
+        /// Build a string tag from a list of ints. i.e "1,2,3,4"
+        /// </summary>
+        /// <param name="tags"></param>
+        /// <returns></returns>
+        private static string TagFromList(List<int> tags)
+        {
+            var sb = new StringBuilder();
+            tags.ForEach(x => sb.Append(string.Format("{0},", x)));
+            if(sb.Length > 1)
+                sb.Remove(sb.Length - 1, 1);    //remove the last ,
+            return sb.ToString();
+        }
+        
         public static NodeModel FindNodeWithDrawable(object drawable)
         {
-            return GetDrawableNodesInModel().FirstOrDefault(x => GetDrawableFromValue(x.OldValue).Contains(drawable));
+            return GetDrawableNodesInModel().FirstOrDefault(x => GetDrawableFromValue(new List<int>(), x.OldValue).ContainsValue(drawable));
         }
 
         #endregion
@@ -804,6 +917,53 @@ namespace Dynamo
         {
             Description = description;
             Id = viewId;
+        }
+    }
+
+    class Point3DTupleEqualityComparer : IEqualityComparer<Tuple<Point3D, Point3D>>
+    {
+        public bool Equals(Tuple<Point3D, Point3D> x, Tuple<Point3D, Point3D> y)
+        {
+            var comp = new Point3DEqualityComparer();
+
+            //if a1 and b1 are equal and a2 and b2 are equal or
+            //a1 and b2 are equal and a2 and b1 are equal
+            if ((comp.Equals(x.Item1, y.Item1) && comp.Equals(x.Item2, y.Item2)) ||
+                (comp.Equals(x.Item1, y.Item2) && comp.Equals(x.Item2, y.Item1)))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public int GetHashCode(Tuple<Point3D, Point3D> obj)
+        {
+            double hCode = obj.Item1.X + obj.Item1.Y + obj.Item1.Z + obj.Item2.X + obj.Item2.Y + obj.Item2.Z;
+            return hCode.GetHashCode();
+        }
+    }
+
+    class Point3DEqualityComparer : IEqualityComparer<Point3D>
+    {
+        private const double epsilon = 0.0001;
+
+        public bool Equals(Point3D x, Point3D y)
+        {
+            if (Math.Abs(x.X - y.X) < epsilon &&
+                Math.Abs(x.Y - y.Y) < epsilon &&
+                Math.Abs(x.Z - y.Z) < epsilon)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public int GetHashCode(Point3D obj)
+        {
+            double hCode = obj.X + obj.Y + obj.Z;
+            return hCode.GetHashCode();
         }
     }
 }

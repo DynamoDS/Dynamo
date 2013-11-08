@@ -104,7 +104,7 @@
                                 Modifiers="Control"
                                 Command="{Binding Path=DataContext.HomeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
         <KeyBinding Key="Up"
-                                Modifiers="Control+Alt"
+                                Modifiers="Control+Shift"
                                 Command="{Binding Path=DataContext.ToggleConsoleShowingCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"/>
         <KeyBinding Key="F4"
                 Modifiers="Alt"

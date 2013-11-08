@@ -13,7 +13,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\AxonometricView.dyn");
+            string samplePath = Path.Combine(_testPath, @".\View\AxonometricView.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
@@ -25,7 +25,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\OverrideElementColorInView.dyn");
+            string samplePath = Path.Combine(_testPath, @".\View\OverrideElementColorInView.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
@@ -37,7 +37,7 @@ namespace Dynamo.Tests
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            string samplePath = Path.Combine(_testPath, @".\PerspectiveView.dyn");
+            string samplePath = Path.Combine(_testPath, @".\View\PerspectiveView.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);

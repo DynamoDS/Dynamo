@@ -1,7 +1,0 @@
-<dynWorkspace X="0" Y="0">
-  <dynElements>
-    <Dynamo.Nodes.dynFamilyTypeSelector type="Dynamo.Nodes.dynFamilyTypeSelector" guid="ced2da17-5789-4fe6-acb7-a06b22b6564c" nickname="Select Fam" x="677.333626952178" y="290.752458360834" lacing="First" index="3" />
-  </dynElements>
-  <dynConnectors />
-  <dynNotes />
-</dynWorkspace>

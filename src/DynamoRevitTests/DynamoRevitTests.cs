@@ -56,7 +56,7 @@ namespace Dynamo.Tests
             _samplesPath = Path.GetFullPath(samplesLoc);
 
             //set the custom node loader search path
-            string defsLoc = Path.Combine(assDir, @".\definitions\");
+            string defsLoc = Path.Combine(assDir, @".\dynamo_packages\Dynamo Sample Custom Nodes\dyf\");
             _defsPath = Path.GetFullPath(defsLoc);
 
             _emptyModelPath = Path.Combine(_testPath, "empty.rfa");
@@ -145,6 +145,20 @@ namespace Dynamo.Tests
             Document initialDoc = dynRevitSettings.Doc.Document;
             dynRevitSettings.Revit.OpenAndActivateDocument(modelPath);
             initialDoc.Close(false);
+        }
+
+        protected void OpenAndRun(string subPath)
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, subPath);
+            string testPath = Path.GetFullPath(samplePath);
+
+            Assert.IsTrue(File.Exists(testPath), string.Format("Could not find file: {0} for testing.", testPath));
+
+            model.Open(testPath);
+
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -26,6 +27,7 @@ using FolderBrowserDialog = System.Windows.Forms.FolderBrowserDialog;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using TextBox = System.Windows.Controls.TextBox;
 using TreeView = System.Windows.Controls.TreeView;
+using VerticalAlignment = System.Windows.VerticalAlignment;
 
 namespace Dynamo.Nodes
 {
@@ -342,6 +344,9 @@ namespace Dynamo.Nodes
 
             tb_slider.TickPlacement = System.Windows.Controls.Primitives.TickPlacement.None;
 
+            tb_slider.TickFrequency = 1;
+            tb_slider.IsSnapToTickEnabled = true;
+
             tb_slider.PreviewMouseUp += delegate
             {
                 dynSettings.ReturnFocusToSearch();
@@ -423,6 +428,117 @@ namespace Dynamo.Nodes
             {
                 Mode = BindingMode.TwoWay,
                 Converter = new DoubleDisplay(),
+                Source = this,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            });
+
+            // min slider value
+            var bindingMinSlider = new System.Windows.Data.Binding("Min")
+            {
+                Mode = BindingMode.OneWay,
+                Source = this,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            };
+            tb_slider.SetBinding(Slider.MinimumProperty, bindingMinSlider);
+        }
+    }
+
+    public partial class IntegerSliderInput : Integer
+    {
+        public override void SetupCustomUIElements(object ui)
+        {
+            var nodeUI = ui as dynNodeView;
+
+            //add a slider control to the input grid of the control
+            var tb_slider = new DynamoSlider(this);
+            tb_slider.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            tb_slider.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            tb_slider.MinWidth = 150;
+            tb_slider.TickPlacement = System.Windows.Controls.Primitives.TickPlacement.BottomRight;
+            tb_slider.TickFrequency = 1;
+            tb_slider.IsSnapToTickEnabled = true;
+
+            tb_slider.PreviewMouseUp += delegate
+            {
+                dynSettings.ReturnFocusToSearch();
+            };
+
+            var mintb = new DynamoTextBox();
+            mintb.Width = double.NaN;
+
+            mintb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
+
+            // input value textbox
+            var valtb = new DynamoTextBox();
+            valtb.Width = double.NaN;
+            valtb.Margin = new Thickness(0, 0, 10, 0);
+
+            var maxtb = new DynamoTextBox();
+            maxtb.Width = double.NaN;
+
+            maxtb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
+
+            var sliderGrid = new Grid();
+            sliderGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+            sliderGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+            sliderGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            sliderGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+
+            sliderGrid.Children.Add(valtb);
+            sliderGrid.Children.Add(mintb);
+            sliderGrid.Children.Add(tb_slider);
+            sliderGrid.Children.Add(maxtb);
+
+            Grid.SetColumn(valtb, 0);
+            Grid.SetColumn(mintb, 1);
+            Grid.SetColumn(tb_slider, 2);
+            Grid.SetColumn(maxtb, 3);
+            nodeUI.inputGrid.Children.Add(sliderGrid);
+
+            maxtb.DataContext = this;
+            tb_slider.DataContext = this;
+            mintb.DataContext = this;
+            valtb.DataContext = this;
+
+            // value input
+            valtb.BindToProperty(new System.Windows.Data.Binding("Value")
+            {
+                Mode = BindingMode.TwoWay,
+                Converter = new IntegerDisplay()
+            });
+
+            // slider value 
+            var sliderBinding = new System.Windows.Data.Binding("Value")
+            {
+                Mode = BindingMode.TwoWay,
+                Source = this,
+            };
+            tb_slider.SetBinding(Slider.ValueProperty, sliderBinding);
+
+            // max value
+            maxtb.BindToProperty(new System.Windows.Data.Binding("Max")
+            {
+                Mode = BindingMode.TwoWay,
+                Converter = new IntegerDisplay(),
+                Source = this,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            });
+
+            // max slider value
+            var bindingMaxSlider = new System.Windows.Data.Binding("Max")
+            {
+                Mode = BindingMode.OneWay,
+                Source = this,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            };
+            tb_slider.SetBinding(Slider.MaximumProperty, bindingMaxSlider);
+
+
+            // min value
+            mintb.BindToProperty(new System.Windows.Data.Binding("Min")
+            {
+                Mode = BindingMode.TwoWay,
+                Converter = new IntegerDisplay(),
                 Source = this,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             });

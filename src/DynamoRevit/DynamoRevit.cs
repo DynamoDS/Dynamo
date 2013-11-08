@@ -234,9 +234,12 @@ namespace Dynamo.Applications
         /// <param name="e"></param>
         private void Application_ViewActivating(object sender, ViewActivatingEventArgs e)
         {
-            View3D view = e.NewActiveView as View3D;
+            var view = e.NewActiveView as View3D;
 
-            if (view != null && view.IsPerspective)
+            if (view != null 
+                && view.IsPerspective
+                && dynSettings.Controller.Context != Context.VASARI_2013
+                && dynSettings.Controller.Context != Context.VASARI_2014)
             {
                 DynamoLogger.Instance.LogWarning(
                     "Dynamo is not available in a perspective view. Please switch to another view to Run.",
@@ -248,44 +251,6 @@ namespace Dynamo.Applications
                 //alert the user of the new active view and enable the run button
                 DynamoLogger.Instance.LogWarning(string.Format("Active view is now {0}", e.NewActiveView.Name), WarningLevel.Mild);
                 dynSettings.Controller.DynamoViewModel.RunEnabled = true;
-            }
-        }
-
-
-        /// <summary>
-        /// Handler for the ViewActivated event.
-        /// Used to query whether Dynamo can be run on the active view.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void Application_ViewActivated(object sender, Autodesk.Revit.UI.Events.ViewActivatedEventArgs e)
-        {
-            if (dynSettings.Controller != null)
-            {
-                if (e.CurrentActiveView is View3D)
-                {
-                    var view = e.CurrentActiveView as View3D;
-                    var previousView = e.PreviousActiveView as View3D;
-
-                    if (view.IsPerspective)
-                    {
-                        //warn user that Dynamo can't be run in perspective 
-                        //and disable the run
-                        DynamoLogger.Instance.LogWarning(
-                            "Dynamo is not available in a perspective view. Please switch to another view to Run.", WarningLevel.Moderate);
-                        dynSettings.Controller.DynamoViewModel.RunEnabled = false;
-                    }
-                    else if ( !view.IsPerspective && (previousView == null || previousView.IsPerspective) )
-                    {
-                        DynamoLogger.Instance.ResetWarning();
-                        dynSettings.Controller.DynamoViewModel.RunEnabled = true;
-                    }
-                }
-                else
-                {
-                    DynamoLogger.Instance.LogWarning(string.Format("Active view is now {0}", e.CurrentActiveView.Name), WarningLevel.Mild);
-                    dynSettings.Controller.DynamoViewModel.RunEnabled = true;
-                }
             }
         }
 

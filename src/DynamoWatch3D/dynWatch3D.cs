@@ -150,6 +150,10 @@ namespace Dynamo.Nodes
             viewHelper.SetAttribute("width", Width);
             viewHelper.SetAttribute("height", Height);
 
+            //Bail out early if the view hasn't been created.
+            if (_watchView == null)
+                return;
+
             var camElement = xmlDoc.CreateElement("camera");
             viewElement.AppendChild(camElement);
             var camHelper = new XmlElementHelper(camElement);
