@@ -312,7 +312,6 @@ namespace Dynamo.Models
             RequiresRecalc = true;
         }
 
-<<<<<<< HEAD
         private bool isUpdated = false;
 
         /// <summary>
@@ -347,16 +346,6 @@ namespace Dynamo.Models
             }
         }
 
-        protected internal ExecutionEnvironment macroEnvironment = null;
-
-        //TODO: don't make this static (maybe)
-        //protected DynamoView Bench
-        //{
-        //    get { return dynSettings.Bench; }
-        //}
-
-=======
->>>>>>> master
         protected DynamoController Controller
         {
             get { return dynSettings.Controller; }
@@ -493,8 +482,6 @@ namespace Dynamo.Models
             }
         }
 
-<<<<<<< HEAD
-=======
         /// <summary>
         /// Enable or disable label display. Default is false.
         /// </summary>
@@ -510,8 +497,7 @@ namespace Dynamo.Models
                 }
             }
         }
-        
->>>>>>> master
+
         #endregion
 
         protected NodeModel()
