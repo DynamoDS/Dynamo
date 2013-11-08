@@ -12,6 +12,7 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Controls;
 using System.Windows.Threading;
+using System.Windows.Input;
 
 namespace Dynamo.ViewModels
 {
@@ -44,8 +45,26 @@ namespace Dynamo.ViewModels
         public event SelectionEventHandler RequestSelectionBoxUpdate;
         public event WorkspacePropertyEditHandler WorkspacePropertyEditRequested;
 
-        public event EventHandler RequestChangeCursorDragging;
-        public event EventHandler RequestChangeCursorUsual;
+        // TODO(Robin) : 
+        /// <summary>
+        /// Cursor Property Binding
+        /// </summary>
+        private Cursor currentCursor = null;
+        public Cursor CurrentCursor
+        {
+            get { return currentCursor; }
+            set { currentCursor = value; RaisePropertyChanged("CurrentCursor"); }
+        }
+        // TODO(Robin) : 
+        /// <summary>
+        /// Force Cursor Property Binding
+        /// </summary>
+        private bool isCursorForced = false;
+        public bool IsCursorForced
+        {
+            get { return isCursorForced; }
+            set { isCursorForced = value; RaisePropertyChanged("IsCursorForced"); }
+        }
 
         /// <summary>
         /// Convenience property
@@ -64,18 +83,6 @@ namespace Dynamo.ViewModels
                 Debug.WriteLine(string.Format("Setting current offset to {0}", e.Point));
                 CurrentOffsetChanged(this, e);
             }
-        }
-
-        private void OnRequestChangeCursorDragging(object sender, EventArgs e)
-        {
-            if (RequestChangeCursorDragging != null)
-                RequestChangeCursorDragging(this, e);
-        }
-
-        private void OnRequestChangeCursorUsual(object sender, EventArgs e)
-        {
-            if (RequestChangeCursorUsual != null)
-                RequestChangeCursorUsual(this, e);
         }
 
         /// <summary>
