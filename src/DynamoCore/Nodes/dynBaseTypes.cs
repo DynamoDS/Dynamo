@@ -3310,6 +3310,50 @@ namespace Dynamo.Nodes
         }
     }
 
+    public abstract class Integer : BasicInteractive<int>
+    {
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            return FScheme.Value.NewNumber(Value);
+        }
+
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        {
+            XmlElement outEl = xmlDoc.CreateElement(typeof(int).FullName);
+            outEl.SetAttribute("value", Value.ToString(CultureInfo.InvariantCulture));
+            nodeElement.AppendChild(outEl);
+        }
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("integerValue", Value);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                Value = helper.ReadInteger("integerValue");
+            }
+        }
+
+        #endregion
+
+        protected override void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
+        {
+            builder.Build(this, inputs);
+        }
+    }
+
     public abstract class Bool : BasicInteractive<bool>
     {
         public override Value Evaluate(FSharpList<Value> args)
@@ -4068,6 +4112,144 @@ namespace Dynamo.Nodes
                 XmlElementHelper helper = new XmlElementHelper(element);
                 Min = helper.ReadDouble("min");
                 Max = helper.ReadDouble("max");
+            }
+        }
+
+        #endregion
+    }
+
+    [NodeName("Integer Slider")]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeDescription("Change an integer value with a slider.")]
+    public partial class IntegerSliderInput : Integer
+    {
+        private int max;
+        private int min;
+
+        public IntegerSliderInput()
+        {
+            RegisterAllPorts();
+
+            Min = 0;
+            Max = 100;
+            Value = 50;
+        }
+
+        public override int Value
+        {
+            get
+            {
+                return base.Value;
+            }
+            set
+            {
+                base.Value = value;
+
+                Debug.WriteLine(string.Format("Min:{0},Max:{1},Value:{2}", Min.ToString(CultureInfo.InvariantCulture), Max.ToString(CultureInfo.InvariantCulture), Value.ToString(CultureInfo.InvariantCulture)));
+            }
+        }
+
+        public int Max
+        {
+            get { return max; }
+            set
+            {
+                max = value;
+
+                if (max < Value)
+                    Value = max;
+
+                RaisePropertyChanged("Max");
+            }
+        }
+
+        public int Min
+        {
+            get { return min; }
+            set
+            {
+                min = value;
+
+                if (min > Value)
+                    Value = min;
+
+                RaisePropertyChanged("Min");
+            }
+        }
+
+        protected override int DeserializeValue(string val)
+        {
+            try
+            {
+                return Convert.ToInt32(val, CultureInfo.InvariantCulture);
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        {
+            XmlElement outEl = xmlDoc.CreateElement(typeof(int).FullName);
+            outEl.SetAttribute("value", Value.ToString(CultureInfo.InvariantCulture));
+            outEl.SetAttribute("min", Min.ToString(CultureInfo.InvariantCulture));
+            outEl.SetAttribute("max", Max.ToString(CultureInfo.InvariantCulture));
+            nodeElement.AppendChild(outEl);
+        }
+
+        protected override void LoadNode(XmlNode nodeElement)
+        {
+            foreach (XmlNode subNode in nodeElement.ChildNodes)
+            {
+                if (subNode.Name.Equals(typeof(int).FullName))
+                {
+                    int value = Value;
+                    int min = Min;
+                    int max = Max;
+
+                    foreach (XmlAttribute attr in subNode.Attributes)
+                    {
+                        if (attr.Name.Equals("value"))
+                            value = DeserializeValue(attr.Value);
+                        else if (attr.Name.Equals("min"))
+                        {
+                            min = Convert.ToInt32(attr.Value, CultureInfo.InvariantCulture);
+                        }
+                        else if (attr.Name.Equals("max"))
+                        {
+                            max = Convert.ToInt32(attr.Value, CultureInfo.InvariantCulture);
+                        }
+                    }
+
+                    Min = min;
+                    Max = max;
+                    Value = value;
+                }
+            }
+        }
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called.
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("min", Min);
+                helper.SetAttribute("max", Max);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called.
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                Min = helper.ReadInteger("min");
+                Max = helper.ReadInteger("max");
             }
         }
 

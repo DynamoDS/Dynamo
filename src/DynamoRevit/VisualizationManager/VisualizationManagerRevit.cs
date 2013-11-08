@@ -2,15 +2,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Windows.Input;
 using System.Windows.Media.Media3D;
 using Autodesk.Revit.DB;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using HelixToolkit.Wpf;
-using Octree.Tools.Point;
-using Octree.Tools.Vector;
 using Curve = Autodesk.Revit.DB.Curve;
 using Solid = Autodesk.Revit.DB.Solid;
 using Face = Autodesk.Revit.DB.Face;
@@ -44,7 +41,7 @@ namespace Dynamo
             Visualizers.Add(typeof(Autodesk.Revit.DB.CurveLoop), DrawCurveLoop);
         }
 
-        private void DrawElement(NodeModel node, object obj, RenderDescription rd, Octree.OctreeSearch.Octree octree)
+        private void DrawElement(NodeModel node, object obj, string tag, RenderDescription rd, Octree.OctreeSearch.Octree octree)
         {
             if (obj == null)
                 return;
@@ -59,15 +56,15 @@ namespace Dynamo
             }
             else if (obj is Form)
             {
-                DrawForm(node, obj, rd, octree);
+                DrawForm(node, obj, tag, rd, octree);
             }
             else if (obj is GeometryElement)
             {
-                DrawGeometryElement(node, obj, rd, octree);
+                DrawGeometryElement(node, obj, tag, rd, octree);
             }
             else if (obj is GeometryObject)
             {
-                DrawGeometryObject(node, obj, rd, octree);
+                DrawGeometryObject(node, obj, tag, rd, octree);
             }
             else
             {
@@ -79,7 +76,7 @@ namespace Dynamo
 
                     if (geom != null)
                     {
-                        DrawGeometryObject(node, geom, rd, octree);
+                        DrawGeometryObject(node, geom, tag, rd, octree);
                     }
                 }
             }
@@ -109,17 +106,17 @@ namespace Dynamo
             }
         }
 
-        private void DrawForm(NodeModel node, object obj, RenderDescription rd, Octree.OctreeSearch.Octree octree)
+        private void DrawForm(NodeModel node, object obj, string tag, RenderDescription rd, Octree.OctreeSearch.Octree octree)
         {
             var form = obj as Form;
 
             if (form == null)
                 return;
 
-            DrawGeometryElement(node, form.get_Geometry(new Options()), rd, octree);
+            DrawGeometryElement(node, form.get_Geometry(new Options()), tag, rd, octree);
         }
 
-        private void DrawGeometryElement(NodeModel node, object obj, RenderDescription rd, Octree.OctreeSearch.Octree octree)
+        private void DrawGeometryElement(NodeModel node, object obj, string tag, RenderDescription rd, Octree.OctreeSearch.Octree octree)
         {
             try
             {
@@ -127,7 +124,7 @@ namespace Dynamo
 
                 foreach (GeometryObject go in gelem)
                 {
-                    DrawGeometryObject(node, go, rd, octree);
+                    DrawGeometryObject(node, go, tag, rd, octree);
                 }
             }
             catch (Exception ex)
@@ -138,14 +135,14 @@ namespace Dynamo
 
         }
 
-        private void DrawGeometryObject(NodeModel node, object obj, RenderDescription rd, Octree.OctreeSearch.Octree octree)
+        private void DrawGeometryObject(NodeModel node, object obj,string tag, RenderDescription rd, Octree.OctreeSearch.Octree octree)
         {
             if (obj == null)
                 return;
 
             if (obj is XYZ)
             {
-                DrawXyz(node, obj, rd, octree);
+                DrawXyz(node, obj, tag, rd, octree);
             }
             if (obj is Curve)
             {
@@ -191,16 +188,23 @@ namespace Dynamo
             }
         }
 
-        private void DrawXyz(NodeModel node, object obj, RenderDescription rd, Octree.OctreeSearch.Octree octree)
+        private void DrawXyz(NodeModel node, object obj, string tag, RenderDescription rd, Octree.OctreeSearch.Octree octree)
         {
             var point = obj as XYZ;
             if (point == null)
                 return;
 
+            var pt = new Point3D(point.X, point.Y, point.Z);
+
             if(node.IsSelected)
-                rd.SelectedPoints.Add(new Point3D(point.X, point.Y, point.Z));
+                rd.SelectedPoints.Add(pt);
             else
-                rd.Points.Add(new Point3D(point.X, point.Y, point.Z));
+                rd.Points.Add(pt);
+
+            if (node.DisplayLabels)
+            {
+                rd.Text.Add(new BillboardTextItem { Text = tag, Position = pt });
+            }
         }
 
         private void DrawCurve(NodeModel node, object obj, RenderDescription rd, Octree.OctreeSearch.Octree octree)
@@ -262,7 +266,7 @@ namespace Dynamo
             }
         }
 
-        private void DrawTransform(NodeModel node, object obj, RenderDescription rd, Octree.OctreeSearch.Octree octree)
+        private void DrawTransform(NodeModel node, object obj, string tag, RenderDescription rd, Octree.OctreeSearch.Octree octree)
         {
             var t = obj as Transform;
             if (t == null)
@@ -286,7 +290,7 @@ namespace Dynamo
             rd.ZAxisPoints.Add(zEnd);
         }
 
-        private void DrawTriangleFace(NodeModel node, object obj, RenderDescription rd, Octree.OctreeSearch.Octree octree)
+        private void DrawTriangleFace(NodeModel node, object obj,string tag, RenderDescription rd, Octree.OctreeSearch.Octree octree)
         {
             var face = obj as TriangleFace;
             if (face == null)
@@ -314,7 +318,7 @@ namespace Dynamo
             }
         }
 
-        private void DrawParticleSystem(NodeModel node, object obj, RenderDescription rd, Octree.OctreeSearch.Octree octree)
+        private void DrawParticleSystem(NodeModel node, object obj,string tag, RenderDescription rd, Octree.OctreeSearch.Octree octree)
         {
             var ps = obj as ParticleSystem;
             if (ps == null)
@@ -357,7 +361,7 @@ namespace Dynamo
             }
         }
 
-        private void DrawCurveLoop(NodeModel node, object obj, RenderDescription rd, Octree.OctreeSearch.Octree octree)
+        private void DrawCurveLoop(NodeModel node, object obj,string tag, RenderDescription rd, Octree.OctreeSearch.Octree octree)
         {
             var cl = obj as Autodesk.Revit.DB.CurveLoop;
             if (cl == null)

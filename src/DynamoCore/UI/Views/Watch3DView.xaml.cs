@@ -46,7 +46,8 @@ namespace Dynamo.Controls
         public ThreadSafeList<Point3D> _linesCacheSelected = new ThreadSafeList<Point3D>();
         public MeshGeometry3D _meshCacheSelected = new MeshGeometry3D();
         private ThreadSafeList<Point3D> _gridCache = new ThreadSafeList<Point3D>();
-  
+        private ThreadSafeList<BillboardTextItem> _text = new ThreadSafeList<BillboardTextItem>();
+
         public Material HelixMeshMaterial
         {
             get { return Materials.White; }
@@ -149,6 +150,19 @@ namespace Dynamo.Controls
             {
                 _meshCacheSelected = value;
                 NotifyPropertyChanged("HelixMeshSelected");
+            }
+        }
+
+        public ThreadSafeList<BillboardTextItem> HelixText
+        {
+            get
+            {
+                return _text;
+            }
+            set
+            {
+                _text = value;
+                NotifyPropertyChanged("HelixText");
             }
         }
 
@@ -284,6 +298,7 @@ namespace Dynamo.Controls
             HelixPointsSelected = null;
             HelixLinesSelected = null;
             HelixMeshSelected = null;
+            HelixText = null;
 
             HelixPoints = rd.Points;
             HelixLines = rd.Lines;
@@ -294,6 +309,7 @@ namespace Dynamo.Controls
             HelixZAxes = rd.ZAxisPoints;
             HelixMesh = VisualizationManager.MergeMeshes(rd.Meshes);
             HelixMeshSelected = VisualizationManager.MergeMeshes(rd.SelectedMeshes);
+            HelixText = rd.Text;
 
             // http://www.japf.fr/2009/10/measure-rendering-time-in-a-wpf-application/comment-page-1/#comment-2892
             //Dispatcher.CurrentDispatcher.BeginInvoke(
