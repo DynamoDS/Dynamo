@@ -90,42 +90,35 @@ namespace Dynamo
 
                 #region draw lines
 
-                SizeTList num_line_strip_vertices = g.num_line_strip_vertices_threadsafe();
                 FloatList line_strip_vertices = g.line_strip_vertices_threadsafe();
 
-                int counter = 0;
-
-                foreach (uint num_verts in num_line_strip_vertices)
+                for (int i = 0; i < line_strip_vertices.Count-3; i += 3)
                 {
-                    for (int i = 0; i < num_verts; ++i)
+                    var start = new Point3D(
+                            line_strip_vertices[i],
+                            line_strip_vertices[i + 1],
+                            line_strip_vertices[i + 2]);
+
+                    var end = new Point3D(
+                            line_strip_vertices[i + 3],
+                            line_strip_vertices[i + 4],
+                            line_strip_vertices[i + 5]);
+
+                    //draw a label at the start of the curve
+                    if (node.DisplayLabels && i == 0)
                     {
-                        var p = new Point3D(
-                            line_strip_vertices[counter],
-                            line_strip_vertices[counter + 1],
-                            line_strip_vertices[counter + 2]);
+                        rd.Text.Add(new BillboardTextItem { Text = tag, Position = start });
+                    }
 
-                        if (selected)
-                        {
-                            rd.SelectedLines.Add(p);
-                        }
-                        else
-                        {
-                            rd.Lines.Add(p);
-                        }
-
-                        counter += 3;
-
-                        if (i == 0 || i == num_verts - 1)
-                            continue;
-
-                        if (selected)
-                        {
-                            rd.SelectedLines.Add(p);
-                        }
-                        else
-                        {
-                            rd.Lines.Add(p);
-                        }
+                    if (selected)
+                    {
+                        rd.SelectedLines.Add(start);
+                        rd.SelectedLines.Add(end);
+                    }
+                    else
+                    {
+                        rd.Lines.Add(start);
+                        rd.Lines.Add(end);
                     }
                 }
 
