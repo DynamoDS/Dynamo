@@ -112,6 +112,7 @@
 			</testFixture>
 			<testFixture name="SelectionTests">
 				<test name="FamilyTypeSelectorNode" runDynamo="True" modelPath=".\empty.rfa"/>
+        <test name="AllSelectionNodes" runDynamo="True" modelPath=".\Selection\Selection.rfa"/>
 			</testFixture>
 			<testFixture name="SolidTests">
 				<test name="BlendSolid" runDynamo="True" modelPath=".\empty.rfa"/>
