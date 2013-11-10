@@ -919,6 +919,11 @@ namespace Dynamo.Controls
                 // Note that you can have more than one file.
                 var files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
+                if (_vm.Model.HomeSpace.HasUnsavedChanges && !_vm.AskUserToSaveWorkspaceOrCancel(_vm.Model.HomeSpace))
+                {
+                    return;
+                }
+
                 if (_vm.OpenCommand.CanExecute(files[0]))
                 {
                     _vm.OpenCommand.Execute(files[0]);
