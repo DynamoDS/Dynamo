@@ -148,6 +148,8 @@ namespace Dynamo.Nodes
                         }
                         ModelCurve.setCurveMethod(mc, c);  //mc.GeometryCurve = c;
                     }
+                    else
+                        this.DeleteElement(this.Elements[0]);
                 }
                 else
                     needsRemake = true;
