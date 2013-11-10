@@ -649,8 +649,8 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("solid in the element's geometry objects", "Solid", typeof(object)));
             selectedItem = 2;
             RegisterAllPorts();
-
         }
+        
         public override void SetupCustomUIElements(object ui)
         {
             var nodeUI = ui as dynNodeView;
@@ -677,7 +677,15 @@ namespace Dynamo.Nodes
             }
             if (combo.SelectedIndex < 0 || combo.SelectedIndex > 2)
                 combo.SelectedIndex = 2;
+
+            combo.SelectionChanged += combo_SelectionChanged;
         }
+
+        void combo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            selectedItem = ((ComboBox) sender).SelectedIndex;
+        }
+        
         void combo_DropDownOpened(object sender, EventArgs e)
         {
             PopulateComboBox();
@@ -687,7 +695,8 @@ namespace Dynamo.Nodes
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
-            nodeElement.SetAttribute("index", this.combo.SelectedIndex.ToString());
+            //nodeElement.SetAttribute("index", this.combo.SelectedIndex.ToString());
+            nodeElement.SetAttribute("index", selectedItem.ToString());
         }
 
         protected override void LoadNode(XmlNode nodeElement)
@@ -717,7 +726,6 @@ namespace Dynamo.Nodes
             cbiDifference.Content = "Difference";
             combo.Items.Add(cbiDifference);
         }
-
 
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
