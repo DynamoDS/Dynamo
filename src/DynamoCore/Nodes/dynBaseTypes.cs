@@ -4378,6 +4378,8 @@ namespace Dynamo.Nodes
         public StringFilename()
         {
             RegisterAllPorts();
+            
+            Value = "";
         }
 
         protected override string DeserializeValue(string val)
