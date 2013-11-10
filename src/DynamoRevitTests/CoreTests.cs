@@ -169,24 +169,35 @@ namespace Dynamo.Tests
 
         }
 
-        [Test]
-        public void CanCopyAndPasteAllNodesOnRevit()
+        [Test, TestCaseSource("SetupCopyPastes")]
+        public void CanCopyAndPasteAllNodesOnRevit(string typeName)
         {
             var model = dynSettings.Controller.DynamoModel;
 
-            foreach (KeyValuePair<string, TypeLoadData> kvp in dynSettings.Controller.BuiltInTypesByName)
-            {
-                Assert.DoesNotThrow(()=>model.CreateNode(0,0,kvp.Key), string.Format("Could not create node : {0}", kvp.Key));
+            Assert.DoesNotThrow(() => model.CreateNode(0, 0, typeName), string.Format("Could not create node : {0}", typeName));
 
                 var node = model.AllNodes.FirstOrDefault();
+
+                DynamoSelection.Instance.ClearSelection();
                 DynamoSelection.Instance.Selection.Add(node);
                 Assert.AreEqual(1, DynamoSelection.Instance.Selection.Count);
 
                 Assert.DoesNotThrow(() => model.Copy(null), string.Format("Could not copy node : {0}", node.GetType()));
                 Assert.DoesNotThrow(() => model.Paste(null), string.Format("Could not paste node : {0}", node.GetType()));
 
-                model.Clear(null);
-            }
+                model.Clear(null);    
+        }
+
+        static List<string> SetupCopyPastes()
+        {
+            var excludes = new List<string>();
+            excludes.Add("Dynamo.Nodes.DSFunction");
+            excludes.Add("Dynamo.Nodes.Symbol");
+            excludes.Add("Dynamo.Nodes.Output");
+            excludes.Add("Dynamo.Nodes.Function");
+            excludes.Add("Dynamo.Nodes.LacerBase");
+            excludes.Add("Dynamo.Nodes.FunctionWithRevit");
+            return dynSettings.Controller.BuiltInTypesByName.Where(x => !excludes.Contains(x.Key)).Select(kvp => kvp.Key).ToList();
         }
     }
 }
