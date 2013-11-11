@@ -106,7 +106,7 @@ namespace Dynamo.Nodes
         {
             return new FunctionCallNode
             {
-                Function = new IdentifierNode("DSRevitNodes.ElementId.ElementIdByInt"),
+                Function = new IdentifierNode("DSRevitNodes.Elements.DSElementId.ElementIdByInt"),
                 FormalArguments = new List<AssociativeNode>
                 {
                     new IntNode(SelectedElement.IntegerValue.ToString())
