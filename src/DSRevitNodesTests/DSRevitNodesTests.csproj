@@ -77,6 +77,7 @@
     <Compile Include="Elements\FamilySymbolTests.cs" />
     <Compile Include="Elements\FamilyTests.cs" />
     <Compile Include="Elements\ReferencePointTests.cs" />
+    <Compile Include="GeometryObjects\NurbSplineTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

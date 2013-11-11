@@ -7,8 +7,8 @@ using NUnit.Framework;
 namespace DSRevitNodesTests
 {
     [TestFixture]
-    class DividedSurfaceTests
+    public class DividedSurfaceTests
     {
-
+        
     }
 }
