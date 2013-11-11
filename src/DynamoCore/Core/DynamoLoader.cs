@@ -9,6 +9,8 @@ using System.IO;
 using System.Windows.Controls;
 using System.Windows;
 using String = System.String;
+using ProtoCore.DSASM;
+using Dynamo.DSEngine;
 
 namespace Dynamo.Utilities
 {
@@ -112,12 +114,14 @@ namespace Dynamo.Utilities
                 }
             }
 
+#if USE_DSENGINE
+            EngineController.Instance.LoadBuiltinLibraries();
+#endif
             AppDomain.CurrentDomain.AssemblyResolve -= resolver;
 
             #endregion
 
         }
-
 
         /// <summary>
         ///     Determine if a Type is a node.  Used by LoadNodesFromAssembly to figure

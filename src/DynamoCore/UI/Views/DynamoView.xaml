@@ -286,6 +286,10 @@
                         </MenuItem>
                     </MenuItem>
 
+                    <MenuItem Header="_Libraries" Name="LibraryManagerMenu" Focusable="False" IsEnabled="True">
+                        <MenuItem Focusable="False" Header="_Import Library..." Command="{Binding Path=DataContext.ImportLibraryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="importLibrary"/>  
+                    </MenuItem>
+                    
                     <MenuItem Header="_Packages" Name="PackageManagerMenu" Focusable="False" IsEnabled="True">
                         <MenuItem Focusable="False" Header="_Search for a Package..." Command="{Binding Path=DataContext.ShowPackageManagerSearchCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="showPMSearch" />
                         <MenuItem Focusable="False" Header="_Manage Packages..." Command="{Binding Path=DataContext.ShowInstalledPackagesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="showPMInstalled" />
@@ -991,7 +995,8 @@
                     CommandParameter="{Binding Path=RunInDebug}"
                     IsEnabled="{Binding Path=RunEnabled, Mode=TwoWay}" Focusable="False"/>
 
-                    <Button Name="cancelButton" Width="100" Content="Cancel" Focusable="False" Style="{DynamicResource ResourceKey=STextButton}" 
+                <Button Name="cancelButton" Width="100" Content="Cancel" Focusable="False" Style="{DynamicResource ResourceKey=STextButton}" 
+
                       Command="{Binding CancelRunCommand}" Margin="5"/>
 
                     <CheckBox Margin="10"

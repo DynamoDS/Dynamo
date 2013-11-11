@@ -96,13 +96,12 @@ namespace Dynamo.Controls
             //data context will come back as disconnected.
             ViewModel = this.DataContext as NodeViewModel;
 
-            ViewModel.NodeLogic.DispatchedToUI += new DispatchedToUIThreadHandler(NodeLogic_DispatchedToUI);
-            ViewModel.RequestShowNodeHelp += new NodeViewModel.NodeHelpEventHandler(ViewModel_RequestShowNodeHelp);
-            ViewModel.RequestShowNodeRename += new EventHandler(ViewModel_RequestShowNodeRename);
-            ViewModel.RequestsSelection += new EventHandler(ViewModel_RequestsSelection);
+            ViewModel.NodeLogic.DispatchedToUI += NodeLogic_DispatchedToUI;
+            ViewModel.RequestShowNodeHelp += ViewModel_RequestShowNodeHelp;
+            ViewModel.RequestShowNodeRename += ViewModel_RequestShowNodeRename;
+            ViewModel.RequestsSelection += ViewModel_RequestsSelection;
 
-            ViewModel.NodeLogic.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(NodeLogic_PropertyChanged);
-            
+            ViewModel.NodeLogic.PropertyChanged += NodeLogic_PropertyChanged;
         }
 
         void NodeLogic_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

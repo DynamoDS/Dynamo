@@ -180,7 +180,7 @@ namespace net.riversofdata.dhlogger
                 sw.Start();
 
 
-                uploaderThread = new Thread(new ThreadStart(UploaderExec));
+                uploaderThread = new Thread(UploaderExec);
                 uploaderThread.IsBackground = true;
                 uploaderThread.Start();
             }

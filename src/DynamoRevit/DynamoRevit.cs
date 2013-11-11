@@ -19,9 +19,13 @@ using Autodesk.Revit.UI;
 using Dynamo.Applications.Properties;
 using Dynamo.Controls;
 using Dynamo.Utilities;
+using RevitServices.Elements;
+using RevitServices.Threading;
+using RevitServices.Transactions;
 using IWin32Window = System.Windows.Interop.IWin32Window;
 using MessageBox = System.Windows.Forms.MessageBox;
 using Rectangle = System.Drawing.Rectangle;
+using RevThread = RevitServices.Threading;
 using Dynamo.FSchemeInterop;
 using System.IO;
 
@@ -32,7 +36,7 @@ namespace Dynamo.Applications
     public class DynamoRevitApp : IExternalApplication
     {
         private static readonly string m_AssemblyName = Assembly.GetExecutingAssembly().Location;
-        public static DynamoUpdater Updater;
+        public static RevitServicesUpdater Updater;
         private static ResourceManager res;
         public static ExecutionEnvironment env;
 
@@ -53,7 +57,6 @@ namespace Dynamo.Applications
 
                 Bitmap dynamoIcon = Resources.logo_square_32x32;
 
-
                 BitmapSource bitmapSource = Imaging.CreateBitmapSourceFromHBitmap(
                     dynamoIcon.GetHbitmap(),
                     IntPtr.Zero,
@@ -63,30 +66,11 @@ namespace Dynamo.Applications
                 pushButton.LargeImage = bitmapSource;
                 pushButton.Image = bitmapSource;
 
-                IdlePromise.RegisterIdle(application);
+                RevThread.IdlePromise.RegisterIdle(application);
 
-                Updater = new DynamoUpdater(application.ActiveAddInId, application.ControlledApplication);
-                if (!UpdaterRegistry.IsUpdaterRegistered(Updater.GetUpdaterId()))
-                    UpdaterRegistry.RegisterUpdater(Updater);
+                Updater = new RevitServicesUpdater(application.ControlledApplication);
 
-                var SpatialFieldFilter = new ElementClassFilter(typeof (SpatialFieldManager));
-                var familyFilter = new ElementClassFilter(typeof (FamilyInstance));
-                var refPointFilter = new ElementCategoryFilter(BuiltInCategory.OST_ReferencePoints);
-                var modelCurveFilter = new ElementClassFilter(typeof (CurveElement));
-                var sunFilter = new ElementClassFilter(typeof (SunAndShadowSettings));
-                IList<ElementFilter> filterList = new List<ElementFilter>();
-
-                filterList.Add(SpatialFieldFilter);
-                filterList.Add(familyFilter);
-                filterList.Add(modelCurveFilter);
-                filterList.Add(refPointFilter);
-                filterList.Add(sunFilter);
-
-                ElementFilter filter = new LogicalOrFilter(filterList);
-
-                UpdaterRegistry.AddTrigger(Updater.GetUpdaterId(), filter, Element.GetChangeTypeAny());
-                UpdaterRegistry.AddTrigger(Updater.GetUpdaterId(), filter, Element.GetChangeTypeElementDeletion());
-                UpdaterRegistry.AddTrigger(Updater.GetUpdaterId(), filter, Element.GetChangeTypeElementAddition());
+                TransactionManager.SetupManager(new DebugTransactionStrategy());
 
                 env = new ExecutionEnvironment();
 
@@ -101,7 +85,7 @@ namespace Dynamo.Applications
 
         public Result OnShutdown(UIControlledApplication application)
         {
-            UpdaterRegistry.UnregisterUpdater(Updater.GetUpdaterId());
+            //UpdaterRegistry.UnregisterUpdater(Updater.GetUpdaterId());
 
             //if(Application.Current != null)
             //    Application.Current.Shutdown();
@@ -167,13 +151,16 @@ namespace Dynamo.Applications
                 dynRevitSettings.Revit = m_revit;
                 dynRevitSettings.Doc = m_doc;
                 dynRevitSettings.DefaultLevel = defaultLevel;
+
+                //TODO: has to be changed when we handle multiple docs
+                DynamoRevitApp.Updater.DocumentToWatch = m_doc.Document;
                 
-                IdlePromise.ExecuteOnIdle(delegate
+                RevThread.IdlePromise.ExecuteOnIdleAsync(delegate
                 {
                     //get window handle
                     IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
 
-                    Regex r = new Regex(@"\b(Autodesk |Structure |MEP |Architecture )\b");
+                    var r = new Regex(@"\b(Autodesk |Structure |MEP |Architecture )\b");
                     string context = r.Replace(m_revit.Application.VersionName, "");
 
                     //they changed the application version name conventions for vasari
@@ -313,8 +300,8 @@ namespace Dynamo.Applications
             dynamoViewY = dynamoView.Top;
             dynamoViewWidth = dynamoView.ActualWidth;
             dynamoViewHeight = dynamoView.ActualHeight;
-            IdlePromise.ClearPromises();
-            IdlePromise.Shutdown();
+            RevThread.IdlePromise.ClearPromises();
+            RevThread.IdlePromise.Shutdown();
         }
 
         /// <summary>

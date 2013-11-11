@@ -6,10 +6,11 @@ using System.Linq;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
 using System.Reflection;
-using Dynamo.Nodes;
+using System.Windows;
 using System.Xml;
 using Dynamo.Selection;
 using Microsoft.FSharp.Collections;
+using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.FSchemeInterop;
@@ -74,7 +75,7 @@ namespace Dynamo.Models
         ElementState state;
         string toolTipText = "";
         private IdentifierNode identifier = null;
-        // protected AssociativeNode defaultAstExpression = null;
+        private List<string> inputIdentifiers = new List<String>();
         private bool _overrideNameWithNickName = false;
 
         /// <summary>
@@ -311,6 +312,40 @@ namespace Dynamo.Models
             RequiresRecalc = true;
         }
 
+        private bool isUpdated = false;
+
+        /// <summary>
+        /// If the node is updated in LiveRunner's execution
+        /// </summary>
+        public bool IsUpdated 
+        {
+            get
+            {
+                return IsUpdated;
+            }
+            set
+            {
+                isUpdated = value;
+                RaisePropertyChanged("IsUpdated");
+            }
+        }
+
+        /// <summary>
+        /// Return a variable whose value will be displayed in preview window.
+        /// Derived nodes may overwrite this function to display default value
+        /// of this node. E.g., code block node may want to display the value 
+        /// of the left hand side variable of last statement. 
+        /// </summary>
+        /// <returns></returns>
+        public virtual string VariableToPreview
+        {
+            get
+            {
+                var ident = AstIdentifier as IdentifierNode;
+                return (ident == null) ? null : ident.Name;
+            }
+        }
+
         protected DynamoController Controller
         {
             get { return dynSettings.Controller; }
@@ -441,7 +476,7 @@ namespace Dynamo.Models
                 if (identifier == null)
                 {
                     identifier = new IdentifierNode();
-                    identifier.Name = identifier.Value = AstBuilder.StringConstants.kVarPrefix + GUID.ToString().Replace("-", string.Empty);
+                    identifier.Name = identifier.Value = AstBuilder.StringConstants.VarPrefix + GUID.ToString().Replace("-", string.Empty);
                 }
                 return identifier;
             }
@@ -462,7 +497,7 @@ namespace Dynamo.Models
                 }
             }
         }
-        
+
         #endregion
 
         protected NodeModel()
@@ -807,48 +842,78 @@ namespace Dynamo.Models
                 });
         }
 
-        protected virtual AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputAstNodes)
+        /// <summary>
+        /// Node may overwrite this method if it provides multiple output, say
+        /// a function which returns a dictionary, or code block node. 
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        protected virtual AssociativeNode GetIndexedOutputNode(int index)
         {
-            return builder.Build(this, inputAstNodes);
-        }
-
-        public AssociativeNode CompileToAstNode(AstBuilder builder)
-        {
-            if (!RequiresRecalc)
+            if (index > 0)
             {
-                return this.AstIdentifier; 
+                throw new ArgumentOutOfRangeException("Index is out of range");
             }
 
-            builder.ClearAstNodes(GUID);
-            bool isPartiallyApplied = false;
+            return this.AstIdentifier;
+        }
+
+        protected virtual void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputAstNodes)
+        {
+            builder.Build(this, inputAstNodes);
+        }
+
+        public void CompileToAstNode(AstBuilder builder)
+        {
+            if (!RequiresRecalc && !isDirty)
+            {
+                return; 
+            }
 
             // Recursively compile its inputs to ast nodes and add intermediate
             // nodes to builder
-            var inputAstNodes = new List<AssociativeNode>();
+            List<AssociativeNode> inputAstNodes = new List<AssociativeNode>();
+            List<string> inputIdentifiers = new List<String>();
+
             for (int index = 0; index < InPortData.Count; ++index)
             {
-                Tuple<int, NodeModel> input;
-                if (!TryGetInput(index, out input))
+                Tuple<int, NodeModel> inputTuple;
+
+                AssociativeNode inputNode = null;
+                if (!TryGetInput(index, out inputTuple))
                 {
-                    isPartiallyApplied = true;
-                    inputAstNodes.Add(null);
+                    inputNode = new NullNode();
                 }
                 else
                 {
-                    inputAstNodes.Add(input.Item2.CompileToAstNode(builder));
+                    int outputIndexOfInput = inputTuple.Item1;
+                    NodeModel inputModel = inputTuple.Item2;
+                    inputModel.CompileToAstNode(builder);
+
+                    // Multiple outputs from input node, input node may be a 
+                    // function node which returns a dictionary or a code block
+                    // node which has multiple outputs.
+                    inputNode = inputModel.GetIndexedOutputNode(outputIndexOfInput);
+                }
+
+                inputAstNodes.Add(inputNode);
+                if (inputNode is IdentifierNode)
+                {
+                    inputIdentifiers.Add((inputNode as IdentifierNode).Name);
+                }
+                else 
+                {
+                    inputIdentifiers.Add(null);
                 }
             }
 
-            // Build evaluatiion for this node. If the rhs is a partially
-            // applied function, then a function defintion node will be created.
-            // But in the end there is always an assignment:
-            //
-            //     AstIdentifier = ...;
-            var rhs = BuildAstNode(builder, inputAstNodes)
-                      ?? builder.BuildEvaluator(this, inputAstNodes);
-            builder.BuildEvaluation(this, rhs, isPartiallyApplied);
-
-            return AstIdentifier;
+            bool inputChanged = !inputIdentifiers.SequenceEqual(this.inputIdentifiers);                  
+            if (isDirty || inputChanged)
+            {
+                BuildAstNode(builder, inputAstNodes);
+                isDirty = false;
+            }
+            this.inputIdentifiers = inputIdentifiers;
         }
 
         /// <summary>
@@ -1308,6 +1373,42 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// Since the ports can have a margin (offset) so that they can moved vertically from its 
+        /// initial position, the center of the port needs to be calculted differently and not only 
+        /// based on the index. The function adds the height of other nodes as well as their margins
+        /// </summary>
+        /// <param name="portModel"> The portModel whose height is to be found</param>
+        /// <returns> Returns the offset of the given port from the top of the ports </returns>
+        internal double GetPortVerticalOffset(PortModel portModel)
+        {
+            double verticalOffset = 2.9;
+            PortType portType;
+            int index = GetPortIndex(portModel, out portType);
+
+            //If the port was not found, then it should have just been deleted. Return from function
+            if (index == -1)
+                return verticalOffset;
+
+            if (portType == PortType.INPUT)
+            {
+                for (int i = 0; i < index; i++)
+                {
+                    verticalOffset += inPorts[i].MarginThickness.Top + 20;
+                }
+                verticalOffset += inPorts[index].MarginThickness.Top;
+            }
+            else if (portType == PortType.OUTPUT)
+            {
+                for (int i = 0; i < index; i++)
+                {
+                    verticalOffset += outPorts[i].MarginThickness.Top + 20;
+                }
+                verticalOffset += outPorts[index].MarginThickness.Top;
+            }
+            return verticalOffset;
+        }
+
+        /// <summary>
         /// Attempts to get the input for a certain port.
         /// </summary>
         /// <param name="data">PortData to look for an input for.</param>
@@ -1415,7 +1516,7 @@ namespace Dynamo.Models
                         return p;
                     }
 
-                    p = new PortModel(index, portType, this, data.NickName)
+                    p = new PortModel(portType, this, data.NickName)
                     {
                         UsingDefaultValue = data.HasDefaultValue,
                         DefaultValueEnabled = data.HasDefaultValue
@@ -1440,12 +1541,14 @@ namespace Dynamo.Models
                     {
                         p = outPorts[index];
                         p.PortName = data.NickName;
+                        p.MarginThickness = new Thickness(0, data.VerticalMargin, 0, 0);
                         return p;
                     }
 
-                    p = new PortModel(index, portType, this, data.NickName)
+                    p = new PortModel(portType, this, data.NickName)
                     {
-                        UsingDefaultValue = false
+                        UsingDefaultValue = false,
+                        MarginThickness = new Thickness(0,data.VerticalMargin,0,0)
                     };
 
                     OutPorts.Add(p);
@@ -1500,7 +1603,7 @@ namespace Dynamo.Models
             }
         }
 
-        private void DestroyConnectors(PortModel port)
+        protected void DestroyConnectors(PortModel port)
         {
             while (port.Connectors.Any())
             {
@@ -1652,6 +1755,23 @@ namespace Dynamo.Models
         public void DispatchOnUIThread(Action a)
         {
             OnDispatchedToUI(this, new UIDispatcherEventArgs(a));
+        }
+
+        public static string PrintValue(string variableName, int currentListIndex, int maxListIndex, int currentDepth, int maxDepth, int maxStringLength = 20)
+        {
+            string previewValue = "<null>";
+            if (!string.IsNullOrEmpty(variableName))
+            {
+                try
+                {
+                    previewValue = EngineController.Instance.GetStringValue(variableName);
+                }
+                catch (Exception ex)
+                {
+                    DynamoLogger.Instance.Log(ex.Message);
+                }
+            }
+            return previewValue;
         }
 
         public static string PrintValue(Value eIn, int currentListIndex, int maxListIndex, int currentDepth, int maxDepth, int maxStringLength = 20)

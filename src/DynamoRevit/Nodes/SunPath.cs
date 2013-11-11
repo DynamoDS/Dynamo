@@ -43,7 +43,7 @@ namespace Dynamo.Nodes
 
             sunPathButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             sunPathButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            sunPathButt.Click += new System.Windows.RoutedEventHandler(registerButt_Click);
+            sunPathButt.Click += registerButt_Click;
             sunPathButt.Content = "Use SunPath\nfrom Current View";
             sunPathButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             sunPathButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
