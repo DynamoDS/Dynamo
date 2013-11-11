@@ -141,7 +141,7 @@ namespace Dynamo.Nodes
                 comItem.Header = portName;
                 comItem.IsCheckable = true;
                 comItem.IsChecked = true;
-                comItem.Checked += new System.Windows.RoutedEventHandler(comItem_Checked);
+                comItem.Checked += comItem_Checked;
                 nodeUI.MainContextMenu.Items.Add(comItem);
 
                 port.PortName = portName;

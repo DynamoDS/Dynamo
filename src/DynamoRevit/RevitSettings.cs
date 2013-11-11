@@ -172,7 +172,7 @@ namespace Dynamo.Utilities
 
         public class SelectionHelper
         {
-            public static ReferencePoint RequestReferencePointSelection(string message)
+            public static Autodesk.Revit.DB.ReferencePoint RequestReferencePointSelection(string message)
             {
                 var doc = dynRevitSettings.Doc;
 

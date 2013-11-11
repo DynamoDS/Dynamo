@@ -227,14 +227,14 @@ namespace Dynamo.Nodes
 
             nodeUI.inputGrid.Children.Add(drawPlane);
 
-            this.RequestChangeColorRange += new EventHandler(delegate
+            this.RequestChangeColorRange += delegate
+            {
+                DispatchOnUIThread(delegate
                 {
-                    DispatchOnUIThread(delegate
-                        {
-                            WriteableBitmap bmp = CompleteColorScale(_start, _end);
-                            drawPlane.Source = bmp; 
-                        });
+                    WriteableBitmap bmp = CompleteColorScale(_start, _end);
+                    drawPlane.Source = bmp; 
                 });
+            };
         }
 
         //http://gaggerostechnicalnotes.blogspot.com/2012/01/wpf-colors-scale.html

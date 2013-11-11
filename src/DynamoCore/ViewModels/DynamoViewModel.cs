@@ -179,6 +179,8 @@ namespace Dynamo.ViewModels
         public DelegateCommand GetBranchVisualizationCommand { get; set; }
         public DelegateCommand TogglePreviewBubbleVisibilityCommand { get; set; }
 
+        public DelegateCommand ImportLibraryCommand { get; set; }
+
         /// <summary>
         /// An observable collection of workspace view models which tracks the model
         /// </summary>
@@ -466,7 +468,7 @@ namespace Dynamo.ViewModels
             //register for property change notifications 
             //on the model and the controller
             _model.PropertyChanged += _model_PropertyChanged;
-            dynSettings.Controller.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Controller_PropertyChanged);
+            dynSettings.Controller.PropertyChanged += Controller_PropertyChanged;
             _model.Workspaces.CollectionChanged += Workspaces_CollectionChanged;
 
             _model.AddHomeWorkspace();
@@ -534,10 +536,14 @@ namespace Dynamo.ViewModels
             GetBranchVisualizationCommand = new DelegateCommand(GetBranchVisualization, CanGetBranchVisualization);
             TogglePreviewBubbleVisibilityCommand = new DelegateCommand(TogglePreviewBubbleVisibility, CanTogglePreviewBubbleVisibility);
 
-            DynamoLogger.Instance.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Instance_PropertyChanged);
+#if USE_DSENGINE
+            ImportLibraryCommand = new DelegateCommand(ImportLibrary, CanImportLibrary);
+#endif
+
+            DynamoLogger.Instance.PropertyChanged += Instance_PropertyChanged;
 
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
-            dynSettings.Controller.VisualizationManager.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(VisualizationManager_PropertyChanged);
+            dynSettings.Controller.VisualizationManager.PropertyChanged += VisualizationManager_PropertyChanged;
 
             this.Model.PropertyChanged += (e, args) =>
             {
@@ -1289,6 +1295,32 @@ namespace Dynamo.ViewModels
             return CurrentSpaceViewModel.FitViewCommand.CanExecute(parameter);
         }
 
+#if USE_DSENGINE
+        public void ImportLibrary(object parameter)
+        {
+            string fileFilter = "Library Files (*.dll, *.ds)|*.dll;*.ds|"
+                              + "Assembly Library Files (*.dll)|*.dll|"
+                              + "DesignScript Files (*.ds)|*.ds|"
+                              + "All Files (*.*)|*.*";
+
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = fileFilter;
+            openFileDialog.Title = "Import Library";
+            openFileDialog.Multiselect = true;
+            openFileDialog.RestoreDirectory = true;
+
+            DialogResult result = openFileDialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                DSEngine.EngineController.Instance.ImportLibraries(openFileDialog.FileNames.ToList());
+            }
+        }
+
+        internal bool CanImportLibrary(object parameter)
+        {
+            return true;
+        }
+#endif
         public void TogglePan(object parameter)
         {
             CurrentSpaceViewModel.TogglePanCommand.Execute(parameter);

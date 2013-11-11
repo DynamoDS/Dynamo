@@ -62,6 +62,9 @@ limitations under the License.
     <WarningLevel>4</WarningLevel>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(ExecutionEngine)' != 'FScheme' ">
+    <DefineConstants>$(DefineConstants);USE_DSENGINE</DefineConstants>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="FScheme, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -73,7 +76,7 @@ limitations under the License.
       <HintPath>..\..\bin\AnyCPU\Debug\FSchemeInterop.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="FSharp.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="FSharp.Core"/>
     <Reference Include="Greg, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\greg\Greg.dll</HintPath>
@@ -104,6 +107,10 @@ limitations under the License.
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\greg\RestSharp.dll</HintPath>
     </Reference>
+    <Reference Include="ProtoInterface">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\DesignScript\ProtoInterface.dll</HintPath>
+    </Reference>
     <Reference Include="ProtoCore">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\DesignScript\ProtoCore.dll</HintPath>
@@ -123,6 +130,10 @@ limitations under the License.
     <Reference Include="GraphToDSCompiler">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\DesignScript\GraphToDSCompiler.dll</HintPath>
+    </Reference>
+    <Reference Include="DesignScriptStudio.Renderer">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\DesignScript\DesignScriptStudio.Renderer.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -150,13 +161,18 @@ limitations under the License.
     <Compile Include="Core\UndoRedoRecorder.cs" />
     <Compile Include="Core\Configurations.cs" />
     <Compile Include="DSEngine\AstBuilder.cs" />
+    <Compile Include="DSEngine\DSLibrary.cs" />
+    <Compile Include="DSEngine\EngineController.cs" />
+    <Compile Include="DSEngine\LiveRunnerServices.cs" />
     <Compile Include="Models\CustomNodeWorkspaceModel.cs" />
     <Compile Include="Models\HomeWorkspaceModel.cs" />
+    <Compile Include="Nodes\CodeBlockNode.cs" />
     <Compile Include="Nodes\dynDSFunction.cs" />
     <Compile Include="Models\Migration.cs" />
     <Compile Include="Core\FunctionDefinition.cs" />
     <Compile Include="Core\PreferenceSettings.cs" />
     <Compile Include="Nodes\Geometry.cs" />
+    <Compile Include="Nodes\New Node Examples\SampleNodeWithUI.cs" />
     <Compile Include="PackageManager\PackageManagerClient.cs" />
     <Compile Include="Search\SearchElements\CustomNodeSearchElement.cs" />
     <Compile Include="Services\UsageReportingManager.cs" />
@@ -349,9 +365,11 @@ limitations under the License.
     <Compile Include="VisualizationManager\octree\Vector3d.cs" />
     <Compile Include="VisualizationManager\octree\Vector3f.cs" />
     <Compile Include="VisualizationManager\RenderDescription.cs" />
+    <Compile Include="DSEngine\RenderPackage.cs" />
     <Compile Include="VisualizationManager\Visualization.cs" />
     <Compile Include="VisualizationManager\VisualizationManager.cs" />
     <Compile Include="VisualizationManager\VisualizationManagerASM.cs" />
+    <Compile Include="DSEngine\VisualizationManagerDSGeometry.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

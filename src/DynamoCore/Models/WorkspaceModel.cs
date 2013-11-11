@@ -294,6 +294,11 @@ namespace Dynamo.Models
             }
         }
 
+        public UndoRedoRecorder UndoXRecorder
+        {
+            get { return undoRecorder; }
+        }
+
         #endregion
 
         protected WorkspaceModel(
@@ -628,6 +633,12 @@ namespace Dynamo.Models
 
             if (typeName.StartsWith("Dynamo.Nodes"))
             {
+#if USE_DSENGINE
+                if (typeName.Equals("Dynamo.Nodes.DSFunction"))
+                {
+                    typeName = modelData.Attributes["name"].Value;
+                }
+#endif
                 NodeModel nodeModel = DynamoModel.CreateNodeInstance(typeName);
                 nodeModel.WorkSpace = this;
                 nodeModel.Deserialize(modelData, SaveContext.Undo);
@@ -701,10 +712,34 @@ namespace Dynamo.Models
 
         public IEnumerable<NodeModel> GetTopMostNodes()
         {
+#if USE_DSENGINE
+            return Nodes.Where(x=> IsTopMostNode(x));
+#else
             return Nodes.Where(
                 x =>
                     x.OutPortData.Any()
                     && x.OutPorts.Any(y => !y.Connectors.Any() || y.Connectors.Any(c => c.End.Owner is Output)));
+#endif
+        }
+
+        //If node is connected to some other node(other than Output) then it is not a 'top' node
+        private bool IsTopMostNode(NodeModel node)
+        {
+            if (node.OutPortData.Count < 1)
+                return false;
+            foreach (var port in node.OutPorts)
+            {
+                if (port.Connectors.Count != 0)
+                {
+                    foreach (var connector in port.Connectors)
+                    {
+                        if (connector.End.Owner!= null && connector.End.Owner is Output)
+                            return true;
+                    }
+                    return false;
+                }
+            }
+            return true;
         }
 
         public event EventHandler Updated;

@@ -10,7 +10,11 @@ using Dynamo.Models;
 using Microsoft.FSharp.Collections;
 
 using Dynamo.Utilities;
+using RevitServices.Elements;
+using RevitServices.Threading;
+using ChangeType = RevitServices.Elements.ChangeType;
 using Value = Dynamo.FScheme.Value;
+using RevThread = RevitServices.Threading;
 
 namespace Dynamo.Revit
 {
@@ -102,7 +106,7 @@ namespace Dynamo.Revit
 
         protected override void LoadNode(XmlNode nodeElement)
         {
-            var del = new DynElementUpdateDelegate(onDeleted);
+            var del = new ElementUpdateDelegate(onDeleted);
 
             elements.Clear();
 
@@ -141,7 +145,7 @@ namespace Dynamo.Revit
 
         internal void RegisterAllElementsDeleteHook()
         {
-            var del = new DynElementUpdateDelegate(onDeleted);
+            var del = new ElementUpdateDelegate(onDeleted);
 
             foreach (var id in elements.SelectMany(eList => eList)) 
             {
@@ -170,7 +174,7 @@ namespace Dynamo.Revit
 
             #region Register Elements w/ DMU
 
-            var del = new DynElementUpdateDelegate(onDeleted);
+            var del = new ElementUpdateDelegate(onDeleted);
 
             foreach (ElementId id in Elements)
                 dynRevitSettings.Controller.RegisterDMUHooks(id, del);
@@ -214,7 +218,7 @@ namespace Dynamo.Revit
             {
                 #region no debug
 
-                if (controller.TransMode == TransactionMode.Manual && !controller.IsTransactionActive())
+                if (controller.TransMode == TransactionMode.Manual && !controller.TransactionManager.TransactionActive)
                 {
                     throw new Exception("A Revit transaction is required in order evaluate this element.");
                 }
@@ -239,7 +243,7 @@ namespace Dynamo.Revit
 
                 DynamoLogger.Instance.Log("Starting a debug transaction for element: " + NickName);
 
-                IdlePromise.ExecuteOnIdle(
+                RevThread.IdlePromise.ExecuteOnIdleSync(
                    delegate
                    {
                        controller.InitTransaction();
@@ -265,8 +269,7 @@ namespace Dynamo.Revit
                            controller.CancelTransaction();
                            throw;
                        }
-                   },
-                   false);
+                   });
 
                 #endregion
             }
@@ -295,7 +298,7 @@ namespace Dynamo.Revit
         {
             var controller = dynRevitSettings.Controller;
 
-            IdlePromise.ExecuteOnIdle(
+            RevThread.IdlePromise.ExecuteOnIdleAsync(
                delegate
                {
                    controller.InitTransaction();
@@ -378,12 +381,12 @@ namespace Dynamo.Revit
                 var u = dynRevitSettings.Controller.Updater;
                 u.RegisterChangeHook(
                    id,
-                   ChangeTypeEnum.Modify,
+                   ChangeType.Modify,
                    ReEvalOnModified(node, modAction)
                 );
                 u.RegisterChangeHook(
                    id,
-                   ChangeTypeEnum.Delete,
+                   ChangeType.Delete,
                    UnRegOnDelete(delAction)
                 );
             }
@@ -396,29 +399,29 @@ namespace Dynamo.Revit
             {
                 var u = dynRevitSettings.Controller.Updater;
                 u.UnRegisterChangeHook(
-                   id, ChangeTypeEnum.Modify
+                   id, ChangeType.Modify
                 );
                 u.UnRegisterChangeHook(
-                   id, ChangeTypeEnum.Delete
+                   id, ChangeType.Delete
                 );
             }
 
-            static DynElementUpdateDelegate UnRegOnDelete(Action deleteAction)
+            static ElementUpdateDelegate UnRegOnDelete(Action deleteAction)
             {
                 return delegate(HashSet<ElementId> deleted)
                 {
                     foreach (var d in deleted)
                     {
                         var u = dynRevitSettings.Controller.Updater;
-                        u.UnRegisterChangeHook(d, ChangeTypeEnum.Delete);
-                        u.UnRegisterChangeHook(d, ChangeTypeEnum.Modify);
+                        u.UnRegisterChangeHook(d, ChangeType.Delete);
+                        u.UnRegisterChangeHook(d, ChangeType.Modify);
                     }
                     if (deleteAction != null)
                         deleteAction();
                 };
             }
 
-            static DynElementUpdateDelegate ReEvalOnModified(NodeModel node, Action modifiedAction)
+            static ElementUpdateDelegate ReEvalOnModified(NodeModel node, Action modifiedAction)
             {
                 return delegate
                 {

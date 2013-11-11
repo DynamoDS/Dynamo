@@ -223,7 +223,7 @@ namespace Dynamo.Nodes
 
             Enabled = false;
 
-            button.Click += new RoutedEventHandler(button_Click);
+            button.Click += button_Click;
 
             var bindingVal = new System.Windows.Data.Binding("Enabled")
             {
@@ -583,8 +583,8 @@ namespace Dynamo.Nodes
             nodeUI.inputGrid.Children.Add(wp);
 
             //rbFalse.IsChecked = true;
-            rbTrue.Checked += new System.Windows.RoutedEventHandler(rbTrue_Checked);
-            rbFalse.Checked += new System.Windows.RoutedEventHandler(rbFalse_Checked);
+            rbTrue.Checked += rbTrue_Checked;
+            rbFalse.Checked += rbFalse_Checked;
 
             rbFalse.DataContext = this;
             rbTrue.DataContext = this;
@@ -662,7 +662,7 @@ namespace Dynamo.Nodes
             //readFileButton.Margin = new System.Windows.Thickness(4);
             readFileButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             readFileButton.VerticalAlignment = System.Windows.VerticalAlignment.Top;
-            readFileButton.Click += new System.Windows.RoutedEventHandler(readFileButton_Click);
+            readFileButton.Click += readFileButton_Click;
             readFileButton.Content = "Browse...";
             readFileButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             readFileButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
@@ -729,7 +729,7 @@ namespace Dynamo.Nodes
             System.Windows.Controls.Grid.SetColumn(combo, 0);
             System.Windows.Controls.Grid.SetRow(combo, 0);
 
-            combo.DropDownOpened += new EventHandler(combo_DropDownOpened);
+            combo.DropDownOpened += combo_DropDownOpened;
             combo.SelectionChanged += delegate
             {
                 if (combo.SelectedIndex != -1)
@@ -817,6 +817,42 @@ namespace Dynamo.Nodes
         }
     }
 
+    public partial class CodeBlockNodeModel
+    {
+        public override void SetupCustomUIElements(object ui)
+        {
+            var nodeUI = ui as dynNodeView;
+
+            var tb = new CodeNodeTextBox(Code)
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF)),
+                AcceptsReturn = true
+            };
+
+
+            nodeUI.inputGrid.Children.Add(tb);
+            Grid.SetColumn(tb, 0);
+            Grid.SetRow(tb, 0);
+
+            tb.DataContext = this;
+            tb.BindToProperty(new Binding("Code")
+            {
+                Mode = BindingMode.TwoWay,
+                NotifyOnValidationError = false,
+                Source = this,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            });
+
+            if (shouldFocus)
+            {
+                tb.Focus();
+                shouldFocus = false;
+            }
+        }
+    }
+
     public partial class Output
     {
         public override void SetupCustomUIElements(object ui)
@@ -889,12 +925,12 @@ namespace Dynamo.Nodes
                 Root = new WatchNode();
             watchTree.DataContext = Root;
 
-            this.RequestBindingUnhook += new EventHandler(delegate
+            this.RequestBindingUnhook += delegate
             {
                 BindingOperations.ClearAllBindings(watchTree.treeView1);
-            });
+            };
 
-            this.RequestBindingRehook += new EventHandler(delegate
+            this.RequestBindingRehook += delegate
             {
                 var sourceBinding = new Binding("Children")
                 {
@@ -902,7 +938,7 @@ namespace Dynamo.Nodes
                     Source = Root,
                 };
                 watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty, sourceBinding);
-            });
+            };
 
         }
 

@@ -351,7 +351,8 @@ namespace Dynamo.Tests
         [Test]
         public void BuildValueStringAcceptsNullInput()
         {
-            var res = NodeModel.PrintValue(null, 0, 3, 0, 4);
+            FScheme.Value value = null;
+            var res = NodeModel.PrintValue(value, 0, 3, 0, 4);
             Assert.AreEqual("<null>",res);
         }
 

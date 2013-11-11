@@ -9,7 +9,6 @@ using Dynamo.Models;
 using Dynamo.Utilities;
 
 using Microsoft.FSharp.Collections;
-
 using Value = Dynamo.FScheme.Value;
 using Dynamo.Revit;
 
@@ -227,7 +226,7 @@ namespace Dynamo.Nodes
                 if (dynUtils.TryGetElement(this.Elements[count], out fi))
                 {
                     fi.Symbol = fs;
-                    LocationPoint lp = fi.Location as LocationPoint;
+                    var lp = fi.Location as LocationPoint;
                     lp.Point = pos;
                 }
                 else
