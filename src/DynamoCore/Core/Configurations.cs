@@ -142,4 +142,9 @@ namespace Dynamo.Core
 
         #endregion
     }
+
+    public class ResourceNames
+    {
+        public static readonly string ResourceBaseUri = "pack://application:,,,/DynamoCore;component/UI/Images/";
+    }
 }

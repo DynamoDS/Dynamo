@@ -159,7 +159,7 @@ namespace Dynamo.Controls
         {
             if (child != null &&
                 ( e.ChangedButton == MouseButton.Middle
-                || e.ChangedButton == MouseButton.Left && IsPanMode()))
+                || e.ChangedButton == MouseButton.Left && IsInPanMode()))
             {
                 var tt = GetTranslateTransform(child);
                 start = e.GetPosition(this);
@@ -172,7 +172,7 @@ namespace Dynamo.Controls
         {
             if (child != null && 
                 ( e.ChangedButton == MouseButton.Middle
-                || e.ChangedButton == MouseButton.Left && IsPanMode()))
+                || e.ChangedButton == MouseButton.Left && IsInPanMode()))
             {
                 child.ReleaseMouseCapture();
             }
@@ -197,7 +197,7 @@ namespace Dynamo.Controls
             }
         }
 
-        private bool IsPanMode()
+        private bool IsInPanMode()
         {
             WorkspaceViewModel vm = DataContext as WorkspaceViewModel;
             return vm.CurrentState == WorkspaceViewModel.StateMachine.State.PanMode;
