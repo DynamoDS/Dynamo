@@ -219,6 +219,16 @@ namespace Dynamo.DSEngine
     }
 
     /// <summary>
+    /// Get notification when AstBuilder starts building node and
+    /// finishes building node.
+    /// </summary>
+    public interface IAstNodeContainer
+    {
+        void OnAstNodeBuilding(NodeModel node);
+        void OnAstNodeBuilt(NodeModel node, IEnumerable<AssociativeNode> astNodes);
+    }
+
+    /// <summary>
     /// AstBuilder is a factory class to create different kinds of AST nodes.
     /// </summary>
     public class AstBuilder : IAstBuilder
@@ -252,11 +262,11 @@ namespace Dynamo.DSEngine
             public List<AssociativeNode> AstNodes { get; private set;}
         }
 
-        public event EventHandler<ASTBuildingEventArgs> AstBuilding;
-        public event EventHandler<ASTBuiltEventArgs> AstBuilt;
-        
-        public AstBuilder()
+        private IAstNodeContainer nodeContainer = null;
+
+        public AstBuilder(IAstNodeContainer nodeContainer)
         {
+            this.nodeContainer = nodeContainer;
         }
 
         #region IAstBuilder interface
@@ -267,14 +277,12 @@ namespace Dynamo.DSEngine
         /// <param name="inputs"></param>
         public void Build(NodeModel node, List<AssociativeNode> inputs)
         {
-            ASTBuildingEventArgs buildingEventArgs = new ASTBuildingEventArgs(node);
-            OnAstBuilding(buildingEventArgs);
+            OnAstNodeBuilding(node);
 
             var rhs = AstFactory.BuildNullNode();
             var assignment = AstFactory.BuildAssignment(node.AstIdentifier, rhs);
 
-            ASTBuiltEventArgs builtEventArgs = new ASTBuiltEventArgs(node, new List<AssociativeNode> { assignment });
-            OnAstBuilt(builtEventArgs);
+            OnAstNodeBuilt(node, new List<AssociativeNode> { assignment } );
         }
 
         /// <summary>
@@ -284,8 +292,7 @@ namespace Dynamo.DSEngine
         /// <param name="inputs"></param>
         public void Build(DSFunction node, List<AssociativeNode> inputs)
         {
-            ASTBuildingEventArgs buildingEventArgs = new ASTBuildingEventArgs(node);
-            OnAstBuilding(buildingEventArgs);
+            OnAstNodeBuilding(node);
 
             string function = node.Definition.Name;
             var functionCall = AstFactory.BuildFunctionCall(function, inputs);
@@ -313,8 +320,7 @@ namespace Dynamo.DSEngine
 
             var assignment = AstFactory.BuildAssignment(node.AstIdentifier, functionCall);
 
-            ASTBuiltEventArgs builtEventArgs = new ASTBuiltEventArgs(node, new List<AssociativeNode> { assignment });
-            OnAstBuilt(builtEventArgs);
+            OnAstNodeBuilt(node, new List<AssociativeNode> { assignment} );
         }
 
         /// <summary>
@@ -324,14 +330,12 @@ namespace Dynamo.DSEngine
         /// <param name="inputs"></param>
         public void Build(Dynamo.Nodes.Double node, List<AssociativeNode> inputs)
         {
-            ASTBuildingEventArgs buildingEventArgs = new ASTBuildingEventArgs(node);
-            OnAstBuilding(buildingEventArgs);
+            OnAstNodeBuilding(node);
 
             var rhs = AstFactory.BuildDoubleNode(node.Value);
             var assignment = AstFactory.BuildAssignment(node.AstIdentifier, rhs);
 
-            ASTBuiltEventArgs builtEventArgs = new ASTBuiltEventArgs(node, new List<AssociativeNode> { assignment });
-            OnAstBuilt(builtEventArgs);
+            OnAstNodeBuilt(node, new List<AssociativeNode> { assignment } );
         }
 
         /// <summary>
@@ -341,8 +345,7 @@ namespace Dynamo.DSEngine
         /// <param name="inputs"></param>
         public void Build(Dynamo.Nodes.DoubleInput node, List<AssociativeNode> inputs)
         {
-            ASTBuildingEventArgs buildingEventArgs = new ASTBuildingEventArgs(node);
-            OnAstBuilding(buildingEventArgs);
+            OnAstNodeBuilding(node);
 
             AssociativeNode rhs = null;
             if (inputs.Count == 1)
@@ -356,8 +359,7 @@ namespace Dynamo.DSEngine
 
             var assignment = AstFactory.BuildAssignment(node.AstIdentifier, rhs);
 
-            ASTBuiltEventArgs builtEventArgs = new ASTBuiltEventArgs(node, new List<AssociativeNode> { assignment });
-            OnAstBuilt(builtEventArgs);
+            OnAstNodeBuilt(node, new List<AssociativeNode> { assignment} );
         }
 
         /// <summary>
@@ -367,14 +369,12 @@ namespace Dynamo.DSEngine
         /// <param name="inputs"></param>
         public void Build(Dynamo.Nodes.Bool node, List<AssociativeNode> inputs)
         {
-            ASTBuildingEventArgs buildingEventArgs = new ASTBuildingEventArgs(node);
-            OnAstBuilding(buildingEventArgs);
+            OnAstNodeBuilding(node);
 
             var rhs =  AstFactory.BuildBooleanNode(node.Value);
             var assignment = AstFactory.BuildAssignment(node.AstIdentifier, rhs);
 
-            ASTBuiltEventArgs builtEventArgs = new ASTBuiltEventArgs(node, new List<AssociativeNode> { assignment });
-            OnAstBuilt(builtEventArgs);
+            OnAstNodeBuilt(node, new List<AssociativeNode> { assignment} );
         }
 
         /// <summary>
@@ -384,14 +384,12 @@ namespace Dynamo.DSEngine
         /// <param name="inputs"></param>
         public void Build(Dynamo.Nodes.String node, List<AssociativeNode> inputs)
         {
-            ASTBuildingEventArgs buildingEventArgs = new ASTBuildingEventArgs(node);
-            OnAstBuilding(buildingEventArgs);
+            OnAstNodeBuilding(node);
 
             var rhs = AstFactory.BuildStringNode(node.Value);
             var assignment = AstFactory.BuildAssignment(node.AstIdentifier, rhs);
 
-            ASTBuiltEventArgs builtEventArgs = new ASTBuiltEventArgs(node, new List<AssociativeNode> { assignment });
-            OnAstBuilt(builtEventArgs);
+            OnAstNodeBuilt(node, new List<AssociativeNode> { assignment} );
         }
 
         /// <summary>
@@ -406,8 +404,7 @@ namespace Dynamo.DSEngine
                 DynamoLogger.Instance.Log("Error in Code Block Node. Not sent for building and compiling");
             }
 
-            ASTBuildingEventArgs buildingEventArgs = new ASTBuildingEventArgs(node);
-            OnAstBuilding(buildingEventArgs);
+            OnAstNodeBuilding(node);
 
             List<string> unboundIdentifiers = new List<string>();
             CodeBlockNode commentNode = null;
@@ -415,9 +412,18 @@ namespace Dynamo.DSEngine
 
             if (codeBlock != null)
             {
-                ASTBuiltEventArgs builtEventArgs = new ASTBuiltEventArgs(node, codeBlock.Body);
-                OnAstBuilt(builtEventArgs);
+                OnAstNodeBuilt(node, codeBlock.Body);
             }
+        }
+
+        /// <summary>
+        /// Compiling a collection of Dynamo nodes to AST nodes, no matter 
+        /// whether Dynamo node has been compiled or not.
+        /// </summary>
+        /// <param name="nodes"></param>
+        public void CompileToAstNodes(IEnumerable<NodeModel> nodes)
+        {
+            throw new NotImplementedException();
         }
         #endregion
 
@@ -479,26 +485,26 @@ namespace Dynamo.DSEngine
         }
 
         /// <summary>
-        /// Dispatch AstBuilding event to event handlers.
+        /// Notify IAstNodeContainer that starts building AST nodes. 
         /// </summary>
         /// <param name="e"></param>
-        private void OnAstBuilding(ASTBuildingEventArgs e)
+        private void OnAstNodeBuilding(NodeModel node)
         {
-            if (AstBuilding != null)
+            if (nodeContainer != null)
             {
-                AstBuilding(this, e);
+                nodeContainer.OnAstNodeBuilding(node);
             }
         }
 
         /// <summary>
-        /// Dispatch AstBuilt event to event handlers.
+        /// Notify IAstNodeContainer that AST nodes have been built.
         /// </summary>
         /// <param name="e"></param>
-        private void OnAstBuilt(ASTBuiltEventArgs e)
+        private void OnAstNodeBuilt(NodeModel node, List<AssociativeNode> astNodes)
         {
-            if (AstBuilt != null)
+            if (nodeContainer != null)
             {
-                AstBuilt(this, e);
+                nodeContainer.OnAstNodeBuilt(node, astNodes);
             }
         }
     }
