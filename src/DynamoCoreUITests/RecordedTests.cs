@@ -287,6 +287,27 @@ namespace Dynamo.Tests.UI
         }
 
         [Test, RequiresSTA]
+        public void TestUpdateNodeCaptions()
+        {
+            RunCommandsFromFile("UpdateNodeCaptions.xml");
+            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(1, workspace.Notes.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count);
+
+            var number = GetNode("0b171995-528b-480a-b203-9cee49fcec9d") as DoubleInput;
+            var strIn = GetNode("d17de86f-0665-4e22-abd4-d16360ee17d7") as StringInput;
+            var note = GetNode("6aed237b-beb6-4a24-8774-9b7e29615be1") as NoteModel;
+
+            Assert.IsNotNull(number);
+            Assert.IsNotNull(strIn);
+            Assert.IsNotNull(note);
+
+            Assert.AreEqual("Caption 1", number.NickName);
+            Assert.AreEqual("Caption 2", strIn.NickName);
+            Assert.AreEqual("Caption 3", note.Text);
+        }
+
+        [Test, RequiresSTA]
         public void TestVerifyRuntimeValues()
         {
             RunCommandsFromFile("VerifyRuntimeValues.xml", true);
@@ -333,10 +354,10 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(3, nodes.Count);
         }
 
-        private NodeModel GetNode(string guid)
+        private ModelBase GetNode(string guid)
         {
             Guid id = Guid.Parse(guid);
-            return (workspace.GetModelInternal(id) as NodeModel);
+            return workspace.GetModelInternal(id);
         }
 
         private void VerifyModelExistence(Dictionary<string, bool> modelExistenceMap)

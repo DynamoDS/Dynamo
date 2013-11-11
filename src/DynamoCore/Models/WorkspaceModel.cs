@@ -816,12 +816,14 @@ namespace Dynamo.Models
                 RecordModelForModification(model);
                 if (!model.UpdateValue(name, value))
                 {
+                    string type = model.GetType().FullName;
                     string message = string.Format(
                         "ModelBase.UpdateValue call not handled.\n\n" + 
-                        "Model GUID: {0}\n" + 
-                        "Property name: {1}\n" + 
-                        "Property value: {2}",
-                        modelGuid.ToString(), name, value);
+                        "Model type: {0}\n" +
+                        "Model GUID: {1}\n" + 
+                        "Property name: {2}\n" + 
+                        "Property value: {3}",
+                        type, modelGuid.ToString(), name, value);
 
                     // All 'UpdateValue' calls must be handled by one of the 
                     // ModelBase derived classes that the 'UpdateModelValue'
