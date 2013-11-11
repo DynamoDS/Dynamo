@@ -305,6 +305,8 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("domain", "The surface's domain.", typeof(FScheme.Value.List)));
 
             RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
         }
 
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
