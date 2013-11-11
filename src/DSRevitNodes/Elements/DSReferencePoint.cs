@@ -145,7 +145,7 @@ namespace DSRevitNodes
         #region Static constructors
 
         /// <summary>
-        /// Create a Reference Point by x,y, and z coordinates.
+        /// Create a Reference Point by x, y, and z coordinates.
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>

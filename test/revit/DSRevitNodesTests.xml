@@ -3,7 +3,7 @@
 	<testAssemblies>
 		<testAssembly name="DSRevitNodesTests.dll">
 			<testFixture name="ReferencePointTests">
-				<test name="CanMakeSingleReferencePoint" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="ByCoordinates_ValidInput" modelPath=".\MassWithBoxAndCone.rfa"/>
 			</testFixture>
 		</testAssembly>
 	</testAssemblies>

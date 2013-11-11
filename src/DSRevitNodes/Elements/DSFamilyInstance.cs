@@ -31,6 +31,15 @@ namespace DSRevitNodes
         #region Private constructors
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="instance"></param>
+        internal DSFamilyInstance(Autodesk.Revit.DB.FamilyInstance instance)
+        {
+            InternalSetFamilyInstance(instance);
+        }
+
+        /// <summary>
         /// Internal constructor for a FamilyInstance
         /// </summary>
         internal DSFamilyInstance(Autodesk.Revit.DB.FamilySymbol fs, Autodesk.Revit.DB.XYZ pos)

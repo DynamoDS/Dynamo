@@ -67,6 +67,7 @@
   <ItemGroup>
     <Compile Include="AbstractElement.cs" />
     <Compile Include="AbstractGeometryObject.cs" />
+    <Compile Include="Elements\DSElementFactory.cs" />
     <Compile Include="Elements\DSFamily.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Interactivity\DSSelection.cs" />
