@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
@@ -12,8 +13,11 @@ namespace DSRevitNodes.GeometryObjects
     /// <summary>
     /// Class for making a Revit NurbsSpline.
     /// </summary>
-    public class DSNurbSpline : DSCurve
+    public class DSNurbSpline : DSCurve, IGraphicItem
     {
+
+        #region Private constructors
+
         /// <summary>
         /// Internal constructor DSNurbsSpline
         /// </summary>
@@ -35,10 +39,15 @@ namespace DSRevitNodes.GeometryObjects
        /// <param name="controlPoints"></param>
        /// <param name="weights"></param>
         internal DSNurbSpline(Autodesk.DesignScript.Geometry.Point[] controlPoints, double[] weights)
-       {
+        {
            var c = NurbSpline.Create(controlPoints.ToXyzs(), weights);
            this.InternalCurve = c;
         }
+
+        #endregion
+
+
+        #region Static constructors
 
         /// <summary>
         /// Create a DSNurbsSpline
@@ -66,6 +75,8 @@ namespace DSRevitNodes.GeometryObjects
         {
             return new DSNurbSpline(controlPoints, weights);
         }
+
+        #endregion
 
     }
 }

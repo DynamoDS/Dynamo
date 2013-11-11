@@ -25,8 +25,8 @@
         <test name="ByPoints_NonMatchingNumberOfPoints" modelPath=".\AdaptiveComponents.rfa"/>
         <test name="ByPoints_NullFamilySymbol" modelPath=".\AdaptiveComponents.rfa"/>
         <test name="ByPoints_NullPts" modelPath=".\AdaptiveComponents.rfa"/>
-        <test name="ByPointsOnFace_ValidInput" modelPath=".\AdaptiveComponents.rfa"/>
         <test name="ByPointsOnCurve_ValidInput" modelPath=".\AdaptiveComponents.rfa"/>
+        <test name="ByPointsOnFace_ValidInput" modelPath=".\AdaptiveComponents.rfa"/>
       </testFixture>
       
 			<testFixture name="FamilyInstanceTests">
@@ -38,6 +38,7 @@
 			</testFixture>
       
       <testFixture name="NurbSplineTests">
+        <test name="ByControlPointsAndWeights_ValidArgs" modelPath=".\empty.rfa"/>
         <test name="ByControlPointsWeightsKnotsDegreeClosedAndRationality_ValidArgs" modelPath=".\empty.rfa"/>
       </testFixture>
 			
