@@ -167,7 +167,6 @@ namespace Dynamo.ViewModels
         public DelegateCommand SubmitCommand { get; set; }
         public DelegateCommand PublishCurrentWorkspaceCommand { get; set; }
         public DelegateCommand PublishSelectedNodesCommand { get; set; }
-        public DelegateCommand ToggleCollectInfoCommand { get; set; }
 
         public DelegateCommand PanCommand { get; set; }
         public DelegateCommand ZoomInCommand { get; set; }
@@ -426,11 +425,11 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public bool CollectInfoOption
+        public bool IsUsageReportingApproved
         {
             get
             {
-                return CollectInfoManager.Instance.CollectInfoOption;
+                return UsageReportingManager.Instance.IsUsageReportingApproved;
             }
         }
 
@@ -515,7 +514,6 @@ namespace Dynamo.ViewModels
             ReportABugCommand = new DelegateCommand(Controller.ReportABug, Controller.CanReportABug);
             GoToWikiCommand = new DelegateCommand(GoToWiki, CanGoToWiki);
             GoToSourceCodeCommand = new DelegateCommand(GoToSourceCode, CanGoToSourceCode);
-            ToggleCollectInfoCommand = new DelegateCommand(ToggleCollectInfo, CanToggleCollectInfo);
 
             ShowPackageManagerSearchCommand = new DelegateCommand(ShowPackageManagerSearch, CanShowPackageManagerSearch);
             ShowInstalledPackagesCommand = new DelegateCommand(ShowInstalledPackages, CanShowInstalledPackages);
@@ -558,7 +556,7 @@ namespace Dynamo.ViewModels
                 }
             };
 
-            CollectInfoManager.Instance.PropertyChanged += CollectInfoManager_PropertyChanged;
+            UsageReportingManager.Instance.PropertyChanged += CollectInfoManager_PropertyChanged;
 
             WatchIsResizable = false;
         }
@@ -1223,16 +1221,6 @@ namespace Dynamo.ViewModels
         }
 
         internal bool CanGoToSourceCode(object parameter)
-        {
-            return true;
-        }
-
-        public void ToggleCollectInfo(object parameter)
-        {
-            CollectInfoManager.Instance.ToggleCollectInfoOption();
-        }
-
-        internal bool CanToggleCollectInfo(object parameter)
         {
             return true;
         }

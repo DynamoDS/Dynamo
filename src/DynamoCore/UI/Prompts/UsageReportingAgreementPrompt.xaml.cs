@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dynamo.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,22 +15,19 @@ using System.Windows.Shapes;
 namespace Dynamo.UI.Prompts
 {
     /// <summary>
-    /// Interaction logic for DataConsentPrompt.xaml
+    /// Interaction logic for UsageReportingAgreementPrompt.xaml
     /// </summary>
-    public partial class CollectInfoPrompt : Window
+    public partial class UsageReportingAgreementPrompt : Window
     {
-        public bool CollectDataConsent { get; private set; }
-
-        public CollectInfoPrompt()
+        public UsageReportingAgreementPrompt()
         {
             InitializeComponent();
-            this.CollectDataConsent = false;
         }
 
         private void OnContinueClick(object sender, RoutedEventArgs e)
         {
-            if (acceptCheck.IsChecked.HasValue)
-                this.CollectDataConsent = acceptCheck.IsChecked.Value;
+            // Update user agreement
+            UsageReportingManager.Instance.SetUsageReportingAgreement(acceptCheck.IsChecked.Value);
             Close();
         }
     }
