@@ -31,9 +31,8 @@ namespace Dynamo.Tests.UI
         [SetUp]
         public void Start()
         {
-            // Instantiate random number generator 
-            // using system-supplied value as seed.
-            randomizer = new System.Random();
+            // Fixed seed randomizer for predictability.
+            randomizer = new System.Random(123456);
         }
 
         [TearDown]

@@ -171,9 +171,9 @@ namespace Dynamo.Models
 
         #region Command Framework Supporting Methods
 
-        public void UpdateValue(string name, string value)
+        public bool UpdateValue(string name, string value)
         {
-            this.UpdateValueCore(name, value);
+            return this.UpdateValueCore(name, value);
         }
 
         /// <summary>

@@ -814,7 +814,20 @@ namespace Dynamo.Models
             if (null != model)
             {
                 RecordModelForModification(model);
-                model.UpdateValue(name, value);
+                if (!model.UpdateValue(name, value))
+                {
+                    string message = string.Format(
+                        "ModelBase.UpdateValue call not handled.\n\n" + 
+                        "Model GUID: {0}\n" + 
+                        "Property name: {1}\n" + 
+                        "Property value: {2}",
+                        modelGuid.ToString(), name, value);
+
+                    // All 'UpdateValue' calls must be handled by one of the 
+                    // ModelBase derived classes that the 'UpdateModelValue'
+                    // is intended for.
+                    throw new InvalidOperationException(message);
+                }
             }
         }
     }
