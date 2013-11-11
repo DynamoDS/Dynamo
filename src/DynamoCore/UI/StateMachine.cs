@@ -215,8 +215,6 @@ namespace Dynamo.ViewModels
             PortModel srcPortM = this.activeConnector.ActiveStartPort;
             PortModel desPortM = portVM.PortModel;
 
-            bool isCompatible = false;
-
             // No self connection
             // No start to start or end or end connection
             if (srcPortM.Owner != desPortM.Owner && srcPortM.PortType != desPortM.PortType)
