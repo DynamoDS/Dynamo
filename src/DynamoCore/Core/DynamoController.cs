@@ -354,7 +354,7 @@ namespace Dynamo
                 EngineController.Instance.ResetAstBuildingState();
                 foreach (NodeModel topMost in topElements)
                 {
-                    topMost.CompileToAstNode(EngineController.Instance.Builder);
+                    topMost.CompileToAstNode(EngineController.Instance.Builder, true);
                 }
                 var engineSyncData = EngineController.Instance.GetSyncData();
                 Run(topElements, engineSyncData);
