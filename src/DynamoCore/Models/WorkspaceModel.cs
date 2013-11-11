@@ -294,7 +294,7 @@ namespace Dynamo.Models
             }
         }
 
-        public UndoRedoRecorder UndoXRecorder
+        internal UndoRedoRecorder UndoRecorder
         {
             get { return undoRecorder; }
         }
