@@ -71,6 +71,11 @@ namespace Dynamo.Search
         {
             bool handleIt = false;
             e.Handled = handleIt;
+
+            if (e.Key == Key.Escape)
+            {
+                ClearSearchBox();
+            }
         }
 
         void OnSearchBoxPreviewKeyDown(object sender, KeyEventArgs e)
@@ -262,6 +267,11 @@ namespace Dynamo.Search
         }
 
         private void SearchCancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            ClearSearchBox();
+        }
+
+        private void ClearSearchBox()
         {
             SearchTextBox.Text = "";
             Keyboard.Focus(SearchTextBox);
