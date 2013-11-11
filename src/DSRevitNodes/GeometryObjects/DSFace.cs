@@ -4,7 +4,6 @@ using Autodesk.Revit.DB;
 
 namespace DSRevitNodes
 {
-    // how 
     public class DSFace
     {
         internal Autodesk.Revit.DB.Face InternalFace
