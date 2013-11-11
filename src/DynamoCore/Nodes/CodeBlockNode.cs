@@ -31,6 +31,12 @@ namespace Dynamo.Nodes
             this.ArgumentLacing = LacingStrategy.Disabled;
         }
 
+        /// <summary>
+        /// The function sets the state of the node to an erraneous state and displays 
+        /// the the string errorMessage as an error bubble on top of the node.
+        /// It also removes all the in ports and out ports as well. So that the user knows there is an error.
+        /// </summary>
+        /// <param name="errorMessage"> Error message to be displayed </param>
         public void DisplayError(string errorMessage)
         {
             //Log an error. TODO Ambi : Remove this later
@@ -76,12 +82,19 @@ namespace Dynamo.Nodes
         }
 
 
+        /// <summary>
+        /// Given a statement class instance, the function checks if the statements DefinedVariable
+        /// has been declared already in a different block or not.
+        /// </summary>
+        /// <param name="stmnt">The statement whose defined variable is being checked</param>
+        /// <returns></returns>
+        /// TODO Ambi : Add changes necessary for multiple variable declarations in a single statement.
         public bool VariableAlreadyDeclared(Statement stmnt)
         {
             string varName = stmnt.DefinedVariable.Name;
             foreach (var node in this.WorkSpace.Nodes)
             {
-                if (node is CodeBlockNodeModel)
+                if (node is CodeBlockNodeModel && node!=this)
                 {
                     foreach (var x in (node as CodeBlockNodeModel).codeStatements)
                     {
@@ -113,19 +126,19 @@ namespace Dynamo.Nodes
                     {
                         DisableReporting();
                         {
-                            this.WorkSpace.UndoXRecorder.BeginActionGroup();
+                            this.WorkSpace.UndoRecorder.BeginActionGroup();
 
                             var portConnections = new Dictionary<string, List<PortModel>>();
                             //Save the connectors so that we can recreate them at the correct positions
                             SaveAndDeleteConnectors(portConnections);
 
-                            this.WorkSpace.UndoXRecorder.RecordModificationForUndo(this);
+                            this.WorkSpace.UndoRecorder.RecordModificationForUndo(this);
                             code = value;
                             ProcessCode();
 
                             //Recreate connectors that can be reused
                             LoadAndCreateConnectors(portConnections);
-                            this.WorkSpace.UndoXRecorder.EndActionGroup();
+                            this.WorkSpace.UndoRecorder.EndActionGroup();
                         }
                         RaisePropertyChanged("Code");
                         RequiresRecalc = true;
@@ -244,10 +257,11 @@ namespace Dynamo.Nodes
                     Statement tempStatement;
                     try
                     {
+                        //Create and save a statement variable from the astnodes generated
                         tempStatement = Statement.CreateInstance(node, this.GUID);
                         codeStatements.Add(tempStatement);
                     }
-                    catch (Exception e)
+                    catch (Exception e) 
                     {
                         DisplayError(e.Message);
                         previewVariable = null;
@@ -266,6 +280,7 @@ namespace Dynamo.Nodes
             }
             else
             {
+                //Found errors. Get the error message strings and use it to call the DisplayError function
                 string errorMessage = "";
                 int i = 0;
                 for (; i < errors.Count - 1; i++)
@@ -275,6 +290,7 @@ namespace Dynamo.Nodes
                 return;
             }
 
+            //Make sure variables have not been declared in other Code block nodes.
             foreach (var singleStatement in codeStatements)
             {
                 if (VariableAlreadyDeclared(singleStatement))
@@ -397,7 +413,7 @@ namespace Dynamo.Nodes
                     foreach (var connector in portModel.Connectors)
                     {
                         portConnections[portName].Add(connector.End);
-                        this.WorkSpace.UndoXRecorder.RecordDeletionForUndo(connector);
+                        this.WorkSpace.UndoRecorder.RecordDeletionForUndo(connector);
                     }
                 }
             }
@@ -431,7 +447,7 @@ namespace Dynamo.Nodes
                         var connector = ConnectorModel.Make(this, endNode, i,
                             endNode.GetPortIndex(endPortModel, out p), PortType.INPUT);
                         this.WorkSpace.Connectors.Add(connector);
-                        this.WorkSpace.UndoXRecorder.RecordCreationForUndo(connector);
+                        this.WorkSpace.UndoRecorder.RecordCreationForUndo(connector);
                     }
                     portConnections.Remove(varName);
                 }
@@ -449,7 +465,7 @@ namespace Dynamo.Nodes
                     var connector = ConnectorModel.Make(this, endNode, undefinedIndices[0],
                         endNode.GetPortIndex(endPortModel, out p), PortType.INPUT);
                     this.WorkSpace.Connectors.Add(connector);
-                    this.WorkSpace.UndoXRecorder.RecordCreationForUndo(connector);
+                    this.WorkSpace.UndoRecorder.RecordCreationForUndo(connector);
                 }
                 portConnections.Remove(kvp.Key);
                 undefinedIndices.RemoveAt(0);
