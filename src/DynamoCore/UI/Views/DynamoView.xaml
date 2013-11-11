@@ -25,7 +25,8 @@
         FontFamily="Open Sans"
         SnapsToDevicePixels="True"
         ResizeMode="CanResizeWithGrip"
-        UseLayoutRounding="True">
+        UseLayoutRounding="True"
+        Cursor="/DynamoCore;component/UI/Images/pointer.cur">
 
     <Window.CommandBindings>
 
@@ -954,7 +955,7 @@
                     VerticalAlignment="Top"
                     Margin="0,120,0,0"
                     Visibility="Hidden">
-            <Grid Background="#222222">
+            <Grid Background="#222222" Cursor="Hand">
                 <Button Click="Button_Click" Template="{DynamicResource BackgroundButton}">
                     <Button.Resources>
                         <ControlTemplate x:Key="BackgroundButton" TargetType="Button">
@@ -1107,18 +1108,20 @@
                         Name="horizontalSplitter"
                         HorizontalAlignment="Stretch" 
                         VerticalAlignment="Stretch" 
-                        Margin="0" Background="#999"/>
+                        Margin="0" Background="#999"
+                        Cursor="/DynamoCore;component/UI/Images/resize_vertical.cur"/>
 
             <GridSplitter ResizeDirection="Auto" 
                           Grid.Column="1" 
                           Grid.Row="2"
                           Grid.RowSpan="2"
                           Height="Auto"
-                          Width="1"
+                          Width="3"
                           Name="verticalSplitter"
                           HorizontalAlignment="Stretch" 
                           VerticalAlignment="Stretch" 
-                          Margin="0" Background="Transparent"/>
+                          Margin="0" Background="Transparent"
+                          Cursor="/DynamoCore;component/UI/Images/resize_horizontal.cur"/>
 
     </Grid>
 
