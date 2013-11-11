@@ -57,8 +57,9 @@ namespace Dynamo.Nodes
 
         /// <summary>
         /// Formats user text by :
-        /// 1. Removing whitespaces form the front and back (whitespaces -> space, tab or enter)
-        /// 2.Adds a semicolon at the end
+        /// 1.Removes unnecessary semi colons
+        /// 2. Removing whitespaces form the front and back (whitespaces -> space, tab or enter)
+        /// 3.Adds a semicolon at the end if needed
         /// </summary>
         /// <param name="inputCode"></param>
         /// <returns></returns>
@@ -67,6 +68,19 @@ namespace Dynamo.Nodes
             if (inputCode == null)
             {
                 return "";
+            }
+
+            inputCode = inputCode.Replace("\r", "");
+            string[] statements = inputCode.Split(';');
+            inputCode = "";
+            foreach (var stmnt in statements)
+            {
+                foreach (char c in stmnt)
+                    if (c != ' ' && c != '\n' && c != '\t')
+                    {
+                        inputCode += (stmnt + ";");
+                        break;
+                    }
             }
 
             inputCode = inputCode.Trim();
