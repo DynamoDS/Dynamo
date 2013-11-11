@@ -154,10 +154,56 @@
         <ScrollViewer Visibility="{Binding BrowserVisibility, Converter={StaticResource BooleanToVisibilityConverter}}" HorizontalAlignment="Stretch" Margin="0" Name="BrowserScrollView" VerticalAlignment="Stretch" Focusable="False"
                       VerticalScrollBarVisibility="{Binding Path=SearchScrollBarVisibility, Converter={StaticResource BoolToScrollBarVisibilityConverter}}"
                       HorizontalScrollBarVisibility="{Binding Path=SearchScrollBarVisibility, Converter={StaticResource BoolToScrollBarVisibilityConverter}}" 
-                      Background="Transparent" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=SearchControl}" Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="2" MouseWheel="TreeViewScrollViewer_PreviewMouseWheel">
+                      Background="Transparent" BorderThickness="0" Width="{Binding Path=ActualWidth,ElementName=SearchControl}" Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="2" MouseWheel="TreeViewScrollViewer_PreviewMouseWheel"
+                      Style="{DynamicResource ScrollViewer}">
 
             <ScrollViewer.Resources>
 
+                <!--ScrollViewer-->
+                <Style x:Key="ScrollViewer"
+                       TargetType="{x:Type ScrollViewer}">
+                    <Setter Property="OverridesDefaultStyle"
+                            Value="True" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ScrollViewer}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition  />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Border Grid.Column="0"
+                                            BorderThickness="0,1,1,1">
+                                        <Border.BorderBrush>
+                                            <SolidColorBrush Color="{DynamicResource BorderMediumColor}" />
+                                        </Border.BorderBrush>
+                                        <ScrollContentPresenter />
+                                    </Border>
+                                    <ScrollBar x:Name="PART_VerticalScrollBar"
+                                               Grid.Column="1"
+                                               Value="{TemplateBinding VerticalOffset}"
+                                               Maximum="{TemplateBinding ScrollableHeight}"
+                                               ViewportSize="{TemplateBinding ViewportHeight}"
+                                               Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" />
+                                    <ScrollBar x:Name="PART_HorizontalScrollBar"
+                                               Orientation="Horizontal"
+                                               Grid.Row="1"
+                                               Grid.Column="0"
+                                               Value="{TemplateBinding HorizontalOffset}"
+                                               Maximum="{TemplateBinding ScrollableWidth}"
+                                               ViewportSize="{TemplateBinding ViewportWidth}"
+                                               Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}" />
+
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+                
                 <!--Scrollbar Thumbs-->
                 <Style x:Key="ScrollThumbs"
                        TargetType="{x:Type Thumb}">
@@ -171,7 +217,7 @@
                                                Height="Auto"
                                                Fill="Transparent" />
                                     <Border x:Name="Rectangle1"
-                                            CornerRadius="3"
+                                            CornerRadius="5"
                                             HorizontalAlignment="Stretch"
                                             VerticalAlignment="Stretch"
                                             Width="Auto"
@@ -193,7 +239,7 @@
                         </Setter.Value>
                     </Setter>
                 </Style>
-                
+
                 <!--ScrollBars-->
                 <Style x:Key="{x:Type ScrollBar}"
                        TargetType="{x:Type ScrollBar}">
@@ -204,12 +250,12 @@
                     <Setter Property="Background"
                             Value="Transparent" />
                     <Setter Property="Width"
-                            Value="5" />
+                            Value="8" />
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type ScrollBar}">
                                 <Grid x:Name="GridRoot"
-                                      Width="6"
+                                      Width="8"
                                       Background="{TemplateBinding Background}">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="0.00001*" />
@@ -294,7 +340,7 @@
                         </Setter.Value>
                     </Setter>
                 </Style>
-                
+
                 <Style x:Key="SearchTreeView" TargetType="{x:Type TreeView}">
                     <Setter Property="Focusable" Value="False"/>
                     <Setter Property="Background" Value="Black"/>
@@ -465,16 +511,18 @@
                                         <Setter Property="Margin" TargetName="NodeName" Value="40,0,5,0"/>
                                     </Trigger>
 
-                                    <!--<Trigger Property="IsSelected" Value="true">
-                                        <Setter Property="Background" TargetName="Bd" Value="#555"/>
-                                    </Trigger>-->
+                                    <Trigger Property="IsSelected" Value="true">
+                                        <Setter Property="Background"
+                                                TargetName="Bd"
+                                                Value="#444"/>
+                                    </Trigger>
 
                                     <MultiTrigger>
                                         <MultiTrigger.Conditions>
                                             <Condition Property="IsMouseOver" Value="true"/>
                                             <Condition Property="IsExpanded" Value="false"/>
                                         </MultiTrigger.Conditions>
-                                        <Setter Property="Background" TargetName="Bd" Value="#333"/>
+                                        <Setter Property="Background" TargetName="Bd" Value="#2e2e2e"/>
                                     </MultiTrigger>
 
                                     <MultiTrigger>
@@ -604,6 +652,8 @@
                             Value="Top" />
                     <Setter Property="HorizontalAlignment"
                             Value="Center" />
+                    <Setter Property="Margin"
+                            Value="0,10,0,0" />
                     <Setter Property="Content"
                             Value="No matches found" />
                     <Setter Property="Template">
