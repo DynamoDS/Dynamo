@@ -24,33 +24,29 @@ namespace Dynamo.Nodes
     [IsInteractive(true)]
     public abstract class SelectionBase : NodeWithOneOutput
     {
+        #region private members
+        
         private bool _canSelect = true;
         protected string _selectButtonContent;
         protected string _selectionMessage;
         private Element _selected;
         protected string _selectionText;
         private bool _buttonEnabled;
+        
+        #endregion
 
-        protected SelectionBase()
-        {
-            dynRevitSettings.Revit.ViewActivated += Revit_ViewActivated;
-            CanSelect = dynRevitSettings.Revit.ActiveUIDocument.Document == dynRevitSettings.Doc.Document;
-        }
-
-        void Revit_ViewActivated(object sender, Autodesk.Revit.UI.Events.ViewActivatedEventArgs e)
-        {
-            CanSelect = e.CurrentActiveView.Document == dynRevitSettings.Doc.Document;
-        }
+        #region properties
 
         public bool CanSelect
         {
             get { return _canSelect; }
-            set { 
+            set
+            {
                 _canSelect = value;
                 RaisePropertyChanged("CanSelect");
             }
         }
-        
+
         public string SelectButtonContent
         {
             get { return _selectButtonContent; }
@@ -112,12 +108,31 @@ namespace Dynamo.Nodes
         /// </summary>
         public abstract string SelectionText { get; set; }
 
+        #endregion
+
+        #region constructors
+
+        protected SelectionBase()
+        {
+            dynSettings.Controller.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
+        }
+
         protected SelectionBase(PortData outPortData) : this()
         {
             OutPortData.Add(outPortData);
             RegisterAllPorts();
 
             dynRevitSettings.Controller.RevitDocumentChanged += Controller_RevitDocumentChanged;
+        }
+        
+        #endregion
+
+        void DynamoViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "RunEnabled")
+            {
+                CanSelect = dynSettings.Controller.DynamoViewModel.RunEnabled;
+            }
         }
 
         void Controller_RevitDocumentChanged(object sender, EventArgs e)
@@ -197,9 +212,11 @@ namespace Dynamo.Nodes
                 });
         }
 
+        /// <summary>
+        /// Overriden in the derived classes
+        /// </summary>
         public virtual void OnSelectClick()
         {
-            //this method calls a different selection action in the derived classes.
         }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
@@ -239,9 +256,17 @@ namespace Dynamo.Nodes
 
     public abstract class ElementSelectionBase : SelectionBase
     {
+        #region private members
+
         protected Func<string, Element> _selectionAction;
 
+        #endregion
+
+        #region constructors
+
         protected ElementSelectionBase(PortData outPortData) : base(outPortData){}
+
+        #endregion
 
         /// <summary>
         /// Callback for when the "Select" button has been clicked.
@@ -278,10 +303,18 @@ namespace Dynamo.Nodes
     [IsInteractive(true)]
     public abstract class ReferenceSelectionBase : SelectionBase
     {
+        #region private members
+
         protected Func<string, Reference> _selectionAction;
         protected Reference _reference;
 
+        #endregion
+
+        #region constructors
+
         protected ReferenceSelectionBase(PortData outPortData):base(outPortData){}
+
+        #endregion
 
         /// <summary>
         /// Callback for when the "Select" button has been clicked.
@@ -310,30 +343,34 @@ namespace Dynamo.Nodes
     [IsInteractive(true)]
     public abstract class MultipleElementSelectionBase : NodeWithOneOutput
     {
-        protected MultipleElementSelectionBase()
-        {
-            dynRevitSettings.Revit.ViewActivated += Revit_ViewActivated;
-            CanSelect = dynRevitSettings.Revit.ActiveUIDocument == dynRevitSettings.Doc;
-        }
+        #region private members
 
-        void Revit_ViewActivated(object sender, Autodesk.Revit.UI.Events.ViewActivatedEventArgs e)
-        {
-            CanSelect = e.CurrentActiveView.Document == dynRevitSettings.Doc.Document;
-        }
+        private TextBlock _tb;
+        private Button _selectButton;
+        protected string _selectButtonContent;
+        private IList<Element> _selected;
+        private bool _canSelect;
+
+        /// <summary>
+        /// Determines what the text should read on the node when the selection has been changed.
+        /// Is ignored in the case where nothing is selected.
+        /// </summary>
+        //protected abstract string SelectionText { get; }
+        protected string _selectionText;
+
+        #endregion
+
+        #region properties
 
         public bool CanSelect
         {
             get { return _canSelect; }
-            set { 
+            set
+            {
                 _canSelect = value;
                 RaisePropertyChanged("CanSelect");
             }
         }
-
-        private TextBlock _tb;
-        private Button _selectButton;
-
-        protected string _selectButtonContent;
 
         public string SelectButtonContent
         {
@@ -345,19 +382,86 @@ namespace Dynamo.Nodes
             }
         }
 
-        /// <summary>
-        /// Determines what the text should read on the node when the selection has been changed.
-        /// Is ignored in the case where nothing is selected.
-        /// </summary>
-        //protected abstract string SelectionText { get; }
-        protected string _selectionText;
-
         public abstract string SelectionText { get; set; }
+
+        /// <summary>
+        /// The Element which is selected. Setting this property will automatically register the Element
+        /// for proper updating, and will update this node's IsDirty value.
+        /// </summary>
+        public virtual IList<Element> SelectedElements
+        {
+            get { return _selected; }
+            set
+            {
+                var dirty = false;
+                if (_selected != null)
+                {
+                    foreach (Element selectedElement in _selected)
+                    {
+                        foreach (Element previousElement in value)
+                        {
+                            if (previousElement != null
+                                && previousElement.Id.Equals(selectedElement.Id))
+                                return;
+
+                            dirty = true;
+                            this.UnregisterEvalOnModified(selectedElement.Id);
+                        }
+                    }
+                }
+                else
+                    dirty = value != null;
+
+                _selected = value;
+                if (value != null)
+                {
+                    foreach (Element previousElement in value)
+                    {
+                        this.RegisterEvalOnModified(
+                            previousElement.Id,
+                            delAction: delegate
+                            {
+                                _selected = null;
+                                SelectedElements = null;
+                            });
+                    }
+
+                    //this.tb.Text = this.SelectionText;
+                    //this.selectButton.Content = "Change";
+                    SelectButtonContent = "Change";
+                }
+                else
+                {
+                    //this.tb.Text = "Nothing Selected.";
+                    //this.selectButton.Content = "Select";
+                    SelectButtonContent = "Select";
+                }
+
+                if (dirty)
+                    RequiresRecalc = true;
+            }
+        }
+
+        #endregion
+
+        #region constructors
 
         protected MultipleElementSelectionBase(PortData outData)
         {
             OutPortData.Add(outData);
             RegisterAllPorts();
+            dynSettings.Controller.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
+            CanSelect = true;
+        }
+
+        #endregion
+
+        void DynamoViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "RunEnabled")
+            {
+                CanSelect = dynSettings.Controller.DynamoViewModel.RunEnabled;
+            }
         }
 
         public override void SetupCustomUIElements(object ui)
@@ -438,67 +542,6 @@ namespace Dynamo.Nodes
         /// 
         /// 
         protected abstract void OnSelectClick();
-
-        private IList<Element> _selected;
-        private bool _canSelect;
-
-        /// <summary>
-        /// The Element which is selected. Setting this property will automatically register the Element
-        /// for proper updating, and will update this node's IsDirty value.
-        /// </summary>
-        public virtual IList<Element> SelectedElements
-        {
-            get { return _selected; }
-            set
-            {
-                var dirty = false;
-                if (_selected != null)
-                {
-                    foreach (Element selectedElement in _selected)
-                    {
-                        foreach (Element previousElement in value)
-                        {
-                            if (previousElement != null
-                                && previousElement.Id.Equals(selectedElement.Id))
-                                return;
-
-                            dirty = true;
-                            this.UnregisterEvalOnModified(selectedElement.Id);
-                        }
-                    }
-                }
-                else
-                    dirty = value != null;
-
-                _selected = value;
-                if (value != null)
-                {
-                    foreach (Element previousElement in value)
-                    {
-                        this.RegisterEvalOnModified(
-                            previousElement.Id,
-                            delAction: delegate
-                            {
-                                _selected = null;
-                                SelectedElements = null;
-                            });
-                    }
-
-                    //this.tb.Text = this.SelectionText;
-                    //this.selectButton.Content = "Change";
-                    SelectButtonContent = "Change";
-                }
-                else
-                {
-                    //this.tb.Text = "Nothing Selected.";
-                    //this.selectButton.Content = "Select";
-                    SelectButtonContent = "Select";
-                }
-
-                if (dirty)
-                    RequiresRecalc = true;
-            }
-        }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
