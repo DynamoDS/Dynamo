@@ -246,6 +246,16 @@ namespace DSRevitNodes.Elements
         /// <returns></returns>
         public static DSAdaptiveComponent ByPoints( Point[] pts, DSFamilySymbol fs )
         {
+            if (pts == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            if (fs == null)
+            {
+                throw new ArgumentNullException();
+            }
+
             return new DSAdaptiveComponent(pts, fs);
         }
 
@@ -258,6 +268,21 @@ namespace DSRevitNodes.Elements
         /// <returns></returns>
         public static DSAdaptiveComponent ByPointsOnFace(double[][] uvs, DSFace f, DSFamilySymbol fs)
         {
+            if (uvs == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            if (f == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            if (fs == null)
+            {
+                throw new ArgumentNullException();
+            }
+
             return new DSAdaptiveComponent(uvs, f, fs);
         }
 
@@ -270,6 +295,21 @@ namespace DSRevitNodes.Elements
         /// <returns></returns>
         public static DSAdaptiveComponent ByPointsOnCurve(double[] parms, DSCurve dsCurve, DSFamilySymbol fs)
         {
+            if (parms == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            if (dsCurve == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            if (fs == null)
+            {
+                throw new ArgumentNullException();
+            }
+
             return new DSAdaptiveComponent(parms,  dsCurve, fs);
         }
 
