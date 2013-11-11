@@ -48,7 +48,7 @@ namespace Dynamo
 
             if (obj is CurveElement)
             {
-                DrawCurveElement(node, obj, rd, octree);
+                DrawCurveElement(node, obj, tag, rd, octree);
             }
             else if (obj is ReferencePoint)
             {
@@ -146,11 +146,11 @@ namespace Dynamo
             }
             if (obj is Curve)
             {
-                DrawCurve(node, obj, rd, octree);
+                DrawCurve(node, obj, tag, rd, octree);
             }
             else if (obj is Solid)
             {
-                DrawSolid(node, obj, rd, octree);
+                DrawSolid(node, obj, tag, rd, octree);
             }
             else if (obj is Face)
             {
@@ -207,7 +207,7 @@ namespace Dynamo
             }
         }
 
-        private void DrawCurve(NodeModel node, object obj, RenderDescription rd, Octree.OctreeSearch.Octree octree)
+        private void DrawCurve(NodeModel node, object obj, string tag, RenderDescription rd, Octree.OctreeSearch.Octree octree)
         {
             var curve = obj as Curve;
 
@@ -218,37 +218,44 @@ namespace Dynamo
 
             bool selected = node.IsSelected;
 
-            for (int i = 0; i < points.Count; ++i)
+            for (int i = 0; i < points.Count-1; ++i)
             {
-                XYZ xyz = points[i];
+                XYZ start = points[i];
+                XYZ end = points[i+1];
 
-                rd.Lines.Add(new Point3D(xyz.X, xyz.Y, xyz.Z));
+                var startPt = new Point3D(start.X, start.Y, start.Z);
+                var endPt = new Point3D(end.X, end.Y, end.Z);
 
-                if (i == 0 || i == (points.Count - 1))
-                    continue;
+                //draw a label at the start of the curve
+                if (node.DisplayLabels && i==0)
+                {
+                    rd.Text.Add(new BillboardTextItem { Text = tag, Position = startPt });
+                }
 
                 if (selected)
                 {
-                    rd.SelectedLines.Add(new Point3D(xyz.X, xyz.Y, xyz.Z));
+                    rd.SelectedLines.Add(startPt);
+                    rd.SelectedLines.Add(endPt);
                 }
                 else
                 {
-                    rd.Lines.Add(new Point3D(xyz.X, xyz.Y, xyz.Z));
+                    rd.Lines.Add(startPt);
+                    rd.Lines.Add(endPt);
                 }
             }
         }
 
-        private void DrawCurveElement(NodeModel node, object obj, RenderDescription rd, Octree.OctreeSearch.Octree octree)
+        private void DrawCurveElement(NodeModel node, object obj, string tag, RenderDescription rd, Octree.OctreeSearch.Octree octree)
         {
             var elem = obj as CurveElement;
 
             if (elem == null)
                 return;
 
-            DrawCurve(node, elem.GeometryCurve, rd, octree);
+            DrawCurve(node, elem.GeometryCurve, tag, rd, octree);
         }
 
-        private void DrawSolid(NodeModel node, object obj, RenderDescription rd, Octree.OctreeSearch.Octree octree)
+        private void DrawSolid(NodeModel node, object obj, string tag, RenderDescription rd, Octree.OctreeSearch.Octree octree)
         {
             var solid = obj as Solid;
 
@@ -262,7 +269,7 @@ namespace Dynamo
 
             foreach (Edge edge in solid.Edges)
             {
-                DrawCurve(node, edge.AsCurve(), rd, octree);
+                DrawCurve(node, edge.AsCurve(), tag, rd, octree);
             }
         }
 
@@ -369,7 +376,7 @@ namespace Dynamo
 
             foreach (var crv in cl)
             {
-                DrawCurve(node, crv, rd, octree);
+                DrawCurve(node, crv, tag, rd, octree);
             }
         }
 
