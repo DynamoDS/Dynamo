@@ -14,7 +14,6 @@ using System.Windows.Resources;
 using System;
 using System.Windows.Shapes;
 using Dynamo.Core;
-using System.Windows.Data;
 
 namespace Dynamo.Controls
 {
