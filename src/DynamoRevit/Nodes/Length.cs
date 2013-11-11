@@ -77,9 +77,6 @@ namespace Dynamo.Nodes
 
         protected override bool UpdateValueCore(string name, string value)
         {
-            if (base.UpdateValueCore(name, value))
-                return true;
-
             if (name == "Value")
             {
                 var converter = new RevitProjectUnitsConverter();
@@ -87,7 +84,7 @@ namespace Dynamo.Nodes
                 return true; // UpdateValueCore handled.
             }
 
-            return false;
+            return base.UpdateValueCore(name, value);
         }
 
         private void editWindowItem_Click(object sender, RoutedEventArgs e)
