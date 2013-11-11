@@ -1,6 +1,9 @@
-﻿using Autodesk.DesignScript.Geometry;
+﻿using System;
+using System.IO;
+using Autodesk.Revit.DB;
 using DSRevitNodes.GeometryObjects;
 using NUnit.Framework;
+using Point = Autodesk.DesignScript.Geometry.Point;
 
 namespace DSRevitNodesTests.GeometryObjects
 {
@@ -14,15 +17,17 @@ namespace DSRevitNodesTests.GeometryObjects
             var pts = new Autodesk.DesignScript.Geometry.Point[]
             {
                 Point.ByCoordinates(0,0,0),
-                Point.ByCoordinates(1,0,0)
+                Point.ByCoordinates(1,0,0),
+                Point.ByCoordinates(3,0,0),
+                Point.ByCoordinates(10,0,0)
             };
 
             var wts = new double[]
             {
-                1,1
+                1,1,1,1
             };
 
-            var spline = DSNurbSpline.ByControlPointsAndWeights(pts, wts); 
+            var spline = DSNurbSpline.ByControlPointsAndWeights(pts, wts);
             Assert.NotNull(spline);
 
         }
@@ -33,22 +38,34 @@ namespace DSRevitNodesTests.GeometryObjects
             var pts = new Autodesk.DesignScript.Geometry.Point[]
             {
                 Point.ByCoordinates(0,0,0),
-                Point.ByCoordinates(1,0,0)
+                Point.ByCoordinates(1,0,0),
+                Point.ByCoordinates(3,0,0),
+                Point.ByCoordinates(10,0,0)
             };
 
             var wts = new double[]
             {
-                1,1
+                1,1,1,1
             };
 
             var knots = new double[]
             {
-                0,1
+                0,0,0,0,1,1,1,1
             };
 
-            var spline = DSNurbSpline.ByControlPointsWeightsKnotsDegreeClosedAndRationality(pts, wts, knots, 1, false,
-                false);
-            Assert.NotNull(spline);
+            try
+            {
+                var spline = DSNurbSpline.ByControlPointsWeightsKnotsDegreeClosedAndRationality(pts, wts, knots, 3,
+                    false,
+                    false);
+                Assert.NotNull(spline);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.InnerException);
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+            }
 
         }
 

@@ -36,6 +36,10 @@
 				<test name="ByPoint_NullPoint" modelPath=".\MassWithBoxAndCone.rfa"/>
 				<test name="ByPoint_NullFamilySymbol" modelPath=".\MassWithBoxAndCone.rfa"/>
 			</testFixture>
+      
+      <testFixture name="NurbSplineTests">
+        <test name="ByControlPointsWeightsKnotsDegreeClosedAndRationality_ValidArgs" modelPath=".\empty.rfa"/>
+      </testFixture>
 			
 		</testAssembly>
 	</testAssemblies>
