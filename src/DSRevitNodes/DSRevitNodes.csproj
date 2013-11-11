@@ -65,11 +65,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbstractElement.cs" />
-    <Compile Include="AbstractGeometryObject.cs" />
-    <Compile Include="Elements\DSElementFactory.cs" />
+    <Compile Include="Elements\AbstractElement.cs" />
+    <Compile Include="Elements\ElementFactory.cs" />
     <Compile Include="Elements\DSFamily.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="GeometryObjects\DSNurbSpline.cs" />
     <Compile Include="Interactivity\DSSelection.cs" />
     <Compile Include="Interactivity\DSParameter.cs" />
     <Compile Include="GeometryObjects\DSCurve.cs" />

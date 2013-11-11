@@ -3,6 +3,7 @@ using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
 using DSNodeServices;
+using DSRevitNodes.Elements;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Edge = Autodesk.DesignScript.Geometry.Edge;

@@ -2,19 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
+using DSRevitNodes.GeometryObjects;
 
 namespace DSRevitNodes
 {
-
-    // Stub until we resolve how we'll convert between Revit and Proto curves
-
-    public class DSCurve
+    /// <summary>
+    /// Class representing a Revit Curve
+    /// </summary>
+    public abstract class DSCurve
     {
         internal Autodesk.Revit.DB.Curve InternalCurve
         {
-            get;
-            private set;
+            get; set;
         }
     }
 
