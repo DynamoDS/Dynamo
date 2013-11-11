@@ -5,6 +5,7 @@ using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.UI.Prompts
 {
@@ -13,7 +14,7 @@ namespace Dynamo.UI.Prompts
     /// </summary>
     public partial class EditWindow : Window
     {
-        public EditWindow()
+        public EditWindow(bool updateSourceOnTextChange = false)
         {
             InitializeComponent();
 
@@ -23,6 +24,24 @@ namespace Dynamo.UI.Prompts
 
             // do not accept value if user closes 
             this.Closing += (sender, args) => this.DialogResult = false;
+
+            if (false != updateSourceOnTextChange)
+            {
+                this.editText.TextChanged += delegate
+                {
+                    var expr = editText.GetBindingExpression(TextBox.TextProperty);
+                    if (expr != null)
+                        expr.UpdateSource();
+                };
+            }
+        }
+
+        public void BindToProperty(object dataContext, System.Windows.Data.Binding binding)
+        {
+            if (null != dataContext)
+                editText.DataContext = dataContext;
+
+            editText.SetBinding(TextBox.TextProperty, binding);
         }
 
         private void OkClick(object sender, RoutedEventArgs e)
@@ -30,14 +49,18 @@ namespace Dynamo.UI.Prompts
             var expr = editText.GetBindingExpression(TextBox.TextProperty);
             if (expr != null)
             {
-                PreUpdateModel(expr.DataItem);
-                expr.UpdateSource();
+                ModelBase model = GetBoundModel(expr.DataItem);
+
+                string propName = expr.ParentBinding.Path.Path;
+                dynSettings.Controller.DynamoViewModel.ExecuteCommand(
+                    new DynCmd.UpdateModelValueCommand(
+                        model.GUID, propName, editText.Text));
             }
 
             this.DialogResult = true;
         }
 
-        private void PreUpdateModel(object dataItem)
+        private ModelBase GetBoundModel(object dataItem)
         {
             // Attempt get to the data-bound model (if there's any).
             var nodeModel = dataItem as NodeModel;
@@ -49,31 +72,16 @@ namespace Dynamo.UI.Prompts
                     nodeModel = nodeViewModel.NodeModel;
                 else
                 {
-                    // TODO(Ben): We temporary do not handle NoteModel here 
-                    // because NoteView actively update the data-bound "Text"
-                    // property as user types, so when this method is called, 
-                    // it will be too late to record the states before the 
-                    // text change happened.
-                    // 
-                    // NoteViewModel noteViewModel = dataItem as NoteViewModel;
-                    // if (null != noteViewModel)
-                    //     noteModel = noteViewModel.Model;
+                    NoteViewModel noteViewModel = dataItem as NoteViewModel;
+                    if (null != noteViewModel)
+                        noteModel = noteViewModel.Model;
                 }
             }
 
-            // If we do get a node/note, record it for undo.
-            if (null != nodeModel || (null != noteModel))
-            {
-                var models = new List<ModelBase>();
-                if (null != nodeModel) models.Add(nodeModel);
-                if (null != noteModel) models.Add(noteModel);
+            if (null != nodeModel)
+                return nodeModel;
 
-                DynamoModel dynamo = dynSettings.Controller.DynamoModel;
-                dynamo.CurrentWorkspace.RecordModelsForModification(models);
-
-                dynSettings.Controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
-                dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
-            }
+            return noteModel;
         }
     }
 }
