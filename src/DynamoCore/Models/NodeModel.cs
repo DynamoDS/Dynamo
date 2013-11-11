@@ -346,6 +346,15 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        /// To indicate if this node is in the process of compiling to AST nodes.
+        /// </summary>
+        protected bool IsCompiling
+        {
+            get;
+            set;
+        }
+
         protected DynamoController Controller
         {
             get { return dynSettings.Controller; }
@@ -863,12 +872,26 @@ namespace Dynamo.Models
             builder.Build(this, inputAstNodes);
         }
 
-        public void CompileToAstNode(AstBuilder builder)
+        /// <summary>
+        /// Compile a Dynamo to the corresponding AST nodes.
+        /// </summary>
+        /// <param name="builder">
+        /// AST builder
+        /// </param>
+        /// <param name="isDeltaExecution">
+        /// If the compilation is for detal execution or not. If this parameter
+        /// is false, then the compilation will always happen no matter this 
+        /// node has been compiled or not. 
+        /// </param>
+        public void CompileToAstNode(AstBuilder builder, bool isDeltaExecution)
         {
-            if (!RequiresRecalc && !isDirty)
+            if (isDeltaExecution && !RequiresRecalc && !isDirty)
             {
                 return; 
             }
+
+            bool hasCyclicConnection = this.IsCompiling;
+            this.IsCompiling = true;
 
             // Recursively compile its inputs to ast nodes and add intermediate
             // nodes to builder
@@ -888,7 +911,11 @@ namespace Dynamo.Models
                 {
                     int outputIndexOfInput = inputTuple.Item1;
                     NodeModel inputModel = inputTuple.Item2;
-                    inputModel.CompileToAstNode(builder);
+
+                    if (!hasCyclicConnection)
+                    {
+                        inputModel.CompileToAstNode(builder, isDeltaExecution);
+                    }
 
                     // Multiple outputs from input node, input node may be a 
                     // function node which returns a dictionary or a code block
@@ -908,12 +935,18 @@ namespace Dynamo.Models
             }
 
             bool inputChanged = !inputIdentifiers.SequenceEqual(this.inputIdentifiers);                  
-            if (isDirty || inputChanged)
+            if (!isDeltaExecution || isDirty || inputChanged)
             {
                 BuildAstNode(builder, inputAstNodes);
-                isDirty = false;
             }
-            this.inputIdentifiers = inputIdentifiers;
+
+            if (isDeltaExecution)
+            {
+                isDirty = false;
+                this.inputIdentifiers = inputIdentifiers;
+            }
+
+            this.IsCompiling = false;
         }
 
         /// <summary>
