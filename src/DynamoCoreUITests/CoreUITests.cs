@@ -602,20 +602,17 @@ namespace Dynamo.Tests.UI
 
             #region Collect Information Option
             // First time run, check if dynamo did set it back to false after running
-            Assert.AreEqual(false, CollectInfoManager.Instance.FirstRun);
-            Assert.AreEqual(true, CollectInfoManager.Instance.NeverAgreeBefore);
+            Assert.AreEqual(false, UsageReportingManager.Instance.FirstRun);
 
             // CollectionInfoOption To TRUE
-            CollectInfoManager.Instance.SetCollectInfoOption(true);
+            UsageReportingManager.Instance.SetUsageReportingAgreement(true);
             RestartTestSetup();
-            Assert.AreEqual(true, CollectInfoManager.Instance.CollectInfoOption);
-            Assert.AreEqual(false, CollectInfoManager.Instance.NeverAgreeBefore);
+            Assert.AreEqual(true, UsageReportingManager.Instance.IsUsageReportingApproved);
 
             // CollectionInfoOption To FALSE
-            CollectInfoManager.Instance.SetCollectInfoOption(false);
+            UsageReportingManager.Instance.SetUsageReportingAgreement(false);
             RestartTestSetup();
-            Assert.AreEqual(false, CollectInfoManager.Instance.CollectInfoOption);
-            Assert.AreEqual(false, CollectInfoManager.Instance.NeverAgreeBefore);
+            Assert.AreEqual(false, UsageReportingManager.Instance.IsUsageReportingApproved);
             #endregion
 
             #region Save And Load of PreferenceSettings

@@ -23,9 +23,8 @@ namespace Dynamo
         // Variables of the settings that will be persistent
 
         #region Collect Information Settings
-        public bool FirstRun { get; set; }
-        public bool NeverAgreeBefore { get; set; }
-        public bool CollectInfoOption { get; set; }
+        public bool IsFirstRun { get; set; }
+        public bool IsUsageReportingApproved { get; set; }
         #endregion
 
         public bool ShowConsole { get; set; }
@@ -36,9 +35,8 @@ namespace Dynamo
         public PreferenceSettings()
         {
             // Default Settings
-            this.FirstRun = true;
-            this.NeverAgreeBefore = true;
-            this.CollectInfoOption = false;
+            this.IsFirstRun = true;
+            this.IsUsageReportingApproved = false;
             this.ShowConsole = false;
             this.ShowConnector = true;
             this.ConnectorType = ConnectorType.BEZIER;
@@ -128,22 +126,15 @@ namespace Dynamo
         /// </summary>
         public static string GetSettingsFilePath()
         {
-            try
-            {
-                string appDataFolder = System.Environment.GetFolderPath(
-                    System.Environment.SpecialFolder.ApplicationData);
+            string appDataFolder = System.Environment.GetFolderPath(
+                System.Environment.SpecialFolder.ApplicationData);
 
-                appDataFolder = Path.Combine(appDataFolder, DYNAMO_SETTINGS_DIRECTORY);
+            appDataFolder = Path.Combine(appDataFolder, DYNAMO_SETTINGS_DIRECTORY);
                 
-                if (Directory.Exists(appDataFolder) == false)
-                    Directory.CreateDirectory(appDataFolder);
+            if (Directory.Exists(appDataFolder) == false)
+                Directory.CreateDirectory(appDataFolder);
                 
-                return (Path.Combine(appDataFolder, DYNAMO_SETTINGS_FILE));
-            }
-            catch (Exception)
-            {
-                return string.Empty;
-            }
+            return (Path.Combine(appDataFolder, DYNAMO_SETTINGS_FILE));
         }
     }
 }

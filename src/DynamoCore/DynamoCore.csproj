@@ -159,8 +159,8 @@ limitations under the License.
     <Compile Include="Nodes\Geometry.cs" />
     <Compile Include="PackageManager\PackageManagerClient.cs" />
     <Compile Include="Search\SearchElements\CustomNodeSearchElement.cs" />
+    <Compile Include="Services\UsageReportingManager.cs" />
     <Compile Include="UI\Commands\AutomationSettings.cs" />
-    <Compile Include="Services\CollectInfoManager.cs" />
     <Compile Include="UI\Commands\BrowserItemCommands.cs" />
     <Compile Include="UI\Commands\Commands.cs" />
     <Compile Include="Core\DynamoLogger.cs" />
@@ -184,8 +184,8 @@ limitations under the License.
     </Compile>
     <Compile Include="UI\SharedResourceDictionary.cs" />
     <Compile Include="UI\HandlingEventTrigger.cs" />
-    <Compile Include="UI\Prompts\CollectInfoPrompt.xaml.cs">
-      <DependentUpon>CollectInfoPrompt.xaml</DependentUpon>
+    <Compile Include="UI\Prompts\UsageReportingAgreementPrompt.xaml.cs">
+      <DependentUpon>UsageReportingAgreementPrompt.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Views\InfoBubbleView.xaml.cs">
       <DependentUpon>InfoBubbleView.xaml</DependentUpon>
@@ -454,7 +454,7 @@ limitations under the License.
     </Page>
     <Page Include="UI\Themes\Ports.xaml">
     </Page>
-    <Page Include="UI\Prompts\CollectInfoPrompt.xaml">
+    <Page Include="UI\Prompts\UsageReportingAgreementPrompt.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

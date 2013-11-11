@@ -166,7 +166,7 @@ namespace Dynamo.Controls
         private void dynBench_Activated(object sender, EventArgs e)
         {
             // If first run, Collect Info Prompt will appear
-            CollectInfoManager.Instance.CheckFirstRun();
+            UsageReportingManager.Instance.CheckIsFirstRun();
 
             this.WorkspaceTabs.SelectedIndex = 0;
             _vm = (DataContext as DynamoViewModel);
