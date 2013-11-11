@@ -5,6 +5,12 @@
 			<testFixture name="ReferencePointTests">
 				<test name="ByCoordinates_ValidInput" modelPath=".\MassWithBoxAndCone.rfa"/>
 			</testFixture>
+			<testFixture name="FamilyTests">
+				<test name="ByName_ValidInput" modelPath=".\MassWithBoxAndCone.rfa"/>
+			</testFixture>
+			<testFixture name="FamilySymbolTests">
+				<test name="ByName_ValidInput" modelPath=".\MassWithBoxAndCone.rfa"/>
+			</testFixture>
 		</testAssembly>
 	</testAssemblies>
 </tests>

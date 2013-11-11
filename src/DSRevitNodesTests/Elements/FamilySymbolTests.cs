@@ -3,6 +3,7 @@ using NUnit.Framework;
 
 namespace DSRevitNodesTests
 {
+    [TestFixture]
     public class FamilySymbolTests
     {
         [Test]
