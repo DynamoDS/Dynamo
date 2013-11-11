@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using DSRevitNodes;
 using DSRevitNodes.Elements;
+using DSRevitNodes.GeometryObjects;
 using NUnit.Framework;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
@@ -61,7 +62,39 @@ namespace DSRevitNodesTests
             Assert.Throws(typeof(ArgumentNullException), () => DSAdaptiveComponent.ByPoints(null, fs));
         }
 
-        // tests for properties, null input
+        [Test]
+        public void ByPointsOnCurve_ValidInput()
+        {
+
+           // build the curve
+            var pts = new Autodesk.DesignScript.Geometry.Point[]
+            {
+                Point.ByCoordinates(0,0,0),
+                Point.ByCoordinates(1,0,0),
+                Point.ByCoordinates(3,0,0),
+                Point.ByCoordinates(10,0,0)
+            };
+
+            var wts = new double[]
+            {
+                1,1,1,1
+            };
+
+            var crv = DSNurbSpline.ByControlPointsAndWeights(pts, wts);
+
+            // obtain the family from the document
+            var fs = DSFamilySymbol.ByName("3PointAC.3PointAC");
+
+            // build the AC
+            var parms = new double[]
+            {
+                0, 0.5, 1
+            };
+
+            var ac = DSAdaptiveComponent.ByPointsOnCurve(parms, crv, fs);
+            Assert.NotNull(ac);
+
+        }
 
         [Test]
         public void ByPointsOnFace_ValidInput()
@@ -69,10 +102,8 @@ namespace DSRevitNodesTests
             Assert.Inconclusive();
         }
 
-        [Test]
-        public void ByPointsOnCurve_ValidInput()
-        {
-            Assert.Inconclusive();
-        }
+        // tests for properties, null input
+
+
     }
 }
