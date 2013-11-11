@@ -9,7 +9,7 @@ using RevitServices.Transactions;
 
 namespace DSRevitNodes.Elements
 {
-    internal static class DSElementFactory
+    public static class DSElementFactory
     {
         /// <summary>
         /// A factory method for looking up and obtaining elements
