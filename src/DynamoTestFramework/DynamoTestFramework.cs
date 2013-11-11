@@ -17,6 +17,7 @@ using Dynamo.NUnit.Tests;
 using Dynamo.Utilities;
 using NUnit.Core;
 using NUnit.Core.Filters;
+using RevitServices.Persistence;
 using RevitServices.Transactions;
 
 namespace Dynamo.Tests
@@ -88,6 +89,10 @@ namespace Dynamo.Tests
                 RevitData.Application = revit.Application;
                 RevitData.Document = RevitData.Application.ActiveUIDocument;
 
+                // setup revit services
+                DocumentManager.GetInstance().CurrentDBDocument = RevitData.Document.Document;
+                TransactionManager.SetupManager(new DebugTransactionStrategy());
+
                 bool canReadData = (0 < dataMap.Count);
 
                 if (canReadData)
@@ -110,7 +115,15 @@ namespace Dynamo.Tests
                     }
                     if (dataMap.ContainsKey("runDynamo"))
                     {
-                        runDynamo = Convert.ToBoolean(dataMap["runDynamo"]);
+                        try
+                        {
+                            runDynamo = Convert.ToBoolean(dataMap["runDynamo"]);
+                        }
+                        catch
+                        {
+                            runDynamo = false;
+                        }
+
                     }
                 }
 

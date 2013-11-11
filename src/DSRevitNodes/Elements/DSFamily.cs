@@ -62,6 +62,17 @@ namespace DSRevitNodes.Elements
             }
         }
 
+        /// <summary>
+        /// The name of this family
+        /// </summary>
+        public string Name
+        {
+            get
+            {
+                return InternalFamily.Name;
+            }
+        }
+
         #endregion
 
         #region Static constructors
