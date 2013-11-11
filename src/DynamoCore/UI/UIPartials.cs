@@ -202,16 +202,13 @@ namespace Dynamo.Nodes
 
         protected override bool UpdateValueCore(string name, string value)
         {
-            if (base.UpdateValueCore(name, value))
-                return true;
-
             if (name == "Value")
             {
                 this.Value = value;
                 return true; // UpdateValueCore handled.
             }
 
-            return false; // Not handled here.
+            return base.UpdateValueCore(name, value);
         }
     }
 
@@ -311,16 +308,13 @@ namespace Dynamo.Nodes
 
         protected override bool UpdateValueCore(string name, string value)
         {
-            if (base.UpdateValueCore(name, value))
-                return true;
-
             if (name == "Value")
             {
                 this.Value = value;
                 return true; // UpdateValueCore handled.
             }
 
-            return false; // Not handled here.
+            return base.UpdateValueCore(name, value);
         }
     }
 
@@ -469,9 +463,6 @@ namespace Dynamo.Nodes
 
         protected override bool UpdateValueCore(string name, string value)
         {
-            if (base.UpdateValueCore(name, value))
-                return true;
-
             var converter = new DoubleDisplay();
             switch (name)
             {
@@ -486,7 +477,7 @@ namespace Dynamo.Nodes
                     return true; // UpdateValueCore handled.
             }
 
-            return false;
+            return base.UpdateValueCore(name, value);
         }
     }
 
@@ -880,16 +871,13 @@ namespace Dynamo.Nodes
 
         protected override bool UpdateValueCore(string name, string value)
         {
-            if (base.UpdateValueCore(name, value))
-                return true;
-
             if (name == "FormulaString")
             {
                 this.FormulaString = value;
                 return true; // UpdateValueCore handled.
             }
 
-            return false;
+            return base.UpdateValueCore(name, value);
         }
     }
 
@@ -921,16 +909,13 @@ namespace Dynamo.Nodes
 
         protected override bool UpdateValueCore(string name, string value)
         {
-            if (base.UpdateValueCore(name, value))
-                return true;
-
             if (name == "Symbol")
             {
                 this.Symbol = value;
                 return true; // UpdateValueCore handled.
             }
 
-            return false;
+            return base.UpdateValueCore(name, value);
         }
     }
 
@@ -962,16 +947,13 @@ namespace Dynamo.Nodes
 
         protected override bool UpdateValueCore(string name, string value)
         {
-            if (base.UpdateValueCore(name, value))
-                return true;
-
             if (name == "InputSymbol")
             {
                 this.InputSymbol = value;
                 return true; // UpdateValueCore handled.
             }
 
-            return false;
+            return base.UpdateValueCore(name, value);
         }
     }
 
