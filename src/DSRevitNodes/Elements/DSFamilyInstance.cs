@@ -137,11 +137,26 @@ namespace DSRevitNodes
 
         public static DSFamilyInstance ByPoint(DSFamilySymbol fs, Point p)
         {
+            if (fs == null)
+            {
+                throw new ArgumentNullException();
+            } 
+            
+            if (p == null)
+            {
+                throw new ArgumentNullException();
+            }
+
             return new DSFamilyInstance(fs.InternalFamilySymbol, new XYZ(p.X, p.Y, p.Z));
         }
 
         public static DSFamilyInstance ByCoordinates(DSFamilySymbol fs, double x, double y, double z)
         {
+            if (fs == null)
+            {
+                throw new ArgumentNullException();
+            }
+
             return new DSFamilyInstance(fs.InternalFamilySymbol, new XYZ(x,y,z));
         }
 
