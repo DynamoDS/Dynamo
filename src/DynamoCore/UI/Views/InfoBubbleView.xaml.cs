@@ -84,6 +84,8 @@ namespace Dynamo.Controls
 
         private void ShowPreviewBubbleFullContent()
         {
+            if (ViewModel == null) return;
+
             string content = ViewModel.FullContent;
             InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.Preview;
             InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Top;
@@ -96,6 +98,8 @@ namespace Dynamo.Controls
 
         private void ShowPreviewBubbleCondensedContent()
         {
+            if (ViewModel == null) return;
+
             string content = ViewModel.FullContent;
             InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.PreviewCondensed;
             InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Top;
@@ -116,35 +120,38 @@ namespace Dynamo.Controls
 
         private void FadeInInfoBubble()
         {
+            if (ViewModel == null) return;
+                
             ViewModel.FadeInCommand.Execute(null);
         }
 
         private void FadeOutInfoBubble()
         {
+            if (ViewModel == null) return;
+                
             ViewModel.FadeOutCommand.Execute(null);
         }
 
         private void ContentContainer_MouseEnter(object sender, MouseEventArgs e)
         {
+            if (ViewModel == null) return;
+                
             if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.PreviewCondensed)
-            {
                 ShowPreviewBubbleFullContent();
-            }
-            FadeInInfoBubble();
             
+            FadeInInfoBubble();
+
             this.Cursor = CursorLibrary.GetCursor(CursorSet.Pointer);
         }
 
         private void InfoBubble_MouseLeave(object sender, MouseEventArgs e)
         {
+            if (ViewModel == null) return;
+
             if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Preview && ViewModel.IsShowPreviewByDefault)
-            {
                 ShowPreviewBubbleCondensedContent();
-            }
             else
-            {
                 FadeOutInfoBubble();
-            }
 
             this.Cursor = CursorLibrary.GetCursor(CursorSet.Pointer);
         }
@@ -156,6 +163,8 @@ namespace Dynamo.Controls
 
         private void InfoBubble_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (ViewModel == null) return;
+
             if (ViewModel.InfoBubbleStyle != InfoBubbleViewModel.Style.Preview && ViewModel.InfoBubbleStyle != InfoBubbleViewModel.Style.PreviewCondensed)
                 return;
 
@@ -189,6 +198,8 @@ namespace Dynamo.Controls
 
         private void MainGrid_MouseMove(object sender, MouseEventArgs e)
         {
+            if (ViewModel == null) return;
+
             if (!isResizing)
                 return;
 
@@ -251,6 +262,8 @@ namespace Dynamo.Controls
 
         private void InfoBubble_MouseMove(object sender, MouseEventArgs e)
         {
+            if (ViewModel == null) return;
+
             Point mousePosition = e.GetPosition(this);
 
             double offsetX = this.ActualWidth - ViewModel.EstimatedWidth;
@@ -262,9 +275,7 @@ namespace Dynamo.Controls
                 this.Cursor = CursorLibrary.GetCursor(CursorSet.Expand);
             }
             else if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.PreviewCondensed)
-            {
                 this.Cursor = CursorLibrary.GetCursor(CursorSet.Condense);
-            }
             else
                 this.Cursor = null;
         }
