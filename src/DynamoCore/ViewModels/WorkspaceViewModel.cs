@@ -467,6 +467,19 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public void NodeToCode(object parameter)
+        {
+            List<ISelectable> mylist = DynamoSelection.Instance.Selection.ToList();
+
+            List<ProtoCore.AST.AssociativeAST.AssociativeNode> astSelectedList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
+            string code = GraphToDSCompiler.GraphUtilities.ASTListToCode(astSelectedList);
+        }
+
+        internal bool CanNodeToCode(object parameter)
+        {
+            return true;
+        }
+
         public void SelectAll(object parameter)
         {
             DynamoSelection.Instance.ClearSelection();
