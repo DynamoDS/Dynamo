@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
+using DSRevitNodes.GeometryObjects;
 
 namespace DSRevitNodes
 {
@@ -74,7 +75,7 @@ namespace DSRevitNodes
         /// <param name="direction"></param>
         /// <param name="distance"></param>
         /// <returns></returns>
-        public static DSSolid ByExtrusion(DSCurve[] profile, Vector direction, double distance)
+        public static DSSolid ByExtrusion(DSCurveLoop profile, Vector direction, double distance)
         {
             if (profile == null)
             {
@@ -86,11 +87,7 @@ namespace DSRevitNodes
                 throw new ArgumentNullException("direction");
             }
 
-            var loop = new CurveLoop();
-            profile.ForEach(x => loop.Append(x.InternalCurve));
-
-            return new DSSolid(loop, direction.ToXyz(), distance);
-
+            return new DSSolid(profile.InternalCurveLoop, direction.ToXyz(), distance);
         }
 
         static DSSolid ByRevolve(List<DSCurve> profile, Vector axis )

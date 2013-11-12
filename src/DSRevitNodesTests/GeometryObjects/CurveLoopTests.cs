@@ -70,7 +70,7 @@ namespace DSRevitNodesTests.GeometryObjects
         [Test]
         public void TriangleByCurves_ValidArgs()
         {
-            // construct a unit rectangle
+            // construct a triangle
             var pts1 = new[]
             {
                 Point.ByCoordinates(0,0,0),
