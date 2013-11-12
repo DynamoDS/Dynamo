@@ -10,7 +10,7 @@ using RevitServices.Transactions;
 
 namespace DSRevitNodes.Elements
 {
-    public static class ElementFactory
+    public static class ElementSelector
     {
         /// <summary>
         /// A factory method for looking up and obtaining elements
@@ -88,6 +88,10 @@ namespace DSRevitNodes.Elements
         /// <returns></returns>
         private static AbstractElement InternalGetDSTypeFromElement(Autodesk.Revit.DB.Element ele)
         {
+            //if (ele is Autodesk.Revit.DB.ReferencePoint)
+            //{
+            //    return new DSReferencePoint(ele as Autodesk.Revit.DB.ReferencePoint);
+            //}
 
             if (ele is Autodesk.Revit.DB.FamilyInstance)
             {

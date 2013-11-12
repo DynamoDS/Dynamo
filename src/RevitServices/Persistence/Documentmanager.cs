@@ -46,9 +46,14 @@ namespace RevitServices.Persistence
             TransactionManager.GetInstance().TransactionTaskDone();
         }
 
+        /// <summary>
+        /// Obtain all elements of a given type from the current document
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public IEnumerable<T> GetElements<T>() where T : Autodesk.Revit.DB.Element
         {
-            var fec = new Autodesk.Revit.DB.FilteredElementCollector(DocumentManager.GetInstance().CurrentDBDocument);
+            var fec = new Autodesk.Revit.DB.FilteredElementCollector(CurrentDBDocument);
             return fec.OfClass(typeof(T)).Cast<T>();
         }
 

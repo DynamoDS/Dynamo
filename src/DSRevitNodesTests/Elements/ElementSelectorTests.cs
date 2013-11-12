@@ -12,7 +12,7 @@ using RevitServices.Transactions;
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    public class ElementFactoryTests
+    public class ElementSelectorTests
     {
 
         [Test]
@@ -26,7 +26,7 @@ namespace DSRevitNodesTests.Elements
 
             // use the element factory to do the same
             var famId = family.Id;
-            var famFromFact = ElementFactory.ByElementId(famId.IntegerValue);
+            var famFromFact = DSRevitNodes.Elements.ElementSelector.ByElementId(famId.IntegerValue);
 
             Assert.NotNull(famFromFact);
             Assert.IsAssignableFrom(typeof(DSFamily), famFromFact);
@@ -45,7 +45,7 @@ namespace DSRevitNodesTests.Elements
 
             // use the element factory to do the same by unique id
             var famUniqueId = family.UniqueId;
-            var famFromFact = ElementFactory.ByUniqueId(famUniqueId);
+            var famFromFact = DSRevitNodes.Elements.ElementSelector.ByUniqueId(famUniqueId);
 
             Assert.NotNull(famFromFact);
             Assert.IsAssignableFrom(typeof(DSFamily), famFromFact);
@@ -68,7 +68,7 @@ namespace DSRevitNodesTests.Elements
 
             // use the element factory to do the same
             var famSymEleId = symbol.Id;
-            var famSymFromFact = ElementFactory.ByElementId(famSymEleId.IntegerValue);
+            var famSymFromFact = DSRevitNodes.Elements.ElementSelector.ByElementId(famSymEleId.IntegerValue);
 
             Assert.NotNull(famSymFromFact);
             Assert.IsAssignableFrom(typeof(DSFamilySymbol), famSymFromFact);
@@ -91,11 +91,47 @@ namespace DSRevitNodesTests.Elements
 
             // use the element factory to do the same
             var famSymUniqueId = symbol.UniqueId;
-            var famSymFromFact = ElementFactory.ByUniqueId(famSymUniqueId);
+            var famSymFromFact = DSRevitNodes.Elements.ElementSelector.ByUniqueId(famSymUniqueId);
 
             Assert.NotNull(famSymFromFact);
             Assert.IsAssignableFrom(typeof(DSFamilySymbol), famSymFromFact);
             Assert.AreEqual(name, (famSymFromFact as DSFamilySymbol).Name);
+        }
+
+        [Test]
+        public void ReferencePointByElementId_ValidArgs()
+        {
+            Assert.Inconclusive();
+        }
+
+        [Test]
+        public void ReferencePointByUniqueId_ValidArgs()
+        {
+            Assert.Inconclusive();
+        }
+
+        [Test]
+        public void FamilyInstanceByElementId_ValidArgs()
+        {
+            Assert.Inconclusive();
+        }
+
+        [Test]
+        public void FamilyInstanceByUniqueId_ValidArgs()
+        {
+            Assert.Inconclusive();
+        }
+
+        [Test]
+        public void DividedPathByElementId_ValidArgs()
+        {
+            Assert.Inconclusive();
+        }
+
+        [Test]
+        public void DividedSurfaceByUniqueId_ValidArgs()
+        {
+            Assert.Inconclusive();
         }
 
     }
