@@ -11,9 +11,17 @@ namespace DSRevitNodesTests.GeometryObjects
     [TestFixture]
     public class SolidTests
     {
+
+
         [Test]
         public void ByExtrusion_ValidArgs()
         {
+            // make a rectangle
+
+            
+
+
+
             Assert.Inconclusive();
         }
     }

@@ -46,7 +46,6 @@ namespace DSRevitNodes.GeometryObjects
 
         #endregion
 
-
         #region Static constructors
 
         /// <summary>

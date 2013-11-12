@@ -66,7 +66,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Elements\AbstractElement.cs" />
-    <Compile Include="Elements\ElementFactory.cs" />
+    <Compile Include="GeometryObjects\DSCurveLoop.cs" />
+    <Compile Include="Elements\ElementSelector.cs" />
     <Compile Include="Elements\DSFamily.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="GeometryObjects\DSNurbSpline.cs" />
