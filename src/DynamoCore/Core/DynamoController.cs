@@ -78,6 +78,18 @@ namespace Dynamo
             get { return visualizationManager ?? (visualizationManager = new VisualizationManagerASM()); }
         }
 
+        private PreferenceSettings _preferenceSettings;
+        public PreferenceSettings PreferenceSettings
+        {
+            get
+            {
+                if (_preferenceSettings == null)
+                    _preferenceSettings = PreferenceSettings.Load();
+
+                return _preferenceSettings;
+            }
+        }
+
         /// <summary>
         /// Testing flag is used to defer calls to run in the idle thread
         /// with the assumption that the entire test will be wrapped in an
@@ -133,10 +145,10 @@ namespace Dynamo
         private ConnectorType _connectorType;
         public ConnectorType ConnectorType
         {
-            get { return _connectorType; }
+            get { return PreferenceSettings.ConnectorType; }
             set
             {
-                _connectorType = value;
+                PreferenceSettings.ConnectorType = value;
             }
         }
 
@@ -269,6 +281,8 @@ namespace Dynamo
 
         public virtual void ShutDown()
         {
+            PreferenceSettings.Save();
+
             VisualizationManager.ClearVisualizations();
 
             dynSettings.Controller.DynamoModel.OnCleanup(null);

@@ -15,6 +15,7 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
+using Dynamo.Services;
 
 namespace Dynamo.ViewModels
 {
@@ -116,7 +117,6 @@ namespace Dynamo.ViewModels
         protected bool debug = false;
         protected bool dynamicRun = false;
 
-        private bool fullscreenWatchShowing = true;
         private bool canNavigateBackground = false;
         private bool _watchEscapeIsDown = false;
 
@@ -343,13 +343,13 @@ namespace Dynamo.ViewModels
 
         public bool FullscreenWatchShowing
         {
-            get { return fullscreenWatchShowing; }
+            get { return this.controller.PreferenceSettings.FullscreenWatchShowing; }
             set
             {
-                fullscreenWatchShowing = value;
+                this.controller.PreferenceSettings.FullscreenWatchShowing = value;
                 RaisePropertyChanged("FullscreenWatchShowing");
 
-                if (!fullscreenWatchShowing && canNavigateBackground)
+                if (!FullscreenWatchShowing && canNavigateBackground)
                     CanNavigateBackground = false;
 
                 if(value)
@@ -373,8 +373,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private bool _consoleShowing;
-
         public string LogText
         {
             get { return DynamoLogger.Instance.LogText; }
@@ -382,20 +380,28 @@ namespace Dynamo.ViewModels
 
         public bool ConsoleShowing
         {
-            get { return _consoleShowing; }
+            get
+            {
+                return this.controller.PreferenceSettings.ShowConsole;
+            }
             set
             {
-                _consoleShowing = value;
+                this.controller.PreferenceSettings.ShowConsole = value;
+
                 RaisePropertyChanged("ConsoleShowing");
             }
         }
 
         public bool IsShowingConnectors
         {
-            get { return dynSettings.Controller.IsShowingConnectors; }
+            get
+            {
+                return this.controller.PreferenceSettings.ShowConnector;
+            }
             set
             {
-                dynSettings.Controller.IsShowingConnectors = value;
+                this.controller.PreferenceSettings.ShowConnector = value;
+
                 RaisePropertyChanged("IsShowingConnectors");
             }
         }
@@ -409,11 +415,23 @@ namespace Dynamo.ViewModels
 
         public ConnectorType ConnectorType
         {
-            get { return dynSettings.Controller.ConnectorType; }
+            get
+            {
+                return this.controller.ConnectorType;
+            }
             set
             {
-                dynSettings.Controller.ConnectorType = value;
+                this.controller.ConnectorType = value;
+
                 RaisePropertyChanged("ConnectorType");
+            }
+        }
+
+        public bool IsUsageReportingApproved
+        {
+            get
+            {
+                return UsageReportingManager.Instance.IsUsageReportingApproved;
             }
         }
 
@@ -443,8 +461,6 @@ namespace Dynamo.ViewModels
 
         public DynamoViewModel(DynamoController controller, string commandFilePath)
         {
-            ConnectorType = ConnectorType.BEZIER;
-
             //create the model
             _model = new DynamoModel();
             dynSettings.Controller.DynamoModel = _model;
@@ -546,6 +562,8 @@ namespace Dynamo.ViewModels
                 }
             };
 
+            UsageReportingManager.Instance.PropertyChanged += CollectInfoManager_PropertyChanged;
+
             WatchIsResizable = false;
         }
 
@@ -558,6 +576,16 @@ namespace Dynamo.ViewModels
                     break;
                 case "ShowGeometryInAlternateContext":
                     RaisePropertyChanged("ShowGeometryInAlternateContext");
+                    break;
+            }
+        }
+
+        void CollectInfoManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "CollectInfoOption":
+                    RaisePropertyChanged("CollectInfoOption");
                     break;
             }
         }
