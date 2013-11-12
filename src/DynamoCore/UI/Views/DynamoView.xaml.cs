@@ -883,8 +883,7 @@ namespace Dynamo.Controls
         {
             if (this._vm == null)
                 return;
-            this._vm.WorkspaceActualHeight = border.ActualHeight;
-            this._vm.WorkspaceActualWidth = border.ActualWidth;
+            this._vm.WorkspaceActualSize(border.ActualWidth, border.ActualHeight);
         }
 
         private void Window_PreviewMouseDown(object sender, MouseButtonEventArgs e)
