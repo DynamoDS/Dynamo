@@ -9,7 +9,7 @@ using DSRevitNodes.Graphics;
 
 namespace DSRevitNodes
 {
-    public class DSSolid : IGraphicItem
+    public class DSSolid : IGeometryObject
     {
         internal Autodesk.Revit.DB.Solid InternalSolid
         {

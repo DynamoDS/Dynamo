@@ -1,11 +1,12 @@
 ﻿using System;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
+using DSRevitNodes.GeometryObjects;
 using DSRevitNodes.Graphics;
 
 namespace DSRevitNodes
 {
-    public class DSFace
+    public class DSFace : IGeometryObject
     {
         internal Autodesk.Revit.DB.Face InternalFace
         {
