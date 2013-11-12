@@ -138,11 +138,6 @@ namespace Dynamo.ViewModels
         public EndlessGridViewModel(WorkspaceViewModel workspaceVM)
         {
             this.workspaceVM = workspaceVM;
-
-            //requiredSpareGridSize = (int)Math.Ceiling(Configurations.GridSpacing * 2 / WorkspaceModel.ZOOM_MINIMUM);
-            //RecalculateZoom();
-
-            //RecalculateSize();
         }
 
         /// <summary>
@@ -153,6 +148,9 @@ namespace Dynamo.ViewModels
             // Subscribing to properties changes, keeping up to date
             this.workspaceVM.Model.PropertyChanged += WorkspaceModel_PropertyChanged;
             dynSettings.Controller.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
+
+            // Render EndlessGrid for the first time
+            RecalculateSize();
         }
 
         void DynamoViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
