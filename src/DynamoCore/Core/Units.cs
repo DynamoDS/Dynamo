@@ -192,22 +192,22 @@ namespace Dynamo.Measure
                     return Utils.ToFractionalInches(ConvertTo(value, DynamoUnitType.Inches));
 
                 case DynamoUnitDisplayType.DecimalInches:
-                    return ConvertTo(value, DynamoUnitType.Inches).ToString("0.00", CultureInfo.CurrentCulture) + " in";
+                    return ConvertTo(value, DynamoUnitType.Inches).ToString("0.00", CultureInfo.CurrentCulture) + "in";
 
                 case DynamoUnitDisplayType.DecimalFeet:
-                    return ConvertTo(value, DynamoUnitType.Feet).ToString("0.00", CultureInfo.CurrentCulture) + " ft";
+                    return ConvertTo(value, DynamoUnitType.Feet).ToString("0.00", CultureInfo.CurrentCulture) + "ft";
 
                 case DynamoUnitDisplayType.FractionalFeetInches:
                     return Utils.ToFeetAndFractionalInches(ConvertTo(value, DynamoUnitType.Feet));
 
                 case DynamoUnitDisplayType.Millimeters:
-                    return ConvertTo(value, DynamoUnitType.Millimeters).ToString("0.00", CultureInfo.CurrentCulture) + " mm";
+                    return ConvertTo(value, DynamoUnitType.Millimeters).ToString("0.00", CultureInfo.CurrentCulture) + "mm";
 
                 case DynamoUnitDisplayType.Centimeters:
-                    return ConvertTo(value, DynamoUnitType.Centimeters).ToString("0.00", CultureInfo.CurrentCulture) + " cm";
+                    return ConvertTo(value, DynamoUnitType.Centimeters).ToString("0.00", CultureInfo.CurrentCulture) + "cm";
 
                 case DynamoUnitDisplayType.Meters:
-                    return ConvertTo(value, DynamoUnitType.Meters).ToString("0.00", CultureInfo.CurrentCulture) + " m";
+                    return ConvertTo(value, DynamoUnitType.Meters).ToString("0.00", CultureInfo.CurrentCulture) + "m";
 
                 default:
                     return value.ToString();
