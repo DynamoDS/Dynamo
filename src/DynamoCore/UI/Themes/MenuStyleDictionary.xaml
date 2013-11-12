@@ -293,16 +293,19 @@
                     </Trigger>
                     <Trigger Property="IsChecked"
                              Value="true">
+                        <Setter TargetName="Check"
+                                Property="Visibility"
+                                Value="Visible" />
                         <Setter TargetName="CheckMark"
                                 Property="Visibility"
                                 Value="Visible" />
                     </Trigger>
-                    <Trigger Property="IsCheckable"
-                             Value="true">
+                    <Trigger Property="IsChecked"
+                             Value="false">
                         <Setter TargetName="Check"
                                 Property="Visibility"
-                                Value="Visible" />
-                        <Setter TargetName="Icon"
+                                Value="Collapsed" />
+                        <Setter TargetName="CheckMark"
                                 Property="Visibility"
                                 Value="Hidden" />
                     </Trigger>
