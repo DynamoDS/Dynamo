@@ -14,7 +14,7 @@
 
         <TextBox 
                 Margin="10"
-                x:FieldModifier="public" 
+                x:FieldModifier="private" 
                 Style="{DynamicResource ResourceKey=SDarkTextBox}"
                 HorizontalAlignment="Stretch" 
                 Name="editText" 

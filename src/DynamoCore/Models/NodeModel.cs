@@ -1900,6 +1900,21 @@ namespace Dynamo.Models
 
         #endregion
 
+        #region Command Framework Supporting Methods
+
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (name == "NickName")
+            {
+                this.NickName = value;
+                return true;
+            }
+
+            return base.UpdateValueCore(name, value);
+        }
+
+        #endregion
+
         #region Serialization/Deserialization Methods
 
         protected override void SerializeCore(XmlElement element, SaveContext context)
