@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
+using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
 using DSRevitNodes.GeometryObjects;
+using DSRevitNodes.Graphics;
 
 namespace DSRevitNodes
 {
-    public class DSSolid
+    public class DSSolid : IGraphicItem
     {
         internal Autodesk.Revit.DB.Solid InternalSolid
         {
@@ -103,6 +105,29 @@ namespace DSRevitNodes
         static DSSolid BySweptBlend(List<List<DSCurve>> profiles, DSCurve spine)
         {
             throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region Tesselation
+
+        public void Tessellate(IRenderPackage package)
+        {
+            var meshes = this.InternalSolid.Faces.Cast<Autodesk.Revit.DB.Face>()
+                .Select(x => x.Triangulate(GraphicsManager.TesselationLevelOfDetail));
+
+            foreach (var mesh in meshes)
+            {
+                for (var i = 0; i < mesh.NumTriangles; i++)
+                {
+                    for (var j = 0; j < 3; j++)
+                    {
+                        var xyz = mesh.get_Triangle(i).get_Vertex(i);
+                        package.PushTriangleVertex(xyz.X, xyz.Y, xyz.Z);
+                    }
+                }
+            }
+
         }
 
         #endregion

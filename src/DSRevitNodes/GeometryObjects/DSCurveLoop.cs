@@ -14,10 +14,16 @@ namespace DSRevitNodes.GeometryObjects
     /// </summary>
     public class DSCurveLoop
     {
+        #region Internal properties
+
         internal Autodesk.Revit.DB.CurveLoop InternalCurveLoop
         {
             get; private set;
         }
+
+        #endregion
+
+        #region Private constructors
 
         /// <summary>
         /// Internal constructor for the CurveLoop type
@@ -27,6 +33,10 @@ namespace DSRevitNodes.GeometryObjects
         {
             this.InternalCurveLoop = loop;
         }
+
+        #endregion
+
+        #region Public properties
 
         /// <summary>
         /// Identifies if the Curveloop is closed
@@ -50,6 +60,10 @@ namespace DSRevitNodes.GeometryObjects
             }
         }
 
+        #endregion
+
+        #region Static constructors
+
         /// <summary>
         /// Build a CurveLoop from a set of curves. The curves should be in order
         /// and linked such that their endpoints are coincident with the next curves
@@ -68,6 +82,8 @@ namespace DSRevitNodes.GeometryObjects
             curves.ForEach(x => loop.Append(x.InternalCurve)); 
             return new DSCurveLoop(loop);
         }
+
+        #endregion
 
     }
 

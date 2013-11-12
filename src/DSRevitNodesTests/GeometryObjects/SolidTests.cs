@@ -61,8 +61,8 @@ namespace DSRevitNodesTests.GeometryObjects
             var extrusion = DSSolid.ByExtrusion(curveloop, dir, dist);
 
             Assert.NotNull(extrusion);
-            Assert.AreEqual(2.5, extrusion.Volume);
-            Assert.AreEqual(5 + 5 + 2.5 + 2.5 + Math.Sqrt(2) * 5, extrusion.SurfaceArea);
+            Assert.AreEqual(2.5, extrusion.Volume, 0.01);
+            Assert.AreEqual(5 + 5 + 0.5 + 0.5 + Math.Sqrt(2) * 5, extrusion.SurfaceArea, 0.01);
 
         }
     }
