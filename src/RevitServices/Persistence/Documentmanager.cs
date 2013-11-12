@@ -46,6 +46,12 @@ namespace RevitServices.Persistence
             TransactionManager.GetInstance().TransactionTaskDone();
         }
 
+        public IEnumerable<T> GetElements<T>() where T : Autodesk.Revit.DB.Element
+        {
+            var fec = new Autodesk.Revit.DB.FilteredElementCollector(DocumentManager.GetInstance().CurrentDBDocument);
+            return fec.OfClass(typeof(T)).Cast<T>();
+        }
+
         /// <summary>
         /// Provide source of the currently active document
         /// Dynamo is reponsible for updating this before use
