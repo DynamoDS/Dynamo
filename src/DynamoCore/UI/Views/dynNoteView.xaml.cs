@@ -89,27 +89,16 @@ namespace Dynamo.Nodes
 
         private void editItem_Click(object sender, RoutedEventArgs e)
         {
-            var editWindow = new EditWindow();
-
-            editWindow.editText.TextChanged += delegate
-                {
-                    var expr = editWindow.editText.GetBindingExpression(TextBox.TextProperty);
-                    if (expr != null)
-                        expr.UpdateSource();
-                };
-
-            //setup a binding with the edit window's text field
-            editWindow.editText.DataContext = DataContext as NoteViewModel;
-            var bindingVal = new Binding("Text")
+            // Setup a binding with the edit window's text field
+            var editWindow = new EditWindow(true);
+            editWindow.BindToProperty(DataContext, new Binding("Text")
             {
                 Mode = BindingMode.TwoWay,
                 Source = (DataContext as NoteViewModel),
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            };
-            editWindow.editText.SetBinding(TextBox.TextProperty, bindingVal);
+            });
 
             editWindow.ShowDialog();
-
         }
 
         private void deleteItem_Click(object sender, RoutedEventArgs e)

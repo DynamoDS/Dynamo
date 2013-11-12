@@ -137,23 +137,21 @@ namespace Dynamo.Controls
 
         void ViewModel_RequestShowNodeRename(object sender, EventArgs e)
         {
-            var editWindow = new EditWindow { DataContext = ViewModel };
+            var editWindow = new EditWindow
+            {
+                DataContext = ViewModel,
+                Title = "Edit Node Name"
+            };
 
-            var bindingVal = new Binding("NickName")
+            editWindow.BindToProperty(null, new Binding("NickName")
             {
                 Mode = BindingMode.TwoWay,
                 NotifyOnValidationError = false,
                 Source = ViewModel,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            };
-            editWindow.editText.SetBinding(TextBox.TextProperty, bindingVal);
+            });
 
-            editWindow.Title = "Edit Node Name";
-
-            if (editWindow.ShowDialog() != true)
-            {
-                return;
-            }
+            editWindow.ShowDialog();
         }
 
         void ViewModel_RequestShowNodeHelp(object sender, NodeHelpEventArgs e)
@@ -273,7 +271,7 @@ namespace Dynamo.Controls
         private void NickNameBlock_OnMouseEnter(object sender, MouseEventArgs e)
         {
             TextBlock textBlock = sender as TextBlock;
-            string tooltipContent = ViewModel.NickName + '\n' + ViewModel.Description;
+            string tooltipContent = ViewModel.Description;
             UIElement containingWorkspace = WPF.FindUpVisualTree<TabControl>(this);
             Point topLeft = textBlock.TranslatePoint(new Point(0, 0), containingWorkspace);
             double actualWidth = textBlock.ActualWidth * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;

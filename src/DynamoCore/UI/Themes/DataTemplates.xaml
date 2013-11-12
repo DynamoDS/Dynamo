@@ -19,4 +19,8 @@
         <controls:InfoBubbleView></controls:InfoBubbleView>
     </DataTemplate>
 
+    <DataTemplate DataType="{x:Type viewModels:EndlessGridViewModel}">
+        <controls:EndlessGrid></controls:EndlessGrid>
+    </DataTemplate>
+
 </ResourceDictionary>
