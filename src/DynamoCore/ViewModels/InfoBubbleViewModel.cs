@@ -641,14 +641,17 @@ namespace Dynamo.ViewModels
 
         private PointCollection GetFramePoints_LibraryItemPreview()
         {
+            double arrowHeight = Configurations.LibraryTooltipArrowHeight;
+            double arrowWidth = Configurations.LibraryTooltipArrowWidth;
+
             PointCollection pointCollection = new PointCollection();
-            pointCollection.Add(new Point(EstimatedWidth, 0));
-            pointCollection.Add(new Point(Configurations.LibraryTooltipArrowWidth, 0));
-            pointCollection.Add(new Point(Configurations.LibraryTooltipArrowWidth, EstimatedHeight / 2 - Configurations.LibraryTooltipArrowHeight / 2));
-            pointCollection.Add(new Point(0, EstimatedHeight / 2));
-            pointCollection.Add(new Point(Configurations.LibraryTooltipArrowWidth, EstimatedHeight / 2 + Configurations.LibraryTooltipArrowHeight / 2));
-            pointCollection.Add(new Point(Configurations.LibraryTooltipArrowWidth, EstimatedHeight));
-            pointCollection.Add(new Point(EstimatedWidth, EstimatedHeight));
+            pointCollection.Add(PrecisePoint(EstimatedWidth, 0));
+            pointCollection.Add(PrecisePoint(arrowWidth, 0));
+            pointCollection.Add(PrecisePoint(arrowWidth, EstimatedHeight / 2 - arrowHeight / 2));
+            pointCollection.Add(PrecisePoint(0, EstimatedHeight / 2));
+            pointCollection.Add(PrecisePoint(arrowWidth, EstimatedHeight / 2 + arrowHeight / 2));
+            pointCollection.Add(PrecisePoint(arrowWidth, EstimatedHeight));
+            pointCollection.Add(PrecisePoint(EstimatedWidth, EstimatedHeight));
 
             return pointCollection;
         }
@@ -671,18 +674,22 @@ namespace Dynamo.ViewModels
         {
             PointCollection pointCollection = new PointCollection();
 
+            double arrowHeight = Configurations.NodeTooltipArrowHeight_SideConnecting;
+            double arrowWidth = Configurations.NodeTooltipArrowWidth_SideConnecting;
+
             if (topLeft.Y - EstimatedHeight >= 40)
             {
+                arrowHeight = Configurations.NodeTooltipArrowHeight_BottomConnecting;
+                arrowWidth = Configurations.NodeTooltipArrowWidth_BottomConnecting;
+
                 limitedDirection = Direction.None;
-                pointCollection.Add(new Point(EstimatedWidth, 0));
-                pointCollection.Add(new Point(0, 0));
-                pointCollection.Add(new Point(0, EstimatedHeight - Configurations.NodeTooltipArrowHeight_BottomConnecting));
-                pointCollection.Add(new Point((EstimatedWidth / 2) - Configurations.NodeTooltipArrowWidth_BottomConnecting / 2,
-                    EstimatedHeight - Configurations.NodeTooltipArrowHeight_BottomConnecting));
-                pointCollection.Add(new Point(EstimatedWidth / 2, EstimatedHeight));
-                pointCollection.Add(new Point((EstimatedWidth / 2) + (Configurations.NodeTooltipArrowWidth_BottomConnecting / 2),
-                    EstimatedHeight - Configurations.NodeTooltipArrowHeight_BottomConnecting));
-                pointCollection.Add(new Point(EstimatedWidth, EstimatedHeight - Configurations.NodeTooltipArrowHeight_BottomConnecting));
+                pointCollection.Add(PrecisePoint(EstimatedWidth, 0));
+                pointCollection.Add(PrecisePoint(0, 0));
+                pointCollection.Add(PrecisePoint(0, EstimatedHeight - arrowHeight));
+                pointCollection.Add(PrecisePoint((EstimatedWidth / 2) - arrowWidth / 2, EstimatedHeight - arrowHeight));
+                pointCollection.Add(PrecisePoint(EstimatedWidth / 2, EstimatedHeight));
+                pointCollection.Add(PrecisePoint((EstimatedWidth / 2) + (arrowWidth / 2), EstimatedHeight - arrowHeight));
+                pointCollection.Add(PrecisePoint(EstimatedWidth, EstimatedHeight - arrowHeight));
             }
             else if (botRight.X + EstimatedWidth <= dynSettings.Controller.DynamoViewModel.WorkspaceActualWidth)
             {
@@ -690,11 +697,11 @@ namespace Dynamo.ViewModels
                 ContentMargin = Configurations.NodeTooltipContentMarginLeft;
                 UpdateContent(Content);
 
-                pointCollection.Add(new Point(EstimatedWidth, 0));
-                pointCollection.Add(new Point(0, 0));
-                pointCollection.Add(new Point(Configurations.NodeTooltipArrowWidth_SideConnecting, Configurations.NodeTooltipArrowHeight_SideConnecting / 2));
-                pointCollection.Add(new Point(Configurations.NodeTooltipArrowWidth_SideConnecting, EstimatedHeight));
-                pointCollection.Add(new Point(EstimatedWidth, EstimatedHeight));
+                pointCollection.Add(PrecisePoint(EstimatedWidth, 0));
+                pointCollection.Add(PrecisePoint(0, 0));
+                pointCollection.Add(PrecisePoint(arrowWidth, arrowHeight / 2));
+                pointCollection.Add(PrecisePoint(arrowWidth, EstimatedHeight));
+                pointCollection.Add(PrecisePoint(EstimatedWidth, EstimatedHeight));
             }
             else
             {
@@ -702,11 +709,11 @@ namespace Dynamo.ViewModels
                 ContentMargin = Configurations.NodeTooltipContentMarginRight;
                 UpdateContent(Content);
 
-                pointCollection.Add(new Point(EstimatedWidth, 0));
-                pointCollection.Add(new Point(0, 0));
-                pointCollection.Add(new Point(0, EstimatedHeight));
-                pointCollection.Add(new Point(EstimatedWidth - Configurations.NodeTooltipArrowWidth_SideConnecting, EstimatedHeight));
-                pointCollection.Add(new Point(EstimatedWidth - Configurations.NodeTooltipArrowWidth_SideConnecting, Configurations.NodeTooltipArrowHeight_SideConnecting / 2));
+                pointCollection.Add(PrecisePoint(EstimatedWidth, 0));
+                pointCollection.Add(PrecisePoint(0, 0));
+                pointCollection.Add(PrecisePoint(0, EstimatedHeight));
+                pointCollection.Add(PrecisePoint(EstimatedWidth - arrowWidth, EstimatedHeight));
+                pointCollection.Add(PrecisePoint(EstimatedWidth - arrowWidth, arrowHeight / 2));
 
             }
             return pointCollection;
@@ -725,15 +732,16 @@ namespace Dynamo.ViewModels
             }
             else
             {
-                pointCollection.Add(new Point(EstimatedWidth, 0));
-                pointCollection.Add(new Point(Configurations.NodeTooltipArrowWidth_SideConnecting, 0));
-                pointCollection.Add(new Point(Configurations.NodeTooltipArrowWidth_SideConnecting,
-                    EstimatedHeight / 2 - Configurations.NodeTooltipArrowHeight_SideConnecting / 2));
-                pointCollection.Add(new Point(0, EstimatedHeight / 2));
-                pointCollection.Add(new Point(Configurations.NodeTooltipArrowWidth_SideConnecting,
-                    EstimatedHeight / 2 + Configurations.NodeTooltipArrowHeight_SideConnecting / 2));
-                pointCollection.Add(new Point(Configurations.NodeTooltipArrowWidth_SideConnecting, EstimatedHeight));
-                pointCollection.Add(new Point(EstimatedWidth, EstimatedHeight));
+                double arrowHeight = Configurations.NodeTooltipArrowHeight_SideConnecting;
+                double arrowWidth = Configurations.NodeTooltipArrowWidth_SideConnecting;
+
+                pointCollection.Add(PrecisePoint(EstimatedWidth, 0));
+                pointCollection.Add(PrecisePoint(arrowWidth, 0));
+                pointCollection.Add(PrecisePoint(arrowWidth, EstimatedHeight / 2 - arrowHeight / 2));
+                pointCollection.Add(PrecisePoint(0, EstimatedHeight / 2));
+                pointCollection.Add(PrecisePoint(arrowWidth, EstimatedHeight / 2 + arrowHeight / 2));
+                pointCollection.Add(PrecisePoint(arrowWidth, EstimatedHeight));
+                pointCollection.Add(PrecisePoint(EstimatedWidth, EstimatedHeight));
             }
             return pointCollection;
         }
@@ -751,42 +759,49 @@ namespace Dynamo.ViewModels
             }
             else
             {
-                pointCollection.Add(new Point(EstimatedWidth - Configurations.NodeTooltipArrowWidth_SideConnecting, 0));
-                pointCollection.Add(new Point(0, 0));
-                pointCollection.Add(new Point(0, EstimatedHeight));
-                pointCollection.Add(new Point(EstimatedWidth - Configurations.NodeTooltipArrowWidth_SideConnecting, EstimatedHeight));
-                pointCollection.Add(new Point(EstimatedWidth - Configurations.NodeTooltipArrowWidth_SideConnecting,
-                    EstimatedHeight / 2 + Configurations.NodeTooltipArrowHeight_SideConnecting / 2));
-                pointCollection.Add(new Point(EstimatedWidth, EstimatedHeight / 2));
-                pointCollection.Add(new Point(EstimatedWidth - Configurations.NodeTooltipArrowWidth_SideConnecting,
-                    EstimatedHeight / 2 - Configurations.NodeTooltipArrowHeight_SideConnecting / 2));
+                double arrowHeight = Configurations.NodeTooltipArrowHeight_SideConnecting;
+                double arrowWidth = Configurations.NodeTooltipArrowWidth_SideConnecting;
+
+                pointCollection.Add(PrecisePoint(EstimatedWidth - arrowWidth, 0));
+                pointCollection.Add(PrecisePoint(0, 0));
+                pointCollection.Add(PrecisePoint(0, EstimatedHeight));
+                pointCollection.Add(PrecisePoint(EstimatedWidth - arrowWidth, EstimatedHeight));
+                pointCollection.Add(PrecisePoint(EstimatedWidth - arrowWidth, EstimatedHeight / 2 + arrowHeight / 2));
+                pointCollection.Add(PrecisePoint(EstimatedWidth, EstimatedHeight / 2));
+                pointCollection.Add(PrecisePoint(EstimatedWidth - arrowWidth, EstimatedHeight / 2 - arrowHeight / 2));
             }
             return pointCollection;
         }
 
         private PointCollection GetFramePoints_Error()
         {
+            double arrowHeight = Configurations.ErrorArrowHeight;
+            double arrowWidth = Configurations.ErrorArrowWidth;
+
             PointCollection pointCollection = new PointCollection();
-            pointCollection.Add(new Point(EstimatedWidth, 0));
-            pointCollection.Add(new Point(0, 0));
-            pointCollection.Add(new Point(0, EstimatedHeight - Configurations.ErrorArrowHeight));
-            pointCollection.Add(new Point((EstimatedWidth / 2) - Configurations.ErrorArrowWidth / 2, EstimatedHeight - Configurations.ErrorArrowHeight));
-            pointCollection.Add(new Point(EstimatedWidth / 2, EstimatedHeight));
-            pointCollection.Add(new Point((EstimatedWidth / 2) + Configurations.ErrorArrowWidth / 2, EstimatedHeight - Configurations.ErrorArrowHeight));
-            pointCollection.Add(new Point(EstimatedWidth, EstimatedHeight - Configurations.ErrorArrowHeight));
+            pointCollection.Add(PrecisePoint(EstimatedWidth, 0));
+            pointCollection.Add(PrecisePoint(0, 0));
+            pointCollection.Add(PrecisePoint(0, EstimatedHeight - arrowHeight));
+            pointCollection.Add(PrecisePoint((EstimatedWidth / 2) - arrowWidth / 2, EstimatedHeight - arrowHeight));
+            pointCollection.Add(PrecisePoint(EstimatedWidth / 2, EstimatedHeight));
+            pointCollection.Add(PrecisePoint((EstimatedWidth / 2) + arrowWidth / 2, EstimatedHeight - arrowHeight));
+            pointCollection.Add(PrecisePoint(EstimatedWidth, EstimatedHeight - arrowHeight));
             return pointCollection;
         }
 
         private PointCollection GetFramePoints_Preview()
         {
+            double arrowHeight = Configurations.PreviewArrowHeight;
+            double arrowWidth = Configurations.PreviewArrowWidth;
+
             PointCollection pointCollection = new PointCollection();
-            pointCollection.Add(new Point(EstimatedWidth, Configurations.PreviewArrowHeight));
-            pointCollection.Add(new Point(EstimatedWidth / 2 + Configurations.PreviewArrowWidth / 2, Configurations.PreviewArrowHeight));
-            pointCollection.Add(new Point(EstimatedWidth / 2, 0));
-            pointCollection.Add(new Point(EstimatedWidth / 2 - Configurations.PreviewArrowWidth / 2, Configurations.PreviewArrowHeight));
-            pointCollection.Add(new Point(0, Configurations.PreviewArrowHeight));
-            pointCollection.Add(new Point(0, EstimatedHeight));
-            pointCollection.Add(new Point(EstimatedWidth, EstimatedHeight));
+            pointCollection.Add(PrecisePoint(EstimatedWidth, arrowHeight));
+            pointCollection.Add(PrecisePoint(EstimatedWidth / 2 + arrowWidth / 2, arrowHeight));
+            pointCollection.Add(PrecisePoint(EstimatedWidth / 2, 0));
+            pointCollection.Add(PrecisePoint(EstimatedWidth / 2 - arrowWidth / 2, arrowHeight));
+            pointCollection.Add(PrecisePoint(0, arrowHeight));
+            pointCollection.Add(PrecisePoint(0, EstimatedHeight));
+            pointCollection.Add(PrecisePoint(EstimatedWidth, EstimatedHeight));
             return pointCollection;
         }
 
@@ -843,6 +858,17 @@ namespace Dynamo.ViewModels
                 Opacity -= 0.85 / 10;
             else
                 fadeOutTimer.Stop();
+        }
+
+        /// Offset each point coordinate by 0.5 to force it to be drawn in the middle of 
+        /// a pixel to remove blurring caused by screen pixel guessing
+        private Point PrecisePoint(double x, double y)
+        {
+            Point p = new Point(
+                Math.Ceiling(x) + Configurations.PixelSharpeningConstant,
+                Math.Ceiling(y) + Configurations.PixelSharpeningConstant);
+
+            return p;
         }
 
         #endregion

@@ -53,3 +53,4 @@ using System.Windows;
 [assembly: AssemblyVersion("0.6.2.*")]
 
 [assembly: InternalsVisibleTo("DynamoCoreTests")]
+[assembly: InternalsVisibleTo("DynamoCoreUITests")]
