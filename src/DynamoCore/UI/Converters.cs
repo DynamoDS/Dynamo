@@ -205,6 +205,24 @@ namespace Dynamo.Controls
         }
     }
 
+    public class SearchResultsToVisibilityConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (values[0] is int && (int)values[0] == 0 && !string.IsNullOrEmpty(values[1] as string))
+            {
+                return Visibility.Visible;
+            }
+
+            return Visibility.Collapsed;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
     public class PortNameConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,
@@ -250,6 +268,19 @@ namespace Dynamo.Controls
             } 
 
             return "Unsaved";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class PathToSaveStateConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return (value is string && !string.IsNullOrEmpty(value as string)) ? "Saved" : "Unsaved";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

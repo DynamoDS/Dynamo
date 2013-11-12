@@ -403,7 +403,7 @@ namespace Dynamo
                 //send back everything
                 rd = AggregateRenderDescriptions();
                 
-                StripDuplicates(rd);
+                //StripDuplicates(rd);
 
                 OnResultsReadyToVisualize(this, new VisualizationEventArgs(rd, string.Empty));
             }
@@ -440,7 +440,7 @@ namespace Dynamo
                 rd.SelectedMeshes.AddRange(mesh_sel);
                 rd.Text.AddRange(text);
 
-                StripDuplicates(rd);
+                //StripDuplicates(rd);
 
                 OnResultsReadyToVisualize(this, new VisualizationEventArgs(rd, node.GUID.ToString()));
             }

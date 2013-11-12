@@ -131,7 +131,8 @@ namespace Dynamo.Controls
                 ShowPreviewBubbleFullContent();
             }
             FadeInInfoBubble();
-            Mouse.OverrideCursor = CursorsLibrary.UsualPointer;
+            
+            this.Cursor = CursorLibrary.GetCursor(CursorSet.Pointer);
         }
 
         private void InfoBubble_MouseLeave(object sender, MouseEventArgs e)
@@ -145,13 +146,12 @@ namespace Dynamo.Controls
                 FadeOutInfoBubble();
             }
 
-            Mouse.OverrideCursor = CursorsLibrary.UsualPointer;
+            this.Cursor = CursorLibrary.GetCursor(CursorSet.Pointer);
         }
 
         private void InfoBubble_MouseEnter(object sender, MouseEventArgs e)
         {
-            if (Mouse.OverrideCursor != CursorsLibrary.Condense)
-                Mouse.OverrideCursor = CursorsLibrary.Condense;
+            this.Cursor = CursorLibrary.GetCursor(CursorSet.Condense);
         }
 
         private void InfoBubble_PreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -176,8 +176,7 @@ namespace Dynamo.Controls
 
         private void ResizeObject_MouseLeave(object sender, MouseEventArgs e)
         {
-            //Mouse.OverrideCursor = null;
-            Mouse.OverrideCursor = CursorsLibrary.UsualPointer;
+            this.Cursor = null;
         }
 
         private void ResizeObject_MouseUp(object sender, MouseButtonEventArgs e)
@@ -204,8 +203,7 @@ namespace Dynamo.Controls
 
         private void HorizontalResizeBar_MouseEnter(object sender, MouseEventArgs e)
         {
-            if (Mouse.OverrideCursor != CursorsLibrary.ResizeVertical)
-                Mouse.OverrideCursor = CursorsLibrary.ResizeVertical;
+            this.Cursor = CursorLibrary.GetCursor(CursorSet.ResizeVertical);
         }
 
         private void HorizontalResizeBar_MouseDown(object sender, MouseButtonEventArgs e)
@@ -219,8 +217,7 @@ namespace Dynamo.Controls
 
         private void ConnerResizePoint_MouseEnter(object sender, MouseEventArgs e)
         {
-            if (Mouse.OverrideCursor != CursorsLibrary.ResizeDiagonal)
-                Mouse.OverrideCursor = CursorsLibrary.ResizeDiagonal;
+            this.Cursor = CursorLibrary.GetCursor(CursorSet.ResizeDiagonal);
         }
 
         private void ConnerResizePoint_MouseDown(object sender, MouseButtonEventArgs e)
@@ -244,8 +241,7 @@ namespace Dynamo.Controls
 
         private void VerticalResizeBar_MouseEnter(object sender, MouseEventArgs e)
         {
-            if (Mouse.OverrideCursor != CursorsLibrary.ResizeHorizontal)
-                Mouse.OverrideCursor = CursorsLibrary.ResizeHorizontal;
+            this.Cursor = CursorLibrary.GetCursor(CursorSet.ResizeHorizontal);
         }
 
         private void InfoBubble_MouseWheel(object sender, MouseWheelEventArgs e)
@@ -257,23 +253,20 @@ namespace Dynamo.Controls
         {
             Point mousePosition = e.GetPosition(this);
 
-            //Debug.WriteLine(this.GetType());
-            //Debug.WriteLine(mousePosition.X + "  " + this.ActualWidth);
-
             double offsetX = this.ActualWidth - ViewModel.EstimatedWidth;
             double offsetY = this.ActualHeight - ViewModel.EstimatedHeight;
             if (Math.Abs(mousePosition.X - offsetX - ViewModel.EstimatedWidth / 2) < 25
                 && (mousePosition.Y - offsetY < 20)
                 && (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Preview))
             {
-                Mouse.OverrideCursor = CursorsLibrary.Expand;
+                this.Cursor = CursorLibrary.GetCursor(CursorSet.Expand);
             }
             else if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.PreviewCondensed)
             {
-                Mouse.OverrideCursor = CursorsLibrary.Condense;
+                this.Cursor = CursorLibrary.GetCursor(CursorSet.Condense);
             }
             else
-                Mouse.OverrideCursor = CursorsLibrary.UsualPointer;
+                this.Cursor = null;
         }
 
     }

@@ -526,5 +526,231 @@ namespace Dynamo.Tests
 
             //dynSettings.Controller.RunExpression(true);
         }
+
+        #region 14 Curves
+
+        [Test]
+        public void AllCurveTestModelCurve()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\\Samples\all curve test model curve.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(47, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(61, model.CurrentWorkspace.Connectors.Count);
+
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+
+        }
+
+        [Test]
+        public void AllCurveTest()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\\Samples\all curve test.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(33, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(33, model.CurrentWorkspace.Connectors.Count);
+
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+
+        }
+
+        [Test]
+        public void ArcAndLineFromRefPoints()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\\Samples\Arc and Line from Ref Points.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(15, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(15, model.CurrentWorkspace.Connectors.Count);
+
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+
+        }
+
+        [Test]
+        public void ArcAndLine()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\\Samples\Arc and Line.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(17, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(16, model.CurrentWorkspace.Connectors.Count);
+
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+
+        }
+
+        [Test]
+        public void ArcFromRefPoints()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\\Samples\Arc from Ref Points.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(13, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count);
+
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+
+        }
+
+        [Test]
+        public void Arc()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\\Samples\Arc.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(15, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(13, model.CurrentWorkspace.Connectors.Count);
+
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+
+        }
+
+        [Test]
+        public void Circle()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\\Samples\circle.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(13, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(13, model.CurrentWorkspace.Connectors.Count);
+
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+
+        }
+
+        [Test]
+        public void Ellipse()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\\Samples\ellipse.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(14, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(14, model.CurrentWorkspace.Connectors.Count);
+
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+
+        }
+
+        #endregion
+
+        #region 06 Python Node
+
+        [Test]
+        public void ConnectTwoPointArraysWithoutPython()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\\Samples\connect two point arrays without python.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
+
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+
+        }
+
+        [Ignore]
+        public void ConnectTwoPointArrays()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\\Samples\connect two point arrays.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
+
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+
+        }
+
+        [Ignore]
+        public void CreateSineWaveFromSelectedCurve()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\\Samples\create sine wave from selected curve.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(2, model.CurrentWorkspace.Connectors.Count);
+
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+
+        }
+
+        [Test]
+        public void CreateSineWaveFromSelectedPoints()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\\Samples\create sine wave from selected points.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
+
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+
+        }
+
+
+
+        #endregion
     }
 }
