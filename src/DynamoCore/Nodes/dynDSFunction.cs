@@ -180,7 +180,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        protected override AssociativeNode GetIndexedOutputNode(int index)
+        public override AssociativeNode GetIndexedOutputNode(int index)
         {
             if (index < 0 ||
                 (OutPortData != null && index >= OutPortData.Count) ||

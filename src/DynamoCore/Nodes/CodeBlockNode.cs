@@ -222,7 +222,7 @@ namespace Dynamo.Nodes
             builder.Build(this, inputAstNodes);
         }
 
-        protected override AssociativeNode GetIndexedOutputNode(int portIndex)
+        public override AssociativeNode GetIndexedOutputNode(int portIndex)
         {
             if (this.State == ElementState.ERROR)
                 return null;

@@ -416,6 +416,60 @@ namespace Dynamo.DSEngine
             }
         }
 
+        private enum MarkFlag
+        {
+            NoMark,
+            TempMark,
+            Marked
+        }
+
+        // Reverse post-order to sort nodes
+        private void MarkNode(NodeModel node, Dictionary<NodeModel, MarkFlag> nodeFlags, LinkedList<NodeModel> sortedList)
+        {
+            var flag = nodeFlags[node];
+            if (MarkFlag.TempMark == flag)
+            {
+                return;
+            }
+            else if (MarkFlag.NoMark == flag)
+            {
+                nodeFlags[node] = MarkFlag.TempMark;
+
+                HashSet<NodeModel> outputs = new HashSet<NodeModel>();
+                node.Outputs.Values.ToList().ForEach(set => set.ToList().ForEach(t => outputs.Add(t.Item2)));
+                foreach (var output in outputs)
+                {
+                    MarkNode(output, nodeFlags, sortedList);
+                }
+
+                nodeFlags[node] = MarkFlag.Marked;
+                sortedList.AddFirst(node);
+            }
+        }
+
+        /// <summary>
+        /// Sort nodes in topological order.
+        /// </summary>
+        /// <param name="nodes"></param>
+        /// <returns></returns>
+        public IEnumerable<NodeModel> TopologicalSort(IEnumerable<NodeModel> nodes)
+        {
+            Dictionary<NodeModel, MarkFlag> nodeFlags = new Dictionary<NodeModel, MarkFlag>();
+            foreach (var node in nodes)
+            {
+                nodeFlags[node] = MarkFlag.NoMark;
+            }
+            LinkedList<NodeModel> sortedNodes = new LinkedList<NodeModel>();
+
+            var candidate = nodeFlags.FirstOrDefault(pair => pair.Value == MarkFlag.NoMark).Key;
+            while (candidate != null)
+            {
+                MarkNode(candidate, nodeFlags, sortedNodes);
+                candidate = nodeFlags.FirstOrDefault(pair => pair.Value == MarkFlag.NoMark).Key;
+            }
+            return sortedNodes;
+        }
+
         /// <summary>
         /// Compiling a collection of Dynamo nodes to AST nodes, no matter 
         /// whether Dynamo node has been compiled or not.
@@ -423,7 +477,51 @@ namespace Dynamo.DSEngine
         /// <param name="nodes"></param>
         public void CompileToAstNodes(IEnumerable<NodeModel> nodes)
         {
-            throw new NotImplementedException();
+            var sortedNodes = TopologicalSort(nodes);
+
+            foreach (var node in sortedNodes)
+            {
+                List<AssociativeNode> inputAstNodes = new List<AssociativeNode>();
+                for (int index = 0; index < node.InPortData.Count; ++index)
+                {
+                    Tuple<int, NodeModel> inputTuple;
+
+                    AssociativeNode inputNode = null;
+                    if (!node.TryGetInput(index, out inputTuple))
+                    {
+                        inputNode = new NullNode();
+                    }
+                    else
+                    {
+                        int outputIndexOfInput = inputTuple.Item1;
+                        NodeModel inputModel = inputTuple.Item2;
+                        inputNode = inputModel.GetIndexedOutputNode(outputIndexOfInput);
+                    }
+
+                    inputAstNodes.Add(inputNode);
+                }
+
+                if (node is CodeBlockNodeModel)
+                {
+                    this.Build(node as CodeBlockNodeModel, inputAstNodes);
+                }
+                else if (node is DSFunction)
+                {
+                    this.Build(node as DSFunction, inputAstNodes);
+                }
+                else if (node is Dynamo.Nodes.Double)
+                {
+                    this.Build(node as Dynamo.Nodes.Double, inputAstNodes);
+                }
+                else if (node is DoubleInput)
+                {
+                    this.Build(node as DoubleInput, inputAstNodes);
+                }
+                else
+                {
+                    throw new NotSupportedException("This kind of node not supported");
+                }
+            }
         }
         #endregion
 
