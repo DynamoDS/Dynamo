@@ -51,6 +51,9 @@
 
       <testFixture name="CurveLoopTests">
         <test name="RectangleByCurves_ValidArgs" modelPath=".\empty.rfa"/>
+        <test name="TriangleByCurves_ValidArgs" modelPath=".\empty.rfa"/>
+        <test name="OpenCurveByCurves_ValidArgs" modelPath=".\empty.rfa"/>
+        <test name="NonPlanarOpenCurveByCurves_ValidArgs" modelPath=".\empty.rfa"/>
       </testFixture>
 			
 		</testAssembly>
