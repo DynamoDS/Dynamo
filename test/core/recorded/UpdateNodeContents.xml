@@ -1,0 +1,36 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <CreateNodeCommand NodeId="2ba65a2e-c3dd-4d27-9d18-9bf123835fb8" NodeName="Number" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <CreateNodeCommand NodeId="2279f845-4ba9-4300-a6c3-a566cd8b4a32" NodeName="Number Slider" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <CreateNodeCommand NodeId="d33abcb6-50fd-4d18-ac89-87adb2d28053" NodeName="String" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <CreateNodeCommand NodeId="540fffbb-4f5b-4496-9231-eba5b04e388c" NodeName="Formula" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <CreateNodeCommand NodeId="0a60f132-25a0-4b7c-85f2-3c31f39ef9da" NodeName="Build Sublists" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="2ba65a2e-c3dd-4d27-9d18-9bf123835fb8" Modifiers="0" />
+  <DragSelectionCommand X="263" Y="216" DragOperation="0" />
+  <DragSelectionCommand X="84" Y="58" DragOperation="1" />
+  <SelectModelCommand ModelGuid="2279f845-4ba9-4300-a6c3-a566cd8b4a32" Modifiers="0" />
+  <DragSelectionCommand X="303" Y="237" DragOperation="0" />
+  <DragSelectionCommand X="102" Y="144" DragOperation="1" />
+  <SelectModelCommand ModelGuid="d33abcb6-50fd-4d18-ac89-87adb2d28053" Modifiers="0" />
+  <DragSelectionCommand X="297" Y="261" DragOperation="0" />
+  <DragSelectionCommand X="76" Y="231" DragOperation="1" />
+  <SelectModelCommand ModelGuid="540fffbb-4f5b-4496-9231-eba5b04e388c" Modifiers="0" />
+  <DragSelectionCommand X="329" Y="283" DragOperation="0" />
+  <DragSelectionCommand X="86" Y="314" DragOperation="1" />
+  <SelectModelCommand ModelGuid="0a60f132-25a0-4b7c-85f2-3c31f39ef9da" Modifiers="0" />
+  <DragSelectionCommand X="364" Y="309" DragOperation="0" />
+  <DragSelectionCommand X="286" Y="311" DragOperation="1" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="2ba65a2e-c3dd-4d27-9d18-9bf123835fb8" Name="Value" Value="12.34" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="2279f845-4ba9-4300-a6c3-a566cd8b4a32" Name="Min" Value="23.45" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="2279f845-4ba9-4300-a6c3-a566cd8b4a32" Name="Value" Value="34.56" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="2279f845-4ba9-4300-a6c3-a566cd8b4a32" Name="Max" Value="45.67" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="d33abcb6-50fd-4d18-ac89-87adb2d28053" Name="Value" Value="Test String Input" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="540fffbb-4f5b-4496-9231-eba5b04e388c" Name="FormulaString" Value="a+b+c" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="0a60f132-25a0-4b7c-85f2-3c31f39ef9da" Name="Value" Value="d" />
+</Commands>

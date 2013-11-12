@@ -271,6 +271,12 @@ namespace Dynamo.ViewModels
 
         public double WorkspaceActualHeight { get; set; }
         public double WorkspaceActualWidth { get; set; }
+        public void WorkspaceActualSize(double width, double height)
+        {
+            WorkspaceActualWidth = width;
+            WorkspaceActualHeight = height;
+            RaisePropertyChanged("WorkspaceActualSize");
+        }
 
         /// <summary>
         /// The index in the collection of workspaces of the current workspace.
@@ -1273,7 +1279,7 @@ namespace Dynamo.ViewModels
 
         public void Escape(object parameter)
         {
-            CurrentSpaceViewModel.OnRequestStopPan(this, null); // Escape Pan Mode
+            CurrentSpaceViewModel.CancelActiveState();
         }
 
         internal bool CanEscape(object parameter)

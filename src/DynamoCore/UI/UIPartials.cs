@@ -171,7 +171,6 @@ namespace Dynamo.Nodes
 
     public partial class Sublists : BasicInteractive<string>
     {
-
         public override void SetupCustomUIElements(object ui)
         {
             var nodeUI = ui as dynNodeView;
@@ -201,6 +200,16 @@ namespace Dynamo.Nodes
             });
         }
 
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (name == "Value")
+            {
+                this.Value = value;
+                return true; // UpdateValueCore handled.
+            }
+
+            return base.UpdateValueCore(name, value);
+        }
     }
 
     public partial class Breakpoint : NodeWithOneOutput
@@ -297,6 +306,16 @@ namespace Dynamo.Nodes
             });
         }
 
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (name == "Value")
+            {
+                this.Value = value;
+                return true; // UpdateValueCore handled.
+            }
+
+            return base.UpdateValueCore(name, value);
+        }
     }
 
     //public partial class AngleInput : DoubleInput
@@ -440,6 +459,25 @@ namespace Dynamo.Nodes
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
             tb_slider.SetBinding(Slider.MinimumProperty, bindingMinSlider);
+        }
+
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            var converter = new DoubleDisplay();
+            switch (name)
+            {
+                case "Value":
+                    this.Value = ((double)converter.ConvertBack(value, typeof(double), null, null));
+                    return true; // UpdateValueCore handled.
+                case "Max":
+                    this.Max = ((double)converter.ConvertBack(value, typeof(double), null, null));
+                    return true; // UpdateValueCore handled.
+                case "Min":
+                    this.Min = ((double)converter.ConvertBack(value, typeof(double), null, null));
+                    return true; // UpdateValueCore handled.
+            }
+
+            return base.UpdateValueCore(name, value);
         }
     }
 
@@ -648,6 +686,21 @@ namespace Dynamo.Nodes
             });
         }
 
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (name == "Value")
+            {
+                var converter = new StringDisplay();
+                this.Value = ((string)converter.ConvertBack(value, typeof(string), null, null));
+                return true; // UpdateValueCore handled.
+            }
+
+            // There's another 'UpdateValueCore' method in 'String' base class,
+            // since they are both bound to the same property, 'StringInput' 
+            // should be given a chance to handle the property value change first
+            // before the base class 'String'.
+            return base.UpdateValueCore(name, value);
+        }
     }
 
     public partial class StringFilename : BasicInteractive<string>
@@ -815,6 +868,17 @@ namespace Dynamo.Nodes
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             });
         }
+
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (name == "FormulaString")
+            {
+                this.FormulaString = value;
+                return true; // UpdateValueCore handled.
+            }
+
+            return base.UpdateValueCore(name, value);
+        }
     }
 
     public partial class Output
@@ -841,6 +905,17 @@ namespace Dynamo.Nodes
                 Mode = BindingMode.TwoWay,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             });
+        }
+
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (name == "Symbol")
+            {
+                this.Symbol = value;
+                return true; // UpdateValueCore handled.
+            }
+
+            return base.UpdateValueCore(name, value);
         }
     }
 
@@ -870,6 +945,16 @@ namespace Dynamo.Nodes
             });
         }
 
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (name == "InputSymbol")
+            {
+                this.InputSymbol = value;
+                return true; // UpdateValueCore handled.
+            }
+
+            return base.UpdateValueCore(name, value);
+        }
     }
 
     public partial class Watch : NodeWithOneOutput
@@ -928,23 +1013,29 @@ namespace Dynamo.Nodes
     {
         public override void editWindowItem_Click(object sender, RoutedEventArgs e)
         {
-
-            var editWindow = new EditWindow {DataContext = this};
-
-            var bindingVal = new System.Windows.Data.Binding("Value")
+            var editWindow = new EditWindow { DataContext = this };
+            editWindow.BindToProperty(null, new System.Windows.Data.Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
                 Converter = new StringDisplay(),
                 NotifyOnValidationError = false,
                 Source = this,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            };
-            editWindow.editText.SetBinding(TextBox.TextProperty, bindingVal);
+            });
 
-            if (editWindow.ShowDialog() != true)
+            editWindow.ShowDialog();
+        }
+
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (name == "Value")
             {
-                return;
+                var converter = new StringDisplay();
+                this.Value = converter.ConvertBack(value, typeof(string), null, null) as string;
+                return true;
             }
+
+            return base.UpdateValueCore(name, value);
         }
     }
 
