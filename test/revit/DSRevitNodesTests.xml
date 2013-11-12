@@ -56,6 +56,10 @@
         <test name="NonPlanarOpenCurveByCurves_ValidArgs" modelPath=".\empty.rfa"/>
       </testFixture>
 
+      <testFixture name="DividedPathTests">
+        <test name="ByCurveAndEqualDivisions_ValidArgs" modelPath=".\empty.rfa"/>
+      </testFixture>
+      
       <testFixture name="SolidTests">
         <test name="ByExtrusion_ValidArgs" modelPath=".\empty.rfa"/>
       </testFixture>
