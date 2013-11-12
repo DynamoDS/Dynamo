@@ -13,7 +13,7 @@ namespace DSRevitNodes.GeometryObjects
     /// <summary>
     /// Class for making a Revit NurbsSpline.
     /// </summary>
-    public class DSNurbSpline : DSCurve, IGraphicItem
+    public class DSNurbSpline : DSCurve
     {
 
         #region Private constructors
