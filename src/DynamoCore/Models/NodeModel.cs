@@ -857,7 +857,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        protected virtual AssociativeNode GetIndexedOutputNode(int index)
+        public virtual AssociativeNode GetIndexedOutputNode(int index)
         {
             if (index > 0)
             {
