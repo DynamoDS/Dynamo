@@ -1,6 +1,7 @@
 ﻿using System;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
+using DSRevitNodes.Graphics;
 
 namespace DSRevitNodes
 {
@@ -29,7 +30,23 @@ namespace DSRevitNodes
             }
         }
 
+        #region Tesselation
 
+        public void Tessellate(IRenderPackage package)
+        {
+            var mesh = this.InternalFace.Triangulate(GraphicsManager.TesselationLevelOfDetail);
 
+            for (var i = 0; i < mesh.NumTriangles; i++)
+            {
+                for (var j = 0; j < 3; j++)
+                {
+                    var xyz = mesh.get_Triangle(i).get_Vertex(i);
+                    package.PushTriangleVertex(xyz.X, xyz.Y, xyz.Z);
+                }
+            }
+
+        }
+
+        #endregion
     }
 }
