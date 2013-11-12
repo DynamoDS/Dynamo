@@ -34,12 +34,28 @@ namespace DSRevitNodes
 
         #region Public properties
 
+        /// <summary>
+        /// The internal faces of the solid
+        /// </summary>
         public DSFace[] Faces
         {
             get
             {
                 return this.InternalSolid.Faces.Cast<Autodesk.Revit.DB.Face>()
                             .Select(x => new DSFace(x))
+                            .ToArray();
+            }
+        }
+
+        /// <summary>
+        /// The internal edges of the solid
+        /// </summary>
+        public DSEdge[] Edges
+        {
+            get
+            {
+                return this.InternalSolid.Edges.Cast<Autodesk.Revit.DB.Edge>()
+                            .Select(x => new DSEdge(x))
                             .ToArray();
             }
         }
