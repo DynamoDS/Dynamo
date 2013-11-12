@@ -213,7 +213,10 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return !this.PreviewBubble.IsShowPreviewByDefault;
+                if(this.PreviewBubble != null)
+                    return !this.PreviewBubble.IsShowPreviewByDefault;
+
+                return false;
             }
         }
 
@@ -284,9 +287,25 @@ namespace Dynamo.ViewModels
             dynSettings.Controller.PropertyChanged += Controller_PropertyChanged;
             
             this.ErrorBubble = new InfoBubbleViewModel();
-            this.PreviewBubble = new InfoBubbleViewModel();
-            this.PreviewBubble.PropertyChanged += PreviewBubble_PropertyChanged;
 
+            // Nodes mentioned in switch cases will not have preview bubble
+            switch (nodeLogic.Name)
+            {
+                case "Number":
+                    break;
+                case "String":
+                    break;
+                case "Watch":
+                    break;
+                case "Watch 3D":
+                    break;
+                case "Boolean":
+                    break;
+                default:
+                    this.PreviewBubble = new InfoBubbleViewModel();
+                    this.PreviewBubble.PropertyChanged += PreviewBubble_PropertyChanged;
+                    break;
+            }
             //Do a one time setup of the initial ports on the node
             //we can not do this automatically because this constructor
             //is called after the node's constructor where the ports
@@ -425,18 +444,21 @@ namespace Dynamo.ViewModels
 
         private void HandleDefaultShowPreviewChanged()
         {
-            RaisePropertyChanged("IsPreviewInsetVisible");
-            this.PreviewBubble.IsShowPreviewByDefault = dynSettings.Controller.IsShowPreviewByDefault;
-            UpdatePreviewBubbleContent();
-            if (dynSettings.Controller.IsShowPreviewByDefault)
+            if (this.PreviewBubble != null)
             {
-                this.PreviewBubble.SetAlwaysVisibleCommand.Execute(true);
-                this.PreviewBubble.InstantAppearCommand.Execute(null);
-            }
-            else
-            {
-                this.PreviewBubble.SetAlwaysVisibleCommand.Execute(false);
-                this.PreviewBubble.InstantCollapseCommand.Execute(null);
+                RaisePropertyChanged("IsPreviewInsetVisible");
+                this.PreviewBubble.IsShowPreviewByDefault = dynSettings.Controller.IsShowPreviewByDefault;
+                UpdatePreviewBubbleContent();
+                if (dynSettings.Controller.IsShowPreviewByDefault)
+                {
+                    this.PreviewBubble.SetAlwaysVisibleCommand.Execute(true);
+                    this.PreviewBubble.InstantAppearCommand.Execute(null);
+                }
+                else
+                {
+                    this.PreviewBubble.SetAlwaysVisibleCommand.Execute(false);
+                    this.PreviewBubble.InstantCollapseCommand.Execute(null);
+                }
             }
         }
 
@@ -445,12 +467,16 @@ namespace Dynamo.ViewModels
             if (this.IsSelected == true)
             {
                 this.ZIndex = 4;
-                this.PreviewBubble.ZIndex = 4;
+
+                if (this.PreviewBubble != null)
+                    this.PreviewBubble.ZIndex = 4;
            }
             else
             {
                 this.ZIndex = 3;
-                this.PreviewBubble.ZIndex = 3;
+
+                if (this.PreviewBubble != null)
+                    this.PreviewBubble.ZIndex = 3;
             }
         }
 
@@ -801,9 +827,12 @@ namespace Dynamo.ViewModels
 
         private void ShowPreview(object parameter)
         {
-            UpdatePreviewBubbleContent();
-            this.PreviewBubble.ZIndex = 5;
-            this.PreviewBubble.InstantAppearCommand.Execute(null);
+            if (this.PreviewBubble != null)
+            {
+                UpdatePreviewBubbleContent();
+                this.PreviewBubble.ZIndex = 5;
+                this.PreviewBubble.InstantAppearCommand.Execute(null);
+            }
         }
 
         private bool CanShowPreview(object parameter)
