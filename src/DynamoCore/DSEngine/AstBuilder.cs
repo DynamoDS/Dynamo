@@ -3,14 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Models;
-using Dynamo.Nodes;
-using GraphToDSCompiler;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSDefinitions;
-using ProtoCore.Utils;
 using ProtoScript.Runners;
-using Double = Dynamo.Nodes.Double;
-using String = Dynamo.Nodes.String;
 
 namespace Dynamo.DSEngine
 {
@@ -351,7 +346,6 @@ namespace Dynamo.DSEngine
         ///     
         /// </summary>
         /// <param name="func"></param>
-        /// </param>
         /// <returns></returns>
         private FunctionDefinitionNode BuildPartialFunction(FunctionCallNode func)
         {
