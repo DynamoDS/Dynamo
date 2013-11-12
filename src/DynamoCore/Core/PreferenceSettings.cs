@@ -48,33 +48,27 @@ namespace Dynamo
         /// else return false
         /// </summary>
         /// <param name="filePath">Path of the XML File</param>
-        /// <returns>Whether file is saved or error occurred.</returns>
-        public bool Save(string filePath)
+        public void Save(string filePath)
         {
-            try
-            {
-                XmlSerializer serializer = new XmlSerializer(typeof(PreferenceSettings));
-                FileStream fs = new FileStream(filePath, FileMode.Create, FileAccess.Write);
-                serializer.Serialize(fs, this);
-                fs.Close(); // Release file lock
-                return true;
-            }
-            catch (Exception) { }
-            
-            return false;
+            // In the event of the following statement fails, it will be handled by application
+            // exception handler, and display to user.
+            XmlSerializer serializer = new XmlSerializer(typeof(PreferenceSettings));
+            FileStream fs = new FileStream(filePath, FileMode.Create, FileAccess.Write);
+            serializer.Serialize(fs, this);
+            fs.Close(); // Release file lock
         }
         /// <summary>
         /// Save PreferenceSettings in a default directory when no path is specified
         /// </summary>
         /// <returns>Whether file is saved or error occurred.</returns>
-        public bool Save()
+        public void Save()
         {
             if ( DYNAMO_TEST_PATH == null )
                 // Save in User Directory Path
-                return Save(GetSettingsFilePath());
+                Save(GetSettingsFilePath());
             else
                 // Support Testing
-                return Save(DYNAMO_TEST_PATH);
+                Save(DYNAMO_TEST_PATH);
         }
 
         /// <summary>
@@ -93,14 +87,10 @@ namespace Dynamo
             if (string.IsNullOrEmpty(filePath) || (!File.Exists(filePath)))
                 return settings;
             
-            try
-            {
-                XmlSerializer serializer = new XmlSerializer(typeof(PreferenceSettings));
-                FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-                settings = serializer.Deserialize(fs) as PreferenceSettings;
-                fs.Close(); // Release file lock
-            }
-            catch (Exception) { }
+            XmlSerializer serializer = new XmlSerializer(typeof(PreferenceSettings));
+            FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+            settings = serializer.Deserialize(fs) as PreferenceSettings;
+            fs.Close(); // Release file lock
             
             return settings;
         }
