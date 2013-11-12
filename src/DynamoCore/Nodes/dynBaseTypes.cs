@@ -680,11 +680,6 @@ namespace Dynamo.Nodes
 
             RegisterAllPorts();
         }
-
-        protected override void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
-        {
-            builder.Build(this, inputs);
-        }
     }
 
     [NodeName("Sort by Key")]
@@ -701,11 +696,6 @@ namespace Dynamo.Nodes
 
             RegisterAllPorts();
         }
-
-        protected override void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
-        {
-             builder.Build(this, inputs);
-        }
     }
 
     [NodeName("Sort")]
@@ -720,11 +710,6 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("sorted", "Sorted list", typeof(Value.List)));
 
             RegisterAllPorts();
-        }
-
-        protected override void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
-        {
-            builder.Build(this, inputs);
         }
     }
 
@@ -2831,11 +2816,6 @@ namespace Dynamo.Nodes
             double theta = ((Value.Number)input).Item;
             return Value.NewNumber(Math.Asin(theta));
         }
-
-        protected override void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
-        {
-            builder.Build(this, inputs);
-        }
     }
 
     [NodeName("Inverse Cosine")]
@@ -2859,11 +2839,6 @@ namespace Dynamo.Nodes
             double theta = ((Value.Number)input).Item;
             return Value.NewNumber(Math.Acos(theta));
         }
-
-        protected override void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
-        {
-            builder.Build(this, inputs);
-        }
     }
 
     [NodeName("Inverse Tangent")]
@@ -2886,11 +2861,6 @@ namespace Dynamo.Nodes
 
             double theta = ((Value.Number)input).Item;
             return Value.NewNumber(Math.Atan(theta));
-        }
-
-        protected override void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
-        {
-            builder.Build(this, inputs);
         }
     }
 
@@ -3304,9 +3274,12 @@ namespace Dynamo.Nodes
 
         #endregion
 
-        protected override void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
+        public override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
-            builder.Build(this, inputs);
+            var rhs = AstFactory.BuildDoubleNode(Value);
+            var assignment = AstFactory.BuildAssignment(AstIdentifier, rhs);
+
+            return new[] { assignment };
         }
     }
 
@@ -3347,11 +3320,6 @@ namespace Dynamo.Nodes
         }
 
         #endregion
-
-        protected override void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
-        {
-            builder.Build(this, inputs);
-        }
     }
 
     public abstract class Bool : BasicInteractive<bool>
@@ -3361,9 +3329,12 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewNumber(Value ? 1 : 0);
         }
 
-        protected override void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
+        public override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
-            builder.Build(this, inputs);
+            var rhs = AstFactory.BuildBooleanNode(Value);
+            var assignment = AstFactory.BuildAssignment(AstIdentifier, rhs);
+
+            return new[] { assignment };
         }
 
         #region Serialization/Deserialization Methods
@@ -3403,9 +3374,12 @@ namespace Dynamo.Nodes
             return "\"" + base.PrintExpression() + "\"";
         }
 
-        protected override void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
+        public override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
-            builder.Build(this, inputs);
+            var rhs = AstFactory.BuildStringNode(Value);
+            var assignment = AstFactory.BuildAssignment(AstIdentifier, rhs);
+
+            return new[] { assignment };
         }
 
         #region Serialization/Deserialization Methods
@@ -3638,23 +3612,24 @@ namespace Dynamo.Nodes
                 : FScheme.Value.NewList(Utils.SequenceToFSharpList(_parsed.Select(x => x.GetFSchemeValue(paramDict))));
         }
 
-        protected override void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
+        public override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
             var paramDict = InPortData.Select(x => x.NickName)
-                .Zip(inputs, Tuple.Create)
-                .ToDictionary(x => x.Item1, x => x.Item2);
+                   .Zip(inputAstNodes, Tuple.Create)
+                   .ToDictionary(x => x.Item1, x => x.Item2);
 
-            List<AssociativeNode> newInputs = null;
-            if (_parsed.Count == 1)
-            {
-                newInputs = new List<AssociativeNode> { _parsed[0].GetAstNode(paramDict)};
-            }
-            else
-            {
-                newInputs = _parsed.Select(x => x.GetAstNode(paramDict)).ToList();
-            }
+            List<AssociativeNode> newInputs = _parsed.Count == 1
+                ? new List<AssociativeNode> { _parsed[0].GetAstNode(paramDict) }
+                : _parsed.Select(x => x.GetAstNode(paramDict)).ToList();
 
-            builder.Build(this, newInputs);
+            AssociativeNode rhs =
+                newInputs.Count == 1
+                    ? newInputs[0]
+                    : AstFactory.BuildExprList(newInputs);
+
+            var assignment = AstFactory.BuildAssignment(AstIdentifier, rhs);
+
+            return new[] { assignment };
         }
 
         public interface IDoubleSequence
