@@ -341,7 +341,7 @@
             </Canvas>
             <controls:Watch3DView Margin="0,20,0,0"
                                           Visibility="{Binding FullscreenWatchShowing, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                            IsHitTestVisible="{Binding CanNavigateBackground}">
+                                            IsHitTestVisible="{Binding WatchPreviewHitTest}">
 
             </controls:Watch3DView>
         </Grid>
