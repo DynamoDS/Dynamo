@@ -109,6 +109,15 @@
 				<test name="Transforms_TranslateAndRotate" runDynamo="True" modelPath=".\empty.rfa"/>
 				<test name="Formulas_FormulaCurve" runDynamo="True" modelPath=".\empty.rfa"/>
 				<test name="Spreadsheets_CSVToStuff" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="AllCurveTestModelCurve" runDynamo="True" modelPath=".\Samples\AllCurves.rfa"/>
+				<test name="AllCurveTest" runDynamo="True" modelPath=".\Samples\AllCurves.rfa"/>
+				<test name="ArcAndLineFromRefPoints" runDynamo="True" modelPath=".\Samples\AllCurves.rfa"/>
+				<test name="ArcAndLine" runDynamo="True" modelPath=".\Samples\AllCurves.rfa"/>
+				<test name="ArcFromRefPoints" runDynamo="True" modelPath=".\Samples\AllCurves.rfa"/>
+				<test name="Arc" runDynamo="True" modelPath=".\Samples\AllCurves.rfa"/>
+				<test name="Circle" runDynamo="True" modelPath=".\Samples\AllCurves.rfa"/>
+				<test name="Ellipse" runDynamo="True" modelPath=".\Samples\AllCurves.rfa"/>
+				<test name="ConnectTwoPointArraysWithoutPython" runDynamo="True" modelPath=".\Samples\AllCurves.rfa"/>
 			</testFixture>
 			<testFixture name="SelectionTests">
 				<test name="FamilyTypeSelectorNode" runDynamo="True" modelPath=".\empty.rfa"/>
