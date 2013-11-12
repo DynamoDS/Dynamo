@@ -55,7 +55,11 @@
         <test name="OpenCurveByCurves_ValidArgs" modelPath=".\empty.rfa"/>
         <test name="NonPlanarOpenCurveByCurves_ValidArgs" modelPath=".\empty.rfa"/>
       </testFixture>
-			
+
+      <testFixture name="SolidTests">
+        <test name="ByExtrusion_ValidArgs" modelPath=".\empty.rfa"/>
+      </testFixture>
+      
 		</testAssembly>
 	</testAssemblies>
 </tests>
