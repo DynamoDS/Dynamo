@@ -41,6 +41,8 @@ namespace Dynamo.Tests.UI
             this.controller = null;
         }
 
+        #region Recorded Test Cases for Command Framework
+
         [Test, RequiresSTA]
         public void TestCreateNodeCommand()
         {
@@ -324,6 +326,52 @@ namespace Dynamo.Tests.UI
         }
 
         [Test, RequiresSTA]
+        public void TestModifyPythonNodes()
+        {
+            RunCommandsFromFile("ModifyPythonNodes.xml", true);
+            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count);
+
+            var python = GetNode("6f580b72-6aeb-4af2-b28b-a2e5b634721b") as Python;
+            var pvarin = GetNode("f0fc1dea-3874-40a0-a532-90c0ee10f437") as PythonVarIn;
+
+            Assert.AreEqual("# Modification 3", python.Script);
+            Assert.AreEqual("# Modification 4", pvarin.Script);
+        }
+
+        [Test, RequiresSTA]
+        public void TestModifyPythonNodesUndo()
+        {
+            RunCommandsFromFile("ModifyPythonNodesUndo.xml", true);
+            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count);
+
+            var python = GetNode("6f580b72-6aeb-4af2-b28b-a2e5b634721b") as Python;
+            var pvarin = GetNode("f0fc1dea-3874-40a0-a532-90c0ee10f437") as PythonVarIn;
+
+            Assert.AreEqual("# Modification 1", python.Script);
+            Assert.AreEqual("# Modification 2", pvarin.Script);
+        }
+
+        [Test, RequiresSTA]
+        public void TestModifyPythonNodesUndoRedo()
+        {
+            RunCommandsFromFile("ModifyPythonNodesUndoRedo.xml", true);
+            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count);
+
+            var python = GetNode("6f580b72-6aeb-4af2-b28b-a2e5b634721b") as Python;
+            var pvarin = GetNode("f0fc1dea-3874-40a0-a532-90c0ee10f437") as PythonVarIn;
+
+            Assert.AreEqual("# Modification 3", python.Script);
+            Assert.AreEqual("# Modification 4", pvarin.Script);
+        }
+
+        #endregion
+
+        #region Recorded Test Cases for Defect Verifications
+
+        [Test, RequiresSTA]
         public void Defect_MAGN_491()
         {
             RunCommandsFromFile("Defect-MAGN-491.xml");
@@ -353,6 +401,8 @@ namespace Dynamo.Tests.UI
             Assert.NotNull(nodes);
             Assert.AreEqual(3, nodes.Count);
         }
+
+        #endregion
 
         private ModelBase GetNode(string guid)
         {
