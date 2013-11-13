@@ -14,7 +14,7 @@ namespace DSRevitNodes
     /// </summary>
     public abstract class DSCurve : IGeometryObject
     {
-        internal Autodesk.Revit.DB.Curve InternalCurve
+        public Autodesk.Revit.DB.Curve InternalCurve
         {
             get; set;
         }

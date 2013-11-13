@@ -6,7 +6,7 @@ using Autodesk.DesignScript.Interfaces;
 
 namespace DSRevitNodes.GeometryObjects
 {
-    interface IGeometryObject : IGraphicItem
+    public interface IGeometryObject : IGraphicItem
     {
     }
 }

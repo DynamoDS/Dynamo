@@ -86,7 +86,7 @@ namespace DSRevitNodes.Elements
         /// </summary>
         /// <param name="ele"></param>
         /// <returns></returns>
-        private static AbstractElement InternalGetDSTypeFromElement(Autodesk.Revit.DB.Element ele)
+        public static AbstractElement InternalGetDSTypeFromElement(Autodesk.Revit.DB.Element ele)
         {
             if (ele is Autodesk.Revit.DB.ReferencePoint)
             {
