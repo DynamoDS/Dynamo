@@ -22,6 +22,7 @@ namespace Dynamo.Nodes
     [NodeDescription("DesignScript Builtin Functions")]
     [IsInteractive(false)]
     [NodeSearchableAttribute(false)]
+    [IsMetaNodeAttribute]
     public class DSFunction : NodeModel
     {
         public FunctionItem Definition { get; set; }

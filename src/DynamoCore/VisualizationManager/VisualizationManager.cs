@@ -682,67 +682,6 @@ namespace Dynamo
         }
 
         /// <summary>
-        /// Strips all duplicates from a render description.
-        /// </summary>
-        /// <param name="rd">A render description</param>
-        private void StripDuplicates(RenderDescription rd)
-        {
-            var sw = new Stopwatch();
-            sw.Start();
-
-            Debug.WriteLine(string.Format("{0} line segments before stripping", rd.Lines.Count/2));
-
-            var comp = new Point3DEqualityComparer();
-
-            //POINTS
-            var strippedPoints = rd.Points.Distinct(comp).ToList();
-
-            //SELECTED POINTS
-            var strippedSelPoints = rd.SelectedPoints.Distinct(comp).ToList();
-
-            //LINES
-            var strippedLines = StripLines(rd.Lines.ToList());
-
-            //SELECTED LINES
-            var strippedSelLines = StripLines(rd.SelectedLines.ToList());
-
-            rd.Points.Clear();
-            rd.SelectedPoints.Clear();
-            rd.Lines.Clear();
-            rd.SelectedLines.Clear();
-
-            rd.Points.AddRange(strippedPoints);
-            rd.SelectedPoints.AddRange(strippedSelPoints);
-            rd.Lines.AddRange(strippedLines);
-            rd.SelectedLines.AddRange(strippedSelLines);
-
-            Debug.WriteLine(string.Format("{0} line segments after stripping", rd.Lines.Count / 2));
-
-            sw.Stop();
-            Debug.WriteLine(string.Format("{0} elapsed for stripping duplicate geometry.", sw.Elapsed));
-        }
-
-        private static IEnumerable<Point3D> StripLines(List<Point3D> lines)
-        {
-            var tupSet = new HashSet<Tuple<Point3D, Point3D>>();
-            var tupComp = new Point3DTupleEqualityComparer();
-
-            for (int i = 0; i < lines.Count; i += 2)
-            {
-                var lineSelTup = new Tuple<Point3D, Point3D>(lines[i], lines[i + 1]);
-                if(!tupSet.Contains(lineSelTup, tupComp))
-                    tupSet.Add(lineSelTup);
-            }
-            var strippedSelLines = new List<Point3D>();
-            foreach (var t in tupSet)
-            {
-                strippedSelLines.Add(t.Item1);
-                strippedSelLines.Add(t.Item2);
-            }
-            return strippedSelLines;
-        }
-
-        /// <summary>
         /// Adds a visualization to the dictionary and adds a handler for node property changes.
         /// </summary>
         /// <param name="kvp"></param>
@@ -941,53 +880,6 @@ namespace Dynamo
         {
             Description = description;
             Id = viewId;
-        }
-    }
-
-    class Point3DTupleEqualityComparer : IEqualityComparer<Tuple<Point3D, Point3D>>
-    {
-        public bool Equals(Tuple<Point3D, Point3D> x, Tuple<Point3D, Point3D> y)
-        {
-            var comp = new Point3DEqualityComparer();
-
-            //if a1 and b1 are equal and a2 and b2 are equal or
-            //a1 and b2 are equal and a2 and b1 are equal
-            if ((comp.Equals(x.Item1, y.Item1) && comp.Equals(x.Item2, y.Item2)) ||
-                (comp.Equals(x.Item1, y.Item2) && comp.Equals(x.Item2, y.Item1)))
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        public int GetHashCode(Tuple<Point3D, Point3D> obj)
-        {
-            double hCode = obj.Item1.X + obj.Item1.Y + obj.Item1.Z + obj.Item2.X + obj.Item2.Y + obj.Item2.Z;
-            return hCode.GetHashCode();
-        }
-    }
-
-    class Point3DEqualityComparer : IEqualityComparer<Point3D>
-    {
-        private const double epsilon = 0.0001;
-
-        public bool Equals(Point3D x, Point3D y)
-        {
-            if (Math.Abs(x.X - y.X) < epsilon &&
-                Math.Abs(x.Y - y.Y) < epsilon &&
-                Math.Abs(x.Z - y.Z) < epsilon)
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        public int GetHashCode(Point3D obj)
-        {
-            double hCode = obj.X + obj.Y + obj.Z;
-            return hCode.GetHashCode();
         }
     }
 }
