@@ -608,6 +608,7 @@ namespace Dynamo.Nodes
     [NodeName("Reverse")]
     [NodeDescription("Reverses a list")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_MODIFY)]
+    [NodeSearchTags("reverse", "end", "last")]
     public class Reverse : BuiltinFunction
     {
         public Reverse()
@@ -623,6 +624,7 @@ namespace Dynamo.Nodes
     [NodeName("List")]
     [NodeDescription("Makes a new list out of the given inputs")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
+    [NodeSearchTags("list")]
     public class NewList : VariableInput
     {
         public NewList()
@@ -701,6 +703,7 @@ namespace Dynamo.Nodes
     [NodeName("Sort")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_MODIFY)]
     [NodeDescription("Returns a sorted list of numbers or strings.")]
+    [NodeSearchTags("sort", "ascending", "order")]
     public class Sort : BuiltinFunction
     {
         public Sort()
@@ -748,7 +751,7 @@ namespace Dynamo.Nodes
     [NodeName("Reduce")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Reduces a list into a new value by combining each element with an accumulated result.")]
-    [NodeSearchTags("foldl")]
+    [NodeSearchTags("fold")]
     public class Fold : BuiltinFunction
     {
         public Fold()
@@ -806,6 +809,7 @@ namespace Dynamo.Nodes
     [NodeName("Number Range")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
     [NodeDescription("Creates a sequence of numbers in the specified range.")]
+    [NodeSearchTags("number", "range", "sequence", "series")]
     [AlsoKnownAs("Dynamo.Nodes.dynBuildSeq", "Dynamo.Nodes.BuildSeq")]
     public class NumberRange : BuiltinFunction
     {
@@ -826,6 +830,7 @@ namespace Dynamo.Nodes
     [NodeName("Number Sequence")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
     [NodeDescription("Creates a sequence of numbers.")]
+    [NodeSearchTags("number", "range", "sequence", "series")]
     public class NumberSeq : NodeWithOneOutput
     {
         public NumberSeq()
