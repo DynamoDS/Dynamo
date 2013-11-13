@@ -319,6 +319,7 @@ namespace Dynamo.Nodes
                         if (lhsIdent != null)
                         {
                             previewVariable = lhsIdent.Name;
+                            // previewVariable = GraphToDSCompiler.GraphUtilities.ASTListToCode(new List<AssociativeNode> { lhsIdent});
                         }
                     }
                 }
@@ -326,12 +327,16 @@ namespace Dynamo.Nodes
             else
             {
                 //Found errors. Get the error message strings and use it to call the DisplayError function
-                string errorMessage = "";
-                int i = 0;
-                for (; i < errors.Count - 1; i++)
-                    errorMessage += (errors[i].Message + "\n");
-                errorMessage += errors[i].Message;
-                DisplayError(errorMessage);
+
+                if (errors != null)
+                {
+                    string errorMessage = "";
+                    int i = 0;
+                    for (; i < errors.Count - 1; i++)
+                        errorMessage += (errors[i].Message + "\n");
+                    errorMessage += errors[i].Message;
+                    DisplayError(errorMessage);
+                }
                 return;
             }
 
