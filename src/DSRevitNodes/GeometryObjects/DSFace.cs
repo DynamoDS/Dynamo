@@ -1,10 +1,12 @@
 ﻿using System;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
+using DSRevitNodes.GeometryObjects;
+using DSRevitNodes.Graphics;
 
 namespace DSRevitNodes
 {
-    public class DSFace
+    public class DSFace : IGeometryObject
     {
         internal Autodesk.Revit.DB.Face InternalFace
         {
@@ -28,5 +30,24 @@ namespace DSRevitNodes
                 return InternalFace.IsTwoSided;
             }
         }
+
+        #region Tesselation
+
+        public void Tessellate(IRenderPackage package)
+        {
+            var mesh = this.InternalFace.Triangulate(GraphicsManager.TesselationLevelOfDetail);
+
+            for (var i = 0; i < mesh.NumTriangles; i++)
+            {
+                for (var j = 0; j < 3; j++)
+                {
+                    var xyz = mesh.get_Triangle(i).get_Vertex(i);
+                    package.PushTriangleVertex(xyz.X, xyz.Y, xyz.Z);
+                }
+            }
+
+        }
+
+        #endregion
     }
 }

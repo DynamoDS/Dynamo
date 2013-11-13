@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
+using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
+using DSRevitNodes.GeometryObjects;
+using DSRevitNodes.Graphics;
 
 namespace DSRevitNodes
 {
-    public class DSSolid
+    public class DSSolid : IGeometryObject
     {
         internal Autodesk.Revit.DB.Solid InternalSolid
         {
@@ -31,12 +34,28 @@ namespace DSRevitNodes
 
         #region Public properties
 
+        /// <summary>
+        /// The internal faces of the solid
+        /// </summary>
         public DSFace[] Faces
         {
             get
             {
                 return this.InternalSolid.Faces.Cast<Autodesk.Revit.DB.Face>()
                             .Select(x => new DSFace(x))
+                            .ToArray();
+            }
+        }
+
+        /// <summary>
+        /// The internal edges of the solid
+        /// </summary>
+        public DSEdge[] Edges
+        {
+            get
+            {
+                return this.InternalSolid.Edges.Cast<Autodesk.Revit.DB.Edge>()
+                            .Select(x => new DSEdge(x))
                             .ToArray();
             }
         }
@@ -74,7 +93,7 @@ namespace DSRevitNodes
         /// <param name="direction"></param>
         /// <param name="distance"></param>
         /// <returns></returns>
-        public static DSSolid ByExtrusion(DSCurve[] profile, Vector direction, double distance)
+        public static DSSolid ByExtrusion(DSCurveLoop profile, Vector direction, double distance)
         {
             if (profile == null)
             {
@@ -86,11 +105,7 @@ namespace DSRevitNodes
                 throw new ArgumentNullException("direction");
             }
 
-            var loop = new CurveLoop();
-            profile.ForEach(x => loop.Append(x.InternalCurve));
-
-            return new DSSolid(loop, direction.ToXyz(), distance);
-
+            return new DSSolid(profile.InternalCurveLoop, direction.ToXyz(), distance);
         }
 
         static DSSolid ByRevolve(List<DSCurve> profile, Vector axis )
@@ -106,6 +121,29 @@ namespace DSRevitNodes
         static DSSolid BySweptBlend(List<List<DSCurve>> profiles, DSCurve spine)
         {
             throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region Tesselation
+
+        public void Tessellate(IRenderPackage package)
+        {
+            var meshes = this.InternalSolid.Faces.Cast<Autodesk.Revit.DB.Face>()
+                .Select(x => x.Triangulate(GraphicsManager.TesselationLevelOfDetail));
+
+            foreach (var mesh in meshes)
+            {
+                for (var i = 0; i < mesh.NumTriangles; i++)
+                {
+                    for (var j = 0; j < 3; j++)
+                    {
+                        var xyz = mesh.get_Triangle(i).get_Vertex(i);
+                        package.PushTriangleVertex(xyz.X, xyz.Y, xyz.Z);
+                    }
+                }
+            }
+
         }
 
         #endregion
