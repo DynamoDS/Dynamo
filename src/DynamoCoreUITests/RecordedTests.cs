@@ -397,6 +397,74 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(2, connectors.Count);
         }
 
+        /// <summary>
+        /// Creates a Code Block Node with a single line comment and multi line comment 
+        /// checks if the ports are created properly and at the correct height
+        /// </summary>
+        [Test, RequiresSTA]
+        public void TestCommentsInCodeBlockNode()
+        {
+            RunCommandsFromFile("TestCommentsInCodeBlockNode.xml");
+
+            //Check the nodes
+            var nodes = workspaceViewModel.Nodes;
+            Assert.NotNull(nodes);
+            Assert.AreEqual(1, nodes.Count);
+
+            //Check the CBN
+            var cbn = GetNode("ebcaa0d3-3f8a-48a7-b5c0-986e383357de") as CodeBlockNodeModel;
+            Assert.AreNotEqual(ElementState.ERROR, cbn.State);
+            Assert.AreEqual(2, cbn.OutPorts.Count);
+
+            Assert.AreEqual("c", cbn.OutPorts[1].ToolTipContent);
+            Assert.AreEqual(100, cbn.OutPorts[1].MarginThickness.Top);
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_590()
+        {
+            RunCommandsFromFile("Defect-MAGN-590.xml");
+
+            //Check the nodes
+            var nodes = workspaceViewModel.Nodes;
+            Assert.NotNull(nodes);
+            Assert.AreEqual(2, nodes.Count);
+
+            //Check the CBN
+            var cbn = GetNode("8630afc1-3d59-4e76-9fca-faa12e6973ea") as CodeBlockNodeModel;
+            var connector = cbn.OutPorts[1].Connectors[0] as ConnectorModel;
+            Assert.AreEqual(2, connector.End.Index);
+        }
+
+        /// <summary>
+        /// Create a code block node with some ports connected and others unconnected. Change all variable names
+        /// and ensure that connectors remain to the port index.
+        /// </summary>
+        [Test, RequiresSTA]
+        public void TestCodeBlockNodeConnectionOnCodeChange()
+        {
+            RunCommandsFromFile("TestCodeBlockNodeConnectionSwitching.xml");
+
+            //Check the nodes
+            var nodes = workspaceViewModel.Nodes;
+            Assert.NotNull(nodes);
+            Assert.AreEqual(2, nodes.Count);
+
+            //Check the CBN
+            var cbn = GetNode("37fade4a-e7ad-43ae-8b6f-27dacb17c1c5") as CodeBlockNodeModel;
+            Assert.AreEqual(4, cbn.OutPorts.Count);
+
+            //Check starting point of connector
+            Assert.AreEqual(0, cbn.OutPorts[0].Connectors.Count);
+            Assert.AreEqual(1, cbn.OutPorts[1].Connectors.Count);
+            Assert.AreEqual(0, cbn.OutPorts[2].Connectors.Count);
+            Assert.AreEqual(1, cbn.OutPorts[3].Connectors.Count);
+
+            //CheckEnding point
+            Assert.AreEqual(1, cbn.OutPorts[1].Connectors[0].End.Index);
+            Assert.AreEqual(0, cbn.OutPorts[3].Connectors[0].End.Index);
+        }
+
         private ModelBase GetNode(string guid)
         {
             Guid id = Guid.Parse(guid);
