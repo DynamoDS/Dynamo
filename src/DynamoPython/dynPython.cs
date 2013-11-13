@@ -175,11 +175,11 @@ namespace Dynamo.Nodes
             return result;
         }
 
-        private dynScriptEditWindow _editWindow;
+        private ScriptEditWindow _editWindow;
 
         void editWindowItem_Click(object sender, RoutedEventArgs e)
         {
-            _editWindow = new dynScriptEditWindow();
+            _editWindow = new ScriptEditWindow();
             // callbacks for autocompletion
             _editWindow.editText.TextArea.TextEntering += textEditor_TextArea_TextEntering;
             _editWindow.editText.TextArea.TextEntered += textEditor_TextArea_TextEntered;
@@ -491,11 +491,11 @@ namespace Dynamo.Nodes
             return result;
         }
 
-        private dynScriptEditWindow _editWindow;
+        private ScriptEditWindow _editWindow;
 
         void editWindowItem_Click(object sender, RoutedEventArgs e)
         {
-            _editWindow = new dynScriptEditWindow();
+            _editWindow = new ScriptEditWindow();
             // callbacks for autocompletion
             _editWindow.editText.TextArea.TextEntering += textEditor_TextArea_TextEntering;
             _editWindow.editText.TextArea.TextEntered += textEditor_TextArea_TextEntered;
