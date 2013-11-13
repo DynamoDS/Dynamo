@@ -37,14 +37,8 @@ namespace Dynamo.Controls
 
         public NodeViewModel ViewModel
         {
-            get
-            {
-                return this.DataContext as NodeViewModel;
-            }
-            set
-            {
-                viewModel = value;
-            }
+            get { return viewModel; }
+            private set { viewModel = value; }
         }
 
         #region constructors
