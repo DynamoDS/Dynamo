@@ -128,6 +128,9 @@ namespace Dynamo.Nodes
             set { }
         }
 
+        // Property added for test case verification purposes
+        public string Script { get { return this._script; } }
+
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
             XmlElement script = xmlDoc.CreateElement("Script");
@@ -376,6 +379,9 @@ namespace Dynamo.Nodes
             }
             set { }
         }
+
+        // Property added for test case verification purposes
+        public string Script { get { return this._script; } }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
