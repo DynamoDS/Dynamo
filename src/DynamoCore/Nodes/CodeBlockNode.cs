@@ -11,6 +11,7 @@ using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
 using System.Windows;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using ArrayNode = ProtoCore.AST.AssociativeAST.ArrayNode;
 using Node = ProtoCore.AST.Node;
 
@@ -129,7 +130,7 @@ namespace Dynamo.Nodes
                         {
                             this.WorkSpace.UndoRecorder.BeginActionGroup();
 
-                            var portConnections = new Dictionary<string, List<PortModel>>();
+                            var portConnections = new OrderedDictionary();
                             //Save the connectors so that we can recreate them at the correct positions
                             SaveAndDeleteConnectors(portConnections);
 
@@ -437,11 +438,11 @@ namespace Dynamo.Nodes
         private bool RequiresOutPort(Statement s, int pos)
         {
             List<string> defVariables = Statement.GetDefinedVariableNames(s, true);
-            
+
             //Check if defined variables exist
             if (defVariables.Count == 0)
                 return false;
-            
+
             //Check if variable has been redclared later on in the CBN
             foreach (string varName in defVariables)
             {
@@ -460,22 +461,26 @@ namespace Dynamo.Nodes
         /// so that they can be recreated if needed.
         /// </summary>
         /// <param name="portConnections">A list of connections that will be destroyed</param>
-        private void SaveAndDeleteConnectors(Dictionary<string, List<PortModel>> portConnections)
+        private void SaveAndDeleteConnectors(OrderedDictionary portConnections)
         {
             for (int i = 0; i < OutPorts.Count; i++)
             {
                 var portModel = OutPorts[i];
+                string portName = portModel.ToolTipContent;
+                if (portModel.ToolTipContent.Equals("Statement Output"))
+                    portName += i.ToString();
                 if (portModel.Connectors.Count != 0)
                 {
-                    string portName = portModel.ToolTipContent;
-                    if (portModel.ToolTipContent.Equals("Statement Output"))
-                        portName += i.ToString();
-                    portConnections[portName] = new List<PortModel>();
+                    portConnections.Add(portName, new List<PortModel>());
                     foreach (var connector in portModel.Connectors)
                     {
-                        portConnections[portName].Add(connector.End);
+                        (portConnections[portName] as List<PortModel>).Add(connector.End);
                         this.WorkSpace.UndoRecorder.RecordDeletionForUndo(connector);
                     }
+                }
+                else
+                {
+                    portConnections.Add(portName, null);
                 }
             }
 
@@ -493,15 +498,15 @@ namespace Dynamo.Nodes
         /// so mercilessly destroyed, restoring peace and balance to the world once again.
         /// </summary>
         /// <param name="portConnections"> List of the connections that were killed</param>
-        private void LoadAndCreateConnectors(Dictionary<string, List<PortModel>> portConnections)
+        private void LoadAndCreateConnectors(OrderedDictionary portConnections)
         {
             List<int> undefinedIndices = new List<int>();
             for (int i = 0; i < OutPortData.Count; i++)
             {
                 string varName = OutPortData[i].ToolTipString;
-                if (portConnections.Keys.Contains(varName))
+                if (portConnections.Contains(varName) && portConnections[varName] != null)
                 {
-                    foreach (var endPortModel in portConnections[varName])
+                    foreach (var endPortModel in (portConnections[varName] as List<PortModel>))
                     {
                         PortType p;
                         NodeModel endNode = endPortModel.Owner;
@@ -510,16 +515,43 @@ namespace Dynamo.Nodes
                         this.WorkSpace.Connectors.Add(connector);
                         this.WorkSpace.UndoRecorder.RecordCreationForUndo(connector);
                     }
-                    portConnections.Remove(varName);
+                    portConnections[varName] = null;
                 }
                 else
                     undefinedIndices.Add(i);
             }
 
-            while (undefinedIndices.Count > 0 && portConnections.Count > 0)
+            for (int i = 0; i < undefinedIndices.Count; i++)
             {
-                var kvp = portConnections.First();
-                foreach (var endPortModel in kvp.Value)
+                int index = undefinedIndices[i];
+                if (index < portConnections.Count && portConnections[index] != null)
+                {
+                    foreach (var endPortModel in (portConnections[index] as List<PortModel>))
+                    {
+                        PortType p;
+                        NodeModel endNode = endPortModel.Owner;
+                        var connector = ConnectorModel.Make(this, endNode, index,
+                            endNode.GetPortIndex(endPortModel, out p), PortType.INPUT);
+                        this.WorkSpace.Connectors.Add(connector);
+                        this.WorkSpace.UndoRecorder.RecordCreationForUndo(connector);
+                    }
+                    portConnections[index] = null;
+                    undefinedIndices.Remove(index);
+                    i--;
+                }
+            }
+
+
+            List<List<PortModel>> unusedConnections = new List<List<PortModel>>();
+            foreach (List<PortModel> portModelList in portConnections.Values.Cast<List<PortModel>>())
+            {
+                if (portModelList == null)
+                    continue;
+                unusedConnections.Add(portModelList);
+            }
+            while (undefinedIndices.Count > 0 && unusedConnections.Count != 0)
+            {
+                foreach (var endPortModel in unusedConnections[0])
                 {
                     PortType p;
                     NodeModel endNode = endPortModel.Owner;
@@ -528,8 +560,8 @@ namespace Dynamo.Nodes
                     this.WorkSpace.Connectors.Add(connector);
                     this.WorkSpace.UndoRecorder.RecordCreationForUndo(connector);
                 }
-                portConnections.Remove(kvp.Key);
                 undefinedIndices.RemoveAt(0);
+                unusedConnections.RemoveAt(0);
             }
         }
         #endregion
