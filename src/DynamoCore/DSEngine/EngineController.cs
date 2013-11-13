@@ -99,9 +99,9 @@ namespace Dynamo.DSEngine
             {
                 mirror = liveRunnerServices.GetMirror(variableName);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                DynamoLogger.Instance.LogWarning("Failed to get mirror for variable: " + variableName, WarningLevel.Severe);
+                DynamoLogger.Instance.Log("Failed to get mirror for variable: " + variableName + "; reason: " + ex.Message);
             }
 
             return mirror;

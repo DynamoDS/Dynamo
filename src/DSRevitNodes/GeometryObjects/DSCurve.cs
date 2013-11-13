@@ -12,7 +12,7 @@ namespace DSRevitNodes
     /// <summary>
     /// Class representing a Revit Curve
     /// </summary>
-    public abstract class DSCurve : IGraphicItem
+    public abstract class DSCurve : IGeometryObject
     {
         internal Autodesk.Revit.DB.Curve InternalCurve
         {

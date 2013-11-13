@@ -73,10 +73,12 @@
     <Compile Include="Elements\AdaptiveComponentTests.cs" />
     <Compile Include="Elements\DividedPathTests.cs" />
     <Compile Include="Elements\DividedSurfaceTests.cs" />
+    <Compile Include="Elements\ElementSelectorTests.cs" />
     <Compile Include="Elements\FamilyInstanceTests.cs" />
     <Compile Include="Elements\FamilySymbolTests.cs" />
     <Compile Include="Elements\FamilyTests.cs" />
     <Compile Include="Elements\ReferencePointTests.cs" />
+    <Compile Include="GeometryObjects\CurveLoopTests.cs" />
     <Compile Include="GeometryObjects\NurbSplineTests.cs" />
     <Compile Include="GeometryObjects\SolidTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

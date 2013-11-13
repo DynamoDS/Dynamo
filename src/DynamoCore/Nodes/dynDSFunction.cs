@@ -10,6 +10,7 @@ using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
+using ProtoCore.Utils;
 
 namespace Dynamo.Nodes
 {
@@ -180,7 +181,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        protected override AssociativeNode GetIndexedOutputNode(int index)
+        public override AssociativeNode GetIndexedOutputNode(int index)
         {
             if (index < 0 ||
                 (OutPortData != null && index >= OutPortData.Count) ||
@@ -206,12 +207,6 @@ namespace Dynamo.Nodes
             return indexedNode;
         }
 
-        protected override void BuildAstNode(DSEngine.IAstBuilder builder, 
-                                              List<ProtoCore.AST.AssociativeAST.AssociativeNode> inputs)
-        {
-            builder.Build(this, inputs);
-        }
-
         /// <summary>
         /// Copy command will call it to serialize this node to xml data.
         /// </summary>
@@ -222,6 +217,37 @@ namespace Dynamo.Nodes
             base.SerializeCore(element, context); 
             XmlElementHelper helper = new XmlElementHelper(element);
             helper.SetAttribute("name", this.Definition.DisplayName);
+        }
+
+        public override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
+        {
+            string function = Definition.Name;
+            var functionCall = AstFactory.BuildFunctionCall(function, inputAstNodes);
+
+            if (IsStaticMember() || IsConstructor())
+            {
+                var classNode = new IdentifierNode(Definition.ClassName);
+                functionCall = CoreUtils.GenerateCallDotNode(classNode,
+                    functionCall as FunctionCallNode,
+                    EngineController.Instance.LiveRunnerCore);
+            }
+            else if (IsInstanceMember())
+            {
+                AssociativeNode thisNode = new NullNode();
+                if (inputAstNodes.Count >= 1)
+                {
+                    thisNode = inputAstNodes[0];
+                    inputAstNodes.RemoveAt(0);  // remove this pointer
+                }
+                functionCall = AstFactory.BuildFunctionCall(function, inputAstNodes);
+                functionCall = CoreUtils.GenerateCallDotNode(thisNode,
+                    functionCall as FunctionCallNode,
+                    EngineController.Instance.LiveRunnerCore);
+            }
+
+            var assignment = AstFactory.BuildAssignment(AstIdentifier, functionCall);
+
+            return new[] { assignment };
         }
     }
 }
