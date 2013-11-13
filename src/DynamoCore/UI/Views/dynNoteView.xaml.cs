@@ -16,8 +16,7 @@ namespace Dynamo.Nodes
     /// </summary>
     public partial class dynNoteView : UserControl, IViewModelView<NoteViewModel>
     {
-        
-        public NoteViewModel ViewModel { get; set; }
+        public NoteViewModel ViewModel { get; private set; }
 
         public dynNoteView()
         {
