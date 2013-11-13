@@ -410,5 +410,23 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Transform Origin")]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_TRANSFORM_MODIFY)]
+    [NodeDescription("Returns the z basis vector of the transform.")]
+    public class Origin : GeometryBase
+    {
+        public Origin()
+        {
+            InPortData.Add(new PortData("transform", "Transform.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("xyz", "Origin.", typeof(Value.Container)));
 
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var transform = (Transform)((Value.Container)args[0]).Item;
+            return Value.NewContainer(transform.Origin);
+        }
+    }
 }
