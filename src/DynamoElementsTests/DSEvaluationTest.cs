@@ -91,5 +91,19 @@ namespace Dynamo.Tests
             RunModel(@"core\dsevaluation\regress561.dyn");
             AssertIsPointer("8774296c-5269-450b-959d-ce4020ddbf80");
         }
+
+        [Test]
+        public void Regress616()
+        {
+            // a=0..10;
+            // b=a;
+            // b[2]=100;
+            // c=a;
+            // d=b[0..(Count(b)-1)..2];  
+            // 
+            // d == {0, 100, 4, 6, 8, 10}
+            RunModel(@"core\dsevaluation\regress616.dyn");
+            AssertValue("f83a463d-1ca4-4586-a544-5df47697e483", new int[] { 0, 100, 4, 6, 8, 10 });
+        }
     }
 }
