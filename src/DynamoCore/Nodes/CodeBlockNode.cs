@@ -386,7 +386,12 @@ namespace Dynamo.Nodes
         private void SetInputPorts(List<string> unboundIdentifier)
         {
             foreach (string name in unboundIdentifier)
-                InPortData.Add(new PortData(name, "Input", typeof(object)));
+            {
+                string portName = name;
+                if (portName.Length > 24)
+                    portName = portName.Remove(21) + "...";
+                InPortData.Add(new PortData(portName, name, typeof(object)));
+            }
         }
 
         /// <summary>
