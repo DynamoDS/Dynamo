@@ -11,7 +11,7 @@ using Point = Autodesk.DesignScript.Geometry.Point;
 namespace DSRevitNodesTests
 {
     [TestFixture]
-    class AdaptiveComponentTests
+    class AdaptiveComponentTests : RevitTestBase
     {
         [Test]
         public void ByPoints_ValidInput()

@@ -57,7 +57,11 @@
       </testFixture>
 
       <testFixture name="DividedPathTests">
-        <test name="ByCurveAndEqualDivisions_ValidArgs" modelPath=".\empty.rfa"/>
+        <test name="ByCurveAndEqualDivisions_CurveIsNotElementReference" modelPath=".\empty.rfa"/>
+      </testFixture>
+      
+      <testFixture name="DividedSurfaceTests">
+        <test name="ByFaceAndUVDivisions_ValidArgs" modelPath=".\block.rfa"/>
       </testFixture>
       
       <testFixture name="SolidTests">
