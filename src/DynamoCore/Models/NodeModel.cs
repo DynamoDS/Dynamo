@@ -2048,6 +2048,15 @@ namespace Dynamo.Models
         }
     }
 
+    /// <summary>
+    /// The MetaNode attribute means this node shouldn't be added to the category,
+    /// only its instances are allowed
+    /// </summary>
+    [AttributeUsage(AttributeTargets.All, Inherited = false)]
+    public class IsMetaNodeAttribute: Attribute
+    {
+    }
+
     #endregion
 
     public class PredicateTraverser
