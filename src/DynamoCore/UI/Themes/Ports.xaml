@@ -28,13 +28,13 @@
     </ResourceDictionary.MergedDictionaries>
 
     <DataTemplate DataType="{x:Type viewModels:PortViewModel}">
-        <Grid Name="mainGrid" Height="20" Margin="{Binding Path=MarginThickness}" Width="{Binding Path=PortName, Converter={StaticResource PortNameToWidthConverter}}">
+        <Grid Name="mainGrid" Background="Transparent" IsHitTestVisible="True" Margin="{Binding Path=MarginThickness}" Height="20" Width="{Binding Path=PortName, Converter={StaticResource PortNameToWidthConverter}}">
             <interactivity:Interaction.Triggers>
                 <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
                     <interactivity:InvokeCommandAction Command="{Binding Path=ConnectCommand}"/>
                 </views:HandlingEventTrigger>
             </interactivity:Interaction.Triggers>
-            <Grid Name="portGrid">
+            <Grid Name="portGrid" Background="Transparent" IsHitTestVisible="True">
                 
                 <Grid.ContextMenu>
                     <ContextMenu>

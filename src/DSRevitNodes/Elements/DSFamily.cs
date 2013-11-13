@@ -62,6 +62,17 @@ namespace DSRevitNodes.Elements
             }
         }
 
+        /// <summary>
+        /// The name of this family
+        /// </summary>
+        public string Name
+        {
+            get
+            {
+                return InternalFamily.Name;
+            }
+        }
+
         #endregion
 
         #region Static constructors
@@ -73,6 +84,11 @@ namespace DSRevitNodes.Elements
         /// <returns></returns>
         public static DSFamily ByName(string name)
         {
+            if (name == null)
+            {
+                throw new ArgumentNullException();
+            }
+
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
             // look up the loaded family

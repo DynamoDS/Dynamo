@@ -65,10 +65,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbstractElement.cs" />
-    <Compile Include="AbstractGeometryObject.cs" />
+    <Compile Include="Elements\AbstractElement.cs" />
+    <Compile Include="GeometryObjects\DSCurveLoop.cs" />
+    <Compile Include="Elements\ElementSelector.cs" />
     <Compile Include="Elements\DSFamily.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="GeometryObjects\DSEdge.cs" />
+    <Compile Include="GeometryObjects\DSNurbSpline.cs" />
+    <Compile Include="GeometryObjects\IGeometryObject.cs" />
+    <Compile Include="Graphics\GraphicsManager.cs" />
     <Compile Include="Interactivity\DSSelection.cs" />
     <Compile Include="Interactivity\DSParameter.cs" />
     <Compile Include="GeometryObjects\DSCurve.cs" />

@@ -4,7 +4,7 @@ using Autodesk.Revit.DB;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 
-namespace DSRevitNodes
+namespace DSRevitNodes.Elements
 {
     /// <summary>
     /// Superclass of all Revit element wrappers

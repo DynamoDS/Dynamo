@@ -22,7 +22,11 @@
                  IsHitTestVisible="{Binding Path=DataContext.ShouldBeHitTestVisible, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type TabControl}}}">
             
             <controls:ZoomBorder ClipToBounds="True" MouseWheel="zoomBorder_MouseWheel" BorderThickness="0"
-                  MouseMove="zoomBorder_MouseMove" x:Name="zoomBorder">
+                                 MouseMove="zoomBorder_MouseMove" x:Name="zoomBorder"
+                                 Width="{Binding Path=ActualWidth, ElementName=outerCanvas}"
+                                 Height="{Binding Path=ActualHeight, ElementName=outerCanvas}"
+                                 Cursor="{Binding CurrentCursor}"
+                                 ForceCursor="{Binding IsCursorForced}">
                 <Grid>
                     <Canvas Name="selectionCanvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                 <Rectangle
@@ -42,8 +46,10 @@
                             <ItemsPanelTemplate>
                                 <controls:DragCanvas
                                     UseLayoutRounding="True"
-                                    Width="2500" 
-                                    Height="2500" 
+                                    Width="0" 
+                                    Height="0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
                                     x:Name="DragCanvas"
                                     Visibility="Visible"
                                     ContextMenuOpening="WorkBench_ContextMenuOpening" 

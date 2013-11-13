@@ -2,12 +2,14 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.Models;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Nodes
 {
@@ -160,10 +162,27 @@ namespace Dynamo.Nodes
                 var expr = GetBindingExpression(TextProperty);
                 if (expr != null)
                 {
-                    if (false != recordForUndo)
-                        PreUpdateModel(expr.DataItem);
-
-                    expr.UpdateSource();
+                    // There are two ways in which the bound data source can be 
+                    // updated: when it is first bound to the target (text box),
+                    // and when it is explicitly updated by text box losing its 
+                    // focus. In the first way, even though the bound data source 
+                    // is updated, its actual value does not get changed. In this 
+                    // case there is no need for undo recording. However, it is 
+                    // deemed as a user commit when text box loses its focus, in 
+                    // which case undo recording has to be done. It is in the 
+                    // second case a command is being sent to actually update the 
+                    // data source (also record the update for undo).
+                    // 
+                    NodeModel nodeModel = GetBoundModel(expr.DataItem);
+                    if (false == recordForUndo)
+                        expr.UpdateSource();
+                    else
+                    {
+                        string propName = expr.ParentBinding.Path.Path;
+                        dynSettings.Controller.DynamoViewModel.ExecuteCommand(
+                            new DynCmd.UpdateModelValueCommand(
+                                nodeModel.GUID, propName, this.Text));
+                    }
                 }
 
                 if (OnChangeCommitted != null)
@@ -173,7 +192,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        private void PreUpdateModel(object dataItem)
+        private NodeModel GetBoundModel(object dataItem)
         {
             // Attempt get to the data-bound model (if there's any).
             NodeModel nodeModel = dataItem as NodeModel;
@@ -184,15 +203,7 @@ namespace Dynamo.Nodes
                     nodeModel = nodeViewModel.NodeModel;
             }
 
-            // If we do get a node/note, record it for undo.
-            if (null != nodeModel)
-            {
-                DynamoModel dynamo = dynSettings.Controller.DynamoModel;
-                dynamo.CurrentWorkspace.RecordModelForModification(nodeModel);
-
-                dynSettings.Controller.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
-                dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
-            }
+            return nodeModel;
         }
 
         #endregion

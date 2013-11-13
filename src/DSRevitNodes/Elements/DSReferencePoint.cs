@@ -3,6 +3,7 @@ using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
 using DSNodeServices;
+using DSRevitNodes.Elements;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Edge = Autodesk.DesignScript.Geometry.Edge;
@@ -145,7 +146,7 @@ namespace DSRevitNodes
         #region Static constructors
 
         /// <summary>
-        /// Create a Reference Point by x,y, and z coordinates.
+        /// Create a Reference Point by x, y, and z coordinates.
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>

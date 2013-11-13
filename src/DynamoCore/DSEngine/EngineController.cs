@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Models;
 using Dynamo.Utilities;
+using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
 using ProtoScript.Runners;
 
@@ -15,7 +16,7 @@ namespace Dynamo.DSEngine
     /// A controller to coordinate the interactions between some DesignScript
     /// sub components like library managment, live runner and so on.
     /// </summary>
-    public class EngineController
+    public class EngineController: IAstNodeContainer
     {
         public static EngineController Instance = new EngineController();
         private LiveRunnerServices liveRunnerServices;
@@ -38,9 +39,7 @@ namespace Dynamo.DSEngine
             liveRunnerServices = new LiveRunnerServices(this);
             liveRunnerServices.ReloadAllLibraries(libraryServices.BuiltinLibraries);
 
-            astBuilder = new AstBuilder();
-            astBuilder.AstBuilding += this.AstBuilding;
-            astBuilder.AstBuilt += this.AstBuilt;
+            astBuilder = new AstBuilder(this);
 
             syncDataManager = new SyncDataManager();
 
@@ -100,9 +99,9 @@ namespace Dynamo.DSEngine
             {
                 mirror = liveRunnerServices.GetMirror(variableName);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                DynamoLogger.Instance.LogWarning("Failed to get mirror for variable: " + variableName, WarningLevel.Severe);
+                DynamoLogger.Instance.Log("Failed to get mirror for variable: " + variableName + "; reason: " + ex.Message);
             }
 
             return mirror;
@@ -232,28 +231,20 @@ namespace Dynamo.DSEngine
             }
         }
 
-        /// <summary>
-        /// AstBuilding event handler.
-        /// </summary>
-        /// <param name="node"></param>
-        private void AstBuilding(object sender, AstBuilder.ASTBuildingEventArgs e)
+        #region Implement IAstNodeContainer interface
+        public void OnAstNodeBuilding(NodeModel node)
         {
-            syncDataManager.MarkForAdding(e.Node.GUID);
+            syncDataManager.MarkForAdding(node.GUID);
         }
 
-        /// <summary>
-        /// AstBuilt event handler.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void AstBuilt(object sender, AstBuilder.ASTBuiltEventArgs e)
+        public void OnAstNodeBuilt(NodeModel node, IEnumerable<AssociativeNode> astNodes)
         {
-            NodeModel node = e.Node;
-            foreach (var astNode in e.AstNodes)
+            foreach (var astNode in astNodes)
             {
                 syncDataManager.AddNode(node.GUID, astNode); 
             }
         }
+        #endregion
 
         /// <summary>
         /// NodeDeleted event handler.

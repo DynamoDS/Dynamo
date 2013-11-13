@@ -70,7 +70,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ReferencePointTests.cs" />
+    <Compile Include="Elements\AdaptiveComponentTests.cs" />
+    <Compile Include="Elements\DividedPathTests.cs" />
+    <Compile Include="Elements\DividedSurfaceTests.cs" />
+    <Compile Include="Elements\ElementSelectorTests.cs" />
+    <Compile Include="Elements\FamilyInstanceTests.cs" />
+    <Compile Include="Elements\FamilySymbolTests.cs" />
+    <Compile Include="Elements\FamilyTests.cs" />
+    <Compile Include="Elements\ReferencePointTests.cs" />
+    <Compile Include="GeometryObjects\CurveLoopTests.cs" />
+    <Compile Include="GeometryObjects\NurbSplineTests.cs" />
+    <Compile Include="GeometryObjects\SolidTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -78,27 +88,12 @@
       <Project>{0bc2a611-bd0e-4fcc-a1de-81f14ed369b2}</Project>
       <Name>DSRevitNodes</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
-      <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
-      <Name>DynamoCore</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DynamoRevitTests\DynamoRevitTests.csproj">
-      <Project>{9adadc68-36a3-4a21-9b54-298154a88720}</Project>
-      <Name>DynamoRevitTests</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DynamoRevit\DynamoRevit.csproj">
-      <Project>{fd56ae51-739e-4893-8de4-925d60c7097c}</Project>
-      <Name>DynamoRevit</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\FSchemeInterop\FSchemeInterop2012.csproj">
-      <Project>{126c6420-c7a2-43b0-8b08-206c6c4c1348}</Project>
-      <Name>FSchemeInterop2012</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\FScheme\FScheme.2012.fsproj">
-      <Project>{f0e5a3e5-bdd0-41ae-848e-ded9efc5fa7f}</Project>
-      <Name>FScheme.2012</Name>
+    <ProjectReference Include="..\RevitServices\RevitServices.csproj">
+      <Project>{e4701f9e-41ab-4044-8166-85d924feb632}</Project>
+      <Name>RevitServices</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
