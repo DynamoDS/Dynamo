@@ -195,6 +195,17 @@ namespace Dynamo.Nodes
             Code = helper.ReadString("CodeText");
             shouldFocus = helper.ReadBoolean("ShouldFocus");
         }
+
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (name == "Code")
+            {
+                this.Code = value;
+                return true;
+            }
+            return base.UpdateValueCore(name, value);
+        }
+
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
             base.SerializeCore(element, context);
