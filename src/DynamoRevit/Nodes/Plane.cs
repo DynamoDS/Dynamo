@@ -316,4 +316,24 @@ namespace Dynamo.Nodes
 
         }
     }
+
+    [NodeName("Plane From Reference Plane")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_DATUMS)]
+    [NodeDescription("Get the plane from a reference plane.")]
+    public class PlaneFromReferencePlane : RevitTransactionNodeWithOneOutput
+    {
+        public PlaneFromReferencePlane()
+        {
+            InPortData.Add(new PortData("reference plane", "The reference plane.", typeof(FScheme.Value.Container)));
+            OutPortData.Add(new PortData("plane", "The plane defined by the reference plane.", typeof(FScheme.Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+        {
+            var refPlane = (Autodesk.Revit.DB.ReferencePlane)((FScheme.Value.Container)args[0]).Item;
+            return FScheme.Value.NewContainer(refPlane.Plane);
+        }
+    }
 }
