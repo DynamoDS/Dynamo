@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.DesignScript.Geometry;
+using RevitServices.Persistence;
 using Line = Autodesk.Revit.DB.Line;
 using System.ComponentModel;
 
@@ -87,6 +88,18 @@ namespace DSRevitNodes
         public static XYZ[] ToXyzs(this Autodesk.DesignScript.Geometry.Point[] list)
         {
             return list.ToList().ConvertAll((x) => new XYZ(x.X, x.Y, x.Z)).ToArray();
+        }
+
+        /// <summary>
+        /// Convert array of points to list of xyz's
+        /// </summary>
+        /// <param name="list">The list to convert</param>
+        /// <returns></returns>
+        public static DoubleArray ToDoubleArray(this double[] list)
+        {
+            var n = new DoubleArray();
+            list.ToList().ForEach(x => n.Append(ref x));
+            return n;
         }
 
         /// <summary>

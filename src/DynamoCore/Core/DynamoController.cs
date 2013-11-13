@@ -351,10 +351,10 @@ namespace Dynamo
             var sw = new Stopwatch();
             sw.Start();
 
+#if !USE_DSENGINE
             //Get our entry points (elements with nothing connected to output)
             List<NodeModel> topElements = DynamoViewModel.Model.HomeSpace.GetTopMostNodes().ToList();
 
-#if !USE_DSENGINE
             //Mark the topmost as dirty/clean
             foreach (NodeModel topMost in topElements)
             {
@@ -366,12 +366,12 @@ namespace Dynamo
 
 #if USE_DSENGINE
                 EngineController.Instance.ResetAstBuildingState();
-                foreach (NodeModel topMost in topElements)
-                {
-                    topMost.CompileToAstNode(EngineController.Instance.Builder);
-                }
+
+                EngineController.Instance.Builder.CompileToAstNodes(
+                    DynamoViewModel.Model.HomeSpace.Nodes);
+
                 var engineSyncData = EngineController.Instance.GetSyncData();
-                Run(topElements, engineSyncData);
+                Run(engineSyncData);
 #else
                 var topNode = new BeginNode(new List<string>());
                 int i = 0;
@@ -462,7 +462,7 @@ namespace Dynamo
             }
         }
 
-        protected virtual void Run(List<NodeModel> topElements, GraphSyncData graphData)
+        protected virtual void Run(GraphSyncData graphData)
         {
             //Print some stuff if we're in debug mode
             if (DynamoViewModel.RunInDebug)
