@@ -323,37 +323,6 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(69.12, (addition.OldValue as FScheme.Value.Number).Item);
         }
 
-        [Test, RequiresSTA]
-        public void Defect_MAGN_491()
-        {
-            RunCommandsFromFile("Defect-MAGN-491.xml");
-            var connectors = workspaceViewModel.Connectors;
-            Assert.NotNull(connectors);
-            Assert.AreEqual(2, connectors.Count);
-
-            // Get to the only two connectors in the session.
-            ConnectorViewModel firstConnector = connectors[0];
-            ConnectorViewModel secondConnector = connectors[1];
-
-            // Find out the corresponding ports they connect to.
-            Point firstPoint = firstConnector.ConnectorModel.End.Center;
-            Point secondPoint = secondConnector.ConnectorModel.End.Center;
-
-            Assert.AreEqual(firstPoint.X, firstConnector.CurvePoint3.X);
-            Assert.AreEqual(firstPoint.Y, firstConnector.CurvePoint3.Y);
-            Assert.AreEqual(secondPoint.X, secondConnector.CurvePoint3.X);
-            Assert.AreEqual(secondPoint.Y, secondConnector.CurvePoint3.Y);
-        }
-
-        [Test, RequiresSTA]
-        public void Defect_MAGN_225()
-        {
-            RunCommandsFromFile("TestConnectionReplacementUndo.xml");
-            var nodes = workspaceViewModel.Nodes;
-            Assert.NotNull(nodes);
-            Assert.AreEqual(3, nodes.Count);
-        }
-
         private ModelBase GetNode(string guid)
         {
             Guid id = Guid.Parse(guid);
@@ -411,5 +380,137 @@ namespace Dynamo.Tests.UI
             Assert.IsTrue(duplicate is CmdType);
             return duplicate as CmdType;
         }
+
+        #region Test Cases from Defects
+        // please add all test cases here, those are related to defects. Also maintain the format and naming convention. 
+        // Name of test case should be Defect_MAGN_0000(defect number) and associated xml should be with same name.
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_491()
+        {
+            RunCommandsFromFile("Defect-MAGN-491.xml");
+            var connectors = workspaceViewModel.Connectors;
+            Assert.NotNull(connectors);
+            Assert.AreEqual(2, connectors.Count);
+
+            // Get to the only two connectors in the session.
+            ConnectorViewModel firstConnector = connectors[0];
+            ConnectorViewModel secondConnector = connectors[1];
+
+            // Find out the corresponding ports they connect to.
+            Point firstPoint = firstConnector.ConnectorModel.End.Center;
+            Point secondPoint = secondConnector.ConnectorModel.End.Center;
+
+            Assert.AreEqual(firstPoint.X, firstConnector.CurvePoint3.X);
+            Assert.AreEqual(firstPoint.Y, firstConnector.CurvePoint3.Y);
+            Assert.AreEqual(secondPoint.X, secondConnector.CurvePoint3.X);
+            Assert.AreEqual(secondPoint.Y, secondConnector.CurvePoint3.Y);
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_225()
+        {
+            RunCommandsFromFile("TestConnectionReplacementUndo.xml"); // this was earlier before setting standards so keeping is as it is.
+            var nodes = workspaceViewModel.Nodes;
+            
+            Assert.NotNull(nodes);
+            Assert.AreEqual(3, nodes.Count);
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_57()
+        {
+            RunCommandsFromFile("Defect_MAGN_57.xml", true);
+            
+            Assert.AreEqual(7, workspace.Nodes.Count);
+            Assert.AreEqual(5, workspace.Connectors.Count);
+
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_159()
+        {
+            RunCommandsFromFile("Defect_MAGN_159.xml", true);
+            
+            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count);
+
+            var number1 = GetNode("045decd1-7454-4b85-b92e-d59d35f31ab2") as DoubleInput;
+            Assert.AreEqual(8, (number1.OldValue as FScheme.Value.Number).Item);
+        }
+
+        [Ignore, RequiresSTA]
+        public void Defect_MAGN_160()
+        {
+            RunCommandsFromFile("Defect_MAGN_160.xml", true); // List node cannot be created  ( current limitation for button click)
+            
+            //Assert.AreEqual(1, workspace.Nodes.Count);
+            //Assert.AreEqual(0, workspace.Connectors.Count);
+
+            //var number1 = GetNode("045decd1-7454-4b85-b92e-d59d35f31ab2") as DoubleInput;
+            //Assert.AreEqual(8, (number1.OldValue as FScheme.Value.Number).Item);
+        }
+
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_164()
+        {
+            RunCommandsFromFile("Defect_MAGN_164.xml", true);
+            
+            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count);
+
+            var number1 = GetNode("2e1e5f33-52fc-4cc9-9d4a-33e46ec64a53") as DoubleInput;
+            Assert.AreEqual(30, (number1.OldValue as FScheme.Value.Number).Item);
+
+            var string1 = GetNode("a4ba7320-3cb8-4524-bc8c-8688d7abc599") as StringInput;
+            Assert.AreEqual("Dynamo", (string1.OldValue as FScheme.Value.String).Item);
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_190()
+        {
+            RunCommandsFromFile("Defect_MAGN_190.xml", true);
+
+            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Connectors.Count);
+
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_429()
+        {
+            RunCommandsFromFile("Defect_MAGN_429.xml", true);
+
+            Assert.AreEqual(0, workspace.Nodes.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count);
+
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_478()
+        {
+            RunCommandsFromFile("Defect_MAGN_478.xml", true);
+
+            Assert.AreEqual(1, workspace.Notes.Count);
+        }
+
+
+        #endregion
+
+        #region Test Cases for general scenarios will go here
+
+        [Test, RequiresSTA]
+        public void ShiftSelectAllNode()
+        {
+            RunCommandsFromFile("ShiftSelectAllNode.xml", true);
+
+            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(4, workspace.Connectors.Count);
+
+        }
+
+        
+        #endregion
     }
 }
