@@ -75,7 +75,6 @@ namespace Dynamo.Models
         ElementState state;
         string toolTipText = "";
         private IdentifierNode identifier = null;
-        private List<string> inputIdentifiers = new List<String>();
         private bool _overrideNameWithNickName = false;
 
         /// <summary>
@@ -344,15 +343,6 @@ namespace Dynamo.Models
                 var ident = AstIdentifier as IdentifierNode;
                 return (ident == null) ? null : ident.Name;
             }
-        }
-
-        /// <summary>
-        /// To indicate if this node is in the process of compiling to AST nodes.
-        /// </summary>
-        protected bool IsCompiling
-        {
-            get;
-            set;
         }
 
         protected DynamoController Controller
