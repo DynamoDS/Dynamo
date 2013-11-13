@@ -46,7 +46,12 @@ namespace Dynamo.Nodes
 
         public override string Description
         {
-            get { return this.Definition.WorkspaceModel.Description; }
+            get
+            {
+                if (this.Definition == null)
+                    return string.Empty;
+                return this.Definition.WorkspaceModel.Description;
+            }
             set
             {
                 this.Definition.WorkspaceModel.Description = value;
