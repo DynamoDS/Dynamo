@@ -47,6 +47,17 @@ namespace RevitServices.Persistence
         }
 
         /// <summary>
+        /// Obtain all elements of a given type from the current document
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public IEnumerable<T> GetElements<T>() where T : Autodesk.Revit.DB.Element
+        {
+            var fec = new Autodesk.Revit.DB.FilteredElementCollector(CurrentDBDocument);
+            return fec.OfClass(typeof(T)).Cast<T>();
+        }
+
+        /// <summary>
         /// Provide source of the currently active document
         /// Dynamo is reponsible for updating this before use
         /// </summary>
