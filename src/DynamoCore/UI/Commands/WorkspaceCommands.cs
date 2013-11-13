@@ -47,9 +47,6 @@ namespace Dynamo.ViewModels
         }
 
 
-
-
-
         public DelegateCommand HideCommand
         {
             get

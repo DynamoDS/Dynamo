@@ -76,7 +76,10 @@ limitations under the License.
       <HintPath>..\..\bin\AnyCPU\Debug\FSchemeInterop.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="FSharp.Core"/>
+    <Reference Include="FSharp.Core, Version=4.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\FSharp\2.0\Runtime\v4.0\FSharp.Core.dll</HintPath>
+    </Reference>
     <Reference Include="Greg, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\greg\Greg.dll</HintPath>
@@ -165,6 +168,7 @@ limitations under the License.
     <Compile Include="DSEngine\DSLibrary.cs" />
     <Compile Include="DSEngine\EngineController.cs" />
     <Compile Include="DSEngine\LiveRunnerServices.cs" />
+    <Compile Include="DSEngine\NodeToCode.cs" />
     <Compile Include="Models\CustomNodeWorkspaceModel.cs" />
     <Compile Include="Models\HomeWorkspaceModel.cs" />
     <Compile Include="Nodes\CodeBlockNode.cs" />
