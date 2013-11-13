@@ -889,7 +889,8 @@ namespace Dynamo.Nodes
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
                 Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF)),
-                AcceptsReturn = true
+                AcceptsReturn = true,
+                MaxWidth = 500
             };
 
 
