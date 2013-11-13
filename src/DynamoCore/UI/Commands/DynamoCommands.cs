@@ -51,7 +51,7 @@ namespace Dynamo.ViewModels
 
         #region Workspace Command Entry Point
 
-        internal void ExecuteCommand(RecordableCommand command)
+        public void ExecuteCommand(RecordableCommand command)
         {
             if (null != this.automationSettings)
                 this.automationSettings.RecordCommand(command);
