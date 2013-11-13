@@ -8,6 +8,7 @@ using System.Windows.Input;
 using System.Xml;
 using Dynamo.Controls;
 using Dynamo.Models;
+using Dynamo.Utilities;
 using DynamoPython;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
@@ -145,6 +146,39 @@ namespace Dynamo.Nodes
                     _script = subNode.InnerText;
             }
         }
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context);
+
+            if (SaveContext.Undo == context)
+            {
+                XmlElement script = element.OwnerDocument.CreateElement("Script");
+                script.InnerText = _script;
+                element.AppendChild(script);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context);
+
+            if (SaveContext.Undo == context)
+            {
+                foreach (XmlNode child in element.ChildNodes)
+                {
+                    if (child.Name == "Script")
+                    {
+                        _script = child.InnerText;
+                        break;
+                    }
+                }
+            }
+        }
+
+        #endregion
 
         private IEnumerable<KeyValuePair<string, dynamic>> makeBindings(IEnumerable<Value> args)
         {
@@ -382,6 +416,53 @@ namespace Dynamo.Nodes
                     _script = subNode.InnerText;
             }
         }
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context);
+
+            if (SaveContext.Undo == context)
+            {
+                XmlElement script = element.OwnerDocument.CreateElement("Script");
+                script.InnerText = _script;
+                element.AppendChild(script);
+
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("inputs", InPortData.Count);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context);
+
+            if (SaveContext.Undo == context)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                int inputs = helper.ReadInteger("inputs", 1);
+
+                for (; inputs > 1; inputs--)
+                {
+                    var nickName = GetInputRootName() + GetInputNameIndex();
+                    InPortData.Add(new PortData(nickName, "", typeof(object)));
+                }
+
+                RegisterAllPorts();
+
+                foreach (XmlNode child in element.ChildNodes)
+                {
+                    if (child.Name == "Script")
+                    {
+                        _script = child.InnerText;
+                        break;
+                    }
+                }
+            }
+        }
+
+        #endregion
 
         private IEnumerable<KeyValuePair<string, dynamic>> makeBindings(IEnumerable<Value> args)
         {
