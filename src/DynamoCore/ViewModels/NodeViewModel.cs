@@ -213,10 +213,10 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if(this.PreviewBubble != null)
-                    return !this.PreviewBubble.IsShowPreviewByDefault;
+                if(this.PreviewBubble == null)
+                    return false;
 
-                return false;
+                return !this.PreviewBubble.IsShowPreviewByDefault;
             }
         }
 
@@ -444,21 +444,21 @@ namespace Dynamo.ViewModels
 
         private void HandleDefaultShowPreviewChanged()
         {
-            if (this.PreviewBubble != null)
+            if (this.PreviewBubble == null)
+                return;
+
+            RaisePropertyChanged("IsPreviewInsetVisible");
+            this.PreviewBubble.IsShowPreviewByDefault = dynSettings.Controller.IsShowPreviewByDefault;
+            UpdatePreviewBubbleContent();
+            if (dynSettings.Controller.IsShowPreviewByDefault)
             {
-                RaisePropertyChanged("IsPreviewInsetVisible");
-                this.PreviewBubble.IsShowPreviewByDefault = dynSettings.Controller.IsShowPreviewByDefault;
-                UpdatePreviewBubbleContent();
-                if (dynSettings.Controller.IsShowPreviewByDefault)
-                {
-                    this.PreviewBubble.SetAlwaysVisibleCommand.Execute(true);
-                    this.PreviewBubble.InstantAppearCommand.Execute(null);
-                }
-                else
-                {
-                    this.PreviewBubble.SetAlwaysVisibleCommand.Execute(false);
-                    this.PreviewBubble.InstantCollapseCommand.Execute(null);
-                }
+                this.PreviewBubble.SetAlwaysVisibleCommand.Execute(true);
+                this.PreviewBubble.InstantAppearCommand.Execute(null);
+            }
+            else
+            {
+                this.PreviewBubble.SetAlwaysVisibleCommand.Execute(false);
+                this.PreviewBubble.InstantCollapseCommand.Execute(null);
             }
         }
 
@@ -470,7 +470,7 @@ namespace Dynamo.ViewModels
 
                 if (this.PreviewBubble != null)
                     this.PreviewBubble.ZIndex = 4;
-           }
+            }
             else
             {
                 this.ZIndex = 3;
@@ -827,12 +827,12 @@ namespace Dynamo.ViewModels
 
         private void ShowPreview(object parameter)
         {
-            if (this.PreviewBubble != null)
-            {
-                UpdatePreviewBubbleContent();
-                this.PreviewBubble.ZIndex = 5;
-                this.PreviewBubble.InstantAppearCommand.Execute(null);
-            }
+            if (this.PreviewBubble == null)
+                return;
+
+            UpdatePreviewBubbleContent();
+            this.PreviewBubble.ZIndex = 5;
+            this.PreviewBubble.InstantAppearCommand.Execute(null);
         }
 
         private bool CanShowPreview(object parameter)
