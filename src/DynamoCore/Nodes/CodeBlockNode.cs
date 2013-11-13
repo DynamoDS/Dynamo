@@ -235,7 +235,17 @@ namespace Dynamo.Nodes
             //var unboundIdentifiers = new List<string>();
 
             CodeBlockNode commentNode;
-            var codeBlock = GraphUtilities.Parse(CodeToParse, out commentNode) as CodeBlockNode;
+            CodeBlockNode codeBlock = null;
+
+            try
+            {
+                codeBlock = GraphUtilities.Parse(CodeToParse, out commentNode) as CodeBlockNode;
+            }
+            catch (Exception ex)
+            {
+                this.State = ElementState.ERROR;
+                DynamoLogger.Instance.Log("Failed to build AST for code block node. Error: " + ex.Message);
+            }
 
             return codeBlock != null ? codeBlock.Body : null;
         }
@@ -266,7 +276,7 @@ namespace Dynamo.Nodes
         {
             get
             {
-                return previewVariable;
+                return (State == ElementState.ERROR) ? null : previewVariable;
             }
         }
         #endregion
