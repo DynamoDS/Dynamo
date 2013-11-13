@@ -235,7 +235,17 @@ namespace Dynamo.Nodes
             //var unboundIdentifiers = new List<string>();
 
             CodeBlockNode commentNode;
-            var codeBlock = GraphUtilities.Parse(CodeToParse, out commentNode) as CodeBlockNode;
+            CodeBlockNode codeBlock = null;
+
+            try
+            {
+                codeBlock = GraphUtilities.Parse(CodeToParse, out commentNode) as CodeBlockNode;
+            }
+            catch (Exception ex)
+            {
+                this.State = ElementState.ERROR;
+                DynamoLogger.Instance.Log("Failed to build AST for code block node. Error: " + ex.Message);
+            }
 
             return codeBlock != null ? codeBlock.Body : null;
         }
@@ -266,7 +276,7 @@ namespace Dynamo.Nodes
         {
             get
             {
-                return previewVariable;
+                return (State == ElementState.ERROR) ? null : previewVariable;
             }
         }
         #endregion
@@ -319,6 +329,7 @@ namespace Dynamo.Nodes
                         if (lhsIdent != null)
                         {
                             previewVariable = lhsIdent.Name;
+                            // previewVariable = GraphToDSCompiler.GraphUtilities.ASTListToCode(new List<AssociativeNode> { lhsIdent});
                         }
                     }
                 }
@@ -326,12 +337,16 @@ namespace Dynamo.Nodes
             else
             {
                 //Found errors. Get the error message strings and use it to call the DisplayError function
-                string errorMessage = "";
-                int i = 0;
-                for (; i < errors.Count - 1; i++)
-                    errorMessage += (errors[i].Message + "\n");
-                errorMessage += errors[i].Message;
-                DisplayError(errorMessage);
+
+                if (errors != null)
+                {
+                    string errorMessage = "";
+                    int i = 0;
+                    for (; i < errors.Count - 1; i++)
+                        errorMessage += (errors[i].Message + "\n");
+                    errorMessage += errors[i].Message;
+                    DisplayError(errorMessage);
+                }
                 return;
             }
 
