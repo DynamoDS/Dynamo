@@ -8,9 +8,9 @@ namespace Dynamo.Nodes
     /// <summary>
     /// Interaction logic for dynScriptEditWindow.xaml
     /// </summary>
-    public partial class dynScriptEditWindow : Window
+    public partial class ScriptEditWindow : Window
     {
-        public dynScriptEditWindow()
+        public ScriptEditWindow()
         {
             InitializeComponent();
             //this.Owner = dynSettings.Bench;
