@@ -78,7 +78,7 @@ namespace Dynamo.Nodes
             foreach (var stmnt in statements)
             {
                 foreach (char c in stmnt)
-                    if (c != ' ' && c != '\n' && c != '\t')
+                    if (!char.IsWhiteSpace(c))
                     {
                         inputCode += (stmnt + ";");
                         break;
@@ -97,35 +97,16 @@ namespace Dynamo.Nodes
                 return inputCode;
         }
 
-
         /// <summary>
-        /// Given a statement class instance, the function checks if the statements DefinedVariable
-        /// has been declared already in a different block or not.
+        /// Returns the names of all the variables defined in this code block.
         /// </summary>
-        /// <param name="stmnt">The statement whose defined variable is being checked</param>
-        /// <returns></returns>
-        /// TODO Ambi : Add changes necessary for multiple variable declarations in a single statement.
-        public string VariableAlreadyDeclared(Statement stmnt)
+        /// <returns>List containing all the names</returns>
+        public List<string> GetDefinedVariableNames()
         {
-            List<string> defVarNames = Statement.GetDefinedVariableNames(stmnt, true);
-            
-            foreach (var node in this.WorkSpace.Nodes)
-            {
-                if (node is CodeBlockNodeModel && node != this)
-                {
-                    foreach (var x in (node as CodeBlockNodeModel).codeStatements)
-                    {
-                        List<string> otherDefVar = Statement.GetDefinedVariableNames(x, true);
-                        foreach (string varName in defVarNames)
-                        {
-                            if (otherDefVar.Contains(varName))
-                                return varName;
-                        }
-                    }
-                }
-            }
-
-            return null;
+            List<string> defVarNames = new List<string>();
+            foreach (var stmnt in codeStatements)
+                defVarNames.AddRange(Statement.GetDefinedVariableNames(stmnt, true));
+            return defVarNames;
         }
         #endregion
 
@@ -203,6 +184,7 @@ namespace Dynamo.Nodes
                 this.Code = value;
                 return true;
             }
+
             return base.UpdateValueCore(name, value);
         }
 
@@ -303,7 +285,7 @@ namespace Dynamo.Nodes
                     try
                     {
                         //Create and save a statement variable from the astnodes generated
-                        tempStatement = Statement.CreateInstance(node, this.GUID);
+                        tempStatement = Statement.CreateInstance(node);
                         codeStatements.Add(tempStatement);
                     }
                     catch (Exception e)
@@ -325,6 +307,8 @@ namespace Dynamo.Nodes
             }
             else
             {
+                if (errors == null)
+                    DisplayError("Errors not getting sent from compiler to UI");
                 //Found errors. Get the error message strings and use it to call the DisplayError function
                 string errorMessage = "";
                 int i = 0;
@@ -336,16 +320,11 @@ namespace Dynamo.Nodes
             }
 
             //Make sure variables have not been declared in other Code block nodes.
-            foreach (var singleStatement in codeStatements)
+            string redefinedVariable = this.WorkSpace.GetRedefinedVariable(this);
+            if (redefinedVariable != null)
             {
-                string redefinedVariable = VariableAlreadyDeclared(singleStatement);
-                if (redefinedVariable != null)
-                {
-                    string varName = redefinedVariable;
-                    string errorMessage = varName + " is already declared.";
-                    DisplayError(errorMessage);
-                    return;
-                }
+                DisplayError(redefinedVariable + " is already defined");
+                return;
             }
 
             SetPorts(unboundIdentifiers); //Set the input and output ports based on the statements
@@ -453,8 +432,12 @@ namespace Dynamo.Nodes
         private bool RequiresOutPort(Statement s, int pos)
         {
             List<string> defVariables = Statement.GetDefinedVariableNames(s, true);
+            
+            //Check if defined variables exist
             if (defVariables.Count == 0)
                 return false;
+            
+            //Check if variable has been redclared later on in the CBN
             foreach (string varName in defVariables)
             {
                 for (int i = pos + 1; i < codeStatements.Count; i++)
@@ -574,12 +557,12 @@ namespace Dynamo.Nodes
         private List<Statement> subStatements = new List<Statement>();
 
         #region Public Methods
-        public static Statement CreateInstance(Node astNode, Guid nodeGuid)
+        public static Statement CreateInstance(Node astNode)
         {
             if (astNode == null)
                 throw new ArgumentNullException();
 
-            return new Statement(astNode, nodeGuid);
+            return new Statement(astNode);
         }
 
         public static void GetReferencedVariables(Node astNode, List<Variable> refVariableList)
@@ -649,7 +632,7 @@ namespace Dynamo.Nodes
         }
 
         /// <summary>
-        /// Returns the names of the reference variables
+        /// Returns the names of the variables that have been referenced in the statement
         /// </summary>
         /// <param name="s"> Statement whose variable names to be got.</param>
         /// <param name="onlyTopLevel"> Bool to check if required to return reference variables in sub statements as well</param>
@@ -668,7 +651,7 @@ namespace Dynamo.Nodes
         }
 
         /// <summary>
-        /// Returns the names of the defined variables
+        /// Returns the names of the variables that have been declared in the statement
         /// </summary>
         /// <param name="s"> Statement whose variable names to be got.</param>
         /// <param name="onlyTopLevel"> Bool to check if required to return reference variables in sub statements as well</param>
@@ -686,14 +669,14 @@ namespace Dynamo.Nodes
             return names;
         }
 
-        public static StatementType GetStatementType(Node astNode, Guid nodeGuid)
+        public static StatementType GetStatementType(Node astNode)
         {
             if (astNode is FunctionDefinitionNode)
                 return StatementType.FuncDeclaration;
             if (astNode is BinaryExpressionNode)
             {
                 BinaryExpressionNode currentNode = astNode as BinaryExpressionNode;
-                if (!(currentNode.LeftNode is IdentifierNode) || currentNode.Optr != ProtoCore.DSASM.Operator.assign)
+                if (currentNode.Optr != ProtoCore.DSASM.Operator.assign)
                     throw new ArgumentException();
                 if (!(currentNode.LeftNode.Name.StartsWith("temp") && currentNode.LeftNode.Name.Length > 10))
                     return StatementType.Expression;
@@ -720,11 +703,11 @@ namespace Dynamo.Nodes
         #endregion
 
         #region Private Methods
-        private Statement(Node astNode, Guid nodeGuid)
+        private Statement(Node astNode)
         {
             StartLine = astNode.line;
             EndLine = astNode.endLine;
-            CurrentType = GetStatementType(astNode, nodeGuid);
+            CurrentType = GetStatementType(astNode);
 
             if (astNode is BinaryExpressionNode)
             {
@@ -732,7 +715,6 @@ namespace Dynamo.Nodes
                 while (astNode is BinaryExpressionNode)
                 {
                     BinaryExpressionNode binExprNode = astNode as BinaryExpressionNode;
-                    CheckValidBinaryExpression(binExprNode);
                     IdentifierNode assignedVar = binExprNode.LeftNode as IdentifierNode;
                     definedVariables.Add(new Variable(assignedVar));
                     astNode = binExprNode.RightNode;
@@ -750,27 +732,13 @@ namespace Dynamo.Nodes
                     EndLine = currentNode.FunctionBody.endLine;
                 foreach (Node node in currentNode.FunctionBody.Body)
                 {
-                    subStatements.Add(new Statement(node, nodeGuid));
+                    subStatements.Add(new Statement(node));
                 }
             }
             else
                 throw new ArgumentException("Must be func def or assignment");
 
             Variable.SetCorrectColumn(referencedVariables, this.CurrentType, this.StartLine);
-        }
-
-        /// <summary>
-        /// Checks if the binary expression node has an identifier on the left and
-        /// an '=' operator.
-        /// </summary>
-        /// <param name="astNode"></param>
-        private void CheckValidBinaryExpression(BinaryExpressionNode astNode)
-        {
-            BinaryExpressionNode binExprNode = astNode as BinaryExpressionNode;
-            if (binExprNode.Optr != ProtoCore.DSASM.Operator.assign)
-                throw new ArgumentException("Binary Expr Node is not an assignment!");
-            if (!(binExprNode.LeftNode is IdentifierNode))
-                throw new ArgumentException("LHS invalid");
         }
         #endregion
     }
