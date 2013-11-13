@@ -469,10 +469,16 @@ namespace Dynamo.ViewModels
 
         public void NodeToCode(object parameter)
         {
-            List<ISelectable> mylist = DynamoSelection.Instance.Selection.ToList();
+            List<NodeModel> nodeList = new List<NodeModel>();
+            foreach (ISelectable selected in DynamoSelection.Instance.Selection)
+            {
+                if (selected is NodeModel)
+                {
+                    nodeList.Add(selected as NodeModel);
+                }
+            }
 
-            List<ProtoCore.AST.AssociativeAST.AssociativeNode> astSelectedList = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>();
-            string code = GraphToDSCompiler.GraphUtilities.ASTListToCode(astSelectedList);
+            string code = Dynamo.DSEngine.NodeToCodeUtils.ConvertNodesToCode(nodeList);
         }
 
         internal bool CanNodeToCode(object parameter)
