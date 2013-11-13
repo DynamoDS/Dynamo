@@ -8,7 +8,6 @@ using System.Windows.Input;
 using System.Xml;
 using Dynamo.Controls;
 using Dynamo.Models;
-using Dynamo.Utilities;
 using DynamoPython;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
@@ -428,9 +427,6 @@ namespace Dynamo.Nodes
                 XmlElement script = element.OwnerDocument.CreateElement("Script");
                 script.InnerText = _script;
                 element.AppendChild(script);
-
-                XmlElementHelper helper = new XmlElementHelper(element);
-                helper.SetAttribute("inputs", InPortData.Count);
             }
         }
 
@@ -440,17 +436,6 @@ namespace Dynamo.Nodes
 
             if (SaveContext.Undo == context)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
-                int inputs = helper.ReadInteger("inputs", 1);
-
-                for (; inputs > 1; inputs--)
-                {
-                    var nickName = GetInputRootName() + GetInputNameIndex();
-                    InPortData.Add(new PortData(nickName, "", typeof(object)));
-                }
-
-                RegisterAllPorts();
-
                 foreach (XmlNode child in element.ChildNodes)
                 {
                     if (child.Name == "Script")
