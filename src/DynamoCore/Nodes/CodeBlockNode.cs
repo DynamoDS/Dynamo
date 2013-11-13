@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
-using ProtoCore.AST;
+using GraphToDSCompiler;
 using ProtoCore.AST.AssociativeAST;
 using Dynamo.Models;
 using Dynamo.Utilities;
@@ -11,6 +11,8 @@ using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
 using System.Windows;
 using System.Collections.ObjectModel;
+using ArrayNode = ProtoCore.AST.AssociativeAST.ArrayNode;
+using Node = ProtoCore.AST.Node;
 
 namespace Dynamo.Nodes
 {
@@ -199,7 +201,7 @@ namespace Dynamo.Nodes
             base.DeserializeCore(element, context);
             if (context == SaveContext.Undo)
             {
-                XmlElementHelper helper = new XmlElementHelper(element as XmlElement);
+                XmlElementHelper helper = new XmlElementHelper(element);
                 shouldFocus = helper.ReadBoolean("ShouldFocus");
                 code = helper.ReadString("CodeText");
                 ProcessCode();
@@ -210,12 +212,17 @@ namespace Dynamo.Nodes
             }
         }
 
-        protected override void BuildAstNode(DSEngine.IAstBuilder builder, List<AssociativeNode> inputAstNodes)
+        public override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
-            builder.Build(this, inputAstNodes);
+            //var unboundIdentifiers = new List<string>();
+
+            CodeBlockNode commentNode;
+            var codeBlock = GraphUtilities.Parse(CodeToParse, out commentNode) as CodeBlockNode;
+
+            return codeBlock != null ? codeBlock.Body : null;
         }
 
-        protected override AssociativeNode GetIndexedOutputNode(int portIndex)
+        public override AssociativeNode GetIndexedOutputNode(int portIndex)
         {
             if (this.State == ElementState.ERROR)
                 return null;

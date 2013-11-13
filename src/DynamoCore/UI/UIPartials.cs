@@ -363,9 +363,6 @@ namespace Dynamo.Nodes
 
             tb_slider.TickPlacement = System.Windows.Controls.Primitives.TickPlacement.None;
 
-            tb_slider.TickFrequency = 1;
-            tb_slider.IsSnapToTickEnabled = true;
-
             tb_slider.PreviewMouseUp += delegate
             {
                 dynSettings.ReturnFocusToSearch();
