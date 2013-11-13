@@ -11,6 +11,7 @@ using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
 using System.Windows;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using ArrayNode = ProtoCore.AST.AssociativeAST.ArrayNode;
 using Node = ProtoCore.AST.Node;
 
@@ -78,7 +79,7 @@ namespace Dynamo.Nodes
             foreach (var stmnt in statements)
             {
                 foreach (char c in stmnt)
-                    if (c != ' ' && c != '\n' && c != '\t')
+                    if (!char.IsWhiteSpace(c))
                     {
                         inputCode += (stmnt + ";");
                         break;
@@ -97,35 +98,16 @@ namespace Dynamo.Nodes
                 return inputCode;
         }
 
-
         /// <summary>
-        /// Given a statement class instance, the function checks if the statements DefinedVariable
-        /// has been declared already in a different block or not.
+        /// Returns the names of all the variables defined in this code block.
         /// </summary>
-        /// <param name="stmnt">The statement whose defined variable is being checked</param>
-        /// <returns></returns>
-        /// TODO Ambi : Add changes necessary for multiple variable declarations in a single statement.
-        public string VariableAlreadyDeclared(Statement stmnt)
+        /// <returns>List containing all the names</returns>
+        public List<string> GetDefinedVariableNames()
         {
-            List<string> defVarNames = Statement.GetDefinedVariableNames(stmnt, true);
-            
-            foreach (var node in this.WorkSpace.Nodes)
-            {
-                if (node is CodeBlockNodeModel && node != this)
-                {
-                    foreach (var x in (node as CodeBlockNodeModel).codeStatements)
-                    {
-                        List<string> otherDefVar = Statement.GetDefinedVariableNames(x, true);
-                        foreach (string varName in defVarNames)
-                        {
-                            if (otherDefVar.Contains(varName))
-                                return varName;
-                        }
-                    }
-                }
-            }
-
-            return null;
+            List<string> defVarNames = new List<string>();
+            foreach (var stmnt in codeStatements)
+                defVarNames.AddRange(Statement.GetDefinedVariableNames(stmnt, true));
+            return defVarNames;
         }
         #endregion
 
@@ -148,7 +130,7 @@ namespace Dynamo.Nodes
                         {
                             this.WorkSpace.UndoRecorder.BeginActionGroup();
 
-                            var portConnections = new Dictionary<string, List<PortModel>>();
+                            var portConnections = new OrderedDictionary();
                             //Save the connectors so that we can recreate them at the correct positions
                             SaveAndDeleteConnectors(portConnections);
 
@@ -203,6 +185,7 @@ namespace Dynamo.Nodes
                 this.Code = value;
                 return true;
             }
+
             return base.UpdateValueCore(name, value);
         }
 
@@ -313,7 +296,7 @@ namespace Dynamo.Nodes
                     try
                     {
                         //Create and save a statement variable from the astnodes generated
-                        tempStatement = Statement.CreateInstance(node, this.GUID);
+                        tempStatement = Statement.CreateInstance(node);
                         codeStatements.Add(tempStatement);
                     }
                     catch (Exception e)
@@ -336,6 +319,8 @@ namespace Dynamo.Nodes
             }
             else
             {
+                if (errors == null)
+                    DisplayError("Errors not getting sent from compiler to UI");
                 //Found errors. Get the error message strings and use it to call the DisplayError function
 
                 if (errors != null)
@@ -351,16 +336,11 @@ namespace Dynamo.Nodes
             }
 
             //Make sure variables have not been declared in other Code block nodes.
-            foreach (var singleStatement in codeStatements)
+            string redefinedVariable = this.WorkSpace.GetRedefinedVariable(this);
+            if (redefinedVariable != null)
             {
-                string redefinedVariable = VariableAlreadyDeclared(singleStatement);
-                if (redefinedVariable != null)
-                {
-                    string varName = redefinedVariable;
-                    string errorMessage = varName + " is already declared.";
-                    DisplayError(errorMessage);
-                    return;
-                }
+                DisplayError(redefinedVariable + " is already defined");
+                return;
             }
 
             SetPorts(unboundIdentifiers); //Set the input and output ports based on the statements
@@ -422,7 +402,12 @@ namespace Dynamo.Nodes
         private void SetInputPorts(List<string> unboundIdentifier)
         {
             foreach (string name in unboundIdentifier)
-                InPortData.Add(new PortData(name, "Input", typeof(object)));
+            {
+                string portName = name;
+                if (portName.Length > 24)
+                    portName = portName.Remove(21) + "...";
+                InPortData.Add(new PortData(portName, name, typeof(object)));
+            }
         }
 
         /// <summary>
@@ -468,8 +453,12 @@ namespace Dynamo.Nodes
         private bool RequiresOutPort(Statement s, int pos)
         {
             List<string> defVariables = Statement.GetDefinedVariableNames(s, true);
+
+            //Check if defined variables exist
             if (defVariables.Count == 0)
                 return false;
+
+            //Check if variable has been redclared later on in the CBN
             foreach (string varName in defVariables)
             {
                 for (int i = pos + 1; i < codeStatements.Count; i++)
@@ -487,22 +476,26 @@ namespace Dynamo.Nodes
         /// so that they can be recreated if needed.
         /// </summary>
         /// <param name="portConnections">A list of connections that will be destroyed</param>
-        private void SaveAndDeleteConnectors(Dictionary<string, List<PortModel>> portConnections)
+        private void SaveAndDeleteConnectors(OrderedDictionary portConnections)
         {
             for (int i = 0; i < OutPorts.Count; i++)
             {
                 var portModel = OutPorts[i];
+                string portName = portModel.ToolTipContent;
+                if (portModel.ToolTipContent.Equals("Statement Output"))
+                    portName += i.ToString();
                 if (portModel.Connectors.Count != 0)
                 {
-                    string portName = portModel.ToolTipContent;
-                    if (portModel.ToolTipContent.Equals("Statement Output"))
-                        portName += i.ToString();
-                    portConnections[portName] = new List<PortModel>();
+                    portConnections.Add(portName, new List<PortModel>());
                     foreach (var connector in portModel.Connectors)
                     {
-                        portConnections[portName].Add(connector.End);
+                        (portConnections[portName] as List<PortModel>).Add(connector.End);
                         this.WorkSpace.UndoRecorder.RecordDeletionForUndo(connector);
                     }
+                }
+                else
+                {
+                    portConnections.Add(portName, null);
                 }
             }
 
@@ -520,15 +513,15 @@ namespace Dynamo.Nodes
         /// so mercilessly destroyed, restoring peace and balance to the world once again.
         /// </summary>
         /// <param name="portConnections"> List of the connections that were killed</param>
-        private void LoadAndCreateConnectors(Dictionary<string, List<PortModel>> portConnections)
+        private void LoadAndCreateConnectors(OrderedDictionary portConnections)
         {
             List<int> undefinedIndices = new List<int>();
             for (int i = 0; i < OutPortData.Count; i++)
             {
                 string varName = OutPortData[i].ToolTipString;
-                if (portConnections.Keys.Contains(varName))
+                if (portConnections.Contains(varName) && portConnections[varName] != null)
                 {
-                    foreach (var endPortModel in portConnections[varName])
+                    foreach (var endPortModel in (portConnections[varName] as List<PortModel>))
                     {
                         PortType p;
                         NodeModel endNode = endPortModel.Owner;
@@ -537,16 +530,43 @@ namespace Dynamo.Nodes
                         this.WorkSpace.Connectors.Add(connector);
                         this.WorkSpace.UndoRecorder.RecordCreationForUndo(connector);
                     }
-                    portConnections.Remove(varName);
+                    portConnections[varName] = null;
                 }
                 else
                     undefinedIndices.Add(i);
             }
 
-            while (undefinedIndices.Count > 0 && portConnections.Count > 0)
+            for (int i = 0; i < undefinedIndices.Count; i++)
             {
-                var kvp = portConnections.First();
-                foreach (var endPortModel in kvp.Value)
+                int index = undefinedIndices[i];
+                if (index < portConnections.Count && portConnections[index] != null)
+                {
+                    foreach (var endPortModel in (portConnections[index] as List<PortModel>))
+                    {
+                        PortType p;
+                        NodeModel endNode = endPortModel.Owner;
+                        var connector = ConnectorModel.Make(this, endNode, index,
+                            endNode.GetPortIndex(endPortModel, out p), PortType.INPUT);
+                        this.WorkSpace.Connectors.Add(connector);
+                        this.WorkSpace.UndoRecorder.RecordCreationForUndo(connector);
+                    }
+                    portConnections[index] = null;
+                    undefinedIndices.Remove(index);
+                    i--;
+                }
+            }
+
+
+            List<List<PortModel>> unusedConnections = new List<List<PortModel>>();
+            foreach (List<PortModel> portModelList in portConnections.Values.Cast<List<PortModel>>())
+            {
+                if (portModelList == null)
+                    continue;
+                unusedConnections.Add(portModelList);
+            }
+            while (undefinedIndices.Count > 0 && unusedConnections.Count != 0)
+            {
+                foreach (var endPortModel in unusedConnections[0])
                 {
                     PortType p;
                     NodeModel endNode = endPortModel.Owner;
@@ -555,8 +575,8 @@ namespace Dynamo.Nodes
                     this.WorkSpace.Connectors.Add(connector);
                     this.WorkSpace.UndoRecorder.RecordCreationForUndo(connector);
                 }
-                portConnections.Remove(kvp.Key);
                 undefinedIndices.RemoveAt(0);
+                unusedConnections.RemoveAt(0);
             }
         }
         #endregion
@@ -589,12 +609,12 @@ namespace Dynamo.Nodes
         private List<Statement> subStatements = new List<Statement>();
 
         #region Public Methods
-        public static Statement CreateInstance(Node astNode, Guid nodeGuid)
+        public static Statement CreateInstance(Node astNode)
         {
             if (astNode == null)
                 throw new ArgumentNullException();
 
-            return new Statement(astNode, nodeGuid);
+            return new Statement(astNode);
         }
 
         public static void GetReferencedVariables(Node astNode, List<Variable> refVariableList)
@@ -664,7 +684,7 @@ namespace Dynamo.Nodes
         }
 
         /// <summary>
-        /// Returns the names of the reference variables
+        /// Returns the names of the variables that have been referenced in the statement
         /// </summary>
         /// <param name="s"> Statement whose variable names to be got.</param>
         /// <param name="onlyTopLevel"> Bool to check if required to return reference variables in sub statements as well</param>
@@ -683,7 +703,7 @@ namespace Dynamo.Nodes
         }
 
         /// <summary>
-        /// Returns the names of the defined variables
+        /// Returns the names of the variables that have been declared in the statement
         /// </summary>
         /// <param name="s"> Statement whose variable names to be got.</param>
         /// <param name="onlyTopLevel"> Bool to check if required to return reference variables in sub statements as well</param>
@@ -701,14 +721,14 @@ namespace Dynamo.Nodes
             return names;
         }
 
-        public static StatementType GetStatementType(Node astNode, Guid nodeGuid)
+        public static StatementType GetStatementType(Node astNode)
         {
             if (astNode is FunctionDefinitionNode)
                 return StatementType.FuncDeclaration;
             if (astNode is BinaryExpressionNode)
             {
                 BinaryExpressionNode currentNode = astNode as BinaryExpressionNode;
-                if (!(currentNode.LeftNode is IdentifierNode) || currentNode.Optr != ProtoCore.DSASM.Operator.assign)
+                if (currentNode.Optr != ProtoCore.DSASM.Operator.assign)
                     throw new ArgumentException();
                 if (!(currentNode.LeftNode.Name.StartsWith("temp") && currentNode.LeftNode.Name.Length > 10))
                     return StatementType.Expression;
@@ -735,11 +755,11 @@ namespace Dynamo.Nodes
         #endregion
 
         #region Private Methods
-        private Statement(Node astNode, Guid nodeGuid)
+        private Statement(Node astNode)
         {
             StartLine = astNode.line;
             EndLine = astNode.endLine;
-            CurrentType = GetStatementType(astNode, nodeGuid);
+            CurrentType = GetStatementType(astNode);
 
             if (astNode is BinaryExpressionNode)
             {
@@ -747,7 +767,6 @@ namespace Dynamo.Nodes
                 while (astNode is BinaryExpressionNode)
                 {
                     BinaryExpressionNode binExprNode = astNode as BinaryExpressionNode;
-                    CheckValidBinaryExpression(binExprNode);
                     IdentifierNode assignedVar = binExprNode.LeftNode as IdentifierNode;
                     definedVariables.Add(new Variable(assignedVar));
                     astNode = binExprNode.RightNode;
@@ -765,27 +784,13 @@ namespace Dynamo.Nodes
                     EndLine = currentNode.FunctionBody.endLine;
                 foreach (Node node in currentNode.FunctionBody.Body)
                 {
-                    subStatements.Add(new Statement(node, nodeGuid));
+                    subStatements.Add(new Statement(node));
                 }
             }
             else
                 throw new ArgumentException("Must be func def or assignment");
 
             Variable.SetCorrectColumn(referencedVariables, this.CurrentType, this.StartLine);
-        }
-
-        /// <summary>
-        /// Checks if the binary expression node has an identifier on the left and
-        /// an '=' operator.
-        /// </summary>
-        /// <param name="astNode"></param>
-        private void CheckValidBinaryExpression(BinaryExpressionNode astNode)
-        {
-            BinaryExpressionNode binExprNode = astNode as BinaryExpressionNode;
-            if (binExprNode.Optr != ProtoCore.DSASM.Operator.assign)
-                throw new ArgumentException("Binary Expr Node is not an assignment!");
-            if (!(binExprNode.LeftNode is IdentifierNode))
-                throw new ArgumentException("LHS invalid");
         }
         #endregion
     }
