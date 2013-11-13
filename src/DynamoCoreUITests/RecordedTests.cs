@@ -354,6 +354,49 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(3, nodes.Count);
         }
 
+
+        [Test, RequiresSTA]
+        public void TestBasicCodeBlockNodePortCreation()
+        {
+            RunCommandsFromFile("TestBasicPortCreation.xml");
+            
+            //Check the nodes
+            var nodes = workspaceViewModel.Nodes;
+            Assert.NotNull(nodes);
+            Assert.AreEqual(2, nodes.Count);
+
+            //Check the CBN
+            var cbn = GetNode("107e30e9-e97c-402c-b206-d27162d1fafd") as CodeBlockNodeModel;
+            Assert.AreNotEqual(ElementState.ERROR, cbn.State); 
+            Assert.AreEqual(4, cbn.OutPorts.Count);
+            Assert.AreEqual(2, cbn.InPorts.Count);
+
+            //CBN OutPut Ports 
+            //    > ToolTipContent stores name of variable
+            //    > Margina thickness is for height.(is a multiple of 20, except for the first)
+            Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+
+            Assert.AreEqual("b", cbn.OutPorts[1].ToolTipContent);
+            Assert.AreEqual(20, cbn.OutPorts[1].MarginThickness.Top);
+
+            Assert.AreEqual("c", cbn.OutPorts[2].ToolTipContent);
+            Assert.AreEqual(60, cbn.OutPorts[2].MarginThickness.Top);
+
+            Assert.AreEqual("d", cbn.OutPorts[3].ToolTipContent);
+            Assert.AreEqual(20, cbn.OutPorts[3].MarginThickness.Top);
+
+            //CBN Input Ports
+            //   >PortName stores name of variable
+            Assert.AreEqual("x", cbn.InPorts[0].PortName);
+            Assert.AreEqual("y", cbn.InPorts[1].PortName);
+
+            //Check the connections
+            var connectors = workspaceViewModel.Connectors;
+            Assert.NotNull(connectors);
+            Assert.AreEqual(2, connectors.Count);
+        }
+
         private ModelBase GetNode(string guid)
         {
             Guid id = Guid.Parse(guid);
