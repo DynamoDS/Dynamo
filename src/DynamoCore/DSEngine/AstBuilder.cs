@@ -123,8 +123,7 @@ namespace Dynamo.DSEngine
         /// </summary>
         public void ResetStates()
         {
-            foreach (var guid in _states.Keys)
-                _states[guid] = State.NoChange;
+            _states.Keys.ToList().ForEach(key => _states[key] = State.NoChange);
         }
 
         /// <summary>
@@ -291,9 +290,14 @@ namespace Dynamo.DSEngine
         /// whether Dynamo node has been compiled or not.
         /// </summary>
         /// <param name="nodes"></param>
-        public void CompileToAstNodes(IEnumerable<NodeModel> nodes)
+        public void CompileToAstNodes(IEnumerable<NodeModel> nodes, bool isDeltaExecution)
         {
             var sortedNodes = TopologicalSort(nodes);
+
+            if (isDeltaExecution)
+            {
+                sortedNodes = sortedNodes.Where(n => n.isDirty);
+            }
 
             foreach (var node in sortedNodes)
             {
