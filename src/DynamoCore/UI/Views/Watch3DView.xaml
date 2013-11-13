@@ -16,6 +16,8 @@
                 <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoColorsAndBrushes.xaml" />
                 <ResourceDictionary Source="/DynamoCore;component/UI/Themes/MenuStyleDictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <Color x:Key="pointColor" R="0" B="255" G="0" A="255"></Color>
+            <Color x:Key="lineColor" R="0" B="255" G="0" A="255"></Color>
         </ResourceDictionary>
     </UserControl.Resources>
     
@@ -31,15 +33,15 @@
         <HelixToolkit:HelixViewport3D Name="watch_view" ZoomExtentsWhenLoaded="True" 
                                       ShowViewCube="False" CameraRotationMode="Turntable"
                                       IsHitTestVisible="True" MouseLeftButtonDown="Watch_view_OnMouseDown" 
-                                      ShowCoordinateSystem="{Binding ElementName=topControl, Path=DataContext.CanNavigateBackground}"  >
+                                      ShowCoordinateSystem="{Binding ElementName=topControl, Path=DataContext.CanNavigateBackground}">
             <ModelVisual3D>
                 <HelixToolkit:LightVisual3D>
                     <HelixToolkit:DefaultLights>
                     </HelixToolkit:DefaultLights>
                 </HelixToolkit:LightVisual3D>
                 <!--<HelixToolkit:GridLinesVisual3D  Width="8" Length="8" MinorDistance="1" MajorDistance="1" Thickness="0.01"/>-->
-                <HelixToolkit:PointsVisual3D Size="6" Color="ForestGreen" Points="{Binding Path=HelixPoints, Mode=TwoWay}"/>
-                <HelixToolkit:LinesVisual3D Thickness="1" Color="DarkSlateGray" Points="{Binding Path=HelixLines, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
+                <HelixToolkit:PointsVisual3D Size="6" Color="{StaticResource pointColor}" Points="{Binding Path=HelixPoints, Mode=TwoWay}"/>
+                <HelixToolkit:LinesVisual3D Thickness="1" Color="{StaticResource lineColor}" Points="{Binding Path=HelixLines, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
                 <HelixToolkit:PointsVisual3D Size="8" Color="Cyan" Points="{Binding Path=HelixPointsSelected, Mode=TwoWay}"></HelixToolkit:PointsVisual3D>
                 <HelixToolkit:LinesVisual3D Thickness="3" Color="Cyan" Points="{Binding Path=HelixLinesSelected, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
                 
