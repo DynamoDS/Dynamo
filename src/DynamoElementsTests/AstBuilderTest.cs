@@ -77,7 +77,7 @@ namespace Dynamo.Tests
 
             AstNodeTestContainer container = new AstNodeTestContainer();
             AstBuilder builder = new AstBuilder(container);
-            builder.CompileToAstNodes(model.CurrentWorkspace.Nodes);
+            builder.CompileToAstNodes(model.CurrentWorkspace.Nodes, false);
 
             var astNodes = container.AstNodes;
             string code = GraphToDSCompiler.GraphUtilities.ASTListToCode(astNodes);
