@@ -300,6 +300,8 @@ namespace Dynamo.Nodes
             }
             else
             {
+                if (errors == null)
+                    DisplayError("Errors not getting sent from compiler to UI");
                 //Found errors. Get the error message strings and use it to call the DisplayError function
                 string errorMessage = "";
                 int i = 0;
