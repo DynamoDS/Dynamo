@@ -481,22 +481,19 @@ namespace Dynamo.ViewModels
             string code = Dynamo.DSEngine.EngineController.Instance.ConvertNodesToCode(nodeList);
 
             //
-            // TODO: Ben/Ambi/Jun Proper Node deletion
-            //IEnumerable<ISelectable> nodeModelsInSelection =  DynamoSelection.Instance.Selection.Where(x=>x is NodeModel);
-            //int m = 0;
-            //while (nodeModelsInSelection.Count()>m)
-            //{
-            //    var node = nodeModelsInSelection.ElementAt(m) as NodeModel;
-            //    var connectors = node.AllConnectors();
-            //    for(int n=0;n<connectors.Count();++n)
-            //        this._model.Connectors.Remove(connectors.ElementAt(n));
-            //    this._model.Nodes.Remove(node);
-            //    m++;
-            //}
-            for (int n = 0; n < nodeList.Count; ++n)
+            // Node deletion
+            IEnumerable<ISelectable> nodeModelsInSelection = DynamoSelection.Instance.Selection.Where(x => x is NodeModel);
+            int m = 0;
+            while (nodeModelsInSelection.Count() > m)
             {
-                this._model.Nodes.Remove(nodeList[n]);
+                var node = nodeModelsInSelection.ElementAt(m) as NodeModel;
+                var connectors = node.AllConnectors();
+                for (int n = 0; n < connectors.Count(); ++n)
+                    this._model.Connectors.Remove(connectors.ElementAt(n));
+                this._model.Nodes.Remove(node);
+                m++;
             }
+
 
             // create node
             var guid = Guid.NewGuid();

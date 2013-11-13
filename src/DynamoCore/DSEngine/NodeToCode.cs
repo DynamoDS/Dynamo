@@ -35,7 +35,7 @@ namespace Dynamo.DSEngine
         {
             ASTNodestoCode astnodesContainer = new ASTNodestoCode();
             Dynamo.DSEngine.AstBuilder astBuilder = new Dynamo.DSEngine.AstBuilder(astnodesContainer);
-            astBuilder.CompileToAstNodes(nodeList);
+            astBuilder.CompileToAstNodes(nodeList, false);
 
             var astNodes = astnodesContainer.AstNodes;
 
