@@ -11,6 +11,8 @@ namespace DSRevitNodes
 {
     public class DSSolid : IGeometryObject
     {
+        private Autodesk.Revit.DB.Solid x;
+
         internal Autodesk.Revit.DB.Solid InternalSolid
         {
             get; private set;
@@ -28,6 +30,12 @@ namespace DSRevitNodes
         {
             var result = GeometryCreationUtilities.CreateExtrusionGeometry(new List<CurveLoop>(){loop}, direction, distance);
             this.InternalSolid = result;
+        }
+
+        public DSSolid(Autodesk.Revit.DB.Solid x)
+        {
+            // TODO: Complete member initialization
+            this.x = x;
         }
 
         #endregion
@@ -48,15 +56,15 @@ namespace DSRevitNodes
         }
 
         /// <summary>
-        /// The internal edges of the solid
+        /// The edges of the solid
         /// </summary>
         public DSEdge[] Edges
         {
             get
             {
                 return this.InternalSolid.Edges.Cast<Autodesk.Revit.DB.Edge>()
-                            .Select(x => new DSEdge(x))
-                            .ToArray();
+                    .Select(x => new DSEdge(x))
+                    .ToArray();
             }
         }
 

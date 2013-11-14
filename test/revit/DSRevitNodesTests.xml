@@ -44,6 +44,7 @@
 
       <testFixture name="ElementSelectorTests">
         <test name="FamilyByElementId_ValidArgs" modelPath=".\MassWithBoxAndCone.rfa"/>
+        <test name="FormByType_ValidArgs" modelPath=".\block.rfa"/>
         <test name="FamilyByUniqueId_ValidArgs" modelPath=".\MassWithBoxAndCone.rfa"/>
         <test name="FamilySymbolByElementId_ValidArgs" modelPath=".\MassWithBoxAndCone.rfa"/>
         <test name="FamilySymbolByUniqueId_ValidArgs" modelPath=".\MassWithBoxAndCone.rfa"/>
@@ -72,6 +73,11 @@
 
       <testFixture name="ModelCurveTests">
         <test name="ByCurve_ValidArgs" modelPath=".\empty.rfa"/>
+      </testFixture>
+	  
+	    <testFixture name="FreeFormTests">
+		    <test name="BySolid_ValidArgs" modelPath=".\empty.rfa"/>
+        <test name="BySolid_NullArgument" modelPath=".\empty.rfa"/>
       </testFixture>
       
 		</testAssembly>

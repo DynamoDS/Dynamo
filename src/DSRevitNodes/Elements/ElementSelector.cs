@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using Autodesk.Revit.DB;
@@ -10,8 +11,18 @@ using RevitServices.Transactions;
 
 namespace DSRevitNodes.Elements
 {
+    [Browsable(false)]
     public static class ElementSelector
     {
+        /// <summary>
+        /// Get a collection of wrapped elements from the current document by type
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<AbstractElement> OfType<T>() where T : Autodesk.Revit.DB.Element
+        {
+            return DocumentManager.GetInstance().ElementsOfType<T>().Select(x => DSTypeFromElement(x));
+        }
+
         /// <summary>
         /// A factory method for looking up and obtaining elements
         /// from the revit project
@@ -23,7 +34,7 @@ namespace DSRevitNodes.Elements
 
             if (ele != null)
             {
-                return InternalGetDSTypeFromElement(ele);
+                return DSTypeFromElement(ele);
             }
             
             throw new Exception("Could not get the element from the document");
@@ -40,7 +51,7 @@ namespace DSRevitNodes.Elements
 
             if (ele != null)
             {
-                return InternalGetDSTypeFromElement(ele);
+                return DSTypeFromElement(ele);
             }
 
             throw new Exception("Could not get the element from the document");
@@ -86,11 +97,21 @@ namespace DSRevitNodes.Elements
         /// </summary>
         /// <param name="ele"></param>
         /// <returns></returns>
-        public static AbstractElement InternalGetDSTypeFromElement(Autodesk.Revit.DB.Element ele)
+        public static AbstractElement DSTypeFromElement(Autodesk.Revit.DB.Element ele)
         {
             if (ele is Autodesk.Revit.DB.ReferencePoint)
             {
                 return new DSReferencePoint(ele as Autodesk.Revit.DB.ReferencePoint);
+            }
+
+            if (ele is Autodesk.Revit.DB.Form)
+            {
+                return new DSForm(ele as Autodesk.Revit.DB.Form);
+            }
+
+            if (ele is Autodesk.Revit.DB.FreeFormElement)
+            {
+                return new DSFreeForm(ele as Autodesk.Revit.DB.FreeFormElement);
             }
 
             if (ele is Autodesk.Revit.DB.FamilyInstance)
