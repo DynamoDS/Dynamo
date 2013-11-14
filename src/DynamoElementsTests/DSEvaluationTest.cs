@@ -127,5 +127,21 @@ namespace Dynamo.Tests
             RunModel(@"core\dsevaluation\regress586.dyn");
             AssertValue("3c9b3bb2-726f-4dbf-b889-9332604c1c01", 3);
         }
+
+        [Test]
+        public void Regress657()
+        {
+            // 5; ----> y = 1..x;
+            RunModel(@"core\dsevaluation\regress657.dyn");
+            AssertValue("dbd24f59-3483-4e86-b433-54738746fe14", new int[] { 1, 2, 3, 4, 5});
+        }
+
+        [Test]
+        public void Regress664()
+        {
+            // 1..5 ----> y = x;
+            RunModel(@"core\dsevaluation\regress664.dyn");
+            AssertValue("34ad4880-deaf-4b03-a8b6-7545c9d0159c", new int[] { 2, 3, 4, 5, 6 });
+        }
     }
 }
