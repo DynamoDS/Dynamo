@@ -21,6 +21,8 @@ namespace Dynamo.Tests.UI
     [TestFixture]
     public class RecordedTests
     {
+        #region Generic Set-up Routines and Data Members
+
         private System.Random randomizer = null;
 
         // For access within test cases.
@@ -40,6 +42,8 @@ namespace Dynamo.Tests.UI
         {
             this.controller = null;
         }
+
+        #endregion
 
         #region Recorded Test Cases for Command Framework
 
@@ -367,13 +371,27 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual("# Modification 4", pvarin.Script);
         }
 
+        [Test, RequiresSTA]
+        public void ShiftSelectAllNode()
+        {
+            RunCommandsFromFile("ShiftSelectAllNode.xml", true);
+
+            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(4, workspace.Connectors.Count);
+        }
+
         #endregion
 
         #region Recorded Test Cases for Defect Verifications
+        // Please add all test cases here, those are related to defects. Also 
+        // maintain the format and naming convention. Name of test case should 
+        // be Defect_MAGN_0000(defect number) and associated xml should be with 
+        // same name.
 
         [Test, RequiresSTA]
         public void Defect_MAGN_491()
         {
+            // TODO: Rename this XML to match the test case name.
             RunCommandsFromFile("Defect-MAGN-491.xml");
             var connectors = workspaceViewModel.Connectors;
             Assert.NotNull(connectors);
@@ -396,13 +414,95 @@ namespace Dynamo.Tests.UI
         [Test, RequiresSTA]
         public void Defect_MAGN_225()
         {
+            // TODO: Rename this XML to match the test case name.
             RunCommandsFromFile("TestConnectionReplacementUndo.xml");
             var nodes = workspaceViewModel.Nodes;
+
             Assert.NotNull(nodes);
             Assert.AreEqual(3, nodes.Count);
         }
 
+        [Test, RequiresSTA]
+        public void Defect_MAGN_57()
+        {
+            RunCommandsFromFile("Defect_MAGN_57.xml", true);
+
+            Assert.AreEqual(7, workspace.Nodes.Count);
+            Assert.AreEqual(5, workspace.Connectors.Count);
+
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_159()
+        {
+            RunCommandsFromFile("Defect_MAGN_159.xml", true);
+
+            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count);
+
+            var number1 = GetNode("045decd1-7454-4b85-b92e-d59d35f31ab2") as DoubleInput;
+            Assert.AreEqual(8, (number1.OldValue as FScheme.Value.Number).Item);
+        }
+
+        [Ignore, RequiresSTA]
+        public void Defect_MAGN_160()
+        {
+            // List node cannot be created  ( current limitation for button click)
+            RunCommandsFromFile("Defect_MAGN_160.xml", true);
+
+            //Assert.AreEqual(1, workspace.Nodes.Count);
+            //Assert.AreEqual(0, workspace.Connectors.Count);
+
+            //var number1 = GetNode("045decd1-7454-4b85-b92e-d59d35f31ab2") as DoubleInput;
+            //Assert.AreEqual(8, (number1.OldValue as FScheme.Value.Number).Item);
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_164()
+        {
+            RunCommandsFromFile("Defect_MAGN_164.xml", true);
+
+            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count);
+
+            var number1 = GetNode("2e1e5f33-52fc-4cc9-9d4a-33e46ec64a53") as DoubleInput;
+            Assert.AreEqual(30, (number1.OldValue as FScheme.Value.Number).Item);
+
+            var string1 = GetNode("a4ba7320-3cb8-4524-bc8c-8688d7abc599") as StringInput;
+            Assert.AreEqual("Dynamo", (string1.OldValue as FScheme.Value.String).Item);
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_190()
+        {
+            RunCommandsFromFile("Defect_MAGN_190.xml", true);
+
+            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Connectors.Count);
+
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_429()
+        {
+            RunCommandsFromFile("Defect_MAGN_429.xml", true);
+
+            Assert.AreEqual(0, workspace.Nodes.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count);
+
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_478()
+        {
+            RunCommandsFromFile("Defect_MAGN_478.xml", true);
+
+            Assert.AreEqual(1, workspace.Notes.Count);
+        }
+
         #endregion
+
+        #region Private Helper Methods
 
         private ModelBase GetNode(string guid)
         {
@@ -461,5 +561,7 @@ namespace Dynamo.Tests.UI
             Assert.IsTrue(duplicate is CmdType);
             return duplicate as CmdType;
         }
+
+        #endregion
     }
 }
