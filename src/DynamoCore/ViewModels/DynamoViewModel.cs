@@ -179,6 +179,8 @@ namespace Dynamo.ViewModels
         public DelegateCommand GetBranchVisualizationCommand { get; set; }
         public DelegateCommand TogglePreviewBubbleVisibilityCommand { get; set; }
 
+        public DelegateCommand ExportToSTLCommand { get; set; }
+
         /// <summary>
         /// An observable collection of workspace view models which tracks the model
         /// </summary>
@@ -523,6 +525,8 @@ namespace Dynamo.ViewModels
             SelectVisualizationInViewCommand = new DelegateCommand(SelectVisualizationInView, CanSelectVisualizationInView);
             GetBranchVisualizationCommand = new DelegateCommand(GetBranchVisualization, CanGetBranchVisualization);
             TogglePreviewBubbleVisibilityCommand = new DelegateCommand(TogglePreviewBubbleVisibility, CanTogglePreviewBubbleVisibility);
+
+            ExportToSTLCommand = new DelegateCommand(ExportToSTL, CanExportToSTL);
 
             DynamoLogger.Instance.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Instance_PropertyChanged);
 
@@ -1315,6 +1319,40 @@ namespace Dynamo.ViewModels
         }
 
         internal bool CanTogglePreviewBubbleVisibility(object parameter)
+        {
+            return true;
+        }
+
+        private void ExportToSTL(object parameter)
+        {
+            FileDialog _fileDialog = null;
+
+            if (_fileDialog == null)
+            {
+                _fileDialog = new SaveFileDialog()
+                {
+                    AddExtension = true,
+                    DefaultExt = ".stl",
+                    FileName = "model.stl",
+                    Filter = "STL Models|*.stl",
+                    Title = "Save your model to STL.",
+                };
+            }
+
+            // if you've got the current space path, use it as the inital dir
+            if (!string.IsNullOrEmpty(_model.CurrentWorkspace.FileName))
+            {
+                var fi = new FileInfo(_model.CurrentWorkspace.FileName);
+                _fileDialog.InitialDirectory = fi.DirectoryName;
+            }
+
+            if (_fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                STLExport.ExportToSTL(_fileDialog.FileName, dynSettings.Controller.DynamoModel.HomeSpace.Name);
+            }
+        }
+
+        internal bool CanExportToSTL(object parameter)
         {
             return true;
         }
