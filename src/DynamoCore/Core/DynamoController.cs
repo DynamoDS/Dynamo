@@ -19,6 +19,7 @@ using Microsoft.Practices.Prism.ViewModel;
 using NUnit.Framework;
 using ProtoScript.Runners;
 using String = System.String;
+using Dynamo.Core;
 
 namespace Dynamo
 {
@@ -78,6 +79,18 @@ namespace Dynamo
             get { return visualizationManager ?? (visualizationManager = new VisualizationManagerASM()); }
         }
 
+        private PreferenceSettings _preferenceSettings;
+        public PreferenceSettings PreferenceSettings
+        {
+            get
+            {
+                if (_preferenceSettings == null)
+                    _preferenceSettings = PreferenceSettings.Load();
+
+                return _preferenceSettings;
+            }
+        }
+
         /// <summary>
         /// Testing flag is used to defer calls to run in the idle thread
         /// with the assumption that the entire test will be wrapped in an
@@ -133,10 +146,10 @@ namespace Dynamo
         private ConnectorType _connectorType;
         public ConnectorType ConnectorType
         {
-            get { return _connectorType; }
+            get { return PreferenceSettings.ConnectorType; }
             set
             {
-                _connectorType = value;
+                PreferenceSettings.ConnectorType = value;
             }
         }
 
@@ -181,12 +194,12 @@ namespace Dynamo
                 RequestsRedraw(sender, e);
         }
 
-        public delegate void CrashPromptHandler(object sender, DispatcherUnhandledExceptionEventArgs e);
+        public delegate void CrashPromptHandler(object sender, CrashPromptArgs e);
         public event CrashPromptHandler RequestsCrashPrompt;
-        public void OnRequestsCrashPrompt(object sender, DispatcherUnhandledExceptionEventArgs e)
+        public void OnRequestsCrashPrompt(object sender, CrashPromptArgs args)
         {
             if (RequestsCrashPrompt != null)
-                RequestsCrashPrompt(this, e);
+                RequestsCrashPrompt(this, args);
         }
 
         #endregion
@@ -269,6 +282,8 @@ namespace Dynamo
 
         public virtual void ShutDown()
         {
+            PreferenceSettings.Save();
+
             VisualizationManager.ClearVisualizations();
 
             dynSettings.Controller.DynamoModel.OnCleanup(null);
@@ -622,7 +637,7 @@ namespace Dynamo
 
         public void ReportABug(object parameter)
         {
-            Process.Start("https://github.com/ikeough/Dynamo/issues?state=open");
+            Process.Start(Configurations.GitHubBugReportingLink);
         }
 
         internal bool CanReportABug(object parameter)
@@ -719,6 +734,58 @@ namespace Dynamo
             : base("Run Cancelled")
         {
             Force = force;
+        }
+    }
+    
+    public class CrashPromptArgs : EventArgs
+    {
+        public enum DisplayOptions
+        {
+            IsDefaultTextOverridden = 0x00000001,
+            HasDetails = 0x00000002,
+            HasFilePath = 0x00000004
+        }
+
+        public DisplayOptions Options { get; private set; }
+        public string Details { get; private set; }
+        public string OverridingText { get; private set; }
+        public string FilePath { get; private set; }
+
+        // Default Crash Prompt
+        public CrashPromptArgs(string details, string overridingText = null, string filePath = null)
+        {
+            if (details != null)
+            {
+                Details = details;
+                Options |= DisplayOptions.HasDetails;
+            }
+
+            if (overridingText != null)
+            {
+                OverridingText = overridingText;
+                Options |= DisplayOptions.IsDefaultTextOverridden;
+            }
+
+            if (filePath != null)
+            {
+                FilePath = filePath;
+                Options |= DisplayOptions.HasFilePath;
+            }
+        }
+
+        public bool IsDefaultTextOverridden()
+        {
+            return this.Options.HasFlag(DisplayOptions.IsDefaultTextOverridden);
+        }
+
+        public bool HasDetails()
+        {
+            return this.Options.HasFlag(DisplayOptions.HasDetails);
+        }
+
+        public bool IsFilePath()
+        {
+            return this.Options.HasFlag(DisplayOptions.HasFilePath);
         }
     }
 
