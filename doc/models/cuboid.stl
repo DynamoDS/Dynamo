@@ -1,0 +1,86 @@
+solid Home
+	facet
+		outer loop
+			1 1 1
+			-1 1 1
+			1 -1 1
+		end loop
+	endfacet
+	facet
+		outer loop
+			1 -1 1
+			-1 1 1
+			-1 -1 1
+		end loop
+	endfacet
+	facet
+		outer loop
+			1 -1 -1
+			-1 -1 -1
+			1 1 -1
+		end loop
+	endfacet
+	facet
+		outer loop
+			1 1 -1
+			-1 -1 -1
+			-1 1 -1
+		end loop
+	endfacet
+	facet
+		outer loop
+			-1 -1 1
+			-1 -1 -1
+			1 -1 1
+		end loop
+	endfacet
+	facet
+		outer loop
+			1 -1 1
+			-1 -1 -1
+			1 -1 -1
+		end loop
+	endfacet
+	facet
+		outer loop
+			-1 1 1
+			-1 1 -1
+			-1 -1 1
+		end loop
+	endfacet
+	facet
+		outer loop
+			-1 -1 1
+			-1 1 -1
+			-1 -1 -1
+		end loop
+	endfacet
+	facet
+		outer loop
+			1 1 1
+			1 1 -1
+			-1 1 1
+		end loop
+	endfacet
+	facet
+		outer loop
+			-1 1 1
+			1 1 -1
+			-1 1 -1
+		end loop
+	endfacet
+	facet
+		outer loop
+			1 -1 1
+			1 -1 -1
+			1 1 1
+		end loop
+	endfacet
+	facet
+		outer loop
+			1 1 1
+			1 -1 -1
+			1 1 -1
+		end loop
+	endfacet
+endsolid Home
