@@ -739,20 +739,20 @@ namespace Dynamo
     
     public class CrashPromptArgs : EventArgs
     {
-        internal enum DisplayOptions
+        public enum DisplayOptions
         {
             IsDefaultTextOverridden = 0x00000001,
             HasDetails = 0x00000002,
             HasFilePath = 0x00000004
         }
 
-        internal DisplayOptions Options { get; private set; }
-        internal string Details { get; private set; }
-        internal string OverridingText { get; private set; }
-        internal string FilePath { get; private set; }
+        public DisplayOptions Options { get; private set; }
+        public string Details { get; private set; }
+        public string OverridingText { get; private set; }
+        public string FilePath { get; private set; }
 
         // Default Crash Prompt
-        internal CrashPromptArgs(string details, string overridingText = null, string filePath = null)
+        public CrashPromptArgs(string details, string overridingText = null, string filePath = null)
         {
             if (details != null)
             {
@@ -773,17 +773,17 @@ namespace Dynamo
             }
         }
 
-        internal bool IsDefaultTextOverridden()
+        public bool IsDefaultTextOverridden()
         {
             return this.Options.HasFlag(DisplayOptions.IsDefaultTextOverridden);
         }
 
-        internal bool HasDetails()
+        public bool HasDetails()
         {
             return this.Options.HasFlag(DisplayOptions.HasDetails);
         }
 
-        internal bool IsFilePath()
+        public bool IsFilePath()
         {
             return this.Options.HasFlag(DisplayOptions.HasFilePath);
         }
