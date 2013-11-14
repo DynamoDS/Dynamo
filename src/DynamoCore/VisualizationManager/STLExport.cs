@@ -63,6 +63,7 @@ namespace Dynamo
                     var a = mesh.Positions[mesh.TriangleIndices[i]];
                     var b = mesh.Positions[mesh.TriangleIndices[i+1]];
                     var c = mesh.Positions[mesh.TriangleIndices[i+2]];
+                    var n = mesh.Normals[mesh.TriangleIndices[i + 1]];
 
                     var verts = new List<Vertex>
                     {
@@ -71,7 +72,8 @@ namespace Dynamo
                         new Vertex(Convert.ToDecimal(c.X), Convert.ToDecimal(c.Y), Convert.ToDecimal(c.Z))
                     };
 
-                    facets.Add(new Facet(new Normal(0, 0, 0), verts, 0));
+                    var normal = new Normal(Convert.ToDecimal(n.X), Convert.ToDecimal(n.Y), Convert.ToDecimal(n.Z));
+                    facets.Add(new Facet(normal, verts, 0));
                 }
             }
 
