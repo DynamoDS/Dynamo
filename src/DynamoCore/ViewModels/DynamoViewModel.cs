@@ -1348,7 +1348,7 @@ namespace Dynamo.ViewModels
 
             if (_fileDialog.ShowDialog() == DialogResult.OK)
             {
-                STLExport.ExportToSTL(_fileDialog.FileName, dynSettings.Controller.DynamoModel.HomeSpace.Name);
+                STLExport.ExportToSTLBinary(_fileDialog.FileName, dynSettings.Controller.DynamoModel.HomeSpace.Name);
             }
         }
 

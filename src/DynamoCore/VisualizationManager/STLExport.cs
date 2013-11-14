@@ -1,7 +1,10 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Dynamo.Utilities;
+using QuantumConcepts.Formats.StereoLithography;
+using QuantumConcepts.Common.Extensions;
 
 namespace Dynamo
 {
@@ -40,6 +43,49 @@ namespace Dynamo
 
                 tw.WriteLine(string.Format("endsolid {0}", modelName));
             }
+        }
+
+        public static void ExportToSTLBinary(string path, string modelName)
+        {
+            var vis = dynSettings.Controller.VisualizationManager;
+
+            //get all the meshes
+            var meshes =
+                vis.Visualizations.SelectMany(x => x.Value.Meshes)
+                    .Concat(vis.Visualizations.SelectMany(x => x.Value.SelectedMeshes));
+
+            //prepare a facet list
+            var facets = new List<Facet>();
+            foreach (var mesh in meshes)
+            {
+                for (int i = 0; i < mesh.TriangleIndices.Count; i += 3)
+                {
+                    var a = mesh.Positions[mesh.TriangleIndices[i]];
+                    var b = mesh.Positions[mesh.TriangleIndices[i+1]];
+                    var c = mesh.Positions[mesh.TriangleIndices[i+2]];
+
+                    var verts = new List<Vertex>
+                    {
+                        new Vertex(Convert.ToDecimal(a.X), Convert.ToDecimal(a.Y), Convert.ToDecimal(a.Z)),
+                        new Vertex(Convert.ToDecimal(b.X), Convert.ToDecimal(b.Y), Convert.ToDecimal(b.Z)),
+                        new Vertex(Convert.ToDecimal(c.X), Convert.ToDecimal(c.Y), Convert.ToDecimal(c.Z))
+                    };
+
+                    facets.Add(new Facet(new Normal(0, 0, 0), verts, 0));
+                }
+            }
+
+            var stl1 = new STLDocument("Test", facets);
+
+            using (var stream = new FileStream(path,FileMode.Create))
+            {
+                using (var writer = new BinaryWriter(stream))
+                {
+                    stl1.Write(writer);
+                    writer.Flush();
+                }
+            }
+            
         }
     }
 }
