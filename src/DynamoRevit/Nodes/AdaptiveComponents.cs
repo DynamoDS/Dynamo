@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Autodesk.Revit.DB;
 using Dynamo.FSchemeInterop;
@@ -19,8 +20,8 @@ namespace Dynamo.Nodes
         public AdaptiveComponentByPoints()
         {
             InPortData.Add(new PortData("xyzs", "The XYZs that define the locations of your adaptive points.", typeof(Value.List)));
-            InPortData.Add(new PortData("fs", "The family type to create the adaptive component.", typeof(Value.Container)));
-            OutPortData.Add(new PortData("ac", "The adaptive component.", typeof(Value.Container)));
+            InPortData.Add(new PortData("family type", "The family type to create the adaptive component.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("adaptive component", "The adaptive component.", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -32,6 +33,8 @@ namespace Dynamo.Nodes
 
             FamilyInstance ac;
 
+            var sw = new Stopwatch();
+
             //if the adapative component already exists, then move the points
             if (Elements.Any())
             {
@@ -39,20 +42,32 @@ namespace Dynamo.Nodes
                 //...we attempt to fetch it from the document...
                 if (dynUtils.TryGetElement(Elements[0], out ac))
                 {
+                    sw.Start();
                     ac.Symbol = fs;
+                    sw.Stop();
+                    Debug.WriteLine(string.Format("{0} elapsed for updating family type on AC.", sw.Elapsed));
+                    sw.Reset();
                 }
                 else
                 {
+                    sw.Start();
                     //create
                     ac = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(dynRevitSettings.Doc.Document, fs);
                     Elements[0] = ac.Id;
+                    sw.Stop();
+                    Debug.WriteLine(string.Format("{0} elapsed for creating an AC.", sw.Elapsed));
+                    sw.Reset();
                 }
             }
             else
             {
+                sw.Start();
                 //create
                 ac = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(dynRevitSettings.Doc.Document, fs);
                 Elements.Add(ac.Id);
+                sw.Stop();
+                Debug.WriteLine(string.Format("{0} elapsed for creating an AC.", sw.Elapsed));
+                sw.Reset();
             }
 
             if (ac == null)
@@ -63,6 +78,7 @@ namespace Dynamo.Nodes
             if (placePointIds.Count() != pts.Count())
                 throw new Exception("The input list of points does not have the same number of values required by the adaptive component.");
 
+            sw.Start();
             // Set the position of each placement point
             int i = 0;
             foreach (ElementId id in placePointIds)
@@ -72,6 +88,9 @@ namespace Dynamo.Nodes
                 point.Position = pt;
                 i++;
             }
+            sw.Stop();
+            Debug.WriteLine(string.Format("{0} elapsed for updating placement points of the AC.", sw.Elapsed));
+            sw.Reset();
 
             return Value.NewContainer(ac);
         }
