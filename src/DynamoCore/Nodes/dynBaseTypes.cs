@@ -2580,12 +2580,9 @@ namespace Dynamo.Nodes
             set { }
         }
 
-        public override AssociativeNode AstIdentifier
+        public override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
-            get
-            {
-                return AstFactory.BuildDoubleNode(Math.E);
-            }
+            return new[] { AstFactory.BuildDoubleNode(Math.E) };
         }
 
         protected internal override INode Build(Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
@@ -2625,12 +2622,9 @@ namespace Dynamo.Nodes
             set { }
         }
 
-        public override AssociativeNode AstIdentifier
+        public override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
-            get
-            {
-                return AstFactory.BuildDoubleNode(Math.PI);
-            }
+            return new[] { AstFactory.BuildDoubleNode(Math.PI) };
         }
 
         protected internal override INode Build(Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
@@ -2671,12 +2665,9 @@ namespace Dynamo.Nodes
             set { }
         }
 
-        public override AssociativeNode AstIdentifier
+        public override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
-            get
-            {
-                return AstFactory.BuildDoubleNode(Math.PI * 2);
-            }
+            return new[] { AstFactory.BuildDoubleNode(Math.PI*2) };
         }
 
         protected internal override INode Build(Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
@@ -3282,7 +3273,7 @@ namespace Dynamo.Nodes
         public override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
             var rhs = AstFactory.BuildDoubleNode(Value);
-            var assignment = AstFactory.BuildAssignment(AstIdentifier, rhs);
+            var assignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), rhs);
 
             return new[] { assignment };
         }
@@ -3337,7 +3328,7 @@ namespace Dynamo.Nodes
         public override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
             var rhs = AstFactory.BuildBooleanNode(Value);
-            var assignment = AstFactory.BuildAssignment(AstIdentifier, rhs);
+            var assignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), rhs);
 
             return new[] { assignment };
         }
@@ -3382,7 +3373,7 @@ namespace Dynamo.Nodes
         public override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
             var rhs = AstFactory.BuildStringNode(Value);
-            var assignment = AstFactory.BuildAssignment(AstIdentifier, rhs);
+            var assignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), rhs);
 
             return new[] { assignment };
         }
@@ -3632,7 +3623,7 @@ namespace Dynamo.Nodes
                     ? newInputs[0]
                     : AstFactory.BuildExprList(newInputs);
 
-            var assignment = AstFactory.BuildAssignment(AstIdentifier, rhs);
+            var assignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), rhs);
 
             return new[] { assignment };
         }

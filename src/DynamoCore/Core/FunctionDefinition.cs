@@ -11,6 +11,7 @@ using Dynamo.Nodes;
 using Dynamo.Utilities;
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
+using Type = ProtoCore.Type;
 
 namespace Dynamo
 {
@@ -71,9 +72,9 @@ namespace Dynamo
 
         public void CompileAndAddToEnvironment(ExecutionEnvironment env)
         {
-            var compiledFunction = this.Compile();
+            var compiledFunction = Compile();
 
-            env.DefineSymbol( this.FunctionId.ToString(),compiledFunction);
+            env.DefineSymbol( FunctionId.ToString(),compiledFunction);
         }
 
         public FScheme.Expression Compile()
@@ -82,7 +83,7 @@ namespace Dynamo
             IEnumerable<string> outputNames = null;
 
             // Get the internal nodes for the function
-            WorkspaceModel functionWorkspace = this.WorkspaceModel;
+            WorkspaceModel functionWorkspace = WorkspaceModel;
 
             #region Find outputs
 
@@ -152,7 +153,7 @@ namespace Dynamo
             //Update existing function nodes which point to this function to match its changes
             dynSettings.Controller.DynamoModel.AllNodes
                 .OfType<Function>()
-                .Where(el => el.Definition != null && el.Definition.FunctionId == this.FunctionId)
+                .Where(el => el.Definition != null && el.Definition.FunctionId == FunctionId)
                 .ToList()
                 .ForEach(node =>
                 {
@@ -233,17 +234,17 @@ namespace Dynamo
         }
 
 
-        public AssociativeNode CompileToAstNode(AstBuilder builder)
+        public AssociativeNode CompileToAstNode()
         {
+            var cnBuilder = new CustomNodeBuilder();
+
             //TODO
             //This stuff needs to be refactored out. Only reason it's still here is for
-            //parity with existing Compile() method. Only reason it's still there as well
-            //is because someone else added it (Peter?) and I don't know what else it affects.
-            //Ideally, this would be a parameter.
-            #region Outputs and Inputs and UI updating crap
+            //parity with existing Compile() method.
+            #region Outputs and Inputs and UI updating
 
             // Get the internal nodes for the function
-            WorkspaceModel functionWorkspace = this.WorkspaceModel;
+            WorkspaceModel functionWorkspace = WorkspaceModel;
 
             #region Find outputs
 
@@ -252,12 +253,16 @@ namespace Dynamo
 
             var topMost = new List<Tuple<int, NodeModel>>();
 
+            IEnumerable<string> outputNames;
+
             // if we found output nodes, add select their inputs
             // these will serve as the function output
             if (outputs.Any())
             {
                 topMost.AddRange(
                     outputs.Where(x => x.HasInput(0)).Select(x => x.Inputs[0]));
+
+                outputNames = outputs.Select(x => x.Symbol);
             }
             else
             {
@@ -285,6 +290,8 @@ namespace Dynamo
                         }
                     }
                 }
+
+                outputNames = outNames;
             }
 
             #endregion
@@ -296,125 +303,65 @@ namespace Dynamo
             }
 
             //Find function entry point, and then compile
-            var variables = functionWorkspace.Nodes.OfType<Symbol>().Select(x => x.GUID.ToString());
+            var inputNodes = functionWorkspace.Nodes.OfType<Symbol>().ToList();
+            var parameters = inputNodes.Select(x => x.GUID.ToString());
+            var inputNames = inputNodes.Select(x => x.InputSymbol);
+
+            //Update existing function nodes which point to this function to match its changes
+            dynSettings.Controller.DynamoModel.AllNodes
+                .OfType<Function>()
+                .Where(el => el.Definition != null && el.Definition.FunctionId == FunctionId)
+                .ToList()
+                .ForEach(node =>
+                {
+                    node.SetInputs(inputNames);
+                    node.SetOutputs(outputNames);
+                    node.RegisterAllPorts();
+                });
+
+            //Call OnSave for all saved elements
+            functionWorkspace.Nodes.ToList().ForEach(x => x.onSave());
 
             #endregion
-
-            //topMost - contains all of the outputs of the function
-            //outputs - all of the Output nodes
-
-            var functionBody = new CodeBlockNode();
-
-            // if the node has any explicit outputs (Output Nodes), we have to search for
-            // nodes that are hanging so that they are still executed, even if they are
-            // not being used as outputs.
-            if (outputs.Any())
-            {
-                List<NodeModel> hangingNodes = functionWorkspace.GetHangingNodes().ToList();
-
-                foreach (var tNode in hangingNodes.Select((x, index) => new { Index = index, Node = x }))
-                {
-                    //TODO: Get Ast for node to be evaluated in the body.
-                    AssociativeNode node = null; //tNode.CompileProtoAst or something
-
-                    functionBody.Body.Add(node);
-                }
-            }
-
-            AssociativeNode top;
             
-            if (topMost.Count > 1)
-            {
-                top = AstFactory.BuildExprList(
-                    topMost.Select(
-                        node =>
-                        {
-                            //TODO: Get Ast for node to be stored in output list
-                            //Specifically, we need a way, given a node and an output index
-                            //(for multi-output nodes) to retreive the appropriate AST to store
-                            //in the output list.
-                            return null as AssociativeNode;
-                        }).ToList());
-            }
-            else if (topMost.Count == 1)
-            {
-                //TODO: Get Ast for node to be used as the function output.
-                //This should basically be the same as the above, except
-                //node = topMost[0]
-                top = null;
-            }
-            else
-            {
-                // if the custom node is empty, it will initially return null
-                top = AstFactory.BuildNullNode();
-            }
+            new AstBuilder(cnBuilder).CompileToAstNodes(
+                functionWorkspace.Nodes.Where(x => !(x is Output)), false);
 
-            var returnNode = new ReturnNode { ReturnExpr = top };
-            functionBody.Body.Add(returnNode);
-
-            //Create a new function definition
-            var functionDef = new FunctionDefinitionNode
-            {
-                //name is the GUID of the custom node
-                Name = FunctionId.ToString(),
-
-                //signature is 
-                Singnature = new ArgumentSignatureNode
-                {
-                    Arguments = variables.Select(paramName => new VarDeclNode
-                    {
-                        NameNode = new IdentifierNode
-                        {
-                            Value = paramName,
-                            Name = paramName,
-                            datatype = new ProtoCore.Type
-                            {
-                                Name = "var",
-                                IsIndexable = false,
-                                rank = 0,
-                                UID = (int)PrimitiveType.kTypeVar
-                            }
-                        },
-                        ArgumentType = new ProtoCore.Type { Name = "var" }
-                    }).ToList()
-                },
-
-                //body is the compiled workspace
-                FunctionBody = functionBody
-            };
-
-            return functionDef;
+            return cnBuilder.GenerateCustomNodeAst(
+                FunctionId.ToString().Replace("-", string.Empty), 
+                TODO,
+                parameters);
         }
 
         public bool AddToSearch()
         {
             return
-                dynSettings.Controller.SearchViewModel.Add(new CustomNodeInfo(  this.FunctionId, 
-                                                                                this.WorkspaceModel.Name,
-                                                                                this.WorkspaceModel.Category,
-                                                                                this.WorkspaceModel.Description,
-                                                                                this.WorkspaceModel.FileName ));
+                dynSettings.Controller.SearchViewModel.Add(new CustomNodeInfo(  FunctionId, 
+                                                                                WorkspaceModel.Name,
+                                                                                WorkspaceModel.Category,
+                                                                                WorkspaceModel.Description,
+                                                                                WorkspaceModel.FileName ));
         }
 
         public void UpdateCustomNodeManager()
         {
-            dynSettings.CustomNodeManager.SetNodeInfo(new CustomNodeInfo(   this.FunctionId,
-                                                                            this.WorkspaceModel.Name,
-                                                                            this.WorkspaceModel.Category,
-                                                                            this.WorkspaceModel.Description,
-                                                                            this.WorkspaceModel.FileName));
+            dynSettings.CustomNodeManager.SetNodeInfo(new CustomNodeInfo(   FunctionId,
+                                                                            WorkspaceModel.Name,
+                                                                            WorkspaceModel.Category,
+                                                                            WorkspaceModel.Description,
+                                                                            WorkspaceModel.FileName));
         }
 
         public bool SyncWithWorkspace(bool addToSearch, bool compileFunction)
         {
 
             // Get the internal nodes for the function
-            var functionWorkspace = this.WorkspaceModel;
+            var functionWorkspace = WorkspaceModel;
 
             try
             {
                 // Add function defininition
-                dynSettings.Controller.CustomNodeManager.AddFunctionDefinition(this.FunctionId, this);
+                dynSettings.Controller.CustomNodeManager.AddFunctionDefinition(FunctionId, this);
 
                 // search
                 if (addToSearch)
@@ -422,12 +369,12 @@ namespace Dynamo
                     AddToSearch();
                 }
 
-                var info = new CustomNodeInfo(this.FunctionId, functionWorkspace.Name, functionWorkspace.Category,
-                                              functionWorkspace.Description, this.WorkspaceModel.FileName);
+                var info = new CustomNodeInfo(FunctionId, functionWorkspace.Name, functionWorkspace.Category,
+                                              functionWorkspace.Description, WorkspaceModel.FileName);
 
                 dynSettings.Controller.CustomNodeManager.SetNodeInfo(info);
 
-                this.CompileAndAddToEnvironment(dynSettings.Controller.FSchemeEnvironment);
+                CompileAndAddToEnvironment(dynSettings.Controller.FSchemeEnvironment);
             }
             catch (Exception e)
             {
@@ -437,6 +384,83 @@ namespace Dynamo
             }
 
             return true;
+        }
+
+        private class CustomNodeBuilder : IAstNodeContainer
+        {
+            private readonly LinkedListOfList<NodeModel, AssociativeNode> _generatedAst
+                = new LinkedListOfList<NodeModel, AssociativeNode>(); 
+
+            #region Implement IAstNodeContainer interface
+
+            public void OnAstNodeBuilding(NodeModel node) { }
+
+            public void OnAstNodeBuilt(NodeModel node, IEnumerable<AssociativeNode> astNodes)
+            {
+                foreach (var ast in astNodes)
+                    _generatedAst.AddItem(node, ast);
+            }
+
+            #endregion
+
+            public AssociativeNode GenerateCustomNodeAst(string name, List<AssociativeNode> outputs, IEnumerable<string> parameters)
+            {
+                var functionBody = new CodeBlockNode();
+
+                functionBody.Body.AddRange(_generatedAst.SelectMany(x => x));
+
+                AssociativeNode top;
+
+                if (outputs.Count > 1)
+                {
+                    top = AstFactory.BuildExprList(outputs);
+                }
+                else if (outputs.Count == 1)
+                {
+                    top = outputs[0];
+                }
+                else
+                {
+                    // if the custom node is empty, it will initially return null
+                    top = AstFactory.BuildNullNode();
+                }
+
+                var returnNode = new ReturnNode { ReturnExpr = top };
+                functionBody.Body.Add(returnNode);
+
+                //Create a new function definition
+                var functionDef = new FunctionDefinitionNode
+                {
+                    //name is the GUID of the custom node
+                    Name = name,
+
+                    //signature is 
+                    Singnature = new ArgumentSignatureNode
+                    {
+                        Arguments = parameters.Select(paramName => new VarDeclNode
+                        {
+                            NameNode = new IdentifierNode
+                            {
+                                Value = paramName,
+                                Name = paramName,
+                                datatype = new Type
+                                {
+                                    Name = "var",
+                                    IsIndexable = false,
+                                    rank = 0,
+                                    UID = (int)PrimitiveType.kTypeVar
+                                }
+                            },
+                            ArgumentType = new Type { Name = "var" }
+                        }).ToList()
+                    },
+
+                    //body is the compiled workspace
+                    FunctionBody = functionBody
+                };
+
+                return functionDef;
+            }
         }
     }
 }
