@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Autodesk.Revit.DB;
 using DSNodeServices;
+using DSRevitNodes.References;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Face = Autodesk.DesignScript.Geometry.Face;
@@ -28,7 +29,7 @@ namespace DSRevitNodes.Elements
 
         #region Private constructors
 
-        private DSDividedSurface(DSFace dsFace, int uDivs, int vDivs)
+        private DSDividedSurface(DSFaceReference dsFace, int uDivs, int vDivs)
         {
             // if the family instance is present in trace...
             var oldEle =
@@ -45,7 +46,7 @@ namespace DSRevitNodes.Elements
             // otherwise create a new family instance...
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
-            var divSurf = Document.FamilyCreate.NewDividedSurface(dsFace.InternalFace.Reference);
+            var divSurf = Document.FamilyCreate.NewDividedSurface(dsFace.InternalReference);
 
             InternalSetDividedSurface(divSurf);
             InternalSetDivisions(uDivs, vDivs);
@@ -83,7 +84,7 @@ namespace DSRevitNodes.Elements
 
         #region Static constructors
 
-        public static DSDividedSurface ByFaceUVDivisions(DSFace f, int uDivs, int vDivs)
+        public static DSDividedSurface ByFaceUVDivisions(DSFaceReference f, int uDivs, int vDivs)
         {
             return new DSDividedSurface(f, uDivs, vDivs);
         }

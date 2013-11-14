@@ -37,6 +37,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MathNet.Numerics, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\mathnet-numerics-build\lib\Net40\MathNet.Numerics.dll</HintPath>
+    </Reference>
+    <Reference Include="MathNet.Numerics.IO, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\mathnet-numerics-build\lib\Net40\MathNet.Numerics.IO.dll</HintPath>
+    </Reference>
     <Reference Include="RevitAPI">
       <HintPath>$(REVITAPI)\RevitAPI.dll</HintPath>
       <Private>False</Private>
@@ -58,6 +66,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -67,6 +76,9 @@
   <ItemGroup>
     <Compile Include="Elements\AbstractElement.cs" />
     <Compile Include="Elements\DSForm.cs" />
+    <Compile Include="Elements\DSSketchPlane.cs" />
+    <Compile Include="References\AbstractReference.cs" />
+    <Compile Include="References\DSFaceReference.cs" />
     <Compile Include="GeometryObjects\DSCurveLoop.cs" />
     <Compile Include="Elements\ElementSelector.cs" />
     <Compile Include="Elements\DSFamily.cs" />
@@ -91,7 +103,7 @@
     <Compile Include="Elements\DSFloor.cs" />
     <Compile Include="Elements\DSGrid.cs" />
     <Compile Include="Elements\DSLevel.cs" />
-    <Compile Include="Elements\DSReferenceCurve.cs" />
+    <Compile Include="References\DSCurveReference.cs" />
     <Compile Include="Elements\DSReferencePlane.cs" />
     <Compile Include="Elements\DSReferencePoint.cs" />
     <Compile Include="Elements\DSSpatialField.cs" />

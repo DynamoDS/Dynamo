@@ -5,8 +5,7 @@ using System.Text;
 
 namespace DSRevitNodes.Elements
 {
-    class DSForm : AbstractElement
+    class DSSketchPlane
     {
-        // can produce DSCurveReferences and DSFaceReferences
     }
 }
