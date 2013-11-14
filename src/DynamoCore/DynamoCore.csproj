@@ -76,7 +76,7 @@ limitations under the License.
       <HintPath>..\..\bin\AnyCPU\Debug\FSchemeInterop.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="FSharp.Core"/>
+    <Reference Include="FSharp.Core" />
     <Reference Include="Greg, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\greg\Greg.dll</HintPath>
@@ -671,6 +671,9 @@ limitations under the License.
     <Resource Include="UI\Images\resize_vertical.cur" />
     <Resource Include="UI\Images\resize_vertical.png" />
     <Resource Include="UI\Images\consent_form_image.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\crash_pic.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

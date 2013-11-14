@@ -1,4 +1,5 @@
-﻿using Dynamo.Services;
+﻿using Dynamo.Core;
+using Dynamo.Services;
 using Dynamo.UI.Commands;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
@@ -46,7 +47,15 @@ namespace Dynamo.Services
                 RaisePropertyChanged("IsUsageReportingApproved");
 
                 // Call PreferenceSettings to save
-                dynSettings.Controller.PreferenceSettings.Save();
+                try
+                {
+                    dynSettings.Controller.PreferenceSettings.Save();
+                }
+                catch (Exception args)
+                {
+                    string filePath = PreferenceSettings.GetSettingsFilePath();
+                    dynSettings.Controller.OnRequestsCrashPrompt(this, new CrashPromptArgs(args.Message, Configurations.UsageReportingErrorMessage, filePath));
+                }
             }
         }
 
