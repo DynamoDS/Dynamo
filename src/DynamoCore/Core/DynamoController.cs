@@ -19,6 +19,7 @@ using Microsoft.Practices.Prism.ViewModel;
 using NUnit.Framework;
 using ProtoScript.Runners;
 using String = System.String;
+using Dynamo.Core;
 
 namespace Dynamo
 {
@@ -193,12 +194,12 @@ namespace Dynamo
                 RequestsRedraw(sender, e);
         }
 
-        public delegate void CrashPromptHandler(object sender, DispatcherUnhandledExceptionEventArgs e);
+        public delegate void CrashPromptHandler(object sender, CrashPromptArgs e);
         public event CrashPromptHandler RequestsCrashPrompt;
-        public void OnRequestsCrashPrompt(object sender, DispatcherUnhandledExceptionEventArgs e)
+        public void OnRequestsCrashPrompt(object sender, CrashPromptArgs args)
         {
             if (RequestsCrashPrompt != null)
-                RequestsCrashPrompt(this, e);
+                RequestsCrashPrompt(this, args);
         }
 
         #endregion
@@ -638,7 +639,7 @@ namespace Dynamo
 
         public void ReportABug(object parameter)
         {
-            Process.Start("https://github.com/ikeough/Dynamo/issues?state=open");
+            Process.Start(Configurations.GitHubBugReportingLink);
         }
 
         internal bool CanReportABug(object parameter)
@@ -735,6 +736,58 @@ namespace Dynamo
             : base("Run Cancelled")
         {
             Force = force;
+        }
+    }
+    
+    public class CrashPromptArgs : EventArgs
+    {
+        internal enum DisplayOptions
+        {
+            IsDefaultTextOverridden = 0x00000001,
+            HasDetails = 0x00000002,
+            HasFilePath = 0x00000004
+        }
+
+        internal DisplayOptions Options { get; private set; }
+        internal string Details { get; private set; }
+        internal string OverridingText { get; private set; }
+        internal string FilePath { get; private set; }
+
+        // Default Crash Prompt
+        internal CrashPromptArgs(string details, string overridingText = null, string filePath = null)
+        {
+            if (details != null)
+            {
+                Details = details;
+                Options |= DisplayOptions.HasDetails;
+            }
+
+            if (overridingText != null)
+            {
+                OverridingText = overridingText;
+                Options |= DisplayOptions.IsDefaultTextOverridden;
+            }
+
+            if (filePath != null)
+            {
+                FilePath = filePath;
+                Options |= DisplayOptions.HasFilePath;
+            }
+        }
+
+        internal bool IsDefaultTextOverridden()
+        {
+            return this.Options.HasFlag(DisplayOptions.IsDefaultTextOverridden);
+        }
+
+        internal bool HasDetails()
+        {
+            return this.Options.HasFlag(DisplayOptions.HasDetails);
+        }
+
+        internal bool IsFilePath()
+        {
+            return this.Options.HasFlag(DisplayOptions.HasFilePath);
         }
     }
 
