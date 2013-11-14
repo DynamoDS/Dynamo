@@ -48,6 +48,18 @@ namespace Dynamo.Tests.UI
         #region Recorded Test Cases for Command Framework
 
         [Test, RequiresSTA]
+        public void _SnowPeashooter()
+        {
+            RunCommandsFromFile("SnowPeashooter.xml");
+
+            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count);
+
+            var number = GetNode("045decd1-7454-4b85-b92e-d59d35f31ab2") as DoubleInput;
+            Assert.AreEqual("12.34", number.Value);
+        }
+
+        [Test, RequiresSTA]
         public void TestCreateNodeCommand()
         {
             // Create the command in completely unpredictable states. These 
@@ -332,7 +344,7 @@ namespace Dynamo.Tests.UI
         [Test, RequiresSTA]
         public void TestModifyPythonNodes()
         {
-            RunCommandsFromFile("ModifyPythonNodes.xml", true);
+            RunCommandsFromFile("ModifyPythonNodes.xml");
             Assert.AreEqual(0, workspace.Connectors.Count);
             Assert.AreEqual(2, workspace.Nodes.Count);
 
@@ -346,7 +358,7 @@ namespace Dynamo.Tests.UI
         [Test, RequiresSTA]
         public void TestModifyPythonNodesUndo()
         {
-            RunCommandsFromFile("ModifyPythonNodesUndo.xml", true);
+            RunCommandsFromFile("ModifyPythonNodesUndo.xml");
             Assert.AreEqual(0, workspace.Connectors.Count);
             Assert.AreEqual(2, workspace.Nodes.Count);
 
@@ -360,7 +372,7 @@ namespace Dynamo.Tests.UI
         [Test, RequiresSTA]
         public void TestModifyPythonNodesUndoRedo()
         {
-            RunCommandsFromFile("ModifyPythonNodesUndoRedo.xml", true);
+            RunCommandsFromFile("ModifyPythonNodesUndoRedo.xml");
             Assert.AreEqual(0, workspace.Connectors.Count);
             Assert.AreEqual(2, workspace.Nodes.Count);
 
@@ -374,7 +386,7 @@ namespace Dynamo.Tests.UI
         [Test, RequiresSTA]
         public void ShiftSelectAllNode()
         {
-            RunCommandsFromFile("ShiftSelectAllNode.xml", true);
+            RunCommandsFromFile("ShiftSelectAllNode.xml");
 
             Assert.AreEqual(4, workspace.Nodes.Count);
             Assert.AreEqual(4, workspace.Connectors.Count);
@@ -425,7 +437,7 @@ namespace Dynamo.Tests.UI
         [Test, RequiresSTA]
         public void Defect_MAGN_57()
         {
-            RunCommandsFromFile("Defect_MAGN_57.xml", true);
+            RunCommandsFromFile("Defect_MAGN_57.xml");
 
             Assert.AreEqual(7, workspace.Nodes.Count);
             Assert.AreEqual(5, workspace.Connectors.Count);
@@ -448,7 +460,7 @@ namespace Dynamo.Tests.UI
         public void Defect_MAGN_160()
         {
             // List node cannot be created  ( current limitation for button click)
-            RunCommandsFromFile("Defect_MAGN_160.xml", true);
+            RunCommandsFromFile("Defect_MAGN_160.xml");
 
             //Assert.AreEqual(1, workspace.Nodes.Count);
             //Assert.AreEqual(0, workspace.Connectors.Count);
@@ -475,7 +487,7 @@ namespace Dynamo.Tests.UI
         [Test, RequiresSTA]
         public void Defect_MAGN_190()
         {
-            RunCommandsFromFile("Defect_MAGN_190.xml", true);
+            RunCommandsFromFile("Defect_MAGN_190.xml");
 
             Assert.AreEqual(2, workspace.Nodes.Count);
             Assert.AreEqual(1, workspace.Connectors.Count);
@@ -485,7 +497,7 @@ namespace Dynamo.Tests.UI
         [Test, RequiresSTA]
         public void Defect_MAGN_429()
         {
-            RunCommandsFromFile("Defect_MAGN_429.xml", true);
+            RunCommandsFromFile("Defect_MAGN_429.xml");
 
             Assert.AreEqual(0, workspace.Nodes.Count);
             Assert.AreEqual(0, workspace.Connectors.Count);
@@ -495,7 +507,7 @@ namespace Dynamo.Tests.UI
         [Test, RequiresSTA]
         public void Defect_MAGN_478()
         {
-            RunCommandsFromFile("Defect_MAGN_478.xml", true);
+            RunCommandsFromFile("Defect_MAGN_478.xml");
 
             Assert.AreEqual(1, workspace.Notes.Count);
         }
