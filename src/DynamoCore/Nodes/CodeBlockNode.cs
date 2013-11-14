@@ -5,6 +5,12 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Xml;
+<<<<<<< HEAD
+=======
+using GraphToDSCompiler;
+using ProtoCore.AST.AssociativeAST;
+using Dynamo.Core;
+>>>>>>> Some comments change and code refactoring
 using Dynamo.Models;
 using Dynamo.Utilities;
 using GraphToDSCompiler;
@@ -352,7 +358,11 @@ namespace Dynamo.Nodes
             }
 
             //Make sure variables have not been declared in other Code block nodes.
+<<<<<<< HEAD
             string redefinedVariable = WorkSpace.GetRedefinedVariable(this);
+=======
+            string redefinedVariable = this.WorkSpace.GetFirstRedefinedVariable(this);
+>>>>>>> Some comments change and code refactoring
             if (redefinedVariable != null)
             {
                 DisplayError(redefinedVariable + " is already defined");
@@ -420,8 +430,8 @@ namespace Dynamo.Nodes
             foreach (string name in unboundIdentifier)
             {
                 string portName = name;
-                if (portName.Length > 24)
-                    portName = portName.Remove(21) + "...";
+                if (portName.Length > Configurations.MaxPortNameLength)
+                    portName = portName.Remove(Configurations.MaxPortNameLength-3) + "...";
                 InPortData.Add(new PortData(portName, name, typeof(object)));
             }
         }
@@ -530,12 +540,24 @@ namespace Dynamo.Nodes
         /// <param name="portConnections"> List of the connections that were killed</param>
         private void LoadAndCreateConnectors(OrderedDictionary portConnections)
         {
+<<<<<<< HEAD
             var undefinedIndices = new List<int>();
+=======
+            /*The matching is done in three parts:
+             *Step 1:
+             *   First, it tries to match the connectors wrt to the defined variable name. Hence it 
+             *   first checks to see if any of the old veriable names are present. If so, if there were
+             *   any connectors presnt then it makes the new connectors.
+             *   As it iterates through the new ports, it also finds the ports that didnt get exist before
+             */
+            List<int> undefinedIndices = new List<int>();
+>>>>>>> Some comments change and code refactoring
             for (int i = 0; i < OutPortData.Count; i++)
             {
                 string varName = OutPortData[i].ToolTipString;
-                if (portConnections.Contains(varName) && portConnections[varName] != null)
+                if (portConnections.Contains(varName))
                 {
+<<<<<<< HEAD
                     foreach (PortModel endPortModel in (portConnections[varName] as List<PortModel>))
                     {
                         PortType p;
@@ -548,13 +570,33 @@ namespace Dynamo.Nodes
                             PortType.INPUT);
                         WorkSpace.Connectors.Add(connector);
                         WorkSpace.UndoRecorder.RecordCreationForUndo(connector);
+=======
+                    if (portConnections[varName] != null)
+                    {
+                        foreach (var endPortModel in (portConnections[varName] as List<PortModel>))
+                        {
+                            PortType p;
+                            NodeModel endNode = endPortModel.Owner;
+                            var connector = ConnectorModel.Make(this, endNode, i,
+                                endNode.GetPortIndex(endPortModel, out p), PortType.INPUT);
+                            this.WorkSpace.Connectors.Add(connector);
+                            this.WorkSpace.UndoRecorder.RecordCreationForUndo(connector);
+                        }
+                        portConnections[varName] = null;
+>>>>>>> Some comments change and code refactoring
                     }
-                    portConnections[varName] = null;
                 }
                 else
                     undefinedIndices.Add(i);
             }
 
+            /*
+             *Step 2:
+             *   The second priority is to match the connections to the previous indices. For all the ports
+             *   that were not previously defined, it now checks if that "numbered" port had any 
+             *   connections previously, ie, if the old third port had 2 connections, then these would go 
+             *   to the new 3rd port (if it is not a variable that was defined before)
+             */
             for (int i = 0; i < undefinedIndices.Count; i++)
             {
                 int index = undefinedIndices[i];
@@ -579,10 +621,26 @@ namespace Dynamo.Nodes
                 }
             }
 
+<<<<<<< HEAD
 
             var unusedConnections =
                 portConnections.Values.Cast<List<PortModel>>().Where(portModelList => portModelList != null).ToList();
 
+=======
+            /*
+             *Step 2:
+             *   The final step. Now that the priorties are finished, the function tries to reuse any
+             *   existing connections by attaching them to any ports that have not already 
+             *   been given connections
+             */
+            List<List<PortModel>> unusedConnections = new List<List<PortModel>>();
+            foreach (List<PortModel> portModelList in portConnections.Values.Cast<List<PortModel>>())
+            {
+                if (portModelList == null)
+                    continue;
+                unusedConnections.Add(portModelList);
+            }
+>>>>>>> Some comments change and code refactoring
             while (undefinedIndices.Count > 0 && unusedConnections.Count != 0)
             {
                 foreach (PortModel endPortModel in unusedConnections[0])
