@@ -1192,4 +1192,30 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewContainer(result);
         }
     }
+
+    [NodeName("XYZ By Offset from Origin")]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_QUERY)]
+    [NodeDescription("Evaluates curve or edge at parameter.")]
+    public class XyzByDistanceOffsetFromOrigin : GeometryBase
+    {
+        public XyzByDistanceOffsetFromOrigin()
+        {
+            InPortData.Add(new PortData("origin", "The origin for the offset.", typeof(FScheme.Value.Container)));
+            InPortData.Add(new PortData("direction", "The direction to offset.", typeof(FScheme.Value.Container)));
+            InPortData.Add(new PortData("distance", "The distance to offset.", typeof(FScheme.Value.Container)));
+            OutPortData.Add(new PortData("point", "The offset point.", typeof(FScheme.Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+        {
+            var origin = (XYZ) ((FScheme.Value.Container) args[0]).Item;
+            var direction = (XYZ)((FScheme.Value.Container)args[1]).Item;
+            var distance = ((FScheme.Value.Number)args[2]).Item;
+
+            var pt = origin + direction.Multiply(distance);
+            return FScheme.Value.NewContainer(pt);
+        }
+    }
 }
