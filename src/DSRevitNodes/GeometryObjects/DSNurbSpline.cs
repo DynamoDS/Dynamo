@@ -40,8 +40,12 @@ namespace DSRevitNodes.GeometryObjects
        /// <param name="weights"></param>
         internal DSNurbSpline(Autodesk.DesignScript.Geometry.Point[] controlPoints, double[] weights)
         {
+            TransactionManager.GetInstance().EnsureInTransaction(DocumentManager.GetInstance().CurrentDBDocument);
+
            var c = NurbSpline.Create(controlPoints.ToXyzs(), weights);
            this.InternalCurve = c;
+
+            TransactionManager.GetInstance().TransactionTaskDone();
         }
 
         #endregion
