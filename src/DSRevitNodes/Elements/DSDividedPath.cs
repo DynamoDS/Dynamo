@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using DSNodeServices;
 using RevitServices.Persistence;
@@ -31,20 +33,28 @@ namespace DSRevitNodes.Elements
         /// <summary>
         /// Private constructor to build a DividedPath
         /// </summary>
-        /// <param name="c">Host curve</param>
+        /// <param name="c">Host curves</param>
         /// <param name="divs">Number of divisions</param>
-        private DSDividedPath(DSCurve c, int divs)
+        private DSDividedPath(DSCurve[] c, int divs)
         {
             // PB: This constructor always *recreates* the divided path.
             // Mutating the divided path would require obtaining the referenced 
             // curve from the DividedPath, which does not look to be possible 
             // (without an expensive reverse lookup)
 
+            // make sure all of the curves are element references
+            var curveRefs = c.Select(x => x.InternalCurve.Reference).ToList();
+            if (curveRefs.Any(x => x == null))
+            {
+                throw new Exception("A DividedPath can only be instantiated using curves " +
+                                    "derived from a Revit element!  Other ways of deriving a " +
+                                    "curve do not guarantee the persistence of the curve.");
+            }
+
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
             // build the divided path
-            var divPath = Autodesk.Revit.DB.DividedPath.Create(Document,
-                new List<Reference>() {c.InternalCurve.Reference});
+            var divPath = Autodesk.Revit.DB.DividedPath.Create( Document, curveRefs );
             divPath.FixedNumberOfPoints = divs;
 
             // set internally
@@ -75,15 +85,35 @@ namespace DSRevitNodes.Elements
 
         #region Static constructors
 
-        public static DSDividedPath ByCurveAndEqualDivisions(DSCurve c, int divisions)
+        public static DSDividedPath ByCurveAndDivisions(DSCurve curve, int divisions)
         {
-            return new DSDividedPath(c, divisions);
+            if (curve == null)
+            {
+                throw new ArgumentNullException("curves");
+            }
+
+            return new DSDividedPath(new[] { curve }, divisions);
         }
 
-        public static DSDividedPath ByCurveAndDivisionsOfLength(DSCurve c, double length)
+        public static DSDividedPath ByCurvesAndDivisions(DSCurve[] curve, int divisions)
         {
-            throw new NotImplementedException();
+            if (curve == null)
+            {
+                throw new ArgumentNullException("curves");
+            }
+
+            if (curve.Any(x => x == null))
+            {
+                throw new ArgumentNullException(String.Format("curves[{0}]",  Array.FindIndex(curve, x => x == null)) );
+            }
+
+            return new DSDividedPath(curve, divisions);
         }
+
+        //public static DSDividedPath ByCurveAndDivisionsOfLength(DSCurve c, double length)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         #endregion
     }
