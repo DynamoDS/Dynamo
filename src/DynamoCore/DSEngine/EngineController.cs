@@ -107,6 +107,16 @@ namespace Dynamo.DSEngine
             return mirror;
         }
 
+        public string ConvertNodesToCode(List<NodeModel> nodesToConvert)
+        {
+            string code = string.Empty;
+            if (nodesToConvert.Count > 0)
+            {
+                code = Dynamo.DSEngine.NodeToCodeUtils.ConvertNodesToCode(nodesToConvert);
+            }
+            return code;
+        }
+
         /// <summary>
         /// Get string representation of the value of variable.
         /// </summary>
