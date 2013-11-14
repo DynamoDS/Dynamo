@@ -161,16 +161,12 @@ namespace Dynamo.DSEngine
             }
             catch (Exception e)
             {
-                DynamoLogger.Instance.LogWarning("Update graph failed: " + e.Message, WarningLevel.Severe);
+                DynamoLogger.Instance.Log("Update graph failed: " + e.Message);
             }
-        }
-
-        /// <summary>
-        /// It is called before building AST nodes.
-        /// </summary>
-        public void ResetAstBuildingState()
-        {
-            syncDataManager.ResetStates();
+            finally
+            {
+                syncDataManager.ResetStates();
+            }
         }
 
         /// <summary>

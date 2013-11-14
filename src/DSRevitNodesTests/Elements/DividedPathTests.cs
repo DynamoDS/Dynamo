@@ -10,10 +10,10 @@ using NUnit.Framework;
 namespace DSRevitNodesTests
 {
     [TestFixture]
-    class DividedPathTests
+    class DividedPathTests : RevitTestBase
     {
         [Test]
-        public void ByCurveAndEqualDivisions_ValidArgs()
+        public void ByCurveAndEqualDivisions_CurveIsNotElementReference()
         {
             var pts = new Autodesk.DesignScript.Geometry.Point[]
             {
@@ -29,9 +29,9 @@ namespace DSRevitNodesTests
             };
 
             var spline = DSNurbSpline.ByControlPointsAndWeights(pts, wts);
-            var divPath = DSDividedPath.ByCurveAndEqualDivisions(spline, 5);
-            Assert.NotNull(divPath);
+            Assert.NotNull(spline);
 
+            Assert.Throws(typeof (Exception), () => DSDividedPath.ByCurveAndDivisions(spline, 5));
         }
     }
 }

@@ -9,7 +9,7 @@ using NUnit.Framework;
 namespace DSRevitNodesTests.GeometryObjects
 {
     [TestFixture]
-    class CurveLoopTests
+    class CurveLoopTests : RevitTestBase
     {
         [Test]
         public void RectangleByCurves_ValidArgs()

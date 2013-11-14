@@ -36,6 +36,15 @@ namespace DSRevitNodes
         #region Private constructors
 
         /// <summary>
+        /// Internal constructor for wrapping a ReferencePoint
+        /// </summary>
+        /// <param name="pt"></param>
+        internal DSReferencePoint(Autodesk.Revit.DB.ReferencePoint refPt)
+        {
+            InternalSetReferencePoint(refPt);
+        }
+
+        /// <summary>
         /// Internal constructor for the ReferencePoint
         /// </summary>
         /// <param name="x"></param>
