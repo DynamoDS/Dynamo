@@ -26,6 +26,7 @@ namespace Dynamo.Nodes
         private string codeToParse = "";
         private string previewVariable = null;
         private List<Statement> codeStatements = new List<Statement>();
+        private List<string> inputIdentifiers = new List<string>();
         private bool shouldFocus = true;
 
         #region Public Methods
@@ -219,10 +220,40 @@ namespace Dynamo.Nodes
 
             CodeBlockNode commentNode;
             CodeBlockNode codeBlock = null;
+            string finalCode = CodeToParse;
+
+            // Define unbound variables if necessary
+            if (this.inputIdentifiers != null && this.inputIdentifiers.Count > 0)
+            {
+                if (null == inputAstNodes || inputAstNodes.Count != inputIdentifiers.Count)
+                {
+                    throw new ArgumentException("Invalid input AST nodes.");
+                }
+
+                StringBuilder initStatements = new StringBuilder();
+                for (int i = 0; i < inputIdentifiers.Count; ++i)
+                {
+                    var astNode = inputAstNodes[i];
+                    if (astNode != null && astNode is IdentifierNode)
+                    {
+                        var unboundVar = inputIdentifiers[i];
+                        var inputVar = GraphUtilities.ASTListToCode(new List<AssociativeNode> { astNode });
+                        if (!string.Equals(unboundVar, inputVar))
+                        {
+                            initStatements.Append(unboundVar);
+                            initStatements.Append(" = ");
+                            initStatements.Append(inputVar);
+                            initStatements.Append(";");
+                        }
+                    }
+                }
+                initStatements.Append(codeToParse);
+                finalCode = initStatements.ToString();
+            }
 
             try
             {
-                codeBlock = GraphUtilities.Parse(CodeToParse, out commentNode) as CodeBlockNode;
+                codeBlock = GraphUtilities.Parse(finalCode, out commentNode) as CodeBlockNode;
             }
             catch (Exception ex)
             {
@@ -352,6 +383,8 @@ namespace Dynamo.Nodes
         /// <param name="unboundIdentifiers"> List of unbound identifiers to be used an inputs</param>
         private void SetPorts(List<string> unboundIdentifiers)
         {
+            this.inputIdentifiers = unboundIdentifiers;
+
             InPortData.Clear();
             OutPortData.Clear();
             if (codeStatements.Count == 0 || codeStatements == null)
