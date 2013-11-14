@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using Dynamo.Utilities;
 
@@ -29,9 +30,9 @@ namespace Dynamo
 
                         tw.WriteLine("\tfacet normal 0 0 0");
                         tw.WriteLine("\t\touter loop");
-                        tw.WriteLine(string.Format("\t\t\t{0} {1} {2}", a.X, a.Y, a.Z));
-                        tw.WriteLine(string.Format("\t\t\t{0} {1} {2}", b.X, b.Y, b.Z));
-                        tw.WriteLine(string.Format("\t\t\t{0} {1} {2}", c.X, c.Y, c.Z));
+                        tw.WriteLine(string.Format("\t\t\tvertex {0} {1} {2}", a.X, a.Y, a.Z));
+                        tw.WriteLine(string.Format("\t\t\tvertex {0} {1} {2}", b.X, b.Y, b.Z));
+                        tw.WriteLine(string.Format("\t\t\tvertex {0} {1} {2}", c.X, c.Y, c.Z));
                         tw.WriteLine("\t\tendloop");
                         tw.WriteLine("\tendfacet");
                     }
