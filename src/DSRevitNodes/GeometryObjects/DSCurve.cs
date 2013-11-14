@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using Autodesk.DesignScript.Geometry;
@@ -14,7 +15,7 @@ namespace DSRevitNodes
     /// </summary>
     public abstract class DSCurve : IGeometryObject
     {
-        public Autodesk.Revit.DB.Curve InternalCurve
+        internal Autodesk.Revit.DB.Curve InternalCurve
         {
             get; set;
         }

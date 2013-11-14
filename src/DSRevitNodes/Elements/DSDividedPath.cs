@@ -4,6 +4,7 @@ using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using DSNodeServices;
+using DSRevitNodes.References;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 
@@ -35,7 +36,7 @@ namespace DSRevitNodes.Elements
         /// </summary>
         /// <param name="c">Host curves</param>
         /// <param name="divs">Number of divisions</param>
-        private DSDividedPath(DSCurve[] c, int divs)
+        private DSDividedPath(DSCurveReference[] c, int divs)
         {
             // PB: This constructor always *recreates* the divided path.
             // Mutating the divided path would require obtaining the referenced 
@@ -43,13 +44,7 @@ namespace DSRevitNodes.Elements
             // (without an expensive reverse lookup)
 
             // make sure all of the curves are element references
-            var curveRefs = c.Select(x => x.InternalCurve.Reference).ToList();
-            if (curveRefs.Any(x => x == null))
-            {
-                throw new Exception("A DividedPath can only be instantiated using curves " +
-                                    "derived from a Revit element!  Other ways of deriving a " +
-                                    "curve do not guarantee the persistence of the curve.");
-            }
+            var curveRefs = c.Select(x => x.InternalReference).ToList();
 
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
@@ -85,7 +80,7 @@ namespace DSRevitNodes.Elements
 
         #region Static constructors
 
-        public static DSDividedPath ByCurveAndDivisions(DSCurve curve, int divisions)
+        public static DSDividedPath ByCurveAndDivisions(DSCurveReference curve, int divisions)
         {
             if (curve == null)
             {
@@ -95,7 +90,7 @@ namespace DSRevitNodes.Elements
             return new DSDividedPath(new[] { curve }, divisions);
         }
 
-        public static DSDividedPath ByCurvesAndDivisions(DSCurve[] curve, int divisions)
+        public static DSDividedPath ByCurvesAndDivisions(DSCurveReference[] curve, int divisions)
         {
             if (curve == null)
             {
