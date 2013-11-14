@@ -38,9 +38,8 @@ namespace Dynamo.Tests
             return mirror;
         }
 
-        private void AssertValue(string guid, object value)
+        private void AssertValue(string varname, object value)
         {
-            string varname = GetVarName(guid);
             var mirror = GetRuntimeMirror(varname);
 
             Console.WriteLine(varname + " = " + mirror.GetStringData());
@@ -65,6 +64,12 @@ namespace Dynamo.Tests
             }
         }
 
+        private void AssertPreviewValue(string guid, object value)
+        {
+            string previewVariable = GetVarName(guid);
+            AssertValue(previewVariable, value);
+        }
+
         private void AssertIsPointer(string guid)
         {
             string varname = GetVarName(guid);
@@ -79,7 +84,7 @@ namespace Dynamo.Tests
         {
             // (1..5) + 1;
             RunModel(@"core\dsevaluation\cbn_nolhs.dyn");
-            AssertValue("4e88b4a9-397a-422e-be13-f9ffcb27bc75", new int[] { 2, 3, 4, 5, 6});
+            AssertPreviewValue("4e88b4a9-397a-422e-be13-f9ffcb27bc75", new int[] { 2, 3, 4, 5, 6 });
         }
 
         [Test]
@@ -103,7 +108,7 @@ namespace Dynamo.Tests
             // 
             // d == {0, 100, 4, 6, 8, 10}
             RunModel(@"core\dsevaluation\regress616.dyn");
-            AssertValue("f83a463d-1ca4-4586-a544-5df47697e483", new int[] { 0, 100, 4, 6, 8, 10 });
+            AssertPreviewValue("f83a463d-1ca4-4586-a544-5df47697e483", new int[] { 0, 100, 4, 6, 8, 10 });
         }
 
         [Test]
@@ -118,14 +123,14 @@ namespace Dynamo.Tests
             // 
             // x + f;
             RunModel(@"core\dsevaluation\regress618.dyn");
-            AssertValue("60e002e2-e723-4e39-b059-d761596f24da", new int[] { 0, 1, 100, 3, 4, 5, 6, 7, 8, 9, 10 });
+            AssertPreviewValue("60e002e2-e723-4e39-b059-d761596f24da", new int[] { 0, 1, 100, 3, 4, 5, 6, 7, 8, 9, 10 });
         }
 
         [Test]
         public void Regress586()
         {
             RunModel(@"core\dsevaluation\regress586.dyn");
-            AssertValue("3c9b3bb2-726f-4dbf-b889-9332604c1c01", 3);
+            AssertPreviewValue("3c9b3bb2-726f-4dbf-b889-9332604c1c01", 3);
         }
 
         [Test]
@@ -133,7 +138,7 @@ namespace Dynamo.Tests
         {
             // 5; ----> y = 1..x;
             RunModel(@"core\dsevaluation\regress657.dyn");
-            AssertValue("dbd24f59-3483-4e86-b433-54738746fe14", new int[] { 1, 2, 3, 4, 5});
+            AssertPreviewValue("dbd24f59-3483-4e86-b433-54738746fe14", new int[] { 1, 2, 3, 4, 5 });
         }
 
         [Test]
@@ -141,7 +146,7 @@ namespace Dynamo.Tests
         {
             // 1..5 ----> y = x;
             RunModel(@"core\dsevaluation\regress664.dyn");
-            AssertValue("34ad4880-deaf-4b03-a8b6-7545c9d0159c", new int[] { 2, 3, 4, 5, 6 });
+            AssertPreviewValue("34ad4880-deaf-4b03-a8b6-7545c9d0159c", new int[] { 2, 3, 4, 5, 6 });
         }
     }
 }
