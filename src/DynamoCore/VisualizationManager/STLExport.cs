@@ -32,7 +32,7 @@ namespace Dynamo
                         tw.WriteLine(string.Format("\t\t\t{0} {1} {2}", a.X, a.Y, a.Z));
                         tw.WriteLine(string.Format("\t\t\t{0} {1} {2}", b.X, b.Y, b.Z));
                         tw.WriteLine(string.Format("\t\t\t{0} {1} {2}", c.X, c.Y, c.Z));
-                        tw.WriteLine("\t\tend loop");
+                        tw.WriteLine("\t\tendloop");
                         tw.WriteLine("\tendfacet");
                     }
                 }

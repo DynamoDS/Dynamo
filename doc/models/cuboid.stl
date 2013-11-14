@@ -4,83 +4,83 @@ solid Home
 			1 1 1
 			-1 1 1
 			1 -1 1
-		end loop
+		endloop
 	endfacet
 	facet
 		outer loop
 			1 -1 1
 			-1 1 1
 			-1 -1 1
-		end loop
+		endloop
 	endfacet
 	facet
 		outer loop
 			1 -1 -1
 			-1 -1 -1
 			1 1 -1
-		end loop
+		endloop
 	endfacet
 	facet
 		outer loop
 			1 1 -1
 			-1 -1 -1
 			-1 1 -1
-		end loop
+		endloop
 	endfacet
 	facet
 		outer loop
 			-1 -1 1
 			-1 -1 -1
 			1 -1 1
-		end loop
+		endloop
 	endfacet
 	facet
 		outer loop
 			1 -1 1
 			-1 -1 -1
 			1 -1 -1
-		end loop
+		endloop
 	endfacet
 	facet
 		outer loop
 			-1 1 1
 			-1 1 -1
 			-1 -1 1
-		end loop
+		endloop
 	endfacet
 	facet
 		outer loop
 			-1 -1 1
 			-1 1 -1
 			-1 -1 -1
-		end loop
+		endloop
 	endfacet
 	facet
 		outer loop
 			1 1 1
 			1 1 -1
 			-1 1 1
-		end loop
+		endloop
 	endfacet
 	facet
 		outer loop
 			-1 1 1
 			1 1 -1
 			-1 1 -1
-		end loop
+		endloop
 	endfacet
 	facet
 		outer loop
 			1 -1 1
 			1 -1 -1
 			1 1 1
-		end loop
+		endloop
 	endfacet
 	facet
 		outer loop
 			1 1 1
 			1 -1 -1
 			1 1 -1
-		end loop
+		endloop
 	endfacet
 endsolid Home
