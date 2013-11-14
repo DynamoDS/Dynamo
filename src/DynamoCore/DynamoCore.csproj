@@ -100,9 +100,6 @@ limitations under the License.
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(NunitPath)\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="QuantumConcepts.Common">
-      <HintPath>..\..\extern\STL\QuantumConcepts.Common.dll</HintPath>
-    </Reference>
     <Reference Include="QuantumConcepts.Formats.STL">
       <HintPath>..\..\extern\STL\QuantumConcepts.Formats.STL.dll</HintPath>
     </Reference>

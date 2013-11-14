@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using Dynamo.Utilities;
 using QuantumConcepts.Formats.StereoLithography;
-using QuantumConcepts.Common.Extensions;
 
 namespace Dynamo
 {
