@@ -3,10 +3,10 @@ using DSRevitNodes;
 using DSRevitNodes.Elements;
 using NUnit.Framework;
 
-namespace DSRevitNodesTests
+namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    public class FamilyTests : RevitTestBase
+    public class FamilyTests 
     {
         [Test]
         public void ByName_ValidInput()

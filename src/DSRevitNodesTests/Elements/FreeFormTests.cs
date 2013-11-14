@@ -4,19 +4,20 @@ using System.Linq;
 using System.Text;
 using Autodesk.DesignScript.Geometry;
 using DSRevitNodes;
+using DSRevitNodes.Elements;
 using DSRevitNodes.GeometryObjects;
 using NUnit.Framework;
 
-namespace DSRevitNodesTests.GeometryObjects
+namespace DSRevitNodesTests.Elements
 {
+
     [TestFixture]
-    public class SolidTests
+    public class FreeFormTests
     {
         [Test]
-        public void ByExtrusion_ValidArgs()
+        public void BySolid_ValidInput()
         {
-          
-            // construct a unit rectangle
+            // construct a triangle
             var pts1 = new[]
             {
                 Point.ByCoordinates(0,0,0),
@@ -55,15 +56,27 @@ namespace DSRevitNodesTests.GeometryObjects
 
             // construct the curveloop
             var curveloop = DSCurveLoop.ByCurves(crvs);
+            Assert.NotNull(curveloop);
 
             var dir = Vector.ByCoordinates(0, 0, 1);
             var dist = 5;
-            var extrusion = DSSolid.ByExtrusion(curveloop, dir, dist);
 
+            // construct the extrusion
+            var extrusion = DSSolid.ByExtrusion(curveloop, dir, dist);
             Assert.NotNull(extrusion);
-            Assert.AreEqual(2.5, extrusion.Volume, 0.01);
-            Assert.AreEqual(5 + 5 + 0.5 + 0.5 + Math.Sqrt(2) * 5, extrusion.SurfaceArea, 0.01);
+
+            // construct the freeform element
+            var freeForm = DSFreeForm.BySolid(extrusion);
+            Assert.NotNull(freeForm);
 
         }
+
+        [Test]
+        public void BySolid_NullArgument()
+        {
+            Assert.Throws(typeof(ArgumentNullException), () => DSFreeForm.BySolid(null));
+        }
+
     }
+
 }

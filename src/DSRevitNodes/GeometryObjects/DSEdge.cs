@@ -14,7 +14,7 @@ namespace DSRevitNodes.GeometryObjects
             get; private set;
         }
 
-        public DSEdge(Autodesk.Revit.DB.Edge x)
+        internal DSEdge(Autodesk.Revit.DB.Edge x)
         {
             this.InternalEdge = x;
         }

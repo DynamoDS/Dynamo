@@ -7,7 +7,7 @@ using NUnit.Framework.Constraints;
 namespace DSRevitNodesTests
 {
     [TestFixture]
-    public class FamilyInstanceTests : RevitTestBase
+    public class FamilyInstanceTests 
     {
         [Test]
         public void ByCoordinates_ValidInput()

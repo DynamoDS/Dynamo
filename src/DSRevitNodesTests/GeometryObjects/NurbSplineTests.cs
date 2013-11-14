@@ -8,7 +8,7 @@ using Point = Autodesk.DesignScript.Geometry.Point;
 namespace DSRevitNodesTests.GeometryObjects
 {
     [TestFixture]
-    public class NurbSplineTests : RevitTestBase
+    public class NurbSplineTests
     {
 
         [Test]

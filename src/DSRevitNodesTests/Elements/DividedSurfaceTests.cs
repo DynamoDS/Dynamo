@@ -10,7 +10,7 @@ using RevitServices.Persistence;
 namespace DSRevitNodesTests
 {
     [TestFixture]
-    public class DividedSurfaceTests : RevitTestBase
+    public class DividedSurfaceTests 
     {
         [Test]
         public void ByFaceAndUVDivisions_ValidArgs()
