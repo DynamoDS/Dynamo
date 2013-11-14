@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using Autodesk.Revit.DB;
@@ -10,6 +11,7 @@ namespace DSRevitNodes.References
     /// <summary>
     /// A base class for revit Reference objects
     /// </summary>
+    [Browsable(false)]
     public abstract class AbstractReference
     {
         public static Document Document

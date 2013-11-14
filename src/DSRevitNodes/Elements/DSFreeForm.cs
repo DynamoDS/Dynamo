@@ -18,10 +18,14 @@ namespace DSRevitNodes
     public class DSFreeForm : AbstractElement
     {
 
+        #region Internal properties
+
         internal Autodesk.Revit.DB.FreeFormElement InternalFreeFormElement
         {
             get; private set;
         }
+
+        #endregion
 
         #region Private constructors
 
@@ -77,9 +81,6 @@ namespace DSRevitNodes
         /// <returns></returns>
         private bool InternalSetSolid(Autodesk.Revit.DB.Solid solid)
         {
-            ElementId deleteId = ElementId.InvalidElementId;
-            GenericForm ffe = null;
-
             var revitAPIAssembly = System.Reflection.Assembly.GetAssembly(typeof(GenericForm));
             var FreeFormType = revitAPIAssembly.GetType("Autodesk.Revit.DB.FreeFormElement", true);
 

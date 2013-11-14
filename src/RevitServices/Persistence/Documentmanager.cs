@@ -51,7 +51,7 @@ namespace RevitServices.Persistence
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public IEnumerable<T> GetElements<T>() where T : Autodesk.Revit.DB.Element
+        public IEnumerable<T> ElementsOfType<T>() where T : Autodesk.Revit.DB.Element
         {
             var fec = new Autodesk.Revit.DB.FilteredElementCollector(CurrentDBDocument);
             return fec.OfClass(typeof(T)).Cast<T>();

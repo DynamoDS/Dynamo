@@ -20,7 +20,7 @@ namespace DSRevitNodesTests.Elements
         {
             // obtain the element id for the box family
             var name = "Box";
-            var family = DocumentManager.GetInstance().GetElements<Autodesk.Revit.DB.Family>()
+            var family = DocumentManager.GetInstance().ElementsOfType<Autodesk.Revit.DB.Family>()
                                                       .FirstOrDefault(x => x.Name == name);
             Assert.NotNull(family);
 
@@ -39,7 +39,7 @@ namespace DSRevitNodesTests.Elements
             var name = "Box";
 
             // look up the loaded family
-            var family = DocumentManager.GetInstance().GetElements<Autodesk.Revit.DB.Family>()
+            var family = DocumentManager.GetInstance().ElementsOfType<Autodesk.Revit.DB.Family>()
                                                       .FirstOrDefault(x => x.Name == name);
             Assert.NotNull(family);
 
@@ -59,7 +59,7 @@ namespace DSRevitNodesTests.Elements
             var name = "Box";
 
             // look up the loaded family
-            var family = DocumentManager.GetInstance().GetElements<Autodesk.Revit.DB.Family>()
+            var family = DocumentManager.GetInstance().ElementsOfType<Autodesk.Revit.DB.Family>()
                                           .FirstOrDefault(x => x.Name == name);
             Assert.NotNull(family);
 
@@ -82,7 +82,7 @@ namespace DSRevitNodesTests.Elements
             var name = "Box";
 
             // look up the loaded family
-            var family = DocumentManager.GetInstance().GetElements<Autodesk.Revit.DB.Family>()
+            var family = DocumentManager.GetInstance().ElementsOfType<Autodesk.Revit.DB.Family>()
                                         .FirstOrDefault(x => x.Name == name);
             Assert.NotNull(family);
 
@@ -96,6 +96,13 @@ namespace DSRevitNodesTests.Elements
             Assert.NotNull(famSymFromFact);
             Assert.IsAssignableFrom(typeof(DSFamilySymbol), famSymFromFact);
             Assert.AreEqual(name, (famSymFromFact as DSFamilySymbol).Name);
+        }
+
+        [Test]
+        public void FormByType_ValidArgs()
+        {
+            var ele = ElementSelector.OfType<Autodesk.Revit.DB.Form>().FirstOrDefault();
+            Assert.NotNull(ele);
         }
 
         [Test]

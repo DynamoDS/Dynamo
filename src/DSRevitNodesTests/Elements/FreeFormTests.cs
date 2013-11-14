@@ -15,7 +15,7 @@ namespace DSRevitNodesTests.Elements
     public class FreeFormTests
     {
         [Test]
-        public void BySolid_ValidInput()
+        public void BySolid_ValidArgs()
         {
             // construct a triangle
             var pts1 = new[]

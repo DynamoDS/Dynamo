@@ -12,14 +12,14 @@ namespace DSRevitNodes.References
     /// See: http://revitapisearch.com.s3-website-us-east-1.amazonaws.com/html/f3d5d2fe-96bf-8528-4628-78d8d5e6705f.htm
     public class DSFaceReference : AbstractReference
     {
-        internal DSFaceReference(Autodesk.Revit.DB.Curve curve)
+        internal DSFaceReference(Autodesk.Revit.DB.Face face)
         {
-            if ( curve.Reference == null )
+            if (face.Reference == null)
             {
                 throw new Exception("A Face Reference can only be obtained "
                                     + "from an Element.");
             }
-            this.InternalReference = curve.Reference;
+            this.InternalReference = face.Reference;
         }
 
     }
