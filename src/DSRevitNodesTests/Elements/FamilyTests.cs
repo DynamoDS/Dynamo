@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace DSRevitNodesTests
 {
     [TestFixture]
-    public class FamilyTests
+    public class FamilyTests : RevitTestBase
     {
         [Test]
         public void ByName_ValidInput()

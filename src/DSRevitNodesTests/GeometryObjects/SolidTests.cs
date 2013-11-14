@@ -10,7 +10,7 @@ using NUnit.Framework;
 namespace DSRevitNodesTests.GeometryObjects
 {
     [TestFixture]
-    public class SolidTests
+    public class SolidTests : RevitTestBase
     {
         [Test]
         public void ByExtrusion_ValidArgs()

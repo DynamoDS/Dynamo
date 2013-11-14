@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace DSRevitNodesTests
 {
     [TestFixture]
-    internal class ReferencePointTests
+    internal class ReferencePointTests : RevitTestBase
     {
         [Test]
         public void ByCoordinates_ValidInput()

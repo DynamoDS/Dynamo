@@ -366,10 +366,8 @@ namespace Dynamo
             {
 
 #if USE_DSENGINE
-                EngineController.Instance.ResetAstBuildingState();
-
                 EngineController.Instance.Builder.CompileToAstNodes(
-                    DynamoViewModel.Model.HomeSpace.Nodes);
+                    DynamoViewModel.Model.HomeSpace.Nodes, true);
 
                 var engineSyncData = EngineController.Instance.GetSyncData();
                 Run(engineSyncData);
