@@ -77,17 +77,16 @@ namespace Dynamo
                 }
             }
 
-            var stl1 = new STLDocument("Test", facets);
+            var stl1 = new STLDocument("WriteBinary", facets);
 
             using (var stream = new FileStream(path,FileMode.Create))
             {
-                using (var writer = new BinaryWriter(stream))
+                using (var writer = new StreamWriter(stream))
                 {
                     stl1.Write(writer);
                     writer.Flush();
                 }
             }
-            
         }
     }
 }
