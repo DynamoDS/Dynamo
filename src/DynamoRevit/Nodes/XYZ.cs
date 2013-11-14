@@ -502,25 +502,6 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("XYZ Origin")]
-    [NodeCategory(BuiltinNodeCategories.GEOMETRY_POINT_CREATE)]
-    [NodeDescription("Creates an XYZ at the origin (0,0,0).")]
-    [NodeSearchTags("xyz", "zero")]
-    public class XyzZero : GeometryBase
-    {
-        public XyzZero()
-        {
-            OutPortData.Add(new PortData("xyz", "XYZ", typeof(FScheme.Value.Container)));
-
-            RegisterAllPorts();
-        }
-
-        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
-        {
-            return FScheme.Value.NewContainer(XYZ.Zero);
-        }
-    }
-
     [NodeName("Unit X")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_POINT_CREATE)]
     [NodeDescription("Creates an XYZ representing the X basis (1,0,0).")]
