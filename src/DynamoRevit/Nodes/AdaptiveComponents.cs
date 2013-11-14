@@ -129,6 +129,8 @@ namespace Dynamo.Nodes
 
             #region batch creation data
 
+            var sw = new Stopwatch();
+            sw.Start();
             foreach (var pts in xyzs)
             {
                 FamilyInstance instance = null;
@@ -160,6 +162,9 @@ namespace Dynamo.Nodes
 
                 count++;
             }
+            sw.Stop();
+            Debug.WriteLine(string.Format("{0} elapsed for updating existing or generating family creation data.", sw.Elapsed));
+            sw.Reset();
 
             #endregion
 
@@ -171,6 +176,7 @@ namespace Dynamo.Nodes
 
             FSharpList<Value> results = FSharpList<Value>.Empty;
 
+            sw.Start();
             if (instData.Any())
             {
                 ICollection<ElementId> ids;
@@ -187,8 +193,11 @@ namespace Dynamo.Nodes
                 //to the elements collection
                 ids.ToList().ForEach(x => Elements.Add(x));
             }
+            sw.Stop();
+            Debug.WriteLine(string.Format("{0} elapsed for creating instances from creation data.", sw.Elapsed));
+            sw.Reset();
 
-
+            sw.Start();
             //make sure the ids list and the XYZ sets list
             //have the same length
             if (count != xyzs.Count())
@@ -211,6 +220,8 @@ namespace Dynamo.Nodes
 
                 UpdatePlacementPoints(ac, xyzs, j);
             }
+            sw.Stop();
+            Debug.WriteLine(string.Format("{0} elapsed for updating remaining instance locations.", sw.Elapsed));
 
             //add all of the instances
             results = Elements.Aggregate(results,
