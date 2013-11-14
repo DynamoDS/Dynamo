@@ -12,7 +12,7 @@ using RevitServices.Transactions;
 namespace DSRevitNodesTests.Elements
 {
     [TestFixture]
-    public class ElementSelectorTests : RevitTestBase
+    public class ElementSelectorTests 
     {
 
         [Test]

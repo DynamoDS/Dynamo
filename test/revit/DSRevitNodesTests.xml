@@ -57,7 +57,9 @@
       </testFixture>
 
       <testFixture name="DividedPathTests">
-        <test name="ByCurveAndEqualDivisions_CurveIsNotElementReference" modelPath=".\empty.rfa"/>
+        <test name="ByCurveAndEqualDivisions_ValidArgs" modelPath=".\empty.rfa"/>
+        <test name="ByCurveAndEqualDivisions_NullArgument" modelPath=".\empty.rfa"/>
+        <test name="ByCurveAndEqualDivisions_InvalidDivisions" modelPath=".\empty.rfa"/>
       </testFixture>
       
       <testFixture name="DividedSurfaceTests">
@@ -66,6 +68,10 @@
       
       <testFixture name="SolidTests">
         <test name="ByExtrusion_ValidArgs" modelPath=".\empty.rfa"/>
+      </testFixture>
+
+      <testFixture name="ModelCurveTests">
+        <test name="ByCurve_ValidArgs" modelPath=".\empty.rfa"/>
       </testFixture>
       
 		</testAssembly>

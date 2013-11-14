@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace DSRevitNodesTests
 {
     [TestFixture]
-    public class FamilySymbolTests : RevitTestBase
+    public class FamilySymbolTests 
     {
         [Test]
         public void ByName_ValidInput()

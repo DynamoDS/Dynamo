@@ -23,6 +23,8 @@ namespace DSRevitNodes
             this.InternalFace = face;
         }
 
+        #region Public properties
+
         public bool IsTwoSided
         {
             get
@@ -30,6 +32,8 @@ namespace DSRevitNodes
                 return InternalFace.IsTwoSided;
             }
         }
+
+        #endregion
 
         #region Tesselation
 

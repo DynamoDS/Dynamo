@@ -33,11 +33,9 @@ namespace DSRevitNodes
 
         #region Private constructor 
 
-        // PB: this implementation differs from Dynamo's original implementation,
-        // which I consider risky.  The old implementation dynamically created a SketchPlane
-        // base on the curve geometry.  This appears risky as the SketchPlane could be used
-        // downstream.  This would end up breaking the ModelCurve created by this node.  Please 
-        // extend this implementation if you are willing to accept that risk.  
+        // PB: This implementation borrows the somewhat risky notions from the original Dynamo
+        // implementation.  In short, it has the ability to infer a sketch plane,
+        // which might also mean deleting the original one.
 
         /// <summary>
         /// Internal constructor for ModelCurve
@@ -166,16 +164,25 @@ namespace DSRevitNodes
         }
         #endregion
 
-        public DSModelCurve ByCurve(DSCurve curve)
+        #region Public constructor
+
+        public static DSModelCurve ByPlanarCurve(DSCurve curve)
         {
+            if (curve == null)
+            {
+                throw new ArgumentNullException("curve");
+            }
+
             return new DSModelCurve(curve.InternalCurve);
         }
 
+        #endregion
+
         #region Helper methods
 
-        static bool hasMethodSetCurve = true;
+        private static bool hasMethodSetCurve = true;
 
-        static public void setCurveMethod(Autodesk.Revit.DB.ModelCurve mc, Curve c)
+        private static void setCurveMethod(Autodesk.Revit.DB.ModelCurve mc, Curve c)
         {
             bool foundMethod = false;
 
@@ -205,10 +212,9 @@ namespace DSRevitNodes
             }
         }
 
-        static bool hasMethodResetSketchPlane = true;
+        private static bool hasMethodResetSketchPlane = true;
 
-        //returns unused sketch plane id
-        static public ElementId resetSketchPlaneMethod(Autodesk.Revit.DB.ModelCurve mc, Curve c, Autodesk.Revit.DB.Plane flattenedOnPlane, out bool needsSketchPlaneReset)
+        private static ElementId resetSketchPlaneMethod(Autodesk.Revit.DB.ModelCurve mc, Curve c, Autodesk.Revit.DB.Plane flattenedOnPlane, out bool needsSketchPlaneReset)
         {
             //do we need to reset?
             needsSketchPlaneReset = false;
@@ -283,17 +289,17 @@ namespace DSRevitNodes
             return ElementId.InvalidElementId;
         }
 
-        public static XYZ MeanXYZ(List<XYZ> pts)
+        private static XYZ MeanXYZ(List<XYZ> pts)
         {
             return pts.Aggregate(new XYZ(), (i, p) => i.Add(p)).Divide(pts.Count);
         }
 
-        public static XYZ MakeXYZ(Vector<double> vec)
+        private static XYZ MakeXYZ(Vector<double> vec)
         {
             return new XYZ(vec[0], vec[1], vec[2]);
         }
 
-        public static Plane GetPlaneFromCurve(Curve c, bool planarOnly)
+        private static Plane GetPlaneFromCurve(Curve c, bool planarOnly)
         {
             //cases to handle
             //straight line - normal will be inconclusive
@@ -354,7 +360,7 @@ namespace DSRevitNodes
             return plane;
         }
 
-        public static SketchPlane GetSketchPlaneFromCurve(Curve c)
+        private static SketchPlane GetSketchPlaneFromCurve(Curve c)
         {
             Plane plane = GetPlaneFromCurve(c, false);
             SketchPlane sp = null;
@@ -365,7 +371,7 @@ namespace DSRevitNodes
             return sp;
         }
 
-        public static Curve Flatten3dCurveOnPlane(Curve c, Plane plane)
+        private static Curve Flatten3dCurveOnPlane(Curve c, Plane plane)
         {
             XYZ meanPt = null;
             List<XYZ> orderedEigenvectors;
@@ -406,7 +412,7 @@ namespace DSRevitNodes
         }
 
         // TODO: refactor this somewhere else
-        public static void PrincipalComponentsAnalysis(List<XYZ> pts, out XYZ meanXYZ, out List<XYZ> orderEigenvectors)
+        private static void PrincipalComponentsAnalysis(List<XYZ> pts, out XYZ meanXYZ, out List<XYZ> orderEigenvectors)
         {
             var meanPt = MeanXYZ(pts);
             meanXYZ = meanPt;
