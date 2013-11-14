@@ -340,7 +340,7 @@ namespace Dynamo.Models
         {
             get
             {
-                var ident = AstIdentifier as IdentifierNode;
+                var ident = AstIdentifierForPreview;
                 return (ident == null) ? null : ident.Name;
             }
         }
@@ -462,23 +462,70 @@ namespace Dynamo.Models
         {
             get { return interactionEnabled; }
             set 
-            { 
+            {
                 interactionEnabled = value;
                 RaisePropertyChanged("InteractionEnabled");
             }
         }
 
-        public virtual AssociativeNode AstIdentifier
+        private IdentifierNode _identifier;
+        /// <summary>
+        /// ProtoAST Identifier for result of the node before any output unpacking has taken place.
+        /// If there is only one output for the node, this is equivalent to GetAstIdentifierForOutputIndex(0).
+        /// </summary>
+        protected internal IdentifierNode AstIdentifierForPreview
         {
             get
             {
-                if (identifier == null)
+                if (_identifier == null)
                 {
-                    identifier = new IdentifierNode();
-                    identifier.Name = identifier.Value = AstBuilder.StringConstants.VAR_PREFIX + GUID.ToString().Replace("-", string.Empty);
+                    var id = AstIdentifierBase;
+                    _identifier = new IdentifierNode
+                    {
+                        Name = id,
+                        Value = id
+                    };
                 }
-                return identifier;
+                return _identifier;
             }
+        }
+
+        /// <summary>
+        /// Base name for ProtoAST Identifiers corresponding to this node's output.
+        /// </summary>
+        protected string AstIdentifierBase
+        {
+            get
+            {
+                return AstBuilder.StringConstants.VAR_PREFIX
+                       + GUID.ToString().Replace("-", string.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Fetches the ProtoAST Identifier for a given output port.
+        /// </summary>
+        /// <param name="outputIndex">Index of the output port.</param>
+        /// <returns>Identifier corresponding to the given output port.</returns>
+        public virtual IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
+        {
+            if (outputIndex < 0 || outputIndex > OutPortData.Count)
+            {
+                throw new ArgumentOutOfRangeException(
+                    "outputIndex", 
+                    @"Index must correspond to an OutPortData index.");
+            }
+
+            if (OutPortData.Count == 1)
+                return AstIdentifierForPreview;
+
+            var nameAndValue = AstIdentifierBase + "_" + outputIndex;
+
+            return new IdentifierNode
+            {
+                Name = nameAndValue,
+                Value = nameAndValue
+            };
         }
 
         /// <summary>
@@ -667,32 +714,28 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Node may overwrite this method if it provides multiple output, say
-        /// a function which returns a dictionary, or code block node. 
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        public virtual AssociativeNode GetIndexedOutputNode(int index)
-        {
-            if (index > 0)
-            {
-                throw new ArgumentOutOfRangeException("index", @"Index is out of range");
-            }
-
-            return AstIdentifier;
-        }
-
-        /// <summary>
         /// 
         /// </summary>
         /// <param name="inputAstNodes"></param>
         /// <returns></returns>
         public virtual IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
-            var rhs = AstFactory.BuildNullNode();
-            var assignment = AstFactory.BuildAssignment(AstIdentifier, rhs);
+            var result = new List<AssociativeNode>();
 
-            return new[] { assignment };
+            var rhs = AstFactory.BuildNullNode();
+
+            result.Add(AstFactory.BuildAssignment(AstIdentifierForPreview, rhs));
+
+            //Single Out
+            if (OutPortData.Count == 1)
+            {
+                result.Add(
+                    AstFactory.BuildAssignment(
+                        GetAstIdentifierForOutputIndex(0),
+                        AstIdentifierForPreview));
+            }
+
+            return result;
         }
 
         /// <summary>

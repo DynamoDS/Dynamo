@@ -264,7 +264,7 @@ namespace Dynamo.Nodes
             return codeBlock != null ? codeBlock.Body : null;
         }
 
-        public override AssociativeNode GetIndexedOutputNode(int portIndex)
+        public override IdentifierNode GetAstIdentifierForPortIndex(int portIndex)
         {
             if (this.State == ElementState.ERROR)
                 return null;
@@ -283,7 +283,7 @@ namespace Dynamo.Nodes
             List<ProtoCore.BuildData.WarningEntry> warnings;
             GraphToDSCompiler.GraphUtilities.Parse(ref codeToParse, out resultNodes, out errors, out  warnings, unboundIdentifiers);
             BinaryExpressionNode indexedStatement = resultNodes[statementIndex] as BinaryExpressionNode;
-            return indexedStatement.LeftNode as AssociativeNode;
+            return indexedStatement.LeftNode as IdentifierNode;
         }
 
         public override string VariableToPreview

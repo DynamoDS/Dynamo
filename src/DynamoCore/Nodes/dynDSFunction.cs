@@ -182,7 +182,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override AssociativeNode GetIndexedOutputNode(int index)
+        public override IdentifierNode GetAstIdentifierForOutputIndex(int index)
         {
             if (index < 0 ||
                 (OutPortData != null && index >= OutPortData.Count) ||
@@ -193,17 +193,20 @@ namespace Dynamo.Nodes
 
             if (Definition.ReturnKeys == null || Definition.ReturnKeys.Count == 0)
             {
-                return AstIdentifier;
+                return AstIdentifierForPreview;
             }
 
             StringNode indexingNode = new StringNode();
             indexingNode.value = Definition.ReturnKeys[index];
+            //"blah"
 
             ArrayNode arrayNode = new ArrayNode();
             arrayNode.Expr = indexingNode;
+            //["blah"]
 
-            var indexedNode = new IdentifierNode(AstIdentifier as IdentifierNode);
+            var indexedNode = new IdentifierNode(AstIdentifierForPreview);
             indexedNode.ArrayDimensions = arrayNode;
+            //guid["blah"]
 
             return indexedNode;
         }
@@ -246,7 +249,9 @@ namespace Dynamo.Nodes
                     EngineController.Instance.LiveRunnerCore);
             }
 
-            var assignment = AstFactory.BuildAssignment(AstIdentifier, functionCall);
+            var assignment = AstFactory.BuildAssignment(AstIdentifierForPreview, functionCall);
+
+            //TODO: build multi-out assignments too
 
             return new[] { assignment };
         }
