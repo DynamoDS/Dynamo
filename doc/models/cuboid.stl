@@ -1,82 +1,82 @@
 solid Home
-	facet
+	facet normal 0 0 0
 		outer loop
 			1 1 1
 			-1 1 1
 			1 -1 1
 		endloop
 	endfacet
-	facet
+	facet normal 0 0 0
 		outer loop
 			1 -1 1
 			-1 1 1
 			-1 -1 1
 		endloop
 	endfacet
-	facet
+	facet normal 0 0 0
 		outer loop
 			1 -1 -1
 			-1 -1 -1
 			1 1 -1
 		endloop
 	endfacet
-	facet
+	facet normal 0 0 0
 		outer loop
 			1 1 -1
 			-1 -1 -1
 			-1 1 -1
 		endloop
 	endfacet
-	facet
+	facet normal 0 0 0
 		outer loop
 			-1 -1 1
 			-1 -1 -1
 			1 -1 1
 		endloop
 	endfacet
-	facet
+	facet normal 0 0 0
 		outer loop
 			1 -1 1
 			-1 -1 -1
 			1 -1 -1
 		endloop
 	endfacet
-	facet
+	facet normal 0 0 0
 		outer loop
 			-1 1 1
 			-1 1 -1
 			-1 -1 1
 		endloop
 	endfacet
-	facet
+	facet normal 0 0 0
 		outer loop
 			-1 -1 1
 			-1 1 -1
 			-1 -1 -1
 		endloop
 	endfacet
-	facet
+	facet normal 0 0 0
 		outer loop
 			1 1 1
 			1 1 -1
 			-1 1 1
 		endloop
 	endfacet
-	facet
+	facet normal 0 0 0
 		outer loop
 			-1 1 1
 			1 1 -1
 			-1 1 -1
 		endloop
 	endfacet
-	facet
+	facet normal 0 0 0
 		outer loop
 			1 -1 1
 			1 -1 -1
 			1 1 1
 		endloop
 	endfacet
-	facet
+	facet normal 0 0 0
 		outer loop
 			1 1 1
 			1 -1 -1

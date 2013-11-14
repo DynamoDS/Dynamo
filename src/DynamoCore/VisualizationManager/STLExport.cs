@@ -27,7 +27,7 @@ namespace Dynamo
                         var b = mesh.Positions[mesh.TriangleIndices[i+1]];
                         var c = mesh.Positions[mesh.TriangleIndices[i+2]];
 
-                        tw.WriteLine("\tfacet");
+                        tw.WriteLine("\tfacet normal 0 0 0");
                         tw.WriteLine("\t\touter loop");
                         tw.WriteLine(string.Format("\t\t\t{0} {1} {2}", a.X, a.Y, a.Z));
                         tw.WriteLine(string.Format("\t\t\t{0} {1} {2}", b.X, b.Y, b.Z));
