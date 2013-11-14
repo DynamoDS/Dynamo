@@ -17,7 +17,6 @@ namespace Dynamo
 
             using (TextWriter tw = new StreamWriter(path))
             {
-                //write the solid name
                 tw.WriteLine(string.Format("solid {0}", modelName));
 
                 foreach (var mesh in meshes)
@@ -38,7 +37,7 @@ namespace Dynamo
                     }
                 }
 
-                tw.WriteLine("endsolid");
+                tw.WriteLine(string.Format("endsolid {0}", modelName));
             }
         }
     }
