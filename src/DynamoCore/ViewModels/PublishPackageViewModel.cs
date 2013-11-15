@@ -336,11 +336,11 @@ namespace Dynamo.PackageManager
         public Package Package { get; set; }
 
         /// <summary>
-        /// FunctionDefinition property </summary>
+        /// CustomNodeDefinition property </summary>
         /// <value>
         /// The FuncDefinition for the current package to be uploaded</value>
-        private List<FunctionDefinition> _FunctionDefinitions;
-        public List<FunctionDefinition> FunctionDefinitions
+        private List<CustomNodeDefinition> _FunctionDefinitions;
+        public List<CustomNodeDefinition> FunctionDefinitions
         {
             get { return _FunctionDefinitions; }
             set
@@ -499,7 +499,7 @@ namespace Dynamo.PackageManager
 
         }
 
-        private IEnumerable<FunctionDefinition> AllDependentFuncDefs()
+        private IEnumerable<CustomNodeDefinition> AllDependentFuncDefs()
         {
             return
                 FunctionDefinitions.Select(x => x.Dependencies)
@@ -508,7 +508,7 @@ namespace Dynamo.PackageManager
                                    .Distinct();
         }
 
-        private IEnumerable<FunctionDefinition> AllFuncDefs()
+        private IEnumerable<CustomNodeDefinition> AllFuncDefs()
         {
             return AllDependentFuncDefs().Union(FunctionDefinitions).Distinct();
         }

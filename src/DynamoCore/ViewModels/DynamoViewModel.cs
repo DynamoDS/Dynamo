@@ -179,6 +179,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand GetBranchVisualizationCommand { get; set; }
         public DelegateCommand TogglePreviewBubbleVisibilityCommand { get; set; }
 
+        public DelegateCommand ExportToSTLCommand { get; set; }
         public DelegateCommand ImportLibraryCommand { get; set; }
 
         /// <summary>
@@ -331,7 +332,13 @@ namespace Dynamo.ViewModels
                 _watchEscapeIsDown = value;
                 RaisePropertyChanged("WatchEscapeIsDown");
                 RaisePropertyChanged("ShouldBeHitTestVisible");
+                RaisePropertyChanged("WatchPreviewHitTest");
             }
+        }
+
+        public bool WatchPreviewHitTest
+        {
+            get { return ( WatchEscapeIsDown || CanNavigateBackground ); }
         }
 
         public bool IsHomeSpace
@@ -370,6 +377,7 @@ namespace Dynamo.ViewModels
             {
                 canNavigateBackground = value;
                 RaisePropertyChanged("CanNavigateBackground");
+                RaisePropertyChanged("WatchBackgroundHitTest");
 
                 int workspace_index = CurrentWorkspaceIndex;
 
@@ -542,6 +550,8 @@ namespace Dynamo.ViewModels
             GetBranchVisualizationCommand = new DelegateCommand(GetBranchVisualization, CanGetBranchVisualization);
             TogglePreviewBubbleVisibilityCommand = new DelegateCommand(TogglePreviewBubbleVisibility, CanTogglePreviewBubbleVisibility);
 
+            ExportToSTLCommand = new DelegateCommand(ExportToSTL, CanExportToSTL);
+            
 #if USE_DSENGINE
             ImportLibraryCommand = new DelegateCommand(ImportLibrary, CanImportLibrary);
 #endif
@@ -791,7 +801,7 @@ namespace Dynamo.ViewModels
         ///     Change the currently visible workspace to a custom node's workspace
         /// </summary>
         /// <param name="symbol">The function definition for the custom node workspace to be viewed</param>
-        internal void FocusCustomNodeWorkspace(FunctionDefinition symbol)
+        internal void FocusCustomNodeWorkspace(CustomNodeDefinition symbol)
         {
             if (symbol == null)
             {
@@ -801,8 +811,8 @@ namespace Dynamo.ViewModels
             if (_model.CurrentWorkspace is CustomNodeWorkspaceModel)
             {
                 var customNodeWorkspace = _model.CurrentWorkspace as CustomNodeWorkspaceModel;
-                if (customNodeWorkspace.FunctionDefinition.FunctionId
-                    == symbol.WorkspaceModel.FunctionDefinition.FunctionId)
+                if (customNodeWorkspace.CustomNodeDefinition.FunctionId
+                    == symbol.WorkspaceModel.CustomNodeDefinition.FunctionId)
                 {
                     return;
                 }
@@ -825,9 +835,9 @@ namespace Dynamo.ViewModels
         }
 
         public virtual Function CreateFunction(IEnumerable<string> inputs, IEnumerable<string> outputs,
-                                                     FunctionDefinition functionDefinition)
+                                                     CustomNodeDefinition customNodeDefinition)
         {
-            return new Function(inputs, outputs, functionDefinition);
+            return new Function(inputs, outputs, customNodeDefinition);
         }
 
         /// <summary>
@@ -852,7 +862,7 @@ namespace Dynamo.ViewModels
                 }
                 else
                 {
-                    foreach (FunctionDefinition funcDef in Controller.CustomNodeManager.GetLoadedDefinitions())
+                    foreach (CustomNodeDefinition funcDef in Controller.CustomNodeManager.GetLoadedDefinitions())
                     {
                         if (funcDef.WorkspaceModel.Nodes.Contains(e))
                         {
@@ -1375,6 +1385,40 @@ namespace Dynamo.ViewModels
         }
 
         internal bool CanTogglePreviewBubbleVisibility(object parameter)
+        {
+            return true;
+        }
+
+        private void ExportToSTL(object parameter)
+        {
+            FileDialog _fileDialog = null;
+
+            if (_fileDialog == null)
+            {
+                _fileDialog = new SaveFileDialog()
+                {
+                    AddExtension = true,
+                    DefaultExt = ".stl",
+                    FileName = "model.stl",
+                    Filter = "STL Models|*.stl",
+                    Title = "Save your model to STL.",
+                };
+            }
+
+            // if you've got the current space path, use it as the inital dir
+            if (!string.IsNullOrEmpty(_model.CurrentWorkspace.FileName))
+            {
+                var fi = new FileInfo(_model.CurrentWorkspace.FileName);
+                _fileDialog.InitialDirectory = fi.DirectoryName;
+            }
+
+            if (_fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                STLExport.ExportToSTL(_fileDialog.FileName, dynSettings.Controller.DynamoModel.HomeSpace.Name);
+            }
+        }
+
+        internal bool CanExportToSTL(object parameter)
         {
             return true;
         }

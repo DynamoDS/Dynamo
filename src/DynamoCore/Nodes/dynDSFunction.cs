@@ -1,22 +1,137 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
+using System.Web.UI.WebControls;
 using System.Xml;
 using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Utilities;
-using Microsoft.FSharp.Collections;
 using ProtoCore.AST.AssociativeAST;
-using ProtoCore.DSASM;
 using ProtoCore.Utils;
 
 namespace Dynamo.Nodes
-{
+{ 
+    /// <summary>
+    /// DesignScript Custom Node instance.
+    /// </summary>
+    [NodeName("Custom Node")]
+    [NodeDescription("Instance of a Custom Node")]
+    [IsInteractive(false)]
+    [NodeSearchableAttribute(false)]
+    [IsMetaNodeAttribute]
+    public class CustomNodeInstance : NodeModel
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public CustomNodeDefinition Definition { get; set; }
+
+        public override string Description
+        {
+            get { return Definition.WorkspaceModel.Description; }
+            set
+            {
+                Definition.WorkspaceModel.Description = value;
+                RaisePropertyChanged("Description");
+            }
+        }
+
+        public override bool RequiresRecalc
+        {
+            get
+            {
+                return Inputs.Values.Where(x => x != null).Any(x => x.Item2.isDirty || x.Item2.RequiresRecalc);
+            }
+            set
+            {
+                base.RequiresRecalc = value;
+            }
+        }
+
+        public CustomNodeInstance() { }
+
+        public CustomNodeInstance(CustomNodeDefinition definition)
+        {
+            Definition = definition;
+            ResyncWithDefinition();
+        }
+
+        /// <summary>
+        /// Updates this Custom Node's data to match its Definition.
+        /// </summary>
+        public void ResyncWithDefinition()
+        {
+            if (Definition.Parameters != null)
+            {
+                foreach (var arg in Definition.Parameters)
+                {
+                    InPortData.Add(new PortData(arg, "parameter", typeof(object)));
+                }
+            }
+
+            // Returns a dictionary
+            if (Definition.ReturnKeys != null && Definition.ReturnKeys.Any())
+            {
+                foreach (var key in Definition.ReturnKeys)
+                {
+                    OutPortData.Add(new PortData(key, "return value", typeof(object)));
+                }
+            }
+            else
+            {
+                OutPortData.Add(new PortData("", "return value", typeof(object)));
+            }
+
+            RegisterAllPorts();
+            NickName = Definition.DisplayName;
+        }
+
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void LoadNode(XmlNode nodeElement)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
+        {
+            var functionCall = AstFactory.BuildFunctionCall(Definition.Name, inputAstNodes);
+
+            var resultAst = new List<AssociativeNode>
+            {
+                AstFactory.BuildAssignment(AstIdentifierForPreview, functionCall)
+            };
+
+            if (OutPortData.Count == 1)
+            {
+                resultAst.Add(
+                    AstFactory.BuildAssignment(
+                        GetAstIdentifierForOutputIndex(0), AstIdentifierForPreview));
+            }
+            else
+            {
+                resultAst.AddRange(
+                    Definition.ReturnKeys != null
+                        ? Definition.ReturnKeys.Select(
+                            rtnKey =>
+                                new IdentifierNode(AstIdentifierForPreview)
+                                {
+                                    ArrayDimensions =
+                                        new ArrayNode { Expr = new StringNode { value = rtnKey } }
+                                })
+                        : Enumerable.Repeat(AstIdentifierForPreview, OutPortData.Count));
+            }
+
+            return resultAst;
+        }
+    }
+
     /// <summary>
     /// DesignScript function node. All functions from DesignScript share the
-    /// same function node but internally have different procedure node.
+    /// same function node but internally have different procedure.
     /// </summary>
     [NodeName("Function Node")]
     [NodeDescription("DesignScript Builtin Functions")]
@@ -44,13 +159,12 @@ namespace Dynamo.Nodes
             return Definition.Type == LibraryItemType.Constructor;
         }
 
-        public DSFunction()
-        {
-        }
+        public DSFunction() { }
 
         public DSFunction(FunctionItem definition)
         {
-            Initialize(definition);
+            Definition = definition;
+            Initialize();
         }
 
         public override bool RequiresRecalc
@@ -68,26 +182,23 @@ namespace Dynamo.Nodes
         /// <summary>
         /// Initialize a DS function node.
         /// </summary>
-        /// <param name="funcDef"></param>
-        private void Initialize(FunctionItem funcDef)
+        private void Initialize()
         {
-            Definition = funcDef;
-
             if (IsInstanceMember())
             {
                 InPortData.Add(new PortData("this", "Class Instance", typeof(object)));
             }
 
-            if (Definition.Arguments != null)
+            if (Definition.Parameters != null)
             {
-                foreach (var arg in Definition.Arguments)
+                foreach (var arg in Definition.Parameters)
                 {
                     InPortData.Add(new PortData(arg, "parameter", typeof(object)));
                 }
             }
 
             // Returns a dictionary
-            if (Definition.ReturnKeys != null && Definition.ReturnKeys.Count >= 1)
+            if (Definition.ReturnKeys != null && Definition.ReturnKeys.Any())
             {
                 foreach (var key in Definition.ReturnKeys)
                 {
@@ -119,7 +230,7 @@ namespace Dynamo.Nodes
             def.SetAttribute("Name", Definition.Name ?? "");
             def.SetAttribute("DisplayName", Definition.DisplayName ?? "");
             def.SetAttribute("Type", Definition.Type.ToString());
-            def.SetAttribute("Arguments", Definition.Arguments == null ? "" : string.Join(";", Definition.Arguments));
+            def.SetAttribute("Parameters", Definition.Parameters == null ? "" : string.Join(";", Definition.Parameters));
             def.SetAttribute("ReturnKeys", Definition.ReturnKeys == null ? "" : string.Join(";", Definition.ReturnKeys));
 
             nodeElement.AppendChild(def);
@@ -139,7 +250,7 @@ namespace Dynamo.Nodes
 
             foreach (XmlElement subNode in nodeElement.ChildNodes.Cast<XmlElement>().Where(subNode => subNode.Name.Equals(typeof(FunctionItem).FullName)))
             {
-                XmlElementHelper helper = new XmlElementHelper(subNode);
+                var helper = new XmlElementHelper(subNode);
 
                 var assembly = helper.ReadString("Assembly", "");
                 var category = helper.ReadString("Category", "");
@@ -150,14 +261,14 @@ namespace Dynamo.Nodes
                 var type = (LibraryItemType)System.Enum.Parse(typeof(LibraryItemType), strType);
 
                 List<string> arguments = null;
-                var argumentValue = helper.ReadString("Arguments", null);
+                var argumentValue = helper.ReadString("Parameters", null);
                 if (argumentValue != null)
                 {
                     argumentValue = argumentValue.Trim();
                 }
                 if (!string.IsNullOrEmpty(argumentValue))
                 {
-                    arguments = argumentValue.Split(new char[] { ';' }).ToList();
+                    arguments = argumentValue.Split(new[] { ';' }).ToList();
                 }
 
                 List<string> returnKeys = null;
@@ -168,44 +279,19 @@ namespace Dynamo.Nodes
                 }
                 if (!string.IsNullOrEmpty(returnKeyValue))
                 {
-                    returnKeys = returnKeyValue.Split(new char[] { ';' }).ToList();
+                    returnKeys = returnKeyValue.Split(new[] { ';' }).ToList();
                 }
 
                 if (!string.IsNullOrEmpty(assembly))
                 {
                     EngineController.Instance.ImportLibraries(new List<string> { assembly });
                 }
-                FunctionItem item = new FunctionItem(assembly, category, className, name, displayName, type, arguments, returnKeys);
-                Initialize(item);
+
+                Definition = new FunctionItem(assembly, category, className, name, displayName, type, arguments, returnKeys);
+                Initialize();
 
                 return;
             }
-        }
-
-        public override AssociativeNode GetIndexedOutputNode(int index)
-        {
-            if (index < 0 ||
-                (OutPortData != null && index >= OutPortData.Count) ||
-                (Definition.ReturnKeys != null && index > 0 && index >= Definition.ReturnKeys.Count))
-            {
-                throw new ArgumentOutOfRangeException("Index is out of range.");
-            }
-
-            if (Definition.ReturnKeys == null || Definition.ReturnKeys.Count == 0)
-            {
-                return AstIdentifier;
-            }
-
-            StringNode indexingNode = new StringNode();
-            indexingNode.value = Definition.ReturnKeys[index];
-
-            ArrayNode arrayNode = new ArrayNode();
-            arrayNode.Expr = indexingNode;
-
-            var indexedNode = new IdentifierNode(AstIdentifier as IdentifierNode);
-            indexedNode.ArrayDimensions = arrayNode;
-
-            return indexedNode;
         }
 
         /// <summary>
@@ -216,11 +302,11 @@ namespace Dynamo.Nodes
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
             base.SerializeCore(element, context); 
-            XmlElementHelper helper = new XmlElementHelper(element);
-            helper.SetAttribute("name", this.Definition.DisplayName);
+            var helper = new XmlElementHelper(element);
+            helper.SetAttribute("name", Definition.DisplayName);
         }
 
-        public override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
             string function = Definition.Name;
             var functionCall = AstFactory.BuildFunctionCall(function, inputAstNodes);
@@ -246,9 +332,34 @@ namespace Dynamo.Nodes
                     EngineController.Instance.LiveRunnerCore);
             }
 
-            var assignment = AstFactory.BuildAssignment(AstIdentifier, functionCall);
+            var resultAst = new List<AssociativeNode>
+            {
+                AstFactory.BuildAssignment(AstIdentifierForPreview, functionCall)
+            };
 
-            return new[] { assignment };
+            if (OutPortData.Count == 1)
+                resultAst.Add(AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstIdentifierForPreview));
+            else
+            {
+                var undefinedOutputs = Definition.ReturnKeys == null || Definition.ReturnKeys.Count == 0;
+                
+                resultAst.AddRange(
+                    Enumerable.Range(0, OutPortData.Count)
+                              .Select(
+                                  outputIdx =>
+                                      undefinedOutputs
+                                          ? AstIdentifierForPreview
+                                          : new IdentifierNode(AstIdentifierForPreview)
+                                          {
+                                              ArrayDimensions =
+                                                  new ArrayNode
+                                                  {
+                                                      Expr = new StringNode { value = Definition.ReturnKeys[outputIdx] }
+                                                  }
+                                          }));
+            }
+
+            return resultAst;
         }
     }
 }

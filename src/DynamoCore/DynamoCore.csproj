@@ -171,8 +171,8 @@ limitations under the License.
     <Compile Include="Nodes\CodeBlockNode.cs" />
     <Compile Include="Nodes\dynDSFunction.cs" />
     <Compile Include="Models\Migration.cs" />
-    <Compile Include="Core\FunctionDefinition.cs" />
     <Compile Include="Core\PreferenceSettings.cs" />
+    <Compile Include="Core\CustomNodeDefinition.cs" />
     <Compile Include="Nodes\Geometry.cs" />
     <Compile Include="Nodes\New Node Examples\SampleNodeWithUI.cs" />
     <Compile Include="PackageManager\PackageManagerClient.cs" />
@@ -368,6 +368,7 @@ limitations under the License.
     <Compile Include="VisualizationManager\octree\Vector3d.cs" />
     <Compile Include="VisualizationManager\octree\Vector3f.cs" />
     <Compile Include="VisualizationManager\RenderDescription.cs" />
+    <Compile Include="VisualizationManager\STLExport.cs" />
     <Compile Include="DSEngine\RenderPackage.cs" />
     <Compile Include="VisualizationManager\Visualization.cs" />
     <Compile Include="VisualizationManager\VisualizationManager.cs" />

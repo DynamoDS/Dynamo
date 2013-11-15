@@ -652,7 +652,7 @@ namespace Dynamo.ViewModels
                 {
                     PortType portType = PortType.INPUT;
                     Guid nodeId = portModel.Owner.GUID;
-                    int portIndex = portModel.Owner.GetPortIndex(portModel, out portType);
+                    int portIndex = portModel.Owner.GetPortIndexAndType(portModel, out portType);
 
                     dynamoViewModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
                         nodeId, portIndex, portType, DynCmd.MakeConnectionCommand.Mode.Begin));
@@ -671,7 +671,7 @@ namespace Dynamo.ViewModels
                     {
                         PortType portType = PortType.INPUT;
                         Guid nodeId = portModel.Owner.GUID;
-                        int portIndex = portModel.Owner.GetPortIndex(portModel, out portType);
+                        int portIndex = portModel.Owner.GetPortIndexAndType(portModel, out portType);
 
                         dynamoViewModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
                             nodeId, portIndex, portType, DynCmd.MakeConnectionCommand.Mode.End));

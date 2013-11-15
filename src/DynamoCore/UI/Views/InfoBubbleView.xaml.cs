@@ -32,6 +32,14 @@ namespace Dynamo.Controls
         private bool isResizeWidth = false;
 
         public InfoBubbleViewModel ViewModel { get { return GetViewModel(); } }
+
+        // When a NodeModel is removed, WPF places the dynNodeView into a "disconnected"
+        // state (i.e. dynNodeView.DataContext becomes "DisconnectedItem") before 
+        // eventually removing the view. This is the result of the host canvas being 
+        // virtualized. This property is used by InfoBubbleView to determine if it should 
+        // still continue to access the InfoBubbleViewModel that it is bound to.
+        private bool IsDisconnected { get { return (this.ViewModel == null); } }
+
         #endregion
 
         public InfoBubbleView()
@@ -84,6 +92,9 @@ namespace Dynamo.Controls
 
         private void ShowPreviewBubbleFullContent()
         {
+            if (this.IsDisconnected)
+                return;
+
             string content = ViewModel.FullContent;
             InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.Preview;
             InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Top;
@@ -96,6 +107,9 @@ namespace Dynamo.Controls
 
         private void ShowPreviewBubbleCondensedContent()
         {
+            if (this.IsDisconnected)
+                return;
+
             string content = ViewModel.FullContent;
             InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.PreviewCondensed;
             InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Top;
@@ -116,35 +130,46 @@ namespace Dynamo.Controls
 
         private void FadeInInfoBubble()
         {
+            if (this.IsDisconnected)
+                return;
+                
             ViewModel.FadeInCommand.Execute(null);
         }
 
         private void FadeOutInfoBubble()
         {
+            if (this.IsDisconnected)
+                return;
+                
             ViewModel.FadeOutCommand.Execute(null);
         }
 
         private void ContentContainer_MouseEnter(object sender, MouseEventArgs e)
         {
+            if (this.IsDisconnected)
+                return;
+                
             if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.PreviewCondensed)
-            {
                 ShowPreviewBubbleFullContent();
-            }
-            FadeInInfoBubble();
             
+            FadeInInfoBubble();
+
             this.Cursor = CursorLibrary.GetCursor(CursorSet.Pointer);
         }
 
         private void InfoBubble_MouseLeave(object sender, MouseEventArgs e)
         {
+            // It is possible for MouseLeave message (that was scheduled earlier) to reach
+            // InfoBubbleView when it becomes disconnected from InfoBubbleViewModel (i.e. 
+            // when the NodeModel it belongs is deleted by user). In this case, InfoBubbleView
+            // should simply ignore the message, since the node is no longer valid.
+            if (this.IsDisconnected)
+                return;
+
             if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Preview && ViewModel.IsShowPreviewByDefault)
-            {
                 ShowPreviewBubbleCondensedContent();
-            }
             else
-            {
                 FadeOutInfoBubble();
-            }
 
             this.Cursor = CursorLibrary.GetCursor(CursorSet.Pointer);
         }
@@ -156,6 +181,9 @@ namespace Dynamo.Controls
 
         private void InfoBubble_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (this.IsDisconnected)
+                return;
+
             if (ViewModel.InfoBubbleStyle != InfoBubbleViewModel.Style.Preview && ViewModel.InfoBubbleStyle != InfoBubbleViewModel.Style.PreviewCondensed)
                 return;
 
@@ -189,6 +217,9 @@ namespace Dynamo.Controls
 
         private void MainGrid_MouseMove(object sender, MouseEventArgs e)
         {
+            if (this.IsDisconnected)
+                return;
+
             if (!isResizing)
                 return;
 
@@ -251,6 +282,9 @@ namespace Dynamo.Controls
 
         private void InfoBubble_MouseMove(object sender, MouseEventArgs e)
         {
+            if (this.IsDisconnected)
+                return;
+
             Point mousePosition = e.GetPosition(this);
 
             double offsetX = this.ActualWidth - ViewModel.EstimatedWidth;
@@ -262,9 +296,7 @@ namespace Dynamo.Controls
                 this.Cursor = CursorLibrary.GetCursor(CursorSet.Expand);
             }
             else if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.PreviewCondensed)
-            {
                 this.Cursor = CursorLibrary.GetCursor(CursorSet.Condense);
-            }
             else
                 this.Cursor = null;
         }
