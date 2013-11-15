@@ -75,40 +75,40 @@ namespace DSRevitNodes.Elements
 
             if (ele is Autodesk.Revit.DB.ReferencePoint)
             {
-                result = DSReferencePoint.BySelection(ele as Autodesk.Revit.DB.ReferencePoint);
+                result = DSReferencePoint.FromExisting(ele as Autodesk.Revit.DB.ReferencePoint, isRevitOwned);
             }
             else if (ele is Autodesk.Revit.DB.Form)
             {
-                result = DSForm.BySelection(ele as Autodesk.Revit.DB.Form);
+                result = DSForm.FromExisting(ele as Autodesk.Revit.DB.Form, isRevitOwned);
             }
             else if (ele is Autodesk.Revit.DB.FreeFormElement)
             {
-                result = DSFreeForm.BySelection(ele as Autodesk.Revit.DB.FreeFormElement);
+                result = DSFreeForm.FromExisting(ele as Autodesk.Revit.DB.FreeFormElement, isRevitOwned);
             }
             else if (ele is Autodesk.Revit.DB.FamilyInstance &&
                 AdaptiveComponentInstanceUtils.HasAdaptiveFamilySymbol(ele as Autodesk.Revit.DB.FamilyInstance))
             {
-                result = DSAdaptiveComponent.BySelection(ele as Autodesk.Revit.DB.FamilyInstance);
+                result = DSAdaptiveComponent.FromExisting(ele as Autodesk.Revit.DB.FamilyInstance, isRevitOwned);
             }
             else if (ele is Autodesk.Revit.DB.FamilyInstance)
             {
-                result = DSFamilyInstance.BySelection(ele as Autodesk.Revit.DB.FamilyInstance);
+                result = DSFamilyInstance.FromExisting(ele as Autodesk.Revit.DB.FamilyInstance, isRevitOwned);
             }
             else if (ele is Autodesk.Revit.DB.FamilySymbol)
             {
-                result = DSFamilySymbol.BySelection(ele as Autodesk.Revit.DB.FamilySymbol);
+                result = DSFamilySymbol.FromExisting(ele as Autodesk.Revit.DB.FamilySymbol, isRevitOwned);
             }
             else if (ele is Autodesk.Revit.DB.Family)
             {
-                result = DSFamily.BySelection(ele as Autodesk.Revit.DB.Family);
+                result = DSFamily.FromExisting(ele as Autodesk.Revit.DB.Family, isRevitOwned);
             }
             else if (ele is Autodesk.Revit.DB.DividedPath)
             {
-                result = DSDividedPath.BySelection(ele as Autodesk.Revit.DB.DividedPath);
+                result = DSDividedPath.FromExisting(ele as Autodesk.Revit.DB.DividedPath, isRevitOwned);
             }
             else if (ele is Autodesk.Revit.DB.DividedSurface)
             {
-                result = DSDividedSurface.BySelection(ele as Autodesk.Revit.DB.DividedSurface);
+                result = DSDividedSurface.FromExisting(ele as Autodesk.Revit.DB.DividedSurface, isRevitOwned);
             }
 
             if (result == null)
@@ -116,7 +116,6 @@ namespace DSRevitNodes.Elements
                 throw new Exception("The Element cannot be wrapped as there is no existing type that wraps it.");
             }
 
-            result.IsRevitOwned = isRevitOwned;
             return result;
 
         }

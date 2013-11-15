@@ -329,11 +329,12 @@ namespace DSRevitNodes.Elements
         #region Internal static constructor
 
         /// <summary>
-        /// Construct from an existing instance of an AdaptiveComponent.  The resulting object is Dynamo owned.
+        /// Construct from an existing instance of an AdaptiveComponent. 
         /// </summary>
         /// <param name="familyInstance"></param>
+        /// <param name="isRevitOwned"></param>
         /// <returns></returns>
-        internal static DSAdaptiveComponent BySelection(Autodesk.Revit.DB.FamilyInstance familyInstance)
+        internal static DSAdaptiveComponent FromExisting(Autodesk.Revit.DB.FamilyInstance familyInstance, bool isRevitOwned)
         {
             if (familyInstance == null)
             {
@@ -346,7 +347,10 @@ namespace DSRevitNodes.Elements
                 throw new Exception("The FamilyInstance is not an adaptive component");
             }
 
-            return new DSAdaptiveComponent(familyInstance);
+            return new DSAdaptiveComponent(familyInstance)
+            {
+                IsRevitOwned = isRevitOwned
+            };
         }
 
         #endregion

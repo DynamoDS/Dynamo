@@ -217,13 +217,17 @@ namespace DSRevitNodes
         #region Internal static constructors 
 
         /// <summary>
-        /// Create a Reference Point from a user selected Element.  The returned object is Dynamo owned.
+        /// Create a Reference Point from a user selected Element.
         /// </summary>
         /// <param name="pt"></param>
+        /// <param name="isRevitOwned"></param>
         /// <returns></returns>
-        internal static DSReferencePoint BySelection(Autodesk.Revit.DB.ReferencePoint pt)
+        internal static DSReferencePoint FromExisting(Autodesk.Revit.DB.ReferencePoint pt, bool isRevitOwned)
         {
-            return new DSReferencePoint(pt);
+            return new DSReferencePoint(pt)
+            {
+                IsRevitOwned = isRevitOwned
+            };
         }
 
         #endregion

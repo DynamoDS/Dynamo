@@ -211,18 +211,22 @@ namespace DSRevitNodes.Elements
         #region Internal static constructor
 
         /// <summary>
-        /// Construct this type from an existing Revit element. The resulting object is Dynamo owned.
+        /// Construct this type from an existing Revit element.
         /// </summary>
         /// <param name="dividedSurface"></param>
+        /// <param name="isRevitOwned"></param>
         /// <returns></returns>
-        internal static DSDividedSurface BySelection(DividedSurface dividedSurface)
+        internal static DSDividedSurface FromExisting(DividedSurface dividedSurface, bool isRevitOwned)
         {
             if (dividedSurface == null)
             {
                 throw new ArgumentNullException("dividedSurface");
             }
 
-            return new DSDividedSurface(dividedSurface);
+            return new DSDividedSurface(dividedSurface)
+            {
+                IsRevitOwned = isRevitOwned
+            };
         }
 
         #endregion

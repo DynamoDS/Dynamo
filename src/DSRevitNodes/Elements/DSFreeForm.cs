@@ -31,7 +31,6 @@ namespace DSRevitNodes
 
         /// <summary>
         /// Private constructor that allows wrapping of an existing FreeForm element.
-        /// The resulting object is Revit owned
         /// </summary>
         /// <param name="ele"></param>
         private DSFreeForm(Autodesk.Revit.DB.FreeFormElement ele)
@@ -140,13 +139,17 @@ namespace DSRevitNodes
         #region Internal static constructors
 
         /// <summary>
-        /// Construct the Revit element by selection.  The returned object is Dynamo owned
+        /// Construct the Revit element by selection.
         /// </summary>
         /// <param name="freeFormElement"></param>
+        /// <param name="isRevitOwned"></param>
         /// <returns></returns>
-        internal static DSFreeForm BySelection(Autodesk.Revit.DB.FreeFormElement freeFormElement)
+        internal static DSFreeForm FromExisting(Autodesk.Revit.DB.FreeFormElement freeFormElement, bool isRevitOwned)
         {
-            return new DSFreeForm(freeFormElement);
+            return new DSFreeForm(freeFormElement)
+            {
+                IsRevitOwned = isRevitOwned
+            };
         }
 
         #endregion

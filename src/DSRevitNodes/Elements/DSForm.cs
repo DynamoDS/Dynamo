@@ -20,8 +20,7 @@ namespace DSRevitNodes.Elements
         #region Private constructor
 
         /// <summary>
-        /// Construct a Revit Form from an existing form.  The resulting object is
-        /// Revit owned.
+        /// Construct a Revit Form from an existing form.  
         /// </summary>
         /// <param name="form"></param>
         private DSForm(Autodesk.Revit.DB.Form form)
@@ -135,13 +134,17 @@ namespace DSRevitNodes.Elements
         #region Internal static constructors
 
         /// <summary>
-        /// Construct the Revit element by selection.  The returned object is Dynamo owned
+        /// Construct the Revit element by selection.  
         /// </summary>
-        /// <param name="freeFormElement"></param>
+        /// <param name="formElement"></param>
+        /// <param name="isRevitOwned"></param>
         /// <returns></returns>
-        internal static DSForm BySelection(Autodesk.Revit.DB.Form form)
+        internal static DSForm FromExisting(Autodesk.Revit.DB.Form formElement, bool isRevitOwned)
         {
-            return new DSForm(form);
+            return new DSForm(formElement)
+            {
+                IsRevitOwned = isRevitOwned
+            };
         }
 
         #endregion
