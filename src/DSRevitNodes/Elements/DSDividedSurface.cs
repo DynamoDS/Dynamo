@@ -30,6 +30,15 @@ namespace DSRevitNodes.Elements
         #region Private constructors
 
         /// <summary>
+        /// Construct from an existing Element.  The resulting object is Dynamo owned.
+        /// </summary>
+        /// <param name="divSurf"></param>
+        private DSDividedSurface(Autodesk.Revit.DB.DividedSurface divSurf)
+        {
+            InternalSetDividedSurface(divSurf);
+        }
+
+        /// <summary>
         /// Private constructor for creating a divided surface
         /// </summary>
         /// <param name="dsFace"></param>
@@ -195,6 +204,25 @@ namespace DSRevitNodes.Elements
             }
 
             return new DSDividedSurface(face, uDivs, vDivs, gridRotation);
+        }
+
+        #endregion
+
+        #region Internal static constructor
+
+        /// <summary>
+        /// Construct this type from an existing Revit element. The resulting object is Dynamo owned.
+        /// </summary>
+        /// <param name="dividedSurface"></param>
+        /// <returns></returns>
+        internal static DSDividedSurface BySelection(DividedSurface dividedSurface)
+        {
+            if (dividedSurface == null)
+            {
+                throw new ArgumentNullException("dividedSurface");
+            }
+
+            return new DSDividedSurface(dividedSurface);
         }
 
         #endregion

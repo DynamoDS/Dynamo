@@ -85,6 +85,11 @@
         <test name="BySolid_NullArgument" modelPath=".\empty.rfa"/>
       </testFixture>
       
+      <testFixture name="FormTests">
+        <test name="FaceReferencesProperty_ValidObject" modelPath=".\block.rfa"/>
+		<test name="SolidsProperty_ValidObject" modelPath=".\block.rfa"/>
+      </testFixture>
+
 		</testAssembly>
 	</testAssemblies>
 </tests>
