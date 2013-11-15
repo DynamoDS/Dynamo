@@ -28,10 +28,6 @@ namespace DSRevitNodesTests.Elements
                 1,1,1,1
             };
 
-            try
-            {
-                
-            }
             var spline = DSNurbSpline.ByControlPointsAndWeights(pts, wts);
             Assert.NotNull(spline);
 
