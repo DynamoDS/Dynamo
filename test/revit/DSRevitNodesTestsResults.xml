@@ -1,16 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file represents the results of running a test suite-->
-<test-results name="C:\Users\boyerp\Dropbox\Github\Autodesk\DynamoNew\Dynamo\bin\AnyCPU\Debug\DynamoTestFramework.dll" total="6" failures="0" not-run="0" date="2013-11-15" time="10:41:10" errors="0" inconclusive="0" ignored="0" skipped="0" invalid="0">
-  <test-suite name="DynamoTestFrameworkTests" description="Unit tests in Revit." time="0.940094" asserts="20" type="TestFixture" result="Success" executed="True">
+<test-results name="C:\Users\boyerp\Dropbox\Github\Autodesk\DynamoNew\Dynamo\bin\AnyCPU\Debug\DynamoTestFramework.dll" total="2" failures="0" not-run="0" date="2013-11-15" time="14:20:22" errors="0" inconclusive="0" ignored="0" skipped="0" invalid="0">
+  <test-suite name="DynamoTestFrameworkTests" description="Unit tests in Revit." time="0.5240524" asserts="4" type="TestFixture" result="Success" executed="True">
     <results>
-      <test-suite name="DividedSurfaceTests" description="Unit tests in Revit." time="0.940094" asserts="20" type="TestFixture" result="Success" executed="True">
+      <test-suite name="FreeFormTests" description="Unit tests in Revit." time="0.5240524" asserts="4" type="TestFixture" result="Success" executed="True">
         <results>
-          <test-case name="ByFaceUVDivisions_ValidArgs" success="True" time="0.290029" executed="True" asserts="5" result="Success" />
-          <test-case name="ByFaceUVDivisionsRotation_ValidArgs" success="True" time="0.3060306" executed="True" asserts="5" result="Success" />
-          <test-case name="ByFaceUVDivisionsRotation_InvalidDivisions" success="True" time="0.1310131" executed="True" asserts="4" result="Success" />
-          <test-case name="ByFaceUVDivisions_InvalidDivisions" success="True" time="0.1330133" executed="True" asserts="4" result="Success" />
-          <test-case name="ByFaceUVDivisions_NullArgument" success="True" time="0.040004" executed="True" asserts="1" result="Success" />
-          <test-case name="ByFaceUVDivisionsRotation_NullArgument" success="True" time="0.040004" executed="True" asserts="1" result="Success" />
+          <test-case name="BySolid_ValidArgs" success="True" time="0.4810481" executed="True" asserts="3" result="Success" />
+          <test-case name="BySolid_NullArgument" success="True" time="0.0430043" executed="True" asserts="1" result="Success" />
         </results>
       </test-suite>
     </results>

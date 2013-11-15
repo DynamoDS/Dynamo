@@ -168,7 +168,7 @@ namespace DSRevitNodesTests.GeometryObjects
             {
                 Point.ByCoordinates(1,0,0),
                 Point.ByCoordinates(1,0.4,0.4),
-                Point.ByCoordinates(1,0.8,0.8),
+                Point.ByCoordinates(1,0.7,1.5),
                 Point.ByCoordinates(1,1,1)
             };
 
