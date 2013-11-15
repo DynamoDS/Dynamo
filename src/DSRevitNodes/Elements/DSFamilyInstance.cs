@@ -31,10 +31,10 @@ namespace DSRevitNodes
         #region Private constructors
 
         /// <summary>
-        /// 
+        /// Wrap an existing FamilyInstance. The resulting class is Dynamo owned
         /// </summary>
         /// <param name="instance"></param>
-        internal DSFamilyInstance(Autodesk.Revit.DB.FamilyInstance instance)
+        private DSFamilyInstance(Autodesk.Revit.DB.FamilyInstance instance)
         {
             InternalSetFamilyInstance(instance);
         }
@@ -135,6 +135,12 @@ namespace DSRevitNodes
 
         #region Static constructors
 
+        /// <summary>
+        /// Place a Revit FamilyInstance given the FamilySymbol (also known as the FamilyType) and it's coordinates in world space
+        /// </summary>
+        /// <param name="fs"></param>
+        /// <param name="p"></param>
+        /// <returns></returns>
         public static DSFamilyInstance ByPoint(DSFamilySymbol fs, Point p)
         {
             if (fs == null)
@@ -150,6 +156,14 @@ namespace DSRevitNodes
             return new DSFamilyInstance(fs.InternalFamilySymbol, new XYZ(p.X, p.Y, p.Z));
         }
 
+        /// <summary>
+        /// Place a Revit FamilyInstance given the FamilySymbol (also known as the FamilyType) and it's coordinates in world space
+        /// </summary>
+        /// <param name="fs"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
+        /// <returns></returns>
         public static DSFamilyInstance ByCoordinates(DSFamilySymbol fs, double x, double y, double z)
         {
             if (fs == null)
@@ -158,6 +172,21 @@ namespace DSRevitNodes
             }
 
             return new DSFamilyInstance(fs.InternalFamilySymbol, new XYZ(x,y,z));
+        }
+
+
+        #endregion
+
+        #region Internal static constructors 
+
+        /// <summary>
+        /// Construct a FamilyInstance from the Revit document.  The returned object is Revit owned.
+        /// </summary>
+        /// <param name="familyInstance"></param>
+        /// <returns></returns>
+        internal static DSFamilyInstance BySelection(Autodesk.Revit.DB.FamilyInstance familyInstance)
+        {
+            return new DSFamilyInstance(familyInstance);
         }
 
         #endregion
@@ -176,5 +205,7 @@ namespace DSRevitNodes
         {
             throw new NotImplementedException();
         }
+
+
     }
 }

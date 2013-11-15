@@ -24,7 +24,7 @@ namespace DSRevitNodes.Elements
 
         #region Private constructors
 
-        internal DSFamily(Autodesk.Revit.DB.Family family)
+        private DSFamily(Autodesk.Revit.DB.Family family)
         {
             InternalSetFamily(family);
         }
@@ -112,6 +112,20 @@ namespace DSRevitNodes.Elements
 
         #endregion
 
+        #region Internal static constructors
+
+        /// <summary>
+        /// Obtain a FamilyInstance by selection.  The resulting object is Dynamo owned.
+        /// </summary>
+        /// <param name="familyInstance"></param>
+        /// <returns></returns>
+        internal static AbstractElement BySelection(Autodesk.Revit.DB.Family family)
+        {
+            return new DSFamily(family);
+        }
+
+        #endregion
+
         #region ToString override
 
         public override string ToString()
@@ -120,5 +134,8 @@ namespace DSRevitNodes.Elements
         }
 
         #endregion
+
+
+
     }
 }
