@@ -22,8 +22,12 @@ namespace DSRevitNodesTests
             var form = ele as DSForm;
             var face = form.FaceReferences.First();
 
-            var divSrf = DSDividedSurface.ByFaceUVDivisions(face, 5, 5);
+            var divSrf = DSDividedSurface.ByFaceUVDivisions(face, 5, 6);
             Assert.NotNull(divSrf);
+
+            Assert.AreEqual(5, divSrf.UDivisions);
+            Assert.AreEqual(6, divSrf.VDivisions);
+            Assert.AreEqual(0.0, divSrf.Rotation, 0.001);
 
         }
     }

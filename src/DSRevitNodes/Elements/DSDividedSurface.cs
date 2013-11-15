@@ -29,7 +29,7 @@ namespace DSRevitNodes.Elements
 
         #region Private constructors
 
-        private DSDividedSurface(DSFaceReference dsFace, int uDivs, int vDivs)
+        private DSDividedSurface(DSFaceReference dsFace, int uDivs, int vDivs, double rotation)
         {
             // if the family instance is present in trace...
             var oldEle =
@@ -40,6 +40,7 @@ namespace DSRevitNodes.Elements
             {
                 InternalSetDividedSurface(oldEle);
                 InternalSetDivisions(uDivs, vDivs);
+                InternalSetRotation(rotation);
                 return;
             }
 
@@ -50,11 +51,40 @@ namespace DSRevitNodes.Elements
 
             InternalSetDividedSurface(divSurf);
             InternalSetDivisions(uDivs, vDivs);
+            InternalSetRotation(rotation);
 
             TransactionManager.GetInstance().TransactionTaskDone();
 
             // remember this new value
             ElementBinder.SetElementForTrace(this.InternalElementId);
+        }
+
+        #endregion
+
+        #region Public properties
+
+        public int UDivisions
+        {
+            get
+            {
+                return InternalDividedSurface.NumberOfUGridlines + 1;
+            }
+        }
+
+        public int VDivisions
+        {
+            get
+            {
+                return InternalDividedSurface.NumberOfVGridlines + 1;
+            }
+        }
+
+        public double Rotation
+        {
+            get
+            {
+                return InternalDividedSurface.AllGridRotation;
+            }
         }
 
         #endregion
@@ -80,13 +110,27 @@ namespace DSRevitNodes.Elements
             TransactionManager.GetInstance().TransactionTaskDone();
         }
 
+        private void InternalSetRotation(double rotation)
+        {
+            TransactionManager.GetInstance().EnsureInTransaction(Document);
+
+            InternalDividedSurface.AllGridRotation = rotation;
+
+            TransactionManager.GetInstance().TransactionTaskDone();
+        }
+
         #endregion
 
         #region Static constructors
 
         public static DSDividedSurface ByFaceUVDivisions(DSFaceReference f, int uDivs, int vDivs)
         {
-            return new DSDividedSurface(f, uDivs, vDivs);
+            return new DSDividedSurface(f, uDivs, vDivs, 0.0);
+        }
+
+        public static DSDividedSurface ByFaceUVDivisionsRotation(DSFaceReference f, int uDivs, int vDivs, double rotation)
+        {
+            return new DSDividedSurface(f, uDivs, vDivs, rotation);
         }
 
         #endregion
