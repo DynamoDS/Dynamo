@@ -1778,7 +1778,7 @@ namespace Dynamo.Nodes
                     InPortData.Add(new PortData(parameter, "variable", typeof(Value.Number)));
                 }
 
-                RegisterInputs();
+                RegisterInputPorts();
             }
             catch (Exception e)
             {
@@ -2580,7 +2580,7 @@ namespace Dynamo.Nodes
             set { }
         }
 
-        public override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
             return new[] { AstFactory.BuildDoubleNode(Math.E) };
         }
@@ -2622,7 +2622,7 @@ namespace Dynamo.Nodes
             set { }
         }
 
-        public override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
             return new[] { AstFactory.BuildDoubleNode(Math.PI) };
         }
@@ -2665,7 +2665,7 @@ namespace Dynamo.Nodes
             set { }
         }
 
-        public override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
             return new[] { AstFactory.BuildDoubleNode(Math.PI*2) };
         }
@@ -3270,7 +3270,7 @@ namespace Dynamo.Nodes
 
         #endregion
 
-        public override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
             var rhs = AstFactory.BuildDoubleNode(Value);
             var assignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), rhs);
@@ -3325,7 +3325,7 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewNumber(Value ? 1 : 0);
         }
 
-        public override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
             var rhs = AstFactory.BuildBooleanNode(Value);
             var assignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), rhs);
@@ -3370,7 +3370,7 @@ namespace Dynamo.Nodes
             return "\"" + base.PrintExpression() + "\"";
         }
 
-        public override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
             var rhs = AstFactory.BuildStringNode(Value);
             var assignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), rhs);
@@ -3453,7 +3453,7 @@ namespace Dynamo.Nodes
                         InPortData.Add(new PortData(id, "variable", typeof (Value.Number)));
                     }
 
-                    RegisterInputs();
+                    RegisterInputPorts();
 
                     ArgumentLacing = InPortData.Any() ? LacingStrategy.Longest : LacingStrategy.Disabled;
                 }
@@ -3608,7 +3608,7 @@ namespace Dynamo.Nodes
                 : FScheme.Value.NewList(Utils.SequenceToFSharpList(_parsed.Select(x => x.GetFSchemeValue(paramDict))));
         }
 
-        public override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
             var paramDict = InPortData.Select(x => x.NickName)
                    .Zip(inputAstNodes, Tuple.Create)

@@ -475,7 +475,7 @@ namespace Dynamo.Nodes
             SetInputs(new List<string>());
             SetOutputs(new List<string>());
             RegisterAllPorts();
-            State = ElementState.ERROR;
+            State = ElementState.Error;
 
             var userMsg = "Failed to load custom node: " + NickName +
                           ".  Replacing with proxy custom node.";

@@ -335,7 +335,7 @@ namespace Dynamo
             if (e.PropertyName == "State")
             {
                 var node = sender as NodeModel;
-                if (node.State == ElementState.ERROR)
+                if (node.State == ElementState.Error)
                 {
                     //dump the visualization
                     if (Visualizations.ContainsKey(node.GUID.ToString()))

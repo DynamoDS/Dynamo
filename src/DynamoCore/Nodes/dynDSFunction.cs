@@ -182,35 +182,6 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override IdentifierNode GetAstIdentifierForOutputIndex(int index)
-        {
-            if (index < 0 ||
-                (OutPortData != null && index >= OutPortData.Count) ||
-                (Definition.ReturnKeys != null && index > 0 && index >= Definition.ReturnKeys.Count))
-            {
-                throw new ArgumentOutOfRangeException("Index is out of range.");
-            }
-
-            if (Definition.ReturnKeys == null || Definition.ReturnKeys.Count == 0)
-            {
-                return AstIdentifierForPreview;
-            }
-
-            StringNode indexingNode = new StringNode();
-            indexingNode.value = Definition.ReturnKeys[index];
-            //"blah"
-
-            ArrayNode arrayNode = new ArrayNode();
-            arrayNode.Expr = indexingNode;
-            //["blah"]
-
-            var indexedNode = new IdentifierNode(AstIdentifierForPreview);
-            indexedNode.ArrayDimensions = arrayNode;
-            //guid["blah"]
-
-            return indexedNode;
-        }
-
         /// <summary>
         /// Copy command will call it to serialize this node to xml data.
         /// </summary>
@@ -223,7 +194,7 @@ namespace Dynamo.Nodes
             helper.SetAttribute("name", this.Definition.DisplayName);
         }
 
-        public override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
             string function = Definition.Name;
             var functionCall = AstFactory.BuildFunctionCall(function, inputAstNodes);
@@ -249,11 +220,34 @@ namespace Dynamo.Nodes
                     EngineController.Instance.LiveRunnerCore);
             }
 
-            var assignment = AstFactory.BuildAssignment(AstIdentifierForPreview, functionCall);
+            var resultAst = new List<AssociativeNode>
+            {
+                AstFactory.BuildAssignment(AstIdentifierForPreview, functionCall)
+            };
 
-            //TODO: build multi-out assignments too
+            if (OutPortData.Count == 1)
+                resultAst.Add(AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstIdentifierForPreview));
+            else
+            {
+                var undefinedOutputs = Definition.ReturnKeys == null || Definition.ReturnKeys.Count == 0;
+                
+                resultAst.AddRange(
+                    Enumerable.Range(0, OutPortData.Count)
+                              .Select(
+                                  outputIdx =>
+                                      undefinedOutputs
+                                          ? AstIdentifierForPreview
+                                          : new IdentifierNode(AstIdentifierForPreview)
+                                          {
+                                              ArrayDimensions =
+                                                  new ArrayNode
+                                                  {
+                                                      Expr = new StringNode { value = Definition.ReturnKeys[outputIdx] }
+                                                  }
+                                          }));
+            }
 
-            return new[] { assignment };
+            return resultAst;
         }
     }
 }
