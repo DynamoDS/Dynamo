@@ -195,7 +195,7 @@ namespace DSRevitNodes
         /// </summary>
         /// <param name="modelCurve"></param>
         /// <returns></returns>
-        internal static DSModelCurve BySelection(Autodesk.Revit.DB.ModelCurve modelCurve)
+        internal static DSModelCurve FromExisting(Autodesk.Revit.DB.ModelCurve modelCurve)
         {
             return new DSModelCurve(modelCurve);
         }

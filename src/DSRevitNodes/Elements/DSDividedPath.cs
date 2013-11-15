@@ -124,13 +124,17 @@ namespace DSRevitNodes.Elements
         #region Internal static constructors
 
         /// <summary>
-        /// Construct this type from an existing Revit element.  The resulting object is Dynamo owned.
+        /// Construct this type from an existing Revit element.
         /// </summary>
         /// <param name="dividedPath"></param>
+        /// <param name="isRevitOwned"></param>
         /// <returns></returns>
-        internal static DSDividedPath BySelection(Autodesk.Revit.DB.DividedPath dividedPath)
+        internal static DSDividedPath FromExisting(Autodesk.Revit.DB.DividedPath dividedPath, bool isRevitOwned)
         {
-            return new DSDividedPath(dividedPath);
+            return new DSDividedPath(dividedPath)
+            {
+                IsRevitOwned = isRevitOwned
+            };
         }
 
         #endregion

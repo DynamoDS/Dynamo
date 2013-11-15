@@ -16,7 +16,7 @@ namespace DSRevitNodesTests
         [Test]
         public void ByFaceUVDivisions_ValidArgs()
         {
-            var ele = ElementSelector.OfType<Autodesk.Revit.DB.Form>().FirstOrDefault();
+            var ele = ElementSelector.ByType<Autodesk.Revit.DB.Form>(true).FirstOrDefault();
             Assert.NotNull(ele);
 
             var form = ele as DSForm;
@@ -33,7 +33,7 @@ namespace DSRevitNodesTests
         [Test]
         public void ByFaceUVDivisionsRotation_ValidArgs()
         {
-            var ele = ElementSelector.OfType<Autodesk.Revit.DB.Form>().FirstOrDefault();
+            var ele = ElementSelector.ByType<Autodesk.Revit.DB.Form>(true).FirstOrDefault();
             Assert.NotNull(ele);
 
             var form = ele as DSForm;
@@ -50,7 +50,7 @@ namespace DSRevitNodesTests
         [Test]
         public void ByFaceUVDivisionsRotation_InvalidDivisions()
         {
-            var ele = ElementSelector.OfType<Autodesk.Revit.DB.Form>().FirstOrDefault();
+            var ele = ElementSelector.ByType<Autodesk.Revit.DB.Form>(true).FirstOrDefault();
             Assert.NotNull(ele);
 
             var form = ele as DSForm;
@@ -64,7 +64,7 @@ namespace DSRevitNodesTests
         [Test]
         public void ByFaceUVDivisions_InvalidDivisions()
         {
-            var ele = ElementSelector.OfType<Autodesk.Revit.DB.Form>().FirstOrDefault();
+            var ele = ElementSelector.ByType<Autodesk.Revit.DB.Form>(true).FirstOrDefault();
             Assert.NotNull(ele);
 
             var form = ele as DSForm;

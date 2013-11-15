@@ -118,7 +118,7 @@ namespace DSRevitNodes
         {
             get
             {
-                return new DSFamilySymbol(this.InternalFamilyInstance.Symbol);
+                return DSFamilySymbol.FromExisting(this.InternalFamilyInstance.Symbol, true);
             }
         }
 
@@ -180,13 +180,17 @@ namespace DSRevitNodes
         #region Internal static constructors 
 
         /// <summary>
-        /// Construct a FamilyInstance from the Revit document.  The returned object is Revit owned.
+        /// Construct a FamilyInstance from the Revit document. 
         /// </summary>
         /// <param name="familyInstance"></param>
+        /// <param name="isRevitOwned"></param>
         /// <returns></returns>
-        internal static DSFamilyInstance BySelection(Autodesk.Revit.DB.FamilyInstance familyInstance)
+        internal static DSFamilyInstance FromExisting(Autodesk.Revit.DB.FamilyInstance familyInstance, bool isRevitOwned)
         {
-            return new DSFamilyInstance(familyInstance);
+            return new DSFamilyInstance(familyInstance)
+            {
+                IsRevitOwned = isRevitOwned
+            };
         }
 
         #endregion

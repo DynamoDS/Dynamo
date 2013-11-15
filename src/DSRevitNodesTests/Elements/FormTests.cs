@@ -13,7 +13,7 @@ namespace DSRevitNodesTests.Elements
         [Test]
         public void FaceReferencesProperty_ValidObject()
         {
-            var ele = ElementSelector.OfType<Autodesk.Revit.DB.Form>().FirstOrDefault();
+            var ele = ElementSelector.ByType<Autodesk.Revit.DB.Form>(true).FirstOrDefault();
             Assert.NotNull(ele);
 
             var form = ele as DSForm;
@@ -25,7 +25,7 @@ namespace DSRevitNodesTests.Elements
         [Test]
         public void SolidsProperty_ValidObject()
         {
-            var ele = ElementSelector.OfType<Autodesk.Revit.DB.Form>().FirstOrDefault();
+            var ele = ElementSelector.ByType<Autodesk.Revit.DB.Form>(true).FirstOrDefault();
             Assert.NotNull(ele);
 
             var form = ele as DSForm;

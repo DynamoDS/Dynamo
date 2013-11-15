@@ -57,7 +57,7 @@ namespace DSRevitNodes.Elements
             {
                 return InternalFamily.Symbols
                     .Cast<Autodesk.Revit.DB.FamilySymbol>()
-                    .Select(x => new DSFamilySymbol(x))
+                    .Select(x => DSFamilySymbol.FromExisting(x, true))
                     .ToArray();
             }
         }
@@ -115,13 +115,17 @@ namespace DSRevitNodes.Elements
         #region Internal static constructors
 
         /// <summary>
-        /// Obtain a FamilyInstance by selection.  The resulting object is Dynamo owned.
+        /// Construct an Element from an existing Element in the Document
         /// </summary>
         /// <param name="familyInstance"></param>
+        /// <param name="isRevitOwned"></param>
         /// <returns></returns>
-        internal static AbstractElement BySelection(Autodesk.Revit.DB.Family family)
+        internal static DSFamily FromExisting(Autodesk.Revit.DB.Family family, bool isRevitOwned)
         {
-            return new DSFamily(family);
+            return new DSFamily(family)
+            {
+                IsRevitOwned = isRevitOwned
+            };
         }
 
         #endregion
@@ -134,8 +138,6 @@ namespace DSRevitNodes.Elements
         }
 
         #endregion
-
-
 
     }
 }
