@@ -211,10 +211,10 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Transform Point")]
+    [NodeName("Transform XYZ")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_TRANSFORM_APPLY)]
     [NodeDescription("Transform a point with a transform.")]
-    [NodeSearchTags("move", "copy", "xyz")]
+    [NodeSearchTags("move", "copy")]
     public class TransformPoint : GeometryBase
     {
         public TransformPoint()
