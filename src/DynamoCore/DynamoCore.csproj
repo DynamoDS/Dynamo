@@ -76,7 +76,7 @@ limitations under the License.
       <HintPath>..\..\bin\AnyCPU\Debug\FSchemeInterop.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="FSharp.Core"/>
+    <Reference Include="FSharp.Core" />
     <Reference Include="Greg, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\greg\Greg.dll</HintPath>
@@ -171,7 +171,7 @@ limitations under the License.
     <Compile Include="Nodes\CodeBlockNode.cs" />
     <Compile Include="Nodes\dynDSFunction.cs" />
     <Compile Include="Models\Migration.cs" />
-    <Compile Include="Core\FunctionDefinition.cs" />
+    <Compile Include="Core\CustomNodeDefinition.cs" />
     <Compile Include="Nodes\Geometry.cs" />
     <Compile Include="Nodes\New Node Examples\SampleNodeWithUI.cs" />
     <Compile Include="PackageManager\PackageManagerClient.cs" />

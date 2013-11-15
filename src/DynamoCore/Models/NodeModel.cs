@@ -21,30 +21,6 @@ using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
 
 namespace Dynamo.Models
 {
-    public enum ElementState
-    {
-        Dead,
-        Active,
-        Error
-    };
-
-
-    public enum LacingStrategy
-    {
-        Disabled,
-        First,
-        Shortest,
-        Longest,
-        CrossProduct
-    };
-
-
-    public delegate void PortsChangedHandler(object sender, EventArgs e);
-
-
-    public delegate void DispatchedToUIThreadHandler(object sender, UIDispatcherEventArgs e);
-
-
     public abstract class NodeModel : ModelBase
     {
         #region abstract members
@@ -53,7 +29,7 @@ namespace Dynamo.Models
         ///     The dynElement's Evaluation Logic.
         /// </summary>
         /// <param name="args">
-        ///     Arguments to the node. You are guaranteed to have as many arguments as you have InPorts at the time
+        ///     Parameters to the node. You are guaranteed to have as many arguments as you have InPorts at the time
         ///     it is run.
         /// </param>
         /// <returns>
@@ -1973,6 +1949,30 @@ namespace Dynamo.Models
 
         #endregion
     }
+    
+    
+    public enum ElementState
+    {
+        Dead,
+        Active,
+        Error
+    };
+
+
+    public enum LacingStrategy
+    {
+        Disabled,
+        First,
+        Shortest,
+        Longest,
+        CrossProduct
+    };
+
+
+    public delegate void PortsChangedHandler(object sender, EventArgs e);
+
+
+    public delegate void DispatchedToUIThreadHandler(object sender, UIDispatcherEventArgs e);
 
 
     public abstract class NodeWithOneOutput : NodeModel
@@ -1984,6 +1984,7 @@ namespace Dynamo.Models
 
         public abstract FScheme.Value Evaluate(FSharpList<FScheme.Value> args);
     }
+
 
     #region class attributes
 
@@ -2120,6 +2121,7 @@ namespace Dynamo.Models
     public class IsMetaNodeAttribute : Attribute { }
 
     #endregion
+
 
     public class PredicateTraverser
     {

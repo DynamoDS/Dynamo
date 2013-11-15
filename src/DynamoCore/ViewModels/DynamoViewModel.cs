@@ -763,7 +763,7 @@ namespace Dynamo.ViewModels
         ///     Change the currently visible workspace to a custom node's workspace
         /// </summary>
         /// <param name="symbol">The function definition for the custom node workspace to be viewed</param>
-        internal void FocusCustomNodeWorkspace(FunctionDefinition symbol)
+        internal void FocusCustomNodeWorkspace(CustomNodeDefinition symbol)
         {
             if (symbol == null)
             {
@@ -773,8 +773,8 @@ namespace Dynamo.ViewModels
             if (_model.CurrentWorkspace is CustomNodeWorkspaceModel)
             {
                 var customNodeWorkspace = _model.CurrentWorkspace as CustomNodeWorkspaceModel;
-                if (customNodeWorkspace.FunctionDefinition.FunctionId
-                    == symbol.WorkspaceModel.FunctionDefinition.FunctionId)
+                if (customNodeWorkspace.CustomNodeDefinition.FunctionId
+                    == symbol.WorkspaceModel.CustomNodeDefinition.FunctionId)
                 {
                     return;
                 }
@@ -797,9 +797,9 @@ namespace Dynamo.ViewModels
         }
 
         public virtual Function CreateFunction(IEnumerable<string> inputs, IEnumerable<string> outputs,
-                                                     FunctionDefinition functionDefinition)
+                                                     CustomNodeDefinition customNodeDefinition)
         {
-            return new Function(inputs, outputs, functionDefinition);
+            return new Function(inputs, outputs, customNodeDefinition);
         }
 
         /// <summary>
@@ -824,7 +824,7 @@ namespace Dynamo.ViewModels
                 }
                 else
                 {
-                    foreach (FunctionDefinition funcDef in Controller.CustomNodeManager.GetLoadedDefinitions())
+                    foreach (CustomNodeDefinition funcDef in Controller.CustomNodeManager.GetLoadedDefinitions())
                     {
                         if (funcDef.WorkspaceModel.Nodes.Contains(e))
                         {

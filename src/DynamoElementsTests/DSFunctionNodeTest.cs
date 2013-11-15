@@ -12,7 +12,7 @@ using ProtoCore.Mirror;
 namespace Dynamo.Tests
 {
     [Category("DSExecution")]
-    class DSFunctionNodeTest: DynamoUnitTest
+    class DSFunctionNodeTest : DynamoUnitTest
     {
         [Test]
         public void TestLoadingFunctions()
@@ -39,7 +39,7 @@ namespace Dynamo.Tests
 
             // get add node
             var addNode = model.CurrentWorkspace.NodeFromWorkspace("c969ebda-d77e-4cd3-985e-187dd1dccb03");
-            string var = (addNode.AstIdentifier as ProtoCore.AST.AssociativeAST.IdentifierNode).Name;
+            string var = addNode.GetAstIdentifierForOutputIndex(0).Name;
             RuntimeMirror mirror = null;
             Assert.DoesNotThrow(() => mirror = EngineController.Instance.GetMirror(var));
             Assert.IsNotNull(mirror);
@@ -60,7 +60,7 @@ namespace Dynamo.Tests
 
             // get abs node
             var absNode = model.CurrentWorkspace.NodeFromWorkspace("2c26388d-3d14-443a-ac41-c2bb0987a58e");
-            string var = (absNode.AstIdentifier as ProtoCore.AST.AssociativeAST.IdentifierNode).Name;
+            string var = absNode.GetAstIdentifierForOutputIndex(0).Name;
             RuntimeMirror mirror = null;
             Assert.DoesNotThrow(() => mirror = EngineController.Instance.GetMirror(var));
             Assert.IsNotNull(mirror);
@@ -69,7 +69,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(value.opdata_d, 10.0);
 
             var mulNode = model.CurrentWorkspace.NodeFromWorkspace("0c85072f-f9c5-45f3-8099-832161dfcacb");
-            var = (mulNode.AstIdentifier as ProtoCore.AST.AssociativeAST.IdentifierNode).Name;
+            var = mulNode.GetAstIdentifierForOutputIndex(0).Name;
             mirror = null;
             Assert.DoesNotThrow(() => mirror = EngineController.Instance.GetMirror(var));
             Assert.IsNotNull(mirror);
@@ -90,7 +90,7 @@ namespace Dynamo.Tests
 
             // get count node
             var count = model.CurrentWorkspace.NodeFromWorkspace("007b5942-12b0-4cea-aa05-b43531b6ccb8");
-            string var = (count.AstIdentifier as ProtoCore.AST.AssociativeAST.IdentifierNode).Name;
+            string var = count.GetAstIdentifierForOutputIndex(0).Name;
             RuntimeMirror mirror = null;
             Assert.DoesNotThrow(() => mirror = EngineController.Instance.GetMirror(var));
             Assert.IsNotNull(mirror);

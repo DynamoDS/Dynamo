@@ -51,8 +51,8 @@ namespace Dynamo.DSEngine
         /// </summary>
         public void LoadBuiltinLibraries()
         {
-            LoadFunctions(libraryServices[LibraryServices.BuiltInCategories.BuiltIns]);
-            LoadFunctions(libraryServices[LibraryServices.BuiltInCategories.Operators]);
+            LoadFunctions(libraryServices[LibraryServices.BuiltInCategories.BUILT_INS]);
+            LoadFunctions(libraryServices[LibraryServices.BuiltInCategories.OPERATORS]);
 
             foreach (var library in libraryServices.BuiltinLibraries)
             {
