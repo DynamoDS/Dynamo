@@ -20,7 +20,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\bin\Debug\</OutputPath>
+    <OutputPath>..\..\..\bin\AnyCPU\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -35,21 +35,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DynamoElements">
-      <HintPath>..\..\..\bin\Debug\DynamoElements.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="DynamoCore">
+      <HintPath>..\..\..\bin\AnyCPU\Debug\DynamoCore.dll</HintPath>
     </Reference>
-    <Reference Include="FScheme, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\bin\Debug\FScheme.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="FScheme">
+      <HintPath>..\..\..\bin\AnyCPU\Debug\FScheme.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Mono.Cecil">
-      <HintPath>..\..\..\..\cecil\bin\net_4_0_Release\Mono.Cecil.dll</HintPath>
+      <HintPath>..\lib\Mono.Cecil.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
