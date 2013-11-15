@@ -64,7 +64,12 @@
       </testFixture>
       
       <testFixture name="DividedSurfaceTests">
-        <test name="ByFaceAndUVDivisions_ValidArgs" modelPath=".\block.rfa"/>
+        <test name="ByFaceUVDivisions_ValidArgs" modelPath=".\block.rfa"/>
+        <test name="ByFaceUVDivisionsRotation_ValidArgs" modelPath=".\block.rfa"/>
+        <test name="ByFaceUVDivisionsRotation_InvalidDivisions" modelPath=".\block.rfa"/>
+        <test name="ByFaceUVDivisions_InvalidDivisions" modelPath=".\block.rfa"/>
+        <test name="ByFaceUVDivisions_NullArgument" modelPath=".\block.rfa"/>
+        <test name="ByFaceUVDivisionsRotation_NullArgument" modelPath=".\block.rfa"/>
       </testFixture>
       
       <testFixture name="SolidTests">

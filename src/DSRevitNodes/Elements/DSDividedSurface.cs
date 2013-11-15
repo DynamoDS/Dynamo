@@ -29,6 +29,13 @@ namespace DSRevitNodes.Elements
 
         #region Private constructors
 
+        /// <summary>
+        /// Private constructor for creating a divided surface
+        /// </summary>
+        /// <param name="dsFace"></param>
+        /// <param name="uDivs"></param>
+        /// <param name="vDivs"></param>
+        /// <param name="rotation"></param>
         private DSDividedSurface(DSFaceReference dsFace, int uDivs, int vDivs, double rotation)
         {
             // if the family instance is present in trace...
@@ -63,22 +70,32 @@ namespace DSRevitNodes.Elements
 
         #region Public properties
 
+        /// <summary>
+        /// Number of divisions in U direction
+        /// </summary>
         public int UDivisions
         {
             get
             {
-                return InternalDividedSurface.NumberOfUGridlines + 1;
+                return InternalDividedSurface.USpacingRule.Number;
             }
         }
 
+        /// <summary>
+        /// Number of divisions in V direction
+        /// </summary>
         public int VDivisions
         {
             get
             {
-                return InternalDividedSurface.NumberOfVGridlines + 1;
+                return InternalDividedSurface.VSpacingRule.Number;
             }
         }
 
+        /// <summary>
+        /// Rotation of the grid lines with respect to the UV parameterization
+        /// of the face
+        /// </summary>
         public double Rotation
         {
             get
@@ -91,6 +108,10 @@ namespace DSRevitNodes.Elements
 
         #region Private mutators
 
+        /// <summary>
+        /// Method to set the internal divided surface, id, and unique id
+        /// </summary>
+        /// <param name="divSurf"></param>
         private void InternalSetDividedSurface(Autodesk.Revit.DB.DividedSurface divSurf)
         {
             this.InternalDividedSurface = divSurf;
@@ -98,6 +119,12 @@ namespace DSRevitNodes.Elements
             this.InternalUniqueId = divSurf.UniqueId;
         }
 
+        /// <summary>
+        /// Method to mutate the number of divisions of the internal divided surface.  Will
+        /// fail if the divided surface is not set
+        /// </summary>
+        /// <param name="uDivs"></param>
+        /// <param name="vDivs"></param>
         private void InternalSetDivisions(int uDivs, int vDivs)
         {
             TransactionManager.GetInstance().EnsureInTransaction(Document);
@@ -110,6 +137,11 @@ namespace DSRevitNodes.Elements
             TransactionManager.GetInstance().TransactionTaskDone();
         }
 
+        /// <summary>
+        /// Method to set the grid rotation of the internal divided surface
+        /// </summary>
+        /// <param name="uDivs"></param>
+        /// <param name="vDivs"></param>
         private void InternalSetRotation(double rotation)
         {
             TransactionManager.GetInstance().EnsureInTransaction(Document);
@@ -123,14 +155,46 @@ namespace DSRevitNodes.Elements
 
         #region Static constructors
 
-        public static DSDividedSurface ByFaceUVDivisions(DSFaceReference f, int uDivs, int vDivs)
+        /// <summary>
+        /// Create a Revit DividedSurface on a face given the face and number of divisions in u and v directon
+        /// </summary>
+        /// <param name="face"></param>
+        /// <param name="uDivs"></param>
+        /// <param name="vDivs"></param>
+        /// <returns></returns>
+        public static DSDividedSurface ByFaceUVDivisions(DSFaceReference face, int uDivs, int vDivs)
         {
-            return new DSDividedSurface(f, uDivs, vDivs, 0.0);
+            return ByFaceUVDivisionsRotation(face, uDivs, vDivs, 0.0);
         }
 
-        public static DSDividedSurface ByFaceUVDivisionsRotation(DSFaceReference f, int uDivs, int vDivs, double rotation)
+        /// <summary>
+        /// Create a Revit DividedSurface on a face given the face and number of divisions in u and v directon
+        /// and the rotation of the grid lines with respect to the natural UV parameterization of the face
+        /// </summary>
+        /// <param name="face"></param>
+        /// <param name="uDivs"></param>
+        /// <param name="vDivs"></param>
+        /// <param name="gridRotation"></param>
+        /// <returns></returns>
+        public static DSDividedSurface ByFaceUVDivisionsRotation(DSFaceReference face, int uDivs, int vDivs, double gridRotation)
         {
-            return new DSDividedSurface(f, uDivs, vDivs, rotation);
+
+            if (face == null)
+            {
+                throw new ArgumentNullException("face");
+            }
+
+            if (uDivs <= 0)
+            {
+                throw new Exception("uDivs must be a positive integer");
+            }
+
+            if (vDivs <= 0)
+            {
+                throw new Exception("vDivs must be a positive integer");
+            }
+
+            return new DSDividedSurface(face, uDivs, vDivs, gridRotation);
         }
 
         #endregion
