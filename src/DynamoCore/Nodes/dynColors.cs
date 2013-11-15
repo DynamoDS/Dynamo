@@ -65,10 +65,10 @@ namespace Dynamo.Nodes
     {
         public Color()
         {
-            InPortData.Add(new PortData("A", "The alpha part of the color between 0 and 255", typeof(Value.Number)));
-            InPortData.Add(new PortData("R", "The red part of the color between 0 and 255", typeof(Value.Number)));
-            InPortData.Add(new PortData("G", "The green part of the color between 0 and 255", typeof(Value.Number)));
-            InPortData.Add(new PortData("B", "The blue part of the color between 0 and 255", typeof(Value.Number)));
+            InPortData.Add(new PortData("A", "The alpha part of the color between 0 and 255", typeof(Value.Number), FScheme.Value.NewNumber(255)));
+            InPortData.Add(new PortData("R", "The red part of the color between 0 and 255", typeof(Value.Number), FScheme.Value.NewNumber(0)));
+            InPortData.Add(new PortData("G", "The green part of the color between 0 and 255", typeof(Value.Number), FScheme.Value.NewNumber(0)));
+            InPortData.Add(new PortData("B", "The blue part of the color between 0 and 255", typeof(Value.Number), FScheme.Value.NewNumber(0)));
             OutPortData.Add(new PortData("c", "The color", typeof(Value.Container)));
 
             RegisterAllPorts();
