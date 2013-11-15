@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tests pluginClass='Dynamo.Tests.DynamoTestFramework' pluginGUID='487f9ff0-5b34-4e7e-97bf-70fbff69194f'>
+	<testAssemblies>
+		<testAssembly name="DSRevitNodesTests.dll">
+		
+			<testFixture name="ReferencePointTests">
+				<test name="ByCoordinates_ValidInput" modelPath=".\MassWithBoxAndCone.rfa"/>
+			</testFixture>
+			
+			<testFixture name="FamilyTests">
+				<test name="ByName_ValidInput" modelPath=".\MassWithBoxAndCone.rfa"/>
+				<test name="ByName_InvalidInput" modelPath=".\MassWithBoxAndCone.rfa"/>
+        <test name="ByName_NonexistentName" modelPath=".\MassWithBoxAndCone.rfa"/>
+        <test name="ByName_NullInput" modelPath=".\MassWithBoxAndCone.rfa"/>
+			</testFixture>
+			
+			<testFixture name="FamilySymbolTests">
+				<test name="ByName_ValidInput" modelPath=".\MassWithBoxAndCone.rfa"/>
+				<test name="ByName_NonexistentName" modelPath=".\MassWithBoxAndCone.rfa"/>
+				<test name="ByName_NullArgument" modelPath=".\MassWithBoxAndCone.rfa"/>
+			</testFixture>
+
+      <testFixture name="AdaptiveComponentTests">
+        <test name="ByPoints_ValidInput" modelPath=".\AdaptiveComponents.rfa"/>
+        <test name="ByPoints_NonMatchingNumberOfPoints" modelPath=".\AdaptiveComponents.rfa"/>
+        <test name="ByPoints_NullFamilySymbol" modelPath=".\AdaptiveComponents.rfa"/>
+        <test name="ByPoints_NullPts" modelPath=".\AdaptiveComponents.rfa"/>
+        <test name="ByPointsOnCurve_ValidInput" modelPath=".\AdaptiveComponents.rfa"/>
+        <test name="ByPointsOnFace_ValidInput" modelPath=".\AdaptiveComponents.rfa"/>
+      </testFixture>
+      
+			<testFixture name="FamilyInstanceTests">
+				<test name="ByCoordinates_ValidInput" modelPath=".\MassWithBoxAndCone.rfa"/>
+				<test name="ByPoint_ValidInput" modelPath=".\MassWithBoxAndCone.rfa"/>
+				<test name="ByPoint_NullFamilySymbol" modelPath=".\MassWithBoxAndCone.rfa"/>
+				<test name="ByPoint_NullPoint" modelPath=".\MassWithBoxAndCone.rfa"/>
+				<test name="ByPoint_NullFamilySymbol" modelPath=".\MassWithBoxAndCone.rfa"/>
+			</testFixture>
+      
+      <testFixture name="NurbSplineTests">
+        <test name="ByControlPointsAndWeights_ValidArgs" modelPath=".\empty.rfa"/>
+        <test name="ByControlPointsWeightsKnotsDegreeClosedAndRationality_ValidArgs" modelPath=".\empty.rfa"/>
+      </testFixture>
+
+      <testFixture name="ElementSelectorTests">
+        <test name="FamilyByElementId_ValidArgs" modelPath=".\MassWithBoxAndCone.rfa"/>
+        <test name="FormByType_ValidArgs" modelPath=".\block.rfa"/>
+        <test name="FamilyByUniqueId_ValidArgs" modelPath=".\MassWithBoxAndCone.rfa"/>
+        <test name="FamilySymbolByElementId_ValidArgs" modelPath=".\MassWithBoxAndCone.rfa"/>
+        <test name="FamilySymbolByUniqueId_ValidArgs" modelPath=".\MassWithBoxAndCone.rfa"/>
+      </testFixture>
+
+      <testFixture name="CurveLoopTests">
+        <test name="RectangleByCurves_ValidArgs" modelPath=".\empty.rfa"/>
+        <test name="TriangleByCurves_ValidArgs" modelPath=".\empty.rfa"/>
+        <test name="OpenCurveByCurves_ValidArgs" modelPath=".\empty.rfa"/>
+        <test name="NonPlanarOpenCurveByCurves_ValidArgs" modelPath=".\empty.rfa"/>
+      </testFixture>
+
+      <testFixture name="DividedPathTests">
+        <test name="ByCurveAndEqualDivisions_ValidArgs" modelPath=".\empty.rfa"/>
+        <test name="ByCurveAndEqualDivisions_NullArgument" modelPath=".\empty.rfa"/>
+        <test name="ByCurveAndEqualDivisions_InvalidDivisions" modelPath=".\empty.rfa"/>
+      </testFixture>
+      
+      <testFixture name="DividedSurfaceTests">
+        <test name="ByFaceAndUVDivisions_ValidArgs" modelPath=".\block.rfa"/>
+      </testFixture>
+      
+      <testFixture name="SolidTests">
+        <test name="ByExtrusion_ValidArgs" modelPath=".\empty.rfa"/>
+      </testFixture>
+
+      <testFixture name="ModelCurveTests">
+        <test name="ByCurve_ValidArgs" modelPath=".\empty.rfa"/>
+      </testFixture>
+	  
+	    <testFixture name="FreeFormTests">
+		    <test name="BySolid_ValidArgs" modelPath=".\empty.rfa"/>
+        <test name="BySolid_NullArgument" modelPath=".\empty.rfa"/>
+      </testFixture>
+      
+		</testAssembly>
+	</testAssemblies>
+</tests>

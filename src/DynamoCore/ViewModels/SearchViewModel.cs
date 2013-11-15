@@ -13,6 +13,7 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Greg.Responses;
 using Microsoft.Practices.Prism.ViewModel;
+using Dynamo.DSEngine;
 
 namespace Dynamo.ViewModels
 {
@@ -793,6 +794,35 @@ namespace Dynamo.ViewModels
             if (searchEleItem != null)
                 _searchElements.Add(searchEleItem);
 
+        }
+
+        /// <summary>
+        ///     Adds a DesignScript function
+        /// </summary>
+        /// <param name="funcItem"></param>
+        public void Add(FunctionItem funcItem)
+        {
+            string name = funcItem.DisplayName;
+            string cat = funcItem.Category;
+            List<string> tags = new List<string>();
+            string description = "";
+
+            var searchEle = new NodeSearchElement(name, description, tags);
+            searchEle.SetSearchable(true);
+
+            if (!string.IsNullOrEmpty(cat))
+            {
+                SearchDictionary.Add(searchEle, cat + "." + searchEle.Name);
+            }
+
+            TryAddCategoryAndItem(cat, searchEle);
+
+            SearchDictionary.Add(searchEle, searchEle.Name);
+            if (tags.Count > 0)
+            {
+                SearchDictionary.Add(searchEle, tags);
+            }
+            SearchDictionary.Add(searchEle, description);
         }
 
         /// <summary>

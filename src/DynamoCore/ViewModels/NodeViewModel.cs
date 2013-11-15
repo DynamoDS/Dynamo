@@ -110,8 +110,19 @@ namespace Dynamo.ViewModels
                 {
                     return "Not available in custom nodes";
                 }
+
+#if USE_DSENGINE
+                return NodeModel.PrintValue(nodeLogic.VariableToPreview,
+                                            0,
+                                            Configurations.PreviewMaxListLength,
+                                            0,
+                                            Configurations.PreviewMaxListDepth,
+                                            Configurations.PreviewMaxLength);
+#else
                 return NodeModel.PrintValue(nodeLogic.OldValue, 0, Configurations.PreviewMaxListLength, 0, 
                     Configurations.PreviewMaxListDepth, Configurations.PreviewMaxLength);
+
+#endif
             }
         }
 
@@ -283,7 +294,8 @@ namespace Dynamo.ViewModels
             logic.OutPorts.CollectionChanged += outports_collectionChanged;
 
             logic.PropertyChanged += logic_PropertyChanged;
-            dynSettings.Controller.DynamoViewModel.Model.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Model_PropertyChanged);
+
+            dynSettings.Controller.DynamoViewModel.Model.PropertyChanged += Model_PropertyChanged;
             dynSettings.Controller.PropertyChanged += Controller_PropertyChanged;
             
             this.ErrorBubble = new InfoBubbleViewModel();
@@ -373,6 +385,9 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("OldValue");
                     UpdatePreviewBubbleContent();
                     RaisePropertyChanged("CanDisplayLabels");
+                    break;
+                case "IsUpdated":
+                    UpdatePreviewBubbleContent();
                     break;
                 case "X":
                     RaisePropertyChanged("Left");

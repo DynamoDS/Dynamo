@@ -26,6 +26,7 @@ using Dynamo.UI.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Dynamo.Core;
+using Dynamo.Services;
 
 namespace Dynamo.Controls
 {
@@ -76,6 +77,9 @@ namespace Dynamo.Controls
             InitializeComponent();
             InitializeShortcutBar();
 
+#if !USE_DSENGINE
+            LibraryManagerMenu.Visibility = System.Windows.Visibility.Collapsed;
+#endif
             this.Loaded += dynBench_Activated;
 
             //setup InfoBubble for library items tooltip
@@ -164,6 +168,9 @@ namespace Dynamo.Controls
 
         private void dynBench_Activated(object sender, EventArgs e)
         {
+            // If first run, Collect Info Prompt will appear
+            UsageReportingManager.Instance.CheckIsFirstRun();
+
             this.WorkspaceTabs.SelectedIndex = 0;
             _vm = (DataContext as DynamoViewModel);
             _vm.Model.RequestLayoutUpdate += vm_RequestLayoutUpdate;
@@ -184,23 +191,23 @@ namespace Dynamo.Controls
 
             //PACKAGE MANAGER
             _vm.RequestPackagePublishDialog += _vm_RequestRequestPackageManagerPublish;
-            _vm.RequestManagePackagesDialog += new EventHandler(_vm_RequestShowInstalledPackages);
-            _vm.RequestPackageManagerSearchDialog += new EventHandler(_vm_RequestShowPackageManagerSearch);
+            _vm.RequestManagePackagesDialog += _vm_RequestShowInstalledPackages;
+            _vm.RequestPackageManagerSearchDialog += _vm_RequestShowPackageManagerSearch;
 
             //FUNCTION NAME PROMPT
             _vm.Model.RequestsFunctionNamePrompt += _vm_RequestsFunctionNamePrompt;
 
-            _vm.SidebarClosed += new EventHandler(_vm_SidebarClosed);
-            _vm.RequestClose += new EventHandler(_vm_RequestClose);
-            _vm.RequestSaveImage += new ImageSaveEventHandler(_vm_RequestSaveImage);
+            _vm.RequestClose += _vm_RequestClose;
+            _vm.RequestSaveImage += _vm_RequestSaveImage;
+            _vm.SidebarClosed += _vm_SidebarClosed;
 
-            dynSettings.Controller.RequestsCrashPrompt += new DynamoController.CrashPromptHandler(Controller_RequestsCrashPrompt);
+            dynSettings.Controller.RequestsCrashPrompt += Controller_RequestsCrashPrompt;
 
-            DynamoSelection.Instance.Selection.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
+            DynamoSelection.Instance.Selection.CollectionChanged += Selection_CollectionChanged;
 
-            _vm.RequestUserSaveWorkflow += new WorkspaceSaveEventHandler(_vm_RequestUserSaveWorkflow);
+            _vm.RequestUserSaveWorkflow += _vm_RequestUserSaveWorkflow;
 
-            dynSettings.Controller.ClipBoard.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(ClipBoard_CollectionChanged);
+            dynSettings.Controller.ClipBoard.CollectionChanged += ClipBoard_CollectionChanged;
 
             // Kick start the automation run, if possible.
             _vm.BeginCommandPlayback(this);
@@ -309,10 +316,10 @@ namespace Dynamo.Controls
             _vm.CopyCommand.RaiseCanExecuteChanged();
             _vm.PasteCommand.RaiseCanExecuteChanged();
         }
-
-        void Controller_RequestsCrashPrompt(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        
+        void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)
         {
-            var prompt = new CrashPrompt(e.Exception.Message + "\n\n" + e.Exception.StackTrace);
+            var prompt = new CrashPrompt(args);
             prompt.ShowDialog();
         }
 

@@ -498,4 +498,4 @@ http://www.nunit.org/index.php?p=license&r=2.6.2
 
 ###Prism###
 http://msdn.microsoft.com/en-us/library/gg406140.aspx  
-http://msdn.microsoft.com/en-us/library/gg405489(PandP.40).aspx  
+http://msdn.microsoft.com/en-us/library/gg405489(PandP.40).aspx

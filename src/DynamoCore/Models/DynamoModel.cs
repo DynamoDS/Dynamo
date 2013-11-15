@@ -24,6 +24,7 @@ using String = System.String;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using ProtoCore.DSASM;
 using Dynamo.ViewModels;
+using Dynamo.DSEngine;
 
 namespace Dynamo.Models
 {
@@ -277,7 +278,7 @@ namespace Dynamo.Models
 
         public DynamoModel()
         {
-            Migrations.Add(new Migration(new Version("0.5.3.0"), new Action(Migrate_0_5_3_to_0_6_0)));
+            Migrations.Add(new Migration(new Version("0.5.3.0"), Migrate_0_5_3_to_0_6_0));
         }
 
         /// <summary>
@@ -1049,6 +1050,10 @@ namespace Dynamo.Models
                 string nodeName = node.GetType().ToString();
                 if (node is Function)
                     nodeName = ((node as Function).Definition.FunctionId).ToString();
+#if USE_DSENGINE
+                else if (node is DSFunction)
+                    nodeName = ((node as DSFunction).Definition.DisplayName);
+#endif
 
                 var xmlDoc = new XmlDocument();
                 var dynEl = xmlDoc.CreateElement(node.GetType().ToString());
@@ -1305,10 +1310,10 @@ namespace Dynamo.Models
         {
             NodeModel result;
 
-            if (dynSettings.Controller.BuiltInFunctions.ContainsKey(name))
+            if (dynSettings.Controller.DSImportedFunctions.ContainsKey(name))
             {
-                var method = dynSettings.Controller.BuiltInFunctions[name];
-                result = new DSFunction(method as ProcedureNode);
+                var functionData  = dynSettings.Controller.DSImportedFunctions[name];
+                result = new DSFunction(functionData as FunctionItem);
             }
             else if (dynSettings.Controller.BuiltInTypesByName.ContainsKey(name))
             {
@@ -1324,7 +1329,6 @@ namespace Dynamo.Models
                 TypeLoadData tld = dynSettings.Controller.BuiltInTypesByNickname[name];
                 try
                 {
-
                     ObjectHandle obj = Activator.CreateInstanceFrom(tld.Assembly.Location, tld.Type.FullName);
                     var newEl = (NodeModel)obj.Unwrap();
                     newEl.DisableInteraction();
