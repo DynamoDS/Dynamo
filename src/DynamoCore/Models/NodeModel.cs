@@ -1029,167 +1029,186 @@ namespace Dynamo.Models
         
         protected virtual void __eval_internal_recursive(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts, int level = 0)
         {
-            var argSets = new List<FSharpList<FScheme.Value>>();
-
-            //create a zip of the incoming args and the port data
-            //to be used for type comparison
-            var portComparison = args.Zip(InPortData, (first, second) => new Tuple<Type, Type>(first.GetType(), second.PortType)).ToList();
-            var listOfListComparison = args.Zip(InPortData, (first, second) => new Tuple<bool, Type>(Utils.IsListOfLists(first), second.PortType));
-
-            //there are more than zero arguments
-            //and there is either an argument which does not match its expections 
-            //OR an argument which requires a list and gets a list of lists
-            //AND argument lacing is not disabled
-            if (ArgumentLacing != LacingStrategy.Disabled && args.Any() &&
-                (portComparison.Any(x => x.Item1 == typeof(Value.List) && x.Item2 != typeof(Value.List)) ||
-                listOfListComparison.Any(x => x.Item1 && x.Item2 == typeof(Value.List))))
+            try
             {
-                //if the argument is of the expected type, then
-                //leave it alone otherwise, wrap it in a list
-                int j = 0;
-                foreach (var arg in args)
+
+                var argSets = new List<FSharpList<FScheme.Value>>();
+
+                //create a zip of the incoming args and the port data
+                //to be used for type comparison
+                var portComparison =
+                    args.Zip(InPortData, (first, second) => new Tuple<Type, Type>(first.GetType(), second.PortType))
+                        .ToList();
+                var listOfListComparison = args.Zip(InPortData,
+                    (first, second) => new Tuple<bool, Type>(Utils.IsListOfLists(first), second.PortType));
+
+                //there are more than zero arguments
+                //and there is either an argument which does not match its expections 
+                //OR an argument which requires a list and gets a list of lists
+                //AND argument lacing is not disabled
+                if (ArgumentLacing != LacingStrategy.Disabled && args.Any() &&
+                    (portComparison.Any(x => x.Item1 == typeof (Value.List) && x.Item2 != typeof (Value.List)) ||
+                     listOfListComparison.Any(x => x.Item1 && x.Item2 == typeof (Value.List))))
                 {
-                    //incoming value is list and expecting single
-                    if (portComparison.ElementAt(j).Item1 == typeof(Value.List) &&
-                        portComparison.ElementAt(j).Item2 != typeof(Value.List))
-                    {
-                        //leave as list
-                        argSets.Add(((Value.List)arg).Item);
-                    }
-                    //incoming value is list and expecting list
-                    else
-                    {
-                        //check if we have a list of lists, if so, then don't wrap
-                        argSets.Add(
-                            Utils.IsListOfLists(arg) && !AcceptsListOfLists(arg)
-                                ? ((Value.List)arg).Item
-                                : Utils.MakeFSharpList(arg));
-                    }
-                    j++;
-                }
-
-                IEnumerable<IEnumerable<Value>> lacedArgs = null;
-                switch (ArgumentLacing)
-                {
-                    case LacingStrategy.First:
-                        lacedArgs = argSets.SingleSet();
-                        break;
-                    case LacingStrategy.Shortest:
-                        lacedArgs = argSets.ShortestSet();
-                        break;
-                    case LacingStrategy.Longest:
-                        lacedArgs = argSets.LongestSet();
-                        break;
-                    case LacingStrategy.CrossProduct:
-                        lacedArgs = argSets.CartesianProduct();
-                        break;
-                }
-
-                var evalResult = OutPortData.ToDictionary(
-                    x => x,
-                    _ => FSharpList<Value>.Empty);
-
-                var evalDict = new Dictionary<PortData, Value>();
-
-                //run the evaluate method for each set of 
-                //arguments in the lace result.
-                foreach (var argList in lacedArgs)
-                {
-                    evalDict.Clear();
-
-                    var thisArgsAsFSharpList = Utils.SequenceToFSharpList(argList);
-
-                    var portComparisonLaced = thisArgsAsFSharpList.Zip(InPortData, (first, second) => new Tuple<Type, Type>(first.GetType(), second.PortType)).ToList();
-                    
-                    int jj = 0;
-                    bool bHasListNotExpecting = false;
-                    foreach (var argLaced in argList)
+                    //if the argument is of the expected type, then
+                    //leave it alone otherwise, wrap it in a list
+                    int j = 0;
+                    foreach (var arg in args)
                     {
                         //incoming value is list and expecting single
-                        if (ArgumentLacing != LacingStrategy.Disabled && thisArgsAsFSharpList.Any() && 
-                            portComparisonLaced.ElementAt(jj).Item1 == typeof(Value.List) &&
-                            portComparison.ElementAt(jj).Item2 != typeof(Value.List) &&
-                            (!AcceptsListOfLists(argLaced) || !Utils.IsListOfLists(argLaced)) 
-                           )
+                        if (portComparison.ElementAt(j).Item1 == typeof (Value.List) &&
+                            portComparison.ElementAt(j).Item2 != typeof (Value.List))
                         {
-                            bHasListNotExpecting = true;
-                            break;
+                            //leave as list
+                            argSets.Add(((Value.List) arg).Item);
                         }
-                        jj++;
+                            //incoming value is list and expecting list
+                        else
+                        {
+                            //check if we have a list of lists, if so, then don't wrap
+                            argSets.Add(
+                                Utils.IsListOfLists(arg) && !AcceptsListOfLists(arg)
+                                    ? ((Value.List) arg).Item
+                                    : Utils.MakeFSharpList(arg));
+                        }
+                        j++;
                     }
-                    if (bHasListNotExpecting)
+
+                    IEnumerable<IEnumerable<Value>> lacedArgs = null;
+                    switch (ArgumentLacing)
                     {
-                        if (level > 20)
-                            throw new Exception("Too deep recursive list containment by lists, only 21 are allowed");
-                        Dictionary<PortData, FScheme.Value> outPutsLevelPlusOne = new Dictionary<PortData, FScheme.Value>();
-
-                        __eval_internal_recursive(Utils.SequenceToFSharpList(argList), outPutsLevelPlusOne, level + 1);
-                        //pack result back
-                       
-                        foreach (var dataLaced in outPutsLevelPlusOne)
-                        {
-                            var dataL = dataLaced.Key;
-                            var valueL = outPutsLevelPlusOne[dataL];
-                            evalResult[dataL] = FSharpList<Value>.Cons(valueL, evalResult[dataL]);
-                        }
-                        continue;
+                        case LacingStrategy.First:
+                            lacedArgs = argSets.SingleSet();
+                            break;
+                        case LacingStrategy.Shortest:
+                            lacedArgs = argSets.ShortestSet();
+                            break;
+                        case LacingStrategy.Longest:
+                            lacedArgs = argSets.LongestSet();
+                            break;
+                        case LacingStrategy.CrossProduct:
+                            lacedArgs = argSets.CartesianProduct();
+                            break;
                     }
-                    else
-                       Evaluate(Utils.SequenceToFSharpList(argList), evalDict);
 
-                    OnEvaluate();
+                    var evalResult = OutPortData.ToDictionary(
+                        x => x,
+                        _ => FSharpList<Value>.Empty);
 
+                    var evalDict = new Dictionary<PortData, Value>();
+
+                    //run the evaluate method for each set of 
+                    //arguments in the lace result.
+                    foreach (var argList in lacedArgs)
+                    {
+                        evalDict.Clear();
+
+                        var thisArgsAsFSharpList = Utils.SequenceToFSharpList(argList);
+
+                        var portComparisonLaced =
+                            thisArgsAsFSharpList.Zip(InPortData,
+                                (first, second) => new Tuple<Type, Type>(first.GetType(), second.PortType)).ToList();
+
+                        int jj = 0;
+                        bool bHasListNotExpecting = false;
+                        foreach (var argLaced in argList)
+                        {
+                            //incoming value is list and expecting single
+                            if (ArgumentLacing != LacingStrategy.Disabled && thisArgsAsFSharpList.Any() &&
+                                portComparisonLaced.ElementAt(jj).Item1 == typeof (Value.List) &&
+                                portComparison.ElementAt(jj).Item2 != typeof (Value.List) &&
+                                (!AcceptsListOfLists(argLaced) || !Utils.IsListOfLists(argLaced))
+                                )
+                            {
+                                bHasListNotExpecting = true;
+                                break;
+                            }
+                            jj++;
+                        }
+                        if (bHasListNotExpecting)
+                        {
+                            if (level > 20)
+                                throw new Exception("Too deep recursive list containment by lists, only 21 are allowed");
+                            Dictionary<PortData, FScheme.Value> outPutsLevelPlusOne =
+                                new Dictionary<PortData, FScheme.Value>();
+
+                            __eval_internal_recursive(Utils.SequenceToFSharpList(argList), outPutsLevelPlusOne,
+                                level + 1);
+                            //pack result back
+
+                            foreach (var dataLaced in outPutsLevelPlusOne)
+                            {
+                                var dataL = dataLaced.Key;
+                                var valueL = outPutsLevelPlusOne[dataL];
+                                evalResult[dataL] = FSharpList<Value>.Cons(valueL, evalResult[dataL]);
+                            }
+                            continue;
+                        }
+                        else
+                            Evaluate(Utils.SequenceToFSharpList(argList), evalDict);
+
+                        OnEvaluate();
+
+                        foreach (var data in OutPortData)
+                        {
+                            evalResult[data] = FSharpList<Value>.Cons(evalDict[data], evalResult[data]);
+                        }
+                    }
+
+                    //the result of evaluation will be a list. we split that result
+                    //and send the results to the outputs
                     foreach (var data in OutPortData)
                     {
-                        evalResult[data] = FSharpList<Value>.Cons(evalDict[data], evalResult[data]);
-                    }    
-                }
+                        var portResults = evalResult[data];
 
-                //the result of evaluation will be a list. we split that result
-                //and send the results to the outputs
-                foreach (var data in OutPortData)
-                {
-                    var portResults = evalResult[data];
-
-                    //if the lacing is cross product, the results
-                    //need to be split back out into a set of lists
-                    //equal in dimension to the first list argument
-                    if (args[0].IsList && ArgumentLacing == LacingStrategy.CrossProduct)
-                    {
-                        var length = portResults.Count();
-                        var innerLength = length/((Value.List)args[0]).Item.Count();
-                        int subCount = 0;
-                        var listOfLists = FSharpList<Value>.Empty;
-                        var innerList = FSharpList<Value>.Empty;
-                        for (int i = 0; i < length; i++)
+                        //if the lacing is cross product, the results
+                        //need to be split back out into a set of lists
+                        //equal in dimension to the first list argument
+                        if (args[0].IsList && ArgumentLacing == LacingStrategy.CrossProduct)
                         {
-                            innerList = FSharpList<Value>.Cons(portResults.ElementAt(i), innerList);
-                            subCount++;
-
-                            if (subCount == innerLength)
+                            var length = portResults.Count();
+                            var innerLength = length/((Value.List) args[0]).Item.Count();
+                            int subCount = 0;
+                            var listOfLists = FSharpList<Value>.Empty;
+                            var innerList = FSharpList<Value>.Empty;
+                            for (int i = 0; i < length; i++)
                             {
-                                subCount = 0;
-                                listOfLists = FSharpList<Value>.Cons(Value.NewList(innerList), listOfLists);
-                                innerList = FSharpList<Value>.Empty;
+                                innerList = FSharpList<Value>.Cons(portResults.ElementAt(i), innerList);
+                                subCount++;
+
+                                if (subCount == innerLength)
+                                {
+                                    subCount = 0;
+                                    listOfLists = FSharpList<Value>.Cons(Value.NewList(innerList), listOfLists);
+                                    innerList = FSharpList<Value>.Empty;
+                                }
                             }
+
+                            evalResult[data] = Utils.SequenceToFSharpList(listOfLists);
+                        }
+                        else
+                        {
+                            //Reverse the evaluation results so they come out right way around
+                            evalResult[data] = Utils.SequenceToFSharpList(evalResult[data].Reverse());
                         }
 
-                        evalResult[data] = Utils.SequenceToFSharpList(listOfLists);
-                    }
-                    else
-                    {
-                        //Reverse the evaluation results so they come out right way around
-                        evalResult[data] = Utils.SequenceToFSharpList(evalResult[data].Reverse());
+                        outPuts[data] = Value.NewList(evalResult[data]);
                     }
 
-                    outPuts[data] = Value.NewList(evalResult[data]);
                 }
-                    
+                else
+                {
+                    Evaluate(args, outPuts);
+                    OnEvaluate();
+                }
             }
-            else
+            catch (NullReferenceException ex)
             {
-                Evaluate(args, outPuts);
-                OnEvaluate();
+                throw new Exception("One of the inputs was not satisfied.", ex);
+            }
+            catch (InvalidCastException ex)
+            {
+                throw new Exception("One of your inputs was not of the correct type. See the console for more details.", ex);
             }
         }
 
