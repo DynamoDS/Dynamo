@@ -9,6 +9,8 @@ using System.IO;
 using System.Windows.Controls;
 using System.Windows;
 using String = System.String;
+using ProtoCore.DSASM;
+using Dynamo.DSEngine;
 
 namespace Dynamo.Utilities
 {
@@ -112,12 +114,14 @@ namespace Dynamo.Utilities
                 }
             }
 
+#if USE_DSENGINE
+            EngineController.Instance.LoadBuiltinLibraries();
+#endif
             AppDomain.CurrentDomain.AssemblyResolve -= resolver;
 
             #endregion
 
         }
-
 
         /// <summary>
         ///     Determine if a Type is a node.  Used by LoadNodesFromAssembly to figure
@@ -160,6 +164,7 @@ namespace Dynamo.Utilities
                         //and have the elementname attribute
                         var attribs = t.GetCustomAttributes(typeof (NodeNameAttribute), false);
                         var isDeprecated = t.GetCustomAttributes(typeof (NodeDeprecatedAttribute), true).Any();
+                        var isMetaNode = t.GetCustomAttributes(typeof(IsMetaNodeAttribute), false).Any();
 
                         if (!IsNodeSubType(t)) /*&& attribs.Length > 0*/
                             continue;
@@ -207,7 +212,7 @@ namespace Dynamo.Utilities
 
                         string typeName;
 
-                        if (attribs.Length > 0 && !isDeprecated)
+                        if (attribs.Length > 0 && !isDeprecated && !isMetaNode)
                         {
                             searchViewModel.Add(t);
                             typeName = (attribs[0] as NodeNameAttribute).Name;

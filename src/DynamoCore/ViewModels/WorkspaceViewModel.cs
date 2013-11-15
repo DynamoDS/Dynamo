@@ -336,7 +336,7 @@ namespace Dynamo.ViewModels
             _model.Nodes.CollectionChanged += Nodes_CollectionChanged;
             _model.Notes.CollectionChanged += Notes_CollectionChanged;
             _model.Connectors.CollectionChanged += Connectors_CollectionChanged;
-            _model.PropertyChanged += ModelPropertyChanged;
+             
 
             // sync collections
             Nodes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Nodes));
@@ -465,6 +465,57 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("FileName");
                     break;
             }
+        }
+
+        public void NodeToCode(object parameter)
+        {
+            List<NodeModel> nodeList = new List<NodeModel>();
+            foreach (ISelectable selected in DynamoSelection.Instance.Selection)
+            {
+                if (selected is NodeModel)
+                {
+                    nodeList.Add(selected as NodeModel);
+                }
+            }
+
+            string code = Dynamo.DSEngine.EngineController.Instance.ConvertNodesToCode(nodeList);
+
+            //
+            // Node deletion
+            IEnumerable<ISelectable> nodeModelsInSelection = DynamoSelection.Instance.Selection.Where(x => x is NodeModel);
+            int m = 0;
+            while (nodeModelsInSelection.Count() > m)
+            {
+                var node = nodeModelsInSelection.ElementAt(m) as NodeModel;
+                var connectors = node.AllConnectors();
+                for (int n = 0; n < connectors.Count(); ++n)
+                    this._model.Connectors.Remove(connectors.ElementAt(n));
+                this._model.Nodes.Remove(node);
+                m++;
+            }
+
+
+            // create node
+            var guid = Guid.NewGuid();
+            dynSettings.Controller.DynamoViewModel.ExecuteCommand(
+              new Dynamo.ViewModels.DynamoViewModel.CreateNodeCommand(guid, "Code Block", 0, 0, true, true));
+
+            // select node
+            var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
+            if (placedNode != null)
+            {
+                DynamoSelection.Instance.ClearSelection();
+                DynamoSelection.Instance.Selection.Add(placedNode);
+            }
+
+            // Assign the sourcecode contents 
+            var cbn = placedNode as CodeBlockNodeModel;
+            cbn.Code = code;
+        }
+
+        internal bool CanNodeToCode(object parameter)
+        {
+            return true;
         }
 
         public void SelectAll(object parameter)

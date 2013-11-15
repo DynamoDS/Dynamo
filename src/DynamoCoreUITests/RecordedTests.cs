@@ -384,6 +384,100 @@ namespace Dynamo.Tests.UI
         }
 
         [Test, RequiresSTA]
+        public void TestBasicCodeBlockNodePortCreation()
+        {
+            RunCommandsFromFile("TestBasicPortCreation.xml");
+            
+            //Check the nodes
+            var nodes = workspaceViewModel.Nodes;
+            Assert.NotNull(nodes);
+            Assert.AreEqual(2, nodes.Count);
+
+            //Check the CBN
+            var cbn = GetNode("107e30e9-e97c-402c-b206-d27162d1fafd") as CodeBlockNodeModel;
+            Assert.AreNotEqual(ElementState.ERROR, cbn.State); 
+            Assert.AreEqual(4, cbn.OutPorts.Count);
+            Assert.AreEqual(2, cbn.InPorts.Count);
+
+            //CBN OutPut Ports 
+            //    > ToolTipContent stores name of variable
+            //    > Margina thickness is for height.(is a multiple of 20, except for the first)
+            Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+
+            Assert.AreEqual("b", cbn.OutPorts[1].ToolTipContent);
+            Assert.AreEqual(20, cbn.OutPorts[1].MarginThickness.Top);
+
+            Assert.AreEqual("c", cbn.OutPorts[2].ToolTipContent);
+            Assert.AreEqual(60, cbn.OutPorts[2].MarginThickness.Top);
+
+            Assert.AreEqual("d", cbn.OutPorts[3].ToolTipContent);
+            Assert.AreEqual(20, cbn.OutPorts[3].MarginThickness.Top);
+
+            //CBN Input Ports
+            //   >PortName stores name of variable
+            Assert.AreEqual("x", cbn.InPorts[0].PortName);
+            Assert.AreEqual("y", cbn.InPorts[1].PortName);
+
+            //Check the connections
+            var connectors = workspaceViewModel.Connectors;
+            Assert.NotNull(connectors);
+            Assert.AreEqual(2, connectors.Count);
+        }
+
+        /// <summary>
+        /// Creates a Code Block Node with a single line comment and multi line comment 
+        /// checks if the ports are created properly and at the correct height
+        /// </summary>
+        [Test, RequiresSTA]
+        public void TestCommentsInCodeBlockNode()
+        {
+            RunCommandsFromFile("TestCommentsInCodeBlockNode.xml");
+
+            //Check the nodes
+            var nodes = workspaceViewModel.Nodes;
+            Assert.NotNull(nodes);
+            Assert.AreEqual(1, nodes.Count);
+
+            //Check the CBN
+            var cbn = GetNode("ebcaa0d3-3f8a-48a7-b5c0-986e383357de") as CodeBlockNodeModel;
+            Assert.AreNotEqual(ElementState.ERROR, cbn.State);
+            Assert.AreEqual(2, cbn.OutPorts.Count);
+
+            Assert.AreEqual("c", cbn.OutPorts[1].ToolTipContent);
+            Assert.AreEqual(100, cbn.OutPorts[1].MarginThickness.Top);
+        }
+
+        /// <summary>
+        /// Create a code block node with some ports connected and others unconnected. Change all variable names
+        /// and ensure that connectors remain to the port index.
+        /// </summary>
+        [Test, RequiresSTA]
+        public void TestCodeBlockNodeConnectionOnCodeChange()
+        {
+            RunCommandsFromFile("TestCodeBlockNodeConnectionSwitching.xml");
+
+            //Check the nodes
+            var nodes = workspaceViewModel.Nodes;
+            Assert.NotNull(nodes);
+            Assert.AreEqual(2, nodes.Count);
+
+            //Check the CBN
+            var cbn = GetNode("37fade4a-e7ad-43ae-8b6f-27dacb17c1c5") as CodeBlockNodeModel;
+            Assert.AreEqual(4, cbn.OutPorts.Count);
+
+            //Check starting point of connector
+            Assert.AreEqual(0, cbn.OutPorts[0].Connectors.Count);
+            Assert.AreEqual(1, cbn.OutPorts[1].Connectors.Count);
+            Assert.AreEqual(0, cbn.OutPorts[2].Connectors.Count);
+            Assert.AreEqual(1, cbn.OutPorts[3].Connectors.Count);
+
+            //CheckEnding point
+            Assert.AreEqual(1, cbn.OutPorts[1].Connectors[0].End.Index);
+            Assert.AreEqual(0, cbn.OutPorts[3].Connectors[0].End.Index);
+        }
+
+        [Test, RequiresSTA]
         public void ShiftSelectAllNode()
         {
             RunCommandsFromFile("ShiftSelectAllNode.xml");
@@ -399,6 +493,22 @@ namespace Dynamo.Tests.UI
         // maintain the format and naming convention. Name of test case should 
         // be Defect_MAGN_0000(defect number) and associated xml should be with 
         // same name.
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_590()
+        {
+            RunCommandsFromFile("Defect-MAGN-590.xml");
+
+            //Check the nodes
+            var nodes = workspaceViewModel.Nodes;
+            Assert.NotNull(nodes);
+            Assert.AreEqual(2, nodes.Count);
+
+            //Check the CBN
+            var cbn = GetNode("8630afc1-3d59-4e76-9fca-faa12e6973ea") as CodeBlockNodeModel;
+            var connector = cbn.OutPorts[1].Connectors[0] as ConnectorModel;
+            Assert.AreEqual(2, connector.End.Index);
+        }
 
         [Test, RequiresSTA]
         public void Defect_MAGN_491()
