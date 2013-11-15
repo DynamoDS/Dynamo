@@ -9,38 +9,48 @@ using Dynamo.FSchemeInterop.Node;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
+using Microsoft.Practices.Prism.ViewModel;
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
 using Type = ProtoCore.Type;
 
 namespace Dynamo
 {
-    public class FunctionDefinition
+    public class CustomNodeDefinition
     {
-        internal FunctionDefinition() : this(Guid.NewGuid()) { }
+        internal CustomNodeDefinition() : this(Guid.NewGuid()) { }
 
-        internal FunctionDefinition(Guid id)
+        internal CustomNodeDefinition(Guid id)
         {
             FunctionId = id;
-            RequiresRecalc = true;
+        }
+
+        public string Name
+        {
+            get { return FunctionId.ToString(); }
         }
 
         public Guid FunctionId { get; internal set; }
         public CustomNodeWorkspaceModel WorkspaceModel { get; internal set; }
-        public List<Tuple<int, NodeModel>> OutPortMappings { get; internal set; }
-        public List<Tuple<int, NodeModel>> InPortMappings { get; internal set; }
+        public IEnumerable<string> Parameters { get; internal set; }
+        public IEnumerable<string> ReturnKeys { get; internal set; }
 
-        public bool RequiresRecalc { get; internal set; }
+        public string DisplayName
+        {
+            get { return WorkspaceModel.Name; }
+        }
 
-        public IEnumerable<FunctionDefinition> Dependencies
+        #region Dependencies
+
+        public IEnumerable<CustomNodeDefinition> Dependencies
         {
             get
             {
-                return FindAllDependencies(new HashSet<FunctionDefinition>());
+                return FindAllDependencies(new HashSet<CustomNodeDefinition>());
             }
         }
 
-        public IEnumerable<FunctionDefinition> DirectDependencies
+        public IEnumerable<CustomNodeDefinition> DirectDependencies
         {
             get
             {
@@ -48,7 +58,7 @@ namespace Dynamo
             }
         }
 
-        private IEnumerable<FunctionDefinition> FindAllDependencies(HashSet<FunctionDefinition> dependencySet)
+        private IEnumerable<CustomNodeDefinition> FindAllDependencies(HashSet<CustomNodeDefinition> dependencySet)
         {
             var query = DirectDependencies.Where(def => !dependencySet.Contains(def));
 
@@ -61,7 +71,7 @@ namespace Dynamo
             }
         }
 
-        private IEnumerable<FunctionDefinition> FindDirectDependencies()
+        private IEnumerable<CustomNodeDefinition> FindDirectDependencies()
         {
             return WorkspaceModel.Nodes
                             .OfType<Function>()
@@ -69,6 +79,12 @@ namespace Dynamo
                             .Where(def => def != this)
                             .Distinct();
         }
+
+        #endregion
+
+        #region FScheme Compilation
+        
+        public bool RequiresRecalc { get; internal set; }
 
         public void CompileAndAddToEnvironment(ExecutionEnvironment env)
         {
@@ -233,28 +249,24 @@ namespace Dynamo
 
         }
 
+        #endregion
 
-        public AssociativeNode CompileToAstNode()
+        #region DS Compilation
+
+        public AssociativeNode CompileToFunctionDefAst()
         {
-            var cnBuilder = new CustomNodeBuilder();
-
             //TODO
             //This stuff needs to be refactored out. Only reason it's still here is for
             //parity with existing Compile() method.
             #region Outputs and Inputs and UI updating
 
-            // Get the internal nodes for the function
-            WorkspaceModel functionWorkspace = WorkspaceModel;
-
             #region Find outputs
 
             // Find output elements for the node
-            List<Output> outputs = functionWorkspace.Nodes.OfType<Output>().ToList();
+            List<Output> outputs = WorkspaceModel.Nodes.OfType<Output>().ToList();
 
             var topMost = new List<Tuple<int, NodeModel>>();
-
-            IEnumerable<string> outputNames;
-
+            
             // if we found output nodes, add select their inputs
             // these will serve as the function output
             if (outputs.Any())
@@ -262,13 +274,13 @@ namespace Dynamo
                 topMost.AddRange(
                     outputs.Where(x => x.HasInput(0)).Select(x => x.Inputs[0]));
 
-                outputNames = outputs.Select(x => x.Symbol);
+                ReturnKeys = outputs.Select(x => x.Symbol);
             }
             else
             {
                 // if there are no explicitly defined output nodes
                 // get the top most nodes and set THEM as the output
-                IEnumerable<NodeModel> topMostNodes = functionWorkspace.GetTopMostNodes();
+                IEnumerable<NodeModel> topMostNodes = WorkspaceModel.GetTopMostNodes();
 
                 var outNames = new List<string>();
 
@@ -291,7 +303,7 @@ namespace Dynamo
                     }
                 }
 
-                outputNames = outNames;
+                ReturnKeys = outNames;
             }
 
             #endregion
@@ -303,93 +315,41 @@ namespace Dynamo
             }
 
             //Find function entry point, and then compile
-            var inputNodes = functionWorkspace.Nodes.OfType<Symbol>().ToList();
+            var inputNodes = WorkspaceModel.Nodes.OfType<Symbol>().ToList();
             var parameters = inputNodes.Select(x => x.GUID.ToString());
-            var inputNames = inputNodes.Select(x => x.InputSymbol);
+            Parameters = inputNodes.Select(x => x.InputSymbol);
 
             //Update existing function nodes which point to this function to match its changes
-            dynSettings.Controller.DynamoModel.AllNodes
-                .OfType<Function>()
-                .Where(el => el.Definition != null && el.Definition.FunctionId == FunctionId)
-                .ToList()
-                .ForEach(node =>
-                {
-                    node.SetInputs(inputNames);
-                    node.SetOutputs(outputNames);
-                    node.RegisterAllPorts();
-                });
+            var instances =
+                dynSettings.Controller.DynamoModel.AllNodes.OfType<CustomNodeInstance>()
+                           .Where(el => el.Definition != null && el.Definition == this);
+
+            foreach (var node in instances)
+                node.ResyncWithDefinition();
 
             //Call OnSave for all saved elements
-            functionWorkspace.Nodes.ToList().ForEach(x => x.onSave());
+            foreach (var node in WorkspaceModel.Nodes)
+                node.onSave();
 
             #endregion
-            
+
+            var cnBuilder = new CustomNodeBuilder();
+
             new AstBuilder(cnBuilder).CompileToAstNodes(
-                functionWorkspace.Nodes.Where(x => !(x is Output)), false);
+                WorkspaceModel.Nodes.Where(x => !(x is Output)), false);
 
             return cnBuilder.GenerateCustomNodeAst(
-                FunctionId.ToString().Replace("-", string.Empty), 
-                TODO,
+                FunctionId.ToString().Replace("-", string.Empty),
+                topMost.Select(
+                    x => x.Item2.GetAstIdentifierForOutputIndex(x.Item1) as AssociativeNode)
+                       .ToList(),
                 parameters);
-        }
-
-        public bool AddToSearch()
-        {
-            return
-                dynSettings.Controller.SearchViewModel.Add(new CustomNodeInfo(  FunctionId, 
-                                                                                WorkspaceModel.Name,
-                                                                                WorkspaceModel.Category,
-                                                                                WorkspaceModel.Description,
-                                                                                WorkspaceModel.FileName ));
-        }
-
-        public void UpdateCustomNodeManager()
-        {
-            dynSettings.CustomNodeManager.SetNodeInfo(new CustomNodeInfo(   FunctionId,
-                                                                            WorkspaceModel.Name,
-                                                                            WorkspaceModel.Category,
-                                                                            WorkspaceModel.Description,
-                                                                            WorkspaceModel.FileName));
-        }
-
-        public bool SyncWithWorkspace(bool addToSearch, bool compileFunction)
-        {
-
-            // Get the internal nodes for the function
-            var functionWorkspace = WorkspaceModel;
-
-            try
-            {
-                // Add function defininition
-                dynSettings.Controller.CustomNodeManager.AddFunctionDefinition(FunctionId, this);
-
-                // search
-                if (addToSearch)
-                {
-                    AddToSearch();
-                }
-
-                var info = new CustomNodeInfo(FunctionId, functionWorkspace.Name, functionWorkspace.Category,
-                                              functionWorkspace.Description, WorkspaceModel.FileName);
-
-                dynSettings.Controller.CustomNodeManager.SetNodeInfo(info);
-
-                CompileAndAddToEnvironment(dynSettings.Controller.FSchemeEnvironment);
-            }
-            catch (Exception e)
-            {
-                DynamoLogger.Instance.Log("Error saving:" + e.GetType());
-                DynamoLogger.Instance.Log(e);
-                return false;
-            }
-
-            return true;
         }
 
         private class CustomNodeBuilder : IAstNodeContainer
         {
             private readonly LinkedListOfList<NodeModel, AssociativeNode> _generatedAst
-                = new LinkedListOfList<NodeModel, AssociativeNode>(); 
+                = new LinkedListOfList<NodeModel, AssociativeNode>();
 
             #region Implement IAstNodeContainer interface
 
@@ -462,5 +422,64 @@ namespace Dynamo
                 return functionDef;
             }
         }
+
+        #endregion
+
+        #region Custom Node Management
+
+        public bool AddToSearch()
+        {
+            return
+                dynSettings.Controller.SearchViewModel.Add(new CustomNodeInfo(  FunctionId, 
+                                                                                WorkspaceModel.Name,
+                                                                                WorkspaceModel.Category,
+                                                                                WorkspaceModel.Description,
+                                                                                WorkspaceModel.FileName ));
+        }
+
+        public void UpdateCustomNodeManager()
+        {
+            dynSettings.CustomNodeManager.SetNodeInfo(new CustomNodeInfo(   FunctionId,
+                                                                            WorkspaceModel.Name,
+                                                                            WorkspaceModel.Category,
+                                                                            WorkspaceModel.Description,
+                                                                            WorkspaceModel.FileName));
+        }
+
+        public bool SyncWithWorkspace(bool addToSearch, bool compileFunction)
+        {
+
+            // Get the internal nodes for the function
+            var functionWorkspace = WorkspaceModel;
+
+            try
+            {
+                // Add function defininition
+                dynSettings.Controller.CustomNodeManager.AddFunctionDefinition(FunctionId, this);
+
+                // search
+                if (addToSearch)
+                {
+                    AddToSearch();
+                }
+
+                var info = new CustomNodeInfo(FunctionId, functionWorkspace.Name, functionWorkspace.Category,
+                                              functionWorkspace.Description, WorkspaceModel.FileName);
+
+                dynSettings.Controller.CustomNodeManager.SetNodeInfo(info);
+
+                CompileAndAddToEnvironment(dynSettings.Controller.FSchemeEnvironment);
+            }
+            catch (Exception e)
+            {
+                DynamoLogger.Instance.Log("Error saving:" + e.GetType());
+                DynamoLogger.Instance.Log(e);
+                return false;
+            }
+
+            return true;
+        }
+
+        #endregion
     }
 }

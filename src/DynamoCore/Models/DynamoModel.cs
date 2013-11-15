@@ -892,7 +892,7 @@ namespace Dynamo.Models
             return true;
         }
 
-        public FunctionDefinition NewCustomNodeWorkspace(   Guid id,
+        public CustomNodeDefinition NewCustomNodeWorkspace(   Guid id,
                                                             string name,
                                                             string category,
                                                             string description,
@@ -912,7 +912,7 @@ namespace Dynamo.Models
             workSpace.Nodes.ToList();
             workSpace.Connectors.ToList();
 
-            var functionDefinition = new FunctionDefinition(id)
+            var functionDefinition = new CustomNodeDefinition(id)
             {
                 WorkspaceModel = workSpace
             };
@@ -1351,7 +1351,7 @@ namespace Dynamo.Models
                 }
                 else
                 {
-                    DynamoLogger.Instance.Log("Failed to find FunctionDefinition.");
+                    DynamoLogger.Instance.Log("Failed to find CustomNodeDefinition.");
                     return null;
                 }
             }
