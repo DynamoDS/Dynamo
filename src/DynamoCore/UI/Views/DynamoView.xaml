@@ -22,11 +22,11 @@
         KeyDown="DynamoView_KeyDown"
         KeyUp="DynamoView_KeyUp"
         Background="#FF353535"
-        FontFamily="Open Sans"
         SnapsToDevicePixels="True"
         ResizeMode="CanResizeWithGrip"
         UseLayoutRounding="True"
-        Cursor="/DynamoCore;component/UI/Images/pointer.cur">
+        Cursor="/DynamoCore;component/UI/Images/pointer.cur"
+        Style="{DynamicResource DynamoWindowStyle}">
 
     <Window.CommandBindings>
 
