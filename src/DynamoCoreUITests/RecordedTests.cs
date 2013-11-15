@@ -21,6 +21,8 @@ namespace Dynamo.Tests.UI
     [TestFixture]
     public class RecordedTests
     {
+        #region Generic Set-up Routines and Data Members
+
         private System.Random randomizer = null;
 
         // For access within test cases.
@@ -39,6 +41,22 @@ namespace Dynamo.Tests.UI
         public void Exit()
         {
             this.controller = null;
+        }
+
+        #endregion
+
+        #region Recorded Test Cases for Command Framework
+
+        [Test, RequiresSTA]
+        public void _SnowPeashooter()
+        {
+            RunCommandsFromFile("SnowPeashooter.xml");
+
+            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count);
+
+            var number = GetNode("045decd1-7454-4b85-b92e-d59d35f31ab2") as DoubleInput;
+            Assert.AreEqual("12.34", number.Value);
         }
 
         [Test, RequiresSTA]
@@ -324,36 +342,46 @@ namespace Dynamo.Tests.UI
         }
 
         [Test, RequiresSTA]
-        public void Defect_MAGN_491()
+        public void TestModifyPythonNodes()
         {
-            RunCommandsFromFile("Defect-MAGN-491.xml");
-            var connectors = workspaceViewModel.Connectors;
-            Assert.NotNull(connectors);
-            Assert.AreEqual(2, connectors.Count);
+            RunCommandsFromFile("ModifyPythonNodes.xml");
+            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count);
 
-            // Get to the only two connectors in the session.
-            ConnectorViewModel firstConnector = connectors[0];
-            ConnectorViewModel secondConnector = connectors[1];
+            var python = GetNode("6f580b72-6aeb-4af2-b28b-a2e5b634721b") as Python;
+            var pvarin = GetNode("f0fc1dea-3874-40a0-a532-90c0ee10f437") as PythonVarIn;
 
-            // Find out the corresponding ports they connect to.
-            Point firstPoint = firstConnector.ConnectorModel.End.Center;
-            Point secondPoint = secondConnector.ConnectorModel.End.Center;
-
-            Assert.AreEqual(firstPoint.X, firstConnector.CurvePoint3.X);
-            Assert.AreEqual(firstPoint.Y, firstConnector.CurvePoint3.Y);
-            Assert.AreEqual(secondPoint.X, secondConnector.CurvePoint3.X);
-            Assert.AreEqual(secondPoint.Y, secondConnector.CurvePoint3.Y);
+            Assert.AreEqual("# Modification 3", python.Script);
+            Assert.AreEqual("# Modification 4", pvarin.Script);
         }
 
         [Test, RequiresSTA]
-        public void Defect_MAGN_225()
+        public void TestModifyPythonNodesUndo()
         {
-            RunCommandsFromFile("TestConnectionReplacementUndo.xml");
-            var nodes = workspaceViewModel.Nodes;
-            Assert.NotNull(nodes);
-            Assert.AreEqual(3, nodes.Count);
+            RunCommandsFromFile("ModifyPythonNodesUndo.xml");
+            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count);
+
+            var python = GetNode("6f580b72-6aeb-4af2-b28b-a2e5b634721b") as Python;
+            var pvarin = GetNode("f0fc1dea-3874-40a0-a532-90c0ee10f437") as PythonVarIn;
+
+            Assert.AreEqual("# Modification 1", python.Script);
+            Assert.AreEqual("# Modification 2", pvarin.Script);
         }
 
+        [Test, RequiresSTA]
+        public void TestModifyPythonNodesUndoRedo()
+        {
+            RunCommandsFromFile("ModifyPythonNodesUndoRedo.xml");
+            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count);
+
+            var python = GetNode("6f580b72-6aeb-4af2-b28b-a2e5b634721b") as Python;
+            var pvarin = GetNode("f0fc1dea-3874-40a0-a532-90c0ee10f437") as PythonVarIn;
+
+            Assert.AreEqual("# Modification 3", python.Script);
+            Assert.AreEqual("# Modification 4", pvarin.Script);
+        }
 
         [Test, RequiresSTA]
         public void TestBasicCodeBlockNodePortCreation()
@@ -420,22 +448,6 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(100, cbn.OutPorts[1].MarginThickness.Top);
         }
 
-        [Test, RequiresSTA]
-        public void Defect_MAGN_590()
-        {
-            RunCommandsFromFile("Defect-MAGN-590.xml");
-
-            //Check the nodes
-            var nodes = workspaceViewModel.Nodes;
-            Assert.NotNull(nodes);
-            Assert.AreEqual(2, nodes.Count);
-
-            //Check the CBN
-            var cbn = GetNode("8630afc1-3d59-4e76-9fca-faa12e6973ea") as CodeBlockNodeModel;
-            var connector = cbn.OutPorts[1].Connectors[0] as ConnectorModel;
-            Assert.AreEqual(2, connector.End.Index);
-        }
-
         /// <summary>
         /// Create a code block node with some ports connected and others unconnected. Change all variable names
         /// and ensure that connectors remain to the port index.
@@ -464,6 +476,155 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(1, cbn.OutPorts[1].Connectors[0].End.Index);
             Assert.AreEqual(0, cbn.OutPorts[3].Connectors[0].End.Index);
         }
+
+        [Test, RequiresSTA]
+        public void ShiftSelectAllNode()
+        {
+            RunCommandsFromFile("ShiftSelectAllNode.xml");
+
+            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(4, workspace.Connectors.Count);
+        }
+
+        #endregion
+
+        #region Recorded Test Cases for Defect Verifications
+        // Please add all test cases here, those are related to defects. Also 
+        // maintain the format and naming convention. Name of test case should 
+        // be Defect_MAGN_0000(defect number) and associated xml should be with 
+        // same name.
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_590()
+        {
+            RunCommandsFromFile("Defect-MAGN-590.xml");
+
+            //Check the nodes
+            var nodes = workspaceViewModel.Nodes;
+            Assert.NotNull(nodes);
+            Assert.AreEqual(2, nodes.Count);
+
+            //Check the CBN
+            var cbn = GetNode("8630afc1-3d59-4e76-9fca-faa12e6973ea") as CodeBlockNodeModel;
+            var connector = cbn.OutPorts[1].Connectors[0] as ConnectorModel;
+            Assert.AreEqual(2, connector.End.Index);
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_491()
+        {
+            // TODO: Rename this XML to match the test case name.
+            RunCommandsFromFile("Defect-MAGN-491.xml");
+            var connectors = workspaceViewModel.Connectors;
+            Assert.NotNull(connectors);
+            Assert.AreEqual(2, connectors.Count);
+
+            // Get to the only two connectors in the session.
+            ConnectorViewModel firstConnector = connectors[0];
+            ConnectorViewModel secondConnector = connectors[1];
+
+            // Find out the corresponding ports they connect to.
+            Point firstPoint = firstConnector.ConnectorModel.End.Center;
+            Point secondPoint = secondConnector.ConnectorModel.End.Center;
+
+            Assert.AreEqual(firstPoint.X, firstConnector.CurvePoint3.X);
+            Assert.AreEqual(firstPoint.Y, firstConnector.CurvePoint3.Y);
+            Assert.AreEqual(secondPoint.X, secondConnector.CurvePoint3.X);
+            Assert.AreEqual(secondPoint.Y, secondConnector.CurvePoint3.Y);
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_225()
+        {
+            // TODO: Rename this XML to match the test case name.
+            RunCommandsFromFile("TestConnectionReplacementUndo.xml");
+            var nodes = workspaceViewModel.Nodes;
+
+            Assert.NotNull(nodes);
+            Assert.AreEqual(3, nodes.Count);
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_57()
+        {
+            RunCommandsFromFile("Defect_MAGN_57.xml");
+
+            Assert.AreEqual(7, workspace.Nodes.Count);
+            Assert.AreEqual(5, workspace.Connectors.Count);
+
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_159()
+        {
+            RunCommandsFromFile("Defect_MAGN_159.xml", true);
+
+            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count);
+
+            var number1 = GetNode("045decd1-7454-4b85-b92e-d59d35f31ab2") as DoubleInput;
+            Assert.AreEqual(8, (number1.OldValue as FScheme.Value.Number).Item);
+        }
+
+        [Ignore, RequiresSTA]
+        public void Defect_MAGN_160()
+        {
+            // List node cannot be created  ( current limitation for button click)
+            RunCommandsFromFile("Defect_MAGN_160.xml");
+
+            //Assert.AreEqual(1, workspace.Nodes.Count);
+            //Assert.AreEqual(0, workspace.Connectors.Count);
+
+            //var number1 = GetNode("045decd1-7454-4b85-b92e-d59d35f31ab2") as DoubleInput;
+            //Assert.AreEqual(8, (number1.OldValue as FScheme.Value.Number).Item);
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_164()
+        {
+            RunCommandsFromFile("Defect_MAGN_164.xml", true);
+
+            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count);
+
+            var number1 = GetNode("2e1e5f33-52fc-4cc9-9d4a-33e46ec64a53") as DoubleInput;
+            Assert.AreEqual(30, (number1.OldValue as FScheme.Value.Number).Item);
+
+            var string1 = GetNode("a4ba7320-3cb8-4524-bc8c-8688d7abc599") as StringInput;
+            Assert.AreEqual("Dynamo", (string1.OldValue as FScheme.Value.String).Item);
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_190()
+        {
+            RunCommandsFromFile("Defect_MAGN_190.xml");
+
+            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Connectors.Count);
+
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_429()
+        {
+            RunCommandsFromFile("Defect_MAGN_429.xml");
+
+            Assert.AreEqual(0, workspace.Nodes.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count);
+
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_478()
+        {
+            RunCommandsFromFile("Defect_MAGN_478.xml");
+
+            Assert.AreEqual(1, workspace.Notes.Count);
+        }
+
+        #endregion
+
+        #region Private Helper Methods
 
         private ModelBase GetNode(string guid)
         {
@@ -522,5 +683,7 @@ namespace Dynamo.Tests.UI
             Assert.IsTrue(duplicate is CmdType);
             return duplicate as CmdType;
         }
+
+        #endregion
     }
 }

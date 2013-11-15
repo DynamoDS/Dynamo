@@ -371,6 +371,9 @@ namespace Dynamo
         /// </summary>
         public virtual void UpdateVisualizations()
         {
+            if (dynSettings.Controller == null)
+                return;
+
             if (isUpdating)
                 return;
 

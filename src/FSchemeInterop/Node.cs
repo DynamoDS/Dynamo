@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Expression = Dynamo.FScheme.Expression;
@@ -788,8 +789,10 @@ namespace Dynamo.FSchemeInterop.Node
 
             foreach (var node in nodeStack)
             {
-                if (node.Parents.Any())
-                    treeLookup[node] = lca(node.Parents.Select(x => treeLookup[x])).AddChild(node);
+                var parents = node.Parents.Where(treeLookup.ContainsKey).ToList();
+               
+                if (parents.Any())
+                    treeLookup[node] = lca(parents.Select(x => treeLookup[x])).AddChild(node);
                 else
                     treeLookup[node] = lcaTree.AddChild(node);
             }
