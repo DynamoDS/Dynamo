@@ -109,7 +109,7 @@ namespace Dynamo.UI.Commands
         /// arguments to the command
         /// </summary>
         /// <param name="command">The command to run</param>
-        /// <param name="args">Arguments to give to the command</param>
+        /// <param name="args">Parameters to give to the command</param>
         public static void RunCommand(DelegateCommand command, object args)
         {
             var commandAndParams = Tuple.Create<object, object>(command, args);

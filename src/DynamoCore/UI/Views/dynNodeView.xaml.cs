@@ -206,8 +206,8 @@ namespace Dynamo.Controls
             }
 
             //set the state using the view model's command
-            if (ViewModel.SetStateCommand.CanExecute(ElementState.DEAD))
-                ViewModel.SetStateCommand.Execute(ElementState.DEAD);
+            if (ViewModel.SetStateCommand.CanExecute(ElementState.Dead))
+                ViewModel.SetStateCommand.Execute(ElementState.Dead);
         }
 
         internal void EnableInteraction()

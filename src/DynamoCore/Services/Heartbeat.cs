@@ -128,7 +128,7 @@ namespace Dynamo.Services
 
             foreach (var node in dynSettings.Controller.DynamoModel.AllNodes)
             {
-                if (node.State != ElementState.ERROR)
+                if (node.State != ElementState.Error)
                     continue;
 
                 string fullName = node.GetType().FullName;
