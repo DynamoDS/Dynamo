@@ -253,11 +253,15 @@ namespace Dynamo
 
         #region DS Compilation
 
+        public void CompileAndAddToVM()
+        {
+            var compiledFunction = CompileToFunctionDefAst();
+
+            throw new NotImplementedException();
+        }
+
         public AssociativeNode CompileToFunctionDefAst()
         {
-            //TODO
-            //This stuff needs to be refactored out. Only reason it's still here is for
-            //parity with existing Compile() method.
             #region Outputs and Inputs and UI updating
 
             #region Find outputs
