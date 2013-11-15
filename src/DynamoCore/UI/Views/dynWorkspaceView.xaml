@@ -28,16 +28,6 @@
                                  Cursor="{Binding CurrentCursor}"
                                  ForceCursor="{Binding IsCursorForced}">
                 <Grid>
-                    <Canvas Name="selectionCanvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                <Rectangle
-                                    x:Name="selectionBox"
-                                    Visibility="Collapsed"
-                                    Stroke="Black"
-                                    StrokeThickness="1"
-                                    IsHitTestVisible="False"
-                                />
-                    </Canvas>
-
                     <ItemsControl ItemsSource="{Binding WorkspaceElements}" Name="WorkspaceElements">
 
                         <!--Resources for the ItemsControl can now be found in DataTemplates.xml-->
@@ -72,7 +62,16 @@
 
                     </ItemsControl>
 
-            </Grid>
+                    <Canvas Name="selectionCanvas"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch">
+                        <Rectangle x:Name="selectionBox"
+                                   Visibility="Collapsed"
+                                   Stroke="Black"
+                                   StrokeThickness="1"
+                                   IsHitTestVisible="False" />
+                    </Canvas>
+                </Grid>
                 
         </controls:ZoomBorder>
             
