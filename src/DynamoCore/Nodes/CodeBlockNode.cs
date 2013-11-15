@@ -124,6 +124,7 @@ namespace Dynamo.Nodes
             {
                 if (code == null || !code.Equals(value))
                 {
+                    previewVariable = null;
 
                     if (value != null)
                     {
@@ -261,7 +262,7 @@ namespace Dynamo.Nodes
                 DynamoLogger.Instance.Log("Failed to build AST for code block node. Error: " + ex.Message);
             }
 
-            return codeBlock != null ? codeBlock.Body : null;
+            return codeBlock != null ? codeBlock.Body : new List<AssociativeNode> { };
         }
 
         public override AssociativeNode GetIndexedOutputNode(int portIndex)
