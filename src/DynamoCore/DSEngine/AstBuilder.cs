@@ -322,7 +322,7 @@ namespace Dynamo.DSEngine
                 }
 
                 //TODO: This should do something more than just log a generic message. --SJE
-                if (node.State == ElementState.ERROR)
+                if (node.State == ElementState.Error)
                 {
                     DynamoLogger.Instance.Log("Error in Node. Not sent for building and compiling");
                 }
