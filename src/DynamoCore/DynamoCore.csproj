@@ -171,8 +171,8 @@ limitations under the License.
     <Compile Include="Nodes\CodeBlockNode.cs" />
     <Compile Include="Nodes\dynDSFunction.cs" />
     <Compile Include="Models\Migration.cs" />
-    <Compile Include="Core\FunctionDefinition.cs" />
     <Compile Include="Core\PreferenceSettings.cs" />
+    <Compile Include="Core\CustomNodeDefinition.cs" />
     <Compile Include="Nodes\Geometry.cs" />
     <Compile Include="Nodes\New Node Examples\SampleNodeWithUI.cs" />
     <Compile Include="PackageManager\PackageManagerClient.cs" />

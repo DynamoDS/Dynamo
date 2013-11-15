@@ -435,12 +435,12 @@ namespace Dynamo.Tests
 
 
 
-        //    if (functionDefinition.WorkspaceModel.Nodes.Any(x => x is RevitTransactionNode)
-        //        || functionDefinition.Dependencies.Any(d => d.WorkspaceModel.Nodes.Any(x => x is RevitTransactionNode)))
+        //    if (CustomNodeDefinition.WorkspaceModel.Nodes.Any(x => x is RevitTransactionNode)
+        //        || CustomNodeDefinition.Dependencies.Any(d => d.WorkspaceModel.Nodes.Any(x => x is RevitTransactionNode)))
         //    {
-        //        return new FunctionWithRevit(inputs, outputs, functionDefinition);
+        //        return new FunctionWithRevit(inputs, outputs, CustomNodeDefinition);
         //    }
-        //    return base.CreateFunction(inputs, outputs, functionDefinition);
+        //    return base.CreateFunction(inputs, outputs, CustomNodeDefinition);
         //}
 
 

@@ -395,7 +395,7 @@ namespace Dynamo.Tests.UI
 
             //Check the CBN
             var cbn = GetNode("107e30e9-e97c-402c-b206-d27162d1fafd") as CodeBlockNodeModel;
-            Assert.AreNotEqual(ElementState.ERROR, cbn.State); 
+            Assert.AreNotEqual(ElementState.Error, cbn.State); 
             Assert.AreEqual(4, cbn.OutPorts.Count);
             Assert.AreEqual(2, cbn.InPorts.Count);
 
@@ -441,7 +441,7 @@ namespace Dynamo.Tests.UI
 
             //Check the CBN
             var cbn = GetNode("ebcaa0d3-3f8a-48a7-b5c0-986e383357de") as CodeBlockNodeModel;
-            Assert.AreNotEqual(ElementState.ERROR, cbn.State);
+            Assert.AreNotEqual(ElementState.Error, cbn.State);
             Assert.AreEqual(2, cbn.OutPorts.Count);
 
             Assert.AreEqual("c", cbn.OutPorts[1].ToolTipContent);

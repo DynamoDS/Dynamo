@@ -7,6 +7,18 @@ namespace Dynamo.Utilities
 {
     public static class ExtensionMethods
     {
+        public struct EnumerationIndex<T>
+        {
+            public int Index;
+            public T Element;
+        }
+
+
+        public static IEnumerable<EnumerationIndex<T>> Enumerate<T>(this IEnumerable<T> seq)
+        {
+            return seq.Select((x, i) => new EnumerationIndex<T> { Element = x, Index = i });
+        }
+
         /// <summary>
         /// An extension to the ObservableCollection class which allows you 
         /// to remove all objects which don't pass a predicate method.

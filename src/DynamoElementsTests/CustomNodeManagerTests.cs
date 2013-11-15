@@ -26,9 +26,9 @@ using NUnit.Framework;
         
         //public IEnumerable<Tuple<string, string, Guid>> GetNodeNameCategoryAndGuidList()
         
-        //public IEnumerable<FunctionDefinition> GetLoadedDefinitions()
+        //public IEnumerable<CustomNodeDefinition> GetLoadedDefinitions()
         
-        //public void AddFunctionDefinition(Guid id, FunctionDefinition def)
+        //public void AddFunctionDefinition(Guid id, CustomNodeDefinition def)
         
         //public CustomNodeInfo AddFileToPath(string file)
         
@@ -46,7 +46,7 @@ using NUnit.Framework;
         
         //public IEnumerable<CustomNodeInfo> ScanNodeHeadersInDirectory(string dir)
         
-        //public void SetFunctionDefinition(Guid guid, FunctionDefinition def)
+        //public void SetFunctionDefinition(Guid guid, CustomNodeDefinition def)
         
         //public void SetNodePath(Guid id, string path)
         
@@ -60,7 +60,7 @@ using NUnit.Framework;
         
         //public string GetDefaultSearchPath()
         
-        //public FunctionDefinition GetFunctionDefinition(Guid id)
+        //public CustomNodeDefinition GetFunctionDefinition(Guid id)
         
         //public string GetNodePath(Guid id)
         
@@ -82,15 +82,15 @@ using NUnit.Framework;
 
         //public static bool GetHeaderFromPath(string path, out Guid guid, out string name, out string category, out string description)
        
-        //public FunctionDefinition GetDefinitionFromWorkspace(WorkspaceModel workspace)
+        //public CustomNodeDefinition GetDefinitionFromWorkspace(WorkspaceModel workspace)
 
-        //private bool GetDefinitionFromPath(Guid funcDefGuid, out FunctionDefinition def)
+        //private bool GetDefinitionFromPath(Guid funcDefGuid, out CustomNodeDefinition def)
       
-        //public void OnGetDefinitionFromPath(FunctionDefinition def)
+        //public void OnGetDefinitionFromPath(CustomNodeDefinition def)
 
-        //public static FScheme.Expression CompileFunction(FunctionDefinition definition)
+        //public static FScheme.Expression CompileFunction(CustomNodeDefinition definition)
 
-        //public static FScheme.Expression CompileFunction(FunctionDefinition definition, out IEnumerable<string> inputNames, out IEnumerable<string> outputNames)
+        //public static FScheme.Expression CompileFunction(CustomNodeDefinition definition, out IEnumerable<string> inputNames, out IEnumerable<string> outputNames)
        
         //private static string FormatFileName(string filename)
        
