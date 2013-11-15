@@ -87,8 +87,8 @@
     <Compile Include="Converters.cs" />
     <Compile Include="dynPython.cs" />
     <Compile Include="dynPythonEngine.cs" />
-    <Compile Include="dynScriptEditWindow.xaml.cs">
-      <DependentUpon>dynScriptEditWindow.xaml</DependentUpon>
+    <Compile Include="ScriptEditWindow.xaml.cs">
+      <DependentUpon>ScriptEditWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IronPythonCompletionData.cs" />
@@ -106,7 +106,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="dynScriptEditWindow.xaml">
+    <Page Include="ScriptEditWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

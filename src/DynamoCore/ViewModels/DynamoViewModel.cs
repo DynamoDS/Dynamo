@@ -331,7 +331,13 @@ namespace Dynamo.ViewModels
                 _watchEscapeIsDown = value;
                 RaisePropertyChanged("WatchEscapeIsDown");
                 RaisePropertyChanged("ShouldBeHitTestVisible");
+                RaisePropertyChanged("WatchPreviewHitTest");
             }
+        }
+
+        public bool WatchPreviewHitTest
+        {
+            get { return ( WatchEscapeIsDown || CanNavigateBackground ); }
         }
 
         public bool IsHomeSpace
@@ -370,6 +376,7 @@ namespace Dynamo.ViewModels
             {
                 canNavigateBackground = value;
                 RaisePropertyChanged("CanNavigateBackground");
+                RaisePropertyChanged("WatchBackgroundHitTest");
 
                 int workspace_index = CurrentWorkspaceIndex;
 
