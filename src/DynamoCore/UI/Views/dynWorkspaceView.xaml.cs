@@ -182,7 +182,6 @@ namespace Dynamo.Views
         /// <param name="e"></param>
         void dynWorkspaceView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            ViewModel.Loaded();
             ViewModel.CurrentOffsetChanged += new PointEventHandler(vm_CurrentOffsetChanged);
             ViewModel.ZoomChanged += new ZoomEventHandler(vm_ZoomChanged);
             ViewModel.RequestZoomToViewportCenter += new ZoomEventHandler(vm_ZoomAtViewportCenter);
@@ -194,6 +193,7 @@ namespace Dynamo.Views
             ViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
             ViewModel.WorkspacePropertyEditRequested += VmOnWorkspacePropertyEditRequested;
             ViewModel.RequestSelectionBoxUpdate += VmOnRequestSelectionBoxUpdate;
+            ViewModel.Loaded();
         }
 
         private void VmOnWorkspacePropertyEditRequested(WorkspaceModel workspace)
