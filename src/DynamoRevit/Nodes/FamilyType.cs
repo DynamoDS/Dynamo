@@ -12,6 +12,7 @@ namespace Dynamo.Nodes
     [NodeName("Select Family Type")]
     [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
     [NodeDescription("Select a Family Type from a drop down list.")]
+    [NodeSearchTags("type")]
     [IsInteractive(true)]
     public class FamilyTypeSelector : DropDrownBase
     {
