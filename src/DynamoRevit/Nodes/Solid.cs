@@ -333,7 +333,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Revolve")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_SOLID_CREATE)]
-    [NodeDescription("Creates a solid by revolving closed curve loops lying in xy plane of Transform.")]
+    [NodeDescription("Creates a solid by revolving closed curve loops lying in xy plane a given coordinate system.")]
     public class CreateRevolvedGeometry : GeometryBase
     {
         public CreateRevolvedGeometry()

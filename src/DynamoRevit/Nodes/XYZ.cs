@@ -308,7 +308,7 @@ namespace Dynamo.Nodes
     [NodeName("XYZ from Reference Point")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_POINT_CREATE)]
     [NodeDescription("Extracts an XYZ from a Reference Point.")]
-    [NodeSearchTags("xyz", "derive", "from", "reference", "point")]
+    [NodeSearchTags("derive", "reference")]
     public class XyzFromReferencePoint : GeometryBase
     {
         public XyzFromReferencePoint()
@@ -502,10 +502,10 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Unit X")]
+    [NodeName("X Axis")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_POINT_CREATE)]
     [NodeDescription("Creates an XYZ representing the X basis (1,0,0).")]
-    [NodeSearchTags("axis", "xyz")]
+    [NodeSearchTags("unit", "xyz")]
     public class XyzBasisX : GeometryBase
     {
         public XyzBasisX()
@@ -522,10 +522,10 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Unit Y")]
+    [NodeName("Y Axis")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_POINT_CREATE)]
     [NodeDescription("Creates an XYZ representing the Y basis (0,1,0).")]
-    [NodeSearchTags("axis", "xyz")]
+    [NodeSearchTags("unit", "xyz")]
     public class XyzBasisY : GeometryBase
     {
         public XyzBasisY()
@@ -542,10 +542,10 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Unit Z")]
+    [NodeName("Z Axis")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_POINT_CREATE)]
     [NodeDescription("Creates an XYZ representing the Z basis (0,0,1).")]
-    [NodeSearchTags("axis", "xyz")]
+    [NodeSearchTags("unit", "xyz")]
     public class XyzBasisZ : GeometryBase
     {
         public XyzBasisZ()
@@ -788,7 +788,7 @@ namespace Dynamo.Nodes
     [NodeName("XYZ Grid")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_POINT_GRID)]
     [NodeDescription("Creates a grid of XYZs.")]
-    [NodeSearchTags("point", "array", "collection", "field")]
+    [NodeSearchTags("array", "collection", "field")]
     public class ReferencePtGrid : GeometryBase
     {
         public ReferencePtGrid()
