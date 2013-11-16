@@ -1,4 +1,5 @@
 ﻿using Dynamo.Models;
+using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 
 using Value = Dynamo.FScheme.Value;
@@ -40,6 +41,8 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_TIME)]
     public class ExecuteInterval : NodeWithOneOutput
     {
+        private Thread delayThread;
+
         public ExecuteInterval()
         {
             InPortData.Add(new PortData("ms", "Delay in milliseconds", typeof(Value.Number)));
@@ -47,14 +50,6 @@ namespace Dynamo.Nodes
 
             RegisterAllPorts();
         }
-
-        Thread delayThread;
-
-        //protected override void OnRunCancelled()
-        //{
-        //    if (delayThread != null && delayThread.IsAlive)
-        //        delayThread.Abort();
-        //}
 
         public override Value Evaluate(FSharpList<Value> args)
         {
@@ -67,7 +62,7 @@ namespace Dynamo.Nodes
                     {
                         Thread.Sleep(delay);
 
-                        if (Controller.RunCancelled)
+                        if (Controller == null || Controller.RunCancelled)
                             return;
 
                         while (Controller.Running)
