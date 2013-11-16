@@ -88,13 +88,6 @@ namespace Dynamo.Views
 
         void dynWorkspaceView_Loaded(object sender, RoutedEventArgs e)
         {
-            zoomAndPanControl = new ZoomAndPanControl(DataContext as WorkspaceViewModel);
-            Canvas.SetRight(zoomAndPanControl, 10);
-            Canvas.SetTop(zoomAndPanControl, 10);
-            Canvas.SetZIndex(zoomAndPanControl, 8000);
-            zoomAndPanControl.Focusable = false;
-            outerCanvas.Children.Add(zoomAndPanControl);
-
             /*
             // Add EndlessGrid
             endlessGrid = new EndlessGrid(outerCanvas);
@@ -182,7 +175,6 @@ namespace Dynamo.Views
         /// <param name="e"></param>
         void dynWorkspaceView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            ViewModel.Loaded();
             ViewModel.CurrentOffsetChanged += new PointEventHandler(vm_CurrentOffsetChanged);
             ViewModel.ZoomChanged += new ZoomEventHandler(vm_ZoomChanged);
             ViewModel.RequestZoomToViewportCenter += new ZoomEventHandler(vm_ZoomAtViewportCenter);
@@ -194,6 +186,15 @@ namespace Dynamo.Views
             ViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
             ViewModel.WorkspacePropertyEditRequested += VmOnWorkspacePropertyEditRequested;
             ViewModel.RequestSelectionBoxUpdate += VmOnRequestSelectionBoxUpdate;
+            ViewModel.Loaded();
+
+            outerCanvas.Children.Remove(zoomAndPanControl);
+            zoomAndPanControl = new ZoomAndPanControl(DataContext as WorkspaceViewModel);
+            Canvas.SetRight(zoomAndPanControl, 10);
+            Canvas.SetTop(zoomAndPanControl, 10);
+            Canvas.SetZIndex(zoomAndPanControl, 8000);
+            zoomAndPanControl.Focusable = false;
+            outerCanvas.Children.Add(zoomAndPanControl);
         }
 
         private void VmOnWorkspacePropertyEditRequested(WorkspaceModel workspace)
