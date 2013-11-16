@@ -57,6 +57,11 @@ namespace Dynamo.Nodes
     [NodeDescription("Listens for data from the web using a UDP port")]
     public class UdpListener : NodeWithOneOutput
     {
+        UdpClient listener;
+        IPEndPoint groupEP;
+        public string UDPResponse = "";
+        int listenPort;
+
         public UdpListener()
         {
             InPortData.Add(new PortData("interval", "How often to query (execution interval).", typeof(Value.Number)));
@@ -66,37 +71,27 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        private delegate void LogDelegate(string msg);
-        private delegate void UDPListening();
-
-        public string UDPResponse = "";
-        int listenPort;
-        //bool UDPInitialized = false;
-
         public class UdpState
         {
             public IPEndPoint e;
             public UdpClient u;
-
         }
 
         public static bool messageReceived = false;
 
         public void ReceiveCallback(IAsyncResult ar)
         {
-            LogDelegate log = new LogDelegate(DynamoLogger.Instance.Log);
-
             try
             {
-                UdpClient u = (UdpClient)((UdpState)(ar.AsyncState)).u;
-                IPEndPoint e = (IPEndPoint)((UdpState)(ar.AsyncState)).e;
+                var u = (UdpClient)((UdpState)(ar.AsyncState)).u;
+                var e = (IPEndPoint)((UdpState)(ar.AsyncState)).e;
 
-                Byte[] receiveBytes = u.EndReceive(ar, ref e);
-                string receiveString = Encoding.ASCII.GetString(receiveBytes);
+                var receiveBytes = u.EndReceive(ar, ref e);
+                var receiveString = Encoding.ASCII.GetString(receiveBytes);
 
                 UDPResponse = Encoding.ASCII.GetString(receiveBytes, 0, receiveBytes.Length);
-                string verboseLog = "Received broadcast from " + e.ToString() + ":\n" + UDPResponse + "\n";
-                log(verboseLog);
+                var verboseLog = "Received broadcast from " + e.ToString() + ":\n" + UDPResponse + "\n";
+                DynamoLogger.Instance.Log(verboseLog);
 
                 Console.WriteLine("Received: {0}", receiveString);
                 messageReceived = true;
@@ -104,48 +99,39 @@ namespace Dynamo.Nodes
             catch (Exception e)
             {
                 UDPResponse = "";
-                log(e.ToString());
+                DynamoLogger.Instance.Log(e.ToString());
             }
         }
 
         private void ListenOnUDP()
         {
-
-            LogDelegate log = new LogDelegate(DynamoLogger.Instance.Log);
-
             // UDP sample from http://stackoverflow.com/questions/8274247/udp-listener-respond-to-client
-            UdpClient listener;
-            IPEndPoint groupEP;
-            listener = new UdpClient(listenPort);
-            groupEP = new IPEndPoint(IPAddress.Any, listenPort);
+
+            if (listener == null)
+            {
+                listener = new UdpClient(listenPort);
+                groupEP = new IPEndPoint(IPAddress.Any, listenPort);
+            }
 
             try
             {
+                if (messageReceived != false) return;
+                var s = new UdpState {e = groupEP, u = listener};
 
-                if (messageReceived == false)
-                {
-
-                    UdpState s = new UdpState();
-                    s.e = groupEP;
-                    s.u = listener;
-
-
-
-                    log("Waiting for broadcast");
-                    listener.BeginReceive(new AsyncCallback(ReceiveCallback), s);
-                    //byte[] bytes = listener.Receive(ref groupEP);
-                }
+                DynamoLogger.Instance.Log("Waiting for broadcast");
+                listener.BeginReceive(new AsyncCallback(ReceiveCallback), s);
             }
             catch (Exception e)
             {
                 UDPResponse = "";
-                log(e.ToString());
+                DynamoLogger.Instance.Log(e.ToString());
             }
             finally
             {
                 if (messageReceived == true)
                 {
                     listener.Close();
+                    listener = null;
                     messageReceived = false;
                 }
             }
@@ -155,10 +141,11 @@ namespace Dynamo.Nodes
         {
             listenPort = (int)((Value.Number)args[1]).Item; // udp port to listen to
 
-            if (((Value.Number)args[0]).Item == 1) // if exec node has pumped
-            {
-                DispatchOnUIThread(ListenOnUDP);
-            }
+            //if (((Value.Number)args[0]).Item == 1) // if exec node has pumped
+            //{
+            //    DispatchOnUIThread(ListenOnUDP);
+            //}
+            ListenOnUDP();
 
             return Value.NewString(UDPResponse);
         }
