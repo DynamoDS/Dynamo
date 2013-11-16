@@ -18,6 +18,7 @@ namespace Dynamo.Nodes
         public WebRequest()
         {
             InPortData.Add(new PortData("url", "A URL to query.", typeof(Value.String)));
+            InPortData.Add(new PortData("interval", "How often to query (execution interval).", typeof(Value.Container)));
             OutPortData.Add(new PortData("str", "The string returned from the web request.", typeof(Value.String)));
             RegisterAllPorts();
         }
@@ -28,18 +29,18 @@ namespace Dynamo.Nodes
 
             //send a webrequest to the URL
             // Initialize the WebRequest.
-            System.Net.WebRequest myRequest = System.Net.WebRequest.Create(url);
+            var myRequest = System.Net.WebRequest.Create(url);
 
             // Return the response. 
-            WebResponse myResponse = myRequest.GetResponse();
+            var myResponse = myRequest.GetResponse();
 
-            Stream dataStream = myResponse.GetResponseStream();
+            var dataStream = myResponse.GetResponseStream();
 
             // Open the stream using a StreamReader for easy access.
-            StreamReader reader = new StreamReader(dataStream);
+            var reader = new StreamReader(dataStream);
 
             // Read the content.
-            string responseFromServer = reader.ReadToEnd();
+            var responseFromServer = reader.ReadToEnd();
 
             reader.Close();
 
@@ -58,8 +59,8 @@ namespace Dynamo.Nodes
     {
         public UdpListener()
         {
-            InPortData.Add(new PortData("exec", "Execution Interval", typeof(Value.Number)));
-            InPortData.Add(new PortData("udp port", "A UDP port to listen to.", typeof(object)));
+            InPortData.Add(new PortData("interval", "How often to query (execution interval).", typeof(Value.Number)));
+            InPortData.Add(new PortData("port", "A UDP port to listen to.", typeof(object)));
             OutPortData.Add(new PortData("str", "The string returned from the web request.", typeof(Value.String)));
 
             RegisterAllPorts();
@@ -153,7 +154,6 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             listenPort = (int)((Value.Number)args[1]).Item; // udp port to listen to
-
 
             if (((Value.Number)args[0]).Item == 1) // if exec node has pumped
             {
