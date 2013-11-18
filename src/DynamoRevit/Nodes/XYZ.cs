@@ -747,7 +747,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("a", "XYZ A.", typeof(FScheme.Value.Container)));
             InPortData.Add(new PortData("b", "XYZ B.", typeof(FScheme.Value.Container)));
-            OutPortData.Add(new PortData("xyz", "The dot product of vectors A and B. ", typeof(FScheme.Value.Container)));
+            OutPortData.Add(new PortData("xyz", "The dot product of vectors A and B. ", typeof(FScheme.Value.Number)));
 
             RegisterAllPorts();
         }
@@ -757,7 +757,7 @@ namespace Dynamo.Nodes
             XYZ a = (XYZ)((FScheme.Value.Container)args[0]).Item;
             XYZ b = (XYZ)((FScheme.Value.Container)args[1]).Item;
 
-            return FScheme.Value.NewContainer(a.DotProduct(b));
+            return FScheme.Value.NewNumber(a.DotProduct(b));
         }
     }
 
