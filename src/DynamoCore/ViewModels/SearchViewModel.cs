@@ -891,7 +891,8 @@ namespace Dynamo.ViewModels
             SearchDictionary.Add(searchEle, searchEle.Name);
             if (tags.Count > 0)
             {
-                SearchDictionary.Add(searchEle, tags);
+                // reduce the weight in search by adding white space
+                tags.ForEach(x => SearchDictionary.Add(searchEle, x + "++++++++"));
             }
             SearchDictionary.Add(searchEle, description);
 

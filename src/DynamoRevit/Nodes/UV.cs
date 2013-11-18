@@ -57,7 +57,7 @@ namespace Dynamo.Nodes
     [NodeName("UV Grid")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_SURFACE_UV)]
     [NodeDescription("Creates a grid of UVs from a domain.")]
-    [NodeSearchTags("point", "array", "collection", "field", "uv")]
+    [NodeSearchTags("points", "array", "collection", "field", "uv")]
     public class UvGrid : NodeWithOneOutput
     {
         public UvGrid()
@@ -103,8 +103,8 @@ namespace Dynamo.Nodes
 
     [NodeName("UV Random")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_SURFACE_UV)]
-    [NodeDescription("Creates a grid of UVs froma domain.")]
-    [NodeSearchTags("point", "array", "collection", "field")]
+    [NodeDescription("Creates a random collection of UVs from a domain.")]
+    [NodeSearchTags("field")]
     public class UvRandom : NodeWithOneOutput
     {
         public UvRandom()

@@ -17,7 +17,7 @@ namespace Dynamo.Nodes
     [NodeName("Transform Curve")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_TRANSFORM_APPLY)]
     [NodeDescription("Returns the curve (c) transformed by the transform (t).")]
-    [NodeSearchTags("move", "transform", "curve", "line")]
+    [NodeSearchTags("move", "line")]
     public class CurveTransformed : GeometryBase
     {
         public CurveTransformed()
@@ -41,10 +41,10 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Polyline")]
+    [NodeName("Lines Through Points")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_CREATE)]
     [NodeDescription("Create a series of lines through a list of points.")]
-    [NodeSearchTags("line", "through", "passing", "thread")]
+    [NodeSearchTags("passing", "thread")]
     public class CurvesThroughPoints : GeometryBase
     {
         public CurvesThroughPoints()
@@ -724,7 +724,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Curve Derivatives")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_QUERY)]
-    [NodeDescription("Returns a transform describing the curve at the parameter.")]
+    [NodeDescription("Returns the derivatives of the curve at the parameter.")]
     public class ComputeCurveDerivatives : GeometryBase
     {
         public ComputeCurveDerivatives()
