@@ -284,7 +284,7 @@ namespace Dynamo.Nodes
 
                 if (!string.IsNullOrEmpty(assembly))
                 {
-                    EngineController.Instance.ImportLibraries(new List<string> { assembly });
+                    dynSettings.Controller.EngineController.ImportLibraries(new List<string> { assembly });
                 }
 
                 Definition = new FunctionItem(assembly, category, className, name, displayName, type, arguments, returnKeys);
@@ -316,7 +316,7 @@ namespace Dynamo.Nodes
                 var classNode = new IdentifierNode(Definition.ClassName);
                 functionCall = CoreUtils.GenerateCallDotNode(classNode,
                     functionCall as FunctionCallNode,
-                    EngineController.Instance.LiveRunnerCore);
+                    dynSettings.Controller.EngineController.LiveRunnerCore);
             }
             else if (IsInstanceMember())
             {
@@ -329,7 +329,7 @@ namespace Dynamo.Nodes
                 functionCall = AstFactory.BuildFunctionCall(function, inputAstNodes);
                 functionCall = CoreUtils.GenerateCallDotNode(thisNode,
                     functionCall as FunctionCallNode,
-                    EngineController.Instance.LiveRunnerCore);
+                    dynSettings.Controller.EngineController.LiveRunnerCore);
             }
 
             var resultAst = new List<AssociativeNode>
