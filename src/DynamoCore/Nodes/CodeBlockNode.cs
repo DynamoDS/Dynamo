@@ -259,7 +259,10 @@ namespace Dynamo.Nodes
                 resultNodes.AddRange(codeBlock.Body);
 
             foreach (var stmnt in codeStatements)
-                resultNodes.Add(stmnt.AstNode as ProtoCore.AST.AssociativeAST.AssociativeNode);
+            {
+                var astNode = ProtoCore.Utils.NodeUtils.Clone(stmnt.AstNode);
+                resultNodes.Add(astNode as ProtoCore.AST.AssociativeAST.AssociativeNode);
+            }
 
             return resultNodes;
         }
