@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Autodesk.Revit.DB;
+using Dynamo.FSchemeInterop;
 using Dynamo.Models;
 using Dynamo.Revit;
 using Dynamo.Utilities;
@@ -350,4 +352,62 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Curve-Plane Intersection")]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_INTERSECT)]
+    [NodeDescription("Calculates the approximate intersection(s) of a curve and a plane.")]
+    public class CurvePlaneIntersection : GeometryBase
+    {
+        public CurvePlaneIntersection()
+        {
+            InPortData.Add(new PortData("curve", "The curve to intersect.", typeof(Value.Container)));
+            InPortData.Add(new PortData("plane", "The plane to intersect.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("point", "The location of intersection.", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var curve = (Curve) ((Value.Container) args[0]).Item;
+            var plane = (Autodesk.Revit.DB.Plane) ((Value.Container) args[1]).Item;
+
+            var curvePts = curve.Tessellate();
+            var xSects = new List<XYZ>();
+
+            for (int i = 0; i < curvePts.Count - 1; ++i)
+            {
+                var a = curvePts[i];
+                var b = curvePts[i + 1];
+                var xsect = linePlaneIntersection(plane, a, b);
+                if (xsect != null)
+                {
+                    xSects.Add(xsect);
+                }
+            }
+
+            return Value.NewList(Utils.SequenceToFSharpList(xSects.Select(Value.NewContainer)));
+        }
+
+        private XYZ linePlaneIntersection(Autodesk.Revit.DB.Plane plane, XYZ p0, XYZ p1)
+        {
+            //http://www.thepolygoners.com/tutorials/lineplane/lineplane.html
+            
+            var v = (p1 - p0);
+            var n = plane.Normal;
+            var p2 = plane.Origin;
+            var denom = n.DotProduct(v);
+
+            //line is parallel to plane
+            if (denom == 0.0)
+            {
+                return null;
+            }
+
+            var t = n.DotProduct(p2 - p0)/denom;
+            if(t >= 0 && t<=1)
+                return p0 + v.Multiply(t);
+
+            return null;
+        }
+    }
 }

@@ -181,7 +181,7 @@ namespace Dynamo.Nodes
                 InPortData.Add(new PortData(p.Item1, "variable", p.Item2));
             }
 
-            RegisterInputs();
+            RegisterInputPorts();
             ValidateConnections();
         }
 

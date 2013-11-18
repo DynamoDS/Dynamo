@@ -33,7 +33,11 @@ namespace DSRevitNodes
 
         #region Private constructors
 
-        internal DSFamilySymbol(Autodesk.Revit.DB.FamilySymbol symbol)
+        /// <summary>
+        /// Private constructor for build a DSFamilySymbol
+        /// </summary>
+        /// <param name="symbol"></param>
+        private DSFamilySymbol(Autodesk.Revit.DB.FamilySymbol symbol)
         {
             InternalSetFamilySymbol(symbol);
         }
@@ -75,7 +79,7 @@ namespace DSRevitNodes
         {
             get
             {
-                return new DSFamily(this.InternalFamilySymbol.Family);
+                return DSFamily.FromExisting(this.InternalFamilySymbol.Family, true);
             }
         }
 
@@ -139,6 +143,24 @@ namespace DSRevitNodes
 
         #endregion
 
+        #region Internal static constructors
+
+        /// <summary>
+        /// Obtain a FamilySymbol by selection. 
+        /// </summary>
+        /// <param name="familySymbol"></param>
+        /// <param name="isRevitOwned"></param>
+        /// <returns></returns>
+        internal static DSFamilySymbol FromExisting(Autodesk.Revit.DB.FamilySymbol familySymbol, bool isRevitOwned)
+        {
+            return new DSFamilySymbol(familySymbol)
+            {
+                IsRevitOwned = isRevitOwned
+            };
+        }
+
+        #endregion
+
         #region ToString override
 
         public override string ToString()
@@ -148,6 +170,8 @@ namespace DSRevitNodes
         }
 
         #endregion
+
+
 
     }
 }

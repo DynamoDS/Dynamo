@@ -21,8 +21,10 @@ namespace NodeDumper
                 return;
             }
 
+            var assDir = new FileInfo(Assembly.GetExecutingAssembly().Location);
             //find if the directory specified exists
-            var nodesDir = args[0];
+            var nodesDir = Path.Combine(assDir.Directory.FullName, args[0]);
+            Console.WriteLine(nodesDir);
             if (!Directory.Exists(nodesDir))
             {
                 Console.WriteLine("The specified directory does not exist.");

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using Dynamo.FSchemeInterop;
 using System.Windows.Media;
@@ -82,7 +83,7 @@ namespace Dynamo.Models
 
         public int Index
         {
-            get { return owner.GetPortIndex(this, out portType); }
+            get { return owner.GetPortIndexAndType(this, out portType); }
         }
 
         public bool IsConnected
@@ -204,6 +205,22 @@ namespace Dynamo.Models
             UsingDefaultValue = false;
             DefaultValueEnabled = false;
             MarginThickness = new Thickness(0);
+        }
+
+        /// <summary>
+        /// Deletes all connectors attached to this PortModel.
+        /// </summary>
+        public void DestroyConnectors()
+        {
+            if (Owner == null)
+                return;
+
+            while (Connectors.Any())
+            {
+                ConnectorModel connector = Connectors[0];
+                Owner.WorkSpace.Connectors.Remove(connector);
+                connector.NotifyConnectedPortsOfDeletion();
+            }
         }
 
         public void Connect(ConnectorModel connector)

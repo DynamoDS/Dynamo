@@ -31,7 +31,16 @@ namespace DSRevitNodes
 
         #endregion
 
-        #region Private constructor 
+        #region Private constructors
+
+        /// <summary>
+        /// Construct a model curve from the document.  The result is Dynamo owned
+        /// </summary>
+        /// <param name="curve"></param>
+        private DSModelCurve(Autodesk.Revit.DB.ModelCurve curve)
+        {
+            InternalSetModelCurve(curve);
+        }
 
         // PB: This implementation borrows the somewhat risky notions from the original Dynamo
         // implementation.  In short, it has the ability to infer a sketch plane,
@@ -41,7 +50,7 @@ namespace DSRevitNodes
         /// Internal constructor for ModelCurve
         /// </summary>
         /// <param name="c"></param>
-        internal DSModelCurve(Autodesk.Revit.DB.Curve c)
+        private DSModelCurve(Autodesk.Revit.DB.Curve c)
         {
 
             //Phase 1 - Check to see if the object exists and should be rebound
@@ -166,6 +175,11 @@ namespace DSRevitNodes
 
         #region Public constructor
 
+        /// <summary>
+        /// Construct a Revit ModelCurve element from an existing curve
+        /// </summary>
+        /// <param name="curve"></param>
+        /// <returns></returns>
         public static DSModelCurve ByPlanarCurve(DSCurve curve)
         {
             if (curve == null)
@@ -174,6 +188,16 @@ namespace DSRevitNodes
             }
 
             return new DSModelCurve(curve.InternalCurve);
+        }
+
+        /// <summary>
+        /// Construct a Revit ModelCurve element from an existing element.  The result is Dynamo owned.
+        /// </summary>
+        /// <param name="modelCurve"></param>
+        /// <returns></returns>
+        internal static DSModelCurve FromExisting(Autodesk.Revit.DB.ModelCurve modelCurve)
+        {
+            return new DSModelCurve(modelCurve);
         }
 
         #endregion

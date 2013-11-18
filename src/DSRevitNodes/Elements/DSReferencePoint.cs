@@ -36,12 +36,14 @@ namespace DSRevitNodes
         #region Private constructors
 
         /// <summary>
-        /// Internal constructor for wrapping a ReferencePoint
+        /// Internal constructor for wrapping a ReferencePoint. The returned
+        /// object is Revit owned
         /// </summary>
         /// <param name="pt"></param>
-        internal DSReferencePoint(Autodesk.Revit.DB.ReferencePoint refPt)
+        private DSReferencePoint(Autodesk.Revit.DB.ReferencePoint refPt)
         {
             InternalSetReferencePoint(refPt);
+            IsRevitOwned = true;
         }
 
         /// <summary>
@@ -171,7 +173,7 @@ namespace DSRevitNodes
         /// </summary>
         /// <param name="pt"></param>
         /// <returns></returns>
-        static DSReferencePoint ByPoint(Point pt)
+        public static DSReferencePoint ByPoint(Point pt)
         {
             return new DSReferencePoint(pt.X, pt.Y, pt.Z);
         }
@@ -208,6 +210,24 @@ namespace DSRevitNodes
         static DSReferencePoint ByPointVectorDistance(Point p, Vector vec, double distance)
         {
             throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region Internal static constructors 
+
+        /// <summary>
+        /// Create a Reference Point from a user selected Element.
+        /// </summary>
+        /// <param name="pt"></param>
+        /// <param name="isRevitOwned"></param>
+        /// <returns></returns>
+        internal static DSReferencePoint FromExisting(Autodesk.Revit.DB.ReferencePoint pt, bool isRevitOwned)
+        {
+            return new DSReferencePoint(pt)
+            {
+                IsRevitOwned = isRevitOwned
+            };
         }
 
         #endregion

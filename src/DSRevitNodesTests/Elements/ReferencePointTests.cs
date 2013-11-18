@@ -16,5 +16,4 @@ namespace DSRevitNodesTests
             Assert.AreEqual(23.1, pt.Z);
         }
     }
-
 }
