@@ -884,9 +884,9 @@ namespace Dynamo.Utilities
                 #endregion
 
                 #region ReferencePoint
-                else if (item.GetType() == typeof(ReferencePoint))
+                else if (item.GetType() == typeof(Autodesk.Revit.DB.ReferencePoint))
                 {
-                    ReferencePoint a = (ReferencePoint)item;
+                    Autodesk.Revit.DB.ReferencePoint a = (Autodesk.Revit.DB.ReferencePoint)item;
 
                     if (output == typeof(XYZ))
                     {

@@ -40,7 +40,7 @@ namespace Dynamo.Utilities
                 HasUnsavedChanges = true
             };
 
-            var newNodeDefinition = new FunctionDefinition(Guid.NewGuid())
+            var newNodeDefinition = new CustomNodeDefinition(Guid.NewGuid())
             {
                 WorkspaceModel = newNodeWorkspace
             };

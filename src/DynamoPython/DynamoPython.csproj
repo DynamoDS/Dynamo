@@ -45,7 +45,7 @@
       <HintPath>..\..\bin\AnyCPU\Debug\FSchemeInterop.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="FSharp.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="FSharp.Core"/>
     <Reference Include="ICSharpCode.AvalonEdit, Version=4.1.0.7916, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\avalonEdit\ICSharpCode.AvalonEdit.dll</HintPath>
@@ -87,8 +87,8 @@
     <Compile Include="Converters.cs" />
     <Compile Include="dynPython.cs" />
     <Compile Include="dynPythonEngine.cs" />
-    <Compile Include="dynScriptEditWindow.xaml.cs">
-      <DependentUpon>dynScriptEditWindow.xaml</DependentUpon>
+    <Compile Include="ScriptEditWindow.xaml.cs">
+      <DependentUpon>ScriptEditWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IronPythonCompletionData.cs" />
@@ -106,7 +106,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="dynScriptEditWindow.xaml">
+    <Page Include="ScriptEditWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

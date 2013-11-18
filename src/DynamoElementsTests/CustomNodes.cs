@@ -428,5 +428,21 @@ namespace Dynamo.Tests
             Assert.IsInstanceOf<FScheme.Value.List>((restWatch.OldValue as FScheme.Value.List).Item[0]);
             Assert.IsTrue(((restWatch.OldValue as FScheme.Value.List).Item[0] as FScheme.Value.List).Item.IsEmpty);
         }
+
+        //[Test]
+        //public void CanGetDependenciesFromFunctionDefinition()
+        //{
+
+
+
+        //    if (CustomNodeDefinition.WorkspaceModel.Nodes.Any(x => x is RevitTransactionNode)
+        //        || CustomNodeDefinition.Dependencies.Any(d => d.WorkspaceModel.Nodes.Any(x => x is RevitTransactionNode)))
+        //    {
+        //        return new FunctionWithRevit(inputs, outputs, CustomNodeDefinition);
+        //    }
+        //    return base.CreateFunction(inputs, outputs, CustomNodeDefinition);
+        //}
+
+
     }
 }

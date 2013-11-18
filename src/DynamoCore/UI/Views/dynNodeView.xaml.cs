@@ -114,13 +114,12 @@ namespace Dynamo.Controls
             // 
             // ViewModel = this.DataContext as NodeViewModel;
 
-            ViewModel.NodeLogic.DispatchedToUI += new DispatchedToUIThreadHandler(NodeLogic_DispatchedToUI);
-            ViewModel.RequestShowNodeHelp += new NodeViewModel.NodeHelpEventHandler(ViewModel_RequestShowNodeHelp);
-            ViewModel.RequestShowNodeRename += new EventHandler(ViewModel_RequestShowNodeRename);
-            ViewModel.RequestsSelection += new EventHandler(ViewModel_RequestsSelection);
+            ViewModel.NodeLogic.DispatchedToUI += NodeLogic_DispatchedToUI;
+            ViewModel.RequestShowNodeHelp += ViewModel_RequestShowNodeHelp;
+            ViewModel.RequestShowNodeRename += ViewModel_RequestShowNodeRename;
+            ViewModel.RequestsSelection += ViewModel_RequestsSelection;
 
-            ViewModel.NodeLogic.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(NodeLogic_PropertyChanged);
-            
+            ViewModel.NodeLogic.PropertyChanged += NodeLogic_PropertyChanged;
         }
 
         void NodeLogic_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -207,8 +206,8 @@ namespace Dynamo.Controls
             }
 
             //set the state using the view model's command
-            if (ViewModel.SetStateCommand.CanExecute(ElementState.DEAD))
-                ViewModel.SetStateCommand.Execute(ElementState.DEAD);
+            if (ViewModel.SetStateCommand.CanExecute(ElementState.Dead))
+                ViewModel.SetStateCommand.Execute(ElementState.Dead);
         }
 
         internal void EnableInteraction()

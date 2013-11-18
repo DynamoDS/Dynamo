@@ -20,6 +20,7 @@ using Octree.OctreeSearch;
 using Octree.Tools.Point;
 using Double = System.Double;
 using String = System.String;
+using Dynamo.DSEngine;
 
 //testing to see if github integration works.
 
@@ -178,16 +179,19 @@ namespace Dynamo
 
         protected VisualizationManager()
         {
-            dynSettings.Controller.DynamoModel.ConnectorDeleted += new ConnectorHandler(DynamoModel_ConnectorDeleted);
-            dynSettings.Controller.EvaluationCompleted += new EventHandler(Controller_EvaluationCompleted);
-            dynSettings.Controller.RequestsRedraw += new EventHandler(Controller_RequestsRedraw);
-            DynamoSelection.Instance.Selection.CollectionChanged += new NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
-            dynSettings.Controller.DynamoModel.ModelCleared += new EventHandler(DynamoModel_ModelCleared);
-            dynSettings.Controller.DynamoModel.CleaningUp += new CleanupHandler(DynamoModel_CleaningUp);
-            dynSettings.Controller.DynamoModel.NodeDeleted += new NodeHandler(DynamoModel_NodeDeleted);
+            dynSettings.Controller.DynamoModel.ConnectorDeleted += DynamoModel_ConnectorDeleted;
+            dynSettings.Controller.EvaluationCompleted += Controller_EvaluationCompleted;
+            dynSettings.Controller.RequestsRedraw += Controller_RequestsRedraw;
+            DynamoSelection.Instance.Selection.CollectionChanged += Selection_CollectionChanged;
+            dynSettings.Controller.DynamoModel.ModelCleared += DynamoModel_ModelCleared;
+            dynSettings.Controller.DynamoModel.CleaningUp += DynamoModel_CleaningUp;
+            
+            dynSettings.Controller.DynamoModel.NodeDeleted += DynamoModel_NodeDeleted;
 
             Visualizers.Add(typeof(GraphicItem), VisualizationManagerASM.DrawLibGGraphicItem);
-
+#if USE_DSENGINE
+            Visualizers.Add(typeof(Autodesk.DesignScript.Interfaces.IGraphicItem), VisualizationManagerDSGeometry.DrawDesignScriptGraphicItem);
+#endif
             octree = new Octree.OctreeSearch.Octree(10000,-10000,10000,-10000,10000,-10000,10000000);
         }
 
@@ -330,7 +334,7 @@ namespace Dynamo
             if (e.PropertyName == "State")
             {
                 var node = sender as NodeModel;
-                if (node.State == ElementState.ERROR)
+                if (node.State == ElementState.Error)
                 {
                     //dump the visualization
                     if (Visualizations.ContainsKey(node.GUID.ToString()))
@@ -719,6 +723,24 @@ namespace Dynamo
         /// <returns></returns>
         public static Dictionary<NodeModel,Dictionary<string,object>> GetAllDrawablesInModel()
         {
+#if USE_DSENGINE
+            var drawables = new Dictionary<NodeModel, Dictionary<string, object>>();
+            foreach (var node in dynSettings.Controller.DynamoModel.Nodes)
+            {
+                string varName = node.VariableToPreview;
+                var graphItems = EngineController.Instance.GetGraphicItems(varName);
+                if (graphItems != null)
+                {
+                    var drawableItems = new Dictionary<string, object>();
+                    for (int i = 0; i < graphItems.Count(); ++i)
+                    {
+                        drawableItems.Add(i.ToString(), graphItems[i]);
+                    }
+                    drawables.Add(node, drawableItems);
+                }
+            }
+            return drawables;
+#else
             //get a list of tuples node,drawables
             var nodeTuples = dynSettings.Controller.DynamoModel.Nodes
                                         .Where(x => x.OldValue != null)
@@ -734,6 +756,7 @@ namespace Dynamo
             var drawables = nodeTuples.Where(x=>x.Item2.Count>0).ToDictionary(tuple => tuple.Item1, tuple => tuple.Item2);
 
             return drawables;
+#endif
         }
 
         /// <summary>

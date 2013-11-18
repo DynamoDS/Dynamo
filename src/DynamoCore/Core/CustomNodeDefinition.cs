@@ -1,0 +1,489 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text;
+using Dynamo.DSEngine;
+using Dynamo.FSchemeInterop;
+using Dynamo.FSchemeInterop.Node;
+using Dynamo.Models;
+using Dynamo.Nodes;
+using Dynamo.Utilities;
+using Microsoft.Practices.Prism.ViewModel;
+using ProtoCore;
+using ProtoCore.AST.AssociativeAST;
+using Type = ProtoCore.Type;
+
+namespace Dynamo
+{
+    public class CustomNodeDefinition
+    {
+        internal CustomNodeDefinition() : this(Guid.NewGuid()) { }
+
+        internal CustomNodeDefinition(Guid id)
+        {
+            FunctionId = id;
+        }
+
+        public string Name
+        {
+            get { return FunctionId.ToString(); }
+        }
+
+        public Guid FunctionId { get; internal set; }
+        public CustomNodeWorkspaceModel WorkspaceModel { get; internal set; }
+        public IEnumerable<string> Parameters { get; internal set; }
+        public IEnumerable<string> ReturnKeys { get; internal set; }
+
+        public string DisplayName
+        {
+            get { return WorkspaceModel.Name; }
+        }
+
+        #region Dependencies
+
+        public IEnumerable<CustomNodeDefinition> Dependencies
+        {
+            get
+            {
+                return FindAllDependencies(new HashSet<CustomNodeDefinition>());
+            }
+        }
+
+        public IEnumerable<CustomNodeDefinition> DirectDependencies
+        {
+            get
+            {
+                return FindDirectDependencies();
+            }
+        }
+
+        private IEnumerable<CustomNodeDefinition> FindAllDependencies(HashSet<CustomNodeDefinition> dependencySet)
+        {
+            var query = DirectDependencies.Where(def => !dependencySet.Contains(def));
+
+            foreach (var definition in query)
+            {
+                yield return definition;
+                dependencySet.Add(definition);
+                foreach (var def in definition.FindAllDependencies(dependencySet))
+                    yield return def;
+            }
+        }
+
+        private IEnumerable<CustomNodeDefinition> FindDirectDependencies()
+        {
+            return WorkspaceModel.Nodes
+                            .OfType<Function>()
+                            .Select(node => node.Definition)
+                            .Where(def => def != this)
+                            .Distinct();
+        }
+
+        #endregion
+
+        #region FScheme Compilation
+        
+        public bool RequiresRecalc { get; internal set; }
+
+        public void CompileAndAddToEnvironment(ExecutionEnvironment env)
+        {
+            var compiledFunction = Compile();
+
+            env.DefineSymbol( FunctionId.ToString(),compiledFunction);
+        }
+
+        public FScheme.Expression Compile()
+        {
+            IEnumerable<string> inputNames = null;
+            IEnumerable<string> outputNames = null;
+
+            // Get the internal nodes for the function
+            WorkspaceModel functionWorkspace = WorkspaceModel;
+
+            #region Find outputs
+
+            // Find output elements for the node
+            List<Output> outputs = functionWorkspace.Nodes.OfType<Output>().ToList();
+
+            var topMost = new List<Tuple<int, NodeModel>>();
+
+            // if we found output nodes, add select their inputs
+            // these will serve as the function output
+            if (outputs.Any())
+            {
+                topMost.AddRange(
+                    outputs.Where(x => x.HasInput(0)).Select(x => x.Inputs[0]));
+
+                outputNames = outputs.Select(x => x.Symbol);
+            }
+            else
+            {
+                // if there are no explicitly defined output nodes
+                // get the top most nodes and set THEM as the output
+                IEnumerable<NodeModel> topMostNodes = functionWorkspace.GetTopMostNodes();
+
+                NodeModel infinite = null;
+
+                var outNames = new List<string>();
+
+                foreach (NodeModel topNode in topMostNodes)
+                {
+                    if (topNode is Function && (topNode as Function).Definition == this)
+                    {
+                        infinite = topNode;
+                        continue;
+                    }
+
+                    foreach (int output in Enumerable.Range(0, topNode.OutPortData.Count))
+                    {
+                        if (!topNode.HasOutput(output))
+                        {
+                            topMost.Add(Tuple.Create(output, topNode));
+                            outNames.Add(topNode.OutPortData[output].NickName);
+                        }
+                    }
+                }
+
+                if (infinite != null && outNames.Count == 0)
+                {
+                    topMost.Add(Tuple.Create(0, infinite));
+                    outNames.Add("∞");
+                }
+
+                outputNames = outNames;
+            }
+
+            #endregion
+
+            // color the node to define its connectivity
+            foreach (var ele in topMost)
+            {
+                ele.Item2.ValidateConnections();
+            }
+
+            //Find function entry point, and then compile
+            var variables = functionWorkspace.Nodes.OfType<Symbol>().ToList();
+            inputNames = variables.Select(x => x.InputSymbol);
+
+            //Update existing function nodes which point to this function to match its changes
+            dynSettings.Controller.DynamoModel.AllNodes
+                .OfType<Function>()
+                .Where(el => el.Definition != null && el.Definition.FunctionId == FunctionId)
+                .ToList()
+                .ForEach(node =>
+                {
+                    node.SetInputs(inputNames);
+                    node.SetOutputs(outputNames);
+                    node.RegisterAllPorts();
+                });
+
+            //Call OnSave for all saved elements
+            functionWorkspace.Nodes.ToList().ForEach(x => x.onSave());
+
+            INode top;
+            var buildDict = new Dictionary<NodeModel, Dictionary<int, INode>>();
+
+            if (topMost.Count > 1)
+            {
+                InputNode node = new ExternalFunctionNode(FScheme.Value.NewList);
+
+                int i = 0;
+                foreach (var topNode in topMost)
+                {
+                    string inputName = i.ToString(CultureInfo.InvariantCulture);
+                    node.AddInput(inputName);
+                    node.ConnectInput(inputName, new BeginNode());
+                    try
+                    {
+                        var exp = topNode.Item2.Build(buildDict, topNode.Item1);
+                        node.ConnectInput(inputName, exp);
+                    }
+                    catch
+                    {
+
+                    }
+
+                    i++;
+                }
+
+                top = node;
+            }
+            else if (topMost.Count == 1)
+            {
+                top = topMost[0].Item2.Build(buildDict, topMost[0].Item1);
+            }
+            else
+            {
+                // if the custom node is empty, it will initially be an empty begin
+                top = new BeginNode();
+            }
+
+            // if the node has any outputs, we create a BeginNode in order to evaluate all of them
+            // sequentially (begin evaluates a list of expressions)
+            if (outputs.Any())
+            {
+                var beginNode = new BeginNode();
+                List<NodeModel> hangingNodes = functionWorkspace.GetHangingNodes().ToList();
+
+                foreach (var tNode in hangingNodes.Select((x, index) => new { Index = index, Node = x }))
+                {
+                    beginNode.AddInput(tNode.Index.ToString(CultureInfo.InvariantCulture));
+                    beginNode.ConnectInput(
+                        tNode.Index.ToString(CultureInfo.InvariantCulture),
+                        tNode.Node.Build(buildDict, 0));
+                }
+
+                beginNode.AddInput(hangingNodes.Count.ToString(CultureInfo.InvariantCulture));
+                beginNode.ConnectInput(hangingNodes.Count.ToString(CultureInfo.InvariantCulture), top);
+
+                top = beginNode;
+            }
+
+            // make the anonymous function
+            FScheme.Expression expression = Utils.MakeAnon(
+                variables.Select(x => x.GUID.ToString()),
+                top.Compile());
+
+            return expression;
+
+        }
+
+        #endregion
+
+        #region DS Compilation
+
+        public void CompileAndAddToVM()
+        {
+            var compiledFunction = CompileToFunctionDefAst();
+
+            throw new NotImplementedException();
+        }
+
+        public AssociativeNode CompileToFunctionDefAst()
+        {
+            #region Outputs and Inputs and UI updating
+
+            #region Find outputs
+
+            // Find output elements for the node
+            List<Output> outputs = WorkspaceModel.Nodes.OfType<Output>().ToList();
+
+            var topMost = new List<Tuple<int, NodeModel>>();
+            
+            // if we found output nodes, add select their inputs
+            // these will serve as the function output
+            if (outputs.Any())
+            {
+                topMost.AddRange(
+                    outputs.Where(x => x.HasInput(0)).Select(x => x.Inputs[0]));
+
+                ReturnKeys = outputs.Select(x => x.Symbol);
+            }
+            else
+            {
+                // if there are no explicitly defined output nodes
+                // get the top most nodes and set THEM as the output
+                IEnumerable<NodeModel> topMostNodes = WorkspaceModel.GetTopMostNodes();
+
+                var outNames = new List<string>();
+
+                foreach (NodeModel topNode in topMostNodes)
+                {
+                    if (topNode is Function && (topNode as Function).Definition == this)
+                    {
+                        topMost.Add(Tuple.Create(0, topNode));
+                        outNames.Add("∞");
+                        continue;
+                    }
+
+                    foreach (int output in Enumerable.Range(0, topNode.OutPortData.Count))
+                    {
+                        if (!topNode.HasOutput(output))
+                        {
+                            topMost.Add(Tuple.Create(output, topNode));
+                            outNames.Add(topNode.OutPortData[output].NickName);
+                        }
+                    }
+                }
+
+                ReturnKeys = outNames;
+            }
+
+            #endregion
+
+            // color the node to define its connectivity
+            foreach (var ele in topMost)
+            {
+                ele.Item2.ValidateConnections();
+            }
+
+            //Find function entry point, and then compile
+            var inputNodes = WorkspaceModel.Nodes.OfType<Symbol>().ToList();
+            var parameters = inputNodes.Select(x => x.GUID.ToString());
+            Parameters = inputNodes.Select(x => x.InputSymbol);
+
+            //Update existing function nodes which point to this function to match its changes
+            var instances =
+                dynSettings.Controller.DynamoModel.AllNodes.OfType<CustomNodeInstance>()
+                           .Where(el => el.Definition != null && el.Definition == this);
+
+            foreach (var node in instances)
+                node.ResyncWithDefinition();
+
+            //Call OnSave for all saved elements
+            foreach (var node in WorkspaceModel.Nodes)
+                node.onSave();
+
+            #endregion
+
+            var cnBuilder = new CustomNodeBuilder();
+
+            new AstBuilder(cnBuilder).CompileToAstNodes(
+                WorkspaceModel.Nodes.Where(x => !(x is Output)), false);
+
+            return cnBuilder.GenerateCustomNodeAst(
+                FunctionId.ToString().Replace("-", string.Empty),
+                topMost.Select(
+                    x => x.Item2.GetAstIdentifierForOutputIndex(x.Item1) as AssociativeNode)
+                       .ToList(),
+                parameters);
+        }
+
+        private class CustomNodeBuilder : IAstNodeContainer
+        {
+            private readonly LinkedListOfList<NodeModel, AssociativeNode> _generatedAst
+                = new LinkedListOfList<NodeModel, AssociativeNode>();
+
+            #region Implement IAstNodeContainer interface
+
+            public void OnAstNodeBuilding(NodeModel node) { }
+
+            public void OnAstNodeBuilt(NodeModel node, IEnumerable<AssociativeNode> astNodes)
+            {
+                foreach (var ast in astNodes)
+                    _generatedAst.AddItem(node, ast);
+            }
+
+            #endregion
+
+            public AssociativeNode GenerateCustomNodeAst(string name, List<AssociativeNode> outputs, IEnumerable<string> parameters)
+            {
+                var functionBody = new CodeBlockNode();
+
+                functionBody.Body.AddRange(_generatedAst.SelectMany(x => x));
+
+                AssociativeNode top;
+
+                if (outputs.Count > 1)
+                {
+                    top = AstFactory.BuildExprList(outputs);
+                }
+                else if (outputs.Count == 1)
+                {
+                    top = outputs[0];
+                }
+                else
+                {
+                    // if the custom node is empty, it will initially return null
+                    top = AstFactory.BuildNullNode();
+                }
+
+                var returnNode = new ReturnNode { ReturnExpr = top };
+                functionBody.Body.Add(returnNode);
+
+                //Create a new function definition
+                var functionDef = new FunctionDefinitionNode
+                {
+                    //name is the GUID of the custom node
+                    Name = name,
+
+                    //signature is 
+                    Singnature = new ArgumentSignatureNode
+                    {
+                        Arguments = parameters.Select(paramName => new VarDeclNode
+                        {
+                            NameNode = new IdentifierNode
+                            {
+                                Value = paramName,
+                                Name = paramName,
+                                datatype = new Type
+                                {
+                                    Name = "var",
+                                    IsIndexable = false,
+                                    rank = 0,
+                                    UID = (int)PrimitiveType.kTypeVar
+                                }
+                            },
+                            ArgumentType = new Type { Name = "var" }
+                        }).ToList()
+                    },
+
+                    //body is the compiled workspace
+                    FunctionBody = functionBody
+                };
+
+                return functionDef;
+            }
+        }
+
+        #endregion
+
+        #region Custom Node Management
+
+        public bool AddToSearch()
+        {
+            return
+                dynSettings.Controller.SearchViewModel.Add(new CustomNodeInfo(  FunctionId, 
+                                                                                WorkspaceModel.Name,
+                                                                                WorkspaceModel.Category,
+                                                                                WorkspaceModel.Description,
+                                                                                WorkspaceModel.FileName ));
+        }
+
+        public void UpdateCustomNodeManager()
+        {
+            dynSettings.CustomNodeManager.SetNodeInfo(new CustomNodeInfo(   FunctionId,
+                                                                            WorkspaceModel.Name,
+                                                                            WorkspaceModel.Category,
+                                                                            WorkspaceModel.Description,
+                                                                            WorkspaceModel.FileName));
+        }
+
+        public bool SyncWithWorkspace(bool addToSearch, bool compileFunction)
+        {
+
+            // Get the internal nodes for the function
+            var functionWorkspace = WorkspaceModel;
+
+            try
+            {
+                // Add function defininition
+                dynSettings.Controller.CustomNodeManager.AddFunctionDefinition(FunctionId, this);
+
+                // search
+                if (addToSearch)
+                {
+                    AddToSearch();
+                }
+
+                var info = new CustomNodeInfo(FunctionId, functionWorkspace.Name, functionWorkspace.Category,
+                                              functionWorkspace.Description, WorkspaceModel.FileName);
+
+                dynSettings.Controller.CustomNodeManager.SetNodeInfo(info);
+
+                CompileAndAddToEnvironment(dynSettings.Controller.FSchemeEnvironment);
+            }
+            catch (Exception e)
+            {
+                DynamoLogger.Instance.Log("Error saving:" + e.GetType());
+                DynamoLogger.Instance.Log(e);
+                return false;
+            }
+
+            return true;
+        }
+
+        #endregion
+    }
+}
