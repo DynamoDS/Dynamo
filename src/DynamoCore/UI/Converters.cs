@@ -426,11 +426,11 @@ namespace Dynamo.Controls
             ElementState state = (ElementState)value;
             switch (state)
             {
-                case ElementState.ACTIVE:
+                case ElementState.Active:
                     return ActiveBrush;
-                case ElementState.DEAD:
+                case ElementState.Dead:
                     return DeadBrush;
-                case ElementState.ERROR:
+                case ElementState.Error:
                     return ErrorBrush;
             }
 

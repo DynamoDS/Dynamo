@@ -439,7 +439,7 @@ namespace Dynamo
                 //No longer running
                 Running = false;
 
-                foreach (FunctionDefinition def in dynSettings.FunctionWasEvaluated)
+                foreach (CustomNodeDefinition def in dynSettings.FunctionWasEvaluated)
                     def.RequiresRecalc = false;
 
                 

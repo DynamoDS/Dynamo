@@ -32,6 +32,15 @@ namespace DSRevitNodes.Elements
         #region Private constructors
 
         /// <summary>
+        /// Construct a DSDividedPath from an existing one.  
+        /// </summary>
+        /// <param name="divPath"></param>
+        private DSDividedPath(Autodesk.Revit.DB.DividedPath divPath)
+        {
+            InternalSetDividedPath(divPath);
+        }
+
+        /// <summary>
         /// Private constructor to build a DividedPath
         /// </summary>
         /// <param name="c">Host curves</param>
@@ -111,5 +120,24 @@ namespace DSRevitNodes.Elements
         //}
 
         #endregion
+
+        #region Internal static constructors
+
+        /// <summary>
+        /// Construct this type from an existing Revit element.
+        /// </summary>
+        /// <param name="dividedPath"></param>
+        /// <param name="isRevitOwned"></param>
+        /// <returns></returns>
+        internal static DSDividedPath FromExisting(Autodesk.Revit.DB.DividedPath dividedPath, bool isRevitOwned)
+        {
+            return new DSDividedPath(dividedPath)
+            {
+                IsRevitOwned = isRevitOwned
+            };
+        }
+
+        #endregion
+
     }
 }

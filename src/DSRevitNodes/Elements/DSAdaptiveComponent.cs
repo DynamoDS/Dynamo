@@ -16,6 +16,8 @@ namespace DSRevitNodes.Elements
     [RegisterForTrace]
     public class DSAdaptiveComponent : AbstractElement
     {
+        private FamilyInstance familyInstance;
+
         #region Properties
 
         /// <summary>
@@ -137,6 +139,15 @@ namespace DSRevitNodes.Elements
 
         }
 
+        /// <summary>
+        /// Internal constructor for existing Elements.
+        /// </summary>
+        /// <param name="familyInstance"></param>
+        private DSAdaptiveComponent(FamilyInstance familyInstance)
+        {
+            InternalSetFamilyInstance(familyInstance);
+        }
+
         #endregion
 
         #region Internal mutators
@@ -241,79 +252,109 @@ namespace DSRevitNodes.Elements
         /// <summary>
         /// Create an AdaptiveComponent from a list of points.
         /// </summary>
-        /// <param name="pts">The points to reference in the AdaptiveComponent</param>
-        /// <param name="fs">The family symbol to use to build the AdaptiveComponent</param>
+        /// <param name="points">The points to reference in the AdaptiveComponent</param>
+        /// <param name="familySymbol">The family symbol to use to build the AdaptiveComponent</param>
         /// <returns></returns>
-        public static DSAdaptiveComponent ByPoints( Point[] pts, DSFamilySymbol fs )
+        public static DSAdaptiveComponent ByPoints( Point[] points, DSFamilySymbol familySymbol )
         {
-            if (pts == null)
+            if (points == null)
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("points");
             }
 
-            if (fs == null)
+            if (familySymbol == null)
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("familySymbol");
             }
 
-            return new DSAdaptiveComponent(pts, fs);
+            return new DSAdaptiveComponent(points, familySymbol);
         }
 
         /// <summary>
         /// Create an adaptive component by uv points on a face.
         /// </summary>
         /// <param name="uvs">An array of UV pairs</param>
-        /// <param name="f">The face on which to place the AdaptiveComponent</param>
-        /// <param name="f">The face on which to place the AdaptiveComponent</param>
+        /// <param name="face">The face on which to place the AdaptiveComponent</param>
+        /// <param name="face">The face on which to place the AdaptiveComponent</param>
         /// <returns></returns>
-        public static DSAdaptiveComponent ByPointsOnFace(double[][] uvs, DSFace f, DSFamilySymbol fs)
+        public static DSAdaptiveComponent ByPointsOnFace(double[][] uvs, DSFace face, DSFamilySymbol familySymbol)
         {
             if (uvs == null)
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("uvs");
             }
 
-            if (f == null)
+            if (face == null)
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("face");
             }
 
-            if (fs == null)
+            if (familySymbol == null)
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("familySymbol");
             }
 
-            return new DSAdaptiveComponent(uvs, f, fs);
+            return new DSAdaptiveComponent(uvs, face, familySymbol);
         }
 
         /// <summary>
         /// Create an adaptive component referencing the parameters on a ReferenceCurve
         /// </summary>
-        /// <param name="parms">The parameters on the curve</param>
-        /// <param name="dsCurve">The curve to reference</param>
-        /// <param name="fs">The family symbol to construct</param>
+        /// <param name="parameters">The parameters on the curve</param>
+        /// <param name="curve">The curve to reference</param>
+        /// <param name="familySymbol">The family symbol to construct</param>
         /// <returns></returns>
-        public static DSAdaptiveComponent ByPointsOnCurve(double[] parms, DSCurve dsCurve, DSFamilySymbol fs)
+        public static DSAdaptiveComponent ByPointsOnCurve(double[] parameters, DSCurve curve, DSFamilySymbol familySymbol)
         {
-            if (parms == null)
+            if (parameters == null)
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("parameters");
             }
 
-            if (dsCurve == null)
+            if (curve == null)
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("curve");
             }
 
-            if (fs == null)
+            if (familySymbol == null)
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("familySymbol");
             }
 
-            return new DSAdaptiveComponent(parms,  dsCurve, fs);
+            return new DSAdaptiveComponent(parameters,  curve, familySymbol);
         }
 
         #endregion
+
+        #region Internal static constructor
+
+        /// <summary>
+        /// Construct from an existing instance of an AdaptiveComponent. 
+        /// </summary>
+        /// <param name="familyInstance"></param>
+        /// <param name="isRevitOwned"></param>
+        /// <returns></returns>
+        internal static DSAdaptiveComponent FromExisting(Autodesk.Revit.DB.FamilyInstance familyInstance, bool isRevitOwned)
+        {
+            if (familyInstance == null)
+            {
+                throw new ArgumentNullException("familyInstance");
+            }
+
+            // Not all family instances are adaptive components
+            if (!AdaptiveComponentInstanceUtils.HasAdaptiveFamilySymbol(familyInstance))
+            {
+                throw new Exception("The FamilyInstance is not an adaptive component");
+            }
+
+            return new DSAdaptiveComponent(familyInstance)
+            {
+                IsRevitOwned = isRevitOwned
+            };
+        }
+
+        #endregion
+
 
     }
 }
