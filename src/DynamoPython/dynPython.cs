@@ -330,7 +330,26 @@ namespace Dynamo.Nodes
         /// </summary>
         private readonly Dictionary<string, dynamic> _stateDict = new Dictionary<string, dynamic>();
 
+        /// <summary>
+        /// The script used by this node for execution.
+        /// </summary>
         private string _script;
+        public string Script
+        {
+            get
+            {
+                return _script;
+            }
+            set
+            {
+                BeginNodeModification();
+
+                _script = value;
+                _dirty = true;
+
+                EndNodeModification();
+            }
+        }
 
         public PythonVarIn()
         {
@@ -343,6 +362,41 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
+        private void BeginNodeModification()
+        {
+            // save changes for undo
+            var changeDict = new Dictionary<ModelBase, Dynamo.Core.UndoRedoRecorder.UserAction>
+                {
+                    {this, UndoRedoRecorder.UserAction.Modification}
+                };
+            this.WorkSpace.RecordModelsForUndo(changeDict);
+        }
+
+        private void EndNodeModification()
+        {
+            this.WorkSpace.HasUnsavedChanges = true;
+        }
+
+        /// <summary>
+        /// Set the number of inputs.  
+        /// </summary>
+        /// <param name="numInputs"></param>
+        public void SetNumInputs(int numInputs)
+        {
+            if (numInputs <= 0)
+            {
+                return;
+            }
+
+            InPortData.Clear();
+
+            for (var i = 0; i < numInputs; i++)
+            {
+                InPortData.Add(new PortData(GetInputRootName() + GetInputNameIndex(), "", typeof(object)));
+            }
+
+            RegisterAllPorts();
+        }
 
         // implement methods from variableinput
         protected override string GetInputRootName()
@@ -355,17 +409,13 @@ namespace Dynamo.Nodes
             return "Input";
         }
 
-
         protected override void RemoveInput()
         {
             if (InPortData.Count > 1)
+            {
                 base.RemoveInput();
+            }   
         }
-
-
-
-
-
 
         private void InitializeDefaultScript()
         {
@@ -449,7 +499,6 @@ namespace Dynamo.Nodes
             }
         }
 
-        //TODO: Make this smarter
         public override bool RequiresRecalc
         {
             get
@@ -466,39 +515,24 @@ namespace Dynamo.Nodes
             script.InnerText = _script;
             nodeElement.AppendChild(script);
 
-
             // save the number of inputs
             nodeElement.SetAttribute("inputs", (InPortData.Count).ToString());
-
         }
 
         protected override void LoadNode(XmlNode nodeElement)
         {
-
             var inputAttr = nodeElement.Attributes["inputs"];
             int inputs = inputAttr == null ? 1 : Convert.ToInt32(inputAttr.Value);
-            
-            
-            
-                for (; inputs > 1; inputs--)
-                {
-                    InPortData.Add(new PortData(GetInputRootName() + GetInputNameIndex(), "", typeof(object)));
-                }
+            this.SetNumInputs(inputs);
 
-                RegisterAllPorts();
-            
-
-
-
-            foreach (XmlNode subNode in nodeElement.ChildNodes)
+            var scriptNode = nodeElement.ChildNodes.Cast<XmlNode>().FirstOrDefault(x => x.Name == "Script");
+            if (scriptNode != null)
             {
-                if (subNode.Name == "Script")
-                    //this.tb.Text = subNode.InnerText;
-                    _script = subNode.InnerText;
+                _script = scriptNode.InnerText;
             }
         }
 
-        private IEnumerable<KeyValuePair<string, dynamic>> makeBindings(IEnumerable<Value> args)
+        private IEnumerable<KeyValuePair<string, dynamic>> MakeBindings(IEnumerable<Value> args)
         {
             //Zip up our inputs
             var bindings = InPortData
@@ -514,7 +548,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            Value result = PythonEngine.Evaluator(_dirty, _script, makeBindings(args));
+            Value result = PythonEngine.Evaluator(_dirty, _script, MakeBindings(args));
             _lastEvalValue = result;
 
             Draw();
@@ -551,9 +585,7 @@ namespace Dynamo.Nodes
             }
 
             //set the value from the text in the box
-            _script = _editWindow.editText.Text;
-
-            _dirty = true;
+            Script = _editWindow.editText.Text;
         }
 
         #region Autocomplete
@@ -625,18 +657,29 @@ namespace Dynamo.Nodes
             if(_lastEvalValue != null)
                 PythonEngine.Drawing(_lastEvalValue, GUID.ToString());
         }
+
+        #region SerializeCore/DeserializeCore
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context);
+
+            var helper = new XmlElementHelper(element);
+            helper.SetAttribute("Script", this.Script);
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context);
+
+            var helper = new XmlElementHelper(element);
+            var script = helper.ReadString("Script", string.Empty);
+            this._script = script;
+        }
+
+        #endregion
+
     }
-
-
-
-
-
-
-
-
-
-
-
 
     [NodeName("Python Script From String")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
