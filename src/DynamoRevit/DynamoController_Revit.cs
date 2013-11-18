@@ -5,6 +5,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
+using System.Windows.Threading;
 using Autodesk.Revit.DB;
 using Dynamo.Controls;
 using Dynamo.Models;
@@ -72,6 +74,7 @@ namespace Dynamo
             //allow the showing of elements in context
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.CanFindNodesFromElements = true;
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.FindNodesFromElements = FindNodesFromSelection;
+
         }
 
         void CleanupVisualizations(object sender, EventArgs e)
@@ -236,7 +239,7 @@ namespace Dynamo
         {
             if (_singleSignOnAssembly == null)
                 _singleSignOnAssembly = LoadSSONet();
-            client.Client.Provider = new RevitOxygenProvider();
+            client.Client.Provider = new RevitOxygenProvider(new DispatcherSynchronizationContext(this.UIDispatcher));
         }
 
         /// <summary>
@@ -805,6 +808,12 @@ namespace Dynamo
                 base.Run(topElements, runningExpression);
             }
         }
+
+        /// <summary>
+        /// The Synchronication Context from the current thread.  This is expected to be the 
+        /// Revit UI thread SynchronizationContext
+        /// </summary>
+        public Dispatcher RevitSyncContext { get; set; }
     }
 
     public enum TransactionMode
