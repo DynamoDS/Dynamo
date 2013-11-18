@@ -301,7 +301,7 @@ namespace Dynamo.Nodes
 
         protected override void OnTextChanged(TextChangedEventArgs e)
         {
-            ;//hide base
+            e.Handled = true; //hide base
         }
 
         protected override void OnLostFocus(RoutedEventArgs e)
