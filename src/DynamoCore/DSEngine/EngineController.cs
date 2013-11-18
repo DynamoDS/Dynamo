@@ -18,14 +18,13 @@ namespace Dynamo.DSEngine
     /// </summary>
     public class EngineController: IAstNodeContainer
     {
-        public static EngineController Instance = new EngineController();
         private LiveRunnerServices liveRunnerServices;
         private LibraryServices libraryServices;
         private AstBuilder astBuilder;
         private SyncDataManager syncDataManager;
         private Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
 
-        private EngineController()
+        internal EngineController(DynamoController controller)
         {
             libraryServices = new LibraryServices();
             libraryServices.LibraryLoading += this.LibraryLoading;
@@ -39,7 +38,7 @@ namespace Dynamo.DSEngine
 
             syncDataManager = new SyncDataManager();
 
-            dynSettings.Controller.DynamoModel.NodeDeleted += NodeDeleted;
+            controller.DynamoModel.NodeDeleted += NodeDeleted;
         }
 
         /// <summary>

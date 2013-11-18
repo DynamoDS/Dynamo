@@ -1328,7 +1328,7 @@ namespace Dynamo.ViewModels
             DialogResult result = openFileDialog.ShowDialog();
             if (result == DialogResult.OK)
             {
-                DSEngine.EngineController.Instance.ImportLibraries(openFileDialog.FileNames.ToList());
+                dynSettings.Controller.EngineController.ImportLibraries(openFileDialog.FileNames.ToList());
             }
         }
 

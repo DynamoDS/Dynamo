@@ -728,7 +728,7 @@ namespace Dynamo
             foreach (var node in dynSettings.Controller.DynamoModel.Nodes)
             {
                 string varName = node.VariableToPreview;
-                var graphItems = EngineController.Instance.GetGraphicItems(varName);
+                var graphItems = dynSettings.Controller.EngineController.GetGraphicItems(varName);
                 if (graphItems != null)
                 {
                     var drawableItems = new Dictionary<string, object>();

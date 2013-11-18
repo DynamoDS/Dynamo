@@ -160,6 +160,13 @@ namespace Dynamo
             set { isShowPreViewByDefault = value; RaisePropertyChanged("IsShowPreviewByDefault"); }
         }
 
+        private EngineController _engineController = null;
+        public EngineController EngineController
+        {
+            get { return _engineController; }
+            private set { _engineController = value; }
+        }
+
         #endregion
 
         #region events
@@ -242,6 +249,8 @@ namespace Dynamo
             this.DynamoViewModel = (DynamoViewModel)Activator.CreateInstance(
                 viewModelType, new object[] { this, commandFilePath });
 
+            this.EngineController = new DSEngine.EngineController(this);
+
             // custom node loader
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string pluginsPath = Path.Combine(directory, "definitions");
@@ -320,7 +329,7 @@ namespace Dynamo
 
 
 #if USE_DSENGINE
-            if (!EngineController.Instance.GenerateGraphSyncData(DynamoViewModel.Model.HomeSpace.Nodes))
+            if (!EngineController.GenerateGraphSyncData(DynamoViewModel.Model.HomeSpace.Nodes))
             {
                 return;
             }
@@ -474,7 +483,7 @@ namespace Dynamo
 
             try
             {
-                bool updated = EngineController.Instance.UpdateGraph();
+                bool updated = EngineController.UpdateGraph();
 
                 // Currently just use inefficient way to refresh preview values. 
                 // After we switch to async call, only those nodes that are really 
