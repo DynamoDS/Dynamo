@@ -309,7 +309,7 @@ namespace Dynamo.Models
         /// </summary>
         public bool IsUpdated
         {
-            get { return IsUpdated; }
+            get { return _isUpdated; }
             set
             {
                 _isUpdated = value;
