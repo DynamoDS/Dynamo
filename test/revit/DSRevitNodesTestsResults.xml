@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--This file represents the results of running a test suite-->
+<test-results name="C:\Users\boyerp\Dropbox\Github\Autodesk\DynamoNew\Dynamo\bin\AnyCPU\Debug\DynamoTestFramework.dll" total="2" failures="0" not-run="0" date="2013-11-15" time="14:20:22" errors="0" inconclusive="0" ignored="0" skipped="0" invalid="0">
+  <test-suite name="DynamoTestFrameworkTests" description="Unit tests in Revit." time="0.5240524" asserts="4" type="TestFixture" result="Success" executed="True">
+    <results>
+      <test-suite name="FreeFormTests" description="Unit tests in Revit." time="0.5240524" asserts="4" type="TestFixture" result="Success" executed="True">
+        <results>
+          <test-case name="BySolid_ValidArgs" success="True" time="0.4810481" executed="True" asserts="3" result="Success" />
+          <test-case name="BySolid_NullArgument" success="True" time="0.0430043" executed="True" asserts="1" result="Success" />
+        </results>
+      </test-suite>
+    </results>
+  </test-suite>
+</test-results>

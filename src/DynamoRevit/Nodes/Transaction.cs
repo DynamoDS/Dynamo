@@ -7,6 +7,7 @@ using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Microsoft.FSharp.Core;
+using RevitServices.Threading;
 using Expression = Dynamo.FScheme.Expression;
 using Value = Dynamo.FScheme.Value;
 
@@ -79,7 +80,7 @@ namespace Dynamo.Nodes
                                 return _node.OldValue;
                             }
                             
-                            return IdlePromise<Value>.ExecuteOnIdle(
+                            return RevitServices.Threading.IdlePromise<Value>.ExecuteOnIdle(
                                 () =>
                                     {
                                         _node.OldValue = f.Invoke(FSharpList<Value>.Empty);

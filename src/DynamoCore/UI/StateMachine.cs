@@ -483,6 +483,8 @@ namespace Dynamo.ViewModels
                     // then the state machine should initiate a drag operation.
                     if (null != GetSelectableFromPoint(mouseDownPos))
                         InitiateDragSequence();
+                    else if (e.ClickCount == 2)
+                        CreateCodeBlockNode();
                     else
                         InitiateWindowSelectionSequence();
 
@@ -495,6 +497,29 @@ namespace Dynamo.ViewModels
 
                 dynSettings.ReturnFocusToSearch();
                 return eventHandled;
+            }
+
+            private void CreateCodeBlockNode()
+            {
+                // create node
+                var guid = Guid.NewGuid();
+                dynSettings.Controller.DynamoViewModel.ExecuteCommand(
+                  new DynCmd.CreateNodeCommand(guid, "Code Block", 0, 0, true, true));
+
+                // select node
+                var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
+                if (placedNode != null)
+                {
+                    DynamoSelection.Instance.ClearSelection();
+                    DynamoSelection.Instance.Selection.Add(placedNode);
+                }
+
+                //correct node position
+                if (placedNode != null)
+                {
+                    placedNode.X = (int)mouseDownPos.X - 92;
+                    placedNode.Y = (int)mouseDownPos.Y - 31;
+                }
             }
 
             internal bool HandleMouseRelease(object sender, MouseButtonEventArgs e)
@@ -616,7 +641,7 @@ namespace Dynamo.ViewModels
                 {
                     PortType portType = PortType.INPUT;
                     Guid nodeId = portModel.Owner.GUID;
-                    int portIndex = portModel.Owner.GetPortIndex(portModel, out portType);
+                    int portIndex = portModel.Owner.GetPortIndexAndType(portModel, out portType);
 
                     dynamoViewModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
                         nodeId, portIndex, portType, DynCmd.MakeConnectionCommand.Mode.Begin));
@@ -635,7 +660,7 @@ namespace Dynamo.ViewModels
                     {
                         PortType portType = PortType.INPUT;
                         Guid nodeId = portModel.Owner.GUID;
-                        int portIndex = portModel.Owner.GetPortIndex(portModel, out portType);
+                        int portIndex = portModel.Owner.GetPortIndexAndType(portModel, out portType);
 
                         dynamoViewModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
                             nodeId, portIndex, portType, DynCmd.MakeConnectionCommand.Mode.End));

@@ -9,12 +9,7 @@ using System.Xml;
 using Dynamo.Controls;
 using Dynamo.Models;
 using DynamoPython;
-using ICSharpCode.AvalonEdit.CodeCompletion;
-using ICSharpCode.AvalonEdit.Highlighting;
-using ICSharpCode.AvalonEdit.Highlighting.Xshd;
-
 using Microsoft.FSharp.Collections;
-
 using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Nodes
@@ -108,7 +103,7 @@ namespace Dynamo.Nodes
                 IsCheckable = false
             };
             nodeUI.MainContextMenu.Items.Add(editWindowItem);
-            editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
+            editWindowItem.Click += delegate { EditScriptContent(); };
             nodeUI.UpdateLayout();
 
             nodeUI.MouseDown += new MouseButtonEventHandler(nodeUI_MouseDown);
@@ -118,7 +113,7 @@ namespace Dynamo.Nodes
         {
             if (e.ClickCount >= 2)
             {
-                editWindowItem_Click(this, null);
+                EditScriptContent();
                 e.Handled = true;
             }
         }
@@ -132,6 +127,9 @@ namespace Dynamo.Nodes
             }
             set { }
         }
+
+        // Property added for test case verification purposes
+        public string Script { get { return this._script; } }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
@@ -150,6 +148,39 @@ namespace Dynamo.Nodes
                     _script = subNode.InnerText;
             }
         }
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context);
+
+            if (SaveContext.Undo == context)
+            {
+                XmlElement script = element.OwnerDocument.CreateElement("Script");
+                script.InnerText = _script;
+                element.AppendChild(script);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context);
+
+            if (SaveContext.Undo == context)
+            {
+                foreach (XmlNode child in element.ChildNodes)
+                {
+                    if (child.Name == "Script")
+                    {
+                        _script = child.InnerText;
+                        break;
+                    }
+                }
+            }
+        }
+
+        #endregion
 
         private IEnumerable<KeyValuePair<string, dynamic>> makeBindings(IEnumerable<Value> args)
         {
@@ -175,105 +206,26 @@ namespace Dynamo.Nodes
             return result;
         }
 
-        private dynScriptEditWindow _editWindow;
-
-        void editWindowItem_Click(object sender, RoutedEventArgs e)
+        protected override bool UpdateValueCore(string name, string value)
         {
-            _editWindow = new dynScriptEditWindow();
-            // callbacks for autocompletion
-            _editWindow.editText.TextArea.TextEntering += textEditor_TextArea_TextEntering;
-            _editWindow.editText.TextArea.TextEntered += textEditor_TextArea_TextEntered;
-
-            const string pythonHighlighting = "ICSharpCode.PythonBinding.Resources.Python.xshd";
-            var elem =
-                GetType()
-                    .Assembly.GetManifestResourceStream(
-                        "DynamoPython.Resources." + pythonHighlighting);
-
-            _editWindow.editText.SyntaxHighlighting =
-                HighlightingLoader.Load(
-                    new XmlTextReader(elem),
-                    HighlightingManager.Instance);
-
-            //set the text of the edit window to begin
-            _editWindow.editText.Text = _script;
-
-            if (_editWindow.ShowDialog() != true)
+            if (name == "ScriptContent")
             {
-                return;
+                this._script = value;
+                this._dirty = true;
+                return true;
             }
 
-            //set the value from the text in the box
-            _script = _editWindow.editText.Text;
-
-            _dirty = true;
+            return base.UpdateValueCore(name, value);
         }
 
-        #region Autocomplete
-
-        CompletionWindow _completionWindow;
-        private readonly IronPythonCompletionProvider _completionProvider = new IronPythonCompletionProvider();
-
-        void textEditor_TextArea_TextEntered(object sender, TextCompositionEventArgs e)
+        private void EditScriptContent()
         {
-            try
-            {
-                if (e.Text == ".")
-                {
-                    _completionWindow = new CompletionWindow(_editWindow.editText.TextArea);
-                    var data = _completionWindow.CompletionList.CompletionData;
-
-                    var completions =
-                        _completionProvider.GetCompletionData(_editWindow.editText.Text.Substring(0,
-                                                                                                _editWindow.editText
-                                                                                                          .CaretOffset));
-
-                    if (completions.Length == 0)
-                        return;
-
-                    foreach (var ele in completions)
-                    {
-                        data.Add(ele);
-                    }
-
-                    _completionWindow.Show();
-
-                    _completionWindow.Closed += delegate
-                        {
-                            _completionWindow = null;
-                        };
-                }
-            }
-            catch (Exception ex)
-            {
-                DynamoLogger.Instance.Log("Failed to perform python autocomplete with exception:");
-                DynamoLogger.Instance.Log(ex.Message);
-                DynamoLogger.Instance.Log(ex.StackTrace);
-            }
+            ScriptEditWindow editWindow = new ScriptEditWindow();
+            editWindow.Initialize(this.GUID, "ScriptContent", this._script);
+            editWindow.ShowDialog();
         }
 
-        void textEditor_TextArea_TextEntering(object sender, TextCompositionEventArgs e)
-        {
-            try {
-                if (e.Text.Length > 0 && _completionWindow != null)
-                {
-                    if (!char.IsLetterOrDigit(e.Text[0]))
-                    {
-                        _completionWindow.CompletionList.RequestInsertion(e);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                DynamoLogger.Instance.Log("Failed to perform python autocomplete with exception:");
-                DynamoLogger.Instance.Log(ex.Message);
-                DynamoLogger.Instance.Log(ex.StackTrace);
-            }
-        }
-
-        #endregion
-
-        public void Draw()
+        private void Draw()
         {
             if(_lastEvalValue != null)
                 PythonEngine.Drawing(_lastEvalValue, GUID.ToString());
@@ -399,7 +351,7 @@ namespace Dynamo.Nodes
                 IsCheckable = false
             };
             nodeUI.MainContextMenu.Items.Add(editWindowItem);
-            editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
+            editWindowItem.Click += delegate { EditScriptContent(); };
             nodeUI.UpdateLayout();
 
             nodeUI.MouseDown += new MouseButtonEventHandler(nodeUI_MouseDown);
@@ -413,7 +365,7 @@ namespace Dynamo.Nodes
         {
             if (e.ClickCount >= 2)
             {
-                editWindowItem_Click(this, null);
+                EditScriptContent();
                 e.Handled = true;
             }
         }
@@ -427,6 +379,9 @@ namespace Dynamo.Nodes
             }
             set { }
         }
+
+        // Property added for test case verification purposes
+        public string Script { get { return this._script; } }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
@@ -467,6 +422,39 @@ namespace Dynamo.Nodes
             }
         }
 
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context);
+
+            if (SaveContext.Undo == context)
+            {
+                XmlElement script = element.OwnerDocument.CreateElement("Script");
+                script.InnerText = _script;
+                element.AppendChild(script);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context);
+
+            if (SaveContext.Undo == context)
+            {
+                foreach (XmlNode child in element.ChildNodes)
+                {
+                    if (child.Name == "Script")
+                    {
+                        _script = child.InnerText;
+                        break;
+                    }
+                }
+            }
+        }
+
+        #endregion
+
         private IEnumerable<KeyValuePair<string, dynamic>> makeBindings(IEnumerable<Value> args)
         {
             //Zip up our inputs
@@ -491,105 +479,26 @@ namespace Dynamo.Nodes
             return result;
         }
 
-        private dynScriptEditWindow _editWindow;
-
-        void editWindowItem_Click(object sender, RoutedEventArgs e)
+        protected override bool UpdateValueCore(string name, string value)
         {
-            _editWindow = new dynScriptEditWindow();
-            // callbacks for autocompletion
-            _editWindow.editText.TextArea.TextEntering += textEditor_TextArea_TextEntering;
-            _editWindow.editText.TextArea.TextEntered += textEditor_TextArea_TextEntered;
-
-            const string pythonHighlighting = "ICSharpCode.PythonBinding.Resources.Python.xshd";
-            var elem =
-                GetType()
-                    .Assembly.GetManifestResourceStream(
-                        "DynamoPython.Resources." + pythonHighlighting);
-
-            _editWindow.editText.SyntaxHighlighting =
-                HighlightingLoader.Load(
-                    new XmlTextReader(elem),
-                    HighlightingManager.Instance);
-
-            //set the text of the edit window to begin
-            _editWindow.editText.Text = _script;
-
-            if (_editWindow.ShowDialog() != true)
+            if (name == "ScriptContent")
             {
-                return;
+                this._script = value;
+                this._dirty = true;
+                return true;
             }
 
-            //set the value from the text in the box
-            _script = _editWindow.editText.Text;
-
-            _dirty = true;
+            return base.UpdateValueCore(name, value);
         }
 
-        #region Autocomplete
-
-        CompletionWindow _completionWindow;
-        private readonly IronPythonCompletionProvider _completionProvider = new IronPythonCompletionProvider();
-
-        void textEditor_TextArea_TextEntered(object sender, TextCompositionEventArgs e)
+        private void EditScriptContent()
         {
-            try
-            {
-                if (e.Text == ".")
-                {
-                    _completionWindow = new CompletionWindow(_editWindow.editText.TextArea);
-                    var data = _completionWindow.CompletionList.CompletionData;
-
-                    var completions =
-                        _completionProvider.GetCompletionData(_editWindow.editText.Text.Substring(0,
-                                                                                                _editWindow.editText
-                                                                                                          .CaretOffset));
-
-                    if (completions.Length == 0)
-                        return;
-
-                    foreach (var ele in completions)
-                    {
-                        data.Add(ele);
-                    }
-
-                    _completionWindow.Show();
-
-                    _completionWindow.Closed += delegate
-                        {
-                            _completionWindow = null;
-                        };
-                }
-            }
-            catch (Exception ex)
-            {
-                DynamoLogger.Instance.Log("Failed to perform python autocomplete with exception:");
-                DynamoLogger.Instance.Log(ex.Message);
-                DynamoLogger.Instance.Log(ex.StackTrace);
-            }
+            ScriptEditWindow editWindow = new ScriptEditWindow();
+            editWindow.Initialize(this.GUID, "ScriptContent", this._script);
+            editWindow.ShowDialog();
         }
 
-        void textEditor_TextArea_TextEntering(object sender, TextCompositionEventArgs e)
-        {
-            try {
-                if (e.Text.Length > 0 && _completionWindow != null)
-                {
-                    if (!char.IsLetterOrDigit(e.Text[0]))
-                    {
-                        _completionWindow.CompletionList.RequestInsertion(e);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                DynamoLogger.Instance.Log("Failed to perform python autocomplete with exception:");
-                DynamoLogger.Instance.Log(ex.Message);
-                DynamoLogger.Instance.Log(ex.StackTrace);
-            }
-        }
-
-        #endregion
-
-        public void Draw()
+        private void Draw()
         {
             if(_lastEvalValue != null)
                 PythonEngine.Drawing(_lastEvalValue, GUID.ToString());

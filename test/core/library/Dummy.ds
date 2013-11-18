@@ -1,0 +1,14 @@
+class Dummy
+{
+    value :int;
+
+    constructor Dummy(v)
+    {
+        value = v;
+    }
+    
+    def GetValue()
+    {
+        return = value;
+    }
+}
