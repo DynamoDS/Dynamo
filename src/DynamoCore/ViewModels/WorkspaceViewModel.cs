@@ -829,7 +829,11 @@ namespace Dynamo.ViewModels
 
         private bool CanSetZoom(object zoom)
         {
-            return true;
+            double setZoom = Convert.ToDouble(zoom);
+            if (setZoom >= WorkspaceModel.ZOOM_MINIMUM && setZoom <= WorkspaceModel.ZOOM_MAXIMUM)
+                return true;
+            else
+                return false;
         }
 
         private bool _fitViewActualZoomToggle = false;
