@@ -362,14 +362,7 @@ namespace Dynamo.Tests
             AssertValue("y", 4);
 
         }
-        [Test]
-        public void CBN_Double_Array_330()
-        {
-
-            RunModel(@"core\dsevaluation\CBN_Double_Array_330.dyn");
-            AssertValue("y", 4);
-
-        }
+             
         [Test]
         public void CBN_Dynamic_Array_622()
         {
