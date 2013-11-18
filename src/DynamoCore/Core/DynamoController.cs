@@ -160,6 +160,13 @@ namespace Dynamo
             set { isShowPreViewByDefault = value; RaisePropertyChanged("IsShowPreviewByDefault"); }
         }
 
+        private EngineController _engineController = null;
+        public EngineController EngineController
+        {
+            get { return _engineController; }
+            private set { _engineController = value; }
+        }
+
         #endregion
 
         #region events
@@ -242,6 +249,8 @@ namespace Dynamo
             this.DynamoViewModel = (DynamoViewModel)Activator.CreateInstance(
                 viewModelType, new object[] { this, commandFilePath });
 
+            this.EngineController = new DSEngine.EngineController(this);
+
             // custom node loader
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string pluginsPath = Path.Combine(directory, "definitions");
@@ -318,6 +327,14 @@ namespace Dynamo
             if (Running)
                 return;
 
+
+#if USE_DSENGINE
+            if (!EngineController.GenerateGraphSyncData(DynamoViewModel.Model.HomeSpace.Nodes))
+            {
+                return;
+            }
+#endif
+
             _showErrors = showErrors;
 
             //TODO: Hack. Might cause things to break later on...
@@ -366,11 +383,7 @@ namespace Dynamo
             {
 
 #if USE_DSENGINE
-                EngineController.Instance.Builder.CompileToAstNodes(
-                    DynamoViewModel.Model.HomeSpace.Nodes, true);
-
-                var engineSyncData = EngineController.Instance.GetSyncData();
-                Run(engineSyncData);
+                Run();
 #else
                 var topNode = new BeginNode(new List<string>());
                 int i = 0;
@@ -461,7 +474,7 @@ namespace Dynamo
             }
         }
 
-        protected virtual void Run(GraphSyncData graphData)
+        protected virtual void Run()
         {
             //Print some stuff if we're in debug mode
             if (DynamoViewModel.RunInDebug)
@@ -470,16 +483,19 @@ namespace Dynamo
 
             try
             {
-                EngineController.Instance.UpdateGraph(graphData);
+                bool updated = EngineController.UpdateGraph();
 
                 // Currently just use inefficient way to refresh preview values. 
                 // After we switch to async call, only those nodes that are really 
                 // updated in this execution session will be required to update 
                 // preview value.
-                var nodes = DynamoViewModel.Model.HomeSpace.Nodes;
-                foreach (NodeModel node in nodes)
+                if (updated)
                 {
-                    node.IsUpdated = true;
+                    var nodes = DynamoViewModel.Model.HomeSpace.Nodes;
+                    foreach (NodeModel node in nodes)
+                    {
+                        node.IsUpdated = true;
+                    }
                 }
             }
             catch (CancelEvaluationException ex)

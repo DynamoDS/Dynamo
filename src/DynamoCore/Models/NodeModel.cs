@@ -1117,7 +1117,7 @@ namespace Dynamo.Models
             {
                 try
                 {
-                    previewValue = EngineController.Instance.GetStringValue(variableName);
+                    previewValue = dynSettings.Controller.EngineController.GetStringValue(variableName);
                 }
                 catch (Exception ex)
                 {

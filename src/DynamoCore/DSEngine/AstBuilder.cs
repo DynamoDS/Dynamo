@@ -286,55 +286,68 @@ namespace Dynamo.DSEngine
         }
 
         /// <summary>
+        /// Compile a dynamo node to the corresponding Ast Nodes
+        /// </summary>
+        /// <param name="node"></param>
+        public void CompileToAstNodes(NodeModel node)
+        {
+            var inputAstNodes = new List<AssociativeNode>();
+            foreach (var index in Enumerable.Range(0, node.InPortData.Count))
+            {
+                Tuple<int, NodeModel> inputTuple;
+
+                AssociativeNode inputNode;
+                if (!node.TryGetInput(index, out inputTuple))
+                {
+                    inputNode = new NullNode();
+                }
+                else
+                {
+                    int outputIndexOfInput = inputTuple.Item1;
+                    NodeModel inputModel = inputTuple.Item2;
+                    inputNode = inputModel.GetAstIdentifierForOutputIndex(outputIndexOfInput);
+                }
+
+                inputAstNodes.Add(inputNode);
+            }
+
+            //TODO: This should do something more than just log a generic message. --SJE
+            if (node.State == ElementState.Error)
+            {
+                DynamoLogger.Instance.Log("Error in Node. Not sent for building and compiling");
+            }
+
+            OnAstNodeBuilding(node);
+
+            var astNodes = node.BuildAst(inputAstNodes);
+
+            if (astNodes != null)
+            {
+                OnAstNodeBuilt(node, astNodes);
+            }
+        }
+
+        /// <summary>
         /// Compiling a collection of Dynamo nodes to AST nodes, no matter 
         /// whether Dynamo node has been compiled or not.
         /// </summary>
         /// <param name="nodes"></param>
         public void CompileToAstNodes(IEnumerable<NodeModel> nodes, bool isDeltaExecution)
         {
+            // TODO: compile to AST nodes should be triggered after a node is 
+            // modified.
+
             var sortedNodes = TopologicalSort(nodes);
 
             if (isDeltaExecution)
-            {
                 sortedNodes = sortedNodes.Where(n => n.isDirty);
-            }
 
             foreach (var node in sortedNodes)
             {
-                var inputAstNodes = new List<AssociativeNode>();
-                foreach (var index in Enumerable.Range(0, node.InPortData.Count))
-                {
-                    Tuple<int, NodeModel> inputTuple;
+                CompileToAstNodes(node);
 
-                    AssociativeNode inputNode;
-                    if (!node.TryGetInput(index, out inputTuple))
-                    {
-                        inputNode = new NullNode();
-                    }
-                    else
-                    {
-                        int outputIndexOfInput = inputTuple.Item1;
-                        NodeModel inputModel = inputTuple.Item2;
-                        inputNode = inputModel.GetAstIdentifierForOutputIndex(outputIndexOfInput);
-                    }
-
-                    inputAstNodes.Add(inputNode);
-                }
-
-                //TODO: This should do something more than just log a generic message. --SJE
-                if (node.State == ElementState.Error)
-                {
-                    DynamoLogger.Instance.Log("Error in Node. Not sent for building and compiling");
-                }
-
-                OnAstNodeBuilding(node);
-
-                var astNodes = node.BuildAst(inputAstNodes);
-
-                if (astNodes != null)
-                {
-                    OnAstNodeBuilt(node, astNodes);
-                }
+                if (isDeltaExecution)
+                    node.isDirty = false;
             }
         }
 
