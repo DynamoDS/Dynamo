@@ -909,7 +909,8 @@ namespace Dynamo.Nodes
                 VerticalAlignment = VerticalAlignment.Stretch,
                 Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF)),
                 AcceptsReturn = true,
-                MaxWidth = Configurations.MaxTextBoxWidth
+                MaxWidth = Configurations.MaxTextBoxWidth,
+                TextWrapping = TextWrapping.Wrap
             };
 
 
