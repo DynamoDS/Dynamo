@@ -926,10 +926,10 @@ namespace Dynamo.Nodes
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             });
 
-            if (_shouldFocus)
+            if (shouldFocus)
             {
                 tb.Focus();
-                _shouldFocus = false;
+                shouldFocus = false;
             }
         }
     }
