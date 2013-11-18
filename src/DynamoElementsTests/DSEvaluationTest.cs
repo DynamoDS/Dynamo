@@ -184,7 +184,7 @@ namespace Dynamo.Tests
         [Test]
         public void CBN_Create_697()
         {
-            
+        // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-697
             // a=1;
             RunModel(@"core\dsevaluation\CBN_Create_697.dyn");
             AssertValue("a", "Dynamo");
@@ -192,7 +192,7 @@ namespace Dynamo.Tests
         [Test]
         public void CBN_Math_Pi_621()
         {
-
+        // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-621
             RunModel(@"core\dsevaluation\CBN_Math_Pi_621.dyn");
             AssertValue("a", 3.14);
 
@@ -201,7 +201,7 @@ namespace Dynamo.Tests
         [Test]
         public void CBN_Multiple_Assignment614()
         {
-
+        // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-614
             RunModel(@"core\dsevaluation\CBN_Multiple_Assignement_614.dyn");
             AssertValue("a", 1);
             AssertValue("b", 1);
@@ -210,7 +210,7 @@ namespace Dynamo.Tests
         [Test]
         public void CBN_Conditional_612()
         {
-
+        // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-612
             RunModel(@"core\dsevaluation\CBN_Conditional_612.dyn");
             AssertValue("a", new int[] { 1,2 });
             
@@ -218,7 +218,7 @@ namespace Dynamo.Tests
         [Test]
         public void CBN_Reference_593()
         {
-
+        // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-593
             RunModel(@"core\dsevaluation\CBN_Reference_593.dyn");
             AssertValue("b", 3);
 
@@ -226,7 +226,7 @@ namespace Dynamo.Tests
         [Test]
         public void CBN_Reference_593_2()
         {
-
+            //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-593
             RunModel(@"core\dsevaluation\CBN_Reference_593_2.dyn");
             AssertValue("b", new int[] {1,2,3,4,5});
 
@@ -234,7 +234,7 @@ namespace Dynamo.Tests
         [Test]
         public void CBN_Binary_607()
         {
-
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-607
             RunModel(@"core\dsevaluation\CBN_binary_607.dyn");
             AssertValue("b", true);
 
@@ -242,7 +242,7 @@ namespace Dynamo.Tests
         [Test]
         public void CBN_Multiple_binary_607()
         {
-
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-607
             RunModel(@"core\dsevaluation\CBN_multiple_binary_607.dyn");
             AssertValue("b", true);
 
@@ -250,7 +250,7 @@ namespace Dynamo.Tests
         [Test]
         public void CBN_Conditionals_597()
         {
-
+            //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-597
             RunModel(@"core\dsevaluation\CBN_conditionals_597.dyn");
             AssertValue("b", 1);
 
@@ -258,7 +258,7 @@ namespace Dynamo.Tests
         [Test]
         public void CBN_Conditionals_597_2()
         {
-
+        // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-597
             RunModel(@"core\dsevaluation\CBN_conditionals_597_2.dyn");
             AssertValue("b", 5);
 
@@ -266,7 +266,7 @@ namespace Dynamo.Tests
         [Test]
         public void CBN_Nested_Conditionals_608()
         {
-
+            //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-608
             RunModel(@"core\dsevaluation\CBN_nested_Conditionals_608.dyn");
             AssertValue("a", false);
 
@@ -274,7 +274,7 @@ namespace Dynamo.Tests
         [Test]
         public void CBN_Nested_Conditionals_608_2()
         {
-
+            //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-608
             RunModel(@"core\dsevaluation\CBN_nested_Conditionals_608_2.dyn");
             AssertValue("a", false);
 
@@ -282,7 +282,7 @@ namespace Dynamo.Tests
         [Test]
         public void CBN_Nested_Conditionals_612()
         {
-
+        // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-612
             RunModel(@"core\dsevaluation\CBN_ConditionalWithExpression_612.dyn");
             AssertValue("a", new int[] { 1, 2 });
 
@@ -290,7 +290,7 @@ namespace Dynamo.Tests
         [Test]
         public void CBN_Nested_Conditionals_612_2()
         {
-
+            //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-612
             RunModel(@"core\dsevaluation\CBN_ConditionalWithExpression_612_2.dyn");
             AssertValue("a", new int[] { 1, 2 });
 
@@ -298,7 +298,7 @@ namespace Dynamo.Tests
         [Test]
         public void CBN_Multiline_705()
         {
-
+            //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-705
             RunModel(@"core\dsevaluation\CBN_multiline_705.dyn");
             AssertValue("c",3);
 
@@ -308,7 +308,7 @@ namespace Dynamo.Tests
         [Test]
         public void CBN_Undefined_692()
         {
-
+            //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-692
             RunModel(@"core\dsevaluation\CBN_Undefined_692.dyn");
             AssertValue("a", null);
 
@@ -316,7 +316,7 @@ namespace Dynamo.Tests
         [Test]
         public void CBN_Class_GetterProperty_625()
         {
-
+            //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-625
             RunModel(@"core\dsevaluation\CBN_Class_GetterProperty_625.dyn");
             AssertValue("b", 0.00);
 
@@ -325,7 +325,7 @@ namespace Dynamo.Tests
         [Test]
         public void CBN_Geometry_RangeExpression_609()
         {
-
+            //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-609
             RunModel(@"core\dsevaluation\CBN_Geometry_RangeExpression_609.dyn");
             AssertValue("b", new int[] {1,2});
 
@@ -333,7 +333,7 @@ namespace Dynamo.Tests
         [Test]
         public void CBN_Geometry_Expression_609_2()
         {
-
+            //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-609
             RunModel(@"core\dsevaluation\CBN_Geometry_Expression_609_2.dyn");
             AssertValue("b", 3);
 
@@ -341,7 +341,7 @@ namespace Dynamo.Tests
         [Test]
         public void CBN_Geometry_Conditional_609_3()
         {
-
+            //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-609
             RunModel(@"core\dsevaluation\CBN_Geometry_Conditional_609_3.dyn");
             AssertValue("b", 1);
 
@@ -349,7 +349,7 @@ namespace Dynamo.Tests
         [Test]
         public void CBN_Geometry_Array_609_4()
         {
-
+            //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-609
             RunModel(@"core\dsevaluation\CBN_Geometry_Array_609_4.dyn");
             AssertValue("b", new int[] {1,2});
 
@@ -358,6 +358,7 @@ namespace Dynamo.Tests
         public void CBN_Double_Array_330()
         {
 
+            //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-330
             RunModel(@"core\dsevaluation\CBN_Double_Array_330.dyn");
             AssertValue("y", 4);
 
@@ -367,6 +368,7 @@ namespace Dynamo.Tests
         public void CBN_Dynamic_Array_622()
         {
 
+            //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-622
             RunModel(@"core\dsevaluation\CBN_Dynamic_Array_622.dyn");
             AssertValue("y", 1);
 
@@ -375,15 +377,16 @@ namespace Dynamo.Tests
         public void CBN_Dynamic_Array_622_2()
         {
 
+        //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-622
             RunModel(@"core\dsevaluation\CBN_Dynamic_Array_622_2.dyn");
             AssertValue("y", 4);
 
         }
 
-
         [Test]
         public void Regress722()
         {
+            //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-722
             RunModel(@"core\dsevaluation\regress722.dyn");
             AssertValue("x", 42);
         }
