@@ -7,12 +7,15 @@ using System.Windows;
 using System.Windows.Input;
 using System.Xml;
 using Dynamo.Controls;
+using Dynamo.Core;
 using Dynamo.Models;
+using Dynamo.Utilities;
 using DynamoPython;
 using ICSharpCode.AvalonEdit.CodeCompletion;
+using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
-
+using IronPython.Modules;
 using Microsoft.FSharp.Collections;
 
 using Value = Dynamo.FScheme.Value;
@@ -33,6 +36,25 @@ namespace Dynamo.Nodes
         private readonly Dictionary<string, dynamic> _stateDict = new Dictionary<string, dynamic>();
 
         private string _script;
+        public string Script
+        {
+            get
+            {
+                return _script;
+            }
+            set
+            {
+                // save changes for undo
+                var changeDict = new Dictionary<ModelBase, Dynamo.Core.UndoRedoRecorder.UserAction>
+                {
+                    {this, UndoRedoRecorder.UserAction.Modification}
+                };
+                this.WorkSpace.RecordModelsForUndo(changeDict);
+
+                _script = value;
+                this.WorkSpace.HasUnsavedChanges = true;
+            }
+        }
 
         public Python()
         {
@@ -204,7 +226,7 @@ namespace Dynamo.Nodes
             }
 
             //set the value from the text in the box
-            _script = _editWindow.editText.Text;
+            Script = _editWindow.editText.Text;
 
             _dirty = true;
         }
@@ -278,13 +300,22 @@ namespace Dynamo.Nodes
             if(_lastEvalValue != null)
                 PythonEngine.Drawing(_lastEvalValue, GUID.ToString());
         }
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context);
+            var helper = new XmlElementHelper(element);
+            helper.SetAttribute("Script", this.Script);
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context);
+            var helper = new XmlElementHelper(element);
+            var script = helper.ReadString("Script", string.Empty);
+            this._script = script;
+        }
     }
-
-
-
-
-
-
 
     [NodeName("Python Script With Variable Number of Inputs")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]

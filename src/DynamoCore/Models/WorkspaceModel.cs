@@ -458,7 +458,7 @@ namespace Dynamo.Models
             undoRecorder.EndActionGroup();
         }
 
-        internal void RecordModelsForUndo(Dictionary<ModelBase, UndoRedoRecorder.UserAction> models)
+        public void RecordModelsForUndo(Dictionary<ModelBase, UndoRedoRecorder.UserAction> models)
         {
             if (null == undoRecorder)
                 return;
