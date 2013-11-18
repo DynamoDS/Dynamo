@@ -18,18 +18,13 @@ namespace Dynamo.DSEngine
     /// </summary>
     public class EngineController: IAstNodeContainer
     {
-        public static EngineController Instance = new EngineController();
         private LiveRunnerServices liveRunnerServices;
         private LibraryServices libraryServices;
         private AstBuilder astBuilder;
         private SyncDataManager syncDataManager;
+        private Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
 
-        public AstBuilder Builder
-        {
-            get { return astBuilder; }
-        }
-
-        private EngineController()
+        internal EngineController(DynamoController controller)
         {
             libraryServices = new LibraryServices();
             libraryServices.LibraryLoading += this.LibraryLoading;
@@ -43,7 +38,7 @@ namespace Dynamo.DSEngine
 
             syncDataManager = new SyncDataManager();
 
-            dynSettings.Controller.DynamoModel.NodeDeleted += NodeDeleted;
+            controller.DynamoModel.NodeDeleted += NodeDeleted;
         }
 
         /// <summary>
@@ -141,32 +136,51 @@ namespace Dynamo.DSEngine
         }
 
         /// <summary>
-        /// Get graph sync data.
+        /// Generate graph sync data based on the input Dynamo nodes. Return 
+        /// false if all nodes are clean.
         /// </summary>
+        /// <param name="nodes"></param>
         /// <returns></returns>
-        public GraphSyncData GetSyncData()
+        public bool GenerateGraphSyncData(IEnumerable<NodeModel> nodes)
         {
-            return syncDataManager.GetSyncData();
+            astBuilder.CompileToAstNodes(nodes, true);
+
+            GraphSyncData data = syncDataManager.GetSyncData();
+            syncDataManager.ResetStates();
+
+            if ((data.AddedSubtrees != null && data.AddedSubtrees.Count > 0) ||
+                (data.ModifiedSubtrees != null && data.ModifiedSubtrees.Count > 0) ||
+                (data.DeletedSubtrees != null && data.DeletedSubtrees.Count > 0))
+            {
+                graphSyncDataQueue.Enqueue(data);
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
         /// Update graph with graph sync data.
         /// </summary>
-        /// <param name="graphData"></param>
-        public void UpdateGraph(GraphSyncData graphData)
+        public bool UpdateGraph()
         {
+            if (graphSyncDataQueue.Count == 0)
+            {
+                return false;
+            }
+            GraphSyncData data = graphSyncDataQueue.Dequeue();
+
             try
             {
-                liveRunnerServices.UpdateGraph(graphData);
+                liveRunnerServices.UpdateGraph(data);
             }
             catch (Exception e)
             {
                 DynamoLogger.Instance.Log("Update graph failed: " + e.Message);
+                return false;
             }
-            finally
-            {
-                syncDataManager.ResetStates();
-            }
+
+            return true;
         }
 
         /// <summary>

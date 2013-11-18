@@ -473,7 +473,7 @@ namespace Dynamo.ViewModels
         {
             List<NodeModel> nodeList = DynamoSelection.Instance.Selection.OfType<NodeModel>().ToList();
 
-            string code = EngineController.Instance.ConvertNodesToCode(nodeList);
+            string code = dynSettings.Controller.EngineController.ConvertNodesToCode(nodeList);
 
             //
             // Node deletion

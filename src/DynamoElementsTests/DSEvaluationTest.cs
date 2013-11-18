@@ -16,15 +16,15 @@ namespace Dynamo.Tests
     {
         private void RunModel(string relativeDynFilePath)
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = Controller.DynamoModel;
             string openPath = Path.Combine(GetTestDirectory(), relativeDynFilePath);
             model.Open(openPath);
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(null));
+            Assert.DoesNotThrow(() => Controller.RunExpression(null));
         }
 
         private string GetVarName(string guid)
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = Controller.DynamoModel;
             var node = model.CurrentWorkspace.NodeFromWorkspace(guid);
             Assert.IsNotNull(node);
             return  node.VariableToPreview;
@@ -33,7 +33,7 @@ namespace Dynamo.Tests
         private RuntimeMirror GetRuntimeMirror(string varName)
         {
             RuntimeMirror mirror = null;
-            Assert.DoesNotThrow(() => mirror = EngineController.Instance.GetMirror(varName));
+            Assert.DoesNotThrow(() => mirror = Controller.EngineController.GetMirror(varName));
             Assert.IsNotNull(mirror);
             return mirror;
         }
