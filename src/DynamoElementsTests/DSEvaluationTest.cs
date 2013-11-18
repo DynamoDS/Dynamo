@@ -148,5 +148,245 @@ namespace Dynamo.Tests
             RunModel(@"core\dsevaluation\regress664.dyn");
             AssertPreviewValue("34ad4880-deaf-4b03-a8b6-7545c9d0159c", new int[] { 2, 3, 4, 5, 6 });
         }
+
+        [Test]
+        public void CBN_Multiline_614()
+        {
+            // a=1;
+            // b=2;
+            RunModel(@"core\dsevaluation\multiline_614.dyn");
+            AssertValue("a", 1);
+            AssertValue("b", 2);
+        }
+
+        [Test]
+        public void CBN_Multiline_614_2()
+        {
+            // With empty line 
+            // a=1;
+            // b=2;
+
+            RunModel(@"core\dsevaluation\multiline_614_2.dyn");
+            AssertValue("a", 1);
+            AssertValue("b", 2);
+        }
+        [Test]
+        public void CBN_String_599()
+        {
+            // With empty line 
+            // a=1;
+            // b=2;
+
+            RunModel(@"core\dsevaluation\CBN_string_599.dyn");
+            AssertValue("a", "Dynamo");
+            
+        }
+        [Test]
+        public void CBN_Create_697()
+        {
+            
+            // a=1;
+            RunModel(@"core\dsevaluation\CBN_Create_697.dyn");
+            AssertValue("a", "Dynamo");
+        }
+        [Test]
+        public void CBN_Math_Pi_621()
+        {
+
+            RunModel(@"core\dsevaluation\CBN_Math_Pi_621.dyn");
+            AssertValue("a", 3.14);
+
+        }
+        
+        [Test]
+        public void CBN_Multiple_Assignment614()
+        {
+
+            RunModel(@"core\dsevaluation\CBN_Multiple_Assignement_614.dyn");
+            AssertValue("a", 1);
+            AssertValue("b", 1);
+
+        }
+        [Test]
+        public void CBN_Conditional_612()
+        {
+
+            RunModel(@"core\dsevaluation\CBN_Conditional_612.dyn");
+            AssertValue("a", new int[] { 1,2 });
+            
+        }
+        [Test]
+        public void CBN_Reference_593()
+        {
+
+            RunModel(@"core\dsevaluation\CBN_Reference_593.dyn");
+            AssertValue("b", 3);
+
+        }
+        [Test]
+        public void CBN_Reference_593_2()
+        {
+
+            RunModel(@"core\dsevaluation\CBN_Reference_593_2.dyn");
+            AssertValue("b", new int[] {1,2,3,4,5});
+
+        }
+        [Test]
+        public void CBN_Binary_607()
+        {
+
+            RunModel(@"core\dsevaluation\CBN_binary_607.dyn");
+            AssertValue("b", true);
+
+        }
+        [Test]
+        public void CBN_Multiple_binary_607()
+        {
+
+            RunModel(@"core\dsevaluation\CBN_multiple_binary_607.dyn");
+            AssertValue("b", true);
+
+        }
+        [Test]
+        public void CBN_Conditionals_597()
+        {
+
+            RunModel(@"core\dsevaluation\CBN_conditionals_597.dyn");
+            AssertValue("b", 1);
+
+        }
+        [Test]
+        public void CBN_Conditionals_597_2()
+        {
+
+            RunModel(@"core\dsevaluation\CBN_conditionals_597_2.dyn");
+            AssertValue("b", 5);
+
+        }
+        [Test]
+        public void CBN_Nested_Conditionals_608()
+        {
+
+            RunModel(@"core\dsevaluation\CBN_nested_Conditionals_608.dyn");
+            AssertValue("a", false);
+
+        }
+        [Test]
+        public void CBN_Nested_Conditionals_608_2()
+        {
+
+            RunModel(@"core\dsevaluation\CBN_nested_Conditionals_608_2.dyn");
+            AssertValue("a", false);
+
+        }
+        [Test]
+        public void CBN_Nested_Conditionals_612()
+        {
+
+            RunModel(@"core\dsevaluation\CBN_ConditionalWithExpression_612.dyn");
+            AssertValue("a", new int[] { 1, 2 });
+
+        }
+        [Test]
+        public void CBN_Nested_Conditionals_612_2()
+        {
+
+            RunModel(@"core\dsevaluation\CBN_ConditionalWithExpression_612_2.dyn");
+            AssertValue("a", new int[] { 1, 2 });
+
+        }
+        [Test]
+        public void CBN_Multiline_705()
+        {
+
+            RunModel(@"core\dsevaluation\CBN_multiline_705.dyn");
+            AssertValue("c",3);
+
+        }
+        
+
+        [Test]
+        public void CBN_Undefined_692()
+        {
+
+            RunModel(@"core\dsevaluation\CBN_Undefined_692.dyn");
+            AssertValue("a", null);
+
+        }
+        [Test]
+        public void CBN_Class_GetterProperty_625()
+        {
+
+            RunModel(@"core\dsevaluation\CBN_Class_GetterProperty_625.dyn");
+            AssertValue("b", 0.00);
+
+        }
+
+        [Test]
+        public void CBN_Geometry_RangeExpression_609()
+        {
+
+            RunModel(@"core\dsevaluation\CBN_Geometry_RangeExpression_609.dyn");
+            AssertValue("b", new int[] {1,2});
+
+        }
+        [Test]
+        public void CBN_Geometry_Expression_609_2()
+        {
+
+            RunModel(@"core\dsevaluation\CBN_Geometry_Expression_609_2.dyn");
+            AssertValue("b", 3);
+
+        }
+        [Test]
+        public void CBN_Geometry_Conditional_609_3()
+        {
+
+            RunModel(@"core\dsevaluation\CBN_Geometry_Conditional_609_3.dyn");
+            AssertValue("b", 1);
+
+        }
+        [Test]
+        public void CBN_Geometry_Array_609_4()
+        {
+
+            RunModel(@"core\dsevaluation\CBN_Geometry_Array_609_4.dyn");
+            AssertValue("b", new int[] {1,2});
+
+        }
+        [Test]
+        public void CBN_Double_Array_330()
+        {
+
+            RunModel(@"core\dsevaluation\CBN_Double_Array_330.dyn");
+            AssertValue("y", 4);
+
+        }
+        [Test]
+        public void CBN_Double_Array_330()
+        {
+
+            RunModel(@"core\dsevaluation\CBN_Double_Array_330.dyn");
+            AssertValue("y", 4);
+
+        }
+        [Test]
+        public void CBN_Dynamic_Array_622()
+        {
+
+            RunModel(@"core\dsevaluation\CBN_Dynamic_Array_622.dyn");
+            AssertValue("y", 1);
+
+        }
+        [Test]
+        public void CBN_Dynamic_Array_622_2()
+        {
+
+            RunModel(@"core\dsevaluation\CBN_Dynamic_Array_622_2.dyn");
+            AssertValue("y", 4);
+
+        }
+        
+        
     }
 }
