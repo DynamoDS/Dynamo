@@ -447,7 +447,6 @@ namespace Dynamo.ViewModels
             if (this.PreviewBubble == null)
                 return;
 
-            RaisePropertyChanged("IsPreviewInsetVisible");
             this.PreviewBubble.IsShowPreviewByDefault = dynSettings.Controller.IsShowPreviewByDefault;
             UpdatePreviewBubbleContent();
             if (dynSettings.Controller.IsShowPreviewByDefault)
@@ -486,6 +485,7 @@ namespace Dynamo.ViewModels
                 return;
             if (string.IsNullOrEmpty(NodeModel.ToolTipText))
             {
+                // TODO: Opacity is no longer in use
                 if (ErrorBubble.Opacity != 0)
                 {
                     ErrorBubble.SetAlwaysVisibleCommand.Execute(false);
