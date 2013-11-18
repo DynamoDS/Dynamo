@@ -349,6 +349,8 @@ namespace Dynamo.Tests.UI
         [Test, RequiresSTA]
         public void Defect_MAGN_491()
         {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-491
+
             // TODO: Rename this XML to match the test case name.
             RunCommandsFromFile("Defect-MAGN-491.xml");
             var connectors = workspaceViewModel.Connectors;
@@ -372,6 +374,8 @@ namespace Dynamo.Tests.UI
         [Test, RequiresSTA]
         public void Defect_MAGN_225()
         {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-225
+
             // TODO: Rename this XML to match the test case name.
             RunCommandsFromFile("TestConnectionReplacementUndo.xml");
             var nodes = workspaceViewModel.Nodes;
@@ -383,6 +387,8 @@ namespace Dynamo.Tests.UI
         [Test, RequiresSTA]
         public void Defect_MAGN_57()
         {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-57
+
             RunCommandsFromFile("Defect_MAGN_57.xml", true);
 
             Assert.AreEqual(7, workspace.Nodes.Count);
@@ -393,6 +399,8 @@ namespace Dynamo.Tests.UI
         [Test, RequiresSTA]
         public void Defect_MAGN_159()
         {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-159
+
             RunCommandsFromFile("Defect_MAGN_159.xml", true);
 
             Assert.AreEqual(1, workspace.Nodes.Count);
@@ -405,6 +413,8 @@ namespace Dynamo.Tests.UI
         [Ignore, RequiresSTA]
         public void Defect_MAGN_160()
         {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-160
+
             // List node cannot be created  ( current limitation for button click)
             RunCommandsFromFile("Defect_MAGN_160.xml", true);
 
@@ -418,6 +428,8 @@ namespace Dynamo.Tests.UI
         [Test, RequiresSTA]
         public void Defect_MAGN_164()
         {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-164
+
             RunCommandsFromFile("Defect_MAGN_164.xml", true);
 
             Assert.AreEqual(2, workspace.Nodes.Count);
@@ -433,6 +445,8 @@ namespace Dynamo.Tests.UI
         [Test, RequiresSTA]
         public void Defect_MAGN_190()
         {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-190
+
             RunCommandsFromFile("Defect_MAGN_190.xml", true);
 
             Assert.AreEqual(2, workspace.Nodes.Count);
@@ -443,6 +457,8 @@ namespace Dynamo.Tests.UI
         [Test, RequiresSTA]
         public void Defect_MAGN_429()
         {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-429
+
             RunCommandsFromFile("Defect_MAGN_429.xml", true);
 
             Assert.AreEqual(0, workspace.Nodes.Count);
@@ -453,6 +469,8 @@ namespace Dynamo.Tests.UI
         [Test, RequiresSTA]
         public void Defect_MAGN_478()
         {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-478
+
             RunCommandsFromFile("Defect_MAGN_478.xml", true);
 
             Assert.AreEqual(1, workspace.Notes.Count);

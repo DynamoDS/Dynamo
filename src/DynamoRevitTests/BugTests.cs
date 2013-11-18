@@ -10,6 +10,8 @@ namespace Dynamo.Tests
         [Test]
         public void MAGN_66()
         {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-66
+
             var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\\Bugs\MAGN_66.dyn");
@@ -22,6 +24,8 @@ namespace Dynamo.Tests
         [Test]
         public void MAGN_102()
         {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-102
+
             var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\\Bugs\MAGN_102_projectPointsToFace_selfContained.dyn");
@@ -39,6 +43,7 @@ namespace Dynamo.Tests
         [Test]
         public void MAGN_122()
         {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-122
             var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\\Bugs\MAGN_122_wallsAndFloorsAndLevels.dyn");
