@@ -31,6 +31,9 @@ namespace Dynamo.Core
         #endregion
 
         #region Information Bubble
+        public static int FadeInDurationInMilliseconds = 250;
+        public static int FadeOutDurationInMilliseconds = 250;
+        public static double MaxOpacity = 0.95;
 
         #region Preview Bubble
 
