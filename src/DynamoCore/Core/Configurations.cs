@@ -147,6 +147,11 @@ namespace Dynamo.Core
         #endregion
 
         #endregion
+
+        #region CodeBlockNode
+        public static readonly int MaxPortNameLength = 24;
+        public static readonly int MaxTextBoxWidth = 500;
+        #endregion
     }
 
     public class ResourceNames
