@@ -357,6 +357,7 @@
                         <Grid>
                             <ScrollViewer x:Name="PART_ContentHost"
                                           SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                          Style="{DynamicResource ResourceKey=SDarkScrollViewer}"
                                           Margin="5,5,0,0"/>
                             <TextBlock x:Name="previewText"
                                        Foreground="#555555"
@@ -617,7 +618,7 @@
         </Setter>
     </Style>
 
-    <Style x:Key="{x:Type ScrollViewer}"
+    <Style x:Key="SDarkScrollViewer"
            TargetType="{x:Type ScrollViewer}">
         <Setter Property="HorizontalScrollBarVisibility"
                 Value="Hidden" />
