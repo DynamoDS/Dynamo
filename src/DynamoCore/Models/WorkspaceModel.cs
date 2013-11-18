@@ -250,7 +250,7 @@ namespace Dynamo.Models
         /// </summary>
         public bool CanUndo
         {
-            get { return ((null == undoRecorder) ? false : undoRecorder.CanUndo); }
+            get { return ((null != undoRecorder) && undoRecorder.CanUndo); }
         }
 
         /// <summary>
@@ -258,7 +258,7 @@ namespace Dynamo.Models
         /// </summary>
         public bool CanRedo
         {
-            get { return ((null == undoRecorder) ? false : undoRecorder.CanRedo); }
+            get { return ((null != undoRecorder) && undoRecorder.CanRedo); }
         }
 
         internal Version WorkspaceVersion { get; set; }
@@ -335,11 +335,11 @@ namespace Dynamo.Models
             DynamoLogger.Instance.Log("Saving " + newPath + "...");
             try
             {
-                var xmlDoc = this.GetXml();
+                var xmlDoc = GetXml();
                 xmlDoc.Save(newPath);
-                this.FileName = newPath;
+                FileName = newPath;
 
-                this.OnWorkspaceSaved();
+                OnWorkspaceSaved();
             }
             catch (Exception ex)
             {
@@ -358,7 +358,7 @@ namespace Dynamo.Models
         /// </summary>
         public virtual bool Save()
         {
-            return this.SaveAs(this.FileName);
+            return SaveAs(FileName);
         }
 
         /// <summary>
@@ -431,8 +431,7 @@ namespace Dynamo.Models
         {
             if (null != model)
             {
-                List<ModelBase> models = new List<ModelBase>();
-                models.Add(model);
+                var models = new List<ModelBase> { model };
                 RecordModelsForModification(models);
             }
         }
@@ -495,9 +494,9 @@ namespace Dynamo.Models
         {
             if (null != model)
             {
-                this.undoRecorder.BeginActionGroup();
-                this.undoRecorder.RecordCreationForUndo(model);
-                this.undoRecorder.EndActionGroup();
+                undoRecorder.BeginActionGroup();
+                undoRecorder.RecordCreationForUndo(model);
+                undoRecorder.EndActionGroup();
             }
         }
 
@@ -506,10 +505,10 @@ namespace Dynamo.Models
             if (!ShouldProceedWithRecording(models))
                 return; // There's nothing created.
 
-            this.undoRecorder.BeginActionGroup();
+            undoRecorder.BeginActionGroup();
             foreach (ModelBase model in models)
-                this.undoRecorder.RecordCreationForUndo(model);
-            this.undoRecorder.EndActionGroup();
+                undoRecorder.RecordCreationForUndo(model);
+            undoRecorder.EndActionGroup();
         }
 
         internal void RecordAndDeleteModels(List<ModelBase> models)
@@ -521,15 +520,15 @@ namespace Dynamo.Models
             // to are deleted. We will have to delete the connectors first 
             // before 
 
-            this.undoRecorder.BeginActionGroup(); // Start a new action group.
+            undoRecorder.BeginActionGroup(); // Start a new action group.
 
             foreach (ModelBase model in models)
             {
                 if (model is NoteModel)
                 {
                     // Take a snapshot of the note before it goes away.
-                    this.undoRecorder.RecordDeletionForUndo(model);
-                    this.Notes.Remove(model as NoteModel);
+                    undoRecorder.RecordDeletionForUndo(model);
+                    Notes.Remove(model as NoteModel);
                 }
                 else if (model is NodeModel)
                 {
@@ -538,18 +537,18 @@ namespace Dynamo.Models
                     // having its "Workspace" pointing to another workspace, 
                     // or the selection set was not quite set up properly.
                     // 
-                    NodeModel node = model as NodeModel;
-                    System.Diagnostics.Debug.Assert(this == node.WorkSpace);
+                    var node = model as NodeModel;
+                    Debug.Assert(this == node.WorkSpace);
 
-                    foreach (var conn in node.AllConnectors().ToList())
+                    foreach (var conn in node.AllConnectors)
                     {
                         conn.NotifyConnectedPortsOfDeletion();
-                        this.Connectors.Remove(conn);
-                        this.undoRecorder.RecordDeletionForUndo(conn);
+                        Connectors.Remove(conn);
+                        undoRecorder.RecordDeletionForUndo(conn);
                     }
 
                     // Take a snapshot of the node before it goes away.
-                    this.undoRecorder.RecordDeletionForUndo(model);
+                    undoRecorder.RecordDeletionForUndo(model);
 
                     node.DisableReporting();
                     node.Destroy();
@@ -558,13 +557,13 @@ namespace Dynamo.Models
                 }
                 else if (model is ConnectorModel)
                 {
-                    ConnectorModel connector = model as ConnectorModel;
-                    this.Connectors.Remove(connector);
-                    this.undoRecorder.RecordDeletionForUndo(model);
+                    var connector = model as ConnectorModel;
+                    Connectors.Remove(connector);
+                    undoRecorder.RecordDeletionForUndo(model);
                 }
             }
 
-            this.undoRecorder.EndActionGroup(); // Conclude the deletion.
+            undoRecorder.EndActionGroup(); // Conclude the deletion.
         }
 
         private static bool ShouldProceedWithRecording(List<ModelBase> models)
@@ -590,15 +589,15 @@ namespace Dynamo.Models
             ModelBase model = GetModelForElement(modelData);
 
             if (model is NoteModel)
-                this.Notes.Remove(model as NoteModel);
+                Notes.Remove(model as NoteModel);
             else if (model is ConnectorModel)
             {
                 ConnectorModel connector = model as ConnectorModel;
-                this.Connectors.Remove(connector);
+                Connectors.Remove(connector);
                 connector.NotifyConnectedPortsOfDeletion();
             }
             else if (model is NodeModel)
-                this.Nodes.Remove(model as NodeModel);
+                Nodes.Remove(model as NodeModel);
             else
             {
                 // If it gets here we obviously need to handle it.
@@ -713,7 +712,7 @@ namespace Dynamo.Models
         public IEnumerable<NodeModel> GetTopMostNodes()
         {
 #if USE_DSENGINE
-            return Nodes.Where(x=> IsTopMostNode(x));
+            return Nodes.Where(IsTopMostNode);
 #else
             return Nodes.Where(
                 x =>
@@ -723,22 +722,16 @@ namespace Dynamo.Models
         }
 
         //If node is connected to some other node(other than Output) then it is not a 'top' node
-        private bool IsTopMostNode(NodeModel node)
+        private static bool IsTopMostNode(NodeModel node)
         {
             if (node.OutPortData.Count < 1)
                 return false;
-            foreach (var port in node.OutPorts)
+
+            foreach (var port in node.OutPorts.Where(port => port.Connectors.Count != 0))
             {
-                if (port.Connectors.Count != 0)
-                {
-                    foreach (var connector in port.Connectors)
-                    {
-                        if (connector.End.Owner!= null && connector.End.Owner is Output)
-                            return true;
-                    }
-                    return false;
-                }
+                return port.Connectors.Any(connector => connector.End.Owner is Output);
             }
+
             return true;
         }
 
@@ -757,13 +750,13 @@ namespace Dynamo.Models
                 var xmlDoc = new XmlDocument();
                 xmlDoc.CreateXmlDeclaration("1.0", null, null);
                 var root = xmlDoc.CreateElement("Workspace"); //write the root element
-                root.SetAttribute("Version", this.WorkspaceVersion.ToString());
-                root.SetAttribute("X", this.X.ToString(CultureInfo.InvariantCulture));
-                root.SetAttribute("Y", this.Y.ToString(CultureInfo.InvariantCulture));
-                root.SetAttribute("zoom", this.Zoom.ToString(CultureInfo.InvariantCulture));
-                root.SetAttribute("Description", this.Description);
-                root.SetAttribute("Category", this.Category);
-                root.SetAttribute("Name", this.Name);
+                root.SetAttribute("Version", WorkspaceVersion.ToString());
+                root.SetAttribute("X", X.ToString(CultureInfo.InvariantCulture));
+                root.SetAttribute("Y", Y.ToString(CultureInfo.InvariantCulture));
+                root.SetAttribute("zoom", Zoom.ToString(CultureInfo.InvariantCulture));
+                root.SetAttribute("Description", Description);
+                root.SetAttribute("Category", Category);
+                root.SetAttribute("Name", Name);
 
                 xmlDoc.AppendChild(root);
 
@@ -771,7 +764,7 @@ namespace Dynamo.Models
                 //write the root element
                 root.AppendChild(elementList);
 
-                foreach (var el in this.Nodes)
+                foreach (var el in Nodes)
                 {
                     var typeName = el.GetType().ToString();
 
@@ -796,7 +789,7 @@ namespace Dynamo.Models
                 //write the root element
                 root.AppendChild(connectorList);
 
-                foreach (var el in this.Nodes)
+                foreach (var el in Nodes)
                 {
                     foreach (var port in el.OutPorts)
                     {
@@ -820,7 +813,7 @@ namespace Dynamo.Models
                 //save the notes
                 var noteList = xmlDoc.CreateElement("Notes"); //write the root element
                 root.AppendChild(noteList);
-                foreach (var n in this.Notes)
+                foreach (var n in Notes)
                 {
                     var note = xmlDoc.CreateElement(n.GetType().ToString());
                     noteList.AppendChild(note);
@@ -845,7 +838,7 @@ namespace Dynamo.Models
 
         internal void UpdateModelValue(Guid modelGuid, string name, string value)
         {
-            ModelBase model = this.GetModelInternal(modelGuid);
+            ModelBase model = GetModelInternal(modelGuid);
             if (null != model)
             {
                 RecordModelForModification(model);
@@ -878,17 +871,12 @@ namespace Dynamo.Models
         internal String GetRedefinedVariable(CodeBlockNodeModel codeBlockNode)
         {
             List<string> newDefVars = codeBlockNode.GetDefinedVariableNames();
-            var otherCodeBlockNodes = Nodes.Where(X => X is CodeBlockNodeModel && X != codeBlockNode);
-            foreach (var cbn in otherCodeBlockNodes)
-            {
-                List<string> oldDefVars = (cbn as CodeBlockNodeModel).GetDefinedVariableNames();
-                foreach (var newVar in newDefVars)
-                {
-                    if (oldDefVars.Contains(newVar))
-                        return newVar;
-                }
-            }
-            return null;
+            return (from cbn in Nodes.OfType<CodeBlockNodeModel>().Where(x => x != codeBlockNode)
+                    select cbn.GetDefinedVariableNames()
+                    into oldDefVars
+                    from newVar in newDefVars
+                    where oldDefVars.Contains(newVar)
+                    select newVar).FirstOrDefault();
         }
     }
 }

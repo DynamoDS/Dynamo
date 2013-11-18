@@ -21,7 +21,6 @@ namespace DSRevitNodes.References
             }
             this.InternalReference = face.Reference;
         }
-
     }
 
 }

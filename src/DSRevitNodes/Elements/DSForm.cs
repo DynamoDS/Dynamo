@@ -19,7 +19,11 @@ namespace DSRevitNodes.Elements
 
         #region Private constructor
 
-        internal DSForm(Autodesk.Revit.DB.Form form)
+        /// <summary>
+        /// Construct a Revit Form from an existing form.  
+        /// </summary>
+        /// <param name="form"></param>
+        private DSForm(Autodesk.Revit.DB.Form form)
         {
             InternalSetForm(form);
         }
@@ -127,6 +131,23 @@ namespace DSRevitNodes.Elements
 
         #endregion
 
+        #region Internal static constructors
+
+        /// <summary>
+        /// Construct the Revit element by selection.  
+        /// </summary>
+        /// <param name="formElement"></param>
+        /// <param name="isRevitOwned"></param>
+        /// <returns></returns>
+        internal static DSForm FromExisting(Autodesk.Revit.DB.Form formElement, bool isRevitOwned)
+        {
+            return new DSForm(formElement)
+            {
+                IsRevitOwned = isRevitOwned
+            };
+        }
+
+        #endregion
 
     }
 }

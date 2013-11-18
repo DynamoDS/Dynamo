@@ -26,7 +26,7 @@ namespace DSRevitNodesTests.Elements
 
             // use the element factory to do the same
             var famId = family.Id;
-            var famFromFact = DSRevitNodes.Elements.ElementSelector.ByElementId(famId.IntegerValue);
+            var famFromFact = DSRevitNodes.Elements.ElementSelector.ByElementId(famId.IntegerValue, true);
 
             Assert.NotNull(famFromFact);
             Assert.IsAssignableFrom(typeof(DSFamily), famFromFact);
@@ -45,7 +45,7 @@ namespace DSRevitNodesTests.Elements
 
             // use the element factory to do the same by unique id
             var famUniqueId = family.UniqueId;
-            var famFromFact = DSRevitNodes.Elements.ElementSelector.ByUniqueId(famUniqueId);
+            var famFromFact = DSRevitNodes.Elements.ElementSelector.ByUniqueId(famUniqueId, true);
 
             Assert.NotNull(famFromFact);
             Assert.IsAssignableFrom(typeof(DSFamily), famFromFact);
@@ -68,7 +68,7 @@ namespace DSRevitNodesTests.Elements
 
             // use the element factory to do the same
             var famSymEleId = symbol.Id;
-            var famSymFromFact = DSRevitNodes.Elements.ElementSelector.ByElementId(famSymEleId.IntegerValue);
+            var famSymFromFact = DSRevitNodes.Elements.ElementSelector.ByElementId(famSymEleId.IntegerValue, true);
 
             Assert.NotNull(famSymFromFact);
             Assert.IsAssignableFrom(typeof(DSFamilySymbol), famSymFromFact);
@@ -91,7 +91,7 @@ namespace DSRevitNodesTests.Elements
 
             // use the element factory to do the same
             var famSymUniqueId = symbol.UniqueId;
-            var famSymFromFact = DSRevitNodes.Elements.ElementSelector.ByUniqueId(famSymUniqueId);
+            var famSymFromFact = DSRevitNodes.Elements.ElementSelector.ByUniqueId(famSymUniqueId, true);
 
             Assert.NotNull(famSymFromFact);
             Assert.IsAssignableFrom(typeof(DSFamilySymbol), famSymFromFact);
@@ -101,7 +101,7 @@ namespace DSRevitNodesTests.Elements
         [Test]
         public void FormByType_ValidArgs()
         {
-            var ele = ElementSelector.OfType<Autodesk.Revit.DB.Form>().FirstOrDefault();
+            var ele = ElementSelector.ByType<Autodesk.Revit.DB.Form>(true).FirstOrDefault();
             Assert.NotNull(ele);
         }
 
