@@ -24,7 +24,7 @@ namespace Dynamo
             if (dynSettings.Controller.Context == Context.VASARI_2014)
             {
                 AlternateDrawingContextAvailable = true;
-                DrawToAlternateContext = true;
+                DrawToAlternateContext = false;
 
                 AlternateContextName = "Vasari";
             }
