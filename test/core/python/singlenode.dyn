@@ -1,0 +1,9 @@
+<Workspace Version="0.6.2.26056" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="3bcad14e-d086-4278-9e08-ed2759ef92f3" nickname="Python Script" x="269" y="164.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>ok</Script>
+    </Dynamo.Nodes.Python>
+  </Elements>
+  <Connectors />
+  <Notes />
+</Workspace>
