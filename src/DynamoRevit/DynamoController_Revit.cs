@@ -734,7 +734,7 @@ namespace Dynamo
             RevertPythonBindings();
         }
 
-        protected override void Run(GraphSyncData graphSyncData)
+        protected override void Run()
         {
             DocumentManager.GetInstance().CurrentDBDocument = dynRevitSettings.Doc.Document;
 
@@ -754,7 +754,7 @@ namespace Dynamo
                     // Clear the active document.  This is a temporary fix 
                     // until trace cleanup is in place
                     DocumentManager.GetInstance().ClearCurrentDocument();
-                    base.Run(graphSyncData);
+                    base.Run();
                 });
             }
             else
@@ -765,7 +765,7 @@ namespace Dynamo
                 DynamoLogger.Instance.Log("Running expression in debug.");
 
                 //Execute the Run Delegate.
-                base.Run(graphSyncData);
+                base.Run();
             }
         }
 

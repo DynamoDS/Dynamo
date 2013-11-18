@@ -338,11 +338,19 @@ namespace Dynamo.Nodes
             };
 
             if (OutPortData.Count == 1)
-                resultAst.Add(AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstIdentifierForPreview));
+            {
+                var outputIdentiferNode = GetAstIdentifierForOutputIndex(0);
+                string outputIdentifier = GraphToDSCompiler.GraphUtilities.ASTListToCode(new List<AssociativeNode> { outputIdentiferNode });
+                string thisIdentifier = GraphToDSCompiler.GraphUtilities.ASTListToCode(new List<AssociativeNode> { AstIdentifierForPreview});
+                if (!string.Equals(outputIdentifier, thisIdentifier))
+                {
+                    resultAst.Add(AstFactory.BuildAssignment(outputIdentiferNode, AstIdentifierForPreview));
+                }
+            }
             else
             {
                 var undefinedOutputs = Definition.ReturnKeys == null || Definition.ReturnKeys.Count == 0;
-                
+
                 resultAst.AddRange(
                     Enumerable.Range(0, OutPortData.Count)
                               .Select(
