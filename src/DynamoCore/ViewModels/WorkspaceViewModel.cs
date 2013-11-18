@@ -40,7 +40,7 @@ namespace Dynamo.ViewModels
         public event ZoomEventHandler RequestZoomToViewportCenter;
         public event ZoomEventHandler RequestZoomToViewportPoint;
         public event ZoomEventHandler RequestZoomToFitView;
-       
+
         public event NodeEventHandler RequestCenterViewOnElement;
         public event NodeEventHandler RequestNodeCentered;
         public event ViewEventHandler RequestAddViewToOuterCanvas;
@@ -338,7 +338,7 @@ namespace Dynamo.ViewModels
             _model.Nodes.CollectionChanged += Nodes_CollectionChanged;
             _model.Notes.CollectionChanged += Notes_CollectionChanged;
             _model.Connectors.CollectionChanged += Connectors_CollectionChanged;
-             
+
 
             // sync collections
             Nodes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Nodes));
@@ -475,7 +475,9 @@ namespace Dynamo.ViewModels
 
             string code = dynSettings.Controller.EngineController.ConvertNodesToCode(nodeList);
 
-            //
+            //UndoRedo Action Group-----------------------------------------------------------------------------------------
+            _model.UndoRecorder.BeginActionGroup();
+
             // Node deletion
             IEnumerable<ISelectable> nodeModelsInSelection = DynamoSelection.Instance.Selection.Where(x => x is NodeModel);
             int m = 0;
@@ -486,11 +488,17 @@ namespace Dynamo.ViewModels
                 var connectors = node.AllConnectors;
                 var connectorModels = connectors as IList<ConnectorModel> ?? connectors.ToList();
                 for (int n = 0; n < connectorModels.Count(); ++n)
+                {
+                    _model.UndoRecorder.RecordDeletionForUndo(connectorModels.ElementAt(n));
                     _model.Connectors.Remove(connectorModels.ElementAt(n));
+                }
+                _model.UndoRecorder.RecordDeletionForUndo(node);
                 _model.Nodes.Remove(node);
                 m++;
             }
 
+            _model.UndoRecorder.EndActionGroup();
+            //End UndoRedo Action Group------------------------------------------------------------------------------------
 
             // create node
             var guid = Guid.NewGuid();
@@ -575,7 +583,7 @@ namespace Dynamo.ViewModels
                 var test = new Rect(x0, y0, locatable.Width, locatable.Height);
                 return region.IntersectsWith(test);
             }
-            
+
             double x1 = x0 + locatable.Width;
             double y1 = y0 + locatable.Height;
             return (region.Contains(x0, y0) && region.Contains(x1, y1));
@@ -719,7 +727,7 @@ namespace Dynamo.ViewModels
                            .ForEach((x) => x.X = xMin + spacing * count++);
             }
 
-            toAlign.ForEach(x=>x.ReportPosition());
+            toAlign.ForEach(x => x.ReportPosition());
         }
 
         private bool CanAlignSelected(string alignType)
@@ -985,7 +993,7 @@ namespace Dynamo.ViewModels
 
         private void PauseVisualizationManagerUpdates(object parameter)
         {
-            dynSettings.Controller.VisualizationManager.UpdatingPaused = (bool) parameter;
+            dynSettings.Controller.VisualizationManager.UpdatingPaused = (bool)parameter;
         }
 
         private bool CanPauseVisualizationManagerUpdates(object parameter)
