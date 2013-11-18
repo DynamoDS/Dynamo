@@ -68,7 +68,7 @@ namespace Dynamo.Tests
             timer.Start();
             Controller.RunExpression(null);
             timer.Stop();
-            Assert.Less(timer.Elapsed.Milliseconds, 750); // open in less than 750ms
+            Assert.Less(timer.Elapsed.Milliseconds, 1000); // open in less than 1s
 
         }
 
