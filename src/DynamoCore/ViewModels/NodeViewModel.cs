@@ -447,7 +447,6 @@ namespace Dynamo.ViewModels
             if (this.PreviewBubble == null)
                 return;
 
-            RaisePropertyChanged("IsPreviewInsetVisible");
             this.PreviewBubble.IsShowPreviewByDefault = dynSettings.Controller.IsShowPreviewByDefault;
             UpdatePreviewBubbleContent();
             if (dynSettings.Controller.IsShowPreviewByDefault)
