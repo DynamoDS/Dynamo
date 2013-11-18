@@ -129,6 +129,11 @@ namespace Dynamo
         {
             var geoms = new List<GeometryObject>();
 
+            if (value == null)
+            {
+                return geoms;
+            }
+
             if (value.IsList)
             {
                 foreach (var val_inner in ((FScheme.Value.List)value).Item)
