@@ -302,7 +302,7 @@ namespace Dynamo.DSEngine
             foreach (var node in sortedNodes)
             {
                 var inputAstNodes = new List<AssociativeNode>();
-                for (int index = 0; index < node.InPortData.Count; ++index)
+                foreach (var index in Enumerable.Range(0, node.InPortData.Count))
                 {
                     Tuple<int, NodeModel> inputTuple;
 
@@ -315,14 +315,14 @@ namespace Dynamo.DSEngine
                     {
                         int outputIndexOfInput = inputTuple.Item1;
                         NodeModel inputModel = inputTuple.Item2;
-                        inputNode = inputModel.GetIndexedOutputNode(outputIndexOfInput);
+                        inputNode = inputModel.GetAstIdentifierForOutputIndex(outputIndexOfInput);
                     }
 
                     inputAstNodes.Add(inputNode);
                 }
 
                 //TODO: This should do something more than just log a generic message. --SJE
-                if (node.State == ElementState.ERROR)
+                if (node.State == ElementState.Error)
                 {
                     DynamoLogger.Instance.Log("Error in Node. Not sent for building and compiling");
                 }

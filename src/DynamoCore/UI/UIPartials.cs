@@ -587,6 +587,25 @@ namespace Dynamo.Nodes
             };
             tb_slider.SetBinding(Slider.MinimumProperty, bindingMinSlider);
         }
+
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            var converter = new IntegerDisplay();
+            switch (name)
+            {
+                case "Value":
+                    this.Value = ((int)converter.ConvertBack(value, typeof(int), null, null));
+                    return true; // UpdateValueCore handled.
+                case "Max":
+                    this.Max = ((int)converter.ConvertBack(value, typeof(int), null, null));
+                    return true; // UpdateValueCore handled.
+                case "Min":
+                    this.Min = ((int)converter.ConvertBack(value, typeof(int), null, null));
+                    return true; // UpdateValueCore handled.
+            }
+
+            return base.UpdateValueCore(name, value);
+        }
     }
 
     public partial class BoolSelector : Bool
@@ -907,10 +926,10 @@ namespace Dynamo.Nodes
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             });
 
-            if (shouldFocus)
+            if (_shouldFocus)
             {
                 tb.Focus();
-                shouldFocus = false;
+                _shouldFocus = false;
             }
         }
     }

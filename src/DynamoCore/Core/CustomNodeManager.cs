@@ -37,7 +37,7 @@ namespace Dynamo.Utilities
         public string Path { get; set; }
     }
 
-    public delegate void DefinitionLoadHandler(FunctionDefinition def);
+    public delegate void DefinitionLoadHandler(CustomNodeDefinition def);
 
     /// <summary>
     ///     Manages instantiation of custom nodes.  All custom nodes known to Dynamo should be stored
@@ -54,7 +54,7 @@ namespace Dynamo.Utilities
         /// </summary>
         public event DefinitionLoadHandler DefinitionLoaded;
 
-        public Dictionary<Guid, FunctionDefinition> LoadedCustomNodes = new Dictionary<Guid, FunctionDefinition>();
+        public Dictionary<Guid, CustomNodeDefinition> LoadedCustomNodes = new Dictionary<Guid, CustomNodeDefinition>();
 
         /// <summary>
         /// NodeNames </summary>
@@ -100,16 +100,16 @@ namespace Dynamo.Utilities
         ///     Enumerates all of the loaded custom node defs
         /// </summary>
         /// <returns>A list of the current loaded custom node defs</returns>
-        public IEnumerable<FunctionDefinition> GetLoadedDefinitions()
+        public IEnumerable<CustomNodeDefinition> GetLoadedDefinitions()
         {
             return LoadedCustomNodes.Values;
         }
 
         /// <summary>
-        ///     Manually add the FunctionDefinition to LoadedNodes, overwriting the existing FunctionDefinition
+        ///     Manually add the CustomNodeDefinition to LoadedNodes, overwriting the existing CustomNodeDefinition
         /// </summary>
         /// <returns>False if SearchPath is not a valid directory, otherwise true</returns>
-        public void AddFunctionDefinition(Guid id, FunctionDefinition def)
+        public void AddFunctionDefinition(Guid id, CustomNodeDefinition def)
         {
             this.LoadedCustomNodes[id] = def;
         }
@@ -224,12 +224,12 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        ///     Update a FunctionDefinition amongst the loaded FunctionDefinitions, without
+        ///     Update a CustomNodeDefinition amongst the loaded FunctionDefinitions, without
         ///     settings its path
         /// </summary>
         /// <param name="guid">The custom node id</param>
         /// <param name="def">The definition for the function</param>
-        public void SetFunctionDefinition(Guid guid, FunctionDefinition def)
+        public void SetFunctionDefinition(Guid guid, CustomNodeDefinition def)
         {
             if (this.LoadedCustomNodes.ContainsKey(guid))
             {
@@ -300,7 +300,7 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="id">The unique id for the node.</param>
         /// <returns>The path to the node or null if it wasn't found.</returns>
-        public FunctionDefinition GetFunctionDefinition(Guid id)
+        public CustomNodeDefinition GetFunctionDefinition(Guid id)
         {
             if (!this.Contains(id))
                 return null;
@@ -311,7 +311,7 @@ namespace Dynamo.Utilities
             }
             else
             {
-                FunctionDefinition def;
+                CustomNodeDefinition def;
                 if (this.GetDefinitionFromPath(id, out def))
                 {
                     return def;
@@ -414,7 +414,7 @@ namespace Dynamo.Utilities
                 return false;
             }
 
-            FunctionDefinition def = null;
+            CustomNodeDefinition def = null;
             if (!this.IsInitialized(guid))
             {
                 if (!GetDefinitionFromPath(guid, out def))
@@ -564,12 +564,12 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        ///     Get a FunctionDefinition from a workspace.  Assumes the FunctionDefinition is already loaded.
+        ///     Get a CustomNodeDefinition from a workspace.  Assumes the CustomNodeDefinition is already loaded.
         ///     Use IsInitialized to figure out if the FunctionDef is loaded.
         /// </summary>
         /// <param name="workspace">The workspace which you'd like to find the Definition for</param>
-        /// <returns>A valid function definition if the FunctionDefinition is already loaded, otherwise null. </returns>
-        public FunctionDefinition GetDefinitionFromWorkspace(WorkspaceModel workspace)
+        /// <returns>A valid function definition if the CustomNodeDefinition is already loaded, otherwise null. </returns>
+        public CustomNodeDefinition GetDefinitionFromWorkspace(WorkspaceModel workspace)
         {
             return this.LoadedCustomNodes.Values.FirstOrDefault((def) => def.WorkspaceModel == workspace);
         }
@@ -582,7 +582,7 @@ namespace Dynamo.Utilities
         /// <param name="controller">Reference to the calling controller</param>
         /// <param name="def">The resultant function definition</param>
         /// <returns></returns>
-        private bool GetDefinitionFromPath(Guid funcDefGuid, out FunctionDefinition def)
+        private bool GetDefinitionFromPath(Guid funcDefGuid, out CustomNodeDefinition def)
         {
             var controller = dynSettings.Controller;
 
@@ -659,7 +659,7 @@ namespace Dynamo.Utilities
                     Zoom = zoom
                 };
 
-                def = new FunctionDefinition(Guid.Parse(id))
+                def = new CustomNodeDefinition(Guid.Parse(id))
                 {
                     WorkspaceModel = ws
                 };
@@ -872,7 +872,7 @@ namespace Dynamo.Utilities
             return true;
         }
 
-        public void OnGetDefinitionFromPath(FunctionDefinition def)
+        public void OnGetDefinitionFromPath(CustomNodeDefinition def)
         {
             if (DefinitionLoaded != null && def != null)
                 DefinitionLoaded(def);

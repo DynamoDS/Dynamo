@@ -14,7 +14,7 @@ namespace Dynamo.PackageManager.UI
         {
         }
 
-        public PackageItemLeafViewModel(FunctionDefinition def, PackageItemViewModel parent) : base(def, parent)
+        public PackageItemLeafViewModel(CustomNodeDefinition def, PackageItemViewModel parent) : base(def, parent)
         {
         }
 

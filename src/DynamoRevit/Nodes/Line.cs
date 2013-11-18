@@ -57,7 +57,50 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Line by Origin and Direction")]
+    [NodeName("Line By Start Point, Direction, Length")]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_CREATE)]
+    [NodeDescription("Creates a geometric line from a start point, a direction, and a length.")]
+    [NodeSearchTags("curve", "direction", "line")]
+    public class LineByStartPtDirLength : GeometryBase
+    {
+        public LineByStartPtDirLength()
+        {
+            InPortData.Add(new PortData("start", "The origin of the line.", typeof(FScheme.Value.Container)));
+            InPortData.Add(new PortData("direction", "The direction vector.", typeof(FScheme.Value.Container)));
+            InPortData.Add(new PortData("length", "The length of the line.", typeof(FScheme.Value.Container)));
+
+            OutPortData.Add(new PortData("line", "Line", typeof(FScheme.Value.Container)));
+
+            RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
+        }
+
+        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+        {
+            var ptA = (XYZ)((FScheme.Value.Container)args[0]).Item;
+            var vec = (XYZ)((FScheme.Value.Container)args[1]).Item;
+            var len = ((FScheme.Value.Number)args[2]).Item;
+
+            if (len == 0)
+            {
+                throw new Exception("Cannot create a line with zero length.");
+            }
+
+            var ptB = ptA + vec.Multiply(len);
+
+            if (ptA.IsAlmostEqualTo(ptB))
+            {
+                throw new Exception("The start point and end point are extremely close together. The line will be too short.");
+            }
+
+            var line = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(ptA, ptB);
+
+            return FScheme.Value.NewContainer(line);
+        }
+    }
+
+    [NodeName("Line by Origin Direction")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_CREATE)]
     [NodeDescription("Creates a line in the direction of an XYZ normal.")]
     public class LineVectorfromXyz : NodeWithOneOutput
@@ -81,7 +124,6 @@ namespace Dynamo.Nodes
 
             return FScheme.Value.NewContainer(c);
         }
-
 
         public Autodesk.Revit.DB.ModelCurve MakeLine(Document doc, XYZ ptA, XYZ ptB)
         {

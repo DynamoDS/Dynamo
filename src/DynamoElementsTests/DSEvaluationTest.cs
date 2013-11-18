@@ -379,7 +379,14 @@ namespace Dynamo.Tests
             AssertValue("y", 4);
 
         }
-        
-        
+
+
+        [Test]
+        public void Regress722()
+        {
+            RunModel(@"core\dsevaluation\regress722.dyn");
+            AssertValue("x", 42);
+        }
+
     }
 }

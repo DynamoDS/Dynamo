@@ -12,12 +12,28 @@ namespace DSRevitNodes.Elements
     [Browsable(false)]
     public abstract class AbstractElement : IDisposable
     {
+        /// <summary>
+        /// A reference to the current Document.
+        /// </summary>
         public static Document Document
         {
             get { return DocumentManager.GetInstance().CurrentDBDocument; }
         }
 
+        /// <summary>
+        /// Indicates whether the element is owned by Revit or not.  If the element
+        /// is Revit owned, it should not be deleted by Dispose().
+        /// </summary>
+        internal bool IsRevitOwned = false;
+
+        /// <summary>
+        /// The element id for this element
+        /// </summary>
         protected ElementId InternalElementId;
+
+        /// <summary>
+        /// The unique id for this element
+        /// </summary>
         protected string InternalUniqueId;
 
         /// <summary>
@@ -26,7 +42,11 @@ namespace DSRevitNodes.Elements
         /// </summary>
         public virtual void Dispose()
         {
-            DocumentManager.GetInstance().DeleteElement(this.InternalElementId);
+            // Do not delete Revit owned elements
+            if (!IsRevitOwned)
+            {
+                DocumentManager.GetInstance().DeleteElement(this.InternalElementId);
+            }
         }
     }
 }
