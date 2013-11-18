@@ -68,8 +68,6 @@ namespace Dynamo.ViewModels
         internal void CancelActiveState()
         {
             stateMachine.CancelActiveState();
-
-            OnDragSelectionEnded(this, EventArgs.Empty);
         }
 
         internal void BeginDragSelection(Point mouseCursor)
@@ -387,14 +385,6 @@ namespace Dynamo.ViewModels
             /// </summary>
             internal void CancelActiveState()
             {
-                if (currentState == State.Connection)
-                {
-                    var command = new DynCmd.MakeConnectionCommand(Guid.Empty, -1,
-                        PortType.INPUT, DynCmd.MakeConnectionCommand.Mode.Cancel);
-
-                    var dynamoViewModel = dynSettings.Controller.DynamoViewModel;
-                    dynamoViewModel.ExecuteCommand(command);
-                }
                 SetCurrentState(State.None);
                 ignoreMouseClick = true;
             }
@@ -539,7 +529,6 @@ namespace Dynamo.ViewModels
 
                 if (this.currentState == State.WindowSelection)
                 {
-                    CancelWindowSelection();
                     SetCurrentState(State.None);
                     return true; // Mouse event handled.
                 }
@@ -698,6 +687,9 @@ namespace Dynamo.ViewModels
 
             private void CancelWindowSelection()
             {
+                // visualization unpause
+                owningWorkspace.OnDragSelectionEnded(this, EventArgs.Empty);
+
                 SelectionBoxUpdateArgs args = null;
                 args = new SelectionBoxUpdateArgs(Visibility.Collapsed);
                 this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
@@ -749,6 +741,9 @@ namespace Dynamo.ViewModels
                 this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
 
                 SetCurrentState(State.WindowSelection);
+
+                // visualization pause
+                owningWorkspace.OnDragSelectionStarted(this, EventArgs.Empty);
             }
 
             #endregion

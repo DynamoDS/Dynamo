@@ -15,7 +15,6 @@ namespace Dynamo.Nodes
     [NodeName("Line by Endpoints")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_CREATE)]
     [NodeDescription("Creates a geometric line.")]
-    [NodeSearchTags("curve", "two point", "line")]
     public class LineBound : GeometryBase
     {
         public LineBound()
@@ -57,10 +56,9 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Line By Start Point, Direction, Length")]
+    [NodeName("Line By Start Point Direction Length")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_CREATE)]
     [NodeDescription("Creates a geometric line from a start point, a direction, and a length.")]
-    [NodeSearchTags("curve", "direction", "line")]
     public class LineByStartPtDirLength : GeometryBase
     {
         public LineByStartPtDirLength()

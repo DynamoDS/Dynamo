@@ -153,6 +153,11 @@ namespace Dynamo
         {
             var geoms = new List<GeometryObject>();
 
+            if (value == null)
+            {
+                return geoms;
+            }
+
             if (value.IsList)
             {
                 foreach (var valInner in ((Value.List)value).Item)

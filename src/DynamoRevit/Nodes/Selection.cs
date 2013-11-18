@@ -625,7 +625,7 @@ namespace Dynamo.Nodes
     [NodeName("Select Divided Surface Families")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a all families on a divided surface by picking the underlying form.")]
-    [NodeSearchTags("Curtain Panel", "Divided", "surface", "component", "family")]
+    [NodeSearchTags("Curtain Panel", "component")]
     public class DividedSurfaceBySelection : ElementSelectionBase
     {
         private Value _data;
