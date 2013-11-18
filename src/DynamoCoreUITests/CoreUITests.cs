@@ -21,18 +21,6 @@ namespace Dynamo.Tests.UI
         {
             AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.CurrentDomain_AssemblyResolve;
 
-            Controller = DynamoController.MakeSandbox();
-
-            //create the view
-            Ui = new DynamoView();
-            Ui.DataContext = Controller.DynamoViewModel;
-            Vm = Controller.DynamoViewModel;
-            Model = Controller.DynamoModel;
-            Controller.UIDispatcher = Ui.Dispatcher;
-            Ui.Show();
-
-            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
-
             string tempPath = Path.GetTempPath();
             TempFolder = Path.Combine(tempPath, "dynamoTmp");
 
@@ -44,6 +32,21 @@ namespace Dynamo.Tests.UI
             {
                 EmptyTempFolder();
             }
+
+            // Setup Temper PreferenceSetting Location for the user to save user in
+            PreferenceSettings.DYNAMO_TEST_PATH = Path.Combine(TempFolder, "UserPreferenceTest.xml");
+
+            Controller = DynamoController.MakeSandbox();
+
+            //create the view
+            Ui = new DynamoView();
+            Ui.DataContext = Controller.DynamoViewModel;
+            Vm = Controller.DynamoViewModel;
+            Model = Controller.DynamoModel;
+            Controller.UIDispatcher = Ui.Dispatcher;
+            Ui.Show();
+
+            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
         }
 
         [TearDown]
@@ -558,8 +561,86 @@ namespace Dynamo.Tests.UI
 
         #endregion
 
+        #region PreferenceSettings
+        [Test, RequiresSTA]
+        [Category("DynamoUI")]
+        public void PreferenceSetting()
+        {
+            // Test Case to ensure that the link for these persistent variable
+            // between DynamoViewModel, Controller is not broken or replaced.
+            #region FullscreenWatchShowing
+            bool expectedValue = !Controller.PreferenceSettings.FullscreenWatchShowing;
+            Vm.ToggleFullscreenWatchShowing(null);
+            Assert.AreEqual(expectedValue, Controller.PreferenceSettings.FullscreenWatchShowing);
+
+            expectedValue = !Controller.PreferenceSettings.FullscreenWatchShowing;
+            Vm.ToggleFullscreenWatchShowing(null);
+            Assert.AreEqual(expectedValue, Controller.PreferenceSettings.FullscreenWatchShowing);
+            #endregion
+
+            #region ShowConsole
+            expectedValue = !Controller.PreferenceSettings.ShowConsole;
+            Vm.ToggleConsoleShowing(null);
+            Assert.AreEqual(expectedValue, Controller.PreferenceSettings.ShowConsole);
+
+            expectedValue = !Controller.PreferenceSettings.ShowConsole;
+            Vm.ToggleConsoleShowing(null);
+            Assert.AreEqual(expectedValue, Controller.PreferenceSettings.ShowConsole);
+            #endregion
+
+            #region ConnectorType
+            ConnectorType expectedConnector = ConnectorType.BEZIER;
+            Vm.SetConnectorType("BEZIER");
+            Assert.AreEqual(expectedConnector, Controller.PreferenceSettings.ConnectorType);
+
+            expectedConnector = ConnectorType.POLYLINE;
+            Vm.SetConnectorType("POLYLINE");
+            Assert.AreEqual(expectedConnector, Controller.PreferenceSettings.ConnectorType);
+            Ui.Close();
+            #endregion
+
+            #region Save And Load of PreferenceSettings
+            // Test if variable can be serialize and deserialize without any issue
+            string tempPath = System.IO.Path.GetTempPath();
+            tempPath = Path.Combine(tempPath, "userPreference.xml");
+
+            // Force inital state
+            PreferenceSettings initalSetting = new PreferenceSettings();
+            PreferenceSettings resultSetting;
+
+            #region First Test
+
+            initalSetting.ConnectorType = ConnectorType.BEZIER;
+            initalSetting.ShowConsole = true;
+            initalSetting.FullscreenWatchShowing = true;
+
+            initalSetting.Save(tempPath);
+            resultSetting = PreferenceSettings.Load(tempPath);
+
+            Assert.AreEqual(resultSetting.FullscreenWatchShowing, initalSetting.FullscreenWatchShowing);
+            Assert.AreEqual(resultSetting.ConnectorType, initalSetting.ConnectorType);
+            Assert.AreEqual(resultSetting.ShowConsole, initalSetting.ShowConsole);
+            #endregion
+
+            #region Second Test
+            initalSetting.ConnectorType = ConnectorType.POLYLINE;
+            initalSetting.ShowConsole = false;
+            initalSetting.FullscreenWatchShowing = false;
+
+            initalSetting.Save(tempPath);
+            resultSetting = PreferenceSettings.Load(tempPath);
+
+            Assert.AreEqual(resultSetting.FullscreenWatchShowing, initalSetting.FullscreenWatchShowing);
+            Assert.AreEqual(resultSetting.ConnectorType, initalSetting.ConnectorType);
+            Assert.AreEqual(resultSetting.ShowConsole, initalSetting.ShowConsole);
+            #endregion
+
+            #endregion
+        }
+        #endregion
+
         #region InfoBubble
-        
+
         [Test]
         [Category("DynamoUI")]
         public void UpdateInfoBubble_LibItem()
