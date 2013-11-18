@@ -540,7 +540,12 @@ namespace Dynamo.Models
                     var node = model as NodeModel;
                     Debug.Assert(this == node.WorkSpace);
 
-                    foreach (var conn in node.AllConnectors)
+                    // Note that AllConnectors is duplicated as a separate list 
+                    // by calling its "ToList" method. This is the because the 
+                    // "Connectors.Remove" will modify "AllConnectors", causing 
+                    // the Enumerator in this "foreach" to become invalid.
+                    // 
+                    foreach (var conn in node.AllConnectors.ToList())
                     {
                         conn.NotifyConnectedPortsOfDeletion();
                         Connectors.Remove(conn);
