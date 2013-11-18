@@ -343,7 +343,7 @@ namespace Dynamo.Tests
         {
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-609
             RunModel(@"core\dsevaluation\CBN_Geometry_Conditional_609_3.dyn");
-            AssertValue("b", 1);
+            AssertValue("b", 3.00);
 
         }
         [Test]
@@ -351,7 +351,7 @@ namespace Dynamo.Tests
         {
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-609
             RunModel(@"core\dsevaluation\CBN_Geometry_Array_609_4.dyn");
-            AssertValue("b", new int[] {1,2});
+            AssertValue("b", new double[] {1.0,2.0});
 
         }
         [Test]
@@ -370,7 +370,8 @@ namespace Dynamo.Tests
 
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-622
             RunModel(@"core\dsevaluation\CBN_Dynamic_Array_622.dyn");
-            AssertValue("y", 1);
+            AssertValue("y", new int[] {1});
+            AssertValue("c", 1 );
 
         }
         [Test]
@@ -379,7 +380,7 @@ namespace Dynamo.Tests
 
         //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-622
             RunModel(@"core\dsevaluation\CBN_Dynamic_Array_622_2.dyn");
-            AssertValue("y", 4);
+            AssertValue("z", 4);
 
         }
 
