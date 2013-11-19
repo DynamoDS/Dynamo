@@ -222,8 +222,13 @@ namespace Dynamo.Core
         /// <summary>
         /// This function removes the top item from the UndoStack
         /// </summary>
-        public void RemoveLastRecordedActionGroup()
+        public void PopFromUndoGroup()
         {
+            if (this.redoStack.Count > 0)
+            {
+                throw new InvalidOperationException(
+                    "UndoStack cannot be pop with non-empty RedoStack");
+            }
             PopActionGroupFromUndoStack();
         }
 
