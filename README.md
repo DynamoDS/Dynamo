@@ -27,6 +27,59 @@ The current version will run on top of Revit 2013, Revit 2014, and Project Vasar
 
 ## Releases ##
 
+###0.6.2###
+
+November 2013
+
+Fixes
+- 2*Pi node
+- Cross Product lacing now gives a list of lists
+- Lots of custom node fixes
+- Fixes for package manager uploads (crash when not logged in)
+- Python cleanup and fixes
+- Dynamo now handles close and open new document in same session
+- Get Family Location fixes
+- Color range node preview is now accurate
+- Structural Framing can now take a single or a list of UP values
+- So Many!  Check Github for full list
+
+
+New
+- UI enhancements
+- Mouse-less navigation
+- Background Preview elemnents highlight when nodes are selected
+- Selection of Solids in background highlights nodes
+- Cloud based Daylighting Analysis
+- No limit to the size of canvas
+- Background 3d visualization improvments
+- Resizable Watch 3d windows
+- PReview data bubbles on nodes
+- Added an interval node to Web Request
+- Equal can now compare all data types
+- Updates to arduino. Use delimiter instead of new lines.
+- More forgiving inputs for Solid Geometry creation
+- Browser reorganization.  
+- Search Improvements
+- List handling.  Most nodes now can take lists and lists of lists
+- XYZ and Vector improvments:  Normalize, Dot product, components, ploar and spherical coordinates
+- Solid Primitives: Boxes, Cylinder, Sphere, Torus
+- Boolean improvments
+- Get Family Location now takes single origin and multi-pick placement families
+- Drag and Drop dyn files into canvas to open
+- Asin, Acos, Atan
+- Wall and Floor Creation nodes.  WARNING!  Recreated, not modified on change.
+- Point and Curve numbering available in node right click "Show Label"
+- Extract Transform Basis for x, y, and z vector components
+- Curve Plane Intersection
+- transform origin node
+- plane from reference plane.
+- line by start point direction and length
+- integer slider
+- xyz by distance offset from origin
+- STL export (from file menu)
+- Adaptive Component Batch creation node (make more stuff faster)
+- Default values added to many nodes
+
 ###0.6.1###
 
 October 2013
