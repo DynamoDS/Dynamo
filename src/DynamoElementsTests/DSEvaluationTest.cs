@@ -399,5 +399,11 @@ namespace Dynamo.Tests
             AssertValue("x", 42);
         }
 
+        [Test]
+        public void Regress737()
+        {
+            RunModel(@"core\dsevaluation\regress737.dyn");
+            AssertPreviewValue("ccad1780-f570-4ccc-ae7a-0ad1b663c3dd", 21);
+        }
     }
 }
