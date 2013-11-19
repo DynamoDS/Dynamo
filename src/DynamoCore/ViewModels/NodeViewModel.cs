@@ -434,6 +434,10 @@ namespace Dynamo.ViewModels
                 case "DisplayLabels":
                     RaisePropertyChanged("IsDisplayingLables");
                     break;
+                case "Position":
+                    UpdateErrorBubblePosition();
+                    UpdatePreviewBubblePosition();
+                    break;
             }
         }
 
