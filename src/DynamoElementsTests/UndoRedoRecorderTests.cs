@@ -569,6 +569,25 @@ namespace Dynamo.Tests
                 recorder.Clear(); // Clearing with an open group.
             });
         }
+
+        [Test]
+        public void TestPopFromUndoGroup()
+        {
+            //Assert that it cannot pop from an empty undostack
+            Assert.Throws<InvalidOperationException>(() => { recorder.PopFromUndoGroup(); });
+
+            //Add models
+            workspace.AddModel(new DummyModel(1, 10));
+            workspace.AddModel(new DummyModel(2, 10));
+
+            Assert.AreEqual(true, recorder.CanUndo);
+            Assert.AreEqual(false, recorder.CanRedo);
+
+            recorder.Undo();
+
+            //Assert that there was an Action Group that was just pushed on top of the undo stack
+            Assert.Throws<InvalidOperationException>(() => { recorder.PopFromUndoGroup(); });
+        }
     }
 
     internal class SerializationTests : DynamoUnitTest
