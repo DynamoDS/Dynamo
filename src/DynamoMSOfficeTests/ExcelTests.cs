@@ -19,6 +19,15 @@ namespace Dynamo.Tests
             base.Init();
             // hide the excel window for tests
             ExcelInterop.ShowOnStartup = false;
+
+            // In unit-test scenario we are redirecting 'PreferenceSettings' to 
+            // load from a non-existing preference XML file. That way each test 
+            // will result in an instance of 'PreferenceSettings' with its default 
+            // values (since the underlying file wouldn't have existed). This 
+            // ensures the preference value change in one test case (if any) does 
+            // not get persisted across to the subsequent test case.
+            // 
+            PreferenceSettings.DYNAMO_TEST_PATH = Path.Combine(TempFolder, "UserPreferenceTest.xml");
         }
 
         [TearDown]
