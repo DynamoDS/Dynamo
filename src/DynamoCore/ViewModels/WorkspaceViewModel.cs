@@ -490,20 +490,23 @@ namespace Dynamo.ViewModels
                 for (int n = 0; n < connectorModels.Count(); ++n)
                 {
                     _model.UndoRecorder.RecordDeletionForUndo(connectorModels.ElementAt(n));
+                    connectorModels.ElementAt(n).NotifyConnectedPortsOfDeletion();
                     _model.Connectors.Remove(connectorModels.ElementAt(n));
                 }
                 _model.UndoRecorder.RecordDeletionForUndo(node);
                 _model.Nodes.Remove(node);
                 m++;
             }
+            
+            // create node
+            var guid = Guid.NewGuid();
+            var codeBlockNode = new CodeBlockNodeModel(code, guid, this._model);
+            this._model.UndoRecorder.RecordCreationForUndo(codeBlockNode);
+            this._model.Nodes.Add(codeBlockNode);
+
 
             _model.UndoRecorder.EndActionGroup();
             //End UndoRedo Action Group------------------------------------------------------------------------------------
-
-            // create node
-            var guid = Guid.NewGuid();
-            dynSettings.Controller.DynamoViewModel.ExecuteCommand(
-                new DynamoViewModel.CreateNodeCommand(guid, "Code Block", 0, 0, true, true));
 
             // select node
             var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
@@ -513,9 +516,7 @@ namespace Dynamo.ViewModels
                 DynamoSelection.Instance.Selection.Add(placedNode);
             }
 
-            // Assign the sourcecode contents 
-            var cbn = placedNode as CodeBlockNodeModel;
-            cbn.Code = code;
+            this._model.Modified();
         }
 
         internal bool CanNodeToCode(object parameter)
