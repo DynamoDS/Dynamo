@@ -11,6 +11,19 @@ namespace Dynamo.Tests
     [Category("DSExecution")]
     class DSLibraryTest : DynamoUnitTest
     {
+        [SetUp]
+        public override void Init()
+        {
+            base.Init();
+        }
+
+        [TearDown]
+        public override void Cleanup()
+        {
+            GraphToDSCompiler.GraphUtilities.CleanUp();
+            base.Cleanup();
+        }
+
         [Test]
         public void TestPreLoadedLibrary()
         {

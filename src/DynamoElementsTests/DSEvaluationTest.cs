@@ -79,6 +79,13 @@ namespace Dynamo.Tests
             Assert.IsTrue(StackUtils.IsValidPointer(svValue));
         }
 
+        [TearDown]
+        public override void Cleanup()
+        {
+            GraphToDSCompiler.GraphUtilities.CleanUp();
+            base.Cleanup();
+        }
+
         [Test]
         public void TestCodeBlockNode01()
         {
