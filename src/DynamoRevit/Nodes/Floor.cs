@@ -11,7 +11,7 @@ namespace Dynamo.Nodes
 {
     [NodeName("Floor By Outline")]
     [NodeCategory(BuiltinNodeCategories.REVIT_DOCUMENT)]
-    [NodeDescription("Create a floor given a list of curves, a floor type and a level.")]
+    [NodeDescription("WARNING!  Recreated, not modified on change.  Create a floor given a list of curves, a floor type and a level.")]
     public class FloorByOutlineLevelAndOffset : RevitTransactionNodeWithOneOutput
     {
         public FloorByOutlineLevelAndOffset()
