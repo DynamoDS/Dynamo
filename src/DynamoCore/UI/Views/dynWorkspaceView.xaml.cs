@@ -42,10 +42,8 @@ namespace Dynamo.Views
             ResizeHorizontal
         }
 
-        // TODO(Ben): Remove this.
         private Dynamo.Controls.DragCanvas WorkBench = null;
         private ZoomAndPanControl zoomAndPanControl = null;
-        private EndlessGrid endlessGrid = null;
 
         private PortViewModel snappedPort = null;
         private List<DependencyObject> hitResultsList = new List<DependencyObject>();
