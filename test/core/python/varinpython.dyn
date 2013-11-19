@@ -1,0 +1,25 @@
+<Workspace Version="0.6.2.28208" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="41d8f37c-8d47-41e8-ac3b-3264201ce0ac" nickname="Python Script With Variable Number of Inputs" x="175" y="174.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="8">
+      <Script># Default imports
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Users\boyerp\Dropbox\Github\Autodesk\DynamoNew\Dynamo\bin\AnyCPU\Debug\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#The input to this node will be stored in the IN0...INX variable(s).
+dataEnteringNode = IN0
+
+#Assign your output to the OUT variable
+OUT = 0
+
+oker</Script>
+    </Dynamo.Nodes.PythonVarIn>
+  </Elements>
+  <Connectors />
+  <Notes />
+</Workspace>
