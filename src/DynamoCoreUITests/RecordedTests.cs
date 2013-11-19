@@ -48,6 +48,18 @@ namespace Dynamo.Tests.UI
         #region Recorded Test Cases for Command Framework
 
         [Test, RequiresSTA]
+        public void _SnowPeashooter()
+        {
+            RunCommandsFromFile("SnowPeashooter.xml");
+
+            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count);
+
+            var number = GetNode("045decd1-7454-4b85-b92e-d59d35f31ab2") as DoubleInput;
+            Assert.AreEqual("12.34", number.Value);
+        }
+
+        [Test, RequiresSTA]
         public void TestCreateNodeCommand()
         {
             // Create the command in completely unpredictable states. These 
@@ -330,9 +342,51 @@ namespace Dynamo.Tests.UI
         }
 
         [Test, RequiresSTA]
+        public void TestModifyPythonNodes()
+        {
+            RunCommandsFromFile("ModifyPythonNodes.xml");
+            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count);
+
+            var python = GetNode("6f580b72-6aeb-4af2-b28b-a2e5b634721b") as Python;
+            var pvarin = GetNode("f0fc1dea-3874-40a0-a532-90c0ee10f437") as PythonVarIn;
+
+            Assert.AreEqual("# Modification 3", python.Script);
+            Assert.AreEqual("# Modification 4", pvarin.Script);
+        }
+
+        [Test, RequiresSTA]
+        public void TestModifyPythonNodesUndo()
+        {
+            RunCommandsFromFile("ModifyPythonNodesUndo.xml");
+            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count);
+
+            var python = GetNode("6f580b72-6aeb-4af2-b28b-a2e5b634721b") as Python;
+            var pvarin = GetNode("f0fc1dea-3874-40a0-a532-90c0ee10f437") as PythonVarIn;
+
+            Assert.AreEqual("# Modification 1", python.Script);
+            Assert.AreEqual("# Modification 2", pvarin.Script);
+        }
+
+        [Test, RequiresSTA]
+        public void TestModifyPythonNodesUndoRedo()
+        {
+            RunCommandsFromFile("ModifyPythonNodesUndoRedo.xml");
+            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count);
+
+            var python = GetNode("6f580b72-6aeb-4af2-b28b-a2e5b634721b") as Python;
+            var pvarin = GetNode("f0fc1dea-3874-40a0-a532-90c0ee10f437") as PythonVarIn;
+
+            Assert.AreEqual("# Modification 3", python.Script);
+            Assert.AreEqual("# Modification 4", pvarin.Script);
+        }
+
+        [Test, RequiresSTA]
         public void ShiftSelectAllNode()
         {
-            RunCommandsFromFile("ShiftSelectAllNode.xml", true);
+            RunCommandsFromFile("ShiftSelectAllNode.xml");
 
             Assert.AreEqual(4, workspace.Nodes.Count);
             Assert.AreEqual(4, workspace.Connectors.Count);
@@ -349,6 +403,8 @@ namespace Dynamo.Tests.UI
         [Test, RequiresSTA]
         public void Defect_MAGN_491()
         {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-491
+
             // TODO: Rename this XML to match the test case name.
             RunCommandsFromFile("Defect-MAGN-491.xml");
             var connectors = workspaceViewModel.Connectors;
@@ -372,6 +428,8 @@ namespace Dynamo.Tests.UI
         [Test, RequiresSTA]
         public void Defect_MAGN_225()
         {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-225
+
             // TODO: Rename this XML to match the test case name.
             RunCommandsFromFile("TestConnectionReplacementUndo.xml");
             var nodes = workspaceViewModel.Nodes;
@@ -383,7 +441,8 @@ namespace Dynamo.Tests.UI
         [Test, RequiresSTA]
         public void Defect_MAGN_57()
         {
-            RunCommandsFromFile("Defect_MAGN_57.xml", true);
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-57
+            RunCommandsFromFile("Defect_MAGN_57.xml");
 
             Assert.AreEqual(7, workspace.Nodes.Count);
             Assert.AreEqual(5, workspace.Connectors.Count);
@@ -393,6 +452,8 @@ namespace Dynamo.Tests.UI
         [Test, RequiresSTA]
         public void Defect_MAGN_159()
         {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-159
+
             RunCommandsFromFile("Defect_MAGN_159.xml", true);
 
             Assert.AreEqual(1, workspace.Nodes.Count);
@@ -405,8 +466,10 @@ namespace Dynamo.Tests.UI
         [Ignore, RequiresSTA]
         public void Defect_MAGN_160()
         {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-160
+
             // List node cannot be created  ( current limitation for button click)
-            RunCommandsFromFile("Defect_MAGN_160.xml", true);
+            RunCommandsFromFile("Defect_MAGN_160.xml");
 
             //Assert.AreEqual(1, workspace.Nodes.Count);
             //Assert.AreEqual(0, workspace.Connectors.Count);
@@ -418,6 +481,8 @@ namespace Dynamo.Tests.UI
         [Test, RequiresSTA]
         public void Defect_MAGN_164()
         {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-164
+
             RunCommandsFromFile("Defect_MAGN_164.xml", true);
 
             Assert.AreEqual(2, workspace.Nodes.Count);
@@ -433,7 +498,8 @@ namespace Dynamo.Tests.UI
         [Test, RequiresSTA]
         public void Defect_MAGN_190()
         {
-            RunCommandsFromFile("Defect_MAGN_190.xml", true);
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-190
+            RunCommandsFromFile("Defect_MAGN_190.xml");
 
             Assert.AreEqual(2, workspace.Nodes.Count);
             Assert.AreEqual(1, workspace.Connectors.Count);
@@ -443,7 +509,8 @@ namespace Dynamo.Tests.UI
         [Test, RequiresSTA]
         public void Defect_MAGN_429()
         {
-            RunCommandsFromFile("Defect_MAGN_429.xml", true);
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-429
+            RunCommandsFromFile("Defect_MAGN_429.xml");
 
             Assert.AreEqual(0, workspace.Nodes.Count);
             Assert.AreEqual(0, workspace.Connectors.Count);
@@ -453,7 +520,8 @@ namespace Dynamo.Tests.UI
         [Test, RequiresSTA]
         public void Defect_MAGN_478()
         {
-            RunCommandsFromFile("Defect_MAGN_478.xml", true);
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-478
+            RunCommandsFromFile("Defect_MAGN_478.xml");
 
             Assert.AreEqual(1, workspace.Notes.Count);
         }

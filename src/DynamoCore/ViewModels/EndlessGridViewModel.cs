@@ -141,15 +141,17 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// When EndlessGrid is loaded, it will trigger this method to start working
+        /// When EndlessGridView is loaded, it will trigger this method to start working
         /// </summary>
-        private void Run(object parameter)
+        internal void InitializeOnce()
         {
             // Subscribing to properties changes, keeping up to date
             this.workspaceVM.Model.PropertyChanged += WorkspaceModel_PropertyChanged;
             dynSettings.Controller.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
 
             // Render EndlessGrid for the first time
+            RecalculateX();
+            RecalculateY();
             RecalculateSize();
         }
 
@@ -264,18 +266,5 @@ namespace Dynamo.ViewModels
             GridLines = collection;
         }
         #endregion
-
-
-        private DelegateCommand runCommand;
-        public DelegateCommand RunCommand
-        {
-            get
-            {
-                if (runCommand == null)
-                    runCommand = new DelegateCommand(Run, CanRun);
-                return runCommand;
-            }
-        }
-        private bool CanRun(object parameter) { return true; }
     }
 }
