@@ -213,6 +213,9 @@ namespace Dynamo.ViewModels
         {
             get
             {
+                if(this.PreviewBubble == null)
+                    return false;
+
                 return !this.PreviewBubble.IsShowPreviewByDefault;
             }
         }
@@ -284,9 +287,25 @@ namespace Dynamo.ViewModels
             dynSettings.Controller.PropertyChanged += Controller_PropertyChanged;
             
             this.ErrorBubble = new InfoBubbleViewModel();
-            this.PreviewBubble = new InfoBubbleViewModel();
-            this.PreviewBubble.PropertyChanged += PreviewBubble_PropertyChanged;
 
+            // Nodes mentioned in switch cases will not have preview bubble
+            switch (nodeLogic.Name)
+            {
+                case "Number":
+                    break;
+                case "String":
+                    break;
+                case "Watch":
+                    break;
+                case "Watch 3D":
+                    break;
+                case "Boolean":
+                    break;
+                default:
+                    this.PreviewBubble = new InfoBubbleViewModel();
+                    this.PreviewBubble.PropertyChanged += PreviewBubble_PropertyChanged;
+                    break;
+            }
             //Do a one time setup of the initial ports on the node
             //we can not do this automatically because this constructor
             //is called after the node's constructor where the ports
@@ -425,7 +444,9 @@ namespace Dynamo.ViewModels
 
         private void HandleDefaultShowPreviewChanged()
         {
-            RaisePropertyChanged("IsPreviewInsetVisible");
+            if (this.PreviewBubble == null)
+                return;
+
             this.PreviewBubble.IsShowPreviewByDefault = dynSettings.Controller.IsShowPreviewByDefault;
             UpdatePreviewBubbleContent();
             if (dynSettings.Controller.IsShowPreviewByDefault)
@@ -445,12 +466,16 @@ namespace Dynamo.ViewModels
             if (this.IsSelected == true)
             {
                 this.ZIndex = 4;
-                this.PreviewBubble.ZIndex = 4;
-           }
+
+                if (this.PreviewBubble != null)
+                    this.PreviewBubble.ZIndex = 4;
+            }
             else
             {
                 this.ZIndex = 3;
-                this.PreviewBubble.ZIndex = 3;
+
+                if (this.PreviewBubble != null)
+                    this.PreviewBubble.ZIndex = 3;
             }
         }
 
@@ -460,6 +485,7 @@ namespace Dynamo.ViewModels
                 return;
             if (string.IsNullOrEmpty(NodeModel.ToolTipText))
             {
+                // TODO: Opacity is no longer in use
                 if (ErrorBubble.Opacity != 0)
                 {
                     ErrorBubble.SetAlwaysVisibleCommand.Execute(false);
@@ -801,6 +827,9 @@ namespace Dynamo.ViewModels
 
         private void ShowPreview(object parameter)
         {
+            if (this.PreviewBubble == null)
+                return;
+
             UpdatePreviewBubbleContent();
             this.PreviewBubble.ZIndex = 5;
             this.PreviewBubble.InstantAppearCommand.Execute(null);
