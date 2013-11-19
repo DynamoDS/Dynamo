@@ -7,8 +7,11 @@ using System.Windows;
 using System.Windows.Input;
 using System.Xml;
 using Dynamo.Controls;
+using Dynamo.Core;
 using Dynamo.Models;
+using Dynamo.Utilities;
 using DynamoPython;
+using IronPython.Modules;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
 
@@ -27,6 +30,9 @@ namespace Dynamo.Nodes
         /// </summary>
         private readonly Dictionary<string, dynamic> _stateDict = new Dictionary<string, dynamic>();
 
+        /// <summary>
+        /// The script used by this node for execution.
+        /// </summary>
         private string _script;
 
         public Python()
@@ -118,7 +124,6 @@ namespace Dynamo.Nodes
             }
         }
 
-        //TODO: Make this smarter
         public override bool RequiresRecalc
         {
             get
@@ -149,40 +154,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        #region Serialization/Deserialization Methods
-
-        protected override void SerializeCore(XmlElement element, SaveContext context)
-        {
-            base.SerializeCore(element, context);
-
-            if (SaveContext.Undo == context)
-            {
-                XmlElement script = element.OwnerDocument.CreateElement("Script");
-                script.InnerText = _script;
-                element.AppendChild(script);
-            }
-        }
-
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
-        {
-            base.DeserializeCore(element, context);
-
-            if (SaveContext.Undo == context)
-            {
-                foreach (XmlNode child in element.ChildNodes)
-                {
-                    if (child.Name == "Script")
-                    {
-                        _script = child.InnerText;
-                        break;
-                    }
-                }
-            }
-        }
-
-        #endregion
-
-        private IEnumerable<KeyValuePair<string, dynamic>> makeBindings(IEnumerable<Value> args)
+        private IEnumerable<KeyValuePair<string, dynamic>> MakeBindings(IEnumerable<Value> args)
         {
             //Zip up our inputs
             var bindings = InPortData
@@ -198,7 +170,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            Value result = PythonEngine.Evaluator(_dirty, _script, makeBindings(args));
+            Value result = PythonEngine.Evaluator(_dirty, _script, MakeBindings(args));
             _lastEvalValue = result;
 
             Draw();
@@ -230,13 +202,26 @@ namespace Dynamo.Nodes
             if(_lastEvalValue != null)
                 PythonEngine.Drawing(_lastEvalValue, GUID.ToString());
         }
+
+        #region SerializeCore/DeserializeCore
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context);
+            var helper = new XmlElementHelper(element);
+            helper.SetAttribute("Script", this.Script);
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context);
+            var helper = new XmlElementHelper(element);
+            var script = helper.ReadString("Script", string.Empty);
+            this._script = script;
+        }
+
+        #endregion
     }
-
-
-
-
-
-
 
     [NodeName("Python Script With Variable Number of Inputs")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
@@ -251,6 +236,9 @@ namespace Dynamo.Nodes
         /// </summary>
         private readonly Dictionary<string, dynamic> _stateDict = new Dictionary<string, dynamic>();
 
+        /// <summary>
+        /// The script used by this node for execution.
+        /// </summary>
         private string _script;
 
         public PythonVarIn()
@@ -264,6 +252,26 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
+        /// <summary>
+        /// Set the number of inputs.  
+        /// </summary>
+        /// <param name="numInputs"></param>
+        public void SetNumInputs(int numInputs)
+        {
+            if (numInputs <= 0)
+            {
+                return;
+            }
+
+            InPortData.Clear();
+
+            for (var i = 0; i < numInputs; i++)
+            {
+                InPortData.Add(new PortData(GetInputRootName() + GetInputNameIndex(), "", typeof(object)));
+            }
+
+            RegisterAllPorts();
+        }
 
         // implement methods from variableinput
         protected override string GetInputRootName()
@@ -276,17 +284,13 @@ namespace Dynamo.Nodes
             return "Input";
         }
 
-
         protected override void RemoveInput()
         {
             if (InPortData.Count > 1)
+            {
                 base.RemoveInput();
+            }   
         }
-
-
-
-
-
 
         private void InitializeDefaultScript()
         {
@@ -370,7 +374,6 @@ namespace Dynamo.Nodes
             }
         }
 
-        //TODO: Make this smarter
         public override bool RequiresRecalc
         {
             get
@@ -390,72 +393,24 @@ namespace Dynamo.Nodes
             script.InnerText = _script;
             nodeElement.AppendChild(script);
 
-
             // save the number of inputs
             nodeElement.SetAttribute("inputs", (InPortData.Count).ToString());
-
         }
 
         protected override void LoadNode(XmlNode nodeElement)
         {
-
             var inputAttr = nodeElement.Attributes["inputs"];
             int inputs = inputAttr == null ? 1 : Convert.ToInt32(inputAttr.Value);
-            
-            
-            
-                for (; inputs > 1; inputs--)
-                {
-                    InPortData.Add(new PortData(GetInputRootName() + GetInputNameIndex(), "", typeof(object)));
-                }
+            this.SetNumInputs(inputs);
 
-                RegisterAllPorts();
-            
-
-
-
-            foreach (XmlNode subNode in nodeElement.ChildNodes)
+            var scriptNode = nodeElement.ChildNodes.Cast<XmlNode>().FirstOrDefault(x => x.Name == "Script");
+            if (scriptNode != null)
             {
-                if (subNode.Name == "Script")
-                    //this.tb.Text = subNode.InnerText;
-                    _script = subNode.InnerText;
+                _script = scriptNode.InnerText;
             }
         }
 
-        #region Serialization/Deserialization Methods
-
-        protected override void SerializeCore(XmlElement element, SaveContext context)
-        {
-            base.SerializeCore(element, context);
-
-            if (SaveContext.Undo == context)
-            {
-                XmlElement script = element.OwnerDocument.CreateElement("Script");
-                script.InnerText = _script;
-                element.AppendChild(script);
-            }
-        }
-
-        protected override void DeserializeCore(XmlElement element, SaveContext context)
-        {
-            base.DeserializeCore(element, context);
-
-            if (SaveContext.Undo == context)
-            {
-                foreach (XmlNode child in element.ChildNodes)
-                {
-                    if (child.Name == "Script")
-                    {
-                        _script = child.InnerText;
-                        break;
-                    }
-                }
-            }
-        }
-
-        #endregion
-
-        private IEnumerable<KeyValuePair<string, dynamic>> makeBindings(IEnumerable<Value> args)
+        private IEnumerable<KeyValuePair<string, dynamic>> MakeBindings(IEnumerable<Value> args)
         {
             //Zip up our inputs
             var bindings = InPortData
@@ -471,7 +426,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            Value result = PythonEngine.Evaluator(_dirty, _script, makeBindings(args));
+            Value result = PythonEngine.Evaluator(_dirty, _script, MakeBindings(args));
             _lastEvalValue = result;
 
             Draw();
@@ -503,18 +458,26 @@ namespace Dynamo.Nodes
             if(_lastEvalValue != null)
                 PythonEngine.Drawing(_lastEvalValue, GUID.ToString());
         }
+
+        #region SerializeCore/DeserializeCore
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context);
+            var helper = new XmlElementHelper(element);
+            helper.SetAttribute("Script", this.Script);
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context);
+            var helper = new XmlElementHelper(element);
+            var script = helper.ReadString("Script", string.Empty);
+            this._script = script;
+        }
+
+        #endregion
     }
-
-
-
-
-
-
-
-
-
-
-
 
     [NodeName("Python Script From String")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]

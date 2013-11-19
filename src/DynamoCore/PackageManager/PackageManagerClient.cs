@@ -211,16 +211,8 @@ namespace Dynamo.PackageManager
         {
             dynSettings.Controller.DynamoViewModel.OnRequestAuthentication();
 
-            int maxRetries = 5;
-            int count = 0;
             var nv = new ValidateAuth();
-            ResponseBody pkgResponse = null;
-
-            while (pkgResponse == null && count < maxRetries)
-            {
-                count++;
-                pkgResponse = Client.ExecuteAndDeserialize(nv);
-            }
+            var pkgResponse = Client.ExecuteAndDeserialize(nv);
 
             if (pkgResponse == null)
             {
@@ -250,26 +242,16 @@ namespace Dynamo.PackageManager
             {
                 try
                 {
-                    int maxRetries = 5;
-                    int count = 0;
                     ResponseBody ret = null;
                     if (isNewVersion)
                     {
                         var pkg = PackageUploadBuilder.NewPackageVersion(l, files, packageUploadHandle);
-                        while (ret == null && count < maxRetries)
-                        {
-                            count++;
-                            ret = Client.ExecuteAndDeserialize(pkg);
-                        }
+                        ret = Client.ExecuteAndDeserialize(pkg);
                     }
                     else
                     {
                         var pkg = PackageUploadBuilder.NewPackage(l, files, packageUploadHandle);
-                        while (ret == null && count < maxRetries)
-                        {
-                            count++;
-                            ret = Client.ExecuteAndDeserialize(pkg);
-                        }
+                        ret = Client.ExecuteAndDeserialize(pkg);
                     }
                     if (ret == null)
                     {
