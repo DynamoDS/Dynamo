@@ -280,6 +280,10 @@ namespace Dynamo.Nodes
             {
                 enter = true;
             }
+            else if (e.Key == Key.Escape)
+            {
+                HandleEscape();
+            }
             if (shift == true && enter == true)
             {
                 dynSettings.ReturnFocusToSearch();
@@ -306,9 +310,34 @@ namespace Dynamo.Nodes
 
         protected override void OnLostFocus(RoutedEventArgs e)
         {
-            if (!this.Text.Equals((DataContext as CodeBlockNodeModel).Code))
-                Pending = true;
-            base.OnLostFocus(e);
+            var cbn = this.DataContext as CodeBlockNodeModel;
+            (this as TextBox).Text = CodeBlockNodeModel.FormatUserText(this.Text);
+            if (this.Text == "")
+            {
+                if (cbn.Code == "")
+                {
+                    cbn.WorkSpace.UndoRecorder.RemoveLastRecordedActionGroup();
+                    cbn.WorkSpace.Nodes.Remove(cbn);
+                }
+                else
+                {
+                    cbn.WorkSpace.RecordAndDeleteModels(new System.Collections.Generic.List<ModelBase>() { cbn });
+                }
+            }
+            else
+            {
+                if (!this.Text.Equals((DataContext as CodeBlockNodeModel).Code))
+                    Pending = true;
+                base.OnLostFocus(e);
+            }
+        }
+
+        private void HandleEscape()
+        {
+            if (this.Text.Equals((DataContext as CodeBlockNodeModel).Code))
+                dynSettings.ReturnFocusToSearch();
+            else
+                (this as TextBox).Text = (DataContext as CodeBlockNodeModel).Code;
         }
     }
 }

@@ -138,7 +138,13 @@ namespace Dynamo.Nodes
                             //Save the connectors so that we can recreate them at the correct positions
                             SaveAndDeleteConnectors(inportConnections, outportConnections);
 
-                            WorkSpace.UndoRecorder.RecordModificationForUndo(this);
+                            if (code == "")
+                            {
+                                WorkSpace.UndoRecorder.RemoveLastRecordedActionGroup();
+                                WorkSpace.UndoRecorder.RecordCreationForUndo(this);
+                            }
+                            else
+                                WorkSpace.UndoRecorder.RecordModificationForUndo(this);
                             code = value;
                             ProcessCode();
 
