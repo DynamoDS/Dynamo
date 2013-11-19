@@ -36,18 +36,11 @@ namespace Dynamo.Tests
 
         private void StartDynamo()
         {
-            try
+            //create a new instance of the ViewModel
+            Controller = new DynamoController(new ExecutionEnvironment(), typeof (DynamoViewModel), Context.NONE)
             {
-                //create a new instance of the ViewModel
-                Controller = new DynamoController(new ExecutionEnvironment(), typeof(DynamoViewModel), Context.NONE)
-                {
-                    Testing = true
-                };
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-            }
+                Testing = true
+            };
         }
     }
 }

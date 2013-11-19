@@ -14,6 +14,8 @@
 			</testFixture>
 			<testFixture name="BugTests">
 				<test name="MAGN_66" runDynamo="True" modelPath=".\Bugs\MAGN_66.rfa"/>
+				<test name="MAGN_102" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="MAGN_122" runDynamo="True" modelPath=".\Bugs\MAGN-122_wallsAndFloorsAndLevels.rvt"/>
 			</testFixture>
 			<testFixture name="CoreTests">
 				<test name="SanityCheck" runDynamo="True" modelPath=".\empty.rfa"/>
