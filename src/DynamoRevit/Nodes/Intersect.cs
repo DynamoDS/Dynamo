@@ -15,6 +15,7 @@ namespace Dynamo.Nodes
     [NodeName("Curve-Face Intersection")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_INTERSECT)]
     [NodeDescription("Calculates the intersection of a curve and a face.")]
+    [NodeSearchTags("curve", "line", "face", "plane", "intersection", "boolean", "physical")]
     public class CurveFaceIntersection : RevitTransactionNode
     {
         private readonly PortData _resultPort = new PortData(
@@ -223,6 +224,7 @@ namespace Dynamo.Nodes
     [NodeName("Curve-Curve Intersection")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_INTERSECT)]
     [NodeDescription("Calculates the intersection of two curves.")]
+    [NodeSearchTags("curve", "line", "overlap", "intersection", "boolean", "physical")]
     public class CurveCurveIntersection : RevitTransactionNode
     {
         private readonly PortData _resultPort = new PortData(
@@ -291,6 +293,7 @@ namespace Dynamo.Nodes
     [NodeName("Face-Face Intersection")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_INTERSECT)]
     [NodeDescription("Calculates the intersection of two faces.")]
+    [NodeSearchTags("face", "face", "plane", "overlap", "intersection", "boolean", "physical")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
     public class FaceFaceIntersection : RevitTransactionNode
     {
@@ -355,6 +358,7 @@ namespace Dynamo.Nodes
     [NodeName("Curve-Plane Intersection")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_INTERSECT)]
     [NodeDescription("Calculates the approximate intersection(s) of a curve and a plane.")]
+    [NodeSearchTags("curve", "line", "face", "plane", "intersection", "boolean", "physical")]
     public class CurvePlaneIntersection : GeometryBase
     {
         public CurvePlaneIntersection()
