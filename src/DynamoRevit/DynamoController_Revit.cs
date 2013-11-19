@@ -5,7 +5,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Windows.Forms;
+using System.Threading;
+using System.Windows.Threading;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Events;
 using Dynamo.Controls;
@@ -87,10 +88,8 @@ namespace Dynamo
             dynRevitSettings.Revit.ViewActivated += Revit_ViewActivated;
 
             //allow the showing of elements in context
-            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.CanFindNodesFromElements =
-                true;
-            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.FindNodesFromElements =
-                FindNodesFromSelection;
+            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.CanFindNodesFromElements = true;
+            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.FindNodesFromElements = FindNodesFromSelection;
 
             TransactionManager = new TransactionWrapper();
             TransactionManager.TransactionStarted += TransactionManager_TransactionCommitted;
@@ -274,7 +273,7 @@ namespace Dynamo
         {
             if (_singleSignOnAssembly == null)
                 _singleSignOnAssembly = LoadSSONet();
-            client.Client.Provider = new RevitOxygenProvider();
+            client.Client.Provider = new RevitOxygenProvider(new DispatcherSynchronizationContext(this.UIDispatcher));
         }
 
         /// <summary>
@@ -832,6 +831,12 @@ namespace Dynamo
         {
             _transaction.CancelTransaction();
         }
+
+        /// <summary>
+        /// The Synchronication Context from the current thread.  This is expected to be the 
+        /// Revit UI thread SynchronizationContext
+        /// </summary>
+        public Dispatcher RevitSyncContext { get; set; }
     }
 
     public enum TransactionMode
