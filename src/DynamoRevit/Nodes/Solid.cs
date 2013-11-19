@@ -23,9 +23,9 @@ namespace Dynamo.Nodes
     {
         public LoftForm()
         {
-            InPortData.Add(new PortData("solid/void", "Indicates if the Form is Solid or Void. Use True for solid and false for void.", typeof(FScheme.Value.Number)));
-            InPortData.Add(new PortData("list", "A list of profiles for the Loft Form. The recommended way is to use list of Planar Ref Curve Chains, list of lists and list of curves are supported for legacy graphs.", typeof(FScheme.Value.List)));
-            InPortData.Add(new PortData("surface?", "Create a single surface or an extrusion if one loop", typeof(FScheme.Value.Container)));
+            InPortData.Add(new PortData("solid/void", "Indicates if the Form is Solid or Void. Use True for solid and false for void.", typeof(FScheme.Value.Number),FScheme.Value.NewNumber(1)));
+            InPortData.Add(new PortData("list", "A list of profiles for the Loft Form. The recommended way is to use a list of planar Reference Curves, list of lists and list of curves are supported for legacy graphs.", typeof(FScheme.Value.List)));
+            InPortData.Add(new PortData("surface?", "Create a single surface or an extrusion if one loop", typeof(FScheme.Value.Container), FScheme.Value.NewNumber(1)));
 
             OutPortData.Add(new PortData("form", "Loft Form", typeof(object)));
 
