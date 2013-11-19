@@ -79,6 +79,13 @@ namespace Dynamo.Tests
             Assert.IsTrue(StackUtils.IsValidPointer(svValue));
         }
 
+        [TearDown]
+        public override void Cleanup()
+        {
+            GraphToDSCompiler.GraphUtilities.CleanUp();
+            base.Cleanup();
+        }
+
         [Test]
         public void TestCodeBlockNode01()
         {
@@ -392,5 +399,11 @@ namespace Dynamo.Tests
             AssertValue("x", 42);
         }
 
+        [Test]
+        public void Regress737()
+        {
+            RunModel(@"core\dsevaluation\regress737.dyn");
+            AssertPreviewValue("ccad1780-f570-4ccc-ae7a-0ad1b663c3dd", 21);
+        }
     }
 }
