@@ -477,6 +477,10 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(0, cbn.OutPorts[3].Connectors[0].End.Index);
         }
 
+        /// <summary>
+        /// Creates 3 number nodes and an add (+) nodes. Connects 2 of the number
+        /// nodes to the + node. Then converts all the nodes to Code.
+        /// </summary>
         [Test, RequiresSTA]
         public void TestConvertAllNodesToCode()
         {
@@ -501,6 +505,10 @@ namespace Dynamo.Tests.UI
             Assert.True(cbn.Code.Contains("69"));
         }
 
+        /// <summary>
+        /// Converts a set of nodes to code. Then does Undo and checks that the original set of
+        /// nodes are formed again.
+        /// </summary>
         [Test, RequiresSTA]
         public void TestConvertAllNodesToCodeUndo()
         {
@@ -527,6 +535,10 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(3, numberList.Count);
         }
 
+        /// <summary>
+        /// Ensures that redo works for NodeToCode by converting a set of nodes to
+        /// code and then undoing and redoing it again.
+        /// </summary>
         [Test, RequiresSTA]
         public void TestConvertAllNodesToCodeUndoRedo()
         {
