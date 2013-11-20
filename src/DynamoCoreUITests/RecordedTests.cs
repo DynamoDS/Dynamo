@@ -511,6 +511,15 @@ namespace Dynamo.Tests.UI
         }
 
         [Test, RequiresSTA]
+        public void Defect_MAGN_775()
+        {
+            // The third undo operation should not crash.
+            RunCommandsFromFile("Defect_MAGN_775.xml");
+            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count);
+        }
+
+        [Test, RequiresSTA]
         public void Defect_MAGN_491()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-491

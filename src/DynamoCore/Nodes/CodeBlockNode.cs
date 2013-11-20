@@ -303,7 +303,6 @@ namespace Dynamo.Nodes
             codeToParse = code;
             List<string> unboundIdentifiers = new List<string>();
             List<ProtoCore.AST.Node> parsedNodes;
-            List<ProtoCore.AST.Node> compiledNodes;
             List<ProtoCore.BuildData.ErrorEntry> errors;
             List<ProtoCore.BuildData.WarningEntry> warnings;
             try

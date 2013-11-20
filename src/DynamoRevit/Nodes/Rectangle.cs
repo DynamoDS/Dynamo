@@ -8,6 +8,7 @@ namespace Dynamo.Nodes
     [NodeName("Rectangle")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_CREATE)]
     [NodeDescription("Create a rectangle by specifying the center, width, height, and normal.  Outputs a CurveLoop object directed counter-clockwise from upper right.")]
+    [NodeSearchTags("rectangle", "quad")]
     public class Rectangle : GeometryBase
     {
         public Rectangle()

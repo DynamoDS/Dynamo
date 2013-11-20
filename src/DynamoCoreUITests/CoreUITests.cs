@@ -611,6 +611,8 @@ namespace Dynamo.Tests.UI
             #endregion
 
             #endregion
+            
+            Ui.Close();
         }
 
         private void RestartTestSetup()
