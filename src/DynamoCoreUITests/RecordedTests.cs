@@ -645,6 +645,22 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(1, workspace.Notes.Count);
         }
 
+        [Test, RequiresSTA]
+        public void Defect_MAGN_411()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-411
+            RunCommandsFromFile("Defect_MAGN_411.xml");
+
+            Assert.AreEqual(1, workspace.Nodes.Count);
+
+            var cbn = GetNode("fc209d2f-1724-4485-bde4-92670802aaa3") as CodeBlockNodeModel;
+            Assert.NotNull(cbn);
+
+            Assert.AreEqual(2, cbn.InPortData.Count);
+            Assert.AreEqual("a", cbn.InPortData[0].ToolTipString);
+            Assert.AreEqual("b", cbn.InPortData[1].ToolTipString);
+        }
+
         #endregion
 
         #region Private Helper Methods
