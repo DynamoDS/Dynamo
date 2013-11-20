@@ -478,6 +478,80 @@ namespace Dynamo.Tests.UI
         }
 
         [Test, RequiresSTA]
+        public void TestConvertAllNodesToCode()
+        {
+            RunCommandsFromFile("TestConvertAllNodesToCode.xml");
+
+            //Check the nodes
+            var nodes = workspaceViewModel.Nodes;
+            Assert.NotNull(nodes);
+            Assert.AreEqual(1, nodes.Count);
+
+            //Check the connectors
+            var connectors = workspaceViewModel.Connectors;
+            Assert.NotNull(connectors);
+            Assert.AreEqual(0, connectors.Count);
+
+            //Check the CBN
+            var cbn = GetNode("8950950f-78f3-4d81-8181-c574ad84bb1d") as CodeBlockNodeModel;
+            Assert.AreEqual(4, cbn.OutPorts.Count);
+            Assert.True(cbn.Code.Contains("+"));
+            Assert.True(cbn.Code.Contains("14"));
+            Assert.True(cbn.Code.Contains("190"));
+            Assert.True(cbn.Code.Contains("69"));
+        }
+
+        [Test, RequiresSTA]
+        public void TestConvertAllNodesToCodeUndo()
+        {
+            RunCommandsFromFile("TestConvertAllNodesToCodeUndo.xml");
+
+            //Check the nodes
+            var nodes = workspaceViewModel.Nodes;
+            Assert.NotNull(nodes);
+            Assert.AreEqual(4, nodes.Count);
+
+            //Check the connectors
+            var connectors = workspaceViewModel.Connectors;
+            Assert.NotNull(connectors);
+            Assert.AreEqual(2, connectors.Count);
+
+            //Check that there is no CBN
+            var cbn = GetNode("37fade4a-e7ad-43ae-8b6f-27dacb17c1c5") as CodeBlockNodeModel;
+            Assert.AreEqual(null, cbn);
+
+            var addNode = workspaceViewModel._model.Nodes.Where(x => x is DSFunction).First() as DSFunction;
+            Assert.NotNull(addNode);
+
+            var numberList = workspaceViewModel._model.Nodes.Where(x => x is DoubleInput).ToList<NodeModel>();
+            Assert.AreEqual(3, numberList.Count);
+        }
+
+        [Test, RequiresSTA]
+        public void TestConvertAllNodesToCodeUndoRedo()
+        {
+            RunCommandsFromFile("TestConvertAllNodesToCodeUndoRedo.xml");
+
+            //Check the nodes
+            var nodes = workspaceViewModel.Nodes;
+            Assert.NotNull(nodes);
+            Assert.AreEqual(1, nodes.Count);
+
+            //Check the connectors
+            var connectors = workspaceViewModel.Connectors;
+            Assert.NotNull(connectors);
+            Assert.AreEqual(0, connectors.Count);
+
+            //Check the CBN
+            var cbn = GetNode("8950950f-78f3-4d81-8181-c574ad84bb1d") as CodeBlockNodeModel;
+            Assert.AreEqual(4, cbn.OutPorts.Count);
+            Assert.True(cbn.Code.Contains("+"));
+            Assert.True(cbn.Code.Contains("14"));
+            Assert.True(cbn.Code.Contains("190"));
+            Assert.True(cbn.Code.Contains("69"));
+        }
+
+        [Test, RequiresSTA]
         public void ShiftSelectAllNode()
         {
             RunCommandsFromFile("ShiftSelectAllNode.xml");
