@@ -484,7 +484,7 @@ namespace Dynamo.ViewModels
                     if (null != GetSelectableFromPoint(mouseDownPos))
                         InitiateDragSequence();
                     else if (e.ClickCount == 2)
-                        CreateCodeBlockNode();
+                        CreateCodeBlockNode(mouseDownPos);
                     else
                         InitiateWindowSelectionSequence();
 
@@ -499,12 +499,13 @@ namespace Dynamo.ViewModels
                 return eventHandled;
             }
 
-            private void CreateCodeBlockNode()
+            private void CreateCodeBlockNode(Point cursor)
             {
                 // create node
                 var guid = Guid.NewGuid();
                 dynSettings.Controller.DynamoViewModel.ExecuteCommand(
-                  new DynCmd.CreateNodeCommand(guid, "Code Block", 0, 0, true, true));
+                    new DynCmd.CreateNodeCommand(guid, "Code Block",
+                        cursor.X, cursor.Y, false, true));
 
                 // select node
                 var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
