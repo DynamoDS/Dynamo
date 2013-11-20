@@ -456,6 +456,8 @@ namespace Dynamo.ViewModels
 
             #region User Input Event Handlers
 
+            private MouseClickHistory prevClick;
+
             internal bool HandleLeftButtonDown(object sender, MouseButtonEventArgs e)
             {
                 if (false != ignoreMouseClick)
@@ -483,11 +485,19 @@ namespace Dynamo.ViewModels
                     // then the state machine should initiate a drag operation.
                     if (null != GetSelectableFromPoint(mouseDownPos))
                         InitiateDragSequence();
-                    else if (e.ClickCount == 2)
-                        CreateCodeBlockNode(mouseDownPos);
+                    else if (prevClick != null && e.Timestamp - prevClick.Timestamp < 200) // Check if it's double click
+                    {
+                        // If both clicks originate from EndlessGrid
+                        // Then create code block node
+                        if (e.Source is Dynamo.Controls.EndlessGrid && e.Source == prevClick.Source)
+                            CreateCodeBlockNode(mouseDownPos);
+                    }
                     else
                         InitiateWindowSelectionSequence();
 
+                    // Store the current click as history
+                    prevClick = new MouseClickHistory(e);
+                    
                     eventHandled = true; // Mouse event handled.
                 }
                 else if (this.currentState == State.PanMode)
@@ -496,9 +506,23 @@ namespace Dynamo.ViewModels
                 }
 
                 dynSettings.ReturnFocusToSearch();
+
                 return eventHandled;
             }
 
+            public class MouseClickHistory
+            {
+                public int Timestamp { get; set; }
+                public object Source { get; set; }
+
+                public MouseClickHistory(MouseButtonEventArgs e)
+                { 
+                    this.Timestamp = e.Timestamp;
+                    this.Source = e.Source;
+                }
+            }
+
+            #region Create CodeBlockNode
             private void CreateCodeBlockNode(Point cursor)
             {
                 // create node
@@ -522,6 +546,7 @@ namespace Dynamo.ViewModels
                     placedNode.Y = (int)mouseDownPos.Y - 31;
                 }
             }
+            #endregion
 
             internal bool HandleMouseRelease(object sender, MouseButtonEventArgs e)
             {
