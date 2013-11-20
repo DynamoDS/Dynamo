@@ -506,19 +506,19 @@ namespace Dynamo.ViewModels
                 dynSettings.Controller.DynamoViewModel.ExecuteCommand(
                   new DynCmd.CreateNodeCommand(guid, "Code Block", 0, 0, true, true));
 
-                // select node
                 var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
                 if (placedNode != null)
                 {
+                    // select node
                     DynamoSelection.Instance.ClearSelection();
                     DynamoSelection.Instance.Selection.Add(placedNode);
-                }
 
-                //correct node position
-                if (placedNode != null)
-                {
-                    placedNode.X = (int)mouseDownPos.X - 92;
-                    placedNode.Y = (int)mouseDownPos.Y - 31;
+                    //correct node position
+                    placedNode.X = Math.Max((int)mouseDownPos.X - 92, 3);
+                    placedNode.Y = Math.Max((int)mouseDownPos.Y - 31, 3);
+
+                    placedNode.X = Math.Min(placedNode.X, dynSettings.Controller.DynamoViewModel.WorkspaceActualWidth - 175 );
+                    placedNode.Y = Math.Min(placedNode.Y, dynSettings.Controller.DynamoViewModel.WorkspaceActualHeight - 90);
                 }
             }
 
