@@ -106,6 +106,7 @@ namespace Dynamo.Nodes
     [NodeName("Reference Curve")]
     [NodeCategory(BuiltinNodeCategories.REVIT_REFERENCE)]
     [NodeDescription("Creates a reference curve.")]
+    [NodeSearchTags("curve", "revit", "ref", "reference", "model")]
     public class ReferenceCurve : RevitTransactionNodeWithOneOutput
     {
         public ReferenceCurve()

@@ -977,6 +977,10 @@ namespace Dynamo.ViewModels
         internal void Loaded()
         {
             RaisePropertyChanged("IsHomeSpace");
+
+            // New workspace or swapped workspace to follow it offset and zoom
+            OnCurrentOffsetChanged(this, new PointEventArgs(new Point(Model.X, Model.Y)));
+            OnZoomChanged(this, new ZoomEventArgs(Model.Zoom));
         }
 
         private void PauseVisualizationManagerUpdates(object parameter)
