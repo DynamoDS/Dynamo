@@ -183,6 +183,15 @@ namespace Dynamo.ViewModels
             RedoCommand.RaiseCanExecuteChanged();
         }
 
+        private void ConvertNodesToCodeImpl(ConvertNodesToCodeCommand command)
+        {
+            CurrentSpace.ConvertNodesToCodeInternal(command.NodeId);
+
+            UndoCommand.RaiseCanExecuteChanged();
+            RedoCommand.RaiseCanExecuteChanged();
+            CurrentSpace.HasUnsavedChanges = true;
+        }
+
         #endregion
     }
 }
