@@ -24,12 +24,12 @@ namespace Dynamo.Tests
                 AstNodes = new List<AssociativeNode>();
             }
 
-            public void OnAstNodeBuilding(NodeModel node)
+            public void OnAstNodeBuilding(Guid node)
             {
             
             }
 
-            public void OnAstNodeBuilt(NodeModel node, IEnumerable<AssociativeNode> astNodes)
+            public void OnAstNodeBuilt(Guid node, IEnumerable<AssociativeNode> astNodes)
             {
                 AstNodes.AddRange(astNodes); 
             }
