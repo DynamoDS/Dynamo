@@ -9,21 +9,21 @@ using ProtoScript.Runners;
 
 namespace Dynamo.DSEngine
 {
-    public class ASTNodestoCode : IAstNodeContainer
+    public class ASTNodesToCode : IAstNodeContainer
     {
         public List<AssociativeNode> AstNodes { get; set; }
 
-        public ASTNodestoCode()
+        public ASTNodesToCode()
         {
             AstNodes = new List<AssociativeNode>();
         }
 
-        public void OnAstNodeBuilding(NodeModel node)
+        public void OnAstNodeBuilding(Guid node)
         {
 
         }
 
-        public void OnAstNodeBuilt(NodeModel node, IEnumerable<AssociativeNode> astNodes)
+        public void OnAstNodeBuilt(Guid node, IEnumerable<AssociativeNode> astNodes)
         {
             AstNodes.AddRange(astNodes);
         }
@@ -33,8 +33,8 @@ namespace Dynamo.DSEngine
     {
         public static string ConvertNodesToCode(IEnumerable<NodeModel> nodeList)
         {
-            ASTNodestoCode astnodesContainer = new ASTNodestoCode();
-            Dynamo.DSEngine.AstBuilder astBuilder = new Dynamo.DSEngine.AstBuilder(astnodesContainer);
+            var astnodesContainer = new ASTNodesToCode();
+            var astBuilder = new AstBuilder(astnodesContainer);
             astBuilder.CompileToAstNodes(nodeList, false);
 
             var astNodes = astnodesContainer.AstNodes;
