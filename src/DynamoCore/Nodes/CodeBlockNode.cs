@@ -10,8 +10,6 @@ using ProtoCore.AST.AssociativeAST;
 using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Utilities;
-using GraphToDSCompiler;
-using ProtoCore.AST.AssociativeAST;
 using ProtoCore.BuildData;
 using ArrayNode = ProtoCore.AST.AssociativeAST.ArrayNode;
 using Node = ProtoCore.AST.Node;
@@ -305,7 +303,6 @@ namespace Dynamo.Nodes
             codeToParse = code;
             List<string> unboundIdentifiers = new List<string>();
             List<ProtoCore.AST.Node> parsedNodes;
-            List<ProtoCore.AST.Node> compiledNodes;
             List<ProtoCore.BuildData.ErrorEntry> errors;
             List<ProtoCore.BuildData.WarningEntry> warnings;
             try

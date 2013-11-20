@@ -15,6 +15,8 @@ using Dynamo.Core;
 
 namespace Dynamo.ViewModels
 {
+    public delegate void InfoBubbleEventHandler(object sender, EventArgs e);
+
     public partial class InfoBubbleViewModel : ViewModelBase
     {
         public enum Style
@@ -151,12 +153,6 @@ namespace Dynamo.ViewModels
             get { return opacity; }
             set { opacity = value; RaisePropertyChanged("Opacity"); }
         }
-        private Visibility infoBubbleVisibility;
-        public Visibility InfoBubbleVisibility
-        {
-            get { return infoBubbleVisibility; }
-            set { infoBubbleVisibility = value; RaisePropertyChanged("InfoBubbleVisibility"); }
-        }
 
         private double textFontSize;
         public double TextFontSize
@@ -198,8 +194,6 @@ namespace Dynamo.ViewModels
         public Point TargetTopLeft;
         public Point TargetBotRight;
 
-        private Timer fadeInTimer;
-        private Timer fadeOutTimer;
         private Direction limitedDirection = Direction.None;
         private bool alwaysVisible = false;
 
@@ -218,15 +212,69 @@ namespace Dynamo.ViewModels
 
         #endregion
 
+        #region Event Handlers
+        public event InfoBubbleEventHandler FadeInInfoBubble;
+        public event InfoBubbleEventHandler FadeOutInfoBubble;
+        public event InfoBubbleEventHandler ShowInfoBubble;
+        public event InfoBubbleEventHandler HideInfoBubble;
+
+        /// <summary>
+        /// For fading in info bubble
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public virtual void OnFadeInInfoBubble(object sender, EventArgs e)
+        {
+            if (FadeInInfoBubble != null)
+            {
+                FadeInInfoBubble(this, e);
+            }
+        }
+
+        /// <summary>
+        /// For fading out info bubble
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public virtual void OnFadeOutInfoBubble(object sender, EventArgs e)
+        {
+            if (FadeOutInfoBubble != null)
+            {
+                FadeOutInfoBubble(this, e);
+            }
+        }
+
+        /// <summary>
+        /// For showing info bubble
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public virtual void OnShowInfoBubble(object sender, EventArgs e)
+        {
+            if (ShowInfoBubble != null)
+            {
+                ShowInfoBubble(this, e);
+            }
+        }
+
+        /// <summary>
+        /// For hiding info bubble
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public virtual void OnHideInfoBubble(object sender, EventArgs e)
+        {
+            if (HideInfoBubble != null)
+            {
+                HideInfoBubble(this, e);
+            }
+        }
+        #endregion
+
         #region Public Methods
 
         public InfoBubbleViewModel()
         {
-            fadeInTimer = new Timer(20);
-            fadeInTimer.Elapsed += fadeInTimer_Elapsed;
-
-            fadeOutTimer = new Timer(20);
-            fadeOutTimer.Elapsed += fadeOutTimer_Elapsed;
         }
 
         #endregion
@@ -264,8 +312,11 @@ namespace Dynamo.ViewModels
             if (dynSettings.Controller.DynamoViewModel.IsMouseDown || 
                 !dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.CanShowInfoBubble)
                 return;
-            fadeOutTimer.Stop();
-            fadeInTimer.Start();
+            
+            // TODO: Opacity should be removed from usage soon.
+            // Doing this to keep error bubble working
+            Opacity = Configurations.MaxOpacity;
+            OnFadeInInfoBubble(this, new EventArgs());
         }
 
         private bool CanFadeIn(object parameter)
@@ -277,8 +328,11 @@ namespace Dynamo.ViewModels
         {
             if (alwaysVisible)
                 return;
-            fadeInTimer.Stop();
-            fadeOutTimer.Start();
+            
+            // TODO: Opacity should be removed from usage soon
+            // Doing this to keep error bubble working
+            Opacity = 0;
+            OnFadeOutInfoBubble(this, new EventArgs());
         }
 
         private bool CanFadeOut(object parameter)
@@ -288,8 +342,10 @@ namespace Dynamo.ViewModels
 
         private void InstantCollapse(object parameter)
         {
-            fadeInTimer.Stop();
+            // TODO: Opacity should be removed from usage soon
+            // Doing this to keep error bubble working
             Opacity = 0;
+            OnHideInfoBubble(this, new EventArgs());
         }
 
         private bool CanInstantCollapse(object parameter)
@@ -299,7 +355,10 @@ namespace Dynamo.ViewModels
 
         private void InstantAppear(object parameter)
         {
-            Opacity = 0.95;
+            // TODO: Opacity should be removed from usage soon.
+            // Doing this to keep error bubble working
+            Opacity = Configurations.MaxOpacity;
+            OnShowInfoBubble(this, new EventArgs());
         }
 
         private bool CanInstantAppear(object parameter)
@@ -840,22 +899,6 @@ namespace Dynamo.ViewModels
         {
             this.TargetTopLeft = topLeft;
             this.TargetBotRight = botRight;
-        }
-
-        private void fadeInTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            if (Opacity <= 0.95)
-                Opacity += 0.95 / 10;
-            else
-                fadeInTimer.Stop();
-        }
-
-        private void fadeOutTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            if (Opacity >= 0)
-                Opacity -= 0.85 / 10;
-            else
-                fadeOutTimer.Stop();
         }
 
         /// Offset each point coordinate by 0.5 to force it to be drawn in the middle of 
