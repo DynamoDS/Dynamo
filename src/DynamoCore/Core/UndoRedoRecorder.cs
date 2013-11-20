@@ -219,6 +219,19 @@ namespace Dynamo.Core
             this.redoStack.Clear(); // Wipe out the redo-stack.
         }
 
+        /// <summary>
+        /// This function removes the top item from the UndoStack
+        /// </summary>
+        public void PopFromUndoGroup()
+        {
+            if (this.redoStack.Count > 0)
+            {
+                throw new InvalidOperationException(
+                    "UndoStack cannot be pop with non-empty RedoStack");
+            }
+            PopActionGroupFromUndoStack();
+        }
+
         #endregion
 
         #region Public Class Properties
