@@ -1,0 +1,12 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <CreateNodeCommand NodeId="4743ca53-516b-42de-b88f-9ed84941f6a6" NodeName="Code Block" X="160" Y="130" DefaultPosition="false" TransformCoordinates="true" />
+  <UpdateModelValueCommand ModelGuid="4743ca53-516b-42de-b88f-9ed84941f6a6" Name="Code" Value="a=2" />
+  <CreateNodeCommand NodeId="3c2f3595-92eb-4cc8-bbd4-ff7055c2a8d7" NodeName="Code Block" X="480" Y="260" DefaultPosition="false" TransformCoordinates="true" />
+  <UpdateModelValueCommand ModelGuid="3c2f3595-92eb-4cc8-bbd4-ff7055c2a8d7" Name="Code" Value="b" />
+  <MakeConnectionCommand NodeId="4743ca53-516b-42de-b88f-9ed84941f6a6" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="3c2f3595-92eb-4cc8-bbd4-ff7055c2a8d7" PortIndex="0" Type="0" ConnectionMode="1" />
+  <UpdateModelValueCommand ModelGuid="3c2f3595-92eb-4cc8-bbd4-ff7055c2a8d7" Name="Code" Value="b=2;" />
+  <UndoRedoCommand CmdOperation="0" />
+  <UndoRedoCommand CmdOperation="0" />
+  <UndoRedoCommand CmdOperation="0" />
+</Commands>
