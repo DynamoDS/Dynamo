@@ -55,7 +55,37 @@
                            IsHitTestVisible="False"
                            Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}">Search...</TextBlock>
 
-                <!--<Button Width="80" Grid.Column="1" Click="ButtonBase_OnClick" Style="{DynamicResource ResourceKey=SImageButton}" Tag="..\Images\search_24.png" >Search</Button>-->
+                <Button Width="80" Grid.Column="1" Click="SortButton_OnClick" 
+                        Style="{DynamicResource ResourceKey=STextButton}" >Sort by
+
+                    <Button.ContextMenu>
+
+                        <ContextMenu>
+                            
+                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="NAME" Margin="3" 
+                                      IsCheckable="True" Header="Name"
+                                      IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter},ConverterParameter=NAME, Mode=TwoWay}" />
+                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="DOWNLOADS" Margin="3" 
+                                      IsCheckable="True" Header="Downloads"
+                                      IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter},ConverterParameter=DOWNLOADS, Mode=TwoWay}" />
+                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="VOTES" Margin="3" 
+                                      IsCheckable="True" Header="Votes"
+                                      IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter},ConverterParameter=VOTES, Mode=TwoWay}" />
+                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="MAINTAINERS" Margin="3" 
+                                      IsCheckable="True" Header="Author" 
+                                      IsChecked="{Binding Path=SortingKey,Converter={StaticResource EnumToBoolConverter},ConverterParameter=MAINTAINERS, Mode=TwoWay}" />
+                            <Separator></Separator>
+                            <MenuItem Command="{Binding Path=SetSortingDirectionCommand}" CommandParameter="ASCENDING" Margin="3" 
+                                      IsCheckable="True" Header="Ascending"
+                                      IsChecked="{Binding Path=SortingDirection, Converter={StaticResource EnumToBoolConverter},ConverterParameter=ASCENDING, Mode=TwoWay}" />
+                            <MenuItem Command="{Binding Path=SetSortingDirectionCommand}" CommandParameter="DESCENDING" Margin="3" 
+                                      IsCheckable="True" Header="Descending"
+                                      IsChecked="{Binding Path=SortingDirection, Converter={StaticResource EnumToBoolConverter},ConverterParameter=DESCENDING, Mode=TwoWay}" />
+                        </ContextMenu>
+
+                    </Button.ContextMenu>
+
+                </Button>
 
             </Grid>
 
@@ -70,8 +100,6 @@
                                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#111"/>
                                 <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#000" />
                             </Style.Resources>
-
-                            <!--<EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick"/>-->
 
                         </Style>
 
