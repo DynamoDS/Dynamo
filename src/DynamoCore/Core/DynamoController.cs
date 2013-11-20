@@ -13,6 +13,8 @@ using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Models;
 using Dynamo.PackageManager;
+using Dynamo.Selection;
+using Dynamo.Services;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Microsoft.Practices.Prism.ViewModel;
@@ -238,17 +240,17 @@ namespace Dynamo
 
             dynSettings.Controller = this;
 
-            this.Context = context;
+            Context = context;
 
             //Start heartbeat reporting
-            Services.InstrumentationLogger.Start();
+            InstrumentationLogger.Start();
 
             //create the view model to which the main window will bind
             //the DynamoModel is created therein
-            this.DynamoViewModel = (DynamoViewModel)Activator.CreateInstance(
+            DynamoViewModel = (DynamoViewModel)Activator.CreateInstance(
                 viewModelType, new object[] { this, commandFilePath });
 
-            this.EngineController = new DSEngine.EngineController(this);
+            EngineController = new EngineController(this);
 
             // custom node loader
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -281,7 +283,7 @@ namespace Dynamo
                 DynamoLogger.Instance.Log("All Tests Passed. Core library loaded OK.");
             }
 
-            this.InfoBubbleViewModel = new InfoBubbleViewModel();
+            InfoBubbleViewModel = new InfoBubbleViewModel();
 
             AddPythonBindings();
         }
@@ -297,7 +299,7 @@ namespace Dynamo
             dynSettings.Controller.DynamoModel.OnCleanup(null);
             dynSettings.Controller = null;
             
-            Selection.DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.ClearSelection();
 
             DynamoLogger.Instance.FinishLogging();
         }
@@ -790,17 +792,17 @@ namespace Dynamo
 
         public bool IsDefaultTextOverridden()
         {
-            return this.Options.HasFlag(DisplayOptions.IsDefaultTextOverridden);
+            return Options.HasFlag(DisplayOptions.IsDefaultTextOverridden);
         }
 
         public bool HasDetails()
         {
-            return this.Options.HasFlag(DisplayOptions.HasDetails);
+            return Options.HasFlag(DisplayOptions.HasDetails);
         }
 
         public bool IsFilePath()
         {
-            return this.Options.HasFlag(DisplayOptions.HasFilePath);
+            return Options.HasFlag(DisplayOptions.HasFilePath);
         }
     }
 
