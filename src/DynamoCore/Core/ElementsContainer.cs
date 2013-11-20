@@ -1,35 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Autodesk.Revit.DB;
+using System.Text;
 using Dynamo.Utilities;
 
-namespace Dynamo.Revit
+namespace Dynamo.Core
 {
-    public class ElementsContainer
+    public class ElementsContainer <T>
     {
-        Dictionary<Guid, List<List<ElementId>>> storedElementIds =
-            new Dictionary<Guid, List<List<ElementId>>>();
+        internal Dictionary<Guid, List<List<T>>> storedElementIds =
+            new Dictionary<Guid, List<List<T>>>();
 
-        internal IEnumerable<Guid> Nodes 
+        public IEnumerable<Guid> Nodes
         {
             get { return storedElementIds.Keys; }
         }
 
-        internal void Clear()
+        public void Clear()
         {
             storedElementIds.Clear();
         }
 
-        public List<List<ElementId>> this[Guid node]
+        public List<List<T>> this[Guid node]
         {
             get
             {
                 if (!storedElementIds.ContainsKey(node))
                 {
-                    storedElementIds[node] = new List<List<ElementId>>()
+                    storedElementIds[node] = new List<List<T>>()
                     {
-                        new List<ElementId>()
+                        new List<T>()
                     };
                 }
                 return storedElementIds[node];
@@ -39,17 +39,17 @@ namespace Dynamo.Revit
         public void DestroyAll()
         {
             foreach (var e in storedElementIds.Values.SelectMany(x => x.SelectMany(y => y)))
-            {
-                try
-                {
-                    dynRevitSettings.Doc.Document.Delete(e);
-                }
-                catch (Autodesk.Revit.Exceptions.InvalidOperationException)
-                {
-                    //TODO: Flesh out?
-                }
+            {               
+                DestroyElement(e);   
             }
             storedElementIds.Clear();
+        }
+
+        public virtual void DestroyElement(T element)
+        {
+            //Override method needs to be responsible for attempting
+            //to destroy its native objects, as well as handling
+            //exceptions.
         }
 
         public bool HasElements(Guid node)

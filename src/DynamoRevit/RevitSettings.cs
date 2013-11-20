@@ -522,7 +522,7 @@ namespace Dynamo.Utilities
 
         public static DynamoController_Revit Controller { get; internal set; }
 
-        public static Stack<ElementsContainer> ElementsContainers
-            = new Stack<ElementsContainer>(new[] { new ElementsContainer() });
+        public static Stack<RevitElementsContainer> ElementsContainers
+            = new Stack<RevitElementsContainer>(new[] { new RevitElementsContainer() });
     }
 }
