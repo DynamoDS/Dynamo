@@ -28,7 +28,8 @@ namespace Dynamo.PackageManager
             NAME,
             DOWNLOADS,
             VOTES,
-            MAINTAINERS
+            MAINTAINERS,
+            LAST_UPDATE
         };
 
         public enum PackageSortingDirection
@@ -211,7 +212,7 @@ namespace Dynamo.PackageManager
             PackageManagerClient.Downloads.CollectionChanged += DownloadsOnCollectionChanged;
             SearchResults.CollectionChanged += SearchResultsOnCollectionChanged;
             SearchText = "";
-            SortingKey = PackageSortingKey.NAME;
+            SortingKey = PackageSortingKey.LAST_UPDATE;
             SortingDirection = PackageSortingDirection.ASCENDING;
         }
 
@@ -303,6 +304,10 @@ namespace Dynamo.PackageManager
                 else if (key == "MAINTAINERS")
                 {
                     this.SortingKey = PackageSortingKey.MAINTAINERS;
+                }
+                else if (key == "LAST_UPDATE")
+                {
+                    this.SortingKey = PackageSortingKey.LAST_UPDATE;
                 } 
                 else if (key == "VOTES")
                 {
@@ -538,6 +543,9 @@ namespace Dynamo.PackageManager
                     break;
                 case PackageSortingKey.DOWNLOADS:
                     results.Sort((e1, e2) => e2.Downloads.CompareTo(e1.Downloads));
+                    break;
+                case PackageSortingKey.LAST_UPDATE:
+                    results.Sort((e1, e2) => e2.Versions.Last().Item1.created.CompareTo(e1.Versions.Last().Item1.created));
                     break;
                 case PackageSortingKey.VOTES:
                     results.Sort((e1, e2) => e2.Votes.CompareTo(e1.Votes));
