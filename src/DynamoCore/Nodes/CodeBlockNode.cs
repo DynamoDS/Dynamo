@@ -170,7 +170,8 @@ namespace Dynamo.Nodes
         {
             base.LoadNode(nodeElement);
             var helper = new XmlElementHelper(nodeElement as XmlElement);
-            Code = helper.ReadString("CodeText");
+            code = helper.ReadString("CodeText");
+            ProcessCodeDirect();
             shouldFocus = helper.ReadBoolean("ShouldFocus");
         }
 
@@ -201,12 +202,17 @@ namespace Dynamo.Nodes
                 var helper = new XmlElementHelper(element);
                 shouldFocus = helper.ReadBoolean("ShouldFocus");
                 code = helper.ReadString("CodeText");
-                ProcessCode();
-                RaisePropertyChanged("Code");
-                RequiresRecalc = true;
-                if (WorkSpace != null)
-                    WorkSpace.Modified();
+                ProcessCodeDirect();
             }
+        }
+
+        private void ProcessCodeDirect()
+        {
+            ProcessCode();
+            RaisePropertyChanged("Code");
+            RequiresRecalc = true;
+            if (WorkSpace != null)
+                WorkSpace.Modified();
         }
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
