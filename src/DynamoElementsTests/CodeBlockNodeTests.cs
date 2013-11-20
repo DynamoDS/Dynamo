@@ -218,6 +218,17 @@ b = c[w][x][y][z];";
             compilableText = CodeBlockNodeModel.FormatUserText(userText);
             Assert.AreEqual("", compilableText);
         }
+
+        [Test]
+        public void Defect_MAGN_784()
+        {
+            var model = Controller.DynamoModel;
+            string openPath = Path.Combine(GetTestDirectory(), @"core\dsevaluation\Defect_MAGN_784.dyn");
+            model.Open(openPath);
+
+            Assert.AreEqual(false, Controller.DynamoModel.CurrentWorkspace.CanUndo);
+            Assert.AreEqual(false, Controller.DynamoModel.CurrentWorkspace.CanRedo);
+        }
     }
 }
 
