@@ -36,6 +36,20 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
+        public CodeBlockNodeModel(string userCode, Guid guid, WorkspaceModel workSpace)
+        {
+            ArgumentLacing = LacingStrategy.Disabled;
+            this.code = userCode;
+            this.GUID = guid;
+            this.WorkSpace = workSpace;
+            this.shouldFocus = false;
+            DisableReporting();
+            ProcessCode();
+            RaisePropertyChanged("Code");
+            RequiresRecalc = true;
+            EnableReporting();
+        }
+
         /// <summary>
         ///     The function sets the state of the node to an erraneous state and displays
         ///     the the string errorMessage as an error bubble on top of the node.
@@ -344,7 +358,7 @@ namespace Dynamo.Nodes
                 {
                     if (errors == null)
                         DisplayError("Errors not getting sent from compiler to UI");
-                    
+
                     //Found errors. Get the error message strings and use it to call the DisplayError function
                     if (errors != null)
                     {
