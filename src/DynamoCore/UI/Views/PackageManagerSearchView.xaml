@@ -65,6 +65,9 @@
                             <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="NAME" Margin="3" 
                                       IsCheckable="True" Header="Name"
                                       IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter},ConverterParameter=NAME, Mode=TwoWay}" />
+                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="LAST_UPDATE" Margin="3" 
+                                      IsCheckable="True" Header="Most Recent Update"
+                                      IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter},ConverterParameter=LAST_UPDATE, Mode=TwoWay}" />
                             <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="DOWNLOADS" Margin="3" 
                                       IsCheckable="True" Header="Downloads"
                                       IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter},ConverterParameter=DOWNLOADS, Mode=TwoWay}" />
