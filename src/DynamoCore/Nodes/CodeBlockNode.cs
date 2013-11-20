@@ -119,16 +119,17 @@ namespace Dynamo.Nodes
                         {
                             WorkSpace.UndoRecorder.BeginActionGroup();
 
-                            var portConnections = new OrderedDictionary();
+                            var inportConnections = new OrderedDictionary();
+                            var outportConnections = new OrderedDictionary();
                             //Save the connectors so that we can recreate them at the correct positions
-                            SaveAndDeleteConnectors(portConnections);
+                            SaveAndDeleteConnectors(inportConnections, outportConnections);
 
                             WorkSpace.UndoRecorder.RecordModificationForUndo(this);
                             code = value;
                             ProcessCode();
 
                             //Recreate connectors that can be reused
-                            LoadAndCreateConnectors(portConnections);
+                            LoadAndCreateConnectors(inportConnections, outportConnections);
                             WorkSpace.UndoRecorder.EndActionGroup();
                         }
                         RaisePropertyChanged("Code");
@@ -170,7 +171,8 @@ namespace Dynamo.Nodes
         {
             base.LoadNode(nodeElement);
             var helper = new XmlElementHelper(nodeElement as XmlElement);
-            Code = helper.ReadString("CodeText");
+            code = helper.ReadString("CodeText");
+            ProcessCodeDirect();
             shouldFocus = helper.ReadBoolean("ShouldFocus");
         }
 
@@ -201,11 +203,7 @@ namespace Dynamo.Nodes
                 var helper = new XmlElementHelper(element);
                 shouldFocus = helper.ReadBoolean("ShouldFocus");
                 code = helper.ReadString("CodeText");
-                ProcessCode();
-                RaisePropertyChanged("Code");
-                RequiresRecalc = true;
-                if (WorkSpace != null)
-                    WorkSpace.Modified();
+                ProcessCodeDirect();
             }
         }
 
@@ -284,6 +282,15 @@ namespace Dynamo.Nodes
         #endregion
 
         #region Private Methods
+
+        private void ProcessCodeDirect()
+        {
+            ProcessCode();
+            RaisePropertyChanged("Code");
+            RequiresRecalc = true;
+            if (WorkSpace != null)
+                WorkSpace.Modified();
+        }
 
         private void ProcessCode()
         {
@@ -500,8 +507,36 @@ namespace Dynamo.Nodes
         ///     so that they can be recreated if needed.
         /// </summary>
         /// <param name="portConnections">A list of connections that will be destroyed</param>
-        private void SaveAndDeleteConnectors(OrderedDictionary portConnections)
+        private void SaveAndDeleteConnectors(OrderedDictionary inportConnections, OrderedDictionary outportConnections)
         {
+            //----------------------------Inputs---------------------------------
+            for (int i = 0; i < InPorts.Count; i++)
+            {
+                PortModel portModel = InPorts[i];
+                string portName = portModel.ToolTipContent;
+                if (portModel.Connectors.Count != 0)
+                {
+                    inportConnections.Add(portName, new List<PortModel>());
+                    foreach (ConnectorModel connector in portModel.Connectors)
+                    {
+                        (inportConnections[portName] as List<PortModel>).Add(connector.Start);
+                        WorkSpace.UndoRecorder.RecordDeletionForUndo(connector);
+                    }
+                }
+                else
+                    inportConnections.Add(portName, null);
+            }
+
+            //Delete the connectors
+            foreach (PortModel inport in InPorts)
+                inport.DestroyConnectors();
+
+            //Clear out all the port models
+            for (int i = InPorts.Count - 1; i >= 0; i--)
+                InPorts.RemoveAt(i);
+
+
+            //----------------------------Outputs---------------------------------
             for (int i = 0; i < OutPorts.Count; i++)
             {
                 PortModel portModel = OutPorts[i];
@@ -510,15 +545,15 @@ namespace Dynamo.Nodes
                     portName += i.ToString(CultureInfo.InvariantCulture);
                 if (portModel.Connectors.Count != 0)
                 {
-                    portConnections.Add(portName, new List<PortModel>());
+                    outportConnections.Add(portName, new List<PortModel>());
                     foreach (ConnectorModel connector in portModel.Connectors)
                     {
-                        (portConnections[portName] as List<PortModel>).Add(connector.End);
+                        (outportConnections[portName] as List<PortModel>).Add(connector.End);
                         WorkSpace.UndoRecorder.RecordDeletionForUndo(connector);
                     }
                 }
                 else
-                    portConnections.Add(portName, null);
+                    outportConnections.Add(portName, null);
             }
 
             //Delete the connectors
@@ -534,25 +569,50 @@ namespace Dynamo.Nodes
         ///     Now that the portData has been set for the new ports, we recreate the connections we
         ///     so mercilessly destroyed, restoring peace and balance to the world once again.
         /// </summary>
-        /// <param name="portConnections"> List of the connections that were killed</param>
-        private void LoadAndCreateConnectors(OrderedDictionary portConnections)
+        /// <param name="outportConnections"> List of the connections that were killed</param>
+        private void LoadAndCreateConnectors(OrderedDictionary inportConnections, OrderedDictionary outportConnections)
         {
+            //----------------------------Inputs---------------------------------
+            /* Input Port connections are matched only if the name is the same */
+            for (int i = 0; i < InPortData.Count; i++)
+            {
+                string varName = InPortData[i].ToolTipString;
+                if (inportConnections.Contains(varName))
+                {
+                    if (inportConnections[varName] != null)
+                    {
+                        foreach (var startPortModel in (inportConnections[varName] as List<PortModel>))
+                        {
+                            PortType p;
+                            NodeModel startNode = startPortModel.Owner;
+                            ConnectorModel connector = ConnectorModel.Make(startNode, this,
+                                startNode.GetPortIndexAndType(startPortModel, out p), i, PortType.INPUT);
+                            this.WorkSpace.Connectors.Add(connector);
+                            this.WorkSpace.UndoRecorder.RecordCreationForUndo(connector);
+                        }
+                        outportConnections[varName] = null;
+                    }
+                }
+            }
+
+            //----------------------------Outputs--------------------------------
             /*The matching is done in three parts:
              *Step 1:
-             *   First, it tries to match the connectors wrt to the defined variable name. Hence it 
-             *   first checks to see if any of the old veriable names are present. If so, if there were
-             *   any connectors presnt then it makes the new connectors.
-             *   As it iterates through the new ports, it also finds the ports that didnt get exist before
+             *   First, it tries to match the connectors wrt to the defined 
+             *   variable name. Hence it first checks to see if any of the old 
+             *   variable names are present. If so, if there were any connectors 
+             *   presnt then it makes the new connectors. As it iterates through 
+             *   the new ports, it also finds the ports that didnt exist before
              */
             List<int> undefinedIndices = new List<int>();
             for (int i = 0; i < OutPortData.Count; i++)
             {
                 string varName = OutPortData[i].ToolTipString;
-                if (portConnections.Contains(varName))
+                if (outportConnections.Contains(varName))
                 {
-                    if (portConnections[varName] != null)
+                    if (outportConnections[varName] != null)
                     {
-                        foreach (var endPortModel in (portConnections[varName] as List<PortModel>))
+                        foreach (var endPortModel in (outportConnections[varName] as List<PortModel>))
                         {
                             PortType p;
                             NodeModel endNode = endPortModel.Owner;
@@ -561,7 +621,7 @@ namespace Dynamo.Nodes
                             this.WorkSpace.Connectors.Add(connector);
                             this.WorkSpace.UndoRecorder.RecordCreationForUndo(connector);
                         }
-                        portConnections[varName] = null;
+                        outportConnections[varName] = null;
                     }
                 }
                 else
@@ -570,17 +630,19 @@ namespace Dynamo.Nodes
 
             /*
              *Step 2:
-             *   The second priority is to match the connections to the previous indices. For all the ports
-             *   that were not previously defined, it now checks if that "numbered" port had any 
-             *   connections previously, ie, if the old third port had 2 connections, then these would go 
-             *   to the new 3rd port (if it is not a variable that was defined before)
+             *   The second priority is to match the connections to the previous 
+             *   indices. For all the ports that were not previously defined, it 
+             *   now checks if that "numbered" port had any connections 
+             *   previously, ie, if the old third port had 2 connections, then 
+             *   these would go to the new 3rd port (if it is not a variable that
+             *   was defined before)
              */
             for (int i = 0; i < undefinedIndices.Count; i++)
             {
                 int index = undefinedIndices[i];
-                if (index < portConnections.Count && portConnections[index] != null)
+                if (index < outportConnections.Count && outportConnections[index] != null)
                 {
-                    foreach (PortModel endPortModel in (portConnections[index] as List<PortModel>))
+                    foreach (PortModel endPortModel in (outportConnections[index] as List<PortModel>))
                     {
                         PortType p;
                         NodeModel endNode = endPortModel.Owner;
@@ -589,7 +651,7 @@ namespace Dynamo.Nodes
                         WorkSpace.Connectors.Add(connector);
                         WorkSpace.UndoRecorder.RecordCreationForUndo(connector);
                     }
-                    portConnections[index] = null;
+                    outportConnections[index] = null;
                     undefinedIndices.Remove(index);
                     i--;
                 }
@@ -597,12 +659,12 @@ namespace Dynamo.Nodes
 
             /*
              *Step 2:
-             *   The final step. Now that the priorties are finished, the function tries to reuse any
-             *   existing connections by attaching them to any ports that have not already 
-             *   been given connections
+             *   The final step. Now that the priorties are finished, the 
+             *   function tries to reuse any existing connections by attaching 
+             *   them to any ports that have not already been given connections
              */
             List<List<PortModel>> unusedConnections = new List<List<PortModel>>();
-            foreach (List<PortModel> portModelList in portConnections.Values.Cast<List<PortModel>>())
+            foreach (List<PortModel> portModelList in outportConnections.Values.Cast<List<PortModel>>())
             {
                 if (portModelList == null)
                     continue;
