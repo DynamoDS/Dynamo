@@ -2,17 +2,13 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using Dynamo.DSEngine;
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
-using Microsoft.Practices.Prism.ViewModel;
-using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
-using Type = ProtoCore.Type;
 
 namespace Dynamo
 {
@@ -88,12 +84,12 @@ namespace Dynamo
 
         public void CompileAndAddToEnvironment(ExecutionEnvironment env)
         {
-            var compiledFunction = Compile();
+            var compiledFunction = _Compile();
 
             env.DefineSymbol( FunctionId.ToString(),compiledFunction);
         }
 
-        public FScheme.Expression Compile()
+        private FScheme.Expression _Compile()
         {
             IEnumerable<string> inputNames = null;
             IEnumerable<string> outputNames = null;
@@ -253,14 +249,7 @@ namespace Dynamo
 
         #region DS Compilation
 
-        public void CompileAndAddToVM()
-        {
-            var compiledFunction = CompileToFunctionDefAst();
-
-            throw new NotImplementedException();
-        }
-
-        public AssociativeNode CompileToFunctionDefAst()
+        public void Compile(EngineController controller)
         {
             #region Outputs and Inputs and UI updating
 
@@ -337,94 +326,14 @@ namespace Dynamo
 
             #endregion
 
-            var cnBuilder = new CustomNodeBuilder();
-
-            new AstBuilder(cnBuilder).CompileToAstNodes(
-                WorkspaceModel.Nodes.Where(x => !(x is Output)), false);
-
-            return cnBuilder.GenerateCustomNodeAst(
-                FunctionId.ToString().Replace("-", string.Empty),
-                topMost.Select(
-                    x => x.Item2.GetAstIdentifierForOutputIndex(x.Item1) as AssociativeNode)
-                       .ToList(),
+            var success = controller.GenerateGraphSyncDataForCustomNode(
+                FunctionId,
+                WorkspaceModel.Nodes.Where(x => !(x is Output)),
+                topMost.Select(x => x.Item2.GetAstIdentifierForOutputIndex(x.Item1) as AssociativeNode).ToList(),
                 parameters);
-        }
 
-        private class CustomNodeBuilder : IAstNodeContainer
-        {
-            private readonly LinkedListOfList<NodeModel, AssociativeNode> _generatedAst
-                = new LinkedListOfList<NodeModel, AssociativeNode>();
-
-            #region Implement IAstNodeContainer interface
-
-            public void OnAstNodeBuilding(NodeModel node) { }
-
-            public void OnAstNodeBuilt(NodeModel node, IEnumerable<AssociativeNode> astNodes)
-            {
-                foreach (var ast in astNodes)
-                    _generatedAst.AddItem(node, ast);
-            }
-
-            #endregion
-
-            public AssociativeNode GenerateCustomNodeAst(string name, List<AssociativeNode> outputs, IEnumerable<string> parameters)
-            {
-                var functionBody = new CodeBlockNode();
-
-                functionBody.Body.AddRange(_generatedAst.SelectMany(x => x));
-
-                AssociativeNode top;
-
-                if (outputs.Count > 1)
-                {
-                    top = AstFactory.BuildExprList(outputs);
-                }
-                else if (outputs.Count == 1)
-                {
-                    top = outputs[0];
-                }
-                else
-                {
-                    // if the custom node is empty, it will initially return null
-                    top = AstFactory.BuildNullNode();
-                }
-
-                var returnNode = new ReturnNode { ReturnExpr = top };
-                functionBody.Body.Add(returnNode);
-
-                //Create a new function definition
-                var functionDef = new FunctionDefinitionNode
-                {
-                    //name is the GUID of the custom node
-                    Name = name,
-
-                    //signature is 
-                    Singnature = new ArgumentSignatureNode
-                    {
-                        Arguments = parameters.Select(paramName => new VarDeclNode
-                        {
-                            NameNode = new IdentifierNode
-                            {
-                                Value = paramName,
-                                Name = paramName,
-                                datatype = new Type
-                                {
-                                    Name = "var",
-                                    IsIndexable = false,
-                                    rank = 0,
-                                    UID = (int)PrimitiveType.kTypeVar
-                                }
-                            },
-                            ArgumentType = new Type { Name = "var" }
-                        }).ToList()
-                    },
-
-                    //body is the compiled workspace
-                    FunctionBody = functionBody
-                };
-
-                return functionDef;
-            }
+            if (success)
+                controller.UpdateGraph();
         }
 
         #endregion
@@ -472,7 +381,11 @@ namespace Dynamo
 
                 dynSettings.Controller.CustomNodeManager.SetNodeInfo(info);
 
+#if USE_DSENGINE
+                Compile(dynSettings.Controller.EngineController);
+#else
                 CompileAndAddToEnvironment(dynSettings.Controller.FSchemeEnvironment);
+#endif
             }
             catch (Exception e)
             {
