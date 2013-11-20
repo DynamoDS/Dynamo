@@ -144,7 +144,30 @@ namespace Dynamo.DSEngine
         public bool GenerateGraphSyncData(IEnumerable<NodeModel> nodes)
         {
             astBuilder.CompileToAstNodes(nodes, true);
+            return VerifyGraphSyncData();
+        }
 
+        /// <summary>
+        /// Generate graph sync data based on the input Dynamo custom node information.
+        /// Return false if all nodes are clean.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="nodes"></param>
+        /// <param name="outputs"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public bool GenerateGraphSyncDataForCustomNode(
+            Guid id,
+            IEnumerable<NodeModel> nodes,
+            List<AssociativeNode> outputs,
+            IEnumerable<string> parameters)
+        {
+            astBuilder.CompileCustomNode(id, nodes, outputs, parameters, true);
+            return VerifyGraphSyncData();
+        }
+
+        private bool VerifyGraphSyncData()
+        {
             GraphSyncData data = syncDataManager.GetSyncData();
             syncDataManager.ResetStates();
 
@@ -252,16 +275,17 @@ namespace Dynamo.DSEngine
         }
 
         #region Implement IAstNodeContainer interface
-        public void OnAstNodeBuilding(NodeModel node)
+
+        public void OnAstNodeBuilding(Guid nodeGuid)
         {
-            syncDataManager.MarkForAdding(node.GUID);
+            syncDataManager.MarkForAdding(nodeGuid);
         }
 
-        public void OnAstNodeBuilt(NodeModel node, IEnumerable<AssociativeNode> astNodes)
+        public void OnAstNodeBuilt(Guid nodeGuid, IEnumerable<AssociativeNode> astNodes)
         {
             foreach (var astNode in astNodes)
             {
-                syncDataManager.AddNode(node.GUID, astNode); 
+                syncDataManager.AddNode(nodeGuid, astNode); 
             }
         }
         #endregion
