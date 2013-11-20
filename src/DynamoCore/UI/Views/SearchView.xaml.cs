@@ -142,7 +142,20 @@ namespace Dynamo.Search
 
         void SearchViewModel_RequestReturnFocusToSearch(object sender, EventArgs e)
         {
-            Keyboard.Focus(SearchTextBox);
+            if (this.Visibility != Visibility.Collapsed)
+                Keyboard.Focus(SearchTextBox);
+            else
+                MoveFocusToNextUIElement();
+        }
+
+        void MoveFocusToNextUIElement()
+        {
+            // Gets the element with keyboard focus.
+            UIElement elementWithFocus = Keyboard.FocusedElement as UIElement;
+
+            // Change keyboard focus.
+            if (elementWithFocus != null)
+                elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
         }
 
         void SearchViewModel_RequestFocusSearch(object sender, EventArgs e)

@@ -13,7 +13,7 @@ namespace Dynamo.Nodes
     [NodeName("XYZ")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_POINT_CREATE)]
     [NodeDescription("Creates an XYZ from three coordinates.")]
-    [NodeSearchTags("vector", "point")]
+    [NodeSearchTags("vector", "point", "xyz", "coordinate")]
     public class Xyz : GeometryBase
     {
         public Xyz()
@@ -41,7 +41,8 @@ namespace Dynamo.Nodes
 
     [NodeName("XYZ by Polar Coordinates")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_POINT_CREATE)]
-    [NodeDescription("Creates an XYZ from sphereical coordinates.")]
+    [NodeDescription("Creates an XYZ from polar coordinates.")]
+    [NodeSearchTags("spherical", "xyz", "polar", "coordinates")]
     public class XyzFromPolar : GeometryBase
     {
         public XyzFromPolar()
@@ -85,7 +86,8 @@ namespace Dynamo.Nodes
 
     [NodeName("XYZ to Polar Coordinates")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_POINT_QUERY)]
-    [NodeDescription("Creates an XYZ from spherical coordinates.")]
+    [NodeDescription("Decompose an XYZ to polar coordinates.")]
+    [NodeSearchTags("spherical", "xyz", "polar", "coordinates", "decompose")]
     public class XyzToPolar : NodeModel
     {
         private readonly PortData _rPort = new PortData("radius", "Radius from origin in radians", typeof(FScheme.Value.Number));
@@ -139,6 +141,7 @@ namespace Dynamo.Nodes
     [NodeName("XYZ by Spherical Coordinates")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_POINT_CREATE)]
     [NodeDescription("Creates an XYZ from spherical coordinates.")]
+    [NodeSearchTags("spherical", "xyz", "polar", "coordinates")]
     public class XyzFromSpherical : GeometryBase
     {
         public XyzFromSpherical()
@@ -183,6 +186,7 @@ namespace Dynamo.Nodes
     [NodeName("XYZ to Spherical Coordinates")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_POINT_QUERY)]
     [NodeDescription("Decompose an XYZ into spherical coordinates.")]
+    [NodeSearchTags("spherical", "xyz", "polar", "coordinates", "decompose")]
     public class XyzToSpherical : NodeModel
     {
         private readonly PortData _rPort = new PortData("radius", "Radius from origin in radians", typeof(FScheme.Value.Number));
@@ -266,6 +270,7 @@ namespace Dynamo.Nodes
     [NodeName("XYZ from List of Numbers")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_POINT_CREATE)]
     [NodeDescription("Creates a list of XYZs by taking sets of 3 numbers from an list.")]
+    [NodeSearchTags("parse", "xyz", "numbers")]
     public class XyzFromListOfNumbers : GeometryBase
     {
         public XyzFromListOfNumbers()
@@ -331,6 +336,7 @@ namespace Dynamo.Nodes
     [NodeName("XYZ Components")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_POINT_QUERY)]
     [NodeDescription("Get the components of an XYZ")]
+    [NodeSearchTags("decompose", "xyz", "components")]
     public class XyzComponents : NodeModel
     {
 
@@ -365,6 +371,7 @@ namespace Dynamo.Nodes
     [NodeName("XYZ X")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_POINT_QUERY)]
     [NodeDescription("Fetches the X value of the given XYZ")]
+    [NodeSearchTags("x", "xyz", "components", "decompose", "Fetches")]
     public class XyzGetX : GeometryBase
     {
         public XyzGetX()
@@ -384,6 +391,7 @@ namespace Dynamo.Nodes
     [NodeName("XYZ Y")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_POINT_QUERY)]
     [NodeDescription("Fetches the Y value of the given XYZ")]
+    [NodeSearchTags("y", "xyz", "components", "decompose", "Fetches")]
     public class XyzGetY : GeometryBase
     {
         public XyzGetY()
@@ -403,6 +411,7 @@ namespace Dynamo.Nodes
     [NodeName("XYZ Z")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_POINT_QUERY)]
     [NodeDescription("Fetches the Z value of the given XYZ")]
+    [NodeSearchTags("xyz", "z", "components", "decompose", "Fetches")]
     public class XyzGetZ : GeometryBase
     {
         public XyzGetZ()
@@ -422,6 +431,7 @@ namespace Dynamo.Nodes
     [NodeName("XYZ Distance")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_POINT_QUERY)]
     [NodeDescription("Returns the distance between a(XYZ) and b(XYZ).")]
+    [NodeSearchTags("xyz", "distance", "measure")]
     public class XyzDistance : MeasurementBase
     {
         public XyzDistance()
@@ -505,7 +515,7 @@ namespace Dynamo.Nodes
     [NodeName("X Axis")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_POINT_CREATE)]
     [NodeDescription("Creates an XYZ representing the X basis (1,0,0).")]
-    [NodeSearchTags("unit", "xyz")]
+    [NodeSearchTags("unit", "xyz", "x", "components", "axis", "basis")]
     public class XyzBasisX : GeometryBase
     {
         public XyzBasisX()
@@ -525,7 +535,7 @@ namespace Dynamo.Nodes
     [NodeName("Y Axis")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_POINT_CREATE)]
     [NodeDescription("Creates an XYZ representing the Y basis (0,1,0).")]
-    [NodeSearchTags("unit", "xyz")]
+    [NodeSearchTags("unit", "xyz", "y", "components", "axis", "basis")]
     public class XyzBasisY : GeometryBase
     {
         public XyzBasisY()
@@ -545,7 +555,7 @@ namespace Dynamo.Nodes
     [NodeName("Z Axis")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_POINT_CREATE)]
     [NodeDescription("Creates an XYZ representing the Z basis (0,0,1).")]
-    [NodeSearchTags("unit", "xyz")]
+    [NodeSearchTags("unit", "xyz", "z", "components", "axis", "basis")]
     public class XyzBasisZ : GeometryBase
     {
         public XyzBasisZ()
@@ -566,6 +576,7 @@ namespace Dynamo.Nodes
     [NodeName("Scale XYZ")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_POINT_MODIFY)]
     [NodeDescription("Multiplies each component of an XYZ by a number.")]
+    [NodeSearchTags("multiply", "xyz", "scale")]
     public class XyzScale : GeometryBase
     {
         public XyzScale()
@@ -592,6 +603,7 @@ namespace Dynamo.Nodes
     [NodeName("Scale XYZ with Base Point")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_POINT_MODIFY)]
     [NodeDescription("Scales an XYZ relative to the supplies base point.")]
+    [NodeSearchTags("scale", "xyz", "multiply", "base")]
     public class XyzScaleOffset : GeometryBase
     {
         public XyzScaleOffset()
@@ -620,6 +632,7 @@ namespace Dynamo.Nodes
     [NodeName("Add XYZs")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_POINT_MODIFY)]
     [NodeDescription("Adds the components of two XYZs.")]
+    [NodeSearchTags("add", "xyz")]
     public class XyzAdd : GeometryBase
     {
         public XyzAdd()
@@ -645,6 +658,7 @@ namespace Dynamo.Nodes
     [NodeName("Subtract XYZs")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_POINT_MODIFY)]
     [NodeDescription("Subtracts the components of two XYZs.")]
+    [NodeSearchTags("difference", "xyz")]
     public class XyzSubtract : GeometryBase
     {
         public XyzSubtract()
@@ -670,6 +684,7 @@ namespace Dynamo.Nodes
     [NodeName("Average XYZs")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_POINT_QUERY)]
     [NodeDescription("Averages a list of XYZs.")]
+    [NodeSearchTags("mean", "xyz")]
     public class XyzAverage : GeometryBase
     {
         public XyzAverage()
@@ -696,6 +711,7 @@ namespace Dynamo.Nodes
     [NodeName("Negate XYZ")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_POINT_MODIFY)]
     [NodeDescription("Negate an XYZ.")]
+    [NodeSearchTags("reverse", "invert", "negate", "xyz")]
     public class XyzNegate : GeometryBase
     {
         public XyzNegate()
@@ -717,6 +733,7 @@ namespace Dynamo.Nodes
     [NodeName("XYZ Cross Product")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_POINT_MODIFY)]
     [NodeDescription("Calculate the cross product of two XYZs.")]
+    [NodeSearchTags("cross", "product", "vector", "dot")]
     public class XyzCrossProduct : GeometryBase
     {
         public XyzCrossProduct()
@@ -740,7 +757,7 @@ namespace Dynamo.Nodes
     [NodeName("XYZ Dot Product")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_POINT_MODIFY)]
     [NodeDescription("Calculate the dot product of two XYZs.")]
-    [NodeSearchTags("inner")]
+    [NodeSearchTags("inner", "cross", "scalar", "vector")]
     public class XyzDotProduct : GeometryBase
     {
         public XyzDotProduct()
@@ -922,6 +939,7 @@ namespace Dynamo.Nodes
     [NodeName("Equal Distanced XYZs On Curve")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_DIVIDE)]
     [NodeDescription("Creates a list of equal distanced XYZs along a curve.")]
+    [NodeSearchTags("distance", "xyz", "curve", "equal", "chord", "cord")]
     public class EqualDistXyzAlongCurve : GeometryBase
     {
         public EqualDistXyzAlongCurve()
@@ -1102,6 +1120,7 @@ namespace Dynamo.Nodes
     [NodeName("Evaluate Curve")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_QUERY)]
     [NodeDescription("Evaluates curve or edge at parameter.")]
+    [NodeSearchTags("parameter", "1d", "divide")]
     public class XyzOnCurveOrEdge : GeometryBase
     {
         public XyzOnCurveOrEdge()
@@ -1177,6 +1196,7 @@ namespace Dynamo.Nodes
     [NodeName("XYZ By Offset from Origin")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_QUERY)]
     [NodeDescription("Evaluates curve or edge at parameter.")]
+    [NodeSearchTags("offset", "xyz", "origin")]
     public class XyzByDistanceOffsetFromOrigin : GeometryBase
     {
         public XyzByDistanceOffsetFromOrigin()
