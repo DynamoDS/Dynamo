@@ -496,7 +496,9 @@ namespace Dynamo.PackageManager
             else
             {
                 // with null query, don't show deprecated packages
-                return LastSync.Where(x => !x.IsDeprecated).ToList();
+                List<PackageManagerSearchElement> list = LastSync.Where(x => !x.IsDeprecated).ToList();
+                Sort(list, this.SortingKey);
+                return list;
             }
         }
 
