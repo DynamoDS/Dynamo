@@ -10,8 +10,6 @@ using ProtoCore.AST.AssociativeAST;
 using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Utilities;
-using GraphToDSCompiler;
-using ProtoCore.AST.AssociativeAST;
 using ProtoCore.BuildData;
 using ArrayNode = ProtoCore.AST.AssociativeAST.ArrayNode;
 using Node = ProtoCore.AST.Node;

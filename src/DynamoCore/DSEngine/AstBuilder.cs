@@ -3,9 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Models;
+using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSDefinitions;
 using ProtoScript.Runners;
+using Type = ProtoCore.Type;
 
 namespace Dynamo.DSEngine
 {
@@ -184,8 +186,8 @@ namespace Dynamo.DSEngine
     /// </summary>
     public interface IAstNodeContainer
     {
-        void OnAstNodeBuilding(NodeModel node);
-        void OnAstNodeBuilt(NodeModel node, IEnumerable<AssociativeNode> astNodes);
+        void OnAstNodeBuilding(Guid nodeGuid);
+        void OnAstNodeBuilt(Guid nodeGuid, IEnumerable<AssociativeNode> astNodes);
     }
 
     /// <summary>
@@ -289,7 +291,14 @@ namespace Dynamo.DSEngine
         /// Compile a dynamo node to the corresponding Ast Nodes
         /// </summary>
         /// <param name="node"></param>
-        public void CompileToAstNodes(NodeModel node)
+        public IEnumerable<AssociativeNode> CompileToAstNodes(NodeModel node)
+        {
+            var result = new List<AssociativeNode>();
+            _CompileToAstNodes(node, result);
+            return result;
+        }
+
+        private void _CompileToAstNodes(NodeModel node, List<AssociativeNode> resultList)
         {
             var inputAstNodes = new List<AssociativeNode>();
             foreach (var index in Enumerable.Range(0, node.InPortData.Count))
@@ -317,14 +326,16 @@ namespace Dynamo.DSEngine
                 DynamoLogger.Instance.Log("Error in Node. Not sent for building and compiling");
             }
 
-            OnAstNodeBuilding(node);
+            OnAstNodeBuilding(node.GUID);
 
             var astNodes = node.BuildAst(inputAstNodes);
 
             if (astNodes != null)
             {
-                OnAstNodeBuilt(node, astNodes);
+                OnAstNodeBuilt(node.GUID, astNodes);
             }
+
+            resultList.AddRange(astNodes ?? new AssociativeNode[0]);
         }
 
         /// <summary>
@@ -332,7 +343,7 @@ namespace Dynamo.DSEngine
         /// whether Dynamo node has been compiled or not.
         /// </summary>
         /// <param name="nodes"></param>
-        public void CompileToAstNodes(IEnumerable<NodeModel> nodes, bool isDeltaExecution)
+        public List<AssociativeNode> CompileToAstNodes(IEnumerable<NodeModel> nodes, bool isDeltaExecution)
         {
             // TODO: compile to AST nodes should be triggered after a node is 
             // modified.
@@ -342,13 +353,94 @@ namespace Dynamo.DSEngine
             if (isDeltaExecution)
                 sortedNodes = sortedNodes.Where(n => n.isDirty);
 
+            var result = new List<AssociativeNode>();
+
             foreach (var node in sortedNodes)
             {
-                CompileToAstNodes(node);
+                _CompileToAstNodes(node, result);
 
                 if (isDeltaExecution)
                     node.isDirty = false;
             }
+
+            return result;
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="functionGuid"></param>
+        /// <param name="funcBody"></param>
+        /// <param name="outputs"></param>
+        /// <param name="parameters"></param>
+        /// <param name="isDeltaExecution"></param>
+        public void CompileCustomNode(
+            Guid functionGuid,
+            IEnumerable<NodeModel> funcBody,
+            List<AssociativeNode> outputs,
+            IEnumerable<string> parameters,
+            bool isDeltaExecution)
+        {
+            OnAstNodeBuilding(functionGuid);
+
+            string name = functionGuid.ToString().Replace("-", string.Empty);
+
+            var functionBody = new CodeBlockNode();
+
+            functionBody.Body.AddRange(CompileToAstNodes(funcBody, isDeltaExecution));
+
+            AssociativeNode top;
+
+            if (outputs.Count > 1)
+            {
+                top = AstFactory.BuildExprList(outputs);
+            }
+            else if (outputs.Count == 1)
+            {
+                top = outputs[0];
+            }
+            else
+            {
+                // if the custom node is empty, it will initially return null
+                top = AstFactory.BuildNullNode();
+            }
+
+            var returnNode = new ReturnNode { ReturnExpr = top };
+            functionBody.Body.Add(returnNode);
+
+            //Create a new function definition
+            var functionDef = new FunctionDefinitionNode
+            {
+                //name is the GUID of the custom node
+                Name = name,
+
+                //signature is 
+                Singnature = new ArgumentSignatureNode
+                {
+                    Arguments = parameters.Select(paramName => new VarDeclNode
+                    {
+                        NameNode = new IdentifierNode
+                        {
+                            Value = paramName,
+                            Name = paramName,
+                            datatype = new Type
+                            {
+                                Name = "var",
+                                IsIndexable = false,
+                                rank = 0,
+                                UID = (int)PrimitiveType.kTypeVar
+                            }
+                        },
+                        ArgumentType = new Type { Name = "var" }
+                    }).ToList()
+                },
+
+                //body is the compiled workspace
+                FunctionBody = functionBody
+            };
+
+            OnAstNodeBuilt(functionGuid, new [] { functionDef });
         }
 
         /// <summary>
@@ -413,25 +505,25 @@ namespace Dynamo.DSEngine
         /// <summary>
         /// Notify IAstNodeContainer that starts building AST nodes. 
         /// </summary>
-        /// <param name="node"></param>
-        private void OnAstNodeBuilding(NodeModel node)
+        /// <param name="nodeGuid"></param>
+        private void OnAstNodeBuilding(Guid nodeGuid)
         {
             if (_nodeContainer != null)
             {
-                _nodeContainer.OnAstNodeBuilding(node);
+                _nodeContainer.OnAstNodeBuilding(nodeGuid);
             }
         }
 
         /// <summary>
         /// Notify IAstNodeContainer that AST nodes have been built.
         /// </summary>
-        /// <param name="node"></param>
+        /// <param name="nodeGuid"></param>
         /// <param name="astNodes"></param>
-        private void OnAstNodeBuilt(NodeModel node, IEnumerable<AssociativeNode> astNodes)
+        private void OnAstNodeBuilt(Guid nodeGuid, IEnumerable<AssociativeNode> astNodes)
         {
             if (_nodeContainer != null)
             {
-                _nodeContainer.OnAstNodeBuilt(node, astNodes);
+                _nodeContainer.OnAstNodeBuilt(nodeGuid, astNodes);
             }
         }
     }
