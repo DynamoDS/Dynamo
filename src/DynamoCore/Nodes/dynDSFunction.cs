@@ -313,10 +313,11 @@ namespace Dynamo.Nodes
 
             if (IsStaticMember() || IsConstructor())
             {
-                var classNode = new IdentifierNode(Definition.ClassName);
-                functionCall = CoreUtils.GenerateCallDotNode(classNode,
-                    functionCall as FunctionCallNode,
-                    dynSettings.Controller.EngineController.LiveRunnerCore);
+                ProtoCore.AST.AssociativeAST.IdentifierListNode identListConstructorCall = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
+                identListConstructorCall.LeftNode = new ProtoCore.AST.AssociativeAST.IdentifierNode(Definition.ClassName);
+                identListConstructorCall.RightNode = functionCall as FunctionCallNode;
+
+                functionCall = identListConstructorCall;
             }
             else if (IsInstanceMember())
             {

@@ -7,11 +7,13 @@ using System.Linq;
 using System.Windows;
 using System.Xml;
 using System.Globalization;
+using Dynamo.Core;
 using Dynamo.Nodes;
+using Dynamo.Selection;
 using Dynamo.Utilities;
 using Microsoft.Practices.Prism.ViewModel;
 using String = System.String;
-using Dynamo.Core;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Models
 {
@@ -866,6 +868,83 @@ namespace Dynamo.Models
 
                 this.HasUnsavedChanges = true;
             }
+        }
+
+        /// <summary>
+        /// After command framework is implemented, this method should now be only 
+        /// called from a menu item (i.e. Ctrl + W). It should not be used as a 
+        /// way for any other code paths to convert nodes to code programmatically. 
+        /// For that we now have ConvertNodesToCodeInternal which takes in more 
+        /// configurable arguments.
+        /// </summary>
+        /// <param name="parameters">This is not used and should always be null,
+        /// otherwise an ArgumentException will be thrown.</param>
+        /// 
+        internal void NodeToCode(object parameters)
+        {
+            if (null != parameters) // See above for details of this exception.
+            {
+                var message = "Internal error, argument must be null";
+                throw new ArgumentException(message, "parameters");
+            }
+
+            Guid nodeID = Guid.NewGuid();
+            var command = new DynCmd.ConvertNodesToCodeCommand(nodeID);
+            dynSettings.Controller.DynamoViewModel.ExecuteCommand(command);
+        }
+
+        internal bool CanNodeToCode(object parameters)
+        {
+            return DynamoSelection.Instance.Selection.Count > 0;
+        }
+
+        internal void ConvertNodesToCodeInternal(Guid nodeId)
+        {
+            List<NodeModel> nodeList = DynamoSelection.Instance.Selection.OfType<NodeModel>().ToList();
+
+            string code = dynSettings.Controller.EngineController.ConvertNodesToCode(nodeList);
+
+            //UndoRedo Action Group-----------------------------------------------------------------------------------------
+            UndoRecorder.BeginActionGroup();
+
+            // Node deletion
+            IEnumerable<ISelectable> nodeModelsInSelection = DynamoSelection.Instance.Selection.Where(x => x is NodeModel);
+            int m = 0;
+            var modelsInSelection = nodeModelsInSelection as IList<ISelectable> ?? nodeModelsInSelection.ToList();
+            while (modelsInSelection.Count() > m)
+            {
+                var node = modelsInSelection.ElementAt(m) as NodeModel;
+                var connectors = node.AllConnectors;
+                var connectorModels = connectors as IList<ConnectorModel> ?? connectors.ToList();
+                for (int n = 0; n < connectorModels.Count(); ++n)
+                {
+                    UndoRecorder.RecordDeletionForUndo(connectorModels.ElementAt(n));
+                    connectorModels.ElementAt(n).NotifyConnectedPortsOfDeletion();
+                    Connectors.Remove(connectorModels.ElementAt(n));
+                }
+                UndoRecorder.RecordDeletionForUndo(node);
+                Nodes.Remove(node);
+                m++;
+            }
+
+            // create node
+            var codeBlockNode = new CodeBlockNodeModel(code, nodeId, this);
+            UndoRecorder.RecordCreationForUndo(codeBlockNode);
+            Nodes.Add(codeBlockNode);
+
+
+            UndoRecorder.EndActionGroup();
+            //End UndoRedo Action Group------------------------------------------------------------------------------------
+
+            // select node
+            var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == nodeId);
+            if (placedNode != null)
+            {
+                DynamoSelection.Instance.ClearSelection();
+                DynamoSelection.Instance.Selection.Add(placedNode);
+            }
+
+            Modified();
         }
 
         /// <summary>
