@@ -294,6 +294,19 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        /// Get the current UndoRedoRecorder that is associated with the current 
+        /// WorkspaceModel. Note that external parties should not have the needs 
+        /// to access the recorder directly, so this property is exposed just as 
+        /// a "temporary solution". Before using this property, consider using 
+        /// WorkspaceModel.RecordModelsForUndo method which allows for multiple 
+        /// modifications in a single action group.
+        /// </summary>
+        internal UndoRedoRecorder UndoRecorder
+        {
+            get { return undoRecorder; }
+        }
+
         #endregion
 
         protected WorkspaceModel(
