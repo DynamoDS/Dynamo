@@ -58,7 +58,7 @@ namespace Dynamo.Controls
 
             this.SizeChanged += OnSizeChanged;
             this.DataContextChanged += OnDataContextChanged;
-            
+
             Canvas.SetZIndex(this, 1);
         }
 
@@ -247,15 +247,19 @@ namespace Dynamo.Controls
         {
             if (ViewModel == null) return;
 
+            var view = WPF.FindUpVisualTree<DynamoView>(this);
+
             dynSettings.ReturnFocusToSearch();
 
-            var view = WPF.FindUpVisualTree<DynamoView>(this);
             view.mainGrid.Focus();
 
-            Guid nodeGuid = this.ViewModel.NodeModel.GUID;
-            dynSettings.Controller.DynamoViewModel.ExecuteCommand(
-                new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers));
-
+            var node = this.ViewModel.NodeModel;
+            if (node.WorkSpace.Nodes.Contains(node))
+            {
+                Guid nodeGuid = this.ViewModel.NodeModel.GUID;
+                dynSettings.Controller.DynamoViewModel.ExecuteCommand(
+                    new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers));
+            }
             if (e.ClickCount == 2)
             {
                 if (ViewModel.GotoWorkspaceCommand.CanExecute(null))
