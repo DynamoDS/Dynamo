@@ -24,14 +24,11 @@ namespace Dynamo.PackageManager.UI
             (this.DataContext as PackageManagerSearchViewModel).SearchAndUpdateResults(this.SearchTextBox.Text);
         }
 
-        private void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void SortButton_OnClick(object sender, RoutedEventArgs e)
         {
-            ((PackageManagerSearchViewModel)DataContext).ExecuteSelected();
-        }
-
-        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
-        {
-            (this.DataContext as PackageManagerSearchViewModel).SearchAndUpdateResults();
+            var button = (Button)sender;
+            button.ContextMenu.DataContext = button.DataContext;
+            button.ContextMenu.IsOpen = true;
         }
     }
 }
