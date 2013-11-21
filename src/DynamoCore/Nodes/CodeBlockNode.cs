@@ -26,6 +26,7 @@ namespace Dynamo.Nodes
         private string code = "";
         private string codeToParse = "";
         private List<string> inputIdentifiers = new List<string>();
+        private List<string> tempVariables = new List<string>();
         private string previewVariable;
         private bool shouldFocus = true;
 
@@ -170,6 +171,14 @@ namespace Dynamo.Nodes
         public string CodeToParse
         {
             get { return codeToParse; }
+        }
+
+        /// <summary>
+        /// Temporary variables that generated in code.
+        /// </summary>
+        public List<string> TempVariables
+        {
+            get { return tempVariables; }
         }
 
         #endregion
@@ -334,10 +343,11 @@ namespace Dynamo.Nodes
             List<ProtoCore.AST.Node> parsedNodes;
             List<ProtoCore.BuildData.ErrorEntry> errors;
             List<ProtoCore.BuildData.WarningEntry> warnings;
+
             try
             {
                 if (GraphToDSCompiler.GraphUtilities.Parse(ref codeToParse, out parsedNodes, out errors,
-                    out  warnings, unboundIdentifiers) && parsedNodes != null)
+                    out  warnings, unboundIdentifiers, out tempVariables) && parsedNodes != null)
                 {
                     //Create an instance of statement for each code statement written by the user
                     for (int i = 0; i < parsedNodes.Count; i++)

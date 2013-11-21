@@ -200,6 +200,7 @@ namespace Dynamo.DSEngine
             public const string PARAM_PREFIX = @"p_";
             public const string FUNCTION_PREFIX = @"func_";
             public const string VAR_PREFIX = @"var_";
+            public const string SHORT_VAR_PREFIX = @"t_";
         }
 
         public class ASTBuildingEventArgs : EventArgs
