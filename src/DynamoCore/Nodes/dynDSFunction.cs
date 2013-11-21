@@ -309,33 +309,72 @@ namespace Dynamo.Nodes
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
             string function = Definition.Name;
-            var functionCall = AstFactory.BuildFunctionCall(function, inputAstNodes);
+            AssociativeNode rhs = null;
 
-            if (IsStaticMember() || IsConstructor())
+            switch (Definition.Type)
             {
-                ProtoCore.AST.AssociativeAST.IdentifierListNode identListConstructorCall = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
-                identListConstructorCall.LeftNode = new ProtoCore.AST.AssociativeAST.IdentifierNode(Definition.ClassName);
-                identListConstructorCall.RightNode = functionCall as FunctionCallNode;
+                case LibraryItemType.Constructor:
+                case LibraryItemType.StaticMethod:
 
-                functionCall = identListConstructorCall;
-            }
-            else if (IsInstanceMember())
-            {
-                AssociativeNode thisNode = new NullNode();
-                if (inputAstNodes.Count >= 1)
-                {
-                    thisNode = inputAstNodes[0];
-                    inputAstNodes.RemoveAt(0);  // remove this pointer
-                }
-                functionCall = AstFactory.BuildFunctionCall(function, inputAstNodes);
-                functionCall = CoreUtils.GenerateCallDotNode(thisNode,
-                    functionCall as FunctionCallNode,
-                    dynSettings.Controller.EngineController.LiveRunnerCore);
+                    var staticCall = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
+                    staticCall.LeftNode = new IdentifierNode(Definition.ClassName);
+                    staticCall.RightNode = AstFactory.BuildFunctionCall(function, inputAstNodes);
+                    rhs = staticCall;
+                    break;
+
+                case LibraryItemType.StaticProperty:
+
+                    var staticProp = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
+                    staticProp.LeftNode = new IdentifierNode(Definition.ClassName);
+                    staticProp.RightNode = new IdentifierNode(Definition.Name);
+                    rhs = staticProp;
+                    break;
+
+                case LibraryItemType.InstanceProperty:
+
+                    // Only handle getter here. Setter could be handled in CBN.
+                    rhs = new NullNode();
+                    if (inputAstNodes != null && inputAstNodes.Count >= 1)
+                    {
+                        var thisNode = inputAstNodes[0];
+                        if (thisNode != null && !(thisNode is NullNode))
+                        {
+                            var insProp = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
+                            insProp.LeftNode = inputAstNodes[0];
+                            insProp.RightNode = new IdentifierNode(Definition.Name);
+                            rhs = insProp;
+                        }
+                    }
+
+                    break;
+
+                case LibraryItemType.InstanceMethod:
+
+                    rhs = new NullNode();
+                    if (inputAstNodes != null && inputAstNodes.Count >= 1)
+                    {
+                        var thisNode = inputAstNodes[0];
+                        inputAstNodes.RemoveAt(0);  // remove this pointer
+
+                        if (thisNode != null && !(thisNode is NullNode))
+                        {
+                            var memberFunc = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
+                            memberFunc.LeftNode = thisNode;
+                            memberFunc.RightNode = AstFactory.BuildFunctionCall(function, inputAstNodes);
+                            rhs = memberFunc;
+                        }
+                    }
+                    
+                    break;
+
+                default:
+                    rhs = AstFactory.BuildFunctionCall(function, inputAstNodes);
+                    break;
             }
 
             var resultAst = new List<AssociativeNode>
             {
-                AstFactory.BuildAssignment(AstIdentifierForPreview, functionCall)
+                AstFactory.BuildAssignment(AstIdentifierForPreview, rhs)
             };
 
             if (OutPortData.Count == 1)
