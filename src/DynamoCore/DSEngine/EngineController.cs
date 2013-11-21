@@ -102,12 +102,12 @@ namespace Dynamo.DSEngine
             return mirror;
         }
 
-        public string ConvertNodesToCode(List<NodeModel> nodesToConvert)
+        public string ConvertNodesToCode(IEnumerable<NodeModel> nodes)
         {
             string code = string.Empty;
-            if (nodesToConvert.Count > 0)
+            if (nodes.Any())
             {
-                code = Dynamo.DSEngine.NodeToCodeUtils.ConvertNodesToCode(nodesToConvert);
+                code = Dynamo.DSEngine.NodeToCodeUtils.ConvertNodesToCode(nodes);
             }
             return code;
         }

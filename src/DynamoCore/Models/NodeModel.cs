@@ -411,6 +411,17 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        ///     If this node is allowed to be converted to AST node in nodes to code conversion.
+        /// </summary>
+        public virtual bool IsConvertiable
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         ///     Base name for ProtoAST Identifiers corresponding to this node's output.
         /// </summary>
         protected string AstIdentifierBase
