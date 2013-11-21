@@ -28,6 +28,7 @@ namespace Dynamo.Nodes
         private List<string> inputIdentifiers = new List<string>();
         private List<string> tempVariables = new List<string>();
         private string previewVariable;
+        private AssociativeNode previewExpressionAST;
         private bool shouldFocus = true;
 
         #region Public Methods
@@ -59,7 +60,6 @@ namespace Dynamo.Nodes
         /// <param name="errorMessage"> Error message to be displayed </param>
         public void DisplayError(string errorMessage)
         {
-            //Log an error. TODO Ambi : Remove this later
             DynamoLogger.Instance.Log("Error in Code Block Node");
 
             //Remove all ports
@@ -70,6 +70,8 @@ namespace Dynamo.Nodes
             for (int i = 0; i < size; i++)
                 OutPortData.RemoveAt(0);
             RegisterAllPorts();
+
+            previewVariable = null;
 
             //Set the node state in error and display the message
             Error(errorMessage);
@@ -147,7 +149,13 @@ namespace Dynamo.Nodes
                             //Save the connectors so that we can recreate them at the correct positions
                             SaveAndDeleteConnectors(inportConnections, outportConnections);
 
-                            WorkSpace.UndoRecorder.RecordModificationForUndo(this);
+                            if (code == "")
+                            {
+                                WorkSpace.UndoRecorder.PopFromUndoGroup();
+                                WorkSpace.UndoRecorder.RecordCreationForUndo(this);
+                            }
+                            else
+                                WorkSpace.UndoRecorder.RecordModificationForUndo(this);
                             code = value;
                             ProcessCode();
 
@@ -295,6 +303,8 @@ namespace Dynamo.Nodes
                 resultNodes.Add(astNode as ProtoCore.AST.AssociativeAST.AssociativeNode);
             }
 
+            resultNodes.Add(ProtoCore.Utils.NodeUtils.Clone(previewExpressionAST));
+
             return resultNodes;
         }
 
@@ -362,19 +372,9 @@ namespace Dynamo.Nodes
                         //Create and save a statement variable from the astnodes generated
                         tempStatement = Statement.CreateInstance(parsedNode);
                         codeStatements.Add(tempStatement);
-
-                        var binaryStatement = parsedNode as BinaryExpressionNode;
-
-                        if (binaryStatement != null && binaryStatement.Optr == ProtoCore.DSASM.Operator.assign)
-                        {
-                            var lhsIdent = binaryStatement.LeftNode as IdentifierNode;
-                            if (lhsIdent != null)
-                            {
-                                previewVariable = lhsIdent.Name;
-                                // previewVariable = GraphToDSCompiler.GraphUtilities.ASTListToCode(new List<AssociativeNode> { lhsIdent});
-                            }
-                        }
                     }
+
+                    SetPreviewVariable(parsedNodes[parsedNodes.Count-1] as BinaryExpressionNode);
                 }
                 else
                 {
@@ -410,6 +410,29 @@ namespace Dynamo.Nodes
             }
 
             SetPorts(unboundIdentifiers); //Set the input and output ports based on the statements
+        }
+
+        private void SetPreviewVariable(BinaryExpressionNode lastStatement)
+        {
+            previewVariable = "temp" + Guid.NewGuid().ToString();
+            previewVariable = previewVariable.Replace('-', '_');
+            CodeBlockNode commentNode;
+            string finalCode = previewVariable + "=1;";
+
+            try
+            {
+                previewExpressionAST = (GraphUtilities.Parse(finalCode, out commentNode) as CodeBlockNode).Body[0];
+            }
+            catch (Exception ex)
+            {
+                State = ElementState.Error;
+                DynamoLogger.Instance.Log("Failed to build AST for code block node. Error: " + ex.Message);
+            }
+
+            if (lastStatement == null)
+                throw new ArgumentNullException("Statement not a binary expression node");
+
+            (previewExpressionAST as BinaryExpressionNode).RightNode = lastStatement.LeftNode;
         }
 
         /// <summary>
