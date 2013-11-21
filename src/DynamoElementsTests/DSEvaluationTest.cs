@@ -14,11 +14,16 @@ namespace Dynamo.Tests
     [Category("DSExecution")]
     class DSEvaluationTest : DynamoUnitTest
     {
-        private void RunModel(string relativeDynFilePath)
+        private void OpenModel(string relativeFilePath)
         {
             var model = Controller.DynamoModel;
-            string openPath = Path.Combine(GetTestDirectory(), relativeDynFilePath);
+            string openPath = Path.Combine(GetTestDirectory(), relativeFilePath);
             model.Open(openPath);
+        }
+
+        private void RunModel(string relativeDynFilePath)
+        {
+            OpenModel(relativeDynFilePath);
             Assert.DoesNotThrow(() => Controller.RunExpression(null));
         }
 
@@ -408,6 +413,13 @@ namespace Dynamo.Tests
         {
             RunModel(@"core\dsevaluation\regress737.dyn");
             AssertPreviewValue("ccad1780-f570-4ccc-ae7a-0ad1b663c3dd", 21);
+        }
+
+
+        [Test]
+        public void Regress781()
+        {
+            OpenModel(@"core\dsevaluation\makeSpiralFromBasePtCenterPtHeight.dyf");
         }
     }
 }
