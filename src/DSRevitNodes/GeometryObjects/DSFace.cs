@@ -33,6 +33,14 @@ namespace DSRevitNodes
             }
         }
 
+        public DSEdge[] Edges
+        {
+            get
+            {
+                return null;
+            }
+        }
+
         #endregion
 
         #region Tesselation
