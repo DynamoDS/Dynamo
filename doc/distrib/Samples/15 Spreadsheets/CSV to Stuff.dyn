@@ -1,255 +1,59 @@
-<dynWorkspace X="125.280846560847" Y="124.028859259259">
-  <dynElements>
-    <Dynamo.Nodes.dynStringFilename type="Dynamo.Nodes.dynStringFilename" guid="c5516802-e335-41c6-a6e8-e0193b9ece1f" nickname="Filename" x="0" y="0.843474565601314" lacing="Disabled">
-      <System.String value="C:\Users\kronz\Documents\GitHub\Dynamo\doc\distrib\Samples\15 CSV to Points\helix_smaller.csv" />
-    </Dynamo.Nodes.dynStringFilename>
-    <Dynamo.Nodes.dynFileReader type="Dynamo.Nodes.dynFileReader" guid="13468dab-9934-4501-8bfa-f206ed95a92c" nickname="Read File" x="325.978070175438" y="0.666666666666686" lacing="Disabled" />
-    <Dynamo.Nodes.dynSplitString type="Dynamo.Nodes.dynSplitString" guid="d9edbf74-9d24-41c0-a136-c9c0a5ce138c" nickname="Split String" x="645.332535885167" y="4.20232624024291" lacing="Disabled" />
-    <Dynamo.Nodes.dynStringInput type="Dynamo.Nodes.dynStringInput" guid="123b16a4-3c87-451b-9915-d220fe5a58b9" nickname="String" x="495.386972215227" y="72.310207336523" lacing="Disabled">
-      <System.String value="%0a" />
-    </Dynamo.Nodes.dynStringInput>
-    <Dynamo.Nodes.dynFamilyTypeSelector type="Dynamo.Nodes.dynFamilyTypeSelector" guid="579ab4b8-6711-4cf7-8740-06f1e15864a3" nickname="Family Type Selector" x="1881.73611111111" y="271.444444444444" lacing="Disabled" index="-1" />
-    <Dynamo.Nodes.dynFamilyInstanceCreatorXYZ type="Dynamo.Nodes.dynFamilyInstanceCreatorXYZ" guid="f72d164d-b1ea-4fe1-ae68-2b2f5dc52449" nickname="Family Instance Creator" x="2230.28968253967" y="166.244047619048" lacing="Longest">
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-    </Dynamo.Nodes.dynFamilyInstanceCreatorXYZ>
-    <Dynamo.Nodes.dynReferencePointByXYZ type="Dynamo.Nodes.dynReferencePointByXYZ" guid="96c68b05-fe68-4127-93a8-6dafc70576be" nickname="Reference Point" x="2228.46666666667" y="50.5444444444444" lacing="Longest">
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-      <Run />
-    </Dynamo.Nodes.dynReferencePointByXYZ>
-    <Dynamo.Nodes.dynWatch3D type="Dynamo.Nodes.dynWatch3D" guid="ebcfc192-76df-4f33-b5a1-ea2414166fd5" nickname="Watch 3D" x="1393.17037037038" y="77.5320987654323" lacing="Disabled" />
-    <Dynamo.Nodes.dynXYZScale type="Dynamo.Nodes.dynXYZScale" guid="2489b03a-c9f3-4a87-a92a-9e38834bbce2" nickname="Scale XYZ" x="1134.07673270503" y="71.549624256019" lacing="Longest" />
-    <Dynamo.Nodes.dynFunction type="Dynamo.Nodes.dynFunction" guid="70de44fe-aa5d-40b1-8115-fcfce01031fa" nickname="Parse List of Lists" x="878.110849917399" y="0" lacing="Disabled">
+<Workspace Version="0.6.2.14024" X="29.4141798941818" Y="46.962192592592" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.FileReader type="Dynamo.Nodes.FileReader" guid="9e8e840a-2abd-474d-ad66-115e1074df73" nickname="Read Text File" x="309.978070175438" y="-3.33333333333309" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.StringFilename type="Dynamo.Nodes.StringFilename" guid="f338c699-a0d3-4edf-8bc9-b48d08d90217" nickname="File Path" x="-16" y="-3.15652543439847" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="C:\Users\kronz\Share\Dropbox\AU2013_AB2551\Samples\15 Spreadsheets\helix.csv" />
+    </Dynamo.Nodes.StringFilename>
+    <Dynamo.Nodes.SplitString type="Dynamo.Nodes.SplitString" guid="31a5908e-8af0-45f4-80d1-c4e6fcc72626" nickname="Split String" x="629.332535885167" y="0.20232624024311" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="bdae9cb5-a63e-43c1-ae6c-015bf772028c" nickname="Parse List of Lists" x="862.110849917399" y="-3.99999999999977" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <ID value="1f47466b-a6c8-49d1-a54e-eb901d971738" />
       <Name value="Parse List of Lists" />
+      <Description value="" />
       <Inputs>
         <Input value="list" />
       </Inputs>
       <Outputs>
         <Output value="list" />
       </Outputs>
-    </Dynamo.Nodes.dynFunction>
-    <Dynamo.Nodes.dynDoubleSliderInput type="Dynamo.Nodes.dynDoubleSliderInput" guid="aed166bf-bd03-4104-8881-bfeb9b1510cb" nickname="Number Slider" x="757.14494675989" y="196.011048151761" lacing="Disabled">
-      <System.Double value="1.63878485226796" min="0" max="20" />
-    </Dynamo.Nodes.dynDoubleSliderInput>
-  </dynElements>
-  <dynConnectors>
-    <Dynamo.Connectors.dynConnectorModel start="c5516802-e335-41c6-a6e8-e0193b9ece1f" start_index="0" end="13468dab-9934-4501-8bfa-f206ed95a92c" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="13468dab-9934-4501-8bfa-f206ed95a92c" start_index="0" end="d9edbf74-9d24-41c0-a136-c9c0a5ce138c" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="d9edbf74-9d24-41c0-a136-c9c0a5ce138c" start_index="0" end="70de44fe-aa5d-40b1-8115-fcfce01031fa" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="123b16a4-3c87-451b-9915-d220fe5a58b9" start_index="0" end="d9edbf74-9d24-41c0-a136-c9c0a5ce138c" end_index="1" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="579ab4b8-6711-4cf7-8740-06f1e15864a3" start_index="0" end="f72d164d-b1ea-4fe1-ae68-2b2f5dc52449" end_index="1" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="2489b03a-c9f3-4a87-a92a-9e38834bbce2" start_index="0" end="ebcfc192-76df-4f33-b5a1-ea2414166fd5" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="70de44fe-aa5d-40b1-8115-fcfce01031fa" start_index="0" end="2489b03a-c9f3-4a87-a92a-9e38834bbce2" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="aed166bf-bd03-4104-8881-bfeb9b1510cb" start_index="0" end="2489b03a-c9f3-4a87-a92a-9e38834bbce2" end_index="1" portType="0" />
-  </dynConnectors>
-  <dynNotes>
-    <Dynamo.Nodes.dynNoteModel text="connect Watch 3d to make Revit &#xD;&#xA;Reference Points" x="2337.46031746032" y="58.5555555555556" />
-    <Dynamo.Nodes.dynNoteModel text="Visualize XYZs in the Watch 3d&#xD;&#xA;before making Revit Elements" x="1392.91666666667" y="21.6666666666666" />
-    <Dynamo.Nodes.dynNoteModel text="Adjust the overall distribution&#xD;&#xA;of the coordinate points" x="1112.44444444444" y="175.111111111111" />
-    <Dynamo.Nodes.dynNoteModel text="Connect to Watch 3d to place families" x="2380" y="183.333333333333" />
-    <Dynamo.Nodes.dynNoteModel text="Pick a loaded family from the &#xD;&#xA;dropdown to place" x="1970" y="366.666666666666" />
-    <Dynamo.Nodes.dynNoteModel text="Browse a CSV file that has numbers &#xD;&#xA;in x, y, and z coordinate space" x="0" y="102.5" />
-    <Dynamo.Nodes.dynNoteModel text="Split the String on &#xD;&#xA;A carriage return &lt;enter&gt;" x="608.333333333333" y="90" />
-    <Dynamo.Nodes.dynNoteModel text="Custom Node. &#xD;&#xA;Double click to look inside" x="873.222222222222" y="62.8888888888889" />
-  </dynNotes>
-</dynWorkspace>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="6fe05139-2620-4d1d-8e06-84a3d52d2635" nickname="String" x="479.386972215227" y="68.3102073365233" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="&#xA;" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.XyzScale type="Dynamo.Nodes.XyzScale" guid="0cde47c6-106f-4a0a-9566-872fd23a0a20" nickname="Scale XYZ" x="1118.07673270503" y="67.5496242560192" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.DoubleSliderInput type="Dynamo.Nodes.DoubleSliderInput" guid="47fd5c56-85b7-4bec-879a-8ae7ed95afa4" nickname="Number Slider" x="741.14494675989" y="192.011048151761" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1.639" min="0" max="20" />
+    </Dynamo.Nodes.DoubleSliderInput>
+    <Dynamo.Nodes.Watch3D type="Dynamo.Nodes.Watch3D" guid="6961ceef-0846-42cd-8996-b99a11c9bb74" nickname="Watch 3D" x="1377.17037037038" y="73.5320987654325" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <view width="219.2" height="315.2">
+        <camera pos_x="8.90654498117057" pos_y="8.90654498117057" pos_z="8.90554498117057" look_x="-8.90654498117057" look_y="-8.90654498117057" look_z="-8.90654498117057" />
+      </view>
+    </Dynamo.Nodes.Watch3D>
+    <Dynamo.Nodes.FamilyTypeSelector type="Dynamo.Nodes.FamilyTypeSelector" guid="e4310aa2-78aa-4d02-8d26-0a668e0ae7eb" nickname="Select Family Type" x="1865.73611111111" y="267.444444444444" isVisible="true" isUpstreamVisible="true" lacing="Disabled" index="-1" />
+    <Dynamo.Nodes.ReferencePointByXyz type="Dynamo.Nodes.ReferencePointByXyz" guid="2e2e787b-90a4-411a-97f4-ec0e0d62e978" nickname="Reference Point" x="2212.46666666667" y="46.5444444444446" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <Run />
+    </Dynamo.Nodes.ReferencePointByXyz>
+    <Dynamo.Nodes.FamilyInstanceCreatorXyz type="Dynamo.Nodes.FamilyInstanceCreatorXyz" guid="efdcaae0-baec-4b1a-82a8-ad1717363f94" nickname="Create Family Instance" x="2214.28968253967" y="162.244047619048" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <Run />
+    </Dynamo.Nodes.FamilyInstanceCreatorXyz>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="9e8e840a-2abd-474d-ad66-115e1074df73" start_index="0" end="31a5908e-8af0-45f4-80d1-c4e6fcc72626" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f338c699-a0d3-4edf-8bc9-b48d08d90217" start_index="0" end="9e8e840a-2abd-474d-ad66-115e1074df73" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="31a5908e-8af0-45f4-80d1-c4e6fcc72626" start_index="0" end="bdae9cb5-a63e-43c1-ae6c-015bf772028c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="bdae9cb5-a63e-43c1-ae6c-015bf772028c" start_index="0" end="0cde47c6-106f-4a0a-9566-872fd23a0a20" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6fe05139-2620-4d1d-8e06-84a3d52d2635" start_index="0" end="31a5908e-8af0-45f4-80d1-c4e6fcc72626" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0cde47c6-106f-4a0a-9566-872fd23a0a20" start_index="0" end="6961ceef-0846-42cd-8996-b99a11c9bb74" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="47fd5c56-85b7-4bec-879a-8ae7ed95afa4" start_index="0" end="0cde47c6-106f-4a0a-9566-872fd23a0a20" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e4310aa2-78aa-4d02-8d26-0a668e0ae7eb" start_index="0" end="efdcaae0-baec-4b1a-82a8-ad1717363f94" end_index="1" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="connect Watch 3d to make Revit &#xD;&#xA;Reference Points" x="2337.46031746032" y="58.5555555555556" />
+    <Dynamo.Models.NoteModel text="Visualize XYZs in the Watch 3d&#xD;&#xA;before making Revit Elements" x="1392.91666666667" y="21.6666666666666" />
+    <Dynamo.Models.NoteModel text="Adjust the overall distribution&#xD;&#xA;of the coordinate points" x="1112.44444444444" y="175.111111111111" />
+    <Dynamo.Models.NoteModel text="Connect to Watch 3d to place families" x="2380" y="183.333333333333" />
+    <Dynamo.Models.NoteModel text="Pick a loaded family from the &#xD;&#xA;dropdown to place" x="1970" y="366.666666666666" />
+    <Dynamo.Models.NoteModel text="Browse a CSV file that has numbers &#xD;&#xA;in x, y, and z coordinate space" x="0" y="102.5" />
+    <Dynamo.Models.NoteModel text="Split the String on &#xD;&#xA;A carriage return &lt;enter&gt;" x="608.333333333333" y="90" />
+    <Dynamo.Models.NoteModel text="Custom Node. &#xD;&#xA;Double click to look inside" x="873.222222222222" y="62.8888888888889" />
+  </Notes>
+</Workspace>
