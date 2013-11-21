@@ -241,7 +241,9 @@ namespace Dynamo.DSEngine
         // Reverse post-order to sort nodes
         private void MarkNode(NodeModel node, Dictionary<NodeModel, MarkFlag> nodeFlags, Stack<NodeModel> sortedList)
         {
-            var flag = nodeFlags[node];
+            MarkFlag flag;
+            if (!nodeFlags.TryGetValue(node, out flag))
+                return;
 
             if (MarkFlag.TempMark == flag) 
                 return;
