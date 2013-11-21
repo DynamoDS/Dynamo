@@ -477,6 +477,92 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(0, cbn.OutPorts[3].Connectors[0].End.Index);
         }
 
+        /// <summary>
+        /// Creates 3 number nodes and an add (+) nodes. Connects 2 of the number
+        /// nodes to the + node. Then converts all the nodes to Code.
+        /// </summary>
+        [Test, RequiresSTA]
+        public void TestConvertAllNodesToCode()
+        {
+            RunCommandsFromFile("TestConvertAllNodesToCode.xml");
+
+            //Check the nodes
+            var nodes = workspaceViewModel.Nodes;
+            Assert.NotNull(nodes);
+            Assert.AreEqual(1, nodes.Count);
+
+            //Check the connectors
+            var connectors = workspaceViewModel.Connectors;
+            Assert.NotNull(connectors);
+            Assert.AreEqual(0, connectors.Count);
+
+            //Check the CBN
+            var cbn = GetNode("8950950f-78f3-4d81-8181-c574ad84bb1d") as CodeBlockNodeModel;
+            Assert.AreEqual(4, cbn.OutPorts.Count);
+            Assert.True(cbn.Code.Contains("+"));
+            Assert.True(cbn.Code.Contains("14"));
+            Assert.True(cbn.Code.Contains("190"));
+            Assert.True(cbn.Code.Contains("69"));
+        }
+
+        /// <summary>
+        /// Converts a set of nodes to code. Then does Undo and checks that the original set of
+        /// nodes are formed again.
+        /// </summary>
+        [Test, RequiresSTA]
+        public void TestConvertAllNodesToCodeUndo()
+        {
+            RunCommandsFromFile("TestConvertAllNodesToCodeUndo.xml");
+
+            //Check the nodes
+            var nodes = workspaceViewModel.Nodes;
+            Assert.NotNull(nodes);
+            Assert.AreEqual(4, nodes.Count);
+
+            //Check the connectors
+            var connectors = workspaceViewModel.Connectors;
+            Assert.NotNull(connectors);
+            Assert.AreEqual(2, connectors.Count);
+
+            //Check that there is no CBN
+            var cbn = GetNode("37fade4a-e7ad-43ae-8b6f-27dacb17c1c5") as CodeBlockNodeModel;
+            Assert.AreEqual(null, cbn);
+
+            var addNode = workspaceViewModel._model.Nodes.Where(x => x is DSFunction).First() as DSFunction;
+            Assert.NotNull(addNode);
+
+            var numberList = workspaceViewModel._model.Nodes.Where(x => x is DoubleInput).ToList<NodeModel>();
+            Assert.AreEqual(3, numberList.Count);
+        }
+
+        /// <summary>
+        /// Ensures that redo works for NodeToCode by converting a set of nodes to
+        /// code and then undoing and redoing it again.
+        /// </summary>
+        [Test, RequiresSTA]
+        public void TestConvertAllNodesToCodeUndoRedo()
+        {
+            RunCommandsFromFile("TestConvertAllNodesToCodeUndoRedo.xml");
+
+            //Check the nodes
+            var nodes = workspaceViewModel.Nodes;
+            Assert.NotNull(nodes);
+            Assert.AreEqual(1, nodes.Count);
+
+            //Check the connectors
+            var connectors = workspaceViewModel.Connectors;
+            Assert.NotNull(connectors);
+            Assert.AreEqual(0, connectors.Count);
+
+            //Check the CBN
+            var cbn = GetNode("8950950f-78f3-4d81-8181-c574ad84bb1d") as CodeBlockNodeModel;
+            Assert.AreEqual(4, cbn.OutPorts.Count);
+            Assert.True(cbn.Code.Contains("+"));
+            Assert.True(cbn.Code.Contains("14"));
+            Assert.True(cbn.Code.Contains("190"));
+            Assert.True(cbn.Code.Contains("69"));
+        }
+
         [Test, RequiresSTA]
         public void ShiftSelectAllNode()
         {
@@ -643,6 +729,22 @@ namespace Dynamo.Tests.UI
             RunCommandsFromFile("Defect_MAGN_478.xml");
 
             Assert.AreEqual(1, workspace.Notes.Count);
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_411()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-411
+            RunCommandsFromFile("Defect_MAGN_411.xml");
+
+            Assert.AreEqual(1, workspace.Nodes.Count);
+
+            var cbn = GetNode("fc209d2f-1724-4485-bde4-92670802aaa3") as CodeBlockNodeModel;
+            Assert.NotNull(cbn);
+
+            Assert.AreEqual(2, cbn.InPortData.Count);
+            Assert.AreEqual("a", cbn.InPortData[0].ToolTipString);
+            Assert.AreEqual("b", cbn.InPortData[1].ToolTipString);
         }
 
         #endregion

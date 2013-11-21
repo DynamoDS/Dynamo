@@ -40,7 +40,7 @@ namespace Dynamo.ViewModels
             {
                 if (_nodeToCodeCommand == null)
                 {
-                    _nodeToCodeCommand = new DelegateCommand(NodeToCode, CanNodeToCode);
+                    _nodeToCodeCommand = new DelegateCommand(_model.NodeToCode, _model.CanNodeToCode);
                 }
                 return _nodeToCodeCommand;
             }
