@@ -14,11 +14,16 @@ namespace Dynamo.Tests
     [Category("DSExecution")]
     class DSEvaluationTest : DynamoUnitTest
     {
-        private void RunModel(string relativeDynFilePath)
+        private void OpenModel(string relativeFilePath)
         {
             var model = Controller.DynamoModel;
-            string openPath = Path.Combine(GetTestDirectory(), relativeDynFilePath);
+            string openPath = Path.Combine(GetTestDirectory(), relativeFilePath);
             model.Open(openPath);
+        }
+
+        private void RunModel(string relativeDynFilePath)
+        {
+            OpenModel(relativeDynFilePath);
             Assert.DoesNotThrow(() => Controller.RunExpression(null));
         }
 
@@ -44,7 +49,12 @@ namespace Dynamo.Tests
 
             Console.WriteLine(varname + " = " + mirror.GetStringData());
             StackValue svValue = mirror.GetData().GetStackValue();
-            if (value is double)
+
+            if (value == null)
+            {
+                Assert.IsTrue(StackUtils.IsNull(svValue));
+            }
+            else if (value is double)
             {
                 Assert.AreEqual(svValue.opdata_d, Convert.ToDouble(value));
             }
@@ -201,7 +211,7 @@ namespace Dynamo.Tests
         {
         // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-621
             RunModel(@"core\dsevaluation\CBN_Math_Pi_621.dyn");
-            AssertValue("a", 3.14);
+            AssertValue("a", Math.PI);
 
         }
         
@@ -243,7 +253,7 @@ namespace Dynamo.Tests
         {
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-607
             RunModel(@"core\dsevaluation\CBN_binary_607.dyn");
-            AssertValue("b", true);
+            AssertValue("c", true);
 
         }
         [Test]
@@ -251,7 +261,7 @@ namespace Dynamo.Tests
         {
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-607
             RunModel(@"core\dsevaluation\CBN_multiple_binary_607.dyn");
-            AssertValue("b", true);
+            AssertValue("c", true);
 
         }
         [Test]
@@ -317,9 +327,8 @@ namespace Dynamo.Tests
         {
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-692
             RunModel(@"core\dsevaluation\CBN_Undefined_692.dyn");
-            AssertValue("a", null);
-
         }
+
         [Test]
         public void CBN_Class_GetterProperty_625()
         {
@@ -404,6 +413,13 @@ namespace Dynamo.Tests
         {
             RunModel(@"core\dsevaluation\regress737.dyn");
             AssertPreviewValue("ccad1780-f570-4ccc-ae7a-0ad1b663c3dd", 21);
+        }
+
+
+        [Test]
+        public void Regress781()
+        {
+            OpenModel(@"core\dsevaluation\makeSpiralFromBasePtCenterPtHeight.dyf");
         }
     }
 }

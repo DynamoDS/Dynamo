@@ -330,22 +330,22 @@ namespace Dynamo.DSEngine
             }
 
             string displayName = proc.name;
+            string procName = proc.name;
+
+            // Use CBN to set property.
+            if (CoreUtils.IsSetter(procName))
+                return null;
+
             LibraryItemType type;
-            if (CoreUtils.IsGetterSetter(proc.name))
+            if (CoreUtils.IsGetter(procName))
             {
                 type = proc.isStatic ? LibraryItemType.StaticProperty : LibraryItemType.InstanceProperty;
                 CoreUtils.TryGetPropertyName(proc.name, out displayName);
 
                 // temporary add prefix to distinguish getter/setter until the
                 // design is nailed down
-                if (CoreUtils.IsGetter(proc.name))
-                {
-                    displayName = "get" + displayName;
-                }
-                else
-                {
-                    displayName = "set" + displayName;
-                }
+                procName = displayName;
+                displayName = "get" + displayName;
             }
             else
             {
@@ -379,7 +379,7 @@ namespace Dynamo.DSEngine
                 returnKeys = proc.MethodAttribute.MutilReturnMap.Keys.ToList();
             }
 
-            var function = new FunctionItem(library, category, className, proc.name, displayName, type, arguments, returnKeys);
+            var function = new FunctionItem(library, category, className, procName, displayName, type, arguments, returnKeys);
             return function;
         }
 
