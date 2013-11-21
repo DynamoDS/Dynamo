@@ -900,7 +900,7 @@ namespace Dynamo.Models
 
         internal void ConvertNodesToCodeInternal(Guid nodeId)
         {
-            IEnumerable<NodeModel> nodes = DynamoSelection.Instance.Selection.OfType<NodeModel>().Where(n => n.IsConvertiable);
+            IEnumerable<NodeModel> nodes = DynamoSelection.Instance.Selection.OfType<NodeModel>().Where(n => n.IsConvertible);
             if (!nodes.Any())
                 return;
 

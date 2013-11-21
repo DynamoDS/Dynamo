@@ -48,7 +48,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override bool IsConvertiable
+        public override bool IsConvertible
         {
             get
             {
