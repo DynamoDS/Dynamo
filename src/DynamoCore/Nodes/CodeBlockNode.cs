@@ -241,7 +241,11 @@ namespace Dynamo.Nodes
             if (inputIdentifiers != null && inputIdentifiers.Count > 0)
             {
                 if (null == inputAstNodes || inputAstNodes.Count != inputIdentifiers.Count)
-                    throw new ArgumentException("Invalid input AST nodes.");
+                {
+                    // This is already an invalid state. Return an empty resultNodes
+                    // A more robust fix is perhaps the ASTBuilder to ignore this node altogether if an error is reported
+                    return resultNodes;
+                 }
 
                 var initStatements = new StringBuilder();
                 for (int i = 0; i < inputIdentifiers.Count; ++i)
