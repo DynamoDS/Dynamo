@@ -140,7 +140,7 @@ namespace Dynamo.Nodes
 
                             if (code == "")
                             {
-                                WorkSpace.UndoRecorder.RemoveLastRecordedActionGroup();
+                                WorkSpace.UndoRecorder.PopFromUndoGroup();
                                 WorkSpace.UndoRecorder.RecordCreationForUndo(this);
                             }
                             else

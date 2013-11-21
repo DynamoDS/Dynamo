@@ -6,6 +6,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.Models;
+using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -308,6 +309,12 @@ namespace Dynamo.Nodes
             e.Handled = true; //hide base
         }
 
+        /// <summary>
+        /// Since an empty Code Block Node should not exist, this function checks for such instances.
+        /// If an empty Code Block Node is found, it is deleted. Since the creation and deletion of 
+        /// an empty Code Block Node should not be recorded, this method also checks and removes
+        /// any unwanted recordings
+        /// </summary>
         protected override void OnLostFocus(RoutedEventArgs e)
         {
             var cbn = this.DataContext as CodeBlockNodeModel;
@@ -316,7 +323,8 @@ namespace Dynamo.Nodes
             {
                 if (cbn.Code == "")
                 {
-                    cbn.WorkSpace.UndoRecorder.RemoveLastRecordedActionGroup();
+                    cbn.WorkSpace.UndoRecorder.PopFromUndoGroup();
+                    DynamoSelection.Instance.Selection.Remove(cbn);
                     cbn.WorkSpace.Nodes.Remove(cbn);
                 }
                 else
