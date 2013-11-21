@@ -413,7 +413,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     If this node is allowed to be converted to AST node in nodes to code conversion.
         /// </summary>
-        public virtual bool IsConvertiable
+        public virtual bool IsConvertible
         {
             get
             {
