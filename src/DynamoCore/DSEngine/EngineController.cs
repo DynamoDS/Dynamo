@@ -182,7 +182,7 @@ namespace Dynamo.DSEngine
             List<AssociativeNode> outputs,
             IEnumerable<string> parameters)
         {
-            astBuilder.CompileCustomNode(id, nodes, outputs, parameters, true);
+            astBuilder.CompileCustomNodeDefinition(id, nodes, outputs, parameters, true);
             return VerifyGraphSyncData();
         }
 
