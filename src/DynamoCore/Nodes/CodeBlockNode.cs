@@ -14,6 +14,7 @@ using ProtoCore.BuildData;
 using ArrayNode = ProtoCore.AST.AssociativeAST.ArrayNode;
 using Node = ProtoCore.AST.Node;
 using Operator = ProtoCore.DSASM.Operator;
+using NUnit.Framework;
 
 namespace Dynamo.Nodes
 {
@@ -28,7 +29,7 @@ namespace Dynamo.Nodes
         private List<string> inputIdentifiers = new List<string>();
         private List<string> tempVariables = new List<string>();
         private string previewVariable;
-        private AssociativeNode previewExpressionAST;
+        private Node previewExpressionAST;
         private bool shouldFocus = true;
 
         #region Public Methods
@@ -306,7 +307,9 @@ namespace Dynamo.Nodes
                 resultNodes.Add(astNode as ProtoCore.AST.AssociativeAST.AssociativeNode);
             }
 
-            resultNodes.Add(ProtoCore.Utils.NodeUtils.Clone(previewExpressionAST));
+           // if (previewExpressionAST == null)
+           //     throw new ArgumentNullException("preview node not set properly");
+            resultNodes.Add(ProtoCore.Utils.NodeUtils.Clone(previewExpressionAST) as AssociativeNode);
 
             return resultNodes;
         }
@@ -424,31 +427,7 @@ namespace Dynamo.Nodes
         {
             previewVariable = "temp" + Guid.NewGuid().ToString();
             previewVariable = previewVariable.Replace('-', '_');
-            CodeBlockNode commentNode;
-            string finalCode = previewVariable + "=1;";
-
-            try
-            {
-                previewExpressionAST = (GraphUtilities.Parse(finalCode, out commentNode) as CodeBlockNode).Body[0];
-            }
-            catch (Exception ex)
-            {
-                State = ElementState.Error;
-                DynamoLogger.Instance.Log("Failed to build AST for code block node. Error: " + ex.Message);
-                return;
-            }
-
-            if (lastStatement == null)
-                throw new ArgumentNullException("Statement not a binary expression node");
-
-            if (previewExpressionAST != null)
-            {
-                if (tempVariables != null)
-                {
-                    tempVariables.Add(previewVariable);
-                }
-                (previewExpressionAST as BinaryExpressionNode).RightNode = lastStatement.LeftNode;
-            }
+            previewExpressionAST = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(new IdentifierNode(previewVariable), lastStatement.LeftNode, Operator.assign);
         }
 
         /// <summary>

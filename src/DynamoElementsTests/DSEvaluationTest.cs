@@ -419,12 +419,12 @@ namespace Dynamo.Tests
         [Test]
         public void CBN_Dynamic_Array_433()
         {
-
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-433
             RunModel(@"core\dsevaluation\CBN_nestedrange592_2.dyn");
             AssertValue("a", null);
         }
-        [Test]
+
+        [Ignore] //Ignored because empty code block nodes should not exist
         public void Regress722()
         {
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-722
