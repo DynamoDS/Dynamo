@@ -119,6 +119,14 @@ namespace Dynamo.Nodes
 
         #region Properties
 
+        public override bool IsConvertiable
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         public string Code
         {
             get { return code; }
