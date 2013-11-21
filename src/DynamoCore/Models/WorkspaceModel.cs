@@ -900,31 +900,37 @@ namespace Dynamo.Models
 
         internal void ConvertNodesToCodeInternal(Guid nodeId)
         {
-            List<NodeModel> nodeList = DynamoSelection.Instance.Selection.OfType<NodeModel>().ToList();
+            IEnumerable<NodeModel> nodes = DynamoSelection.Instance.Selection.OfType<NodeModel>().Where(n => n.IsConvertiable);
+            if (!nodes.Any())
+                return;
 
-            string code = dynSettings.Controller.EngineController.ConvertNodesToCode(nodeList);
+            string code = dynSettings.Controller.EngineController.ConvertNodesToCode(nodes);
 
             //UndoRedo Action Group-----------------------------------------------------------------------------------------
             UndoRecorder.BeginActionGroup();
 
-            // Node deletion
-            IEnumerable<ISelectable> nodeModelsInSelection = DynamoSelection.Instance.Selection.Where(x => x is NodeModel);
-            int m = 0;
-            var modelsInSelection = nodeModelsInSelection as IList<ISelectable> ?? nodeModelsInSelection.ToList();
-            while (modelsInSelection.Count() > m)
+            // Delete all nodes
+            var nodeList = nodes.ToList();
+            for (int i = 0; i < nodeList.Count; ++i)
             {
-                var node = modelsInSelection.ElementAt(m) as NodeModel;
-                var connectors = node.AllConnectors;
-                var connectorModels = connectors as IList<ConnectorModel> ?? connectors.ToList();
-                for (int n = 0; n < connectorModels.Count(); ++n)
+                var node = nodeList[i];
+                var connectors = node.AllConnectors as IList<ConnectorModel>;
+                if (null == connectors)
                 {
-                    UndoRecorder.RecordDeletionForUndo(connectorModels.ElementAt(n));
-                    connectorModels.ElementAt(n).NotifyConnectedPortsOfDeletion();
-                    Connectors.Remove(connectorModels.ElementAt(n));
+                    connectors = node.AllConnectors.ToList();
                 }
+
+                // Delete all connections
+                for (int n = 0; n < connectors.Count(); ++n)
+                {
+                    var connector = connectors[n];
+                    UndoRecorder.RecordDeletionForUndo(connector);
+                    connector.NotifyConnectedPortsOfDeletion();
+                    Connectors.Remove(connector);
+                }
+
                 UndoRecorder.RecordDeletionForUndo(node);
                 Nodes.Remove(node);
-                m++;
             }
 
             // create node
