@@ -249,6 +249,11 @@ namespace Dynamo
 
         #region DS Compilation
 
+        /// <summary>
+        /// Compiles this custom node definition, updating all UI instances to match
+        /// inputs and outputs and registering new definition with the EngineController.
+        /// </summary>
+        /// <param name="controller"></param>
         public void Compile(EngineController controller)
         {
             #region Outputs and Inputs and UI updating
