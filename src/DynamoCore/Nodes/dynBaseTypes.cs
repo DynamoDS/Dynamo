@@ -3234,6 +3234,11 @@ namespace Dynamo.Nodes
 
     public abstract class Double : BasicInteractive<double>
     {
+        public override bool IsConvertible
+        {
+            get { return true; }
+        }
+
         public override Value Evaluate(FSharpList<Value> args)
         {
             return FScheme.Value.NewNumber(Value);
@@ -3465,6 +3470,11 @@ namespace Dynamo.Nodes
                 RequiresRecalc = value != null;
                 RaisePropertyChanged("Value");
             }
+        }
+
+        public override bool IsConvertible
+        {
+            get { return true; }
         }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)

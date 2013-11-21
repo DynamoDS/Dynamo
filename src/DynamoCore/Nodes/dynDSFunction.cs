@@ -48,14 +48,6 @@ namespace Dynamo.Nodes
             }
         }
 
-        public override bool IsConvertible
-        {
-            get
-            {
-                return true;
-            }
-        }
-
         public CustomNodeInstance() { }
 
         public CustomNodeInstance(CustomNodeDefinition definition)
@@ -173,6 +165,14 @@ namespace Dynamo.Nodes
         {
             Definition = definition;
             Initialize();
+        }
+
+        public override bool IsConvertible
+        {
+            get
+            {
+                return true;
+            }
         }
 
         public override bool RequiresRecalc
