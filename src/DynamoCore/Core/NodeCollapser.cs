@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.ViewModels;
@@ -33,6 +34,21 @@ namespace Dynamo.Utilities
                     return;
                 }
             }
+
+            // Note that undoable actions are only recorded for the "currentWorkspace", 
+            // the nodes which get moved into "newNodeWorkspace" are not recorded for undo,
+            // even in the new workspace. Their creations will simply be treated as part of
+            // the opening of that new workspace (i.e. when a user opens a file, she will 
+            // not expect the nodes that show up to be undoable).
+            // 
+            // After local nodes are moved into "newNodeWorkspace" as the result of 
+            // conversion, if user performs an undo, new set of nodes will be created in 
+            // "currentWorkspace" (not moving those nodes in the "newNodeWorkspace" back 
+            // into "currentWorkspace"). In another word, undo recording is on a per-
+            // workspace basis, it does not work across different workspaces.
+            // 
+            UndoRedoRecorder undoRecorder = currentWorkspace.UndoRecorder;
+            undoRecorder.BeginActionGroup();
 
             var newNodeWorkspace = new CustomNodeWorkspaceModel(args.Name, args.Category, args.Description, 0, 0)
             {
@@ -157,28 +173,65 @@ namespace Dynamo.Utilities
 
             #endregion
 
-            #region Move selection to new workspace
+            #region Handle full selected connectors
 
-            var connectors = new HashSet<ConnectorModel>(currentWorkspace.Connectors.Where(
-                                                                conn => selectedNodeSet.Contains(conn.Start.Owner)
-                                                                    && selectedNodeSet.Contains(conn.End.Owner)));
+            // Step 2: Determine all the connectors whose start/end owners are 
+            // both in the selection set, and then move them from the current 
+            // workspace into the new workspace.
 
-            //Step 2: move all nodes to new workspace
-            //  remove from old
+            var fullySelectedConns = new HashSet<ConnectorModel>(
+                currentWorkspace.Connectors.Where((conn) =>
+                {
+                    bool startSelected = selectedNodeSet.Contains(conn.Start.Owner);
+                    bool endSelected = selectedNodeSet.Contains(conn.End.Owner);
+                    return startSelected && endSelected;
+                }));
+
+            foreach (var ele in fullySelectedConns)
+            {
+                undoRecorder.RecordDeletionForUndo(ele);
+                currentWorkspace.Connectors.Remove(ele);
+            }
+
+            #endregion
+
+            #region Handle partially selected connectors
+
+            // Step 3: Partially selected connectors (either one of its start 
+            // and end owners is in the selection) are to be destroyed.
+
+            var partiallySelectedConns = currentWorkspace.Connectors.Where((conn) =>
+            {
+                bool startSelected = selectedNodeSet.Contains(conn.Start.Owner);
+                bool endSelected = selectedNodeSet.Contains(conn.End.Owner);
+                return startSelected || endSelected;
+
+            }).ToList();
+
+            foreach (ConnectorModel connector in partiallySelectedConns)
+            {
+                undoRecorder.RecordDeletionForUndo(connector);
+                connector.NotifyConnectedPortsOfDeletion();
+                currentWorkspace.Connectors.Remove(connector);
+            }
+
+            #endregion
+
+            #region Transfer nodes and connectors to new workspace
+
+            // Step 4: move all nodes to new workspace remove from old
+
             foreach (var ele in selectedNodeSet)
             {
+                undoRecorder.RecordDeletionForUndo(ele);
                 ele.SaveResult = false;
                 currentWorkspace.Nodes.Remove(ele);
                 ele.WorkSpace = newNodeWorkspace;
             }
-            foreach (var ele in connectors)
-            {
-                currentWorkspace.Connectors.Remove(ele);
-            }
 
             //  add to new
             newNodeWorkspace.Nodes.AddRange(selectedNodeSet);
-            newNodeWorkspace.Connectors.AddRange(connectors);
+            newNodeWorkspace.Connectors.AddRange(fullySelectedConns);
 
             double leftShift = leftMost - 250;
             foreach (NodeModel node in newNodeWorkspace.Nodes)
@@ -212,16 +265,6 @@ namespace Dynamo.Utilities
             #region Destroy all hanging connectors
 
             //Step 6: connect inputs and outputs
-
-            var removeConnectors = currentWorkspace.Connectors.Where(c =>
-                                                                     selectedNodeSet.Contains(c.Start.Owner) ||
-                                                                     selectedNodeSet.Contains(c.End.Owner))
-                                                   .ToList();
-            foreach (ConnectorModel connector in removeConnectors)
-            {
-                connector.NotifyConnectedPortsOfDeletion();
-                currentWorkspace.Connectors.Remove(connector);
-            }
 
             #endregion
 
@@ -443,6 +486,7 @@ namespace Dynamo.Utilities
 
             string name = newNodeDefinition.FunctionId.ToString();
             var collapsedNode = dynSettings.Controller.DynamoModel.CreateNode(avgX, avgY, name);
+            undoRecorder.RecordCreationForUndo(collapsedNode);
 
             // place the node as intended, not centered
             collapsedNode.X = avgX;
@@ -460,7 +504,10 @@ namespace Dynamo.Utilities
                                     PortType.INPUT);
 
                 if (conn != null)
+                {
                     currentWorkspace.Connectors.Add(conn);
+                    undoRecorder.RecordCreationForUndo(conn);
+                }
             }
 
             foreach (var nodeTuple in outConnectors)
@@ -474,14 +521,17 @@ namespace Dynamo.Utilities
                                     PortType.INPUT);
 
                 if (conn != null)
+                {
                     currentWorkspace.Connectors.Add(conn);
+                    undoRecorder.RecordCreationForUndo(conn);
+                }
             }
 
+            undoRecorder.EndActionGroup();
             collapsedNode.EnableReporting();
             currentWorkspace.EnableReporting();
 
             newNodeWorkspace.WatchChanges = true;
         }
-
     }
 }
