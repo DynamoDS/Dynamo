@@ -28,8 +28,8 @@ namespace Dynamo.Nodes
         private string codeToParse = "";
         private List<string> inputIdentifiers = new List<string>();
         private List<string> tempVariables = new List<string>();
-        private string previewVariable;
-        private Node previewExpressionAST;
+        private string previewVariable = null;
+        private Node previewExpressionAST = new NullNode();
         private bool shouldFocus = true;
 
         #region Public Methods
@@ -337,7 +337,8 @@ namespace Dynamo.Nodes
 
             if (previewExpressionAST == null)
                 throw new ArgumentNullException("preview node not set properly");
-            resultNodes.Add(ProtoCore.Utils.NodeUtils.Clone(previewExpressionAST) as AssociativeNode);
+            else if (!(previewExpressionAST is NullNode))
+                resultNodes.Add(ProtoCore.Utils.NodeUtils.Clone(previewExpressionAST) as AssociativeNode);
 
             return resultNodes;
         }
@@ -382,9 +383,9 @@ namespace Dynamo.Nodes
             //New code => Revamp everything
             codeStatements.Clear();
 
-            if (Code.Equals("")) //If its null then remove all the ports
+            if (Code.Equals("")) //If its null then set preview to null
             {
-                SetPorts(new List<string>());
+                previewExpressionAST = new NullNode();
                 return;
             }
 
