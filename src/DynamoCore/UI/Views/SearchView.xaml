@@ -604,8 +604,8 @@
 
                         <StackPanel Orientation="Horizontal">
 
-                            <Border Background="#444" Margin="0 0 10 0" CornerRadius="1" BorderThickness="1" BorderBrush="Black">
-                                <TextBlock Foreground="Black" FontWeight="Bold" Padding="2" FontSize="9" Text="C"/>
+                            <Border Background="#444" Margin="0 6 10 6" CornerRadius="1" BorderThickness="1" BorderBrush="#222">
+                                <TextBlock Foreground="#222" FontWeight="Bold" Padding="4" FontSize="9" Text="C"/>
                             </Border>
 
                             <Border Height="30">
