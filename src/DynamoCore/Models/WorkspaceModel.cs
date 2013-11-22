@@ -294,6 +294,19 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        /// Get the current UndoRedoRecorder that is associated with the current 
+        /// WorkspaceModel. Note that external parties should not have the needs 
+        /// to access the recorder directly, so this property is exposed just as 
+        /// a "temporary solution". Before using this property, consider using 
+        /// WorkspaceModel.RecordModelsForUndo method which allows for multiple 
+        /// modifications in a single action group.
+        /// </summary>
+        internal UndoRedoRecorder UndoRecorder
+        {
+            get { return undoRecorder; }
+        }
+
         #endregion
 
         protected WorkspaceModel(
@@ -458,7 +471,7 @@ namespace Dynamo.Models
             undoRecorder.EndActionGroup();
         }
 
-        internal void RecordModelsForUndo(Dictionary<ModelBase, UndoRedoRecorder.UserAction> models)
+        public void RecordModelsForUndo(Dictionary<ModelBase, UndoRedoRecorder.UserAction> models)
         {
             if (null == undoRecorder)
                 return;
@@ -806,6 +819,33 @@ namespace Dynamo.Models
         public void ReportPosition()
         {
             RaisePropertyChanged("Position");
+        }
+
+        internal void UpdateModelValue(Guid modelGuid, string name, string value)
+        {
+            ModelBase model = this.GetModelInternal(modelGuid);
+            if (null != model)
+            {
+                RecordModelForModification(model);
+                if (!model.UpdateValue(name, value))
+                {
+                    string type = model.GetType().FullName;
+                    string message = string.Format(
+                        "ModelBase.UpdateValue call not handled.\n\n" + 
+                        "Model type: {0}\n" +
+                        "Model GUID: {1}\n" + 
+                        "Property name: {2}\n" + 
+                        "Property value: {3}",
+                        type, modelGuid.ToString(), name, value);
+
+                    // All 'UpdateValue' calls must be handled by one of the 
+                    // ModelBase derived classes that the 'UpdateModelValue'
+                    // is intended for.
+                    throw new InvalidOperationException(message);
+                }
+
+                this.HasUnsavedChanges = true;
+            }
         }
     }
 }

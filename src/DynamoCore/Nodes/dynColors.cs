@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml;
 using Dynamo.Controls;
 using Dynamo.Models;
 using System.Collections.Generic;
@@ -65,10 +66,10 @@ namespace Dynamo.Nodes
     {
         public Color()
         {
-            InPortData.Add(new PortData("A", "The alpha part of the color between 0 and 255", typeof(Value.Number)));
-            InPortData.Add(new PortData("R", "The red part of the color between 0 and 255", typeof(Value.Number)));
-            InPortData.Add(new PortData("G", "The green part of the color between 0 and 255", typeof(Value.Number)));
-            InPortData.Add(new PortData("B", "The blue part of the color between 0 and 255", typeof(Value.Number)));
+            InPortData.Add(new PortData("A", "The alpha part of the color between 0 and 255", typeof(Value.Number), FScheme.Value.NewNumber(255)));
+            InPortData.Add(new PortData("R", "The red part of the color between 0 and 255", typeof(Value.Number), FScheme.Value.NewNumber(0)));
+            InPortData.Add(new PortData("G", "The green part of the color between 0 and 255", typeof(Value.Number), FScheme.Value.NewNumber(0)));
+            InPortData.Add(new PortData("B", "The blue part of the color between 0 and 255", typeof(Value.Number), FScheme.Value.NewNumber(0)));
             OutPortData.Add(new PortData("c", "The color", typeof(Value.Container)));
 
             RegisterAllPorts();
@@ -188,6 +189,8 @@ namespace Dynamo.Nodes
 
             RegisterAllPorts();
 
+            ArgumentLacing = LacingStrategy.Longest;
+
             _start = System.Drawing.Color.Blue;
             _end = System.Drawing.Color.Red;
         }
@@ -216,13 +219,13 @@ namespace Dynamo.Nodes
             var nodeUI = ui as dynNodeView;
 
             base.SetupCustomUIElements(nodeUI);
-            nodeUI.Width = 200;
             
             var drawPlane = new System.Windows.Controls.Image
                 {
                     Stretch = Stretch.Fill,
                     HorizontalAlignment = HorizontalAlignment.Stretch,
-                    Height = 100
+                    Width = 100,
+                    Height = 200 
                 };
 
             nodeUI.inputGrid.Children.Add(drawPlane);
@@ -247,7 +250,7 @@ namespace Dynamo.Nodes
             int width = 1;
             int height = Size;
 
-            var bitmap = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgr32, null);
+            var bitmap = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
             var pixels = new uint[width * height];
 
             for (int i = 0; i < Size; i++)
@@ -256,12 +259,23 @@ namespace Dynamo.Nodes
                 var newGreen = start.G + ((end.G - start.G) / Size) * i;
                 var newBlue = start.B + ((end.B - start.B) / Size) * i;
 
-                pixels[i] = (uint)((newBlue << 16) + (newGreen << 8) + (newRed << 0));
+                //pixels[i] = (uint)((newBlue << 16) + (newGreen << 8) + (newRed << 0));
+                pixels[i] = (uint)((255 << 24) + (newRed << 16) + (newGreen << 8) + newBlue);
 
             }
             bitmap.WritePixels(new Int32Rect(0, 0, width, height), pixels, width * 4, 0);
 
             return bitmap;
+        }
+
+        [NodeMigrationAttribute("0.6.2.0","0.6.3.0")]
+        public void UpdateLacability(XmlNode node)
+        {
+            //if the laceability has been set on this node to disabled, then set it to longest
+            if (node.Attributes["lacing"].Value == "Disabled")
+            {
+                node.Attributes["lacing"].Value = "Longest";
+            }
         }
     }
 }

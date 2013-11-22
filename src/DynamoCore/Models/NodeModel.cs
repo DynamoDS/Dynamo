@@ -1033,16 +1033,19 @@ namespace Dynamo.Models
 
             //create a zip of the incoming args and the port data
             //to be used for type comparison
-            var portComparison = args.Zip(InPortData, (first, second) => new Tuple<Type, Type>(first.GetType(), second.PortType)).ToList();
-            var listOfListComparison = args.Zip(InPortData, (first, second) => new Tuple<bool, Type>(Utils.IsListOfLists(first), second.PortType));
+            var portComparison =
+                args.Zip(InPortData, (first, second) => new Tuple<Type, Type>(first.GetType(), second.PortType))
+                    .ToList();
+            var listOfListComparison = args.Zip(InPortData,
+                (first, second) => new Tuple<bool, Type>(Utils.IsListOfLists(first), second.PortType));
 
             //there are more than zero arguments
             //and there is either an argument which does not match its expections 
             //OR an argument which requires a list and gets a list of lists
             //AND argument lacing is not disabled
             if (ArgumentLacing != LacingStrategy.Disabled && args.Any() &&
-                (portComparison.Any(x => x.Item1 == typeof(Value.List) && x.Item2 != typeof(Value.List)) ||
-                listOfListComparison.Any(x => x.Item1 && x.Item2 == typeof(Value.List))))
+                (portComparison.Any(x => x.Item1 == typeof (Value.List) && x.Item2 != typeof (Value.List)) ||
+                    listOfListComparison.Any(x => x.Item1 && x.Item2 == typeof (Value.List))))
             {
                 //if the argument is of the expected type, then
                 //leave it alone otherwise, wrap it in a list
@@ -1050,19 +1053,19 @@ namespace Dynamo.Models
                 foreach (var arg in args)
                 {
                     //incoming value is list and expecting single
-                    if (portComparison.ElementAt(j).Item1 == typeof(Value.List) &&
-                        portComparison.ElementAt(j).Item2 != typeof(Value.List))
+                    if (portComparison.ElementAt(j).Item1 == typeof (Value.List) &&
+                        portComparison.ElementAt(j).Item2 != typeof (Value.List))
                     {
                         //leave as list
-                        argSets.Add(((Value.List)arg).Item);
+                        argSets.Add(((Value.List) arg).Item);
                     }
-                    //incoming value is list and expecting list
+                        //incoming value is list and expecting list
                     else
                     {
                         //check if we have a list of lists, if so, then don't wrap
                         argSets.Add(
                             Utils.IsListOfLists(arg) && !AcceptsListOfLists(arg)
-                                ? ((Value.List)arg).Item
+                                ? ((Value.List) arg).Item
                                 : Utils.MakeFSharpList(arg));
                     }
                     j++;
@@ -1099,18 +1102,20 @@ namespace Dynamo.Models
 
                     var thisArgsAsFSharpList = Utils.SequenceToFSharpList(argList);
 
-                    var portComparisonLaced = thisArgsAsFSharpList.Zip(InPortData, (first, second) => new Tuple<Type, Type>(first.GetType(), second.PortType)).ToList();
-                    
+                    var portComparisonLaced =
+                        thisArgsAsFSharpList.Zip(InPortData,
+                            (first, second) => new Tuple<Type, Type>(first.GetType(), second.PortType)).ToList();
+
                     int jj = 0;
                     bool bHasListNotExpecting = false;
                     foreach (var argLaced in argList)
                     {
                         //incoming value is list and expecting single
-                        if (ArgumentLacing != LacingStrategy.Disabled && thisArgsAsFSharpList.Any() && 
-                            portComparisonLaced.ElementAt(jj).Item1 == typeof(Value.List) &&
-                            portComparison.ElementAt(jj).Item2 != typeof(Value.List) &&
-                            (!AcceptsListOfLists(argLaced) || !Utils.IsListOfLists(argLaced)) 
-                           )
+                        if (ArgumentLacing != LacingStrategy.Disabled && thisArgsAsFSharpList.Any() &&
+                            portComparisonLaced.ElementAt(jj).Item1 == typeof (Value.List) &&
+                            portComparison.ElementAt(jj).Item2 != typeof (Value.List) &&
+                            (!AcceptsListOfLists(argLaced) || !Utils.IsListOfLists(argLaced))
+                            )
                         {
                             bHasListNotExpecting = true;
                             break;
@@ -1121,11 +1126,13 @@ namespace Dynamo.Models
                     {
                         if (level > 20)
                             throw new Exception("Too deep recursive list containment by lists, only 21 are allowed");
-                        Dictionary<PortData, FScheme.Value> outPutsLevelPlusOne = new Dictionary<PortData, FScheme.Value>();
+                        Dictionary<PortData, FScheme.Value> outPutsLevelPlusOne =
+                            new Dictionary<PortData, FScheme.Value>();
 
-                        __eval_internal_recursive(Utils.SequenceToFSharpList(argList), outPutsLevelPlusOne, level + 1);
+                        __eval_internal_recursive(Utils.SequenceToFSharpList(argList), outPutsLevelPlusOne,
+                            level + 1);
                         //pack result back
-                       
+
                         foreach (var dataLaced in outPutsLevelPlusOne)
                         {
                             var dataL = dataLaced.Key;
@@ -1135,14 +1142,14 @@ namespace Dynamo.Models
                         continue;
                     }
                     else
-                       Evaluate(Utils.SequenceToFSharpList(argList), evalDict);
+                        Evaluate(Utils.SequenceToFSharpList(argList), evalDict);
 
                     OnEvaluate();
 
                     foreach (var data in OutPortData)
                     {
                         evalResult[data] = FSharpList<Value>.Cons(evalDict[data], evalResult[data]);
-                    }    
+                    }
                 }
 
                 //the result of evaluation will be a list. we split that result
@@ -1157,7 +1164,7 @@ namespace Dynamo.Models
                     if (args[0].IsList && ArgumentLacing == LacingStrategy.CrossProduct)
                     {
                         var length = portResults.Count();
-                        var innerLength = length/((Value.List)args[0]).Item.Count();
+                        var innerLength = length/((Value.List) args[0]).Item.Count();
                         int subCount = 0;
                         var listOfLists = FSharpList<Value>.Empty;
                         var innerList = FSharpList<Value>.Empty;
@@ -1184,7 +1191,7 @@ namespace Dynamo.Models
 
                     outPuts[data] = Value.NewList(evalResult[data]);
                 }
-                    
+
             }
             else
             {
@@ -1743,6 +1750,21 @@ namespace Dynamo.Models
         {
             ValidateConnections();
             IsSelected = false;
+        }
+
+        #endregion
+
+        #region Command Framework Supporting Methods
+
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (name == "NickName")
+            {
+                this.NickName = value;
+                return true;
+            }
+
+            return base.UpdateValueCore(name, value);
         }
 
         #endregion

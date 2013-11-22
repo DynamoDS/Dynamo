@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows;
 using System.Windows.Media.Media3D;
 using Autodesk.Revit.DB;
 using Dynamo.Models;
@@ -23,7 +24,7 @@ namespace Dynamo
             if (dynSettings.Controller.Context == Context.VASARI_2014)
             {
                 AlternateDrawingContextAvailable = true;
-                DrawToAlternateContext = true;
+                DrawToAlternateContext = false;
 
                 AlternateContextName = "Vasari";
             }
@@ -39,6 +40,7 @@ namespace Dynamo
             Visualizers.Add(typeof(TriangleFace), DrawTriangleFace);
             Visualizers.Add(typeof(GeometryObject), DrawGeometryObject);
             Visualizers.Add(typeof(Autodesk.Revit.DB.CurveLoop), DrawCurveLoop);
+            Visualizers.Add(typeof(Facet), DrawFacet);
         }
 
         private void DrawElement(NodeModel node, object obj, string tag, RenderDescription rd, Octree.OctreeSearch.Octree octree)
@@ -48,7 +50,7 @@ namespace Dynamo
 
             if (obj is CurveElement)
             {
-                DrawCurveElement(node, obj, rd, octree);
+                DrawCurveElement(node, obj, tag, rd, octree);
             }
             else if (obj is ReferencePoint)
             {
@@ -146,11 +148,11 @@ namespace Dynamo
             }
             if (obj is Curve)
             {
-                DrawCurve(node, obj, rd, octree);
+                DrawCurve(node, obj, tag, rd, octree);
             }
             else if (obj is Solid)
             {
-                DrawSolid(node, obj, rd, octree);
+                DrawSolid(node, obj, tag, rd, octree);
             }
             else if (obj is Face)
             {
@@ -207,7 +209,7 @@ namespace Dynamo
             }
         }
 
-        private void DrawCurve(NodeModel node, object obj, RenderDescription rd, Octree.OctreeSearch.Octree octree)
+        private void DrawCurve(NodeModel node, object obj, string tag, RenderDescription rd, Octree.OctreeSearch.Octree octree)
         {
             var curve = obj as Curve;
 
@@ -223,35 +225,39 @@ namespace Dynamo
                 XYZ start = points[i];
                 XYZ end = points[i+1];
 
-                //rd.Lines.Add(new Point3D(xyz.X, xyz.Y, xyz.Z));
+                var startPt = new Point3D(start.X, start.Y, start.Z);
+                var endPt = new Point3D(end.X, end.Y, end.Z);
 
-                //if (i == 0 || i == (points.Count - 1))
-                    //continue;
+                //draw a label at the start of the curve
+                if (node.DisplayLabels && i==0)
+                {
+                    rd.Text.Add(new BillboardTextItem { Text = tag, Position = startPt });
+                }
 
                 if (selected)
                 {
-                    rd.SelectedLines.Add(new Point3D(start.X, start.Y, start.Z));
-                    rd.SelectedLines.Add(new Point3D(end.X, end.Y, end.Z));
+                    rd.SelectedLines.Add(startPt);
+                    rd.SelectedLines.Add(endPt);
                 }
                 else
                 {
-                    rd.Lines.Add(new Point3D(start.X, start.Y, start.Z));
-                    rd.Lines.Add(new Point3D(end.X, end.Y, end.Z));
+                    rd.Lines.Add(startPt);
+                    rd.Lines.Add(endPt);
                 }
             }
         }
 
-        private void DrawCurveElement(NodeModel node, object obj, RenderDescription rd, Octree.OctreeSearch.Octree octree)
+        private void DrawCurveElement(NodeModel node, object obj, string tag, RenderDescription rd, Octree.OctreeSearch.Octree octree)
         {
             var elem = obj as CurveElement;
 
             if (elem == null)
                 return;
 
-            DrawCurve(node, elem.GeometryCurve, rd, octree);
+            DrawCurve(node, elem.GeometryCurve, tag, rd, octree);
         }
 
-        private void DrawSolid(NodeModel node, object obj, RenderDescription rd, Octree.OctreeSearch.Octree octree)
+        private void DrawSolid(NodeModel node, object obj, string tag, RenderDescription rd, Octree.OctreeSearch.Octree octree)
         {
             var solid = obj as Solid;
 
@@ -265,7 +271,7 @@ namespace Dynamo
 
             foreach (Edge edge in solid.Edges)
             {
-                DrawCurve(node, edge.AsCurve(), rd, octree);
+                DrawCurve(node, edge.AsCurve(), tag, rd, octree);
             }
         }
 
@@ -372,7 +378,56 @@ namespace Dynamo
 
             foreach (var crv in cl)
             {
-                DrawCurve(node, crv, rd, octree);
+                DrawCurve(node, crv, tag, rd, octree);
+            }
+        }
+
+        private void DrawFacet(NodeModel node, object obj, string tag, RenderDescription rd,
+            Octree.OctreeSearch.Octree octree)
+        {
+            var facet = obj as Facet;
+            if (facet == null)
+                return;
+
+            var builder = new MeshBuilder();
+            var points = new Point3DCollection();
+            var tex = new PointCollection();
+            var norms = new Vector3DCollection();
+            var tris = new List<int>();
+
+            var a = facet.Points[0];
+            var b = facet.Points[1];
+            var c = facet.Points[2];
+
+            var side1 = (b - a).Normalize();
+            var side2 = (c - a).Normalize();
+            var norm = side1.CrossProduct(side2);
+
+            int count = 0;
+            foreach (var pt in facet.Points)
+            {
+                points.Add(new Point3D(pt.X,pt.Y,pt.Z));
+                tex.Add(new System.Windows.Point(0,0));
+                tris.Add(count);
+                norms.Add(new Vector3D(norm.X,norm.Y,norm.Z));
+                count++;
+            }
+
+            builder.Append(points, tris, norms, tex);
+
+            if (node.IsSelected)
+            {
+                rd.SelectedMeshes.Add(builder.ToMesh(true));
+            }
+            else
+            {
+                rd.Meshes.Add(builder.ToMesh(true));
+            }
+
+            if (node.DisplayLabels)
+            {
+                var cp = (a + b + c)/3;
+                rd.Text.Add(new BillboardTextItem { Text = tag, Position = new Point3D(cp.X,cp.Y,cp.Z)});
             }
         }
 

@@ -155,6 +155,130 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void CanCollapseAndUndoRedo()
+        {
+            var model = Controller.DynamoModel;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\collapse\");
+            model.Open(Path.Combine(examplePath, "collapse-number-chain.dyn"));
+
+            // Ensure all the nodes we are looking for are actually there.
+            Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count);
+            var existenceMap = new Dictionary<string, bool>();
+            existenceMap.Add("5a503c02-13a7-4def-9fb6-52101117219e", true);
+            existenceMap.Add("6e7bdd5a-6c3c-4588-bb7d-bb49c969812b", true);
+            existenceMap.Add("da2cbc80-a278-4699-96fa-a22d7762a42d", true);
+            existenceMap.Add("28cff154-ef78-43fa-bcc9-f86e00ce2ced", true);
+            existenceMap.Add("7ad3d045-c620-4817-8723-afd3c266555b", true);
+            existenceMap.Add("e8388f0d-2438-4b8b-87d1-f473c9e2c9a8", true);
+            existenceMap.Add("fed04d43-aad6-4782-a3c4-a86925e6b538", true);
+            existenceMap.Add("5e0d6637-5156-4b60-b49d-3c9aedd71884", true);
+            existenceMap.Add("98350887-4839-4ece-a4ad-37137cb11f52", true);
+            existenceMap.Add("8f4a460d-dada-4ecd-a0ca-9adb32d36f12", true);
+            existenceMap.Add("9cbbfa9c-fb5d-4a18-8d4b-5a02d842724e", true);
+            this.VerifyModelExistence(existenceMap);
+
+            string[] guids =
+            {
+                "5e0d6637-5156-4b60-b49d-3c9aedd71884", // Addition
+                "98350887-4839-4ece-a4ad-37137cb11f52", // Addition
+                "28cff154-ef78-43fa-bcc9-f86e00ce2ced", // Double input
+                "7ad3d045-c620-4817-8723-afd3c266555b", // Double input
+            };
+
+            List<NodeModel> selectionSet = new List<NodeModel>();
+            var workspace = model.CurrentWorkspace;
+
+            foreach (string guid in guids)
+            {
+                var m = workspace.GetModelInternal(Guid.Parse(guid));
+                selectionSet.Add(m as NodeModel);
+            }
+
+            // Making sure we do not have any Function node at this point.
+            Assert.IsNull(model.CurrentWorkspace.FirstNodeFromWorkspace<Function>());
+            Assert.AreEqual(false, model.CurrentWorkspace.CanUndo);
+            Assert.AreEqual(false, model.CurrentWorkspace.CanRedo);
+
+            NodeCollapser.Collapse(
+                selectionSet.AsEnumerable(),
+                model.CurrentWorkspace,
+                new FunctionNamePromptEventArgs
+                {
+                    Category = "Testing",
+                    Description = "",
+                    Name = "__CollapseTest__",
+                    Success = true
+                });
+
+            // Making sure we have a Function node after the conversion.
+            Assert.IsNotNull(model.CurrentWorkspace.FirstNodeFromWorkspace<Function>());
+
+            // Make sure we have 8 nodes left (11 - 4 + 1).
+            Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+            existenceMap.Clear();
+            existenceMap.Add("5a503c02-13a7-4def-9fb6-52101117219e", true);
+            existenceMap.Add("6e7bdd5a-6c3c-4588-bb7d-bb49c969812b", true);
+            existenceMap.Add("da2cbc80-a278-4699-96fa-a22d7762a42d", true);
+            existenceMap.Add("28cff154-ef78-43fa-bcc9-f86e00ce2ced", false);
+            existenceMap.Add("7ad3d045-c620-4817-8723-afd3c266555b", false);
+            existenceMap.Add("e8388f0d-2438-4b8b-87d1-f473c9e2c9a8", true);
+            existenceMap.Add("fed04d43-aad6-4782-a3c4-a86925e6b538", true);
+            existenceMap.Add("5e0d6637-5156-4b60-b49d-3c9aedd71884", false);
+            existenceMap.Add("98350887-4839-4ece-a4ad-37137cb11f52", false);
+            existenceMap.Add("8f4a460d-dada-4ecd-a0ca-9adb32d36f12", true);
+            existenceMap.Add("9cbbfa9c-fb5d-4a18-8d4b-5a02d842724e", true);
+            this.VerifyModelExistence(existenceMap);
+
+            // Try undoing the conversion operation.
+            Assert.AreEqual(true, model.CurrentWorkspace.CanUndo);
+            Assert.AreEqual(false, model.CurrentWorkspace.CanRedo);
+            model.CurrentWorkspace.Undo();
+            Assert.AreEqual(false, model.CurrentWorkspace.CanUndo);
+            Assert.AreEqual(true, model.CurrentWorkspace.CanRedo);
+
+            // Now it should have gone back to 11 nodes.
+            Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count);
+            existenceMap.Clear();
+            existenceMap.Add("5a503c02-13a7-4def-9fb6-52101117219e", true);
+            existenceMap.Add("6e7bdd5a-6c3c-4588-bb7d-bb49c969812b", true);
+            existenceMap.Add("da2cbc80-a278-4699-96fa-a22d7762a42d", true);
+            existenceMap.Add("28cff154-ef78-43fa-bcc9-f86e00ce2ced", true);
+            existenceMap.Add("7ad3d045-c620-4817-8723-afd3c266555b", true);
+            existenceMap.Add("e8388f0d-2438-4b8b-87d1-f473c9e2c9a8", true);
+            existenceMap.Add("fed04d43-aad6-4782-a3c4-a86925e6b538", true);
+            existenceMap.Add("5e0d6637-5156-4b60-b49d-3c9aedd71884", true);
+            existenceMap.Add("98350887-4839-4ece-a4ad-37137cb11f52", true);
+            existenceMap.Add("8f4a460d-dada-4ecd-a0ca-9adb32d36f12", true);
+            existenceMap.Add("9cbbfa9c-fb5d-4a18-8d4b-5a02d842724e", true);
+            this.VerifyModelExistence(existenceMap);
+
+            // Try redoing the conversion.
+            model.CurrentWorkspace.Redo();
+            Assert.AreEqual(true, model.CurrentWorkspace.CanUndo);
+            Assert.AreEqual(false, model.CurrentWorkspace.CanRedo);
+
+            // It should have gone back to 8 nodes.
+            Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
+            existenceMap.Clear();
+            existenceMap.Add("5a503c02-13a7-4def-9fb6-52101117219e", true);
+            existenceMap.Add("6e7bdd5a-6c3c-4588-bb7d-bb49c969812b", true);
+            existenceMap.Add("da2cbc80-a278-4699-96fa-a22d7762a42d", true);
+            existenceMap.Add("28cff154-ef78-43fa-bcc9-f86e00ce2ced", false);
+            existenceMap.Add("7ad3d045-c620-4817-8723-afd3c266555b", false);
+            existenceMap.Add("e8388f0d-2438-4b8b-87d1-f473c9e2c9a8", true);
+            existenceMap.Add("fed04d43-aad6-4782-a3c4-a86925e6b538", true);
+            existenceMap.Add("5e0d6637-5156-4b60-b49d-3c9aedd71884", false);
+            existenceMap.Add("98350887-4839-4ece-a4ad-37137cb11f52", false);
+            existenceMap.Add("8f4a460d-dada-4ecd-a0ca-9adb32d36f12", true);
+            existenceMap.Add("9cbbfa9c-fb5d-4a18-8d4b-5a02d842724e", true);
+            this.VerifyModelExistence(existenceMap);
+        }
+
+        [Test]
         public void GitHub_461_DeleteNodesFromCustomNodeWorkspaceAfterCollapse()
         {
             var model = Controller.DynamoModel;

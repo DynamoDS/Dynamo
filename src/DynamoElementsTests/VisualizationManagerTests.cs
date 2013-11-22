@@ -430,5 +430,36 @@ namespace Dynamo.Tests
             ptNode.DisplayLabels = false;
             Assert.AreEqual(0, viz.Visualizations.SelectMany(x => x.Value.Text).Count());
         }
+
+        [Test]
+        public void CanDrawNodeLabelsOnCurves()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            var viz = dynSettings.Controller.VisualizationManager;
+
+            string openPath = Path.Combine(GetTestDirectory(), @"core\GeometryTestFiles\BSplineCurveTest.dyn");
+            model.Open(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(5, model.CurrentWorkspace.Nodes.Count);
+
+            //before we run the expression, confirm that all nodes
+            //have label display set to false - the default
+            Assert.IsTrue(model.AllNodes.All(x => x.DisplayLabels != true));
+
+            // run the expression
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(null));
+
+            //10 lines segments in this file
+            Assert.AreEqual(20, viz.Visualizations.SelectMany(x => x.Value.Lines).Count());
+
+            //label displayed should be possible now because
+            //some nodes have values. toggle on label display
+            var crvNode = model.Nodes.FirstOrDefault(x => x is BSplineCurveNode);
+            Assert.IsNotNull(crvNode);
+            crvNode.DisplayLabels = true;
+
+            Assert.AreEqual(viz.Visualizations.SelectMany(x => x.Value.Text).Count(), 5);
+        }
     }
 }

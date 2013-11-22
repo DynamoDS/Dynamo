@@ -71,6 +71,11 @@ namespace Dynamo.Search
         {
             bool handleIt = false;
             e.Handled = handleIt;
+
+            if (e.Key == Key.Escape)
+            {
+                ClearSearchBox();
+            }
         }
 
         void OnSearchBoxPreviewKeyDown(object sender, KeyEventArgs e)
@@ -137,7 +142,20 @@ namespace Dynamo.Search
 
         void SearchViewModel_RequestReturnFocusToSearch(object sender, EventArgs e)
         {
-            Keyboard.Focus(SearchTextBox);
+            if (this.Visibility != Visibility.Collapsed)
+                Keyboard.Focus(SearchTextBox);
+            else
+                MoveFocusToNextUIElement();
+        }
+
+        void MoveFocusToNextUIElement()
+        {
+            // Gets the element with keyboard focus.
+            UIElement elementWithFocus = Keyboard.FocusedElement as UIElement;
+
+            // Change keyboard focus.
+            if (elementWithFocus != null)
+                elementWithFocus.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
         }
 
         void SearchViewModel_RequestFocusSearch(object sender, EventArgs e)
@@ -206,7 +224,8 @@ namespace Dynamo.Search
             BitmapImage bmi = new BitmapImage(collapsestateSource);
             RotateTransform rotateTransform = new RotateTransform(-90, 16, 16);
             collapsestate.Source = new BitmapImage(collapsestateSource);
-            this.Cursor = CursorsLibrary.LibraryClick;
+            
+            this.Cursor = CursorLibrary.GetCursor(CursorSet.LinkSelect);
         }
 
         private void buttonGrid_MouseLeave(object sender, MouseEventArgs e)
@@ -218,7 +237,8 @@ namespace Dynamo.Search
             Image collapsestate = (Image)g.Children[1];
             var collapsestateSource = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/expand_normal.png");
             collapsestate.Source = new BitmapImage(collapsestateSource);
-            this.Cursor = CursorsLibrary.UsualPointer;
+            
+            this.Cursor = null;
         }
 
         private void LibraryItem_OnMouseEnter(object sender, MouseEventArgs e)
@@ -232,7 +252,7 @@ namespace Dynamo.Search
             Point topLeft = this.PointFromScreen(pointToScreen_TopLeft);
             Point pointToScreen_BotRight = new Point(pointToScreen_TopLeft.X + treeViewItem.ActualWidth, pointToScreen_TopLeft.Y + treeViewItem.ActualHeight);
             Point botRight = this.PointFromScreen(pointToScreen_BotRight);
-            string infoBubbleContent = nodeSearchElement.Name + "\n" + nodeSearchElement.Description;
+            string infoBubbleContent = nodeSearchElement.Description;
             InfoBubbleDataPacket data = new InfoBubbleDataPacket(InfoBubbleViewModel.Style.LibraryItemPreview, topLeft,
                 botRight, infoBubbleContent, InfoBubbleViewModel.Direction.Left);
             DynamoCommands.ShowLibItemInfoBubbleCommand.Execute(data);
@@ -260,6 +280,11 @@ namespace Dynamo.Search
         }
 
         private void SearchCancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            ClearSearchBox();
+        }
+
+        private void ClearSearchBox()
         {
             SearchTextBox.Text = "";
             Keyboard.Focus(SearchTextBox);
