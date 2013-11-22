@@ -92,7 +92,7 @@ namespace Dynamo.Tests
         [TearDown]
         public override void Cleanup()
         {
-            GraphToDSCompiler.GraphUtilities.CleanUp();
+            GraphToDSCompiler.GraphUtilities.Reset();
             base.Cleanup();
         }
 
@@ -473,6 +473,18 @@ namespace Dynamo.Tests
         public void Regress781()
         {
             OpenModel(@"core\dsevaluation\makeSpiralFromBasePtCenterPtHeight.dyf");
+        }
+
+        [Test]
+        public void TestLoadNewFile()
+        {
+            // Load file with CBN containing 'a = 1;'
+            RunModel(@"core\dsevaluation\CBN_Assign.dyn");
+            AssertPreviewValue("144aa20e-66b9-4f00-a872-409257da3a10", 1);
+
+            // Load file with CBN containing 'a;'
+            RunModel(@"core\dsevaluation\CBN_SingleVar.dyn");
+            AssertPreviewValue("144aa20e-66b9-4f00-a872-409257da3a10", null);
         }
     }
 }

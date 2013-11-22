@@ -603,6 +603,11 @@ namespace Dynamo
 
     #endregion
 
+        public void ResetEngine()
+        {
+            EngineController = new EngineController(this);
+        }
+
         public void RequestRedraw()
         {
             OnRequestsRedraw(this, EventArgs.Empty);

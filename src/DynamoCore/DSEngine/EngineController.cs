@@ -26,21 +26,37 @@ namespace Dynamo.DSEngine
         private Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
         private int shortVarCounter = 0;
 
+
+        /// <summary>
+        /// libraries is a static property so we retain the loaded library information even after resetting EngineController 
+        /// </summary>
+        private static List<string> libraries = new List<string>();
+
         internal EngineController(DynamoController controller)
         {
+            GraphToDSCompiler.GraphUtilities.Reset();
+
             libraryServices = new LibraryServices();
             libraryServices.LibraryLoading += this.LibraryLoading;
             libraryServices.LibraryLoadFailed += this.LibraryLoadFailed;
             libraryServices.LibraryLoaded += this.LibraryLoaded;
 
             liveRunnerServices = new LiveRunnerServices(this);
-            liveRunnerServices.ReloadAllLibraries(libraryServices.BuiltinLibraries);
+            foreach (string loadedLib in libraryServices.BuiltinLibraries)
+            {
+                if (!libraries.Contains(loadedLib))
+                {
+                    libraries.Add(loadedLib);
+                }
+            }
+            liveRunnerServices.ReloadAllLibraries(libraries);
 
             astBuilder = new AstBuilder(this);
 
             syncDataManager = new SyncDataManager();
 
             controller.DynamoModel.NodeDeleted += NodeDeleted;
+
         }
 
         /// <summary>
@@ -310,7 +326,6 @@ namespace Dynamo.DSEngine
             LoadFunctions(libraryServices[newLibrary]);
 
             // Reset the VM
-            List<string> libraries = new List<string>();
             libraries.AddRange(libraryServices.BuiltinLibraries);
             libraries.AddRange(libraryServices.ImportedLibraries);
             liveRunnerServices.ReloadAllLibraries(libraries);
