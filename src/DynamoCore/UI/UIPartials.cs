@@ -37,14 +37,14 @@ namespace Dynamo.Nodes
         {
             var nodeUI = ui as dynNodeView;
 
-            System.Windows.Controls.Button addButton = new dynNodeButton();
+            System.Windows.Controls.Button addButton = new DynamoNodeButton();
             addButton.Content = "+";
             addButton.Width = 20;
             //addButton.Height = 20;
             addButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             addButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
 
-            System.Windows.Controls.Button subButton = new dynNodeButton();
+            System.Windows.Controls.Button subButton = new DynamoNodeButton();
             subButton.Content = "-";
             subButton.Width = 20;
             //subButton.Height = 20;
@@ -112,13 +112,13 @@ namespace Dynamo.Nodes
         {
             var nodeUI = ui as dynNodeView;
 
-            System.Windows.Controls.Button addButton = new dynNodeButton();
+            System.Windows.Controls.Button addButton = new DynamoNodeButton();
             addButton.Content = "+";
             addButton.Width = 20;
             addButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             addButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
 
-            System.Windows.Controls.Button subButton = new dynNodeButton();
+            System.Windows.Controls.Button subButton = new DynamoNodeButton();
             subButton.Content = "-";
             subButton.Width = 20;
             subButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
@@ -221,7 +221,7 @@ namespace Dynamo.Nodes
             var nodeUI = ui as dynNodeView;
 
             //add a text box to the input grid of the control
-            var button = new dynNodeButton();
+            var button = new DynamoNodeButton();
             button.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             button.VerticalAlignment = System.Windows.VerticalAlignment.Top;
             //inputGrid.RowDefinitions.Add(new RowDefinition());
@@ -726,7 +726,7 @@ namespace Dynamo.Nodes
             var nodeUI = ui as dynNodeView;
 
             //add a button to the inputGrid on the dynElement
-            var readFileButton = new dynNodeButton();
+            var readFileButton = new DynamoNodeButton();
 
             //readFileButton.Margin = new System.Windows.Thickness(4);
             readFileButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -1055,14 +1055,32 @@ namespace Dynamo.Nodes
         }
     }
 
-    public class dynNodeButton : System.Windows.Controls.Button
+    public class DynamoNodeButton : System.Windows.Controls.Button
     {
-        public dynNodeButton()
+        private string eventName = string.Empty;
+        private ModelBase model = null;
+
+        public DynamoNodeButton()
             : base()
         {
             Style = (Style)SharedDictionaryManager.DynamoModernDictionary["SNodeTextButton"];
 
             this.Margin = new Thickness(1, 0, 1, 0);
+        }
+
+        public DynamoNodeButton(ModelBase model, string eventName)
+            : this()
+        {
+            this.model = model;
+            this.eventName = eventName;
+            this.Click += OnDynamoNodeButtonClick;
+        }
+
+        private void OnDynamoNodeButtonClick(object sender, RoutedEventArgs e)
+        {
+            if (null != this.model && (!string.IsNullOrEmpty(this.eventName)))
+            {
+            }
         }
     }
 
