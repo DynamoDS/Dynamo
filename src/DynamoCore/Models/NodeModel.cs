@@ -1964,7 +1964,7 @@ namespace Dynamo.Models
     /// Flag to hide deprecated nodes in search, but allow in workflows
     /// </summary>
     [AttributeUsage(AttributeTargets.All, Inherited = true)]
-    public class NodeDeprecatedAttribute : System.Attribute
+    public class NodeHiddenInBrowserAttribute : System.Attribute
     {
     }
 
