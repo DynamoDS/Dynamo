@@ -37,6 +37,9 @@ namespace Dynamo.Core
         #endregion
 
         #region Information Bubble
+        public static int FadeInDurationInMilliseconds = 250;
+        public static int FadeOutDurationInMilliseconds = 250;
+        public static double MaxOpacity = 0.95;
 
         #region Preview Bubble
 
@@ -146,6 +149,11 @@ namespace Dynamo.Core
 
         #endregion
 
+        #endregion
+
+        #region CodeBlockNode
+        public static readonly int MaxPortNameLength = 24;
+        public static readonly int MaxTextBoxWidth = 500;
         #endregion
     }
 

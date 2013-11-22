@@ -909,7 +909,8 @@ namespace Dynamo.Nodes
                 VerticalAlignment = VerticalAlignment.Stretch,
                 Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF)),
                 AcceptsReturn = true,
-                MaxWidth = 500
+                MaxWidth = Configurations.MaxTextBoxWidth,
+                TextWrapping = TextWrapping.Wrap
             };
 
 
@@ -926,10 +927,10 @@ namespace Dynamo.Nodes
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             });
 
-            if (_shouldFocus)
+            if (shouldFocus)
             {
                 tb.Focus();
-                _shouldFocus = false;
+                shouldFocus = false;
             }
         }
     }

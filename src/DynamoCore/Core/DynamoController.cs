@@ -13,6 +13,8 @@ using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Models;
 using Dynamo.PackageManager;
+using Dynamo.Selection;
+using Dynamo.Services;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Microsoft.Practices.Prism.ViewModel;
@@ -143,7 +145,6 @@ namespace Dynamo
             }
         }
 
-        private ConnectorType _connectorType;
         public ConnectorType ConnectorType
         {
             get { return PreferenceSettings.ConnectorType; }
@@ -158,6 +159,13 @@ namespace Dynamo
         {
             get { return isShowPreViewByDefault;}
             set { isShowPreViewByDefault = value; RaisePropertyChanged("IsShowPreviewByDefault"); }
+        }
+
+        private EngineController _engineController = null;
+        public EngineController EngineController
+        {
+            get { return _engineController; }
+            private set { _engineController = value; }
         }
 
         #endregion
@@ -232,15 +240,17 @@ namespace Dynamo
 
             dynSettings.Controller = this;
 
-            this.Context = context;
+            Context = context;
 
             //Start heartbeat reporting
-            Services.InstrumentationLogger.Start();
+            InstrumentationLogger.Start();
 
             //create the view model to which the main window will bind
             //the DynamoModel is created therein
-            this.DynamoViewModel = (DynamoViewModel)Activator.CreateInstance(
+            DynamoViewModel = (DynamoViewModel)Activator.CreateInstance(
                 viewModelType, new object[] { this, commandFilePath });
+
+            EngineController = new EngineController(this);
 
             // custom node loader
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -273,7 +283,7 @@ namespace Dynamo
                 DynamoLogger.Instance.Log("All Tests Passed. Core library loaded OK.");
             }
 
-            this.InfoBubbleViewModel = new InfoBubbleViewModel();
+            InfoBubbleViewModel = new InfoBubbleViewModel();
 
             AddPythonBindings();
         }
@@ -289,7 +299,7 @@ namespace Dynamo
             dynSettings.Controller.DynamoModel.OnCleanup(null);
             dynSettings.Controller = null;
             
-            Selection.DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.ClearSelection();
 
             DynamoLogger.Instance.FinishLogging();
         }
@@ -317,6 +327,14 @@ namespace Dynamo
             //If we're already running, do nothing.
             if (Running)
                 return;
+
+
+#if USE_DSENGINE
+            if (!EngineController.GenerateGraphSyncData(DynamoViewModel.Model.HomeSpace.Nodes))
+            {
+                return;
+            }
+#endif
 
             _showErrors = showErrors;
 
@@ -366,11 +384,7 @@ namespace Dynamo
             {
 
 #if USE_DSENGINE
-                EngineController.Instance.Builder.CompileToAstNodes(
-                    DynamoViewModel.Model.HomeSpace.Nodes, true);
-
-                var engineSyncData = EngineController.Instance.GetSyncData();
-                Run(engineSyncData);
+                Run();
 #else
                 var topNode = new BeginNode(new List<string>());
                 int i = 0;
@@ -461,7 +475,7 @@ namespace Dynamo
             }
         }
 
-        protected virtual void Run(GraphSyncData graphData)
+        protected virtual void Run()
         {
             //Print some stuff if we're in debug mode
             if (DynamoViewModel.RunInDebug)
@@ -470,16 +484,19 @@ namespace Dynamo
 
             try
             {
-                EngineController.Instance.UpdateGraph(graphData);
+                bool updated = EngineController.UpdateGraph();
 
                 // Currently just use inefficient way to refresh preview values. 
                 // After we switch to async call, only those nodes that are really 
                 // updated in this execution session will be required to update 
                 // preview value.
-                var nodes = DynamoViewModel.Model.HomeSpace.Nodes;
-                foreach (NodeModel node in nodes)
+                if (updated)
                 {
-                    node.IsUpdated = true;
+                    var nodes = DynamoViewModel.Model.HomeSpace.Nodes;
+                    foreach (NodeModel node in nodes)
+                    {
+                        node.IsUpdated = true;
+                    }
                 }
             }
             catch (CancelEvaluationException ex)
@@ -775,17 +792,17 @@ namespace Dynamo
 
         public bool IsDefaultTextOverridden()
         {
-            return this.Options.HasFlag(DisplayOptions.IsDefaultTextOverridden);
+            return Options.HasFlag(DisplayOptions.IsDefaultTextOverridden);
         }
 
         public bool HasDetails()
         {
-            return this.Options.HasFlag(DisplayOptions.HasDetails);
+            return Options.HasFlag(DisplayOptions.HasDetails);
         }
 
         public bool IsFilePath()
         {
-            return this.Options.HasFlag(DisplayOptions.HasFilePath);
+            return Options.HasFlag(DisplayOptions.HasFilePath);
         }
     }
 

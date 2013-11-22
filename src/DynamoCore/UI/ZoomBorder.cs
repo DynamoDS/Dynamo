@@ -232,8 +232,9 @@ namespace Dynamo.Controls
             this.Children.Add(itemsControl);
 
             this.Background = Brushes.Transparent;
-            // Styling
-            ((EndlessGridViewModel)this.DataContext).RunCommand.Execute(null);
+
+            // Call ViewModel to compute data required for View
+            ((EndlessGridViewModel)this.DataContext).InitializeOnce();
 
             CreateBinding();
         }

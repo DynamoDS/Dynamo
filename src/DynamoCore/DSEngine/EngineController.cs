@@ -9,6 +9,7 @@ using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
 using ProtoScript.Runners;
+using Dynamo.Nodes;
 
 namespace Dynamo.DSEngine
 {
@@ -18,18 +19,14 @@ namespace Dynamo.DSEngine
     /// </summary>
     public class EngineController: IAstNodeContainer
     {
-        public static EngineController Instance = new EngineController();
         private LiveRunnerServices liveRunnerServices;
         private LibraryServices libraryServices;
         private AstBuilder astBuilder;
         private SyncDataManager syncDataManager;
+        private Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
+        private int shortVarCounter = 0;
 
-        public AstBuilder Builder
-        {
-            get { return astBuilder; }
-        }
-
-        private EngineController()
+        internal EngineController(DynamoController controller)
         {
             libraryServices = new LibraryServices();
             libraryServices.LibraryLoading += this.LibraryLoading;
@@ -43,7 +40,7 @@ namespace Dynamo.DSEngine
 
             syncDataManager = new SyncDataManager();
 
-            dynSettings.Controller.DynamoModel.NodeDeleted += NodeDeleted;
+            controller.DynamoModel.NodeDeleted += NodeDeleted;
         }
 
         /// <summary>
@@ -107,14 +104,32 @@ namespace Dynamo.DSEngine
             return mirror;
         }
 
-        public string ConvertNodesToCode(List<NodeModel> nodesToConvert)
+        public string ConvertNodesToCode(IEnumerable<NodeModel> nodes)
         {
-            string code = string.Empty;
-            if (nodesToConvert.Count > 0)
+            if (!nodes.Any())
+                return string.Empty;
+
+            string code = Dynamo.DSEngine.NodeToCodeUtils.ConvertNodesToCode(nodes);
+            if (string.IsNullOrEmpty(code))
+                return code;
+
+            StringBuilder sb = new StringBuilder(code);
+            foreach (var node in nodes)
             {
-                code = Dynamo.DSEngine.NodeToCodeUtils.ConvertNodesToCode(nodesToConvert);
+                if (node is CodeBlockNodeModel)
+                {
+                    var tempVars = (node as CodeBlockNodeModel).TempVariables;
+                    foreach (var tempVar in tempVars)
+                    {
+                        sb = sb.Replace(tempVar, GenerateShortVariable()); 
+                    }
+                }
+
+                string thisVar = GraphToDSCompiler.GraphUtilities.ASTListToCode(new List<AssociativeNode> { node.AstIdentifierForPreview });
+                sb = sb.Replace(thisVar, GenerateShortVariable());
             }
-            return code;
+
+            return sb.ToString();
         }
 
         /// <summary>
@@ -141,32 +156,99 @@ namespace Dynamo.DSEngine
         }
 
         /// <summary>
-        /// Get graph sync data.
+        /// Generate graph sync data based on the input Dynamo nodes. Return 
+        /// false if all nodes are clean.
         /// </summary>
+        /// <param name="nodes"></param>
         /// <returns></returns>
-        public GraphSyncData GetSyncData()
+        public bool GenerateGraphSyncData(IEnumerable<NodeModel> nodes)
         {
-            return syncDataManager.GetSyncData();
+            astBuilder.CompileToAstNodes(nodes, true);
+            return VerifyGraphSyncData();
+        }
+
+        /// <summary>
+        /// Generate graph sync data based on the input Dynamo custom node information.
+        /// Return false if all nodes are clean.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="nodes"></param>
+        /// <param name="outputs"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public bool GenerateGraphSyncDataForCustomNode(
+            Guid id,
+            IEnumerable<NodeModel> nodes,
+            List<AssociativeNode> outputs,
+            IEnumerable<string> parameters)
+        {
+            astBuilder.CompileCustomNodeDefinition(id, nodes, outputs, parameters, true);
+            return VerifyGraphSyncData();
+        }
+
+        private bool VerifyGraphSyncData()
+        {
+            GraphSyncData data = syncDataManager.GetSyncData();
+            syncDataManager.ResetStates();
+
+            if ((data.AddedSubtrees != null && data.AddedSubtrees.Count > 0) ||
+                (data.ModifiedSubtrees != null && data.ModifiedSubtrees.Count > 0) ||
+                (data.DeletedSubtrees != null && data.DeletedSubtrees.Count > 0))
+            {
+                graphSyncDataQueue.Enqueue(data);
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
         /// Update graph with graph sync data.
         /// </summary>
-        /// <param name="graphData"></param>
-        public void UpdateGraph(GraphSyncData graphData)
+        public bool UpdateGraph()
         {
+            if (graphSyncDataQueue.Count == 0)
+            {
+                return false;
+            }
+            GraphSyncData data = graphSyncDataQueue.Dequeue();
+
             try
             {
-                liveRunnerServices.UpdateGraph(graphData);
+                liveRunnerServices.UpdateGraph(data);
             }
             catch (Exception e)
             {
                 DynamoLogger.Instance.Log("Update graph failed: " + e.Message);
+                return false;
             }
-            finally
+
+            return true;
+        }
+
+        private string GenerateShortVariable()
+        {
+            while (true)
             {
-                syncDataManager.ResetStates();
+                shortVarCounter++;
+                string var = AstBuilder.StringConstants.SHORT_VAR_PREFIX + shortVarCounter.ToString();
+
+                if (!HasVariableDefined(var))
+                    return var;
             }
+        }
+
+        private bool HasVariableDefined(string var)
+        {
+            ProtoCore.Core core = GraphToDSCompiler.GraphUtilities.GetCore();
+            var cbs = core.CodeBlockList;
+            if (cbs == null || cbs.Count > 0)
+            {
+                return false;
+            }
+
+            var idx = cbs[0].symbolTable.IndexOf(var, ProtoCore.DSASM.Constants.kGlobalScope, ProtoCore.DSASM.Constants.kGlobalScope);
+            return idx == ProtoCore.DSASM.Constants.kInvalidIndex;
         }
 
         /// <summary>
@@ -238,16 +320,17 @@ namespace Dynamo.DSEngine
         }
 
         #region Implement IAstNodeContainer interface
-        public void OnAstNodeBuilding(NodeModel node)
+
+        public void OnAstNodeBuilding(Guid nodeGuid)
         {
-            syncDataManager.MarkForAdding(node.GUID);
+            syncDataManager.MarkForAdding(nodeGuid);
         }
 
-        public void OnAstNodeBuilt(NodeModel node, IEnumerable<AssociativeNode> astNodes)
+        public void OnAstNodeBuilt(Guid nodeGuid, IEnumerable<AssociativeNode> astNodes)
         {
             foreach (var astNode in astNodes)
             {
-                syncDataManager.AddNode(node.GUID, astNode); 
+                syncDataManager.AddNode(nodeGuid, astNode); 
             }
         }
         #endregion

@@ -434,6 +434,10 @@ namespace Dynamo.ViewModels
                 case "DisplayLabels":
                     RaisePropertyChanged("IsDisplayingLables");
                     break;
+                case "Position":
+                    UpdateErrorBubblePosition();
+                    UpdatePreviewBubblePosition();
+                    break;
             }
         }
 
@@ -462,7 +466,6 @@ namespace Dynamo.ViewModels
             if (this.PreviewBubble == null)
                 return;
 
-            RaisePropertyChanged("IsPreviewInsetVisible");
             this.PreviewBubble.IsShowPreviewByDefault = dynSettings.Controller.IsShowPreviewByDefault;
             UpdatePreviewBubbleContent();
             if (dynSettings.Controller.IsShowPreviewByDefault)
@@ -501,6 +504,7 @@ namespace Dynamo.ViewModels
                 return;
             if (string.IsNullOrEmpty(NodeModel.ToolTipText))
             {
+                // TODO: Opacity is no longer in use
                 if (ErrorBubble.Opacity != 0)
                 {
                     ErrorBubble.SetAlwaysVisibleCommand.Execute(false);
@@ -509,12 +513,10 @@ namespace Dynamo.ViewModels
             }
             else
             {
-                Point topLeft = new Point(NodeModel.X, NodeModel.Y);
-                Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
                 InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.Error;
                 string content = NodeModel.ToolTipText;
                 InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Bottom;
-                InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
+                InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, GetTopLeft(), GetBotRight(), content, connectingDirection);
                 dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.BeginInvoke((new Action(() =>
                 {
                     if (!dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Errors.Contains(this.ErrorBubble))
@@ -530,11 +532,9 @@ namespace Dynamo.ViewModels
         {
             if (this.ErrorBubble == null)
                 return;
-            Point topLeft = new Point(NodeModel.X, NodeModel.Y);
-            Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
             InfoBubbleDataPacket data = new InfoBubbleDataPacket();
-            data.TopLeft = topLeft;
-            data.BotRight = botRight;
+            data.TopLeft = GetTopLeft();
+            data.BotRight = GetBotRight();
             this.ErrorBubble.UpdatePositionCommand.Execute(data);
         }
 
@@ -545,11 +545,9 @@ namespace Dynamo.ViewModels
 
             //create data packet to send to preview bubble
             InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.PreviewCondensed;
-            Point topLeft = new Point(NodeModel.X, NodeModel.Y);
-            Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
             string content = this.OldValue;
             InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Top;
-            InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
+            InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, GetTopLeft(), GetBotRight(), content, connectingDirection);
 
             //update preview bubble
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.BeginInvoke((new Action(() =>
@@ -563,11 +561,9 @@ namespace Dynamo.ViewModels
         {
             if (this.PreviewBubble == null || this.NodeModel is Watch)
                 return;
-            Point topLeft = new Point(NodeModel.X, NodeModel.Y);
-            Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
             InfoBubbleDataPacket data = new InfoBubbleDataPacket();
-            data.TopLeft = topLeft;
-            data.BotRight = botRight;
+            data.TopLeft = GetTopLeft();
+            data.BotRight = GetBotRight();
             this.PreviewBubble.UpdatePositionCommand.Execute(data);
         }
 
@@ -896,6 +892,18 @@ namespace Dynamo.ViewModels
 
             return false;
         }
+
+        #region Private Helper Methods
+        private Point GetTopLeft()
+        {
+            return new Point(NodeModel.X, NodeModel.Y);
+        }
+
+        private Point GetBotRight()
+        {
+            return new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
+        }
+        #endregion
     }
 
     public class NodeHelpEventArgs : EventArgs

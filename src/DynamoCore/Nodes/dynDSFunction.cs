@@ -167,6 +167,14 @@ namespace Dynamo.Nodes
             Initialize();
         }
 
+        public override bool IsConvertible
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         public override bool RequiresRecalc
         {
             get
@@ -284,7 +292,7 @@ namespace Dynamo.Nodes
 
                 if (!string.IsNullOrEmpty(assembly))
                 {
-                    EngineController.Instance.ImportLibraries(new List<string> { assembly });
+                    dynSettings.Controller.EngineController.ImportLibraries(new List<string> { assembly });
                 }
 
                 Definition = new FunctionItem(assembly, category, className, name, displayName, type, arguments, returnKeys);
@@ -309,40 +317,88 @@ namespace Dynamo.Nodes
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
             string function = Definition.Name;
-            var functionCall = AstFactory.BuildFunctionCall(function, inputAstNodes);
+            AssociativeNode rhs = null;
 
-            if (IsStaticMember() || IsConstructor())
+            switch (Definition.Type)
             {
-                var classNode = new IdentifierNode(Definition.ClassName);
-                functionCall = CoreUtils.GenerateCallDotNode(classNode,
-                    functionCall as FunctionCallNode,
-                    EngineController.Instance.LiveRunnerCore);
-            }
-            else if (IsInstanceMember())
-            {
-                AssociativeNode thisNode = new NullNode();
-                if (inputAstNodes.Count >= 1)
-                {
-                    thisNode = inputAstNodes[0];
-                    inputAstNodes.RemoveAt(0);  // remove this pointer
-                }
-                functionCall = AstFactory.BuildFunctionCall(function, inputAstNodes);
-                functionCall = CoreUtils.GenerateCallDotNode(thisNode,
-                    functionCall as FunctionCallNode,
-                    EngineController.Instance.LiveRunnerCore);
+                case LibraryItemType.Constructor:
+                case LibraryItemType.StaticMethod:
+
+                    var staticCall = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
+                    staticCall.LeftNode = new IdentifierNode(Definition.ClassName);
+                    staticCall.RightNode = AstFactory.BuildFunctionCall(function, inputAstNodes);
+                    rhs = staticCall;
+                    break;
+
+                case LibraryItemType.StaticProperty:
+
+                    var staticProp = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
+                    staticProp.LeftNode = new IdentifierNode(Definition.ClassName);
+                    staticProp.RightNode = new IdentifierNode(Definition.Name);
+                    rhs = staticProp;
+                    break;
+
+                case LibraryItemType.InstanceProperty:
+
+                    // Only handle getter here. Setter could be handled in CBN.
+                    rhs = new NullNode();
+                    if (inputAstNodes != null && inputAstNodes.Count >= 1)
+                    {
+                        var thisNode = inputAstNodes[0];
+                        if (thisNode != null && !(thisNode is NullNode))
+                        {
+                            var insProp = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
+                            insProp.LeftNode = inputAstNodes[0];
+                            insProp.RightNode = new IdentifierNode(Definition.Name);
+                            rhs = insProp;
+                        }
+                    }
+
+                    break;
+
+                case LibraryItemType.InstanceMethod:
+
+                    rhs = new NullNode();
+                    if (inputAstNodes != null && inputAstNodes.Count >= 1)
+                    {
+                        var thisNode = inputAstNodes[0];
+                        inputAstNodes.RemoveAt(0);  // remove this pointer
+
+                        if (thisNode != null && !(thisNode is NullNode))
+                        {
+                            var memberFunc = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
+                            memberFunc.LeftNode = thisNode;
+                            memberFunc.RightNode = AstFactory.BuildFunctionCall(function, inputAstNodes);
+                            rhs = memberFunc;
+                        }
+                    }
+                    
+                    break;
+
+                default:
+                    rhs = AstFactory.BuildFunctionCall(function, inputAstNodes);
+                    break;
             }
 
             var resultAst = new List<AssociativeNode>
             {
-                AstFactory.BuildAssignment(AstIdentifierForPreview, functionCall)
+                AstFactory.BuildAssignment(AstIdentifierForPreview, rhs)
             };
 
             if (OutPortData.Count == 1)
-                resultAst.Add(AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstIdentifierForPreview));
+            {
+                var outputIdentiferNode = GetAstIdentifierForOutputIndex(0);
+                string outputIdentifier = GraphToDSCompiler.GraphUtilities.ASTListToCode(new List<AssociativeNode> { outputIdentiferNode });
+                string thisIdentifier = GraphToDSCompiler.GraphUtilities.ASTListToCode(new List<AssociativeNode> { AstIdentifierForPreview});
+                if (!string.Equals(outputIdentifier, thisIdentifier))
+                {
+                    resultAst.Add(AstFactory.BuildAssignment(outputIdentiferNode, AstIdentifierForPreview));
+                }
+            }
             else
             {
                 var undefinedOutputs = Definition.ReturnKeys == null || Definition.ReturnKeys.Count == 0;
-                
+
                 resultAst.AddRange(
                     Enumerable.Range(0, OutPortData.Count)
                               .Select(

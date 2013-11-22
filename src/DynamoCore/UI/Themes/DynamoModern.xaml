@@ -55,9 +55,6 @@
         <GradientStop Color="{DynamicResource ControlMediumColor}" Offset="0.5" />
         <GradientStop Color="{DynamicResource ControlLightColor}" Offset="1" />
     </LinearGradientBrush>
-
-    <!-- Import -->
-    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     
     <!-- Embedded Font -->
     <!-- Open Sans (under Apache License, version 2.0)
@@ -70,7 +67,7 @@
     <FontFamily x:Key="OpenSansLightItalic">/DynamoCore;component/UI/Fonts/#Open Sans Light Italic</FontFamily>
     <FontFamily x:Key="OpenSansSemiboldItalic">/DynamoCore;component/UI/Fonts/#Open Sans Semibold Italic</FontFamily>
     <FontFamily x:Key="OpenSansBoldItalic">/DynamoCore;component/UI/Fonts/#Open Sans Bold Italic</FontFamily>
-    
+
     <!-- Window Common Styling -->
     <Style x:Key="DynamoWindowStyle"  TargetType="{x:Type Window}">
         <Setter Property="FontFamily" Value="{StaticResource OpenSansRegular}" />
@@ -795,7 +792,7 @@
         <Setter Property="Foreground" Value="#444" />
         <Setter Property="CaretBrush" Value="#333" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
-        <Setter Property="FontSize" Value="16.61px" />
+        <Setter Property="FontSize" Value="14.61px" />
         <Setter Property="Padding" Value="3" />
         <Setter Property="Template">
             <Setter.Value>
@@ -809,11 +806,11 @@
                                           SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                             <TextBlock x:Name="previewText"
                                        Foreground="#777777"
-                                       FontSize="16.61px"
+                                       FontSize="14.61px"
                                        Padding="3"
                                        Margin="4 0 4 0"
                                        IsHitTestVisible="False"
-                                       Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                       Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Collapse}"
                                        Text="{TemplateBinding Tag}" />
                         </Grid>
                     </Border>

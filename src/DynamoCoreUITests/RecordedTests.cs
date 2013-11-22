@@ -477,6 +477,92 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(0, cbn.OutPorts[3].Connectors[0].End.Index);
         }
 
+        /// <summary>
+        /// Creates 3 number nodes and an add (+) nodes. Connects 2 of the number
+        /// nodes to the + node. Then converts all the nodes to Code.
+        /// </summary>
+        [Test, RequiresSTA]
+        public void TestConvertAllNodesToCode()
+        {
+            RunCommandsFromFile("TestConvertAllNodesToCode.xml");
+
+            //Check the nodes
+            var nodes = workspaceViewModel.Nodes;
+            Assert.NotNull(nodes);
+            Assert.AreEqual(1, nodes.Count);
+
+            //Check the connectors
+            var connectors = workspaceViewModel.Connectors;
+            Assert.NotNull(connectors);
+            Assert.AreEqual(0, connectors.Count);
+
+            //Check the CBN
+            var cbn = GetNode("8950950f-78f3-4d81-8181-c574ad84bb1d") as CodeBlockNodeModel;
+            Assert.AreEqual(4, cbn.OutPorts.Count);
+            Assert.True(cbn.Code.Contains("+"));
+            Assert.True(cbn.Code.Contains("14"));
+            Assert.True(cbn.Code.Contains("190"));
+            Assert.True(cbn.Code.Contains("69"));
+        }
+
+        /// <summary>
+        /// Converts a set of nodes to code. Then does Undo and checks that the original set of
+        /// nodes are formed again.
+        /// </summary>
+        [Test, RequiresSTA]
+        public void TestConvertAllNodesToCodeUndo()
+        {
+            RunCommandsFromFile("TestConvertAllNodesToCodeUndo.xml");
+
+            //Check the nodes
+            var nodes = workspaceViewModel.Nodes;
+            Assert.NotNull(nodes);
+            Assert.AreEqual(4, nodes.Count);
+
+            //Check the connectors
+            var connectors = workspaceViewModel.Connectors;
+            Assert.NotNull(connectors);
+            Assert.AreEqual(2, connectors.Count);
+
+            //Check that there is no CBN
+            var cbn = GetNode("37fade4a-e7ad-43ae-8b6f-27dacb17c1c5") as CodeBlockNodeModel;
+            Assert.AreEqual(null, cbn);
+
+            var addNode = workspaceViewModel._model.Nodes.Where(x => x is DSFunction).First() as DSFunction;
+            Assert.NotNull(addNode);
+
+            var numberList = workspaceViewModel._model.Nodes.Where(x => x is DoubleInput).ToList<NodeModel>();
+            Assert.AreEqual(3, numberList.Count);
+        }
+
+        /// <summary>
+        /// Ensures that redo works for NodeToCode by converting a set of nodes to
+        /// code and then undoing and redoing it again.
+        /// </summary>
+        [Test, RequiresSTA]
+        public void TestConvertAllNodesToCodeUndoRedo()
+        {
+            RunCommandsFromFile("TestConvertAllNodesToCodeUndoRedo.xml");
+
+            //Check the nodes
+            var nodes = workspaceViewModel.Nodes;
+            Assert.NotNull(nodes);
+            Assert.AreEqual(1, nodes.Count);
+
+            //Check the connectors
+            var connectors = workspaceViewModel.Connectors;
+            Assert.NotNull(connectors);
+            Assert.AreEqual(0, connectors.Count);
+
+            //Check the CBN
+            var cbn = GetNode("8950950f-78f3-4d81-8181-c574ad84bb1d") as CodeBlockNodeModel;
+            Assert.AreEqual(4, cbn.OutPorts.Count);
+            Assert.True(cbn.Code.Contains("+"));
+            Assert.True(cbn.Code.Contains("14"));
+            Assert.True(cbn.Code.Contains("190"));
+            Assert.True(cbn.Code.Contains("69"));
+        }
+
         [Test, RequiresSTA]
         public void ShiftSelectAllNode()
         {
@@ -511,8 +597,19 @@ namespace Dynamo.Tests.UI
         }
 
         [Test, RequiresSTA]
+        public void Defect_MAGN_775()
+        {
+            // The third undo operation should not crash.
+            RunCommandsFromFile("Defect_MAGN_775.xml");
+            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count);
+        }
+
+        [Test, RequiresSTA]
         public void Defect_MAGN_491()
         {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-491
+
             // TODO: Rename this XML to match the test case name.
             RunCommandsFromFile("Defect-MAGN-491.xml");
             var connectors = workspaceViewModel.Connectors;
@@ -536,6 +633,8 @@ namespace Dynamo.Tests.UI
         [Test, RequiresSTA]
         public void Defect_MAGN_225()
         {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-225
+
             // TODO: Rename this XML to match the test case name.
             RunCommandsFromFile("TestConnectionReplacementUndo.xml");
             var nodes = workspaceViewModel.Nodes;
@@ -547,6 +646,7 @@ namespace Dynamo.Tests.UI
         [Test, RequiresSTA]
         public void Defect_MAGN_57()
         {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-57
             RunCommandsFromFile("Defect_MAGN_57.xml");
 
             Assert.AreEqual(7, workspace.Nodes.Count);
@@ -557,6 +657,8 @@ namespace Dynamo.Tests.UI
         [Test, RequiresSTA]
         public void Defect_MAGN_159()
         {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-159
+
             RunCommandsFromFile("Defect_MAGN_159.xml", true);
 
             Assert.AreEqual(1, workspace.Nodes.Count);
@@ -569,6 +671,8 @@ namespace Dynamo.Tests.UI
         [Ignore, RequiresSTA]
         public void Defect_MAGN_160()
         {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-160
+
             // List node cannot be created  ( current limitation for button click)
             RunCommandsFromFile("Defect_MAGN_160.xml");
 
@@ -582,6 +686,8 @@ namespace Dynamo.Tests.UI
         [Test, RequiresSTA]
         public void Defect_MAGN_164()
         {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-164
+
             RunCommandsFromFile("Defect_MAGN_164.xml", true);
 
             Assert.AreEqual(2, workspace.Nodes.Count);
@@ -597,6 +703,7 @@ namespace Dynamo.Tests.UI
         [Test, RequiresSTA]
         public void Defect_MAGN_190()
         {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-190
             RunCommandsFromFile("Defect_MAGN_190.xml");
 
             Assert.AreEqual(2, workspace.Nodes.Count);
@@ -607,6 +714,7 @@ namespace Dynamo.Tests.UI
         [Test, RequiresSTA]
         public void Defect_MAGN_429()
         {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-429
             RunCommandsFromFile("Defect_MAGN_429.xml");
 
             Assert.AreEqual(0, workspace.Nodes.Count);
@@ -617,9 +725,271 @@ namespace Dynamo.Tests.UI
         [Test, RequiresSTA]
         public void Defect_MAGN_478()
         {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-478
             RunCommandsFromFile("Defect_MAGN_478.xml");
 
             Assert.AreEqual(1, workspace.Notes.Count);
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_411()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-411
+            RunCommandsFromFile("Defect_MAGN_411.xml");
+
+            Assert.AreEqual(1, workspace.Nodes.Count);
+
+            var cbn = GetNode("fc209d2f-1724-4485-bde4-92670802aaa3") as CodeBlockNodeModel;
+            Assert.NotNull(cbn);
+
+            Assert.AreEqual(2, cbn.InPortData.Count);
+            Assert.AreEqual("a", cbn.InPortData[0].ToolTipString);
+            Assert.AreEqual("b", cbn.InPortData[1].ToolTipString);
+        }
+
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_585()
+        {
+            // Details steps are here : http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-585
+
+            RunCommandsFromFile("Defect_MAGN_585.xml");
+
+            //Check the nodes and connectors count
+            var nodes = workspaceViewModel.Nodes;
+            var connectors = workspaceViewModel.Connectors;
+            Assert.NotNull(nodes);
+            Assert.AreEqual(2, nodes.Count);
+            Assert.AreEqual(2, connectors.Count);
+
+            //Check the CBN
+            var cbn = GetNode("5dd0c52b-aa33-4db0-bbe6-e653c1b2a73a") as CodeBlockNodeModel;
+            Assert.AreNotEqual(ElementState.Error, cbn.State);
+            Assert.AreEqual(5, cbn.OutPorts.Count);
+            Assert.AreEqual(1, cbn.InPorts.Count);
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_605()
+        {
+            // Details steps are here : http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-605
+
+            RunCommandsFromFile("Defect_MAGN_605.xml");
+
+            //Check the nodes and connectors count
+            var nodes = workspaceViewModel.Nodes;
+            var connectors = workspaceViewModel.Connectors;
+            Assert.NotNull(nodes);
+            Assert.AreEqual(1, nodes.Count);
+            Assert.AreEqual(0, connectors.Count);
+
+            //Check the CBN
+            var cbn = GetNode("a344e085-a6fa-4d43-ac27-692fb102ba6d") as CodeBlockNodeModel;
+            Assert.AreNotEqual(ElementState.Error, cbn.State);
+            Assert.AreEqual(3, cbn.OutPorts.Count);
+            Assert.AreEqual(0, cbn.InPorts.Count);
+
+            //Check the position of ports
+            Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+
+            Assert.AreEqual("b", cbn.OutPorts[1].ToolTipContent);
+            Assert.AreEqual(0, cbn.OutPorts[1].MarginThickness.Top);
+
+            Assert.AreEqual("c", cbn.OutPorts[2].ToolTipContent);
+            Assert.AreEqual(0, cbn.OutPorts[2].MarginThickness.Top);
+
+        }
+
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_624()
+        {
+            // Details steps are here : http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-624
+
+            RunCommandsFromFile("Defect_MAGN_624.xml");
+
+            //Check the nodes and connectors count
+            var nodes = workspaceViewModel.Nodes;
+            var connectors = workspaceViewModel.Connectors;
+            Assert.NotNull(nodes);
+            Assert.AreEqual(1, nodes.Count);
+            Assert.AreEqual(0, connectors.Count);
+
+            //Check the CBN for input and output ports count
+            var cbn = GetNode("8bc43138-d655-40f6-973e-614f1695874c") as CodeBlockNodeModel;
+            Assert.AreNotEqual(ElementState.Error, cbn.State);
+            Assert.AreEqual(1, cbn.OutPorts.Count);
+            Assert.AreEqual(0, cbn.InPorts.Count);
+
+            //Check the position of ports
+            Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual(24, cbn.OutPorts[0].MarginThickness.Top);
+
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_624_1()
+        {
+            // Further testing of this defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-624
+            // a={1,2,3};
+            // a[0] = 3; // first create CBN with first two lines and then add two more. the below one.
+            // b = 1;
+            // a = 0;
+
+            RunCommandsFromFile("Defect_MAGN_624_1.xml");
+
+            //Check the nodes and connectors count
+            var nodes = workspaceViewModel.Nodes;
+            var connectors = workspaceViewModel.Connectors;
+            Assert.NotNull(nodes);
+            Assert.AreEqual(2, nodes.Count);
+            Assert.AreEqual(2, connectors.Count);
+
+            //Check the CBN for input and output ports count
+            var cbn = GetNode("c9929987-69c8-42bd-9cda-04ef90d029cb") as CodeBlockNodeModel;
+            Assert.AreNotEqual(ElementState.Error, cbn.State);
+            Assert.AreEqual(2, cbn.OutPorts.Count);
+            Assert.AreEqual(0, cbn.InPorts.Count);
+
+            //Check the position of ports
+            Assert.AreEqual("b", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual(64, cbn.OutPorts[0].MarginThickness.Top);
+
+            Assert.AreEqual("a", cbn.OutPorts[1].ToolTipContent);
+            Assert.AreEqual(20, cbn.OutPorts[1].MarginThickness.Top);
+
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_590_1()
+        {
+            // Further testing of this defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-590
+
+            RunCommandsFromFile("Defect_MAGN_590.xml");
+
+            //Check the nodes and connectors count
+            var nodes = workspaceViewModel.Nodes;
+            var connectors = workspaceViewModel.Connectors;
+            Assert.NotNull(nodes);
+            Assert.AreEqual(2, nodes.Count);
+            Assert.AreEqual(2, connectors.Count);
+
+            //Check the CBN for input and output ports count
+            var cbn = GetNode("88295180-7478-4c70-af15-cdac34835abf") as CodeBlockNodeModel;
+            Assert.AreNotEqual(ElementState.Error, cbn.State);
+            Assert.AreEqual(2, cbn.OutPorts.Count);
+            Assert.AreEqual(0, cbn.InPorts.Count);
+
+            //Check the position of ports
+            Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+
+            Assert.AreEqual("c", cbn.OutPorts[1].ToolTipContent);
+            Assert.AreEqual(20, cbn.OutPorts[1].MarginThickness.Top);
+
+            var connector = cbn.OutPorts[1].Connectors[0] as ConnectorModel;
+            Assert.AreEqual(2, connector.End.Index);
+
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_589_1()
+        {
+            // Further testing of this defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-589
+
+            RunCommandsFromFile("Defect_MAGN_589_1.xml");
+
+            //Check the nodes and connectors count
+            var nodes = workspaceViewModel.Nodes;
+            var connectors = workspaceViewModel.Connectors;
+            Assert.NotNull(nodes);
+            Assert.AreEqual(1, nodes.Count);
+            Assert.AreEqual(0, connectors.Count);
+
+            //Check the CBN for input and output ports count
+            var cbn = GetNode("08cdbdea-a025-4cc6-a449-66896cdfa319") as CodeBlockNodeModel;
+            Assert.AreNotEqual(ElementState.Error, cbn.State);
+            Assert.AreEqual(3, cbn.OutPorts.Count);
+            Assert.AreEqual(2, cbn.InPorts.Count);
+
+            //Check the position of ports
+            Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+
+            Assert.AreEqual("Statement Output", cbn.OutPorts[1].ToolTipContent);
+            Assert.AreEqual(20, cbn.OutPorts[1].MarginThickness.Top);
+
+            Assert.AreEqual("Statement Output", cbn.OutPorts[2].ToolTipContent);
+            Assert.AreEqual(20, cbn.OutPorts[2].MarginThickness.Top);
+
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_589_2()
+        {
+            // Further testing of this defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-589
+
+            RunCommandsFromFile("Defect_MAGN_589_2.xml");
+
+            //Check the nodes and connectors count
+            var nodes = workspaceViewModel.Nodes;
+            var connectors = workspaceViewModel.Connectors;
+            Assert.NotNull(nodes);
+            Assert.AreEqual(1, nodes.Count);
+            Assert.AreEqual(0, connectors.Count);
+
+            //Check the CBN for input and output ports count
+            var cbn = GetNode("9b225999-1803-4627-b319-d32ccbea33ef") as CodeBlockNodeModel;
+            Assert.AreNotEqual(ElementState.Error, cbn.State);
+            Assert.AreEqual(2, cbn.OutPorts.Count);
+            Assert.AreEqual(0, cbn.InPorts.Count);
+
+            //Check the position of ports
+            Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+
+            Assert.AreEqual("b", cbn.OutPorts[1].ToolTipContent);
+            Assert.AreEqual(20, cbn.OutPorts[1].MarginThickness.Top);
+
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_589_3()
+        {
+            // Further testing of this defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-589
+
+            RunCommandsFromFile("Defect_MAGN_589_3.xml");
+
+            //Check the nodes and connectors count
+            var nodes = workspaceViewModel.Nodes;
+            var connectors = workspaceViewModel.Connectors;
+            Assert.NotNull(nodes);
+            Assert.AreEqual(1, nodes.Count);
+            Assert.AreEqual(0, connectors.Count);
+
+            //Check the CBN for input and output ports count
+            var cbn = GetNode("623aa74b-bf03-4169-98d9-bee76feb1f3b") as CodeBlockNodeModel;
+            Assert.AreNotEqual(ElementState.Error, cbn.State);
+            Assert.AreEqual(5, cbn.OutPorts.Count);
+            Assert.AreEqual(2, cbn.InPorts.Count);
+
+            //Check the position of ports
+            Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+
+            Assert.AreEqual("Statement Output", cbn.OutPorts[1].ToolTipContent);
+            Assert.AreEqual(20, cbn.OutPorts[1].MarginThickness.Top);
+
+            Assert.AreEqual("d", cbn.OutPorts[2].ToolTipContent);
+            Assert.AreEqual(20, cbn.OutPorts[2].MarginThickness.Top);
+
+            Assert.AreEqual("Statement Output", cbn.OutPorts[3].ToolTipContent);
+            Assert.AreEqual(20, cbn.OutPorts[3].MarginThickness.Top);
+
+            Assert.AreEqual("h", cbn.OutPorts[4].ToolTipContent);
+            Assert.AreEqual(20, cbn.OutPorts[4].MarginThickness.Top);
+
         }
 
         #endregion

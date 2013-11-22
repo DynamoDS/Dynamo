@@ -24,12 +24,12 @@ namespace Dynamo.Tests
                 AstNodes = new List<AssociativeNode>();
             }
 
-            public void OnAstNodeBuilding(NodeModel node)
+            public void OnAstNodeBuilding(Guid node)
             {
             
             }
 
-            public void OnAstNodeBuilt(NodeModel node, IEnumerable<AssociativeNode> astNodes)
+            public void OnAstNodeBuilt(Guid node, IEnumerable<AssociativeNode> astNodes)
             {
                 AstNodes.AddRange(astNodes); 
             }
@@ -70,7 +70,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestCompileToAstNodes1()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\astbuilder\complex.dyn");
             model.Open(openPath);
@@ -92,7 +92,7 @@ namespace Dynamo.Tests
             // 
             //  1 <----> 2
             //
-            var model = dynSettings.Controller.DynamoModel;
+            var model = Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\astbuilder\cyclic.dyn");
             model.Open(openPath);
@@ -114,7 +114,7 @@ namespace Dynamo.Tests
             //     \    
             //      +----> 4
             // 
-            var model = dynSettings.Controller.DynamoModel;
+            var model = Controller.DynamoModel;
             string openPath = Path.Combine(GetTestDirectory(), @"core\astbuilder\multioutputs.dyn");
             model.Open(openPath);
             var nodes = model.CurrentWorkspace.Nodes.ToList();
@@ -155,7 +155,7 @@ namespace Dynamo.Tests
             //          /
             //   3 ----+
             // 
-            var model = dynSettings.Controller.DynamoModel;
+            var model = Controller.DynamoModel;
             string openPath = Path.Combine(GetTestDirectory(), @"core\astbuilder\multiinputs.dyn");
             model.Open(openPath);
             var nodes = model.CurrentWorkspace.Nodes.ToList();
@@ -195,7 +195,7 @@ namespace Dynamo.Tests
             //  |               v
             //  2 ----> 3 ----> 1
             // 
-            var model = dynSettings.Controller.DynamoModel;
+            var model = Controller.DynamoModel;
             string openPath = Path.Combine(GetTestDirectory(), @"core\astbuilder\tri.dyn");
             model.Open(openPath);
             var nodes = model.CurrentWorkspace.Nodes.ToList();
@@ -232,7 +232,7 @@ namespace Dynamo.Tests
             //   
             // 1 <---- 2 <----> 3 <---- 4
             //
-            var model = dynSettings.Controller.DynamoModel;
+            var model = Controller.DynamoModel;
             string openPath = Path.Combine(GetTestDirectory(), @"core\astbuilder\linear.dyn");
             model.Open(openPath);
             var nodes = model.CurrentWorkspace.Nodes.ToList();
@@ -276,7 +276,7 @@ namespace Dynamo.Tests
             //                   |
             //  6 <---- 4 <----> 3 <----> 5 ----> 7          8 <----> 9
             // 
-            var model = dynSettings.Controller.DynamoModel;
+            var model = Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\astbuilder\complex.dyn");
             model.Open(openPath);

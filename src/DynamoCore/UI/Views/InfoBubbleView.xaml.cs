@@ -17,6 +17,7 @@ using InfoBubbleViewModel = Dynamo.ViewModels.InfoBubbleViewModel;
 using Dynamo.ViewModels;
 using Dynamo.Utilities;
 using System.Diagnostics;
+using Dynamo.Core;
 
 namespace Dynamo.Controls
 {
@@ -42,16 +43,133 @@ namespace Dynamo.Controls
 
         #endregion
 
+        #region Storyboards
+        private Storyboard fadeInStoryBoard;
+        private Storyboard fadeOutStoryBoard;
+        #endregion
+
+        /// <summary>
+        /// Used to present useful/important information to user
+        /// Known usages (when this summary is written): DynamoView and dynNodeView (via DataTemplates.xaml)
+        /// Till date there are 5 major types of info bubble
+        /// 1. LibraryItemPreview:  Displayed when mouse hover over an item in the search view
+        /// 2. NodeTooltip:         Displayed when mouse hover over the title area of a node
+        /// 3. PreviewCondensed:    This is the default state when preview is shown.
+        ///                         Displayed when mouse hover over the little triangle at the bottom of a node
+        ///                         or
+        ///                         when user chooses to show the preview
+        /// 4. Preview:             Displayed when the node has a preview and mouse hover over the condensed preview
+        /// 5. Error:               Displayed when errors exist for the node
+        /// </summary>
         public InfoBubbleView()
         {
             InitializeComponent();
+
+            // Setup storyboard used for animating fading in and fading out of info bubble
+            SetupFadeInStoryBoard();
+            SetupFadeOutStoryBoard();
+
+            mainGrid.Opacity = Configurations.MaxOpacity;
+
             this.DataContextChanged += InfoBubbleView_DataContextChanged;
         }
+
+        #region Setup animation storyboard
+        private void SetupFadeInStoryBoard()
+        {
+            DoubleAnimation countUpDoubleAnimation = new DoubleAnimation();
+            countUpDoubleAnimation.From = 0.0;
+            countUpDoubleAnimation.To = Configurations.MaxOpacity;
+            countUpDoubleAnimation.Duration =
+                new Duration(TimeSpan.FromMilliseconds(Configurations.FadeInDurationInMilliseconds));
+            countUpDoubleAnimation.FillBehavior = FillBehavior.HoldEnd;
+            countUpDoubleAnimation.Completed += CountUpDoubleAnimation_Completed;
+
+            fadeInStoryBoard = new Storyboard();
+            fadeInStoryBoard.Children.Add(countUpDoubleAnimation);
+            Storyboard.SetTargetName(countUpDoubleAnimation, mainGrid.Name);
+            Storyboard.SetTargetProperty(countUpDoubleAnimation, new PropertyPath(Grid.OpacityProperty));
+        }
+
+        private void SetupFadeOutStoryBoard()
+        {
+            DoubleAnimation countDownDoubleAnimation = new DoubleAnimation();
+            countDownDoubleAnimation.From = Configurations.MaxOpacity;
+            countDownDoubleAnimation.To = 0.0;
+            countDownDoubleAnimation.Duration =
+                new Duration(TimeSpan.FromMilliseconds(Configurations.FadeOutDurationInMilliseconds));
+            countDownDoubleAnimation.FillBehavior = FillBehavior.HoldEnd;
+            countDownDoubleAnimation.Completed += CountDownDoubleAnimation_Completed;
+
+            fadeOutStoryBoard = new Storyboard();
+            fadeOutStoryBoard.Children.Add(countDownDoubleAnimation);
+            Storyboard.SetTargetName(countDownDoubleAnimation, mainGrid.Name);
+            Storyboard.SetTargetProperty(countDownDoubleAnimation, new PropertyPath(Grid.OpacityProperty));
+        }
+        #endregion
+
+        #region FadeIn FadeOut Event Handling
+        private void FadeInInfoBubble(object sender, EventArgs e)
+        {
+            //Console.WriteLine("FadeIn start");
+
+            fadeOutStoryBoard.Stop(this);
+            mainGrid.Visibility = Visibility.Visible;
+            fadeInStoryBoard.Begin(this);
+        }
+
+        private void FadeOutInfoBubble(object sender, EventArgs e)
+        {
+            //Console.WriteLine("FadeOut start");
+
+            fadeInStoryBoard.Stop(this);
+            mainGrid.Visibility = Visibility.Collapsed;
+            fadeOutStoryBoard.Begin(this);
+        }
+
+        private void CountDownDoubleAnimation_Completed(object sender, EventArgs e)
+        {
+            fadeInStoryBoard.Stop(this);
+            fadeOutStoryBoard.Stop(this);
+
+            //Console.WriteLine("FadeOut done");
+        }
+
+        private void CountUpDoubleAnimation_Completed(object sender, EventArgs e)
+        {
+            //Console.WriteLine("FadeIn done");
+        }
+        #endregion
+
+        #region Show/Hide Info Bubble
+        // Show bubble instantly
+        private void ShowInfoBubble(object sender, EventArgs e)
+        {            
+            mainGrid.Visibility = Visibility.Visible;
+            // Run animation and skip it to end state i.e. MaxOpacity
+            fadeInStoryBoard.Begin(this);
+            fadeInStoryBoard.SkipToFill(this);
+        }
+
+        // Hide bubble instantly
+        private void HideInfoBubble(object sender, EventArgs e)
+        {
+            mainGrid.Visibility = Visibility.Collapsed;
+            fadeOutStoryBoard.Begin(this);
+            fadeOutStoryBoard.SkipToFill(this);
+        }
+        #endregion
 
         private void InfoBubbleView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (DataContext != null && DataContext is InfoBubbleViewModel)
+            {
                 (DataContext as InfoBubbleViewModel).PropertyChanged += ViewModel_PropertyChanged;
+                (DataContext as InfoBubbleViewModel).FadeInInfoBubble += FadeInInfoBubble;
+                (DataContext as InfoBubbleViewModel).FadeOutInfoBubble += FadeOutInfoBubble;
+                (DataContext as InfoBubbleViewModel).ShowInfoBubble += ShowInfoBubble;
+                (DataContext as InfoBubbleViewModel).HideInfoBubble += HideInfoBubble;
+            }
             UpdateContent();
         }
 
@@ -181,6 +299,7 @@ namespace Dynamo.Controls
 
         private void InfoBubble_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
+            e.Handled = true;
             if (this.IsDisconnected)
                 return;
 
@@ -196,7 +315,6 @@ namespace Dynamo.Controls
             else
             {
                 ViewModel.IsShowPreviewByDefault = true;
-                ViewModel.ZIndex = 3;
                 ViewModel.SetAlwaysVisibleCommand.Execute(true);
                 ShowPreviewBubbleCondensedContent();
             }
@@ -300,6 +418,5 @@ namespace Dynamo.Controls
             else
                 this.Cursor = null;
         }
-
     }
 }

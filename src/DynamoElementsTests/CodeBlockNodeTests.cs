@@ -18,6 +18,7 @@ namespace Dynamo.Tests
 {
     class CodeBlockNodeTests : DynamoUnitTest
     {
+#if false
         [Test]
         public void TestVariableClass()
         {
@@ -65,7 +66,7 @@ e+f ;";
 a = 
 b..
 c..
-#d;";
+d;";
             CodeBlockNode commentNode;
             ProtoCore.AST.Node resultNode;
             List<string> refVarNames = new List<string>();
@@ -192,7 +193,7 @@ b = c[w][x][y][z];";
             Assert.AreEqual(true, refVarNames.Contains("c"));
             Assert.AreEqual(true, refVarNames.Contains("z"));
         }
-
+#endif
         [Test]
         public void TestSemiColonAddition()
         {
@@ -216,6 +217,17 @@ b = c[w][x][y][z];";
             userText = "\n   \n   \n    \n";
             compilableText = CodeBlockNodeModel.FormatUserText(userText);
             Assert.AreEqual("", compilableText);
+        }
+
+        [Test]
+        public void Defect_MAGN_784()
+        {
+            var model = Controller.DynamoModel;
+            string openPath = Path.Combine(GetTestDirectory(), @"core\dsevaluation\Defect_MAGN_784.dyn");
+            model.Open(openPath);
+
+            Assert.AreEqual(false, Controller.DynamoModel.CurrentWorkspace.CanUndo);
+            Assert.AreEqual(false, Controller.DynamoModel.CurrentWorkspace.CanRedo);
         }
     }
 }

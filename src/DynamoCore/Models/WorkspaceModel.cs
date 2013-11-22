@@ -7,11 +7,13 @@ using System.Linq;
 using System.Windows;
 using System.Xml;
 using System.Globalization;
+using Dynamo.Core;
 using Dynamo.Nodes;
+using Dynamo.Selection;
 using Dynamo.Utilities;
 using Microsoft.Practices.Prism.ViewModel;
 using String = System.String;
-using Dynamo.Core;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Models
 {
@@ -294,6 +296,14 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        /// Get the current UndoRedoRecorder that is associated with the current 
+        /// WorkspaceModel. Note that external parties should not have the needs 
+        /// to access the recorder directly, so this property is exposed just as 
+        /// a "temporary solution". Before using this property, consider using 
+        /// WorkspaceModel.RecordModelsForUndo method which allows for multiple 
+        /// modifications in a single action group.
+        /// </summary>
         internal UndoRedoRecorder UndoRecorder
         {
             get { return undoRecorder; }
@@ -462,7 +472,7 @@ namespace Dynamo.Models
             undoRecorder.EndActionGroup();
         }
 
-        internal void RecordModelsForUndo(Dictionary<ModelBase, UndoRedoRecorder.UserAction> models)
+        public void RecordModelsForUndo(Dictionary<ModelBase, UndoRedoRecorder.UserAction> models)
         {
             if (null == undoRecorder)
                 return;
@@ -863,17 +873,102 @@ namespace Dynamo.Models
                     // is intended for.
                     throw new InvalidOperationException(message);
                 }
+
+                this.HasUnsavedChanges = true;
             }
         }
 
         /// <summary>
-        /// The function tries to find if a variable already exists in another code block in the workspace.
-        /// If it does, it returns the name, otherwise returns null
+        /// After command framework is implemented, this method should now be only 
+        /// called from a menu item (i.e. Ctrl + W). It should not be used as a 
+        /// way for any other code paths to convert nodes to code programmatically. 
+        /// For that we now have ConvertNodesToCodeInternal which takes in more 
+        /// configurable arguments.
+        /// </summary>
+        /// <param name="parameters">This is not used and should always be null,
+        /// otherwise an ArgumentException will be thrown.</param>
+        /// 
+        internal void NodeToCode(object parameters)
+        {
+            if (null != parameters) // See above for details of this exception.
+            {
+                var message = "Internal error, argument must be null";
+                throw new ArgumentException(message, "parameters");
+            }
+
+            Guid nodeID = Guid.NewGuid();
+            var command = new DynCmd.ConvertNodesToCodeCommand(nodeID);
+            dynSettings.Controller.DynamoViewModel.ExecuteCommand(command);
+        }
+
+        internal bool CanNodeToCode(object parameters)
+        {
+            return DynamoSelection.Instance.Selection.Count > 0;
+        }
+
+        internal void ConvertNodesToCodeInternal(Guid nodeId)
+        {
+            IEnumerable<NodeModel> nodes = DynamoSelection.Instance.Selection.OfType<NodeModel>().Where(n => n.IsConvertible);
+            if (!nodes.Any())
+                return;
+
+            string code = dynSettings.Controller.EngineController.ConvertNodesToCode(nodes);
+
+            //UndoRedo Action Group-----------------------------------------------------------------------------------------
+            UndoRecorder.BeginActionGroup();
+
+            // Delete all nodes
+            var nodeList = nodes.ToList();
+            for (int i = 0; i < nodeList.Count; ++i)
+            {
+                var node = nodeList[i];
+                var connectors = node.AllConnectors as IList<ConnectorModel>;
+                if (null == connectors)
+                {
+                    connectors = node.AllConnectors.ToList();
+                }
+
+                // Delete all connections
+                for (int n = 0; n < connectors.Count(); ++n)
+                {
+                    var connector = connectors[n];
+                    UndoRecorder.RecordDeletionForUndo(connector);
+                    connector.NotifyConnectedPortsOfDeletion();
+                    Connectors.Remove(connector);
+                }
+
+                UndoRecorder.RecordDeletionForUndo(node);
+                Nodes.Remove(node);
+            }
+
+            // create node
+            var codeBlockNode = new CodeBlockNodeModel(code, nodeId, this);
+            UndoRecorder.RecordCreationForUndo(codeBlockNode);
+            Nodes.Add(codeBlockNode);
+
+
+            UndoRecorder.EndActionGroup();
+            //End UndoRedo Action Group------------------------------------------------------------------------------------
+
+            // select node
+            var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == nodeId);
+            if (placedNode != null)
+            {
+                DynamoSelection.Instance.ClearSelection();
+                DynamoSelection.Instance.Selection.Add(placedNode);
+            }
+
+            Modified();
+        }
+
+        /// <summary>
+        /// This function finds if any variable declared in the specified code block exists in the workspace
+        /// If it does, it returns the name of the first such variable it finds, otherwise returns null
         /// </summary>
         /// <param name="codeBlockNode">The code block node whose variables need to
         /// be chacked for redeclaration</param>
-        /// <returns> the name of the redefined variable (if exists). Else it returns null</returns>
-        internal String GetRedefinedVariable(CodeBlockNodeModel codeBlockNode)
+        /// <returns> the name of the first redefined variable (if exists). Else it returns null</returns>
+        internal String GetFirstRedefinedVariable(CodeBlockNodeModel codeBlockNode)
         {
             List<string> newDefVars = codeBlockNode.GetDefinedVariableNames();
             return (from cbn in Nodes.OfType<CodeBlockNodeModel>().Where(x => x != codeBlockNode)
