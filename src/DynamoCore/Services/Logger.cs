@@ -68,7 +68,12 @@ namespace Dynamo.Services
         }
 
 
-       
+
+        public static void FORCE_LogInfo(string tag, string data)
+        {
+
+            loggerImpl.Info(tag, data);
+        }
 
         public static void LogInfo(string tag, string data)
         {
