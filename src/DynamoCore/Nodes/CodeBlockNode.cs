@@ -140,9 +140,6 @@ namespace Dynamo.Nodes
                         string errorMessage = null;
                         DisableReporting();
                         {
-                            //Undo the Update value recording
-                            WorkSpace.UndoRecorder.PopFromUndoGroup();
-
                             WorkSpace.UndoRecorder.BeginActionGroup();
 
                             var inportConnections = new OrderedDictionary();
@@ -171,7 +168,7 @@ namespace Dynamo.Nodes
                             WorkSpace.Modified();
                         EnableReporting();
 
-                        if(errorMessage != null)
+                        if (errorMessage != null)
                             Error(errorMessage);
                     }
                     else
@@ -223,7 +220,32 @@ namespace Dynamo.Nodes
         {
             if (name == "Code")
             {
-                Code = value;
+                //Remove the UpdateValue's recording
+                this.WorkSpace.UndoRecorder.PopFromUndoGroup();
+
+                //Since an empty Code Block Node should not exist, this checks for such instances.
+                // If an empty Code Block Node is found, it is deleted. Since the creation and deletion of 
+                // an empty Code Block Node should not be recorded, this method also checks and removes
+                // any unwanted recordings
+
+                if (value == "")
+                {
+                    if (this.Code == "")
+                    {
+                        this.WorkSpace.UndoRecorder.PopFromUndoGroup();
+                        Dynamo.Selection.DynamoSelection.Instance.Selection.Remove(this);
+                        this.WorkSpace.Nodes.Remove(this);
+                    }
+                    else
+                    {
+                        this.WorkSpace.RecordAndDeleteModels(new System.Collections.Generic.List<ModelBase>() { this });
+                    }
+                }
+                else
+                {
+                    if (!value.Equals(this.Code))
+                        Code = value;
+                }
                 return true;
             }
 
@@ -272,7 +294,7 @@ namespace Dynamo.Nodes
                     // This is already an invalid state. Return an empty resultNodes
                     // A more robust fix is perhaps the ASTBuilder to ignore this node altogether if an error is reported
                     return resultNodes;
-                 }
+                }
 
                 var initStatements = new StringBuilder();
                 for (int i = 0; i < inputIdentifiers.Count; ++i)
