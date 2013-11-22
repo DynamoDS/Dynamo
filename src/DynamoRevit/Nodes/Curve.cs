@@ -17,7 +17,7 @@ namespace Dynamo.Nodes
     [NodeName("Transform Curve")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_TRANSFORM_APPLY)]
     [NodeDescription("Returns the curve (c) transformed by the transform (t).")]
-    [NodeSearchTags("move", "transform", "curve", "line")]
+    [NodeSearchTags("move", "line")]
     public class CurveTransformed : GeometryBase
     {
         public CurveTransformed()
@@ -41,10 +41,10 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Polyline")]
+    [NodeName("Lines Through Points")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_CREATE)]
     [NodeDescription("Create a series of lines through a list of points.")]
-    [NodeSearchTags("line", "through", "passing", "thread")]
+    [NodeSearchTags("passing", "thread", "polyline", "straight")]
     public class CurvesThroughPoints : GeometryBase
     {
         public CurvesThroughPoints()
@@ -79,6 +79,7 @@ namespace Dynamo.Nodes
     [NodeName("Curve By Points")]
     [NodeCategory(BuiltinNodeCategories.REVIT_REFERENCE)]
     [NodeDescription("Create a new Curve by Points by passing in a list of Reference Points")]
+    [NodeSearchTags("spline", "points", "reference", "hermite", "interpolate")]
     public class CurveByPoints : RevitTransactionNodeWithOneOutput
     {
         //Our eventual output.
@@ -140,6 +141,7 @@ namespace Dynamo.Nodes
     [NodeName("Curve by Points by Curve")]
     [NodeCategory(BuiltinNodeCategories.REVIT_REFERENCE)]
     [NodeDescription("Create a new Curve by Points by passing in a geometry line in 3d space")]
+    [NodeSearchTags("spline", "points", "reference", "hermite", "interpolate", "Approximate")]
     [AlsoKnownAsAttribute("Curve By Points By Line")]
     public class CurveByPointsByLine : RevitTransactionNodeWithOneOutput
     {
@@ -426,7 +428,7 @@ namespace Dynamo.Nodes
     [NodeName("Geometry Curve From Model Curve")]
     [NodeCategory(BuiltinNodeCategories.REVIT_REFERENCE)]
     [NodeDescription("Takes in a model curve and extracts a geometry curve")]
-    [NodeSearchTags("Convert", "Extract", "Geometry", "Curve", "Model", "Reference")]
+    [NodeSearchTags("Convert", "Extract", "Geometry", "Curve", "Model", "Reference", "line")]
     public class CurveFromModelCurve : RevitTransactionNodeWithOneOutput
     {
         public CurveFromModelCurve()
@@ -492,6 +494,7 @@ namespace Dynamo.Nodes
     [NodeName("Curve Loop")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_CREATE)]
     [NodeDescription("Creates Curve Loop")]
+    [NodeSearchTags("closed", "join", "profile")]
     public class CurveLoop : GeometryBase
     {
         public CurveLoop()
@@ -569,6 +572,7 @@ namespace Dynamo.Nodes
     [NodeName("Thicken Curve")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_CREATE)]
     [NodeDescription("Creates Curve Loop by thickening a curve")]
+    [NodeSearchTags("offset", "loop")]
     public class ThickenCurveLoop : GeometryBase
     {
         public ThickenCurveLoop()
@@ -597,6 +601,7 @@ namespace Dynamo.Nodes
     [NodeName("Curve Loop Components")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_QUERY)]
     [NodeDescription("Extract a list of curves in the Curve Loop")]
+    [NodeSearchTags("explode", "decompose", "profile")]
     public class ListCurveLoop : RevitTransactionNodeWithOneOutput
     {
         public ListCurveLoop()
@@ -631,6 +636,7 @@ namespace Dynamo.Nodes
     [NodeName("Offset Curve")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_CREATE)]
     [NodeDescription("Creates curve by offseting curve")]
+    [NodeSearchTags("copy", "move", "curve", "line", "perpendicular")]
     public class OffsetCrv : GeometryBase
     {
         public OffsetCrv()
@@ -674,6 +680,7 @@ namespace Dynamo.Nodes
     [NodeName("Bound Curve")]
     [NodeCategory(BuiltinNodeCategories.REVIT_REFERENCE)]
     [NodeDescription("Creates Curve by bounding original by two points")]
+    [NodeSearchTags("shatter", "subdivide", "divide", "domain")]
     public class BoundCurve : RevitTransactionNodeWithOneOutput
     {
         public BoundCurve()
@@ -724,7 +731,8 @@ namespace Dynamo.Nodes
 
     [NodeName("Curve Derivatives")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_QUERY)]
-    [NodeDescription("Returns a transform describing the curve at the parameter.")]
+    [NodeDescription("Returns the derivatives of the curve at the parameter.")]
+    [NodeSearchTags("tangent", "normal")]
     public class ComputeCurveDerivatives : GeometryBase
     {
         public ComputeCurveDerivatives()
@@ -759,6 +767,7 @@ namespace Dynamo.Nodes
     [NodeName("Transform on Curve")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_QUERY)]
     [NodeDescription("Evaluates tangent vector of curve or edge at parameter.")]
+    [NodeSearchTags("tangent", "normal")]
     public class TangentTransformOnCurveOrEdge : GeometryBase
     {
         public TangentTransformOnCurveOrEdge()
@@ -808,6 +817,7 @@ namespace Dynamo.Nodes
     [NodeName("Approximate By Tangent Arcs")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_FIT)]
     [NodeDescription("Appoximates curve by sequence of tangent arcs.")]
+    [NodeSearchTags("rationalize", "subdivide")]
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.REVIT_2014, Context.VASARI_2013)]
     public class ApproximateByTangentArcs : RevitTransactionNodeWithOneOutput
     {

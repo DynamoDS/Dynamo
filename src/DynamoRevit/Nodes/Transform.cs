@@ -211,10 +211,10 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Transform Point")]
+    [NodeName("Transform XYZ")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_TRANSFORM_APPLY)]
     [NodeDescription("Transform a point with a transform.")]
-    [NodeSearchTags("move", "copy", "xyz")]
+    [NodeSearchTags("move", "copy")]
     public class TransformPoint : GeometryBase
     {
         public TransformPoint()
@@ -347,6 +347,86 @@ namespace Dynamo.Nodes
 
             return Value.NewContainer(t);
 
+        }
+    }
+
+    [NodeName("Transform Basis X")]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_TRANSFORM_MODIFY)]
+    [NodeDescription("Returns the x basis vector of the transform.")]
+    public class BasisX : GeometryBase
+    {
+        public BasisX()
+        {
+            InPortData.Add(new PortData("transform", "Transform.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("xyz", "Basis X.", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var transform = (Transform)((Value.Container)args[0]).Item;
+            return Value.NewContainer(transform.BasisX);
+        }
+    }
+
+    [NodeName("Transform Basis Y")]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_TRANSFORM_MODIFY)]
+    [NodeDescription("Returns the y basis vector of the transform.")]
+    public class BasisY : GeometryBase
+    {
+        public BasisY()
+        {
+            InPortData.Add(new PortData("transform", "Transform.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("xyz", "Basis Y.", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var transform = (Transform)((Value.Container)args[0]).Item;
+            return Value.NewContainer(transform.BasisY);
+        }
+    }
+
+    [NodeName("Transform Basis Z")]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_TRANSFORM_MODIFY)]
+    [NodeDescription("Returns the z basis vector of the transform.")]
+    public class BasisZ : GeometryBase
+    {
+        public BasisZ()
+        {
+            InPortData.Add(new PortData("transform", "Transform.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("xyz", "Basis Z.", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var transform = (Transform)((Value.Container)args[0]).Item;
+            return Value.NewContainer(transform.BasisZ);
+        }
+    }
+
+    [NodeName("Transform Origin")]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_TRANSFORM_MODIFY)]
+    [NodeDescription("Returns the z basis vector of the transform.")]
+    public class Origin : GeometryBase
+    {
+        public Origin()
+        {
+            InPortData.Add(new PortData("transform", "Transform.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("xyz", "Origin.", typeof(Value.Container)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var transform = (Transform)((Value.Container)args[0]).Item;
+            return Value.NewContainer(transform.Origin);
         }
     }
 }

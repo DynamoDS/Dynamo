@@ -23,10 +23,60 @@ namespace Dynamo.PackageManager
             RESULTS
         };
 
+        public enum PackageSortingKey
+        {
+            NAME,
+            DOWNLOADS,
+            VOTES,
+            MAINTAINERS,
+            LAST_UPDATE
+        };
+
+        public enum PackageSortingDirection
+        {
+            ASCENDING,
+            DESCENDING
+        };
+
         #region Properties & Fields
 
         // The results of the last synchronization with the package manager server
         public List<PackageManagerSearchElement> LastSync { get; set; }
+
+        /// <summary>
+        ///     SortingKey property
+        /// </summary>
+        /// <value>
+        ///     Set which kind of sorting should be used for displaying search results
+        /// </value>
+        public PackageSortingKey _sortingKey;
+        public PackageSortingKey SortingKey
+        {
+            get { return _sortingKey; }
+            set
+            {
+                _sortingKey = value;
+                RaisePropertyChanged("SortingKey");
+            }
+        }
+
+
+        /// <summary>
+        ///     SortingDirection property
+        /// </summary>
+        /// <value>
+        ///     Set which kind of sorting should be used for displaying search results
+        /// </value>
+        public PackageSortingDirection _sortingDirection;
+        public PackageSortingDirection SortingDirection
+        {
+            get { return _sortingDirection; }
+            set
+            {
+                _sortingDirection = value;
+                RaisePropertyChanged("SortingDirection");
+            }
+        }
 
         /// <summary>
         ///     SearchText property
@@ -113,18 +163,27 @@ namespace Dynamo.PackageManager
         /// </value>
         public PackageManagerClient PackageManagerClient { get; private set; }
 
-        /// <summary>
-        ///     An ordered list representing all of the visible items in the browser.
-        ///     This is used to manage up-down navigation through the menu.
-        /// </summary>
-        private List<BrowserItem> _visibleSearchResults = new List<BrowserItem>();
-
         private SearchDictionary<PackageManagerSearchElement> SearchDictionary;
 
         /// <summary>
         ///     Command to clear the completed package downloads
         /// </summary>
         public DelegateCommand ClearCompletedCommand { get; set; }
+
+        /// <summary>
+        ///     Sort the search results
+        /// </summary>
+        public DelegateCommand SortCommand { get; set; }
+
+        /// <summary>
+        ///     Set the sorting key for search results and resort
+        /// </summary>
+        public DelegateCommand<object> SetSortingKeyCommand { get; set; }
+
+        /// <summary>
+        ///     Command to set the sorting direction and resort the search results
+        /// </summary>
+        public DelegateCommand<object> SetSortingDirectionCommand { get; set; }
 
         /// <summary>
         ///     Current downloads
@@ -147,11 +206,135 @@ namespace Dynamo.PackageManager
             MaxNumSearchResults = 12;
             SearchDictionary = new SearchDictionary<PackageManagerSearchElement>();
             ClearCompletedCommand = new DelegateCommand(ClearCompleted, CanClearCompleted);
+            SortCommand = new DelegateCommand(Sort, CanSort);
+            SetSortingKeyCommand = new DelegateCommand<object>(SetSortingKey, CanSetSortingKey);
+            SetSortingDirectionCommand = new DelegateCommand<object>(SetSortingDirection, CanSetSortingDirection);
             PackageManagerClient.Downloads.CollectionChanged += DownloadsOnCollectionChanged;
-            this.SearchResults.CollectionChanged += SearchResultsOnCollectionChanged;
+            SearchResults.CollectionChanged += SearchResultsOnCollectionChanged;
             SearchText = "";
+            SortingKey = PackageSortingKey.LAST_UPDATE;
+            SortingDirection = PackageSortingDirection.ASCENDING;
         }
 
+        /// <summary>
+        /// Sort the search results
+        /// </summary>
+        public void Sort()
+        {
+            var list = this.SearchResults.AsEnumerable().ToList();
+            Sort(list, this.SortingKey);
+            this.SearchResults.Clear();
+
+            if (SortingDirection == PackageSortingDirection.DESCENDING)
+            {
+                list.Reverse();
+            }
+
+            foreach (var ele in list)
+            {
+                this.SearchResults.Add(ele);
+            }
+        }
+
+        /// <summary>
+        /// Can search be performed.  Used by the associated command
+        /// </summary>
+        /// <returns></returns>
+        public bool CanSort()
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Set the sorting direction.  Used by the associated command.
+        /// </summary>
+        /// <param name="sortingDir"></param>
+        public void SetSortingDirection(object sortingDir)
+        {
+            if (sortingDir is string)
+            {
+                var key = (string)sortingDir;
+
+                if (key == "ASCENDING")
+                {
+                    this.SortingDirection = PackageSortingDirection.ASCENDING;
+                }
+                else if (key == "DESCENDING")
+                {
+                    this.SortingDirection = PackageSortingDirection.DESCENDING;
+                }
+
+            }
+            else if (sortingDir is PackageSortingDirection)
+            {
+                this.SortingDirection = (PackageSortingDirection)sortingDir;
+            }
+
+            this.Sort();
+        }
+
+        /// <summary>
+        /// Set the associated key
+        /// </summary>
+        /// <returns></returns>
+        public bool CanSetSortingDirection(object par)
+        {
+            return true;
+        }
+
+
+        /// <summary>
+        /// Set the key for search.  Used by the associated command.
+        /// </summary>
+        /// <param name="sortingKey"></param>
+        public void SetSortingKey(object sortingKey)
+        {
+            if (sortingKey is string)
+            {
+                var key = (string) sortingKey;
+
+                if (key == "NAME")
+                {
+                    this.SortingKey = PackageSortingKey.NAME;
+                } 
+                else if (key == "DOWNLOADS")
+                {
+                    this.SortingKey = PackageSortingKey.DOWNLOADS;
+                } 
+                else if (key == "MAINTAINERS")
+                {
+                    this.SortingKey = PackageSortingKey.MAINTAINERS;
+                }
+                else if (key == "LAST_UPDATE")
+                {
+                    this.SortingKey = PackageSortingKey.LAST_UPDATE;
+                } 
+                else if (key == "VOTES")
+                {
+                    this.SortingKey = PackageSortingKey.VOTES;
+                }
+
+            } 
+            else if (sortingKey is PackageSortingKey)
+            {
+                this.SortingKey = (PackageSortingKey) sortingKey;
+            }
+
+            this.Sort();
+        }
+
+        /// <summary>
+        /// Set the associated key
+        /// </summary>
+        /// <returns></returns>
+        public bool CanSetSortingKey(object par)
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Attempts to obtain the list of search results.  If it fails, it does nothing
+        /// </summary>
         public void Refresh()
         {
             var pkgs = PackageManagerClient.ListAll();
@@ -170,6 +353,10 @@ namespace Dynamo.PackageManager
             }
         }
 
+        /// <summary>
+        /// Synchronously perform a refresh and then search
+        /// </summary>
+        /// <returns></returns>
         public List<PackageManagerSearchElement> RefreshAndSearch()
         {
 
@@ -309,7 +496,9 @@ namespace Dynamo.PackageManager
             else
             {
                 // with null query, don't show deprecated packages
-                return LastSync.Where(x => !x.IsDeprecated).ToList();
+                List<PackageManagerSearchElement> list = LastSync.Where(x => !x.IsDeprecated).ToList();
+                Sort(list, this.SortingKey);
+                return list;
             }
         }
 
@@ -336,10 +525,38 @@ namespace Dynamo.PackageManager
 
             if (emptySearch)
             {
-                results.Sort((e1, e2) => e1.Name.ToLower().CompareTo(e2.Name.ToLower()));
+                Sort(results, this.SortingKey);
             }
 
             return results;
+        }
+
+        /// <summary>
+        /// Sort a list of search results by the given key
+        /// </summary>
+        /// <param name="results"></param>
+        private static void Sort(List<PackageManagerSearchElement> results, PackageSortingKey key)
+        {
+
+            switch (key)
+            {
+                case PackageSortingKey.NAME:
+                    results.Sort((e1, e2) => e1.Name.ToLower().CompareTo(e2.Name.ToLower()));
+                    break;
+                case PackageSortingKey.DOWNLOADS:
+                    results.Sort((e1, e2) => e2.Downloads.CompareTo(e1.Downloads));
+                    break;
+                case PackageSortingKey.LAST_UPDATE:
+                    results.Sort((e1, e2) => e2.Versions.Last().Item1.created.CompareTo(e1.Versions.Last().Item1.created));
+                    break;
+                case PackageSortingKey.VOTES:
+                    results.Sort((e1, e2) => e2.Votes.CompareTo(e1.Votes));
+                    break;
+                case PackageSortingKey.MAINTAINERS:
+                    results.Sort((e1, e2) => e1.Maintainers.ToLower().CompareTo(e2.Maintainers.ToLower()));
+                    break;
+            }
+            
         }
 
         /// <summary>

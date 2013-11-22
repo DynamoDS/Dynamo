@@ -883,8 +883,7 @@ namespace Dynamo.Controls
         {
             if (this._vm == null)
                 return;
-            this._vm.WorkspaceActualHeight = border.ActualHeight;
-            this._vm.WorkspaceActualWidth = border.ActualWidth;
+            this._vm.WorkspaceActualSize(border.ActualWidth, border.ActualHeight);
         }
 
         private void Window_PreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -918,6 +917,11 @@ namespace Dynamo.Controls
             {
                 // Note that you can have more than one file.
                 var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+                if (_vm.Model.HomeSpace.HasUnsavedChanges && !_vm.AskUserToSaveWorkspaceOrCancel(_vm.Model.HomeSpace))
+                {
+                    return;
+                }
 
                 if (_vm.OpenCommand.CanExecute(files[0]))
                 {

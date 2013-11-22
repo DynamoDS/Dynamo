@@ -3,18 +3,18 @@
 
 [Setup]
 AppName=Dynamo
-AppVerName=Dynamo 0.6.2
+AppVerName=Dynamo 0.6.3
 AppPublisher=Autodesk, Inc.
 AppID={{12A2BEA3-7641-4AEC-B344-9B49C8DDFF1A}
 AppCopyright=
 AppPublisherURL=http://www.dynamobim.com
 AppSupportURL=
 AppUpdatesURL=
-AppVersion=0.6.2
-VersionInfoVersion=0.6.2
+AppVersion=0.6.3
+VersionInfoVersion=0.6.3
 VersionInfoCompany=Autodesk 
-VersionInfoDescription=Dynamo 0.6.2
-VersionInfoTextVersion=Dynamo 0.6.2
+VersionInfoDescription=Dynamo 0.6.3
+VersionInfoTextVersion=Dynamo 0.6.3
 VersionInfoCopyright=
 DefaultDirName=C:\Autodesk\Dynamo\Core
 DefaultGroupName=
@@ -29,7 +29,7 @@ ShowLanguageDialog=auto
 DirExistsWarning=no
 UninstallFilesDir={app}\Uninstall
 UninstallDisplayIcon={app}\logo_square_32x32.ico
-UninstallDisplayName=Dynamo 0.6.2
+UninstallDisplayName=Dynamo 0.6.3
 UsePreviousAppDir=no
 
 [Types]
@@ -65,10 +65,6 @@ Source: temp\dynamo_packages\*; DestDir: {app}\dynamo_packages; Flags: ignorever
 Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2013\Dynamo.addin"
 Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2014\Dynamo.addin"
 Type: files; Name: "{commonappdata}\Autodesk\Vasari\Addins\2014\Dynamo.addin"
-Type: files; Name: {app}\RevitRaaS.dll
-Type: files; Name: {app}\DynamoRaaS.dll
-Type: files; Name: {app}\SDF.dll
-Type: files; Name: {app}\JobMonitor.dll
 
 [Run]
 Filename: "{app}\fsharp_redist.exe"; Parameters: "/q"; Flags: runascurrentuser

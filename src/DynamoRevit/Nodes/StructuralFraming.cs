@@ -53,7 +53,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("type", "The framing type.", typeof(Value.Container)));
             InPortData.Add(new PortData("curves", "The curve(s) to be used as center lines for your framing elements.  Must be a list", typeof(Value.List)));
-            InPortData.Add(new PortData("up", "The \"up\" vector for the beam.", typeof(Value.List)));
+            InPortData.Add(new PortData("up", "The \"up\" vector for the beam.", typeof(Value)));
             OutPortData.Add(new PortData("framing", "The structural framing instance(s) created by this operation.", typeof(Value.List)));
 
             RegisterAllPorts();
@@ -68,12 +68,30 @@ namespace Dynamo.Nodes
         {
             var symbol = (FamilySymbol)((Value.Container)args[0]).Item;
             var curves = ((Value.List) args[1]).Item;
-            var targets =((Value.List)args[2]).Item;
 
-            if (curves.Count() != targets.Count())
-                throw new Exception("The number of curves and the number of up vectors must be the same.");
+            IEnumerable<Tuple<Curve, XYZ>> data;
+            if (args[2].IsList)
+            {
+                var targets = ((Value.List)args[2]).Item;
 
-            var data = curves.Zip(targets, (first,second)=>new Tuple<Curve,XYZ>((Curve)((Value.Container)first).Item, (XYZ)((Value.Container)second).Item));
+                if (curves.Count() != targets.Count())
+                    throw new Exception("The number of curves and the number of up vectors must be the same.");
+
+                //if we get a list of up vectors, then pair each
+                //curve with a corresponding up vector
+                data = curves.Zip(targets,
+                    (first, second) =>
+                        new Tuple<Curve, XYZ>((Curve) ((Value.Container) first).Item,
+                            (XYZ) ((Value.Container) second).Item));
+            }
+            else
+            {
+                //if we get a single up vector, then pair each
+                //curve with that up vector
+                data = curves.Select(x=>new Tuple<Curve, XYZ>((Curve)((Value.Container)x).Item,
+                            (XYZ)((Value.Container)args[2]).Item));
+            }
+            
 
             var instData = new List<FamilyInstanceCreationData>();
 

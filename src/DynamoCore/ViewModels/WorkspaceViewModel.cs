@@ -12,6 +12,7 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Controls;
 using System.Windows.Threading;
+using System.Windows.Input;
 
 namespace Dynamo.ViewModels
 {
@@ -37,16 +38,32 @@ namespace Dynamo.ViewModels
         public event ZoomEventHandler RequestZoomToViewportCenter;
         public event ZoomEventHandler RequestZoomToViewportPoint;
         public event ZoomEventHandler RequestZoomToFitView;
-        public event EventHandler RequestTogglePan;
-        public event EventHandler RequestStopPan;
+       
         public event NodeEventHandler RequestCenterViewOnElement;
         public event NodeEventHandler RequestNodeCentered;
         public event ViewEventHandler RequestAddViewToOuterCanvas;
         public event SelectionEventHandler RequestSelectionBoxUpdate;
         public event WorkspacePropertyEditHandler WorkspacePropertyEditRequested;
 
-        public event EventHandler RequestChangeCursorDragging;
-        public event EventHandler RequestChangeCursorUsual;
+        /// <summary>
+        /// Cursor Property Binding for WorkspaceView
+        /// </summary>
+        private Cursor currentCursor = null;
+        public Cursor CurrentCursor
+        {
+            get { return currentCursor; }
+            set { currentCursor = value; RaisePropertyChanged("CurrentCursor"); }
+        }
+
+        /// <summary>
+        /// Force Cursor Property Binding for WorkspaceView
+        /// </summary>
+        private bool isCursorForced = false;
+        public bool IsCursorForced
+        {
+            get { return isCursorForced; }
+            set { isCursorForced = value; RaisePropertyChanged("IsCursorForced"); }
+        }
 
         /// <summary>
         /// Convenience property
@@ -65,18 +82,6 @@ namespace Dynamo.ViewModels
                 Debug.WriteLine(string.Format("Setting current offset to {0}", e.Point));
                 CurrentOffsetChanged(this, e);
             }
-        }
-
-        private void OnRequestChangeCursorDragging(object sender, EventArgs e)
-        {
-            if (RequestChangeCursorDragging != null)
-                RequestChangeCursorDragging(this, e);
-        }
-
-        private void OnRequestChangeCursorUsual(object sender, EventArgs e)
-        {
-            if (RequestChangeCursorUsual != null)
-                RequestChangeCursorUsual(this, e);
         }
 
         /// <summary>
@@ -130,22 +135,6 @@ namespace Dynamo.ViewModels
             if (RequestZoomToFitView != null)
             {
                 RequestZoomToFitView(this, e);
-            }
-        }
-
-        public virtual void OnRequestTogglePan(object sender, EventArgs e)
-        {
-            if (RequestTogglePan != null)
-            {
-                RequestTogglePan(this, e);
-            }
-        }
-
-        public virtual void OnRequestStopPan(object sender, EventArgs e)
-        {
-            if (RequestStopPan != null)
-            {
-                RequestStopPan(this, e);
             }
         }
 
@@ -336,6 +325,10 @@ namespace Dynamo.ViewModels
 
             var errorsColl = new CollectionContainer { Collection = Errors };
             _workspaceElements.Add(errorsColl);
+
+            // Add EndlessGrid
+            var endlessGrid = new EndlessGridViewModel(this);
+            _workspaceElements.Add(endlessGrid);
 
             //respond to collection changes on the model by creating new view models
             //currently, view models are added for notes and nodes
@@ -849,20 +842,10 @@ namespace Dynamo.ViewModels
 
         private void TogglePan(object o)
         {
-            OnRequestTogglePan(this, null);
+            RequestTogglePanMode();
         }
 
         private bool CanTogglePan(object o)
-        {
-            return true;
-        }
-
-        private void StopPan(object o)
-        {
-            OnRequestStopPan(this, null);
-        }
-
-        private bool CanStopPan(object o)
         {
             return true;
         }
@@ -946,6 +929,10 @@ namespace Dynamo.ViewModels
         internal void Loaded()
         {
             RaisePropertyChanged("IsHomeSpace");
+
+            // New workspace or swapped workspace to follow it offset and zoom
+            OnCurrentOffsetChanged(this, new PointEventArgs(new Point(Model.X, Model.Y)));
+            OnZoomChanged(this, new ZoomEventArgs(Model.Zoom));
         }
 
         private void PauseVisualizationManagerUpdates(object parameter)

@@ -14,6 +14,8 @@
 			</testFixture>
 			<testFixture name="BugTests">
 				<test name="MAGN_66" runDynamo="True" modelPath=".\Bugs\MAGN_66.rfa"/>
+				<test name="MAGN_102" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="MAGN_122" runDynamo="True" modelPath=".\Bugs\MAGN-122_wallsAndFloorsAndLevels.rvt"/>
 			</testFixture>
 			<testFixture name="CoreTests">
 				<test name="SanityCheck" runDynamo="True" modelPath=".\empty.rfa"/>
@@ -109,9 +111,19 @@
 				<test name="Transforms_TranslateAndRotate" runDynamo="True" modelPath=".\empty.rfa"/>
 				<test name="Formulas_FormulaCurve" runDynamo="True" modelPath=".\empty.rfa"/>
 				<test name="Spreadsheets_CSVToStuff" runDynamo="True" modelPath=".\empty.rfa"/>
+				<test name="AllCurveTestModelCurve" runDynamo="True" modelPath=".\Samples\AllCurves.rfa"/>
+				<test name="AllCurveTest" runDynamo="True" modelPath=".\Samples\AllCurves.rfa"/>
+				<test name="ArcAndLineFromRefPoints" runDynamo="True" modelPath=".\Samples\AllCurves.rfa"/>
+				<test name="ArcAndLine" runDynamo="True" modelPath=".\Samples\AllCurves.rfa"/>
+				<test name="ArcFromRefPoints" runDynamo="True" modelPath=".\Samples\AllCurves.rfa"/>
+				<test name="Arc" runDynamo="True" modelPath=".\Samples\AllCurves.rfa"/>
+				<test name="Circle" runDynamo="True" modelPath=".\Samples\AllCurves.rfa"/>
+				<test name="Ellipse" runDynamo="True" modelPath=".\Samples\AllCurves.rfa"/>
+				<test name="ConnectTwoPointArraysWithoutPython" runDynamo="True" modelPath=".\Samples\AllCurves.rfa"/>
 			</testFixture>
 			<testFixture name="SelectionTests">
 				<test name="FamilyTypeSelectorNode" runDynamo="True" modelPath=".\empty.rfa"/>
+        <test name="AllSelectionNodes" runDynamo="True" modelPath=".\Selection\Selection.rfa"/>
 			</testFixture>
 			<testFixture name="SolidTests">
 				<test name="BlendSolid" runDynamo="True" modelPath=".\empty.rfa"/>

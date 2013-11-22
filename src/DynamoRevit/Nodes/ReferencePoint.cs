@@ -169,8 +169,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Reference Point by Normal")]
     [NodeCategory(BuiltinNodeCategories.REVIT_REFERENCE)]
-    [NodeDescription("Owns a reference point which is projected from a point by normal and distance.")]
-    [NodeSearchTags("normal", "ref")]
+    [NodeDescription("Owns a reference point which is projected from a point by normal and length.")]
     public class PointNormalDistance : RevitTransactionNodeWithOneOutput
     {
         public PointNormalDistance()
@@ -394,7 +393,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Reference Point Distance")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
-    [NodeSearchTags("Distance", "dist", "norm")]
+    [NodeSearchTags("norm")]
     [NodeDescription("Measures a distance between point(s).")]
     public class DistanceBetweenPoints : MeasurementBase
     {
