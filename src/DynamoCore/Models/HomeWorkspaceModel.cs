@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Threading;
 using Dynamo.Utilities;
 
 namespace Dynamo.Models
 {
     public class HomeWorkspaceModel : WorkspaceModel
     {
+        private DispatcherTimer runExpressionTimer;
+
         public HomeWorkspaceModel()
             : this(new List<NodeModel>(), new List<ConnectorModel>(), 0, 0)
         {
@@ -23,13 +26,40 @@ namespace Dynamo.Models
         {
         }
 
+        private void OnRunExpression(object sender, EventArgs e)
+        {
+            var controller = dynSettings.Controller;
+            if (!controller.Running)
+            {
+                controller.RunExpression(false);
+            }
+            runExpressionTimer.Stop();
+        }
+
         public override void Modified()
         {
             base.Modified();
 
+            DynamoLogger.Instance.Log("===============Modified==================");
+
             var controller = dynSettings.Controller;
             if (dynSettings.Controller.DynamoViewModel.DynamicRunEnabled)
             {
+#if USE_DSENGINE
+                if (null == runExpressionTimer)
+                {
+                    runExpressionTimer = new DispatcherTimer();
+                    runExpressionTimer.Interval += new TimeSpan(0, 0, 0, 0, 100);
+                    runExpressionTimer.Tick += new EventHandler(OnRunExpression);
+                }
+
+                if (runExpressionTimer.IsEnabled)
+                {
+                    runExpressionTimer.Stop();
+                }
+
+                runExpressionTimer.Start(); // reset timer
+#else
                 //DynamoLogger.Instance.Log("Running Dynamically");
                 if (!controller.Running)
                 {
@@ -41,6 +71,7 @@ namespace Dynamo.Models
                     //DynamoLogger.Instance.Log("Run in progress, cancelling then running.");
                     controller.QueueRun();
                 }
+#endif
             }
         }
 
