@@ -262,6 +262,32 @@
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
+  <Target Name="CopyConfig"
+        Inputs="@(DetectedConfig)"
+        Outputs="@(DetectedConfig->'$(OutDir)%(Filename)%(Extension)')"
+        AfterTargets="DetectConfigFiles">
+    <Copy SourceFiles="@(DetectedConfig)"
+          DestinationFiles="@(DetectedConfig->'$(OutDir)%(Filename)%(Extension)')">
+        <Output TaskParameter="CopiedFiles"
+                ItemName="CopiedConfig" />
+
+    </Copy>
+    <Message Importance="High"
+             Condition="'%(CopiedConfig.FullPath)'!=''"
+             Text="Copied config: %(CopiedConfig.FullPath)" />
+</Target>
+
+<Target Name="DetectConfigFiles" AfterTargets="ResolveAssemblyReferences">
+    <ItemGroup>
+        <!-- Add .config onto all the assemblies we reference -->
+        <PossibleConfig Include="%(ReferencePath.FullPath).config" />
+    </ItemGroup>
+
+    <!-- Work out which ones actually exist in the file system -->
+    <ItemGroup>
+        <DetectedConfig Include="@(PossibleConfig)" Condition="Exists('%(PossibleConfig.Identity)')" />
+    </ItemGroup>
+</Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
