@@ -9,7 +9,7 @@ namespace Dynamo.Nodes
 {
     [NodeName("Wall by Curve")]
     [NodeCategory(BuiltinNodeCategories.REVIT_DOCUMENT)]
-    [NodeDescription("Create a wall given a curve, a level, a wall type, and a height.")]
+    [NodeDescription("WARNING!  Recreated, not modified on change.  Create a wall given a curve, a level, a wall type, and a height.")]
     public class WallByCurve : RevitTransactionNodeWithOneOutput
     {
         public WallByCurve()
