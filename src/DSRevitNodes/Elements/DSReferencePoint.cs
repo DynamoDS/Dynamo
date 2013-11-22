@@ -4,6 +4,7 @@ using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
 using DSNodeServices;
 using DSRevitNodes.Elements;
+using DSRevitNodes.GeometryConversion;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Edge = Autodesk.DesignScript.Geometry.Edge;

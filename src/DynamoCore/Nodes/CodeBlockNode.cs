@@ -374,7 +374,10 @@ namespace Dynamo.Nodes
                         codeStatements.Add(tempStatement);
                     }
 
-                    SetPreviewVariable(parsedNodes[parsedNodes.Count-1] as BinaryExpressionNode);
+                    if (parsedNodes.Count > 0)
+                    {
+                        SetPreviewVariable(parsedNodes[parsedNodes.Count - 1] as BinaryExpressionNode);
+                    }
                 }
                 else
                 {
@@ -427,12 +430,20 @@ namespace Dynamo.Nodes
             {
                 State = ElementState.Error;
                 DynamoLogger.Instance.Log("Failed to build AST for code block node. Error: " + ex.Message);
+                return;
             }
 
             if (lastStatement == null)
                 throw new ArgumentNullException("Statement not a binary expression node");
 
-            (previewExpressionAST as BinaryExpressionNode).RightNode = lastStatement.LeftNode;
+            if (previewExpressionAST != null)
+            {
+                if (tempVariables != null)
+                {
+                    tempVariables.Add(previewVariable);
+                }
+                (previewExpressionAST as BinaryExpressionNode).RightNode = lastStatement.LeftNode;
+            }
         }
 
         /// <summary>

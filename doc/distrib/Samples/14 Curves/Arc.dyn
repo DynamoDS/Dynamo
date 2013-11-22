@@ -1,38 +1,32 @@
-<dynWorkspace X="435.031851851852" Y="169.635221323517">
-  <dynElements>
-    <Dynamo.Nodes.dynArcStartMiddleEnd type="Dynamo.Nodes.dynArcStartMiddleEnd" guid="f927b0e4-58ec-49be-a624-73c2910a760f" nickname="Arc by Center Point" x="459.083333333333" y="111.666666666667" lacing="Longest" />
-    <Dynamo.Nodes.dynModelCurve type="Dynamo.Nodes.dynModelCurve" guid="6946c12b-f1d8-4589-8ccc-3d5b23e5ba1b" nickname="Model Curve" x="591.083333333333" y="221.666666666667" lacing="Longest" />
-    <Dynamo.Nodes.dynSketchPlane type="Dynamo.Nodes.dynSketchPlane" guid="2d6cb241-3689-43f3-8204-2cb76a68d7d0" nickname="Sketch Plane" x="331.833333333333" y="391.166666666667" lacing="Longest" />
-    <Dynamo.Nodes.dynPlane type="Dynamo.Nodes.dynPlane" guid="56c0b63e-7592-4125-8587-93633cadf15d" nickname="Plane" x="120" y="360.5" lacing="Longest" />
-    <Dynamo.Nodes.dynXYZZero type="Dynamo.Nodes.dynXYZZero" guid="d967888f-3c59-4ca5-8a05-05c500fa661a" nickname="XYZ Zero" x="4" y="418.5" lacing="Longest" />
-    <Dynamo.Nodes.dynXYZFromReferencePoint type="Dynamo.Nodes.dynXYZFromReferencePoint" guid="bad31750-c7b6-4fa9-a022-17f81818f6ed" nickname="XYZ From Ref Point" x="246.833333333333" y="46.4166666666666" lacing="Longest" />
-    <Dynamo.Nodes.dynXYZFromReferencePoint type="Dynamo.Nodes.dynXYZFromReferencePoint" guid="b671e597-f5e3-4fa4-ad29-3160febe9163" nickname="XYZ From Ref Point" x="251.083333333333" y="129.416666666667" lacing="Longest" />
-    <Dynamo.Nodes.dynXYZFromReferencePoint type="Dynamo.Nodes.dynXYZFromReferencePoint" guid="2ce4097b-07a2-464b-be89-deaff11b434b" nickname="XYZ From Ref Point" x="246.083333333333" y="207.916666666667" lacing="Longest" />
-    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="d06cd90b-d3c7-4fd3-b530-21e981a1b710" nickname="Watch" x="585.833333333333" y="340.416666666667" lacing="Disabled" />
-    <Dynamo.Nodes.dynWatch3D type="Dynamo.Nodes.dynWatch3D" guid="383677d8-a594-4040-b14a-e7fa9e73bfab" nickname="Watch 3D" x="752.769230769231" y="0" lacing="Disabled" />
-    <Dynamo.Nodes.dynNewList type="Dynamo.Nodes.dynNewList" guid="6de77be2-fa0f-41ec-a494-151d47ad8274" nickname="List" x="596.852564102564" y="129.166666666667" lacing="Disabled">
-      <Input name="item(s)" />
-    </Dynamo.Nodes.dynNewList>
-    <Dynamo.Nodes.dynPointBySelection type="Dynamo.Nodes.dynPointBySelection" guid="3d694eeb-8c6a-4454-be4a-0067ac0b2f74" nickname="Select Point" x="0" y="203.778726155278" lacing="Disabled" />
-    <Dynamo.Nodes.dynPointBySelection type="Dynamo.Nodes.dynPointBySelection" guid="7d6c8bf0-8175-49e1-8978-2ccdb84f5a18" nickname="Select Point" x="0" y="107.48990003987" lacing="Disabled" />
-    <Dynamo.Nodes.dynPointBySelection type="Dynamo.Nodes.dynPointBySelection" guid="1dc99fb9-5ca8-411d-9afd-1bcc2562a914" nickname="Select Point" x="0" y="19.7159519774533" lacing="Disabled" />
-    <Dynamo.Nodes.dynXYZBasisZ type="Dynamo.Nodes.dynXYZBasisZ" guid="1f03ab73-5bdf-4f17-b652-86a5c0b6ce77" nickname="Z Axis" x="0" y="318.843120073261" lacing="Longest" />
-  </dynElements>
-  <dynConnectors>
-    <Dynamo.Connectors.dynConnectorModel start="f927b0e4-58ec-49be-a624-73c2910a760f" start_index="0" end="6946c12b-f1d8-4589-8ccc-3d5b23e5ba1b" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="f927b0e4-58ec-49be-a624-73c2910a760f" start_index="0" end="6de77be2-fa0f-41ec-a494-151d47ad8274" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="6946c12b-f1d8-4589-8ccc-3d5b23e5ba1b" start_index="0" end="d06cd90b-d3c7-4fd3-b530-21e981a1b710" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="2d6cb241-3689-43f3-8204-2cb76a68d7d0" start_index="0" end="6946c12b-f1d8-4589-8ccc-3d5b23e5ba1b" end_index="1" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="56c0b63e-7592-4125-8587-93633cadf15d" start_index="0" end="2d6cb241-3689-43f3-8204-2cb76a68d7d0" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="d967888f-3c59-4ca5-8a05-05c500fa661a" start_index="0" end="56c0b63e-7592-4125-8587-93633cadf15d" end_index="1" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="bad31750-c7b6-4fa9-a022-17f81818f6ed" start_index="0" end="f927b0e4-58ec-49be-a624-73c2910a760f" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="b671e597-f5e3-4fa4-ad29-3160febe9163" start_index="0" end="f927b0e4-58ec-49be-a624-73c2910a760f" end_index="1" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="2ce4097b-07a2-464b-be89-deaff11b434b" start_index="0" end="f927b0e4-58ec-49be-a624-73c2910a760f" end_index="2" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="6de77be2-fa0f-41ec-a494-151d47ad8274" start_index="0" end="383677d8-a594-4040-b14a-e7fa9e73bfab" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="3d694eeb-8c6a-4454-be4a-0067ac0b2f74" start_index="0" end="2ce4097b-07a2-464b-be89-deaff11b434b" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="7d6c8bf0-8175-49e1-8978-2ccdb84f5a18" start_index="0" end="b671e597-f5e3-4fa4-ad29-3160febe9163" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="1dc99fb9-5ca8-411d-9afd-1bcc2562a914" start_index="0" end="bad31750-c7b6-4fa9-a022-17f81818f6ed" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="1f03ab73-5bdf-4f17-b652-86a5c0b6ce77" start_index="0" end="56c0b63e-7592-4125-8587-93633cadf15d" end_index="0" portType="0" />
-  </dynConnectors>
-  <dynNotes />
-</dynWorkspace>
+<Workspace Version="0.6.2.14024" X="163.048666666667" Y="13.8202706197367" zoom="0.9" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.PointBySelection type="Dynamo.Nodes.PointBySelection" guid="6ed89917-d2f2-4fe2-84c9-4ddc9151dca5" nickname="Select Reference Point" x="-132" y="138.573094834596" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.PointBySelection type="Dynamo.Nodes.PointBySelection" guid="53fddd82-356b-43db-bb01-9a8d2c498fa6" nickname="Select Reference Point" x="-132" y="226.347042897013" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.XyzFromReferencePoint type="Dynamo.Nodes.XyzFromReferencePoint" guid="5d6936e0-b1aa-444b-9ac9-4e2a68ead3dd" nickname="XYZ from Reference Point" x="114.833333333333" y="165.273809523809" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.XyzFromReferencePoint type="Dynamo.Nodes.XyzFromReferencePoint" guid="07a47b06-43cc-46a6-9317-fd0d5db62cbc" nickname="XYZ from Reference Point" x="119.083333333333" y="248.27380952381" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.XyzFromReferencePoint type="Dynamo.Nodes.XyzFromReferencePoint" guid="ddcda715-3044-4323-9e11-f9c0839c1e9d" nickname="XYZ from Reference Point" x="114.083333333333" y="326.77380952381" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.PointBySelection type="Dynamo.Nodes.PointBySelection" guid="ff02da1f-9c03-4d4d-911c-3d140758bc51" nickname="Select Reference Point" x="-132" y="322.635869012421" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.ArcStartMiddleEnd type="Dynamo.Nodes.ArcStartMiddleEnd" guid="b56267b1-ba66-46bf-a5d4-6203bfaa22d5" nickname="Arc by Start, Middle, End" x="327.083333333333" y="230.52380952381" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.ModelCurve type="Dynamo.Nodes.ModelCurve" guid="3814d6fb-9a42-4dcc-96df-ac9b6e1cb1af" nickname="Model Curve" x="487.527777777777" y="342.301587301587" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <Run />
+    </Dynamo.Nodes.ModelCurve>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="92b1c0d6-7230-46c8-bcbe-718fcdb9a83d" nickname="Watch" x="542.722222222222" y="510.829365079365" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch3D type="Dynamo.Nodes.Watch3D" guid="537a93fa-b525-4d4a-b751-c89fd7d5ddf1" nickname="Watch 3D" x="620.769230769231" y="118.857142857143" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <view width="219.2" height="315.2">
+        <camera pos_x="20.6975697527233" pos_y="20.6975697527233" pos_z="20.6965697527233" look_x="-20.6975697527233" look_y="-20.6975697527233" look_z="-20.6975697527233" />
+      </view>
+    </Dynamo.Nodes.Watch3D>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="6ed89917-d2f2-4fe2-84c9-4ddc9151dca5" start_index="0" end="5d6936e0-b1aa-444b-9ac9-4e2a68ead3dd" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="53fddd82-356b-43db-bb01-9a8d2c498fa6" start_index="0" end="07a47b06-43cc-46a6-9317-fd0d5db62cbc" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5d6936e0-b1aa-444b-9ac9-4e2a68ead3dd" start_index="0" end="b56267b1-ba66-46bf-a5d4-6203bfaa22d5" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="07a47b06-43cc-46a6-9317-fd0d5db62cbc" start_index="0" end="b56267b1-ba66-46bf-a5d4-6203bfaa22d5" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ddcda715-3044-4323-9e11-f9c0839c1e9d" start_index="0" end="b56267b1-ba66-46bf-a5d4-6203bfaa22d5" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ff02da1f-9c03-4d4d-911c-3d140758bc51" start_index="0" end="ddcda715-3044-4323-9e11-f9c0839c1e9d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b56267b1-ba66-46bf-a5d4-6203bfaa22d5" start_index="0" end="3814d6fb-9a42-4dcc-96df-ac9b6e1cb1af" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b56267b1-ba66-46bf-a5d4-6203bfaa22d5" start_index="0" end="537a93fa-b525-4d4a-b751-c89fd7d5ddf1" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3814d6fb-9a42-4dcc-96df-ac9b6e1cb1af" start_index="0" end="92b1c0d6-7230-46c8-bcbe-718fcdb9a83d" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
