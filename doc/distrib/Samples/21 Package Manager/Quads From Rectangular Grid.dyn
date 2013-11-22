@@ -29,7 +29,7 @@
     <Dynamo.Nodes.GeometryCurveNurbSpline type="Dynamo.Nodes.GeometryCurveNurbSpline" guid="14e7db53-d695-484d-821c-1b4bf2fb2951" nickname="Nurbs Spline" x="1099.46512099012" y="63.453798978799" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
     <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="066068e9-bc7f-4a27-8091-add05732cc09" nickname="Watch" x="797.565120990121" y="178.553798978799" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.Watch3D type="Dynamo.Nodes.Watch3D" guid="54e264e6-ce5a-4c99-8be0-a3b8c68c4977" nickname="Watch 3D" x="1211.56512099012" y="64.5537989787991" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <view width="219.2" height="315.2">
+      <view width="228.8" height="372.8">
         <camera pos_x="20.6975697527233" pos_y="20.6975697527233" pos_z="20.6965697527233" look_x="-20.6975697527233" look_y="-20.6975697527233" look_z="-20.6975697527233" />
       </view>
     </Dynamo.Nodes.Watch3D>
@@ -49,6 +49,6 @@
     <Dynamo.Models.NoteModel text="Number of Rows" x="51.5651209901204" y="14.5537989787992" />
     <Dynamo.Models.NoteModel text="Grid of Points" x="279.565120990121" y="200.553798978799" />
     <Dynamo.Models.NoteModel text="Point List" x="435.565120990121" y="290.553798978799" />
-    <Dynamo.Models.NoteModel text="Custom Node.  If this is red, got to Packages&gt;Search for a Package, and search for it by name.  Download, then re-open this dyn file" x="437.565120990121" y="-9.44620102120092" />
+    <Dynamo.Models.NoteModel text="Custom Node.  If this is unplugged, go to Packages&gt;Search for a Package, and search for it by name.  Download, then restart dynamo." x="437.565120990121" y="-9.44620102120092" />
   </Notes>
 </Workspace>

@@ -31,6 +31,6 @@
     <Dynamo.Models.ConnectorModel start="ca714d20-72f7-4c0f-93e3-c3e10c9eb4d8" start_index="0" end="f79003ef-b3d1-4935-80de-5738f366cd15" end_index="2" portType="0" />
   </Connectors>
   <Notes>
-    <Dynamo.Models.NoteModel text="If this node is red, go to Packages&gt;Search for a Package, search for fibonacci_Recursion Lesson, download and re-open this dyn file.&#xD;&#xA;Then double click to open this custom node." x="597.565120990121" y="132.553798978799" />
+    <Dynamo.Models.NoteModel text="If this node is unplugged, go to Packages&gt;Search for a Package, search for fibonacci_Recursion Lesson, download and restart dynamo.&#xD;&#xA;Then double click to open this custom node." x="597.565120990121" y="132.553798978799" />
   </Notes>
 </Workspace>
