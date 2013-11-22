@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml;
 using Dynamo.Controls;
 using Dynamo.Models;
 using System.Collections.Generic;
@@ -267,13 +268,13 @@ namespace Dynamo.Nodes
             return bitmap;
         }
 
-        [NodeMigrationAttribute("0.6.2.0","0.7.0.0")]
-        public void UpdateLacability()
+        [NodeMigrationAttribute("0.6.2.0","0.6.3.0")]
+        public void UpdateLacability(XmlNode node)
         {
             //if the laceability has been set on this node to disabled, then set it to longest
-            if (ArgumentLacing == LacingStrategy.Disabled)
+            if (node.Attributes["lacing"].Value == "Disabled")
             {
-                ArgumentLacing = LacingStrategy.Longest;
+                node.Attributes["lacing"].Value = "Longest";
             }
         }
     }
