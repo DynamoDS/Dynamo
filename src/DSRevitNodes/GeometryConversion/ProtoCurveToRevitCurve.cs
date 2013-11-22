@@ -54,7 +54,8 @@ namespace DSRevitNodes.GeometryConversion
         /// <returns></returns>
         private static Autodesk.Revit.DB.Arc Convert(Autodesk.DesignScript.Geometry.Arc arc)
         {
-            throw new NotImplementedException();
+            var plane = arc.ContextCoordinateSystem.XYPlane.ToPlane();
+            return Autodesk.Revit.DB.Arc.Create(plane, arc.Radius, arc.StartAngle, arc.EndAngle);
         }
 
         /// <summary>
@@ -62,9 +63,10 @@ namespace DSRevitNodes.GeometryConversion
         /// </summary>
         /// <param name="arc"></param>
         /// <returns></returns>
-        private static Autodesk.Revit.DB.Arc Convert(Autodesk.DesignScript.Geometry.Circle arc)
+        private static Autodesk.Revit.DB.Arc Convert(Autodesk.DesignScript.Geometry.Circle circ)
         {
-            throw new NotImplementedException();
+            var plane = circ.ContextCoordinateSystem.XYPlane.ToPlane();
+            return Autodesk.Revit.DB.Arc.Create(plane, circ.Radius, 0, 2*Math.PI);
         }
 
         /// <summary>
@@ -74,9 +76,8 @@ namespace DSRevitNodes.GeometryConversion
         /// <returns></returns>
         private static Autodesk.Revit.DB.Line Convert(Autodesk.DesignScript.Geometry.Line line)
         {
-            throw new NotImplementedException();
+            return Autodesk.Revit.DB.Line.CreateBound(line.StartPoint.ToXyz(), line.EndPoint.ToXyz());
         }
-
 
     }
 }
