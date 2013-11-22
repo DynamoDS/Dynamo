@@ -212,15 +212,12 @@ namespace Dynamo.Controls
         {
             if (this.IsDisconnected)
                 return;
+            
+            InfoBubbleDataPacket data = new InfoBubbleDataPacket();
+            data.Style = InfoBubbleViewModel.Style.Preview;
+            data.ConnectingDirection = InfoBubbleViewModel.Direction.Top;
 
-            string content = ViewModel.FullContent;
-            InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.Preview;
-            InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Top;
-            Point topLeft = ViewModel.TargetTopLeft;
-            Point botRight = ViewModel.TargetBotRight;
-            InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
-            this.ViewModel.UpdateContentCommand.Execute(data);
-            this.ViewModel.ZIndex = 5;
+            this.ViewModel.ShowFullContentCommand.Execute(data);
         }
 
         private void ShowPreviewBubbleCondensedContent()
@@ -228,14 +225,11 @@ namespace Dynamo.Controls
             if (this.IsDisconnected)
                 return;
 
-            string content = ViewModel.FullContent;
-            InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.PreviewCondensed;
-            InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Top;
-            Point topLeft = ViewModel.TargetTopLeft;
-            Point botRight = ViewModel.TargetBotRight;
-            InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
-            this.ViewModel.UpdateContentCommand.Execute(data);
-            this.ViewModel.ZIndex = 3;
+            InfoBubbleDataPacket data = new InfoBubbleDataPacket();
+            data.Style = InfoBubbleViewModel.Style.PreviewCondensed;
+            data.ConnectingDirection = InfoBubbleViewModel.Direction.Top;
+
+            this.ViewModel.ShowCondensedContentCommand.Execute(data);
         }
 
         private void ShowErrorBubbleFullContent()
@@ -243,14 +237,11 @@ namespace Dynamo.Controls
             if (this.IsDisconnected)
                 return;
 
-            string content = ViewModel.FullContent;
-            InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.Error;
-            InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Bottom;
-            Point topLeft = ViewModel.TargetTopLeft;
-            Point botRight = ViewModel.TargetBotRight;
-            InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
-            this.ViewModel.UpdateContentCommand.Execute(data);
-            this.ViewModel.ZIndex = 5;
+            InfoBubbleDataPacket data = new InfoBubbleDataPacket();
+            data.Style = InfoBubbleViewModel.Style.Error;
+            data.ConnectingDirection = InfoBubbleViewModel.Direction.Bottom;
+
+            this.ViewModel.ShowFullContentCommand.Execute(data);
         }
 
         private void ShowErrorBubbleCondensedContent()
@@ -258,14 +249,11 @@ namespace Dynamo.Controls
             if (this.IsDisconnected)
                 return;
 
-            string content = ViewModel.FullContent;
-            InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.ErrorCondensed;
-            InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Bottom;
-            Point topLeft = ViewModel.TargetTopLeft;
-            Point botRight = ViewModel.TargetBotRight;
-            InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
-            this.ViewModel.UpdateContentCommand.Execute(data);
-            this.ViewModel.ZIndex = 3;
+            InfoBubbleDataPacket data = new InfoBubbleDataPacket();
+            data.Style = InfoBubbleViewModel.Style.ErrorCondensed;
+            data.ConnectingDirection = InfoBubbleViewModel.Direction.Bottom;
+
+            this.ViewModel.ShowCondensedContentCommand.Execute(data);
         }
 
         private InfoBubbleViewModel GetViewModel()
@@ -318,7 +306,8 @@ namespace Dynamo.Controls
 
             if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Preview && ViewModel.IsShowPreviewByDefault)
                 ShowPreviewBubbleCondensedContent();
-            else if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Error) // TODO Hide error bubble when no error with another and condition
+            else if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Error || ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.ErrorCondensed) 
+                // TODO Hide error bubble when no error with another and condition
                 ShowErrorBubbleCondensedContent();
             else
                 FadeOutInfoBubble();
