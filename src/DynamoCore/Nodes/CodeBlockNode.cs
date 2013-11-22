@@ -142,6 +142,9 @@ namespace Dynamo.Nodes
                     {
                         DisableReporting();
                         {
+                            //Undo the Update value recording
+                            WorkSpace.UndoRecorder.PopFromUndoGroup();
+
                             WorkSpace.UndoRecorder.BeginActionGroup();
 
                             var inportConnections = new OrderedDictionary();
@@ -339,6 +342,8 @@ namespace Dynamo.Nodes
 
         private void ProcessCode()
         {
+            //Set State to active
+
             //Format user test
             code = FormatUserText(code);
 
