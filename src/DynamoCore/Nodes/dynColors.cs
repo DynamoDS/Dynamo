@@ -266,5 +266,15 @@ namespace Dynamo.Nodes
 
             return bitmap;
         }
+
+        [NodeMigrationAttribute("0.6.2.0","0.7.0.0")]
+        public void UpdateLacability()
+        {
+            //if the laceability has been set on this node to disabled, then set it to longest
+            if (ArgumentLacing == LacingStrategy.Disabled)
+            {
+                ArgumentLacing = LacingStrategy.Longest;
+            }
+        }
     }
 }
