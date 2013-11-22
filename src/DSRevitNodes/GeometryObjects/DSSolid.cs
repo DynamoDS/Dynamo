@@ -33,7 +33,7 @@ namespace DSRevitNodes
             this.InternalSolid = result;
         }
 
-        public DSSolid(Autodesk.Revit.DB.Solid x)
+        internal DSSolid(Autodesk.Revit.DB.Solid x)
         {
             // TODO: Complete member initialization
             this.x = x;

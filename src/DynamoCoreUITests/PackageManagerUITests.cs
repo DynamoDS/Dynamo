@@ -142,7 +142,7 @@ namespace Dynamo.Tests.UI
             AssertWindowOwnedByDynamoView<InstalledPackagesView>();
         }
 
-        [Test]
+        [Test, Ignore]
         public void CannotCreateDuplicateManagePackagesDialogs()
         {
             for (var i = 0; i < 10; i++)
