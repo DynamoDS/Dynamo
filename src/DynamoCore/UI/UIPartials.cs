@@ -93,6 +93,16 @@ namespace Dynamo.Nodes
             }
             else if (eventName == "RemoveInPort")
             {
+                // When an in-port is removed, it is possible that a connector 
+                // is almost removed along with it. Both node modification and 
+                // connector deletion have to be recorded as one action group.
+                // But before HandleModelEventCore is called, node modification 
+                // has already been recorded (in WorkspaceModel.SendModelEvent).
+                // For that reason, that entry on the undo-stack needs to be 
+                // popped (the node modification will be recorded here instead).
+                // 
+                this.WorkSpace.UndoRecorder.PopFromUndoGroup();
+
                 RecordModels();
                 RemoveInput();
                 RegisterAllPorts();
@@ -162,6 +172,16 @@ namespace Dynamo.Nodes
             }
             else if (eventName == "RemoveInPort")
             {
+                // When an in-port is removed, it is possible that a connector 
+                // is almost removed along with it. Both node modification and 
+                // connector deletion have to be recorded as one action group.
+                // But before HandleModelEventCore is called, node modification 
+                // has already been recorded (in WorkspaceModel.SendModelEvent).
+                // For that reason, that entry on the undo-stack needs to be 
+                // popped (the node modification will be recorded here instead).
+                // 
+                this.WorkSpace.UndoRecorder.PopFromUndoGroup();
+
                 RecordModels();
                 RemoveInput();
                 RegisterAllPorts();
