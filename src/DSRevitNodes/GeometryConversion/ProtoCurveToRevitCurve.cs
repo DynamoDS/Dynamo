@@ -9,7 +9,7 @@ using Autodesk.Revit.DB.Structure;
 namespace DSRevitNodes.GeometryConversion
 {
     [Browsable(false)]
-    internal static class ProtoCurveToRevitCurve
+    public static class ProtoCurveToRevitCurve
     {
 
         /// <summary>
@@ -17,7 +17,7 @@ namespace DSRevitNodes.GeometryConversion
         /// </summary>
         /// <param name="crv"></param>
         /// <returns></returns>
-        internal static Autodesk.Revit.DB.Curve ToRevitType(this Autodesk.DesignScript.Geometry.Curve crv)
+        public static Autodesk.Revit.DB.Curve ToRevitType(this Autodesk.DesignScript.Geometry.Curve crv)
         {
             dynamic dyCrv = crv;
             return ProtoCurveToRevitCurve.Convert(dyCrv);
