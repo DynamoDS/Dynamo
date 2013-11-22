@@ -42,6 +42,11 @@
                     <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
                     <Setter Property="TextWrapping" Value="Wrap"/>
                 </Style>
+                <Style TargetType="{x:Type Grid}">
+                    <Setter Property="Margin" Value="{Binding Path=ContentMargin}"/>
+                    <Setter Property="MaxWidth" Value="{Binding Path=ContentMaxWidth}"/>
+                    <Setter Property="MaxHeight" Value="{Binding Path=ContentMaxHeight}"/>
+                </Style>
                 <Style x:Key="{x:Type ScrollBar}" TargetType="{x:Type ScrollBar}">
                     <Setter Property="Stylus.IsFlicksEnabled" Value="false" />
                     <Setter Property="Foreground" Value="Gray" />
