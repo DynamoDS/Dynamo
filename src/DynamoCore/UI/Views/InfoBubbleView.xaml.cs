@@ -238,6 +238,36 @@ namespace Dynamo.Controls
             this.ViewModel.ZIndex = 3;
         }
 
+        private void ShowErrorBubbleFullContent()
+        {
+            if (this.IsDisconnected)
+                return;
+
+            string content = ViewModel.FullContent;
+            InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.Error;
+            InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Bottom;
+            Point topLeft = ViewModel.TargetTopLeft;
+            Point botRight = ViewModel.TargetBotRight;
+            InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
+            this.ViewModel.UpdateContentCommand.Execute(data);
+            this.ViewModel.ZIndex = 5;
+        }
+
+        private void ShowErrorBubbleCondensedContent()
+        {
+            if (this.IsDisconnected)
+                return;
+
+            string content = ViewModel.FullContent;
+            InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.ErrorCondensed;
+            InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Bottom;
+            Point topLeft = ViewModel.TargetTopLeft;
+            Point botRight = ViewModel.TargetBotRight;
+            InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
+            this.ViewModel.UpdateContentCommand.Execute(data);
+            this.ViewModel.ZIndex = 3;
+        }
+
         private InfoBubbleViewModel GetViewModel()
         {
             if (this.DataContext is InfoBubbleViewModel)
@@ -269,6 +299,8 @@ namespace Dynamo.Controls
                 
             if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.PreviewCondensed)
                 ShowPreviewBubbleFullContent();
+            else if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.ErrorCondensed)
+                ShowErrorBubbleFullContent();
             
             FadeInInfoBubble();
 
@@ -286,6 +318,8 @@ namespace Dynamo.Controls
 
             if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Preview && ViewModel.IsShowPreviewByDefault)
                 ShowPreviewBubbleCondensedContent();
+            else if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Error) // TODO Hide error bubble when no error with another and condition
+                ShowErrorBubbleCondensedContent();
             else
                 FadeOutInfoBubble();
 

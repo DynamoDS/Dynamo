@@ -24,6 +24,7 @@ namespace Dynamo.ViewModels
             LibraryItemPreview,
             NodeTooltip,
             Error,
+            ErrorCondensed,
             Preview,
             PreviewCondensed,
             None
@@ -437,6 +438,7 @@ namespace Dynamo.ViewModels
                     MakeFitInView();
                     break;
                 case Style.Error:
+                case Style.ErrorCondensed:
                     Margin = GetMargin_Error(topLeft, botRight);
                     break;
                 case Style.Preview:
@@ -463,6 +465,9 @@ namespace Dynamo.ViewModels
                 case Style.Error:
                     SetStyle_Error();
                     break;
+                case Style.ErrorCondensed:
+                    SetStyle_ErrorCondensed();
+                    break;
                 case Style.Preview:
                     SetStyle_Preview();
                     break;
@@ -485,6 +490,7 @@ namespace Dynamo.ViewModels
                     FramePoints = GetFramePoints_NodeTooltip(topLeft, botRight);
                     break;
                 case Style.Error:
+                case Style.ErrorCondensed:
                     FramePoints = GetFramePoints_Error();
                     break;
                 case Style.Preview:
@@ -632,6 +638,26 @@ namespace Dynamo.ViewModels
             MaxHeight = Configurations.ErrorMaxHeight;
             ContentMaxWidth = Configurations.ErrorContentMaxWidth;
             ContentMaxHeight = Configurations.ErrorContentMaxHeight;
+
+            TextFontSize = Configurations.ErrorTextFontSize;
+            TextForeground = Configurations.ErrorTextForeground;
+            TextFontWeight = Configurations.ErrorTextFontWeight;
+            ContentWrapping = Configurations.ErrorContentWrapping;
+            ContentMargin = Configurations.ErrorContentMargin;
+        }
+
+        private void SetStyle_ErrorCondensed()
+        {
+            FrameFill = Configurations.ErrorFrameFill;
+            FrameStrokeThickness = Configurations.ErrorFrameStrokeThickness;
+            FrameStrokeColor = Configurations.ErrorFrameStrokeColor;
+
+            MaxWidth = Configurations.ErrorCondensedMaxWidth;
+            MinWidth = Configurations.ErrorCondensedMinWidth;
+            MaxHeight = Configurations.ErrorCondensedMaxHeight;
+            MinHeight = Configurations.ErrorCondensedMinHeight;
+            ContentMaxWidth = Configurations.ErrorCondensedContentMaxWidth;
+            ContentMaxHeight = Configurations.ErrorCondensedContentMaxHeight;
 
             TextFontSize = Configurations.ErrorTextFontSize;
             TextForeground = Configurations.ErrorTextForeground;
