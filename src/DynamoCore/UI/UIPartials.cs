@@ -38,14 +38,14 @@ namespace Dynamo.Nodes
         {
             var nodeUI = ui as dynNodeView;
 
-            System.Windows.Controls.Button addButton = new DynamoNodeButton();
+            var addButton = new DynamoNodeButton(this, "AddInPort");
             addButton.Content = "+";
             addButton.Width = 20;
             //addButton.Height = 20;
             addButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             addButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
 
-            System.Windows.Controls.Button subButton = new DynamoNodeButton();
+            var subButton = new DynamoNodeButton(this, "RemoveInPort");
             subButton.Content = "-";
             subButton.Width = 20;
             //subButton.Height = 20;
@@ -61,28 +61,6 @@ namespace Dynamo.Nodes
             wp.Children.Add(subButton);
 
             nodeUI.inputGrid.Children.Add(wp);
-
-            //nodeUI.inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            //nodeUI.inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
-
-            //nodeUI.inputGrid.Children.Add(addButton);
-            //System.Windows.Controls.Grid.SetColumn(addButton, 0);
-
-            //nodeUI.inputGrid.Children.Add(subButton);
-            //System.Windows.Controls.Grid.SetColumn(subButton, 1);
-
-            addButton.Click += delegate 
-            {
-                this.WorkSpace.RecordModelForModification(this);
-                AddInput(); 
-                RegisterAllPorts(); 
-            };
-            subButton.Click += delegate 
-            {
-                RecordModels();
-                RemoveInput(); 
-                RegisterAllPorts(); 
-            };
         }
 
         private void RecordModels()
@@ -105,6 +83,24 @@ namespace Dynamo.Nodes
                 this.WorkSpace.RecordModelForModification(this);
         }
 
+        protected override bool HandleModelEventCore(string eventName)
+        {
+            if (eventName == "AddInPort")
+            {
+                AddInput();
+                RegisterAllPorts();
+                return true; // Handled here.
+            }
+            else if (eventName == "RemoveInPort")
+            {
+                RecordModels();
+                RemoveInput();
+                RegisterAllPorts();
+                return true; // Handled here.
+            }
+
+            return base.HandleModelEventCore(eventName);
+        }
     }
 
     public partial class VariableInputAndOutput : NodeModel
@@ -113,13 +109,13 @@ namespace Dynamo.Nodes
         {
             var nodeUI = ui as dynNodeView;
 
-            System.Windows.Controls.Button addButton = new DynamoNodeButton();
+            var addButton = new DynamoNodeButton(this, "AddInPort");
             addButton.Content = "+";
             addButton.Width = 20;
             addButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             addButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
 
-            System.Windows.Controls.Button subButton = new DynamoNodeButton();
+            var subButton = new DynamoNodeButton(this, "RemoveInPort");
             subButton.Content = "-";
             subButton.Width = 20;
             subButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
@@ -134,19 +130,6 @@ namespace Dynamo.Nodes
             wp.Children.Add(subButton);
 
             nodeUI.inputGrid.Children.Add(wp);
-
-            addButton.Click += delegate
-            {
-                this.WorkSpace.RecordModelForModification(this);
-                AddInput();
-                RegisterAllPorts();
-            };
-            subButton.Click += delegate
-            {
-                RecordModels();
-                RemoveInput();
-                RegisterAllPorts();
-            };
         }
 
         private void RecordModels()
@@ -167,6 +150,25 @@ namespace Dynamo.Nodes
             }
             else
                 this.WorkSpace.RecordModelForModification(this);
+        }
+
+        protected override bool HandleModelEventCore(string eventName)
+        {
+            if (eventName == "AddInPort")
+            {
+                AddInput();
+                RegisterAllPorts();
+                return true; // Handled here.
+            }
+            else if (eventName == "RemoveInPort")
+            {
+                RecordModels();
+                RemoveInput();
+                RegisterAllPorts();
+                return true; // Handled here.
+            }
+
+            return base.HandleModelEventCore(eventName);
         }
     }
 
