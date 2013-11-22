@@ -821,6 +821,10 @@ namespace Dynamo.Models
             RaisePropertyChanged("Position");
         }
 
+        internal void SendModelEvent(Guid modelGuid, string name)
+        {
+        }
+
         internal void UpdateModelValue(Guid modelGuid, string name, string value)
         {
             ModelBase model = this.GetModelInternal(modelGuid);
