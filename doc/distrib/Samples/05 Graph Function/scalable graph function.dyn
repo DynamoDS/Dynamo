@@ -1,263 +1,237 @@
-<dynWorkspace X="203.005577356535" Y="88.5102905982906" zoom="0.7">
-  <dynElements>
-    <Dynamo.Nodes.dynFunction type="Dynamo.Nodes.dynFunction" guid="9c8c2279-6f59-417c-8218-3b337230bd99" nickname="GraphFunction" x="671.798120300752" y="163.66992481203" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <ID value="07e6b150-d902-4abb-8103-79193552eee7" />
-      <Name value="GraphFunction" />
-      <Inputs>
-        <Input value="x-start" />
-        <Input value="x-end" />
-        <Input value="x-step" />
-        <Input value="y = f(x)" />
-      </Inputs>
-      <Outputs>
-        <Output value="out" />
-      </Outputs>
-    </Dynamo.Nodes.dynFunction>
-    <Dynamo.Nodes.dynReferencePointByXYZ type="Dynamo.Nodes.dynReferencePointByXYZ" guid="734ce2dc-eb47-4cd5-98a9-2d75ed87fac2" nickname="Reference Point" x="809.456015037594" y="163.822556390977" isVisible="true" isUpstreamVisible="true" lacing="Longest">
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b931</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b941</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b942</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b943</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b944</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b945</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b946</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b947</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b948</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b949</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b94a</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b94b</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b94c</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b94d</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b94e</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b94f</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b950</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b951</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b952</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b953</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b954</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b955</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b956</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b957</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b958</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b959</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b95a</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b95b</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b95c</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b95d</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b95e</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b95f</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b960</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b961</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b962</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b963</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b964</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b965</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b966</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b967</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b968</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b969</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b96a</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b96b</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b96c</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b96d</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b96e</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b96f</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b970</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b971</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b972</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b973</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b974</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b975</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b976</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b977</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b978</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b979</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b97a</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b97b</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b97c</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b97d</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b97e</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b97f</Element>
-      </Run>
-      <Run>
-        <Element>3d31cbbc-35a8-4584-9090-73a7fa105f99-0000b980</Element>
-      </Run>
-    </Dynamo.Nodes.dynReferencePointByXYZ>
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="affb404d-ed36-41dd-aa93-cc304afb2a23" nickname="Number" x="144" y="199.797368421053" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+<Workspace Version="0.6.2.14024" X="151.570598628818" Y="225.581304867355" zoom="1.1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="affb404d-ed36-41dd-aa93-cc304afb2a23" nickname="Number" x="-62.5454545454544" y="204.068181818182" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="32" />
-    </Dynamo.Nodes.dynDoubleInput>
-    <Dynamo.Nodes.dynPi type="Dynamo.Nodes.dynPi" guid="0a830469-9710-44f9-afb2-a0b307ad1889" nickname="π" x="133.960526315789" y="81.263157894737" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynDoubleSliderInput type="Dynamo.Nodes.dynDoubleSliderInput" guid="cc12621a-ffbd-46ef-aba0-c488e14d7f14" nickname="Number Slider" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.Double value="39.5692883895158" min="0" max="50" />
-    </Dynamo.Nodes.dynDoubleSliderInput>
-    <Dynamo.Nodes.dynSin type="Dynamo.Nodes.dynSin" guid="3d7e0885-94c2-4123-9a1a-803a517aa74f" nickname="sine" x="470.070091896407" y="514.101837928153" isVisible="true" isUpstreamVisible="true" lacing="First" />
-    <Dynamo.Nodes.dynMultiplication type="Dynamo.Nodes.dynMultiplication" guid="c8ca1146-0945-475b-bfc2-df2afbb71f99" nickname="×" x="502.306015037594" y="124.796240601503" isVisible="true" isUpstreamVisible="true" lacing="First" />
-    <Dynamo.Nodes.dynDoubleSliderInput type="Dynamo.Nodes.dynDoubleSliderInput" guid="ea1f32ed-145b-4218-a013-87dd5e9053b2" nickname="Number Slider" x="0" y="297.592105263158" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.Double value="1.11111111111111" min="0" max="10" />
-    </Dynamo.Nodes.dynDoubleSliderInput>
-    <Dynamo.Nodes.dynMultiplication type="Dynamo.Nodes.dynMultiplication" guid="bddfacc6-3281-45f1-8346-d7e0eeb5f85c" nickname="×" x="475.099832915622" y="405.009607351713" isVisible="true" isUpstreamVisible="true" lacing="First" />
-    <Dynamo.Nodes.dynFunction type="Dynamo.Nodes.dynFunction" guid="70161769-254b-49ea-a964-e083ee7d10df" nickname="ConnectPoints" x="919.195488721807" y="162.901503759398" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <ID value="fbdfbd95-f779-49ae-869f-227f4a3fdb1e" />
-      <Name value="ConnectPoints" />
-      <Inputs>
-        <Input value="refPts" />
-      </Inputs>
-      <Outputs>
-        <Output value="out" />
-      </Outputs>
-    </Dynamo.Nodes.dynFunction>
-    <Dynamo.Nodes.dynFormula type="Dynamo.Nodes.dynFormula" guid="557daf1c-9606-473a-b0c5-b8767cfe5c60" nickname="Formula" x="661.944298295293" y="543.412001151944" isVisible="true" isUpstreamVisible="true" lacing="First" formula="C*f(d*x)" />
-    <Dynamo.Nodes.dynFormula type="Dynamo.Nodes.dynFormula" guid="511e4975-b0e3-4d23-a526-5043232f72c2" nickname="Formula" x="482.515726866722" y="606.189778929722" isVisible="true" isUpstreamVisible="true" lacing="First" formula="1/x" />
-    <Dynamo.Nodes.dynFormula type="Dynamo.Nodes.dynFormula" guid="e1ec2105-bc11-4eba-921b-766f5d369d46" nickname="Formula" x="499.198266549261" y="10" isVisible="true" isUpstreamVisible="true" lacing="First" formula="x*-pi" />
-    <Dynamo.Nodes.dynFormula type="Dynamo.Nodes.dynFormula" guid="a778b274-c4fb-4c4d-bf74-997fa216e324" nickname="Formula" x="500.341123692118" y="236.221524961468" isVisible="true" isUpstreamVisible="true" lacing="First" formula="x*(pi/y)" />
-  </dynElements>
-  <dynConnectors>
-    <Dynamo.Connectors.dynConnectorModel start="9c8c2279-6f59-417c-8218-3b337230bd99" start_index="0" end="734ce2dc-eb47-4cd5-98a9-2d75ed87fac2" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="734ce2dc-eb47-4cd5-98a9-2d75ed87fac2" start_index="0" end="70161769-254b-49ea-a964-e083ee7d10df" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="affb404d-ed36-41dd-aa93-cc304afb2a23" start_index="0" end="a778b274-c4fb-4c4d-bf74-997fa216e324" end_index="2" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="0a830469-9710-44f9-afb2-a0b307ad1889" start_index="0" end="c8ca1146-0945-475b-bfc2-df2afbb71f99" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="0a830469-9710-44f9-afb2-a0b307ad1889" start_index="0" end="e1ec2105-bc11-4eba-921b-766f5d369d46" end_index="1" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="0a830469-9710-44f9-afb2-a0b307ad1889" start_index="0" end="a778b274-c4fb-4c4d-bf74-997fa216e324" end_index="1" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="cc12621a-ffbd-46ef-aba0-c488e14d7f14" start_index="0" end="c8ca1146-0945-475b-bfc2-df2afbb71f99" end_index="1" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="cc12621a-ffbd-46ef-aba0-c488e14d7f14" start_index="0" end="bddfacc6-3281-45f1-8346-d7e0eeb5f85c" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="cc12621a-ffbd-46ef-aba0-c488e14d7f14" start_index="0" end="511e4975-b0e3-4d23-a526-5043232f72c2" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="cc12621a-ffbd-46ef-aba0-c488e14d7f14" start_index="0" end="e1ec2105-bc11-4eba-921b-766f5d369d46" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="cc12621a-ffbd-46ef-aba0-c488e14d7f14" start_index="0" end="a778b274-c4fb-4c4d-bf74-997fa216e324" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="3d7e0885-94c2-4123-9a1a-803a517aa74f" start_index="0" end="557daf1c-9606-473a-b0c5-b8767cfe5c60" end_index="1" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="c8ca1146-0945-475b-bfc2-df2afbb71f99" start_index="0" end="9c8c2279-6f59-417c-8218-3b337230bd99" end_index="1" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="ea1f32ed-145b-4218-a013-87dd5e9053b2" start_index="0" end="bddfacc6-3281-45f1-8346-d7e0eeb5f85c" end_index="1" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="bddfacc6-3281-45f1-8346-d7e0eeb5f85c" start_index="0" end="557daf1c-9606-473a-b0c5-b8767cfe5c60" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="557daf1c-9606-473a-b0c5-b8767cfe5c60" start_index="0" end="9c8c2279-6f59-417c-8218-3b337230bd99" end_index="3" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="511e4975-b0e3-4d23-a526-5043232f72c2" start_index="0" end="557daf1c-9606-473a-b0c5-b8767cfe5c60" end_index="2" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="e1ec2105-bc11-4eba-921b-766f5d369d46" start_index="0" end="9c8c2279-6f59-417c-8218-3b337230bd99" end_index="0" portType="0" />
-    <Dynamo.Connectors.dynConnectorModel start="a778b274-c4fb-4c4d-bf74-997fa216e324" start_index="0" end="9c8c2279-6f59-417c-8218-3b337230bd99" end_index="2" portType="0" />
-  </dynConnectors>
-  <dynNotes />
-</dynWorkspace>
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="02d6d396-7e63-409a-88c9-7ad5ae1b4e15" nickname="Number" x="-93.0909090909092" y="-55.2272727272727" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="-1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Multiplication type="Dynamo.Nodes.Multiplication" guid="3a5260cc-ebba-45f3-8d05-96264678005b" nickname="Multiply" x="40.6944072747692" y="-60.198161024615" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Pi type="Dynamo.Nodes.Pi" guid="b64a647d-b08d-4a70-9b52-6a93213b80f4" nickname="Pi" x="-78.5936424700896" y="117.856047129777" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="49a5cb7e-d839-4c50-81e9-405450bc4d9a" nickname="Formula" x="429.870651263182" y="142.55180520994" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>sin(x)</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="9eab143c-0da8-4e25-b913-b15b87319240" nickname="Number" x="171.870651263182" y="98.3699870281219" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <System.Double value="start..end..#amount" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Xyz type="Dynamo.Nodes.Xyz" guid="c472d9ad-7d3e-4632-9e49-33904b0613de" nickname="XYZ" x="620.981762374293" y="96.3295829877175" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Xyz>
+    <Dynamo.Nodes.ReferencePointByXyz type="Dynamo.Nodes.ReferencePointByXyz" guid="e6123ac0-26ff-4c54-a84a-458dccfec928" nickname="Reference Point" x="936.804994697524" y="244.809380967516" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-000082e2</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-000082e3</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-000082e4</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-000082e5</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-000082e6</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-000082e7</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-000082e8</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-000082e9</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-000082ea</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-000082eb</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-000082ec</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-000082ed</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-000082ee</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-000082ef</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-000082f0</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-000082f1</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-000082f2</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-000082f3</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-000082f4</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-000082f5</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-000082f6</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-000082f7</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-000082f8</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-000082f9</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-000082fa</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-000082fb</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-000082fc</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-000082fd</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-000082fe</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-000082ff</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-00008300</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-00008301</Element>
+      </Run>
+    </Dynamo.Nodes.ReferencePointByXyz>
+    <Dynamo.Nodes.CurvesThroughPoints type="Dynamo.Nodes.CurvesThroughPoints" guid="cbfe9d0a-3041-4628-8e3c-45f27ee3b4fe" nickname="Lines Through Points" x="938.707092599622" y="93.4204920786266" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.ModelCurve type="Dynamo.Nodes.ModelCurve" guid="08e6e6f9-274f-430f-9e8a-89ba7ee02f4c" nickname="Model Curve" x="1118.97369821623" y="93.4204920786266" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-00008307</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-00008309</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-0000830b</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-0000830d</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-0000830f</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-00008311</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-00008313</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-00008315</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-00008317</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-00008319</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-0000831b</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-0000831d</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-0000831f</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-00008321</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-00008323</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-00008325</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-00008327</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-00008329</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-0000832b</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-0000832d</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-0000832f</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-00008331</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-00008333</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-00008335</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-00008337</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-00008339</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-0000833b</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-0000833d</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-0000833f</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-00008341</Element>
+      </Run>
+      <Run>
+        <Element>606659bf-28ec-4833-b1ed-7c74cb058917-00008343</Element>
+      </Run>
+    </Dynamo.Nodes.ModelCurve>
+    <Dynamo.Nodes.XyzScale type="Dynamo.Nodes.XyzScale" guid="03e49525-f029-47db-b5ae-b4570f87bb31" nickname="Scale XYZ" x="774.935819428347" y="98.9260864842227" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.DoubleSliderInput type="Dynamo.Nodes.DoubleSliderInput" guid="894d1796-40fb-4883-b01a-a46902136581" nickname="Number Slider" x="313.844910337438" y="280.744268302405" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1" min="0.1" max="10" />
+    </Dynamo.Nodes.DoubleSliderInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="affb404d-ed36-41dd-aa93-cc304afb2a23" start_index="0" end="9eab143c-0da8-4e25-b913-b15b87319240" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="02d6d396-7e63-409a-88c9-7ad5ae1b4e15" start_index="0" end="3a5260cc-ebba-45f3-8d05-96264678005b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3a5260cc-ebba-45f3-8d05-96264678005b" start_index="0" end="9eab143c-0da8-4e25-b913-b15b87319240" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b64a647d-b08d-4a70-9b52-6a93213b80f4" start_index="0" end="3a5260cc-ebba-45f3-8d05-96264678005b" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b64a647d-b08d-4a70-9b52-6a93213b80f4" start_index="0" end="9eab143c-0da8-4e25-b913-b15b87319240" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="49a5cb7e-d839-4c50-81e9-405450bc4d9a" start_index="0" end="c472d9ad-7d3e-4632-9e49-33904b0613de" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9eab143c-0da8-4e25-b913-b15b87319240" start_index="0" end="49a5cb7e-d839-4c50-81e9-405450bc4d9a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9eab143c-0da8-4e25-b913-b15b87319240" start_index="0" end="c472d9ad-7d3e-4632-9e49-33904b0613de" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c472d9ad-7d3e-4632-9e49-33904b0613de" start_index="0" end="03e49525-f029-47db-b5ae-b4570f87bb31" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cbfe9d0a-3041-4628-8e3c-45f27ee3b4fe" start_index="0" end="08e6e6f9-274f-430f-9e8a-89ba7ee02f4c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="03e49525-f029-47db-b5ae-b4570f87bb31" start_index="0" end="cbfe9d0a-3041-4628-8e3c-45f27ee3b4fe" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="03e49525-f029-47db-b5ae-b4570f87bb31" start_index="0" end="e6123ac0-26ff-4c54-a84a-458dccfec928" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="894d1796-40fb-4883-b01a-a46902136581" start_index="0" end="03e49525-f029-47db-b5ae-b4570f87bb31" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

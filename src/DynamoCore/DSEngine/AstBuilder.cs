@@ -200,6 +200,7 @@ namespace Dynamo.DSEngine
             public const string PARAM_PREFIX = @"p_";
             public const string FUNCTION_PREFIX = @"func_";
             public const string VAR_PREFIX = @"var_";
+            public const string SHORT_VAR_PREFIX = @"t_";
         }
 
         public class ASTBuildingEventArgs : EventArgs
@@ -345,6 +346,7 @@ namespace Dynamo.DSEngine
         /// whether Dynamo node has been compiled or not.
         /// </summary>
         /// <param name="nodes"></param>
+        /// <param name="isDeltaExecution"></param>
         public List<AssociativeNode> CompileToAstNodes(IEnumerable<NodeModel> nodes, bool isDeltaExecution)
         {
             // TODO: compile to AST nodes should be triggered after a node is 
@@ -370,19 +372,16 @@ namespace Dynamo.DSEngine
 
 
         /// <summary>
-        /// 
+        /// Compiles a collection of Dynamo nodes into a function definition for a custom node.
         /// </summary>
         /// <param name="functionGuid"></param>
         /// <param name="funcBody"></param>
         /// <param name="outputs"></param>
         /// <param name="parameters"></param>
         /// <param name="isDeltaExecution"></param>
-        public void CompileCustomNode(
-            Guid functionGuid,
-            IEnumerable<NodeModel> funcBody,
-            List<AssociativeNode> outputs,
-            IEnumerable<string> parameters,
-            bool isDeltaExecution)
+        public void CompileCustomNodeDefinition(
+            Guid functionGuid, IEnumerable<NodeModel> funcBody, List<AssociativeNode> outputs,
+            IEnumerable<string> parameters, bool isDeltaExecution)
         {
             OnAstNodeBuilding(functionGuid);
 
@@ -417,32 +416,35 @@ namespace Dynamo.DSEngine
                 //name is the GUID of the custom node
                 Name = name,
 
-                //signature is 
-                Singnature = new ArgumentSignatureNode
-                {
-                    Arguments = parameters.Select(paramName => new VarDeclNode
+                //signature contains all input names
+                Singnature =
+                    new ArgumentSignatureNode
                     {
-                        NameNode = new IdentifierNode
-                        {
-                            Value = paramName,
-                            Name = paramName,
-                            datatype = new Type
-                            {
-                                Name = "var",
-                                IsIndexable = false,
-                                rank = 0,
-                                UID = (int)PrimitiveType.kTypeVar
-                            }
-                        },
-                        ArgumentType = new Type { Name = "var" }
-                    }).ToList()
-                },
+                        Arguments =
+                            parameters.Select(
+                                paramName =>
+                                    new VarDeclNode
+                                    {
+                                        NameNode =
+                                            new IdentifierNode
+                                            {
+                                                Value = paramName, Name = paramName,
+                                                datatype =
+                                                    new Type
+                                                    {
+                                                        Name = "var", IsIndexable = false, rank = 0,
+                                                        UID = (int)PrimitiveType.kTypeVar
+                                                    }
+                                            },
+                                        ArgumentType = new Type { Name = "var" }
+                                    }).ToList()
+                    },
 
                 //body is the compiled workspace
                 FunctionBody = functionBody
             };
 
-            OnAstNodeBuilt(functionGuid, new [] { functionDef });
+            OnAstNodeBuilt(functionGuid, new[] { functionDef });
         }
 
         /// <summary>

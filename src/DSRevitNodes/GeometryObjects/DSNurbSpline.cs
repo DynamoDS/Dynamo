@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
+using DSRevitNodes.GeometryConversion;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 

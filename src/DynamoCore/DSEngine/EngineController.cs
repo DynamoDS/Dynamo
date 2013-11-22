@@ -9,6 +9,7 @@ using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
 using ProtoScript.Runners;
+using Dynamo.Nodes;
 
 namespace Dynamo.DSEngine
 {
@@ -23,6 +24,7 @@ namespace Dynamo.DSEngine
         private AstBuilder astBuilder;
         private SyncDataManager syncDataManager;
         private Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
+        private int shortVarCounter = 0;
 
         internal EngineController(DynamoController controller)
         {
@@ -104,12 +106,30 @@ namespace Dynamo.DSEngine
 
         public string ConvertNodesToCode(IEnumerable<NodeModel> nodes)
         {
-            string code = string.Empty;
-            if (nodes.Any())
+            if (!nodes.Any())
+                return string.Empty;
+
+            string code = Dynamo.DSEngine.NodeToCodeUtils.ConvertNodesToCode(nodes);
+            if (string.IsNullOrEmpty(code))
+                return code;
+
+            StringBuilder sb = new StringBuilder(code);
+            foreach (var node in nodes)
             {
-                code = Dynamo.DSEngine.NodeToCodeUtils.ConvertNodesToCode(nodes);
+                if (node is CodeBlockNodeModel)
+                {
+                    var tempVars = (node as CodeBlockNodeModel).TempVariables;
+                    foreach (var tempVar in tempVars)
+                    {
+                        sb = sb.Replace(tempVar, GenerateShortVariable()); 
+                    }
+                }
+
+                string thisVar = GraphToDSCompiler.GraphUtilities.ASTListToCode(new List<AssociativeNode> { node.AstIdentifierForPreview });
+                sb = sb.Replace(thisVar, GenerateShortVariable());
             }
-            return code;
+
+            return sb.ToString();
         }
 
         /// <summary>
@@ -143,7 +163,11 @@ namespace Dynamo.DSEngine
         /// <returns></returns>
         public bool GenerateGraphSyncData(IEnumerable<NodeModel> nodes)
         {
-            astBuilder.CompileToAstNodes(nodes, true);
+            IEnumerable<NodeModel> activeNodes = nodes.Where(n => ElementState.Active == n.State);
+            if (!activeNodes.Any())
+                return false;
+
+            astBuilder.CompileToAstNodes(activeNodes, true);
             return VerifyGraphSyncData();
         }
 
@@ -162,7 +186,7 @@ namespace Dynamo.DSEngine
             List<AssociativeNode> outputs,
             IEnumerable<string> parameters)
         {
-            astBuilder.CompileCustomNode(id, nodes, outputs, parameters, true);
+            astBuilder.CompileCustomNodeDefinition(id, nodes, outputs, parameters, true);
             return VerifyGraphSyncData();
         }
 
@@ -204,6 +228,31 @@ namespace Dynamo.DSEngine
             }
 
             return true;
+        }
+
+        private string GenerateShortVariable()
+        {
+            while (true)
+            {
+                shortVarCounter++;
+                string var = AstBuilder.StringConstants.SHORT_VAR_PREFIX + shortVarCounter.ToString();
+
+                if (!HasVariableDefined(var))
+                    return var;
+            }
+        }
+
+        private bool HasVariableDefined(string var)
+        {
+            ProtoCore.Core core = GraphToDSCompiler.GraphUtilities.GetCore();
+            var cbs = core.CodeBlockList;
+            if (cbs == null || cbs.Count > 0)
+            {
+                return false;
+            }
+
+            var idx = cbs[0].symbolTable.IndexOf(var, ProtoCore.DSASM.Constants.kGlobalScope, ProtoCore.DSASM.Constants.kGlobalScope);
+            return idx == ProtoCore.DSASM.Constants.kInvalidIndex;
         }
 
         /// <summary>
