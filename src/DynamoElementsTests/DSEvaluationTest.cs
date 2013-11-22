@@ -383,7 +383,31 @@ namespace Dynamo.Tests
             AssertValue("z", 4);
 
         }
+        [Test]
+        public void CBN_Dynamic_Array_592()
+        {
 
+            //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-592
+            RunModel(@"core\dsevaluation\CBN_nestedrange592.dyn");
+            AssertValue("a", new int[][] {new int[]{1,2,3,4,5,6,7,8,9,10,11},new int[]{2,4,6,8,10,12},new int[] {3,6,9,12}});
+
+        }
+        [Test]
+        public void CBN_Dynamic_Array_592_2()
+        {
+
+            //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-592
+            RunModel(@"core\dsevaluation\CBN_nestedrange592_2.dyn");
+            AssertValue("a", new int[][] { new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, new int[] { 2, 3, 4, 5, 6, 7,8,9,10 }, new int[] { 3, 4,5,6,7,8,9,10 } });
+        }
+        [Test]
+        public void CBN_Dynamic_Array_433()
+        {
+
+            //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-433
+            RunModel(@"core\dsevaluation\CBN_nestedrange592_2.dyn");
+            AssertValue("a", null);
+        }
         [Test]
         public void Regress722()
         {
@@ -391,6 +415,35 @@ namespace Dynamo.Tests
             RunModel(@"core\dsevaluation\regress722.dyn");
             AssertValue("x", 42);
         }
+        [Test]
+        public void CBN_Array_Range_629()
+        {
+            //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-629
+            RunModel(@"core\dsevaluation\CBN_Array_Range_629.dyn");
+            AssertValue("a", new int[][] { new int[] { 1, 2 } });
+        }
+        [Test]
+        public void CBN_Array_Range_629_2()
+        {
+            //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-629
+            RunModel(@"core\dsevaluation\CBN_Array_Range_629_2.dyn");
+            AssertValue("a",  new int[]{4});
+        }
+        [Test]
+        public void CBN_Empty_722()
+        {
+            //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-722
+            RunModel(@"core\dsevaluation\CBN_Empty_722.dyn");
+            AssertValue("a",  10.00);
+        }
+        [Test]
+        public void CBN_array_indexnull_619()
+        {
+            //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-722
+            RunModel(@"core\dsevaluation\CBN_array_indexnull_619.dyn");
+            AssertValue("a",  new int []{5});
+        }
+        
 
     }
 }
