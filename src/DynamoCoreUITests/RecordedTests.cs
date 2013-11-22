@@ -342,6 +342,58 @@ namespace Dynamo.Tests.UI
         }
 
         [Test, RequiresSTA]
+        public void TestModelEventCommandAdd()
+        {
+            RunCommandsFromFile("TestModelEventCommandAdd.xml");
+            Assert.AreEqual(2, workspace.Connectors.Count);
+            Assert.AreEqual(3, workspace.Nodes.Count);
+
+            var listNode = GetNode("25244c48-8404-461b-b0ec-a35ed03ae86e") as NodeModel;
+            Assert.IsNotNull(listNode);
+            Assert.AreEqual(3, listNode.InPorts.Count);
+            Assert.AreEqual(1, listNode.OutPorts.Count);
+        }
+
+        [Test, RequiresSTA]
+        public void TestModelEventCommandAddRemove()
+        {
+            RunCommandsFromFile("TestModelEventCommandAddRemove.xml");
+            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(3, workspace.Nodes.Count);
+
+            var listNode = GetNode("25244c48-8404-461b-b0ec-a35ed03ae86e") as NodeModel;
+            Assert.IsNotNull(listNode);
+            Assert.AreEqual(1, listNode.InPorts.Count);
+            Assert.AreEqual(1, listNode.OutPorts.Count);
+        }
+
+        [Test, RequiresSTA]
+        public void TestModelEventCommandUndo()
+        {
+            RunCommandsFromFile("TestModelEventCommandUndo.xml");
+            Assert.AreEqual(2, workspace.Connectors.Count);
+            Assert.AreEqual(3, workspace.Nodes.Count);
+
+            var listNode = GetNode("25244c48-8404-461b-b0ec-a35ed03ae86e") as NodeModel;
+            Assert.IsNotNull(listNode);
+            Assert.AreEqual(3, listNode.InPorts.Count);
+            Assert.AreEqual(1, listNode.OutPorts.Count);
+        }
+
+        [Test, RequiresSTA]
+        public void TestModelEventCommandUndoRedo()
+        {
+            RunCommandsFromFile("TestModelEventCommandUndoRedo.xml");
+            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(3, workspace.Nodes.Count);
+
+            var listNode = GetNode("25244c48-8404-461b-b0ec-a35ed03ae86e") as NodeModel;
+            Assert.IsNotNull(listNode);
+            Assert.AreEqual(1, listNode.InPorts.Count);
+            Assert.AreEqual(1, listNode.OutPorts.Count);
+        }
+
+        [Test, RequiresSTA]
         public void TestModifyPythonNodes()
         {
             RunCommandsFromFile("ModifyPythonNodes.xml");
