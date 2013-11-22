@@ -28,6 +28,7 @@ using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using TextBox = System.Windows.Controls.TextBox;
 using TreeView = System.Windows.Controls.TreeView;
 using VerticalAlignment = System.Windows.VerticalAlignment;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Nodes
 {
@@ -1078,8 +1079,15 @@ namespace Dynamo.Nodes
 
         private void OnDynamoNodeButtonClick(object sender, RoutedEventArgs e)
         {
+            // If this DynamoNodeButton was created with an associated model 
+            // and the event name, then the owner of this button (a ModelBase) 
+            // needs the "DynCmd.ModelEventCommand" to be sent when user clicks
+            // on the button.
+            // 
             if (null != this.model && (!string.IsNullOrEmpty(this.eventName)))
             {
+                var command = new DynCmd.ModelEventCommand(model.GUID, eventName);
+                dynSettings.Controller.DynamoViewModel.ExecuteCommand(command);
             }
         }
     }
