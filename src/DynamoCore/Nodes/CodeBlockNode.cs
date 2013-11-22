@@ -47,19 +47,17 @@ namespace Dynamo.Nodes
             this.WorkSpace = workSpace;
             this.shouldFocus = false;
             DisableReporting();
-            ProcessCode();
+            //ProcessCode();
             RaisePropertyChanged("Code");
             RequiresRecalc = true;
             EnableReporting();
         }
 
         /// <summary>
-        ///     The function sets the state of the node to an erraneous state and displays
-        ///     the the string errorMessage as an error bubble on top of the node.
-        ///     It also removes all the in ports and out ports as well. So that the user knows there is an error.
+        ///     It removes all the in ports and out ports so that the user knows there is an error.
         /// </summary>
         /// <param name="errorMessage"> Error message to be displayed </param>
-        public void DisplayError(string errorMessage)
+        public void ProcessError()
         {
             DynamoLogger.Instance.Log("Error in Code Block Node");
 
@@ -73,9 +71,6 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
 
             previewVariable = null;
-
-            //Set the node state in error and display the message
-            Error(errorMessage);
         }
 
         /// <summary>
@@ -141,6 +136,8 @@ namespace Dynamo.Nodes
                 {
                     if (value != null)
                     {
+                        this.State = ElementState.Error;
+                        string errorMessage = null;
                         DisableReporting();
                         {
                             //Undo the Update value recording
@@ -161,7 +158,7 @@ namespace Dynamo.Nodes
                             else
                                 WorkSpace.UndoRecorder.RecordModificationForUndo(this);
                             code = value;
-                            ProcessCode();
+                            ProcessCode(ref errorMessage);
 
                             //Recreate connectors that can be reused
                             LoadAndCreateConnectors(inportConnections, outportConnections);
@@ -169,10 +166,13 @@ namespace Dynamo.Nodes
                         }
                         RaisePropertyChanged("Code");
                         RequiresRecalc = true;
-                        EnableReporting();
                         ReportPosition();
                         if (WorkSpace != null)
                             WorkSpace.Modified();
+                        EnableReporting();
+
+                        if(errorMessage != null)
+                            Error(errorMessage);
                     }
                     else
                         code = null;
@@ -252,6 +252,12 @@ namespace Dynamo.Nodes
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
+            //Do not build if the node is in error.
+            if (this.State == ElementState.Error)
+            {
+                return null;
+            }
+
             //var unboundIdentifiers = new List<string>();
             var resultNodes = new List<AssociativeNode>();
             CodeBlockNode commentNode;
@@ -307,8 +313,8 @@ namespace Dynamo.Nodes
                 resultNodes.Add(astNode as ProtoCore.AST.AssociativeAST.AssociativeNode);
             }
 
-           // if (previewExpressionAST == null)
-           //     throw new ArgumentNullException("preview node not set properly");
+            if (previewExpressionAST == null)
+                throw new ArgumentNullException("preview node not set properly");
             resultNodes.Add(ProtoCore.Utils.NodeUtils.Clone(previewExpressionAST) as AssociativeNode);
 
             return resultNodes;
@@ -336,17 +342,18 @@ namespace Dynamo.Nodes
 
         private void ProcessCodeDirect()
         {
-            ProcessCode();
+            string errorMessage = null;
+            ProcessCode(ref errorMessage);
             RaisePropertyChanged("Code");
             RequiresRecalc = true;
             if (WorkSpace != null)
                 WorkSpace.Modified();
+            if (errorMessage != null)
+                Error(errorMessage);
         }
 
-        private void ProcessCode()
+        private void ProcessCode(ref string errorMessage)
         {
-            //Set State to active
-
             //Format user test
             code = FormatUserText(code);
 
@@ -390,25 +397,29 @@ namespace Dynamo.Nodes
                 else
                 {
                     if (errors == null)
-                        DisplayError("Errors not getting sent from compiler to UI");
+                    {
+                        ProcessError();
+                        errorMessage = "Errors not getting sent from compiler to UI";
+                    }
 
                     //Found errors. Get the error message strings and use it to call the DisplayError function
                     if (errors != null)
                     {
-                        string errorMessage = "";
+                        errorMessage = "";
                         int i = 0;
                         for (; i < errors.Count - 1; i++)
                             errorMessage += (errors[i].Message + "\n");
                         errorMessage += errors[i].Message;
-                        DisplayError(errorMessage);
+                        ProcessError();
                     }
                     return;
                 }
             }
             catch (Exception e)
             {
-                DisplayError(e.Message);
+                errorMessage = e.Message;
                 previewVariable = null;
+                ProcessError();
                 return;
             }
 
@@ -416,7 +427,8 @@ namespace Dynamo.Nodes
             string redefinedVariable = this.WorkSpace.GetFirstRedefinedVariable(this);
             if (redefinedVariable != null)
             {
-                DisplayError(redefinedVariable + " is already defined");
+                ProcessError();
+                errorMessage = redefinedVariable + " is already defined";
                 return;
             }
 
