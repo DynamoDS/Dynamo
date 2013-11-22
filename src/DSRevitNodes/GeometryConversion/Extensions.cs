@@ -7,7 +7,7 @@ using RevitServices.Persistence;
 using Line = Autodesk.Revit.DB.Line;
 using System.ComponentModel;
 
-namespace DSRevitNodes
+namespace DSRevitNodes.GeometryConversion
 {
     [Browsable(false)]
     public static class Extensions

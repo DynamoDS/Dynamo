@@ -163,7 +163,11 @@ namespace Dynamo.DSEngine
         /// <returns></returns>
         public bool GenerateGraphSyncData(IEnumerable<NodeModel> nodes)
         {
-            astBuilder.CompileToAstNodes(nodes, true);
+            IEnumerable<NodeModel> activeNodes = nodes.Where(n => ElementState.Active == n.State);
+            if (!activeNodes.Any())
+                return false;
+
+            astBuilder.CompileToAstNodes(activeNodes, true);
             return VerifyGraphSyncData();
         }
 
@@ -182,7 +186,7 @@ namespace Dynamo.DSEngine
             List<AssociativeNode> outputs,
             IEnumerable<string> parameters)
         {
-            astBuilder.CompileCustomNode(id, nodes, outputs, parameters, true);
+            astBuilder.CompileCustomNodeDefinition(id, nodes, outputs, parameters, true);
             return VerifyGraphSyncData();
         }
 

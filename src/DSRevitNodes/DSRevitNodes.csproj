@@ -77,12 +77,13 @@
     <Compile Include="Elements\AbstractElement.cs" />
     <Compile Include="Elements\DSForm.cs" />
     <Compile Include="Elements\DSSketchPlane.cs" />
+    <Compile Include="GeometryConversion\ProtoCurveToRevitCurve.cs" />
     <Compile Include="References\AbstractReference.cs" />
     <Compile Include="References\DSFaceReference.cs" />
     <Compile Include="GeometryObjects\DSCurveLoop.cs" />
     <Compile Include="Elements\ElementSelector.cs" />
     <Compile Include="Elements\DSFamily.cs" />
-    <Compile Include="Extensions.cs" />
+    <Compile Include="GeometryConversion\Extensions.cs" />
     <Compile Include="GeometryObjects\DSEdge.cs" />
     <Compile Include="GeometryObjects\DSNurbSpline.cs" />
     <Compile Include="GeometryObjects\IGeometryObject.cs" />

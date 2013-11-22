@@ -19,9 +19,6 @@ namespace DSRevitNodes.GeometryObjects
             this.InternalEdge = x;
         }
 
-        //
-        // need to convert all revit types to their ds wrapped equivalents
-        //
         //public DSCurve Curve
         //{
         //    get
