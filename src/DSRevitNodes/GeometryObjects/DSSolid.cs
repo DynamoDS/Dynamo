@@ -4,6 +4,7 @@ using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
+using DSRevitNodes.GeometryConversion;
 using DSRevitNodes.GeometryObjects;
 using DSRevitNodes.Graphics;
 
@@ -32,7 +33,7 @@ namespace DSRevitNodes
             this.InternalSolid = result;
         }
 
-        public DSSolid(Autodesk.Revit.DB.Solid x)
+        internal DSSolid(Autodesk.Revit.DB.Solid x)
         {
             // TODO: Complete member initialization
             this.x = x;

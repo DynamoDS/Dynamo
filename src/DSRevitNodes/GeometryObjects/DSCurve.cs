@@ -10,6 +10,9 @@ using DSRevitNodes.GeometryObjects;
 
 namespace DSRevitNodes
 {
+
+    // this type should actually be removed, to be replaced by Autodesk.DesignScript.Geometry.Curve
+
     /// <summary>
     /// Class representing a Revit Curve
     /// </summary>
