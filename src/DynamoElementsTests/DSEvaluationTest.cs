@@ -474,5 +474,13 @@ namespace Dynamo.Tests
         {
             OpenModel(@"core\dsevaluation\makeSpiralFromBasePtCenterPtHeight.dyf");
         }
+
+        [Test]
+        public void Defect_MAGN_844()
+        {
+            OpenModel(@"core\dsevaluation\Defect_MAGN_844.dyn");
+            AssertPreviewValue("8de1b8aa-c6c3-4360-9619-fe9d01a804f8", 1);
+
+        }
     }
 }
