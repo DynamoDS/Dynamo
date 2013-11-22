@@ -1,6 +1,9 @@
-<Workspace X="76.6309523809526" Y="104.952380952381" zoom="1" Description="" Category="" Name="Home">
+<Workspace Version="0.6.2.14024" X="76.6309523809526" Y="104.952380952381" zoom="1" Description="" Category="" Name="Home">
   <Elements>
-    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="7d934c8e-f5ff-43b6-b224-7fe968dbe9aa" nickname="Python Script" x="212.901162790698" y="38.6" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <Dynamo.Nodes.CurvesBySelection type="Dynamo.Nodes.CurvesBySelection" guid="63c661d4-6083-46ac-ab46-d8e5176fb5d4" nickname="Select Curve" x="-18.4000000000001" y="169.6" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <instance id="48a42a15-0c2b-476d-98f5-1a32de60371c-00007fe5" />
+    </Dynamo.Nodes.CurvesBySelection>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="a12cf7c9-ebde-4106-94d5-12ec21919e6f" nickname="Python Script" x="194.501162790698" y="208.2" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <Script>#derived from Nathan Miller's example http://theprovingground.wikidot.com/revit-api-py-curves
 # Default imports
 import clr
@@ -38,14 +41,11 @@ for i in range(0,steps+1):
 crv2 = doc.FamilyCreate.NewCurveByPoints(refptarr)
 </Script>
     </Dynamo.Nodes.Python>
-    <Dynamo.Nodes.CurvesBySelection type="Dynamo.Nodes.CurvesBySelection" guid="052930f8-51c7-4db1-ae80-5e2b20cbf752" nickname="Curve by Selection" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <instance id="43f8c44d-3ad8-4b7c-b885-2531a3dbd3cd-0000799e" />
-    </Dynamo.Nodes.CurvesBySelection>
-    <Dynamo.Nodes.Transaction type="Dynamo.Nodes.Transaction" guid="b11ed0cc-5e1c-4b17-a921-602a9b30ca1f" nickname="Transaction" x="390.40026896506" y="54.3213830149307" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Transaction type="Dynamo.Nodes.Transaction" guid="35817bca-39b1-4f5b-bb25-296cdac5a208" nickname="Transaction" x="372.00026896506" y="223.921383014931" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
   </Elements>
   <Connectors>
-    <Dynamo.Models.ConnectorModel start="7d934c8e-f5ff-43b6-b224-7fe968dbe9aa" start_index="0" end="b11ed0cc-5e1c-4b17-a921-602a9b30ca1f" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="052930f8-51c7-4db1-ae80-5e2b20cbf752" start_index="0" end="7d934c8e-f5ff-43b6-b224-7fe968dbe9aa" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="63c661d4-6083-46ac-ab46-d8e5176fb5d4" start_index="0" end="a12cf7c9-ebde-4106-94d5-12ec21919e6f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a12cf7c9-ebde-4106-94d5-12ec21919e6f" start_index="0" end="35817bca-39b1-4f5b-bb25-296cdac5a208" end_index="0" portType="0" />
   </Connectors>
   <Notes />
 </Workspace>
