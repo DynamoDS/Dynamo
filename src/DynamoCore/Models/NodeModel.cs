@@ -6,6 +6,7 @@ using System.Linq;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
 using System.Reflection;
+using System.Threading;
 using Dynamo.Nodes;
 using System.Xml;
 using Dynamo.Selection;
@@ -1602,11 +1603,21 @@ namespace Dynamo.Models
         /// </summary>
         public void ValidateConnections()
         {
-            // if there are inputs without connections
-            // mark as dead
-            State = inPorts.Any(x => !x.Connectors.Any() && !(x.UsingDefaultValue && x.DefaultValueEnabled))
-                ? ElementState.DEAD 
-                : ElementState.ACTIVE;
+            if (dynSettings.Controller != null &&
+                dynSettings.Controller.UIDispatcher != null &&
+                dynSettings.Controller.UIDispatcher.Thread != Thread.CurrentThread)
+            {
+                //Force this onto the UI thread
+                dynSettings.Controller.UIDispatcher.Invoke((Action) (() =>
+                    {
+
+                        // if there are inputs without connections
+                        // mark as dead
+                        State = inPorts.Any(x => !x.Connectors.Any() && !(x.UsingDefaultValue && x.DefaultValueEnabled))
+                                    ? ElementState.DEAD
+                                    : ElementState.ACTIVE;
+                    }));
+            }
         }
 
         public void Error(string p)
