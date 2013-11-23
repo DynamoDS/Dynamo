@@ -526,6 +526,46 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(1, workspace.Notes.Count);
         }
 
+        [Test, RequiresSTA]
+        public void Defect_MAGN_397()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-397
+            RunCommandsFromFile("Defect_MAGN_397.xml");
+
+            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Connectors.Count);
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_520()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-520
+            RunCommandsFromFile("Defect_MAGN_520.xml");
+
+            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count);
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_520_WithCrossSelection()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-520
+            RunCommandsFromFile("Defect_MAGN_520_WithCrossSelection.xml");
+
+            Assert.AreEqual(3, workspace.Nodes.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count);
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_581()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-581
+            RunCommandsFromFile("Defect_MAGN_581.xml");
+
+            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Connectors.Count);
+        }
+
         #endregion
 
         #region Private Helper Methods
