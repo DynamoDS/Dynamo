@@ -67,7 +67,7 @@ namespace Dynamo.Nodes
             var nodeUI = ui as dynNodeView;
 
             //add a button to the inputGrid on the dynElement
-            Button analysisResultButt = new dynNodeButton();
+            Button analysisResultButt = new DynamoNodeButton();
             nodeUI.inputGrid.Children.Add(analysisResultButt);
             analysisResultButt.Margin = new Thickness(0, 0, 0, 0);
             analysisResultButt.HorizontalAlignment = HorizontalAlignment.Center;

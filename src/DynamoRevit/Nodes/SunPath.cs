@@ -39,7 +39,7 @@ namespace Dynamo.Nodes
             var nodeUI = ui as dynNodeView;
 
             //add a button to the inputGrid on the dynElement
-            sunPathButt = new dynNodeButton();
+            sunPathButt = new DynamoNodeButton();
 
             sunPathButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             sunPathButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;

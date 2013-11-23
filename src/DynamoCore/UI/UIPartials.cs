@@ -28,6 +28,7 @@ using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using TextBox = System.Windows.Controls.TextBox;
 using TreeView = System.Windows.Controls.TreeView;
 using VerticalAlignment = System.Windows.VerticalAlignment;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Nodes
 {
@@ -37,14 +38,14 @@ namespace Dynamo.Nodes
         {
             var nodeUI = ui as dynNodeView;
 
-            System.Windows.Controls.Button addButton = new dynNodeButton();
+            var addButton = new DynamoNodeButton(this, "AddInPort");
             addButton.Content = "+";
             addButton.Width = 20;
             //addButton.Height = 20;
             addButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             addButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
 
-            System.Windows.Controls.Button subButton = new dynNodeButton();
+            var subButton = new DynamoNodeButton(this, "RemoveInPort");
             subButton.Content = "-";
             subButton.Width = 20;
             //subButton.Height = 20;
@@ -60,28 +61,6 @@ namespace Dynamo.Nodes
             wp.Children.Add(subButton);
 
             nodeUI.inputGrid.Children.Add(wp);
-
-            //nodeUI.inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            //nodeUI.inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
-
-            //nodeUI.inputGrid.Children.Add(addButton);
-            //System.Windows.Controls.Grid.SetColumn(addButton, 0);
-
-            //nodeUI.inputGrid.Children.Add(subButton);
-            //System.Windows.Controls.Grid.SetColumn(subButton, 1);
-
-            addButton.Click += delegate 
-            {
-                this.WorkSpace.RecordModelForModification(this);
-                AddInput(); 
-                RegisterAllPorts(); 
-            };
-            subButton.Click += delegate 
-            {
-                RecordModels();
-                RemoveInput(); 
-                RegisterAllPorts(); 
-            };
         }
 
         private void RecordModels()
@@ -104,6 +83,34 @@ namespace Dynamo.Nodes
                 this.WorkSpace.RecordModelForModification(this);
         }
 
+        protected override bool HandleModelEventCore(string eventName)
+        {
+            if (eventName == "AddInPort")
+            {
+                AddInput();
+                RegisterAllPorts();
+                return true; // Handled here.
+            }
+            else if (eventName == "RemoveInPort")
+            {
+                // When an in-port is removed, it is possible that a connector 
+                // is almost removed along with it. Both node modification and 
+                // connector deletion have to be recorded as one action group.
+                // But before HandleModelEventCore is called, node modification 
+                // has already been recorded (in WorkspaceModel.SendModelEvent).
+                // For that reason, that entry on the undo-stack needs to be 
+                // popped (the node modification will be recorded here instead).
+                // 
+                this.WorkSpace.UndoRecorder.PopFromUndoGroup();
+
+                RecordModels();
+                RemoveInput();
+                RegisterAllPorts();
+                return true; // Handled here.
+            }
+
+            return base.HandleModelEventCore(eventName);
+        }
     }
 
     public partial class VariableInputAndOutput : NodeModel
@@ -112,13 +119,13 @@ namespace Dynamo.Nodes
         {
             var nodeUI = ui as dynNodeView;
 
-            System.Windows.Controls.Button addButton = new dynNodeButton();
+            var addButton = new DynamoNodeButton(this, "AddInPort");
             addButton.Content = "+";
             addButton.Width = 20;
             addButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
             addButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
 
-            System.Windows.Controls.Button subButton = new dynNodeButton();
+            var subButton = new DynamoNodeButton(this, "RemoveInPort");
             subButton.Content = "-";
             subButton.Width = 20;
             subButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
@@ -133,19 +140,6 @@ namespace Dynamo.Nodes
             wp.Children.Add(subButton);
 
             nodeUI.inputGrid.Children.Add(wp);
-
-            addButton.Click += delegate
-            {
-                this.WorkSpace.RecordModelForModification(this);
-                AddInput();
-                RegisterAllPorts();
-            };
-            subButton.Click += delegate
-            {
-                RecordModels();
-                RemoveInput();
-                RegisterAllPorts();
-            };
         }
 
         private void RecordModels()
@@ -166,6 +160,35 @@ namespace Dynamo.Nodes
             }
             else
                 this.WorkSpace.RecordModelForModification(this);
+        }
+
+        protected override bool HandleModelEventCore(string eventName)
+        {
+            if (eventName == "AddInPort")
+            {
+                AddInput();
+                RegisterAllPorts();
+                return true; // Handled here.
+            }
+            else if (eventName == "RemoveInPort")
+            {
+                // When an in-port is removed, it is possible that a connector 
+                // is almost removed along with it. Both node modification and 
+                // connector deletion have to be recorded as one action group.
+                // But before HandleModelEventCore is called, node modification 
+                // has already been recorded (in WorkspaceModel.SendModelEvent).
+                // For that reason, that entry on the undo-stack needs to be 
+                // popped (the node modification will be recorded here instead).
+                // 
+                this.WorkSpace.UndoRecorder.PopFromUndoGroup();
+
+                RecordModels();
+                RemoveInput();
+                RegisterAllPorts();
+                return true; // Handled here.
+            }
+
+            return base.HandleModelEventCore(eventName);
         }
     }
 
@@ -221,7 +244,7 @@ namespace Dynamo.Nodes
             var nodeUI = ui as dynNodeView;
 
             //add a text box to the input grid of the control
-            var button = new dynNodeButton();
+            var button = new DynamoNodeButton();
             button.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             button.VerticalAlignment = System.Windows.VerticalAlignment.Top;
             //inputGrid.RowDefinitions.Add(new RowDefinition());
@@ -726,7 +749,7 @@ namespace Dynamo.Nodes
             var nodeUI = ui as dynNodeView;
 
             //add a button to the inputGrid on the dynElement
-            var readFileButton = new dynNodeButton();
+            var readFileButton = new DynamoNodeButton();
 
             //readFileButton.Margin = new System.Windows.Thickness(4);
             readFileButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -1055,14 +1078,39 @@ namespace Dynamo.Nodes
         }
     }
 
-    public class dynNodeButton : System.Windows.Controls.Button
+    public class DynamoNodeButton : System.Windows.Controls.Button
     {
-        public dynNodeButton()
+        private string eventName = string.Empty;
+        private ModelBase model = null;
+
+        public DynamoNodeButton()
             : base()
         {
             Style = (Style)SharedDictionaryManager.DynamoModernDictionary["SNodeTextButton"];
 
             this.Margin = new Thickness(1, 0, 1, 0);
+        }
+
+        public DynamoNodeButton(ModelBase model, string eventName)
+            : this()
+        {
+            this.model = model;
+            this.eventName = eventName;
+            this.Click += OnDynamoNodeButtonClick;
+        }
+
+        private void OnDynamoNodeButtonClick(object sender, RoutedEventArgs e)
+        {
+            // If this DynamoNodeButton was created with an associated model 
+            // and the event name, then the owner of this button (a ModelBase) 
+            // needs the "DynCmd.ModelEventCommand" to be sent when user clicks
+            // on the button.
+            // 
+            if (null != this.model && (!string.IsNullOrEmpty(this.eventName)))
+            {
+                var command = new DynCmd.ModelEventCommand(model.GUID, eventName);
+                dynSettings.Controller.DynamoViewModel.ExecuteCommand(command);
+            }
         }
     }
 
