@@ -1603,21 +1603,26 @@ namespace Dynamo.Models
         /// </summary>
         public void ValidateConnections()
         {
+
+            Action setState = (() =>
+                {
+
+                    // if there are inputs without connections
+                    // mark as dead
+                    State = inPorts.Any(x => !x.Connectors.Any() && !(x.UsingDefaultValue && x.DefaultValueEnabled))
+                                ? ElementState.DEAD
+                                : ElementState.ACTIVE;
+                });
+
             if (dynSettings.Controller != null &&
                 dynSettings.Controller.UIDispatcher != null &&
                 dynSettings.Controller.UIDispatcher.Thread != Thread.CurrentThread)
             {
                 //Force this onto the UI thread
-                dynSettings.Controller.UIDispatcher.Invoke((Action) (() =>
-                    {
-
-                        // if there are inputs without connections
-                        // mark as dead
-                        State = inPorts.Any(x => !x.Connectors.Any() && !(x.UsingDefaultValue && x.DefaultValueEnabled))
-                                    ? ElementState.DEAD
-                                    : ElementState.ACTIVE;
-                    }));
+                dynSettings.Controller.UIDispatcher.Invoke(setState);
             }
+            else
+                setState();
         }
 
         public void Error(string p)
