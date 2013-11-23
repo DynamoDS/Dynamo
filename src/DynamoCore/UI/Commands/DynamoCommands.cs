@@ -174,6 +174,14 @@ namespace Dynamo.ViewModels
             RedoCommand.RaiseCanExecuteChanged();
         }
 
+        private void SendModelEventImpl(ModelEventCommand command)
+        {
+            CurrentSpace.SendModelEvent(command.ModelGuid, command.EventName);
+
+            UndoCommand.RaiseCanExecuteChanged();
+            RedoCommand.RaiseCanExecuteChanged();
+        }
+
         private void UpdateModelValueImpl(UpdateModelValueCommand command)
         {
             CurrentSpace.UpdateModelValue(command.ModelGuid,
