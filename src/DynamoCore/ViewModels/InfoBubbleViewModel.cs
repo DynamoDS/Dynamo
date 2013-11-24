@@ -24,6 +24,7 @@ namespace Dynamo.ViewModels
             LibraryItemPreview,
             NodeTooltip,
             Error,
+            ErrorCondensed,
             Preview,
             PreviewCondensed,
             None
@@ -408,6 +409,41 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        private void ShowFullContent(object parameter)
+        {
+            InfoBubbleDataPacket data = (InfoBubbleDataPacket)parameter;
+            
+            UpdateStyle(data.Style, data.ConnectingDirection);
+            Content = FullContent;
+            UpdateShape(TargetTopLeft, TargetBotRight);
+            UpdatePosition(TargetTopLeft, TargetBotRight);
+            
+            ZIndex = 5;
+        }
+
+        private bool CanShowFullContent(object parameter)
+        {
+            return true;
+        }
+
+        private void ShowCondensedContent(object parameter)
+        {
+            InfoBubbleDataPacket data = (InfoBubbleDataPacket)parameter;           
+
+            UpdateStyle(data.Style, data.ConnectingDirection);
+            // Generate condensed content
+            GenerateContent();
+            UpdateShape(TargetTopLeft, TargetBotRight);
+            UpdatePosition(TargetTopLeft, TargetBotRight);            
+
+            ZIndex = 3;
+        }
+
+        private bool CanShowCondensedContent(object parameter)
+        {
+            return true;
+        }
+
         #endregion
 
         #region Private Helper Method
@@ -415,10 +451,28 @@ namespace Dynamo.ViewModels
         private void UpdateContent(string text)
         {
             FullContent = text;
-            if (this.infoBubbleStyle == Style.PreviewCondensed && text.Length > 25)
-                Content = text.Substring(0, Configurations.CondensedPreviewMaxLength) + "...";
-            else
-                Content = text;
+
+            // Generate initial condensed content (if needed) whenever bubble content is updated
+            GenerateContent();
+        }
+
+        private void GenerateContent()
+        {
+            switch (InfoBubbleStyle)
+            {
+                case Style.PreviewCondensed:
+                    if (FullContent.Length > 25)
+                        Content = FullContent.Substring(0, Configurations.CondensedPreviewMaxLength) + "...";
+                    else
+                        Content = FullContent;
+                    break;
+                case Style.ErrorCondensed:
+                    Content = "...";
+                    break;
+                default:
+                    Content = FullContent;
+                    break;
+            }
         }
 
         private void UpdatePosition(Point topLeft, Point botRight)
@@ -437,6 +491,7 @@ namespace Dynamo.ViewModels
                     MakeFitInView();
                     break;
                 case Style.Error:
+                case Style.ErrorCondensed:
                     Margin = GetMargin_Error(topLeft, botRight);
                     break;
                 case Style.Preview:
@@ -463,6 +518,9 @@ namespace Dynamo.ViewModels
                 case Style.Error:
                     SetStyle_Error();
                     break;
+                case Style.ErrorCondensed:
+                    SetStyle_ErrorCondensed();
+                    break;
                 case Style.Preview:
                     SetStyle_Preview();
                     break;
@@ -485,6 +543,7 @@ namespace Dynamo.ViewModels
                     FramePoints = GetFramePoints_NodeTooltip(topLeft, botRight);
                     break;
                 case Style.Error:
+                case Style.ErrorCondensed:
                     FramePoints = GetFramePoints_Error();
                     break;
                 case Style.Preview:
@@ -640,6 +699,26 @@ namespace Dynamo.ViewModels
             ContentMargin = Configurations.ErrorContentMargin;
         }
 
+        private void SetStyle_ErrorCondensed()
+        {
+            FrameFill = Configurations.ErrorFrameFill;
+            FrameStrokeThickness = Configurations.ErrorFrameStrokeThickness;
+            FrameStrokeColor = Configurations.ErrorFrameStrokeColor;
+
+            MaxWidth = Configurations.ErrorCondensedMaxWidth;
+            MinWidth = Configurations.ErrorCondensedMinWidth;
+            MaxHeight = Configurations.ErrorCondensedMaxHeight;
+            MinHeight = Configurations.ErrorCondensedMinHeight;
+            ContentMaxWidth = Configurations.ErrorCondensedContentMaxWidth;
+            ContentMaxHeight = Configurations.ErrorCondensedContentMaxHeight;
+
+            TextFontSize = Configurations.ErrorTextFontSize;
+            TextForeground = Configurations.ErrorTextForeground;
+            TextFontWeight = Configurations.ErrorTextFontWeight;
+            ContentWrapping = Configurations.ErrorContentWrapping;
+            ContentMargin = Configurations.ErrorContentMargin;
+        }
+
         private void SetStyle_Preview()
         {
             FrameFill = Configurations.PreviewFrameFill;
@@ -754,7 +833,7 @@ namespace Dynamo.ViewModels
             {
                 limitedDirection = Direction.Top;
                 ContentMargin = Configurations.NodeTooltipContentMarginLeft;
-                UpdateContent(Content);
+                //UpdateContent(Content);
 
                 pointCollection.Add(PrecisePoint(EstimatedWidth, 0));
                 pointCollection.Add(PrecisePoint(0, 0));
@@ -766,7 +845,7 @@ namespace Dynamo.ViewModels
             {
                 limitedDirection = Direction.TopRight;
                 ContentMargin = Configurations.NodeTooltipContentMarginRight;
-                UpdateContent(Content);
+                //UpdateContent(Content);
 
                 pointCollection.Add(PrecisePoint(EstimatedWidth, 0));
                 pointCollection.Add(PrecisePoint(0, 0));
@@ -786,7 +865,7 @@ namespace Dynamo.ViewModels
             {
                 limitedDirection = Direction.Right;
                 ContentMargin = Configurations.NodeTooltipContentMarginRight;
-                UpdateContent(Content);
+                //UpdateContent(Content);
                 pointCollection = GetFramePoints_NodeTooltipConnectRight(topLeft, botRight);
             }
             else
@@ -813,7 +892,7 @@ namespace Dynamo.ViewModels
             {
                 limitedDirection = Direction.Left;
                 ContentMargin = Configurations.NodeTooltipContentMarginLeft;
-                UpdateContent(Content);
+                //UpdateContent(Content);
                 pointCollection = GetFramePoints_NodeTooltipConnectLeft(topLeft, botRight);
             }
             else

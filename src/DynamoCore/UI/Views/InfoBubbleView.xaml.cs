@@ -193,8 +193,61 @@ namespace Dynamo.Controls
 
             if (ViewModel == null) return;
 
-            TextBox textBox = GetNewTextBox(ViewModel.Content);
-            ContentContainer.Children.Add(textBox);
+
+            if (ViewModel.Content == "...")
+            {
+                #region Draw Icon
+                Rectangle r1 = new Rectangle();
+                r1.Fill = Brushes.Black;
+                r1.Height = 1;
+                r1.Width = 16;
+                r1.UseLayoutRounding = true;
+
+                Rectangle r2 = new Rectangle();
+                r2.Fill = Brushes.Black;
+                r2.Height = 1;
+                r2.Width = 16;
+                r2.UseLayoutRounding = true;
+
+                Rectangle r3 = new Rectangle();
+                r3.Fill = Brushes.Black;
+                r3.Height = 1;
+                r3.Width = 10;
+                r3.UseLayoutRounding = true;
+                r3.HorizontalAlignment = HorizontalAlignment.Left;
+
+                Grid myGrid = new Grid();
+                myGrid.Background = Brushes.Transparent;
+                myGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
+                myGrid.VerticalAlignment = VerticalAlignment.Stretch;
+
+                // Create row definitions.
+                RowDefinition rowDefinition1 = new RowDefinition();
+                RowDefinition rowDefinition2 = new RowDefinition();
+                RowDefinition rowDefinition3 = new RowDefinition();
+                rowDefinition1.Height = new GridLength(3);
+                rowDefinition2.Height = new GridLength(3);
+                rowDefinition3.Height = new GridLength(3);
+
+                myGrid.RowDefinitions.Add(rowDefinition1);
+                myGrid.RowDefinitions.Add(rowDefinition2);
+                myGrid.RowDefinitions.Add(rowDefinition3);
+                myGrid.Children.Add(r1);
+                Grid.SetRow(r1, 0);
+                myGrid.Children.Add(r2);
+                Grid.SetRow(r2, 1);
+                myGrid.Children.Add(r3);
+                Grid.SetRow(r3, 2);
+                myGrid.UseLayoutRounding = true;
+
+                ContentContainer.Children.Add(myGrid);
+                #endregion
+            }
+            else
+            {
+                TextBox textBox = GetNewTextBox(ViewModel.Content);
+                ContentContainer.Children.Add(textBox);
+            }
 
             ContentContainer.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
             ViewModel.EstimatedWidth = ContentContainer.DesiredSize.Width;
@@ -212,15 +265,12 @@ namespace Dynamo.Controls
         {
             if (this.IsDisconnected)
                 return;
+            
+            InfoBubbleDataPacket data = new InfoBubbleDataPacket();
+            data.Style = InfoBubbleViewModel.Style.Preview;
+            data.ConnectingDirection = InfoBubbleViewModel.Direction.Top;
 
-            string content = ViewModel.FullContent;
-            InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.Preview;
-            InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Top;
-            Point topLeft = ViewModel.TargetTopLeft;
-            Point botRight = ViewModel.TargetBotRight;
-            InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
-            this.ViewModel.UpdateContentCommand.Execute(data);
-            this.ViewModel.ZIndex = 5;
+            this.ViewModel.ShowFullContentCommand.Execute(data);
         }
 
         private void ShowPreviewBubbleCondensedContent()
@@ -228,14 +278,35 @@ namespace Dynamo.Controls
             if (this.IsDisconnected)
                 return;
 
-            string content = ViewModel.FullContent;
-            InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.PreviewCondensed;
-            InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Top;
-            Point topLeft = ViewModel.TargetTopLeft;
-            Point botRight = ViewModel.TargetBotRight;
-            InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
-            this.ViewModel.UpdateContentCommand.Execute(data);
-            this.ViewModel.ZIndex = 3;
+            InfoBubbleDataPacket data = new InfoBubbleDataPacket();
+            data.Style = InfoBubbleViewModel.Style.PreviewCondensed;
+            data.ConnectingDirection = InfoBubbleViewModel.Direction.Top;
+
+            this.ViewModel.ShowCondensedContentCommand.Execute(data);
+        }
+
+        private void ShowErrorBubbleFullContent()
+        {
+            if (this.IsDisconnected)
+                return;
+
+            InfoBubbleDataPacket data = new InfoBubbleDataPacket();
+            data.Style = InfoBubbleViewModel.Style.Error;
+            data.ConnectingDirection = InfoBubbleViewModel.Direction.Bottom;
+
+            this.ViewModel.ShowFullContentCommand.Execute(data);
+        }
+
+        private void ShowErrorBubbleCondensedContent()
+        {
+            if (this.IsDisconnected)
+                return;
+
+            InfoBubbleDataPacket data = new InfoBubbleDataPacket();
+            data.Style = InfoBubbleViewModel.Style.ErrorCondensed;
+            data.ConnectingDirection = InfoBubbleViewModel.Direction.Bottom;
+
+            this.ViewModel.ShowCondensedContentCommand.Execute(data);
         }
 
         private InfoBubbleViewModel GetViewModel()
@@ -269,6 +340,8 @@ namespace Dynamo.Controls
                 
             if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.PreviewCondensed)
                 ShowPreviewBubbleFullContent();
+            else if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.ErrorCondensed)
+                ShowErrorBubbleFullContent();
             
             FadeInInfoBubble();
 
@@ -286,6 +359,9 @@ namespace Dynamo.Controls
 
             if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Preview && ViewModel.IsShowPreviewByDefault)
                 ShowPreviewBubbleCondensedContent();
+            else if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Error || ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.ErrorCondensed) 
+                // TODO Hide error bubble when no error with another and condition
+                ShowErrorBubbleCondensedContent();
             else
                 FadeOutInfoBubble();
 

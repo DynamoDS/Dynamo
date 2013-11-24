@@ -287,6 +287,7 @@ namespace Dynamo.ViewModels
             dynSettings.Controller.PropertyChanged += Controller_PropertyChanged;
             
             this.ErrorBubble = new InfoBubbleViewModel();
+            this.ErrorBubble.PropertyChanged += ErrorBubble_PropertyChanged;
 
             // Nodes mentioned in switch cases will not have preview bubble
             switch (nodeLogic.Name)
@@ -399,6 +400,7 @@ namespace Dynamo.ViewModels
                     break;
                 case "ToolTipText":
                     UpdateErrorBubbleContent();
+                    // TODO Update preview bubble visibility to false
                     break;
                 case "IsVisible":
                     RaisePropertyChanged("IsVisible");
@@ -430,6 +432,18 @@ namespace Dynamo.ViewModels
                     HandleDefaultShowPreviewChanged();
                     break;
             }
+        }
+
+        private void ErrorBubble_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            // TODO set preview to be no visible
+
+            //switch (e.PropertyName)
+            //{
+            //    case "IsShowPreviewByDefault":
+            //        RaisePropertyChanged("IsPreviewInsetVisible");
+            //        break;
+            //}
         }
 
         private void PreviewBubble_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -496,7 +510,8 @@ namespace Dynamo.ViewModels
             {
                 Point topLeft = new Point(NodeModel.X, NodeModel.Y);
                 Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
-                InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.Error;
+                InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.ErrorCondensed;
+                // NOTE!: If tooltip is not cached here, it will be cleared once the dispatcher is invoked below
                 string content = NodeModel.ToolTipText;
                 InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Bottom;
                 InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
@@ -504,6 +519,7 @@ namespace Dynamo.ViewModels
                 {
                     if (!dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Errors.Contains(this.ErrorBubble))
                         return;
+
                     this.ErrorBubble.UpdateContentCommand.Execute(data);
                     this.ErrorBubble.SetAlwaysVisibleCommand.Execute(true);
                     this.ErrorBubble.InstantAppearCommand.Execute(null);
