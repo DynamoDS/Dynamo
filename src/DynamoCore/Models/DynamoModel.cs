@@ -641,32 +641,7 @@ namespace Dynamo.Models
                     }
                 }
 
-                #region process migrations
-                var migrations =
-                (from method in GetType().GetMethods()
-                 let attribute =
-                     method.GetCustomAttributes(false)
-                           .OfType<WorkspaceMigrationAttribute>()
-                           .FirstOrDefault()
-                 where attribute != null
-                 let result = new { method, attribute.From, attribute.To }
-                 orderby result.From
-                 select result).ToList();
-
-                var currentVersion = dynSettings.Controller.DynamoModel.HomeSpace.WorkspaceVersion;
-                var workspaceVersion = string.IsNullOrEmpty(version) ? new Version() : new Version(version);
-
-                while (workspaceVersion != null && workspaceVersion < currentVersion)
-                {
-                    var nextMigration = migrations.FirstOrDefault(x => x.From >= workspaceVersion);
-
-                    if (nextMigration == null)
-                        break;
-
-                    nextMigration.method.Invoke(this, new object[] { xmlDoc });
-                    workspaceVersion = nextMigration.To;
-                }
-                #endregion
+                Migration.ProcessWorkspaceMigrations(xmlDoc, version);
 
                 //set the zoom and offsets and trigger events
                 //to get the view to position iteself
@@ -1644,76 +1619,6 @@ namespace Dynamo.Models
 
         #endregion
 
-        #region Migrations
-
-        [WorkspaceMigrationAttribute("0.5.3.0", "0.6.1.0")]
-        public void Migrate_0_5_3_to_0_6_0(XmlDocument doc)
-        {
-            DynamoLogger.Instance.LogWarning("Applying model migration from 0.5.3.x to 0.6.1.x", WarningLevel.Mild);
-        }
-
-        [WorkspaceMigrationAttribute("0.6.1.0", "0.7.0.0")]
-        public void Migrate_0_6_1_to_0_7_0(XmlDocument doc)
-        {
-            //replace all the instances of Dynamo.Nodes.dynXYZZero with a Dynamo.Nodes.XYZ
-            XmlNodeList elNodes = doc.GetElementsByTagName("Elements");
-
-            if (elNodes.Count == 0)
-                elNodes = doc.GetElementsByTagName("dynElements");
-
-            var elementsRoot = elNodes[0];
-
-            var corrections = new List<Tuple<XmlNode, XmlNode>>();
-
-            foreach (XmlNode elNode in elementsRoot.ChildNodes)
-            {
-                if (elNode.Name == "Dynamo.Nodes.dynXYZZero" || 
-                    elNode.Name == "Dynamo.Nodes.XYZZero" ||
-                    elNode.Name == "Dynamo.Nodes.XyzZero")
-                {
-                    //create a new node to replace the old one
-                    var newNode = doc.CreateElement("Dynamo.Nodes.Xyz");
-                    newNode.SetAttribute("type", "Dynamo.Nodes.Xyz");
-                    newNode.SetAttribute("guid", elNode.Attributes["guid"].Value);
-                    newNode.SetAttribute("nickname", "XYZ");
-                    newNode.SetAttribute("x", elNode.Attributes["x"].Value);
-                    newNode.SetAttribute("y", elNode.Attributes["y"].Value);
-                    newNode.SetAttribute("isVisible", elNode.Attributes["isVisible"].Value);
-                    newNode.SetAttribute("isUpstreamVisible", elNode.Attributes["isUpstreamVisible"].Value);
-                    newNode.SetAttribute("lacing", elNode.Attributes["lacing"].Value);
-
-                    //add some info about the default ports
-                    var port1Node = doc.CreateElement("PortInfo");
-                    port1Node.SetAttribute("index", "0");
-                    port1Node.SetAttribute("default", "True");
-                    var port2Node = doc.CreateElement("PortInfo");
-                    port2Node.SetAttribute("index", "1");
-                    port2Node.SetAttribute("default", "True");
-                    var port3Node = doc.CreateElement("PortInfo");
-                    port3Node.SetAttribute("index", "2");
-                    port3Node.SetAttribute("default", "True");
-
-                    newNode.AppendChild(port1Node);
-                    newNode.AppendChild(port2Node);
-                    newNode.AppendChild(port3Node);
-
-                    corrections.Add(new Tuple<XmlNode, XmlNode>(newNode, elNode));
-
-                    //elementsRoot.InsertBefore(newNode, elNode);
-                    //elementsRoot.RemoveChild(elNode);
-                }
-            }
-
-            foreach (var correction in corrections)
-            {
-                DynamoLogger.Instance.LogWarning("Replacing XyzZero with Xyz with default inputs.", WarningLevel.Mild);
-                elementsRoot.InsertBefore(correction.Item1, correction.Item2);
-                elementsRoot.RemoveChild(correction.Item2);
-            }
-
-        }
-
-        #endregion
     }
 
     public class PointEventArgs : EventArgs
