@@ -419,12 +419,12 @@ namespace Dynamo.Tests
         [Test]
         public void CBN_Dynamic_Array_433()
         {
-
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-433
             RunModel(@"core\dsevaluation\CBN_nestedrange592_2.dyn");
             AssertValue("a", null);
         }
-        [Test]
+
+        [Ignore] //Ignored because empty code block nodes should not exist
         public void Regress722()
         {
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-722
@@ -473,6 +473,14 @@ namespace Dynamo.Tests
         public void Regress781()
         {
             OpenModel(@"core\dsevaluation\makeSpiralFromBasePtCenterPtHeight.dyf");
+        }
+
+        [Test]
+        public void Defect_MAGN_844()
+        {
+            OpenModel(@"core\dsevaluation\Defect_MAGN_844.dyn");
+            AssertPreviewValue("8de1b8aa-c6c3-4360-9619-fe9d01a804f8", 1);
+
         }
     }
 }

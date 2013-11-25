@@ -14,6 +14,7 @@ using ProtoCore.BuildData;
 using ArrayNode = ProtoCore.AST.AssociativeAST.ArrayNode;
 using Node = ProtoCore.AST.Node;
 using Operator = ProtoCore.DSASM.Operator;
+using NUnit.Framework;
 
 namespace Dynamo.Nodes
 {
@@ -27,8 +28,8 @@ namespace Dynamo.Nodes
         private string codeToParse = "";
         private List<string> inputIdentifiers = new List<string>();
         private List<string> tempVariables = new List<string>();
-        private string previewVariable;
-        private AssociativeNode previewExpressionAST;
+        private string previewVariable = null;
+        private Node previewExpressionAST = new NullNode();
         private bool shouldFocus = true;
 
         #region Public Methods
@@ -45,20 +46,14 @@ namespace Dynamo.Nodes
             this.GUID = guid;
             this.WorkSpace = workSpace;
             this.shouldFocus = false;
-            DisableReporting();
-            ProcessCode();
-            RaisePropertyChanged("Code");
-            RequiresRecalc = true;
-            EnableReporting();
+            ProcessCodeDirect();
         }
 
         /// <summary>
-        ///     The function sets the state of the node to an erraneous state and displays
-        ///     the the string errorMessage as an error bubble on top of the node.
-        ///     It also removes all the in ports and out ports as well. So that the user knows there is an error.
+        ///     It removes all the in ports and out ports so that the user knows there is an error.
         /// </summary>
         /// <param name="errorMessage"> Error message to be displayed </param>
-        public void DisplayError(string errorMessage)
+        public void ProcessError()
         {
             DynamoLogger.Instance.Log("Error in Code Block Node");
 
@@ -72,9 +67,6 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
 
             previewVariable = null;
-
-            //Set the node state in error and display the message
-            Error(errorMessage);
         }
 
         /// <summary>
@@ -140,6 +132,8 @@ namespace Dynamo.Nodes
                 {
                     if (value != null)
                     {
+                        this.State = ElementState.Error;
+                        string errorMessage = null;
                         DisableReporting();
                         {
                             WorkSpace.UndoRecorder.BeginActionGroup();
@@ -157,7 +151,7 @@ namespace Dynamo.Nodes
                             else
                                 WorkSpace.UndoRecorder.RecordModificationForUndo(this);
                             code = value;
-                            ProcessCode();
+                            ProcessCode(ref errorMessage);
 
                             //Recreate connectors that can be reused
                             LoadAndCreateConnectors(inportConnections, outportConnections);
@@ -165,10 +159,13 @@ namespace Dynamo.Nodes
                         }
                         RaisePropertyChanged("Code");
                         RequiresRecalc = true;
-                        EnableReporting();
                         ReportPosition();
                         if (WorkSpace != null)
                             WorkSpace.Modified();
+                        EnableReporting();
+
+                        if (errorMessage != null)
+                            Error(errorMessage);
                     }
                     else
                         code = null;
@@ -219,7 +216,32 @@ namespace Dynamo.Nodes
         {
             if (name == "Code")
             {
-                Code = value;
+                //Remove the UpdateValue's recording
+                this.WorkSpace.UndoRecorder.PopFromUndoGroup();
+
+                //Since an empty Code Block Node should not exist, this checks for such instances.
+                // If an empty Code Block Node is found, it is deleted. Since the creation and deletion of 
+                // an empty Code Block Node should not be recorded, this method also checks and removes
+                // any unwanted recordings
+
+                if (value == "")
+                {
+                    if (this.Code == "")
+                    {
+                        this.WorkSpace.UndoRecorder.PopFromUndoGroup();
+                        Dynamo.Selection.DynamoSelection.Instance.Selection.Remove(this);
+                        this.WorkSpace.Nodes.Remove(this);
+                    }
+                    else
+                    {
+                        this.WorkSpace.RecordAndDeleteModels(new System.Collections.Generic.List<ModelBase>() { this });
+                    }
+                }
+                else
+                {
+                    if (!value.Equals(this.Code))
+                        Code = value;
+                }
                 return true;
             }
 
@@ -248,6 +270,12 @@ namespace Dynamo.Nodes
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
+            //Do not build if the node is in error.
+            if (this.State == ElementState.Error)
+            {
+                return null;
+            }
+
             //var unboundIdentifiers = new List<string>();
             var resultNodes = new List<AssociativeNode>();
             CodeBlockNode commentNode;
@@ -262,7 +290,7 @@ namespace Dynamo.Nodes
                     // This is already an invalid state. Return an empty resultNodes
                     // A more robust fix is perhaps the ASTBuilder to ignore this node altogether if an error is reported
                     return resultNodes;
-                 }
+                }
 
                 var initStatements = new StringBuilder();
                 for (int i = 0; i < inputIdentifiers.Count; ++i)
@@ -303,7 +331,10 @@ namespace Dynamo.Nodes
                 resultNodes.Add(astNode as ProtoCore.AST.AssociativeAST.AssociativeNode);
             }
 
-            resultNodes.Add(ProtoCore.Utils.NodeUtils.Clone(previewExpressionAST));
+            if (previewExpressionAST == null)
+                throw new ArgumentNullException("preview node not set properly");
+            else if (!(previewExpressionAST is NullNode))
+                resultNodes.Add(ProtoCore.Utils.NodeUtils.Clone(previewExpressionAST) as AssociativeNode);
 
             return resultNodes;
         }
@@ -330,14 +361,17 @@ namespace Dynamo.Nodes
 
         private void ProcessCodeDirect()
         {
-            ProcessCode();
+            string errorMessage = null;
+            ProcessCode(ref errorMessage);
             RaisePropertyChanged("Code");
             RequiresRecalc = true;
             if (WorkSpace != null)
                 WorkSpace.Modified();
+            if (errorMessage != null)
+                Error(errorMessage);
         }
 
-        private void ProcessCode()
+        private void ProcessCode(ref string errorMessage)
         {
             //Format user test
             code = FormatUserText(code);
@@ -345,9 +379,9 @@ namespace Dynamo.Nodes
             //New code => Revamp everything
             codeStatements.Clear();
 
-            if (Code.Equals("")) //If its null then remove all the ports
+            if (Code.Equals("")) //If its null then set preview to null
             {
-                SetPorts(new List<string>());
+                previewExpressionAST = new NullNode();
                 return;
             }
 
@@ -382,25 +416,29 @@ namespace Dynamo.Nodes
                 else
                 {
                     if (errors == null)
-                        DisplayError("Errors not getting sent from compiler to UI");
+                    {
+                        ProcessError();
+                        errorMessage = "Errors not getting sent from compiler to UI";
+                    }
 
                     //Found errors. Get the error message strings and use it to call the DisplayError function
                     if (errors != null)
                     {
-                        string errorMessage = "";
+                        errorMessage = "";
                         int i = 0;
                         for (; i < errors.Count - 1; i++)
                             errorMessage += (errors[i].Message + "\n");
                         errorMessage += errors[i].Message;
-                        DisplayError(errorMessage);
+                        ProcessError();
                     }
                     return;
                 }
             }
             catch (Exception e)
             {
-                DisplayError(e.Message);
+                errorMessage = e.Message;
                 previewVariable = null;
+                ProcessError();
                 return;
             }
 
@@ -408,7 +446,8 @@ namespace Dynamo.Nodes
             string redefinedVariable = this.WorkSpace.GetFirstRedefinedVariable(this);
             if (redefinedVariable != null)
             {
-                DisplayError(redefinedVariable + " is already defined");
+                ProcessError();
+                errorMessage = redefinedVariable + " is already defined";
                 return;
             }
 
@@ -419,31 +458,7 @@ namespace Dynamo.Nodes
         {
             previewVariable = "temp" + Guid.NewGuid().ToString();
             previewVariable = previewVariable.Replace('-', '_');
-            CodeBlockNode commentNode;
-            string finalCode = previewVariable + "=1;";
-
-            try
-            {
-                previewExpressionAST = (GraphUtilities.Parse(finalCode, out commentNode) as CodeBlockNode).Body[0];
-            }
-            catch (Exception ex)
-            {
-                State = ElementState.Error;
-                DynamoLogger.Instance.Log("Failed to build AST for code block node. Error: " + ex.Message);
-                return;
-            }
-
-            if (lastStatement == null)
-                throw new ArgumentNullException("Statement not a binary expression node");
-
-            if (previewExpressionAST != null)
-            {
-                if (tempVariables != null)
-                {
-                    tempVariables.Add(previewVariable);
-                }
-                (previewExpressionAST as BinaryExpressionNode).RightNode = lastStatement.LeftNode;
-            }
+            previewExpressionAST = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(new IdentifierNode(previewVariable), lastStatement.LeftNode, Operator.assign);
         }
 
         /// <summary>
