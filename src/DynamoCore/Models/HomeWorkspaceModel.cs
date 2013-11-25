@@ -41,8 +41,6 @@ namespace Dynamo.Models
         {
             base.Modified();
 
-            DynamoLogger.Instance.Log("===============Modified==================");
-
             var controller = dynSettings.Controller;
             if (dynSettings.Controller.DynamoViewModel.DynamicRunEnabled)
             {
