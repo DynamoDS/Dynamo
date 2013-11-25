@@ -1481,6 +1481,7 @@ namespace Dynamo.Models
             //don't save the file path
             CurrentWorkspace.FileName = "";
             CurrentWorkspace.HasUnsavedChanges = false;
+            CurrentWorkspace.WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
 
             // Clear undo/redo stacks.
             CurrentWorkspace.ClearUndoRecorder();
@@ -1645,17 +1646,15 @@ namespace Dynamo.Models
 
         #region Migrations
 
-        [WorkspaceMigrationAttribute("0.5.3.0", "0.6.0.0")]
+        [WorkspaceMigrationAttribute("0.5.3.0", "0.6.1.0")]
         public void Migrate_0_5_3_to_0_6_0(XmlDocument doc)
         {
-            DynamoLogger.Instance.LogWarning("Applying model migration from 0.5.3.x to 0.6.0.x", WarningLevel.Mild);
+            DynamoLogger.Instance.LogWarning("Applying model migration from 0.5.3.x to 0.6.1.x", WarningLevel.Mild);
         }
 
-        [WorkspaceMigrationAttribute("0.6.1.0", "0.6.2.0")]
-        public void Migrate_0_6_1_to_0_6_2(XmlDocument doc)
+        [WorkspaceMigrationAttribute("0.6.1.0", "0.7.0.0")]
+        public void Migrate_0_6_1_to_0_7_0(XmlDocument doc)
         {
-            DynamoLogger.Instance.LogWarning("XYZZero nodes are obsolete. All instances of XYZZero have been replaced with XYZ with default inputs.", WarningLevel.Mild);
-
             //replace all the instances of Dynamo.Nodes.dynXYZZero with a Dynamo.Nodes.XYZ
             XmlNodeList elNodes = doc.GetElementsByTagName("Elements");
 
@@ -1663,6 +1662,8 @@ namespace Dynamo.Models
                 elNodes = doc.GetElementsByTagName("dynElements");
 
             var elementsRoot = elNodes[0];
+
+            var corrections = new List<Tuple<XmlNode, XmlNode>>();
 
             foreach (XmlNode elNode in elementsRoot.ChildNodes)
             {
@@ -1696,9 +1697,18 @@ namespace Dynamo.Models
                     newNode.AppendChild(port2Node);
                     newNode.AppendChild(port3Node);
 
-                    elementsRoot.InsertBefore(newNode, elNode);
-                    elementsRoot.RemoveChild(elNode);
+                    corrections.Add(new Tuple<XmlNode, XmlNode>(newNode, elNode));
+
+                    //elementsRoot.InsertBefore(newNode, elNode);
+                    //elementsRoot.RemoveChild(elNode);
                 }
+            }
+
+            foreach (var correction in corrections)
+            {
+                DynamoLogger.Instance.LogWarning("Replacing XyzZero with Xyz with default inputs.", WarningLevel.Mild);
+                elementsRoot.InsertBefore(correction.Item1, correction.Item2);
+                elementsRoot.RemoveChild(correction.Item2);
             }
 
         }
