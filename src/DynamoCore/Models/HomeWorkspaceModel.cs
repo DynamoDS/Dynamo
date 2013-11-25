@@ -45,6 +45,19 @@ namespace Dynamo.Models
             if (dynSettings.Controller.DynamoViewModel.DynamicRunEnabled)
             {
 #if USE_DSENGINE
+                // This dispatch timer is to avoid updating graph too frequently.
+                // It happens when we are modifying a bunch of connections in 
+                // a short time frame. E.g., when we delete some nodes with a 
+                // bunch of connections, each deletion of connection will call 
+                // Modified(). Or, when we are modifying the content in a code 
+                // block. 
+                // 
+                // Each time when Modified() is called, runExpressionTimer will
+                // be reset and until no Modified events flood in, the updating
+                // of graph will get executed. 
+                //
+                // We use DispatcherTimer so that the update of graph happens on
+                // the main UI thread.
                 if (null == runExpressionTimer)
                 {
                     runExpressionTimer = new DispatcherTimer();
