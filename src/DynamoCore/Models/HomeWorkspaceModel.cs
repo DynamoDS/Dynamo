@@ -28,12 +28,13 @@ namespace Dynamo.Models
 
         private void OnRunExpression(object sender, EventArgs e)
         {
+            (sender as DispatcherTimer).Stop();
+
             var controller = dynSettings.Controller;
             if (!controller.Running)
             {
                 controller.RunExpression(false);
             }
-            runExpressionTimer.Stop();
         }
 
         public override void Modified()
@@ -53,11 +54,7 @@ namespace Dynamo.Models
                     runExpressionTimer.Tick += new EventHandler(OnRunExpression);
                 }
 
-                if (runExpressionTimer.IsEnabled)
-                {
-                    runExpressionTimer.Stop();
-                }
-
+                runExpressionTimer.Stop();
                 runExpressionTimer.Start(); // reset timer
 #else
                 //DynamoLogger.Instance.Log("Running Dynamically");
