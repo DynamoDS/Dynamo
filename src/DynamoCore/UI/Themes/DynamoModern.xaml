@@ -632,7 +632,7 @@
                                                     ContentTemplate="{TemplateBinding ContentTemplate}"
                                                     CanContentScroll="{TemplateBinding CanContentScroll}" />
                         </Grid>
-                        <Grid Background="Transparent">
+                        <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
