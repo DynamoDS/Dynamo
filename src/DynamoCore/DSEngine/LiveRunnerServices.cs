@@ -60,7 +60,10 @@ namespace Dynamo.DSEngine
         /// <param name="libraries"></param>
         public void ReloadAllLibraries(List<string> libraries)
         {
-            liveRunner.ResetVMAndResyncGraph(libraries);
+            if (libraries.Count > 0)
+            {
+                liveRunner.ResetVMAndResyncGraph(libraries);
+            }
         }
 
         /// <summary>

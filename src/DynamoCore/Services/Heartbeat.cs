@@ -52,8 +52,7 @@ namespace Dynamo.Services
                 try
                 {
 
-
-                    InstrumentationLogger.FORCE_LogInfo("Heartbeat-Uptime-s",
+                    InstrumentationLogger.LogInfo("Heartbeat-Uptime-s",
                                                   DateTime.Now.Subtract(startTime)
                                                           .TotalSeconds.ToString(CultureInfo.InvariantCulture));
 

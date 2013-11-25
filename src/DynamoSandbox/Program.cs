@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using Dynamo;
 using Dynamo.Controls;
-using Dynamo.Utilities;
 
 namespace DynamoSandbox
 {
@@ -36,21 +35,6 @@ namespace DynamoSandbox
             }
             catch (Exception e)
             {
-                try
-                {
-                    // Show the unhandled exception dialog so user can copy the 
-                    // crash details and report the crash if she chooses to.
-                    dynSettings.Controller.OnRequestsCrashPrompt(null,
-                        new CrashPromptArgs(e.Message + "\n\n" + e.StackTrace));
-
-                    // Give user a chance to save (but does not allow cancellation)
-                    bool allowCancellation = false;
-                    dynSettings.Controller.DynamoViewModel.Exit(allowCancellation);
-                }
-                catch
-                {
-                }
-
                 Debug.WriteLine(e.Message);
                 Debug.WriteLine(e.StackTrace);
             }

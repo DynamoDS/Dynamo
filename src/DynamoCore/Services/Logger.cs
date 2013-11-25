@@ -25,15 +25,7 @@ namespace Dynamo.Services
 
        static string userID = GetUserID();
        static string sessionID = Guid.NewGuid().ToString();
-
-
-        private static bool LoggingEnabled
-        {
-            get { return UsageReportingManager.Instance.IsUsageReportingApproved; }
-        }
-
-
-       //private static bool loggingEnabled = true;
+       private static bool loggingEnabled = true;
         private static Log loggerImpl;
         private static Heartbeat heartbeat;
 
@@ -68,16 +60,16 @@ namespace Dynamo.Services
         }
 
 
+        
 
-        public static void FORCE_LogInfo(string tag, string data)
+        public static void EnableLogging(bool enable)
         {
-
-            loggerImpl.Info(tag, data);
+            loggingEnabled = enable;
         }
 
         public static void LogInfo(string tag, string data)
         {
-            if (!LoggingEnabled)
+            if (!loggingEnabled)
                 return;
 
             loggerImpl.Info(tag, data);
@@ -85,7 +77,7 @@ namespace Dynamo.Services
 
         public static void LogDebug(string tag, string data)
         {
-            if (!LoggingEnabled)
+            if (!loggingEnabled)
                 return;
 
             loggerImpl.Debug(tag, data);
@@ -93,7 +85,7 @@ namespace Dynamo.Services
 
         public static void LogPerf(string tag, string data)
         {
-            if (!LoggingEnabled)
+            if (!loggingEnabled)
                 return;
 
             loggerImpl.Info("Perf-" + tag, data);
@@ -101,7 +93,7 @@ namespace Dynamo.Services
 
         public static void LogError(string tag, string data)
         {
-            if (!LoggingEnabled)
+            if (!loggingEnabled)
                 return;
 
             loggerImpl.Error(tag, data);

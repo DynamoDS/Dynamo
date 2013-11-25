@@ -605,6 +605,8 @@ namespace Dynamo.Models
             CurrentWorkspace.Connectors.Clear();
             CurrentWorkspace.Nodes.Clear();
             CurrentWorkspace.Notes.Clear();
+
+            dynSettings.Controller.ResetEngine();
         }
 
         /// <summary>

@@ -9,7 +9,7 @@ using Autodesk.Revit.DB.Structure;
 namespace DSRevitNodes.GeometryConversion
 {
     [Browsable(false)]
-    public static class ProtoCurveToRevitCurve
+    internal static class ProtoCurveToRevitCurve
     {
 
         /// <summary>
@@ -17,7 +17,7 @@ namespace DSRevitNodes.GeometryConversion
         /// </summary>
         /// <param name="crv"></param>
         /// <returns></returns>
-        public static Autodesk.Revit.DB.Curve ToRevitType(this Autodesk.DesignScript.Geometry.Curve crv)
+        internal static Autodesk.Revit.DB.Curve ToRevitType(this Autodesk.DesignScript.Geometry.Curve crv)
         {
             dynamic dyCrv = crv;
             return ProtoCurveToRevitCurve.Convert(dyCrv);
@@ -54,8 +54,7 @@ namespace DSRevitNodes.GeometryConversion
         /// <returns></returns>
         private static Autodesk.Revit.DB.Arc Convert(Autodesk.DesignScript.Geometry.Arc arc)
         {
-            var plane = arc.ContextCoordinateSystem.XYPlane.ToPlane();
-            return Autodesk.Revit.DB.Arc.Create(plane, arc.Radius, arc.StartAngle, arc.EndAngle);
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -63,10 +62,9 @@ namespace DSRevitNodes.GeometryConversion
         /// </summary>
         /// <param name="arc"></param>
         /// <returns></returns>
-        private static Autodesk.Revit.DB.Arc Convert(Autodesk.DesignScript.Geometry.Circle circ)
+        private static Autodesk.Revit.DB.Arc Convert(Autodesk.DesignScript.Geometry.Circle arc)
         {
-            var plane = circ.ContextCoordinateSystem.XYPlane.ToPlane();
-            return Autodesk.Revit.DB.Arc.Create(plane, circ.Radius, 0, 2*Math.PI);
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -76,8 +74,9 @@ namespace DSRevitNodes.GeometryConversion
         /// <returns></returns>
         private static Autodesk.Revit.DB.Line Convert(Autodesk.DesignScript.Geometry.Line line)
         {
-            return Autodesk.Revit.DB.Line.CreateBound(line.StartPoint.ToXyz(), line.EndPoint.ToXyz());
+            throw new NotImplementedException();
         }
+
 
     }
 }

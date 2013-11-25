@@ -92,7 +92,7 @@ namespace Dynamo.Tests
         [TearDown]
         public override void Cleanup()
         {
-            GraphToDSCompiler.GraphUtilities.CleanUp();
+            GraphToDSCompiler.GraphUtilities.Reset();
             base.Cleanup();
         }
 
@@ -419,12 +419,12 @@ namespace Dynamo.Tests
         [Test]
         public void CBN_Dynamic_Array_433()
         {
+
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-433
             RunModel(@"core\dsevaluation\CBN_nestedrange592_2.dyn");
             AssertValue("a", null);
         }
-
-        [Ignore] //Ignored because empty code block nodes should not exist
+        [Test]
         public void Regress722()
         {
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-722
@@ -476,11 +476,15 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Defect_MAGN_844()
+        public void TestLoadNewFile()
         {
-            OpenModel(@"core\dsevaluation\Defect_MAGN_844.dyn");
-            AssertPreviewValue("8de1b8aa-c6c3-4360-9619-fe9d01a804f8", 1);
+            // Load file with CBN containing 'a = 1;'
+            RunModel(@"core\dsevaluation\CBN_Assign.dyn");
+            AssertPreviewValue("144aa20e-66b9-4f00-a872-409257da3a10", 1);
 
+            // Load file with CBN containing 'a;'
+            RunModel(@"core\dsevaluation\CBN_SingleVar.dyn");
+            AssertPreviewValue("144aa20e-66b9-4f00-a872-409257da3a10", null);
         }
     }
 }
