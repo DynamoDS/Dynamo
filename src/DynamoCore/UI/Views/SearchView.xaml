@@ -35,55 +35,56 @@
         </Grid.RowDefinitions>
 
         <!--<TextBlock FontSize="13" FontWeight="SemiBold" Grid.Row="0" Foreground="#AAAAAA" Background="#222222" Padding="15,12,5,8" >Library</TextBlock>-->
-
-        <Button Click="OnLibraryClick" Template="{DynamicResource BackgroundButton}">
-            <Button.Resources>
-                <ControlTemplate x:Key="BackgroundButton" TargetType="Button">
-                    <Border Name="border"
-                            BorderThickness="0"
-                            BorderBrush="Black"
-                            Background="{StaticResource WorkspaceBackgroundBrush}"
-                            Height="20"
-                            Margin="0,0,-1,0">
-                        <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
-                    </Border>
-                </ControlTemplate>
-            </Button.Resources>
-            <Button.Content>
-                <Grid Name="buttonGrid" Mouse.MouseEnter="Button_MouseEnter" Mouse.MouseLeave="buttonGrid_MouseLeave">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <Label Grid.Column="0" FontWeight="Normal" Margin="0" Padding="16,0,0,0" Foreground="#AAAAAA" VerticalAlignment="Center" HorizontalAlignment="Stretch">
-                        Library
-                    </Label>
-                    <Image Grid.Column="1"
-                           Source="/DynamoCore;component/UI/Images/expand_normal.png" Width="20" Height="20" RenderTransformOrigin="0.5, 0.5">
+        <Grid Name="buttonGrid"              
+              Background="{StaticResource WorkspaceBackgroundBrush}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Label Grid.Column="0"
+                   FontWeight="Normal"
+                   Margin="0"
+                   Padding="16,0,0,0"
+                   Foreground="#AAAAAA"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Stretch">
+                Library
+            </Label>
+            <Button Mouse.MouseEnter="Button_MouseEnter"
+                    Mouse.MouseLeave="buttonGrid_MouseLeave"
+                    Click="OnLibraryClick"
+                    Template="{DynamicResource BackgroundButton}"
+                    Grid.Column="1"
+                    VerticalAlignment="Center">
+                <Button.Resources>
+                    <ControlTemplate x:Key="BackgroundButton"
+                                     TargetType="Button">
+                        <Border Name="border"
+                                BorderThickness="0"
+                                BorderBrush="Black"
+                                Background="{StaticResource WorkspaceBackgroundBrush}"
+                                Height="20"
+                                Margin="0,0,-1,0">
+                            <ContentPresenter HorizontalAlignment="Stretch"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Button.Resources>
+                <Button.Content>
+                    <Image Source="/DynamoCore;component/UI/Images/expand_normal.png"
+                           Width="20"
+                           Height="20"
+                           RenderTransformOrigin="0.5, 0.5">
                         <Image.RenderTransform>
-                            <RotateTransform Angle="180"/>
+                            <RotateTransform Angle="180" />
                         </Image.RenderTransform>
                     </Image>
-                </Grid>
-            </Button.Content>
-                
-                
-            <!--<Button.Template>
-                <ControlTemplate>
-                    <Border Background="#444444"
-                        BorderThickness="1"
-                        CornerRadius="0">
-                    <ContentPresenter HorizontalAlignment="Center"
-                                            VerticalAlignment="Top"
-                                            RecognizesAccessKey="True">
-                    </ContentPresenter>
-                    </Border>
-                </ControlTemplate>
-            </Button.Template>-->
-            </Button>
+                </Button.Content>
+            </Button>            
+        </Grid>        
 
         <Border BorderThickness="0,0,0,1"
                 BorderBrush="#3F3F3F"
