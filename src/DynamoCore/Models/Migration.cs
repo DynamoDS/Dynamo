@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Linq;
+using System.Reflection;
+using System.Xml;
+using Dynamo.Utilities;
 
 namespace Dynamo.Models
 {
@@ -23,6 +27,35 @@ namespace Dynamo.Models
         {
             Version = v;
             Upgrade = upgrade;
+        }
+
+        public static void ProcessWorkspaceMigrations(XmlDocument xmlDoc, string version)
+        {
+
+            var migrations =
+                (from method in typeof(WorkspaceMigrations).GetMethods(BindingFlags.Public | BindingFlags.Static)
+                 let attribute =
+                     method.GetCustomAttributes(false)
+                           .OfType<WorkspaceMigrationAttribute>()
+                           .FirstOrDefault()
+                 where attribute != null
+                 let result = new { method, attribute.From, attribute.To }
+                 orderby result.From
+                 select result).ToList();
+
+                var currentVersion = dynSettings.Controller.DynamoModel.HomeSpace.WorkspaceVersion;
+                var workspaceVersion = string.IsNullOrEmpty(version) ? new Version() : new Version(version);
+
+                while (workspaceVersion != null && workspaceVersion < currentVersion)
+                {
+                    var nextMigration = migrations.FirstOrDefault(x => x.From >= workspaceVersion);
+
+                    if (nextMigration == null)
+                        break;
+
+                    nextMigration.method.Invoke(null, new object[] { xmlDoc });
+                    workspaceVersion = nextMigration.To;
+                }
         }
     }
 
