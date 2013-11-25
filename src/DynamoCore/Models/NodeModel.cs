@@ -6,11 +6,13 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
+using System.Reflection;
+using System.Threading;
+using Dynamo.Nodes;
 using System.Xml;
 using Dynamo.DSEngine;
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
-using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
@@ -850,16 +852,31 @@ namespace Dynamo.Models
         #region Node State
 
         /// <summary>
-        ///     Color the connection according to it's port connectivity
-        ///     if all ports are connected, color green, else color orange
+        /// Color the connection according to it's port connectivity
+        /// if all ports are connected, color green, else color orange
         /// </summary>
         public void ValidateConnections()
         {
-            // if there are inputs without connections
-            // mark as dead
-            State = _inPorts.Any(x => !x.Connectors.Any() && !(x.UsingDefaultValue && x.DefaultValueEnabled))
-                        ? ElementState.Dead
-                        : ElementState.Active;
+
+            Action setState = (() =>
+                {
+
+                    // if there are inputs without connections
+                    // mark as dead
+                    State = _inPorts.Any(x => !x.Connectors.Any() && !(x.UsingDefaultValue && x.DefaultValueEnabled))
+                                ? ElementState.Dead
+                                : ElementState.Active;
+                });
+
+            if (dynSettings.Controller != null &&
+                dynSettings.Controller.UIDispatcher != null &&
+                dynSettings.Controller.UIDispatcher.Thread != Thread.CurrentThread)
+            {
+                //Force this onto the UI thread
+                dynSettings.Controller.UIDispatcher.Invoke(setState);
+            }
+            else
+                setState();
         }
 
         public void Error(string p)
@@ -1199,7 +1216,6 @@ namespace Dynamo.Models
             else if (eIn.IsString)
             {
                 string str = (eIn as FScheme.Value.String).Item;
-
                 if (str.Length > maxStringLength)
                     str = str.Substring(0, maxStringLength) + "...";
 
@@ -2117,6 +2133,8 @@ namespace Dynamo.Models
     [AttributeUsage(AttributeTargets.All, Inherited = true)]
     public class NodeDeprecatedAttribute : Attribute { }
 
+    [AttributeUsage(AttributeTargets.All, Inherited = true)]
+    public class NodeHiddenInBrowserAttribute : System.Attribute { }
 
     /// <summary>
     ///     The AlsoKnownAs attribute allows the node implementor to
