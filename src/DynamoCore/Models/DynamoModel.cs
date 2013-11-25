@@ -1654,7 +1654,7 @@ namespace Dynamo.Models
         [WorkspaceMigrationAttribute("0.6.1.0", "0.6.2.0")]
         public void Migrate_0_6_1_to_0_6_2(XmlDocument doc)
         {
-            DynamoLogger.Instance.LogWarning("Applying model migration from 0.6.1.x to 0.6.2.x", WarningLevel.Mild);
+            DynamoLogger.Instance.LogWarning("XYZZero nodes are obsolete. All instances of XYZZero have been replaced with XYZ with default inputs.", WarningLevel.Mild);
 
             //replace all the instances of Dynamo.Nodes.dynXYZZero with a Dynamo.Nodes.XYZ
             XmlNodeList elNodes = doc.GetElementsByTagName("Elements");
@@ -1666,7 +1666,9 @@ namespace Dynamo.Models
 
             foreach (XmlNode elNode in elementsRoot.ChildNodes)
             {
-                if (elNode.Name == "Dynamo.Nodes.dynXYZZero" || elNode.Name == "Dynamo.Nodes.XYZZero")
+                if (elNode.Name == "Dynamo.Nodes.dynXYZZero" || 
+                    elNode.Name == "Dynamo.Nodes.XYZZero" ||
+                    elNode.Name == "Dynamo.Nodes.XyzZero")
                 {
                     //create a new node to replace the old one
                     var newNode = doc.CreateElement("Dynamo.Nodes.Xyz");
