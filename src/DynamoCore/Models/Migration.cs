@@ -48,4 +48,17 @@ namespace Dynamo.Models
             To = String.IsNullOrEmpty(to) ? null : new Version(to);
         }
     }
+
+    [AttributeUsage(AttributeTargets.Method)]
+    public class WorkspaceMigrationAttribute : Attribute
+    {
+        public Version From { get; private set; }
+        public Version To { get; private set; }
+
+        public WorkspaceMigrationAttribute(string from, string to="")
+        {
+            From = new Version(from);
+            To = String.IsNullOrEmpty(to) ? null : new Version(to);
+        }
+    }
 }
