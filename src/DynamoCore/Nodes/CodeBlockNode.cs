@@ -46,11 +46,7 @@ namespace Dynamo.Nodes
             this.GUID = guid;
             this.WorkSpace = workSpace;
             this.shouldFocus = false;
-            DisableReporting();
-            //ProcessCode();
-            RaisePropertyChanged("Code");
-            RequiresRecalc = true;
-            EnableReporting();
+            ProcessCodeDirect();
         }
 
         /// <summary>
