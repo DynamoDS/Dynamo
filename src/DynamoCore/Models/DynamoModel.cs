@@ -178,7 +178,6 @@ namespace Dynamo.Models
         public string UnlockLoadPath { get; set; }
         private WorkspaceModel _cspace;
         internal string editName = "";
-        private List<Migration> _migrations = new List<Migration>();
 
         /// <summary>
         /// Event called when a workspace is hidden
@@ -267,37 +266,11 @@ namespace Dynamo.Models
         /// </summary>
         public event CleanupHandler CleaningUp;
 
-        internal List<Migration> Migrations
-        {
-            get { return _migrations; }
-            set { _migrations = value; }
-        }
-
         #endregion
 
         public DynamoModel()
         {
-            Migrations.Add(new Migration(new Version("0.5.3.0"), new Action(Migrate_0_5_3_to_0_6_0)));
-        }
 
-        /// <summary>
-        /// Run every migration for a model version before current.
-        /// </summary>
-        public void ProcessMigrations()
-        {
-            var migrations =
-                Migrations.Where(x => x.Version < HomeSpace.WorkspaceVersion || x.Version == null)
-                          .OrderBy(x => x.Version);
-            
-            foreach (var migration in migrations)
-            {
-                migration.Upgrade.Invoke();
-            }
-        }
-
-        private void Migrate_0_5_3_to_0_6_0()
-        {
-            DynamoLogger.Instance.LogWarning("Applying model migration from 0.5.3.x to 0.6.0.x", WarningLevel.Mild);
         }
 
         public virtual void OnCleanup(EventArgs e)
@@ -668,6 +641,33 @@ namespace Dynamo.Models
                     }
                 }
 
+                #region process migrations
+                var migrations =
+                (from method in GetType().GetMethods()
+                 let attribute =
+                     method.GetCustomAttributes(false)
+                           .OfType<WorkspaceMigrationAttribute>()
+                           .FirstOrDefault()
+                 where attribute != null
+                 let result = new { method, attribute.From, attribute.To }
+                 orderby result.From
+                 select result).ToList();
+
+                var currentVersion = dynSettings.Controller.DynamoModel.HomeSpace.WorkspaceVersion;
+                var workspaceVersion = string.IsNullOrEmpty(version) ? new Version() : new Version(version);
+
+                while (workspaceVersion != null && workspaceVersion < currentVersion)
+                {
+                    var nextMigration = migrations.FirstOrDefault(x => x.From >= workspaceVersion);
+
+                    if (nextMigration == null)
+                        break;
+
+                    nextMigration.method.Invoke(this, new object[] { xmlDoc });
+                    workspaceVersion = nextMigration.To;
+                }
+                #endregion
+
                 //set the zoom and offsets and trigger events
                 //to get the view to position iteself
                 CurrentWorkspace.X = cx;
@@ -873,7 +873,6 @@ namespace Dynamo.Models
 
                 if(!string.IsNullOrEmpty(version))
                     CurrentWorkspace.WorkspaceVersion = new Version(version);
-                dynSettings.Controller.DynamoModel.ProcessMigrations();
 
                 #endregion
 
@@ -1640,6 +1639,66 @@ namespace Dynamo.Models
             // directly. If that is not the case, please let me know and I'll 
             // fix it.
             throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region Migrations
+
+        [WorkspaceMigrationAttribute("0.5.3.0", "0.6.0.0")]
+        public void Migrate_0_5_3_to_0_6_0(XmlDocument doc)
+        {
+            DynamoLogger.Instance.LogWarning("Applying model migration from 0.5.3.x to 0.6.0.x", WarningLevel.Mild);
+        }
+
+        [WorkspaceMigrationAttribute("0.6.1.0", "0.6.2.0")]
+        public void Migrate_0_6_1_to_0_6_2(XmlDocument doc)
+        {
+            DynamoLogger.Instance.LogWarning("Applying model migration from 0.6.1.x to 0.6.2.x", WarningLevel.Mild);
+
+            //replace all the instances of Dynamo.Nodes.dynXYZZero with a Dynamo.Nodes.XYZ
+            XmlNodeList elNodes = doc.GetElementsByTagName("Elements");
+
+            if (elNodes.Count == 0)
+                elNodes = doc.GetElementsByTagName("dynElements");
+
+            var elementsRoot = elNodes[0];
+
+            foreach (XmlNode elNode in elementsRoot.ChildNodes)
+            {
+                if (elNode.Name == "Dynamo.Nodes.dynXYZZero" || elNode.Name == "Dynamo.Nodes.XYZZero")
+                {
+                    //create a new node to replace the old one
+                    var newNode = doc.CreateElement("Dynamo.Nodes.Xyz");
+                    newNode.SetAttribute("type", "Dynamo.Nodes.Xyz");
+                    newNode.SetAttribute("guid", elNode.Attributes["guid"].Value);
+                    newNode.SetAttribute("nickname", "XYZ");
+                    newNode.SetAttribute("x", elNode.Attributes["x"].Value);
+                    newNode.SetAttribute("y", elNode.Attributes["y"].Value);
+                    newNode.SetAttribute("isVisible", elNode.Attributes["isVisible"].Value);
+                    newNode.SetAttribute("isUpstreamVisible", elNode.Attributes["isUpstreamVisible"].Value);
+                    newNode.SetAttribute("lacing", elNode.Attributes["lacing"].Value);
+
+                    //add some info about the default ports
+                    var port1Node = doc.CreateElement("PortInfo");
+                    port1Node.SetAttribute("index", "0");
+                    port1Node.SetAttribute("default", "True");
+                    var port2Node = doc.CreateElement("PortInfo");
+                    port2Node.SetAttribute("index", "1");
+                    port2Node.SetAttribute("default", "True");
+                    var port3Node = doc.CreateElement("PortInfo");
+                    port3Node.SetAttribute("index", "2");
+                    port3Node.SetAttribute("default", "True");
+
+                    newNode.AppendChild(port1Node);
+                    newNode.AppendChild(port2Node);
+                    newNode.AppendChild(port3Node);
+
+                    elementsRoot.InsertBefore(newNode, elNode);
+                    elementsRoot.RemoveChild(elNode);
+                }
+            }
+
         }
 
         #endregion
