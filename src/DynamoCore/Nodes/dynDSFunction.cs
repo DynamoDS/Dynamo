@@ -136,6 +136,7 @@ namespace Dynamo.Nodes
     [NodeName("Function Node")]
     [NodeDescription("DesignScript Builtin Functions")]
     [IsInteractive(false)]
+    [NodeHiddenInBrowser] 
     [NodeSearchableAttribute(false)]
     [IsMetaNodeAttribute]
     public class DSFunction : NodeModel
