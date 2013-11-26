@@ -5,7 +5,7 @@
 AppName=DynamoDS
 AppVerName=DynamoDS 0.6.3
 AppPublisher=Autodesk, Inc.
-AppID={{12A2BEA3-7641-4AEC-B344-9B49C8DDFF1A}
+AppID={{6B5FA6CA-9D69-46CF-B517-1F90C64F7C0B}
 AppCopyright=
 AppPublisherURL=http://www.dynamobim.com
 AppSupportURL=
