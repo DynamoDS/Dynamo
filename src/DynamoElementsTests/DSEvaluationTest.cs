@@ -518,5 +518,15 @@ namespace Dynamo.Tests
             //               ==> 1 = a;
             RunModel(@"core\dsevaluation\Defect_MAGN_829_5.dyn");
         }
+
+        [Test]
+        public void Defect_MAGN_610()
+        {
+            // Multiline CBN ==> a={1,2,3};
+            //               ==> a[0]= 3;
+            RunModel(@"core\dsevaluation\Defect_MAGN_610.dyn");
+            AssertPreviewValue("aa78716b-f3f6-4676-bb72-2cb1c34181f8", 3);
+            AssertValue("a", 3);
+        }
     }
 }
