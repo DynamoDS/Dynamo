@@ -469,61 +469,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public void NodeToCode(object parameter)
-        {
-            List<NodeModel> nodeList = DynamoSelection.Instance.Selection.OfType<NodeModel>().ToList();
-
-            string code = dynSettings.Controller.EngineController.ConvertNodesToCode(nodeList);
-
-            //UndoRedo Action Group-----------------------------------------------------------------------------------------
-            _model.UndoRecorder.BeginActionGroup();
-
-            // Node deletion
-            IEnumerable<ISelectable> nodeModelsInSelection = DynamoSelection.Instance.Selection.Where(x => x is NodeModel);
-            int m = 0;
-            var modelsInSelection = nodeModelsInSelection as IList<ISelectable> ?? nodeModelsInSelection.ToList();
-            while (modelsInSelection.Count() > m)
-            {
-                var node = modelsInSelection.ElementAt(m) as NodeModel;
-                var connectors = node.AllConnectors;
-                var connectorModels = connectors as IList<ConnectorModel> ?? connectors.ToList();
-                for (int n = 0; n < connectorModels.Count(); ++n)
-                {
-                    _model.UndoRecorder.RecordDeletionForUndo(connectorModels.ElementAt(n));
-                    connectorModels.ElementAt(n).NotifyConnectedPortsOfDeletion();
-                    _model.Connectors.Remove(connectorModels.ElementAt(n));
-                }
-                _model.UndoRecorder.RecordDeletionForUndo(node);
-                _model.Nodes.Remove(node);
-                m++;
-            }
-            
-            // create node
-            var guid = Guid.NewGuid();
-            var codeBlockNode = new CodeBlockNodeModel(code, guid, this._model);
-            this._model.UndoRecorder.RecordCreationForUndo(codeBlockNode);
-            this._model.Nodes.Add(codeBlockNode);
-
-
-            _model.UndoRecorder.EndActionGroup();
-            //End UndoRedo Action Group------------------------------------------------------------------------------------
-
-            // select node
-            var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
-            if (placedNode != null)
-            {
-                DynamoSelection.Instance.ClearSelection();
-                DynamoSelection.Instance.Selection.Add(placedNode);
-            }
-
-            this._model.Modified();
-        }
-
-        internal bool CanNodeToCode(object parameter)
-        {
-            return true;
-        }
-
         public void SelectAll(object parameter)
         {
             DynamoSelection.Instance.ClearSelection();
