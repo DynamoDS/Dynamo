@@ -15,7 +15,22 @@ using Dynamo.Core;
 
 namespace Dynamo.ViewModels
 {
-    public delegate void InfoBubbleEventHandler(object sender, EventArgs e);
+    public class InfoBubbleEventArgs : EventArgs
+    {
+        public enum Request
+        {
+            FadeIn, FadeOut, Show, Hide
+        }
+
+        public Request RequestType { get; private set; }
+
+        public InfoBubbleEventArgs(Request request)
+        {
+            this.RequestType = request;
+        }
+    }
+
+    public delegate void InfoBubbleEventHandler(object sender, InfoBubbleEventArgs e);
 
     public partial class InfoBubbleViewModel : ViewModelBase
     {
@@ -211,65 +226,23 @@ namespace Dynamo.ViewModels
             get { return 0; }
         }
 
+        public bool AlwaysVisible
+        {
+            get { return alwaysVisible; }
+        }
+
         #endregion
 
         #region Event Handlers
-        public event InfoBubbleEventHandler FadeInInfoBubble;
-        public event InfoBubbleEventHandler FadeOutInfoBubble;
-        public event InfoBubbleEventHandler ShowInfoBubble;
-        public event InfoBubbleEventHandler HideInfoBubble;
 
-        /// <summary>
-        /// For fading in info bubble
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public virtual void OnFadeInInfoBubble(object sender, EventArgs e)
+        public event InfoBubbleEventHandler RequestAction;
+
+        public void OnRequestAction(InfoBubbleEventArgs e)
         {
-            if (FadeInInfoBubble != null)
-            {
-                FadeInInfoBubble(this, e);
-            }
+            if (RequestAction != null)
+                RequestAction(this, e);
         }
 
-        /// <summary>
-        /// For fading out info bubble
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public virtual void OnFadeOutInfoBubble(object sender, EventArgs e)
-        {
-            if (FadeOutInfoBubble != null)
-            {
-                FadeOutInfoBubble(this, e);
-            }
-        }
-
-        /// <summary>
-        /// For showing info bubble
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public virtual void OnShowInfoBubble(object sender, EventArgs e)
-        {
-            if (ShowInfoBubble != null)
-            {
-                ShowInfoBubble(this, e);
-            }
-        }
-
-        /// <summary>
-        /// For hiding info bubble
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public virtual void OnHideInfoBubble(object sender, EventArgs e)
-        {
-            if (HideInfoBubble != null)
-            {
-                HideInfoBubble(this, e);
-            }
-        }
         #endregion
 
         #region Public Methods
@@ -305,65 +278,6 @@ namespace Dynamo.ViewModels
         }
 
         private bool CanUpdatePosition(object parameter)
-        {
-            return true;
-        }
-
-        private void FadeIn(object parameter)
-        {
-            if (dynSettings.Controller.DynamoViewModel.IsMouseDown || 
-                !dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.CanShowInfoBubble)
-                return;
-            
-            // TODO: Opacity should be removed from usage soon.
-            // Doing this to keep error bubble working
-            Opacity = Configurations.MaxOpacity;
-            OnFadeInInfoBubble(this, new EventArgs());
-        }
-
-        private bool CanFadeIn(object parameter)
-        {
-            return true;
-        }
-
-        private void FadeOut(object parameter)
-        {
-            if (alwaysVisible)
-                return;
-            
-            // TODO: Opacity should be removed from usage soon
-            // Doing this to keep error bubble working
-            Opacity = 0;
-            OnFadeOutInfoBubble(this, new EventArgs());
-        }
-
-        private bool CanFadeOut(object parameter)
-        {
-            return true;
-        }
-
-        private void InstantCollapse(object parameter)
-        {
-            // TODO: Opacity should be removed from usage soon
-            // Doing this to keep error bubble working
-            Opacity = 0;
-            OnHideInfoBubble(this, new EventArgs());
-        }
-
-        private bool CanInstantCollapse(object parameter)
-        {
-            return true;
-        }
-
-        private void InstantAppear(object parameter)
-        {
-            // TODO: Opacity should be removed from usage soon.
-            // Doing this to keep error bubble working
-            Opacity = Configurations.MaxOpacity;
-            OnShowInfoBubble(this, new EventArgs());
-        }
-
-        private bool CanInstantAppear(object parameter)
         {
             return true;
         }

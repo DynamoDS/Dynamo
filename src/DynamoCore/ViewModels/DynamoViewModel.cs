@@ -1309,7 +1309,8 @@ namespace Dynamo.ViewModels
         {
             InfoBubbleDataPacket data = (InfoBubbleDataPacket)parameter;
             controller.InfoBubbleViewModel.UpdateContentCommand.Execute(data);
-            controller.InfoBubbleViewModel.FadeInCommand.Execute(null);
+            controller.InfoBubbleViewModel.OnRequestAction(
+                new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.FadeIn));
         }
 
         internal bool CanShowInfoBubble(object parameter)
@@ -1319,7 +1320,8 @@ namespace Dynamo.ViewModels
 
         public void HideInfoBubble(object parameter)
         {
-            controller.InfoBubbleViewModel.FadeOutCommand.Execute(null);
+            controller.InfoBubbleViewModel.OnRequestAction(
+                new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.FadeOut));
         }
 
         internal bool CanHideInfoBubble(object parameter)
