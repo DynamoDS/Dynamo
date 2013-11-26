@@ -30,7 +30,7 @@ namespace DSRevitNodes.GeometryConversion
         /// <returns></returns>
         private static Autodesk.Revit.DB.Curve Convert(Autodesk.DesignScript.Geometry.BSplineCurve crv)
         {
-            // TODO: degree elevation algorithm
+            // TODO PB: degree elevation algorithm
 
             if (crv.Degree < 2)
             {
