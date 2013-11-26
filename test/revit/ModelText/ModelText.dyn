@@ -1,4 +1,4 @@
-<Workspace Version="0.7.0.17877" X="182.992354867355" Y="72.2106876456874" zoom="0.5" Description="" Category="" Name="Home">
+<Workspace Version="0.6.0.0" X="182.992354867355" Y="72.2106876456874" zoom="0.5" Description="" Category="" Name="Home">
   <Elements>
     <Dynamo.Nodes.ModelText type="Dynamo.Nodes.ModelText" guid="f2e6e48d-7046-48bd-bdd0-39c1eada4375" nickname="Model Text" x="1477.38492063492" y="525.067777777778" isVisible="true" isUpstreamVisible="true" lacing="Longest">
       <Run>
