@@ -14,6 +14,7 @@ using Dynamo.Utilities;
 using Microsoft.Practices.Prism.ViewModel;
 using String = System.String;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Models
 {
@@ -265,8 +266,8 @@ namespace Dynamo.Models
 
         internal Version WorkspaceVersion { get; set; }
 
-        
-        
+
+
         public delegate void WorkspaceSavedEvent(WorkspaceModel model);
         public event WorkspaceSavedEvent WorkspaceSaved;
 
@@ -283,7 +284,7 @@ namespace Dynamo.Models
             get { return 0; }
             set
             {
-                
+
             }
         }
 
@@ -861,10 +862,10 @@ namespace Dynamo.Models
                 {
                     string type = model.GetType().FullName;
                     string message = string.Format(
-                        "ModelBase.UpdateValue call not handled.\n\n" + 
+                        "ModelBase.UpdateValue call not handled.\n\n" +
                         "Model type: {0}\n" +
-                        "Model GUID: {1}\n" + 
-                        "Property name: {2}\n" + 
+                        "Model GUID: {1}\n" +
+                        "Property name: {2}\n" +
                         "Property value: {3}",
                         type, modelGuid.ToString(), name, value);
 
@@ -912,12 +913,16 @@ namespace Dynamo.Models
             if (!nodes.Any())
                 return;
 
-            string code = dynSettings.Controller.EngineController.ConvertNodesToCode(nodes);
+            Dictionary<string, string> variableNameMap;
+            string code = dynSettings.Controller.EngineController.ConvertNodesToCode(nodes, out variableNameMap);
 
-            //UndoRedo Action Group-----------------------------------------------------------------------------------------
+            //UndoRedo Action Group----------------------------------------------
             UndoRecorder.BeginActionGroup();
 
             // Delete all nodes
+            var externalInputConnections = new Dictionary<ConnectorModel, string>();
+            var externalOutputConnections = new Dictionary<ConnectorModel, string>();
+
             var nodeList = nodes.ToList();
             for (int i = 0; i < nodeList.Count; ++i)
             {
@@ -932,6 +937,22 @@ namespace Dynamo.Models
                 for (int n = 0; n < connectors.Count(); ++n)
                 {
                     var connector = connectors[n];
+                    if (!IsInternalNodeToCodeConnection(connector))
+                    {
+                        //If the connector is an external connector, the save its details
+                        //for recreation later
+                        if (connector.Start.Owner == node)
+                        {
+                            string portName = GetNewPortName(connector.Start, PortType.OUTPUT, variableNameMap);
+                            externalOutputConnections.Add(connector, portName);
+                        }
+                        else
+                        {
+                            string portName = GetNewPortName(connector.Start, PortType.INPUT, variableNameMap);
+                            externalInputConnections.Add(connector, portName);
+                        }
+                    }
+
                     UndoRecorder.RecordDeletionForUndo(connector);
                     connector.NotifyConnectedPortsOfDeletion();
                     Connectors.Remove(connector);
@@ -941,14 +962,18 @@ namespace Dynamo.Models
                 Nodes.Remove(node);
             }
 
-            // create node
+
+            // Create node
             var codeBlockNode = new CodeBlockNodeModel(code, nodeId, this);
             UndoRecorder.RecordCreationForUndo(codeBlockNode);
             Nodes.Add(codeBlockNode);
 
 
+            ReConnectInputConnections(externalInputConnections, codeBlockNode);
+            ReConnectOutputConnections(externalOutputConnections, codeBlockNode);
+
             UndoRecorder.EndActionGroup();
-            //End UndoRedo Action Group------------------------------------------------------------------------------------
+            //End UndoRedo Action Group------------------------------------------
 
             // select node
             var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == nodeId);
@@ -960,6 +985,119 @@ namespace Dynamo.Models
 
             Modified();
         }
+
+        #region Node To Code Reconnection
+
+        /// <summary>
+        /// Checks whether the given connection is inside the node to code set or outside it. 
+        /// This determines if it should be redrawn(if it is external) or if it should be 
+        /// deleted (if it is internal)
+        /// </summary>
+        private bool IsInternalNodeToCodeConnection(ConnectorModel connector)
+        {
+            return DynamoSelection.Instance.Selection.Contains(connector.Start.Owner) && DynamoSelection.Instance.Selection.Contains(connector.End.Owner);
+        }
+
+        /// <summary>
+        /// Since the old set  of nodes becomes a new code block node, a connector requires the 
+        /// the port of the new code block that it should connect to. This can be achieved by finding 
+        /// the new port name. 
+        /// </summary>
+        /// <param name="portModel">Old port that is used for connection</param>
+        /// <param name="portType"> Input or Output</param>
+        /// <param name="variableNameMap"> It is adictionary that maps the old variable names to the 
+        /// new variable names generated by the NodeToCode function</param>
+        /// <returns></returns>
+        private String GetNewPortName(PortModel portModel, PortType portType, Dictionary<string, string> variableNameMap)
+        {
+            string portName;
+
+            //Currently all the DS nodes get converted into variables based on the GUID, except for 
+            //the code block node.
+            if (portModel.Owner is CodeBlockNodeModel)
+            {
+                //The code block node uses names for ports based on the name of the defined variable
+                //If there is no defined variable, it uses a randomly generated temp name
+                portName = portModel.ToolTipContent;
+                if (portName == "Statement Output")
+                {
+                    var cbn = portModel.Owner as CodeBlockNodeModel;
+                    int index = cbn.OutPorts.IndexOf(portModel);
+                    //Access the temp name through the AST identifier node
+                    portName = (cbn.GetAstIdentifierForOutputIndex(index) as IdentifierNode).Value;
+                }
+                else
+                    return portName;
+            }
+            else
+            {
+                portName = "var_" + (portModel.Owner.GUID.ToString().Replace("-", ""));
+            }
+
+            //Output temp names are converted into simpler forms by NodeToCode.
+            //ToDo : Change once input names are also converted.
+            if (portType == PortType.OUTPUT)
+                portName = variableNameMap[portName];
+
+            return portName;
+        }
+
+        /// <summary>
+        /// Forms new connections from the external nodes to the Node To Code Node,
+        /// based on the connectors passed as inputs.
+        /// </summary>
+        /// <param name="externalOutputConnections">List of connectors to remake, along with the port names of the new port</param>
+        /// <param name="codeBlockNode">The new Node To Code created Code Block Node</param>
+        private void ReConnectOutputConnections(Dictionary<ConnectorModel, string> externalOutputConnections, CodeBlockNodeModel codeBlockNode)
+        {
+            foreach (var kvp in externalOutputConnections)
+            {
+                var connector = kvp.Key;
+                string portName = kvp.Value;
+                int startIndex = 0, endIndex = 0;
+
+                //Get the start and end idex for the ports for the connection
+                endIndex = connector.End.Owner.InPorts.IndexOf(connector.End);
+                var portModel = codeBlockNode.OutPorts.Where(x => x.ToolTipContent == portName).First() as PortModel;
+                startIndex = codeBlockNode.OutPorts.IndexOf(portModel);
+
+                //Make the new connection and then record and add it
+                var newConnector = ConnectorModel.Make(codeBlockNode, connector.End.Owner,
+                    startIndex, endIndex, PortType.INPUT);
+
+                this.Connectors.Add(newConnector);
+                UndoRecorder.RecordCreationForUndo(newConnector);
+            }
+        }
+
+        /// <summary>
+        /// Forms new connections from the external nodes to the Node To Code Node,
+        /// based on the connectors passed as inputs.
+        /// </summary>
+        /// <param name="externalInputConnections">List of connectors to remake, along with the port names of the new port</param>
+        /// <param name="codeBlockNode">The new Node To Code created Code Block Node</param>
+        private void ReConnectInputConnections(Dictionary<ConnectorModel, string> externalInputConnections, CodeBlockNodeModel codeBlockNode)
+        {
+            foreach (var kvp in externalInputConnections)
+            {
+                var connector = kvp.Key;
+                string portName = kvp.Value;
+                int startIndex = 0, endIndex = 0;
+
+                //Find the start and end index of the ports for the connection
+                startIndex = connector.Start.Owner.OutPorts.IndexOf(connector.Start);
+                var portModel = codeBlockNode.InPorts.Where(x => x.ToolTipContent == portName).First() as PortModel;
+                endIndex = codeBlockNode.InPorts.IndexOf(portModel);
+
+                //Make the new connection and then record and add it
+                var newConnector = ConnectorModel.Make(connector.Start.Owner, codeBlockNode,
+                    startIndex, endIndex, PortType.INPUT);
+
+                this.Connectors.Add(newConnector);
+                UndoRecorder.RecordCreationForUndo(newConnector);
+            }
+        }
+        #endregion
 
         /// <summary>
         /// This function finds if any variable declared in the specified code block exists in the workspace
@@ -973,10 +1111,10 @@ namespace Dynamo.Models
             List<string> newDefVars = codeBlockNode.GetDefinedVariableNames();
             return (from cbn in Nodes.OfType<CodeBlockNodeModel>().Where(x => x != codeBlockNode)
                     select cbn.GetDefinedVariableNames()
-                    into oldDefVars
-                    from newVar in newDefVars
-                    where oldDefVars.Contains(newVar)
-                    select newVar).FirstOrDefault();
+                        into oldDefVars
+                        from newVar in newDefVars
+                        where oldDefVars.Contains(newVar)
+                        select newVar).FirstOrDefault();
         }
     }
 }

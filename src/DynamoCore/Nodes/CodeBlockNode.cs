@@ -500,8 +500,7 @@ namespace Dynamo.Nodes
                 if (RequiresOutPort(s, i))
                 {
                     string nickName = Statement.GetDefinedVariableNames(s, true)[0];
-
-                    if (nickName.StartsWith("temp") && nickName.Length > 9) // Do a better check
+                    if (tempVariables.Contains(nickName)) 
                         nickName = "Statement Output"; //Set tool tip incase of random var name
 
                     OutPortData.Add(
