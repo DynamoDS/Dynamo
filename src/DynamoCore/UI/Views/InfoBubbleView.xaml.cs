@@ -109,23 +109,6 @@ namespace Dynamo.Controls
         #endregion
 
         #region FadeIn FadeOut Event Handling
-        private void FadeInInfoBubble(object sender, EventArgs e)
-        {
-            //Console.WriteLine("FadeIn start");
-
-            fadeOutStoryBoard.Stop(this);
-            mainGrid.Visibility = Visibility.Visible;
-            fadeInStoryBoard.Begin(this);
-        }
-
-        private void FadeOutInfoBubble(object sender, EventArgs e)
-        {
-            //Console.WriteLine("FadeOut start");
-
-            fadeInStoryBoard.Stop(this);
-            mainGrid.Visibility = Visibility.Collapsed;
-            fadeOutStoryBoard.Begin(this);
-        }
 
         private void CountDownDoubleAnimation_Completed(object sender, EventArgs e)
         {
@@ -141,34 +124,12 @@ namespace Dynamo.Controls
         }
         #endregion
 
-        #region Show/Hide Info Bubble
-        // Show bubble instantly
-        private void ShowInfoBubble(object sender, EventArgs e)
-        {            
-            mainGrid.Visibility = Visibility.Visible;
-            // Run animation and skip it to end state i.e. MaxOpacity
-            fadeInStoryBoard.Begin(this);
-            fadeInStoryBoard.SkipToFill(this);
-        }
-
-        // Hide bubble instantly
-        private void HideInfoBubble(object sender, EventArgs e)
-        {
-            mainGrid.Visibility = Visibility.Collapsed;
-            fadeOutStoryBoard.Begin(this);
-            fadeOutStoryBoard.SkipToFill(this);
-        }
-        #endregion
-
         private void InfoBubbleView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (DataContext != null && DataContext is InfoBubbleViewModel)
             {
                 (DataContext as InfoBubbleViewModel).PropertyChanged += ViewModel_PropertyChanged;
-                (DataContext as InfoBubbleViewModel).FadeInInfoBubble += FadeInInfoBubble;
-                (DataContext as InfoBubbleViewModel).FadeOutInfoBubble += FadeOutInfoBubble;
-                (DataContext as InfoBubbleViewModel).ShowInfoBubble += ShowInfoBubble;
-                (DataContext as InfoBubbleViewModel).HideInfoBubble += HideInfoBubble;
+                (DataContext as InfoBubbleViewModel).RequestAction += InfoBubbleRequestAction;
             }
             UpdateContent();
         }
@@ -317,20 +278,69 @@ namespace Dynamo.Controls
                 return null;
         }
 
+        private void InfoBubbleRequestAction(object sender, InfoBubbleEventArgs e)
+        {
+            switch (e.RequestType)
+            {
+                case InfoBubbleEventArgs.Request.Show:
+                    ShowInfoBubble();
+                    break;
+                case InfoBubbleEventArgs.Request.Hide:
+                    HideInfoBubble();
+                    break;
+                case InfoBubbleEventArgs.Request.FadeIn:
+                    FadeInInfoBubble();
+                    break;
+                case InfoBubbleEventArgs.Request.FadeOut:
+                    FadeOutInfoBubble();
+                    break;
+            }
+        }
+
+        private void ShowInfoBubble()
+        {
+            if (mainGrid.Visibility == System.Windows.Visibility.Collapsed)
+            {
+                mainGrid.Visibility = Visibility.Visible;
+                // Run animation and skip it to end state i.e. MaxOpacity
+                fadeInStoryBoard.Begin(this);
+                fadeInStoryBoard.SkipToFill(this);
+            }
+        }
+
+        // Hide bubble instantly
+        private void HideInfoBubble()
+        {
+            if (mainGrid.Visibility == System.Windows.Visibility.Visible)
+            {
+                mainGrid.Visibility = Visibility.Collapsed;
+                fadeOutStoryBoard.Begin(this);
+                fadeOutStoryBoard.SkipToFill(this);
+            }
+        }
+
         private void FadeInInfoBubble()
         {
             if (this.IsDisconnected)
                 return;
-                
-            ViewModel.FadeInCommand.Execute(null);
+
+            if (dynSettings.Controller.DynamoViewModel.IsMouseDown ||
+                !dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.CanShowInfoBubble)
+                return;
+
+            fadeOutStoryBoard.Stop(this);
+            mainGrid.Visibility = Visibility.Visible;
+            fadeInStoryBoard.Begin(this);
         }
 
         private void FadeOutInfoBubble()
         {
-            if (this.IsDisconnected)
+            if (this.IsDisconnected || (this.ViewModel.AlwaysVisible))
                 return;
-                
-            ViewModel.FadeOutCommand.Execute(null);
+
+            fadeInStoryBoard.Stop(this);
+            mainGrid.Visibility = Visibility.Collapsed;
+            fadeOutStoryBoard.Begin(this);
         }
 
         private void ContentContainer_MouseEnter(object sender, MouseEventArgs e)
@@ -385,7 +395,7 @@ namespace Dynamo.Controls
             {
                 ViewModel.IsShowPreviewByDefault = false;
                 ViewModel.SetAlwaysVisibleCommand.Execute(false);
-                ViewModel.InstantCollapseCommand.Execute(null);
+                this.HideInfoBubble();
             }
             else
             {
