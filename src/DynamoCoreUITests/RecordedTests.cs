@@ -1056,6 +1056,27 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(1, workspace.Connectors.Count);
         }
 
+        [Test, RequiresSTA]
+        public void Defect_MAGN_613()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-613
+            RunCommandsFromFile("Defect_MAGN_613.xml");
+
+            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count);
+
+            //Check the CBN for input and output ports count
+            var cbn = GetNode("3c7c3458-70be-4588-b162-b1099cf30ebc") as CodeBlockNodeModel;
+            Assert.AreNotEqual(ElementState.Error, cbn.State);
+            Assert.AreEqual(1, cbn.OutPorts.Count);
+            Assert.AreEqual(0, cbn.InPorts.Count);
+
+            //Check the position of ports
+            Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual(64, cbn.OutPorts[0].MarginThickness.Top);
+
+        }
+
         #endregion
 
         #region Private Helper Methods
