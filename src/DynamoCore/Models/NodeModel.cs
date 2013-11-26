@@ -699,6 +699,18 @@ namespace Dynamo.Models
                                    GetAstIdentifierForOutputIndex(output.Index))));
         }
 
+        /// <summary>
+        /// Given a port model, It returns the name of the variable that will be 
+        /// created if this node was converted into a code block node using the 
+        /// Node To Code method
+        /// </summary>
+        /// <param name="portModel"></param>
+        /// <returns></returns>
+        internal virtual string GetNodeToCodeName(PortModel portModel)
+        {
+            return "var_" + this.GUID.ToString().Replace("-","");
+        }
+
         #endregion
 
         #region Input and Output Connections

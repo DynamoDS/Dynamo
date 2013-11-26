@@ -355,6 +355,16 @@ namespace Dynamo.Nodes
             return (codeStatements[statementIndex].AstNode as BinaryExpressionNode).LeftNode as IdentifierNode;
         }
 
+        internal override string GetNodeToCodeName(PortModel portModel)
+        {
+            if (portModel.ToolTipContent == "Statement Output")
+            {
+                int index = OutPorts.IndexOf(portModel);
+                return (GetAstIdentifierForOutputIndex(index) as IdentifierNode).Value;
+            }
+            return portModel.ToolTipContent;
+        }
+
         #endregion
 
         #region Private Methods
