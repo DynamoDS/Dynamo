@@ -14,7 +14,7 @@ namespace DSRevitNodesTests.GeometryConversion
     [TestFixture]
     internal class ProtoToRevitCurveTests
     {
-
+        [Test]
         public void BSplineCurve_Basic()
         {
             var pts = new[]
@@ -49,6 +49,7 @@ namespace DSRevitNodesTests.GeometryConversion
 
         } 
 
+        [Test]
         public void Circle_Basic()
         {
             var radius = 4;
@@ -71,6 +72,7 @@ namespace DSRevitNodesTests.GeometryConversion
 
         } 
 
+        [Test]
         public void Arc_Basic()
         {
             var circ = Autodesk.DesignScript.Geometry.Arc.ByCenterPointRadiusAngle(Point.ByCoordinates(1, 2, 3), 4,
@@ -91,6 +93,7 @@ namespace DSRevitNodesTests.GeometryConversion
             // TODO: test the interval of the revit arc
         } 
 
+        [Test]
         public void Line_Basic()
         {
             var line = Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint( Point.ByCoordinates(1, 2, 3), Point.ByCoordinates(2,4,6));
