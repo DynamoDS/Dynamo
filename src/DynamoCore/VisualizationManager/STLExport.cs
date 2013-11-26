@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
+using Dynamo.Nodes;
 using Dynamo.Utilities;
 
 namespace Dynamo
@@ -27,7 +28,9 @@ namespace Dynamo
                         var b = mesh.Positions[mesh.TriangleIndices[i+1]];
                         var c = mesh.Positions[mesh.TriangleIndices[i+2]];
 
-                        tw.WriteLine("\tfacet normal 0 0 0");
+                        var n1 = mesh.Normals[mesh.TriangleIndices[i]];
+
+                        tw.WriteLine(string.Format("\tfacet normal {0} {1} {2}", n1.X, n1.Y, n1.Z));
                         tw.WriteLine("\t\touter loop");
                         tw.WriteLine(string.Format("\t\t\tvertex {0} {1} {2}", a.X, a.Y, a.Z));
                         tw.WriteLine(string.Format("\t\t\tvertex {0} {1} {2}", b.X, b.Y, b.Z));
