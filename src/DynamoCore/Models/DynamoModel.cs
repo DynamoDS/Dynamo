@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -13,8 +12,6 @@ using System.Windows.Forms;
 using System.Windows.Threading;
 using System.Xml;
 using Dynamo.Nodes;
-using Dynamo.Nodes.Search;
-using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.Selection;
 using Microsoft.Practices.Prism;
@@ -178,7 +175,6 @@ namespace Dynamo.Models
         public string UnlockLoadPath { get; set; }
         private WorkspaceModel _cspace;
         internal string editName = "";
-        private List<Migration> _migrations = new List<Migration>();
 
         /// <summary>
         /// Event called when a workspace is hidden
@@ -267,37 +263,11 @@ namespace Dynamo.Models
         /// </summary>
         public event CleanupHandler CleaningUp;
 
-        internal List<Migration> Migrations
-        {
-            get { return _migrations; }
-            set { _migrations = value; }
-        }
-
         #endregion
 
         public DynamoModel()
         {
-            Migrations.Add(new Migration(new Version("0.5.3.0"), new Action(Migrate_0_5_3_to_0_6_0)));
-        }
-
-        /// <summary>
-        /// Run every migration for a model version before current.
-        /// </summary>
-        public void ProcessMigrations()
-        {
-            var migrations =
-                Migrations.Where(x => x.Version < HomeSpace.WorkspaceVersion || x.Version == null)
-                          .OrderBy(x => x.Version);
             
-            foreach (var migration in migrations)
-            {
-                migration.Upgrade.Invoke();
-            }
-        }
-
-        private void Migrate_0_5_3_to_0_6_0()
-        {
-            DynamoLogger.Instance.LogWarning("Applying model migration from 0.5.3.x to 0.6.0.x", WarningLevel.Mild);
         }
 
         public virtual void OnCleanup(EventArgs e)
@@ -668,6 +638,8 @@ namespace Dynamo.Models
                     }
                 }
 
+                MigrationManager.Instance.ProcessWorkspaceMigrations(xmlDoc, version);
+
                 //set the zoom and offsets and trigger events
                 //to get the view to position iteself
                 CurrentWorkspace.X = cx;
@@ -873,7 +845,6 @@ namespace Dynamo.Models
 
                 if(!string.IsNullOrEmpty(version))
                     CurrentWorkspace.WorkspaceVersion = new Version(version);
-                dynSettings.Controller.DynamoModel.ProcessMigrations();
 
                 #endregion
 
@@ -1482,6 +1453,7 @@ namespace Dynamo.Models
             //don't save the file path
             CurrentWorkspace.FileName = "";
             CurrentWorkspace.HasUnsavedChanges = false;
+            CurrentWorkspace.WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
 
             // Clear undo/redo stacks.
             CurrentWorkspace.ClearUndoRecorder();
@@ -1643,6 +1615,7 @@ namespace Dynamo.Models
         }
 
         #endregion
+
     }
 
     public class PointEventArgs : EventArgs
