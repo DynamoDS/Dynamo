@@ -452,12 +452,14 @@ namespace Dynamo.ViewModels
             if (dynSettings.Controller.IsShowPreviewByDefault)
             {
                 this.PreviewBubble.SetAlwaysVisibleCommand.Execute(true);
-                this.PreviewBubble.InstantAppearCommand.Execute(null);
+                this.PreviewBubble.OnRequestAction(
+                    new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Show));
             }
             else
             {
                 this.PreviewBubble.SetAlwaysVisibleCommand.Execute(false);
-                this.PreviewBubble.InstantCollapseCommand.Execute(null);
+                this.PreviewBubble.OnRequestAction(
+                    new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Hide));
             }
         }
 
@@ -489,7 +491,7 @@ namespace Dynamo.ViewModels
                 if (ErrorBubble.Opacity != 0)
                 {
                     ErrorBubble.SetAlwaysVisibleCommand.Execute(false);
-                    ErrorBubble.InstantCollapseCommand.Execute(null);
+                    ErrorBubble.OnRequestAction(new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Hide));
                 }
             }
             else
@@ -506,7 +508,7 @@ namespace Dynamo.ViewModels
                         return;
                     this.ErrorBubble.UpdateContentCommand.Execute(data);
                     this.ErrorBubble.SetAlwaysVisibleCommand.Execute(true);
-                    this.ErrorBubble.InstantAppearCommand.Execute(null);
+                    this.ErrorBubble.OnRequestAction(new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Show));
                 })));
             }
         }
@@ -815,11 +817,6 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        private void CollapseTooltip(object parameter)
-        {
-            dynSettings.Controller.InfoBubbleViewModel.InstantCollapseCommand.Execute(null);
-        }
-
         private bool CanCollapseTooltip(object parameter)
         {
             return true;
@@ -832,7 +829,8 @@ namespace Dynamo.ViewModels
 
             UpdatePreviewBubbleContent();
             this.PreviewBubble.ZIndex = 5;
-            this.PreviewBubble.InstantAppearCommand.Execute(null);
+            this.PreviewBubble.OnRequestAction(
+                new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Show));
         }
 
         private bool CanShowPreview(object parameter)

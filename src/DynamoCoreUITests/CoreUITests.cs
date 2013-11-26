@@ -700,7 +700,7 @@ namespace Dynamo.Tests.UI
         public void Collapse()
         {
             InfoBubbleViewModel infoBubble = new InfoBubbleViewModel();
-            infoBubble.InstantCollapseCommand.Execute(null);
+            infoBubble.OnRequestAction(new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Hide));
             Assert.AreEqual(0, infoBubble.Opacity);
         }
 

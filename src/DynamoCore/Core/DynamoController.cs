@@ -139,7 +139,6 @@ namespace Dynamo
             }
         }
 
-        private ConnectorType _connectorType;
         public ConnectorType ConnectorType
         {
             get { return PreferenceSettings.ConnectorType; }

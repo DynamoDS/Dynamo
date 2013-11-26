@@ -275,7 +275,9 @@ namespace Dynamo.Controls
 
         private void NickNameBlock_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-            ViewModel.CollapseTooltipCommand.Execute(null);
+            dynSettings.Controller.InfoBubbleViewModel.OnRequestAction(
+                new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Hide));
+
             if (e.ClickCount == 2)
             {
                 Debug.WriteLine("Nickname double clicked!");
@@ -334,7 +336,8 @@ namespace Dynamo.Controls
 
         private void InputPort_OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            ViewModel.CollapseTooltipCommand.Execute(null);
+            dynSettings.Controller.InfoBubbleViewModel.OnRequestAction(
+                new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Hide));
         }
 
         private void OutputPort_OnMouseEnter(object sender, MouseEventArgs e)
@@ -363,7 +366,8 @@ namespace Dynamo.Controls
 
         private void OutputPort_OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            ViewModel.CollapseTooltipCommand.Execute(null);
+            dynSettings.Controller.InfoBubbleViewModel.OnRequestAction(
+                new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Hide));
         }
 
         private void PreviewArrow_MouseEnter(object sender, MouseEventArgs e)
