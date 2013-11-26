@@ -222,6 +222,7 @@
     <Compile Include="Views\Partials.cs" />
     <Compile Include="ViewModels\DynamoRevitViewModel.cs" />
     <Compile Include="VisualizationManager\VisualizationManagerRevit.cs" />
+    <Compile Include="WorkspaceMigrationsRevit.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
