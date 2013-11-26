@@ -300,8 +300,8 @@ namespace Dynamo.Tests
             model.Open(testPath);
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(13, model.CurrentWorkspace.Connectors.Count);
 
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
@@ -411,7 +411,7 @@ namespace Dynamo.Tests
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(13, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(13, model.CurrentWorkspace.Connectors.Count);
+            Assert.AreEqual(14, model.CurrentWorkspace.Connectors.Count);
 
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
