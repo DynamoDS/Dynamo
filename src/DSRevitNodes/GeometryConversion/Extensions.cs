@@ -173,17 +173,6 @@ namespace DSRevitNodes.GeometryConversion
         }
 
         /// <summary>
-        /// Convert Revit Line to DS Line.
-        /// </summary>
-        /// <param name="line"></param>
-        /// <returns></returns>
-        public static Autodesk.DesignScript.Geometry.Line ToLine(this Autodesk.Revit.DB.Line line)
-        {
-            return Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint(
-                line.get_EndPoint(0).ToPoint(), line.get_EndPoint(1).ToPoint());
-        }
-
-        /// <summary>
         /// Convert list of points to list of xyz's
         /// </summary>
         /// <param name="list">The list to convert</param>

@@ -78,6 +78,7 @@
     <Compile Include="Elements\DSForm.cs" />
     <Compile Include="Elements\DSSketchPlane.cs" />
     <Compile Include="GeometryConversion\ProtoCurveToRevitCurve.cs" />
+    <Compile Include="GeometryConversion\RevitCurveToProtoCurve.cs" />
     <Compile Include="References\AbstractReference.cs" />
     <Compile Include="References\DSFaceReference.cs" />
     <Compile Include="GeometryObjects\DSCurveLoop.cs" />
