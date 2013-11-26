@@ -3,14 +3,14 @@
   <AddIn Type="Application">
     <Name>Dynamo For Revit</Name>
     <Assembly>C:\Autodesk\Revit_2013\DynamoWIP\DynamoRevit.dll</Assembly>
-    <AddInId>188B9080-EEBE-40C3-865A-8FC31DEEC12F</AddInId>
+    <AddInId>F2E59889-3233-4B1A-934A-724007E92195</AddInId>
     <FullClassName>Dynamo.Applications.DynamoRevitApp</FullClassName>
     <VendorId>ADSK</VendorId>
     <VendorDescription>Autodesk, github.com/ikeough/dynamo</VendorDescription>
   </AddIn>
   <AddIn Type="Command">
     <Assembly>C:\Autodesk\Revit_2013\DynamoWIP\DynamoRevit.dll</Assembly>
-    <AddInId>dc09be67-aa31-4ea7-86c9-d06c080cd3e9</AddInId>
+    <AddInId>7efcdea9-8d54-4985-88a5-97febdb7567c</AddInId>
     <FullClassName>Dynamo.Applications.DynamoRevit</FullClassName>
     <VendorId>ADSK</VendorId>
     <VendorDescription>Autodesk, github.com/ikeough/dynamo</VendorDescription>
