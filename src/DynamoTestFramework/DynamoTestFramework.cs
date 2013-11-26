@@ -251,7 +251,7 @@ namespace Dynamo.Tests
             // create the transaction manager object
             TransactionManager.SetupManager(new DebugTransactionStrategy());
 
-            var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.Updater, typeof(DynamoRevitViewModel), context)
+            var dynamoController = new DynamoController_Revit(DynamoRevitAppDS.env, DynamoRevitAppDS.Updater, typeof(DynamoRevitViewModel), context)
                 {
                     Testing = true
                 };
