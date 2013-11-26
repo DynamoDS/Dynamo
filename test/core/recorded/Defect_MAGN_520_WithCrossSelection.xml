@@ -1,0 +1,15 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <CreateNodeCommand NodeId="353430be-e23f-41f4-9901-ade100d523b5" NodeName="Number" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <CreateNodeCommand NodeId="6c8de14e-0b13-413c-bd9e-e64c83222de9" NodeName="Number" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <CreateNodeCommand NodeId="60006532-577b-42f6-9759-665253b75fa4" NodeName="Number" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="60006532-577b-42f6-9759-665253b75fa4" Modifiers="0" />
+  <DragSelectionCommand X="776" Y="469" DragOperation="0" />
+  <DragSelectionCommand X="1126" Y="377" DragOperation="1" />
+  <SelectModelCommand ModelGuid="6c8de14e-0b13-413c-bd9e-e64c83222de9" Modifiers="0" />
+  <DragSelectionCommand X="784" Y="442" DragOperation="0" />
+  <DragSelectionCommand X="792" Y="677" DragOperation="1" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="747" Y="387" Width="634" Height="490" IsCrossSelection="true" />
+  <DeleteModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" />
+</Commands>

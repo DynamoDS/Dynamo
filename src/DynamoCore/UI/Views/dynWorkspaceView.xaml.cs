@@ -164,6 +164,7 @@ namespace Dynamo.Views
         void Selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             ViewModel.NodeFromSelectionCommand.RaiseCanExecuteChanged();
+            ViewModel.NodeToCodeCommand.RaiseCanExecuteChanged();
         }
 
         /// <summary>

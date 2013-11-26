@@ -270,7 +270,7 @@ namespace Dynamo.Nodes
         /// To allow users to remove focus by pressing Shift Enter. Uses two bools (shift / enter)
         /// and sets them when pressed/released
         /// </summary>
-        #region Key Press Event Handlers 
+        #region Key Press Event Handlers
         protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == Key.LeftShift || e.Key == Key.RightShift)
@@ -310,34 +310,12 @@ namespace Dynamo.Nodes
         }
 
         /// <summary>
-        /// Since an empty Code Block Node should not exist, this function checks for such instances.
-        /// If an empty Code Block Node is found, it is deleted. Since the creation and deletion of 
-        /// an empty Code Block Node should not be recorded, this method also checks and removes
-        /// any unwanted recordings
+        /// 
         /// </summary>
         protected override void OnLostFocus(RoutedEventArgs e)
         {
-            var cbn = this.DataContext as CodeBlockNodeModel;
-            (this as TextBox).Text = CodeBlockNodeModel.FormatUserText(this.Text);
-            if (this.Text == "")
-            {
-                if (cbn.Code == "")
-                {
-                    cbn.WorkSpace.UndoRecorder.PopFromUndoGroup();
-                    DynamoSelection.Instance.Selection.Remove(cbn);
-                    cbn.WorkSpace.Nodes.Remove(cbn);
-                }
-                else
-                {
-                    cbn.WorkSpace.RecordAndDeleteModels(new System.Collections.Generic.List<ModelBase>() { cbn });
-                }
-            }
-            else
-            {
-                if (!this.Text.Equals((DataContext as CodeBlockNodeModel).Code))
-                    Pending = true;
-                base.OnLostFocus(e);
-            }
+            Pending = true;
+            base.OnLostFocus(e);
         }
 
         private void HandleEscape()
