@@ -75,6 +75,7 @@ namespace Dynamo
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.CanFindNodesFromElements = true;
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.FindNodesFromElements = FindNodesFromSelection;
 
+            MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrationsRevit));
         }
 
         void CleanupVisualizations(object sender, EventArgs e)

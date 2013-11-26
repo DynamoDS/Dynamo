@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -13,8 +12,6 @@ using System.Windows.Forms;
 using System.Windows.Threading;
 using System.Xml;
 using Dynamo.Nodes;
-using Dynamo.Nodes.Search;
-using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.Selection;
 using Microsoft.Practices.Prism;
@@ -270,7 +267,7 @@ namespace Dynamo.Models
 
         public DynamoModel()
         {
-
+            
         }
 
         public virtual void OnCleanup(EventArgs e)
@@ -641,7 +638,7 @@ namespace Dynamo.Models
                     }
                 }
 
-                Migration.ProcessWorkspaceMigrations(xmlDoc, version);
+                MigrationManager.Instance.ProcessWorkspaceMigrations(xmlDoc, version);
 
                 //set the zoom and offsets and trigger events
                 //to get the view to position iteself
