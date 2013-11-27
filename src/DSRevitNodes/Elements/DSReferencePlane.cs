@@ -4,9 +4,11 @@ using Autodesk.Revit.UI;
 using DSNodeServices;
 using DSRevitNodes.Elements;
 using DSRevitNodes.GeometryConversion;
+using DSRevitNodes.References;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Line = Autodesk.DesignScript.Geometry.Line;
+using Plane = Autodesk.DesignScript.Geometry.Plane;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
 namespace DSRevitNodes
@@ -135,8 +137,34 @@ namespace DSRevitNodes
 
         #endregion
 
+        #region Public propertioes
+
+        /// <summary>
+        /// Get the internal Geometric Plane
+        /// </summary>
+        public Autodesk.DesignScript.Geometry.Plane Plane
+        {
+            get
+            {
+                return InternalReferencePlane.Plane.ToPlane();
+            }
+        }
+
+        /// <summary>
+        /// Get a reference to this plane for downstream Elements requiring it
+        /// </summary>
+        public DSPlaneReference PlaneReference
+        {
+            get
+            {
+                return new DSPlaneReference(InternalReferencePlane.Reference);
+            }
+        }
+
+        #endregion
+
         #region Public static constructors
-        
+
         /// <summary>
         /// Form a ReferencePlane from a line
         /// </summary>
