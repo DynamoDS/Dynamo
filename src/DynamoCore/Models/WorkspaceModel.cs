@@ -1020,12 +1020,18 @@ namespace Dynamo.Models
             foreach (var kvp in externalOutputConnections)
             {
                 var connector = kvp.Key;
-                string portName = kvp.Value;
+                string variableName = kvp.Value;
                 int startIndex = 0, endIndex = 0;
 
                 //Get the start and end idex for the ports for the connection
                 endIndex = connector.End.Owner.InPorts.IndexOf(connector.End);
-                var portModel = codeBlockNode.OutPorts.Where(x => x.ToolTipContent == portName).First() as PortModel;
+                int i =0;
+                for (i = 0; i < codeBlockNode.OutPorts.Count;i++)
+                {
+                    if (codeBlockNode.GetAstIdentifierForOutputIndex(i).Value == variableName)
+                        break;
+                }
+                var portModel = codeBlockNode.OutPorts[i];
                 startIndex = codeBlockNode.OutPorts.IndexOf(portModel);
 
                 //Make the new connection and then record and add it
@@ -1048,13 +1054,12 @@ namespace Dynamo.Models
             foreach (var kvp in externalInputConnections)
             {
                 var connector = kvp.Key;
-                string portName = kvp.Value;
+                string variableName = kvp.Value;
                 int startIndex = 0, endIndex = 0;
 
                 //Find the start and end index of the ports for the connection
                 startIndex = connector.Start.Owner.OutPorts.IndexOf(connector.Start);
-                var portModel = codeBlockNode.InPorts.Where(x => x.ToolTipContent == portName).First() as PortModel;
-                endIndex = codeBlockNode.InPorts.IndexOf(portModel);
+                endIndex = CodeBlockNodeModel.GetInportIndex(codeBlockNode, variableName);
 
                 //Make the new connection and then record and add it
                 var newConnector = ConnectorModel.Make(connector.Start.Owner, codeBlockNode,
