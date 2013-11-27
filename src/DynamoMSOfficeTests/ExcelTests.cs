@@ -475,5 +475,26 @@ namespace Dynamo.Tests
 
         #endregion
 
+        #region Defects
+
+        [Test]
+        public void Defect_MAGN_883()
+        {
+            string testDir = GetTestDirectory();
+            string openPath = Path.Combine(testDir, @"core\excel\Defect_MAGN_883.dyn");
+            Controller.DynamoModel.Open(openPath);
+
+            Assert.AreEqual(6, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var filename = workspace.FirstNodeFromWorkspace<StringFilename>();
+
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", testDir);
+            Controller.RunExpression(null);
+            Assert.Pass("RunExpression should no longer crash (Defect_MAGN_883)");
+        }
+
+        #endregion
     }
 }
