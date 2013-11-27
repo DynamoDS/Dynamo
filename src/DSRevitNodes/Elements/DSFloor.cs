@@ -1,17 +1,74 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Autodesk.Revit.DB;
+using DSRevitNodes.Elements;
+using DSRevitNodes.GeometryConversion;
+using RevitServices.Persistence;
+using RevitServices.Transactions;
 using Curve = Autodesk.DesignScript.Geometry.Curve;
 
 namespace DSRevitNodes
 {
-    public class DSFloor
+    /// <summary>
+    /// A Revit Floor
+    /// </summary>
+    public class DSFloor : AbstractElement
     {
-
-
-
-        static DSFloor ByOutline(List<DSCurve> outline, DSLevel dsLevel)
+        internal Autodesk.Revit.DB.Floor InternalFloor
         {
-            throw new NotImplementedException();
+            get; private set;
+        }
+
+        /// <summary>
+        /// Private constructor
+        /// </summary>
+        private DSFloor(Autodesk.Revit.DB.CurveArray curveArray, Autodesk.Revit.DB.FloorType floorType, Autodesk.Revit.DB.Level level)
+        {
+            TransactionManager.GetInstance().EnsureInTransaction(Document);
+
+            // we assume the floor is not structural here, this may be a bad assumption
+            var floor = Document.Create.NewFloor(curveArray, floorType, level, false);
+
+            InternalSetFloor( floor );
+
+            TransactionManager.GetInstance().TransactionTaskDone();
+
+            ElementBinder.CleanupAndSetElementForTrace(Document, this.InternalElementId);
+        }
+
+        /// <summary>
+        /// Set the InternalFloor property and the associated element id and unique id
+        /// </summary>
+        /// <param name="floor"></param>
+        private void InternalSetFloor(Autodesk.Revit.DB.Floor floor)
+        {
+            this.InternalFloor = floor;
+            this.InternalElementId = floor.Id;
+            this.InternalUniqueId = floor.UniqueId;
+        }
+
+        public static DSFloor ByOutline( Autodesk.DesignScript.Geometry.Curve[] outline, DSLevel level)
+        {
+            if (outline == null)
+            {
+                throw new ArgumentNullException("outline");
+            }
+
+            if ( level == null )
+            {
+                throw new ArgumentNullException("level");
+            }
+
+            if (outline.Count() < 3)
+            {
+                throw new Exception("Outline must have at least 3 edges to enclose an area.");
+            }
+
+            var ca = new CurveArray();
+            outline.ToList().ForEach(x => ca.Append(x.ToRevitType())); 
+
+            return new DSFloor(ca, level.InternalLevel );
         }
     }
 }
