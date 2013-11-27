@@ -465,13 +465,13 @@ namespace Dynamo.ViewModels
             UpdatePreviewBubbleContent();
             if (dynSettings.Controller.IsShowPreviewByDefault)
             {
-                this.PreviewBubble.SetAlwaysVisibleCommand.Execute(true);
+                this.PreviewBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
                 this.PreviewBubble.OnRequestAction(
                     new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Show));
             }
             else
             {
-                this.PreviewBubble.SetAlwaysVisibleCommand.Execute(false);
+                this.PreviewBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Minimized);
                 this.PreviewBubble.OnRequestAction(
                     new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Hide));
             }
@@ -504,7 +504,7 @@ namespace Dynamo.ViewModels
                 // TODO: Opacity is no longer in use
                 if (ErrorBubble.Opacity != 0)
                 {
-                    ErrorBubble.SetAlwaysVisibleCommand.Execute(false);
+                    ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Minimized);
                     ErrorBubble.OnRequestAction(new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Hide));
                 }
             }
@@ -523,7 +523,7 @@ namespace Dynamo.ViewModels
                         return;
 
                     this.ErrorBubble.UpdateContentCommand.Execute(data);
-                    this.ErrorBubble.SetAlwaysVisibleCommand.Execute(true);
+                    ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
                     this.ErrorBubble.OnRequestAction(new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Show));
                 })));
             }
