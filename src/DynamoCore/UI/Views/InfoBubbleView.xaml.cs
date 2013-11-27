@@ -136,9 +136,11 @@ namespace Dynamo.Controls
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "Content")
+            switch (e.PropertyName)
             {
-                UpdateContent();
+                case "Content":
+                    UpdateContent();
+                    break;
             }
         }
 
@@ -335,7 +337,7 @@ namespace Dynamo.Controls
 
         private void FadeOutInfoBubble()
         {
-            if (this.IsDisconnected || (this.ViewModel.AlwaysVisible))
+            if (this.IsDisconnected || (this.ViewModel.InfoBubbleState == InfoBubbleViewModel.State.Pinned))
                 return;
 
             fadeInStoryBoard.Stop(this);
@@ -391,17 +393,20 @@ namespace Dynamo.Controls
             if (ViewModel.InfoBubbleStyle != InfoBubbleViewModel.Style.Preview && ViewModel.InfoBubbleStyle != InfoBubbleViewModel.Style.PreviewCondensed)
                 return;
 
-            if (ViewModel.IsShowPreviewByDefault)
+            // TODO: Kahheng Complete changes here
+            if (ViewModel.InfoBubbleState == InfoBubbleViewModel.State.Minimized)
             {
-                ViewModel.IsShowPreviewByDefault = false;
-                ViewModel.SetAlwaysVisibleCommand.Execute(false);
-                this.HideInfoBubble();
-            }
-            else
-            {
+                ViewModel.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
+
                 ViewModel.IsShowPreviewByDefault = true;
-                ViewModel.SetAlwaysVisibleCommand.Execute(true);
                 ShowPreviewBubbleCondensedContent();
+            }
+            else if (ViewModel.InfoBubbleState == InfoBubbleViewModel.State.Pinned)
+            {
+                ViewModel.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Minimized);
+
+                ViewModel.IsShowPreviewByDefault = false;
+                this.HideInfoBubble();
             }
         }
 
