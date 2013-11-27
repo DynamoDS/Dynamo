@@ -10,6 +10,8 @@ namespace DSRevitNodes
     /// </summary>
     public class DSLevel : AbstractElement
     {
+        private Autodesk.Revit.DB.Floor level;
+
         /// <summary>
         /// Internal reference to Revit element
         /// </summary>
@@ -60,6 +62,11 @@ namespace DSRevitNodes
 
             ElementBinder.SetElementForTrace(this.InternalElementId);
 
+        }
+
+        private DSLevel(Autodesk.Revit.DB.Level level)
+        {
+            this.InternalSetLevel(level);
         }
 
         #endregion
@@ -206,6 +213,24 @@ namespace DSRevitNodes
             }
 
             return new DSLevel(level.Elevation + offset, name);
+        }
+
+        #endregion
+
+        #region Internal static constructors
+
+        /// <summary>
+        /// Create a Level from a user selected Element.
+        /// </summary>
+        /// <param name="level"></param>
+        /// <param name="isRevitOwned"></param>
+        /// <returns></returns>
+        internal static DSLevel FromExisting(Autodesk.Revit.DB.Level level, bool isRevitOwned)
+        {
+            return new DSLevel(level)
+            {
+                IsRevitOwned = isRevitOwned
+            };
         }
 
         #endregion
