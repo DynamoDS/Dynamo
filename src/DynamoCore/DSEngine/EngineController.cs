@@ -48,6 +48,9 @@ namespace Dynamo.DSEngine
                     libraries.Add(loadedLib);
                 }
             }
+
+            // Load the libraries to the GraphUitlities core (This core is referenced by UI)
+            GraphToDSCompiler.GraphUtilities.PreloadAssembly(libraries);
             liveRunnerServices.ReloadAllLibraries(libraries);
 
             astBuilder = new AstBuilder(this);
