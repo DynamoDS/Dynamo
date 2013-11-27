@@ -170,6 +170,13 @@ namespace Dynamo.Nodes
 
                             //Recreate connectors that can be reused
                             LoadAndCreateConnectors(inportConnections, outportConnections);
+
+                            if (errorMessage == null)
+                            {
+                                string redefinedVar = this.WorkSpace.UpdateDefinedVariables(this);
+                                errorMessage = redefinedVar == null ? null : redefinedVar + " is already defined";
+                            }
+
                             WorkSpace.UndoRecorder.EndActionGroup();
                         }
                         RaisePropertyChanged("Code");
@@ -180,7 +187,10 @@ namespace Dynamo.Nodes
                         EnableReporting();
 
                         if (errorMessage != null)
+                        {
+                            ProcessError();
                             Error(errorMessage);
+                        }
                     }
                     else
                         code = null;
@@ -261,6 +271,13 @@ namespace Dynamo.Nodes
             }
 
             return base.UpdateValueCore(name, value);
+        }
+
+        public override void Destroy()
+        {
+            base.Destroy();
+            this.codeStatements.Clear();
+            this.WorkSpace.UpdateDefinedVariables(this);
         }
 
         protected override void SerializeCore(XmlElement element, SaveContext context)
@@ -380,10 +397,13 @@ namespace Dynamo.Nodes
             ProcessCode(ref errorMessage);
             RaisePropertyChanged("Code");
             RequiresRecalc = true;
+            if (errorMessage != null)
+            {
+                ProcessError();
+                Error(errorMessage);
+            }
             if (WorkSpace != null)
                 WorkSpace.Modified();
-            if (errorMessage != null)
-                Error(errorMessage);
         }
 
         private void ProcessCode(ref string errorMessage)
@@ -434,7 +454,6 @@ namespace Dynamo.Nodes
                 {
                     if (errors == null)
                     {
-                        ProcessError();
                         errorMessage = "Errors not getting sent from compiler to UI";
                     }
 
@@ -455,16 +474,6 @@ namespace Dynamo.Nodes
             {
                 errorMessage = e.Message;
                 previewVariable = null;
-                ProcessError();
-                return;
-            }
-
-            //Make sure variables have not been declared in other Code block nodes.
-            string redefinedVariable = this.WorkSpace.GetFirstRedefinedVariable(this);
-            if (redefinedVariable != null)
-            {
-                ProcessError();
-                errorMessage = redefinedVariable + " is already defined";
                 return;
             }
 

@@ -310,6 +310,10 @@ namespace Dynamo.Models
             get { return undoRecorder; }
         }
 
+        //A dictonary that helps maps variables to the CodeBlockNodes it is defined in.
+        //To be used only in workspace
+        private Dictionary<string, List<Guid>> definedVariableMap;
+
         #endregion
 
         protected WorkspaceModel(
@@ -329,6 +333,8 @@ namespace Dynamo.Models
             WorkspaceSaved += OnWorkspaceSaved;
             WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
             undoRecorder = new UndoRedoRecorder(this);
+
+            definedVariableMap = new Dictionary<string, List<Guid>>();
         }
 
 
@@ -1102,6 +1108,62 @@ namespace Dynamo.Models
                         from newVar in newDefVars
                         where oldDefVars.Contains(newVar)
                         select newVar).FirstOrDefault();
+        }
+
+        internal string UpdateDefinedVariables(CodeBlockNodeModel cbn)
+        {
+            string reDefinedVariable = null;
+            List<string> currentDefinedVars = cbn.GetDefinedVariableNames();
+            var modelsToReprocess = new HashSet<CodeBlockNodeModel>();
+            var previouslyDefinedVariableMap = definedVariableMap.Where(x => x.Value.Contains(cbn.GUID));
+            
+            for(int i=0;i<previouslyDefinedVariableMap.Count();i++)
+            {
+                var variable = previouslyDefinedVariableMap.ElementAt(i).Key;
+                if (currentDefinedVars.Contains(variable))
+                {
+                    //It was defined before and is defined again. Dont process it again.
+                    currentDefinedVars.Remove(variable);
+                }
+                else
+                {
+                    //It was defined before and now it is not defined.
+                    definedVariableMap[variable].Remove(cbn.GUID);
+                    if (definedVariableMap[variable].Count == 0)
+                        definedVariableMap.Remove(variable);
+                    else
+                    {
+                        //Get the first node that defines this variable and save it for reprocessing
+                        var nodeId = definedVariableMap[variable][0];
+                        var node = Nodes.Where(x => x.GUID == nodeId).First() as CodeBlockNodeModel;
+                        modelsToReprocess.Add(node);
+                    }
+                }
+            }
+
+            //So by this point we have removed all the variables from currentDefVars that were defined before
+            //So now we go through the ones that were newly defined.
+            foreach (var variable in currentDefinedVars)
+            {
+                if (definedVariableMap.ContainsKey(variable))
+                {
+                    //Been defined before elsewhere.
+                    reDefinedVariable = variable;
+                    definedVariableMap[variable].Add(cbn.GUID);
+                }
+                else
+                {
+                    //Never been defined before
+                    definedVariableMap.Add(variable, new List<Guid>());
+                    definedVariableMap[variable].Add(cbn.GUID);
+                }
+            }
+
+            //Reprocess those models
+            foreach (var model in modelsToReprocess)
+                CodeBlockNodeModel.OnDefinedVariableUpdated(model);
+
+            return reDefinedVariable;
         }
     }
 }
