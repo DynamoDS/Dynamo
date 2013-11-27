@@ -103,7 +103,7 @@ namespace DSRevitNodes
         #region Internal static constructors
 
         /// <summary>
-        /// Create a Reference Point from a user selected Element.
+        /// Create a Floor from a user selected Element.
         /// </summary>
         /// <param name="pt"></param>
         /// <param name="isRevitOwned"></param>
