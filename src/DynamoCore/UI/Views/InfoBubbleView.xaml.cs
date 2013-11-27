@@ -369,13 +369,24 @@ namespace Dynamo.Controls
             if (this.IsDisconnected)
                 return;
 
-            if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Preview && ViewModel.IsShowPreviewByDefault)
-                ShowPreviewBubbleCondensedContent();
-            else if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Error || ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.ErrorCondensed) 
-                // TODO Hide error bubble when no error with another and condition
-                ShowErrorBubbleCondensedContent();
-            else
-                FadeOutInfoBubble();
+            switch (ViewModel.InfoBubbleStyle)
+            {
+                case InfoBubbleViewModel.Style.Preview:
+                    if (ViewModel.InfoBubbleState == InfoBubbleViewModel.State.Pinned)
+                        ShowPreviewBubbleCondensedContent();
+                    else
+                        goto default;
+                    break;
+
+                case InfoBubbleViewModel.Style.Error:
+                case InfoBubbleViewModel.Style.ErrorCondensed:
+                    ShowErrorBubbleCondensedContent();
+                    break;
+
+                default:
+                    FadeOutInfoBubble();
+                    break;
+            }
 
             this.Cursor = CursorLibrary.GetCursor(CursorSet.Pointer);
         }
@@ -393,20 +404,17 @@ namespace Dynamo.Controls
             if (ViewModel.InfoBubbleStyle != InfoBubbleViewModel.Style.Preview && ViewModel.InfoBubbleStyle != InfoBubbleViewModel.Style.PreviewCondensed)
                 return;
 
-            // TODO: Kahheng Complete changes here
-            if (ViewModel.InfoBubbleState == InfoBubbleViewModel.State.Minimized)
+            switch (ViewModel.InfoBubbleState)
             {
-                ViewModel.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
+                case InfoBubbleViewModel.State.Minimized:
+                    ViewModel.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
+                    ShowPreviewBubbleCondensedContent();
+                    break;
 
-                ViewModel.IsShowPreviewByDefault = true;
-                ShowPreviewBubbleCondensedContent();
-            }
-            else if (ViewModel.InfoBubbleState == InfoBubbleViewModel.State.Pinned)
-            {
-                ViewModel.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Minimized);
-
-                ViewModel.IsShowPreviewByDefault = false;
-                this.HideInfoBubble();
+                case InfoBubbleViewModel.State.Pinned:
+                    ViewModel.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Minimized);
+                    this.HideInfoBubble();
+                    break;
             }
         }
 

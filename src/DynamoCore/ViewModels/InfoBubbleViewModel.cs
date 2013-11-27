@@ -213,12 +213,6 @@ namespace Dynamo.ViewModels
 
 
         // TODO:Kahheng Refactor away these
-        private bool isShowPreviewByDefault;
-        public bool IsShowPreviewByDefault
-        {
-            get { return isShowPreviewByDefault; }
-            set { isShowPreviewByDefault = value; RaisePropertyChanged("IsShowPreviewByDefault"); }
-        }
         private double opacity;
         public double Opacity
         {
@@ -235,9 +229,6 @@ namespace Dynamo.ViewModels
             get { return infoBubbleState; }
             set { infoBubbleState = value; RaisePropertyChanged("InfoBubbleState"); }
         }
-
-
-
 
         #endregion
 
@@ -350,7 +341,6 @@ namespace Dynamo.ViewModels
 
         // TODO:Kahheng Refactor away these
         #region TODO:Kahheng Refactor away these
-
         private void ShowFullContent(object parameter)
         {
             InfoBubbleDataPacket data = (InfoBubbleDataPacket)parameter;
@@ -385,7 +375,6 @@ namespace Dynamo.ViewModels
         {
             return true;
         }
-        // TODO:Kahheng Refactor away these
         #endregion
 
 
@@ -573,7 +562,7 @@ namespace Dynamo.ViewModels
             margin.Top = botRight.Y;
             margin.Left = -((EstimatedWidth - nodeWidth) / 2) + topLeft.X;
 
-            if (!this.IsShowPreviewByDefault)
+            if (InfoBubbleState == State.Minimized)
                 margin.Top -= Configurations.PreviewArrowHeight;
             return margin;
         }
