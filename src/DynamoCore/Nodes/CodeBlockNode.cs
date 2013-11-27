@@ -223,7 +223,7 @@ namespace Dynamo.Nodes
                 // If an empty Code Block Node is found, it is deleted. Since the creation and deletion of 
                 // an empty Code Block Node should not be recorded, this method also checks and removes
                 // any unwanted recordings
-
+                value = FormatUserText(value);
                 if (value == "")
                 {
                     if (this.Code == "")
