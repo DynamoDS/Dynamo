@@ -216,7 +216,7 @@ namespace Dynamo.ViewModels
                 if(this.PreviewBubble == null)
                     return false;
 
-                return !this.PreviewBubble.IsShowPreviewByDefault;
+                return (this.PreviewBubble.InfoBubbleState == InfoBubbleViewModel.State.Minimized);
             }
         }
 
@@ -450,7 +450,7 @@ namespace Dynamo.ViewModels
         {
             switch (e.PropertyName)
             {
-                case "IsShowPreviewByDefault":
+                case "InfoBubbleState":
                     RaisePropertyChanged("IsPreviewInsetVisible");
                     break;
             }
@@ -461,7 +461,6 @@ namespace Dynamo.ViewModels
             if (this.PreviewBubble == null)
                 return;
 
-            this.PreviewBubble.IsShowPreviewByDefault = dynSettings.Controller.IsShowPreviewByDefault;
             UpdatePreviewBubbleContent();
             if (dynSettings.Controller.IsShowPreviewByDefault)
             {
@@ -523,7 +522,7 @@ namespace Dynamo.ViewModels
                         return;
 
                     this.ErrorBubble.UpdateContentCommand.Execute(data);
-                    ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
+                    this.ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
                     this.ErrorBubble.OnRequestAction(new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Show));
                 })));
             }
