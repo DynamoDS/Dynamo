@@ -20,7 +20,9 @@ namespace DSRevitNodes.GeometryConversion
         public static Autodesk.Revit.DB.Curve ToRevitType(this Autodesk.DesignScript.Geometry.Curve crv)
         {
             dynamic dyCrv = crv;
+
             return ProtoToRevitCurve.Convert(dyCrv);
+
         }
 
         /// <summary>
