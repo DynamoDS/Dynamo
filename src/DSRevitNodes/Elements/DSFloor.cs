@@ -23,6 +23,16 @@ namespace DSRevitNodes
             get; private set;
         }
 
+        #region Private constructors 
+
+        /// <summary>
+        /// Private constructor
+        /// </summary>
+        private DSFloor(Autodesk.Revit.DB.Floor floor)
+        {
+            InternalSetFloor(floor);
+        }
+      
         /// <summary>
         /// Private constructor
         /// </summary>
@@ -40,6 +50,11 @@ namespace DSRevitNodes
             ElementBinder.CleanupAndSetElementForTrace(Document, this.InternalElementId);
         }
 
+        #endregion
+
+        #region Private mutators
+
+
         /// <summary>
         /// Set the InternalFloor property and the associated element id and unique id
         /// </summary>
@@ -50,6 +65,10 @@ namespace DSRevitNodes
             this.InternalElementId = floor.Id;
             this.InternalUniqueId = floor.UniqueId;
         }
+
+        #endregion
+
+        #region Public static constructors
 
         /// <summary>
         /// Create a Revit Floor given it's curve outline and Level
@@ -79,5 +98,25 @@ namespace DSRevitNodes
 
             return new DSFloor(ca, floorType.InternalFloorType, level.InternalLevel );
         }
+        #endregion
+
+        #region Internal static constructors
+
+        /// <summary>
+        /// Create a Reference Point from a user selected Element.
+        /// </summary>
+        /// <param name="pt"></param>
+        /// <param name="isRevitOwned"></param>
+        /// <returns></returns>
+        internal static DSFloor FromExisting(Autodesk.Revit.DB.Floor floor, bool isRevitOwned)
+        {
+            return new DSFloor(floor)
+            {
+                IsRevitOwned = isRevitOwned
+            };
+        }
+
+        #endregion
+
     }
 }
