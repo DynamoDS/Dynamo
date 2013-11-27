@@ -11,14 +11,27 @@ using Point = Autodesk.DesignScript.Geometry.Point;
 
 namespace DSRevitNodes
 {
+    /// <summary>
+    /// A Revit ReferencePlane
+    /// </summary>
     [RegisterForTrace]
     public class DSReferencePlane : AbstractElement
     {
-
-        private Autodesk.Revit.DB.ReferencePlane InternalReferencePlane;
+        /// <summary>
+        /// Internal handle for the Revit object
+        /// </summary>
+        internal Autodesk.Revit.DB.ReferencePlane InternalReferencePlane
+        {
+            get; private set;
+        }
 
         #region Private constructors
 
+        /// <summary>
+        /// Constructor used internally by public static constructors
+        /// </summary>
+        /// <param name="bubbleEnd"></param>
+        /// <param name="freeEnd"></param>
         private DSReferencePlane(XYZ bubbleEnd, XYZ freeEnd)
         {
             //Phase 1 - Check to see if the object exists and should be rebound
@@ -72,6 +85,10 @@ namespace DSRevitNodes
 
         #region Private mutators
 
+        /// <summary>
+        /// Set the InternalReferencePlane and update the element id and unique id
+        /// </summary>
+        /// <param name="rp"></param>
         private void InternalSetReferencePlane(Autodesk.Revit.DB.ReferencePlane rp)
         {
             this.InternalReferencePlane = rp;
@@ -79,6 +96,12 @@ namespace DSRevitNodes
             this.InternalUniqueId = rp.UniqueId;
         }
 
+        /// <summary>
+        /// Mutate the two end points of the ReferencePlane 
+        /// </summary>
+        /// <param name="bubbleEnd"></param>
+        /// <param name="freeEnd"></param>
+        /// <returns>False if the operation failed</returns>
         private bool InternalSetEndpoints(XYZ bubbleEnd, XYZ freeEnd)
         {
             TransactionManager.GetInstance().EnsureInTransaction(Document);
@@ -113,7 +136,12 @@ namespace DSRevitNodes
         #endregion
 
         #region Public static constructors
-
+        
+        /// <summary>
+        /// Form a ReferencePlane from a line
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
         public static DSReferencePlane ByLine(Autodesk.DesignScript.Geometry.Line line)
         {
             if (line == null)
@@ -124,7 +152,13 @@ namespace DSRevitNodes
             return new DSReferencePlane(line.StartPoint.ToXyz(), line.EndPoint.ToXyz());
         }
 
-        public static DSReferencePlane ByStartPtEndPt(Point start, Point end)
+        /// <summary>
+        /// Form a Refernece plane from two end points
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <returns></returns>
+        public static DSReferencePlane ByStartPointEndPoint(Point start, Point end)
         {
             if (start == null)
             {
