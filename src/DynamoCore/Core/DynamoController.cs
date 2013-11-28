@@ -63,7 +63,7 @@ namespace Dynamo
         private readonly Dictionary<string, TypeLoadData> builtinTypesByTypeName =
             new Dictionary<string, TypeLoadData>();
 
-        private readonly Dictionary<string, object> dsImportedFunctions = new Dictionary<String, object>();
+        private readonly Dictionary<string, List<FunctionItem>> dsImportedFunctions = new Dictionary<string, List<FunctionItem>>();
 
         private bool testing = false;
 
@@ -121,7 +121,7 @@ namespace Dynamo
             get { return builtinTypesByTypeName; }
         }
 
-        public Dictionary<string, object> DSImportedFunctions
+        public Dictionary<string, List<FunctionItem>> DSImportedFunctions
         {
             get { return dsImportedFunctions; }
         }

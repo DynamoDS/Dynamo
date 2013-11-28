@@ -178,6 +178,7 @@ limitations under the License.
     <Compile Include="Nodes\New Node Examples\SampleNodeWithUI.cs" />
     <Compile Include="PackageManager\PackageManagerClient.cs" />
     <Compile Include="Search\SearchElements\CustomNodeSearchElement.cs" />
+    <Compile Include="Search\SearchElements\DSFunctionNodeSearchElement.cs" />
     <Compile Include="Services\UsageReportingManager.cs" />
     <Compile Include="UI\Commands\AutomationSettings.cs" />
     <Compile Include="UI\Commands\BrowserItemCommands.cs" />
