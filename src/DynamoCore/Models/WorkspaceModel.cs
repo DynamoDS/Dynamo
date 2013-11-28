@@ -1025,8 +1025,8 @@ namespace Dynamo.Models
 
                 //Get the start and end idex for the ports for the connection
                 endIndex = connector.End.Owner.InPorts.IndexOf(connector.End);
-                int i =0;
-                for (i = 0; i < codeBlockNode.OutPorts.Count;i++)
+                int i = 0;
+                for (i = 0; i < codeBlockNode.OutPorts.Count; i++)
                 {
                     if (codeBlockNode.GetAstIdentifierForOutputIndex(i).Value == variableName)
                         break;
@@ -1061,12 +1061,20 @@ namespace Dynamo.Models
                 startIndex = connector.Start.Owner.OutPorts.IndexOf(connector.Start);
                 endIndex = CodeBlockNodeModel.GetInportIndex(codeBlockNode, variableName);
 
-                //Make the new connection and then record and add it
-                var newConnector = ConnectorModel.Make(connector.Start.Owner, codeBlockNode,
-                    startIndex, endIndex, PortType.INPUT);
+                //For inputs, a single node can be an input to multiple nodes in the code block node selection
+                //After conversion, all these connecetions should become only 1 connection and not many
+                //Hence for inputs, it is required to make sure that a certain type of connection has not
+                //been created already.
+                if (Connectors.Where(x => (x.Start == connector.Start && 
+                    x.End == codeBlockNode.InPorts[endIndex])).FirstOrDefault() == null)
+                {
+                    //Make the new connection and then record and add it
+                    var newConnector = ConnectorModel.Make(connector.Start.Owner, codeBlockNode,
+                        startIndex, endIndex, PortType.INPUT);
 
-                this.Connectors.Add(newConnector);
-                UndoRecorder.RecordCreationForUndo(newConnector);
+                    this.Connectors.Add(newConnector);
+                    UndoRecorder.RecordCreationForUndo(newConnector);
+                }
             }
         }
         #endregion
