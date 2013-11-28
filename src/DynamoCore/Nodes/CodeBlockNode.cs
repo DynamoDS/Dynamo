@@ -21,6 +21,7 @@ namespace Dynamo.Nodes
     [NodeName("Code Block")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Allows for code to be written")] //<--Change the descp :|
+    [IsDesignScriptCompatible]
     public partial class CodeBlockNodeModel : NodeModel
     {
         private readonly List<Statement> codeStatements = new List<Statement>();
@@ -108,6 +109,16 @@ namespace Dynamo.Nodes
             foreach (Statement stmnt in codeStatements)
                 defVarNames.AddRange(Statement.GetDefinedVariableNames(stmnt, true));
             return defVarNames;
+        }
+
+        /// <summary>
+        /// Returns the index of the port corresponding to the variable name given
+        /// </summary>
+        /// <param name="variableName"> Name of the variable corresponding to an input port </param>
+        /// <returns> Index of the required port in the InPorts collection </returns>
+        public static int GetInportIndex(CodeBlockNodeModel cbn, string variableName)
+        {
+            return cbn.inputIdentifiers.IndexOf(variableName);
         }
 
         #endregion
@@ -500,8 +511,7 @@ namespace Dynamo.Nodes
                 if (RequiresOutPort(s, i))
                 {
                     string nickName = Statement.GetDefinedVariableNames(s, true)[0];
-
-                    if (nickName.StartsWith("temp") && nickName.Length > 9) // Do a better check
+                    if (tempVariables.Contains(nickName)) 
                         nickName = "Statement Output"; //Set tool tip incase of random var name
 
                     OutPortData.Add(

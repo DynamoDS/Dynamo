@@ -799,25 +799,20 @@ namespace Dynamo.ViewModels
         /// <summary>
         ///     Adds a DesignScript function
         /// </summary>
-        /// <param name="funcItem"></param>
-        public void Add(FunctionItem funcItem)
+        /// <param name="func"></param>
+        public void Add(FunctionItem func)
         {
-            string name = funcItem.DisplayName;
-            string cat = funcItem.Category;
+            string name = func.MangledName;
+            string category = func.Category;
+            string description = func.Signature;
             List<string> tags = new List<string>();
-            string description = "";
 
-            var searchEle = new NodeSearchElement(name, description, tags);
+            var searchEle = new DSFunctionNodeSearchElement(func);
             searchEle.SetSearchable(true);
 
-            if (!string.IsNullOrEmpty(cat))
-            {
-                SearchDictionary.Add(searchEle, cat + "." + searchEle.Name);
-            }
+            TryAddCategoryAndItem(category, searchEle);
+            SearchDictionary.Add(searchEle, func.SearchName);
 
-            TryAddCategoryAndItem(cat, searchEle);
-
-            SearchDictionary.Add(searchEle, searchEle.Name);
             if (tags.Count > 0)
             {
                 SearchDictionary.Add(searchEle, tags);

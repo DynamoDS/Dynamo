@@ -1024,7 +1024,7 @@ namespace Dynamo.Models
                     nodeName = ((node as Function).Definition.FunctionId).ToString();
 #if USE_DSENGINE
                 else if (node is DSFunction)
-                    nodeName = ((node as DSFunction).Definition.DisplayName);
+                    nodeName = ((node as DSFunction).Definition.MangledName);
 #endif
 
                 var xmlDoc = new XmlDocument();
@@ -1281,13 +1281,13 @@ namespace Dynamo.Models
         internal static NodeModel CreateNodeInstance(string name)
         {
             NodeModel result;
-
-            if (dynSettings.Controller.DSImportedFunctions.ContainsKey(name))
-            {
-                var functionData  = dynSettings.Controller.DSImportedFunctions[name];
-                result = new DSFunction(functionData as FunctionItem);
-            }
-            else if (dynSettings.Controller.BuiltInTypesByName.ContainsKey(name))
+            
+#if USE_DSENGINE
+            FunctionItem functionItem = (dynSettings.Controller.EngineController.GetImportedFunction(name));
+            if (functionItem != null)
+                return new DSFunction(functionItem);
+#endif
+            if (dynSettings.Controller.BuiltInTypesByName.ContainsKey(name))
             {
                 TypeLoadData tld = dynSettings.Controller.BuiltInTypesByName[name];
 
