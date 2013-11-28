@@ -6,6 +6,10 @@ using Dynamo.Models;
 using Dynamo.ViewModels;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
+using ProtoCore.AST.AssociativeAST;
+using System.ComponentModel;
+using Dynamo.Utilities;
+using ProtoCore.Mirror;
 
 namespace Dynamo.Nodes
 {
@@ -60,6 +64,7 @@ namespace Dynamo.Nodes
         }
 
         static WatchHandlers handlerManager = new WatchHandlers();
+        static readonly string nullString = "null";
 
         public event EventHandler RequestBindingUnhook;
         protected virtual void OnRequestBindingUnhook(EventArgs e)
@@ -98,6 +103,9 @@ namespace Dynamo.Nodes
             {
                 p.PortDisconnected += p_PortDisconnected;
             }
+#if USE_DSENGINE
+            this.PropertyChanged += new PropertyChangedEventHandler(NodeValueUpdated);
+#endif
         }
 
         void p_PortDisconnected(object sender, EventArgs e)
@@ -148,7 +156,7 @@ namespace Dynamo.Nodes
             
             if (eIn == null || eIn.IsDummy)
             {
-                node = new WatchNode("null");
+                node = new WatchNode(nullString);
                 return node;
             }
 
@@ -203,6 +211,93 @@ namespace Dynamo.Nodes
 
             return node;
         }
+
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
+        {
+            var resultAst = new List<AssociativeNode>
+            {
+                AstFactory.BuildAssignment(AstIdentifierForPreview, inputAstNodes[0])
+            };
+
+            return resultAst;
+        }
+
+#if USE_DSENGINE
+
+        #region NodeValueUpdated event handler
+        void NodeValueUpdated(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName != "IsUpdated")
+                return;
+
+            DispatchOnUIThread(
+                delegate
+                {
+                    //unhook the binding
+                    OnRequestBindingUnhook(EventArgs.Empty);
+
+                    Root.Children.Clear();
+
+                    Root.Children.Add(ProcessAstNode(AstIdentifierForPreview, "", 0));
+
+                    //rehook the binding
+                    OnRequestBindingRehook(EventArgs.Empty);
+                }
+            );
+        }
+
+        #endregion
+
+        #region Watch Node creation for AST node
+
+        WatchNode ProcessAstNode(AssociativeNode ast, string prefix, int count, bool isListMember = false)
+        {
+            //content += prefix + string.Format("[{0}]:", count.ToString());
+            string varName = GraphToDSCompiler.GraphUtilities.ASTListToCode(
+                new List<ProtoCore.AST.AssociativeAST.AssociativeNode> { ast });
+
+            var mirror = dynSettings.Controller.EngineController.GetMirror(varName);
+            if(null == mirror)
+                return new WatchNode(nullString);
+
+            var mirrorData = mirror.GetData();
+            return ProcessMirrorData(mirrorData, prefix, count, isListMember);
+        }
+
+        WatchNode ProcessMirrorData(MirrorData data, string prefix, int count, bool isListMember)
+        {
+            if (null == data || data.IsNull)
+                return new WatchNode(nullString);
+            if (data.IsCollection)
+            {
+                string newPrefix = prefix + "\t";
+
+                var list = data.GetElements();
+
+                WatchNode node = new WatchNode(list.Count == 0 ? "Empty List" : "List", isListMember, count);
+
+                foreach (var e in list.Select((x, i) => new { Element = x, Index = i }))
+                {
+                    node.Children.Add(ProcessMirrorData(e.Element, newPrefix, e.Index, true));
+                }
+                return node;
+            }
+
+            var classMirror = data.Class;
+            if (null != classMirror)
+            {
+                WatchNode node = new WatchNode(classMirror.ClassName, isListMember, count);
+
+                handlerManager.ProcessNode(data.Data, node);
+                return node;
+            }
+
+            string previewData = data.Data.ToString();
+            return new WatchNode(previewData, isListMember, count);
+        }
+
+        #endregion
+#endif
     }
 
 }
