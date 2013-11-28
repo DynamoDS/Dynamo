@@ -65,8 +65,8 @@ namespace Dynamo.DSEngine
         /// </summary>
         public void LoadBuiltinLibraries()
         {
-            LoadFunctions(libraryServices[LibraryServices.BuiltInCategories.BUILT_INS]);
-            LoadFunctions(libraryServices[LibraryServices.BuiltInCategories.OPERATORS]);
+            LoadFunctions(libraryServices[LibraryServices.Categories.BuiltIns]);
+            LoadFunctions(libraryServices[LibraryServices.Categories.Operators]);
 
             foreach (var library in libraryServices.BuiltinLibraries)
             {
@@ -121,8 +121,9 @@ namespace Dynamo.DSEngine
             return mirror;
         }
 
-        public string ConvertNodesToCode(IEnumerable<NodeModel> nodes)
+        public string ConvertNodesToCode(IEnumerable<NodeModel> nodes, out Dictionary<string,string> variableNames)
         {
+            variableNames = new Dictionary<string, string>();
             if (!nodes.Any())
                 return string.Empty;
 
@@ -131,6 +132,7 @@ namespace Dynamo.DSEngine
                 return code;
 
             StringBuilder sb = new StringBuilder(code);
+            string newVar;
             foreach (var node in nodes)
             {
                 if (node is CodeBlockNodeModel)
@@ -138,12 +140,18 @@ namespace Dynamo.DSEngine
                     var tempVars = (node as CodeBlockNodeModel).TempVariables;
                     foreach (var tempVar in tempVars)
                     {
-                        sb = sb.Replace(tempVar, GenerateShortVariable()); 
+                        newVar = GenerateShortVariable();
+                        sb = sb.Replace(tempVar, newVar);
+                        variableNames.Add(tempVar, newVar);
                     }
                 }
-
-                string thisVar = GraphToDSCompiler.GraphUtilities.ASTListToCode(new List<AssociativeNode> { node.AstIdentifierForPreview });
-                sb = sb.Replace(thisVar, GenerateShortVariable());
+                else
+                {
+                    string thisVar = GraphToDSCompiler.GraphUtilities.ASTListToCode(new List<AssociativeNode> { node.AstIdentifierForPreview });
+                    newVar = GenerateShortVariable();
+                    sb = sb.Replace(thisVar, newVar);
+                    variableNames.Add(thisVar, newVar);
+                }
             }
 
             return sb.ToString();
@@ -246,6 +254,33 @@ namespace Dynamo.DSEngine
 
             return true;
         }
+        
+        /// <summary>
+        /// Get the corresponding FunctionItem based on mangled function name
+        /// </summary>
+        /// <param name="mangledFunctionName"></param>
+        /// <returns></returns>
+        public FunctionItem GetImportedFunction(string mangledFunctionName)
+        {
+            string searchName = mangledFunctionName.Split(new char[] { '@' })[0];
+
+            List<FunctionItem> functionGroup;
+            if (!dynSettings.Controller.DSImportedFunctions.TryGetValue(searchName, out functionGroup))
+            {
+                return null;
+            }
+
+            foreach (var item in functionGroup)
+            {
+                if (item.MangledName.Equals(mangledFunctionName))
+                    return item;
+            }
+
+            if (functionGroup.Count > 0)
+                return functionGroup[0];
+            else
+                return null;
+        }
 
         private string GenerateShortVariable()
         {
@@ -290,10 +325,13 @@ namespace Dynamo.DSEngine
             {
                 searchViewModel.Add(function);
 
-                if (!controller.DSImportedFunctions.ContainsKey(function.DisplayName))
+                List<FunctionItem> functionGroup;
+                if (!controller.DSImportedFunctions.TryGetValue(function.SearchName, out functionGroup))
                 {
-                    controller.DSImportedFunctions.Add(function.DisplayName, function);
+                    functionGroup = new List<FunctionItem>();
+                    controller.DSImportedFunctions[function.SearchName] = functionGroup;
                 }
+                functionGroup.Add(function);
             }
         }
 
