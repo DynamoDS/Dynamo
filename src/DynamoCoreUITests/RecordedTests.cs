@@ -15,6 +15,10 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using NUnit.Framework;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using Dynamo.Tests;
+using ProtoCore.DSASM;
+using ProtoCore.Mirror;
+using Dynamo.Tests;
 
 namespace Dynamo.Tests.UI
 {
@@ -41,6 +45,69 @@ namespace Dynamo.Tests.UI
         public void Exit()
         {
             this.controller = null;
+        }
+
+        private string GetVarName(string guid)
+        {
+            var model = controller.DynamoModel;
+            var node = model.CurrentWorkspace.NodeFromWorkspace(guid);
+            Assert.IsNotNull(node);
+            return node.VariableToPreview;
+        }
+
+        private RuntimeMirror GetRuntimeMirror(string varName)
+        {
+            RuntimeMirror mirror = null;
+            mirror = controller.EngineController.GetMirror(varName);
+
+            Assert.IsNotNull(mirror);
+            return mirror;
+        }
+
+        private void AssertValue(string varname, object value)
+        {
+            var mirror = GetRuntimeMirror(varname);
+
+            Console.WriteLine(varname + " = " + mirror.GetStringData());
+            StackValue svValue = mirror.GetData().GetStackValue();
+
+            if (value == null)
+            {
+                Assert.IsTrue(StackUtils.IsNull(svValue));
+            }
+            else if (value is double)
+            {
+                Assert.AreEqual(svValue.opdata_d, Convert.ToDouble(value));
+            }
+            else if (value is int)
+            {
+                Assert.AreEqual(svValue.opdata, Convert.ToInt64(value));
+            }
+            else if (value is IEnumerable<int>)
+            {
+                var values = (value as IEnumerable<int>).ToList().Select(v => (object)v).ToList();
+                Assert.IsTrue(mirror.GetUtils().CompareArrays(varname, values, typeof(Int64)));
+            }
+            else if (value is IEnumerable<double>)
+            {
+                var values = (value as IEnumerable<double>).ToList().Select(v => (object)v).ToList();
+                Assert.IsTrue(mirror.GetUtils().CompareArrays(varname, values, typeof(double)));
+            }
+        }
+
+        private void AssertPreviewValue(string guid, object value)
+        {
+            string previewVariable = GetVarName(guid);
+            AssertValue(previewVariable, value);
+        }
+
+        private void AssertIsPointer(string guid)
+        {
+            string varname = GetVarName(guid);
+            var mirror = GetRuntimeMirror(varname);
+
+            StackValue svValue = mirror.GetData().GetStackValue();
+            Assert.IsTrue(StackUtils.IsValidPointer(svValue));
         }
 
         #endregion
@@ -1427,6 +1494,81 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
             Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
 
+        }
+
+        // TODO(Robin): Please remove this sample test case before committing
+        [Test, RequiresSTA]
+        public void RecordedCommandWithMirrorExample()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-613
+            RunCommandsFromFile("Defect_MAGN_613.xml");
+
+            // Run
+            Assert.DoesNotThrow(() => controller.RunExpression(null));
+            AssertValue("a", 1);
+        }
+
+        #endregion
+
+        #region Private Helper Methods
+
+        private ModelBase GetNode(string guid)
+        {
+            Guid id = Guid.Parse(guid);
+            return workspace.GetModelInternal(id);
+        }
+
+        private void VerifyModelExistence(Dictionary<string, bool> modelExistenceMap)
+        {
+            var nodes = workspace.Nodes;
+            foreach (var pair in modelExistenceMap)
+            {
+                Guid guid = Guid.Parse(pair.Key);
+                var node = nodes.FirstOrDefault((x) => (x.GUID == guid));
+                bool nodeExists = (null != node);
+                Assert.AreEqual(nodeExists, pair.Value);
+            }
+        }
+
+        private void RunCommandsFromFile(string commandFileName, bool autoRun = false)
+        {
+            string commandFilePath = DynamoTestUI.GetTestDirectory();
+            commandFilePath = Path.Combine(commandFilePath, @"core\recorded\");
+            commandFilePath = Path.Combine(commandFilePath, commandFileName);
+
+            // Create the controller to run alongside the view.
+            controller = DynamoController.MakeSandbox(commandFilePath);
+            controller.Testing = true;
+            controller.DynamoViewModel.DynamicRunEnabled = autoRun;
+
+            // Create the view.
+            var dynamoView = new DynamoView();
+            dynamoView.DataContext = controller.DynamoViewModel;
+            controller.UIDispatcher = dynamoView.Dispatcher;
+            dynamoView.ShowDialog();
+
+            Assert.IsNotNull(controller);
+            Assert.IsNotNull(controller.DynamoModel);
+            Assert.IsNotNull(controller.DynamoModel.CurrentWorkspace);
+            workspace = controller.DynamoModel.CurrentWorkspace;
+            workspaceViewModel = controller.DynamoViewModel.CurrentSpaceViewModel;
+        }
+
+        private CmdType DuplicateAndCompare<CmdType>(CmdType command)
+            where CmdType : DynCmd.RecordableCommand
+        {
+            Assert.IsNotNull(command); // Ensure we have an input command.
+
+            // Serialize the command into an XmlElement.
+            XmlDocument xmlDocument = new XmlDocument();
+            XmlElement element = command.Serialize(xmlDocument);
+            Assert.IsNotNull(element);
+
+            // Deserialized the XmlElement into a new instance of the command.
+            var duplicate = DynCmd.RecordableCommand.Deserialize(element);
+            Assert.IsNotNull(duplicate);
+            Assert.IsTrue(duplicate is CmdType);
+            return duplicate as CmdType;
         }
 
         #endregion
