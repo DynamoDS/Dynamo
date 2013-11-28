@@ -925,7 +925,12 @@ namespace Dynamo.Models
             var externalInputConnections = new Dictionary<ConnectorModel, string>();
             var externalOutputConnections = new Dictionary<ConnectorModel, string>();
 
+            //Also collect the average X and Y co-ordinates of the different nodes
             var nodeList = nodes.ToList();
+            int nodeCount = nodeList.Count;
+            double totalX = 0, totalY = 0;
+
+
             for (int i = 0; i < nodeList.Count; ++i)
             {
                 var node = nodeList[i];
@@ -966,6 +971,8 @@ namespace Dynamo.Models
                 #endregion
 
                 #region Step I.B. Delete the node
+                totalX += node.X;
+                totalY += node.Y;
                 UndoRecorder.RecordDeletionForUndo(node);
                 Nodes.Remove(node);
                 #endregion
@@ -973,7 +980,7 @@ namespace Dynamo.Models
             #endregion
 
             #region Step II. Create the new code block node
-            var codeBlockNode = new CodeBlockNodeModel(code, nodeId, this);
+            var codeBlockNode = new CodeBlockNodeModel(code, nodeId, this, totalX/nodeCount, totalY/nodeCount);
             UndoRecorder.RecordCreationForUndo(codeBlockNode);
             Nodes.Add(codeBlockNode);
             #endregion
@@ -1065,7 +1072,7 @@ namespace Dynamo.Models
                 //After conversion, all these connecetions should become only 1 connection and not many
                 //Hence for inputs, it is required to make sure that a certain type of connection has not
                 //been created already.
-                if (Connectors.Where(x => (x.Start == connector.Start && 
+                if (Connectors.Where(x => (x.Start == connector.Start &&
                     x.End == codeBlockNode.InPorts[endIndex])).FirstOrDefault() == null)
                 {
                     //Make the new connection and then record and add it
