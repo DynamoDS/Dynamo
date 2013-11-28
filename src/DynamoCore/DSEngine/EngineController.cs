@@ -121,8 +121,9 @@ namespace Dynamo.DSEngine
             return mirror;
         }
 
-        public string ConvertNodesToCode(IEnumerable<NodeModel> nodes)
+        public string ConvertNodesToCode(IEnumerable<NodeModel> nodes, out Dictionary<string,string> variableNames)
         {
+            variableNames = new Dictionary<string, string>();
             if (!nodes.Any())
                 return string.Empty;
 
@@ -131,6 +132,7 @@ namespace Dynamo.DSEngine
                 return code;
 
             StringBuilder sb = new StringBuilder(code);
+            string newVar;
             foreach (var node in nodes)
             {
                 if (node is CodeBlockNodeModel)
@@ -138,12 +140,18 @@ namespace Dynamo.DSEngine
                     var tempVars = (node as CodeBlockNodeModel).TempVariables;
                     foreach (var tempVar in tempVars)
                     {
-                        sb = sb.Replace(tempVar, GenerateShortVariable()); 
+                        newVar = GenerateShortVariable();
+                        sb = sb.Replace(tempVar, newVar);
+                        variableNames.Add(tempVar, newVar);
                     }
                 }
-
-                string thisVar = GraphToDSCompiler.GraphUtilities.ASTListToCode(new List<AssociativeNode> { node.AstIdentifierForPreview });
-                sb = sb.Replace(thisVar, GenerateShortVariable());
+                else
+                {
+                    string thisVar = GraphToDSCompiler.GraphUtilities.ASTListToCode(new List<AssociativeNode> { node.AstIdentifierForPreview });
+                    newVar = GenerateShortVariable();
+                    sb = sb.Replace(thisVar, newVar);
+                    variableNames.Add(thisVar, newVar);
+                }
             }
 
             return sb.ToString();
