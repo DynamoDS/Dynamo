@@ -259,7 +259,8 @@ namespace Dynamo.Nodes
             string assembly = null;
             string function = null;
 
-            if (nodeElement.Attributes["assembly"] == null)
+            if (nodeElement.Attributes["assembly"] == null &&
+                nodeElement.Attributes["function"] == null)
             {
                 // To open old file
                 foreach (XmlElement subNode in nodeElement.ChildNodes.Cast<XmlElement>().Where(subNode => subNode.Name.Equals(typeof(FunctionItem).FullName)))
@@ -268,7 +269,7 @@ namespace Dynamo.Nodes
                     assembly = helper.ReadString("Assembly", "");
                     break;
                 }
-                function = nodeElement.Attributes["nickname"].Value;
+                function = nodeElement.Attributes["nickname"].Value.Replace(".get", ".");
             }
             else
             {
