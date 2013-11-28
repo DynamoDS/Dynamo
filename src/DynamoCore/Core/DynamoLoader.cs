@@ -166,6 +166,7 @@ namespace Dynamo.Utilities
                         var isDeprecated = t.GetCustomAttributes(typeof (NodeDeprecatedAttribute), true).Any();
                         var isMetaNode = t.GetCustomAttributes(typeof(IsMetaNodeAttribute), false).Any();
                         var isHidden = t.GetCustomAttributes(typeof (NodeHiddenInBrowserAttribute), true).Any();
+                        var isDSCompatible = t.GetCustomAttributes(typeof(IsDesignScriptCompatibleAttribute), true).Any();
 
                         if (!IsNodeSubType(t)) /*&& attribs.Length > 0*/
                             continue;
@@ -213,7 +214,11 @@ namespace Dynamo.Utilities
 
                         string typeName;
 
+#if USE_DSENGINE
+                        if (attribs.Length > 0 && !isDeprecated && !isMetaNode && isDSCompatible)
+#else
                         if (attribs.Length > 0 && !isDeprecated && !isMetaNode)
+#endif
                         {
                             searchViewModel.Add(t);
                             typeName = (attribs[0] as NodeNameAttribute).Name;

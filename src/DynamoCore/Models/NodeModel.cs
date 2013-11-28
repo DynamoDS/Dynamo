@@ -2160,6 +2160,14 @@ namespace Dynamo.Models
     [AttributeUsage(AttributeTargets.All, Inherited = false)]
     public class IsMetaNodeAttribute : Attribute { }
 
+
+    /// <summary>
+    ///     The IsDesignScriptCompatibleAttribute indicates if the node is able
+    ///     to work with DesignScript evaluation engine.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.All, Inherited = false)]
+    public class IsDesignScriptCompatibleAttribute : Attribute { }
+
     #endregion
 
 
