@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:controls="clr-namespace:Dynamo.Controls"
              mc:Ignorable="d"
-             Name="InfoBubbleWindowUserControl">
+             Name="InfoBubbleWindowUserControl"
+             Loaded="InfoBubbleWindowUserControl_Loaded">
     <UserControl.Resources>
         <ResourceDictionary>
             <controls:OpacityToVisibilityConverter x:Key="OpacityToVisibilityConverter"/>

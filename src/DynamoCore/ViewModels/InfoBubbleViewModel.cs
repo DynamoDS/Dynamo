@@ -211,6 +211,14 @@ namespace Dynamo.ViewModels
             get { return 0; }
         }
 
+        private State infoBubbleState;
+
+        public State InfoBubbleState
+        {
+            get { return infoBubbleState; }
+            set { infoBubbleState = value; RaisePropertyChanged("InfoBubbleState"); }
+        }
+
 
         // TODO:Kahheng Refactor away these
         private double opacity;
@@ -218,16 +226,6 @@ namespace Dynamo.ViewModels
         {
             get { return opacity; }
             set { opacity = value; RaisePropertyChanged("Opacity"); }
-        }
-
-
-        // TODO:Kahheng Refactoring work in progress
-        private State infoBubbleState;
-
-        public State InfoBubbleState
-        {
-            get { return infoBubbleState; }
-            set { infoBubbleState = value; RaisePropertyChanged("InfoBubbleState"); }
         }
 
         #endregion

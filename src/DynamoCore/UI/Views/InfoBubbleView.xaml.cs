@@ -69,9 +69,25 @@ namespace Dynamo.Controls
             SetupFadeInStoryBoard();
             SetupFadeOutStoryBoard();
 
-            mainGrid.Opacity = Configurations.MaxOpacity;
-
             this.DataContextChanged += InfoBubbleView_DataContextChanged;
+        }
+
+        private void InfoBubbleWindowUserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (ViewModel != null)
+            {
+                switch (ViewModel.InfoBubbleState)
+                {
+                    case InfoBubbleViewModel.State.Minimized:
+                        mainGrid.Visibility = Visibility.Collapsed;
+                        mainGrid.Opacity = 0;
+                        break;
+                    case InfoBubbleViewModel.State.Pinned:
+                        mainGrid.Visibility = Visibility.Visible;
+                        mainGrid.Opacity = Configurations.MaxOpacity;
+                        break;
+                }
+            }
         }
 
         #region Setup animation storyboard
@@ -112,15 +128,19 @@ namespace Dynamo.Controls
 
         private void CountDownDoubleAnimation_Completed(object sender, EventArgs e)
         {
+            //Console.WriteLine("FadeOut done");
             fadeInStoryBoard.Stop(this);
             fadeOutStoryBoard.Stop(this);
 
-            //Console.WriteLine("FadeOut done");
+            mainGrid.Opacity = 0;
+            mainGrid.Visibility = Visibility.Collapsed;
         }
 
         private void CountUpDoubleAnimation_Completed(object sender, EventArgs e)
         {
             //Console.WriteLine("FadeIn done");
+            mainGrid.Opacity = Configurations.MaxOpacity;
+            mainGrid.Visibility = Visibility.Visible;
         }
         #endregion
 
