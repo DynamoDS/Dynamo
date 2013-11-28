@@ -40,9 +40,11 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        public CodeBlockNodeModel(string userCode, Guid guid, WorkspaceModel workSpace)
+        public CodeBlockNodeModel(string userCode, Guid guid, WorkspaceModel workSpace, double XPos, double YPos)
         {
             ArgumentLacing = LacingStrategy.Disabled;
+            this.X = XPos;
+            this.Y = YPos;
             this.code = userCode;
             this.GUID = guid;
             this.WorkSpace = workSpace;
