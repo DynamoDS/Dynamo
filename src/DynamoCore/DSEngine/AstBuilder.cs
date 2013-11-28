@@ -417,7 +417,7 @@ namespace Dynamo.DSEngine
                 Name = name,
 
                 //signature contains all input names
-                Singnature =
+                Signature =
                     new ArgumentSignatureNode
                     {
                         Arguments =
@@ -499,7 +499,7 @@ namespace Dynamo.DSEngine
                 Name =
                     StringConstants.FUNCTION_PREFIX
                     + Guid.NewGuid().ToString().Replace("-", string.Empty),
-                Singnature = new ArgumentSignatureNode { Arguments = partialArgs },
+                Signature = new ArgumentSignatureNode { Arguments = partialArgs },
                 FunctionBody = funcBody
             };
 

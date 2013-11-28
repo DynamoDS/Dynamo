@@ -92,7 +92,7 @@ namespace Dynamo.Tests
         [TearDown]
         public override void Cleanup()
         {
-            GraphToDSCompiler.GraphUtilities.CleanUp();
+            GraphToDSCompiler.GraphUtilities.Reset();
             base.Cleanup();
         }
 
@@ -478,9 +478,91 @@ namespace Dynamo.Tests
         [Test]
         public void Defect_MAGN_844()
         {
-            OpenModel(@"core\dsevaluation\Defect_MAGN_844.dyn");
+            RunModel(@"core\dsevaluation\Defect_MAGN_844.dyn");
             AssertPreviewValue("8de1b8aa-c6c3-4360-9619-fe9d01a804f8", 1);
 
+        }
+
+        [Test]
+        public void Defect_MAGN_829_1()
+        {
+            // CBN ==> 1=a;
+            var model = dynSettings.Controller.DynamoModel;
+
+            RunModel(@"core\dsevaluation\Defect_MAGN_829_1.dyn");
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(0, model.CurrentWorkspace.Connectors.Count);
+            Assert.Pass("Execution completed successfully");
+
+        }
+
+        [Test]
+        public void Defect_MAGN_829_2()
+        {
+            // CBN ==> 1=1=a;
+            var model = dynSettings.Controller.DynamoModel;
+
+            RunModel(@"core\dsevaluation\Defect_MAGN_829_2.dyn");
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(0, model.CurrentWorkspace.Connectors.Count);
+            Assert.Pass("Execution completed successfully");
+        }
+
+        [Test]
+        public void Defect_MAGN_829_3()
+        {
+            // CBN ==> a=1=2=3;
+            var model = dynSettings.Controller.DynamoModel;
+
+            RunModel(@"core\dsevaluation\Defect_MAGN_829_3.dyn");
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(0, model.CurrentWorkspace.Connectors.Count);
+            Assert.Pass("Execution completed successfully");
+        }
+
+        [Test]
+        public void Defect_MAGN_829_4()
+        {
+            // CBN ==> a*a=1;;
+            var model = dynSettings.Controller.DynamoModel;
+
+            RunModel(@"core\dsevaluation\Defect_MAGN_829_4.dyn");
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(0, model.CurrentWorkspace.Connectors.Count);
+            Assert.Pass("Execution completed successfully");
+        }
+
+        [Test]
+        public void Defect_MAGN_829_5()
+        {
+            // Multiline CBN ==> a=1;
+            //               ==> 1 = a;
+            var model = dynSettings.Controller.DynamoModel;
+
+            RunModel(@"core\dsevaluation\Defect_MAGN_829_5.dyn");
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(0, model.CurrentWorkspace.Connectors.Count);
+            Assert.Pass("Execution completed successfully");
+        }
+
+        [Test]
+        public void Defect_MAGN_610()
+        {
+            // Multiline CBN ==> a={1,2,3};
+            //               ==> a[0]= 3;
+            RunModel(@"core\dsevaluation\Defect_MAGN_610.dyn");
+            AssertPreviewValue("aa78716b-f3f6-4676-bb72-2cb1c34181f8", 3);
+            AssertValue("a", 3);
         }
     }
 }
