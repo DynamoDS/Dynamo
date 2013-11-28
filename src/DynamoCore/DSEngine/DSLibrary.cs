@@ -346,6 +346,8 @@ namespace Dynamo.DSEngine
 
             try
             {
+                int globalFunctionNumber = GraphUtilities.GetGlobalMethods(string.Empty).Count;
+
                 DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
                 var importedClasses = GraphUtilities.GetClassesForAssembly(libraryPath);
                 if (GraphUtilities.BuildStatus.ErrorCount > 0)
@@ -365,6 +367,17 @@ namespace Dynamo.DSEngine
                 foreach (ClassNode classNode in importedClasses)
                 {
                     ImportClass(classNode, libraryPath, functions);
+                }
+
+                // GraphUtilities.GetGlobalMethods() ignores input and just 
+                // return all global functions. The workaround is to get 
+                // new global functions after importing this assembly.
+                var globalFunctions = GraphUtilities.GetGlobalMethods(string.Empty);
+                for (int i = globalFunctionNumber; i < globalFunctions.Count; ++i)
+                {
+                    var functionItem = ImportProcedure(libraryPath, null, globalFunctions[i]);
+                    if (functionItem != null)
+                        functions.Add(functionItem);
                 }
             }
             catch (Exception e)
