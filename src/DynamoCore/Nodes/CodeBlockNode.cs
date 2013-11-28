@@ -311,7 +311,7 @@ namespace Dynamo.Nodes
                     if (astNode is IdentifierNode)
                     {
                         string unboundVar = inputIdentifiers[i];
-                        string inputVar = GraphUtilities.ASTListToCode(new List<AssociativeNode> { astNode });
+                        string inputVar = (astNode as IdentifierNode).Value;
                         if (!string.Equals(unboundVar, inputVar))
                         {
                             initStatements.Append(unboundVar);
