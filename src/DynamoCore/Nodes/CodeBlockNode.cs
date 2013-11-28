@@ -21,6 +21,7 @@ namespace Dynamo.Nodes
     [NodeName("Code Block")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Allows for code to be written")] //<--Change the descp :|
+    [IsDesignScriptCompatible]
     public partial class CodeBlockNodeModel : NodeModel
     {
         private readonly List<Statement> codeStatements = new List<Statement>();
