@@ -133,7 +133,7 @@ namespace Dynamo.DSEngine
                 {
                     string signature = string.Join(", ", Parameters.Select(p => p.Item1 + (string.IsNullOrEmpty(p.Item2) ? string.Empty : ": " + p.Item2)));
 
-                    descBuf.Append("(");
+                    descBuf.Append(" (");
                     descBuf.Append(signature);
                     descBuf.Append(")");
                 }
