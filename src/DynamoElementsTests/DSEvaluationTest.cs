@@ -8,6 +8,7 @@ using Dynamo.Utilities;
 using NUnit.Framework;
 using ProtoCore.DSASM;
 using ProtoCore.Mirror;
+using System.Collections;
 
 namespace Dynamo.Tests
 {
@@ -39,38 +40,47 @@ namespace Dynamo.Tests
         {
             RuntimeMirror mirror = null;
             Assert.DoesNotThrow(() => mirror = Controller.EngineController.GetMirror(varName));
-            Assert.IsNotNull(mirror);
             return mirror;
         }
 
         private void AssertValue(string varname, object value)
         {
             var mirror = GetRuntimeMirror(varname);
+            //Couldn't find the variable, so expected value should be null.
+            if (mirror == null)
+            {
+                if(value != null)
+                    Assert.IsNotNull(mirror, string.Format("Variable : {0}, not found.", varname));
+                return;
+            }
 
             Console.WriteLine(varname + " = " + mirror.GetStringData());
-            StackValue svValue = mirror.GetData().GetStackValue();
+            var svValue = mirror.GetData();
+            AssertValue(svValue, value);
+        }
 
-            if (value == null)
-            {
-                Assert.IsTrue(StackUtils.IsNull(svValue));
-            }
-            else if (value is double)
-            {
-                Assert.AreEqual(svValue.opdata_d, Convert.ToDouble(value));
-            }
+        private void AssertValue(MirrorData data, object value)
+        {
+            if (data.IsCollection)
+                AssertCollection(data, value as IEnumerable);
+            else if (value == null)
+                Assert.IsTrue(data.IsNull);
             else if (value is int)
+                Assert.AreEqual((int)value, Convert.ToInt32(data.Data));
+            else if (value is double)
+                Assert.IsTrue(Math.Abs((double)value - Convert.ToDouble(data.Data)) < 0.00001);
+            else
+                Assert.AreEqual(value, data.Data);
+        }
+
+        private void AssertCollection(MirrorData data, IEnumerable collection)
+        {
+            Assert.IsTrue(data.IsCollection);
+            List<MirrorData> elements = data.GetElements();
+            int i = 0;
+            foreach (var item in collection)
             {
-                Assert.AreEqual(svValue.opdata, Convert.ToInt64(value));
-            }
-            else if (value is IEnumerable<int>)
-            {
-                var values = (value as IEnumerable<int>).ToList().Select(v => (object)v).ToList();
-                Assert.IsTrue(mirror.GetUtils().CompareArrays(varname, values, typeof(Int64)));
-            }
-            else if (value is IEnumerable<double>)
-            {
-                var values = (value as IEnumerable<double>).ToList().Select(v => (object)v).ToList();
-                Assert.IsTrue(mirror.GetUtils().CompareArrays(varname, values, typeof(double)));
+                AssertValue(elements[i++], item);
             }
         }
 
@@ -80,13 +90,13 @@ namespace Dynamo.Tests
             AssertValue(previewVariable, value);
         }
 
-        private void AssertIsPointer(string guid)
+        private void AssertClassName(string guid, string className)
         {
             string varname = GetVarName(guid);
             var mirror = GetRuntimeMirror(varname);
-
-            StackValue svValue = mirror.GetData().GetStackValue();
-            Assert.IsTrue(StackUtils.IsValidPointer(svValue));
+            Assert.IsNotNull(mirror);
+            var classInfo = mirror.GetData().Class;
+            Assert.AreEqual(classInfo.ClassName, className);
         }
 
         [TearDown]
@@ -111,7 +121,7 @@ namespace Dynamo.Tests
             // 2; ----> y Point.ByCoordinates(x, y, z);
             // 3; ----> z
             RunModel(@"core\dsevaluation\regress561.dyn");
-            AssertIsPointer("8774296c-5269-450b-959d-ce4020ddbf80");
+            AssertClassName("8774296c-5269-450b-959d-ce4020ddbf80", "Point");
         }
 
         [Test]
@@ -191,8 +201,7 @@ namespace Dynamo.Tests
         public void CBN_String_599()
         {
             // With empty line 
-            // a=1;
-            // b=2;
+            // a="Dynamo";
 
             RunModel(@"core\dsevaluation\CBN_string_599.dyn");
             AssertValue("a", "Dynamo");
@@ -204,7 +213,7 @@ namespace Dynamo.Tests
         // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-697
             // a=1;
             RunModel(@"core\dsevaluation\CBN_Create_697.dyn");
-            AssertValue("a", "Dynamo");
+            AssertValue("a", 1);
         }
         [Test]
         public void CBN_Math_Pi_621()
@@ -420,7 +429,7 @@ namespace Dynamo.Tests
         public void CBN_Dynamic_Array_433()
         {
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-433
-            RunModel(@"core\dsevaluation\CBN_nestedrange592_2.dyn");
+            RunModel(@"core\dsevaluation\CBN_Dynamic_Array_433.dyn");
             AssertValue("a", null);
         }
 
@@ -478,7 +487,7 @@ namespace Dynamo.Tests
         [Test]
         public void Defect_MAGN_844()
         {
-            OpenModel(@"core\dsevaluation\Defect_MAGN_844.dyn");
+            RunModel(@"core\dsevaluation\Defect_MAGN_844.dyn");
             AssertPreviewValue("8de1b8aa-c6c3-4360-9619-fe9d01a804f8", 1);
 
         }
@@ -487,28 +496,57 @@ namespace Dynamo.Tests
         public void Defect_MAGN_829_1()
         {
             // CBN ==> 1=a;
+            var model = dynSettings.Controller.DynamoModel;
+
             RunModel(@"core\dsevaluation\Defect_MAGN_829_1.dyn");
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(0, model.CurrentWorkspace.Connectors.Count);
+            Assert.Pass("Execution completed successfully");
+
         }
 
         [Test]
         public void Defect_MAGN_829_2()
         {
             // CBN ==> 1=1=a;
+            var model = dynSettings.Controller.DynamoModel;
+
             RunModel(@"core\dsevaluation\Defect_MAGN_829_2.dyn");
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(0, model.CurrentWorkspace.Connectors.Count);
+            Assert.Pass("Execution completed successfully");
         }
 
         [Test]
         public void Defect_MAGN_829_3()
         {
             // CBN ==> a=1=2=3;
+            var model = dynSettings.Controller.DynamoModel;
+
             RunModel(@"core\dsevaluation\Defect_MAGN_829_3.dyn");
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(0, model.CurrentWorkspace.Connectors.Count);
+            Assert.Pass("Execution completed successfully");
         }
 
         [Test]
         public void Defect_MAGN_829_4()
         {
             // CBN ==> a*a=1;;
+            var model = dynSettings.Controller.DynamoModel;
+
             RunModel(@"core\dsevaluation\Defect_MAGN_829_4.dyn");
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(0, model.CurrentWorkspace.Connectors.Count);
+            Assert.Pass("Execution completed successfully");
         }
 
         [Test]
@@ -516,7 +554,14 @@ namespace Dynamo.Tests
         {
             // Multiline CBN ==> a=1;
             //               ==> 1 = a;
+            var model = dynSettings.Controller.DynamoModel;
+
             RunModel(@"core\dsevaluation\Defect_MAGN_829_5.dyn");
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(0, model.CurrentWorkspace.Connectors.Count);
+            Assert.Pass("Execution completed successfully");
         }
 
         [Test]
@@ -526,7 +571,7 @@ namespace Dynamo.Tests
             //               ==> a[0]= 3;
             RunModel(@"core\dsevaluation\Defect_MAGN_610.dyn");
             AssertPreviewValue("aa78716b-f3f6-4676-bb72-2cb1c34181f8", 3);
-            AssertValue("a", 3);
+            AssertValue("a", new int[] { 3, 2, 3 });
         }
     }
 }

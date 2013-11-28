@@ -14,6 +14,7 @@ using Dynamo.Utilities;
 using Microsoft.Practices.Prism.ViewModel;
 using String = System.String;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Models
 {
@@ -265,8 +266,8 @@ namespace Dynamo.Models
 
         internal Version WorkspaceVersion { get; set; }
 
-        
-        
+
+
         public delegate void WorkspaceSavedEvent(WorkspaceModel model);
         public event WorkspaceSavedEvent WorkspaceSaved;
 
@@ -283,7 +284,7 @@ namespace Dynamo.Models
             get { return 0; }
             set
             {
-                
+
             }
         }
 
@@ -861,10 +862,10 @@ namespace Dynamo.Models
                 {
                     string type = model.GetType().FullName;
                     string message = string.Format(
-                        "ModelBase.UpdateValue call not handled.\n\n" + 
+                        "ModelBase.UpdateValue call not handled.\n\n" +
                         "Model type: {0}\n" +
-                        "Model GUID: {1}\n" + 
-                        "Property name: {2}\n" + 
+                        "Model GUID: {1}\n" +
+                        "Property name: {2}\n" +
                         "Property value: {3}",
                         type, modelGuid.ToString(), name, value);
 
@@ -912,43 +913,78 @@ namespace Dynamo.Models
             if (!nodes.Any())
                 return;
 
-            string code = dynSettings.Controller.EngineController.ConvertNodesToCode(nodes);
+            Dictionary<string, string> variableNameMap;
+            string code = dynSettings.Controller.EngineController.ConvertNodesToCode(nodes, out variableNameMap);
 
-            //UndoRedo Action Group-----------------------------------------------------------------------------------------
+            //UndoRedo Action Group----------------------------------------------
             UndoRecorder.BeginActionGroup();
 
-            // Delete all nodes
+            #region Step I. Delete all nodes and their connections
+            //Create two dictionarys to store the details of the external connections that have to 
+            //be recreated after the conversion
+            var externalInputConnections = new Dictionary<ConnectorModel, string>();
+            var externalOutputConnections = new Dictionary<ConnectorModel, string>();
+
             var nodeList = nodes.ToList();
             for (int i = 0; i < nodeList.Count; ++i)
             {
                 var node = nodeList[i];
+                #region Step I.A. Delete the connections for the node
                 var connectors = node.AllConnectors as IList<ConnectorModel>;
                 if (null == connectors)
                 {
                     connectors = node.AllConnectors.ToList();
                 }
 
-                // Delete all connections
                 for (int n = 0; n < connectors.Count(); ++n)
                 {
                     var connector = connectors[n];
+                    if (!IsInternalNodeToCodeConnection(connector))
+                    {
+                        //If the connector is an external connector, the save its details
+                        //for recreation later
+                        var startNode = connector.Start.Owner;
+                        int index = startNode.OutPorts.IndexOf(connector.Start);
+                        //We use the varibleName as the connection between the port of the old Node
+                        //to the port of the new node.
+                        var variableName = startNode.GetAstIdentifierForOutputIndex(index).Value;
+                        if (variableNameMap.ContainsKey(variableName))
+                            variableName = variableNameMap[variableName];
+
+                        //Store the data in the corresponding dictionary
+                        if (startNode == node)
+                            externalOutputConnections.Add(connector, variableName);
+                        else
+                            externalInputConnections.Add(connector, variableName);
+                    }
+
+                    //Delete the connector
                     UndoRecorder.RecordDeletionForUndo(connector);
                     connector.NotifyConnectedPortsOfDeletion();
                     Connectors.Remove(connector);
                 }
+                #endregion
 
+                #region Step I.B. Delete the node
                 UndoRecorder.RecordDeletionForUndo(node);
                 Nodes.Remove(node);
+                #endregion
             }
+            #endregion
 
-            // create node
+            #region Step II. Create the new code block node
             var codeBlockNode = new CodeBlockNodeModel(code, nodeId, this);
             UndoRecorder.RecordCreationForUndo(codeBlockNode);
             Nodes.Add(codeBlockNode);
+            #endregion
 
+            #region Step III. Recreate the necessary connections
+            ReConnectInputConnections(externalInputConnections, codeBlockNode);
+            ReConnectOutputConnections(externalOutputConnections, codeBlockNode);
+            #endregion
 
             UndoRecorder.EndActionGroup();
-            //End UndoRedo Action Group------------------------------------------------------------------------------------
+            //End UndoRedo Action Group------------------------------------------
 
             // select node
             var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == nodeId);
@@ -960,6 +996,80 @@ namespace Dynamo.Models
 
             Modified();
         }
+
+        #region Node To Code Reconnection
+
+        /// <summary>
+        /// Checks whether the given connection is inside the node to code set or outside it. 
+        /// This determines if it should be redrawn(if it is external) or if it should be 
+        /// deleted (if it is internal)
+        /// </summary>
+        private bool IsInternalNodeToCodeConnection(ConnectorModel connector)
+        {
+            return DynamoSelection.Instance.Selection.Contains(connector.Start.Owner) && DynamoSelection.Instance.Selection.Contains(connector.End.Owner);
+        }
+
+        /// <summary>
+        /// Forms new connections from the external nodes to the Node To Code Node,
+        /// based on the connectors passed as inputs.
+        /// </summary>
+        /// <param name="externalOutputConnections">List of connectors to remake, along with the port names of the new port</param>
+        /// <param name="codeBlockNode">The new Node To Code created Code Block Node</param>
+        private void ReConnectOutputConnections(Dictionary<ConnectorModel, string> externalOutputConnections, CodeBlockNodeModel codeBlockNode)
+        {
+            foreach (var kvp in externalOutputConnections)
+            {
+                var connector = kvp.Key;
+                string variableName = kvp.Value;
+                int startIndex = 0, endIndex = 0;
+
+                //Get the start and end idex for the ports for the connection
+                endIndex = connector.End.Owner.InPorts.IndexOf(connector.End);
+                int i =0;
+                for (i = 0; i < codeBlockNode.OutPorts.Count;i++)
+                {
+                    if (codeBlockNode.GetAstIdentifierForOutputIndex(i).Value == variableName)
+                        break;
+                }
+                var portModel = codeBlockNode.OutPorts[i];
+                startIndex = codeBlockNode.OutPorts.IndexOf(portModel);
+
+                //Make the new connection and then record and add it
+                var newConnector = ConnectorModel.Make(codeBlockNode, connector.End.Owner,
+                    startIndex, endIndex, PortType.INPUT);
+
+                this.Connectors.Add(newConnector);
+                UndoRecorder.RecordCreationForUndo(newConnector);
+            }
+        }
+
+        /// <summary>
+        /// Forms new connections from the external nodes to the Node To Code Node,
+        /// based on the connectors passed as inputs.
+        /// </summary>
+        /// <param name="externalInputConnections">List of connectors to remake, along with the port names of the new port</param>
+        /// <param name="codeBlockNode">The new Node To Code created Code Block Node</param>
+        private void ReConnectInputConnections(Dictionary<ConnectorModel, string> externalInputConnections, CodeBlockNodeModel codeBlockNode)
+        {
+            foreach (var kvp in externalInputConnections)
+            {
+                var connector = kvp.Key;
+                string variableName = kvp.Value;
+                int startIndex = 0, endIndex = 0;
+
+                //Find the start and end index of the ports for the connection
+                startIndex = connector.Start.Owner.OutPorts.IndexOf(connector.Start);
+                endIndex = CodeBlockNodeModel.GetInportIndex(codeBlockNode, variableName);
+
+                //Make the new connection and then record and add it
+                var newConnector = ConnectorModel.Make(connector.Start.Owner, codeBlockNode,
+                    startIndex, endIndex, PortType.INPUT);
+
+                this.Connectors.Add(newConnector);
+                UndoRecorder.RecordCreationForUndo(newConnector);
+            }
+        }
+        #endregion
 
         /// <summary>
         /// This function finds if any variable declared in the specified code block exists in the workspace
@@ -973,10 +1083,10 @@ namespace Dynamo.Models
             List<string> newDefVars = codeBlockNode.GetDefinedVariableNames();
             return (from cbn in Nodes.OfType<CodeBlockNodeModel>().Where(x => x != codeBlockNode)
                     select cbn.GetDefinedVariableNames()
-                    into oldDefVars
-                    from newVar in newDefVars
-                    where oldDefVars.Contains(newVar)
-                    select newVar).FirstOrDefault();
+                        into oldDefVars
+                        from newVar in newDefVars
+                        where oldDefVars.Contains(newVar)
+                        select newVar).FirstOrDefault();
         }
     }
 }

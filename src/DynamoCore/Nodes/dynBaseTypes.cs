@@ -2580,11 +2580,6 @@ namespace Dynamo.Nodes
             set { }
         }
 
-        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
-        {
-            return new[] { AstFactory.BuildDoubleNode(Math.E) };
-        }
-
         protected internal override INode Build(Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
             Dictionary<int, INode> result;
@@ -2620,11 +2615,6 @@ namespace Dynamo.Nodes
                 return false;
             }
             set { }
-        }
-
-        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
-        {
-            return new[] { AstFactory.BuildDoubleNode(Math.PI) };
         }
 
         protected internal override INode Build(Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
@@ -2663,11 +2653,6 @@ namespace Dynamo.Nodes
                 return false;
             }
             set { }
-        }
-
-        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
-        {
-            return new[] { AstFactory.BuildDoubleNode(Math.PI*2) };
         }
 
         protected internal override INode Build(Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
@@ -3330,14 +3315,6 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewNumber(Value ? 1 : 0);
         }
 
-        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
-        {
-            var rhs = AstFactory.BuildBooleanNode(Value);
-            var assignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), rhs);
-
-            return new[] { assignment };
-        }
-
         #region Serialization/Deserialization Methods
 
         protected override void SerializeCore(XmlElement element, SaveContext context)
@@ -3375,14 +3352,6 @@ namespace Dynamo.Nodes
             return "\"" + base.PrintExpression() + "\"";
         }
 
-        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
-        {
-            var rhs = AstFactory.BuildStringNode(Value);
-            var assignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), rhs);
-
-            return new[] { assignment };
-        }
-
         #region Serialization/Deserialization Methods
 
         protected override void SerializeCore(XmlElement element, SaveContext context)
@@ -3415,6 +3384,7 @@ namespace Dynamo.Nodes
     [NodeName("Number")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Creates a number.")]
+    [IsDesignScriptCompatible]
     public partial class DoubleInput : NodeWithOneOutput
     {
         public DoubleInput()
@@ -3962,6 +3932,7 @@ namespace Dynamo.Nodes
     [NodeName("Number Slider")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Change a number value with a slider.")]
+    [IsDesignScriptCompatible]
     public partial class DoubleSliderInput : Double
     {
 

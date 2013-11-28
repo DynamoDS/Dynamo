@@ -168,6 +168,14 @@ namespace Dynamo.Nodes
             Initialize();
         }
 
+        public override string Description
+        {
+            get 
+            { 
+                return Definition.Signature; 
+            }
+        }
+
         public override bool IsConvertible
         {
             get
@@ -195,14 +203,14 @@ namespace Dynamo.Nodes
         {
             if (IsInstanceMember())
             {
-                InPortData.Add(new PortData("this", "Class Instance", typeof(object)));
+                InPortData.Add(new PortData("this", Definition.ClassName, typeof(object)));
             }
 
             if (Definition.Parameters != null)
             {
                 foreach (var arg in Definition.Parameters)
                 {
-                    InPortData.Add(new PortData(arg, "parameter", typeof(object)));
+                    InPortData.Add(new PortData(arg.Item1, string.IsNullOrEmpty(arg.Item2) ? "var" : arg.Item2, typeof(object)));
                 }
             }
 
@@ -211,16 +219,17 @@ namespace Dynamo.Nodes
             {
                 foreach (var key in Definition.ReturnKeys)
                 {
-                    OutPortData.Add(new PortData(key, "return value", typeof(object)));
+                    OutPortData.Add(new PortData(key, "var", typeof(object)));
                 }
             }
             else
             {
-                OutPortData.Add(new PortData("", "return value", typeof(object)));
+                string returnType = IsConstructor() ? Definition.ClassName : Definition.ReturnType;
+                OutPortData.Add(new PortData(">", returnType, typeof(object)));
             }
 
             RegisterAllPorts();
-            NickName = Definition.DisplayName;
+            NickName = Definition.SearchName;
         }
 
         /// <summary>
@@ -231,18 +240,8 @@ namespace Dynamo.Nodes
         /// <param name="context"></param>
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
-            XmlElement def = xmlDoc.CreateElement(typeof(FunctionItem).FullName);
-
-            def.SetAttribute("Assembly", Definition.Assembly ?? "");
-            def.SetAttribute("Category", Definition.Category ?? "");
-            def.SetAttribute("ClassName", Definition.ClassName ?? "");
-            def.SetAttribute("Name", Definition.Name ?? "");
-            def.SetAttribute("DisplayName", Definition.DisplayName ?? "");
-            def.SetAttribute("Type", Definition.Type.ToString());
-            def.SetAttribute("Parameters", Definition.Parameters == null ? "" : string.Join(";", Definition.Parameters));
-            def.SetAttribute("ReturnKeys", Definition.ReturnKeys == null ? "" : string.Join(";", Definition.ReturnKeys));
-
-            nodeElement.AppendChild(def);
+            nodeElement.SetAttribute("assembly", Definition.Assembly ?? "");
+            nodeElement.SetAttribute("function", Definition.MangledName ?? "");
         }
 
         /// <summary>
@@ -257,50 +256,40 @@ namespace Dynamo.Nodes
                 return;
             }
 
-            foreach (XmlElement subNode in nodeElement.ChildNodes.Cast<XmlElement>().Where(subNode => subNode.Name.Equals(typeof(FunctionItem).FullName)))
+            string assembly = null;
+            string function = null;
+
+            if (nodeElement.Attributes["assembly"] == null &&
+                nodeElement.Attributes["function"] == null)
             {
-                var helper = new XmlElementHelper(subNode);
-
-                var assembly = helper.ReadString("Assembly", "");
-                var category = helper.ReadString("Category", "");
-                var className = helper.ReadString("ClassName", "");
-                var name = helper.ReadString("Name", "");
-                var displayName = helper.ReadString("DisplayName");
-                var strType = helper.ReadString("Type", LibraryItemType.GenericFunction.ToString());
-                var type = (LibraryItemType)System.Enum.Parse(typeof(LibraryItemType), strType);
-
-                List<string> arguments = null;
-                var argumentValue = helper.ReadString("Parameters", null);
-                if (argumentValue != null)
+                // To open old file
+                foreach (XmlElement subNode in nodeElement.ChildNodes.Cast<XmlElement>().Where(subNode => subNode.Name.Equals(typeof(FunctionItem).FullName)))
                 {
-                    argumentValue = argumentValue.Trim();
+                    var helper = new XmlElementHelper(subNode);
+                    assembly = helper.ReadString("Assembly", "");
+                    break;
                 }
-                if (!string.IsNullOrEmpty(argumentValue))
-                {
-                    arguments = argumentValue.Split(new[] { ';' }).ToList();
-                }
-
-                List<string> returnKeys = null;
-                var returnKeyValue = helper.ReadString("ReturnKeys", null);
-                if (returnKeyValue != null)
-                {
-                    returnKeyValue = returnKeyValue.Trim();
-                }
-                if (!string.IsNullOrEmpty(returnKeyValue))
-                {
-                    returnKeys = returnKeyValue.Split(new[] { ';' }).ToList();
-                }
-
-                if (!string.IsNullOrEmpty(assembly))
-                {
-                    dynSettings.Controller.EngineController.ImportLibraries(new List<string> { assembly });
-                }
-
-                Definition = new FunctionItem(assembly, category, className, name, displayName, type, arguments, returnKeys);
-                Initialize();
-
-                return;
+                function = nodeElement.Attributes["nickname"].Value.Replace(".get", ".");
             }
+            else
+            {
+                assembly = nodeElement.Attributes["assembly"].Value;
+                function = nodeElement.Attributes["function"].Value;
+            }
+            
+            if (!string.IsNullOrEmpty(assembly))
+            {
+                dynSettings.Controller.EngineController.ImportLibraries(new List<string> { assembly });
+            }
+
+            Definition = dynSettings.Controller.EngineController.GetImportedFunction(function);
+            if (null == Definition)
+            {
+                throw new Exception("Cannot find function: " + function);
+            }
+
+            Initialize();
+            return;
         }
 
         /// <summary>
@@ -312,7 +301,7 @@ namespace Dynamo.Nodes
         {
             base.SerializeCore(element, context); 
             var helper = new XmlElementHelper(element);
-            helper.SetAttribute("name", Definition.DisplayName);
+            helper.SetAttribute("name", Definition.MangledName);
         }
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
