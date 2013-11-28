@@ -76,7 +76,8 @@
     <Compile Include="Elements\FreeFormTests.cs" />
     <Compile Include="Elements\ModelCurveTests.cs" />
     <Compile Include="Elements\ReferencePointTests.cs" />
-    <Compile Include="GeometryConversion\ProtoCurveToRevitCurveTests.cs" />
+    <Compile Include="GeometryConversion\ProtoToRevitCurveTests.cs" />
+    <Compile Include="GeometryConversion\RevitToProtoCurveTests.cs" />
     <Compile Include="GeometryObjects\CurveLoopTests.cs" />
     <Compile Include="GeometryObjects\NurbSplineTests.cs" />
     <Compile Include="GeometryObjects\SolidTests.cs" />

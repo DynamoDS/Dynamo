@@ -95,6 +95,8 @@ namespace Dynamo
             TransactionManager.TransactionStarted += TransactionManager_TransactionCommitted;
             TransactionManager.TransactionCancelled += TransactionManager_TransactionCancelled;
             TransactionManager.FailuresRaised += TransactionManager_FailuresRaised;
+
+            MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrationsRevit));
         }
 
         private void CleanupVisualizations(object sender, EventArgs e)

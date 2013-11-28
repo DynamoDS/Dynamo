@@ -286,6 +286,8 @@ namespace Dynamo
             InfoBubbleViewModel = new InfoBubbleViewModel();
 
             AddPythonBindings();
+
+            MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrations));
         }
 
         #endregion
@@ -602,6 +604,11 @@ namespace Dynamo
         }
 
     #endregion
+
+        public void ResetEngine()
+        {
+            EngineController = new EngineController(this);
+        }
 
         public void RequestRedraw()
         {

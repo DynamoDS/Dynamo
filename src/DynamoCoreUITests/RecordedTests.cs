@@ -992,6 +992,91 @@ namespace Dynamo.Tests.UI
 
         }
 
+        [Test, RequiresSTA]
+        public void Defect_MAGN_828()
+        {
+            // Further testing of this defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-828
+
+            RunCommandsFromFile("Defect_MAGN_828.xml");
+
+            //Check the nodes and connectors count
+            var nodes = workspaceViewModel.Nodes;
+            var connectors = workspaceViewModel.Connectors;
+            Assert.NotNull(nodes);
+            Assert.AreEqual(1, nodes.Count);
+            Assert.AreEqual(0, connectors.Count);
+
+            //Check the CBN for input and output ports count
+            var cbn = GetNode("32542274-9e86-4ac6-8288-3f3ac8d6e906") as CodeBlockNodeModel;
+            Assert.AreNotEqual(ElementState.Error, cbn.State);
+            Assert.AreEqual(1, cbn.OutPorts.Count);
+            Assert.AreEqual(1, cbn.InPorts.Count);
+
+            //Check the position of ports
+            Assert.AreEqual("Statement Output", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+        }
+
+        public void Defect_MAGN_397()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-397
+            RunCommandsFromFile("Defect_MAGN_397.xml");
+
+            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Connectors.Count);
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_520()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-520
+            RunCommandsFromFile("Defect_MAGN_520.xml");
+
+            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count);
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_520_WithCrossSelection()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-520
+            RunCommandsFromFile("Defect_MAGN_520_WithCrossSelection.xml");
+
+            Assert.AreEqual(3, workspace.Nodes.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count);
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_581()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-581
+            RunCommandsFromFile("Defect_MAGN_581.xml");
+
+            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Connectors.Count);
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_613()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-613
+            RunCommandsFromFile("Defect_MAGN_613.xml");
+
+            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count);
+
+            //Check the CBN for input and output ports count
+            var cbn = GetNode("3c7c3458-70be-4588-b162-b1099cf30ebc") as CodeBlockNodeModel;
+            Assert.AreNotEqual(ElementState.Error, cbn.State);
+            Assert.AreEqual(1, cbn.OutPorts.Count);
+            Assert.AreEqual(0, cbn.InPorts.Count);
+
+            //Check the position of ports
+            Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual(64, cbn.OutPorts[0].MarginThickness.Top);
+
+        }
+
         #endregion
 
         #region Private Helper Methods

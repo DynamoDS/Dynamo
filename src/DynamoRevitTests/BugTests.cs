@@ -57,5 +57,23 @@ namespace Dynamo.Tests
 
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
+
+        [Test]
+        public void MAGN_438()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-438
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\\Bugs\MAGN-438_structuralFraming_simple.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
+
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+        }
     }
 }

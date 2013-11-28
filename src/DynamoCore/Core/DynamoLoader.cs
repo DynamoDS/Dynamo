@@ -165,6 +165,7 @@ namespace Dynamo.Utilities
                         var attribs = t.GetCustomAttributes(typeof (NodeNameAttribute), false);
                         var isDeprecated = t.GetCustomAttributes(typeof (NodeDeprecatedAttribute), true).Any();
                         var isMetaNode = t.GetCustomAttributes(typeof(IsMetaNodeAttribute), false).Any();
+                        var isHidden = t.GetCustomAttributes(typeof (NodeHiddenInBrowserAttribute), true).Any();
 
                         if (!IsNodeSubType(t)) /*&& attribs.Length > 0*/
                             continue;

@@ -20,7 +20,7 @@ namespace Dynamo.Tests
         [TearDown]
         public override void Cleanup()
         {
-            GraphToDSCompiler.GraphUtilities.CleanUp();
+            GraphToDSCompiler.GraphUtilities.Reset();
             base.Cleanup();
         }
 
