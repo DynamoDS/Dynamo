@@ -357,7 +357,10 @@ namespace Dynamo.Controls
 
         private void FadeOutInfoBubble()
         {
-            if (this.IsDisconnected || (this.ViewModel.InfoBubbleState == InfoBubbleViewModel.State.Pinned))
+            if (this.IsDisconnected)
+                return;
+
+            if (this.ViewModel.InfoBubbleState == InfoBubbleViewModel.State.Pinned)
                 return;
 
             fadeInStoryBoard.Stop(this);
