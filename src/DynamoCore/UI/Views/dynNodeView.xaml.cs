@@ -16,6 +16,7 @@ using Dynamo.ViewModels;
 using System.Windows.Media;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Windows.Threading;
+using Dynamo.Core;
 
 namespace Dynamo.Controls
 {
@@ -42,7 +43,7 @@ namespace Dynamo.Controls
             private set { viewModel = value; }
         }
 
-        private DispatcherTimer twoSecondsWaitTimer;
+        private DispatcherTimer delayTimer;
 
         #region constructors
 
@@ -302,25 +303,26 @@ namespace Dynamo.Controls
             double actualHeight = textBlock.ActualHeight * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
             Point botRight = new Point(topLeft.X + actualWidth, topLeft.Y + actualHeight);
 
-            twoSecondsWaitTimer = new DispatcherTimer();
-            twoSecondsWaitTimer.Interval = TimeSpan.FromSeconds(2); // two seconds wait
+            delayTimer = new DispatcherTimer();
+            delayTimer.Interval = TimeSpan.FromSeconds(Configurations.NodeToolTipFadeInDelayInSeconds);
 
-            twoSecondsWaitTimer.Tick += delegate(object sender1, EventArgs e1)
+            delayTimer.Tick += delegate(object sender1, EventArgs e1)
             {
                 dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.BeginInvoke((new Action(() =>
                 {
                     ViewModel.ShowTooltipCommand.Execute(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.NodeTooltip, topLeft,
                         botRight, tooltipContent, InfoBubbleViewModel.Direction.Bottom));
                 })));
+                delayTimer.Stop(); // stop timer after one tick
             };
 
-            twoSecondsWaitTimer.Start();
+            delayTimer.Start();
         }
 
         private void NickNameBlock_OnMouseLeave(object sender, MouseEventArgs e)
         {
-            if (twoSecondsWaitTimer.IsEnabled)
-                twoSecondsWaitTimer.Stop();
+            if (delayTimer.IsEnabled)
+                delayTimer.Stop();
 
             if (ViewModel != null)
                 ViewModel.FadeOutTooltipCommand.Execute(null);
@@ -341,25 +343,26 @@ namespace Dynamo.Controls
             double actualHeight = inputPort.ActualHeight * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
             Point botRight = new Point(topLeft.X + actualWidth, topLeft.Y + actualHeight);
 
-            twoSecondsWaitTimer = new DispatcherTimer();
-            twoSecondsWaitTimer.Interval = TimeSpan.FromSeconds(2); // two seconds wait
+            delayTimer = new DispatcherTimer();
+            delayTimer.Interval = TimeSpan.FromSeconds(Configurations.NodeToolTipFadeInDelayInSeconds);
 
-            twoSecondsWaitTimer.Tick += delegate(object sender1, EventArgs e1)
+            delayTimer.Tick += delegate(object sender1, EventArgs e1)
             {
                 dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.BeginInvoke((new Action(() =>
                 {
                     ViewModel.ShowTooltipCommand.Execute(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.NodeTooltip, topLeft,
                         botRight, content, InfoBubbleViewModel.Direction.Right));
                 })));
+                delayTimer.Stop(); // stop timer after one tick
             };
 
-            twoSecondsWaitTimer.Start();
+            delayTimer.Start();
         }
 
         private void InputPort_OnMouseLeave(object sender, MouseEventArgs e)
         {
-            if (twoSecondsWaitTimer.IsEnabled)
-                twoSecondsWaitTimer.Stop();
+            if (delayTimer.IsEnabled)
+                delayTimer.Stop();
 
             if (ViewModel != null)
                 ViewModel.FadeOutTooltipCommand.Execute(null);
@@ -386,25 +389,26 @@ namespace Dynamo.Controls
             double actualHeight = outputPort.ActualHeight * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
             Point botRight = new Point(topLeft.X + actualWidth, topLeft.Y + actualHeight);
 
-            twoSecondsWaitTimer = new DispatcherTimer();
-            twoSecondsWaitTimer.Interval = TimeSpan.FromSeconds(2); // two seconds wait
+            delayTimer = new DispatcherTimer();
+            delayTimer.Interval = TimeSpan.FromSeconds(Configurations.NodeToolTipFadeInDelayInSeconds);
 
-            twoSecondsWaitTimer.Tick += delegate(object sender1, EventArgs e1)
+            delayTimer.Tick += delegate(object sender1, EventArgs e1)
             {
                 dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.BeginInvoke((new Action(() =>
                 {
                     ViewModel.ShowTooltipCommand.Execute(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.NodeTooltip, topLeft,
                         botRight, content, InfoBubbleViewModel.Direction.Left));
                 })));
+                delayTimer.Stop(); // stop timer after one tick
             };
 
-            twoSecondsWaitTimer.Start();
+            delayTimer.Start();
         }
 
         private void OutputPort_OnMouseLeave(object sender, MouseEventArgs e)
         {
-            if (twoSecondsWaitTimer.IsEnabled)
-                twoSecondsWaitTimer.Stop();
+            if (delayTimer.IsEnabled)
+                delayTimer.Stop();
 
             if (ViewModel != null)
                 ViewModel.FadeOutTooltipCommand.Execute(null);

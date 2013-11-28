@@ -102,6 +102,7 @@ namespace Dynamo.Core
         #endregion
 
         #region Node Tooltip
+        public static int NodeToolTipFadeInDelayInSeconds = 2;
 
         public static SolidColorBrush NodeTooltipFrameFill = new SolidColorBrush(Color.FromRgb(255, 255, 255));
         public static double NodeTooltipFrameStrokeThickness = 1;
