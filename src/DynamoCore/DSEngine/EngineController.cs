@@ -164,9 +164,12 @@ namespace Dynamo.DSEngine
                     if (!(inputNode is CodeBlockNodeModel))
                     {
                         string inputVar = GraphToDSCompiler.GraphUtilities.ASTListToCode(new List<AssociativeNode> { inputNode.AstIdentifierForPreview });
-                        newVar = GenerateShortVariable();
-                        variableNames.Add(inputVar, newVar);
-                        sb = sb.Replace(inputVar, newVar);
+                        if (!variableNames.ContainsKey(inputVar))
+                        {
+                            newVar = GenerateShortVariable();
+                            variableNames.Add(inputVar, newVar);
+                            sb = sb.Replace(inputVar, newVar);
+                        }
                     }
                     else
                     {
@@ -175,9 +178,12 @@ namespace Dynamo.DSEngine
                         string inputVar = cbn.GetAstIdentifierForOutputIndex(portIndex).Value;
                         if (cbn.TempVariables.Contains(inputVar))
                         {
-                            newVar = GenerateShortVariable();
-                            variableNames.Add(inputVar, newVar);
-                            sb = sb.Replace(inputVar, newVar);
+                            if (!variableNames.ContainsKey(inputVar))
+                            {
+                                newVar = GenerateShortVariable();
+                                variableNames.Add(inputVar, newVar);
+                                sb = sb.Replace(inputVar, newVar);
+                            }
                         }
                     }
                 }
