@@ -1116,11 +1116,12 @@ namespace Dynamo.Models
             var modelsToReValidate = new HashSet<CodeBlockNodeModel>();
             if (currentDefinedVars.Count != 0)
                 modelsToReValidate.Add(cbn);
-            var previouslyDefinedVariableMap = definedVariableMap.Where(x => x.Value.Contains(cbn.GUID));
-
+            
+            //Find out the variables that were defined in that cbn previously
+            var previouslyDefinedVariableMap = definedVariableMap.Keys.Where(x => definedVariableMap[x].Contains(cbn.GUID)).ToList<string>();
             for (int i = 0; i < previouslyDefinedVariableMap.Count(); i++)
             {
-                var variable = previouslyDefinedVariableMap.ElementAt(i).Key;
+                var variable = previouslyDefinedVariableMap[i];
                 if (currentDefinedVars.Contains(variable))
                 {
                     //It was defined before and is defined again. Dont process it again.
