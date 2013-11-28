@@ -54,26 +54,6 @@ namespace Dynamo.Nodes
         }
 
         /// <summary>
-        ///     It removes all the in ports and out ports so that the user knows there is an error.
-        /// </summary>
-        /// <param name="errorMessage"> Error message to be displayed </param>
-        public void ProcessError()
-        {
-            DynamoLogger.Instance.Log("Error in Code Block Node");
-
-            //Remove all ports
-            int size = InPortData.Count;
-            for (int i = 0; i < size; i++)
-                InPortData.RemoveAt(0);
-            size = OutPortData.Count;
-            for (int i = 0; i < size; i++)
-                OutPortData.RemoveAt(0);
-            RegisterAllPorts();
-
-            previewVariable = null;
-        }
-
-        /// <summary>
         /// Formats user text by :
         /// 1.Removing whitespaces form the front and back (whitespaces -> space, tab or enter)
         /// 2.Removes unnecessary semi colons
@@ -117,11 +97,27 @@ namespace Dynamo.Nodes
         /// <summary>
         /// Returns the index of the port corresponding to the variable name given
         /// </summary>
+<<<<<<< HEAD
         /// <param name="variableName"> Name of the variable corresponding to an input port </param>
         /// <returns> Index of the required port in the InPorts collection </returns>
         public static int GetInportIndex(CodeBlockNodeModel cbn, string variableName)
         {
             return cbn.inputIdentifiers.IndexOf(variableName);
+=======
+        public static void ReValidate(CodeBlockNodeModel cbn)
+        {
+            foreach (string variable in cbn.GetDefinedVariableNames())
+            {
+                var ownerGuid = cbn.WorkSpace.GetDefiningNode(variable);
+                if (ownerGuid != cbn.GUID)
+                {
+                    cbn.Error(variable + " is redefined!");
+                    return;
+                }
+            }
+
+            cbn.ValidateConnections();
+>>>>>>> Code refactor
         }
 
         #endregion
@@ -169,11 +165,7 @@ namespace Dynamo.Nodes
                             //Recreate connectors that can be reused
                             LoadAndCreateConnectors(inportConnections, outportConnections);
 
-                            if (errorMessage == null)
-                            {
-                                string redefinedVar = this.WorkSpace.UpdateDefinedVariables(this);
-                                errorMessage = redefinedVar == null ? null : redefinedVar + " is already defined";
-                            }
+                            this.WorkSpace.UpdateDefinedVariables(this);
 
                             WorkSpace.UndoRecorder.EndActionGroup();
                         }
@@ -184,11 +176,12 @@ namespace Dynamo.Nodes
                             WorkSpace.Modified();
                         EnableReporting();
 
+                        //Error messages must change the state only after enable reporting is set
+                        //Hence functions must be recalled here
                         if (errorMessage != null)
-                        {
-                            ProcessError();
                             Error(errorMessage);
-                        }
+                        else
+                            CodeBlockNodeModel.ReValidate(this);
                     }
                     else
                         code = null;
@@ -391,10 +384,7 @@ namespace Dynamo.Nodes
             RaisePropertyChanged("Code");
             RequiresRecalc = true;
             if (errorMessage != null)
-            {
-                ProcessError();
                 Error(errorMessage);
-            }
             if (WorkSpace != null)
                 WorkSpace.Modified();
         }
@@ -457,16 +447,13 @@ namespace Dynamo.Nodes
                         for (; i < errors.Count - 1; i++)
                             errorMessage += (errors[i].Message + "\n");
                         errorMessage += errors[i].Message;
-                        ProcessError();
                     }
-                    return;
                 }
             }
             catch (Exception e)
             {
                 errorMessage = e.Message;
                 previewVariable = null;
-                return;
             }
 
             SetPorts(unboundIdentifiers); //Set the input and output ports based on the statements
