@@ -247,6 +247,7 @@ namespace Dynamo.ViewModels
         public InfoBubbleViewModel()
         {
             // Default values
+            TextFontSize = Configurations.PreviewTextFontSize;
             preview_LastMaxWidth = double.MaxValue;
             preview_LastMaxHeight = double.MaxValue;
             limitedDirection = Direction.None;
