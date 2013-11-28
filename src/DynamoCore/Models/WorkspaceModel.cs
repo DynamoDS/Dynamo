@@ -1110,14 +1110,15 @@ namespace Dynamo.Models
                         select newVar).FirstOrDefault();
         }
 
-        internal string UpdateDefinedVariables(CodeBlockNodeModel cbn)
+        internal void UpdateDefinedVariables(CodeBlockNodeModel cbn)
         {
-            string reDefinedVariable = null;
             List<string> currentDefinedVars = cbn.GetDefinedVariableNames();
-            var modelsToReprocess = new HashSet<CodeBlockNodeModel>();
+            var modelsToReValidate = new HashSet<CodeBlockNodeModel>();
+            if (currentDefinedVars.Count != 0)
+                modelsToReValidate.Add(cbn);
             var previouslyDefinedVariableMap = definedVariableMap.Where(x => x.Value.Contains(cbn.GUID));
-            
-            for(int i=0;i<previouslyDefinedVariableMap.Count();i++)
+
+            for (int i = 0; i < previouslyDefinedVariableMap.Count(); i++)
             {
                 var variable = previouslyDefinedVariableMap.ElementAt(i).Key;
                 if (currentDefinedVars.Contains(variable))
@@ -1127,7 +1128,7 @@ namespace Dynamo.Models
                 }
                 else
                 {
-                    //It was defined before and now it is not defined.
+                    //It was defined before and now it is not defined, remove it form the map.
                     definedVariableMap[variable].Remove(cbn.GUID);
                     if (definedVariableMap[variable].Count == 0)
                         definedVariableMap.Remove(variable);
@@ -1136,7 +1137,7 @@ namespace Dynamo.Models
                         //Get the first node that defines this variable and save it for reprocessing
                         var nodeId = definedVariableMap[variable][0];
                         var node = Nodes.Where(x => x.GUID == nodeId).First() as CodeBlockNodeModel;
-                        modelsToReprocess.Add(node);
+                        modelsToReValidate.Add(node);
                     }
                 }
             }
@@ -1148,7 +1149,6 @@ namespace Dynamo.Models
                 if (definedVariableMap.ContainsKey(variable))
                 {
                     //Been defined before elsewhere.
-                    reDefinedVariable = variable;
                     definedVariableMap[variable].Add(cbn.GUID);
                 }
                 else
@@ -1160,10 +1160,13 @@ namespace Dynamo.Models
             }
 
             //Reprocess those models
-            foreach (var model in modelsToReprocess)
-                CodeBlockNodeModel.OnDefinedVariableUpdated(model);
+            foreach (var model in modelsToReValidate)
+                CodeBlockNodeModel.ReValidate(model);
+        }
 
-            return reDefinedVariable;
+        internal Guid GetDefiningNode(String variable)
+        {
+            return definedVariableMap[variable][0];
         }
     }
 }
