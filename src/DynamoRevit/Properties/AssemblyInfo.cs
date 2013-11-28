@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("DynamoRevit")]
+[assembly: AssemblyTitle("DynamoRevitDS")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Autodesk, Inc.")]
-[assembly: AssemblyProduct("DynamoRevit")]
+[assembly: AssemblyProduct("DynamoRevitDS")]
 [assembly: AssemblyCopyright("Copyright © Autodesk, Inc 2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

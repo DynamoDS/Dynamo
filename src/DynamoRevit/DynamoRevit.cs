@@ -33,7 +33,7 @@ namespace Dynamo.Applications
 {
     [Transaction(Autodesk.Revit.Attributes.TransactionMode.Automatic)]
     [Regeneration(RegenerationOption.Manual)]
-    public class DynamoRevitAppDS : IExternalApplication
+    public class DynamoRevitApp : IExternalApplication
     {
         private static readonly string m_AssemblyName = Assembly.GetExecutingAssembly().Location;
         public static RevitServicesUpdater Updater;
@@ -52,7 +52,7 @@ namespace Dynamo.Applications
                 //Create a push button in the ribbon panel 
                 var pushButton = ribbonPanel.AddItem(new PushButtonData("DynamoDS",
                                                                         res.GetString("App_Name"), m_AssemblyName,
-                                                                        "Dynamo.Applications.DynamoRevitDS")) as
+                                                                        "Dynamo.Applications.DynamoRevit")) as
                                  PushButton;
 
                 Bitmap dynamoIcon = Resources.logo_square_32x32;
@@ -96,7 +96,7 @@ namespace Dynamo.Applications
 
     [Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
-    internal class DynamoRevitDS : IExternalCommand
+    internal class DynamoRevit : IExternalCommand
     {
         private static DynamoView dynamoView;
         private UIDocument m_doc;
@@ -153,7 +153,7 @@ namespace Dynamo.Applications
                 dynRevitSettings.DefaultLevel = defaultLevel;
 
                 //TODO: has to be changed when we handle multiple docs
-                DynamoRevitAppDS.Updater.DocumentToWatch = m_doc.Document;
+                DynamoRevitApp.Updater.DocumentToWatch = m_doc.Document;
                 
                 RevThread.IdlePromise.ExecuteOnIdleAsync(delegate
                 {
@@ -169,7 +169,7 @@ namespace Dynamo.Applications
                     if (context == "Vasari")
                         context = "Vasari 2014";
 
-                    dynamoController = new DynamoController_Revit(DynamoRevitAppDS.env, DynamoRevitAppDS.Updater, typeof(DynamoRevitViewModel), context);
+                    dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.Updater, typeof(DynamoRevitViewModel), context);
                         
                     dynamoView = new DynamoView { DataContext = dynamoController.DynamoViewModel };
                     dynamoController.UIDispatcher = dynamoView.Dispatcher;
