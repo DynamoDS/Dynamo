@@ -131,6 +131,12 @@ namespace DSRevitNodes
             {
                 throw new ArgumentNullException("solid");
             }
+
+            if (!Document.IsFamilyDocument)
+            {
+                throw new Exception("You can only create a FreeForm element in the Family editor.  You can then import" +
+                                    "this family into a Project environment as a family.");
+            }
             return new DSFreeForm(solid.InternalSolid);
         }
 

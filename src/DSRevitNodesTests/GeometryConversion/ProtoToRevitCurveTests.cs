@@ -20,12 +20,18 @@ namespace DSRevitNodesTests.GeometryConversion
             var pts = new[]
             {
                 Point.ByCoordinates(10,2,3)
-                , Point.ByCoordinates(10,2,2)
+                , Point.ByCoordinates(0,2,2)
                 , Point.ByCoordinates(10,4,8)
                 , Point.ByCoordinates(10,2,8)
+                , Point.ByCoordinates(5,5,5)
             };
 
-            var bspline = BSplineCurve.ByPoints(pts);
+            var bspline = BSplineCurve.ByControlVertices(pts, 3);
+
+            Console.WriteLine(bspline.Degree);
+            Console.WriteLine(bspline.ControlVertices);
+
+            Console.WriteLine(bspline.PointAtParameter(0.5).ToXyz());
 
             var revitCurve = bspline.ToRevitType();
 
@@ -54,7 +60,7 @@ namespace DSRevitNodesTests.GeometryConversion
         {
             var radius = 4;
             var circ = Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius(Point.ByCoordinates(1, 2, 3), radius,
-                Vector.ByCoordinates(1, 2, 3));
+                Vector.ByCoordinates(0,0,1));
 
             var revitCurve = circ.ToRevitType();
 
@@ -70,6 +76,7 @@ namespace DSRevitNodesTests.GeometryConversion
 
             // TODO: test the interval of the revit arc
 
+
         } 
 
         [Test]
@@ -78,17 +85,27 @@ namespace DSRevitNodesTests.GeometryConversion
             var circ = Autodesk.DesignScript.Geometry.Arc.ByCenterPointRadiusAngle(Point.ByCoordinates(1, 2, 3), 4,
                 0.4, 1.3, Vector.ByCoordinates(1, 2, 3));
 
+            // temporary debug methods
+            Console.WriteLine(circ.Radius);
+            Console.WriteLine(circ.PointAtParameter(0.5));
+
+            Console.WriteLine(circ.PointAtParameter(0.5));
+            Console.WriteLine(circ.StartAngle);
+            Console.WriteLine(circ.EndAngle);
+
             var revitCurve = circ.ToRevitType();
 
             Assert.NotNull(revitCurve);
 
             Assert.IsAssignableFrom<Autodesk.Revit.DB.Arc>(revitCurve);
 
-            var revitArc = (Autodesk.Revit.DB.Arc)revitCurve;
+            var revitArc = (Autodesk.Revit.DB.Arc) revitCurve;
 
             Assert.AreEqual(circ.CenterPoint, revitArc.Center.ToPoint());
             Assert.AreEqual(circ.Radius, revitArc.Radius);
             Assert.AreEqual(circ.Normal, revitArc.Normal);
+
+
 
             // TODO: test the interval of the revit arc
         } 
@@ -97,6 +114,8 @@ namespace DSRevitNodesTests.GeometryConversion
         public void Line_Basic()
         {
             var line = Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint( Point.ByCoordinates(1, 2, 3), Point.ByCoordinates(2,4,6));
+
+            Console.WriteLine(line.PointAtParameter(0.5).ToXyz());
 
             var revitCurve = line.ToRevitType();
 
