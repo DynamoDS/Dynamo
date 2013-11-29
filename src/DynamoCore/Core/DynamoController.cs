@@ -263,7 +263,9 @@ namespace Dynamo
             dynSettings.PackageLoader = new PackageLoader();
 
             dynSettings.PackageLoader.DoCachedPackageUninstalls();
+#if !USE_DSENGINE
             dynSettings.PackageLoader.LoadPackages();
+#endif
             
             FSchemeEnvironment = env;
 
