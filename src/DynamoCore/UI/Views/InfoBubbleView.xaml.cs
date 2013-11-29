@@ -69,9 +69,25 @@ namespace Dynamo.Controls
             SetupFadeInStoryBoard();
             SetupFadeOutStoryBoard();
 
-            mainGrid.Opacity = Configurations.MaxOpacity;
-
             this.DataContextChanged += InfoBubbleView_DataContextChanged;
+        }
+
+        private void InfoBubbleWindowUserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (ViewModel != null)
+            {
+                switch (ViewModel.InfoBubbleState)
+                {
+                    case InfoBubbleViewModel.State.Minimized:
+                        mainGrid.Visibility = Visibility.Collapsed;
+                        mainGrid.Opacity = 0;
+                        break;
+                    case InfoBubbleViewModel.State.Pinned:
+                        mainGrid.Visibility = Visibility.Visible;
+                        mainGrid.Opacity = Configurations.MaxOpacity;
+                        break;
+                }
+            }
         }
 
         #region Setup animation storyboard
@@ -112,15 +128,19 @@ namespace Dynamo.Controls
 
         private void CountDownDoubleAnimation_Completed(object sender, EventArgs e)
         {
+            //Console.WriteLine("FadeOut done");
             fadeInStoryBoard.Stop(this);
             fadeOutStoryBoard.Stop(this);
 
-            //Console.WriteLine("FadeOut done");
+            mainGrid.Opacity = 0;
+            mainGrid.Visibility = Visibility.Collapsed;
         }
 
         private void CountUpDoubleAnimation_Completed(object sender, EventArgs e)
         {
             //Console.WriteLine("FadeIn done");
+            mainGrid.Opacity = Configurations.MaxOpacity;
+            mainGrid.Visibility = Visibility.Visible;
         }
         #endregion
 
@@ -136,9 +156,11 @@ namespace Dynamo.Controls
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "Content")
+            switch (e.PropertyName)
             {
-                UpdateContent();
+                case "Content":
+                    UpdateContent();
+                    break;
             }
         }
 
@@ -335,7 +357,10 @@ namespace Dynamo.Controls
 
         private void FadeOutInfoBubble()
         {
-            if (this.IsDisconnected || (this.ViewModel.AlwaysVisible))
+            if (this.IsDisconnected)
+                return;
+
+            if (this.ViewModel.InfoBubbleState == InfoBubbleViewModel.State.Pinned)
                 return;
 
             fadeInStoryBoard.Stop(this);
@@ -367,13 +392,24 @@ namespace Dynamo.Controls
             if (this.IsDisconnected)
                 return;
 
-            if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Preview && ViewModel.IsShowPreviewByDefault)
-                ShowPreviewBubbleCondensedContent();
-            else if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Error || ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.ErrorCondensed) 
-                // TODO Hide error bubble when no error with another and condition
-                ShowErrorBubbleCondensedContent();
-            else
-                FadeOutInfoBubble();
+            switch (ViewModel.InfoBubbleStyle)
+            {
+                case InfoBubbleViewModel.Style.Preview:
+                    if (ViewModel.InfoBubbleState == InfoBubbleViewModel.State.Pinned)
+                        ShowPreviewBubbleCondensedContent();
+                    else
+                        goto default;
+                    break;
+
+                case InfoBubbleViewModel.Style.Error:
+                case InfoBubbleViewModel.Style.ErrorCondensed:
+                    ShowErrorBubbleCondensedContent();
+                    break;
+
+                default:
+                    FadeOutInfoBubble();
+                    break;
+            }
 
             this.Cursor = CursorLibrary.GetCursor(CursorSet.Pointer);
         }
@@ -391,17 +427,17 @@ namespace Dynamo.Controls
             if (ViewModel.InfoBubbleStyle != InfoBubbleViewModel.Style.Preview && ViewModel.InfoBubbleStyle != InfoBubbleViewModel.Style.PreviewCondensed)
                 return;
 
-            if (ViewModel.IsShowPreviewByDefault)
+            switch (ViewModel.InfoBubbleState)
             {
-                ViewModel.IsShowPreviewByDefault = false;
-                ViewModel.SetAlwaysVisibleCommand.Execute(false);
-                this.HideInfoBubble();
-            }
-            else
-            {
-                ViewModel.IsShowPreviewByDefault = true;
-                ViewModel.SetAlwaysVisibleCommand.Execute(true);
-                ShowPreviewBubbleCondensedContent();
+                case InfoBubbleViewModel.State.Minimized:
+                    ViewModel.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
+                    ShowPreviewBubbleCondensedContent();
+                    break;
+
+                case InfoBubbleViewModel.State.Pinned:
+                    ViewModel.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Minimized);
+                    this.HideInfoBubble();
+                    break;
             }
         }
 

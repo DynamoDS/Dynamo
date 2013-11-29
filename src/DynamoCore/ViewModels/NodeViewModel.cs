@@ -216,7 +216,7 @@ namespace Dynamo.ViewModels
                 if(this.PreviewBubble == null)
                     return false;
 
-                return !this.PreviewBubble.IsShowPreviewByDefault;
+                return (this.PreviewBubble.InfoBubbleState == InfoBubbleViewModel.State.Minimized);
             }
         }
 
@@ -450,7 +450,7 @@ namespace Dynamo.ViewModels
         {
             switch (e.PropertyName)
             {
-                case "IsShowPreviewByDefault":
+                case "InfoBubbleState":
                     RaisePropertyChanged("IsPreviewInsetVisible");
                     break;
             }
@@ -461,17 +461,16 @@ namespace Dynamo.ViewModels
             if (this.PreviewBubble == null)
                 return;
 
-            this.PreviewBubble.IsShowPreviewByDefault = dynSettings.Controller.IsShowPreviewByDefault;
             UpdatePreviewBubbleContent();
             if (dynSettings.Controller.IsShowPreviewByDefault)
             {
-                this.PreviewBubble.SetAlwaysVisibleCommand.Execute(true);
+                this.PreviewBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
                 this.PreviewBubble.OnRequestAction(
                     new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Show));
             }
             else
             {
-                this.PreviewBubble.SetAlwaysVisibleCommand.Execute(false);
+                this.PreviewBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Minimized);
                 this.PreviewBubble.OnRequestAction(
                     new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Hide));
             }
@@ -504,7 +503,7 @@ namespace Dynamo.ViewModels
                 // TODO: Opacity is no longer in use
                 if (ErrorBubble.Opacity != 0)
                 {
-                    ErrorBubble.SetAlwaysVisibleCommand.Execute(false);
+                    ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Minimized);
                     ErrorBubble.OnRequestAction(new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Hide));
                 }
             }
@@ -523,7 +522,7 @@ namespace Dynamo.ViewModels
                         return;
 
                     this.ErrorBubble.UpdateContentCommand.Execute(data);
-                    this.ErrorBubble.SetAlwaysVisibleCommand.Execute(true);
+                    this.ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
                     this.ErrorBubble.OnRequestAction(new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Show));
                 })));
             }

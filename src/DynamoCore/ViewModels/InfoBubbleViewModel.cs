@@ -56,30 +56,29 @@ namespace Dynamo.ViewModels
             BottomLeft,
             BottomRight
         }
+        public enum State
+        {
+            Minimized,
+            Pinned
+        }
 
         #region Properties
 
-        private double zIndex = 3;
+        private double zIndex;
         public double ZIndex
         {
             get { return zIndex; }
             set { zIndex = value; RaisePropertyChanged("ZIndex"); }
         }
-        private Style infoBubbleStyle = Style.None;
+        private Style infoBubbleStyle;
         public Style InfoBubbleStyle
         {
             get { return infoBubbleStyle; }
             set { infoBubbleStyle = value; RaisePropertyChanged("InfoBubbleStyle"); }
         }
         public string FullContent;
-        public Direction ConnectingDirection = Direction.None;
+        public Direction ConnectingDirection;
 
-        private bool isShowPreviewByDefault;
-        public bool IsShowPreviewByDefault
-        {
-            get { return isShowPreviewByDefault; }
-            set { isShowPreviewByDefault = value; RaisePropertyChanged("IsShowPreviewByDefault"); }
-        }
         public double EstimatedWidth;
         public double EstimatedHeight;
         private PointCollection framePoints;
@@ -163,13 +162,6 @@ namespace Dynamo.ViewModels
             set { contentMaxHeight = value; RaisePropertyChanged("ContentMaxHeight"); }
         }
 
-        private double opacity = 0;
-        public double Opacity
-        {
-            get { return opacity; }
-            set { opacity = value; RaisePropertyChanged("Opacity"); }
-        }
-
         private double textFontSize;
         public double TextFontSize
         {
@@ -194,13 +186,7 @@ namespace Dynamo.ViewModels
             get { return contentWrapping; }
             set { contentWrapping = value; RaisePropertyChanged("TextWrapping"); }
         }
-        private Visibility contentVisibility = Visibility.Visible;
-        public Visibility ContentVisibility
-        {
-            get { return contentVisibility; }
-            set { contentVisibility = value; RaisePropertyChanged("ContentVisibility"); }
-        }
-        private string content = string.Empty;
+        private string content;
         public string Content
         {
             get { return content; }
@@ -210,11 +196,10 @@ namespace Dynamo.ViewModels
         public Point TargetTopLeft;
         public Point TargetBotRight;
 
-        private Direction limitedDirection = Direction.None;
-        private bool alwaysVisible = false;
+        private Direction limitedDirection;
 
-        private double preview_LastMaxWidth = double.MaxValue;
-        private double preview_LastMaxHeight = double.MaxValue;
+        private double preview_LastMaxWidth;
+        private double preview_LastMaxHeight;
 
         public double Left
         {
@@ -226,9 +211,21 @@ namespace Dynamo.ViewModels
             get { return 0; }
         }
 
-        public bool AlwaysVisible
+        private State infoBubbleState;
+
+        public State InfoBubbleState
         {
-            get { return alwaysVisible; }
+            get { return infoBubbleState; }
+            set { infoBubbleState = value; RaisePropertyChanged("InfoBubbleState"); }
+        }
+
+
+        // TODO:Kahheng Refactor away these
+        private double opacity;
+        public double Opacity
+        {
+            get { return opacity; }
+            set { opacity = value; RaisePropertyChanged("Opacity"); }
         }
 
         #endregion
@@ -249,6 +246,17 @@ namespace Dynamo.ViewModels
 
         public InfoBubbleViewModel()
         {
+            // Default values
+            TextFontSize = Configurations.PreviewTextFontSize;
+            preview_LastMaxWidth = double.MaxValue;
+            preview_LastMaxHeight = double.MaxValue;
+            limitedDirection = Direction.None;
+            ConnectingDirection = Direction.None;
+            Content = string.Empty;
+            Opacity = 0;
+            ZIndex = 3;
+            InfoBubbleStyle = Style.None;
+            InfoBubbleState = State.Minimized;
         }
 
         #endregion
@@ -278,16 +286,6 @@ namespace Dynamo.ViewModels
         }
 
         private bool CanUpdatePosition(object parameter)
-        {
-            return true;
-        }
-
-        private void SetAlwaysVisible(object parameter)
-        {
-            alwaysVisible = (bool)parameter;
-        }
-
-        private bool CanSetAlwaysVisible(object parameter)
         {
             return true;
         }
@@ -323,15 +321,34 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        private void ChangeInfoBubbleState(object parameter)
+        {
+            if (parameter is InfoBubbleViewModel.State)
+            {
+                InfoBubbleViewModel.State newState = (InfoBubbleViewModel.State)parameter;
+
+                InfoBubbleState = newState;
+            }
+        }
+
+        private bool CanChangeInfoBubbleState(object parameter)
+        {
+            return true;
+        }
+
+
+
+        // TODO:Kahheng Refactor away these
+        #region TODO:Kahheng Refactor away these
         private void ShowFullContent(object parameter)
         {
             InfoBubbleDataPacket data = (InfoBubbleDataPacket)parameter;
-            
+
             UpdateStyle(data.Style, data.ConnectingDirection);
             Content = FullContent;
             UpdateShape(TargetTopLeft, TargetBotRight);
             UpdatePosition(TargetTopLeft, TargetBotRight);
-            
+
             ZIndex = 5;
         }
 
@@ -342,13 +359,13 @@ namespace Dynamo.ViewModels
 
         private void ShowCondensedContent(object parameter)
         {
-            InfoBubbleDataPacket data = (InfoBubbleDataPacket)parameter;           
+            InfoBubbleDataPacket data = (InfoBubbleDataPacket)parameter;
 
             UpdateStyle(data.Style, data.ConnectingDirection);
             // Generate condensed content
             GenerateContent();
             UpdateShape(TargetTopLeft, TargetBotRight);
-            UpdatePosition(TargetTopLeft, TargetBotRight);            
+            UpdatePosition(TargetTopLeft, TargetBotRight);
 
             ZIndex = 3;
         }
@@ -357,6 +374,8 @@ namespace Dynamo.ViewModels
         {
             return true;
         }
+        #endregion
+
 
         #endregion
 
@@ -542,7 +561,7 @@ namespace Dynamo.ViewModels
             margin.Top = botRight.Y;
             margin.Left = -((EstimatedWidth - nodeWidth) / 2) + topLeft.X;
 
-            if (!this.IsShowPreviewByDefault)
+            if (InfoBubbleState == State.Minimized)
                 margin.Top -= Configurations.PreviewArrowHeight;
             return margin;
         }
