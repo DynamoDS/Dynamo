@@ -75,10 +75,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Elements\AbstractElement.cs" />
+    <Compile Include="Elements\DSFloorType.cs" />
     <Compile Include="Elements\DSForm.cs" />
     <Compile Include="Elements\DSSketchPlane.cs" />
     <Compile Include="GeometryConversion\ProtoToRevitCurve.cs" />
     <Compile Include="GeometryConversion\RevitToProtoCurve.cs" />
+    <Compile Include="GeometryObjects\DSPlanarFace.cs" />
     <Compile Include="References\AbstractReference.cs" />
     <Compile Include="References\DSFaceReference.cs" />
     <Compile Include="GeometryObjects\DSCurveLoop.cs" />
@@ -113,6 +115,7 @@
     <Compile Include="Elements\DSView.cs" />
     <Compile Include="Elements\DSWall.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="References\DSPlaneReference.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DSNodeServices\DSNodeServices.csproj">

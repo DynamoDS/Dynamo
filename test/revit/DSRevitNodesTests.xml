@@ -87,7 +87,23 @@
       
       <testFixture name="FormTests">
         <test name="FaceReferencesProperty_ValidObject" modelPath=".\block.rfa"/>
-		<test name="SolidsProperty_ValidObject" modelPath=".\block.rfa"/>
+		    <test name="SolidsProperty_ValidObject" modelPath=".\block.rfa"/>
+      </testFixture>
+
+     <testFixture name="ProtoToRevitCurveTests">
+        <test name="BSplineCurve_Basic" modelPath=".\empty.rfa"/>
+        <test name="Circle_Basic" modelPath=".\empty.rfa"/>
+        <test name="Arc_Basic" modelPath=".\empty.rfa"/>
+		    <test name="Line_Basic" modelPath=".\empty.rfa"/>
+      </testFixture>
+      
+      <testFixture name="RevitToProtoCurveTests">
+        <test name="NurbSpline_Rational" modelPath=".\empty.rfa"/>
+		    <test name="HermiteSpline_Basic" modelPath=".\empty.rfa"/>
+		    <test name="Line_Basic" modelPath=".\empty.rfa"/>
+		    <test name="Arc_Basic" modelPath=".\empty.rfa"/>
+		    <test name="Ellipse_Basic" modelPath=".\empty.rfa"/>
+		    <test name="CylindricalHelix_Basic" modelPath=".\empty.rfa"/>
       </testFixture>
 
 		</testAssembly>

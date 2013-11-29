@@ -404,6 +404,8 @@ namespace Dynamo.Tests
                     testCase.result = "Cancelled";
                     break;
                 case ResultState.Error:
+                    var f = new failureType {message = result.Message, stacktrace = result.StackTrace};
+                    testCase.Item = f;
                     testCase.result = "Error";
                     break;
                 case ResultState.Failure:
