@@ -43,7 +43,7 @@ namespace Dynamo.Controls
             private set { viewModel = value; }
         }
 
-        private DispatcherTimer delayTimer;
+        private DispatcherTimer toolTipDelayTimer;
 
         #region constructors
 
@@ -296,33 +296,24 @@ namespace Dynamo.Controls
         private void NickNameBlock_OnMouseEnter(object sender, MouseEventArgs e)
         {
             TextBlock textBlock = sender as TextBlock;
-            string tooltipContent = ViewModel.Description;
             UIElement containingWorkspace = WPF.FindUpVisualTree<TabControl>(this);
-            Point topLeft = textBlock.TranslatePoint(new Point(0, 0), containingWorkspace);
             double actualWidth = textBlock.ActualWidth * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
             double actualHeight = textBlock.ActualHeight * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
-            Point botRight = new Point(topLeft.X + actualWidth, topLeft.Y + actualHeight);
 
-            delayTimer = new DispatcherTimer();
-            delayTimer.Interval = TimeSpan.FromSeconds(Configurations.NodeToolTipFadeInDelayInSeconds);
+            InfoBubbleDataPacket data = new InfoBubbleDataPacket();
+            data.Style = InfoBubbleViewModel.Style.NodeTooltip;
+            data.TopLeft = textBlock.TranslatePoint(new Point(0, 0), containingWorkspace);
+            data.BotRight = new Point(data.TopLeft.X + actualWidth, data.TopLeft.Y + actualHeight);
+            data.Text = ViewModel.Description;
+            data.ConnectingDirection = InfoBubbleViewModel.Direction.Bottom;
 
-            delayTimer.Tick += delegate(object sender1, EventArgs e1)
-            {
-                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.BeginInvoke((new Action(() =>
-                {
-                    ViewModel.ShowTooltipCommand.Execute(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.NodeTooltip, topLeft,
-                        botRight, tooltipContent, InfoBubbleViewModel.Direction.Bottom));
-                })));
-                delayTimer.Stop(); // stop timer after one tick
-            };
-
-            delayTimer.Start();
+            StartDelayedTooltipFadeIn(data);
         }
 
         private void NickNameBlock_OnMouseLeave(object sender, MouseEventArgs e)
         {
-            if (delayTimer.IsEnabled)
-                delayTimer.Stop();
+            if (toolTipDelayTimer != null && toolTipDelayTimer.IsEnabled)
+                toolTipDelayTimer.Stop();
 
             if (ViewModel != null)
                 ViewModel.FadeOutTooltipCommand.Execute(null);
@@ -338,31 +329,23 @@ namespace Dynamo.Controls
                 return;
 
             UIElement containingWorkspace = WPF.FindUpVisualTree<TabControl>(this);
-            Point topLeft = inputPort.TranslatePoint(new Point(0, 0), containingWorkspace);
             double actualWidth = inputPort.ActualWidth * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
             double actualHeight = inputPort.ActualHeight * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
-            Point botRight = new Point(topLeft.X + actualWidth, topLeft.Y + actualHeight);
 
-            delayTimer = new DispatcherTimer();
-            delayTimer.Interval = TimeSpan.FromSeconds(Configurations.NodeToolTipFadeInDelayInSeconds);
+            InfoBubbleDataPacket data = new InfoBubbleDataPacket();
+            data.Style = InfoBubbleViewModel.Style.NodeTooltip;
+            data.TopLeft = inputPort.TranslatePoint(new Point(0, 0), containingWorkspace);
+            data.BotRight = new Point(data.TopLeft.X + actualWidth, data.TopLeft.Y + actualHeight);
+            data.Text = content;
+            data.ConnectingDirection = InfoBubbleViewModel.Direction.Right;
 
-            delayTimer.Tick += delegate(object sender1, EventArgs e1)
-            {
-                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.BeginInvoke((new Action(() =>
-                {
-                    ViewModel.ShowTooltipCommand.Execute(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.NodeTooltip, topLeft,
-                        botRight, content, InfoBubbleViewModel.Direction.Right));
-                })));
-                delayTimer.Stop(); // stop timer after one tick
-            };
-
-            delayTimer.Start();
+            StartDelayedTooltipFadeIn(data);
         }
 
         private void InputPort_OnMouseLeave(object sender, MouseEventArgs e)
         {
-            if (delayTimer.IsEnabled)
-                delayTimer.Stop();
+            if (toolTipDelayTimer != null && toolTipDelayTimer.IsEnabled)
+                toolTipDelayTimer.Stop();
 
             if (ViewModel != null)
                 ViewModel.FadeOutTooltipCommand.Execute(null);
@@ -384,31 +367,23 @@ namespace Dynamo.Controls
                 return;
 
             UIElement containingWorkspace = WPF.FindUpVisualTree<TabControl>(this);
-            Point topLeft = outputPort.TranslatePoint(new Point(0, 0), containingWorkspace);
             double actualWidth = outputPort.ActualWidth * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
             double actualHeight = outputPort.ActualHeight * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
-            Point botRight = new Point(topLeft.X + actualWidth, topLeft.Y + actualHeight);
 
-            delayTimer = new DispatcherTimer();
-            delayTimer.Interval = TimeSpan.FromSeconds(Configurations.NodeToolTipFadeInDelayInSeconds);
+            InfoBubbleDataPacket data = new InfoBubbleDataPacket();
+            data.Style      = InfoBubbleViewModel.Style.NodeTooltip;
+            data.TopLeft    = outputPort.TranslatePoint(new Point(0, 0), containingWorkspace);
+            data.BotRight   = new Point(data.TopLeft.X + actualWidth, data.TopLeft.Y + actualHeight);
+            data.Text       = content;
+            data.ConnectingDirection = InfoBubbleViewModel.Direction.Left;
 
-            delayTimer.Tick += delegate(object sender1, EventArgs e1)
-            {
-                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.BeginInvoke((new Action(() =>
-                {
-                    ViewModel.ShowTooltipCommand.Execute(new InfoBubbleDataPacket(InfoBubbleViewModel.Style.NodeTooltip, topLeft,
-                        botRight, content, InfoBubbleViewModel.Direction.Left));
-                })));
-                delayTimer.Stop(); // stop timer after one tick
-            };
-
-            delayTimer.Start();
+            StartDelayedTooltipFadeIn(data);
         }
 
         private void OutputPort_OnMouseLeave(object sender, MouseEventArgs e)
         {
-            if (delayTimer.IsEnabled)
-                delayTimer.Stop();
+            if (toolTipDelayTimer != null && toolTipDelayTimer.IsEnabled)
+                toolTipDelayTimer.Stop();
 
             if (ViewModel != null)
                 ViewModel.FadeOutTooltipCommand.Execute(null);
@@ -427,6 +402,26 @@ namespace Dynamo.Controls
             UIElement uiElement = sender as UIElement;
             if (uiElement.Visibility == System.Windows.Visibility.Visible)
                 ViewModel.ShowPreviewCommand.Execute(null);
+        }
+
+        private void StartDelayedTooltipFadeIn(InfoBubbleDataPacket data)
+        {
+            if (toolTipDelayTimer == null)
+            {
+                toolTipDelayTimer = new DispatcherTimer();
+                toolTipDelayTimer.Interval = TimeSpan.FromMilliseconds(Configurations.ToolTipFadeInDelayInMS);
+
+                toolTipDelayTimer.Tick += delegate(object sender, EventArgs e)
+                {
+                    var timer = sender as DispatcherTimer;
+                    timer.Stop(); // stop timer after one tick
+                    ViewModel.ShowTooltipCommand.Execute((InfoBubbleDataPacket)timer.Tag);
+                };
+            }
+
+            toolTipDelayTimer.Stop();
+            toolTipDelayTimer.Tag = data;
+            toolTipDelayTimer.Start();
         }
     }
 }
