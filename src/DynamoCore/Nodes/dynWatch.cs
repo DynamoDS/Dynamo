@@ -24,6 +24,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
     [NodeDescription("Visualize the output of node. ")]
     [NodeSearchTags("print", "output", "display")]
+    [IsDesignScriptCompatible]
     public partial class Watch: NodeWithOneOutput
     {
 
