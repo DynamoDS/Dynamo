@@ -41,17 +41,23 @@ namespace Dynamo.ViewModels
             set { gridLines = value; RaisePropertyChanged("GridLines"); }
         }
 
-        private double x;
-        public double X {
-            get { return x; }
-            set { x = value; RaisePropertyChanged("X"); }
+        private double left;
+        public double Left
+        {
+            get { return left; }
+            set { left = value; RaisePropertyChanged("Left"); }
         }
 
-        private double y;
-        public double Y
+        private double top;
+        public double Top
         {
-            get { return y; }
-            set { y = value; RaisePropertyChanged("Y"); }
+            get { return top; }
+            set { top = value; RaisePropertyChanged("Top"); }
+        }
+
+        public double ZIndex
+        {
+            get { return 0; }
         }
 
         private Transform transform;
@@ -150,8 +156,8 @@ namespace Dynamo.ViewModels
             dynSettings.Controller.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
 
             // Render EndlessGrid for the first time
-            RecalculateX();
-            RecalculateY();
+            RecalculateLeft();
+            RecalculateTop();
             RecalculateSize();
         }
 
@@ -173,11 +179,11 @@ namespace Dynamo.ViewModels
             switch (e.PropertyName)
             {
                 case "X":
-                    RecalculateX();
+                    RecalculateLeft();
                     break;
 
                 case "Y":
-                    RecalculateY();
+                    RecalculateTop();
                     break;
 
                 case "Zoom":
@@ -186,24 +192,14 @@ namespace Dynamo.ViewModels
             }
         }
 
-        protected void RecalculateX()
+        protected void RecalculateLeft()
         {
-            X = -requiredSpareGridSize - ((int)(WorkspaceX / gridSpacingScaled)) * Configurations.GridSpacing;
-            UpdateTransform();
+            Left = -requiredSpareGridSize - ((int)(WorkspaceX / gridSpacingScaled)) * Configurations.GridSpacing;
         }
 
-        protected void RecalculateY()
+        protected void RecalculateTop()
         {
-            Y = -requiredSpareGridSize - ((int)(WorkspaceY / gridSpacingScaled)) * Configurations.GridSpacing;
-            UpdateTransform();
-        }
-
-        private void UpdateTransform()
-        {
-            TranslateTransform tt = ((TranslateTransform)Transform);
-            tt.X = X;
-            tt.Y = Y;
-            RaisePropertyChanged("Transform");
+            Top = -requiredSpareGridSize - ((int)(WorkspaceY / gridSpacingScaled)) * Configurations.GridSpacing;
         }
 
         protected void RecalculateZoom()
