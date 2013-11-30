@@ -20,7 +20,8 @@
 
         <Polygon Name="backgroundPolygon" Fill="{Binding Path=FrameFill}" Stroke="{Binding Path=FrameStrokeColor}" 
                  StrokeThickness="{Binding Path=FrameStrokeThickness}" Points="{Binding Path=FramePoints}"
-                 Margin="0, 0, 0, 0" MouseMove="InfoBubble_MouseMove" MouseEnter="InfoBubble_MouseEnter"  MouseDown="InfoBubble_PreviewMouseDown">
+                 Margin="0, 0, 0, 0" MouseMove="InfoBubble_MouseMove" MouseEnter="InfoBubble_MouseEnter"  MouseDown="InfoBubble_PreviewMouseDown"
+                 RenderOptions.EdgeMode="Aliased">
         </Polygon>
 
         <StackPanel Name="ContentContainer" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
