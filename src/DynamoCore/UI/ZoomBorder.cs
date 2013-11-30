@@ -263,11 +263,6 @@ namespace Dynamo.Controls
             this.itemsControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("GridLines"){
                 Mode = BindingMode.OneWay
             });
-
-            this.SetBinding(EndlessGrid.RenderTransformProperty, new Binding("Transform")
-            {
-                Mode = BindingMode.OneWay
-            });
         }
     }
 }
