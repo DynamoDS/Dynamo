@@ -36,13 +36,13 @@ namespace Dynamo.ViewModels
     {
         public enum Style
         {
+            None,
             LibraryItemPreview,
             NodeTooltip,
             Error,
             ErrorCondensed,
             Preview,
-            PreviewCondensed,
-            None
+            PreviewCondensed
         }
         public enum Direction
         {
