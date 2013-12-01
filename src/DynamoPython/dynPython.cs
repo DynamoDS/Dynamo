@@ -7,14 +7,12 @@ using System.Windows;
 using System.Windows.Input;
 using System.Xml;
 using Dynamo.Controls;
+using Dynamo.Core;
 using Dynamo.Models;
+using Dynamo.Utilities;
 using DynamoPython;
-using ICSharpCode.AvalonEdit.CodeCompletion;
-using ICSharpCode.AvalonEdit.Highlighting;
-using ICSharpCode.AvalonEdit.Highlighting.Xshd;
-
+using IronPython.Modules;
 using Microsoft.FSharp.Collections;
-
 using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Nodes
@@ -32,6 +30,9 @@ namespace Dynamo.Nodes
         /// </summary>
         private readonly Dictionary<string, dynamic> _stateDict = new Dictionary<string, dynamic>();
 
+        /// <summary>
+        /// The script used by this node for execution.
+        /// </summary>
         private string _script;
 
         public Python()
@@ -108,22 +109,21 @@ namespace Dynamo.Nodes
                 IsCheckable = false
             };
             nodeUI.MainContextMenu.Items.Add(editWindowItem);
-            editWindowItem.Click += editWindowItem_Click;
+            editWindowItem.Click += delegate { EditScriptContent(); };
             nodeUI.UpdateLayout();
 
-            nodeUI.MouseDown += nodeUI_MouseDown;
+            nodeUI.MouseDown += new MouseButtonEventHandler(nodeUI_MouseDown);
         }
 
         void nodeUI_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ClickCount >= 2)
             {
-                editWindowItem_Click(this, null);
+                EditScriptContent();
                 e.Handled = true;
             }
         }
 
-        //TODO: Make this smarter
         public override bool RequiresRecalc
         {
             get
@@ -132,6 +132,9 @@ namespace Dynamo.Nodes
             }
             set { }
         }
+
+        // Property added for test case verification purposes
+        public string Script { get { return this._script; } }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
@@ -151,7 +154,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        private IEnumerable<KeyValuePair<string, dynamic>> makeBindings(IEnumerable<Value> args)
+        private IEnumerable<KeyValuePair<string, dynamic>> MakeBindings(IEnumerable<Value> args)
         {
             //Zip up our inputs
             var bindings = InPortData
@@ -167,7 +170,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            Value result = PythonEngine.Evaluator(_dirty, _script, makeBindings(args));
+            Value result = PythonEngine.Evaluator(_dirty, _script, MakeBindings(args));
             _lastEvalValue = result;
 
             Draw();
@@ -175,109 +178,305 @@ namespace Dynamo.Nodes
             return result;
         }
 
-        private dynScriptEditWindow _editWindow;
-
-        void editWindowItem_Click(object sender, RoutedEventArgs e)
+        protected override bool UpdateValueCore(string name, string value)
         {
-            _editWindow = new dynScriptEditWindow();
-            // callbacks for autocompletion
-            _editWindow.editText.TextArea.TextEntering += textEditor_TextArea_TextEntering;
-            _editWindow.editText.TextArea.TextEntered += textEditor_TextArea_TextEntered;
-
-            const string pythonHighlighting = "ICSharpCode.PythonBinding.Resources.Python.xshd";
-            var elem =
-                GetType()
-                    .Assembly.GetManifestResourceStream(
-                        "DynamoPython.Resources." + pythonHighlighting);
-
-            _editWindow.editText.SyntaxHighlighting =
-                HighlightingLoader.Load(
-                    new XmlTextReader(elem),
-                    HighlightingManager.Instance);
-
-            //set the text of the edit window to begin
-            _editWindow.editText.Text = _script;
-
-            if (_editWindow.ShowDialog() != true)
+            if (name == "ScriptContent")
             {
-                return;
+                this._script = value;
+                this._dirty = true;
+                return true;
             }
 
-            //set the value from the text in the box
-            _script = _editWindow.editText.Text;
-
-            _dirty = true;
+            return base.UpdateValueCore(name, value);
         }
 
-        #region Autocomplete
-
-        CompletionWindow _completionWindow;
-        private readonly IronPythonCompletionProvider _completionProvider = new IronPythonCompletionProvider();
-
-        void textEditor_TextArea_TextEntered(object sender, TextCompositionEventArgs e)
+        private void EditScriptContent()
         {
-            try
-            {
-                if (e.Text == ".")
-                {
-                    _completionWindow = new CompletionWindow(_editWindow.editText.TextArea);
-                    var data = _completionWindow.CompletionList.CompletionData;
-
-                    var completions =
-                        _completionProvider.GetCompletionData(_editWindow.editText.Text.Substring(0,
-                                                                                                _editWindow.editText
-                                                                                                          .CaretOffset));
-
-                    if (completions.Length == 0)
-                        return;
-
-                    foreach (var ele in completions)
-                    {
-                        data.Add(ele);
-                    }
-
-                    _completionWindow.Show();
-
-                    _completionWindow.Closed += delegate
-                        {
-                            _completionWindow = null;
-                        };
-                }
-            }
-            catch (Exception ex)
-            {
-                DynamoLogger.Instance.Log("Failed to perform python autocomplete with exception:");
-                DynamoLogger.Instance.Log(ex.Message);
-                DynamoLogger.Instance.Log(ex.StackTrace);
-            }
+            ScriptEditWindow editWindow = new ScriptEditWindow();
+            editWindow.Initialize(this.GUID, "ScriptContent", this._script);
+            editWindow.ShowDialog();
         }
 
-        void textEditor_TextArea_TextEntering(object sender, TextCompositionEventArgs e)
-        {
-            try {
-                if (e.Text.Length > 0 && _completionWindow != null)
-                {
-                    if (!char.IsLetterOrDigit(e.Text[0]))
-                    {
-                        _completionWindow.CompletionList.RequestInsertion(e);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                DynamoLogger.Instance.Log("Failed to perform python autocomplete with exception:");
-                DynamoLogger.Instance.Log(ex.Message);
-                DynamoLogger.Instance.Log(ex.StackTrace);
-            }
-        }
-
-        #endregion
-
-        public void Draw()
+        private void Draw()
         {
             if(_lastEvalValue != null)
                 PythonEngine.Drawing(_lastEvalValue, GUID.ToString());
         }
+
+        #region SerializeCore/DeserializeCore
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context);
+            var helper = new XmlElementHelper(element);
+            helper.SetAttribute("Script", this.Script);
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context);
+            var helper = new XmlElementHelper(element);
+            var script = helper.ReadString("Script", string.Empty);
+            this._script = script;
+        }
+
+        #endregion
+    }
+
+    [NodeName("Python Script With Variable Number of Inputs")]
+    [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
+    [NodeDescription("Runs an embedded IronPython script")]
+    public class PythonVarIn : VariableInput
+    {
+        private bool _dirty = true;
+        private Value _lastEvalValue;
+
+        /// <summary>
+        /// Allows a scripter to have a persistent reference to previous runs.
+        /// </summary>
+        private readonly Dictionary<string, dynamic> _stateDict = new Dictionary<string, dynamic>();
+
+        /// <summary>
+        /// The script used by this node for execution.
+        /// </summary>
+        private string _script;
+
+        public PythonVarIn()
+        {
+            InPortData.Add(new PortData("IN0", "Input0", typeof(object)));
+            OutPortData.Add(new PortData("OUT", "Result of the python script", typeof(object)));
+
+            RegisterAllPorts();
+            InitializeDefaultScript();
+
+            ArgumentLacing = LacingStrategy.Disabled;
+        }
+
+        /// <summary>
+        /// Set the number of inputs.  
+        /// </summary>
+        /// <param name="numInputs"></param>
+        public void SetNumInputs(int numInputs)
+        {
+            if (numInputs <= 0)
+            {
+                return;
+            }
+
+            InPortData.Clear();
+
+            for (var i = 0; i < numInputs; i++)
+            {
+                InPortData.Add(new PortData(GetInputRootName() + GetInputNameIndex(), "", typeof(object)));
+            }
+
+            RegisterAllPorts();
+        }
+
+        // implement methods from variableinput
+        protected override string GetInputRootName()
+        {
+            return "IN";
+        }
+
+        protected override string GetTooltipRootName()
+        {
+            return "Input";
+        }
+
+        protected override void RemoveInput()
+        {
+            if (InPortData.Count > 1)
+            {
+                base.RemoveInput();
+            }   
+        }
+
+        private void InitializeDefaultScript()
+        {
+            _script = "# Default imports\n";
+
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+            if (assemblies.Any(x => x.FullName.Contains("RevitAPI")) && assemblies.Any(x => x.FullName.Contains("RevitAPIUI")))
+            {
+                _script = _script
+                    + "import clr\n"
+                    + "clr.AddReference('RevitAPI')\n"
+                    + "clr.AddReference('RevitAPIUI')\n"
+                    + "from Autodesk.Revit.DB import *\n"
+                    + "import Autodesk\n";
+            }
+
+            string dllDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\dll";
+
+            if (!assemblies.Any(x => x.FullName.Contains("LibGNet")))
+            {
+                //LibG could not be found, possibly because we haven't used a node
+                //that requires it yet. Let's load it...
+                string libGPath = Path.Combine(dllDir, "LibGNet.dll");
+                Assembly.LoadFrom(libGPath);
+
+                //refresh the collection of loaded assemblies
+                assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            }
+
+            if (assemblies.Any(x => x.FullName.Contains("LibGNet")))
+            {
+                _script = _script + "import sys\n"
+                    + "import clr\n"
+                    + "path = r'C:\\Autodesk\\Dynamo\\Core'\n"
+                    + "exec_path = r'" + dllDir + "'\n"
+                    + "sys.path.append(path)\n"
+                    + "sys.path.append(exec_path)\n"
+                    + "clr.AddReference('LibGNet')\n"
+                    + "from Autodesk.LibG import *\n";
+            }
+
+            _script = _script + "\n"
+                + "#The input to this node will be stored in the IN0...INX variable(s).\n"
+                + "dataEnteringNode = IN0\n\n"
+                + "#Assign your output to the OUT variable\n"
+                + "OUT = 0";
+        }
+
+        public override void SetupCustomUIElements(object ui)
+        {
+            var nodeUI = ui as dynNodeView;
+
+            //topControl.Height = 200;
+            //topControl.Width = 300;
+
+            //add an edit window option to the 
+            //main context window
+            var editWindowItem = new System.Windows.Controls.MenuItem
+            {
+                Header = "Edit...",
+                IsCheckable = false
+            };
+            nodeUI.MainContextMenu.Items.Add(editWindowItem);
+            editWindowItem.Click += delegate { EditScriptContent(); };
+            nodeUI.UpdateLayout();
+
+            nodeUI.MouseDown += new MouseButtonEventHandler(nodeUI_MouseDown);
+
+
+            base.SetupCustomUIElements(nodeUI); // call the base class method to setup the +/- buttons
+
+        }
+
+        void nodeUI_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ClickCount >= 2)
+            {
+                EditScriptContent();
+                e.Handled = true;
+            }
+        }
+
+        public override bool RequiresRecalc
+        {
+            get
+            {
+                return true;
+            }
+            set { }
+        }
+
+        // Property added for test case verification purposes
+        public string Script { get { return this._script; } }
+
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        {
+            XmlElement script = xmlDoc.CreateElement("Script");
+            //script.InnerText = this.tb.Text;
+            script.InnerText = _script;
+            nodeElement.AppendChild(script);
+
+            // save the number of inputs
+            nodeElement.SetAttribute("inputs", (InPortData.Count).ToString());
+        }
+
+        protected override void LoadNode(XmlNode nodeElement)
+        {
+            var inputAttr = nodeElement.Attributes["inputs"];
+            int inputs = inputAttr == null ? 1 : Convert.ToInt32(inputAttr.Value);
+            this.SetNumInputs(inputs);
+
+            var scriptNode = nodeElement.ChildNodes.Cast<XmlNode>().FirstOrDefault(x => x.Name == "Script");
+            if (scriptNode != null)
+            {
+                _script = scriptNode.InnerText;
+            }
+        }
+
+        private IEnumerable<KeyValuePair<string, dynamic>> MakeBindings(IEnumerable<Value> args)
+        {
+            //Zip up our inputs
+            var bindings = InPortData
+               .Select(x => x.NickName)
+               .Zip(args, (s, v) => new KeyValuePair<string, dynamic>(s, Converters.convertFromValue(v)))
+               .Concat(PythonBindings.Bindings)
+               .ToList();
+
+            bindings.Add(new KeyValuePair<string, dynamic>("__persistent__", _stateDict));
+
+            return bindings;
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            Value result = PythonEngine.Evaluator(_dirty, _script, MakeBindings(args));
+            _lastEvalValue = result;
+
+            Draw();
+
+            return result;
+        }
+
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (name == "ScriptContent")
+            {
+                this._script = value;
+                this._dirty = true;
+                return true;
+            }
+
+            return base.UpdateValueCore(name, value);
+        }
+
+        private void EditScriptContent()
+        {
+            ScriptEditWindow editWindow = new ScriptEditWindow();
+            editWindow.Initialize(this.GUID, "ScriptContent", this._script);
+            editWindow.ShowDialog();
+        }
+
+        private void Draw()
+        {
+            if(_lastEvalValue != null)
+                PythonEngine.Drawing(_lastEvalValue, GUID.ToString());
+        }
+
+        #region SerializeCore/DeserializeCore
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context);
+            var helper = new XmlElementHelper(element);
+            helper.SetAttribute("Script", this.Script);
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context);
+            var helper = new XmlElementHelper(element);
+            var script = helper.ReadString("Script", string.Empty);
+            this._script = script;
+        }
+
+        #endregion
     }
 
     [NodeName("Python Script From String")]

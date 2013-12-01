@@ -21,7 +21,7 @@ namespace Dynamo.ViewModels
         /// class to be serializable to/deserializable from an XmlElement.
         /// </summary>
         /// 
-        internal abstract class RecordableCommand
+        public abstract class RecordableCommand
         {
             #region Class Data Members
 
@@ -31,6 +31,16 @@ namespace Dynamo.ViewModels
             #endregion
 
             #region Public Class Operational Methods
+
+            /// <summary>
+            /// Constructs an instance of RecordableCommand derived class. This 
+            /// constructor is made protected to indicate that the class instance 
+            /// can only be instantiated through a derived class.
+            /// </summary>
+            protected RecordableCommand()
+            {
+                this.IsInPlaybackMode = false;
+            }
 
             /// <summary>
             /// Call this method to execute a RecordableCommand. A RecordableCommand 
@@ -80,24 +90,46 @@ namespace Dynamo.ViewModels
                 if (string.IsNullOrEmpty(element.Name))
                     throw new ArgumentException("XmlElement without name");
 
+                RecordableCommand command = null;
+
                 switch (element.Name)
                 {
                     case "CreateNodeCommand":
-                        return CreateNodeCommand.DeserializeCore(element);
+                        command = CreateNodeCommand.DeserializeCore(element);
+                        break;
                     case "SelectModelCommand":
-                        return SelectModelCommand.DeserializeCore(element);
+                        command = SelectModelCommand.DeserializeCore(element);
+                        break;
                     case "CreateNoteCommand":
-                        return CreateNoteCommand.DeserializeCore(element);
+                        command = CreateNoteCommand.DeserializeCore(element);
+                        break;
                     case "SelectInRegionCommand":
-                        return SelectInRegionCommand.DeserializeCore(element);
+                        command = SelectInRegionCommand.DeserializeCore(element);
+                        break;
                     case "DragSelectionCommand":
-                        return DragSelectionCommand.DeserializeCore(element);
+                        command = DragSelectionCommand.DeserializeCore(element);
+                        break;
                     case "MakeConnectionCommand":
-                        return MakeConnectionCommand.DeserializeCore(element);
+                        command = MakeConnectionCommand.DeserializeCore(element);
+                        break;
                     case "DeleteModelCommand":
-                        return DeleteModelCommand.DeserializeCore(element);
+                        command = DeleteModelCommand.DeserializeCore(element);
+                        break;
                     case "UndoRedoCommand":
-                        return UndoRedoCommand.DeserializeCore(element);
+                        command = UndoRedoCommand.DeserializeCore(element);
+                        break;
+                    case "UpdateModelValueCommand":
+                        command = UpdateModelValueCommand.DeserializeCore(element);
+                        break;
+                    case "ConvertNodesToCodeCommand":
+                        command = ConvertNodesToCodeCommand.DeserializeCore(element);
+                        break;
+                }
+
+                if (null != command)
+                {
+                    command.IsInPlaybackMode = true;
+                    return command;
                 }
 
                 string message = string.Format("Unknown command: {0}", element.Name);
@@ -118,6 +150,17 @@ namespace Dynamo.ViewModels
             /// be recorded for playback.
             /// </summary>
             internal bool Redundant { get { return this.redundant; } }
+
+            /// <summary>
+            /// This flag will be set to true only during playback. Derived classes
+            /// can use this to decide their actions accordingly. For example, 
+            /// UpdateModelValueCommand doesn't change the value of a property 
+            /// during recording time, it is created for the sole purpose of being
+            /// recorded. During playback, then UpdateModelValueCommand will update
+            /// the property that it is bound to. This is a runtime flag, it is not 
+            /// serialized in anyway.
+            /// </summary>
+            internal bool IsInPlaybackMode { get; private set; }
 
             #endregion
 
@@ -148,11 +191,11 @@ namespace Dynamo.ViewModels
             #endregion
         }
 
-        internal class CreateNodeCommand : RecordableCommand
+        public class CreateNodeCommand : RecordableCommand
         {
             #region Public Class Methods
 
-            internal CreateNodeCommand(Guid nodeId, string nodeName,
+            public CreateNodeCommand(Guid nodeId, string nodeName,
                 double x, double y, bool defaultPosition, bool transformCoordinates)
             {
                 this.NodeId = nodeId;
@@ -210,11 +253,11 @@ namespace Dynamo.ViewModels
             #endregion
         }
 
-        internal class CreateNoteCommand : RecordableCommand
+        public class CreateNoteCommand : RecordableCommand
         {
             #region Public Class Methods
 
-            internal CreateNoteCommand(Guid nodeId, string noteText,
+            public CreateNoteCommand(Guid nodeId, string noteText,
                 double x, double y, bool defaultPosition)
             {
                 if (string.IsNullOrEmpty(noteText))
@@ -271,11 +314,11 @@ namespace Dynamo.ViewModels
             #endregion
         }
 
-        internal class SelectModelCommand : RecordableCommand
+        public class SelectModelCommand : RecordableCommand
         {
             #region Public Class Methods
 
-            internal SelectModelCommand(Guid modelGuid, ModifierKeys modifiers)
+            public SelectModelCommand(Guid modelGuid, ModifierKeys modifiers)
             {
                 this.ModelGuid = modelGuid;
                 this.Modifiers = modifiers;
@@ -315,11 +358,11 @@ namespace Dynamo.ViewModels
             #endregion
         }
 
-        internal class SelectInRegionCommand : RecordableCommand
+        public class SelectInRegionCommand : RecordableCommand
         {
             #region Public Class Methods
 
-            internal SelectInRegionCommand(Rect region, bool isCrossSelection)
+            public SelectInRegionCommand(Rect region, bool isCrossSelection)
             {
                 this.redundant = true; // High-frequency command.
 
@@ -370,13 +413,13 @@ namespace Dynamo.ViewModels
             #endregion
         }
 
-        internal class DragSelectionCommand : RecordableCommand
+        public class DragSelectionCommand : RecordableCommand
         {
             #region Public Class Methods
 
-            internal enum Operation { BeginDrag, EndDrag }
+            public enum Operation { BeginDrag, EndDrag }
 
-            internal DragSelectionCommand(Point mouseCursor, Operation operation)
+            public DragSelectionCommand(Point mouseCursor, Operation operation)
             {
                 this.MouseCursor = mouseCursor;
                 this.DragOperation = operation;
@@ -418,13 +461,13 @@ namespace Dynamo.ViewModels
             #endregion
         }
 
-        internal class MakeConnectionCommand : RecordableCommand
+        public class MakeConnectionCommand : RecordableCommand
         {
             #region Public Class Methods
 
-            internal enum Mode { Begin, End, Cancel }
+            public enum Mode { Begin, End, Cancel }
 
-            internal MakeConnectionCommand(Guid nodeId, int portIndex, PortType portType, Mode mode)
+            public MakeConnectionCommand(Guid nodeId, int portIndex, PortType portType, Mode mode)
             {
                 this.NodeId = nodeId;
                 this.PortIndex = portIndex;
@@ -472,11 +515,11 @@ namespace Dynamo.ViewModels
             #endregion
         }
 
-        internal class DeleteModelCommand : RecordableCommand
+        public class DeleteModelCommand : RecordableCommand
         {
             #region Public Class Methods
 
-            internal DeleteModelCommand(Guid modelGuid)
+            public DeleteModelCommand(Guid modelGuid)
             {
                 this.ModelGuid = modelGuid;
             }
@@ -512,13 +555,13 @@ namespace Dynamo.ViewModels
             #endregion
         }
 
-        internal class UndoRedoCommand : RecordableCommand
+        public class UndoRedoCommand : RecordableCommand
         {
             #region Public Class Methods
 
-            internal enum Operation { Undo, Redo }
+            public enum Operation { Undo, Redo }
 
-            internal UndoRedoCommand(Operation operation)
+            public UndoRedoCommand(Operation operation)
             {
                 this.CmdOperation = operation;
             }
@@ -554,6 +597,93 @@ namespace Dynamo.ViewModels
             #endregion
         }
 
+        public class UpdateModelValueCommand : RecordableCommand
+        {
+            #region Public Class Methods
+
+            public UpdateModelValueCommand(Guid modelGuid, string name, string value)
+            {
+                this.ModelGuid = modelGuid;
+                this.Name = name;
+                this.Value = value;
+            }
+
+            internal static UpdateModelValueCommand DeserializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                Guid modelGuid = helper.ReadGuid("ModelGuid");
+                string name = helper.ReadString("Name");
+                string value = helper.ReadString("Value");
+                return new UpdateModelValueCommand(modelGuid, name, value);
+            }
+
+            #endregion
+
+            #region Public Command Properties
+
+            internal Guid ModelGuid { get; private set; }
+            internal string Name { get; private set; }
+            internal string Value { get; private set; }
+
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+            {
+                dynamoViewModel.UpdateModelValueImpl(this);
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("ModelGuid", this.ModelGuid);
+                helper.SetAttribute("Name", this.Name);
+                helper.SetAttribute("Value", this.Value);
+            }
+
+            #endregion
+        }
+
+        public class ConvertNodesToCodeCommand : RecordableCommand
+        {
+            #region Public Class Methods
+
+            internal ConvertNodesToCodeCommand(Guid nodeId)
+            {
+                this.NodeId = nodeId;
+            }
+
+            internal static ConvertNodesToCodeCommand DeserializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                System.Guid nodeId = helper.ReadGuid("NodeId");
+                return new ConvertNodesToCodeCommand(nodeId);
+            }
+
+            #endregion
+
+            #region Public Command Properties
+
+            internal Guid NodeId { get; private set; }
+
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+            {
+                dynamoViewModel.ConvertNodesToCodeImpl(this);
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("NodeId", this.NodeId);
+            }
+
+            #endregion
+        }
     }
 
     // internal class XxxYyyCommand : RecordableCommand

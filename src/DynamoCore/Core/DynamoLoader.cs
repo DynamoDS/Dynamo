@@ -115,7 +115,7 @@ namespace Dynamo.Utilities
             }
 
 #if USE_DSENGINE
-            EngineController.Instance.LoadBuiltinLibraries();
+            dynSettings.Controller.EngineController.LoadBuiltinLibraries();
 #endif
             AppDomain.CurrentDomain.AssemblyResolve -= resolver;
 
@@ -164,6 +164,9 @@ namespace Dynamo.Utilities
                         //and have the elementname attribute
                         var attribs = t.GetCustomAttributes(typeof (NodeNameAttribute), false);
                         var isDeprecated = t.GetCustomAttributes(typeof (NodeDeprecatedAttribute), true).Any();
+                        var isMetaNode = t.GetCustomAttributes(typeof(IsMetaNodeAttribute), false).Any();
+                        var isHidden = t.GetCustomAttributes(typeof (NodeHiddenInBrowserAttribute), true).Any();
+                        var isDSCompatible = t.GetCustomAttributes(typeof(IsDesignScriptCompatibleAttribute), true).Any();
 
                         if (!IsNodeSubType(t)) /*&& attribs.Length > 0*/
                             continue;
@@ -211,7 +214,11 @@ namespace Dynamo.Utilities
 
                         string typeName;
 
-                        if (attribs.Length > 0 && !isDeprecated)
+#if USE_DSENGINE
+                        if (attribs.Length > 0 && !isDeprecated && !isMetaNode && isDSCompatible)
+#else
+                        if (attribs.Length > 0 && !isDeprecated && !isMetaNode)
+#endif
                         {
                             searchViewModel.Add(t);
                             typeName = (attribs[0] as NodeNameAttribute).Name;

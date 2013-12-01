@@ -1,0 +1,13 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <CreateNodeCommand NodeId="10eac8b6-f168-4c07-9679-3eac5471c61d" NodeName="Add" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <CreateNodeCommand NodeId="e1fa6408-3291-4f4e-bf0d-14923514cc73" NodeName="Number" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="e1fa6408-3291-4f4e-bf0d-14923514cc73" Modifiers="0" />
+  <DragSelectionCommand X="289" Y="243" DragOperation="0" />
+  <DragSelectionCommand X="133" Y="209" DragOperation="1" />
+  <MakeConnectionCommand NodeId="e1fa6408-3291-4f4e-bf0d-14923514cc73" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="10eac8b6-f168-4c07-9679-3eac5471c61d" PortIndex="0" Type="0" ConnectionMode="1" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="64" Y="146" Width="300" Height="177" IsCrossSelection="false" />
+  <DeleteModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" />
+  <UndoRedoCommand CmdOperation="0" />
+</Commands>

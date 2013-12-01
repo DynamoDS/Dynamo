@@ -2,24 +2,24 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 [Setup]
-AppName=Dynamo
-AppVerName=Dynamo 0.6.2
+AppName=DynamoDS
+AppVerName=DynamoDS 0.6.3
 AppPublisher=Autodesk, Inc.
-AppID={{12A2BEA3-7641-4AEC-B344-9B49C8DDFF1A}
+AppID={{6B5FA6CA-9D69-46CF-B517-1F90C64F7C0B}
 AppCopyright=
 AppPublisherURL=http://www.dynamobim.com
 AppSupportURL=
 AppUpdatesURL=
-AppVersion=0.6.2
-VersionInfoVersion=0.6.2
+AppVersion=0.6.3
+VersionInfoVersion=0.6.3
 VersionInfoCompany=Autodesk 
-VersionInfoDescription=Dynamo 0.6.2
-VersionInfoTextVersion=Dynamo 0.6.2
+VersionInfoDescription=DynamoDS 0.6.3
+VersionInfoTextVersion=DynamoDS 0.6.3
 VersionInfoCopyright=
-DefaultDirName=C:\Autodesk\Dynamo\Core
+DefaultDirName=C:\Autodesk\DynamoDS\Core
 DefaultGroupName=
 OutputDir=Installers
-OutputBaseFilename=InstallDynamo
+OutputBaseFilename=InstallDynamoDS
 SetupIconFile=Extra\logo_square_32x32.ico
 Compression=lzma
 SolidCompression=true
@@ -29,7 +29,7 @@ ShowLanguageDialog=auto
 DirExistsWarning=no
 UninstallFilesDir={app}\Uninstall
 UninstallDisplayIcon={app}\logo_square_32x32.ico
-UninstallDisplayName=Dynamo 0.6.2
+UninstallDisplayName=DynamoDS 0.6.3
 UsePreviousAppDir=no
 
 [Types]
@@ -62,13 +62,9 @@ Source: temp\Samples\*.*; DestDir: {app}\samples; Flags: ignoreversion overwrite
 Source: temp\dynamo_packages\*; DestDir: {app}\dynamo_packages; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
 
 [UninstallDelete]
-Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2013\Dynamo.addin"
-Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2014\Dynamo.addin"
-Type: files; Name: "{commonappdata}\Autodesk\Vasari\Addins\2014\Dynamo.addin"
-Type: files; Name: {app}\RevitRaaS.dll
-Type: files; Name: {app}\DynamoRaaS.dll
-Type: files; Name: {app}\SDF.dll
-Type: files; Name: {app}\JobMonitor.dll
+Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2013\DynamoDS.addin"
+Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2014\DynamoDS.addin"
+Type: files; Name: "{commonappdata}\Autodesk\Vasari\Addins\2014\DynamoDS.addin"
 
 [Run]
 Filename: "{app}\fsharp_redist.exe"; Parameters: "/q"; Flags: runascurrentuser
@@ -167,16 +163,16 @@ begin
 	AddInFileContents := '<?xml version="1.0" encoding="utf-8" standalone="no"?>' + #13#10;
 	AddInFileContents := AddInFileContents + '<RevitAddIns>' + #13#10;
 	AddInFileContents := AddInFileContents + '  <AddIn Type="Application">' + #13#10;
-  AddInFileContents := AddInFileContents + '    <Name>Dynamo</Name>' + #13#10;
-	AddInFileContents := AddInFileContents + '    <Assembly>'  + ExpandConstant('{app}') + '\DynamoRevit.dll</Assembly>' + #13#10;
-	AddInFileContents := AddInFileContents + '    <AddInId>188B9080-EEBE-40C3-865A-8FC31DEEC12F</AddInId>' + #13#10;
+  AddInFileContents := AddInFileContents + '    <Name>DynamoDS</Name>' + #13#10;
+	AddInFileContents := AddInFileContents + '    <Assembly>'  + ExpandConstant('{app}') + '\DynamoRevitDS.dll</Assembly>' + #13#10;
+	AddInFileContents := AddInFileContents + '    <AddInId>F2E59889-3233-4B1A-934A-724007E92195</AddInId>' + #13#10;
 	AddInFileContents := AddInFileContents + '    <FullClassName>Dynamo.Applications.DynamoRevitApp</FullClassName>' + #13#10;
 	AddInFileContents := AddInFileContents + '  <VendorId>ADSK</VendorId>' + #13#10;
 	AddInFileContents := AddInFileContents + '  <VendorDescription>Autodesk, github.com/ikeough/dynamo</VendorDescription>' + #13#10;
 	AddInFileContents := AddInFileContents + '  </AddIn>' + #13#10;
 	AddInFileContents := AddInFileContents + '  <AddIn Type="Command">' + #13#10;
-	AddInFileContents := AddInFileContents + '    <Assembly>'  + ExpandConstant('{app}') + '\DynamoRevit.dll</Assembly>' + #13#10;
-	AddInFileContents := AddInFileContents + '    <AddInId>dc09be67-aa31-4ea7-86c9-d06c080cd3e9</AddInId>' + #13#10;
+	AddInFileContents := AddInFileContents + '    <Assembly>'  + ExpandConstant('{app}') + '\DynamoRevitDS.dll</Assembly>' + #13#10;
+	AddInFileContents := AddInFileContents + '    <AddInId>7efcdea9-8d54-4985-88a5-97febdb7567c</AddInId>' + #13#10;
 	AddInFileContents := AddInFileContents + '    <FullClassName>Dynamo.Applications.DynamoRevit</FullClassName>' + #13#10;
 	AddInFileContents := AddInFileContents + '  <VendorId>ADSK</VendorId>' + #13#10;
 	AddInFileContents := AddInFileContents + '  <VendorDescription>Autodesk, github.com/ikeough/dynamo</VendorDescription>' + #13#10;
@@ -187,17 +183,17 @@ begin
 	
     if (WizardForm.ComponentsList.Checked[1]) then
     begin
-      SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2013\Dynamo.addin'), AddInFileContents, False);
+      SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2013\DynamoDS.addin'), AddInFileContents, False);
     end;
   
     if (WizardForm.ComponentsList.Checked[2]) then
     begin
-      SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2014\Dynamo.addin'), AddInFileContents, False);
+      SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Revit\Addins\2014\DynamoDS.addin'), AddInFileContents, False);
     end;
 
     if (WizardForm.ComponentsList.Checked[3]) then
     begin
-      SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Vasari\Addins\2014\Dynamo.addin'), AddInFileContents, False);
+      SaveStringToFile(ExpandConstant('{commonappdata}\Autodesk\Vasari\Addins\2014\DynamoDS.addin'), AddInFileContents, False);
     end;
 
   end;

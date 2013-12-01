@@ -123,7 +123,7 @@
 
                 <DockPanel Background="#222" Grid.Row="0">
                     <Label Content="Package Contents" FontSize="12" Margin="10,8,0,0" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" />
-                    <!--<Button Style="{DynamicResource ResourceKey=SBadgeButton}" HorizontalAlignment="Right" Height="27" ToolTip="Add File To Package" Margin="5">+</Button>-->
+                    <Button Style="{DynamicResource ResourceKey=SBadgeButton}" Command="{Binding Path=ShowAddFileDialogAndAddCommand}" HorizontalAlignment="Right" Height="27" ToolTip="Add File To Package" Margin="5">+</Button>
                 </DockPanel>
                 
                 <ScrollViewer Grid.Row="1" Margin="0" VerticalScrollBarVisibility="Visible" Name="BrowserScrollView" Background="#222" BorderThickness="0">

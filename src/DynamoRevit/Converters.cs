@@ -151,13 +151,13 @@ namespace Dynamo.Controls
                 switch (displayUnit)
                 {
                     case DisplayUnitType.DUT_CENTIMETERS:
-                        return total*0.032808;
+                        return total * (1 / 30.48);  
 
                     case DisplayUnitType.DUT_MILLIMETERS:
-                        return total * 0.003281;
+                        return total * (1 / 304.8); 
 
                     case DisplayUnitType.DUT_METERS:
-                        return total*3.28084;
+                        return total * (1 / 0.3048);
 
                     case DisplayUnitType.DUT_FRACTIONAL_INCHES:
                         return total/12.0;

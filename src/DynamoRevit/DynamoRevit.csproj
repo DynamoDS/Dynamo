@@ -12,7 +12,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dynamo.Applications</RootNamespace>
-    <AssemblyName>DynamoRevit</AssemblyName>
+    <AssemblyName>DynamoRevitDS</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
@@ -47,6 +47,9 @@
     <NoWarn>618</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DynamoRaaS">
+      <HintPath>..\..\extern\DynamoRaaS\DynamoRaaS.dll</HintPath>
+    </Reference>
     <Reference Include="FScheme, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\bin\AnyCPU\Debug\FScheme.dll</HintPath>
@@ -72,6 +75,9 @@
     </Reference>
     <Reference Include="HelixToolkit.Wpf">
       <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="JobMonitor">
+      <HintPath>..\..\extern\DynamoRaaS\JobMonitor.dll</HintPath>
     </Reference>
     <Reference Include="LibGNet, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
@@ -142,6 +148,12 @@
       <HintPath>$(REVITAPI)\RevitAPIUI.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="RevitRaaS">
+      <HintPath>..\..\extern\DynamoRaaS\RevitRaaS.dll</HintPath>
+    </Reference>
+    <Reference Include="SDF">
+      <HintPath>..\..\extern\DynamoRaaS\SDF.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -158,6 +170,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converters.cs" />
+    <Compile Include="Nodes\Facet.cs" />
     <Compile Include="Packing\CygonRectanglePacker.cs" />
     <Compile Include="DynamoController_Revit.cs" />
     <Compile Include="FunctionWithRevit.cs" />
@@ -183,7 +196,7 @@
     <Compile Include="Nodes\NurbsSpline.cs" />
     <Compile Include="Nodes\Rectangle.cs" />
     <Compile Include="Nodes\ReferenceCurve.cs" />
-    <Compile Include="Nodes\SpatialField.cs" />
+    <Compile Include="Nodes\AnalysisDisplay.cs" />
     <Compile Include="Nodes\Curve.cs" />
     <Compile Include="Nodes\Grid.cs" />
     <Compile Include="Nodes\DividedCurve.cs" />
@@ -238,6 +251,7 @@
     <Compile Include="Views\Partials.cs" />
     <Compile Include="ViewModels\DynamoRevitViewModel.cs" />
     <Compile Include="VisualizationManager\VisualizationManagerRevit.cs" />
+    <Compile Include="WorkspaceMigrationsRevit.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

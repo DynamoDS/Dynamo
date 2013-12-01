@@ -5,7 +5,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Windows.Forms;
+using System.Threading;
+using System.Windows.Threading;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Events;
 using Dynamo.Controls;
@@ -87,15 +88,15 @@ namespace Dynamo
             dynRevitSettings.Revit.ViewActivated += Revit_ViewActivated;
 
             //allow the showing of elements in context
-            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.CanFindNodesFromElements =
-                true;
-            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.FindNodesFromElements =
-                FindNodesFromSelection;
+            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.CanFindNodesFromElements = true;
+            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.FindNodesFromElements = FindNodesFromSelection;
 
             TransactionManager = new TransactionWrapper();
             TransactionManager.TransactionStarted += TransactionManager_TransactionCommitted;
             TransactionManager.TransactionCancelled += TransactionManager_TransactionCancelled;
             TransactionManager.FailuresRaised += TransactionManager_FailuresRaised;
+
+            MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrationsRevit));
         }
 
         private void CleanupVisualizations(object sender, EventArgs e)
@@ -152,6 +153,11 @@ namespace Dynamo
         private static List<GeometryObject> RevitGeometryFromNodes(Value value)
         {
             var geoms = new List<GeometryObject>();
+
+            if (value == null)
+            {
+                return geoms;
+            }
 
             if (value.IsList)
             {
@@ -269,7 +275,7 @@ namespace Dynamo
         {
             if (_singleSignOnAssembly == null)
                 _singleSignOnAssembly = LoadSSONet();
-            client.Client.Provider = new RevitOxygenProvider();
+            client.Client.Provider = new RevitOxygenProvider(new DispatcherSynchronizationContext(this.UIDispatcher));
         }
 
         /// <summary>
@@ -729,9 +735,10 @@ namespace Dynamo
             RevertPythonBindings();
         }
 
-        protected override void Run(List<NodeModel> topElements, GraphSyncData graphSyncData)
+        protected override void Run()
         {
             DocumentManager.GetInstance().CurrentDBDocument = dynRevitSettings.Doc.Document;
+
             if (!DynamoViewModel.RunInDebug)
             {
                 // As we use a generic function node to represent all functions,
@@ -743,7 +750,13 @@ namespace Dynamo
                 TransMode = TransactionMode.Automatic; //Automatic transaction control
                 Debug.WriteLine("Adding a run to the idle stack.");
                 InIdleThread = true; //Now in the idle thread.
-                RevThread.IdlePromise.ExecuteOnIdleSync(() => base.Run(topElements, graphSyncData));
+                RevThread.IdlePromise.ExecuteOnIdleSync(() =>
+                {
+                    // Clear the active document.  This is a temporary fix 
+                    // until trace cleanup is in place
+                    DocumentManager.GetInstance().ClearCurrentDocument();
+                    base.Run();
+                });
             }
             else
             {
@@ -753,7 +766,7 @@ namespace Dynamo
                 DynamoLogger.Instance.Log("Running expression in debug.");
 
                 //Execute the Run Delegate.
-                base.Run(topElements, graphSyncData);
+                base.Run();
             }
         }
 
@@ -820,6 +833,12 @@ namespace Dynamo
         {
             _transaction.CancelTransaction();
         }
+
+        /// <summary>
+        /// The Synchronication Context from the current thread.  This is expected to be the 
+        /// Revit UI thread SynchronizationContext
+        /// </summary>
+        public Dispatcher RevitSyncContext { get; set; }
     }
 
     public enum TransactionMode

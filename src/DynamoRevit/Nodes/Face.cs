@@ -153,7 +153,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Surface Derivatives")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_SURFACE_QUERY)]
-    [NodeDescription("Returns a transform describing the face (f) at the parameter (uv).")]
+    [NodeDescription("Returns a derivatives of the face (f) at the parameter (uv).")]
     public class ComputeFaceDerivatives : GeometryBase
     {
         public ComputeFaceDerivatives()
@@ -305,6 +305,8 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("domain", "The surface's domain.", typeof(FScheme.Value.List)));
 
             RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
         }
 
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)

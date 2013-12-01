@@ -1,17 +1,16 @@
-<Workspace X="-4.36904761904702" Y="115.952380952381" zoom="1" Description="" Category="" Name="Home">
+<Workspace Version="0.6.2.14024" X="-4.36904761904702" Y="115.952380952381" zoom="1" Description="" Category="" Name="Home">
   <Elements>
-    <Dynamo.Nodes.PointBySelection type="Dynamo.Nodes.PointBySelection" guid="6adae558-1d83-4903-a231-a2cf88d4567c" nickname="Point by Selection" x="81" y="14" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <instance id="43f8c44d-3ad8-4b7c-b885-2531a3dbd3cd-00007ae6" />
+    <Dynamo.Nodes.PointBySelection type="Dynamo.Nodes.PointBySelection" guid="8632dddf-d923-4cfa-b128-2fed136507d3" nickname="Select Reference Point" x="85.0000000000001" y="10.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <instance id="59b81eea-9ba3-46cc-b901-a8a7773923bb-00008285" />
     </Dynamo.Nodes.PointBySelection>
-    <Dynamo.Nodes.PointBySelection type="Dynamo.Nodes.PointBySelection" guid="7ce00e02-b10b-4b31-b93c-bad204a56499" nickname="Point by Selection" x="82.75" y="107.95" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <instance id="43f8c44d-3ad8-4b7c-b885-2531a3dbd3cd-00007b15" />
-    </Dynamo.Nodes.PointBySelection>
-    <Dynamo.Nodes.NewList type="Dynamo.Nodes.NewList" guid="8fb17c16-f942-4e1f-b7d2-e69935c70da6" nickname="list" x="257.95" y="47.35" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <Dynamo.Nodes.NewList type="Dynamo.Nodes.NewList" guid="d0479c19-2cc3-4765-9c48-4c8dc300a271" nickname="List" x="261.95" y="44.15" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <Input name="index0" />
       <Input name="index1" />
     </Dynamo.Nodes.NewList>
-    <Dynamo.Nodes.Transaction type="Dynamo.Nodes.Transaction" guid="265d3748-0dce-4abb-8564-a281c8eba453" nickname="Transaction" x="641.826176494656" y="72.9722865974853" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="1a1d3ed8-9649-41ce-b8c0-d85072ae38fb" nickname="Python Script" x="460.501162790698" y="61.2" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <Dynamo.Nodes.PointBySelection type="Dynamo.Nodes.PointBySelection" guid="5a6e0f00-c9be-41a9-8d6f-931b304d5f3b" nickname="Select Reference Point" x="86.7500000000001" y="104.75" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <instance id="59b81eea-9ba3-46cc-b901-a8a7773923bb-000082c0" />
+    </Dynamo.Nodes.PointBySelection>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="c925d90d-be67-4567-a496-74f203e8ed2a" nickname="Python Script" x="464.501162790698" y="58" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <Script>#derived from Nathan Miller's example http://theprovingground.wikidot.com/revit-api-py-curves
 
 # Default imports
@@ -76,14 +75,15 @@ for i in range(0,steps+1):
     refptarr.Append(refPt)
 </Script>
     </Dynamo.Nodes.Python>
-    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="211fc774-26a9-4c0a-8445-959fbee9ffd8" nickname="Watch" x="742.369047619047" y="232.247619047619" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Transaction type="Dynamo.Nodes.Transaction" guid="1dbc8f31-adf2-4f09-b8a7-28e4e4a10ac6" nickname="Transaction" x="645.826176494656" y="69.7722865974853" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="09733fa5-d8c0-4005-81c3-6b092175cc6f" nickname="Watch" x="746.369047619047" y="229.047619047619" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
   </Elements>
   <Connectors>
-    <Dynamo.Models.ConnectorModel start="6adae558-1d83-4903-a231-a2cf88d4567c" start_index="0" end="8fb17c16-f942-4e1f-b7d2-e69935c70da6" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="7ce00e02-b10b-4b31-b93c-bad204a56499" start_index="0" end="8fb17c16-f942-4e1f-b7d2-e69935c70da6" end_index="1" portType="0" />
-    <Dynamo.Models.ConnectorModel start="8fb17c16-f942-4e1f-b7d2-e69935c70da6" start_index="0" end="1a1d3ed8-9649-41ce-b8c0-d85072ae38fb" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="1a1d3ed8-9649-41ce-b8c0-d85072ae38fb" start_index="0" end="265d3748-0dce-4abb-8564-a281c8eba453" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="1a1d3ed8-9649-41ce-b8c0-d85072ae38fb" start_index="0" end="211fc774-26a9-4c0a-8445-959fbee9ffd8" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8632dddf-d923-4cfa-b128-2fed136507d3" start_index="0" end="d0479c19-2cc3-4765-9c48-4c8dc300a271" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d0479c19-2cc3-4765-9c48-4c8dc300a271" start_index="0" end="c925d90d-be67-4567-a496-74f203e8ed2a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5a6e0f00-c9be-41a9-8d6f-931b304d5f3b" start_index="0" end="d0479c19-2cc3-4765-9c48-4c8dc300a271" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c925d90d-be67-4567-a496-74f203e8ed2a" start_index="0" end="1dbc8f31-adf2-4f09-b8a7-28e4e4a10ac6" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c925d90d-be67-4567-a496-74f203e8ed2a" start_index="0" end="09733fa5-d8c0-4005-81c3-6b092175cc6f" end_index="0" portType="0" />
   </Connectors>
   <Notes>
     <Dynamo.Models.NoteModel text="Create a transaction to wrap the python script." x="576.833333333333" y="12.4166666666666" />

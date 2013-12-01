@@ -28,14 +28,15 @@ namespace Dynamo.ViewModels
 
         ObservableCollection<PortViewModel> inPorts = new ObservableCollection<PortViewModel>();
         ObservableCollection<PortViewModel> outPorts = new ObservableCollection<PortViewModel>();
-
         NodeModel nodeLogic;
-        public NodeModel NodeModel { get { return nodeLogic; } private set { nodeLogic = value; } }
-
         private bool isFullyConnected = false;
+        private double zIndex = 3;
+
         #endregion
 
         #region public members
+
+        public NodeModel NodeModel { get { return nodeLogic; } private set { nodeLogic = value; } }
 
         public bool IsFullyConnected
         {
@@ -135,14 +136,6 @@ namespace Dynamo.ViewModels
             get { return nodeLogic.Description; }
         }
 
-        //public double DropShadowOpacity
-        //{
-        //    get
-        //    {
-        //        return nodeLogic.IsCustomFunction? 1:0;
-        //    }
-        //}
-
         public bool IsCustomFunction
         {
             get { return nodeLogic.IsCustomFunction ? true : false; }
@@ -174,8 +167,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private double zIndex = 3;
-         public double ZIndex
+        public double ZIndex
          {
             get { return zIndex; }
             set { zIndex = value; RaisePropertyChanged("ZIndex"); }
@@ -232,8 +224,30 @@ namespace Dynamo.ViewModels
         {
             get
             {
+                if(this.PreviewBubble == null)
+                    return false;
+
                 return !this.PreviewBubble.IsShowPreviewByDefault;
             }
+        }
+
+        /// <summary>
+        /// Enable or disable text labels on nodes.
+        /// </summary>
+        public bool IsDisplayingLabels
+        {
+            get 
+            { return nodeLogic.DisplayLabels; }
+            set
+            {
+                nodeLogic.DisplayLabels = value;
+                RaisePropertyChanged("IsDisplayingLabels");
+            }
+        }
+
+        public bool CanDisplayLabels
+        {
+            get { return nodeLogic.OldValue != null; }
         }
 
         #endregion
@@ -285,9 +299,25 @@ namespace Dynamo.ViewModels
             dynSettings.Controller.PropertyChanged += Controller_PropertyChanged;
             
             this.ErrorBubble = new InfoBubbleViewModel();
-            this.PreviewBubble = new InfoBubbleViewModel();
-            this.PreviewBubble.PropertyChanged += PreviewBubble_PropertyChanged;
 
+            // Nodes mentioned in switch cases will not have preview bubble
+            switch (nodeLogic.Name)
+            {
+                case "Number":
+                    break;
+                case "String":
+                    break;
+                case "Watch":
+                    break;
+                case "Watch 3D":
+                    break;
+                case "Boolean":
+                    break;
+                default:
+                    this.PreviewBubble = new InfoBubbleViewModel();
+                    this.PreviewBubble.PropertyChanged += PreviewBubble_PropertyChanged;
+                    break;
+            }
             //Do a one time setup of the initial ports on the node
             //we can not do this automatically because this constructor
             //is called after the node's constructor where the ports
@@ -354,6 +384,7 @@ namespace Dynamo.ViewModels
                 case "OldValue":
                     RaisePropertyChanged("OldValue");
                     UpdatePreviewBubbleContent();
+                    RaisePropertyChanged("CanDisplayLabels");
                     break;
                 case "IsUpdated":
                     UpdatePreviewBubbleContent();
@@ -381,18 +412,15 @@ namespace Dynamo.ViewModels
                 case "ArgumentLacing":
                     RaisePropertyChanged("ArgumentLacing");
                     break;
-
                 case "ToolTipText":
                     UpdateErrorBubbleContent();
                     break;
                 case "IsVisible":
                     RaisePropertyChanged("IsVisible");
                     break;
-
                 case "IsUpstreamVisible":
                     RaisePropertyChanged("IsUpstreamVisible");
                     break;
-
                 case "Width":
                     RaisePropertyChanged("Width");
                     UpdateErrorBubblePosition();
@@ -400,6 +428,13 @@ namespace Dynamo.ViewModels
                     break;
                 case "Height":
                     RaisePropertyChanged("Height");
+                    UpdateErrorBubblePosition();
+                    UpdatePreviewBubblePosition();
+                    break;
+                case "DisplayLabels":
+                    RaisePropertyChanged("IsDisplayingLables");
+                    break;
+                case "Position":
                     UpdateErrorBubblePosition();
                     UpdatePreviewBubblePosition();
                     break;
@@ -428,7 +463,9 @@ namespace Dynamo.ViewModels
 
         private void HandleDefaultShowPreviewChanged()
         {
-            RaisePropertyChanged("IsPreviewInsetVisible");
+            if (this.PreviewBubble == null)
+                return;
+
             this.PreviewBubble.IsShowPreviewByDefault = dynSettings.Controller.IsShowPreviewByDefault;
             UpdatePreviewBubbleContent();
             if (dynSettings.Controller.IsShowPreviewByDefault)
@@ -448,12 +485,16 @@ namespace Dynamo.ViewModels
             if (this.IsSelected == true)
             {
                 this.ZIndex = 4;
-                this.PreviewBubble.ZIndex = 4;
-           }
+
+                if (this.PreviewBubble != null)
+                    this.PreviewBubble.ZIndex = 4;
+            }
             else
             {
                 this.ZIndex = 3;
-                this.PreviewBubble.ZIndex = 3;
+
+                if (this.PreviewBubble != null)
+                    this.PreviewBubble.ZIndex = 3;
             }
         }
 
@@ -463,6 +504,7 @@ namespace Dynamo.ViewModels
                 return;
             if (string.IsNullOrEmpty(NodeModel.ToolTipText))
             {
+                // TODO: Opacity is no longer in use
                 if (ErrorBubble.Opacity != 0)
                 {
                     ErrorBubble.SetAlwaysVisibleCommand.Execute(false);
@@ -471,12 +513,10 @@ namespace Dynamo.ViewModels
             }
             else
             {
-                Point topLeft = new Point(NodeModel.X, NodeModel.Y);
-                Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
                 InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.Error;
                 string content = NodeModel.ToolTipText;
                 InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Bottom;
-                InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
+                InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, GetTopLeft(), GetBotRight(), content, connectingDirection);
                 dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.BeginInvoke((new Action(() =>
                 {
                     if (!dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Errors.Contains(this.ErrorBubble))
@@ -492,11 +532,9 @@ namespace Dynamo.ViewModels
         {
             if (this.ErrorBubble == null)
                 return;
-            Point topLeft = new Point(NodeModel.X, NodeModel.Y);
-            Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
             InfoBubbleDataPacket data = new InfoBubbleDataPacket();
-            data.TopLeft = topLeft;
-            data.BotRight = botRight;
+            data.TopLeft = GetTopLeft();
+            data.BotRight = GetBotRight();
             this.ErrorBubble.UpdatePositionCommand.Execute(data);
         }
 
@@ -507,11 +545,9 @@ namespace Dynamo.ViewModels
 
             //create data packet to send to preview bubble
             InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.PreviewCondensed;
-            Point topLeft = new Point(NodeModel.X, NodeModel.Y);
-            Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
             string content = this.OldValue;
             InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Top;
-            InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
+            InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, GetTopLeft(), GetBotRight(), content, connectingDirection);
 
             //update preview bubble
             dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.BeginInvoke((new Action(() =>
@@ -525,11 +561,9 @@ namespace Dynamo.ViewModels
         {
             if (this.PreviewBubble == null || this.NodeModel is Watch)
                 return;
-            Point topLeft = new Point(NodeModel.X, NodeModel.Y);
-            Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
             InfoBubbleDataPacket data = new InfoBubbleDataPacket();
-            data.TopLeft = topLeft;
-            data.BotRight = botRight;
+            data.TopLeft = GetTopLeft();
+            data.BotRight = GetBotRight();
             this.PreviewBubble.UpdatePositionCommand.Execute(data);
         }
 
@@ -567,7 +601,7 @@ namespace Dynamo.ViewModels
             dynSettings.Controller.DynamoViewModel.ExecuteCommand(command);
         }
 
-        void SetLacingType(object param)
+        private void SetLacingType(object param)
         {
             // Record the state of this node before changes.
             DynamoModel dynamo = dynSettings.Controller.DynamoModel;
@@ -584,7 +618,7 @@ namespace Dynamo.ViewModels
             dynSettings.Controller.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
         }
 
-        bool CanSetLacingType(object param)
+        private bool CanSetLacingType(object param)
         {
             // Only allow setting of lacing strategy when it is not disabled.
             return (this.ArgumentLacing != LacingStrategy.Disabled);
@@ -602,26 +636,26 @@ namespace Dynamo.ViewModels
             return nodeLogic.IsCustomFunction;
         }
 
-        private void SetLayout(object parameters)
-        {
-            var dict = parameters as Dictionary<string,
-            double>;
-            nodeLogic.X = dict["X"];
-            nodeLogic.Y = dict["Y"];
-            nodeLogic.Height = dict["Height"];
-            nodeLogic.Width = dict["Width"];
-        }
+        //private void SetLayout(object parameters)
+        //{
+        //    var dict = parameters as Dictionary<string,
+        //    double>;
+        //    nodeLogic.X = dict["X"];
+        //    nodeLogic.Y = dict["Y"];
+        //    nodeLogic.Height = dict["Height"];
+        //    nodeLogic.Width = dict["Width"];
+        //}
 
-        private bool CanSetLayout(object parameters)
-        {
-            var dict = parameters as Dictionary<string,
-            double>;
-            if (dict == null)
-                return false;
-            return true;
-        }
+        //private bool CanSetLayout(object parameters)
+        //{
+        //    var dict = parameters as Dictionary<string,
+        //    double>;
+        //    if (dict == null)
+        //        return false;
+        //    return true;
+        //}
 
-        void inports_collectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void inports_collectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             //The visual height of the node is bound to preferred height.
             //PreferredHeight = Math.Max(inPorts.Count * 20 + 10, outPorts.Count * 20 + 10); //spacing for inputs + title space + bottom space
@@ -645,7 +679,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        void outports_collectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void outports_collectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             //The visual height of the node is bound to preferred height.
             //PreferredHeight = Math.Max(inPorts.Count * 20 + 10, outPorts.Count * 20 + 10); //spacing for inputs + title space + bottom space
@@ -804,6 +838,9 @@ namespace Dynamo.ViewModels
 
         private void ShowPreview(object parameter)
         {
+            if (this.PreviewBubble == null)
+                return;
+
             UpdatePreviewBubbleContent();
             this.PreviewBubble.ZIndex = 5;
             this.PreviewBubble.InstantAppearCommand.Execute(null);
@@ -855,6 +892,18 @@ namespace Dynamo.ViewModels
 
             return false;
         }
+
+        #region Private Helper Methods
+        private Point GetTopLeft()
+        {
+            return new Point(NodeModel.X, NodeModel.Y);
+        }
+
+        private Point GetBotRight()
+        {
+            return new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
+        }
+        #endregion
     }
 
     public class NodeHelpEventArgs : EventArgs

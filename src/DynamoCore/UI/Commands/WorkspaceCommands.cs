@@ -33,6 +33,20 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private DelegateCommand _nodeToCodeCommand;
+        public DelegateCommand NodeToCodeCommand
+        {
+            get
+            {
+                if (_nodeToCodeCommand == null)
+                {
+                    _nodeToCodeCommand = new DelegateCommand(_model.NodeToCode, _model.CanNodeToCode);
+                }
+                return _nodeToCodeCommand;
+            }
+        }
+
+
         public DelegateCommand HideCommand
         {
             get

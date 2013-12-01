@@ -1,0 +1,10 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="a344e085-a6fa-4d43-ac27-692fb102ba6d" NodeName="Code Block" X="218" Y="223" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="a344e085-a6fa-4d43-ac27-692fb102ba6d" Name="Code" Value="a=1;&#xD;&#xA;b=2;" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="a344e085-a6fa-4d43-ac27-692fb102ba6d" Name="Code" Value="a=1;&#xD;&#xA;;&#xA;b=2;" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="a344e085-a6fa-4d43-ac27-692fb102ba6d" Name="Code" Value="a=1;&#xA;b=2;&#xD;&#xA;;&#xD;&#xA;c=3;" />
+</Commands>

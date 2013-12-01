@@ -608,6 +608,7 @@ namespace Dynamo.Nodes
     [NodeName("Reverse")]
     [NodeDescription("Reverses a list")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_MODIFY)]
+    [NodeSearchTags("reverse", "end", "last")]
     public class Reverse : BuiltinFunction
     {
         public Reverse()
@@ -623,6 +624,7 @@ namespace Dynamo.Nodes
     [NodeName("List")]
     [NodeDescription("Makes a new list out of the given inputs")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
+    [NodeSearchTags("list")]
     public class NewList : VariableInput
     {
         public NewList()
@@ -680,11 +682,6 @@ namespace Dynamo.Nodes
 
             RegisterAllPorts();
         }
-
-        protected override void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
-        {
-            builder.Build(this, inputs);
-        }
     }
 
     [NodeName("Sort by Key")]
@@ -701,16 +698,12 @@ namespace Dynamo.Nodes
 
             RegisterAllPorts();
         }
-
-        protected override void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
-        {
-             builder.Build(this, inputs);
-        }
     }
 
     [NodeName("Sort")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_MODIFY)]
     [NodeDescription("Returns a sorted list of numbers or strings.")]
+    [NodeSearchTags("sort", "ascending", "order")]
     public class Sort : BuiltinFunction
     {
         public Sort()
@@ -720,11 +713,6 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("sorted", "Sorted list", typeof(Value.List)));
 
             RegisterAllPorts();
-        }
-
-        protected override void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
-        {
-            builder.Build(this, inputs);
         }
     }
 
@@ -763,7 +751,7 @@ namespace Dynamo.Nodes
     [NodeName("Reduce")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Reduces a list into a new value by combining each element with an accumulated result.")]
-    [NodeSearchTags("foldl")]
+    [NodeSearchTags("fold")]
     public class Fold : BuiltinFunction
     {
         public Fold()
@@ -821,6 +809,7 @@ namespace Dynamo.Nodes
     [NodeName("Number Range")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
     [NodeDescription("Creates a sequence of numbers in the specified range.")]
+    [NodeSearchTags("number", "range", "sequence", "series")]
     [AlsoKnownAs("Dynamo.Nodes.dynBuildSeq", "Dynamo.Nodes.BuildSeq")]
     public class NumberRange : BuiltinFunction
     {
@@ -841,6 +830,7 @@ namespace Dynamo.Nodes
     [NodeName("Number Sequence")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
     [NodeDescription("Creates a sequence of numbers.")]
+    [NodeSearchTags("number", "range", "sequence", "series")]
     public class NumberSeq : NodeWithOneOutput
     {
         public NumberSeq()
@@ -1788,7 +1778,7 @@ namespace Dynamo.Nodes
                     InPortData.Add(new PortData(parameter, "variable", typeof(Value.Number)));
                 }
 
-                RegisterInputs();
+                RegisterInputPorts();
             }
             catch (Exception e)
             {
@@ -2590,14 +2580,6 @@ namespace Dynamo.Nodes
             set { }
         }
 
-        public override AssociativeNode AstIdentifier
-        {
-            get
-            {
-                return AstFactory.BuildDoubleNode(Math.E);
-            }
-        }
-
         protected internal override INode Build(Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
             Dictionary<int, INode> result;
@@ -2633,14 +2615,6 @@ namespace Dynamo.Nodes
                 return false;
             }
             set { }
-        }
-
-        public override AssociativeNode AstIdentifier
-        {
-            get
-            {
-                return AstFactory.BuildDoubleNode(Math.PI);
-            }
         }
 
         protected internal override INode Build(Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
@@ -2679,14 +2653,6 @@ namespace Dynamo.Nodes
                 return false;
             }
             set { }
-        }
-
-        public override AssociativeNode AstIdentifier
-        {
-            get
-            {
-                return AstFactory.BuildDoubleNode(Math.PI * 2);
-            }
         }
 
         protected internal override INode Build(Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
@@ -2831,11 +2797,6 @@ namespace Dynamo.Nodes
             double theta = ((Value.Number)input).Item;
             return Value.NewNumber(Math.Asin(theta));
         }
-
-        protected override void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
-        {
-            builder.Build(this, inputs);
-        }
     }
 
     [NodeName("Inverse Cosine")]
@@ -2859,11 +2820,6 @@ namespace Dynamo.Nodes
             double theta = ((Value.Number)input).Item;
             return Value.NewNumber(Math.Acos(theta));
         }
-
-        protected override void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
-        {
-            builder.Build(this, inputs);
-        }
     }
 
     [NodeName("Inverse Tangent")]
@@ -2886,11 +2842,6 @@ namespace Dynamo.Nodes
 
             double theta = ((Value.Number)input).Item;
             return Value.NewNumber(Math.Atan(theta));
-        }
-
-        protected override void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
-        {
-            builder.Build(this, inputs);
         }
     }
 
@@ -3268,6 +3219,11 @@ namespace Dynamo.Nodes
 
     public abstract class Double : BasicInteractive<double>
     {
+        public override bool IsConvertible
+        {
+            get { return true; }
+        }
+
         public override Value Evaluate(FSharpList<Value> args)
         {
             return FScheme.Value.NewNumber(Value);
@@ -3304,10 +3260,52 @@ namespace Dynamo.Nodes
 
         #endregion
 
-        protected override void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
-            builder.Build(this, inputs);
+            var rhs = AstFactory.BuildDoubleNode(Value);
+            var assignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), rhs);
+
+            return new[] { assignment };
         }
+    }
+
+    public abstract class Integer : BasicInteractive<int>
+    {
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            return FScheme.Value.NewNumber(Value);
+        }
+
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        {
+            XmlElement outEl = xmlDoc.CreateElement(typeof(int).FullName);
+            outEl.SetAttribute("value", Value.ToString(CultureInfo.InvariantCulture));
+            nodeElement.AppendChild(outEl);
+        }
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("integerValue", Value);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                Value = helper.ReadInteger("integerValue");
+            }
+        }
+
+        #endregion
     }
 
     public abstract class Bool : BasicInteractive<bool>
@@ -3315,11 +3313,6 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             return FScheme.Value.NewNumber(Value ? 1 : 0);
-        }
-
-        protected override void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
-        {
-            builder.Build(this, inputs);
         }
 
         #region Serialization/Deserialization Methods
@@ -3359,11 +3352,6 @@ namespace Dynamo.Nodes
             return "\"" + base.PrintExpression() + "\"";
         }
 
-        protected override void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
-        {
-            builder.Build(this, inputs);
-        }
-
         #region Serialization/Deserialization Methods
 
         protected override void SerializeCore(XmlElement element, SaveContext context)
@@ -3396,6 +3384,7 @@ namespace Dynamo.Nodes
     [NodeName("Number")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Creates a number.")]
+    [IsDesignScriptCompatible]
     public partial class DoubleInput : NodeWithOneOutput
     {
         public DoubleInput()
@@ -3439,7 +3428,7 @@ namespace Dynamo.Nodes
                         InPortData.Add(new PortData(id, "variable", typeof (Value.Number)));
                     }
 
-                    RegisterInputs();
+                    RegisterInputPorts();
 
                     ArgumentLacing = InPortData.Any() ? LacingStrategy.Longest : LacingStrategy.Disabled;
                 }
@@ -3451,6 +3440,11 @@ namespace Dynamo.Nodes
                 RequiresRecalc = value != null;
                 RaisePropertyChanged("Value");
             }
+        }
+
+        public override bool IsConvertible
+        {
+            get { return true; }
         }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
@@ -3594,23 +3588,24 @@ namespace Dynamo.Nodes
                 : FScheme.Value.NewList(Utils.SequenceToFSharpList(_parsed.Select(x => x.GetFSchemeValue(paramDict))));
         }
 
-        protected override void BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
             var paramDict = InPortData.Select(x => x.NickName)
-                .Zip(inputs, Tuple.Create)
-                .ToDictionary(x => x.Item1, x => x.Item2);
+                   .Zip(inputAstNodes, Tuple.Create)
+                   .ToDictionary(x => x.Item1, x => x.Item2);
 
-            List<AssociativeNode> newInputs = null;
-            if (_parsed.Count == 1)
-            {
-                newInputs = new List<AssociativeNode> { _parsed[0].GetAstNode(paramDict)};
-            }
-            else
-            {
-                newInputs = _parsed.Select(x => x.GetAstNode(paramDict)).ToList();
-            }
+            List<AssociativeNode> newInputs = _parsed.Count == 1
+                ? new List<AssociativeNode> { _parsed[0].GetAstNode(paramDict) }
+                : _parsed.Select(x => x.GetAstNode(paramDict)).ToList();
 
-            builder.Build(this, newInputs);
+            AssociativeNode rhs =
+                newInputs.Count == 1
+                    ? newInputs[0]
+                    : AstFactory.BuildExprList(newInputs);
+
+            var assignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), rhs);
+
+            return new[] { assignment };
         }
 
         public interface IDoubleSequence
@@ -3937,6 +3932,7 @@ namespace Dynamo.Nodes
     [NodeName("Number Slider")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Change a number value with a slider.")]
+    [IsDesignScriptCompatible]
     public partial class DoubleSliderInput : Double
     {
 
@@ -4074,6 +4070,144 @@ namespace Dynamo.Nodes
         #endregion
     }
 
+    [NodeName("Integer Slider")]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeDescription("Change an integer value with a slider.")]
+    public partial class IntegerSliderInput : Integer
+    {
+        private int max;
+        private int min;
+
+        public IntegerSliderInput()
+        {
+            RegisterAllPorts();
+
+            Min = 0;
+            Max = 100;
+            Value = 50;
+        }
+
+        public override int Value
+        {
+            get
+            {
+                return base.Value;
+            }
+            set
+            {
+                base.Value = value;
+
+                Debug.WriteLine(string.Format("Min:{0},Max:{1},Value:{2}", Min.ToString(CultureInfo.InvariantCulture), Max.ToString(CultureInfo.InvariantCulture), Value.ToString(CultureInfo.InvariantCulture)));
+            }
+        }
+
+        public int Max
+        {
+            get { return max; }
+            set
+            {
+                max = value;
+
+                if (max < Value)
+                    Value = max;
+
+                RaisePropertyChanged("Max");
+            }
+        }
+
+        public int Min
+        {
+            get { return min; }
+            set
+            {
+                min = value;
+
+                if (min > Value)
+                    Value = min;
+
+                RaisePropertyChanged("Min");
+            }
+        }
+
+        protected override int DeserializeValue(string val)
+        {
+            try
+            {
+                return Convert.ToInt32(val, CultureInfo.InvariantCulture);
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        {
+            XmlElement outEl = xmlDoc.CreateElement(typeof(int).FullName);
+            outEl.SetAttribute("value", Value.ToString(CultureInfo.InvariantCulture));
+            outEl.SetAttribute("min", Min.ToString(CultureInfo.InvariantCulture));
+            outEl.SetAttribute("max", Max.ToString(CultureInfo.InvariantCulture));
+            nodeElement.AppendChild(outEl);
+        }
+
+        protected override void LoadNode(XmlNode nodeElement)
+        {
+            foreach (XmlNode subNode in nodeElement.ChildNodes)
+            {
+                if (subNode.Name.Equals(typeof(int).FullName))
+                {
+                    int value = Value;
+                    int min = Min;
+                    int max = Max;
+
+                    foreach (XmlAttribute attr in subNode.Attributes)
+                    {
+                        if (attr.Name.Equals("value"))
+                            value = DeserializeValue(attr.Value);
+                        else if (attr.Name.Equals("min"))
+                        {
+                            min = Convert.ToInt32(attr.Value, CultureInfo.InvariantCulture);
+                        }
+                        else if (attr.Name.Equals("max"))
+                        {
+                            max = Convert.ToInt32(attr.Value, CultureInfo.InvariantCulture);
+                        }
+                    }
+
+                    Min = min;
+                    Max = max;
+                    Value = value;
+                }
+            }
+        }
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); //Base implementation must be called.
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("min", Min);
+                helper.SetAttribute("max", Max);
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called.
+            if (context == SaveContext.Undo)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                Min = helper.ReadInteger("min");
+                Max = helper.ReadInteger("max");
+            }
+        }
+
+        #endregion
+    }
+
     [NodeName("Boolean")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("Selection between a true and false.")]
@@ -4196,6 +4330,8 @@ namespace Dynamo.Nodes
         public StringFilename()
         {
             RegisterAllPorts();
+            
+            Value = "";
         }
 
         protected override string DeserializeValue(string val)

@@ -201,6 +201,14 @@ namespace Dynamo.Nodes
                 node = new WatchNode((eIn as Value.Symbol).Item.ToString(), isListMember, count);
             }
 
+            // This is a fix for the following defect. "VirtualizingStackPanel" 
+            // does not quite work well with "WatchNode" being 'null' value.
+            // 
+            //      https://github.com/ikeough/Dynamo/issues/832
+            // 
+            if (null == node)
+                node = new WatchNode("null");
+
             return node;
         }
     }

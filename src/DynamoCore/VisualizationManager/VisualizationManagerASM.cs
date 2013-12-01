@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using Autodesk.LibG;
 using Dynamo.Models;
 using Dynamo.Selection;
 using HelixToolkit.Wpf;
+using Microsoft.FSharp.Collections;
 
 namespace Dynamo
 {
@@ -16,7 +18,7 @@ namespace Dynamo
             DrawToAlternateContext = false;
         }
 
-        public static void DrawLibGGraphicItem(NodeModel node, object geom, RenderDescription rd,  Octree.OctreeSearch.Octree octree)
+        public static void DrawLibGGraphicItem(NodeModel node, object geom, string tag, RenderDescription rd,  Octree.OctreeSearch.Octree octree)
         {
             var selected = DynamoSelection.Instance.Selection.Contains(node);
             var g = geom as GraphicItem;
@@ -66,15 +68,21 @@ namespace Dynamo
 
                 for (int i = 0; i < point_vertices.Count; i += 3)
                 {
+                    var pos = new Point3D(point_vertices[i],
+                        point_vertices[i + 1], point_vertices[i + 2]);
+
                     if (selected)
                     {
-                        rd.SelectedPoints.Add(new Point3D(point_vertices[i],
-                                                          point_vertices[i + 1], point_vertices[i + 2]));
+                        rd.SelectedPoints.Add(pos);
                     }
                     else
                     {
-                        rd.Points.Add(new Point3D(point_vertices[i],
-                                                  point_vertices[i + 1], point_vertices[i + 2]));
+                        rd.Points.Add(pos);
+                    }
+
+                    if (node.DisplayLabels)
+                    {
+                        rd.Text.Add(new BillboardTextItem { Text = tag, Position = pos });
                     }
                 }
 
@@ -82,42 +90,35 @@ namespace Dynamo
 
                 #region draw lines
 
-                SizeTList num_line_strip_vertices = g.num_line_strip_vertices_threadsafe();
                 FloatList line_strip_vertices = g.line_strip_vertices_threadsafe();
 
-                int counter = 0;
-
-                foreach (uint num_verts in num_line_strip_vertices)
+                for (int i = 0; i < line_strip_vertices.Count-3; i += 3)
                 {
-                    for (int i = 0; i < num_verts; ++i)
+                    var start = new Point3D(
+                            line_strip_vertices[i],
+                            line_strip_vertices[i + 1],
+                            line_strip_vertices[i + 2]);
+
+                    var end = new Point3D(
+                            line_strip_vertices[i + 3],
+                            line_strip_vertices[i + 4],
+                            line_strip_vertices[i + 5]);
+
+                    //draw a label at the start of the curve
+                    if (node.DisplayLabels && i == 0)
                     {
-                        var p = new Point3D(
-                            line_strip_vertices[counter],
-                            line_strip_vertices[counter + 1],
-                            line_strip_vertices[counter + 2]);
+                        rd.Text.Add(new BillboardTextItem { Text = tag, Position = start });
+                    }
 
-                        if (selected)
-                        {
-                            rd.SelectedLines.Add(p);
-                        }
-                        else
-                        {
-                            rd.Lines.Add(p);
-                        }
-
-                        counter += 3;
-
-                        if (i == 0 || i == num_verts - 1)
-                            continue;
-
-                        if (selected)
-                        {
-                            rd.SelectedLines.Add(p);
-                        }
-                        else
-                        {
-                            rd.Lines.Add(p);
-                        }
+                    if (selected)
+                    {
+                        rd.SelectedLines.Add(start);
+                        rd.SelectedLines.Add(end);
+                    }
+                    else
+                    {
+                        rd.Lines.Add(start);
+                        rd.Lines.Add(end);
                     }
                 }
 

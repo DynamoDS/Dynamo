@@ -26,6 +26,7 @@ using Dynamo.UI.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Dynamo.Core;
+using Dynamo.Services;
 
 namespace Dynamo.Controls
 {
@@ -167,6 +168,9 @@ namespace Dynamo.Controls
 
         private void dynBench_Activated(object sender, EventArgs e)
         {
+            // If first run, Collect Info Prompt will appear
+            UsageReportingManager.Instance.CheckIsFirstRun();
+
             this.WorkspaceTabs.SelectedIndex = 0;
             _vm = (DataContext as DynamoViewModel);
             _vm.Model.RequestLayoutUpdate += vm_RequestLayoutUpdate;
@@ -312,10 +316,10 @@ namespace Dynamo.Controls
             _vm.CopyCommand.RaiseCanExecuteChanged();
             _vm.PasteCommand.RaiseCanExecuteChanged();
         }
-
-        void Controller_RequestsCrashPrompt(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        
+        void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)
         {
-            var prompt = new CrashPrompt(e.Exception.Message + "\n\n" + e.Exception.StackTrace);
+            var prompt = new CrashPrompt(args);
             prompt.ShowDialog();
         }
 
@@ -886,8 +890,7 @@ namespace Dynamo.Controls
         {
             if (this._vm == null)
                 return;
-            this._vm.WorkspaceActualHeight = border.ActualHeight;
-            this._vm.WorkspaceActualWidth = border.ActualWidth;
+            this._vm.WorkspaceActualSize(border.ActualWidth, border.ActualHeight);
         }
 
         private void Window_PreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -921,6 +924,11 @@ namespace Dynamo.Controls
             {
                 // Note that you can have more than one file.
                 var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+                if (_vm.Model.HomeSpace.HasUnsavedChanges && !_vm.AskUserToSaveWorkspaceOrCancel(_vm.Model.HomeSpace))
+                {
+                    return;
+                }
 
                 if (_vm.OpenCommand.CanExecute(files[0]))
                 {

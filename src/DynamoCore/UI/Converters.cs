@@ -205,6 +205,24 @@ namespace Dynamo.Controls
         }
     }
 
+    public class SearchResultsToVisibilityConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (values[0] is int && (int)values[0] == 0 && !string.IsNullOrEmpty(values[1] as string))
+            {
+                return Visibility.Visible;
+            }
+
+            return Visibility.Collapsed;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
     public class PortNameConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,
@@ -250,6 +268,19 @@ namespace Dynamo.Controls
             } 
 
             return "Unsaved";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class PathToSaveStateConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return (value is string && !string.IsNullOrEmpty(value as string)) ? "Saved" : "Unsaved";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -395,11 +426,11 @@ namespace Dynamo.Controls
             ElementState state = (ElementState)value;
             switch (state)
             {
-                case ElementState.ACTIVE:
+                case ElementState.Active:
                     return ActiveBrush;
-                case ElementState.DEAD:
+                case ElementState.Dead:
                     return DeadBrush;
-                case ElementState.ERROR:
+                case ElementState.Error:
                     return ErrorBrush;
             }
 
@@ -977,6 +1008,25 @@ namespace Dynamo.Controls
             double val = 0.0;
             double.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.CurrentCulture, out val);
             //Debug.WriteLine(string.Format("Converting {0} -> {1}", value, val));
+            return val;
+        }
+    }
+
+    [ValueConversion(typeof(int), typeof(String))]
+    public class IntegerDisplay : IValueConverter
+    {
+        public virtual object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            //source -> target
+            string val = ((int)value).ToString("0", CultureInfo.CurrentCulture);
+            return value == null ? "" : val;
+        }
+
+        public virtual object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            //target -> source
+            int val = 0;
+            int.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.CurrentCulture, out val);
             return val;
         }
     }

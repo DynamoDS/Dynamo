@@ -3,6 +3,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using Dynamo.Models;
+using Dynamo.Services;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo
@@ -12,6 +13,8 @@ namespace Dynamo
 
     public class DynamoLogger:NotificationObject
     {
+        const string DYNAMO_LOG_DIRECTORY = @"Autodesk\Dynamo\Logs\";
+
         private static DynamoLogger instance;
         private string logPath;
         private string warning;
@@ -83,6 +86,8 @@ namespace Dynamo
         /// <param name="message"></param>
         public void Log(string message, LogLevel level)
         {
+            InstrumentationLogger.LogInfo("LogMessage-" + level.ToString(), message);
+
             switch (level)
             {
                 //write to the console
@@ -189,7 +194,11 @@ namespace Dynamo
         {
             //create log files in a directory 
             //with the executing assembly
-            string log_dir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dynamo_logs");
+            string log_dir = System.Environment.GetFolderPath(
+                    System.Environment.SpecialFolder.ApplicationData);
+
+            log_dir = Path.Combine(log_dir, DYNAMO_LOG_DIRECTORY);
+
             if (!Directory.Exists(log_dir))
             {
                 Directory.CreateDirectory(log_dir);

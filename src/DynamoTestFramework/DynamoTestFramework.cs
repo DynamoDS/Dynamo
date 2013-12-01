@@ -17,6 +17,8 @@ using Dynamo.NUnit.Tests;
 using Dynamo.Utilities;
 using NUnit.Core;
 using NUnit.Core.Filters;
+using RevitServices.Persistence;
+using RevitServices.Transactions;
 
 namespace Dynamo.Tests
 {
@@ -87,6 +89,10 @@ namespace Dynamo.Tests
                 RevitData.Application = revit.Application;
                 RevitData.Document = RevitData.Application.ActiveUIDocument;
 
+                // setup revit services
+                DocumentManager.GetInstance().CurrentDBDocument = RevitData.Document.Document;
+                TransactionManager.SetupManager(new DebugTransactionStrategy());
+
                 bool canReadData = (0 < dataMap.Count);
 
                 if (canReadData)
@@ -109,7 +115,15 @@ namespace Dynamo.Tests
                     }
                     if (dataMap.ContainsKey("runDynamo"))
                     {
-                        runDynamo = Convert.ToBoolean(dataMap["runDynamo"]);
+                        try
+                        {
+                            runDynamo = Convert.ToBoolean(dataMap["runDynamo"]);
+                        }
+                        catch
+                        {
+                            runDynamo = false;
+                        }
+
                     }
                 }
 
@@ -233,6 +247,9 @@ namespace Dynamo.Tests
             //create dynamo
             var r = new Regex(@"\b(Autodesk |Structure |MEP |Architecture )\b");
             string context = r.Replace(RevitData.Application.Application.VersionName, "");
+
+            // create the transaction manager object
+            TransactionManager.SetupManager(new DebugTransactionStrategy());
 
             var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.Updater, typeof(DynamoRevitViewModel), context)
                 {
@@ -387,6 +404,8 @@ namespace Dynamo.Tests
                     testCase.result = "Cancelled";
                     break;
                 case ResultState.Error:
+                    var f = new failureType {message = result.Message, stacktrace = result.StackTrace};
+                    testCase.Item = f;
                     testCase.result = "Error";
                     break;
                 case ResultState.Failure:

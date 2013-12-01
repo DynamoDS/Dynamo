@@ -10,6 +10,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using NUnit.Framework;
 using System.Windows;
+using Dynamo.Services;
 
 namespace Dynamo.Tests.UI
 {
@@ -20,18 +21,6 @@ namespace Dynamo.Tests.UI
         public void Start()
         {
             AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.CurrentDomain_AssemblyResolve;
-
-            Controller = DynamoController.MakeSandbox();
-
-            //create the view
-            Ui = new DynamoView();
-            Ui.DataContext = Controller.DynamoViewModel;
-            Vm = Controller.DynamoViewModel;
-            Model = Controller.DynamoModel;
-            Controller.UIDispatcher = Ui.Dispatcher;
-            Ui.Show();
-
-            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
 
             string tempPath = Path.GetTempPath();
             TempFolder = Path.Combine(tempPath, "dynamoTmp");
@@ -44,6 +33,22 @@ namespace Dynamo.Tests.UI
             {
                 EmptyTempFolder();
             }
+
+            // Setup Temp PreferenceSetting Location for testing
+            PreferenceSettings.DYNAMO_TEST_PATH = Path.Combine(TempFolder, "UserPreferenceTest.xml");
+
+            Controller = DynamoController.MakeSandbox();
+            Controller.Testing = true;
+
+            //create the view
+            Ui = new DynamoView();
+            Ui.DataContext = Controller.DynamoViewModel;
+            Vm = Controller.DynamoViewModel;
+            Model = Controller.DynamoModel;
+            Controller.UIDispatcher = Ui.Dispatcher;
+            Ui.Show();
+
+            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
         }
 
         [TearDown]
@@ -161,35 +166,26 @@ namespace Dynamo.Tests.UI
 
         [Test]
         [Category("DynamoUI")]
-        public void CanZoomIn()
+        public void CanZoom()
         {
             WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel._model;
-            double zoom = workspaceModel.Zoom;
-
-            Vm.ZoomInCommand.Execute(null);
-
+            WorkspaceViewModel workspaceVM = Vm.CurrentSpaceViewModel;
+            double zoom;
+            
+            // Test Zoom in
+            zoom = workspaceModel.Zoom;
+            if ( Vm.ZoomInCommand.CanExecute(null) )
+                Vm.ZoomInCommand.Execute(null);
             Assert.Greater(workspaceModel.Zoom, zoom);
-        }
 
-        [Test]
-        [Category("DynamoUI")]
-        public void CanZoomOut()
-        {
-            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel._model;
-            double zoom = workspaceModel.Zoom;
-
-            Vm.ZoomOutCommand.Execute(null);
-
+            // Test Zoom out
+            zoom = workspaceModel.Zoom;
+            if (Vm.ZoomOutCommand.CanExecute(null))
+                Vm.ZoomOutCommand.Execute(null);
             Assert.Greater(zoom, workspaceModel.Zoom);
-        }
 
-        [Test]
-        [Category("DynamoUI")]
-        public void CanSetZoom()
-        {
-            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel._model;
+            // Test can set zoom (at random zoom for 10 times)
             int testLoop = 10;
-
             for (int i = 0; i < testLoop; i++)
             {
                 // Get random number for the zoom
@@ -198,93 +194,61 @@ namespace Dynamo.Tests.UI
                 Random random = new Random();
                 double randomNumber = random.NextDouble() * (upperBound - lowerBound) + lowerBound;
 
-                Vm.CurrentSpaceViewModel.SetZoomCommand.Execute(randomNumber);
+                if (Vm.CurrentSpaceViewModel.SetZoomCommand.CanExecute(randomNumber))
+                    Vm.CurrentSpaceViewModel.SetZoomCommand.Execute(randomNumber);
 
                 // Check Zoom is correct
                 Assert.AreEqual(randomNumber, workspaceModel.Zoom);
             }
-        }
 
-        [Test]
-        [Category("DynamoUI")]
-        public void CanSetZoomBorderTest()
-        {
-            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel._model;
-            WorkspaceViewModel workspaceVM = Vm.CurrentSpaceViewModel;
+            // Border Test for Set Zoom
+            // Min zoom
+            zoom = WorkspaceModel.ZOOM_MINIMUM;
+            if (workspaceVM.SetZoomCommand.CanExecute(zoom))
+                workspaceVM.SetZoomCommand.Execute(zoom);
+            Assert.AreEqual(zoom, workspaceModel.Zoom);
+            // Zoom out over limit (check that it does not zoom out)
+            if (Vm.ZoomOutCommand.CanExecute(null))
+                Vm.ZoomOutCommand.Execute(null);
+            Assert.AreEqual(zoom, workspaceModel.Zoom);
+            
+            // Max zoom
+            zoom = WorkspaceModel.ZOOM_MAXIMUM;
+            if (workspaceVM.SetZoomCommand.CanExecute(zoom))
+                workspaceVM.SetZoomCommand.Execute(zoom);
+            Assert.AreEqual(zoom, workspaceModel.Zoom);
+            // Zoom in over limit (check that it does not zoom in)
+            if (Vm.ZoomInCommand.CanExecute(null))
+                Vm.ZoomInCommand.Execute(null);
+            Assert.AreEqual(zoom, workspaceModel.Zoom);
 
-            workspaceVM.SetZoomCommand.Execute(WorkspaceModel.ZOOM_MINIMUM);
-            Assert.AreEqual(WorkspaceModel.ZOOM_MINIMUM, workspaceModel.Zoom);
+            // Above Max Limit Test
+            zoom = WorkspaceModel.ZOOM_MAXIMUM + 0.1;
+            if (workspaceVM.SetZoomCommand.CanExecute(zoom))
+                workspaceVM.SetZoomCommand.Execute(zoom);
+            Assert.AreNotEqual(zoom, workspaceModel.Zoom);
 
-            workspaceVM.SetZoomCommand.Execute(WorkspaceModel.ZOOM_MAXIMUM);
-            Assert.AreEqual(WorkspaceModel.ZOOM_MAXIMUM, workspaceModel.Zoom);
+            // Below Min Limit Test
+            zoom = WorkspaceModel.ZOOM_MINIMUM - 0.1;
+            if (workspaceVM.SetZoomCommand.CanExecute(zoom))
+                workspaceVM.SetZoomCommand.Execute(zoom);
+            Assert.AreNotEqual(zoom, workspaceModel.Zoom);
 
-            workspaceVM.SetZoomCommand.Execute(WorkspaceModel.ZOOM_MAXIMUM + 0.1);
-            Assert.AreNotEqual(WorkspaceModel.ZOOM_MAXIMUM, workspaceModel.Zoom);
-
-            workspaceVM.SetZoomCommand.Execute(WorkspaceModel.ZOOM_MINIMUM - 0.1);
-            Assert.AreNotEqual(WorkspaceModel.ZOOM_MINIMUM, workspaceModel.Zoom);
-        }
-
-        [Test]
-        [Category("DynamoUI")]
-        public void CanZoomInLimit()
-        {
-            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel._model;
-            WorkspaceViewModel workspaceVM = Vm.CurrentSpaceViewModel;
-
-            // Zoom to max zoom value
-            workspaceVM.SetZoomCommand.Execute(WorkspaceModel.ZOOM_MAXIMUM);
-
-            Vm.ZoomInCommand.Execute(null);
-
-            // Check it does not zoom in anymore
-            Assert.AreEqual(WorkspaceModel.ZOOM_MAXIMUM, workspaceModel.Zoom);
-        }
-
-        [Test]
-        [Category("DynamoUI")]
-        public void CanZoomOutLimit()
-        {
-            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel._model;
-            WorkspaceViewModel workspaceVM = Vm.CurrentSpaceViewModel;
-
-            // Zoom to max zoom value
-            workspaceVM.SetZoomCommand.Execute(WorkspaceModel.ZOOM_MINIMUM);
-
-            Vm.ZoomOutCommand.Execute(null);
-
-            // Check it does not zoom out anymore
-            Assert.AreEqual(WorkspaceModel.ZOOM_MINIMUM, workspaceModel.Zoom);
-        }
-
-        [Test, RequiresSTA]
-        [Category("DynamoUI")]
-        public void ZoomInOutStressTest()
-        {
-            WorkspaceModel workspaceModel = Vm.CurrentSpaceViewModel._model;
-            WorkspaceViewModel workspaceVM = Vm.CurrentSpaceViewModel;
-
+            // Stress Test
             // Zoom in and out repeatly
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 20; i++)
             {
-                for (int stepIn = 0; stepIn < 30; stepIn++)
+                for (int stepIn = 0; stepIn < 20; stepIn++)
                 {
                     if (Vm.ZoomInCommand.CanExecute(null))
-                    {
                         Vm.ZoomInCommand.Execute(null);
-                        Console.WriteLine("Zoom in " + stepIn);
-                    }
                 }
-                for (int stepOut = 0; stepOut < 30; stepOut++)
+                for (int stepOut = 0; stepOut < 20; stepOut++)
                 {
                     if (Vm.ZoomOutCommand.CanExecute(null))
-                    {
                         Vm.ZoomOutCommand.Execute(null);
-                        Console.WriteLine("Zoom out " + stepOut);
-                    }
                 }
             }
-
             // Doesn't crash the system
             Assert.True(true);
         }
@@ -558,8 +522,123 @@ namespace Dynamo.Tests.UI
 
         #endregion
 
+        #region PreferenceSettings
+        [Test, RequiresSTA]
+        [Category("DynamoUI")]
+        public void PreferenceSetting()
+        {
+            // Test Case to ensure that the link for these persistent variable
+            // between DynamoViewModel, Controller is not broken or replaced.
+            #region FullscreenWatchShowing
+            bool expectedValue = !Controller.PreferenceSettings.FullscreenWatchShowing;
+            Vm.ToggleFullscreenWatchShowing(null);
+            Assert.AreEqual(expectedValue, Controller.PreferenceSettings.FullscreenWatchShowing);
+
+            expectedValue = !Controller.PreferenceSettings.FullscreenWatchShowing;
+            Vm.ToggleFullscreenWatchShowing(null);
+            Assert.AreEqual(expectedValue, Controller.PreferenceSettings.FullscreenWatchShowing);
+            #endregion
+
+            #region ShowConsole
+            expectedValue = !Controller.PreferenceSettings.ShowConsole;
+            Vm.ToggleConsoleShowing(null);
+            Assert.AreEqual(expectedValue, Controller.PreferenceSettings.ShowConsole);
+
+            expectedValue = !Controller.PreferenceSettings.ShowConsole;
+            Vm.ToggleConsoleShowing(null);
+            Assert.AreEqual(expectedValue, Controller.PreferenceSettings.ShowConsole);
+            #endregion
+
+            #region ConnectorType
+            ConnectorType expectedConnector = ConnectorType.BEZIER;
+            Vm.SetConnectorType("BEZIER");
+            Assert.AreEqual(expectedConnector, Controller.PreferenceSettings.ConnectorType);
+
+            expectedConnector = ConnectorType.POLYLINE;
+            Vm.SetConnectorType("POLYLINE");
+            Assert.AreEqual(expectedConnector, Controller.PreferenceSettings.ConnectorType);
+            #endregion
+
+            #region Collect Information Option
+            // First time run, check if dynamo did set it back to false after running
+            Assert.AreEqual(false, UsageReportingManager.Instance.FirstRun);
+
+            // CollectionInfoOption To TRUE
+            UsageReportingManager.Instance.SetUsageReportingAgreement(true);
+            RestartTestSetup();
+            Assert.AreEqual(true, UsageReportingManager.Instance.IsUsageReportingApproved);
+
+            // CollectionInfoOption To FALSE
+            UsageReportingManager.Instance.SetUsageReportingAgreement(false);
+            RestartTestSetup();
+            Assert.AreEqual(false, UsageReportingManager.Instance.IsUsageReportingApproved);
+            #endregion
+
+            #region Save And Load of PreferenceSettings
+            // Test if variable can be serialize and deserialize without any issue
+            string tempPath = System.IO.Path.GetTempPath();
+            tempPath = Path.Combine(tempPath, "userPreference.xml");
+
+            // Force inital state
+            PreferenceSettings initalSetting = new PreferenceSettings();
+            PreferenceSettings resultSetting;
+
+            #region First Test
+
+            initalSetting.ConnectorType = ConnectorType.BEZIER;
+            initalSetting.ShowConsole = true;
+            initalSetting.FullscreenWatchShowing = true;
+
+            initalSetting.Save(tempPath);
+            resultSetting = PreferenceSettings.Load(tempPath);
+
+            Assert.AreEqual(resultSetting.FullscreenWatchShowing, initalSetting.FullscreenWatchShowing);
+            Assert.AreEqual(resultSetting.ConnectorType, initalSetting.ConnectorType);
+            Assert.AreEqual(resultSetting.ShowConsole, initalSetting.ShowConsole);
+            #endregion
+
+            #region Second Test
+            initalSetting.ConnectorType = ConnectorType.POLYLINE;
+            initalSetting.ShowConsole = false;
+            initalSetting.FullscreenWatchShowing = false;
+
+            initalSetting.Save(tempPath);
+            resultSetting = PreferenceSettings.Load(tempPath);
+
+            Assert.AreEqual(resultSetting.FullscreenWatchShowing, initalSetting.FullscreenWatchShowing);
+            Assert.AreEqual(resultSetting.ConnectorType, initalSetting.ConnectorType);
+            Assert.AreEqual(resultSetting.ShowConsole, initalSetting.ShowConsole);
+            #endregion
+
+            #endregion
+            
+            Ui.Close();
+        }
+
+        private void RestartTestSetup()
+        {
+            // Shutdown Dynamo and restart it
+            Ui.Close();
+
+            // Setup Temp PreferenceSetting Location for testing
+            PreferenceSettings.DYNAMO_TEST_PATH = Path.Combine(TempFolder, "UserPreferenceTest.xml");
+
+            Controller = DynamoController.MakeSandbox();
+            Controller.Testing = true;
+
+            //create the view
+            Ui = new DynamoView();
+            Ui.DataContext = Controller.DynamoViewModel;
+            Vm = Controller.DynamoViewModel;
+            Controller.UIDispatcher = Ui.Dispatcher;
+            Ui.Show();
+
+            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+        }
+        #endregion
+
         #region InfoBubble
-        
+
         [Test]
         [Category("DynamoUI")]
         public void UpdateInfoBubble_LibItem()
