@@ -37,14 +37,8 @@ namespace Dynamo.Controls
 
         public NodeViewModel ViewModel
         {
-            get
-            {
-                return this.DataContext as NodeViewModel;
-            }
-            set
-            {
-                viewModel = value;
-            }
+            get { return viewModel; }
+            private set { viewModel = value; }
         }
 
         #region constructors
@@ -59,11 +53,12 @@ namespace Dynamo.Controls
 
             InitializeComponent();
 
-            this.Loaded += new RoutedEventHandler(dynNodeView_Loaded);
+            this.Loaded += new RoutedEventHandler(OnNodeViewLoaded);
             inputGrid.Loaded += new RoutedEventHandler(inputGrid_Loaded);
 
             this.SizeChanged += OnSizeChanged;
-            
+            this.DataContextChanged += OnDataContextChanged;
+
             Canvas.SetZIndex(this, 1);
         }
 
@@ -88,13 +83,36 @@ namespace Dynamo.Controls
             }
         }
 
-        void dynNodeView_Loaded(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// This event handler is called soon as the NodeViewModel is bound to this 
+        /// dynNodeView, which happens way before OnNodeViewLoaded event is sent. 
+        /// There is a known bug in WPF 4.0 where DataContext becomes DisconnectedItem 
+        /// when actions such as tab switching happens (that is when the View becomes 
+        /// disconnected from the underlying ViewModel/Model that it was bound to). So 
+        /// it is more reliable for dynNodeView to cache the NodeViewModel it is bound 
+        /// to when it first becomes available, and refer to the cached value at a later
+        /// time.
+        /// </summary>
+        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            //This is an annoying bug in WPF for .net 4.0
-            //You need to cache a reference to the data context or
-            //when switching back and forth between tabs, the element's
-            //data context will come back as disconnected.
-            ViewModel = this.DataContext as NodeViewModel;
+            // If this is the first time dynNodeView is bound to the NodeViewModel, 
+            // cache the DataContext (i.e. NodeViewModel) locally and start 
+            // referecing it from this point onwards. Note that this notification 
+            // can be sent as a result of DataContext becoming DisconnectedItem too,
+            // but ViewModel should not be updated in that case (hence the null-check).
+            // 
+            if (null == this.ViewModel)
+                this.ViewModel = e.NewValue as NodeViewModel;
+        }
+
+        private void OnNodeViewLoaded(object sender, RoutedEventArgs e)
+        {
+            // We no longer cache the DataContext (NodeViewModel) here because 
+            // OnNodeViewLoaded gets called at a much later time and we need the 
+            // ViewModel to be valid earlier (e.g. OnSizeChanged is called before
+            // OnNodeViewLoaded, and it needs ViewModel for size computation).
+            // 
+            // ViewModel = this.DataContext as NodeViewModel;
 
             ViewModel.NodeLogic.DispatchedToUI += NodeLogic_DispatchedToUI;
             ViewModel.RequestShowNodeHelp += ViewModel_RequestShowNodeHelp;
@@ -137,23 +155,21 @@ namespace Dynamo.Controls
 
         void ViewModel_RequestShowNodeRename(object sender, EventArgs e)
         {
-            var editWindow = new EditWindow { DataContext = ViewModel };
+            var editWindow = new EditWindow
+            {
+                DataContext = ViewModel,
+                Title = "Edit Node Name"
+            };
 
-            var bindingVal = new Binding("NickName")
+            editWindow.BindToProperty(null, new Binding("NickName")
             {
                 Mode = BindingMode.TwoWay,
                 NotifyOnValidationError = false,
                 Source = ViewModel,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            };
-            editWindow.editText.SetBinding(TextBox.TextProperty, bindingVal);
+            });
 
-            editWindow.Title = "Edit Node Name";
-
-            if (editWindow.ShowDialog() != true)
-            {
-                return;
-            }
+            editWindow.ShowDialog();
         }
 
         void ViewModel_RequestShowNodeHelp(object sender, NodeHelpEventArgs e)
@@ -190,8 +206,8 @@ namespace Dynamo.Controls
             }
 
             //set the state using the view model's command
-            if (ViewModel.SetStateCommand.CanExecute(ElementState.DEAD))
-                ViewModel.SetStateCommand.Execute(ElementState.DEAD);
+            if (ViewModel.SetStateCommand.CanExecute(ElementState.Dead))
+                ViewModel.SetStateCommand.Execute(ElementState.Dead);
         }
 
         internal void EnableInteraction()
@@ -231,15 +247,19 @@ namespace Dynamo.Controls
         {
             if (ViewModel == null) return;
 
+            var view = WPF.FindUpVisualTree<DynamoView>(this);
+
             dynSettings.ReturnFocusToSearch();
 
-            var view = WPF.FindUpVisualTree<DynamoView>(this);
             view.mainGrid.Focus();
 
-            Guid nodeGuid = this.ViewModel.NodeModel.GUID;
-            dynSettings.Controller.DynamoViewModel.ExecuteCommand(
-                new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers));
-
+            var node = this.ViewModel.NodeModel;
+            if (node.WorkSpace.Nodes.Contains(node))
+            {
+                Guid nodeGuid = this.ViewModel.NodeModel.GUID;
+                dynSettings.Controller.DynamoViewModel.ExecuteCommand(
+                    new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers));
+            }
             if (e.ClickCount == 2)
             {
                 if (ViewModel.GotoWorkspaceCommand.CanExecute(null))
@@ -273,7 +293,7 @@ namespace Dynamo.Controls
         private void NickNameBlock_OnMouseEnter(object sender, MouseEventArgs e)
         {
             TextBlock textBlock = sender as TextBlock;
-            string tooltipContent = ViewModel.NickName + '\n' + ViewModel.Description;
+            string tooltipContent = ViewModel.Description;
             UIElement containingWorkspace = WPF.FindUpVisualTree<TabControl>(this);
             Point topLeft = textBlock.TranslatePoint(new Point(0, 0), containingWorkspace);
             double actualWidth = textBlock.ActualWidth * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;

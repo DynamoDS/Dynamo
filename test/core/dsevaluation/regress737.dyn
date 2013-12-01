@@ -1,0 +1,13 @@
+<Workspace Version="0.6.2.26152" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="e45890e5-eaf9-450a-a37b-bd02cf2e2e72" nickname="Code Block" x="99" y="258" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="a=3;&#xA;a * 6;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="ccad1780-f570-4ccc-ae7a-0ad1b663c3dd" nickname="+" x="283" y="249.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Dynamo.DSEngine.FunctionItem Assembly="" Category="Operators" ClassName="" Name="%add" DisplayName="+" Type="GenericFunction" Parameters="operand1;operand2" ReturnKeys="" />
+    </Dynamo.Nodes.DSFunction>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="e45890e5-eaf9-450a-a37b-bd02cf2e2e72" start_index="0" end="ccad1780-f570-4ccc-ae7a-0ad1b663c3dd" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e45890e5-eaf9-450a-a37b-bd02cf2e2e72" start_index="1" end="ccad1780-f570-4ccc-ae7a-0ad1b663c3dd" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

@@ -75,12 +75,22 @@ namespace Dynamo.Nodes
             tb.OnChangeCommitted += delegate { RequiresRecalc = true; };
         }
 
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (name == "Value")
+            {
+                var converter = new RevitProjectUnitsConverter();
+                this.Value = ((double)converter.ConvertBack(value, typeof(double), null, null));
+                return true; // UpdateValueCore handled.
+            }
+
+            return base.UpdateValueCore(name, value);
+        }
+
         private void editWindowItem_Click(object sender, RoutedEventArgs e)
         {
-            var editWindow = new EditWindow();
-
-            editWindow.DataContext = this;
-            var bindingVal = new System.Windows.Data.Binding("Value")
+            var editWindow = new EditWindow() { DataContext = this };
+            editWindow.BindToProperty(null, new System.Windows.Data.Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
                 Converter = new RevitProjectUnitsConverter(),
@@ -88,13 +98,9 @@ namespace Dynamo.Nodes
                 NotifyOnValidationError = false,
                 Source = this,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            };
-            editWindow.editText.SetBinding(System.Windows.Controls.TextBox.TextProperty, bindingVal);
+            });
 
-            if (editWindow.ShowDialog() != true)
-            {
-                return;
-            }
+            editWindow.ShowDialog();
         }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)

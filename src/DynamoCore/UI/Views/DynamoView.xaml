@@ -7,6 +7,7 @@
         xmlns:models="clr-namespace:Dynamo.Models"
         xmlns:controls="clr-namespace:Dynamo.Controls"
         xmlns:commands="clr-namespace:Dynamo.UI.Commands"
+        xmlns:service="clr-namespace:Dynamo.Services"
         xmlns:dynamo="clr-namespace:Dynamo"
         xmlns:core="clr-namespace:Dynamo.Core"
         xmlns:ui="clr-namespace:Dynamo.UI"
@@ -22,10 +23,11 @@
         KeyDown="DynamoView_KeyDown"
         KeyUp="DynamoView_KeyUp"
         Background="#FF353535"
-        FontFamily="Open Sans"
         SnapsToDevicePixels="True"
         ResizeMode="CanResizeWithGrip"
-        UseLayoutRounding="True">
+        UseLayoutRounding="True"
+        Cursor="/DynamoCore;component/UI/Images/pointer.cur"
+        Style="{DynamicResource DynamoWindowStyle}">
 
     <Window.CommandBindings>
 
@@ -205,6 +207,8 @@
                                 <Image Source="/DynamoCore;component/UI/Images/screenshot_normal.png" Width="14" Height="14"/>
                             </MenuItem.Icon>
                         </MenuItem>
+                        <MenuItem Focusable="False" Header="_Export Model to STL..." Command="{Binding ExportToSTLCommand}" Name="saveSTL">
+                        </MenuItem>
                         <Separator />
                         <MenuItem Focusable="False" Header="_Clear" Command="{Binding ClearCommand}" Name="clearButton" InputGestureText="Ctrl + Shift + C" IsEnabled="{Binding IsUILocked, Converter={StaticResource InverseBooleanConverter}}">
                             <MenuItem.Icon>
@@ -295,6 +299,14 @@
                         <MenuItem Focusable="False" Header="_Publish Selected Nodes..." Command="{Binding Path=DataContext.PublishSelectedNodesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="publishSelected" />
                         <MenuItem Focusable="False" Header="_Publish Current Workspace..." Command="{Binding Path=DataContext.PublishCurrentWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="publishCurrent" />
                     </MenuItem>
+                    
+                    <MenuItem Header="_Settings" Name="settingsMenu" Focusable="False">
+                        <MenuItem Header="_Enable usability data reporting"
+                                  Name="ToggleIsUsageReportingApprovedCommand"
+                                  Command="{Binding Path=ToggleIsUsageReportingApprovedCommand, Source={x:Static service:UsageReportingManager.Instance} }"
+                                  IsChecked="{Binding Path=IsUsageReportingApproved, Mode=OneWay, Source={x:Static service:UsageReportingManager.Instance} }"
+                                  Focusable="False"/>
+                    </MenuItem>
 
                     <MenuItem Header="Help" Focusable="False">
                         <MenuItem Focusable="False" Header="Samples" Name="SamplesMenu">
@@ -344,7 +356,7 @@
             </Canvas>
             <controls:Watch3DView Margin="0,20,0,0"
                                           Visibility="{Binding FullscreenWatchShowing, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                            IsHitTestVisible="{Binding CanNavigateBackground}">
+                                            IsHitTestVisible="{Binding WatchPreviewHitTest}">
 
             </controls:Watch3DView>
         </Grid>
@@ -555,17 +567,24 @@
                                                                                      TargetType="MenuItem">
                                                                         <Border Name="Border"
                                                                                 Height="25">
-                                                                            <Grid>
+                                                                            <Grid MinWidth="200">
                                                                                 <Grid.ColumnDefinitions>
-                                                                                    <ColumnDefinition Width="*"
-                                                                                                      MinWidth="200" />
+                                                                                    <ColumnDefinition Width="Auto" />
+                                                                                    <ColumnDefinition Width="*" />
                                                                                 </Grid.ColumnDefinitions>
                                                                                 <ContentPresenter Name="HeaderHost"
                                                                                                   Grid.Column="0"
-                                                                                                  Margin="5,0"
+                                                                                                  Margin="5,0,0,0"
                                                                                                   HorizontalAlignment="Stretch"
                                                                                                   VerticalAlignment="Center"
                                                                                                   ContentSource="Header"
+                                                                                                  RecognizesAccessKey="True" />
+                                                                                <ContentPresenter Name="SaveStateHost"
+                                                                                                  Grid.Column="1"
+                                                                                                  Margin="0,0,5,0"
+                                                                                                  HorizontalAlignment="Stretch"
+                                                                                                  VerticalAlignment="Center"
+                                                                                                  ContentSource="Tag"
                                                                                                   RecognizesAccessKey="True" />
                                                                             </Grid>
                                                                         </Border>
@@ -590,14 +609,34 @@
                                                                         </ControlTemplate.Triggers>
                                                                     </ControlTemplate>
                                                                 </Style.Resources>
-                                                                
-                                                                <Setter Property="Header"
-                                                                        Value="{Binding Path=Name}" />
 
                                                                 <EventSetter Event="Click"
                                                                              Handler="TabControlMenuItem_Click" />
 
                                                                 <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}"
+                                                                                 Value="Unsaved">
+                                                                        <Setter Property="Header"
+                                                                                Value="{Binding Name}" />
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}"
+                                                                                 Value="Saved">
+                                                                        <Setter Property="Header"
+                                                                                Value="{Binding FileName, Converter={StaticResource PathToFileNameConverter}}" />
+                                                                    </DataTrigger>
+
+                                                                    <DataTrigger Binding="{Binding HasUnsavedChanges}"
+                                                                                 Value="True">
+                                                                        <Setter Property="Tag"
+                                                                                Value="*" />
+                                                                    </DataTrigger>
+
+                                                                    <DataTrigger Binding="{Binding HasUnsavedChanges}"
+                                                                                 Value="False">
+                                                                        <Setter Property="Tag"
+                                                                                Value="" />
+                                                                    </DataTrigger>
+                                                                    
                                                                     <Trigger Property="Role"
                                                                              Value="SubmenuHeader">
                                                                         <Setter Property="Template"
@@ -779,15 +818,17 @@
                                 <MouseBinding Gesture="MiddleClick" Command="{Binding HideCommand}" />
                             </Button.InputBindings>-->
 
-                            <DockPanel Margin="0,0,5,0"
-                                       Height="20"
-                                       HorizontalAlignment="Stretch">
-
+                            <Grid Height="20">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                
                                 <TextBlock Name="WorkspaceName"
-                                           Margin="8,2,0,0"
+                                           Margin="8,0,0,0"
                                            Padding="0,0,0,0"
-                                           DockPanel.Dock="Left"
                                            HorizontalAlignment="Stretch"
+                                           VerticalAlignment="Center"
                                            TextTrimming="CharacterEllipsis">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
@@ -809,17 +850,49 @@
                                                             Value="Normal" />
                                                 </DataTrigger>
 
-                                                <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}"
-                                                             Value="{x:Type models:HomeWorkspaceModel}">
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}"
+                                                                   Value="{x:Type models:HomeWorkspaceModel}" />
+                                                        <Condition Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}"
+                                                                   Value="Unsaved" />
+                                                    </MultiDataTrigger.Conditions>
                                                     <Setter Property="Text"
                                                             Value="Home" />
-                                                </DataTrigger>
-
-                                                <DataTrigger Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}"
-                                                             Value="{x:Type models:CustomNodeWorkspaceModel}">
+                                                </MultiDataTrigger>
+                                                
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}"
+                                                                   Value="{x:Type models:HomeWorkspaceModel}" />
+                                                        <Condition Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}"
+                                                                   Value="Saved" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Text"
+                                                            Value="{Binding Path=FileName, Converter={StaticResource PathToFileNameConverter}}" />
+                                                </MultiDataTrigger>
+                                                
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}"
+                                                                   Value="{x:Type models:CustomNodeWorkspaceModel}" />
+                                                        <Condition Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}"
+                                                                   Value="Unsaved" />
+                                                    </MultiDataTrigger.Conditions>
                                                     <Setter Property="Text"
                                                             Value="{Binding Name}" />
-                                                </DataTrigger>
+                                                </MultiDataTrigger>
+                                                
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}"
+                                                                   Value="{x:Type models:CustomNodeWorkspaceModel}" />
+                                                        <Condition Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}"
+                                                                   Value="Saved" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Text"
+                                                            Value="{Binding Path=FileName, Converter={StaticResource PathToFileNameConverter}}" />
+                                                </MultiDataTrigger>
 
                                             </Style.Triggers>
                                         </Style>
@@ -827,8 +900,9 @@
                                 </TextBlock>
 
                                 <TextBlock Name="WorkspaceSaveState"
-                                           Margin="0,2,0,0"
-                                           DockPanel.Dock="Left">
+                                           Grid.Column="1"
+                                           Margin="0,0,0,0"
+                                           VerticalAlignment="Center">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Style.Triggers>
@@ -863,8 +937,7 @@
                                         </Style>
                                     </TextBlock.Style>
                                 </TextBlock>
-                            </DockPanel>
-
+                            </Grid>
                             <!--</Button>-->
 
                         </DataTemplate>
@@ -897,7 +970,7 @@
                     VerticalAlignment="Top"
                     Margin="0,120,0,0"
                     Visibility="Hidden">
-            <Grid Background="#222222">
+            <Grid Background="#222222" Cursor="Hand">
                 <Button Click="Button_Click" Template="{DynamicResource BackgroundButton}">
                     <Button.Resources>
                         <ControlTemplate x:Key="BackgroundButton" TargetType="Button">
@@ -1051,18 +1124,20 @@
                         Name="horizontalSplitter"
                         HorizontalAlignment="Stretch" 
                         VerticalAlignment="Stretch" 
-                        Margin="0" Background="#999"/>
+                        Margin="0" Background="#999"
+                        Cursor="/DynamoCore;component/UI/Images/resize_vertical.cur"/>
 
             <GridSplitter ResizeDirection="Auto" 
                           Grid.Column="1" 
                           Grid.Row="2"
                           Grid.RowSpan="2"
                           Height="Auto"
-                          Width="1"
+                          Width="3"
                           Name="verticalSplitter"
                           HorizontalAlignment="Stretch" 
                           VerticalAlignment="Stretch" 
-                          Margin="0" Background="Transparent"/>
+                          Margin="0" Background="Transparent"
+                          Cursor="/DynamoCore;component/UI/Images/resize_horizontal.cur"/>
 
     </Grid>
 

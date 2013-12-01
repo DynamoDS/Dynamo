@@ -3,6 +3,8 @@ using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
 using DSNodeServices;
+using DSRevitNodes.Elements;
+using DSRevitNodes.GeometryConversion;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Edge = Autodesk.DesignScript.Geometry.Edge;
@@ -17,7 +19,7 @@ namespace DSRevitNodes
     /// </summary>
     [RegisterForTrace]
     [ShortName("refPt")]
-    public class DSReferencePoint : AbstractGeometry, IGraphicItem
+    public class DSReferencePoint : AbstractElement, IGraphicItem
     {
 
         #region Internal properties
@@ -25,7 +27,7 @@ namespace DSRevitNodes
         /// <summary>
         /// Internal variable containing the wrapped Revit object
         /// </summary>
-        protected Autodesk.Revit.DB.ReferencePoint InternalReferencePoint
+        internal Autodesk.Revit.DB.ReferencePoint InternalReferencePoint
         {
             get; private set;
         }
@@ -33,6 +35,17 @@ namespace DSRevitNodes
         #endregion
 
         #region Private constructors
+
+        /// <summary>
+        /// Internal constructor for wrapping a ReferencePoint. The returned
+        /// object is Revit owned
+        /// </summary>
+        /// <param name="pt"></param>
+        private DSReferencePoint(Autodesk.Revit.DB.ReferencePoint refPt)
+        {
+            InternalSetReferencePoint(refPt);
+            IsRevitOwned = true;
+        }
 
         /// <summary>
         /// Internal constructor for the ReferencePoint
@@ -61,7 +74,7 @@ namespace DSRevitNodes
 
             TransactionManager.GetInstance().TransactionTaskDone();
 
-            ElementBinder.SetElementForTrace(this.InternalID);
+            ElementBinder.SetElementForTrace(this.InternalElementId);
         }
 
         #endregion
@@ -81,7 +94,7 @@ namespace DSRevitNodes
         {
 
             InternalReferencePoint = p;
-            this.InternalID = InternalReferencePoint.Id;
+            this.InternalElementId = InternalReferencePoint.Id;
             this.InternalUniqueId = InternalReferencePoint.UniqueId;
         }
 
@@ -145,7 +158,7 @@ namespace DSRevitNodes
         #region Static constructors
 
         /// <summary>
-        /// Create a Reference Point by x,y, and z coordinates.
+        /// Create a Reference Point by x, y, and z coordinates.
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
@@ -161,7 +174,7 @@ namespace DSRevitNodes
         /// </summary>
         /// <param name="pt"></param>
         /// <returns></returns>
-        static DSReferencePoint ByPoint(Point pt)
+        public static DSReferencePoint ByPoint(Point pt)
         {
             return new DSReferencePoint(pt.X, pt.Y, pt.Z);
         }
@@ -198,6 +211,24 @@ namespace DSRevitNodes
         static DSReferencePoint ByPointVectorDistance(Point p, Vector vec, double distance)
         {
             throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region Internal static constructors 
+
+        /// <summary>
+        /// Create a Reference Point from a user selected Element.
+        /// </summary>
+        /// <param name="pt"></param>
+        /// <param name="isRevitOwned"></param>
+        /// <returns></returns>
+        internal static DSReferencePoint FromExisting(Autodesk.Revit.DB.ReferencePoint pt, bool isRevitOwned)
+        {
+            return new DSReferencePoint(pt)
+            {
+                IsRevitOwned = isRevitOwned
+            };
         }
 
         #endregion

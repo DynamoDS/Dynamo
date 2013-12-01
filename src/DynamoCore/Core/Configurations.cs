@@ -9,6 +9,17 @@ namespace Dynamo.Core
 {
     public class Configurations
     {
+        #region Dynamo Universal Constants
+        // Add 0.5 to place the point in the middle of a pixel to sharpen it
+        public static readonly double PixelSharpeningConstant = 0.5;
+        #endregion
+
+        #region Usage Reporting Error Message
+        public static string GitHubBugReportingLink = "https://github.com/ikeough/Dynamo/issues?state=open";
+
+        public static string UsageReportingErrorMessage = "Uh oh...\n\rWe're sorry - we tried to save your decisions, but something went wrong. The decision probably hasn't been saved. This really shouldn't have happened. Please get in touch via GitHub and send us this information.\n\rYou can also try deleting [FILEPATH] and trying again.\n\rDepending on your previous choice, instrumentation may still be running, if you're worried about this, please consider not using Dynamo until we've got back to you to solve the problem.\n\rSorry about that.";
+        #endregion
+
         #region Canvas Configurations
         //public static readonly double Minimum
 
@@ -26,6 +37,9 @@ namespace Dynamo.Core
         #endregion
 
         #region Information Bubble
+        public static int FadeInDurationInMilliseconds = 250;
+        public static int FadeOutDurationInMilliseconds = 250;
+        public static double MaxOpacity = 0.95;
 
         #region Preview Bubble
 
@@ -59,8 +73,8 @@ namespace Dynamo.Core
         public static double PreviewCondensedContentMaxWidth = PreviewCondensedMaxWidth - 10;
         public static double PreviewCondensedContentMaxHeight = PreviewCondensedMaxHeight - 17;
 
-        public static double PreviewArrowWidth = 14;
-        public static double PreviewArrowHeight = 7;
+        public static double PreviewArrowWidth = 12;
+        public static double PreviewArrowHeight = 6;
 
         #endregion
 
@@ -117,7 +131,7 @@ namespace Dynamo.Core
 
         public static SolidColorBrush LibraryTooltipFrameFill = new SolidColorBrush(Color.FromRgb(255, 255, 255));
         public static double LibraryTooltipFrameStrokeThickness = 1;
-        public static SolidColorBrush LibraryTooltipFrameStrokeColor = new SolidColorBrush(Color.FromRgb(10, 93, 30));
+        public static SolidColorBrush LibraryTooltipFrameStrokeColor = new SolidColorBrush(Color.FromRgb(165, 209, 226));
 
         public static double LibraryTooltipMaxWidth = 400;
         public static double LibraryTooltipMaxHeight = 200;
@@ -130,11 +144,21 @@ namespace Dynamo.Core
         public static TextWrapping LibraryTooltipContentWrapping = TextWrapping.Wrap;
         public static Thickness LibraryTooltipContentMargin = new Thickness(12, 5, 5, 5);
 
-        public static double LibraryTooltipArrowHeight = 14;
-        public static double LibraryTooltipArrowWidth = 7;
+        public static double LibraryTooltipArrowHeight = 12;
+        public static double LibraryTooltipArrowWidth = 6;
 
         #endregion
 
         #endregion
+
+        #region CodeBlockNode
+        public static readonly int MaxPortNameLength = 24;
+        public static readonly int MaxTextBoxWidth = 500;
+        #endregion
+    }
+
+    public class ResourceNames
+    {
+        public static readonly string ResourceBaseUri = "pack://application:,,,/DynamoCore;component/UI/Images/";
     }
 }

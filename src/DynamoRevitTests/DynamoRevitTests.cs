@@ -146,5 +146,19 @@ namespace Dynamo.Tests
             dynRevitSettings.Revit.OpenAndActivateDocument(modelPath);
             initialDoc.Close(false);
         }
+
+        protected void OpenAndRun(string subPath)
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, subPath);
+            string testPath = Path.GetFullPath(samplePath);
+
+            Assert.IsTrue(File.Exists(testPath), string.Format("Could not find file: {0} for testing.", testPath));
+
+            model.Open(testPath);
+
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+        }
     }
 }

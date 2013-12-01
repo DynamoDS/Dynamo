@@ -24,21 +24,29 @@ namespace Dynamo.Nodes
     [IsInteractive(true)]
     public abstract class SelectionBase : NodeWithOneOutput
     {
+        #region private members
+        
         private bool _canSelect = true;
         protected string _selectButtonContent;
         protected string _selectionMessage;
         private Element _selected;
         protected string _selectionText;
+        private bool _buttonEnabled;
+        
+        #endregion
+
+        #region properties
 
         public bool CanSelect
         {
             get { return _canSelect; }
-            set { 
+            set
+            {
                 _canSelect = value;
                 RaisePropertyChanged("CanSelect");
             }
         }
-        
+
         public string SelectButtonContent
         {
             get { return _selectButtonContent; }
@@ -100,12 +108,31 @@ namespace Dynamo.Nodes
         /// </summary>
         public abstract string SelectionText { get; set; }
 
-        protected SelectionBase(PortData outPortData)
+        #endregion
+
+        #region constructors
+
+        protected SelectionBase()
+        {
+            dynSettings.Controller.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
+        }
+
+        protected SelectionBase(PortData outPortData) : this()
         {
             OutPortData.Add(outPortData);
             RegisterAllPorts();
 
             dynRevitSettings.Controller.RevitDocumentChanged += Controller_RevitDocumentChanged;
+        }
+        
+        #endregion
+
+        void DynamoViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "RunEnabled")
+            {
+                CanSelect = dynSettings.Controller.DynamoViewModel.RunEnabled;
+            }
         }
 
         void Controller_RevitDocumentChanged(object sender, EventArgs e)
@@ -185,9 +212,11 @@ namespace Dynamo.Nodes
                 });
         }
 
+        /// <summary>
+        /// Overriden in the derived classes
+        /// </summary>
         public virtual void OnSelectClick()
         {
-            //this method calls a different selection action in the derived classes.
         }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
@@ -227,9 +256,17 @@ namespace Dynamo.Nodes
 
     public abstract class ElementSelectionBase : SelectionBase
     {
+        #region private members
+
         protected Func<string, Element> _selectionAction;
 
+        #endregion
+
+        #region constructors
+
         protected ElementSelectionBase(PortData outPortData) : base(outPortData){}
+
+        #endregion
 
         /// <summary>
         /// Callback for when the "Select" button has been clicked.
@@ -266,10 +303,18 @@ namespace Dynamo.Nodes
     [IsInteractive(true)]
     public abstract class ReferenceSelectionBase : SelectionBase
     {
+        #region private members
+
         protected Func<string, Reference> _selectionAction;
         protected Reference _reference;
 
+        #endregion
+
+        #region constructors
+
         protected ReferenceSelectionBase(PortData outPortData):base(outPortData){}
+
+        #endregion
 
         /// <summary>
         /// Callback for when the "Select" button has been clicked.
@@ -298,10 +343,34 @@ namespace Dynamo.Nodes
     [IsInteractive(true)]
     public abstract class MultipleElementSelectionBase : NodeWithOneOutput
     {
+        #region private members
+
         private TextBlock _tb;
         private Button _selectButton;
-
         protected string _selectButtonContent;
+        private IList<Element> _selected;
+        private bool _canSelect;
+
+        /// <summary>
+        /// Determines what the text should read on the node when the selection has been changed.
+        /// Is ignored in the case where nothing is selected.
+        /// </summary>
+        //protected abstract string SelectionText { get; }
+        protected string _selectionText;
+
+        #endregion
+
+        #region properties
+
+        public bool CanSelect
+        {
+            get { return _canSelect; }
+            set
+            {
+                _canSelect = value;
+                RaisePropertyChanged("CanSelect");
+            }
+        }
 
         public string SelectButtonContent
         {
@@ -313,95 +382,7 @@ namespace Dynamo.Nodes
             }
         }
 
-        /// <summary>
-        /// Determines what the text should read on the node when the selection has been changed.
-        /// Is ignored in the case where nothing is selected.
-        /// </summary>
-        //protected abstract string SelectionText { get; }
-        protected string _selectionText;
-
         public abstract string SelectionText { get; set; }
-
-        protected MultipleElementSelectionBase(PortData outData)
-        {
-            OutPortData.Add(outData);
-            RegisterAllPorts();
-        }
-
-        public override void SetupCustomUIElements(object ui)
-        {
-            var nodeUI = ui as dynNodeView;
-
-            //add a button to the inputGrid on the dynElement
-            _selectButton = new dynNodeButton
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Center
-            };
-            _selectButton.Click += selectButton_Click;
-
-            _tb = new TextBlock
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Center,
-                Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0)),
-                TextWrapping = TextWrapping.Wrap,
-                TextTrimming = TextTrimming.WordEllipsis,
-                MaxWidth = 200,
-                MaxHeight = 100
-            };
-
-            if (SelectedElements == null || !SelectedElements.Any() || !SelectionText.Any() || !SelectButtonContent.Any())
-            {
-                SelectionText = "Nothing Selected";
-                SelectButtonContent = "Select Instances";
-            }
-
-
-            nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
-            nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
-
-            nodeUI.inputGrid.Children.Add(_tb);
-            nodeUI.inputGrid.Children.Add(_selectButton);
-
-            System.Windows.Controls.Grid.SetRow(_selectButton, 0);
-            System.Windows.Controls.Grid.SetRow(_tb, 1);
-
-            _tb.DataContext = this;
-            _selectButton.DataContext = this;
-
-            var selectTextBinding = new System.Windows.Data.Binding("SelectionText")
-            {
-                Mode = BindingMode.TwoWay,
-            };
-            _tb.SetBinding(TextBlock.TextProperty, selectTextBinding);
-
-            var buttonTextBinding = new System.Windows.Data.Binding("SelectButtonContent")
-            {
-                Mode = BindingMode.TwoWay,
-            };
-            _selectButton.SetBinding(ContentControl.ContentProperty, buttonTextBinding);
-        }
-
-        private void selectButton_Click(object sender, RoutedEventArgs e)
-        {
-            _selectButton.IsEnabled = false;
-            RevThread.IdlePromise.ExecuteOnIdleAsync(
-                delegate
-                {
-                    OnSelectClick();
-                    _selectButton.IsEnabled = true;
-                });
-        }
-
-        /// <summary>
-        /// Callback for when the "Select" button has been clicked.
-        /// </summary>
-        /// 
-        /// 
-        protected abstract void OnSelectClick();
-
-        private IList<Element> _selected;
 
         /// <summary>
         /// The Element which is selected. Setting this property will automatically register the Element
@@ -460,6 +441,107 @@ namespace Dynamo.Nodes
                     RequiresRecalc = true;
             }
         }
+
+        #endregion
+
+        #region constructors
+
+        protected MultipleElementSelectionBase(PortData outData)
+        {
+            OutPortData.Add(outData);
+            RegisterAllPorts();
+            dynSettings.Controller.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
+            CanSelect = true;
+        }
+
+        #endregion
+
+        void DynamoViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "RunEnabled")
+            {
+                CanSelect = dynSettings.Controller.DynamoViewModel.RunEnabled;
+            }
+        }
+
+        public override void SetupCustomUIElements(object ui)
+        {
+            var nodeUI = ui as dynNodeView;
+
+            //add a button to the inputGrid on the dynElement
+            _selectButton = new dynNodeButton
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+            _selectButton.Click += selectButton_Click;
+
+            _tb = new TextBlock
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
+                Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0)),
+                TextWrapping = TextWrapping.Wrap,
+                TextTrimming = TextTrimming.WordEllipsis,
+                MaxWidth = 200,
+                MaxHeight = 100
+            };
+
+            if (SelectedElements == null || !SelectedElements.Any() || !SelectionText.Any() || !SelectButtonContent.Any())
+            {
+                SelectionText = "Nothing Selected";
+                SelectButtonContent = "Select Instances";
+            }
+
+
+            nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
+            nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
+
+            nodeUI.inputGrid.Children.Add(_tb);
+            nodeUI.inputGrid.Children.Add(_selectButton);
+
+            System.Windows.Controls.Grid.SetRow(_selectButton, 0);
+            System.Windows.Controls.Grid.SetRow(_tb, 1);
+
+            _tb.DataContext = this;
+            _selectButton.DataContext = this;
+
+            var selectTextBinding = new System.Windows.Data.Binding("SelectionText")
+            {
+                Mode = BindingMode.TwoWay,
+            };
+            _tb.SetBinding(TextBlock.TextProperty, selectTextBinding);
+
+            var buttonTextBinding = new System.Windows.Data.Binding("SelectButtonContent")
+            {
+                Mode = BindingMode.TwoWay,
+            };
+            _selectButton.SetBinding(ContentControl.ContentProperty, buttonTextBinding);
+
+            var buttonEnabledBinding = new System.Windows.Data.Binding("CanSelect")
+            {
+                Mode = BindingMode.TwoWay,
+            };
+            _selectButton.SetBinding(Button.IsEnabledProperty, buttonEnabledBinding);
+        }
+
+        private void selectButton_Click(object sender, RoutedEventArgs e)
+        {
+            _selectButton.IsEnabled = false;
+            RevThread.IdlePromise.ExecuteOnIdleAsync(
+                delegate
+                {
+                    OnSelectClick();
+                    _selectButton.IsEnabled = true;
+                });
+        }
+
+        /// <summary>
+        /// Callback for when the "Select" button has been clicked.
+        /// </summary>
+        /// 
+        /// 
+        protected abstract void OnSelectClick();
 
         public override Value Evaluate(FSharpList<Value> args)
         {
@@ -543,7 +625,7 @@ namespace Dynamo.Nodes
     [NodeName("Select Divided Surface Families")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a all families on a divided surface by picking the underlying form.")]
-    [NodeSearchTags("Curtain Panel", "Divided", "surface", "component", "family")]
+    [NodeSearchTags("Curtain Panel", "component")]
     public class DividedSurfaceBySelection : ElementSelectionBase
     {
         private Value _data;

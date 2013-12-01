@@ -51,7 +51,7 @@ namespace Dynamo.ViewModels
 
         #region Workspace Command Entry Point
 
-        internal void ExecuteCommand(RecordableCommand command)
+        public void ExecuteCommand(RecordableCommand command)
         {
             if (null != this.automationSettings)
                 this.automationSettings.RecordCommand(command);
@@ -172,6 +172,24 @@ namespace Dynamo.ViewModels
 
             UndoCommand.RaiseCanExecuteChanged();
             RedoCommand.RaiseCanExecuteChanged();
+        }
+
+        private void UpdateModelValueImpl(UpdateModelValueCommand command)
+        {
+            CurrentSpace.UpdateModelValue(command.ModelGuid,
+                command.Name, command.Value);
+
+            UndoCommand.RaiseCanExecuteChanged();
+            RedoCommand.RaiseCanExecuteChanged();
+        }
+
+        private void ConvertNodesToCodeImpl(ConvertNodesToCodeCommand command)
+        {
+            CurrentSpace.ConvertNodesToCodeInternal(command.NodeId);
+
+            UndoCommand.RaiseCanExecuteChanged();
+            RedoCommand.RaiseCanExecuteChanged();
+            CurrentSpace.HasUnsavedChanges = true;
         }
 
         #endregion

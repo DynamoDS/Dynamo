@@ -19,6 +19,15 @@ namespace Dynamo.Tests
             base.Init();
             // hide the excel window for tests
             ExcelInterop.ShowOnStartup = false;
+
+            // In unit-test scenario we are redirecting 'PreferenceSettings' to 
+            // load from a non-existing preference XML file. That way each test 
+            // will result in an instance of 'PreferenceSettings' with its default 
+            // values (since the underlying file wouldn't have existed). This 
+            // ensures the preference value change in one test case (if any) does 
+            // not get persisted across to the subsequent test case.
+            // 
+            PreferenceSettings.DYNAMO_TEST_PATH = Path.Combine(TempFolder, "UserPreferenceTest.xml");
         }
 
         [TearDown]
@@ -68,7 +77,7 @@ namespace Dynamo.Tests
             timer.Start();
             Controller.RunExpression(null);
             timer.Stop();
-            Assert.Less(timer.Elapsed.Milliseconds, 750); // open in less than 750ms
+            Assert.Less(timer.Elapsed.Milliseconds, 1000); // open in less than 1s
 
         }
 
@@ -466,5 +475,34 @@ namespace Dynamo.Tests
 
         #endregion
 
+        #region Defects
+
+        /// <summary>
+        /// TODO: This is to verify the fix for the following user report issue.
+        /// Note that however this test case does not completely simulate the 
+        /// user scenario -- the "Watch.Process" does not even get called for 
+        /// some reason. This test case passes now, but should be revisit later
+        /// for an enhancement which allows "Watch.Process" to be called (and 
+        /// crash without the fix).
+        /// </summary>
+        [Ignore, Test]
+        public void Defect_MAGN_883()
+        {
+            string testDir = GetTestDirectory();
+            string openPath = Path.Combine(testDir, @"core\excel\Defect_MAGN_883.dyn");
+            Controller.DynamoModel.Open(openPath);
+
+            Assert.AreEqual(6, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var filename = workspace.FirstNodeFromWorkspace<StringFilename>();
+
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", testDir);
+            Controller.RunExpression(null);
+            Assert.Pass("RunExpression should no longer crash (Defect_MAGN_883)");
+        }
+
+        #endregion
     }
 }

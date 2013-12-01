@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using System.Text;
 using Autodesk.Revit.DB;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
@@ -51,6 +48,23 @@ namespace Dynamo.Tests
             //greater than what is possible
             typeSelNode.SelectedIndex = count + 5;
             Assert.AreEqual(typeSelNode.SelectedIndex, -1);
+        }
+
+        [Test]
+        public void AllSelectionNodes()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\Selection\Selection.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            //open the test file
+            model.Open(testPath);
+
+            Assert.DoesNotThrow(()=>dynSettings.Controller.RunExpression(true));
+
+            var selNodes = model.AllNodes.Where(x => x is SelectionBase || x is MultipleElementSelectionBase);
+            Assert.IsFalse(selNodes.Any(x=>x.OldValue == null));
         }
     }
 }

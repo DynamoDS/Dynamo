@@ -34,6 +34,14 @@ namespace Dynamo.ViewModels
         /// 
         private const string PauseAttribName = "PauseAfterPlaybackInMs";
 
+        /// <summary>
+        /// This attribute specifies the interval between two consecutive 
+        /// commands in milliseconds. When a command is completed, the next 
+        /// command will be executed after this interval elapsed. The default
+        /// value for command interval is 20 milliseconds.
+        /// </summary>
+        private const string IntervalAttribName = "CommandIntervalInMs";
+
         private System.Windows.Window mainWindow = null;
         private DynamoViewModel owningViewModel = null;
         private DispatcherTimer playbackTimer = null;
@@ -44,6 +52,7 @@ namespace Dynamo.ViewModels
 
         #region Class Properties
 
+        internal int CommandInterval { get; private set; }
         internal int PauseAfterPlayback { get; private set; }
         internal bool ExitAfterPlayback { get; private set; }
         internal Mode CurrentMode { get; private set; }
@@ -65,6 +74,7 @@ namespace Dynamo.ViewModels
 
         internal AutomationSettings(DynamoViewModel vm, string commandFilePath)
         {
+            this.CommandInterval = 20; // 20ms between two consecutive commands.
             this.PauseAfterPlayback = 10; // 10ms after playback is done.
             this.ExitAfterPlayback = true; // Exit Dynamo after playback.
 
@@ -99,7 +109,7 @@ namespace Dynamo.ViewModels
             playbackTimer = new DispatcherTimer();
 
             // Serialized commands for playback.
-            playbackTimer.Interval = TimeSpan.FromMilliseconds(20);
+            playbackTimer.Interval = TimeSpan.FromMilliseconds(CommandInterval);
             playbackTimer.Tick += OnPlaybackTimerTick;
             playbackTimer.Start();
         }
@@ -142,6 +152,7 @@ namespace Dynamo.ViewModels
             XmlElementHelper helper = new XmlElementHelper(commandRoot);
             helper.SetAttribute(ExitAttribName, ExitAfterPlayback);
             helper.SetAttribute(PauseAttribName, PauseAfterPlayback);
+            helper.SetAttribute(IntervalAttribName, CommandInterval);
 
             foreach (DynCmd.RecordableCommand command in recordedCommands)
                 commandRoot.AppendChild(command.Serialize(document));
@@ -187,6 +198,7 @@ namespace Dynamo.ViewModels
                 XmlElementHelper helper = new XmlElementHelper(commandRoot);
                 this.ExitAfterPlayback = helper.ReadBoolean(ExitAttribName, true);
                 this.PauseAfterPlayback = helper.ReadInteger(PauseAttribName, 10);
+                this.CommandInterval = helper.ReadInteger(IntervalAttribName, 20);
 
                 loadedCommands = new List<DynCmd.RecordableCommand>();
                 foreach (XmlNode node in commandRoot.ChildNodes)

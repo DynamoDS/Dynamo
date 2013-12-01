@@ -15,6 +15,7 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
+using Dynamo.Services;
 
 namespace Dynamo.ViewModels
 {
@@ -116,7 +117,6 @@ namespace Dynamo.ViewModels
         protected bool debug = false;
         protected bool dynamicRun = false;
 
-        private bool fullscreenWatchShowing = true;
         private bool canNavigateBackground = false;
         private bool _watchEscapeIsDown = false;
 
@@ -179,6 +179,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand GetBranchVisualizationCommand { get; set; }
         public DelegateCommand TogglePreviewBubbleVisibilityCommand { get; set; }
 
+        public DelegateCommand ExportToSTLCommand { get; set; }
         public DelegateCommand ImportLibraryCommand { get; set; }
 
         /// <summary>
@@ -273,6 +274,12 @@ namespace Dynamo.ViewModels
 
         public double WorkspaceActualHeight { get; set; }
         public double WorkspaceActualWidth { get; set; }
+        public void WorkspaceActualSize(double width, double height)
+        {
+            WorkspaceActualWidth = width;
+            WorkspaceActualHeight = height;
+            RaisePropertyChanged("WorkspaceActualSize");
+        }
 
         /// <summary>
         /// The index in the collection of workspaces of the current workspace.
@@ -325,7 +332,13 @@ namespace Dynamo.ViewModels
                 _watchEscapeIsDown = value;
                 RaisePropertyChanged("WatchEscapeIsDown");
                 RaisePropertyChanged("ShouldBeHitTestVisible");
+                RaisePropertyChanged("WatchPreviewHitTest");
             }
+        }
+
+        public bool WatchPreviewHitTest
+        {
+            get { return ( WatchEscapeIsDown || CanNavigateBackground ); }
         }
 
         public bool IsHomeSpace
@@ -343,13 +356,13 @@ namespace Dynamo.ViewModels
 
         public bool FullscreenWatchShowing
         {
-            get { return fullscreenWatchShowing; }
+            get { return this.controller.PreferenceSettings.FullscreenWatchShowing; }
             set
             {
-                fullscreenWatchShowing = value;
+                this.controller.PreferenceSettings.FullscreenWatchShowing = value;
                 RaisePropertyChanged("FullscreenWatchShowing");
 
-                if (!fullscreenWatchShowing && canNavigateBackground)
+                if (!FullscreenWatchShowing && canNavigateBackground)
                     CanNavigateBackground = false;
 
                 if(value)
@@ -364,6 +377,7 @@ namespace Dynamo.ViewModels
             {
                 canNavigateBackground = value;
                 RaisePropertyChanged("CanNavigateBackground");
+                RaisePropertyChanged("WatchBackgroundHitTest");
 
                 int workspace_index = CurrentWorkspaceIndex;
 
@@ -373,8 +387,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private bool _consoleShowing;
-
         public string LogText
         {
             get { return DynamoLogger.Instance.LogText; }
@@ -382,20 +394,28 @@ namespace Dynamo.ViewModels
 
         public bool ConsoleShowing
         {
-            get { return _consoleShowing; }
+            get
+            {
+                return this.controller.PreferenceSettings.ShowConsole;
+            }
             set
             {
-                _consoleShowing = value;
+                this.controller.PreferenceSettings.ShowConsole = value;
+
                 RaisePropertyChanged("ConsoleShowing");
             }
         }
 
         public bool IsShowingConnectors
         {
-            get { return dynSettings.Controller.IsShowingConnectors; }
+            get
+            {
+                return this.controller.PreferenceSettings.ShowConnector;
+            }
             set
             {
-                dynSettings.Controller.IsShowingConnectors = value;
+                this.controller.PreferenceSettings.ShowConnector = value;
+
                 RaisePropertyChanged("IsShowingConnectors");
             }
         }
@@ -409,11 +429,23 @@ namespace Dynamo.ViewModels
 
         public ConnectorType ConnectorType
         {
-            get { return dynSettings.Controller.ConnectorType; }
+            get
+            {
+                return this.controller.ConnectorType;
+            }
             set
             {
-                dynSettings.Controller.ConnectorType = value;
+                this.controller.ConnectorType = value;
+
                 RaisePropertyChanged("ConnectorType");
+            }
+        }
+
+        public bool IsUsageReportingApproved
+        {
+            get
+            {
+                return UsageReportingManager.Instance.IsUsageReportingApproved;
             }
         }
 
@@ -443,8 +475,6 @@ namespace Dynamo.ViewModels
 
         public DynamoViewModel(DynamoController controller, string commandFilePath)
         {
-            ConnectorType = ConnectorType.BEZIER;
-
             //create the model
             _model = new DynamoModel();
             dynSettings.Controller.DynamoModel = _model;
@@ -520,6 +550,8 @@ namespace Dynamo.ViewModels
             GetBranchVisualizationCommand = new DelegateCommand(GetBranchVisualization, CanGetBranchVisualization);
             TogglePreviewBubbleVisibilityCommand = new DelegateCommand(TogglePreviewBubbleVisibility, CanTogglePreviewBubbleVisibility);
 
+            ExportToSTLCommand = new DelegateCommand(ExportToSTL, CanExportToSTL);
+            
 #if USE_DSENGINE
             ImportLibraryCommand = new DelegateCommand(ImportLibrary, CanImportLibrary);
 #endif
@@ -546,6 +578,8 @@ namespace Dynamo.ViewModels
                 }
             };
 
+            UsageReportingManager.Instance.PropertyChanged += CollectInfoManager_PropertyChanged;
+
             WatchIsResizable = false;
         }
 
@@ -558,6 +592,16 @@ namespace Dynamo.ViewModels
                     break;
                 case "ShowGeometryInAlternateContext":
                     RaisePropertyChanged("ShowGeometryInAlternateContext");
+                    break;
+            }
+        }
+
+        void CollectInfoManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "CollectInfoOption":
+                    RaisePropertyChanged("CollectInfoOption");
                     break;
             }
         }
@@ -757,7 +801,7 @@ namespace Dynamo.ViewModels
         ///     Change the currently visible workspace to a custom node's workspace
         /// </summary>
         /// <param name="symbol">The function definition for the custom node workspace to be viewed</param>
-        internal void FocusCustomNodeWorkspace(FunctionDefinition symbol)
+        internal void FocusCustomNodeWorkspace(CustomNodeDefinition symbol)
         {
             if (symbol == null)
             {
@@ -767,8 +811,8 @@ namespace Dynamo.ViewModels
             if (_model.CurrentWorkspace is CustomNodeWorkspaceModel)
             {
                 var customNodeWorkspace = _model.CurrentWorkspace as CustomNodeWorkspaceModel;
-                if (customNodeWorkspace.FunctionDefinition.FunctionId
-                    == symbol.WorkspaceModel.FunctionDefinition.FunctionId)
+                if (customNodeWorkspace.CustomNodeDefinition.FunctionId
+                    == symbol.WorkspaceModel.CustomNodeDefinition.FunctionId)
                 {
                     return;
                 }
@@ -791,9 +835,9 @@ namespace Dynamo.ViewModels
         }
 
         public virtual Function CreateFunction(IEnumerable<string> inputs, IEnumerable<string> outputs,
-                                                     FunctionDefinition functionDefinition)
+                                                     CustomNodeDefinition customNodeDefinition)
         {
-            return new Function(inputs, outputs, functionDefinition);
+            return new Function(inputs, outputs, customNodeDefinition);
         }
 
         /// <summary>
@@ -818,7 +862,7 @@ namespace Dynamo.ViewModels
                 }
                 else
                 {
-                    foreach (FunctionDefinition funcDef in Controller.CustomNodeManager.GetLoadedDefinitions())
+                    foreach (CustomNodeDefinition funcDef in Controller.CustomNodeManager.GetLoadedDefinitions())
                     {
                         if (funcDef.WorkspaceModel.Nodes.Contains(e))
                         {
@@ -1284,7 +1328,7 @@ namespace Dynamo.ViewModels
             DialogResult result = openFileDialog.ShowDialog();
             if (result == DialogResult.OK)
             {
-                DSEngine.EngineController.Instance.ImportLibraries(openFileDialog.FileNames.ToList());
+                dynSettings.Controller.EngineController.ImportLibraries(openFileDialog.FileNames.ToList());
             }
         }
 
@@ -1305,7 +1349,7 @@ namespace Dynamo.ViewModels
 
         public void Escape(object parameter)
         {
-            CurrentSpaceViewModel.OnRequestStopPan(this, null); // Escape Pan Mode
+            CurrentSpaceViewModel.CancelActiveState();
         }
 
         internal bool CanEscape(object parameter)
@@ -1341,6 +1385,40 @@ namespace Dynamo.ViewModels
         }
 
         internal bool CanTogglePreviewBubbleVisibility(object parameter)
+        {
+            return true;
+        }
+
+        private void ExportToSTL(object parameter)
+        {
+            FileDialog _fileDialog = null;
+
+            if (_fileDialog == null)
+            {
+                _fileDialog = new SaveFileDialog()
+                {
+                    AddExtension = true,
+                    DefaultExt = ".stl",
+                    FileName = "model.stl",
+                    Filter = "STL Models|*.stl",
+                    Title = "Save your model to STL.",
+                };
+            }
+
+            // if you've got the current space path, use it as the inital dir
+            if (!string.IsNullOrEmpty(_model.CurrentWorkspace.FileName))
+            {
+                var fi = new FileInfo(_model.CurrentWorkspace.FileName);
+                _fileDialog.InitialDirectory = fi.DirectoryName;
+            }
+
+            if (_fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                STLExport.ExportToSTL(_fileDialog.FileName, dynSettings.Controller.DynamoModel.HomeSpace.Name);
+            }
+        }
+
+        internal bool CanExportToSTL(object parameter)
         {
             return true;
         }

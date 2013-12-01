@@ -4,26 +4,27 @@ using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using DSNodeServices;
+using DSRevitNodes.GeometryConversion;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
-using Curve = Autodesk.DesignScript.Geometry.Curve;
-using Face = Autodesk.DesignScript.Geometry.Face;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
-namespace DSRevitNodes
+namespace DSRevitNodes.Elements
 {
     /// <summary>
     /// A Revit Adaptive Component
     /// </summary>
     [RegisterForTrace]
-    public class DSAdaptiveComponent : AbstractGeometry
+    public class DSAdaptiveComponent : AbstractElement
     {
+        private FamilyInstance familyInstance;
+
         #region Properties
 
         /// <summary>
         /// Internal variable containing the wrapped Revit object
         /// </summary>
-        public Autodesk.Revit.DB.FamilyInstance InternalFamilyInstance
+        internal Autodesk.Revit.DB.FamilyInstance InternalFamilyInstance
         {
             get; private set;
         }
@@ -55,7 +56,7 @@ namespace DSRevitNodes
             // otherwise create a new family instance...
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
-            var fam = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(AbstractGeometry.Document, fs.InternalFamilySymbol);
+            var fam = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(AbstractElement.Document, fs.InternalFamilySymbol);
 
             if (fam == null)
                 throw new Exception("An adaptive component could not be found or created.");
@@ -66,7 +67,7 @@ namespace DSRevitNodes
             TransactionManager.GetInstance().TransactionTaskDone();
 
             // remember this value
-            ElementBinder.SetElementForTrace(this.InternalID);
+            ElementBinder.SetElementForTrace(this.InternalElementId);
         }
 
         /// <summary>
@@ -92,7 +93,7 @@ namespace DSRevitNodes
             // otherwise create a new family instance...
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
-            var fam = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(AbstractGeometry.Document, fs.InternalFamilySymbol);
+            var fam = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(AbstractElement.Document, fs.InternalFamilySymbol);
 
             if (fam == null)
                 throw new Exception("An adaptive component could not be found or created.");
@@ -127,7 +128,7 @@ namespace DSRevitNodes
             // otherwise create a new family instance...
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
-            var fam = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(AbstractGeometry.Document, fs.InternalFamilySymbol);
+            var fam = AdaptiveComponentInstanceUtils.CreateAdaptiveComponentInstance(AbstractElement.Document, fs.InternalFamilySymbol);
 
             if (fam == null)
                 throw new Exception("An adaptive component could not be found or created.");
@@ -137,6 +138,15 @@ namespace DSRevitNodes
 
             TransactionManager.GetInstance().TransactionTaskDone();
 
+        }
+
+        /// <summary>
+        /// Internal constructor for existing Elements.
+        /// </summary>
+        /// <param name="familyInstance"></param>
+        private DSAdaptiveComponent(FamilyInstance familyInstance)
+        {
+            InternalSetFamilyInstance(familyInstance);
         }
 
         #endregion
@@ -150,7 +160,7 @@ namespace DSRevitNodes
         private void InternalSetFamilyInstance(Autodesk.Revit.DB.FamilyInstance ele)
         {
             InternalFamilyInstance = ele;
-            InternalID = ele.Id;
+            InternalElementId = ele.Id;
             InternalUniqueId = ele.UniqueId;
         }
 
@@ -243,39 +253,109 @@ namespace DSRevitNodes
         /// <summary>
         /// Create an AdaptiveComponent from a list of points.
         /// </summary>
-        /// <param name="pts">The points to reference in the AdaptiveComponent</param>
-        /// <param name="fs">The family symbol to use to build the AdaptiveComponent</param>
+        /// <param name="points">The points to reference in the AdaptiveComponent</param>
+        /// <param name="familySymbol">The family symbol to use to build the AdaptiveComponent</param>
         /// <returns></returns>
-        static DSAdaptiveComponent ByPoints( Point[] pts, DSFamilySymbol fs )
+        public static DSAdaptiveComponent ByPoints( Point[] points, DSFamilySymbol familySymbol )
         {
-            return new DSAdaptiveComponent(pts, fs);
+            if (points == null)
+            {
+                throw new ArgumentNullException("points");
+            }
+
+            if (familySymbol == null)
+            {
+                throw new ArgumentNullException("familySymbol");
+            }
+
+            return new DSAdaptiveComponent(points, familySymbol);
         }
 
         /// <summary>
         /// Create an adaptive component by uv points on a face.
         /// </summary>
         /// <param name="uvs">An array of UV pairs</param>
-        /// <param name="f">The face on which to place the AdaptiveComponent</param>
-        /// <param name="f">The face on which to place the AdaptiveComponent</param>
+        /// <param name="face">The face on which to place the AdaptiveComponent</param>
+        /// <param name="face">The face on which to place the AdaptiveComponent</param>
         /// <returns></returns>
-        static DSAdaptiveComponent ByPointsOnFace(double[][] uvs, DSFace f, DSFamilySymbol fs)
+        public static DSAdaptiveComponent ByPointsOnFace(double[][] uvs, DSFace face, DSFamilySymbol familySymbol)
         {
-            return new DSAdaptiveComponent(uvs, f, fs);
+            if (uvs == null)
+            {
+                throw new ArgumentNullException("uvs");
+            }
+
+            if (face == null)
+            {
+                throw new ArgumentNullException("face");
+            }
+
+            if (familySymbol == null)
+            {
+                throw new ArgumentNullException("familySymbol");
+            }
+
+            return new DSAdaptiveComponent(uvs, face, familySymbol);
         }
 
         /// <summary>
         /// Create an adaptive component referencing the parameters on a ReferenceCurve
         /// </summary>
-        /// <param name="parms">The parameters on the curve</param>
-        /// <param name="dsCurve">The curve to reference</param>
-        /// <param name="fs">The family symbol to construct</param>
+        /// <param name="parameters">The parameters on the curve</param>
+        /// <param name="curve">The curve to reference</param>
+        /// <param name="familySymbol">The family symbol to construct</param>
         /// <returns></returns>
-        static DSAdaptiveComponent ByPointsOnCurve(double[] parms, DSCurve dsCurve, DSFamilySymbol fs)
+        public static DSAdaptiveComponent ByPointsOnCurve(double[] parameters, DSCurve curve, DSFamilySymbol familySymbol)
         {
-            return new DSAdaptiveComponent(parms,  dsCurve, fs);
+            if (parameters == null)
+            {
+                throw new ArgumentNullException("parameters");
+            }
+
+            if (curve == null)
+            {
+                throw new ArgumentNullException("curve");
+            }
+
+            if (familySymbol == null)
+            {
+                throw new ArgumentNullException("familySymbol");
+            }
+
+            return new DSAdaptiveComponent(parameters,  curve, familySymbol);
         }
 
         #endregion
+
+        #region Internal static constructor
+
+        /// <summary>
+        /// Construct from an existing instance of an AdaptiveComponent. 
+        /// </summary>
+        /// <param name="familyInstance"></param>
+        /// <param name="isRevitOwned"></param>
+        /// <returns></returns>
+        internal static DSAdaptiveComponent FromExisting(Autodesk.Revit.DB.FamilyInstance familyInstance, bool isRevitOwned)
+        {
+            if (familyInstance == null)
+            {
+                throw new ArgumentNullException("familyInstance");
+            }
+
+            // Not all family instances are adaptive components
+            if (!AdaptiveComponentInstanceUtils.HasAdaptiveFamilySymbol(familyInstance))
+            {
+                throw new Exception("The FamilyInstance is not an adaptive component");
+            }
+
+            return new DSAdaptiveComponent(familyInstance)
+            {
+                IsRevitOwned = isRevitOwned
+            };
+        }
+
+        #endregion
+
 
     }
 }

@@ -13,13 +13,13 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid x:Name="mainGrid" Background="Transparent" Opacity="{Binding Path=Opacity}" HorizontalAlignment="Left" VerticalAlignment="Top"
-          Margin="{Binding Path=Margin}" Visibility="{Binding Path=Opacity, Converter={StaticResource OpacityToVisibilityConverter}}"
+    <Grid x:Name="mainGrid" Background="Transparent" HorizontalAlignment="Left" VerticalAlignment="Top"
+          Margin="{Binding Path=Margin}"
            MouseLeave="InfoBubble_MouseLeave" MouseMove="MainGrid_MouseMove" MouseWheel="InfoBubble_MouseWheel">
 
         <Polygon Name="backgroundPolygon" Fill="{Binding Path=FrameFill}" Stroke="{Binding Path=FrameStrokeColor}" 
                  StrokeThickness="{Binding Path=FrameStrokeThickness}" Points="{Binding Path=FramePoints}"
-                 Margin="0, 0, 0, 0" MouseMove="InfoBubble_MouseMove" MouseEnter="InfoBubble_MouseEnter"  MouseDown="InfoBubble_PreviewMouseDown">
+                 Margin="0, 0, 0, 0" MouseMove="InfoBubble_MouseMove" MouseEnter="InfoBubble_MouseEnter" PreviewMouseDown="InfoBubble_PreviewMouseDown">
         </Polygon>
 
         <StackPanel Name="ContentContainer" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"

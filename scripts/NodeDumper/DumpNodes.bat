@@ -1,1 +1,1 @@
-start C:\Users\Ian\Documents\GitHub\Dynamo\bin\Debug\NodeDumper.exe "C:\Users\Ian\Documents\GitHub\Dynamo\bin\Debug"
+start /B ..\..\bin\AnyCPU\Debug\NodeDumper.exe .\

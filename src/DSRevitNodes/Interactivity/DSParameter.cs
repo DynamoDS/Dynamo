@@ -5,7 +5,14 @@ using System.Text;
 
 namespace DSRevitNodes
 {
-    class DSParameter
+    public class DSParameter
     {
+        private object param;
+
+        public DSParameter(object param)
+        {
+            // TODO: Complete member initialization
+            this.param = param;
+        }
     }
 }

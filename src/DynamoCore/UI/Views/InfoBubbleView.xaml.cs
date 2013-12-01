@@ -17,6 +17,7 @@ using InfoBubbleViewModel = Dynamo.ViewModels.InfoBubbleViewModel;
 using Dynamo.ViewModels;
 using Dynamo.Utilities;
 using System.Diagnostics;
+using Dynamo.Core;
 
 namespace Dynamo.Controls
 {
@@ -32,18 +33,143 @@ namespace Dynamo.Controls
         private bool isResizeWidth = false;
 
         public InfoBubbleViewModel ViewModel { get { return GetViewModel(); } }
+
+        // When a NodeModel is removed, WPF places the dynNodeView into a "disconnected"
+        // state (i.e. dynNodeView.DataContext becomes "DisconnectedItem") before 
+        // eventually removing the view. This is the result of the host canvas being 
+        // virtualized. This property is used by InfoBubbleView to determine if it should 
+        // still continue to access the InfoBubbleViewModel that it is bound to.
+        private bool IsDisconnected { get { return (this.ViewModel == null); } }
+
         #endregion
 
+        #region Storyboards
+        private Storyboard fadeInStoryBoard;
+        private Storyboard fadeOutStoryBoard;
+        #endregion
+
+        /// <summary>
+        /// Used to present useful/important information to user
+        /// Known usages (when this summary is written): DynamoView and dynNodeView (via DataTemplates.xaml)
+        /// Till date there are 5 major types of info bubble
+        /// 1. LibraryItemPreview:  Displayed when mouse hover over an item in the search view
+        /// 2. NodeTooltip:         Displayed when mouse hover over the title area of a node
+        /// 3. PreviewCondensed:    This is the default state when preview is shown.
+        ///                         Displayed when mouse hover over the little triangle at the bottom of a node
+        ///                         or
+        ///                         when user chooses to show the preview
+        /// 4. Preview:             Displayed when the node has a preview and mouse hover over the condensed preview
+        /// 5. Error:               Displayed when errors exist for the node
+        /// </summary>
         public InfoBubbleView()
         {
             InitializeComponent();
+
+            // Setup storyboard used for animating fading in and fading out of info bubble
+            SetupFadeInStoryBoard();
+            SetupFadeOutStoryBoard();
+
+            mainGrid.Opacity = Configurations.MaxOpacity;
+
             this.DataContextChanged += InfoBubbleView_DataContextChanged;
         }
+
+        #region Setup animation storyboard
+        private void SetupFadeInStoryBoard()
+        {
+            DoubleAnimation countUpDoubleAnimation = new DoubleAnimation();
+            countUpDoubleAnimation.From = 0.0;
+            countUpDoubleAnimation.To = Configurations.MaxOpacity;
+            countUpDoubleAnimation.Duration =
+                new Duration(TimeSpan.FromMilliseconds(Configurations.FadeInDurationInMilliseconds));
+            countUpDoubleAnimation.FillBehavior = FillBehavior.HoldEnd;
+            countUpDoubleAnimation.Completed += CountUpDoubleAnimation_Completed;
+
+            fadeInStoryBoard = new Storyboard();
+            fadeInStoryBoard.Children.Add(countUpDoubleAnimation);
+            Storyboard.SetTargetName(countUpDoubleAnimation, mainGrid.Name);
+            Storyboard.SetTargetProperty(countUpDoubleAnimation, new PropertyPath(Grid.OpacityProperty));
+        }
+
+        private void SetupFadeOutStoryBoard()
+        {
+            DoubleAnimation countDownDoubleAnimation = new DoubleAnimation();
+            countDownDoubleAnimation.From = Configurations.MaxOpacity;
+            countDownDoubleAnimation.To = 0.0;
+            countDownDoubleAnimation.Duration =
+                new Duration(TimeSpan.FromMilliseconds(Configurations.FadeOutDurationInMilliseconds));
+            countDownDoubleAnimation.FillBehavior = FillBehavior.HoldEnd;
+            countDownDoubleAnimation.Completed += CountDownDoubleAnimation_Completed;
+
+            fadeOutStoryBoard = new Storyboard();
+            fadeOutStoryBoard.Children.Add(countDownDoubleAnimation);
+            Storyboard.SetTargetName(countDownDoubleAnimation, mainGrid.Name);
+            Storyboard.SetTargetProperty(countDownDoubleAnimation, new PropertyPath(Grid.OpacityProperty));
+        }
+        #endregion
+
+        #region FadeIn FadeOut Event Handling
+        private void FadeInInfoBubble(object sender, EventArgs e)
+        {
+            //Console.WriteLine("FadeIn start");
+
+            fadeOutStoryBoard.Stop(this);
+            mainGrid.Visibility = Visibility.Visible;
+            fadeInStoryBoard.Begin(this);
+        }
+
+        private void FadeOutInfoBubble(object sender, EventArgs e)
+        {
+            //Console.WriteLine("FadeOut start");
+
+            fadeInStoryBoard.Stop(this);
+            mainGrid.Visibility = Visibility.Collapsed;
+            fadeOutStoryBoard.Begin(this);
+        }
+
+        private void CountDownDoubleAnimation_Completed(object sender, EventArgs e)
+        {
+            fadeInStoryBoard.Stop(this);
+            fadeOutStoryBoard.Stop(this);
+
+            //Console.WriteLine("FadeOut done");
+        }
+
+        private void CountUpDoubleAnimation_Completed(object sender, EventArgs e)
+        {
+            //Console.WriteLine("FadeIn done");
+        }
+        #endregion
+
+        #region Show/Hide Info Bubble
+        // Show bubble instantly
+        private void ShowInfoBubble(object sender, EventArgs e)
+        {            
+            mainGrid.Visibility = Visibility.Visible;
+            // Run animation and skip it to end state i.e. MaxOpacity
+            fadeInStoryBoard.Begin(this);
+            fadeInStoryBoard.SkipToFill(this);
+        }
+
+        // Hide bubble instantly
+        private void HideInfoBubble(object sender, EventArgs e)
+        {
+            mainGrid.Visibility = Visibility.Collapsed;
+            fadeOutStoryBoard.Begin(this);
+            fadeOutStoryBoard.SkipToFill(this);
+        }
+        #endregion
 
         private void InfoBubbleView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (DataContext != null && DataContext is InfoBubbleViewModel)
+            {
                 (DataContext as InfoBubbleViewModel).PropertyChanged += ViewModel_PropertyChanged;
+                (DataContext as InfoBubbleViewModel).FadeInInfoBubble += FadeInInfoBubble;
+                (DataContext as InfoBubbleViewModel).FadeOutInfoBubble += FadeOutInfoBubble;
+                (DataContext as InfoBubbleViewModel).ShowInfoBubble += ShowInfoBubble;
+                (DataContext as InfoBubbleViewModel).HideInfoBubble += HideInfoBubble;
+            }
             UpdateContent();
         }
 
@@ -84,6 +210,9 @@ namespace Dynamo.Controls
 
         private void ShowPreviewBubbleFullContent()
         {
+            if (this.IsDisconnected)
+                return;
+
             string content = ViewModel.FullContent;
             InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.Preview;
             InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Top;
@@ -96,6 +225,9 @@ namespace Dynamo.Controls
 
         private void ShowPreviewBubbleCondensedContent()
         {
+            if (this.IsDisconnected)
+                return;
+
             string content = ViewModel.FullContent;
             InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.PreviewCondensed;
             InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Top;
@@ -116,46 +248,61 @@ namespace Dynamo.Controls
 
         private void FadeInInfoBubble()
         {
+            if (this.IsDisconnected)
+                return;
+                
             ViewModel.FadeInCommand.Execute(null);
         }
 
         private void FadeOutInfoBubble()
         {
+            if (this.IsDisconnected)
+                return;
+                
             ViewModel.FadeOutCommand.Execute(null);
         }
 
         private void ContentContainer_MouseEnter(object sender, MouseEventArgs e)
         {
+            if (this.IsDisconnected)
+                return;
+                
             if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.PreviewCondensed)
-            {
                 ShowPreviewBubbleFullContent();
-            }
+            
             FadeInInfoBubble();
-            Mouse.OverrideCursor = CursorsLibrary.UsualPointer;
+
+            this.Cursor = CursorLibrary.GetCursor(CursorSet.Pointer);
         }
 
         private void InfoBubble_MouseLeave(object sender, MouseEventArgs e)
         {
-            if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Preview && ViewModel.IsShowPreviewByDefault)
-            {
-                ShowPreviewBubbleCondensedContent();
-            }
-            else
-            {
-                FadeOutInfoBubble();
-            }
+            // It is possible for MouseLeave message (that was scheduled earlier) to reach
+            // InfoBubbleView when it becomes disconnected from InfoBubbleViewModel (i.e. 
+            // when the NodeModel it belongs is deleted by user). In this case, InfoBubbleView
+            // should simply ignore the message, since the node is no longer valid.
+            if (this.IsDisconnected)
+                return;
 
-            Mouse.OverrideCursor = CursorsLibrary.UsualPointer;
+            if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Preview && ViewModel.IsShowPreviewByDefault)
+                ShowPreviewBubbleCondensedContent();
+            else
+                FadeOutInfoBubble();
+
+            this.Cursor = CursorLibrary.GetCursor(CursorSet.Pointer);
         }
 
         private void InfoBubble_MouseEnter(object sender, MouseEventArgs e)
         {
-            if (Mouse.OverrideCursor != CursorsLibrary.Condense)
-                Mouse.OverrideCursor = CursorsLibrary.Condense;
+            this.Cursor = CursorLibrary.GetCursor(CursorSet.Condense);
         }
 
         private void InfoBubble_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
+            e.Handled = true;
+            if (this.IsDisconnected)
+                return;
+
             if (ViewModel.InfoBubbleStyle != InfoBubbleViewModel.Style.Preview && ViewModel.InfoBubbleStyle != InfoBubbleViewModel.Style.PreviewCondensed)
                 return;
 
@@ -168,7 +315,6 @@ namespace Dynamo.Controls
             else
             {
                 ViewModel.IsShowPreviewByDefault = true;
-                ViewModel.ZIndex = 3;
                 ViewModel.SetAlwaysVisibleCommand.Execute(true);
                 ShowPreviewBubbleCondensedContent();
             }
@@ -176,8 +322,7 @@ namespace Dynamo.Controls
 
         private void ResizeObject_MouseLeave(object sender, MouseEventArgs e)
         {
-            //Mouse.OverrideCursor = null;
-            Mouse.OverrideCursor = CursorsLibrary.UsualPointer;
+            this.Cursor = null;
         }
 
         private void ResizeObject_MouseUp(object sender, MouseButtonEventArgs e)
@@ -190,6 +335,9 @@ namespace Dynamo.Controls
 
         private void MainGrid_MouseMove(object sender, MouseEventArgs e)
         {
+            if (this.IsDisconnected)
+                return;
+
             if (!isResizing)
                 return;
 
@@ -204,8 +352,7 @@ namespace Dynamo.Controls
 
         private void HorizontalResizeBar_MouseEnter(object sender, MouseEventArgs e)
         {
-            if (Mouse.OverrideCursor != CursorsLibrary.ResizeVertical)
-                Mouse.OverrideCursor = CursorsLibrary.ResizeVertical;
+            this.Cursor = CursorLibrary.GetCursor(CursorSet.ResizeVertical);
         }
 
         private void HorizontalResizeBar_MouseDown(object sender, MouseButtonEventArgs e)
@@ -219,8 +366,7 @@ namespace Dynamo.Controls
 
         private void ConnerResizePoint_MouseEnter(object sender, MouseEventArgs e)
         {
-            if (Mouse.OverrideCursor != CursorsLibrary.ResizeDiagonal)
-                Mouse.OverrideCursor = CursorsLibrary.ResizeDiagonal;
+            this.Cursor = CursorLibrary.GetCursor(CursorSet.ResizeDiagonal);
         }
 
         private void ConnerResizePoint_MouseDown(object sender, MouseButtonEventArgs e)
@@ -244,8 +390,7 @@ namespace Dynamo.Controls
 
         private void VerticalResizeBar_MouseEnter(object sender, MouseEventArgs e)
         {
-            if (Mouse.OverrideCursor != CursorsLibrary.ResizeHorizontal)
-                Mouse.OverrideCursor = CursorsLibrary.ResizeHorizontal;
+            this.Cursor = CursorLibrary.GetCursor(CursorSet.ResizeHorizontal);
         }
 
         private void InfoBubble_MouseWheel(object sender, MouseWheelEventArgs e)
@@ -255,10 +400,10 @@ namespace Dynamo.Controls
 
         private void InfoBubble_MouseMove(object sender, MouseEventArgs e)
         {
-            Point mousePosition = e.GetPosition(this);
+            if (this.IsDisconnected)
+                return;
 
-            //Debug.WriteLine(this.GetType());
-            //Debug.WriteLine(mousePosition.X + "  " + this.ActualWidth);
+            Point mousePosition = e.GetPosition(this);
 
             double offsetX = this.ActualWidth - ViewModel.EstimatedWidth;
             double offsetY = this.ActualHeight - ViewModel.EstimatedHeight;
@@ -266,15 +411,12 @@ namespace Dynamo.Controls
                 && (mousePosition.Y - offsetY < 20)
                 && (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Preview))
             {
-                Mouse.OverrideCursor = CursorsLibrary.Expand;
+                this.Cursor = CursorLibrary.GetCursor(CursorSet.Expand);
             }
             else if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.PreviewCondensed)
-            {
-                Mouse.OverrideCursor = CursorsLibrary.Condense;
-            }
+                this.Cursor = CursorLibrary.GetCursor(CursorSet.Condense);
             else
-                Mouse.OverrideCursor = CursorsLibrary.UsualPointer;
+                this.Cursor = null;
         }
-
     }
 }

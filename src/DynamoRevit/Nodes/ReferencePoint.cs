@@ -399,7 +399,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Reference Point Distance")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
-    [NodeSearchTags("Distance", "dist", "norm")]
+    [NodeSearchTags("norm")]
     [NodeDescription("Measures a distance between point(s).")]
     public class DistanceBetweenPoints : MeasurementBase
     {

@@ -23,9 +23,9 @@ namespace Dynamo.Nodes
     {
         public LoftForm()
         {
-            InPortData.Add(new PortData("solid/void", "Indicates if the Form is Solid or Void. Use True for solid and false for void.", typeof(FScheme.Value.Number)));
-            InPortData.Add(new PortData("list", "A list of profiles for the Loft Form. The recommended way is to use list of Planar Ref Curve Chains, list of lists and list of curves are supported for legacy graphs.", typeof(FScheme.Value.List)));
-            InPortData.Add(new PortData("surface?", "Create a single surface or an extrusion if one loop", typeof(FScheme.Value.Container)));
+            InPortData.Add(new PortData("solid/void", "Indicates if the Form is Solid or Void. Use True for solid and false for void.", typeof(FScheme.Value.Number),FScheme.Value.NewNumber(1)));
+            InPortData.Add(new PortData("list", "A list of profiles for the Loft Form. The recommended way is to use a list of planar Reference Curves, list of lists and list of curves are supported for legacy graphs.", typeof(FScheme.Value.List)));
+            InPortData.Add(new PortData("surface?", "Create a single surface or an extrusion if one loop", typeof(FScheme.Value.Container), FScheme.Value.NewNumber(1)));
 
             OutPortData.Add(new PortData("form", "Loft Form", typeof(object)));
 
@@ -333,7 +333,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Revolve")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_SOLID_CREATE)]
-    [NodeDescription("Creates a solid by revolving closed curve loops lying in xy plane of Transform.")]
+    [NodeDescription("Creates a solid by revolving closed curve loops lying in xy plane a given coordinate system.")]
     public class CreateRevolvedGeometry : GeometryBase
     {
         public CreateRevolvedGeometry()
@@ -649,8 +649,8 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("solid in the element's geometry objects", "Solid", typeof(object)));
             selectedItem = 2;
             RegisterAllPorts();
-
         }
+        
         public override void SetupCustomUIElements(object ui)
         {
             var nodeUI = ui as dynNodeView;
@@ -677,7 +677,15 @@ namespace Dynamo.Nodes
             }
             if (combo.SelectedIndex < 0 || combo.SelectedIndex > 2)
                 combo.SelectedIndex = 2;
+
+            combo.SelectionChanged += combo_SelectionChanged;
         }
+
+        void combo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            selectedItem = ((ComboBox) sender).SelectedIndex;
+        }
+        
         void combo_DropDownOpened(object sender, EventArgs e)
         {
             PopulateComboBox();
@@ -687,7 +695,8 @@ namespace Dynamo.Nodes
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
-            nodeElement.SetAttribute("index", this.combo.SelectedIndex.ToString());
+            //nodeElement.SetAttribute("index", this.combo.SelectedIndex.ToString());
+            nodeElement.SetAttribute("index", selectedItem.ToString());
         }
 
         protected override void LoadNode(XmlNode nodeElement)
@@ -717,7 +726,6 @@ namespace Dynamo.Nodes
             cbiDifference.Content = "Difference";
             combo.Items.Add(cbiDifference);
         }
-
 
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {

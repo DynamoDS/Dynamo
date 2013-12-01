@@ -55,11 +55,11 @@ namespace Dynamo.Core
         ModelBase GetModelForElement(XmlElement modelData);
     }
 
-    internal class UndoRedoRecorder
+    public class UndoRedoRecorder
     {
         #region Private Class Data Members
 
-        internal enum UserAction
+        public enum UserAction
         {
             Creation,
             Modification,
@@ -217,6 +217,19 @@ namespace Dynamo.Core
                 model, UserAction.Modification);
 
             this.redoStack.Clear(); // Wipe out the redo-stack.
+        }
+
+        /// <summary>
+        /// This function removes the top item from the UndoStack
+        /// </summary>
+        public void PopFromUndoGroup()
+        {
+            if (this.redoStack.Count > 0)
+            {
+                throw new InvalidOperationException(
+                    "UndoStack cannot be pop with non-empty RedoStack");
+            }
+            PopActionGroupFromUndoStack();
         }
 
         #endregion

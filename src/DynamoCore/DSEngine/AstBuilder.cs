@@ -1,25 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using Dynamo.FSchemeInterop;
 using Dynamo.Models;
-using Dynamo.Nodes;
-using Dynamo.Utilities;
-using Microsoft.FSharp.Collections;
 using ProtoCore;
-using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
-using ProtoCore.DSASM;
-using ProtoCore.DSASM.Mirror;
-using ProtoCore.Exceptions;
-using ProtoCore.Lang;
-using ProtoCore.Mirror;
-using ProtoCore.Utils;
-using ProtoFFI;
+using ProtoCore.DSDefinitions;
 using ProtoScript.Runners;
+using Type = ProtoCore.Type;
 
 namespace Dynamo.DSEngine
 {
@@ -28,78 +16,79 @@ namespace Dynamo.DSEngine
     /// can be accessed through a key. 
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    internal class LinkedListOfList<Key, T> : IEnumerable<List<T>>
+    /// <typeparam name="TKey"></typeparam>
+    internal class LinkedListOfList<TKey, T> : IEnumerable<List<T>>
     {
-        private Dictionary<Key, LinkedListNode<List<T>>> map;
-        private LinkedList<List<T>> list;
+        private readonly Dictionary<TKey, LinkedListNode<List<T>>> _map;
+        private readonly LinkedList<List<T>> _list;
 
         public LinkedListOfList()
         {
-            map = new Dictionary<Key, LinkedListNode<List<T>>>();
-            list = new LinkedList<List<T>>();
+            _map = new Dictionary<TKey, LinkedListNode<List<T>>>();
+            _list = new LinkedList<List<T>>();
         }
 
-        public void AddItem(Key key, T item)
+        public void AddItem(TKey key, T item)
         {
             LinkedListNode<List<T>> listNode;
-            if (!map.TryGetValue(key, out listNode))
+            if (!_map.TryGetValue(key, out listNode))
             {
                 listNode = new LinkedListNode<List<T>>(new List<T>());
-                list.AddLast(listNode);
-                map[key] = listNode;
+                _list.AddLast(listNode);
+                _map[key] = listNode;
             }
             listNode.Value.Add(item);
         }
 
-        public bool Contains(Key key)
+        public bool Contains(TKey key)
         {
-            return map.ContainsKey(key);
+            return _map.ContainsKey(key);
         }
 
-        public void Clears(Key key)
+        public void Clears(TKey key)
         {
             LinkedListNode<List<T>> listNode;
-            if (map.TryGetValue(key, out listNode))
+            if (_map.TryGetValue(key, out listNode))
             {
                 listNode.Value.Clear();
             }
         }
 
-        public void Removes(Key key)
+        public void Removes(TKey key)
         {
             LinkedListNode<List<T>> listNode;
-            if (map.TryGetValue(key, out listNode))
+            if (_map.TryGetValue(key, out listNode))
             {
-                map.Remove(key);
-                list.Remove(listNode);
+                _map.Remove(key);
+                _list.Remove(listNode);
             }
         }
 
-        public List<T> GetItems(Key key)
+        public List<T> GetItems(TKey key)
         {
             LinkedListNode<List<T>> listNode;
-            if (!map.TryGetValue(key, out listNode) || listNode.Value == null)
+            if (!_map.TryGetValue(key, out listNode) || listNode.Value == null)
             {
                 return null;
             }
 
-            List<T> ret = new List<T>(listNode.Value);
+            var ret = new List<T>(listNode.Value);
             return ret;
         }
 
-        public List<Key> GetKeys()
+        public List<TKey> GetKeys()
         {
-            return new List<Key>(map.Keys);
+            return new List<TKey>(_map.Keys);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return list.GetEnumerator();
+            return _list.GetEnumerator();
         }
 
         IEnumerator<List<T>> IEnumerable<List<T>>.GetEnumerator()
         {
-            return list.GetEnumerator();
+            return _list.GetEnumerator();
         }
     }
 
@@ -116,10 +105,6 @@ namespace Dynamo.DSEngine
             Added,
             Modified,
             Deleted
-        }
-
-        public SyncDataManager()
-        {
         }
 
         /// <summary>
@@ -140,11 +125,7 @@ namespace Dynamo.DSEngine
         /// </summary>
         public void ResetStates()
         {
-            List<Guid> guids = new List<Guid>(states.Keys);
-            foreach (var guid in guids)
-            {
-                states[guid] = State.NoChange;
-            }
+            _states.Keys.ToList().ForEach(key => _states[key] = State.NoChange);
         }
 
         /// <summary>
@@ -153,15 +134,15 @@ namespace Dynamo.DSEngine
         /// <param name="guid"></param>
         public void MarkForAdding(Guid guid)
         {
-            if (states.ContainsKey(guid))
+            if (_states.ContainsKey(guid))
             {
-                states[guid] = State.Modified;
+                _states[guid] = State.Modified;
             }
             else
             {
-                states[guid] = State.Added;
+                _states[guid] = State.Added;
             }
-            nodes.Removes(guid);
+            _nodes.Removes(guid);
         }
 
         /// <summary>
@@ -171,7 +152,7 @@ namespace Dynamo.DSEngine
         /// <param name="node"></param>
         public void AddNode(Guid guid, AssociativeNode node)
         {
-            nodes.AddItem(guid, node);
+            _nodes.AddItem(guid, node);
         }
 
         /// <summary>
@@ -180,61 +161,53 @@ namespace Dynamo.DSEngine
         /// <param name="guid"></param>
         public void DeleteNodes(Guid guid)
         {
-            states[guid] = State.Deleted;
-            nodes.Removes(guid);
+            _states[guid] = State.Deleted;
+            _nodes.Removes(guid);
         }
 
         private List<Subtree> GetSubtrees(State state)
         {
-            List<Guid> guids = states.Where(x => x.Value == state)
+            List<Guid> guids = _states.Where(x => x.Value == state)
                                      .Select(x => x.Key)
                                      .ToList();
 
-            List<Subtree> subtrees = new List<Subtree>();
-            foreach (var guid in guids)
-            {
-                Subtree tree = new Subtree(nodes.GetItems(guid), guid);
-                subtrees.Add(tree);
-            }
-
-            return subtrees;
+            return guids.Select(guid => new Subtree(_nodes.GetItems(guid), guid)).ToList();
         }
 
-        private LinkedListOfList<Guid, AssociativeNode> nodes = new LinkedListOfList<Guid,AssociativeNode>();
-        private Dictionary<Guid, State> states = new Dictionary<Guid,State>();
+        private readonly LinkedListOfList<Guid, AssociativeNode> _nodes 
+            = new LinkedListOfList<Guid,AssociativeNode>();
+
+        private readonly Dictionary<Guid, State> _states = new Dictionary<Guid,State>();
     }
 
     /// <summary>
-    /// Generate ast nodes
+    /// Get notification when AstBuilder starts building node and
+    /// finishes building node.
     /// </summary>
-    public interface IAstBuilder
+    public interface IAstNodeContainer
     {
-        void Build(NodeModel node, List<AssociativeNode> inputs);
-        void Build(Dynamo.Nodes.DSFunction node, List<AssociativeNode> inputs);
-        void Build(Dynamo.Nodes.Double node, List<AssociativeNode> inputs);
-        void Build(Dynamo.Nodes.Bool node, List<AssociativeNode> inputs);
-        void Build(Dynamo.Nodes.String node, List<AssociativeNode> inputs);
-        void Build(Dynamo.Nodes.DoubleInput node, List<AssociativeNode> inputs);
-        void Build(Dynamo.Nodes.CodeBlockNodeModel node, List<AssociativeNode> inputs);
+        void OnAstNodeBuilding(Guid nodeGuid);
+        void OnAstNodeBuilt(Guid nodeGuid, IEnumerable<AssociativeNode> astNodes);
     }
 
     /// <summary>
     /// AstBuilder is a factory class to create different kinds of AST nodes.
     /// </summary>
-    public class AstBuilder : IAstBuilder
+    public class AstBuilder
     {
         internal class StringConstants
         {
-            public const string ParamPrefix = @"p_";
-            public const string FunctionPrefix = @"func_";
-            public const string VarPrefix = @"var_";
+            public const string PARAM_PREFIX = @"p_";
+            public const string FUNCTION_PREFIX = @"func_";
+            public const string VAR_PREFIX = @"var_";
+            public const string SHORT_VAR_PREFIX = @"t_";
         }
 
         public class ASTBuildingEventArgs : EventArgs
         {
             public ASTBuildingEventArgs(NodeModel node)
             {
-                this.Node = node;
+                Node = node;
             }
 
             public NodeModel Node { get; private set; }
@@ -244,182 +217,235 @@ namespace Dynamo.DSEngine
         {
             public ASTBuiltEventArgs(NodeModel node, List<AssociativeNode> astNodes)
             {
-                this.Node = node;
-                this.AstNodes = astNodes;
+                Node = node;
+                AstNodes = astNodes;
             }
 
             public NodeModel Node { get; private set;}
             public List<AssociativeNode> AstNodes { get; private set;}
         }
 
-        public event EventHandler<ASTBuildingEventArgs> AstBuilding;
-        public event EventHandler<ASTBuiltEventArgs> AstBuilt;
-        
-        public AstBuilder()
+        private readonly IAstNodeContainer _nodeContainer;
+
+        public AstBuilder(IAstNodeContainer nodeContainer)
         {
+            _nodeContainer = nodeContainer;
         }
 
-        #region IAstBuilder interface
-        /// <summary>
-        /// Build default AST node for Dynamo node.
-        /// </summary>
-        /// <param name="node"></param>
-        /// <param name="inputs"></param>
-        public void Build(NodeModel node, List<AssociativeNode> inputs)
+        private enum MarkFlag
         {
-            ASTBuildingEventArgs buildingEventArgs = new ASTBuildingEventArgs(node);
-            OnAstBuilding(buildingEventArgs);
-
-            var rhs = AstFactory.BuildNullNode();
-            var assignment = AstFactory.BuildAssignment(node.AstIdentifier, rhs);
-
-            ASTBuiltEventArgs builtEventArgs = new ASTBuiltEventArgs(node, new List<AssociativeNode> { assignment });
-            OnAstBuilt(builtEventArgs);
+            NoMark,
+            TempMark,
+            Marked
         }
 
-        /// <summary>
-        /// Build AST node for DSFunction node.
-        /// </summary>
-        /// <param name="node"></param>
-        /// <param name="inputs"></param>
-        public void Build(DSFunction node, List<AssociativeNode> inputs)
+        // Reverse post-order to sort nodes
+        private void MarkNode(NodeModel node, Dictionary<NodeModel, MarkFlag> nodeFlags, Stack<NodeModel> sortedList)
         {
-            ASTBuildingEventArgs buildingEventArgs = new ASTBuildingEventArgs(node);
-            OnAstBuilding(buildingEventArgs);
+            MarkFlag flag;
+            if (!nodeFlags.TryGetValue(node, out flag))
+                return;
 
-            string function = node.Definition.Name;
-            var functionCall = AstFactory.BuildFunctionCall(function, inputs);
+            if (MarkFlag.TempMark == flag) 
+                return;
 
-            if (node.IsStaticMember() || node.IsConstructor())
+            if (MarkFlag.NoMark == flag)
             {
-                IdentifierNode classNode = new IdentifierNode(node.Definition.ClassName);
-                functionCall = CoreUtils.GenerateCallDotNode(classNode, 
-                    functionCall as FunctionCallNode, 
-                    EngineController.Instance.LiveRunnerCore);
+                nodeFlags[node] = MarkFlag.TempMark;
+
+                var outputs = node.Outputs.Values.SelectMany(set => set.Select(t => t.Item2)).Distinct();
+                foreach (var output in outputs)
+                    MarkNode(output, nodeFlags, sortedList);
+
+                nodeFlags[node] = MarkFlag.Marked;
+                sortedList.Push(node);
             }
-            else if (node.IsInstanceMember())
+        }
+
+        /// <summary>
+        /// Sort nodes in topological order.
+        /// </summary>
+        /// <param name="nodes"></param>
+        /// <returns></returns>
+        public IEnumerable<NodeModel> TopologicalSort(IEnumerable<NodeModel> nodes)
+        {
+            var sortedNodes = new Stack<NodeModel>();
+            var nodeFlags = nodes.ToDictionary(node => node, _ => MarkFlag.NoMark);
+            
+            foreach (var candidate in TSortCandidates(nodeFlags))
+                MarkNode(candidate, nodeFlags, sortedNodes);
+
+            return sortedNodes;
+        }
+
+        private IEnumerable<NodeModel> TSortCandidates(Dictionary<NodeModel, MarkFlag> nodeFlags)
+        {
+            while (true)
             {
-                AssociativeNode thisNode = new NullNode(); 
-                if (inputs.Count >= 1)
+                var candidate = nodeFlags.FirstOrDefault(pair => pair.Value == MarkFlag.NoMark).Key;
+                if (candidate != null)
+                    yield return candidate;
+                else
+                    yield break;
+            }
+        }
+
+        /// <summary>
+        /// Compile a dynamo node to the corresponding Ast Nodes
+        /// </summary>
+        /// <param name="node"></param>
+        public IEnumerable<AssociativeNode> CompileToAstNodes(NodeModel node)
+        {
+            var result = new List<AssociativeNode>();
+            _CompileToAstNodes(node, result);
+            return result;
+        }
+
+        private void _CompileToAstNodes(NodeModel node, List<AssociativeNode> resultList)
+        {
+            var inputAstNodes = new List<AssociativeNode>();
+            foreach (var index in Enumerable.Range(0, node.InPortData.Count))
+            {
+                Tuple<int, NodeModel> inputTuple;
+
+                AssociativeNode inputNode;
+                if (!node.TryGetInput(index, out inputTuple))
                 {
-                    thisNode = inputs[0];
-                    inputs.RemoveAt(0);  // remove this pointer
+                    inputNode = new NullNode();
                 }
-                functionCall = AstFactory.BuildFunctionCall(function, inputs);
-                functionCall= CoreUtils.GenerateCallDotNode(thisNode, 
-                    functionCall as FunctionCallNode, 
-                    EngineController.Instance.LiveRunnerCore);
+                else
+                {
+                    int outputIndexOfInput = inputTuple.Item1;
+                    NodeModel inputModel = inputTuple.Item2;
+                    inputNode = inputModel.GetAstIdentifierForOutputIndex(outputIndexOfInput);
+                }
+
+                inputAstNodes.Add(inputNode);
             }
 
-            var assignment = AstFactory.BuildAssignment(node.AstIdentifier, functionCall);
-
-            ASTBuiltEventArgs builtEventArgs = new ASTBuiltEventArgs(node, new List<AssociativeNode> { assignment });
-            OnAstBuilt(builtEventArgs);
-        }
-
-        /// <summary>
-        /// Build AST node for Double node.
-        /// </summary>
-        /// <param name="node"></param>
-        /// <param name="inputs"></param>
-        public void Build(Dynamo.Nodes.Double node, List<AssociativeNode> inputs)
-        {
-            ASTBuildingEventArgs buildingEventArgs = new ASTBuildingEventArgs(node);
-            OnAstBuilding(buildingEventArgs);
-
-            var rhs = AstFactory.BuildDoubleNode(node.Value);
-            var assignment = AstFactory.BuildAssignment(node.AstIdentifier, rhs);
-
-            ASTBuiltEventArgs builtEventArgs = new ASTBuiltEventArgs(node, new List<AssociativeNode> { assignment });
-            OnAstBuilt(builtEventArgs);
-        }
-
-        /// <summary>
-        /// Build AST node for DoubleInput node.
-        /// </summary>
-        /// <param name="node"></param>
-        /// <param name="inputs"></param>
-        public void Build(Dynamo.Nodes.DoubleInput node, List<AssociativeNode> inputs)
-        {
-            ASTBuildingEventArgs buildingEventArgs = new ASTBuildingEventArgs(node);
-            OnAstBuilding(buildingEventArgs);
-
-            AssociativeNode rhs = null;
-            if (inputs.Count == 1)
+            //TODO: This should do something more than just log a generic message. --SJE
+            if (node.State == ElementState.Error)
             {
-                rhs = inputs[0];
+                DynamoLogger.Instance.Log("Error in Node. Not sent for building and compiling");
+            }
+
+            OnAstNodeBuilding(node.GUID);
+
+            var astNodes = node.BuildAst(inputAstNodes);
+
+            if (astNodes != null)
+            {
+                OnAstNodeBuilt(node.GUID, astNodes);
+            }
+
+            resultList.AddRange(astNodes ?? new AssociativeNode[0]);
+        }
+
+        /// <summary>
+        /// Compiling a collection of Dynamo nodes to AST nodes, no matter 
+        /// whether Dynamo node has been compiled or not.
+        /// </summary>
+        /// <param name="nodes"></param>
+        /// <param name="isDeltaExecution"></param>
+        public List<AssociativeNode> CompileToAstNodes(IEnumerable<NodeModel> nodes, bool isDeltaExecution)
+        {
+            // TODO: compile to AST nodes should be triggered after a node is 
+            // modified.
+
+            var sortedNodes = TopologicalSort(nodes);
+
+            if (isDeltaExecution)
+                sortedNodes = sortedNodes.Where(n => n.isDirty);
+
+            var result = new List<AssociativeNode>();
+
+            foreach (var node in sortedNodes)
+            {
+                _CompileToAstNodes(node, result);
+
+                if (isDeltaExecution)
+                    node.isDirty = false;
+            }
+
+            return result;
+        }
+
+
+        /// <summary>
+        /// Compiles a collection of Dynamo nodes into a function definition for a custom node.
+        /// </summary>
+        /// <param name="functionGuid"></param>
+        /// <param name="funcBody"></param>
+        /// <param name="outputs"></param>
+        /// <param name="parameters"></param>
+        /// <param name="isDeltaExecution"></param>
+        public void CompileCustomNodeDefinition(
+            Guid functionGuid, IEnumerable<NodeModel> funcBody, List<AssociativeNode> outputs,
+            IEnumerable<string> parameters, bool isDeltaExecution)
+        {
+            OnAstNodeBuilding(functionGuid);
+
+            string name = functionGuid.ToString().Replace("-", string.Empty);
+
+            var functionBody = new CodeBlockNode();
+
+            functionBody.Body.AddRange(CompileToAstNodes(funcBody, isDeltaExecution));
+
+            AssociativeNode top;
+
+            if (outputs.Count > 1)
+            {
+                top = AstFactory.BuildExprList(outputs);
+            }
+            else if (outputs.Count == 1)
+            {
+                top = outputs[0];
             }
             else
             {
-                rhs = AstFactory.BuildExprList(inputs);
+                // if the custom node is empty, it will initially return null
+                top = AstFactory.BuildNullNode();
             }
 
-            var assignment = AstFactory.BuildAssignment(node.AstIdentifier, rhs);
+            var returnNode = new ReturnNode { ReturnExpr = top };
+            functionBody.Body.Add(returnNode);
 
-            ASTBuiltEventArgs builtEventArgs = new ASTBuiltEventArgs(node, new List<AssociativeNode> { assignment });
-            OnAstBuilt(builtEventArgs);
-        }
-
-        /// <summary>
-        /// Build AST node for bool node.
-        /// </summary>
-        /// <param name="node"></param>
-        /// <param name="inputs"></param>
-        public void Build(Dynamo.Nodes.Bool node, List<AssociativeNode> inputs)
-        {
-            ASTBuildingEventArgs buildingEventArgs = new ASTBuildingEventArgs(node);
-            OnAstBuilding(buildingEventArgs);
-
-            var rhs =  AstFactory.BuildBooleanNode(node.Value);
-            var assignment = AstFactory.BuildAssignment(node.AstIdentifier, rhs);
-
-            ASTBuiltEventArgs builtEventArgs = new ASTBuiltEventArgs(node, new List<AssociativeNode> { assignment });
-            OnAstBuilt(builtEventArgs);
-        }
-
-        /// <summary>
-        /// Build AST node for String node.
-        /// </summary>
-        /// <param name="node"></param>
-        /// <param name="inputs"></param>
-        public void Build(Dynamo.Nodes.String node, List<AssociativeNode> inputs)
-        {
-            ASTBuildingEventArgs buildingEventArgs = new ASTBuildingEventArgs(node);
-            OnAstBuilding(buildingEventArgs);
-
-            var rhs = AstFactory.BuildStringNode(node.Value);
-            var assignment = AstFactory.BuildAssignment(node.AstIdentifier, rhs);
-
-            ASTBuiltEventArgs builtEventArgs = new ASTBuiltEventArgs(node, new List<AssociativeNode> { assignment });
-            OnAstBuilt(builtEventArgs);
-        }
-
-        /// <summary>
-        /// Build AST node for code block node.
-        /// </summary>
-        /// <param name="node"></param>
-        /// <param name="inputs"></param>
-        public void Build(Dynamo.Nodes.CodeBlockNodeModel node, List<AssociativeNode> inputs)
-        {
-            if (node.State == ElementState.ERROR)
+            //Create a new function definition
+            var functionDef = new FunctionDefinitionNode
             {
-                DynamoLogger.Instance.Log("Error in Code Block Node. Not sent for building and compiling");
-            }
+                //name is the GUID of the custom node
+                Name = name,
 
-            ASTBuildingEventArgs buildingEventArgs = new ASTBuildingEventArgs(node);
-            OnAstBuilding(buildingEventArgs);
+                //signature contains all input names
+                Signature =
+                    new ArgumentSignatureNode
+                    {
+                        Arguments =
+                            parameters.Select(
+                                paramName =>
+                                    new VarDeclNode
+                                    {
+                                        NameNode =
+                                            new IdentifierNode
+                                            {
+                                                Value = paramName, Name = paramName,
+                                                datatype =
+                                                    new Type
+                                                    {
+                                                        Name = "var", IsIndexable = false, rank = 0,
+                                                        UID = (int)PrimitiveType.kTypeVar
+                                                    }
+                                            },
+                                        ArgumentType = new Type { Name = "var" }
+                                    }).ToList()
+                    },
 
-            List<string> unboundIdentifiers = new List<string>();
-            CodeBlockNode commentNode = null;
-            CodeBlockNode codeBlock = GraphToDSCompiler.GraphUtilities.Parse(node.Code, out commentNode) as CodeBlockNode;
+                //body is the compiled workspace
+                FunctionBody = functionBody
+            };
 
-            if (codeBlock != null)
-            {
-                ASTBuiltEventArgs builtEventArgs = new ASTBuiltEventArgs(node, codeBlock.Body);
-                OnAstBuilt(builtEventArgs);
-            }
+            OnAstNodeBuilt(functionGuid, new[] { functionDef });
         }
-        #endregion
 
         /// <summary>
         /// Create a function defintion for a partially applied function call. 
@@ -433,18 +459,17 @@ namespace Dynamo.DSEngine
         ///     
         /// </summary>
         /// <param name="func"></param>
-        /// </param>
         /// <returns></returns>
         private FunctionDefinitionNode BuildPartialFunction(FunctionCallNode func)
         {
-            List<VarDeclNode> partialArgs = new List<VarDeclNode>();
+            var partialArgs = new List<VarDeclNode>();
             int paramPostfix = 0;
 
             for (int i = 0; i < func.FormalArguments.Count; ++i)
             {
                 if (func.FormalArguments[i] == null)
                 {
-                    VarDeclNode param = AstFactory.BuildParamNode(AstBuilder.StringConstants.ParamPrefix + paramPostfix);
+                    VarDeclNode param = AstFactory.BuildParamNode(StringConstants.PARAM_PREFIX + paramPostfix);
                     partialArgs.Add(param);
 
                     func.FormalArguments[i] = param.NameNode;
@@ -458,47 +483,51 @@ namespace Dynamo.DSEngine
                 return null;
             }
 
-            CodeBlockNode funcBody = new CodeBlockNode();
+            var funcBody = new CodeBlockNode();
             {
-                var lhs = AstFactory.BuildIdentifier(ProtoCore.DSDefinitions.Keyword.Return);
+                var lhs = AstFactory.BuildIdentifier(Keyword.Return);
                 var rhs = AstFactory.BuildFunctionCall(func.Function.Name, func.FormalArguments);
                 var returnStmt = AstFactory.BuildAssignment(lhs, rhs);
                 funcBody.Body.Add(returnStmt);
             }
 
-            FunctionDefinitionNode partialFunc = new FunctionDefinitionNode();
-            partialFunc.IsExternLib = false;
-            partialFunc.IsDNI = false;
-            partialFunc.ExternLibName = null;
-            partialFunc.Name = StringConstants.FunctionPrefix + Guid.NewGuid().ToString().Replace("-", string.Empty);
-            partialFunc.Singnature = new ArgumentSignatureNode();
-            partialFunc.Singnature.Arguments = partialArgs;
-            partialFunc.FunctionBody = funcBody;
+            var partialFunc = new FunctionDefinitionNode
+            {
+                IsExternLib = false,
+                IsDNI = false,
+                ExternLibName = null,
+                Name =
+                    StringConstants.FUNCTION_PREFIX
+                    + Guid.NewGuid().ToString().Replace("-", string.Empty),
+                Signature = new ArgumentSignatureNode { Arguments = partialArgs },
+                FunctionBody = funcBody
+            };
 
             return partialFunc;
         }
 
         /// <summary>
-        /// Dispatch AstBuilding event to event handlers.
+        /// Notify IAstNodeContainer that starts building AST nodes. 
         /// </summary>
-        /// <param name="e"></param>
-        private void OnAstBuilding(ASTBuildingEventArgs e)
+        /// <param name="nodeGuid"></param>
+        private void OnAstNodeBuilding(Guid nodeGuid)
         {
-            if (AstBuilding != null)
+            if (_nodeContainer != null)
             {
-                AstBuilding(this, e);
+                _nodeContainer.OnAstNodeBuilding(nodeGuid);
             }
         }
 
         /// <summary>
-        /// Dispatch AstBuilt event to event handlers.
+        /// Notify IAstNodeContainer that AST nodes have been built.
         /// </summary>
-        /// <param name="e"></param>
-        private void OnAstBuilt(ASTBuiltEventArgs e)
+        /// <param name="nodeGuid"></param>
+        /// <param name="astNodes"></param>
+        private void OnAstNodeBuilt(Guid nodeGuid, IEnumerable<AssociativeNode> astNodes)
         {
-            if (AstBuilt != null)
+            if (_nodeContainer != null)
             {
-                AstBuilt(this, e);
+                _nodeContainer.OnAstNodeBuilt(nodeGuid, astNodes);
             }
         }
     }

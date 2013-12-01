@@ -1,0 +1,12 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNoteCommand NodeId="5387831c-7c93-41ad-849a-c66d8725841f" NoteText="" X="0" Y="0" DefaultPosition="true" />
+  <SelectModelCommand ModelGuid="5387831c-7c93-41ad-849a-c66d8725841f" Modifiers="0" />
+  <DragSelectionCommand X="722" Y="419" DragOperation="0" />
+  <DragSelectionCommand X="722" Y="419" DragOperation="1" />
+  <SelectModelCommand ModelGuid="5387831c-7c93-41ad-849a-c66d8725841f" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="5387831c-7c93-41ad-849a-c66d8725841f" Name="Text" Value="asdasdasdNew Note" />
+  <SelectModelCommand ModelGuid="5387831c-7c93-41ad-849a-c66d8725841f" Modifiers="0" />
+  <DeleteModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" />
+  <UndoRedoCommand CmdOperation="0" />
+</Commands>

@@ -12,6 +12,7 @@ namespace Dynamo.Nodes
     [NodeName("Nurbs Spline Model Curve")]
     [NodeCategory(BuiltinNodeCategories.REVIT_REFERENCE)]
     [NodeDescription("Node to create a planar nurbs spline model curve.")]
+    [NodeSearchTags("curve", "model", "line", "revit", "nurbs")]
     public class ModelCurveNurbSpline : RevitTransactionNodeWithOneOutput
     {
         public ModelCurveNurbSpline()
@@ -72,6 +73,7 @@ namespace Dynamo.Nodes
     [NodeName("Model Curve")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_CREATE)]
     [NodeDescription("Creates a model curve.")]
+    [NodeSearchTags("curve", "model", "line", "revit")]
     public class ModelCurve : RevitTransactionNodeWithOneOutput
     {
         public ModelCurve()
@@ -224,6 +226,8 @@ namespace Dynamo.Nodes
                         }
                         ModelCurve.setCurveMethod(mc, c); // mc.GeometryCurve = c;
                     }
+                    else
+                        this.DeleteElement(this.Elements[0]);
 
                 }
                 else
