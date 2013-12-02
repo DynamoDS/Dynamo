@@ -13,13 +13,19 @@ namespace DSRevitNodes
     [RegisterForTrace]
     public class DSMaterial : AbstractElement
     {
+        #region Internal property
+
         /// <summary>
-        /// 
+        /// Internal reference to the Element
         /// </summary>
         internal Autodesk.Revit.DB.Material InternalMaterial
         {
             get; private set;
         }
+
+        #endregion
+
+        #region Private constructors
 
         /// <summary>
         /// Private constructor for DSMaterial
@@ -29,6 +35,10 @@ namespace DSRevitNodes
         {
             InternalSetMaterial(material);
         }
+
+        #endregion
+
+        #region Private mutators
 
         /// <summary>
         /// Set the internal Element, ELementId, and UniqueId
@@ -40,7 +50,11 @@ namespace DSRevitNodes
             this.InternalElementId = material.Id;
             this.InternalUniqueId = material.UniqueId;
         }
-        
+
+        #endregion
+
+        #region Public static constructors
+
         /// <summary>
         /// Select a material from the current document by the name
         /// </summary>
@@ -67,6 +81,10 @@ namespace DSRevitNodes
             };
         }
 
+        #endregion
+
+        #region Internal static constructors
+
         /// <summary>
         /// Wrap an element in the associated DS type
         /// </summary>
@@ -79,6 +97,8 @@ namespace DSRevitNodes
                 IsRevitOwned = true
             };
         }
+
+        #endregion
 
     }
 }
