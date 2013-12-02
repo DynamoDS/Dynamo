@@ -181,7 +181,7 @@ namespace DSRevitNodes
         /// </summary>
         /// <param name="grid"></param>
         /// <returns></returns>
-        internal static DSGrid FromExisting(Autodesk.Revit.DB.Grid grid)
+        internal static DSGrid FromExisting(Autodesk.Revit.DB.Grid grid, bool isRevitOwned)
         {
             if (grid == null)
             {
@@ -190,7 +190,7 @@ namespace DSRevitNodes
 
             return new DSGrid(grid)
             {
-                IsRevitOwned = true
+                IsRevitOwned = isRevitOwned
             };
         }
 

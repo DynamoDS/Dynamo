@@ -1,16 +1,28 @@
 ﻿using System;
 using Autodesk.Revit.DB;
+using DSNodeServices;
 using DSRevitNodes.Elements;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
 namespace DSRevitNodes
 {
-    class DSStucturalFraming
+    [RegisterForTrace]
+    public class DSStucturalFraming
     {
-        static DSFamilyInstance ByStartEndPoints(Point start, Point end, DSFamilySymbol framing_type)
+
+
+        public static DSFamilyInstance ByStartEndPoints(Point start, Point end, DSFamilySymbol framing_type)
         {
             throw new NotImplementedException();
         }
+
+        public static DSFamilyInstance ByCurve(DSCurve curve, Autodesk.DesignScript.Geometry.Vector upVector, DSFamilySymbol framingType)
+        {
+            
+        }
+
+
+
     }
 }
 

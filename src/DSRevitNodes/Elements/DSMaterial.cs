@@ -90,11 +90,11 @@ namespace DSRevitNodes
         /// </summary>
         /// <param name="material">The material</param>
         /// <returns></returns>
-        internal static DSMaterial FromExisting(Autodesk.Revit.DB.Material material)
+        internal static DSMaterial FromExisting(Autodesk.Revit.DB.Material material, bool isRevitOwned)
         {
             return new DSMaterial(material)
             {
-                IsRevitOwned = true
+                IsRevitOwned = isRevitOwned
             };
         }
 
