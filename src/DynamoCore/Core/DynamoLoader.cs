@@ -115,7 +115,7 @@ namespace Dynamo.Utilities
             }
 
 #if USE_DSENGINE
-            dynSettings.Controller.EngineController.LoadBuiltinLibraries();
+            dynSettings.Controller.EngineController.LoadLibraries();
 #endif
             AppDomain.CurrentDomain.AssemblyResolve -= resolver;
 

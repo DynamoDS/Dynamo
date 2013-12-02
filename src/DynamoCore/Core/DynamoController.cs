@@ -250,7 +250,7 @@ namespace Dynamo
             DynamoViewModel = (DynamoViewModel)Activator.CreateInstance(
                 viewModelType, new object[] { this, commandFilePath });
 
-            EngineController = new EngineController(this);
+            EngineController = new EngineController(this, false);
 
             // custom node loader
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -263,7 +263,9 @@ namespace Dynamo
             dynSettings.PackageLoader = new PackageLoader();
 
             dynSettings.PackageLoader.DoCachedPackageUninstalls();
+#if !USE_DSENGINE
             dynSettings.PackageLoader.LoadPackages();
+#endif
             
             FSchemeEnvironment = env;
 
@@ -607,7 +609,7 @@ namespace Dynamo
 
         public void ResetEngine()
         {
-            EngineController = new EngineController(this);
+            EngineController = new EngineController(this, true);
         }
 
         public void RequestRedraw()
