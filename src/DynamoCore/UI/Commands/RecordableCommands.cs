@@ -98,6 +98,9 @@ namespace Dynamo.ViewModels
                     case "OpenFileCommand":
                         command = OpenFileCommand.DeserializeCore(element);
                         break;
+                    case "RunCancelCommand":
+                        command = RunCancelCommand.DeserializeCore(element);
+                        break;
                     case "CreateNodeCommand":
                         command = CreateNodeCommand.DeserializeCore(element);
                         break;
@@ -249,6 +252,50 @@ namespace Dynamo.ViewModels
             {
                 XmlElementHelper helper = new XmlElementHelper(element);
                 helper.SetAttribute("XmlFilePath", this.XmlFilePath);
+            }
+
+            #endregion
+        }
+
+        public class RunCancelCommand : RecordableCommand
+        {
+            #region Public Class Methods
+
+            public RunCancelCommand(bool showErrors, bool cancelRun)
+            {
+                this.ShowErrors = showErrors;
+                this.CancelRun = cancelRun;
+            }
+
+            internal static RunCancelCommand DeserializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                bool showErrors = helper.ReadBoolean("ShowErrors");
+                bool cancelRun = helper.ReadBoolean("CancelRun");
+                return new RunCancelCommand(showErrors, cancelRun);
+            }
+
+            #endregion
+
+            #region Public Command Properties
+
+            internal bool ShowErrors { get; private set; }
+            internal bool CancelRun { get; private set; }
+
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+            {
+                dynamoViewModel.RunCancelImpl(this);
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("ShowErrors", this.ShowErrors);
+                helper.SetAttribute("CancelRun", this.CancelRun);
             }
 
             #endregion
