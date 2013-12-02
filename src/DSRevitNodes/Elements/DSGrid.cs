@@ -10,6 +10,9 @@ using Point = Autodesk.DesignScript.Geometry.Point;
 
 namespace DSRevitNodes
 {
+    /// <summary>
+    /// A Revit Grid Element
+    /// </summary>
     [RegisterForTrace]
     class DSGrid : AbstractElement
     {
@@ -20,6 +23,8 @@ namespace DSRevitNodes
         {
             get; private set;
         }
+
+        #region Private constructors
 
         /// <summary>
         /// Private constructor for wrapping an existing Element
@@ -64,6 +69,10 @@ namespace DSRevitNodes
             ElementBinder.CleanupAndSetElementForTrace(Document, this.InternalElementId);
         }
 
+        #endregion
+
+        #region Private mutators
+
         /// <summary>
         /// Set the internal Element, ElementId, and UniqueId
         /// </summary>
@@ -74,6 +83,22 @@ namespace DSRevitNodes
             this.InternalElementId = grid.Id;
             this.InternalUniqueId = grid.UniqueId;
         }
+
+        #endregion
+
+        #region Public properties
+
+        public Autodesk.DesignScript.Geometry.Curve Curve
+        {
+            get
+            {
+                return this.InternalGrid.Curve.ToProtoType();
+            }
+        }
+
+        #endregion
+
+        #region Public static constructors
 
         /// <summary>
         /// Create a Revit Grid Element in a Project along a Line.  
@@ -143,6 +168,10 @@ namespace DSRevitNodes
             return new DSGrid( (Autodesk.Revit.DB.Arc) arc.ToRevitType() );
         }
 
+        #endregion
+
+        #region Internal static constructor
+
         /// <summary>
         /// Wrap an existing Element in the associated DS type
         /// </summary>
@@ -160,6 +189,8 @@ namespace DSRevitNodes
                 IsRevitOwned = true
             };
         }
+
+        #endregion
 
     }
 }
