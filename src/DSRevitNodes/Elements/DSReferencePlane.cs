@@ -19,6 +19,8 @@ namespace DSRevitNodes
     [RegisterForTrace]
     public class DSReferencePlane : AbstractElement
     {
+        #region Internal properties
+
         /// <summary>
         /// Internal handle for the Revit object
         /// </summary>
@@ -26,6 +28,8 @@ namespace DSRevitNodes
         {
             get; private set;
         }
+
+        #endregion
 
         #region Private constructors
 

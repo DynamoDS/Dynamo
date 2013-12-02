@@ -78,6 +78,7 @@
     <Compile Include="Elements\DSFloorType.cs" />
     <Compile Include="Elements\DSForm.cs" />
     <Compile Include="Elements\DSSketchPlane.cs" />
+    <Compile Include="Elements\DSWallType.cs" />
     <Compile Include="GeometryConversion\ProtoToRevitCurve.cs" />
     <Compile Include="GeometryConversion\RevitToProtoCurve.cs" />
     <Compile Include="GeometryObjects\DSPlanarFace.cs" />
