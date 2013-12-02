@@ -29,9 +29,9 @@ namespace Dynamo.DSEngine
         /// <summary>
         /// libraries is a static property so we retain the loaded library information even after resetting EngineController 
         /// </summary>
-        private static List<string> libraries = new List<string>();
+        private static List<string> importedLibraries = new List<string>();
 
-        internal EngineController(DynamoController controller)
+        internal EngineController(DynamoController controller, bool isReset)
         {
             GraphToDSCompiler.GraphUtilities.Reset();
 
@@ -41,17 +41,17 @@ namespace Dynamo.DSEngine
             libraryServices.LibraryLoaded += this.LibraryLoaded;
 
             liveRunnerServices = new LiveRunnerServices(this);
-            foreach (string loadedLib in libraryServices.BuiltinLibraries)
+            // If EngineController is reset, then load those imported libraries, otherwise
+            // those imported libraries will be loaded in LoadLibraries().
+            if (isReset)
             {
-                if (!libraries.Contains(loadedLib))
-                {
-                    libraries.Add(loadedLib);
-                }
+                liveRunnerServices.ReloadAllLibraries(libraryServices.BuiltinLibraries.Union(importedLibraries).ToList());
+                GraphToDSCompiler.GraphUtilities.PreloadAssembly(importedLibraries);
             }
-
-            // Load the libraries to the GraphUitlities core (This core is referenced by UI)
-            GraphToDSCompiler.GraphUtilities.PreloadAssembly(libraries);
-            liveRunnerServices.ReloadAllLibraries(libraries);
+            else
+            {
+                liveRunnerServices.ReloadAllLibraries(libraryServices.BuiltinLibraries);
+            }
 
             astBuilder = new AstBuilder(this);
 
@@ -63,7 +63,7 @@ namespace Dynamo.DSEngine
         /// <summary>
         /// Load builtin functions and libraries into Dynamo.
         /// </summary>
-        public void LoadBuiltinLibraries()
+        public void LoadLibraries()
         {
             LoadFunctions(libraryServices[LibraryServices.Categories.BuiltIns]);
             LoadFunctions(libraryServices[LibraryServices.Categories.Operators]);
@@ -71,6 +71,12 @@ namespace Dynamo.DSEngine
             foreach (var library in libraryServices.BuiltinLibraries)
             {
                 LoadFunctions(libraryServices[library]);
+            }
+
+            var libs = new List<string>(importedLibraries);
+            foreach (var lib in libs)
+            {
+                libraryServices.ImportLibrary(lib);
             }
         }
 
@@ -365,9 +371,9 @@ namespace Dynamo.DSEngine
             LoadFunctions(libraryServices[newLibrary]);
 
             // Reset the VM
-            libraries.AddRange(libraryServices.BuiltinLibraries);
-            libraries.AddRange(libraryServices.ImportedLibraries);
-            liveRunnerServices.ReloadAllLibraries(libraries);
+            importedLibraries.Clear();
+            importedLibraries.AddRange(libraryServices.ImportedLibraries);
+            liveRunnerServices.ReloadAllLibraries(libraryServices.BuiltinLibraries.Union(importedLibraries).ToList());
 
             // Mark all nodes as dirty so that AST for the whole graph will be
             // regenerated.
