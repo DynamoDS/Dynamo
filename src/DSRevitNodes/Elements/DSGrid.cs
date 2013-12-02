@@ -1,168 +1,165 @@
 ﻿using System;
 using Autodesk.Revit.DB;
 using Autodesk.DesignScript.Geometry;
+using DSNodeServices;
+using DSRevitNodes.Elements;
+using DSRevitNodes.GeometryConversion;
+using RevitServices.Persistence;
+using RevitServices.Transactions;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
 namespace DSRevitNodes
 {
-    class DSGrid
+    [RegisterForTrace]
+    class DSGrid : AbstractElement
     {
-        static DSGrid ByStartPtEndPt(Point start, Point end)
+        /// <summary>
+        /// Internal reference to Element
+        /// </summary>
+        internal Autodesk.Revit.DB.Grid InternalGrid
         {
-            throw new NotImplementedException();
+            get; private set;
         }
+
+        /// <summary>
+        /// Private constructor for wrapping an existing Element
+        /// </summary>
+        /// <param name="grid"></param>
+        private DSGrid(Autodesk.Revit.DB.Grid grid)
+        {
+            InternalSetGrid(grid);
+        }
+
+        /// <summary>
+        /// Private constructor that creates a new Element every time
+        /// </summary>
+        /// <param name="line"></param>
+        private DSGrid(Autodesk.Revit.DB.Line line)
+        {
+            // Changing the underlying curve requires destroying the Grid
+            TransactionManager.GetInstance().EnsureInTransaction(Document);
+
+            Autodesk.Revit.DB.Grid g = Document.Create.NewGrid( line );
+            InternalSetGrid(g);
+
+            TransactionManager.GetInstance().TransactionTaskDone();
+
+            ElementBinder.CleanupAndSetElementForTrace(Document, this.InternalElementId);
+        }
+
+        /// <summary>
+        /// Private constructor that creates a new Element every time
+        /// </summary>
+        /// <param name="arc"></param>
+        private DSGrid(Autodesk.Revit.DB.Arc arc)
+        {
+            // Changing the underlying curve requires destroying the Grid
+            TransactionManager.GetInstance().EnsureInTransaction(Document);
+
+            Autodesk.Revit.DB.Grid g = Document.Create.NewGrid(arc);
+            InternalSetGrid(g);
+
+            TransactionManager.GetInstance().TransactionTaskDone();
+
+            ElementBinder.CleanupAndSetElementForTrace(Document, this.InternalElementId);
+        }
+
+        /// <summary>
+        /// Set the internal Element, ElementId, and UniqueId
+        /// </summary>
+        /// <param name="grid"></param>
+        private void InternalSetGrid(Autodesk.Revit.DB.Grid grid)
+        {
+            this.InternalGrid = grid;
+            this.InternalElementId = grid.Id;
+            this.InternalUniqueId = grid.UniqueId;
+        }
+
+        /// <summary>
+        /// Create a Revit Grid Element in a Project along a Line.  
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        public static DSGrid ByLine(Autodesk.DesignScript.Geometry.Line line)
+        {
+            if (Document.IsFamilyDocument)
+            {
+                throw new Exception("A Grid Element can only be created in a Revit Project");
+            }
+
+            if (line == null)
+            {
+                throw new ArgumentNullException("line");
+            }
+
+            return new DSGrid( (Autodesk.Revit.DB.Line) line.ToRevitType());
+        }
+
+        /// <summary>
+        /// Create a Revit Grid Element in a project between two end points
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <returns></returns>
+        public static DSGrid ByStartAndEndPoint(Autodesk.DesignScript.Geometry.Point start, Autodesk.DesignScript.Geometry.Point end)
+        {
+            if (Document.IsFamilyDocument)
+            {
+                throw new Exception("A Grid Element can only be created in a Revit Project");
+            }
+
+            if (start == null)
+            {
+                throw new ArgumentNullException("start");
+            }
+
+            if (end == null)
+            {
+                throw new ArgumentNullException("end");
+            }
+
+            var line = Autodesk.Revit.DB.Line.CreateBound(start.ToXyz(), end.ToXyz());
+
+            return new DSGrid(line);
+        }
+
+        /// <summary>
+        /// Create a Revit Grid Element in a project along an Arc
+        /// </summary>
+        /// <param name="arc"></param>
+        /// <returns></returns>
+        public static DSGrid ByArc(Autodesk.DesignScript.Geometry.Arc arc)
+        {
+            if (Document.IsFamilyDocument)
+            {
+                throw new Exception("A Grid Element can only be created in a Revit Project");
+            }
+
+            if (arc == null)
+            {
+                throw new ArgumentNullException("arc");
+            }
+
+            return new DSGrid( (Autodesk.Revit.DB.Arc) arc.ToRevitType() );
+        }
+
+        /// <summary>
+        /// Wrap an existing Element in the associated DS type
+        /// </summary>
+        /// <param name="grid"></param>
+        /// <returns></returns>
+        internal static DSGrid FromExisting(Autodesk.Revit.DB.Grid grid)
+        {
+            if (grid == null)
+            {
+                throw new ArgumentNullException("grid");
+            }
+
+            return new DSGrid(grid)
+            {
+                IsRevitOwned = true
+            };
+        }
+
     }
 }
-
-/*
- [NodeName("Column Grid")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_DATUMS)]
-    [NodeDescription("Creates a column grid datum")]
-    public class ColumnGrid : RevitTransactionNodeWithOneOutput
-    {
-        public ColumnGrid()
-        {
-            InPortData.Add(new PortData("line", "Geometry Line.", typeof(Value.Container))); // MDJ TODO - expand this to work with curved grids.
-            OutPortData.Add(new PortData("grid", "Grid", typeof(Value.Container)));
-
-            RegisterAllPorts();
-        }
-
-        public override Value Evaluate(FSharpList<Value> args)
-        {
-
-            var input = args[0];
-
-            //If we are receiving a list, we must create a column grid for each curve in the list.
-            if (input.IsList)
-            {
-                var curveList = (input as Value.List).Item;
-
-                //Counter to keep track of how many column grids we've made. We'll use this to delete old
-                //elements later.
-                int count = 0;
-
-                //We create our output by...
-                var result = Utils.SequenceToFSharpList(
-                   curveList.Select(
-                    //..taking each element in the list and...
-                      delegate(Value x)
-                      {
-                          Grid grid;
-                          //...if we already have elements made by this node in a previous run...
-                          if (this.Elements.Count > count)
-                          {
-                              //...we attempt to fetch it from the document...
-                              if (dynUtils.TryGetElement(this.Elements[count], out grid))
-                              {
-                                  //...and if we're successful, update it's position... 
-                                  //grid.Curve = (Curve)((Value.Container)x).Item; // these are all readonly, how to modify exising grid then?
-                                  //MDJ TODO - figure out how to move grid or use document.Create.NewGrid(geomLine)
-                                  // hack - make a new one for now
-                                  string gridNum = grid.Name;
-                                  grid = this.UIDocument.Document.Create.NewGrid(
-                                     (Line)((Value.Container)x).Item
-                                  );
-                                  grid.Name = gridNum;
-
-                              }
-                              else
-                              {
-                                  //...otherwise, we can make a new column grid and replace it in the list of
-                                  //previously created grids.
-                                  //grid = this.UIDocument.Document.IsFamilyDocument
-                                  //?
-                                    //this.UIDocument.Document.FamilyCreate.NewLevel(
-                                    // (double)((Value.Number)x).Item
-                                  //)
-                                  //: 
-                                  grid = this.UIDocument.Document.Create.NewGrid(
-                                     (Line)((Value.Container)x).Item
-                                  );
-                                  this.Elements[0] = grid.Id;
-
-                              }
-                          }
-                          //...otherwise...
-                          else
-                          {
-                              //...we create a new column grid...
-                              //grid = this.UIDocument.Document.IsFamilyDocument
-                              //?
-                              //this.UIDocument.Document.FamilyCreate.NewLevel(
-                              // (double)((Value.Number)x).Item
-                              //)
-                              //: 
-                              grid = this.UIDocument.Document.Create.NewGrid(
-                                 (Line)((Value.Container)x).Item
-                              );
-                              //...and store it in the element list for future runs.
-                              this.Elements.Add(grid.Id);
-
-                          }
-                          //Finally, we update the counter, and return a new Value containing the grid.
-                          //This Value will be placed in the Value.List that will be passed downstream from this
-                          //node.
-                          count++;
-                          return Value.NewContainer(grid);
-                      }
-                   )
-                );
-
-                //Now that we've created all the column grids from this run, we delete all of the
-                //extra ones from the previous run.
-                foreach (var e in this.Elements.Skip(count))
-                {
-                    this.DeleteElement(e);
-                }
-
-                //Fin
-                return Value.NewList(result);
-            }
-            //If we're not receiving a list, we will just assume we received one double height.
-            else
-            {
-                //Column grid elements take in one curve for their geometry
-                Line c = (Line)((Value.Container)args[0]).Item;
-
-                Grid grid;
-
-                if (this.Elements.Any())
-                {
-                    if (dynUtils.TryGetElement(this.Elements[0], out grid))
-                    {
-                        grid = this.UIDocument.Document.Create.NewGrid(c);
-
-                    }
-                    else
-                    {
-                        //grid = this.UIDocument.Document.IsFamilyDocument
-                        //   ? this.UIDocument.Document.FamilyCreate.NewLevel(h)
-                        //   : 
-                        grid = this.UIDocument.Document.Create.NewGrid(c);
-                        this.Elements[0] = grid.Id;
-                    }
-                }
-                else
-                {
-                    //grid = this.UIDocument.Document.IsFamilyDocument
-                    //   ? this.UIDocument.Document.FamilyCreate.NewLevel(h)
-                    //   : 
-                    grid = this.UIDocument.Document.Create.NewGrid(c);
-                    this.Elements.Add(grid.Id);
-                }
-
-                //Now that we've created this single Level from this run, we delete all of the
-                // potential extra ones from the previous run.
-                // this is to handle going from a list down to a simgle element.
-                foreach (var e in this.Elements.Skip(1))
-                {
-                    this.DeleteElement(e);
-                }
-
-                return Value.NewContainer(grid);
-            }
-        }
-    }
-
-*/
