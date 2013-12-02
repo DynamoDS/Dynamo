@@ -127,6 +127,18 @@ namespace Dynamo.Tests.UI
         }
 
         [Test, RequiresSTA]
+        public void TestRunCancelCommand()
+        {
+            bool showErrors = randomizer.Next(2) == 0;
+            bool cancelRun = randomizer.Next(2) == 0;
+
+            var cmdOne = new DynCmd.RunCancelCommand(showErrors, cancelRun);
+            var cmdTwo = DuplicateAndCompare(cmdOne);
+            Assert.AreEqual(cmdOne.ShowErrors, cmdTwo.ShowErrors);
+            Assert.AreEqual(cmdOne.CancelRun, cmdTwo.CancelRun);
+        }
+
+        [Test, RequiresSTA]
         public void TestCreateNodeCommand()
         {
             // Create the command in completely unpredictable states. These 
@@ -535,6 +547,23 @@ namespace Dynamo.Tests.UI
         {
             RunCommandsFromFile("CreateNodesAndConnectors.xml");
             Assert.AreEqual(4, workspace.Connectors.Count);
+        }
+
+        [Test, RequiresSTA]
+        public void TestCreateNodesAndRunExpression()
+        {
+            RunCommandsFromFile("CreateNodesAndRunExpression.xml");
+            var number1 = GetNode("e37873fb-ef3f-4864-b7e5-9417e0ad014c") as DoubleInput;
+            var number2 = GetNode("977ce97c-22f5-4155-ae22-d0c3a6f82f19") as DoubleInput;
+            var addition = GetNode("cf8c52b1-fbee-4674-ba73-6ee0d09463f2") as Addition;
+
+            Assert.IsNotNull(number1);
+            Assert.IsNotNull(number2);
+            Assert.IsNotNull(addition);
+
+            Assert.AreEqual(4, ((number1.OldValue as FScheme.Value.Number).Item), 0.000001);
+            Assert.AreEqual(2, ((number2.OldValue as FScheme.Value.Number).Item), 0.000001);
+            Assert.AreEqual(6, ((addition.OldValue as FScheme.Value.Number).Item), 0.000001);
         }
 
         [Test, RequiresSTA]
