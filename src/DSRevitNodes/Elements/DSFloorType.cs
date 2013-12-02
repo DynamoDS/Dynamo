@@ -14,6 +14,8 @@ namespace DSRevitNodes.Elements
     /// http://revitapisearch.com.s3-website-us-east-1.amazonaws.com/html/b6fd8c08-7eea-1ab4-b7ab-096778b46e8f.htm
     public class DSFloorType : AbstractElement
     {
+        #region Internal properties
+
         /// <summary>
         /// An internal reference to the FloorType
         /// </summary>
@@ -21,6 +23,16 @@ namespace DSRevitNodes.Elements
         {
             get; private set;
         }
+
+        /// <summary>
+        /// Reference to the Element
+        /// </summary>
+        internal override Element InternalElement
+        {
+            get { return InternalFloorType; }
+        }
+
+        #endregion
 
         #region Private constructors
 

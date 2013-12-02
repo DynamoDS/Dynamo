@@ -12,10 +12,23 @@ namespace DSRevitNodes.Elements
     [RegisterForTrace]
     public class DSForm : AbstractElement
     {
+
+        #region Internal Properties
+
         internal Autodesk.Revit.DB.Form InternalForm
         {
             get; private set;
         }
+
+        /// <summary>
+        /// Reference to the Element
+        /// </summary>
+        internal override Element InternalElement
+        {
+            get { return InternalForm; }
+        }
+
+        #endregion
 
         #region Private constructor
 

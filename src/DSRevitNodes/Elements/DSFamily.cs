@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Autodesk.Revit.DB;
 using DSNodeServices;
 using RevitServices.Transactions;
 
@@ -18,6 +19,14 @@ namespace DSRevitNodes.Elements
         internal Autodesk.Revit.DB.Family InternalFamily
         {
             get; private set;
+        }
+
+        /// <summary>
+        /// Reference to the Element
+        /// </summary>
+        internal override Element InternalElement
+        {
+            get { return InternalFamily; }
         }
 
         #endregion

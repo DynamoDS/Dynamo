@@ -1,26 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Autodesk.Revit.DB;
-using DSRevitNodes.Elements;
+using DSNodeServices;
 using DSRevitNodes.GeometryConversion;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
-using Curve = Autodesk.DesignScript.Geometry.Curve;
 
-namespace DSRevitNodes
+namespace DSRevitNodes.Elements.Views
 {
     /// <summary>
-    /// A Revit Floor
+    /// A Revit ViewDrafting
     /// </summary>
-    public class DSFloor : AbstractElement
+    [RegisterForTrace]
+    public class DSDraftingView : AbstractView
     {
+
         #region Internal properties
 
         /// <summary>
-        /// An internal handle on the Revit floor
+        /// An internal handle on the Revit element
         /// </summary>
-        internal Autodesk.Revit.DB.Floor InternalFloor
+        internal Autodesk.Revit.DB.ViewDrafting InternalViewDrafting
         {
             get; private set;
         }
@@ -28,9 +30,9 @@ namespace DSRevitNodes
         /// <summary>
         /// Reference to the Element
         /// </summary>
-        internal override Element InternalElement
+        internal override Autodesk.Revit.DB.Element InternalElement
         {
-            get { return InternalFloor; }
+            get { return InternalViewDrafting; }
         }
 
         #endregion
@@ -40,22 +42,25 @@ namespace DSRevitNodes
         /// <summary>
         /// Private constructor
         /// </summary>
-        private DSFloor(Autodesk.Revit.DB.Floor floor)
+        private DSDraftingView(Autodesk.Revit.DB.ViewDrafting view)
         {
-            InternalSetFloor(floor);
+            InternalSetDraftingView(view);
         }
       
         /// <summary>
         /// Private constructor
         /// </summary>
-        private DSFloor(Autodesk.Revit.DB.CurveArray curveArray, Autodesk.Revit.DB.FloorType floorType, Autodesk.Revit.DB.Level level)
+        private DSDraftingView(string name)
         {
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
-            // we assume the floor is not structural here, this may be a bad assumption
-            var floor = Document.Create.NewFloor(curveArray, floorType, level, false);
+            ViewDrafting vd = Document.Create.NewViewDrafting();
 
-            InternalSetFloor( floor );
+            //rename the view
+            if (!vd.Name.Equals(name))
+                vd.Name = CreateUniqueViewName(name);
+
+            InternalSetDraftingView(vd);
 
             TransactionManager.GetInstance().TransactionTaskDone();
 
@@ -68,12 +73,12 @@ namespace DSRevitNodes
 
 
         /// <summary>
-        /// Set the InternalFloor property and the associated element id and unique id
+        /// Set the InternalViewDrafting property and the associated element id and unique id
         /// </summary>
         /// <param name="floor"></param>
-        private void InternalSetFloor(Autodesk.Revit.DB.Floor floor)
+        private void InternalSetDraftingView(Autodesk.Revit.DB.ViewDrafting floor)
         {
-            this.InternalFloor = floor;
+            this.InternalViewDrafting = floor;
             this.InternalElementId = floor.Id;
             this.InternalUniqueId = floor.UniqueId;
         }
@@ -88,41 +93,28 @@ namespace DSRevitNodes
         /// <param name="outline"></param>
         /// <param name="level"></param>
         /// <returns>The floor</returns>
-        public static DSFloor ByOutline( Autodesk.DesignScript.Geometry.Curve[] outline, DSFloorType floorType, DSLevel level)
+        public static DSDraftingView ByName( string name )
         {
-            if (outline == null)
+            if (name == null)
             {
-                throw new ArgumentNullException("outline");
+                throw new ArgumentNullException("name");
             }
 
-            if ( level == null )
-            {
-                throw new ArgumentNullException("level");
-            }
-
-            if (outline.Count() < 3)
-            {
-                throw new Exception("Outline must have at least 3 edges to enclose an area.");
-            }
-
-            var ca = new CurveArray();
-            outline.ToList().ForEach(x => ca.Append(x.ToRevitType())); 
-
-            return new DSFloor(ca, floorType.InternalFloorType, level.InternalLevel );
+            return new DSDraftingView( name );
         }
         #endregion
 
         #region Internal static constructors
 
         /// <summary>
-        /// Create a Floor from a user selected Element.
+        /// Create a View from a user selected Element.
         /// </summary>
         /// <param name="pt"></param>
         /// <param name="isRevitOwned"></param>
         /// <returns></returns>
-        internal static DSFloor FromExisting(Autodesk.Revit.DB.Floor floor, bool isRevitOwned)
+        internal static DSDraftingView FromExisting(Autodesk.Revit.DB.ViewDrafting view, bool isRevitOwned)
         {
-            return new DSFloor(floor)
+            return new DSDraftingView(view)
             {
                 IsRevitOwned = isRevitOwned
             };

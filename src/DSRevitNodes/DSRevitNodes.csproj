@@ -75,12 +75,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Elements\AbstractElement.cs" />
+    <Compile Include="Elements\Views\DSView3D.cs" />
     <Compile Include="Elements\DSFloorType.cs" />
     <Compile Include="Elements\DSForm.cs" />
     <Compile Include="Elements\DSSketchPlane.cs" />
+    <Compile Include="Elements\Views\DSDraftingView.cs" />
+    <Compile Include="Elements\Views\DSPlanView.cs" />
+    <Compile Include="Elements\Views\DSSheetView.cs" />
+    <Compile Include="Elements\Views\DSTableView.cs" />
     <Compile Include="Elements\DSWallType.cs" />
+    <Compile Include="Elements\Views\DSSectionView.cs" />
     <Compile Include="GeometryConversion\ProtoToRevitCurve.cs" />
     <Compile Include="GeometryConversion\RevitToProtoCurve.cs" />
+    <Compile Include="GeometryObjects\DSBoundingBox.cs" />
     <Compile Include="GeometryObjects\DSPlanarFace.cs" />
     <Compile Include="References\AbstractReference.cs" />
     <Compile Include="References\DSFaceReference.cs" />
@@ -113,7 +120,7 @@
     <Compile Include="Elements\DSReferencePoint.cs" />
     <Compile Include="Elements\DSSpatialField.cs" />
     <Compile Include="Elements\DSStucturalFraming.cs" />
-    <Compile Include="Elements\DSView.cs" />
+    <Compile Include="Elements\Views\AbstractView.cs" />
     <Compile Include="Elements\DSWall.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="References\DSPlaneReference.cs" />

@@ -32,6 +32,14 @@ namespace DSRevitNodes
             get; private set;
         }
 
+        /// <summary>
+        /// Reference to the Element
+        /// </summary>
+        internal override Autodesk.Revit.DB.Element InternalElement
+        {
+            get { return InternalReferencePoint; }
+        }
+
         #endregion
 
         #region Private constructors

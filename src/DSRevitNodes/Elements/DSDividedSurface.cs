@@ -25,6 +25,14 @@ namespace DSRevitNodes.Elements
             get; private set;
         }
 
+        /// <summary>
+        /// Reference to the Element
+        /// </summary>
+        internal override Element InternalElement
+        {
+            get { return InternalDividedSurface; }
+        }
+
         #endregion
 
         #region Private constructors

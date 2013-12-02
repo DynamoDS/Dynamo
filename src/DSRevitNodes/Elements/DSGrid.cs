@@ -16,7 +16,7 @@ namespace DSRevitNodes
     [RegisterForTrace]
     public class DSGrid : AbstractElement
     {
-        #region Internal property
+        #region Internal properties
 
         /// <summary>
         /// Internal reference to Element
@@ -24,6 +24,14 @@ namespace DSRevitNodes
         internal Autodesk.Revit.DB.Grid InternalGrid
         {
             get; private set;
+        }
+
+        /// <summary>
+        /// Reference to the Element
+        /// </summary>
+        internal override Element InternalElement
+        {
+            get { return InternalGrid; }
         }
 
         #endregion

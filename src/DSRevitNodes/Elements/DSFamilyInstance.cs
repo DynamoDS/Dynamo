@@ -4,6 +4,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Structure;
 using DSNodeServices;
 using DSRevitNodes.Elements;
+using DSRevitNodes.GeometryObjects;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Point = Autodesk.DesignScript.Geometry.Point;
@@ -25,6 +26,15 @@ namespace DSRevitNodes
         {
             get; private set;
         }
+
+        /// <summary>
+        /// Reference to the Element
+        /// </summary>
+        internal override Element InternalElement
+        {
+            get { return InternalFamilyInstance; }
+        }
+
 
         #endregion
 

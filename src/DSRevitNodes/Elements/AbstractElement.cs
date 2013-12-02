@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using Autodesk.Revit.DB;
+using DSRevitNodes.GeometryObjects;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 
@@ -25,6 +26,14 @@ namespace DSRevitNodes.Elements
         /// is Revit owned, it should not be deleted by Dispose().
         /// </summary>
         internal bool IsRevitOwned = false;
+
+        /// <summary>
+        /// A reference to the element
+        /// </summary>
+        internal abstract Element InternalElement
+        {
+            get;
+        }
 
         /// <summary>
         /// The element id for this element
