@@ -17,8 +17,6 @@ namespace DSRevitNodes.Elements
     [RegisterForTrace]
     public class DSAdaptiveComponent : AbstractElement
     {
-        private FamilyInstance familyInstance;
-
         #region Properties
 
         /// <summary>
@@ -27,6 +25,14 @@ namespace DSRevitNodes.Elements
         internal Autodesk.Revit.DB.FamilyInstance InternalFamilyInstance
         {
             get; private set;
+        }
+
+        /// <summary>
+        /// Reference to the Element
+        /// </summary>
+        internal override Element InternalElement
+        {
+            get { return InternalFamilyInstance; }
         }
 
         #endregion
@@ -356,6 +362,6 @@ namespace DSRevitNodes.Elements
 
         #endregion
 
-
+        
     }
 }

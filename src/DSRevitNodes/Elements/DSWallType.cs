@@ -21,6 +21,14 @@ namespace DSRevitNodes.Elements
             get; private set;
         }
 
+        /// <summary>
+        /// Reference to the Element
+        /// </summary>
+        internal override Autodesk.Revit.DB.Element InternalElement
+        {
+            get { return InternalWallType; }
+        }
+
         #endregion
 
         #region Private constructors

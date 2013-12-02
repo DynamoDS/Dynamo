@@ -18,7 +18,7 @@ namespace DSRevitNodes
     public class DSFamilySymbol: AbstractElement
     {
 
-        #region internal Properties
+        #region Internal Properties
 
         /// <summary>
         /// Internal wrapper property
@@ -27,6 +27,14 @@ namespace DSRevitNodes
         {
             get;
             private set;
+        }
+
+        /// <summary>
+        /// Reference to the Element
+        /// </summary>
+        internal override Element InternalElement
+        {
+            get { return InternalFamilySymbol; }
         }
 
         #endregion

@@ -20,9 +20,20 @@ namespace DSRevitNodes
 
         #region Internal properties
 
+        /// <summary>
+        /// Reference to the Element
+        /// </summary>
         internal Autodesk.Revit.DB.FreeFormElement InternalFreeFormElement
         {
             get; private set;
+        }
+
+        /// <summary>
+        /// Reference to the Element
+        /// </summary>
+        internal override Element InternalElement
+        {
+            get { return InternalFreeFormElement; }
         }
 
         #endregion

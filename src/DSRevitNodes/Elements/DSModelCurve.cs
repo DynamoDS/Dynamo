@@ -24,9 +24,20 @@ namespace DSRevitNodes
 
         #region Internal properties
 
+        /// <summary>
+        /// Reference to the Element
+        /// </summary>
         internal Autodesk.Revit.DB.ModelCurve InternalModelCurve
         {
             get; private set;
+        }
+
+        /// <summary>
+        /// Reference to the Element
+        /// </summary>
+        internal override Autodesk.Revit.DB.Element InternalElement
+        {
+            get { return InternalModelCurve; }
         }
 
         #endregion

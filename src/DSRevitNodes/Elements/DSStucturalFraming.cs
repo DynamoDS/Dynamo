@@ -10,7 +10,6 @@ namespace DSRevitNodes
     public class DSStucturalFraming
     {
 
-
         public static DSFamilyInstance ByStartEndPoints(Point start, Point end, DSFamilySymbol framing_type)
         {
             throw new NotImplementedException();
@@ -18,10 +17,8 @@ namespace DSRevitNodes
 
         public static DSFamilyInstance ByCurve(DSCurve curve, Autodesk.DesignScript.Geometry.Vector upVector, DSFamilySymbol framingType)
         {
-            
+            throw new NotImplementedException();
         }
-
-
 
     }
 }

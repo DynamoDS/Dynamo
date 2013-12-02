@@ -13,7 +13,7 @@ namespace DSRevitNodes
     [RegisterForTrace]
     public class DSMaterial : AbstractElement
     {
-        #region Internal property
+        #region Internal properties
 
         /// <summary>
         /// Internal reference to the Element
@@ -21,6 +21,14 @@ namespace DSRevitNodes
         internal Autodesk.Revit.DB.Material InternalMaterial
         {
             get; private set;
+        }
+
+        /// <summary>
+        /// Reference to the Element
+        /// </summary>
+        internal override Autodesk.Revit.DB.Element InternalElement
+        {
+            get { return InternalMaterial; }
         }
 
         #endregion
