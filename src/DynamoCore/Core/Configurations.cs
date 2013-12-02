@@ -9,11 +9,6 @@ namespace Dynamo.Core
 {
     public class Configurations
     {
-        #region Dynamo Universal Constants
-        // Add 0.5 to place the point in the middle of a pixel to sharpen it
-        public static readonly double PixelSharpeningConstant = 0.5;
-        #endregion
-
         #region Canvas Configurations
         //public static readonly double Minimum
 
@@ -102,6 +97,7 @@ namespace Dynamo.Core
         #endregion
 
         #region Node Tooltip
+        public static int ToolTipFadeInDelayInMS = 2000;
 
         public static SolidColorBrush NodeTooltipFrameFill = new SolidColorBrush(Color.FromRgb(255, 255, 255));
         public static double NodeTooltipFrameStrokeThickness = 1;
