@@ -338,8 +338,20 @@ namespace Dynamo.Models
         /// <param name="parameters">The path the the file.</param>
         public void Open(object parameters)
         {
-            string xmlPath = parameters as string;
+            string xmlFilePath = parameters as string;
+            var command = new DynCmd.OpenFileCommand(xmlFilePath);
+            dynSettings.Controller.DynamoViewModel.ExecuteCommand(command);
+        }
 
+        internal bool CanOpen(object parameters)
+        {
+            if (File.Exists(parameters.ToString()))
+                return true;
+            return false;
+        }
+
+        internal void OpenInternal(string xmlPath)
+        {
             dynSettings.Controller.IsUILocked = true;
 
             if (!OpenDefinition(xmlPath))
@@ -357,13 +369,6 @@ namespace Dynamo.Models
 
             //clear the clipboard to avoid copying between dyns
             dynSettings.Controller.ClipBoard.Clear();
-        }
-
-        internal bool CanOpen(object parameters)
-        {
-            if (File.Exists(parameters.ToString()))
-                return true;
-            return false;
         }
 
         internal void PostUIActivation(object parameter)
