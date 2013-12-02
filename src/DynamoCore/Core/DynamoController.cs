@@ -250,7 +250,7 @@ namespace Dynamo
             DynamoViewModel = (DynamoViewModel)Activator.CreateInstance(
                 viewModelType, new object[] { this, commandFilePath });
 
-            EngineController = new EngineController(this);
+            EngineController = new EngineController(this, false);
 
             // custom node loader
             string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -607,7 +607,7 @@ namespace Dynamo
 
         public void ResetEngine()
         {
-            EngineController = new EngineController(this);
+            EngineController = new EngineController(this, true);
         }
 
         public void RequestRedraw()

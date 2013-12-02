@@ -27,6 +27,11 @@ namespace Dynamo.Core
         public static readonly int GridSpacing = 100;
         public static readonly int GridThickness = 2;
         public static readonly Color GridLineColor = Color.FromRgb(232, 232, 232);
+
+        // Double Clicking
+        // Maximum distance allowed between first and second click to be accepted as a double click
+        public static readonly int DoubleClickAcceptableDistance = 10; // in pixel
+
         #endregion
 
         #region Tab Bar Configurations

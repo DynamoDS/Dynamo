@@ -19,6 +19,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
     [NodeDescription("Shows a dynamic preview of geometry.")]
     [AlsoKnownAs("Dynamo.Nodes.dyn3DPreview", "Dynamo.Nodes.3DPreview")]
+    [IsDesignScriptCompatible]
     public class Watch3D : NodeWithOneOutput, IWatchViewModel
     {
         private bool _requiresRedraw = false;
