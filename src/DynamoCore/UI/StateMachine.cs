@@ -525,17 +525,22 @@ namespace Dynamo.ViewModels
 
                 public static bool CheckIsDoubleClick(MouseClickHistory prevClick, MouseClickHistory curClick)
                 {
-                    if (prevClick == null) return false;
+                    if (prevClick == null || (curClick.Source != prevClick.Source))
+                        return false; // Click events did not come from same source
 
-                    if (curClick.Source == prevClick.Source) // Check same source and same position
-                    {   // If current mouse click time is lesser than Windows Setting's DoubleClickTime
-                        int clickInterval = curClick.Timestamp - prevClick.Timestamp;
-                        if (clickInterval < System.Windows.Forms.SystemInformation.DoubleClickTime)
-                            if (Math.Abs(prevClick.Position.X - curClick.Position.X) <= Configurations.DoubleClickAcceptableDistance)
-                                if (Math.Abs(prevClick.Position.Y - curClick.Position.Y) <= Configurations.DoubleClickAcceptableDistance)
-                                    return true;
-                    }
-                    return false;
+                    int clickInterval = curClick.Timestamp - prevClick.Timestamp;
+                    if (clickInterval > System.Windows.Forms.SystemInformation.DoubleClickTime)
+                        return false; // Time difference is more than system DoubleClickTime
+
+                    double diff = Math.Abs(prevClick.Position.X - curClick.Position.X);
+                    if (diff > Configurations.DoubleClickAcceptableDistance)
+                        return false; // Click is beyond acceptable threshold.
+
+                    diff = Math.Abs(prevClick.Position.Y - curClick.Position.Y);
+                    if (diff > Configurations.DoubleClickAcceptableDistance)
+                        return false; // Click is beyond acceptable threshold.
+
+                    return true;
                 }
             }
 
