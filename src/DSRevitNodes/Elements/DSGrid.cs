@@ -14,8 +14,10 @@ namespace DSRevitNodes
     /// A Revit Grid Element
     /// </summary>
     [RegisterForTrace]
-    class DSGrid : AbstractElement
+    public class DSGrid : AbstractElement
     {
+        #region Internal property
+
         /// <summary>
         /// Internal reference to Element
         /// </summary>
@@ -23,6 +25,8 @@ namespace DSRevitNodes
         {
             get; private set;
         }
+
+        #endregion
 
         #region Private constructors
 
