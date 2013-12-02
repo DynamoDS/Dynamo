@@ -906,13 +906,12 @@ namespace Dynamo.ViewModels
             if (!FullscreenWatchShowing)
                 return;
 
-            if (CanNavigateBackground)
+            CanNavigateBackground = !CanNavigateBackground;
+
+            if (!CanNavigateBackground)
             {
-                CanNavigateBackground = false;
-            }
-            else
-            {
-                CanNavigateBackground = true;
+                // Return focus back to Search View (Search Field)
+                dynSettings.Controller.SearchViewModel.OnRequestReturnFocusToSearch(this, new EventArgs());
             }
         }
 
