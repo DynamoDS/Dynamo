@@ -6,6 +6,9 @@ using RevitServices.Persistence;
 
 namespace DSRevitNodes.Elements
 {
+    /// <summary>
+    /// A Revit WallType
+    /// </summary>
     public class DSWallType : AbstractElement
     {
         #region Internal properties
