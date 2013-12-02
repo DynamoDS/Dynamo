@@ -601,7 +601,7 @@ namespace Dynamo.Tests.UI
         {
             // The third undo operation should not crash.
             RunCommandsFromFile("Defect_MAGN_775.xml");
-            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Nodes.Count);
             Assert.AreEqual(0, workspace.Connectors.Count);
         }
 
