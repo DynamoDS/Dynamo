@@ -46,7 +46,7 @@ namespace DSRevitNodes
         /// </summary>
         /// <param name="name">The name of the material</param>
         /// <returns></returns>
-        public DSMaterial ByName(string name)
+        public static DSMaterial ByName(string name)
         {
             if (name == null)
             {
@@ -72,7 +72,7 @@ namespace DSRevitNodes
         /// </summary>
         /// <param name="material">The material</param>
         /// <returns></returns>
-        internal DSMaterial FromExisting(Autodesk.Revit.DB.Material material)
+        internal static DSMaterial FromExisting(Autodesk.Revit.DB.Material material)
         {
             return new DSMaterial(material)
             {
