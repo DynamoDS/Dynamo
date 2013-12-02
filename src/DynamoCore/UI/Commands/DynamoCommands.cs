@@ -69,6 +69,12 @@ namespace Dynamo.ViewModels
             dynSettings.Controller.DynamoModel.OpenInternal(xmlFilePath);
         }
 
+        private void RunCancelImpl(RunCancelCommand command)
+        {
+            dynSettings.Controller.RunCancelInternal(
+                command.ShowErrors, command.CancelRun);
+        }
+
         private void CreateNodeImpl(CreateNodeCommand command)
         {
             NodeModel nodeModel = Model.CreateNode(
