@@ -40,9 +40,11 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        public CodeBlockNodeModel(string userCode, Guid guid, WorkspaceModel workSpace)
+        public CodeBlockNodeModel(string userCode, Guid guid, WorkspaceModel workSpace, double XPos, double YPos)
         {
             ArgumentLacing = LacingStrategy.Disabled;
+            this.X = XPos;
+            this.Y = YPos;
             this.code = userCode;
             this.GUID = guid;
             this.WorkSpace = workSpace;
@@ -310,7 +312,7 @@ namespace Dynamo.Nodes
                     if (astNode is IdentifierNode)
                     {
                         string unboundVar = inputIdentifiers[i];
-                        string inputVar = GraphUtilities.ASTListToCode(new List<AssociativeNode> { astNode });
+                        string inputVar = (astNode as IdentifierNode).Value;
                         if (!string.Equals(unboundVar, inputVar))
                         {
                             initStatements.Append(unboundVar);

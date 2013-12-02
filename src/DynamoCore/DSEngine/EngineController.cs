@@ -158,6 +158,41 @@ namespace Dynamo.DSEngine
                     sb = sb.Replace(thisVar, newVar);
                     variableNames.Add(thisVar, newVar);
                 }
+
+                //get the names of inputs as well and replace them with simpler names
+                foreach (var inport in node.InPorts)
+                {
+                    if (inport.Connectors.Count == 0)
+                        continue;
+                    var inputNode = inport.Connectors[0].Start.Owner;
+                    if (nodes.Contains(inputNode))
+                        continue;
+                    if (!(inputNode is CodeBlockNodeModel))
+                    {
+                        string inputVar = GraphToDSCompiler.GraphUtilities.ASTListToCode(new List<AssociativeNode> { inputNode.AstIdentifierForPreview });
+                        if (!variableNames.ContainsKey(inputVar))
+                        {
+                            newVar = GenerateShortVariable();
+                            variableNames.Add(inputVar, newVar);
+                            sb = sb.Replace(inputVar, newVar);
+                        }
+                    }
+                    else
+                    {
+                        var cbn = inputNode as CodeBlockNodeModel;
+                        int portIndex = cbn.OutPorts.IndexOf(inport.Connectors[0].Start);
+                        string inputVar = cbn.GetAstIdentifierForOutputIndex(portIndex).Value;
+                        if (cbn.TempVariables.Contains(inputVar))
+                        {
+                            if (!variableNames.ContainsKey(inputVar))
+                            {
+                                newVar = GenerateShortVariable();
+                                variableNames.Add(inputVar, newVar);
+                                sb = sb.Replace(inputVar, newVar);
+                            }
+                        }
+                    }
+                }
             }
 
             return sb.ToString();
