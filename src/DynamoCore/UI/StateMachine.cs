@@ -386,7 +386,6 @@ namespace Dynamo.ViewModels
             internal void CancelActiveState()
             {
                 SetCurrentState(State.None);
-                ignoreMouseClick = true;
             }
 
             /// <summary>
@@ -466,6 +465,8 @@ namespace Dynamo.ViewModels
                     return false;
                 }
 
+                MouseClickHistory curClick = new MouseClickHistory(sender, e);
+
                 bool eventHandled = false;
                 if (this.currentState == State.Connection)
                 {
@@ -485,18 +486,15 @@ namespace Dynamo.ViewModels
                     // then the state machine should initiate a drag operation.
                     if (null != GetSelectableFromPoint(mouseDownPos))
                         InitiateDragSequence();
-                    else if (prevClick != null && e.Timestamp - prevClick.Timestamp < 200) // Check if it's double click
-                    {
-                        // If both clicks originate from EndlessGrid
-                        // Then create code block node
-                        if (e.Source is Dynamo.Controls.EndlessGrid && e.Source == prevClick.Source)
-                            CreateCodeBlockNode(mouseDownPos);
+                    else if (e.Source is Dynamo.Controls.EndlessGrid && MouseClickHistory.CheckIsDoubleClick(prevClick, curClick))
+                    {   // Double clicking on background (EndlessGrid)
+                        CreateCodeBlockNode(mouseDownPos);
+                        prevClick = null;
                     }
                     else
                         InitiateWindowSelectionSequence();
 
-                    // Store the current click as history
-                    prevClick = new MouseClickHistory(e);
+                    prevClick = curClick;
                     
                     eventHandled = true; // Mouse event handled.
                 }
@@ -514,11 +512,35 @@ namespace Dynamo.ViewModels
             {
                 public int Timestamp { get; set; }
                 public object Source { get; set; }
+                public Point Position { get; set; }
 
-                public MouseClickHistory(MouseButtonEventArgs e)
+                public MouseClickHistory(object sender, MouseButtonEventArgs e)
                 { 
                     this.Timestamp = e.Timestamp;
                     this.Source = e.Source;
+
+                    IInputElement element = sender as IInputElement;
+                    this.Position = e.GetPosition(element);
+                }
+
+                public static bool CheckIsDoubleClick(MouseClickHistory prevClick, MouseClickHistory curClick)
+                {
+                    if (prevClick == null || (curClick.Source != prevClick.Source))
+                        return false; // Click events did not come from same source
+
+                    int clickInterval = curClick.Timestamp - prevClick.Timestamp;
+                    if (clickInterval > System.Windows.Forms.SystemInformation.DoubleClickTime)
+                        return false; // Time difference is more than system DoubleClickTime
+
+                    double diff = Math.Abs(prevClick.Position.X - curClick.Position.X);
+                    if (diff > Configurations.DoubleClickAcceptableDistance)
+                        return false; // Click is beyond acceptable threshold.
+
+                    diff = Math.Abs(prevClick.Position.Y - curClick.Position.Y);
+                    if (diff > Configurations.DoubleClickAcceptableDistance)
+                        return false; // Click is beyond acceptable threshold.
+
+                    return true;
                 }
             }
 
@@ -771,7 +793,6 @@ namespace Dynamo.ViewModels
                 // visualization pause
                 owningWorkspace.OnDragSelectionStarted(this, EventArgs.Empty);
             }
-
             #endregion
         }
 
