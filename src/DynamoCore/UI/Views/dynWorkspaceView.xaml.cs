@@ -167,12 +167,32 @@ namespace Dynamo.Views
         }
 
         /// <summary>
-        /// Handler for the DataContextChangedEvent. Hanndles registration of event listeners.
+        /// This WorkspaceView will be supporting multiple WorkspaceViewModel
+        /// E.g. Home Workspace, Custom Workspaces
+        /// 
+        /// Handler for the DataContextChangedEvent. Handles registration of event listeners.
+        /// Called during switching of workspace. 
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         void dynWorkspaceView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
+            // Remove before adding registration of event listener to prevent multiple registration 
+            // to the same WorkspaceViewModel
+
+            // Remove registration of event listener
+            ViewModel.CurrentOffsetChanged -= new PointEventHandler(vm_CurrentOffsetChanged);
+            ViewModel.ZoomChanged -= new ZoomEventHandler(vm_ZoomChanged);
+            ViewModel.RequestZoomToViewportCenter -= new ZoomEventHandler(vm_ZoomAtViewportCenter);
+            ViewModel.RequestZoomToViewportPoint -= new ZoomEventHandler(vm_ZoomAtViewportPoint);
+            ViewModel.RequestZoomToFitView -= new ZoomEventHandler(vm_ZoomToFitView);
+            ViewModel.RequestCenterViewOnElement -= new NodeEventHandler(CenterViewOnElement);
+            ViewModel.RequestNodeCentered -= new NodeEventHandler(vm_RequestNodeCentered);
+            ViewModel.RequestAddViewToOuterCanvas -= new ViewEventHandler(vm_RequestAddViewToOuterCanvas);
+            ViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
+            ViewModel.RequestSelectionBoxUpdate -= VmOnRequestSelectionBoxUpdate;
+
+            // Adding registration of event listener
             ViewModel.CurrentOffsetChanged += new PointEventHandler(vm_CurrentOffsetChanged);
             ViewModel.ZoomChanged += new ZoomEventHandler(vm_ZoomChanged);
             ViewModel.RequestZoomToViewportCenter += new ZoomEventHandler(vm_ZoomAtViewportCenter);
@@ -181,9 +201,9 @@ namespace Dynamo.Views
             ViewModel.RequestCenterViewOnElement += new NodeEventHandler(CenterViewOnElement);
             ViewModel.RequestNodeCentered += new NodeEventHandler(vm_RequestNodeCentered);
             ViewModel.RequestAddViewToOuterCanvas += new ViewEventHandler(vm_RequestAddViewToOuterCanvas);
-            ViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
             ViewModel.WorkspacePropertyEditRequested += VmOnWorkspacePropertyEditRequested;
             ViewModel.RequestSelectionBoxUpdate += VmOnRequestSelectionBoxUpdate;
+
             ViewModel.Loaded();
 
             outerCanvas.Children.Remove(zoomAndPanControl);
