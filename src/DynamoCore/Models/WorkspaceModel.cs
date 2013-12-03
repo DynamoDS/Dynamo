@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
+using System.Web;
 using System.Windows;
 using System.Xml;
 using System.Globalization;
@@ -310,10 +311,6 @@ namespace Dynamo.Models
             get { return undoRecorder; }
         }
 
-        //A dictonary that helps maps variables to the CodeBlockNodes it is defined in.
-        //To be used only in workspace
-        private Dictionary<string, List<Guid>> definedVariableMap;
-
         #endregion
 
         protected WorkspaceModel(
@@ -334,7 +331,7 @@ namespace Dynamo.Models
             WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
             undoRecorder = new UndoRedoRecorder(this);
 
-            definedVariableMap = new Dictionary<string, List<Guid>>();
+            variableDefinitions = new VariableDefinitions(this);
         }
 
 
@@ -428,13 +425,19 @@ namespace Dynamo.Models
         internal void Undo()
         {
             if (null != undoRecorder)
+            {
                 undoRecorder.Undo();
+                this.variableDefinitions.ReValidateAllNodes();
+            }
         }
 
         internal void Redo()
         {
             if (null != undoRecorder)
+            {
                 undoRecorder.Redo();
+                this.variableDefinitions.ReValidateAllNodes();
+            }
         }
 
         internal void ClearUndoRecorder()
@@ -714,6 +717,9 @@ namespace Dynamo.Models
             if (null == foundModel && (Notes.Count > 0))
                 foundModel = Notes.FirstOrDefault((x) => (x.GUID == modelGuid));
 
+            if (null == foundModel && modelGuid == variableDefinitions.GUID)
+                foundModel = variableDefinitions;
+
             return foundModel;
         }
 
@@ -885,6 +891,8 @@ namespace Dynamo.Models
             }
         }
 
+        #region Node To Code
+
         /// <summary>
         /// After command framework is implemented, this method should now be only 
         /// called from a menu item (i.e. Ctrl + W). It should not be used as a 
@@ -1010,6 +1018,8 @@ namespace Dynamo.Models
             Modified();
         }
 
+        #endregion
+
         #region Node To Code Reconnection
 
         /// <summary>
@@ -1092,31 +1102,91 @@ namespace Dynamo.Models
         }
         #endregion
 
-        /// <summary>
-        /// This function finds if any variable declared in the specified code block exists in the workspace
-        /// If it does, it returns the name of the first such variable it finds, otherwise returns null
-        /// </summary>
-        /// <param name="codeBlockNode">The code block node whose variables need to
-        /// be chacked for redeclaration</param>
-        /// <returns> the name of the first redefined variable (if exists). Else it returns null</returns>
-        internal String GetFirstRedefinedVariable(CodeBlockNodeModel codeBlockNode)
+        #region Redefined Variables
+
+        private class VariableDefinitions : ModelBase
         {
-            List<string> newDefVars = codeBlockNode.GetDefinedVariableNames();
-            return (from cbn in Nodes.OfType<CodeBlockNodeModel>().Where(x => x != codeBlockNode)
-                    select cbn.GetDefinedVariableNames()
-                        into oldDefVars
-                        from newVar in newDefVars
-                        where oldDefVars.Contains(newVar)
-                        select newVar).FirstOrDefault();
+            private WorkspaceModel workspace;
+            public Dictionary<string, List<Guid>> Map { get; set; }
+            public bool IsDirty { get; set; }
+
+            public VariableDefinitions(WorkspaceModel workSpace)
+            {
+                Map = new Dictionary<String, List<Guid>>();
+                this.GUID = Guid.NewGuid();
+                this.workspace = workSpace;
+                this.IsDirty = false;
+            }
+
+            protected override void SerializeCore(XmlElement element, SaveContext context)
+            {
+                if (context == SaveContext.Undo)
+                {
+                    XmlElementHelper helper = new XmlElementHelper(element);
+                    helper.SetAttribute("guid", GUID);
+                    XmlDocument xmlDoc = element.OwnerDocument;
+                    foreach (string variable in Map.Keys)
+                    {
+                        var guidList = xmlDoc.CreateElement("Variable");
+                        XmlElementHelper dictionaryHelper = new XmlElementHelper(guidList);
+                        dictionaryHelper.SetAttribute("DefinedVariableName", variable);
+                        for (int i = 0; i < Map[variable].Count; i++)
+                        {
+                            Guid guid = Map[variable][i];
+                            dictionaryHelper.SetAttribute("DefiningNodeGuid" + i.ToString(), guid);
+                        }
+                        element.AppendChild(guidList);
+                    }
+                }
+            }
+
+            protected override void DeserializeCore(XmlElement element, SaveContext context)
+            {
+                if (context == SaveContext.Undo)
+                {
+                    XmlElementHelper helper = new XmlElementHelper(element);
+                    this.GUID = helper.ReadGuid("guid");
+                    Map = new Dictionary<String, List<Guid>>();
+                    var variables = element.SelectNodes("Variable");
+                    foreach (XmlNode variableNode in variables)
+                    {
+                        var dictionaryHelper = new XmlElementHelper(variableNode as XmlElement);
+                        string variableName = dictionaryHelper.ReadString("DefinedVariableName");
+                        Map.Add(variableName, new List<Guid>());
+                        for (int i = 0; i < variableNode.Attributes.Count - 1; i++)
+                        {
+                            Guid guid = dictionaryHelper.ReadGuid("DefiningNodeGuid" + i.ToString());
+                            Map[variableName].Add(guid);
+                        }
+                    }
+                    this.IsDirty = true;
+                }
+            }
+
+            public void ReValidateAllNodes()
+            {
+                this.IsDirty = false;
+                foreach (var node in this.workspace.Nodes.Where(x => x is CodeBlockNodeModel))
+                {
+                    CodeBlockNodeModel.ReValidate(node as CodeBlockNodeModel);
+                }
+            }
+
         }
+
+        private VariableDefinitions variableDefinitions;
 
         internal void UpdateDefinedVariables(CodeBlockNodeModel cbn)
         {
+            this.undoRecorder.RecordModificationForUndo(variableDefinitions);
+
+            var definedVariableMap = variableDefinitions.Map;
+
             List<string> currentDefinedVars = cbn.GetDefinedVariableNames();
             var modelsToReValidate = new HashSet<CodeBlockNodeModel>();
             if (currentDefinedVars.Count != 0)
                 modelsToReValidate.Add(cbn);
-            
+
             //Find out the variables that were defined in that cbn previously
             var previouslyDefinedVariableMap = definedVariableMap.Keys.Where(x => definedVariableMap[x].Contains(cbn.GUID)).ToList<string>();
             for (int i = 0; i < previouslyDefinedVariableMap.Count(); i++)
@@ -1167,7 +1237,9 @@ namespace Dynamo.Models
 
         internal Guid GetDefiningNode(String variable)
         {
-            return definedVariableMap[variable][0];
+            return variableDefinitions.Map[variable][0];
         }
+
+        #endregion
     }
 }
