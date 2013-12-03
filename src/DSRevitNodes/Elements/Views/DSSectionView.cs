@@ -8,13 +8,13 @@ using DSRevitNodes.GeometryObjects;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 
-namespace DSRevitNodes.Elements.Views
+namespace DSRevitNodes.Elements
 {
     /// <summary>
     /// A Revit ViewSection
     /// </summary>
     [RegisterForTrace]
-    public class DSSectionView : AbstractView
+    public class DSSectionView : AbstractElement
     {
 
         #region Internal properties

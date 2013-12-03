@@ -45,9 +45,9 @@ namespace DSRevitNodes.GeometryObjects
             return new DSBoundingBox(e.InternalElement.get_BoundingBox(null));
         }
 
-        internal static DSBoundingBox FromElementInView( AbstractElement e, AbstractView view )
+        internal static DSBoundingBox FromElementInView( AbstractElement e, AbstractView3D view3D )
         {
-            return new DSBoundingBox(e.InternalElement.get_BoundingBox( (Autodesk.Revit.DB.View) view.InternalElement) );
+            return new DSBoundingBox(e.InternalElement.get_BoundingBox( (Autodesk.Revit.DB.View) view3D.InternalElement) );
         }
 
         internal static DSBoundingBox FromExisting( BoundingBoxXYZ box )
