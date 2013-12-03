@@ -148,6 +148,9 @@ namespace Dynamo.Controls
                 WorkspaceViewModel vm = DataContext as WorkspaceViewModel;
                 vm.OnRequestZoomToViewportPoint(this, new ZoomEventArgs(zoom, mousePosition));
 
+                // Update WorkspaceModel without triggering property changed
+                vm.SetCurrentOffsetCommand.Execute(GetTranslateTransformOrigin());
+
                 // Reset Fit View Toggle
                 if ( vm.ResetFitViewToggleCommand.CanExecute(null) )
                     vm.ResetFitViewToggleCommand.Execute(null);
@@ -183,13 +186,19 @@ namespace Dynamo.Controls
             {
                 if (child.IsMouseCaptured)
                 {
+                    // Change ZoomBorder's child translation
                     var tt = GetTranslateTransform(child);
                     Vector v = start - e.GetPosition(this);
                     tt.X = origin.X - v.X;
                     tt.Y = origin.Y - v.Y;
 
-                    // Reset Fit View Toggle
+                    
                     WorkspaceViewModel vm = DataContext as WorkspaceViewModel;
+
+                    // Update WorkspaceModel without triggering property changed
+                    vm.SetCurrentOffsetCommand.Execute(GetTranslateTransformOrigin());
+                    
+                    // Reset Fit View Toggle
                     if (vm.ResetFitViewToggleCommand.CanExecute(null))
                         vm.ResetFitViewToggleCommand.Execute(null);
                 }
