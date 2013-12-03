@@ -52,7 +52,6 @@ namespace DSRevitNodes
         private DSReferencePoint(Autodesk.Revit.DB.ReferencePoint refPt)
         {
             InternalSetReferencePoint(refPt);
-            IsRevitOwned = true;
         }
 
         /// <summary>

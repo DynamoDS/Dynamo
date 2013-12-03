@@ -5,12 +5,253 @@ using System.Linq;
 using System.Text;
 using Autodesk.Revit.DB;
 using DSRevitNodes.Elements;
+using DSRevitNodes.Elements;
+using DSRevitNodes.GeometryConversion;
 using RevitServices.Persistence;
+using RevitServices.Transactions;
 
 namespace DSRevitNodes
 {
-    public abstract class AbstractView : AbstractElement
+    public abstract class AbstractView3D : AbstractElement
     {
+
+        #region Internal properties
+
+        /// <summary>
+        /// An internal handle on the Revit element
+        /// </summary>
+        internal View3D InternalView3D
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Reference to the Element
+        /// </summary>
+        internal override Element InternalElement
+        {
+            get { return InternalView3D; }
+        }
+
+        #endregion
+
+        #region Private helper methods
+
+        /// <summary>
+        /// Build Orientation3D object for eye point and a target point 
+        /// </summary>
+        /// <param name="eyePoint"></param>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public static ViewOrientation3D BuildOrientation3D( XYZ eyePoint, XYZ target )
+        {
+            var globalUp = XYZ.BasisZ;
+            var direction = target.Subtract(eyePoint);
+            var up = direction.CrossProduct(globalUp).CrossProduct(direction);
+            return new ViewOrientation3D(eyePoint, up, direction);
+        }
+
+        /// <summary>
+        /// Obtain a sparse point collection outlining a Revit element bt traversing it's
+        /// GeometryObject representation
+        /// </summary>
+        /// <param name="e"></param>
+        /// <param name="pts"></param>
+        public static void GetPointCloud(Element e, List<XYZ> pts)
+        {
+            var options = new Options()
+            {
+                ComputeReferences = true,
+                DetailLevel = ViewDetailLevel.Coarse,
+                IncludeNonVisibleObjects = false
+            };
+
+            foreach (var gObj in e.get_Geometry(options))
+            {
+                if (gObj is Solid)
+                {
+                    GetPointCloud(gObj as Solid, pts);
+                }
+                else if (gObj is GeometryInstance)
+                {
+                    GetPointCloud(gObj as GeometryInstance, pts);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Obtain a point collection outlining a GeometryObject
+        /// </summary>
+        /// <param name="geomInst"></param>
+        /// <param name="pts"></param>
+        public static void GetPointCloud(GeometryInstance geomInst, List<XYZ> pts)
+        {
+            foreach (var gObj in geomInst.GetInstanceGeometry())
+            {
+                if (gObj is Solid)
+                {
+                    GetPointCloud(gObj as Solid, pts);
+                }
+                else if (gObj is GeometryInstance)
+                {
+                    GetPointCloud(gObj as GeometryInstance, pts);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Obtain a point collection outlining a Solid GeometryObject
+        /// </summary>
+        /// <param name="solid"></param>
+        /// <param name="pts"></param>
+        public static void GetPointCloud(Solid solid, List<XYZ> pts)
+        {
+            foreach (Edge gEdge in solid.Edges)
+            {
+                var c = gEdge.AsCurve();
+                if (c is Line)
+                {
+                    pts.Add(c.Evaluate(0, true));
+                    pts.Add(c.Evaluate(1, true));
+                }
+                else
+                {
+                    IList<XYZ> xyzArray = gEdge.Tessellate();
+                    pts.AddRange(xyzArray);
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Make a single element appear in a particular view
+        /// </summary>
+        /// <param name="view"></param>
+        /// <param name="element"></param>
+        protected static void IsolateInView(View3D view, Element element)
+        {
+            var fec = GetVisibleElementFilter();
+
+            view.CropBoxActive = true;
+                
+            var all = fec.ToElements();
+            var toHide =
+                fec.ToElements().Where(x => !x.IsHidden(view) && x.CanBeHidden(view) && x.Id != element.Id).Select(x => x.Id).ToList();
+
+            if (toHide.Count > 0)
+                view.HideElements(toHide);
+
+            // (sic)
+            Document.Regenerate();
+
+            if (view.IsPerspective)
+            {
+                var farClip = view.get_Parameter("Far Clip Active");
+                farClip.Set(0);
+            }
+            else
+            {
+                var pts = new List<XYZ>();
+
+                GetPointCloud(element, pts);
+
+                var bounding = view.CropBox;
+                var transInverse = bounding.Transform.Inverse;
+                var transPts = pts.Select(transInverse.OfPoint).ToList();
+
+                //ingore the Z coordindates and find
+                //the max X ,Y and Min X, Y in 3d view.
+                double dMaxX = 0, dMaxY = 0, dMinX = 0, dMinY = 0;
+
+                bool bFirstPt = true;
+                foreach (var pt1 in transPts)
+                {
+                    if (true == bFirstPt)
+                    {
+                        dMaxX = pt1.X;
+                        dMaxY = pt1.Y;
+                        dMinX = pt1.X;
+                        dMinY = pt1.Y;
+                        bFirstPt = false;
+                    }
+                    else
+                    {
+                        if (dMaxX < pt1.X)
+                            dMaxX = pt1.X;
+                        if (dMaxY < pt1.Y)
+                            dMaxY = pt1.Y;
+                        if (dMinX > pt1.X)
+                            dMinX = pt1.X;
+                        if (dMinY > pt1.Y)
+                            dMinY = pt1.Y;
+                    }
+                }
+
+                bounding.Max = new XYZ(dMaxX, dMaxY, bounding.Max.Z);
+                bounding.Min = new XYZ(dMinX, dMinY, bounding.Min.Z);
+                view.CropBox = bounding;
+            }
+
+            view.CropBoxVisible = false;
+
+        }
+
+        /// <summary>
+        /// Set the cropping for the current view
+        /// </summary>
+        /// <param name="view3D"></param>
+        /// <param name="bbox"></param>
+        private void IsolateInView(View3D view3D, BoundingBoxXYZ bbox)
+        {
+            view3D.CropBox = bbox;
+        }
+
+        /// <summary>
+        /// Create a Revit 3D View
+        /// </summary>
+        /// <param name="orient"></param>
+        /// <param name="name"></param>
+        /// <param name="isPerspective"></param>
+        /// <returns></returns>
+        protected static View3D Create3DView(ViewOrientation3D orient, string name, bool isPerspective)
+        {
+            // (sic) From the Dynamo legacy implementation
+            var viewFam = DocumentManager.GetInstance().ElementsOfType<ViewFamilyType>()
+                .FirstOrDefault(x => x.ViewFamily == ViewFamily.ThreeDimensional);
+
+            if (viewFam == null)
+            {
+                throw new Exception("There is no three dimensional view family int he document");
+            }
+
+            Autodesk.Revit.DB.View3D view;
+            if (isPerspective)
+            {
+                view = View3D.CreatePerspective(Document, viewFam.Id);
+            }
+            else
+            {
+                view = View3D.CreateIsometric(Document, viewFam.Id);
+            }
+
+            view.SetOrientation(orient);
+            view.SaveOrientationAndLock();
+
+            try
+            {
+                //will fail if name is not unique
+                view.Name = name;
+            }
+            catch
+            {
+                view.Name = CreateUniqueViewName(name);
+            }
+
+
+            return view;
+        }
+
         /// <summary>
         /// Determines whether a view with the provided name already exists.
         /// If a view exists with the provided name, and new view is created with
@@ -203,210 +444,75 @@ namespace DSRevitNodes
 
             return fec;
         }
+
+        #endregion
+
+        #region Protected mutators
+
+        /// <summary>
+        /// Set the name of the current view
+        /// </summary>
+        /// <param name="name"></param>
+        protected void InternalSetName(string name)
+        {
+            if (!this.InternalView3D.Name.Equals(name))
+                this.InternalView3D.Name = CreateUniqueViewName(name);
+        }
+
+        /// <summary>
+        /// Set the orientation of the view
+        /// </summary>
+        /// <param name="orient"></param>
+        protected void InternalSetOrientation( ViewOrientation3D orient)
+        {
+            if (this.InternalView3D.ViewDirection.IsAlmostEqualTo(orient.ForwardDirection) &&
+                this.InternalView3D.Origin.IsAlmostEqualTo(orient.EyePosition)) return;
+
+            this.InternalView3D.Unlock();
+            this.InternalView3D.SetOrientation(orient);
+            this.InternalView3D.SaveOrientationAndLock();
+        }
+
+        /// <summary>
+        /// Isolate the element in the current view by creating a mininum size crop box around it
+        /// </summary>
+        /// <param name="element"></param>
+        protected void InternalIsolateInView(Element element)
+        {
+            IsolateInView(this.InternalView3D, element);
+        }
+    
+        /// <summary>
+        /// Isolate the bounding box in the current view
+        /// </summary>
+        /// <param name="bbox"></param>
+        protected void InternalIsolateInView(BoundingBoxXYZ bbox)
+        {
+            IsolateInView(this.InternalView3D, bbox);
+        }
+
+        /// <summary>
+        /// Show all hiddent elements in the view
+        /// </summary>
+        protected void InternalRemoveIsolation()
+        {
+            InternalView3D.UnhideElements(GetVisibleElementFilter().ToElementIds());
+            InternalView3D.CropBoxActive = false;
+        }
+
+        /// <summary>
+        /// Set the InternalView3D property and the associated element id and unique id
+        /// </summary>
+        /// <param name="view"></param>
+        protected void InternalSetView3D(View3D view)
+        {
+            this.InternalView3D = view;
+            this.InternalElementId = view.Id;
+            this.InternalUniqueId = view.UniqueId;
+        }
+
+        #endregion
+
     }
 }
 
-
-
-    //public delegate View3D View3DCreationDelegate(ViewOrientation3D orient, string name, bool isPerspective);
-
-    //        InPortData.Add(new PortData("eye", "The eye position point.", typeof(Value.Container)));
-    //        InPortData.Add(new PortData("target", "The location where the view is pointing.", typeof(Value.Container)));
-    //        InPortData.Add(new PortData("name", "The name of the view.", typeof(Value.String)));
-    //        InPortData.Add(new PortData("extents", "Pass in a bounding box or an element to define the 3D crop of the view.", typeof(Value.String)));
-    //        InPortData.Add(new PortData("isolate", "If an element is supplied in 'extents', it will be isolated in the view.", typeof(Value.String)));
-
-    //        OutPortData.Add(new PortData("view", "The newly created 3D view.", typeof(Value.Container)));
-
-
-  
-
-/*View3D view = null;
-            var eye = (XYZ)((Value.Container)args[0]).Item;
-            var target = (XYZ)((Value.Container)args[1]).Item;
-            var name = ((Value.String)args[2]).Item;
-            var extents = ((Value.Container)args[3]).Item;
-            var isolate = Convert.ToBoolean(((Value.Number)args[4]).Item);
-
-            var globalUp = XYZ.BasisZ;
-            var direction = target.Subtract(eye);
-            var up = direction.CrossProduct(globalUp).CrossProduct(direction);
-            var orient = new ViewOrientation3D(eye, up, direction);
-
-            if (this.Elements.Any())
-            {
-                if (dynUtils.TryGetElement(this.Elements[0], out view))
-                {
-                    if (!view.ViewDirection.IsAlmostEqualTo(direction) || !view.Origin.IsAlmostEqualTo(eye))
-                    {
-                        view.Unlock();
-                        view.SetOrientation(orient);
-                        view.SaveOrientationAndLock();
-                    }
-
-                    if (!view.Name.Equals(name))
-                        view.Name = ViewBase.CreateUniqueViewName(name);
-                }
-                else
-                {
-                    //create a new view
-                    view = ViewBase.Create3DView(orient, name, isPerspective);
-                    Elements[0] = view.Id;
-                }
-            }
-            else
-            {
-                view = Create3DView(orient, name, isPerspective);
-                Elements.Add(view.Id);
-            }
-
-            var fec = dynRevitUtils.SetupFilters(dynRevitSettings.Doc.Document);
-
-            if (isolate)
-            {
-                view.CropBoxActive = true;
-
-                var element = extents as Element;
-                if (element != null)
-                {
-                    var e = element;
-
-                    var all = fec.ToElements();
-                    var toHide =
-                        fec.ToElements().Where(x => !x.IsHidden(view) && x.CanBeHidden(view) && x.Id != e.Id).Select(x => x.Id).ToList();
-                    
-                    if (toHide.Count > 0)
-                        view.HideElements(toHide);
-
-                    dynRevitSettings.Doc.Document.Regenerate();
-
-                    Debug.WriteLine(string.Format("Eye:{0},Origin{1}, BBox_Origin{2}, Element{3}",
-                        eye.ToString(), view.Origin.ToString(), view.CropBox.Transform.Origin.ToString(), (element.Location as LocationPoint).Point.ToString()));
-
-                    //http://wikihelp.autodesk.com/Revit/fra/2013/Help/0000-API_Deve0/0039-Basic_In39/0067-Views67/0069-The_View69
-                    if (isPerspective)
-                    {
-                        var farClip = view.get_Parameter("Far Clip Active");
-                        farClip.Set(0);
-                    }
-                    else
-                    {
-                        //http://adndevblog.typepad.com/aec/2012/05/set-crop-box-of-3d-view-that-exactly-fits-an-element.html
-                        var pts = new List<XYZ>();
-
-                        ParseElementGeometry(element, pts);
-
-                        var bounding = view.CropBox;
-                        var transInverse = bounding.Transform.Inverse;
-                        var transPts = pts.Select(transInverse.OfPoint).ToList();
-
-                        //ingore the Z coordindates and find
-                        //the max X ,Y and Min X, Y in 3d view.
-                        double dMaxX = 0, dMaxY = 0, dMinX = 0, dMinY = 0;
-
-                        //geom.XYZ ptMaxX, ptMaxY, ptMinX,ptMInY; 
-                        //coorresponding point.
-                        bool bFirstPt = true;
-                        foreach (var pt1 in transPts)
-                        {
-                            if (true == bFirstPt)
-                            {
-                                dMaxX = pt1.X;
-                                dMaxY = pt1.Y;
-                                dMinX = pt1.X;
-                                dMinY = pt1.Y;
-                                bFirstPt = false;
-                            }
-                            else
-                            {
-                                if (dMaxX < pt1.X)
-                                    dMaxX = pt1.X;
-                                if (dMaxY < pt1.Y)
-                                    dMaxY = pt1.Y;
-                                if (dMinX > pt1.X)
-                                    dMinX = pt1.X;
-                                if (dMinY > pt1.Y)
-                                    dMinY = pt1.Y;
-                            }
-                        }
-
-                        bounding.Max = new XYZ(dMaxX, dMaxY, bounding.Max.Z);
-                        bounding.Min = new XYZ(dMinX, dMinY, bounding.Min.Z);
-                        view.CropBox = bounding;
-                    }
-                }
-                else
-                {
-                    var xyz = extents as BoundingBoxXYZ;
-                    if (xyz != null)
-                    {
-                        view.CropBox = xyz;
-                    }
-                }
-
-                view.CropBoxVisible = false;
-            }
-            else
-            {
-                view.UnhideElements(fec.ToElementIds());
-                view.CropBoxActive = false;
-            }
-
-            return Value.NewContainer(view);
- * */
-
-    //[NodeName("Bounding Box XYZ")]
-    //[NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
-    //[NodeDescription("Create a bounding box.")]
-    //public class BoundingBoxXyz : NodeWithOneOutput
-    //{
-    //    public BoundingBoxXyz()
-    //    {
-    //        InPortData.Add(new PortData("trans", "The coordinate system of the box.", typeof(Value.Container)));
-    //        InPortData.Add(new PortData("x size", "The size of the bounding box in the x direction of the local coordinate system.", typeof(Value.Number)));
-    //        InPortData.Add(new PortData("y size", "The size of the bounding box in the y direction of the local coordinate system.", typeof(Value.Number)));
-    //        InPortData.Add(new PortData("z size", "The size of the bounding box in the z direction of the local coordinate system.", typeof(Value.Number)));
-    //        OutPortData.Add(new PortData("bbox", "The bounding box.", typeof(Value.Container)));
-
-    //        RegisterAllPorts();
-
-    //        ArgumentLacing = LacingStrategy.Longest;
-    //    }
-
-    //    public override Value Evaluate(FSharpList<Value> args)
-    //    {
-    //        BoundingBoxXYZ bbox = new BoundingBoxXYZ();
-            
-    //        Transform t = (Transform)((Value.Container)args[0]).Item;
-    //        double x = (double)((Value.Number)args[1]).Item;
-    //        double y = (double)((Value.Number)args[2]).Item;
-    //        double z = (double)((Value.Number)args[3]).Item;
-
-    //        bbox.Transform = t;
-    //        bbox.Min = new XYZ(0, 0, 0);
-    //        bbox.Max = new XYZ(x, y, z);
-    //        return Value.NewContainer(bbox);
-    //    }
-
-    //}
-
-
-    //[NodeName("Get Active View")]
-    //[NodeCategory(BuiltinNodeCategories.REVIT_VIEW)]
-    //[NodeDescription("Gets the active Revit view.")]
-    //public class ActiveRevitView : RevitTransactionNodeWithOneOutput
-    //{
-    //    public ActiveRevitView()
-    //    {
-    //        OutPortData.Add(new PortData("v", "The active revit view.", typeof(Value.Container)));
-
-    //        RegisterAllPorts();
-    //    }
-
-    //    public override Value Evaluate(FSharpList<Value> args)
-    //    {
-
-    //        return Value.NewContainer(dynRevitSettings.Doc.Document.ActiveView);
-    //    }
-
-    //}

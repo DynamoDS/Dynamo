@@ -8,13 +8,13 @@ using DSRevitNodes.GeometryConversion;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 
-namespace DSRevitNodes.Elements.Views
+namespace DSRevitNodes.Elements
 {
     /// <summary>
     /// A Revit ViewDrafting
     /// </summary>
     [RegisterForTrace]
-    public class DSDraftingView : AbstractView
+    public class DSDraftingView : AbstractElement
     {
 
         #region Internal properties
@@ -54,11 +54,11 @@ namespace DSRevitNodes.Elements.Views
         {
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
-            ViewDrafting vd = Document.Create.NewViewDrafting();
+            var vd = Document.Create.NewViewDrafting();
 
             //rename the view
             if (!vd.Name.Equals(name))
-                vd.Name = CreateUniqueViewName(name);
+                vd.Name = AbstractView3D.CreateUniqueViewName(name);
 
             InternalSetDraftingView(vd);
 
