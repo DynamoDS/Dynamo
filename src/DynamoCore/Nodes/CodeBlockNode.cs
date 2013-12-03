@@ -107,6 +107,9 @@ namespace Dynamo.Nodes
 
         public static void ReValidate(CodeBlockNodeModel cbn)
         {
+            if (cbn.GetDefinedVariableNames().Count == 0 && cbn.State == ElementState.Error)
+                return;
+
             foreach (string variable in cbn.GetDefinedVariableNames())
             {
                 var ownerGuid = cbn.WorkSpace.GetDefiningNode(variable);

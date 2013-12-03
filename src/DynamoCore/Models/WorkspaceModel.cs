@@ -427,7 +427,7 @@ namespace Dynamo.Models
             if (null != undoRecorder)
             {
                 undoRecorder.Undo();
-                this.variableDefinitions.ReValidateAllNodes();
+                RevalidateCodeBlockNodes();
             }
         }
 
@@ -436,7 +436,7 @@ namespace Dynamo.Models
             if (null != undoRecorder)
             {
                 undoRecorder.Redo();
-                this.variableDefinitions.ReValidateAllNodes();
+                RevalidateCodeBlockNodes();
             }
         }
 
@@ -850,6 +850,11 @@ namespace Dynamo.Models
                     note.SetAttribute("y", n.Y.ToString(CultureInfo.InvariantCulture));
                 }
 
+                //save the variable definitions
+                var varDefinitions = xmlDoc.CreateElement("VariableDefinitions");
+                root.AppendChild(varDefinitions);
+                this.variableDefinitions.SaveDefinitions(xmlDoc, varDefinitions, SaveContext.File);
+
                 return xmlDoc;
             }
             catch (Exception ex)
@@ -1104,6 +1109,17 @@ namespace Dynamo.Models
 
         #region Redefined Variables
 
+
+        internal void RevalidateCodeBlockNodes()
+        {
+            this.variableDefinitions.ReValidateAllNodes();
+        }
+
+        internal void LoadVariableDefinitions(XmlElement element)
+        {
+            this.variableDefinitions.LoadDefinitions(element);
+        }
+
         private class VariableDefinitions : ModelBase
         {
             private WorkspaceModel workspace;
@@ -1165,13 +1181,53 @@ namespace Dynamo.Models
 
             public void ReValidateAllNodes()
             {
-                this.IsDirty = false;
-                foreach (var node in this.workspace.Nodes.Where(x => x is CodeBlockNodeModel))
+                if (this.IsDirty == true)
                 {
-                    CodeBlockNodeModel.ReValidate(node as CodeBlockNodeModel);
+                    this.IsDirty = false;
+                    foreach (var node in this.workspace.Nodes.Where(x => x is CodeBlockNodeModel))
+                    {
+                        CodeBlockNodeModel.ReValidate(node as CodeBlockNodeModel);
+                    }
                 }
             }
 
+            internal void SaveDefinitions(XmlDocument xmlDoc, XmlElement element, SaveContext saveContext)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("guid", GUID);
+                foreach (string variable in Map.Keys)
+                {
+                    var guidList = xmlDoc.CreateElement("Variable");
+                    XmlElementHelper dictionaryHelper = new XmlElementHelper(guidList);
+                    dictionaryHelper.SetAttribute("DefinedVariableName", variable);
+                    for (int i = 0; i < Map[variable].Count; i++)
+                    {
+                        Guid guid = Map[variable][i];
+                        dictionaryHelper.SetAttribute("DefiningNodeGuid" + i.ToString(), guid);
+                    }
+                    element.AppendChild(guidList);
+                }
+            }
+
+            internal void LoadDefinitions(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                this.GUID = helper.ReadGuid("guid");
+                Map = new Dictionary<String, List<Guid>>();
+                var variables = element.SelectNodes("Variable");
+                foreach (XmlNode variableNode in variables)
+                {
+                    var dictionaryHelper = new XmlElementHelper(variableNode as XmlElement);
+                    string variableName = dictionaryHelper.ReadString("DefinedVariableName");
+                    Map.Add(variableName, new List<Guid>());
+                    for (int i = 0; i < variableNode.Attributes.Count - 1; i++)
+                    {
+                        Guid guid = dictionaryHelper.ReadGuid("DefiningNodeGuid" + i.ToString());
+                        Map[variableName].Add(guid);
+                    }
+                }
+                this.IsDirty = true;
+            }
         }
 
         private VariableDefinitions variableDefinitions;

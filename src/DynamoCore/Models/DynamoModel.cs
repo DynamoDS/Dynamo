@@ -654,6 +654,7 @@ namespace Dynamo.Models
                 XmlNodeList elNodes = xmlDoc.GetElementsByTagName("Elements");
                 XmlNodeList cNodes = xmlDoc.GetElementsByTagName("Connectors");
                 XmlNodeList nNodes = xmlDoc.GetElementsByTagName("Notes");
+                XmlNodeList varDefinitions = xmlDoc.GetElementsByTagName("VariableDefinitions");
 
                 if (elNodes.Count == 0)
                     elNodes = xmlDoc.GetElementsByTagName("dynElements");
@@ -833,6 +834,10 @@ namespace Dynamo.Models
 
                 DynamoLogger.Instance.Log(string.Format("{0} ellapsed for loading notes.", sw.Elapsed - previousElapsed));
 
+                #region Load Variable Definitions
+                CurrentWorkspace.LoadVariableDefinitions(varDefinitions[0] as XmlElement);
+                #endregion
+
                 foreach (NodeModel e in CurrentWorkspace.Nodes)
                     e.EnableReporting();
 
@@ -844,6 +849,8 @@ namespace Dynamo.Models
                         sw.Stop();
                         DynamoLogger.Instance.Log(string.Format("{0} ellapsed for loading workspace.", sw.Elapsed));
                     }));
+
+                CurrentWorkspace.RevalidateCodeBlockNodes();
 
                 if(!string.IsNullOrEmpty(version))
                     CurrentWorkspace.WorkspaceVersion = new Version(version);
