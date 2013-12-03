@@ -337,18 +337,6 @@ namespace Dynamo.Views
             node.ReportPosition();
         }
 
-        void zoomBorder_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (e.MiddleButton == MouseButtonState.Pressed)
-                (DataContext as WorkspaceViewModel).SetCurrentOffsetCommand.Execute((sender as ZoomBorder).GetTranslateTransformOrigin());
-        }
-
-        void zoomBorder_MouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            if (e.MiddleButton == MouseButtonState.Pressed)
-                (DataContext as WorkspaceViewModel).SetCurrentOffsetCommand.Execute((sender as ZoomBorder).GetTranslateTransformOrigin());
-        }
-
         void vm_CurrentOffsetChanged(object sender, EventArgs e)
         {
             zoomBorder.SetTranslateTransformOrigin((e as PointEventArgs).Point);
