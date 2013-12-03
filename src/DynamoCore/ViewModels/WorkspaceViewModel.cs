@@ -13,6 +13,7 @@ using Dynamo.Utilities;
 using Dynamo.Controls;
 using System.Windows.Threading;
 using System.Windows.Input;
+using Dynamo.Core;
 
 namespace Dynamo.ViewModels
 {
@@ -283,7 +284,7 @@ namespace Dynamo.ViewModels
 
         public bool ZoomEnabled
         {
-            get { return CanZoom(_zoomIncrement); }
+            get { return CanZoom(Configurations.ZoomIncrement); }
         }
 
         public bool CanFindNodesFromElements
@@ -744,28 +745,26 @@ namespace Dynamo.ViewModels
             return false;
         }
 
-        private double _zoomIncrement = 0.05;
-
         private void ZoomIn(object o)
         {
-            OnRequestZoomToViewportCenter(this, new ZoomEventArgs(_zoomIncrement));
+            OnRequestZoomToViewportCenter(this, new ZoomEventArgs(Configurations.ZoomIncrement));
             ResetFitViewToggle(o);
         }
 
         private bool CanZoomIn(object o)
         {
-            return CanZoom(_zoomIncrement);
+            return CanZoom(Configurations.ZoomIncrement);
         }
 
         private void ZoomOut(object o)
         {
-            OnRequestZoomToViewportCenter(this, new ZoomEventArgs(-_zoomIncrement));
+            OnRequestZoomToViewportCenter(this, new ZoomEventArgs(-Configurations.ZoomIncrement));
             ResetFitViewToggle(o);
         }
 
         private bool CanZoomOut(object o)
         {
-            return CanZoom(-_zoomIncrement);
+            return CanZoom(-Configurations.ZoomIncrement);
         }
 
         private bool CanZoom(double zoom)
