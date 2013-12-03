@@ -98,13 +98,13 @@ namespace Dynamo.Nodes
         /// <summary>
         /// Returns the index of the port corresponding to the variable name given
         /// </summary>
-<<<<<<< HEAD
         /// <param name="variableName"> Name of the variable corresponding to an input port </param>
         /// <returns> Index of the required port in the InPorts collection </returns>
         public static int GetInportIndex(CodeBlockNodeModel cbn, string variableName)
         {
             return cbn.inputIdentifiers.IndexOf(variableName);
-=======
+        }
+
         public static void ReValidate(CodeBlockNodeModel cbn)
         {
             foreach (string variable in cbn.GetDefinedVariableNames())
@@ -117,8 +117,8 @@ namespace Dynamo.Nodes
                 }
             }
 
+            cbn.State = ElementState.Active;
             cbn.ValidateConnections();
->>>>>>> Code refactor
         }
 
         #endregion
