@@ -8,7 +8,7 @@ using DSRevitNodes.GeometryConversion;
 using DSRevitNodes.GeometryObjects;
 using DSRevitNodes.Graphics;
 
-namespace DSRevitNodes
+namespace DSRevitNodes.Elements
 {
     public class DSSolid : IGeometryObject
     {

@@ -1,5 +1,6 @@
 ﻿using System;
 using DSRevitNodes;
+using DSRevitNodes.Elements;
 using NUnit.Framework;
 
 namespace DSRevitNodesTests

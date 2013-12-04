@@ -27,12 +27,7 @@ namespace DSRevitNodesTests
                 Point.ByCoordinates(10,0,0)
             };
 
-            var wts = new double[]
-            {
-                1,1,1,1
-            };
-
-            var spline = DSNurbSpline.ByControlPointsAndWeights(pts, wts);
+            var spline = BSplineCurve.ByControlVertices( pts, 3 );
             Assert.NotNull(spline);
 
             // build model curve from spline
@@ -64,12 +59,7 @@ namespace DSRevitNodesTests
                 Point.ByCoordinates(10,0,0)
             };
 
-            var wts = new double[]
-            {
-                1,1,1,1
-            };
-
-            var spline = DSNurbSpline.ByControlPointsAndWeights(pts, wts);
+            var spline = BSplineCurve.ByControlVertices(pts, 3);
             Assert.NotNull(spline);
 
             // build model curve from spline

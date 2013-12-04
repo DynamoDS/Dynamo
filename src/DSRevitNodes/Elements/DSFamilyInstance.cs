@@ -11,40 +11,22 @@ using Point = Autodesk.DesignScript.Geometry.Point;
 using Curve = Autodesk.DesignScript.Geometry.Curve;
 using Face = Autodesk.DesignScript.Geometry.Face;
 
-namespace DSRevitNodes
+namespace DSRevitNodes.Elements
 {
     /// <summary>
     /// A Revit FamilyInstance
     /// </summary>
     [RegisterForTrace]
-    public class DSFamilyInstance : AbstractElement
+    public class DSFamilyInstance : AbstractFamilyInstance
     {
-
-        #region Internal properties
-
-        internal Autodesk.Revit.DB.FamilyInstance InternalFamilyInstance
-        {
-            get; private set;
-        }
-
-        /// <summary>
-        /// Reference to the Element
-        /// </summary>
-        internal override Element InternalElement
-        {
-            get { return InternalFamilyInstance; }
-        }
-
-
-        #endregion
 
         #region Private constructors
 
         /// <summary>
-        /// Wrap an existing FamilyInstance. The resulting class is Dynamo owned
+        /// Wrap an existing FamilyInstance.
         /// </summary>
         /// <param name="instance"></param>
-        private DSFamilyInstance(Autodesk.Revit.DB.FamilyInstance instance)
+        protected DSFamilyInstance(Autodesk.Revit.DB.FamilyInstance instance)
         {
             InternalSetFamilyInstance(instance);
         }
@@ -94,13 +76,6 @@ namespace DSRevitNodes
 
         #region Private mutators
 
-        private void InternalSetFamilyInstance(Autodesk.Revit.DB.FamilyInstance fi)
-        {
-            this.InternalFamilyInstance = fi;
-            this.InternalElementId = fi.Id;
-            this.InternalUniqueId = fi.UniqueId;
-        }
-
         private void InternalSetPosition(XYZ fi)
         {
             TransactionManager.GetInstance().EnsureInTransaction(Document);
@@ -111,39 +86,9 @@ namespace DSRevitNodes
             TransactionManager.GetInstance().TransactionTaskDone();
         }
 
-        private void InternalSetFamilySymbol(Autodesk.Revit.DB.FamilySymbol fs)
-        {
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
-
-            InternalFamilyInstance.Symbol = fs;
-
-            TransactionManager.GetInstance().TransactionTaskDone();
-        }
-
         #endregion
 
-        #region Public properties
-
-        public DSFamilySymbol Symbol
-        {
-            get
-            {
-                return DSFamilySymbol.FromExisting(this.InternalFamilyInstance.Symbol, true);
-            }
-        }
-
-        public Point Location
-        {
-            get
-            {
-                var pos = this.InternalFamilyInstance.Location as LocationPoint;
-                return Point.ByCoordinates( pos.Point.X, pos.Point.Y, pos.Point.Z );
-            }
-        }
-
-        #endregion
-
-        #region Static constructors
+        #region Public static constructors
 
         /// <summary>
         /// Place a Revit FamilyInstance given the FamilySymbol (also known as the FamilyType) and it's coordinates in world space
@@ -205,6 +150,8 @@ namespace DSRevitNodes
 
         #endregion
 
+        #region Incomplete Static constructors
+
         static DSFamilyInstance ByCurve(DSFamilySymbol fs, DSCurve c)
         {
             throw new NotImplementedException();
@@ -219,6 +166,8 @@ namespace DSRevitNodes
         {
             throw new NotImplementedException();
         }
+
+        #endregion
 
 
     }

@@ -9,7 +9,7 @@ using DSNodeServices;
 using DSRevitNodes.Elements;
 using RevitServices.Transactions;
 
-namespace DSRevitNodes
+namespace DSRevitNodes.Elements
 {
     /// <summary>
     /// A Revit FamilySymbol
