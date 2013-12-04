@@ -16,6 +16,9 @@ namespace Dynamo.Core
         public static readonly int GridSpacing = 100;
         public static readonly int GridThickness = 2;
         public static readonly Color GridLineColor = Color.FromRgb(232, 232, 232);
+
+        // Canvas Control
+        public static readonly double ZoomIncrement = 0.05;
         #endregion
 
         #region Tab Bar Configurations
