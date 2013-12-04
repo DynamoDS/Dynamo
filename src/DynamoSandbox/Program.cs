@@ -36,6 +36,13 @@ namespace DynamoSandbox
             }
             catch (Exception e)
             {
+                #if DEBUG
+
+                // Display the recorded command XML when the crash happens, so that it maybe saved and re-run later
+                dynSettings.Controller.DynamoViewModel.SaveRecordedCommand.Execute(null);
+
+                #endif
+
                 try
                 {
                     // Show the unhandled exception dialog so user can copy the 
