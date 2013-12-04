@@ -7,13 +7,15 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using DSNodeServices;
 using DSRevitNodes.Elements;
+using DSRevitNodes.GeometryConversion;
+using DSRevitNodes.GeometryObjects;
 using DSRevitNodes.References;
 using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Numerics.LinearAlgebra.Generic;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 
-namespace DSRevitNodes
+namespace DSRevitNodes.Elements
 {
     /// <summary>
     /// A Revit ModelCurve
@@ -187,18 +189,23 @@ namespace DSRevitNodes
         #region Public constructor
 
         /// <summary>
-        /// Construct a Revit ModelCurve element from an existing curve
+        /// Construct a Revit ModelCurve element from a Curve
         /// </summary>
         /// <param name="curve"></param>
         /// <returns></returns>
-        public static DSModelCurve ByPlanarCurve(DSCurve curve)
+        public static DSModelCurve ByPlanarCurve(Autodesk.DesignScript.Geometry.Curve curve)
         {
             if (curve == null)
             {
                 throw new ArgumentNullException("curve");
             }
 
-            return new DSModelCurve(curve.InternalCurve);
+            if (!curve.IsPlanar)
+            {
+                throw new Exception("The curve is not planar");
+            }
+
+            return new DSModelCurve(curve.ToRevitType());
         }
 
         /// <summary>

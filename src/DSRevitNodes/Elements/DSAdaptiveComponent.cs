@@ -5,6 +5,7 @@ using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using DSNodeServices;
 using DSRevitNodes.GeometryConversion;
+using DSRevitNodes.GeometryObjects;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Point = Autodesk.DesignScript.Geometry.Point;
@@ -15,27 +16,8 @@ namespace DSRevitNodes.Elements
     /// A Revit Adaptive Component
     /// </summary>
     [RegisterForTrace]
-    public class DSAdaptiveComponent : AbstractElement
+    public class DSAdaptiveComponent : AbstractFamilyInstance
     {
-        #region Properties
-
-        /// <summary>
-        /// Internal variable containing the wrapped Revit object
-        /// </summary>
-        internal Autodesk.Revit.DB.FamilyInstance InternalFamilyInstance
-        {
-            get; private set;
-        }
-
-        /// <summary>
-        /// Reference to the Element
-        /// </summary>
-        internal override Element InternalElement
-        {
-            get { return InternalFamilyInstance; }
-        }
-
-        #endregion
 
         #region Private constructors
 
@@ -160,17 +142,6 @@ namespace DSRevitNodes.Elements
         #region Internal mutators
 
         /// <summary>
-        /// Set the internal object and update the id's
-        /// </summary>
-        /// <param name="ele">The new adaptive component</param>
-        private void InternalSetFamilyInstance(Autodesk.Revit.DB.FamilyInstance ele)
-        {
-            InternalFamilyInstance = ele;
-            InternalElementId = ele.Id;
-            InternalUniqueId = ele.UniqueId;
-        }
-
-        /// <summary>
         /// Set the positions of the internal family instance from a list of XYZ points
         /// </summary>
         /// <param name="points"></param>
@@ -250,7 +221,6 @@ namespace DSRevitNodes.Elements
 
             TransactionManager.GetInstance().TransactionTaskDone();
         }
-
 
         #endregion
 

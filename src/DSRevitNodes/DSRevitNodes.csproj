@@ -75,6 +75,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Elements\AbstractElement.cs" />
+    <Compile Include="Elements\AbstractFamilyInstance.cs" />
+    <Compile Include="Elements\DSStructuralType.cs" />
     <Compile Include="Elements\Views\AbstractPlanView.cs" />
     <Compile Include="Elements\Views\DSAxonometricView.cs" />
     <Compile Include="Elements\Views\DSCeilingPlanView.cs" />

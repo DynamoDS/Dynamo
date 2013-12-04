@@ -5,6 +5,9 @@ using System.Text;
 
 namespace DSRevitNodes.Elements
 {
+    /// <summary>
+    /// A not yet implemented TableView class
+    /// </summary>
     class DSTableView
     {
     }

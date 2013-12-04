@@ -11,7 +11,7 @@ using Line = Autodesk.DesignScript.Geometry.Line;
 using Plane = Autodesk.DesignScript.Geometry.Plane;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
-namespace DSRevitNodes
+namespace DSRevitNodes.Elements
 {
     /// <summary>
     /// A Revit ReferencePlane

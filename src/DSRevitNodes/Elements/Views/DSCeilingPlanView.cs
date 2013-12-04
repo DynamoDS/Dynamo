@@ -7,7 +7,7 @@ using DSNodeServices;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 
-namespace DSRevitNodes.Elements.Views
+namespace DSRevitNodes.Elements
 {
     /// <summary>
     /// A Revit ViewPlan
