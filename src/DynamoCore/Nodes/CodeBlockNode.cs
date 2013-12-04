@@ -808,6 +808,16 @@ namespace Dynamo.Nodes
         }
 
         //ToDo: Move this method into the CBN text formatter when it is created
+        /// <summary>
+        /// Returns the extra number of lines caused due to text wrapping. Example, a line such as
+        ///             " this is a very very very very very long line"
+        /// would become
+        ///             " this is a very very very very
+        ///               very long line "
+        /// due to text wrapping
+        /// </summary>
+        /// <param name="statement"> The statement whose extra lines is required to be calculated </param>
+        /// <returns> Returns the extra number of lines caused by text wrapping. For example, the above statement would return 1 </returns>
         private int GetExtraLinesDueToTextWrapping(string statement)
         {
             int numberOfLines = 0;
@@ -820,6 +830,13 @@ namespace Dynamo.Nodes
             return numberOfLines;
         }
 
+        //ToDo: Move this method into the CBN text formatter when it is created
+        /// <summary>
+        /// Simulates the given text like it were text from a code block node, and
+        /// returns the line height.
+        /// </summary>
+        /// <param name="str"> The string whose line height is required to be calculated </param>
+        /// <returns> The line height of the formatted string </returns>
         private double GetFormattedTextHeight(string str)
         {
             FontFamily textFontFamily = null;
