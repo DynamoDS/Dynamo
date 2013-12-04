@@ -168,21 +168,16 @@ namespace Dynamo.Models
             }
             set
             {
-                //don't bother changing the state
-                //when we are not reporting modifications
-                //used when clearing the workbench
-                //to avoid nodes recoloring when connectors
-                //are deleted
-                if (IsReportingModifications)
-                {
-                    if (value != ElementState.ERROR)
-                    {
-                        SetTooltip();
-                    }
+                if (value != ElementState.ERROR)
+                    ClearTooltipText();
 
-                    state = value;
+                state = value;
+
+                // Suppress notification if not reporting. Reporting is disabled 
+                // in cases like clearing the workbench to avoid nodes recoloring 
+                // as connectors are deleted.
+                if (IsReportingModifications)
                     RaisePropertyChanged("State");
-                }
             }
         }
 
@@ -973,7 +968,7 @@ namespace Dynamo.Models
                                 evalDict.OrderBy(pair => OutPortData.IndexOf(pair.Key))
                                     .Select(pair => pair.Value)));
 
-                    ValidateConnections();
+                    ClearError();
                 }
                 catch (CancelEvaluationException)
                 {
@@ -1587,7 +1582,7 @@ namespace Dynamo.Models
             }
         }
 
-        void SetTooltip()
+        protected void ClearTooltipText()
         {
             ToolTipText = "";
         }
@@ -1603,16 +1598,24 @@ namespace Dynamo.Models
         /// </summary>
         public void ValidateConnections()
         {
-
             Action setState = (() =>
-                {
+            {
+                // If a node is in erroneous state, then calling ValidateConnections 
+                // will not remove its error state (that has to be done before calling 
+                // ValidateConnections through some other means).
+                // 
+                if (this.State == ElementState.ERROR)
+                    return;
 
-                    // if there are inputs without connections
-                    // mark as dead
-                    State = inPorts.Any(x => !x.Connectors.Any() && !(x.UsingDefaultValue && x.DefaultValueEnabled))
-                                ? ElementState.DEAD
-                                : ElementState.ACTIVE;
+                // if there are inputs without connections mark as dead
+                bool hasPortWihtoutInput = inPorts.Any((x) =>
+                {
+                    // When a given port has no input and it has no default value.
+                    return !x.Connectors.Any() && !(x.UsingDefaultValue && x.DefaultValueEnabled);
                 });
+
+                State = hasPortWihtoutInput ? ElementState.DEAD : ElementState.ACTIVE;
+            });
 
             if (dynSettings.Controller != null &&
                 dynSettings.Controller.UIDispatcher != null &&
@@ -1629,6 +1632,13 @@ namespace Dynamo.Models
         {
             State = ElementState.ERROR;
             ToolTipText = p;
+        }
+
+        protected void ClearError()
+        {
+            State = ElementState.DEAD;
+            ClearTooltipText();
+            ValidateConnections();
         }
 
         public void SelectNeighbors()
