@@ -792,7 +792,7 @@
         <Setter Property="Foreground" Value="#444" />
         <Setter Property="CaretBrush" Value="#333" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
-        <Setter Property="FontSize" Value="14.61px" />
+        <Setter Property="FontSize" Value="14.67px" />
         <Setter Property="Padding" Value="3" />
         <Setter Property="Template">
             <Setter.Value>
@@ -806,7 +806,7 @@
                                           SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                             <TextBlock x:Name="previewText"
                                        Foreground="#777777"
-                                       FontSize="14.61px"
+                                       FontSize="14.67px"
                                        Padding="3"
                                        Margin="4 0 4 0"
                                        IsHitTestVisible="False"
