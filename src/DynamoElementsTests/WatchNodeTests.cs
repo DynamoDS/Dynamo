@@ -10,11 +10,12 @@ namespace Dynamo.Tests
     {
         private void AssertWatchTreeBranchContent(WatchTreeBranch branch, object[] content)
         {
+            Assert.AreEqual(content.Length, branch.Count);
             int count = 0;
             foreach (var item in branch)
             {
                 string nodeLabel = string.Format("[{0}] {1}", count, content[count]);
-                Assert.AreEqual(item.NodeLabel, nodeLabel);
+                Assert.AreEqual(nodeLabel, item.NodeLabel);
                 ++count;
             }
         }
@@ -35,13 +36,13 @@ namespace Dynamo.Tests
             Watch watchPoint = model.CurrentWorkspace.NodeFromWorkspace("f1581148-9318-40fa-9402-61557255162a") as Watch;
 
             WatchNode node = watchNumber.GetWatchNode();
-            Assert.AreEqual(node.NodeLabel, "5");
+            Assert.AreEqual("5", node.NodeLabel);
 
             node = watchBoolean.GetWatchNode();
-            Assert.AreEqual(node.NodeLabel, "False");
+            Assert.AreEqual("False", node.NodeLabel);
 
             node = watchPoint.GetWatchNode();
-            Assert.AreEqual(node.NodeLabel, "Point");
+            Assert.AreEqual("Point", node.NodeLabel);
         }
 
         [Test]
@@ -60,18 +61,18 @@ namespace Dynamo.Tests
             Watch watchVectors = model.CurrentWorkspace.NodeFromWorkspace("73b35c1f-2dfb-4ce0-8609-c0bac9f3033c") as Watch;
 
             WatchNode node = watchNumbers.GetWatchNode();
-            Assert.AreEqual(node.NodeLabel, "List");
-            Assert.AreEqual(node.Children.Count, 10);
+            Assert.AreEqual("List", node.NodeLabel);
+            Assert.AreEqual(10, node.Children.Count);
             AssertWatchTreeBranchContent(node.Children, new object[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
 
             node = watchBooleans.GetWatchNode();
-            Assert.AreEqual(node.NodeLabel, "List");
-            Assert.AreEqual(node.Children.Count, 6);
+            Assert.AreEqual("List", node.NodeLabel);
+            Assert.AreEqual(6, node.Children.Count);
             AssertWatchTreeBranchContent(node.Children, new object[] { true, false, true, false, true, false });
 
             node = watchVectors.GetWatchNode();
-            Assert.AreEqual(node.NodeLabel, "List");
-            Assert.AreEqual(node.Children.Count, 10);
+            Assert.AreEqual("List", node.NodeLabel);
+            Assert.AreEqual(10, node.Children.Count);
             string vector = "Vector";
             AssertWatchTreeBranchContent(node.Children, new object[] { vector, vector, vector, vector, vector, vector, vector, vector, vector, vector });
         }
