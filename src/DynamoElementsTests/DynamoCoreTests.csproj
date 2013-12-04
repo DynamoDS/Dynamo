@@ -99,6 +99,7 @@
     <Compile Include="Nodes\NodeSampleTests.cs" />
     <Compile Include="SearchSideEffects.cs" />
     <Compile Include="UnitTestBase.cs" />
+    <Compile Include="WatchNodeTests.cs" />
     <Compile Include="WorkspaceHeaderTests.cs" />
     <Compile Include="WorkspaceSaving.cs" />
     <Compile Include="PrintValue.cs" />
