@@ -195,13 +195,6 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// Type of all functions that are used for Mapping operations.
-        /// </summary>
-        /// <param name="args">Variable number of arguments to be mapped/combined.</param>
-        /// <returns>Combined result of the input arguments.</returns>
-        public delegate object MapDelegate(params object[] args);
-
-        /// <summary>
         /// Produces a new list by applying a projection function to each element of the input list(s) and
         /// storing the result.
         /// </summary>
@@ -211,7 +204,7 @@ namespace DSCoreNodes
         /// </param>
         /// <param name="lists">Lists to be combined/mapped into a new list.</param>
         public static IList<object> Map(
-            MapDelegate projection, params IEnumerable<object>[] lists)
+            Function.MapDelegate projection, params IEnumerable<object>[] lists)
         {
             if (!lists.Any())
                 throw new ArgumentException("Need at least one list to map.");
@@ -238,7 +231,7 @@ namespace DSCoreNodes
         /// </param>
         /// <param name="lists">Lists to take the cartesion product of.</param>
         public static IEnumerable<object> CartesianProduct(
-            MapDelegate projection, params IEnumerable<object>[] lists)
+            Function.MapDelegate projection, params IEnumerable<object>[] lists)
         {
             if (!lists.Any())
                 throw new ArgumentException("Need at least one list to map.");
@@ -253,7 +246,7 @@ namespace DSCoreNodes
         /// Function that consumed an element from each input list. Return value is ignored.
         /// </param>
         /// <param name="lists">Lists to be iterated over.</param>
-        public static void ForEach(MapDelegate action, params IEnumerable<object>[] lists)
+        public static void ForEach(Function.MapDelegate action, params IEnumerable<object>[] lists)
         {
             if (!lists.Any())
                 throw new ArgumentException("Need at least one list to iterate over.");
