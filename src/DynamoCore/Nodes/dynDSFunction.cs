@@ -6,8 +6,10 @@ using System.Xml;
 using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Utilities;
+using GraphToDSCompiler;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Utils;
+using ArrayNode = ProtoCore.AST.AssociativeAST.ArrayNode;
 
 namespace Dynamo.Nodes
 { 
@@ -17,8 +19,8 @@ namespace Dynamo.Nodes
     [NodeName("Custom Node")]
     [NodeDescription("Instance of a Custom Node")]
     [IsInteractive(false)]
-    [NodeSearchableAttribute(false)]
-    [IsMetaNodeAttribute]
+    [NodeSearchable(false)]
+    [IsMetaNode]
     public class CustomNodeInstance : NodeModel
     {
         /// <summary>
@@ -137,8 +139,8 @@ namespace Dynamo.Nodes
     [NodeDescription("DesignScript Builtin Functions")]
     [IsInteractive(false)]
     [NodeHiddenInBrowser] 
-    [NodeSearchableAttribute(false)]
-    [IsMetaNodeAttribute]
+    [NodeSearchable(false)]
+    [IsMetaNode]
     public class DSFunction : NodeModel
     {
         public FunctionDescriptor Definition { get; set; }
@@ -257,7 +259,7 @@ namespace Dynamo.Nodes
             }
 
             string assembly = null;
-            string function = null;
+            string function;
 
             if (nodeElement.Attributes["assembly"] == null &&
                 nodeElement.Attributes["function"] == null)
@@ -293,7 +295,6 @@ namespace Dynamo.Nodes
             }
 
             Initialize();
-            return;
         }
 
         /// <summary>
@@ -311,24 +312,28 @@ namespace Dynamo.Nodes
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
             string function = Definition.Name;
-            AssociativeNode rhs = null;
+            AssociativeNode rhs;
 
             switch (Definition.Type)
             {
                 case FunctionType.Constructor:
                 case FunctionType.StaticMethod:
 
-                    var staticCall = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
-                    staticCall.LeftNode = new IdentifierNode(Definition.ClassName);
-                    staticCall.RightNode = AstFactory.BuildFunctionCall(function, inputAstNodes);
+                    var staticCall = new IdentifierListNode
+                    {
+                        LeftNode = new IdentifierNode(Definition.ClassName),
+                        RightNode = AstFactory.BuildFunctionCall(function, inputAstNodes)
+                    };
                     rhs = staticCall;
                     break;
 
                 case FunctionType.StaticProperty:
 
-                    var staticProp = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
-                    staticProp.LeftNode = new IdentifierNode(Definition.ClassName);
-                    staticProp.RightNode = new IdentifierNode(Definition.Name);
+                    var staticProp = new IdentifierListNode
+                    {
+                        LeftNode = new IdentifierNode(Definition.ClassName),
+                        RightNode = new IdentifierNode(Definition.Name)
+                    };
                     rhs = staticProp;
                     break;
 
@@ -341,9 +346,11 @@ namespace Dynamo.Nodes
                         var thisNode = inputAstNodes[0];
                         if (thisNode != null && !(thisNode is NullNode))
                         {
-                            var insProp = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
-                            insProp.LeftNode = inputAstNodes[0];
-                            insProp.RightNode = new IdentifierNode(Definition.Name);
+                            var insProp = new IdentifierListNode
+                            {
+                                LeftNode = inputAstNodes[0],
+                                RightNode = new IdentifierNode(Definition.Name)
+                            };
                             rhs = insProp;
                         }
                     }
@@ -356,17 +363,19 @@ namespace Dynamo.Nodes
                     if (inputAstNodes != null && inputAstNodes.Count >= 1)
                     {
                         var thisNode = inputAstNodes[0];
-                        inputAstNodes.RemoveAt(0);  // remove this pointer
+                        inputAstNodes.RemoveAt(0); // remove this pointer
 
                         if (thisNode != null && !(thisNode is NullNode))
                         {
-                            var memberFunc = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
+                            var memberFunc = new IdentifierListNode();
                             memberFunc.LeftNode = thisNode;
-                            memberFunc.RightNode = AstFactory.BuildFunctionCall(function, inputAstNodes);
+                            memberFunc.RightNode = AstFactory.BuildFunctionCall(
+                                function,
+                                inputAstNodes);
                             rhs = memberFunc;
                         }
                     }
-                    
+
                     break;
 
                 default:
@@ -375,18 +384,21 @@ namespace Dynamo.Nodes
             }
 
             var resultAst = new List<AssociativeNode>
-            {
-                AstFactory.BuildAssignment(AstIdentifierForPreview, rhs)
-            };
+            { AstFactory.BuildAssignment(AstIdentifierForPreview, rhs) };
 
             if (OutPortData.Count == 1)
             {
                 var outputIdentiferNode = GetAstIdentifierForOutputIndex(0);
-                string outputIdentifier = GraphToDSCompiler.GraphUtilities.ASTListToCode(new List<AssociativeNode> { outputIdentiferNode });
-                string thisIdentifier = GraphToDSCompiler.GraphUtilities.ASTListToCode(new List<AssociativeNode> { AstIdentifierForPreview});
+                string outputIdentifier =
+                    GraphUtilities.ASTListToCode(
+                        new List<AssociativeNode> { outputIdentiferNode });
+                string thisIdentifier =
+                    GraphUtilities.ASTListToCode(
+                        new List<AssociativeNode> { AstIdentifierForPreview });
                 if (!string.Equals(outputIdentifier, thisIdentifier))
                 {
-                    resultAst.Add(AstFactory.BuildAssignment(outputIdentiferNode, AstIdentifierForPreview));
+                    resultAst.Add(
+                        AstFactory.BuildAssignment(outputIdentiferNode, AstIdentifierForPreview));
                 }
             }
             else
@@ -404,7 +416,11 @@ namespace Dynamo.Nodes
                                               ArrayDimensions =
                                                   new ArrayNode
                                                   {
-                                                      Expr = new StringNode { value = Definition.ReturnKeys.ToList()[outputIdx] }
+                                                      Expr =
+                                                          new StringNode
+                                                          {
+                                                              value = Definition.ReturnKeys[outputIdx]
+                                                          }
                                                   }
                                           }));
             }
