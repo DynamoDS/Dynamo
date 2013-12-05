@@ -12,7 +12,7 @@ using ProtoCore.Utils;
 using ArrayNode = ProtoCore.AST.AssociativeAST.ArrayNode;
 
 namespace Dynamo.Nodes
-{ 
+{
     /// <summary>
     /// DesignScript Custom Node instance.
     /// </summary>
@@ -42,7 +42,9 @@ namespace Dynamo.Nodes
         {
             get
             {
-                return Inputs.Values.Where(x => x != null).Any(x => x.Item2.isDirty || x.Item2.RequiresRecalc);
+                return
+                    Inputs.Values.Where(x => x != null)
+                          .Any(x => x.Item2.isDirty || x.Item2.RequiresRecalc);
             }
             set
             {
@@ -88,7 +90,8 @@ namespace Dynamo.Nodes
             NickName = Definition.DisplayName;
         }
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        protected override void SaveNode(
+            XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
             throw new NotImplementedException();
         }
@@ -103,15 +106,14 @@ namespace Dynamo.Nodes
             var functionCall = AstFactory.BuildFunctionCall(Definition.Name, inputAstNodes);
 
             var resultAst = new List<AssociativeNode>
-            {
-                AstFactory.BuildAssignment(AstIdentifierForPreview, functionCall)
-            };
+            { AstFactory.BuildAssignment(AstIdentifierForPreview, functionCall) };
 
             if (OutPortData.Count == 1)
             {
                 resultAst.Add(
                     AstFactory.BuildAssignment(
-                        GetAstIdentifierForOutputIndex(0), AstIdentifierForPreview));
+                        GetAstIdentifierForOutputIndex(0),
+                        AstIdentifierForPreview));
             }
             else
             {
@@ -138,7 +140,7 @@ namespace Dynamo.Nodes
     [NodeName("Function Node")]
     [NodeDescription("DesignScript Builtin Functions")]
     [IsInteractive(false)]
-    [NodeHiddenInBrowser] 
+    [NodeHiddenInBrowser]
     [NodeSearchable(false)]
     [IsMetaNode]
     public class DSFunction : NodeModel
@@ -147,14 +149,14 @@ namespace Dynamo.Nodes
 
         public bool IsInstanceMember()
         {
-            return Definition.Type == FunctionType.InstanceMethod ||
-                   Definition.Type == FunctionType.InstanceProperty;
+            return Definition.Type == FunctionType.InstanceMethod
+                || Definition.Type == FunctionType.InstanceProperty;
         }
 
         public bool IsStaticMember()
         {
-            return Definition.Type == FunctionType.StaticMethod ||
-                   Definition.Type == FunctionType.StaticProperty;
+            return Definition.Type == FunctionType.StaticMethod
+                || Definition.Type == FunctionType.StaticProperty;
         }
 
         public bool IsConstructor()
@@ -172,9 +174,9 @@ namespace Dynamo.Nodes
 
         public override string Description
         {
-            get 
-            { 
-                return Definition.Signature; 
+            get
+            {
+                return Definition.Signature;
             }
         }
 
@@ -190,7 +192,9 @@ namespace Dynamo.Nodes
         {
             get
             {
-                return Inputs.Values.Where(x => x != null).Any(x => x.Item2.isDirty || x.Item2.RequiresRecalc);
+                return
+                    Inputs.Values.Where(x => x != null)
+                          .Any(x => x.Item2.isDirty || x.Item2.RequiresRecalc);
             }
             set
             {
@@ -212,7 +216,11 @@ namespace Dynamo.Nodes
             {
                 foreach (var arg in Definition.Parameters)
                 {
-                    InPortData.Add(new PortData(arg.Parameter, string.IsNullOrEmpty(arg.Type) ? "var" : arg.Type, typeof(object)));
+                    InPortData.Add(
+                        new PortData(
+                            arg.Parameter,
+                            string.IsNullOrEmpty(arg.Type) ? "var" : arg.Type,
+                            typeof(object)));
                 }
             }
 
@@ -240,7 +248,8 @@ namespace Dynamo.Nodes
         /// <param name="xmlDoc"></param>
         /// <param name="nodeElement"></param>
         /// <param name="context"></param>
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        protected override void SaveNode(
+            XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
             nodeElement.SetAttribute("assembly", Definition.Assembly ?? "");
             nodeElement.SetAttribute("function", Definition.MangledName ?? "");
@@ -261,11 +270,17 @@ namespace Dynamo.Nodes
             string assembly = null;
             string function;
 
-            if (nodeElement.Attributes["assembly"] == null &&
-                nodeElement.Attributes["function"] == null)
+            if (nodeElement.Attributes["assembly"] == null
+                && nodeElement.Attributes["function"] == null)
             {
                 // To open old file
-                foreach (XmlElement subNode in nodeElement.ChildNodes.Cast<XmlElement>().Where(subNode => subNode.Name.Equals(typeof(FunctionDescriptor).FullName)))
+                foreach (
+                    XmlElement subNode in
+                        nodeElement.ChildNodes.Cast<XmlElement>()
+                                   .Where(
+                                       subNode =>
+                                           subNode.Name.Equals(typeof(FunctionDescriptor).FullName))
+                    )
                 {
                     var helper = new XmlElementHelper(subNode);
                     assembly = helper.ReadString("Assembly", "");
@@ -282,7 +297,9 @@ namespace Dynamo.Nodes
             if (!string.IsNullOrEmpty(assembly))
             {
                 dynSettings.Controller.EngineController.ImportLibrary(assembly);
-                Definition = dynSettings.Controller.EngineController.GetFunctionDescriptor(assembly, function);
+                Definition = dynSettings.Controller.EngineController.GetFunctionDescriptor(
+                    assembly,
+                    function);
             }
             else
             {
@@ -304,7 +321,7 @@ namespace Dynamo.Nodes
         /// <param name="context"></param>
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
-            base.SerializeCore(element, context); 
+            base.SerializeCore(element, context);
             var helper = new XmlElementHelper(element);
             helper.SetAttribute("name", Definition.MangledName);
         }
@@ -367,11 +384,11 @@ namespace Dynamo.Nodes
 
                         if (thisNode != null && !(thisNode is NullNode))
                         {
-                            var memberFunc = new IdentifierListNode();
-                            memberFunc.LeftNode = thisNode;
-                            memberFunc.RightNode = AstFactory.BuildFunctionCall(
-                                function,
-                                inputAstNodes);
+                            var memberFunc = new IdentifierListNode
+                            {
+                                LeftNode = thisNode,
+                                RightNode = AstFactory.BuildFunctionCall(function, inputAstNodes)
+                            };
                             rhs = memberFunc;
                         }
                     }
@@ -390,8 +407,7 @@ namespace Dynamo.Nodes
             {
                 var outputIdentiferNode = GetAstIdentifierForOutputIndex(0);
                 string outputIdentifier =
-                    GraphUtilities.ASTListToCode(
-                        new List<AssociativeNode> { outputIdentiferNode });
+                    GraphUtilities.ASTListToCode(new List<AssociativeNode> { outputIdentiferNode });
                 string thisIdentifier =
                     GraphUtilities.ASTListToCode(
                         new List<AssociativeNode> { AstIdentifierForPreview });
@@ -419,7 +435,9 @@ namespace Dynamo.Nodes
                                                       Expr =
                                                           new StringNode
                                                           {
-                                                              value = Definition.ReturnKeys.ElementAt(outputIdx)
+                                                              value =
+                                                                  Definition.ReturnKeys.ElementAt(
+                                                                      outputIdx)
                                                           }
                                                   }
                                           }));
