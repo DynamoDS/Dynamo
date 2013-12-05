@@ -403,10 +403,10 @@ let rec EQ = function
         else
             Number(0.)
     
-    | [Container(o1); Container(o2)] when o1 = o1 || o1.Equals(o2) -> Number(1.)
+    | [Container(o1); Container(o2)] when o1 = o2 || o1.Equals(o2) -> Number(1.)
 
     | m -> Number(0.)
-        
+    
 
 let Not = function
     | [expr] -> if ValueToBool expr then Number(0.) else Number(1.)
