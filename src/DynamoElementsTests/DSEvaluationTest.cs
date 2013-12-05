@@ -12,20 +12,50 @@ using System.Collections;
 
 namespace Dynamo.Tests
 {
-    [Category("DSExecution")]
-    class DSEvaluationTest : DynamoUnitTest
+    class DSEvaluationUnitTest : DynamoUnitTest
     {
-        private void OpenModel(string relativeFilePath)
+        public void OpenModel(string relativeFilePath)
         {
             var model = Controller.DynamoModel;
             string openPath = Path.Combine(GetTestDirectory(), relativeFilePath);
             model.Open(openPath);
         }
 
-        private void RunModel(string relativeDynFilePath)
+        public void RunModel(string relativeDynFilePath)
         {
             OpenModel(relativeDynFilePath);
             Assert.DoesNotThrow(() => Controller.RunExpression(null));
+        }
+
+        public void AssertValue(string varname, object value)
+        {
+            var mirror = GetRuntimeMirror(varname);
+            //Couldn't find the variable, so expected value should be null.
+            if (mirror == null)
+            {
+                if (value != null)
+                    Assert.IsNotNull(mirror, string.Format("Variable : {0}, not found.", varname));
+                return;
+            }
+
+            Console.WriteLine(varname + " = " + mirror.GetStringData());
+            var svValue = mirror.GetData();
+            AssertValue(svValue, value);
+        }
+
+        public void AssertPreviewValue(string guid, object value)
+        {
+            string previewVariable = GetVarName(guid);
+            AssertValue(previewVariable, value);
+        }
+
+        public void AssertClassName(string guid, string className)
+        {
+            string varname = GetVarName(guid);
+            var mirror = GetRuntimeMirror(varname);
+            Assert.IsNotNull(mirror);
+            var classInfo = mirror.GetData().Class;
+            Assert.AreEqual(classInfo.ClassName, className);
         }
 
         private string GetVarName(string guid)
@@ -41,22 +71,6 @@ namespace Dynamo.Tests
             RuntimeMirror mirror = null;
             Assert.DoesNotThrow(() => mirror = Controller.EngineController.GetMirror(varName));
             return mirror;
-        }
-
-        private void AssertValue(string varname, object value)
-        {
-            var mirror = GetRuntimeMirror(varname);
-            //Couldn't find the variable, so expected value should be null.
-            if (mirror == null)
-            {
-                if(value != null)
-                    Assert.IsNotNull(mirror, string.Format("Variable : {0}, not found.", varname));
-                return;
-            }
-
-            Console.WriteLine(varname + " = " + mirror.GetStringData());
-            var svValue = mirror.GetData();
-            AssertValue(svValue, value);
         }
 
         private void AssertValue(MirrorData data, object value)
@@ -84,28 +98,17 @@ namespace Dynamo.Tests
             }
         }
 
-        private void AssertPreviewValue(string guid, object value)
-        {
-            string previewVariable = GetVarName(guid);
-            AssertValue(previewVariable, value);
-        }
-
-        private void AssertClassName(string guid, string className)
-        {
-            string varname = GetVarName(guid);
-            var mirror = GetRuntimeMirror(varname);
-            Assert.IsNotNull(mirror);
-            var classInfo = mirror.GetData().Class;
-            Assert.AreEqual(classInfo.ClassName, className);
-        }
-
         [TearDown]
         public override void Cleanup()
         {
             GraphToDSCompiler.GraphUtilities.Reset();
             base.Cleanup();
         }
+    }
 
+    [Category("DSExecution")]
+    class DSEvaluationTest : DSEvaluationUnitTest
+    {
         [Test]
         public void TestCodeBlockNode01()
         {
