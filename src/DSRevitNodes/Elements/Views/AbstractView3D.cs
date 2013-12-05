@@ -10,7 +10,7 @@ using DSRevitNodes.GeometryConversion;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 
-namespace DSRevitNodes
+namespace DSRevitNodes.Elements
 {
     public abstract class AbstractView3D : AbstractElement
     {

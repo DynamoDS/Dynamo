@@ -8,7 +8,7 @@ using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
 using DSRevitNodes.GeometryObjects;
 
-namespace DSRevitNodes
+namespace DSRevitNodes.GeometryObjects
 {
 
     // this type should actually be removed, to be replaced by Autodesk.DesignScript.Geometry.Curve
