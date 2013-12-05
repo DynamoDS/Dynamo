@@ -419,7 +419,7 @@ namespace Dynamo.Nodes
                                                       Expr =
                                                           new StringNode
                                                           {
-                                                              value = Definition.ReturnKeys[outputIdx]
+                                                              value = Definition.ReturnKeys.ElementAt(outputIdx)
                                                           }
                                                   }
                                           }));

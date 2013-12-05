@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="Core.cs" />
     <Compile Include="Geometry\Domain.cs" />
+    <Compile Include="List.cs" />
     <Compile Include="ObjectWithPropertyDictionary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
