@@ -12,7 +12,10 @@ using Operator = ProtoCore.DSASM.Operator;
 
 namespace Dynamo.DSEngine
 {
-    public enum LibraryItemType
+    /// <summary>
+    /// The type of a function.
+    /// </summary>
+    public enum FunctionType
     {
         GenericFunction,
         Constructor,
@@ -23,39 +26,110 @@ namespace Dynamo.DSEngine
     }
 
     /// <summary>
-    /// Describe a DesignScript library item.
+    /// A tuple of parameter and its type. 
     /// </summary>
-    public abstract class LibraryItem
+    public class TypedParameter
     {
-        public string Assembly { get; set; }
-        public string ClassName { get; set; }
-        public string Name { get; set; }
-        public LibraryItemType Type { get; set; }
-        public string QualifiedName
+        public string Parameter { get; private set; }
+        public string Type { get; private set; }
+
+        public TypedParameter(string parameter, string type)
         {
-            get
+            if (string.IsNullOrEmpty(parameter))
             {
-                return string.IsNullOrEmpty(ClassName) ? Name : ClassName + "." + Name;
+                throw new ArgumentException();
             }
+            Parameter = parameter;
+
+            if (null == type)
+            {
+                throw new ArgumentNullException("Type cannot be null.");
+            }
+            Type = type;
         }
 
-        protected LibraryItem(string assembly, string className, string name, LibraryItemType type)
+        public override string ToString()
         {
-            Assembly = assembly;
-            ClassName = className;
-            Name = name;
-            Type = type;
+            if (String.IsNullOrEmpty(Type))
+            {
+                return Parameter;
+            }
+            else
+            {
+                return Parameter + ": " + Type;
+            }
         }
     }
 
     /// <summary>
     /// Describe a DesignScript function in a imported library
     /// </summary>
-    public class FunctionItem : LibraryItem
+    public class FunctionDescriptor
     {
-        public List<Tuple<string, string>> Parameters { get; private set; }
-        public List<string> ReturnKeys { get; private set; }
-        public string ReturnType { get; private set; }
+        /// <summary>
+        /// Full path to the assembly the defined this function
+        /// </summary>
+        public string Assembly
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Class name of this function. If the functino is global function,
+        /// return String.Empty.
+        /// </summary>
+        public string ClassName
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Function name.
+        /// </summary>
+        public string Name
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Function parameters.
+        /// </summary>
+        public IEnumerable<TypedParameter> Parameters
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Function return type.
+        /// </summary>
+        public string ReturnType
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// If the function returns a dictionary, ReturnKeys is the key collection
+        /// used in returned dictionary.
+        /// </summary>
+        public IEnumerable<string> ReturnKeys
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Function type.
+        /// </summary>
+        public FunctionType Type
+        {
+            get;
+            private set;
+        }
 
         /// <summary>
         /// The category of this function.
@@ -64,21 +138,21 @@ namespace Dynamo.DSEngine
         {
             get
             {
-                StringBuilder categoryBuf = new StringBuilder(); 
+                StringBuilder categoryBuf = new StringBuilder();
                 categoryBuf.Append(GetRootCategory());
                 switch (Type)
                 {
-                    case LibraryItemType.Constructor:
+                    case FunctionType.Constructor:
                         categoryBuf.Append("." + ClassName + "." + LibraryServices.Categories.Constructors);
                         break;
 
-                    case LibraryItemType.StaticMethod:
-                    case LibraryItemType.StaticProperty:
+                    case FunctionType.StaticMethod:
+                    case FunctionType.StaticProperty:
                         categoryBuf.Append("." + ClassName + "." + LibraryServices.Categories.StaticMembers);
                         break;
 
-                    case LibraryItemType.InstanceMethod:
-                    case LibraryItemType.InstanceProperty:
+                    case FunctionType.InstanceMethod:
+                    case FunctionType.InstanceProperty:
                         categoryBuf.Append("." + ClassName + "." + LibraryServices.Categories.Members);
                         break;
                 }
@@ -89,11 +163,11 @@ namespace Dynamo.DSEngine
         /// <summary>
         /// The string that is used to search for this function. 
         /// </summary>
-        public string SearchName
+        public string QualifiedName
         {
             get
             {
-                return LibraryItemType.GenericFunction == Type ? UserFriendlyName : ClassName + "." + Name;
+                return FunctionType.GenericFunction == Type ? UserFriendlyName : ClassName + "." + Name;
             }
         }
 
@@ -105,13 +179,13 @@ namespace Dynamo.DSEngine
         {
             get
             {
-                if (Parameters != null && Parameters.Count > 0)
+                if (Parameters != null && Parameters.Any())
                 {
-                    return SearchName + "@" + string.Join(",", Parameters.Select(p => string.IsNullOrEmpty(p.Item2) ? string.Empty : p.Item2));
+                    return QualifiedName + "@" + string.Join(",", Parameters.Select(p => p.Type));
                 }
                 else
                 {
-                    return SearchName;
+                    return QualifiedName;
                 }
             }
         }
@@ -124,24 +198,32 @@ namespace Dynamo.DSEngine
             get
             {
                 StringBuilder descBuf = new StringBuilder();
-                descBuf.Append(SearchName);
+                descBuf.Append(QualifiedName);
 
                 if (!string.IsNullOrEmpty(ReturnType))
                     descBuf.Append(": " + ReturnType);
 
-                if (Parameters != null && Parameters.Count > 0)
+                if (Parameters != null && Parameters.Any())
                 {
-                    string signature = string.Join(", ", Parameters.Select(p => p.Item1 + (string.IsNullOrEmpty(p.Item2) ? string.Empty : ": " + p.Item2)));
+                    string signature = string.Join(", ", Parameters.Select(p => p.ToString()));
 
                     descBuf.Append(" (");
                     descBuf.Append(signature);
                     descBuf.Append(")");
+                }
+                else if (FunctionType.InstanceProperty != Type && FunctionType.StaticProperty != Type)
+                {
+                    descBuf.Append(" ( )");
                 }
 
                 return descBuf.ToString();
             }
         }
 
+        /// <summary>
+        /// Return a user friendly name. E.g., for operator '+' it will return 
+        /// 'Add'
+        /// </summary>
         public string UserFriendlyName
         {
             get
@@ -165,7 +247,7 @@ namespace Dynamo.DSEngine
             if (null == obj || GetType() != obj.GetType())
                 return false;
 
-            return MangledName.Equals(obj as FunctionItem);
+            return MangledName.Equals(obj as FunctionDescriptor);
         }
 
         public override int GetHashCode()
@@ -189,25 +271,102 @@ namespace Dynamo.DSEngine
             }
         }
 
-        public FunctionItem(string assembly,
+        public FunctionDescriptor(string assembly,
                             string className,
                             string name,
-                            LibraryItemType type,
-                            List<Tuple<string, string>> parameters,
+                            IEnumerable<TypedParameter> parameters,
                             string returnType,
-                            List<string> returnKeys = null) :
-            base(assembly, className, name, type)
+                            FunctionType type,
+                            IEnumerable<string> returnKeys = null)
         {
+            Assembly = assembly;
+            ClassName = className;
+            Name = name;
             Parameters = parameters;
-            ReturnKeys = returnKeys;
             ReturnType = returnType;
+            Type = type;
+            ReturnKeys = returnKeys;
         }
     }
 
     /// <summary>
-    /// A helper class to get some information from DesignScript core.
+    /// A group of overloaded functions
     /// </summary>
-    public class LibraryServices
+    public class FunctionGroup
+    {
+        public string QualifiedName 
+        { 
+            get; 
+            private set; 
+        }
+
+        public IEnumerable<FunctionDescriptor> Functions
+        {
+            get
+            {
+                return _functions;
+            }
+        }
+
+        private List<FunctionDescriptor> _functions;
+
+        public FunctionGroup(string qualifiedName)
+        {
+            _functions = new List<FunctionDescriptor>();
+            QualifiedName = qualifiedName;
+        }
+
+        /// <summary>
+        /// Add a function descriptor to the group
+        /// </summary>
+        /// <param name="function"></param>
+        /// <returns></returns>
+        public bool AddFunctionDescriptor(FunctionDescriptor function)
+        {
+            if (!QualifiedName.Equals(function.QualifiedName) ||
+                _functions.Contains(function))
+                return false;
+
+            _functions.Add(function);
+            return true;
+        }
+
+        /// <summary>
+        /// Get function descriptor from mangled function name
+        /// </summary>
+        /// <param name="managledName"></param>
+        /// <returns></returns>
+        public FunctionDescriptor GetFunctionDescriptor(string managledName)
+        {
+            if (null == managledName)
+                throw new ArgumentNullException();
+
+            if (_functions.Count == 0)
+                return null;
+
+            var func = _functions.FirstOrDefault(f => f.MangledName.Equals(managledName));
+            return null == func ? _functions.First() : func;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (null == obj || GetType() != obj.GetType())
+                return false;
+
+            return QualifiedName.Equals((obj as FunctionGroup).QualifiedName);
+        }
+
+        public override int GetHashCode()
+        {
+            return QualifiedName.GetHashCode();
+        }
+    }
+
+    /// <summary>
+    /// LibraryServices is a singleton class which manages builtin libraries
+    /// as well as imported libraries. It is across different sessions. 
+    /// </summary>
+    internal class LibraryServices
     {
         public static class Categories
         {
@@ -254,105 +413,202 @@ namespace Dynamo.DSEngine
         public event EventHandler<LibraryLoadFailedEventArgs> LibraryLoadFailed;
         public event EventHandler<LibraryLoadedEventArgs> LibraryLoaded;
 
-        public LibraryServices()
+        public static LibraryServices GetInstance()
         {
-            GraphUtilities.PreloadAssembly(BuiltinLibraries);
-            _libraryFunctionMap = new Dictionary<string, List<FunctionItem>>(new LibraryPathComparer());
+            return _libraryServices;
+        }
+
+        private static LibraryServices _libraryServices = new LibraryServices();
+        private LibraryServices()
+        {
+            GraphUtilities.PreloadAssembly(_libraries);
+
             PopulateBuiltIns();
             PopulateOperators();
-            PopulateBuiltinLibraries();
+            PopulatePreloadLibraries();
+        }
+
+        /// <summary>
+        /// Reset the whole library services. Note it should only be used in 
+        /// testing. 
+        /// </summary>
+        public void Reset()
+        {
+            _importedFunctionGroups.Clear();
+            _builtinFunctionGroups.Clear();
+            _libraries = new List<string> { "Math.dll", "ProtoGeometry.dll" };
+
+            GraphUtilities.Reset();
+            GraphUtilities.PreloadAssembly(_libraries);
+            PopulateBuiltIns();
+            PopulateOperators();
+            PopulatePreloadLibraries();
         }
 
         /// <summary>
         /// Get a list of imported libraries.
         /// </summary>
-        public List<string> Libraries
+        public IEnumerable<string> Libraries
         {
-            get
+            get 
             {
-                if (_libraryFunctionMap == null)
-                {
-                    return null;
-                }
-
-                return _libraryFunctionMap.Keys.ToList();
+                return _libraries;
             }
         }
 
-        private readonly List<string> _builtinLibraries = new List<string>
+        private List<string> _libraries = new List<string> { "Math.dll", "ProtoGeometry.dll" } ;
+        private readonly Dictionary<string, Dictionary<string, FunctionGroup>> _importedFunctionGroups = new Dictionary<string, Dictionary<string, FunctionGroup>>(new LibraryPathComparer());
+        private Dictionary<string, FunctionGroup> _builtinFunctionGroups = new Dictionary<string, FunctionGroup>();
+
+        /// <summary>
+        /// Get function groups from an imported library.
+        /// </summary>
+        /// <param name="library">Library path</param>
+        /// <returns></returns>
+        public IEnumerable<FunctionGroup> GetFunctionGroups(string library)
         {
-            "Math.dll", "ProtoGeometry.dll"
-        };
-        public List<string> BuiltinLibraries
-        {
-            get
+            if (null == library)
             {
-                return _builtinLibraries;
+                throw new ArgumentNullException();
             }
+
+            Dictionary<string, FunctionGroup> functionGroups;
+            if (_importedFunctionGroups.TryGetValue(library, out functionGroups))
+            {
+                return functionGroups.Values;
+            }
+
+            return null;
         }
 
-        private readonly List<string> _importedLibraries = new List<string>();
-        public List<string> ImportedLibraries
+        /// <summary>
+        /// Get builtin function groups.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<FunctionGroup> BuiltinFunctionGroups
         {
             get
             {
-                return _importedLibraries;
+                return _builtinFunctionGroups.Values;
             }
         }
 
         /// <summary>
-        /// Get a list of imported functions.
+        /// Get all imported function groups.
         /// </summary>
-        /// <param name="library"></param>
-        /// <returns></returns>
-        public List<FunctionItem> this[string library]
+        public IEnumerable<FunctionGroup> ImportedFunctionGroups
         {
             get
             {
-                if (string.IsNullOrEmpty(library))
-                {
-                    return null;
-                }
-
-                List<FunctionItem> functions;
-                _libraryFunctionMap.TryGetValue(library, out functions);
-                return functions;
+                return _importedFunctionGroups.SelectMany(d => d.Value).Select(p => p.Value);
             }
+        }
+
+        /// <summary>
+        /// Get function descriptor from the managled function name.
+        /// name.
+        /// </summary>
+        /// <param name="library">Library path</param>
+        /// <param name="mangledName">Mangled function name</param>
+        /// <returns></returns>
+        public FunctionDescriptor GetFunctionDescriptor(string library, string mangledName)
+        {
+            if (null == library || null == mangledName)
+            {
+                throw new ArgumentNullException();
+            }
+
+            Dictionary<string, FunctionGroup> groups;
+            if (_importedFunctionGroups.TryGetValue(library, out groups))
+            {
+                FunctionGroup functionGroup;
+                string qualifiedName = mangledName.Split(new char[] { '@' })[0];
+                if (groups.TryGetValue(qualifiedName, out functionGroup))
+                {
+                    return functionGroup.GetFunctionDescriptor(mangledName);
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Get function descriptor from the managed function name.
+        /// </summary>
+        /// <param name="managedName"></param>
+        /// <returns></returns>
+        public FunctionDescriptor GetFunctionDescriptor(string managledName)
+        {
+            if (string.IsNullOrEmpty(managledName))
+            {
+                throw new ArgumentException("Invalid arguments");
+            }
+
+            string qualifiedName = managledName.Split(new char[] { '@' })[0];
+            FunctionGroup functionGroup;
+
+            if (_builtinFunctionGroups.TryGetValue(qualifiedName, out functionGroup))
+            {
+                return functionGroup.GetFunctionDescriptor(managledName);
+            }
+            else
+            {
+                foreach (var groupMap in _importedFunctionGroups.Values)
+                {
+                   if (groupMap.TryGetValue(qualifiedName, out functionGroup))
+                   {
+                       return functionGroup.GetFunctionDescriptor(managledName);
+                   }
+                }
+            }
+
+            return null;
         }
 
         /// <summary>
         /// Import a library (if it hasn't been imported yet).
         /// </summary>
-        /// <param name="libraryPath"></param>
-        public void ImportLibrary(string libraryPath)
+        /// <param name="library"></param>
+        public void ImportLibrary(string library)
         {
-            if (!File.Exists(libraryPath))
+            if (null == library)
             {
-                string errorMessage = string.Format("Cannot find library path: {0}.", libraryPath);
-                OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(libraryPath, errorMessage));
+                throw new ArgumentNullException();
+            }
+
+            if (!library.EndsWith(".dll", StringComparison.InvariantCultureIgnoreCase) &&
+                !library.EndsWith(".ds", StringComparison.InvariantCultureIgnoreCase))
+            {
+                string errorMessage = "Invalid library format.";
+                OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
                 return;
             }
 
-            libraryPath = Path.GetFullPath(libraryPath);
-            if (_libraryFunctionMap.ContainsKey(libraryPath))
+            if (_importedFunctionGroups.ContainsKey(library))
             {
-                string errorMessage = string.Format("Library {0} has been loaded.", libraryPath);
-                OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(libraryPath, errorMessage));
+                string errorMessage = string.Format("Library {0} has been loaded.", library);
+                OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
                 return;
             }
 
-            OnLibraryLoading(new LibraryLoadingEventArgs(libraryPath));
-            var functions = new List<FunctionItem>();
+            library = Path.GetFullPath(library);
+            if (!File.Exists(library))
+            {
+                string errorMessage = string.Format("Cannot find library path: {0}.", library);
+                OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
+                return;
+            }
+
+            OnLibraryLoading(new LibraryLoadingEventArgs(library));
 
             try
             {
                 int globalFunctionNumber = GraphUtilities.GetGlobalMethods(string.Empty).Count;
 
                 DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
-                var importedClasses = GraphUtilities.GetClassesForAssembly(libraryPath);
+                var importedClasses = GraphUtilities.GetClassesForAssembly(library);
                 if (GraphUtilities.BuildStatus.ErrorCount > 0)
                 {
-                    string errorMessage = string.Format("Build error for library: {0}", libraryPath);
+                    string errorMessage = string.Format("Build error for library: {0}", library);
                     DynamoLogger.Instance.LogWarning(errorMessage, WarningLevel.Moderate);
                     foreach (var error in GraphUtilities.BuildStatus.Errors)
                     {
@@ -360,13 +616,13 @@ namespace Dynamo.DSEngine
                         errorMessage += error.Message + "\n";
                     }
 
-                    OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(libraryPath, errorMessage));
+                    OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
                     return;
                 }
 
                 foreach (ClassNode classNode in importedClasses)
                 {
-                    ImportClass(classNode, libraryPath, functions);
+                    ImportClass(library, classNode);
                 }
 
                 // GraphUtilities.GetGlobalMethods() ignores input and just 
@@ -375,96 +631,148 @@ namespace Dynamo.DSEngine
                 var globalFunctions = GraphUtilities.GetGlobalMethods(string.Empty);
                 for (int i = globalFunctionNumber; i < globalFunctions.Count; ++i)
                 {
-                    var functionItem = ImportProcedure(libraryPath, null, globalFunctions[i]);
-                    if (functionItem != null)
-                        functions.Add(functionItem);
+                    ImportProcedure(library, null, globalFunctions[i]);
                 }
             }
             catch (Exception e)
             {
-                OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(libraryPath, e.Message));
+                OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, e.Message));
                 return;
             }
 
-            AddToLibraryList(libraryPath, functions);
-            OnLibraryLoaded(new LibraryLoadedEventArgs(libraryPath));
+            OnLibraryLoaded(new LibraryLoadedEventArgs(library));
         }
 
-        private class LibraryPathComparer: IEqualityComparer<string>
+        private class LibraryPathComparer : IEqualityComparer<string>
         {
-            public bool Equals(string x, string y)
+            public bool Equals(string path1, string path2)
             {
-                return string.Compare(x, y, StringComparison.InvariantCultureIgnoreCase) == 0;
+                string file1 = Path.GetFileName(path1);
+                string file2 = Path.GetFileName(path2);
+                return string.Compare(file1, file2, StringComparison.InvariantCultureIgnoreCase) == 0;
             }
 
-            public int GetHashCode(string obj)
+            public int GetHashCode(string path)
             {
-                return obj.ToUpper().GetHashCode();
+                string file = Path.GetFileName(path);
+                return file.ToUpper().GetHashCode();
             }
         }
 
-        private readonly Dictionary<string, List<FunctionItem>> _libraryFunctionMap;
-
-        private void AddToLibraryList(string libraryPath, List<FunctionItem> functions)
+        private void AddImportedFunctions(string library, IEnumerable<FunctionDescriptor> functions)
         {
-            if (string.IsNullOrEmpty(libraryPath))
+            if (null == library || null == functions)
             {
-                throw new ArgumentException("Invalid library path");
+                throw new ArgumentNullException();
             }
 
-            if (_libraryFunctionMap.ContainsKey(libraryPath))
+            Dictionary<string, FunctionGroup> fptrs;
+            if (!_importedFunctionGroups.TryGetValue(library, out fptrs))
             {
-
+                fptrs = new Dictionary<string, FunctionGroup>();
+                _importedFunctionGroups[library] = fptrs;
             }
-            else
+
+            foreach (var function in functions)
             {
-                _libraryFunctionMap[libraryPath] = functions;
+                string qualifiedName = function.QualifiedName;
+                FunctionGroup functionGroup;
+                if (!fptrs.TryGetValue(qualifiedName, out functionGroup))
+                {
+                    functionGroup = new FunctionGroup(qualifiedName);
+                    fptrs[qualifiedName] = functionGroup;
+                }
+                functionGroup.AddFunctionDescriptor(function);
             }
-        }       
+        }
 
+        private void AddBuiltinFunctions(IEnumerable<FunctionDescriptor> functions)
+        {
+            if (null == functions)
+            {
+                throw new ArgumentNullException();
+            }
+
+            foreach (var function in functions)
+            {
+                string qualifiedName = function.QualifiedName;
+                FunctionGroup functionGroup;
+                if (!_builtinFunctionGroups.TryGetValue(qualifiedName, out functionGroup))
+                {
+                    functionGroup = new FunctionGroup(qualifiedName);
+                    _builtinFunctionGroups[qualifiedName] = functionGroup;
+                }
+                functionGroup.AddFunctionDescriptor(function);
+            }
+        }
+
+        /// <summary>
+        /// Add DesignScript builtin functions to the library.
+        /// </summary>
         private void PopulateBuiltIns()
         {
-            const string category = Categories.BuiltIns;
-            List<ProcedureNode> builtins = GraphUtilities.BuiltInMethods;
+            var functions = from method in GraphUtilities.BuiltInMethods
+                            let arguments = method.argInfoList.Zip(method.argTypeList, (arg, argType) => new TypedParameter(arg.Name, argType.ToString()))
+                            select new FunctionDescriptor(null, null, method.name, arguments, method.returntype.ToString(), FunctionType.GenericFunction);
 
-            var builtInFunctions = from method in builtins
-                                   let arguments = method.argInfoList.Zip(method.argTypeList, (arg, argType) => Tuple.Create(arg.Name, argType.ToString())).ToList()
-                                   select new FunctionItem( null, null, method.name, LibraryItemType.GenericFunction, arguments, method.returntype.ToString());
-
-            AddToLibraryList(category, builtInFunctions.ToList());
+            AddBuiltinFunctions(functions);
         }
 
+        /// <summary>
+        /// Add operators to the library.
+        /// </summary>
         private void PopulateOperators()
         {
-            const string category = Categories.Operators;
-            var opFunctions = new List<FunctionItem>();
-            var args = new List<Tuple<string, string>> 
+            var args = new List<TypedParameter> 
             {
-                Tuple.Create("x", string.Empty),
-                Tuple.Create("y", string.Empty),
+                new TypedParameter("x", string.Empty),
+                new TypedParameter("y", string.Empty),
             };
 
-            opFunctions.Add(new FunctionItem(null, null, Op.GetOpFunction(Operator.add), LibraryItemType.GenericFunction, args, null));
-            opFunctions.Add(new FunctionItem(null, null, Op.GetOpFunction(Operator.sub), LibraryItemType.GenericFunction, args, null));
-            opFunctions.Add(new FunctionItem(null, null, Op.GetOpFunction(Operator.mul), LibraryItemType.GenericFunction, args, null));
-            opFunctions.Add(new FunctionItem(null, null, Op.GetOpFunction(Operator.div), LibraryItemType.GenericFunction, args, null));
+            var functions = new List<FunctionDescriptor>()
+            {
+                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.add), args, null, FunctionType.GenericFunction),
+                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.sub), args, null, FunctionType.GenericFunction),
+                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.mul), args, null, FunctionType.GenericFunction),
+                new FunctionDescriptor(null, null, Op.GetOpFunction(Operator.div), args, null, FunctionType.GenericFunction),
+            };
 
-            AddToLibraryList(category, opFunctions);
+            AddBuiltinFunctions(functions);
         }
 
-        private FunctionItem ImportProcedure(string library, string className, ProcedureNode proc)
+        /// <summary>
+        /// Polulate preloaded libraries.
+        /// </summary>
+        private void PopulatePreloadLibraries()
+        {
+            foreach (var classNode in GraphUtilities.ClassTable.ClassNodes)
+            {
+                if (classNode.IsImportedClass && !string.IsNullOrEmpty(classNode.ExternLib))
+                {
+                    string library = Path.GetFileName(classNode.ExternLib);
+                    ImportClass(library, classNode);
+                }
+            }
+        }
+
+        private void ImportProcedure(string library, string className, ProcedureNode proc)
         {
             if (proc.isAutoGeneratedThisProc)
-                return null;
+            {
+                return;
+            }
 
             string procName = proc.name;
-            if (CoreUtils.IsSetter(procName) || procName.Equals(ProtoCore.DSDefinitions.Keyword.Dispose))
-                return null;
+            if (CoreUtils.IsSetter(procName) || 
+                procName.Equals(ProtoCore.DSDefinitions.Keyword.Dispose))
+            {
+                return;
+            }
 
-            LibraryItemType type;
+            FunctionType type;
             if (CoreUtils.IsGetter(procName))
             {
-                type = proc.isStatic ? LibraryItemType.StaticProperty : LibraryItemType.InstanceProperty;
+                type = proc.isStatic ? FunctionType.StaticProperty : FunctionType.InstanceProperty;
 
                 string property;
                 if (CoreUtils.TryGetPropertyName(procName, out property))
@@ -476,67 +784,38 @@ namespace Dynamo.DSEngine
             {
                 if (proc.isConstructor)
                 {
-                    type = LibraryItemType.Constructor;
+                    type = FunctionType.Constructor;
                 }
                 else if (proc.isStatic)
                 {
-                    type = LibraryItemType.StaticMethod;
+                    type = FunctionType.StaticMethod;
                 }
                 else if (!string.IsNullOrEmpty(className))
                 {
-                    type = LibraryItemType.InstanceMethod;
+                    type = FunctionType.InstanceMethod;
                 }
                 else
                 {
-                    type = LibraryItemType.GenericFunction;
+                    type = FunctionType.GenericFunction;
                 }
             }
-            
-            List<Tuple<string, string>> arguments = proc.argInfoList.Zip(proc.argTypeList, (arg, argType) => Tuple.Create(arg.Name, argType.ToString())).ToList();
-            List<string> returnKeys = null;
+
+            var arguments = proc.argInfoList.Zip(proc.argTypeList, (arg, argType) => new TypedParameter(arg.Name, argType.ToString()));
+            IEnumerable<string> returnKeys = null;
             if (proc.MethodAttribute != null && proc.MethodAttribute.MutilReturnMap != null)
             {
-                returnKeys = proc.MethodAttribute.MutilReturnMap.Keys.ToList();
+                returnKeys = proc.MethodAttribute.MutilReturnMap.Keys;
             }
 
-            var function = new FunctionItem(library, className, procName, type, arguments, proc.returntype.ToString(), returnKeys);
-            return function;
+            var function = new FunctionDescriptor(library, className, procName, arguments, proc.returntype.ToString(), type, returnKeys);
+            AddImportedFunctions(library, new FunctionDescriptor[] { function });
         }
 
-        private void ImportClass(ClassNode classNode, string libraryPath, List<FunctionItem> functions)
+        private void ImportClass(string library, ClassNode classNode)
         {
-            functions.AddRange(
-                classNode.vtable.procList.Select(
-                    proc =>
-                        ImportProcedure(libraryPath, classNode.name, proc))
-                         .Where(function => function != null));
-        }
-
-        private void PopulateBuiltinLibraries()
-        {
-            var importedFunctions = new Dictionary<string, List<FunctionItem>>(new LibraryPathComparer());
-            foreach (var library in BuiltinLibraries)
+            foreach (var proc in classNode.vtable.procList)
             {
-                importedFunctions[library] = new List<FunctionItem>();
-            }
-
-            foreach (var classNode in GraphUtilities.ClassTable.ClassNodes)
-            {
-                if (classNode.IsImportedClass && !string.IsNullOrEmpty(classNode.ExternLib))
-                {
-                    string library = Path.GetFileName(classNode.ExternLib);
-
-                    List<FunctionItem> functions;
-                    if (importedFunctions.TryGetValue(library, out functions))
-                    {
-                        ImportClass(classNode, library, functions);
-                    }
-                }
-            }
-
-            foreach (var keyValue in importedFunctions)
-            {
-                AddToLibraryList(keyValue.Key, keyValue.Value); 
+                ImportProcedure(library, classNode.name, proc); 
             }
         }
 
@@ -560,7 +839,7 @@ namespace Dynamo.DSEngine
 
         private void OnLibraryLoaded(LibraryLoadedEventArgs e)
         {
-            _importedLibraries.Add(e.LibraryPath);
+            _libraries.Add(e.LibraryPath);
 
             EventHandler<LibraryLoadedEventArgs> handler = LibraryLoaded;
             if (handler != null)
