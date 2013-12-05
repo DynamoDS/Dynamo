@@ -5,13 +5,15 @@ using Autodesk.Revit.DB;
 using DSNodeServices;
 using DSRevitNodes.Elements;
 using DSRevitNodes.GeometryConversion;
+using DSRevitNodes.GeometryObjects;
+using DSRevitNodes.References;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Edge = Autodesk.DesignScript.Geometry.Edge;
 using Plane = Autodesk.DesignScript.Geometry.Plane;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
-namespace DSRevitNodes
+namespace DSRevitNodes.Elements
 {
 
     /// <summary>
@@ -186,40 +188,6 @@ namespace DSRevitNodes
             return new DSReferencePoint(pt.X, pt.Y, pt.Z);
         }
 
-        /// <summary>
-        /// Create a Reference Point by UV coordinates on a face.
-        /// </summary>
-        /// <param name="f"></param>
-        /// <param name="v"></param>
-        /// <returns></returns>
-        static DSReferencePoint ByPointOnFace(DSFace f, Vector v)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Create a Reference Point at a parameter on an edge.
-        /// </summary>
-        /// <param name="e"></param>
-        /// <param name="t"></param>
-        /// <returns></returns>
-        static DSReferencePoint ByPointOnEdge(Edge e, double t)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Create a Reference Point offset from a point along a vector.
-        /// </summary>
-        /// <param name="p"></param>
-        /// <param name="normal"></param>
-        /// <param name="distance"></param>
-        /// <returns></returns>
-        static DSReferencePoint ByPointVectorDistance(Point p, Vector vec, double distance)
-        {
-            throw new NotImplementedException();
-        }
-
         #endregion
 
         #region Internal static constructors 
@@ -253,5 +221,42 @@ namespace DSRevitNodes
 
         #endregion
 
+        #region Incomplete static constructors
+
+        /// <summary>
+        /// Create a Reference Point by UV coordinates on a face.
+        /// </summary>
+        /// <param name="f"></param>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        static DSReferencePoint ByPointOnFace(DSFaceReference f, Autodesk.DesignScript.Geometry.Vector v)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Create a Reference Point at a parameter on an edge.
+        /// </summary>
+        /// <param name="e"></param>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        static DSReferencePoint ByPointOnEdge(DSEdge e, double t)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Create a Reference Point offset from a point along a vector.
+        /// </summary>
+        /// <param name="p"></param>
+        /// <param name="normal"></param>
+        /// <param name="distance"></param>
+        /// <returns></returns>
+        static DSReferencePoint ByPointVectorDistance(Point p, Vector vec, double distance)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

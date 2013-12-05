@@ -4,7 +4,7 @@ using Autodesk.Revit.DB;
 using DSRevitNodes.GeometryObjects;
 using DSRevitNodes.Graphics;
 
-namespace DSRevitNodes
+namespace DSRevitNodes.GeometryObjects
 {
     public class DSFace : IGeometryObject
     {

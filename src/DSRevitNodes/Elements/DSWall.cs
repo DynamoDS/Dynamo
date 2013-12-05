@@ -8,7 +8,7 @@ using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
-namespace DSRevitNodes
+namespace DSRevitNodes.Elements
 {
     [RegisterForTrace]
     public class DSWall : AbstractElement

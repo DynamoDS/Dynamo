@@ -9,7 +9,7 @@ using DSRevitNodes.Elements;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 
-namespace DSRevitNodes
+namespace DSRevitNodes.Elements
 {
     /// <summary>
     /// A Revit FreeForm element

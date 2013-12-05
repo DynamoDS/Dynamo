@@ -8,7 +8,7 @@ using DSNodeServices;
 using DSRevitNodes.Elements;
 using RevitServices.Persistence;
 
-namespace DSRevitNodes
+namespace DSRevitNodes.Elements
 {
     [RegisterForTrace]
     public class DSMaterial : AbstractElement
