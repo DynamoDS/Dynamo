@@ -308,7 +308,7 @@ namespace Dynamo.Nodes
                 ReferencePoint refPointEnd = this.UIDocument.Document.FamilyCreate.NewReferencePoint(end);
                 refPtArr.Append(refPointStart);
                 refPtArr.Append(refPointEnd);
-                c = dynRevitSettings.Doc.Document.FamilyCreate.NewCurveByPoints(refPtArr);
+                //c = dynRevitSettings.Doc.Document.FamilyCreate.NewCurveByPoints(refPtArr);
             }
             else if (gc.GetType() == typeof(Arc) && foundCreateArcThroughPoints)
             {

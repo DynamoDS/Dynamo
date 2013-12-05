@@ -153,6 +153,7 @@ limitations under the License.
     <Compile Include="DSEngine\AstBuilder.cs" />
     <Compile Include="Models\CustomNodeWorkspaceModel.cs" />
     <Compile Include="Models\HomeWorkspaceModel.cs" />
+    <Compile Include="Models\WorkspaceMigrations.cs" />
     <Compile Include="Nodes\dynDSFunction.cs" />
     <Compile Include="Models\Migration.cs" />
     <Compile Include="Core\FunctionDefinition.cs" />
