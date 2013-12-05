@@ -26,9 +26,9 @@ namespace Dynamo.Tests.UI
         private System.Random randomizer = null;
 
         // For access within test cases.
-        private WorkspaceModel workspace = null;
-        private WorkspaceViewModel workspaceViewModel = null;
-        private DynamoController controller = null;
+        protected WorkspaceModel workspace = null;
+        protected WorkspaceViewModel workspaceViewModel = null;
+        protected DynamoController controller = null;
 
         [SetUp]
         public void Start()
@@ -219,236 +219,73 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(cmdOne.Value, cmdTwo.Value);
         }
 
-        [Test, RequiresSTA]
-        public void TestCreateNodes()
+        #endregion
+
+        #region Private Helper Methods
+
+        protected ModelBase GetNode(string guid)
         {
-            RunCommandsFromFile("CreateNodesAndConnectors.xml");
-            Assert.AreEqual(5, workspace.Nodes.Count);
+            Guid id = Guid.Parse(guid);
+            return workspace.GetModelInternal(id);
         }
 
-        [Test, RequiresSTA]
-        public void TestCreateConnectors()
+        protected void VerifyModelExistence(Dictionary<string, bool> modelExistenceMap)
         {
-            RunCommandsFromFile("CreateNodesAndConnectors.xml");
-            Assert.AreEqual(4, workspace.Connectors.Count);
-        }
-
-        [Test, RequiresSTA]
-        public void TestDeleteCommands()
-        {
-            RunCommandsFromFile("CreateAndDeleteNodes.xml");
-            Assert.AreEqual(4, workspace.Nodes.Count);
-            Assert.AreEqual(2, workspace.Connectors.Count);
-
-            // This dictionary maps each of the node GUIDs, to a Boolean 
-            // flag indicating that if the node exists or deleted.
-            Dictionary<string, bool> nodeExistenceMap = new Dictionary<string, bool>()
+            var nodes = workspace.Nodes;
+            foreach (var pair in modelExistenceMap)
             {
-                { "ba59fa31-919d-4e67-b7c6-b58589a7093f", true },
-                { "42058bba-c2fd-4e49-8d76-44c45d0dc597", false },
-                { "5c92e961-8095-49bb-828d-1f3c14f9a005", true },
-                { "d5ad0ff6-9314-4e22-947f-7ba967ad4758", false },
-                { "4d2b71b4-d2c1-4695-afcf-6f7ec05c71f5", true },
-                { "a71328b2-dee7-45d6-8070-44ecebc358d9", true },
-            };
-
-            VerifyModelExistence(nodeExistenceMap);
+                Guid guid = Guid.Parse(pair.Key);
+                var node = nodes.FirstOrDefault((x) => (x.GUID == guid));
+                bool nodeExists = (null != node);
+                Assert.AreEqual(nodeExists, pair.Value);
+            }
         }
 
-        [Test, RequiresSTA]
-        public void TestUndoRedoNodesAndConnections()
+        protected void RunCommandsFromFile(string commandFileName, bool autoRun = false)
         {
-            RunCommandsFromFile("UndoRedoNodesAndConnections.xml");
-            Assert.AreEqual(2, workspace.Connectors.Count);
+            string commandFilePath = DynamoTestUI.GetTestDirectory();
+            commandFilePath = Path.Combine(commandFilePath, @"core\recorded\");
+            commandFilePath = Path.Combine(commandFilePath, commandFileName);
 
-            // This dictionary maps each of the node GUIDs, to a Boolean 
-            // flag indicating that if the node exists or deleted.
-            Dictionary<string, bool> nodeExistenceMap = new Dictionary<string, bool>()
-            {
-                { "fec0ae4f-f3b7-4b33-b728-c75e5415d73c", true },
-                { "168298c7-f003-48f8-a346-0061086f8e3a", true },
-                { "69ee3a47-0a9a-4746-ace3-6643d508f235", true },
-            };
+            // Create the controller to run alongside the view.
+            controller = DynamoController.MakeSandbox(commandFilePath);
+            controller.DynamoViewModel.DynamicRunEnabled = autoRun;
 
-            VerifyModelExistence(nodeExistenceMap);
+            // Create the view.
+            var dynamoView = new DynamoView();
+            dynamoView.DataContext = controller.DynamoViewModel;
+            controller.UIDispatcher = dynamoView.Dispatcher;
+            dynamoView.ShowDialog();
+
+            Assert.IsNotNull(controller);
+            Assert.IsNotNull(controller.DynamoModel);
+            Assert.IsNotNull(controller.DynamoModel.CurrentWorkspace);
+            workspace = controller.DynamoModel.CurrentWorkspace;
+            workspaceViewModel = controller.DynamoViewModel.CurrentSpaceViewModel;
         }
 
-        [Test, RequiresSTA]
-        public void TestUpdateNodeContents()
+        private CmdType DuplicateAndCompare<CmdType>(CmdType command)
+            where CmdType : DynCmd.RecordableCommand
         {
-            RunCommandsFromFile("UpdateNodeContents.xml");
-            Assert.AreEqual(0, workspace.Connectors.Count);
-            Assert.AreEqual(5, workspace.Nodes.Count);
+            Assert.IsNotNull(command); // Ensure we have an input command.
 
-            var number = GetNode("2ba65a2e-c3dd-4d27-9d18-9bf123835fb8") as DoubleInput;
-            var slider = GetNode("2279f845-4ba9-4300-a6c3-a566cd8b4a32") as DoubleSliderInput;
-            var strIn = GetNode("d33abcb6-50fd-4d18-ac89-87adb2d28053") as StringInput;
-            var formula = GetNode("540fffbb-4f5b-4496-9231-eba5b04e388c") as Formula;
-            var sublist = GetNode("0a60f132-25a0-4b7c-85f2-3c31f39ef9da") as Sublists;
+            // Serialize the command into an XmlElement.
+            XmlDocument xmlDocument = new XmlDocument();
+            XmlElement element = command.Serialize(xmlDocument);
+            Assert.IsNotNull(element);
 
-            Assert.IsNotNull(number);
-            Assert.IsNotNull(slider);
-            Assert.IsNotNull(strIn);
-            Assert.IsNotNull(formula);
-            Assert.IsNotNull(sublist);
-
-            Assert.AreEqual("12.34", number.Value);
-            Assert.AreEqual(23.45, slider.Min, 0.000001);
-            Assert.AreEqual(34.56, slider.Value, 0.000001);
-            Assert.AreEqual(45.67, slider.Max, 0.000001);
-            Assert.AreEqual("Test String Input", strIn.Value);
-            Assert.AreEqual("d", sublist.Value);
-
-            Assert.AreEqual("a+b+c", formula.FormulaString);
-            Assert.AreEqual(3, formula.InPorts.Count);
-            Assert.AreEqual(1, formula.OutPorts.Count);
-        }
-
-        [Test, RequiresSTA]
-        public void TestUpdateNodeCaptions()
-        {
-            RunCommandsFromFile("UpdateNodeCaptions.xml");
-            Assert.AreEqual(0, workspace.Connectors.Count);
-            Assert.AreEqual(1, workspace.Notes.Count);
-            Assert.AreEqual(2, workspace.Nodes.Count);
-
-            var number = GetNode("0b171995-528b-480a-b203-9cee49fcec9d") as DoubleInput;
-            var strIn = GetNode("d17de86f-0665-4e22-abd4-d16360ee17d7") as StringInput;
-            var note = GetNode("6aed237b-beb6-4a24-8774-9b7e29615be1") as NoteModel;
-
-            Assert.IsNotNull(number);
-            Assert.IsNotNull(strIn);
-            Assert.IsNotNull(note);
-
-            Assert.AreEqual("Caption 1", number.NickName);
-            Assert.AreEqual("Caption 2", strIn.NickName);
-            Assert.AreEqual("Caption 3", note.Text);
-        }
-
-        [Test, RequiresSTA]
-        public void TestVerifyRuntimeValues()
-        {
-            RunCommandsFromFile("VerifyRuntimeValues.xml", true);
-            Assert.AreEqual(2, workspace.Connectors.Count);
-            Assert.AreEqual(3, workspace.Nodes.Count);
-
-            var number1 = GetNode("76b951e9-a815-4fb9-bec1-fbd1178fa113") as DoubleInput;
-            var number2 = GetNode("1a3efb71-52df-46e8-95ab-a130e9a885ce") as DoubleInput;
-            var addition = GetNode("9182323d-a4fd-40eb-905b-8ec415d17926") as Addition;
-
-            Assert.AreEqual(12.34, (number1.OldValue as FScheme.Value.Number).Item);
-            Assert.AreEqual(56.78, (number2.OldValue as FScheme.Value.Number).Item);
-            Assert.AreEqual(69.12, (addition.OldValue as FScheme.Value.Number).Item);
-        }
-
-        [Test, RequiresSTA]
-        public void TestModifyPythonNodes()
-        {
-            RunCommandsFromFile("ModifyPythonNodes.xml");
-            Assert.AreEqual(0, workspace.Connectors.Count);
-            Assert.AreEqual(2, workspace.Nodes.Count);
-
-            var python = GetNode("6f580b72-6aeb-4af2-b28b-a2e5b634721b") as Python;
-            var pvarin = GetNode("f0fc1dea-3874-40a0-a532-90c0ee10f437") as PythonVarIn;
-
-            Assert.AreEqual("# Modification 3", python.Script);
-            Assert.AreEqual("# Modification 4", pvarin.Script);
-        }
-
-        [Test, RequiresSTA]
-        public void TestModifyPythonNodesUndo()
-        {
-            RunCommandsFromFile("ModifyPythonNodesUndo.xml");
-            Assert.AreEqual(0, workspace.Connectors.Count);
-            Assert.AreEqual(2, workspace.Nodes.Count);
-
-            var python = GetNode("6f580b72-6aeb-4af2-b28b-a2e5b634721b") as Python;
-            var pvarin = GetNode("f0fc1dea-3874-40a0-a532-90c0ee10f437") as PythonVarIn;
-
-            Assert.AreEqual("# Modification 1", python.Script);
-            Assert.AreEqual("# Modification 2", pvarin.Script);
-        }
-
-        [Test, RequiresSTA]
-        public void TestModifyPythonNodesUndoRedo()
-        {
-            RunCommandsFromFile("ModifyPythonNodesUndoRedo.xml");
-            Assert.AreEqual(0, workspace.Connectors.Count);
-            Assert.AreEqual(2, workspace.Nodes.Count);
-
-            var python = GetNode("6f580b72-6aeb-4af2-b28b-a2e5b634721b") as Python;
-            var pvarin = GetNode("f0fc1dea-3874-40a0-a532-90c0ee10f437") as PythonVarIn;
-
-            Assert.AreEqual("# Modification 3", python.Script);
-            Assert.AreEqual("# Modification 4", pvarin.Script);
-        }
-
-        [Test, RequiresSTA]
-        public void ShiftSelectAllNode()
-        {
-            RunCommandsFromFile("ShiftSelectAllNode.xml");
-
-            Assert.AreEqual(4, workspace.Nodes.Count);
-            Assert.AreEqual(4, workspace.Connectors.Count);
+            // Deserialized the XmlElement into a new instance of the command.
+            var duplicate = DynCmd.RecordableCommand.Deserialize(element);
+            Assert.IsNotNull(duplicate);
+            Assert.IsTrue(duplicate is CmdType);
+            return duplicate as CmdType;
         }
 
         #endregion
+    }
 
-        #region Recorded Test Cases for Defect Verifications
-        // Please add all test cases here, those are related to defects. Also 
-        // maintain the format and naming convention. Name of test case should 
-        // be Defect_MAGN_0000(defect number) and associated xml should be with 
-        // same name.
-
-        [Test, RequiresSTA]
-        public void Defect_MAGN_491()
-        {
-            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-491
-
-            // TODO: Rename this XML to match the test case name.
-            RunCommandsFromFile("Defect-MAGN-491.xml");
-            var connectors = workspaceViewModel.Connectors;
-            Assert.NotNull(connectors);
-            Assert.AreEqual(2, connectors.Count);
-
-            // Get to the only two connectors in the session.
-            ConnectorViewModel firstConnector = connectors[0];
-            ConnectorViewModel secondConnector = connectors[1];
-
-            // Find out the corresponding ports they connect to.
-            Point firstPoint = firstConnector.ConnectorModel.End.Center;
-            Point secondPoint = secondConnector.ConnectorModel.End.Center;
-
-            Assert.AreEqual(firstPoint.X, firstConnector.CurvePoint3.X);
-            Assert.AreEqual(firstPoint.Y, firstConnector.CurvePoint3.Y);
-            Assert.AreEqual(secondPoint.X, secondConnector.CurvePoint3.X);
-            Assert.AreEqual(secondPoint.Y, secondConnector.CurvePoint3.Y);
-        }
-
-        [Test, RequiresSTA]
-        public void Defect_MAGN_225()
-        {
-            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-225
-
-            // TODO: Rename this XML to match the test case name.
-            RunCommandsFromFile("TestConnectionReplacementUndo.xml");
-            var nodes = workspaceViewModel.Nodes;
-
-            Assert.NotNull(nodes);
-            Assert.AreEqual(3, nodes.Count);
-        }
-
-        [Test, RequiresSTA]
-        public void Defect_MAGN_57()
-        {
-            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-57
-            RunCommandsFromFile("Defect_MAGN_57.xml");
-
-            Assert.AreEqual(7, workspace.Nodes.Count);
-            Assert.AreEqual(5, workspace.Connectors.Count);
-
-        }
-
+    class RecordedTestsFScheme : RecordedTests
+    {
         [Test, RequiresSTA]
         public void Defect_MAGN_159()
         {
@@ -507,6 +344,29 @@ namespace Dynamo.Tests.UI
         }
 
         [Test, RequiresSTA]
+        public void Defect_MAGN_225()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-225
+
+            // TODO: Rename this XML to match the test case name.
+            RunCommandsFromFile("TestConnectionReplacementUndo.xml");
+            var nodes = workspaceViewModel.Nodes;
+
+            Assert.NotNull(nodes);
+            Assert.AreEqual(3, nodes.Count);
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_397()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-397
+            RunCommandsFromFile("Defect_MAGN_397.xml");
+
+            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Connectors.Count);
+        }
+
+        [Test, RequiresSTA]
         public void Defect_MAGN_429()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-429
@@ -527,13 +387,28 @@ namespace Dynamo.Tests.UI
         }
 
         [Test, RequiresSTA]
-        public void Defect_MAGN_397()
+        public void Defect_MAGN_491()
         {
-            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-397
-            RunCommandsFromFile("Defect_MAGN_397.xml");
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-491
 
-            Assert.AreEqual(2, workspace.Nodes.Count);
-            Assert.AreEqual(1, workspace.Connectors.Count);
+            // TODO: Rename this XML to match the test case name.
+            RunCommandsFromFile("Defect-MAGN-491.xml");
+            var connectors = workspaceViewModel.Connectors;
+            Assert.NotNull(connectors);
+            Assert.AreEqual(2, connectors.Count);
+
+            // Get to the only two connectors in the session.
+            ConnectorViewModel firstConnector = connectors[0];
+            ConnectorViewModel secondConnector = connectors[1];
+
+            // Find out the corresponding ports they connect to.
+            Point firstPoint = firstConnector.ConnectorModel.End.Center;
+            Point secondPoint = secondConnector.ConnectorModel.End.Center;
+
+            Assert.AreEqual(firstPoint.X, firstConnector.CurvePoint3.X);
+            Assert.AreEqual(firstPoint.Y, firstConnector.CurvePoint3.Y);
+            Assert.AreEqual(secondPoint.X, secondConnector.CurvePoint3.X);
+            Assert.AreEqual(secondPoint.Y, secondConnector.CurvePoint3.Y);
         }
 
         [Test, RequiresSTA]
@@ -557,6 +432,17 @@ namespace Dynamo.Tests.UI
         }
 
         [Test, RequiresSTA]
+        public void Defect_MAGN_57()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-57
+            RunCommandsFromFile("Defect_MAGN_57.xml");
+
+            Assert.AreEqual(7, workspace.Nodes.Count);
+            Assert.AreEqual(5, workspace.Connectors.Count);
+
+        }
+
+        [Test, RequiresSTA]
         public void Defect_MAGN_581()
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-581
@@ -566,68 +452,178 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(1, workspace.Connectors.Count);
         }
 
-        #endregion
-
-        #region Private Helper Methods
-
-        private ModelBase GetNode(string guid)
+        [Test, RequiresSTA]
+        public void ShiftSelectAllNode()
         {
-            Guid id = Guid.Parse(guid);
-            return workspace.GetModelInternal(id);
+            RunCommandsFromFile("ShiftSelectAllNode.xml");
+
+            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(4, workspace.Connectors.Count);
         }
 
-        private void VerifyModelExistence(Dictionary<string, bool> modelExistenceMap)
+        [Test, RequiresSTA]
+        public void TestCreateConnectors()
         {
-            var nodes = workspace.Nodes;
-            foreach (var pair in modelExistenceMap)
+            RunCommandsFromFile("CreateNodesAndConnectors.xml");
+            Assert.AreEqual(4, workspace.Connectors.Count);
+        }
+
+        [Test, RequiresSTA]
+        public void TestCreateNodes()
+        {
+            RunCommandsFromFile("CreateNodesAndConnectors.xml");
+            Assert.AreEqual(5, workspace.Nodes.Count);
+        }
+
+        [Test, RequiresSTA]
+        public void TestDeleteCommands()
+        {
+            RunCommandsFromFile("CreateAndDeleteNodes.xml");
+            Assert.AreEqual(4, workspace.Nodes.Count);
+            Assert.AreEqual(2, workspace.Connectors.Count);
+
+            // This dictionary maps each of the node GUIDs, to a Boolean 
+            // flag indicating that if the node exists or deleted.
+            Dictionary<string, bool> nodeExistenceMap = new Dictionary<string, bool>()
             {
-                Guid guid = Guid.Parse(pair.Key);
-                var node = nodes.FirstOrDefault((x) => (x.GUID == guid));
-                bool nodeExists = (null != node);
-                Assert.AreEqual(nodeExists, pair.Value);
-            }
+                { "ba59fa31-919d-4e67-b7c6-b58589a7093f", true },
+                { "42058bba-c2fd-4e49-8d76-44c45d0dc597", false },
+                { "5c92e961-8095-49bb-828d-1f3c14f9a005", true },
+                { "d5ad0ff6-9314-4e22-947f-7ba967ad4758", false },
+                { "4d2b71b4-d2c1-4695-afcf-6f7ec05c71f5", true },
+                { "a71328b2-dee7-45d6-8070-44ecebc358d9", true },
+            };
+
+            VerifyModelExistence(nodeExistenceMap);
         }
 
-        private void RunCommandsFromFile(string commandFileName, bool autoRun = false)
+        [Test, RequiresSTA]
+        public void TestModifyPythonNodes()
         {
-            string commandFilePath = DynamoTestUI.GetTestDirectory();
-            commandFilePath = Path.Combine(commandFilePath, @"core\recorded\");
-            commandFilePath = Path.Combine(commandFilePath, commandFileName);
+            RunCommandsFromFile("ModifyPythonNodes.xml");
+            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count);
 
-            // Create the controller to run alongside the view.
-            controller = DynamoController.MakeSandbox(commandFilePath);
-            controller.DynamoViewModel.DynamicRunEnabled = autoRun;
+            var python = GetNode("6f580b72-6aeb-4af2-b28b-a2e5b634721b") as Python;
+            var pvarin = GetNode("f0fc1dea-3874-40a0-a532-90c0ee10f437") as PythonVarIn;
 
-            // Create the view.
-            var dynamoView = new DynamoView();
-            dynamoView.DataContext = controller.DynamoViewModel;
-            controller.UIDispatcher = dynamoView.Dispatcher;
-            dynamoView.ShowDialog();
-
-            Assert.IsNotNull(controller);
-            Assert.IsNotNull(controller.DynamoModel);
-            Assert.IsNotNull(controller.DynamoModel.CurrentWorkspace);
-            workspace = controller.DynamoModel.CurrentWorkspace;
-            workspaceViewModel = controller.DynamoViewModel.CurrentSpaceViewModel;
+            Assert.AreEqual("# Modification 3", python.Script);
+            Assert.AreEqual("# Modification 4", pvarin.Script);
         }
 
-        private CmdType DuplicateAndCompare<CmdType>(CmdType command)
-            where CmdType : DynCmd.RecordableCommand
+        [Test, RequiresSTA]
+        public void TestModifyPythonNodesUndo()
         {
-            Assert.IsNotNull(command); // Ensure we have an input command.
+            RunCommandsFromFile("ModifyPythonNodesUndo.xml");
+            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count);
 
-            // Serialize the command into an XmlElement.
-            XmlDocument xmlDocument = new XmlDocument();
-            XmlElement element = command.Serialize(xmlDocument);
-            Assert.IsNotNull(element);
+            var python = GetNode("6f580b72-6aeb-4af2-b28b-a2e5b634721b") as Python;
+            var pvarin = GetNode("f0fc1dea-3874-40a0-a532-90c0ee10f437") as PythonVarIn;
 
-            // Deserialized the XmlElement into a new instance of the command.
-            var duplicate = DynCmd.RecordableCommand.Deserialize(element);
-            Assert.IsNotNull(duplicate);
-            Assert.IsTrue(duplicate is CmdType);
-            return duplicate as CmdType;
+            Assert.AreEqual("# Modification 1", python.Script);
+            Assert.AreEqual("# Modification 2", pvarin.Script);
         }
 
-        #endregion
+        [Test, RequiresSTA]
+        public void TestModifyPythonNodesUndoRedo()
+        {
+            RunCommandsFromFile("ModifyPythonNodesUndoRedo.xml");
+            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count);
+
+            var python = GetNode("6f580b72-6aeb-4af2-b28b-a2e5b634721b") as Python;
+            var pvarin = GetNode("f0fc1dea-3874-40a0-a532-90c0ee10f437") as PythonVarIn;
+
+            Assert.AreEqual("# Modification 3", python.Script);
+            Assert.AreEqual("# Modification 4", pvarin.Script);
+        }
+
+        [Test, RequiresSTA]
+        public void TestUndoRedoNodesAndConnections()
+        {
+            RunCommandsFromFile("UndoRedoNodesAndConnections.xml");
+            Assert.AreEqual(2, workspace.Connectors.Count);
+
+            // This dictionary maps each of the node GUIDs, to a Boolean 
+            // flag indicating that if the node exists or deleted.
+            Dictionary<string, bool> nodeExistenceMap = new Dictionary<string, bool>()
+            {
+                { "fec0ae4f-f3b7-4b33-b728-c75e5415d73c", true },
+                { "168298c7-f003-48f8-a346-0061086f8e3a", true },
+                { "69ee3a47-0a9a-4746-ace3-6643d508f235", true },
+            };
+
+            VerifyModelExistence(nodeExistenceMap);
+        }
+
+        [Test, RequiresSTA]
+        public void TestUpdateNodeCaptions()
+        {
+            RunCommandsFromFile("UpdateNodeCaptions.xml");
+            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(1, workspace.Notes.Count);
+            Assert.AreEqual(2, workspace.Nodes.Count);
+
+            var number = GetNode("0b171995-528b-480a-b203-9cee49fcec9d") as DoubleInput;
+            var strIn = GetNode("d17de86f-0665-4e22-abd4-d16360ee17d7") as StringInput;
+            var note = GetNode("6aed237b-beb6-4a24-8774-9b7e29615be1") as NoteModel;
+
+            Assert.IsNotNull(number);
+            Assert.IsNotNull(strIn);
+            Assert.IsNotNull(note);
+
+            Assert.AreEqual("Caption 1", number.NickName);
+            Assert.AreEqual("Caption 2", strIn.NickName);
+            Assert.AreEqual("Caption 3", note.Text);
+        }
+
+        [Test, RequiresSTA]
+        public void TestUpdateNodeContents()
+        {
+            RunCommandsFromFile("UpdateNodeContents.xml");
+            Assert.AreEqual(0, workspace.Connectors.Count);
+            Assert.AreEqual(5, workspace.Nodes.Count);
+
+            var number = GetNode("2ba65a2e-c3dd-4d27-9d18-9bf123835fb8") as DoubleInput;
+            var slider = GetNode("2279f845-4ba9-4300-a6c3-a566cd8b4a32") as DoubleSliderInput;
+            var strIn = GetNode("d33abcb6-50fd-4d18-ac89-87adb2d28053") as StringInput;
+            var formula = GetNode("540fffbb-4f5b-4496-9231-eba5b04e388c") as Formula;
+            var sublist = GetNode("0a60f132-25a0-4b7c-85f2-3c31f39ef9da") as Sublists;
+
+            Assert.IsNotNull(number);
+            Assert.IsNotNull(slider);
+            Assert.IsNotNull(strIn);
+            Assert.IsNotNull(formula);
+            Assert.IsNotNull(sublist);
+
+            Assert.AreEqual("12.34", number.Value);
+            Assert.AreEqual(23.45, slider.Min, 0.000001);
+            Assert.AreEqual(34.56, slider.Value, 0.000001);
+            Assert.AreEqual(45.67, slider.Max, 0.000001);
+            Assert.AreEqual("Test String Input", strIn.Value);
+            Assert.AreEqual("d", sublist.Value);
+
+            Assert.AreEqual("a+b+c", formula.FormulaString);
+            Assert.AreEqual(3, formula.InPorts.Count);
+            Assert.AreEqual(1, formula.OutPorts.Count);
+        }
+
+        [Test, RequiresSTA]
+        public void TestVerifyRuntimeValues()
+        {
+            RunCommandsFromFile("VerifyRuntimeValues.xml", true);
+            Assert.AreEqual(2, workspace.Connectors.Count);
+            Assert.AreEqual(3, workspace.Nodes.Count);
+
+            var number1 = GetNode("76b951e9-a815-4fb9-bec1-fbd1178fa113") as DoubleInput;
+            var number2 = GetNode("1a3efb71-52df-46e8-95ab-a130e9a885ce") as DoubleInput;
+            var addition = GetNode("9182323d-a4fd-40eb-905b-8ec415d17926") as Addition;
+
+            Assert.AreEqual(12.34, (number1.OldValue as FScheme.Value.Number).Item);
+            Assert.AreEqual(56.78, (number2.OldValue as FScheme.Value.Number).Item);
+            Assert.AreEqual(69.12, (addition.OldValue as FScheme.Value.Number).Item);
+        }
+
     }
 }
