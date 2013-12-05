@@ -9,7 +9,7 @@ using NUnit.Framework;
 namespace Dynamo.Tests
 {
     [Category("DSExecution")]
-    class DSLibraryTest : DynamoUnitTest
+    class DSLibraryTest : DSEvaluationUnitTest
     {
         [SetUp]
         public override void Init()
@@ -20,15 +20,15 @@ namespace Dynamo.Tests
         [TearDown]
         public override void Cleanup()
         {
-            GraphToDSCompiler.GraphUtilities.Reset();
+            LibraryServices.GetInstance().Reset();
             base.Cleanup();
         }
 
         [Test]
         public void TestPreLoadedLibrary()
         {
-            LibraryServices libraryServices = new LibraryServices();
-            List<string> loadedLibs = libraryServices.BuiltinLibraries;
+            LibraryServices libraryServices = LibraryServices.GetInstance();
+            var loadedLibs = libraryServices.Libraries;
             List<string> libs = libraryServices.Libraries.Select(
                 lib => {return Path.GetFileName(lib);}).ToList();
 
@@ -41,7 +41,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestLoadLibrary()
         {
-            LibraryServices libraryServices = new LibraryServices();
+            LibraryServices libraryServices = LibraryServices.GetInstance();
             bool libraryLoaded = false;
 
             libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
@@ -51,15 +51,15 @@ namespace Dynamo.Tests
             libraryServices.ImportLibrary(libraryPath);
             Assert.IsTrue(libraryLoaded);
 
-            List<FunctionItem> functions = libraryServices[libraryPath];
+            var functions = libraryServices.GetFunctionGroups(libraryPath);
             Assert.IsNotNull(functions);
-            Assert.IsTrue(functions.Count > 0);
+            Assert.IsTrue(functions.Any());
         }
 
         [Test]
         public void TestLoadDSFile()
         {
-            LibraryServices libraryServices = new LibraryServices();
+            LibraryServices libraryServices = LibraryServices.GetInstance();
             bool libraryLoaded = false;
 
             libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
@@ -69,9 +69,32 @@ namespace Dynamo.Tests
             libraryServices.ImportLibrary(libraryPath);
             Assert.IsTrue(libraryLoaded);
 
-            List<FunctionItem> functions = libraryServices[libraryPath];
+            var functions = libraryServices.GetFunctionGroups(libraryPath);
             Assert.IsNotNull(functions);
-            Assert.IsTrue(functions.Count > 0);
+            Assert.IsTrue(functions.Any());
+        }
+
+        [Test]
+        public void TestLibraryAcrossSessions()
+        {
+            LibraryServices libraryServices = LibraryServices.GetInstance();
+
+            bool libraryLoaded = false;
+            libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
+
+            // library should be able to load
+            string libraryPath = Path.Combine(GetTestDirectory(), @"core\library\Test.ds");
+            libraryServices.ImportLibrary(libraryPath);
+            Assert.IsTrue(libraryLoaded);
+
+            // open dyn file which uses node in that library
+            RunModel(@"core\library\t1.dyn");
+            AssertValue("a", 1025);
+
+            // open the other dyn file which uses node in that library, and
+            // library should still be available
+            RunModel(@"core\library\t2.dyn");
+            AssertValue("a", 43);
         }
     }
 }

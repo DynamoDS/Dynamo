@@ -26,74 +26,40 @@ namespace Dynamo.DSEngine
         private Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
         private int shortVarCounter = 0;
 
-        /// <summary>
-        /// libraries is a static property so we retain the loaded library information even after resetting EngineController 
-        /// </summary>
-        private static List<string> importedLibraries = new List<string>();
-
         internal EngineController(DynamoController controller, bool isReset)
         {
-            GraphToDSCompiler.GraphUtilities.Reset();
-
-            libraryServices = new LibraryServices();
+            libraryServices = LibraryServices.GetInstance();
             libraryServices.LibraryLoading += this.LibraryLoading;
             libraryServices.LibraryLoadFailed += this.LibraryLoadFailed;
             libraryServices.LibraryLoaded += this.LibraryLoaded;
 
             liveRunnerServices = new LiveRunnerServices(this);
-            // If EngineController is reset, then load those imported libraries, otherwise
-            // those imported libraries will be loaded in LoadLibraries().
-            if (isReset)
-            {
-                liveRunnerServices.ReloadAllLibraries(libraryServices.BuiltinLibraries.Union(importedLibraries).ToList());
-                GraphToDSCompiler.GraphUtilities.PreloadAssembly(importedLibraries);
-            }
-            else
-            {
-                liveRunnerServices.ReloadAllLibraries(libraryServices.BuiltinLibraries);
-            }
+            liveRunnerServices.ReloadAllLibraries(libraryServices.Libraries.ToList());
+
+            GraphToDSCompiler.GraphUtilities.Reset();
+            GraphToDSCompiler.GraphUtilities.PreloadAssembly(libraryServices.Libraries.ToList());
 
             astBuilder = new AstBuilder(this);
-
             syncDataManager = new SyncDataManager();
-
             controller.DynamoModel.NodeDeleted += NodeDeleted;
         }
 
         /// <summary>
-        /// Load builtin functions and libraries into Dynamo.
+        /// Return all function groups.
         /// </summary>
-        public void LoadLibraries()
+        public IEnumerable<FunctionGroup> GetFunctionGroups() 
         {
-            LoadFunctions(libraryServices[LibraryServices.Categories.BuiltIns]);
-            LoadFunctions(libraryServices[LibraryServices.Categories.Operators]);
-
-            foreach (var library in libraryServices.BuiltinLibraries)
-            {
-                LoadFunctions(libraryServices[library]);
-            }
-
-            var libs = new List<string>(importedLibraries);
-            foreach (var lib in libs)
-            {
-                libraryServices.ImportLibrary(lib);
-            }
+            return libraryServices.BuiltinFunctionGroups.Union(
+                       libraryServices.Libraries.SelectMany(lib => libraryServices.GetFunctionGroups(lib)));
         }
 
         /// <summary>
-        /// Import a list of libraries.
+        /// Import library.
         /// </summary>
-        /// <param name="libraries"></param>
-        public void ImportLibraries(List<string> libraries)
+        /// <param name="library"></param>
+        public void ImportLibrary(string library)
         {
-            foreach (string library in libraries)
-            {
-                if (library.EndsWith(".dll", StringComparison.InvariantCultureIgnoreCase) ||
-                    library.EndsWith(".ds", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    libraryServices.ImportLibrary(library);
-                }
-            }
+            libraryServices.ImportLibrary(library);
         }
 
         /// <summary>
@@ -297,30 +263,23 @@ namespace Dynamo.DSEngine
         }
         
         /// <summary>
-        /// Get the corresponding FunctionItem based on mangled function name
+        /// Get function descriptor from managed function name.
         /// </summary>
         /// <param name="mangledFunctionName"></param>
         /// <returns></returns>
-        public FunctionItem GetImportedFunction(string mangledFunctionName)
+        public FunctionDescriptor GetFunctionDescriptor(string library, string managledName)
         {
-            string searchName = mangledFunctionName.Split(new char[] { '@' })[0];
+            return libraryServices.GetFunctionDescriptor(library, managledName);
+        }
 
-            List<FunctionItem> functionGroup;
-            if (!dynSettings.Controller.DSImportedFunctions.TryGetValue(searchName, out functionGroup))
-            {
-                return null;
-            }
-
-            foreach (var item in functionGroup)
-            {
-                if (item.MangledName.Equals(mangledFunctionName))
-                    return item;
-            }
-
-            if (functionGroup.Count > 0)
-                return functionGroup[0];
-            else
-                return null;
+        /// <summary>
+        /// Get function descriptor from managed function name.
+        /// </summary>
+        /// <param name="managledName"></param>
+        /// <returns></returns>
+        public FunctionDescriptor GetFunctionDescriptor(string managledName)
+        {
+            return libraryServices.GetFunctionDescriptor(managledName);
         }
 
         private string GenerateShortVariable()
@@ -349,34 +308,6 @@ namespace Dynamo.DSEngine
         }
 
         /// <summary>
-        /// Load DesignScript functions into Dynamo.
-        /// </summary>
-        /// <param name="functions"></param>
-        private void LoadFunctions(List<FunctionItem> functions)
-        {
-            if (null == functions)
-            {
-                return;
-            }
-
-            var searchViewModel = dynSettings.Controller.SearchViewModel;
-            var controller = dynSettings.Controller;
-
-            foreach (var function in functions)
-            {
-                searchViewModel.Add(function);
-
-                List<FunctionItem> functionGroup;
-                if (!controller.DSImportedFunctions.TryGetValue(function.SearchName, out functionGroup))
-                {
-                    functionGroup = new List<FunctionItem>();
-                    controller.DSImportedFunctions[function.SearchName] = functionGroup;
-                }
-                functionGroup.Add(function);
-            }
-        }
-
-        /// <summary>
         /// LibraryLoading event handler.
         /// </summary>
         /// <param name="sender"></param>
@@ -401,14 +332,13 @@ namespace Dynamo.DSEngine
         /// <param name="e"></param>
         private void LibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs e)
         {
-            // Load all functions defined in that library.
             string newLibrary = e.LibraryPath;
-            LoadFunctions(libraryServices[newLibrary]);
+
+            // Load all functions defined in that library.
+            dynSettings.Controller.SearchViewModel.Add(libraryServices.GetFunctionGroups(newLibrary));
 
             // Reset the VM
-            importedLibraries.Clear();
-            importedLibraries.AddRange(libraryServices.ImportedLibraries);
-            liveRunnerServices.ReloadAllLibraries(libraryServices.BuiltinLibraries.Union(importedLibraries).ToList());
+            liveRunnerServices.ReloadAllLibraries(libraryServices.Libraries.ToList());
 
             // Mark all nodes as dirty so that AST for the whole graph will be
             // regenerated.
