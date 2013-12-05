@@ -481,52 +481,53 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// 
+        /// Fetches elements from the given list at indices that are multiples
+        /// of the given value, after the given offset.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="list"></param>
-        /// <param name="n"></param>
-        /// <param name="offset"></param>
-        /// <returns></returns>
+        /// <typeparam name="T">Type of the contents of the list.</typeparam>
+        /// <param name="list">List to take elements from.</param>
+        /// <param name="n">
+        /// Indices that are multiples of this number (after the offset)
+        /// will be fetched.
+        /// </param>
+        /// <param name="offset">
+        /// Amount of elements to be ignored from the start of the list.
+        /// </param>
         public static IList<T> TakeEveryNth<T>(IList<T> list, int n, int offset=0)
         {
             return list.Skip(offset).Where((_, i) => (i + 1)%n == 0).ToList();
         }
 
         /// <summary>
-        /// 
+        /// An Empty List.
         /// </summary>
-        /// <returns></returns>
         public static IList Empty()
         {
             return new ArrayList();
         }
 
         /// <summary>
-        /// 
+        /// Determines if the given list is empty.
         /// </summary>
-        /// <param name="list"></param>
-        /// <returns></returns>
+        /// <param name="list">List to check for elements.</param>
         public static bool IsEmpty(IList list)
         {
             return list.Count == 0;
         }
 
         /// <summary>
-        /// 
+        /// Gets the number of elements stored in the given list.
         /// </summary>
-        /// <param name="list"></param>
-        /// <returns></returns>
+        /// <param name="list">List to get the element count of.</param>
         public static int Count(IList list)
         {
             return list.Count;
         }
 
         /// <summary>
-        /// 
+        /// Concatenates all given lists into a single list.
         /// </summary>
-        /// <param name="lists"></param>
-        /// <returns></returns>
+        /// <param name="lists">Lists to join into one.</param>
         public static IList Join(params IList[] lists)
         {
             var result = new ArrayList();
@@ -536,32 +537,30 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// 
+        /// Gets the first item in a list.
         /// </summary>
-        /// <param name="list"></param>
-        /// <returns></returns>
+        /// <param name="list">List to get the first item from.</param>
         public static object First(IList list)
         {
             return list[0];
         }
 
         /// <summary>
-        /// 
+        /// Removes the first item from the given list.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="list"></param>
-        /// <returns></returns>
+        /// <typeparam name="T">Type of the contents of the list.</typeparam>
+        /// <param name="list">List to get the rest of.</param>
         public static IList<T> Rest<T>(IList<T> list)
         {
             return list.Skip(1).ToList();
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of lists out of an existing list with each sub-list containing
+        /// the given amount of elements.
         /// </summary>
-        /// <param name="list"></param>
-        /// <param name="subLength"></param>
-        /// <returns></returns>
+        /// <param name="list">List to partition.</param>
+        /// <param name="subLength">Length of each new sub-list.</param>
         public static IList PartitionList(IList list, int subLength)
         {
             if (list.Count < subLength)
@@ -591,11 +590,10 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// 
+        /// Create a diagonal lists of lists from top left to lower right.
         /// </summary>
-        /// <param name="list"></param>
-        /// <param name="subLength"></param>
-        /// <returns></returns>
+        /// <param name="list">A list</param>
+        /// <param name="subLength">Length of each new sub-list.</param>
         public static IList DiagonalRight(IList list, int subLength)
         {
             if (list.Count < subLength)
@@ -640,11 +638,10 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// 
+        /// Create a diagonal lists of lists from top right to lower left.
         /// </summary>
-        /// <param name="list"></param>
-        /// <param name="subLength"></param>
-        /// <returns></returns>
+        /// <param name="list">A list.</param>
+        /// <param name="subLength">Length of each new sib-list.</param>
         public static IList DiagonalLeft(IList list, int subLength)
         {
             if (list.Count < subLength)
@@ -685,10 +682,9 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// 
+        /// Swaps rows and columns in a list of lists.
         /// </summary>
-        /// <param name="lists"></param>
-        /// <returns></returns>
+        /// <param name="lists">A list of lists to be transposed.</param>
         public static IList<IList> Transpose(IList<IList<object>> lists)
         {
             if (!lists.Any())
@@ -707,32 +703,30 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// 
+        /// Creates a list containing the given item the given number of times.
         /// </summary>
-        /// <param name="thing"></param>
-        /// <param name="amount"></param>
-        /// <returns></returns>
+        /// <param name="thing">The thing to repeat.</param>
+        /// <param name="amount">The number of times to repeat.</param>
         public static IList<object> Repeat(object thing, int amount)
         {
             return Enumerable.Repeat(thing, amount).ToList();
         }
 
         /// <summary>
-        /// 
+        /// Flattens a nested list of lists into a single list containing no
+        /// sub-lists.
         /// </summary>
-        /// <param name="list"></param>
-        /// <returns></returns>
+        /// <param name="list">List to flatten.</param>
         public static IList FlattenCompletely(IList<object> list)
         {
             throw new NotImplementedException();
         }
 
         /// <summary>
-        /// 
+        /// Flattens a nested list of lists by a certain amount.
         /// </summary>
-        /// <param name="list"></param>
-        /// <param name="amt"></param>
-        /// <returns></returns>
+        /// <param name="list">List to flatten.</param>
+        /// <param name="amt">Layers of nesting to remove.</param>s
         public static IList Flatten(IList<object> list, int amt)
         {
             throw new NotImplementedException();
