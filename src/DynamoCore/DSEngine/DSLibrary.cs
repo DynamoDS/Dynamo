@@ -211,6 +211,10 @@ namespace Dynamo.DSEngine
                     descBuf.Append(signature);
                     descBuf.Append(")");
                 }
+                else if (FunctionType.InstanceProperty != Type && FunctionType.StaticProperty != Type)
+                {
+                    descBuf.Append(" ( )");
+                }
 
                 return descBuf.ToString();
             }
