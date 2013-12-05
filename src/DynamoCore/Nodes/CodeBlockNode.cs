@@ -579,7 +579,7 @@ namespace Dynamo.Nodes
 
                     string stmntText = ProtoCore.Utils.ParserUtils.ExtractStatementFromCode(codeToParse, codeStatements[i - 1].AstNode);
 
-                    textWrapping = GetExtraLinesDueToTextWrapping(stmntText)*20;
+                    textWrapping = GetExtraLinesDueToTextWrapping(stmntText) * 20;
                 }
                 else
                     textWrapping = 0;
@@ -820,12 +820,13 @@ namespace Dynamo.Nodes
         /// <returns> Returns the extra number of lines caused by text wrapping. For example, the above statement would return 1 </returns>
         private int GetExtraLinesDueToTextWrapping(string statement)
         {
+            double portHeight = (double)Dynamo.UI.SharedDictionaryManager.DynamoModernDictionary["port_height"] - 0.1;
             int numberOfLines = 0;
             string[] lines = statement.Split('\n');
             foreach (string line in lines)
             {
                 double lineHeight = GetFormattedTextHeight(line);
-                numberOfLines += Math.Max(0,(int)(lineHeight / 19.9) - 1);
+                numberOfLines += Math.Max(0, (int)(lineHeight / portHeight) - 1);
             }
             return numberOfLines;
         }
@@ -866,7 +867,7 @@ namespace Dynamo.Nodes
                 }
 
                 if (textFontSize == -1.0 || textFontFamily == null)
-                    throw new Exception("Resource not found");
+                    throw new Exception("Resource Setter not found");
             }
             catch (Exception e)
             {
@@ -876,7 +877,7 @@ namespace Dynamo.Nodes
             FormattedText newText = new FormattedText(str,
                     CultureInfo.CurrentCulture,
                     System.Windows.FlowDirection.LeftToRight,
-                    new Typeface(textFontFamily,FontStyles.Normal,FontWeights.Normal,FontStretches.Normal,new FontFamily("Arial")) ,
+                    new Typeface(textFontFamily, FontStyles.Normal, FontWeights.Normal, FontStretches.Normal, new FontFamily("Arial")),
                     textFontSize,
                     new SolidColorBrush());
 
