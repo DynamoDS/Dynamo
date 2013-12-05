@@ -669,7 +669,6 @@ namespace Dynamo.Models
         /// Wraps the publically overrideable `BuildOutputAst` method so that it works with Preview.
         /// </summary>
         /// <param name="inputAstNodes"></param>
-        /// <returns></returns>
         internal virtual IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
             var result = BuildOutputAst(inputAstNodes);
