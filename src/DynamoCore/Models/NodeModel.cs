@@ -1616,10 +1616,22 @@ namespace Dynamo.Models
 
             if (dynSettings.Controller != null &&
                 dynSettings.Controller.UIDispatcher != null &&
-                dynSettings.Controller.UIDispatcher.Thread != Thread.CurrentThread)
+                dynSettings.Controller.UIDispatcher.CheckAccess() == false)
             {
-                //Force this onto the UI thread
-                dynSettings.Controller.UIDispatcher.Invoke(setState);
+                // This is put in place to solve the crashing issue outlined in 
+                // the following defect. ValidateConnections can be called from 
+                // a background evaluation thread at any point in time, we do 
+                // not want such calls to update UI in anyway while we're here 
+                // (the UI update is caused by setting State property which leads
+                // to tool-tip update that triggers InfoBubble to update its UI,
+                // a problem that is currently being resolved and tested on a 
+                // separate branch). When the InfoBubble restructuring gets over,
+                // please ensure the following scenario is tested and continue to 
+                // work:
+                // 
+                //      http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-847
+                // 
+                dynSettings.Controller.UIDispatcher.BeginInvoke(setState);
             }
             else
                 setState();
