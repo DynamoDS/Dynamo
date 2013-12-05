@@ -141,28 +141,28 @@ namespace Dynamo.Nodes
     [IsMetaNodeAttribute]
     public class DSFunction : NodeModel
     {
-        public FunctionItem Definition { get; set; }
+        public FunctionDescriptor Definition { get; set; }
 
         public bool IsInstanceMember()
         {
-            return Definition.Type == LibraryItemType.InstanceMethod ||
-                   Definition.Type == LibraryItemType.InstanceProperty;
+            return Definition.Type == FunctionType.InstanceMethod ||
+                   Definition.Type == FunctionType.InstanceProperty;
         }
 
         public bool IsStaticMember()
         {
-            return Definition.Type == LibraryItemType.StaticMethod ||
-                   Definition.Type == LibraryItemType.StaticProperty;
+            return Definition.Type == FunctionType.StaticMethod ||
+                   Definition.Type == FunctionType.StaticProperty;
         }
 
         public bool IsConstructor()
         {
-            return Definition.Type == LibraryItemType.Constructor;
+            return Definition.Type == FunctionType.Constructor;
         }
 
         public DSFunction() { }
 
-        public DSFunction(FunctionItem definition)
+        public DSFunction(FunctionDescriptor definition)
         {
             Definition = definition;
             Initialize();
@@ -210,7 +210,7 @@ namespace Dynamo.Nodes
             {
                 foreach (var arg in Definition.Parameters)
                 {
-                    InPortData.Add(new PortData(arg.Item1, string.IsNullOrEmpty(arg.Item2) ? "var" : arg.Item2, typeof(object)));
+                    InPortData.Add(new PortData(arg.Parameter, string.IsNullOrEmpty(arg.Type) ? "var" : arg.Type, typeof(object)));
                 }
             }
 
@@ -229,7 +229,7 @@ namespace Dynamo.Nodes
             }
 
             RegisterAllPorts();
-            NickName = Definition.SearchName;
+            NickName = Definition.QualifiedName;
         }
 
         /// <summary>
@@ -263,7 +263,7 @@ namespace Dynamo.Nodes
                 nodeElement.Attributes["function"] == null)
             {
                 // To open old file
-                foreach (XmlElement subNode in nodeElement.ChildNodes.Cast<XmlElement>().Where(subNode => subNode.Name.Equals(typeof(FunctionItem).FullName)))
+                foreach (XmlElement subNode in nodeElement.ChildNodes.Cast<XmlElement>().Where(subNode => subNode.Name.Equals(typeof(FunctionDescriptor).FullName)))
                 {
                     var helper = new XmlElementHelper(subNode);
                     assembly = helper.ReadString("Assembly", "");
@@ -276,13 +276,17 @@ namespace Dynamo.Nodes
                 assembly = nodeElement.Attributes["assembly"].Value;
                 function = nodeElement.Attributes["function"].Value;
             }
-            
+
             if (!string.IsNullOrEmpty(assembly))
             {
-                dynSettings.Controller.EngineController.ImportLibraries(new List<string> { assembly });
+                dynSettings.Controller.EngineController.ImportLibrary(assembly);
+                Definition = dynSettings.Controller.EngineController.GetFunctionDescriptor(assembly, function);
+            }
+            else
+            {
+                Definition = dynSettings.Controller.EngineController.GetFunctionDescriptor(function);
             }
 
-            Definition = dynSettings.Controller.EngineController.GetImportedFunction(function);
             if (null == Definition)
             {
                 throw new Exception("Cannot find function: " + function);
@@ -311,8 +315,8 @@ namespace Dynamo.Nodes
 
             switch (Definition.Type)
             {
-                case LibraryItemType.Constructor:
-                case LibraryItemType.StaticMethod:
+                case FunctionType.Constructor:
+                case FunctionType.StaticMethod:
 
                     var staticCall = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
                     staticCall.LeftNode = new IdentifierNode(Definition.ClassName);
@@ -320,7 +324,7 @@ namespace Dynamo.Nodes
                     rhs = staticCall;
                     break;
 
-                case LibraryItemType.StaticProperty:
+                case FunctionType.StaticProperty:
 
                     var staticProp = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
                     staticProp.LeftNode = new IdentifierNode(Definition.ClassName);
@@ -328,7 +332,7 @@ namespace Dynamo.Nodes
                     rhs = staticProp;
                     break;
 
-                case LibraryItemType.InstanceProperty:
+                case FunctionType.InstanceProperty:
 
                     // Only handle getter here. Setter could be handled in CBN.
                     rhs = new NullNode();
@@ -346,7 +350,7 @@ namespace Dynamo.Nodes
 
                     break;
 
-                case LibraryItemType.InstanceMethod:
+                case FunctionType.InstanceMethod:
 
                     rhs = new NullNode();
                     if (inputAstNodes != null && inputAstNodes.Count >= 1)
@@ -387,7 +391,7 @@ namespace Dynamo.Nodes
             }
             else
             {
-                var undefinedOutputs = Definition.ReturnKeys == null || Definition.ReturnKeys.Count == 0;
+                var undefinedOutputs = Definition.ReturnKeys == null || !Definition.ReturnKeys.Any();
 
                 resultAst.AddRange(
                     Enumerable.Range(0, OutPortData.Count)
@@ -400,7 +404,7 @@ namespace Dynamo.Nodes
                                               ArrayDimensions =
                                                   new ArrayNode
                                                   {
-                                                      Expr = new StringNode { value = Definition.ReturnKeys[outputIdx] }
+                                                      Expr = new StringNode { value = Definition.ReturnKeys.ToList()[outputIdx] }
                                                   }
                                           }));
             }

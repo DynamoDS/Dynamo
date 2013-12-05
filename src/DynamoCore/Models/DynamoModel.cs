@@ -1283,7 +1283,7 @@ namespace Dynamo.Models
             NodeModel result;
             
 #if USE_DSENGINE
-            FunctionItem functionItem = (dynSettings.Controller.EngineController.GetImportedFunction(name));
+            FunctionDescriptor functionItem = (dynSettings.Controller.EngineController.GetFunctionDescriptor(name));
             if (functionItem != null)
                 return new DSFunction(functionItem);
 #endif
