@@ -252,9 +252,22 @@ namespace DSRevitNodes.Elements
         /// <param name="normal"></param>
         /// <param name="distance"></param>
         /// <returns></returns>
-        static DSReferencePoint ByPointVectorDistance(Point p, Vector vec, double distance)
+        public static DSReferencePoint ByPointVectorDistance(Point basePoint, Vector direction, double distance)
         {
-            throw new NotImplementedException();
+            if (basePoint == null)
+            {
+                throw new ArgumentNullException("basePoint");
+            }
+
+            if (direction == null)
+            {
+                throw new ArgumentNullException("direction");
+            }
+
+            var pt = basePoint.ToXyz() + direction.ToXyz() * distance;
+
+            return new DSReferencePoint(pt.X, pt.Y, pt.Z);
+
         }
 
         #endregion
