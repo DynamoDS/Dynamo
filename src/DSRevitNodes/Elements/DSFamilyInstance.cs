@@ -8,6 +8,7 @@ using DSNodeServices;
 using DSRevitNodes.Elements;
 using DSRevitNodes.GeometryConversion;
 using DSRevitNodes.GeometryObjects;
+using DSRevitNodes.References;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Point = Autodesk.DesignScript.Geometry.Point;
@@ -155,6 +156,19 @@ namespace DSRevitNodes.Elements
                 });
 
                 return curves.Select(x => x.ToProtoType()).ToArray();
+            }
+        }
+
+        public DSCurveReference[] CurveReferences
+        {
+            get
+            {
+                var curves = this.GetCurvesFromFamily(InternalFamilyInstance, new Options()
+                {
+                    ComputeReferences = true
+                });
+
+                return curves.Select(x => new DSCurveReference(x)).ToArray();
             }
         }
 
