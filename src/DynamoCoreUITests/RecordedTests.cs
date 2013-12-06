@@ -285,6 +285,7 @@ namespace Dynamo.Tests.UI
     }
 
 #if !USE_DSENGINE
+
     class RecordedTestsFScheme : RecordedTests
     {
         [Test, RequiresSTA]
@@ -632,9 +633,8 @@ namespace Dynamo.Tests.UI
 
     class RecordedTestsDSEngine : RecordedTests
     {
+        #region Basic CodeBlockNode Test Cases
 
-// Basic CBN test cases will go here
-    
         [Test, RequiresSTA]
         public void TestBasicCodeBlockNodePortCreation()
         {
@@ -869,7 +869,10 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual("CBN", cbn.NickName);
         }
 
-// Test Cases from Defects will go here.
+        #endregion
+
+        #region Defect Verifications Test Cases
+
         [Test, RequiresSTA]
         public void Defect_MAGN_159()
         {
@@ -1426,6 +1429,8 @@ namespace Dynamo.Tests.UI
 
         }
 
+        #endregion
     }
+
 #endif
 }
