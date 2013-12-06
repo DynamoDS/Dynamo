@@ -265,9 +265,9 @@ namespace Dynamo.Controls
             {
                 if (ViewModel.GotoWorkspaceCommand.CanExecute(null))
                 {
+                    e.Handled = true;
                     ViewModel.GotoWorkspaceCommand.Execute(null);
                 }
-                e.Handled = true;
             }
         }
 
