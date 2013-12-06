@@ -12,7 +12,7 @@ using RevitServices.Transactions;
 
 namespace DSRevitNodes.Elements
 {
-    public abstract class AbstractView3D : AbstractElement
+    public abstract class AbstractView3D : AbstractView
     {
 
         #region Internal properties

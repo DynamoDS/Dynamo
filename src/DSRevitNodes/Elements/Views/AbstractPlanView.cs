@@ -10,7 +10,7 @@ namespace DSRevitNodes.Elements
     /// <summary>
     /// Base class for Revit Plan views
     /// </summary>
-    public class AbstractPlanView : AbstractElement
+    public class AbstractPlanView : AbstractView
     {
 
         #region Internal properties
