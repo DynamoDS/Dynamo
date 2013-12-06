@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Structure;
 using DSNodeServices;
 using DSRevitNodes.Elements;
+using DSRevitNodes.GeometryConversion;
 using DSRevitNodes.GeometryObjects;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
@@ -29,6 +32,49 @@ namespace DSRevitNodes.Elements
         protected DSFamilyInstance(Autodesk.Revit.DB.FamilyInstance instance)
         {
             InternalSetFamilyInstance(instance);
+        }
+
+        /// <summary>
+        /// Internal constructor for a FamilyInstance
+        /// </summary>
+        internal DSFamilyInstance(Autodesk.Revit.DB.FamilySymbol fs, Autodesk.Revit.DB.XYZ pos,
+            Autodesk.Revit.DB.Level level)
+        {
+            //Phase 1 - Check to see if the object exists and should be rebound
+            var oldFam =
+                ElementBinder.GetElementFromTrace<Autodesk.Revit.DB.FamilyInstance>(Document);
+
+            //There was a point, rebind to that, and adjust its position
+            if (oldFam != null)
+            {
+                InternalSetFamilyInstance(oldFam);
+                InternalSetLevel(level);
+                InternalSetFamilySymbol(fs);
+                InternalSetPosition(pos);
+                return;
+            }
+
+            //Phase 2- There was no existing point, create one
+            TransactionManager.GetInstance().EnsureInTransaction(Document);
+
+            Autodesk.Revit.DB.FamilyInstance fi;
+
+            if (Document.IsFamilyDocument)
+            {
+                fi = Document.FamilyCreate.NewFamilyInstance(pos, fs, level,
+                    Autodesk.Revit.DB.Structure.StructuralType.NonStructural);
+            }
+            else
+            {
+                fi = Document.Create.NewFamilyInstance(
+                    pos, fs, level, Autodesk.Revit.DB.Structure.StructuralType.NonStructural);
+            }
+
+            InternalSetFamilyInstance(fi);
+
+            TransactionManager.GetInstance().TransactionTaskDone();
+
+            ElementBinder.SetElementForTrace(this.InternalElementId);
         }
 
         /// <summary>
@@ -76,6 +122,16 @@ namespace DSRevitNodes.Elements
 
         #region Private mutators
 
+        private void InternalSetLevel(Level level)
+        {
+            TransactionManager.GetInstance().EnsureInTransaction(Document);
+
+            // http://thebuildingcoder.typepad.com/blog/2011/01/family-instance-missing-level-property.html
+            InternalFamilyInstance.get_Parameter(BuiltInParameter.FAMILY_LEVEL_PARAM).Set(level.Id);
+
+            TransactionManager.GetInstance().TransactionTaskDone();
+        }
+
         private void InternalSetPosition(XYZ fi)
         {
             TransactionManager.GetInstance().EnsureInTransaction(Document);
@@ -84,6 +140,22 @@ namespace DSRevitNodes.Elements
             lp.Point = fi;
 
             TransactionManager.GetInstance().TransactionTaskDone();
+        }
+
+        #endregion
+
+        #region Public properties
+
+        public Autodesk.DesignScript.Geometry.Curve[] Curves {
+            get
+            {
+                var curves = this.GetCurvesFromFamily(InternalFamilyInstance, new Options()
+                {
+                    ComputeReferences = true
+                });
+
+                return curves.Select(x => x.ToProtoType()).ToArray();
+            }
         }
 
         #endregion
@@ -114,21 +186,37 @@ namespace DSRevitNodes.Elements
         /// <summary>
         /// Place a Revit FamilyInstance given the FamilySymbol (also known as the FamilyType) and it's coordinates in world space
         /// </summary>
-        /// <param name="fs"></param>
+        /// <param name="familySymbol"></param>
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <param name="z"></param>
         /// <returns></returns>
-        public static DSFamilyInstance ByCoordinates(DSFamilySymbol fs, double x, double y, double z)
+        public static DSFamilyInstance ByCoordinates(DSFamilySymbol familySymbol, double x, double y, double z)
         {
-            if (fs == null)
+            if (familySymbol == null)
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("familySymbol");
             }
 
-            return new DSFamilyInstance(fs.InternalFamilySymbol, new XYZ(x,y,z));
+            return new DSFamilyInstance(familySymbol.InternalFamilySymbol, new XYZ(x,y,z));
         }
 
+        /// <summary>
+        /// Place a Revit FamilyInstance given the FamilySymbol (also known as the FamilyType), it's coordinates in world space, and the Level
+        /// </summary>
+        /// <param name="familySymbol"></param>
+        /// <param name="p"></param>
+        /// <param name="level"></param>
+        /// <returns></returns>
+        public static DSFamilyInstance ByPointAndLevel(DSFamilySymbol familySymbol, Point p, DSLevel level)
+        {
+            if (familySymbol == null)
+            {
+                throw new ArgumentNullException("familySymbol");
+            }
+
+            return new DSFamilyInstance(familySymbol.InternalFamilySymbol, p.ToXyz(), level.InternalLevel);
+        }
 
         #endregion
 
@@ -162,13 +250,100 @@ namespace DSRevitNodes.Elements
             throw new NotImplementedException();
         }
 
-        static DSFamilyInstance ByPointAndLevel(Point p, DSLevel l)
+        #endregion
+
+        #region Private helper methods
+
+        private IEnumerable<Autodesk.Revit.DB.Curve> GetCurvesFromFamily(Autodesk.Revit.DB.FamilyInstance fi, Autodesk.Revit.DB.Options options)
         {
-            throw new NotImplementedException();
+            var geomElem = fi.get_Geometry(options);
+
+            var curves = new CurveArray();
+
+            //Find all curves and insert them into curve array
+            AddCurves(fi, geomElem, ref curves);
+
+            return curves.Cast<Autodesk.Revit.DB.Curve>();
+
+        }
+
+        /// <summary>
+        /// Retrieve the first curve found for 
+        /// the given element. In case the element is a 
+        /// family instance, it may have its own non-empty
+        /// solid, in which case we use that. Otherwise we 
+        /// search the symbol geometry. If we use the 
+        /// symbol geometry, we have to keep track of the 
+        /// instance transform to map it to the actual
+        /// instance project location.
+        /// </summary>
+        private Autodesk.Revit.DB.Curve GetCurve(Element e, Options opt)
+        {
+            GeometryElement geo = e.get_Geometry(opt);
+
+            Autodesk.Revit.DB.Curve curve = null;
+            GeometryInstance inst = null;
+            Transform t = Transform.Identity;
+
+            // Some columns have no solids, and we have to 
+            // retrieve the geometry from the symbol; 
+            // others do have solids on the instance itself 
+            // and no contents in the instance geometry 
+            // (e.g. in rst_basic_sample_project.rvt).
+
+            foreach (GeometryObject obj in geo)
+            {
+                curve = obj as Autodesk.Revit.DB.Curve;
+
+                if (null != curve)
+                {
+                    break;
+                }
+
+                inst = obj as GeometryInstance;
+            }
+
+            if (null == curve && null != inst)
+            {
+                geo = inst.GetSymbolGeometry();
+                t = inst.Transform;
+
+                foreach (GeometryObject obj in geo)
+                {
+                    curve = obj as Autodesk.Revit.DB.Curve;
+
+                    if (null != curve)
+                    {
+                        break;
+                    }
+                }
+            }
+            return curve;
+        }
+
+        private void AddCurves(FamilyInstance fi, GeometryElement geomElem, ref CurveArray curves)
+        {
+            foreach (GeometryObject geomObj in geomElem)
+            {
+                Autodesk.Revit.DB.Curve curve = geomObj as Autodesk.Revit.DB.Curve;
+                if (null != curve)
+                {
+                    curves.Append(curve);
+                    continue;
+                }
+
+                //If this GeometryObject is Instance, call AddCurve
+                GeometryInstance geomInst = geomObj as GeometryInstance;
+                if (null != geomInst)
+                {
+                    GeometryElement transformedGeomElem // curves transformed into project coords
+                        = geomInst.GetInstanceGeometry(geomInst.Transform.Inverse);
+                    AddCurves(fi, transformedGeomElem, ref curves);
+                }
+            }
         }
 
         #endregion
-
 
     }
 }

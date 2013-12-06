@@ -33,6 +33,9 @@ namespace DSRevitNodes.GeometryObjects
             }
         }
 
+        /// <summary>
+        /// Get the Edges of the Face
+        /// </summary>
         public DSEdge[] Edges
         {
             get
@@ -41,6 +44,16 @@ namespace DSRevitNodes.GeometryObjects
             }
         }
 
+        /// <summary>
+        /// Get the Surface Area of the face
+        /// </summary>
+        public double SurfaceArea
+        {
+            get
+            {
+                return InternalFace.Area;
+            }
+        }
         #endregion
 
         #region Tesselation

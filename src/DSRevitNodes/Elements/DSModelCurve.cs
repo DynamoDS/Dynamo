@@ -175,7 +175,7 @@ namespace DSRevitNodes.Elements
         #region Public Properties
 
         /// <summary>
-        /// Obtain the reference curve for this geometry curve
+        /// Obtain the reference curve for this ModelCurve
         /// </summary>
         public DSCurveReference CurveReference
         {
@@ -184,6 +184,18 @@ namespace DSRevitNodes.Elements
                 return new DSCurveReference(InternalModelCurve.GeometryCurve);
             }
         }
+
+        /// <summary>
+        /// Obtain the geometry curve for this geometry curve
+        /// </summary>
+        public Autodesk.DesignScript.Geometry.Curve Curve
+        {
+            get
+            {
+                return InternalModelCurve.GeometryCurve.ToProtoType();
+            }
+        }
+
         #endregion
 
         #region Public constructor
