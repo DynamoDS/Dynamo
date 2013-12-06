@@ -71,7 +71,7 @@ namespace DSRevitNodes.Elements
             //There was a point, rebind to that, and adjust its position
             if (oldRefPt != null)
             {
-                InternalReferencePoint = oldRefPt;
+                InternalSetReferencePoint(oldRefPt);
                 InternalSetPosition(new XYZ(x, y, z));
                 return;
             }

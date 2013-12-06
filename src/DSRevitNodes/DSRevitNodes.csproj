@@ -74,10 +74,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnalysisDisplay\DSFaceAnalysisDisplay.cs" />
+    <Compile Include="AnalysisDisplay\DSPointAnalysisDisplay.cs" />
+    <Compile Include="AnalysisDisplay\DSVectorAnalysisDisplay.cs" />
     <Compile Include="Elements\AbstractElement.cs" />
     <Compile Include="Elements\AbstractFamilyInstance.cs" />
+    <Compile Include="Elements\DSModelText.cs" />
+    <Compile Include="Elements\DSModelTextType.cs" />
     <Compile Include="Elements\DSStructuralType.cs" />
     <Compile Include="Elements\Views\AbstractPlanView.cs" />
+    <Compile Include="Elements\Views\AbstractView.cs" />
     <Compile Include="Elements\Views\DSAxonometricView.cs" />
     <Compile Include="Elements\Views\DSCeilingPlanView.cs" />
     <Compile Include="Elements\Views\DSPerspectiveView.cs" />
@@ -123,7 +129,7 @@
     <Compile Include="References\DSCurveReference.cs" />
     <Compile Include="Elements\DSReferencePlane.cs" />
     <Compile Include="Elements\DSReferencePoint.cs" />
-    <Compile Include="Elements\DSSpatialField.cs" />
+    <Compile Include="AnalysisDisplay\AbstractAnalysisDisplay.cs" />
     <Compile Include="Elements\DSStucturalFraming.cs" />
     <Compile Include="Elements\Views\AbstractView3D.cs" />
     <Compile Include="Elements\DSWall.cs" />
