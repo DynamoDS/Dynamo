@@ -28,6 +28,25 @@ namespace DSRevitNodes.Elements
         internal bool IsRevitOwned = false;
 
         /// <summary>
+        /// Obtain all of the Parameters from an Element
+        /// </summary>
+        public DSParameter[] Parameters
+        {
+            get
+            {
+                var parms = this.InternalElement.Parameters;
+                var parmsOut = new DSParameter[parms.Size];
+                var count = 0;
+                foreach (var param in parms)
+                {
+                    parmsOut[count++] = new DSParameter(param);
+                }
+
+                return parmsOut;
+            }
+        }
+
+        /// <summary>
         /// A reference to the element
         /// </summary>
         internal abstract Element InternalElement
