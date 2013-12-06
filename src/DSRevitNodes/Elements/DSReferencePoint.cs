@@ -62,6 +62,40 @@ namespace DSRevitNodes.Elements
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <param name="z"></param>
+        private DSReferencePoint( Reference curveReference, double parameter )
+        {
+            //Phase 1 - Check to see if the object exists and should be rebound
+            var oldRefPt = 
+                ElementBinder.GetElementFromTrace<Autodesk.Revit.DB.ReferencePoint>(Document);
+
+            //There was a point, rebind to that, and adjust its position
+            if (oldRefPt != null)
+            {
+                InternalSetReferencePoint(oldRefPt);
+                // TODO: extend to support other types of parameterization, curve reversal
+                InternalSetPointOnEdge(curveReference, parameter, PointOnCurveMeasurementType.NormalizedCurveParameter, PointOnCurveMeasureFrom.Beginning );
+                return;
+            }
+
+            //Phase 2- There was no existing point, create one
+            TransactionManager.GetInstance().EnsureInTransaction(Document);
+
+            // TODO: extend to support other types of parameterization, curve reversal
+            var plc = new PointLocationOnCurve(PointOnCurveMeasurementType.NormalizedCurveParameter, parameter, PointOnCurveMeasureFrom.Beginning);
+            var edgePoint = Document.Application.Create.NewPointOnEdge(curveReference, plc);
+            InternalSetReferencePoint(Document.FamilyCreate.NewReferencePoint(edgePoint));
+
+            TransactionManager.GetInstance().TransactionTaskDone();
+
+            ElementBinder.SetElementForTrace(this.InternalElementId);
+        }
+
+        /// <summary>
+        /// Internal constructor for the ReferencePoint
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
         private DSReferencePoint(double x, double y, double z)
         {
             //Phase 1 - Check to see if the object exists and should be rebound
@@ -95,6 +129,17 @@ namespace DSRevitNodes.Elements
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
             InternalReferencePoint.Position = xyz;
+
+            TransactionManager.GetInstance().TransactionTaskDone();
+        }
+
+        private void InternalSetPointOnEdge(Reference curveReference, double parameter, PointOnCurveMeasurementType measurementType, PointOnCurveMeasureFrom measureFrom)
+        {
+            TransactionManager.GetInstance().EnsureInTransaction(Document);
+
+            var plc = new PointLocationOnCurve(measurementType, parameter, measureFrom);
+            var edgePoint = Document.Application.Create.NewPointOnEdge(curveReference, plc);
+            InternalReferencePoint.SetPointElementReference(edgePoint);
 
             TransactionManager.GetInstance().TransactionTaskDone();
         }
@@ -175,6 +220,10 @@ namespace DSRevitNodes.Elements
         /// <returns></returns>
         public static DSReferencePoint ByCoordinates(double x, double y, double z)
         {
+            if (!Document.IsFamilyDocument)
+            {
+                throw new Exception("ReferencePoint Elements can only be created in a Family Document");
+            }
             return new DSReferencePoint(x, y, z);
         }
 
@@ -185,7 +234,64 @@ namespace DSRevitNodes.Elements
         /// <returns></returns>
         public static DSReferencePoint ByPoint(Point pt)
         {
+            if (pt == null)
+            {
+                throw new ArgumentNullException("pt");
+            }
+
+            if (!Document.IsFamilyDocument)
+            {
+                throw new Exception("ReferencePoint Elements can only be created in a Family Document");
+            }
+
             return new DSReferencePoint(pt.X, pt.Y, pt.Z);
+        }
+
+        /// <summary>
+        /// Create a Reference Point Element offset from a point along a vector.
+        /// </summary>
+        /// <param name="basePoint"></param>
+        /// <param name="direction"></param>
+        /// <param name="distance"></param>
+        /// <returns></returns>
+        public static DSReferencePoint ByPointVectorDistance(Point basePoint, Vector direction, double distance)
+        {
+            if (!Document.IsFamilyDocument)
+            {
+                throw new Exception("ReferencePoint Elements can only be created in a Family Document");
+            }
+
+            if (basePoint == null)
+            {
+                throw new ArgumentNullException("basePoint");
+            }
+
+            if (direction == null)
+            {
+                throw new ArgumentNullException("direction");
+            }
+
+            var pt = basePoint.ToXyz() + direction.ToXyz() * distance;
+
+            return new DSReferencePoint(pt.X, pt.Y, pt.Z);
+
+        }
+
+        /// <summary>
+        /// Create a Reference Point at a parameter on an edge.
+        /// </summary>
+        /// <param name="edge"></param>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
+        public static DSReferencePoint ByPointOnEdge(DSCurveReference edge, double parameter)
+        {
+            if (edge == null)
+            {
+                throw new ArgumentNullException("edge");
+            }
+
+            return new DSReferencePoint(edge.InternalReference, parameter);
+
         }
 
         #endregion
@@ -234,42 +340,8 @@ namespace DSRevitNodes.Elements
             throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// Create a Reference Point at a parameter on an edge.
-        /// </summary>
-        /// <param name="e"></param>
-        /// <param name="t"></param>
-        /// <returns></returns>
-        static DSReferencePoint ByPointOnEdge(DSEdge e, double t)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Create a Reference Point offset from a point along a vector.
-        /// </summary>
-        /// <param name="p"></param>
-        /// <param name="normal"></param>
-        /// <param name="distance"></param>
-        /// <returns></returns>
-        public static DSReferencePoint ByPointVectorDistance(Point basePoint, Vector direction, double distance)
-        {
-            if (basePoint == null)
-            {
-                throw new ArgumentNullException("basePoint");
-            }
-
-            if (direction == null)
-            {
-                throw new ArgumentNullException("direction");
-            }
-
-            var pt = basePoint.ToXyz() + direction.ToXyz() * distance;
-
-            return new DSReferencePoint(pt.X, pt.Y, pt.Z);
-
-        }
 
         #endregion
     }
 }
+
