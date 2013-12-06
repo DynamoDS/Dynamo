@@ -88,7 +88,7 @@ namespace DSRevitNodes.Elements
         /// <param name="outline"></param>
         /// <param name="level"></param>
         /// <returns>The floor</returns>
-        public static DSFloor ByOutline( Autodesk.DesignScript.Geometry.Curve[] outline, DSFloorType floorType, DSLevel level)
+        public static DSFloor ByOutlineTypeAndLevel( Autodesk.DesignScript.Geometry.Curve[] outline, DSFloorType floorType, DSLevel level)
         {
             if (outline == null)
             {
