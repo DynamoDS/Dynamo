@@ -91,25 +91,6 @@ namespace DSRevitNodes.Elements
             }
         }
 
-        /// <summary>
-        /// Get a list of parameters from this FamilySymbol
-        /// </summary>
-        public DSParameter[] Parameters
-        {
-            get
-            {
-                var parms = this.InternalFamilySymbol.Parameters;
-                var parmsOut = new DSParameter[parms.Size];
-                var count = 0;
-                foreach (var param in parms)
-                {
-                    parmsOut[count++] = new DSParameter(param);
-                }
-
-                return parmsOut;
-            }
-        }
-
         #endregion
 
         #region Public static constructors
