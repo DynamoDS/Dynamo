@@ -127,7 +127,7 @@ namespace Dynamo.Tests
             ModelCurve mc2;
             CreateTwoModelCurves(out mc1, out mc2);
 
-            string samplePath = Path.Combine(_samplesPath, @".\04 Form From Curve Selection\form from curve selection - list.dyn");
+            string samplePath = Path.Combine(_samplesPath, @".\04 Form From Curve Selection\form from curve selection.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
