@@ -14,17 +14,19 @@ namespace Dynamo.Search.SearchElements
 {
     public class DSFunctionNodeSearchElement : NodeSearchElement, IEquatable<DSFunctionNodeSearchElement>
     {
-        private FunctionItem _functionItem;
+        private FunctionDescriptor _functionItem;
+        private string _displayString;
 
-        public DSFunctionNodeSearchElement(FunctionItem functionItem) :
-            base(functionItem.UserFriendlyName, functionItem.Signature, new List<string> { })
+        public DSFunctionNodeSearchElement(string displayString, FunctionDescriptor functionItem) :
+            base(displayString, functionItem.Signature, new List<string> { })
         {
+            _displayString = displayString;
             _functionItem = functionItem;
         }
 
         public override NodeSearchElement Copy()
         {
-            return new DSFunctionNodeSearchElement(this._functionItem);
+            return new DSFunctionNodeSearchElement(_displayString, _functionItem);
         }
 
         /// <summary>

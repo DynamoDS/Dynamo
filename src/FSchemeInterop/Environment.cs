@@ -26,7 +26,7 @@ namespace Dynamo.FSchemeInterop
         }
 
         /// <summary>
-        /// Environment containing runtime values. Indeces correspond to symbols
+        /// Environment containing runtime values. indices correspond to symbols
         /// in CompilationEnvironemnt.
         /// </summary>
         public FSharpRef<FSharpList<FSharpRef<FSharpRef<Value>[]>>> RuntimeEnvironment
@@ -47,7 +47,7 @@ namespace Dynamo.FSchemeInterop
         /// <param name="symbol">Identifier to remove.</param>
         public void Delete(string symbol)
         {
-            var removedIndeces = new HashSet<int>();
+            var removedindices = new HashSet<int>();
 
             this.CompilationEnvironment.Value = Utils.SequenceToFSharpList(
                 this.CompilationEnvironment.Value.Select(
@@ -56,13 +56,13 @@ namespace Dynamo.FSchemeInterop
                             {
                                 var remove = !symbol.Equals(y);
                                 if (remove)
-                                    removedIndeces.Add(i);
+                                    removedindices.Add(i);
                                 return remove; 
                             })))
                 .Where(x => x.Any()));
 
             this.RuntimeEnvironment.Value.Head.Value = this.RuntimeEnvironment.Value.Head.Value.Where(
-                (_, i) => !removedIndeces.Contains(i)
+                (_, i) => !removedindices.Contains(i)
             ).ToArray();
         }
 

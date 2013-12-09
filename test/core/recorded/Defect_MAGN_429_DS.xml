@@ -1,0 +1,6 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <CreateNodeCommand NodeId="7197f933-cf3a-46b7-a478-69a29af1704f" NodeName="+@," X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="7197f933-cf3a-46b7-a478-69a29af1704f" Modifiers="0" />
+  <SelectModelCommand ModelGuid="7197f933-cf3a-46b7-a478-69a29af1704f" Modifiers="0" />
+  <DeleteModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" />
+</Commands>
