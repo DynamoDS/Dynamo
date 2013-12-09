@@ -118,8 +118,11 @@ namespace Dynamo.Controls
         ///                         Displayed when mouse hover over the little triangle at the bottom of a node
         ///                         or
         ///                         when user chooses to show the preview
-        /// 4. Preview:             Displayed when the node has a preview and mouse hover over the condensed preview
-        /// 5. Error:               Displayed when errors exist for the node
+        /// 4. Preview:             Displayed when the node has a preview and mouse hover over the condensed preview        
+        /// 5. ErrorCondensed:      This is the default state when error is shown.
+        ///                         Displayed when errors exist for the node
+        /// 6. Error:               Displayed when errors exist for the node and mouse hover over the condensed
+        ///                         error
         /// </summary>
         public InfoBubbleView()
         {
@@ -220,6 +223,20 @@ namespace Dynamo.Controls
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
+            // The fix for the following issue was previously performed in 
+            // NodeModel. This is shifted over to infobubble to centralize 
+            // the issue until code restructuring is completed.
+            //
+            // This is a temporarily measure, it work by dispatching the 
+            // work to UI thread when info bubble UI values need to be 
+            // modified by background evaluation thread.
+            // To completely solve this, changes affecting UI values should be 
+            // restructured into UI Binding in order for things to be thread 
+            // safe. 
+            // The above mentioned issue is being documented in:
+            //
+            //      http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-847
+            //
             Action propertyChanged = (() =>
             {
                 switch (e.PropertyName)
@@ -237,9 +254,15 @@ namespace Dynamo.Controls
                         break;
 
                     case "ConnectingDirection":
+                        UpdateShape();
+                        UpdatePosition();
+                        break;
+
                     case "InfoBubbleState":
                         UpdateShape();
                         UpdatePosition();
+
+                        HandleInfoBubbleStateChanged(ViewModel.InfoBubbleState);
                         break;
 
                     case "InfoBubbleStyle":
@@ -255,6 +278,22 @@ namespace Dynamo.Controls
                     propertyChanged();
                 else
                     dynSettings.Controller.UIDispatcher.BeginInvoke(propertyChanged);
+            }
+        }
+
+        private void HandleInfoBubbleStateChanged(InfoBubbleViewModel.State state)
+        {
+            switch (state)
+            {
+                case InfoBubbleViewModel.State.Minimized:
+                    // Changing to Minimized
+                    this.HideInfoBubble();
+                    break;
+
+                case InfoBubbleViewModel.State.Pinned:
+                    // Changing to Pinned
+                    this.ShowInfoBubble();
+                    break;
             }
         }
 
@@ -1099,7 +1138,6 @@ namespace Dynamo.Controls
 
                 case InfoBubbleViewModel.State.Pinned:
                     ViewModel.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Minimized);
-                    this.HideInfoBubble();
                     break;
             }
         }

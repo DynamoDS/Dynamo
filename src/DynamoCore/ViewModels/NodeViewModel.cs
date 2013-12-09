@@ -469,14 +469,10 @@ namespace Dynamo.ViewModels
             if (dynSettings.Controller.IsShowPreviewByDefault)
             {
                 this.PreviewBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
-                this.PreviewBubble.OnRequestAction(
-                    new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Show));
             }
             else
             {
                 this.PreviewBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Minimized);
-                this.PreviewBubble.OnRequestAction(
-                    new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Hide));
             }
         }
 
@@ -507,7 +503,6 @@ namespace Dynamo.ViewModels
                 if (NodeModel.State != ElementState.ERROR)
                 {
                     ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Minimized);
-                    ErrorBubble.OnRequestAction(new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Hide));
                 }
             }
             else
@@ -525,7 +520,6 @@ namespace Dynamo.ViewModels
 
                 this.ErrorBubble.UpdateContentCommand.Execute(data);
                 this.ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
-                this.ErrorBubble.OnRequestAction(new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Show));
             }
         }
 
