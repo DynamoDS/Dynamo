@@ -1,6 +1,7 @@
 ﻿using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.Exceptions;
 using DSRevitNodes;
+using DSRevitNodes.Elements;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
 

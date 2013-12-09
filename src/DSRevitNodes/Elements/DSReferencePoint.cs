@@ -5,13 +5,15 @@ using Autodesk.Revit.DB;
 using DSNodeServices;
 using DSRevitNodes.Elements;
 using DSRevitNodes.GeometryConversion;
+using DSRevitNodes.GeometryObjects;
+using DSRevitNodes.References;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Edge = Autodesk.DesignScript.Geometry.Edge;
 using Plane = Autodesk.DesignScript.Geometry.Plane;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
-namespace DSRevitNodes
+namespace DSRevitNodes.Elements
 {
 
     /// <summary>
@@ -32,19 +34,88 @@ namespace DSRevitNodes
             get; private set;
         }
 
+        /// <summary>
+        /// Reference to the Element
+        /// </summary>
+        internal override Autodesk.Revit.DB.Element InternalElement
+        {
+            get { return InternalReferencePoint; }
+        }
+
         #endregion
 
         #region Private constructors
 
         /// <summary>
-        /// Internal constructor for wrapping a ReferencePoint. The returned
-        /// object is Revit owned
+        /// Internal constructor for wrapping a ReferencePoint. 
         /// </summary>
-        /// <param name="pt"></param>
+        /// <param name="refPt"></param>
         private DSReferencePoint(Autodesk.Revit.DB.ReferencePoint refPt)
         {
             InternalSetReferencePoint(refPt);
-            IsRevitOwned = true;
+        }
+
+        /// <summary>
+        /// Internal constructor for ReferencePoint Elements that a persistent relationship to a Face
+        /// </summary>
+        /// <param name="faceReference"></param>
+        /// <param name="uv"></param>
+        private DSReferencePoint(Reference faceReference, UV uv)
+        {
+            //Phase 1 - Check to see if the object exists and should be rebound
+            var oldRefPt =
+                ElementBinder.GetElementFromTrace<Autodesk.Revit.DB.ReferencePoint>(Document);
+
+            //There was a point, rebind to that, and adjust its position
+            if (oldRefPt != null)
+            {
+                InternalSetReferencePoint(oldRefPt);
+                InternalSetPointOnFace(faceReference, uv);
+                return;
+            }
+
+            //Phase 2- There was no existing point, create one
+            TransactionManager.GetInstance().EnsureInTransaction(Document);
+
+            var edgePoint = Document.Application.Create.NewPointOnFace(faceReference, uv);
+            InternalSetReferencePoint(Document.FamilyCreate.NewReferencePoint(edgePoint));
+
+            TransactionManager.GetInstance().TransactionTaskDone();
+
+            ElementBinder.SetElementForTrace(this.InternalElementId);
+        }
+
+        /// <summary>
+        /// Internal constructor for ReferencePoint Elements that a persistent relationship to a Curve
+        /// </summary>
+        /// <param name="curveReference"></param>
+        /// <param name="parameter"></param>
+        /// <param name="measurementType"></param>
+        /// <param name="measureFrom"></param>
+        private DSReferencePoint( Reference curveReference, double parameter, PointOnCurveMeasurementType measurementType, PointOnCurveMeasureFrom measureFrom )
+        {
+            //Phase 1 - Check to see if the object exists and should be rebound
+            var oldRefPt = 
+                ElementBinder.GetElementFromTrace<Autodesk.Revit.DB.ReferencePoint>(Document);
+             
+            //There was a point, rebind to that, and adjust its position
+            if (oldRefPt != null)
+            {
+                InternalSetReferencePoint(oldRefPt);
+                InternalSetPointOnCurve(curveReference, parameter, measurementType, measureFrom);
+                return;
+            }
+
+            //Phase 2- There was no existing point, create one
+            TransactionManager.GetInstance().EnsureInTransaction(Document);
+
+            var plc = new PointLocationOnCurve(measurementType, parameter, measureFrom);
+            var edgePoint = Document.Application.Create.NewPointOnEdge(curveReference, plc);
+            InternalSetReferencePoint(Document.FamilyCreate.NewReferencePoint(edgePoint));
+
+            TransactionManager.GetInstance().TransactionTaskDone();
+
+            ElementBinder.SetElementForTrace(this.InternalElementId);
         }
 
         /// <summary>
@@ -62,7 +133,7 @@ namespace DSRevitNodes
             //There was a point, rebind to that, and adjust its position
             if (oldRefPt != null)
             {
-                InternalReferencePoint = oldRefPt;
+                InternalSetReferencePoint(oldRefPt);
                 InternalSetPosition(new XYZ(x, y, z));
                 return;
             }
@@ -86,6 +157,27 @@ namespace DSRevitNodes
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
             InternalReferencePoint.Position = xyz;
+
+            TransactionManager.GetInstance().TransactionTaskDone();
+        }
+
+        private void InternalSetPointOnFace(Reference faceReference, UV uv)
+        {
+            TransactionManager.GetInstance().EnsureInTransaction(Document);
+
+            var edgePoint = Document.Application.Create.NewPointOnFace(faceReference, uv);
+            InternalReferencePoint.SetPointElementReference(edgePoint);
+
+            TransactionManager.GetInstance().TransactionTaskDone();
+        }
+
+        private void InternalSetPointOnCurve(Reference curveReference, double parameter, PointOnCurveMeasurementType measurementType, PointOnCurveMeasureFrom measureFrom)
+        {
+            TransactionManager.GetInstance().EnsureInTransaction(Document);
+
+            var plc = new PointLocationOnCurve(measurementType, parameter, measureFrom);
+            var edgePoint = Document.Application.Create.NewPointOnEdge(curveReference, plc);
+            InternalReferencePoint.SetPointElementReference(edgePoint);
 
             TransactionManager.GetInstance().TransactionTaskDone();
         }
@@ -155,7 +247,7 @@ namespace DSRevitNodes
 
         #endregion
 
-        #region Static constructors
+        #region Public static constructors
 
         /// <summary>
         /// Create a Reference Point by x, y, and z coordinates.
@@ -166,6 +258,10 @@ namespace DSRevitNodes
         /// <returns></returns>
         public static DSReferencePoint ByCoordinates(double x, double y, double z)
         {
+            if (!Document.IsFamilyDocument)
+            {
+                throw new Exception("ReferencePoint Elements can only be created in a Family Document");
+            }
             return new DSReferencePoint(x, y, z);
         }
 
@@ -176,41 +272,113 @@ namespace DSRevitNodes
         /// <returns></returns>
         public static DSReferencePoint ByPoint(Point pt)
         {
+            if (pt == null)
+            {
+                throw new ArgumentNullException("pt");
+            }
+
+            if (!Document.IsFamilyDocument)
+            {
+                throw new Exception("ReferencePoint Elements can only be created in a Family Document");
+            }
+
             return new DSReferencePoint(pt.X, pt.Y, pt.Z);
         }
 
         /// <summary>
-        /// Create a Reference Point by UV coordinates on a face.
+        /// Create a Reference Point Element offset from a point along a vector
         /// </summary>
-        /// <param name="f"></param>
-        /// <param name="v"></param>
-        /// <returns></returns>
-        static DSReferencePoint ByPointOnFace(DSFace f, Vector v)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Create a Reference Point at a parameter on an edge.
-        /// </summary>
-        /// <param name="e"></param>
-        /// <param name="t"></param>
-        /// <returns></returns>
-        static DSReferencePoint ByPointOnEdge(Edge e, double t)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Create a Reference Point offset from a point along a vector.
-        /// </summary>
-        /// <param name="p"></param>
-        /// <param name="normal"></param>
+        /// <param name="basePoint"></param>
+        /// <param name="direction"></param>
         /// <param name="distance"></param>
         /// <returns></returns>
-        static DSReferencePoint ByPointVectorDistance(Point p, Vector vec, double distance)
+        public static DSReferencePoint ByPointVectorDistance(Autodesk.DesignScript.Geometry.Point basePoint, Autodesk.DesignScript.Geometry.Vector direction, double distance)
         {
-            throw new NotImplementedException();
+            if (!Document.IsFamilyDocument)
+            {
+                throw new Exception("ReferencePoint Elements can only be created in a Family Document");
+            }
+
+            if (basePoint == null)
+            {
+                throw new ArgumentNullException("basePoint");
+            }
+
+            if (direction == null)
+            {
+                throw new ArgumentNullException("direction");
+            }
+
+            var pt = basePoint.ToXyz() + direction.ToXyz() * distance;
+
+            return new DSReferencePoint(pt.X, pt.Y, pt.Z);
+
+        }
+
+        /// <summary>
+        /// Create a Reference Point at a particular length along a curve
+        /// </summary>
+        /// <param name="curveReference"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        public static DSReferencePoint ByLengthOnCurveReference(DSCurveReference curveReference, double length)
+        {
+            if (!Document.IsFamilyDocument)
+            {
+                throw new Exception("ReferencePoint Elements can only be created in a Family Document");
+            }
+
+            if (curveReference == null)
+            {
+                throw new ArgumentNullException("curveReference");
+            }
+
+            return new DSReferencePoint(curveReference.InternalReference, length, PointOnCurveMeasurementType.SegmentLength, PointOnCurveMeasureFrom.Beginning);
+        }
+
+        /// <summary>
+        /// Create a Reference Point at a parameter on an Curve.  This introduces a persistent relationship between
+        /// Elements in the Revit document.
+        /// </summary>
+        /// <param name="curveReference"></param>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
+        public static DSReferencePoint ByParameterOnCurveReference(DSCurveReference curveReference, double parameter)
+        {
+            if (!Document.IsFamilyDocument)
+            {
+                throw new Exception("ReferencePoint Elements can only be created in a Family Document");
+            }
+
+            if (curveReference == null)
+            {
+                throw new ArgumentNullException("curveReference");
+            }
+
+            return new DSReferencePoint(curveReference.InternalReference, parameter, PointOnCurveMeasurementType.NormalizedCurveParameter, PointOnCurveMeasureFrom.Beginning);
+        }
+
+        /// <summary>
+        /// Create a Reference Point by UV coordinates on a Face. This introduces a persistent relationship between
+        /// Elements in the Revit document.
+        /// </summary>
+        /// <param name="face"></param>
+        /// <param name="u"></param>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        public static DSReferencePoint ByParametersOnFaceReference(DSFaceReference face, double u, double v)
+        {
+            if (!Document.IsFamilyDocument)
+            {
+                throw new Exception("ReferencePoint Elements can only be created in a Family Document");
+            }
+
+            if (face == null)
+            {
+                throw new ArgumentNullException("face");
+            }
+
+            return new DSReferencePoint(face.InternalReference, new UV(u,v) );
         }
 
         #endregion
@@ -248,3 +416,4 @@ namespace DSRevitNodes
 
     }
 }
+

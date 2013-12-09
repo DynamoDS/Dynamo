@@ -8,13 +8,15 @@ using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Curve = Autodesk.DesignScript.Geometry.Curve;
 
-namespace DSRevitNodes
+namespace DSRevitNodes.Elements
 {
     /// <summary>
     /// A Revit Floor
     /// </summary>
     public class DSFloor : AbstractElement
     {
+        #region Internal properties
+
         /// <summary>
         /// An internal handle on the Revit floor
         /// </summary>
@@ -23,7 +25,17 @@ namespace DSRevitNodes
             get; private set;
         }
 
-        #region Private constructors 
+        /// <summary>
+        /// Reference to the Element
+        /// </summary>
+        internal override Element InternalElement
+        {
+            get { return InternalFloor; }
+        }
+
+        #endregion
+
+        #region Private constructors
 
         /// <summary>
         /// Private constructor
@@ -76,7 +88,7 @@ namespace DSRevitNodes
         /// <param name="outline"></param>
         /// <param name="level"></param>
         /// <returns>The floor</returns>
-        public static DSFloor ByOutline( Autodesk.DesignScript.Geometry.Curve[] outline, DSFloorType floorType, DSLevel level)
+        public static DSFloor ByOutlineTypeAndLevel( Autodesk.DesignScript.Geometry.Curve[] outline, DSFloorType floorType, DSLevel level)
         {
             if (outline == null)
             {

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Autodesk.DesignScript.Geometry;
 using DSRevitNodes;
+using DSRevitNodes.Elements;
 using DSRevitNodes.GeometryObjects;
 using NUnit.Framework;
 
@@ -15,24 +16,11 @@ namespace DSRevitNodesTests.Elements
         [Test]
         public void ByCurve_ValidArgs()
         {
-            var pts = new Autodesk.DesignScript.Geometry.Point[]
-            {
-                Point.ByCoordinates(0,0,0),
-                Point.ByCoordinates(1,0,0),
-                Point.ByCoordinates(3,0,0),
-                Point.ByCoordinates(10,0,0)
-            };
+            var line = Line.ByStartPointEndPoint(Point.ByCoordinates(0, 0, 0), Point.ByCoordinates(1, 1, 1));
+            Assert.NotNull(line);
 
-            var wts = new double[]
-            {
-                1,1,1,1
-            };
-
-            var spline = DSNurbSpline.ByControlPointsAndWeights(pts, wts);
-            Assert.NotNull(spline);
-
-            var modelCurve = DSModelCurve.ByPlanarCurve(spline);
-            Assert.NotNull(spline);
+            var modelCurve = DSModelCurve.ByPlanarCurve(line);
+            Assert.NotNull(line);
 
             var curveRef = modelCurve.CurveReference;
             Assert.NotNull(curveRef);

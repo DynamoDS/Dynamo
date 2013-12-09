@@ -115,7 +115,7 @@ namespace Dynamo.Utilities
             }
 
 #if USE_DSENGINE
-            dynSettings.Controller.EngineController.LoadBuiltinLibraries();
+            dynSettings.Controller.SearchViewModel.Add(dynSettings.Controller.EngineController.GetFunctionGroups());
 #endif
             AppDomain.CurrentDomain.AssemblyResolve -= resolver;
 

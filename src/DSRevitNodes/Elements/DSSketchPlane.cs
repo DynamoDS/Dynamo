@@ -17,6 +17,8 @@ namespace DSRevitNodes.Elements
     [RegisterForTrace]
     public class DSSketchPlane : AbstractElement
     {
+        #region Internal properties
+
         /// <summary>
         /// Internal reference to the Revit Element
         /// </summary>
@@ -24,6 +26,16 @@ namespace DSRevitNodes.Elements
         {
             get; private set;
         }
+
+        /// <summary>
+        /// Reference to the Element
+        /// </summary>
+        internal override Autodesk.Revit.DB.Element InternalElement
+        {
+            get { return InternalSketchPlane; }
+        }
+
+        #endregion
 
         #region Private constructors
 
@@ -183,6 +195,5 @@ namespace DSRevitNodes.Elements
         }
 
         #endregion
-
     }
 }

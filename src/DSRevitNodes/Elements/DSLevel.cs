@@ -3,14 +3,14 @@ using DSRevitNodes.Elements;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 
-namespace DSRevitNodes
+namespace DSRevitNodes.Elements
 {
     /// <summary>
     /// A Revit Level
     /// </summary>
     public class DSLevel : AbstractElement
     {
-        private Autodesk.Revit.DB.Floor level;
+        #region Internal properties
 
         /// <summary>
         /// Internal reference to Revit element
@@ -19,6 +19,16 @@ namespace DSRevitNodes
         {
             get; private set;
         }
+
+        /// <summary>
+        /// Reference to the Element
+        /// </summary>
+        internal override Autodesk.Revit.DB.Element InternalElement
+        {
+            get { return InternalLevel; }
+        }
+
+        #endregion
 
         #region Private constructor
 

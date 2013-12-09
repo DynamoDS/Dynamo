@@ -7,13 +7,15 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using DSNodeServices;
 using DSRevitNodes.Elements;
+using DSRevitNodes.GeometryConversion;
+using DSRevitNodes.GeometryObjects;
 using DSRevitNodes.References;
 using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Numerics.LinearAlgebra.Generic;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 
-namespace DSRevitNodes
+namespace DSRevitNodes.Elements
 {
     /// <summary>
     /// A Revit ModelCurve
@@ -24,9 +26,20 @@ namespace DSRevitNodes
 
         #region Internal properties
 
+        /// <summary>
+        /// Reference to the Element
+        /// </summary>
         internal Autodesk.Revit.DB.ModelCurve InternalModelCurve
         {
             get; private set;
+        }
+
+        /// <summary>
+        /// Reference to the Element
+        /// </summary>
+        internal override Autodesk.Revit.DB.Element InternalElement
+        {
+            get { return InternalModelCurve; }
         }
 
         #endregion
@@ -162,7 +175,7 @@ namespace DSRevitNodes
         #region Public Properties
 
         /// <summary>
-        /// Obtain the reference curve for this geometry curve
+        /// Obtain the reference curve for this ModelCurve
         /// </summary>
         public DSCurveReference CurveReference
         {
@@ -171,23 +184,40 @@ namespace DSRevitNodes
                 return new DSCurveReference(InternalModelCurve.GeometryCurve);
             }
         }
+
+        /// <summary>
+        /// Obtain the geometry curve for this geometry curve
+        /// </summary>
+        public Autodesk.DesignScript.Geometry.Curve Curve
+        {
+            get
+            {
+                return InternalModelCurve.GeometryCurve.ToProtoType();
+            }
+        }
+
         #endregion
 
         #region Public constructor
 
         /// <summary>
-        /// Construct a Revit ModelCurve element from an existing curve
+        /// Construct a Revit ModelCurve element from a Curve
         /// </summary>
         /// <param name="curve"></param>
         /// <returns></returns>
-        public static DSModelCurve ByPlanarCurve(DSCurve curve)
+        public static DSModelCurve ByPlanarCurve(Autodesk.DesignScript.Geometry.Curve curve)
         {
             if (curve == null)
             {
                 throw new ArgumentNullException("curve");
             }
 
-            return new DSModelCurve(curve.InternalCurve);
+            if (!curve.IsPlanar)
+            {
+                throw new Exception("The curve is not planar");
+            }
+
+            return new DSModelCurve(curve.ToRevitType());
         }
 
         /// <summary>

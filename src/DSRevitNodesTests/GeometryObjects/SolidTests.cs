@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Autodesk.DesignScript.Geometry;
 using DSRevitNodes;
+using DSRevitNodes.Elements;
 using DSRevitNodes.GeometryObjects;
 using NUnit.Framework;
 

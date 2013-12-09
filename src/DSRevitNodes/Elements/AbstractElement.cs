@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using Autodesk.Revit.DB;
+using DSRevitNodes.GeometryObjects;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 
@@ -25,6 +27,26 @@ namespace DSRevitNodes.Elements
         /// is Revit owned, it should not be deleted by Dispose().
         /// </summary>
         internal bool IsRevitOwned = false;
+
+        /// <summary>
+        /// Obtain all of the Parameters from an Element
+        /// </summary>
+        public DSParameter[] Parameters
+        {
+            get
+            {
+                var parms = this.InternalElement.Parameters;
+                return parms.Cast<Autodesk.Revit.DB.Parameter>().Select(x => new DSParameter(x)).ToArray();
+            }
+        }
+
+        /// <summary>
+        /// A reference to the element
+        /// </summary>
+        internal abstract Element InternalElement
+        {
+            get;
+        }
 
         /// <summary>
         /// The element id for this element
