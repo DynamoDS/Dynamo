@@ -317,7 +317,7 @@ namespace Dynamo.Controls
             if (ViewModel != null)
                 ViewModel.FadeOutTooltipCommand.Execute(null);
             else if (dynSettings.Controller != null)
-                dynSettings.Controller.DynamoViewModel.HideInfoBubble(null);
+                dynSettings.Controller.DynamoViewModel.FadeOutInfoBubble(null);
         }
 
         private void InputPort_OnMouseEnter(object sender, MouseEventArgs e)
@@ -333,7 +333,7 @@ namespace Dynamo.Controls
             if (ViewModel != null)
                 ViewModel.FadeOutTooltipCommand.Execute(null);
             else if (dynSettings.Controller != null)
-                dynSettings.Controller.DynamoViewModel.HideInfoBubble(null);
+                dynSettings.Controller.DynamoViewModel.FadeOutInfoBubble(null);
         }
 
         private void InputPort_OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -358,7 +358,7 @@ namespace Dynamo.Controls
             if (ViewModel != null)
                 ViewModel.FadeOutTooltipCommand.Execute(null);
             else if (dynSettings.Controller != null)
-                dynSettings.Controller.DynamoViewModel.HideInfoBubble(null);
+                dynSettings.Controller.DynamoViewModel.FadeOutInfoBubble(null);
         }
 
         private void OutputPort_OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -433,6 +433,12 @@ namespace Dynamo.Controls
                     ViewModel.ShowTooltipCommand.Execute((InfoBubbleDataPacket)timer.Tag);
                 };
             }
+
+            // Collapse any existing bubble before starting fade in
+            if (ViewModel != null)
+                ViewModel.HideTooltipCommand.Execute(null);
+            else if (dynSettings.Controller != null)
+                dynSettings.Controller.DynamoViewModel.HideInfoBubble(null);
 
             toolTipDelayTimer.Stop();
             toolTipDelayTimer.Tag = data;

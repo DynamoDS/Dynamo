@@ -1062,7 +1062,6 @@ namespace Dynamo.Controls
                 return;
 
             fadeInStoryBoard.Stop(this);
-            mainGrid.Visibility = Visibility.Collapsed;
             fadeOutStoryBoard.Begin(this);
         }
 

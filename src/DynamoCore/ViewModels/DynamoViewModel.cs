@@ -1320,12 +1320,13 @@ namespace Dynamo.ViewModels
         public void HideInfoBubble(object parameter)
         {
             controller.InfoBubbleViewModel.OnRequestAction(
-                new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.FadeOut));
+                new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Hide));
         }
 
-        internal bool CanHideInfoBubble(object parameter)
+        public void FadeOutInfoBubble(object parameter)
         {
-            return true;
+            controller.InfoBubbleViewModel.OnRequestAction(
+                new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.FadeOut));
         }
 
         public void TogglePreviewBubbleVisibility(object parameter)
