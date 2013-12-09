@@ -78,6 +78,7 @@
     <Compile Include="AnalysisDisplay\DSFaceAnalysisDisplay.cs" />
     <Compile Include="AnalysisDisplay\DSPointAnalysisDisplay.cs" />
     <Compile Include="AnalysisDisplay\DSVectorAnalysisDisplay.cs" />
+    <Compile Include="Application\DSDocument.cs" />
     <Compile Include="Elements\AbstractElement.cs" />
     <Compile Include="Elements\AbstractFamilyInstance.cs" />
     <Compile Include="Elements\DSModelText.cs" />
