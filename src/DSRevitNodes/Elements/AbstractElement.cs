@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using Autodesk.Revit.DB;
 using DSRevitNodes.GeometryObjects;
 using RevitServices.Persistence;
@@ -35,14 +36,7 @@ namespace DSRevitNodes.Elements
             get
             {
                 var parms = this.InternalElement.Parameters;
-                var parmsOut = new DSParameter[parms.Size];
-                var count = 0;
-                foreach (var param in parms)
-                {
-                    parmsOut[count++] = new DSParameter(param);
-                }
-
-                return parmsOut;
+                return parms.Cast<Autodesk.Revit.DB.Parameter>().Select(x => new DSParameter(x)).ToArray();
             }
         }
 

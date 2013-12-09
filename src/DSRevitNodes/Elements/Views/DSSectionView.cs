@@ -102,11 +102,10 @@ namespace DSRevitNodes.Elements
         #region Public static constructors
 
         /// <summary>
-        /// Create a Revit Floor given it's curve outline and Level
+        /// Create a Revit ViewSection by a bounding box
         /// </summary>
-        /// <param name="outline"></param>
-        /// <param name="level"></param>
-        /// <returns>The floor</returns>
+        /// <param name="box"></param>
+        /// <returns></returns>
         public static DSSectionView ByBoundingBox(DSBoundingBox box)
         {
             if (box == null)

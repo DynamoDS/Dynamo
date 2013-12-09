@@ -112,7 +112,7 @@ namespace DSRevitNodes.AnalysisDisplay
         /// <param name="sampleUvPoints"></param>
         /// <param name="samples"></param>
         /// <returns></returns>
-        public static DSFaceAnalysisDisplay ByViewPointsAndValues(AbstractView view, DSFaceReference faceReference,
+        public static DSFaceAnalysisDisplay ByViewFacePointsAndValues(AbstractView view, DSFaceReference faceReference,
                         double[][] sampleUvPoints, double[] samples)
         {
 
