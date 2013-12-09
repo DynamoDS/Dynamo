@@ -63,8 +63,6 @@ namespace Dynamo
         private readonly Dictionary<string, TypeLoadData> builtinTypesByTypeName =
             new Dictionary<string, TypeLoadData>();
 
-        private readonly Dictionary<string, List<FunctionItem>> dsImportedFunctions = new Dictionary<string, List<FunctionItem>>();
-
         private bool testing = false;
 
         protected VisualizationManager visualizationManager;
@@ -119,11 +117,6 @@ namespace Dynamo
         public Dictionary<string, TypeLoadData> BuiltInTypesByName
         {
             get { return builtinTypesByTypeName; }
-        }
-
-        public Dictionary<string, List<FunctionItem>> DSImportedFunctions
-        {
-            get { return dsImportedFunctions; }
         }
 
         public ExecutionEnvironment FSchemeEnvironment { get; private set; }

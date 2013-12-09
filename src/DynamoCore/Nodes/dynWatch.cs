@@ -247,7 +247,7 @@ namespace Dynamo.Nodes
 
                     Root.Children.Clear();
 
-                    Root.Children.Add(ProcessAstNode(AstIdentifierForPreview, "", 0));
+                    Root.Children.Add(GetWatchNode());
 
                     //rehook the binding
                     OnRequestBindingRehook(EventArgs.Empty);
@@ -259,31 +259,50 @@ namespace Dynamo.Nodes
 
         #region Watch Node creation for AST node
 
-        WatchNode ProcessAstNode(AssociativeNode ast, string prefix, int count, bool isListMember = false)
+        /// <summary>
+        /// This method returns a WatchNode for it's preview AST node.
+        /// This method gets called on ui thread when "IsUpdated" property
+        /// change is notified. This method is responsible for populating the 
+        /// watch node with evaluated value of the input. Gets the MirrorData
+        /// for the input/preview AST and then processes the mirror data to
+        /// render the watch content properly.
+        /// </summary>
+        /// <returns>WatchNode</returns>
+        internal WatchNode GetWatchNode()
         {
-            //content += prefix + string.Format("[{0}]:", count.ToString());
-            string varName = GraphToDSCompiler.GraphUtilities.ASTListToCode(
-                new List<ProtoCore.AST.AssociativeAST.AssociativeNode> { ast });
-
-            var mirror = dynSettings.Controller.EngineController.GetMirror(varName);
+            //Get RuntimeMirror for input ast identifier.
+            var mirror = dynSettings.Controller.EngineController.GetMirror(AstIdentifierForPreview.Name);
             if(null == mirror)
                 return new WatchNode(nullString);
 
+            //Get MirrorData from the RuntimeMirror
             var mirrorData = mirror.GetData();
-            return ProcessMirrorData(mirrorData, prefix, count, isListMember);
+            return ProcessMirrorData(mirrorData, "", 0, false);
         }
 
-        WatchNode ProcessMirrorData(MirrorData data, string prefix, int count, bool isListMember)
+
+        /// <summary>
+        /// Update the watch content from the given MirrorData and returns WatchNode.
+        /// </summary>
+        /// <param name="data">The Mirror data for which watch content is needed.</param>
+        /// <param name="prefix">Prefix string used for formatting the content.</param>
+        /// <param name="index">Index of input data if it is a part of a collection.</param>
+        /// <param name="isListMember">Specifies if this data belongs to a collection.</param>
+        /// <returns>WatchNode</returns>
+        WatchNode ProcessMirrorData(MirrorData data, string prefix, int index, bool isListMember)
         {
+            //Null data
             if (null == data || data.IsNull)
                 return new WatchNode(nullString);
+
+            //If the input data is collection, process each element recursively.
             if (data.IsCollection)
             {
                 string newPrefix = prefix + "\t";
 
                 var list = data.GetElements();
 
-                WatchNode node = new WatchNode(list.Count == 0 ? "Empty List" : "List", isListMember, count);
+                WatchNode node = new WatchNode(list.Count == 0 ? "Empty List" : "List", isListMember, index);
 
                 foreach (var e in list.Select((x, i) => new { Element = x, Index = i }))
                 {
@@ -292,17 +311,20 @@ namespace Dynamo.Nodes
                 return node;
             }
 
+            //If the input data is an instance of a class, create a watch node
+            //with the class name and let WatchHandler process the underlying CLR data
             var classMirror = data.Class;
             if (null != classMirror)
             {
-                WatchNode node = new WatchNode(classMirror.ClassName, isListMember, count);
+                WatchNode node = new WatchNode(classMirror.ClassName, isListMember, index);
 
                 handlerManager.ProcessNode(data.Data, node);
                 return node;
             }
 
+            //Finally for all else get the string representation of data as watch content.
             string previewData = data.Data.ToString();
-            return new WatchNode(previewData, isListMember, count);
+            return new WatchNode(previewData, isListMember, index);
         }
 
         #endregion

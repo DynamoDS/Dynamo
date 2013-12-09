@@ -1171,14 +1171,14 @@ namespace Dynamo.Nodes
 
     [NodeName("Shift List Indices")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_MODIFY)]
-    [NodeDescription("Shifts the indeces of a list by a given amount.")]
+    [NodeDescription("Shifts the indices of a list by a given amount.")]
     public class ShiftList : NodeWithOneOutput
     {
         public ShiftList()
         {
             InPortData.Add(
-                new PortData("amt", "Amount to shift the list indeces by.", typeof(Value.Number)));
-            InPortData.Add(new PortData("list", "List to shift indeces of.", typeof(Value.List)));
+                new PortData("amt", "Amount to shift the list indices by.", typeof(Value.Number)));
+            InPortData.Add(new PortData("list", "List to shift indices of.", typeof(Value.List)));
             OutPortData.Add(new PortData("list", "Shifted list", typeof(Value.List)));
 
             RegisterAllPorts();
@@ -1224,17 +1224,17 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var indeces = args[0];
+            var indices = args[0];
             var lst = ((Value.List)args[1]).Item;
 
-            if (indeces.IsNumber)
+            if (indices.IsNumber)
             {
-                var idx = (int)(indeces as Value.Number).Item;
+                var idx = (int)(indices as Value.Number).Item;
                 return ListModule.Get(lst, idx);
             }
-            else if (indeces.IsList)
+            else if (indices.IsList)
             {
-                var idxs = (indeces as Value.List).Item.Select(x => (int)((Value.Number)x).Item);
+                var idxs = (indices as Value.List).Item.Select(x => (int)((Value.Number)x).Item);
                 return
                     Value.NewList(
                         Utils.SequenceToFSharpList(idxs.Select(i => ListModule.Get(lst, i))));
@@ -1289,19 +1289,19 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var indeces = args[0];
+            var indices = args[0];
             var lst = ((Value.List)args[1]).Item;
 
-            if (indeces.IsNumber)
+            if (indices.IsNumber)
             {
-                var idx = (int)(indeces as Value.Number).Item;
+                var idx = (int)(indices as Value.Number).Item;
                 return Value.NewList(Utils.SequenceToFSharpList(lst.Where((_, i) => i != idx)));
             }
-            else if (indeces.IsList)
+            else if (indices.IsList)
             {
                 var idxs =
                     new HashSet<int>(
-                        (indeces as Value.List).Item.Select(x => (int)((Value.Number)x).Item));
+                        (indices as Value.List).Item.Select(x => (int)((Value.Number)x).Item));
                 return
                     Value.NewList(
                         Utils.SequenceToFSharpList(lst.Where((_, i) => !idxs.Contains(i))));
@@ -1320,7 +1320,7 @@ namespace Dynamo.Nodes
     {
         public RemoveEveryNth()
         {
-            InPortData.Add(new PortData("n", "All indeces that are a multiple of this number will be removed.", typeof(object)));
+            InPortData.Add(new PortData("n", "All indices that are a multiple of this number will be removed.", typeof(object)));
             InPortData.Add(new PortData("list", "The list to remove elements from.", typeof(Value.List)));
             InPortData.Add(new PortData("offset", "Skip this amount before removing every Nth.", typeof(Value.Number), Value.NewNumber(0)));
             OutPortData.Add(new PortData("list", "List with elements removed.", typeof(object)));
@@ -1345,7 +1345,7 @@ namespace Dynamo.Nodes
     {
         public TakeEveryNth()
         {
-            InPortData.Add(new PortData("n", "All indeces that are a multiple of this number will be extracted.", typeof(object)));
+            InPortData.Add(new PortData("n", "All indices that are a multiple of this number will be extracted.", typeof(object)));
             InPortData.Add(new PortData("list", "The list to extract elements from.", typeof(Value.List)));
             InPortData.Add(new PortData("offset", "Skip this amount before taking every Nth.", typeof(Value.Number), Value.NewNumber(0)));
             OutPortData.Add(new PortData("list", "Extracted elements.", typeof(object)));

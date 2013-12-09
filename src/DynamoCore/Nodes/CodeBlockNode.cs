@@ -15,6 +15,8 @@ using ArrayNode = ProtoCore.AST.AssociativeAST.ArrayNode;
 using Node = ProtoCore.AST.Node;
 using Operator = ProtoCore.DSASM.Operator;
 using NUnit.Framework;
+using System.Windows.Media;
+using System.Windows;
 
 namespace Dynamo.Nodes
 {
@@ -386,6 +388,8 @@ namespace Dynamo.Nodes
 
         private void ProcessCode(ref string errorMessage)
         {
+            Style windowStyle = Dynamo.UI.SharedDictionaryManager.DynamoModernDictionary["DynamoWindowStyle"] as Style;
+            var textFontFamily = windowStyle.Setters;
             //Format user test
             code = FormatUserText(code);
 
@@ -513,7 +517,7 @@ namespace Dynamo.Nodes
                 if (RequiresOutPort(s, i))
                 {
                     string nickName = Statement.GetDefinedVariableNames(s, true)[0];
-                    if (tempVariables.Contains(nickName)) 
+                    if (tempVariables.Contains(nickName))
                         nickName = "Statement Output"; //Set tool tip incase of random var name
 
                     OutPortData.Add(
@@ -531,8 +535,8 @@ namespace Dynamo.Nodes
             foreach (string name in unboundIdentifier)
             {
                 string portName = name;
-                if (portName.Length > Configurations.MaxPortNameLength)
-                    portName = portName.Remove(Configurations.MaxPortNameLength - 3) + "...";
+                if (portName.Length > Configurations.CBNMaxPortNameLength)
+                    portName = portName.Remove(Configurations.CBNMaxPortNameLength - 3) + "...";
                 InPortData.Add(new PortData(portName, name, typeof(object)));
             }
         }
@@ -545,6 +549,7 @@ namespace Dynamo.Nodes
         {
             var result = new List<double>();
             int currentOffset = 1; //Used to mark the line immediately after the last output port line
+            int textWrapping = 0;
             double initialMarginRequired = 4;
             for (int i = 0; i < codeStatements.Count; i++)
             {
@@ -564,7 +569,22 @@ namespace Dynamo.Nodes
                     margin = 0.0;
                     currentOffset += 1;
                 }
-                result.Add(margin + initialMarginRequired);
+
+                //Calculate extra margin required due to text wrapping
+                if (i != 0)
+                {
+                    Node statementNode = codeStatements[i - 1].AstNode;
+                    if (this.TempVariables.Contains(Statement.GetDefinedVariableNames(codeStatements[i - 1], true)[0]))
+                        statementNode = (statementNode as BinaryExpressionNode).RightNode;
+
+                    string stmntText = ProtoCore.Utils.ParserUtils.ExtractStatementFromCode(codeToParse, codeStatements[i - 1].AstNode);
+
+                    textWrapping = GetExtraLinesDueToTextWrapping(stmntText) * 20;
+                }
+                else
+                    textWrapping = 0;
+
+                result.Add(margin + initialMarginRequired + textWrapping);
                 initialMarginRequired = 0;
             }
             return result;
@@ -787,6 +807,85 @@ namespace Dynamo.Nodes
             }
         }
 
+        //ToDo: Move this method into the CBN text formatter when it is created
+        /// <summary>
+        /// Returns the extra number of lines caused due to text wrapping. Example, a line such as
+        ///             " this is a very very very very very long line"
+        /// would become
+        ///             " this is a very very very very
+        ///               very long line "
+        /// due to text wrapping
+        /// </summary>
+        /// <param name="statement"> The statement whose extra lines is required to be calculated </param>
+        /// <returns> Returns the extra number of lines caused by text wrapping. For example, the above statement would return 1 </returns>
+        private int GetExtraLinesDueToTextWrapping(string statement)
+        {
+            double portHeight = (double)Dynamo.UI.SharedDictionaryManager.DynamoModernDictionary["port_height"] - 0.1;
+            int numberOfLines = 0;
+            string[] lines = statement.Split('\n');
+            foreach (string line in lines)
+            {
+                double lineHeight = GetFormattedTextHeight(line);
+                numberOfLines += Math.Max(0, (int)(lineHeight / portHeight) - 1);
+            }
+            return numberOfLines;
+        }
+
+        //ToDo: Move this method into the CBN text formatter when it is created
+        /// <summary>
+        /// Simulates the given text like it were text from a code block node, and
+        /// returns the line height.
+        /// </summary>
+        /// <param name="str"> The string whose line height is required to be calculated </param>
+        /// <returns> The line height of the formatted string </returns>
+        private double GetFormattedTextHeight(string str)
+        {
+            FontFamily textFontFamily = null;
+            double textFontSize = -1.0;
+            try
+            {
+                Style windowStyle = Dynamo.UI.SharedDictionaryManager.DynamoModernDictionary["DynamoWindowStyle"] as Style;
+                var styleSetters = windowStyle.Setters;
+                foreach (System.Windows.Setter setter in styleSetters)
+                {
+                    if (setter.Property.Name == "FontFamily")
+                    {
+                        textFontFamily = setter.Value as FontFamily;
+                        break;
+                    }
+                }
+
+                Style codeBlockNodeStyle = Dynamo.UI.SharedDictionaryManager.DynamoModernDictionary["CodeBlockNodeTextBox"] as Style;
+                styleSetters = codeBlockNodeStyle.Setters;
+                foreach (System.Windows.Setter setter in styleSetters)
+                {
+                    if (setter.Property.Name == "FontSize")
+                    {
+                        textFontSize = (double)setter.Value;
+                        break;
+                    }
+                }
+
+                if (textFontSize == -1.0 || textFontFamily == null)
+                    throw new Exception("Resource Setter not found");
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
+            FormattedText newText = new FormattedText(str,
+                    CultureInfo.CurrentCulture,
+                    System.Windows.FlowDirection.LeftToRight,
+                    new Typeface(textFontFamily, FontStyles.Normal, FontWeights.Normal, FontStretches.Normal, new FontFamily("Arial")),
+                    textFontSize,
+                    new SolidColorBrush());
+
+            newText.MaxTextWidth = Configurations.CBNMaxTextBoxWidth;
+            newText.Trimming = TextTrimming.None;
+            return newText.Height;
+
+        }
         #endregion
     }
 

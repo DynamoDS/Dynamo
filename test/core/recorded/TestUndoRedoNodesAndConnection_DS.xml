@@ -1,0 +1,25 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="2605ed9d-1cce-41a2-8b36-dcd02d1396a6" NodeName="Code Block" X="149" Y="206" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="2605ed9d-1cce-41a2-8b36-dcd02d1396a6" Name="Code" Value="a=10;" />
+  <CreateNodeCommand NodeId="9beac565-3238-4396-8c78-9d9645ec5185" NodeName="Code Block" X="88" Y="359" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="9beac565-3238-4396-8c78-9d9645ec5185" Name="Code" Value="b=20;" />
+  <CreateNodeCommand NodeId="a40978be-1877-478d-8935-fa6b01334055" NodeName="+@," X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <MakeConnectionCommand NodeId="2605ed9d-1cce-41a2-8b36-dcd02d1396a6" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="a40978be-1877-478d-8935-fa6b01334055" PortIndex="0" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="9beac565-3238-4396-8c78-9d9645ec5185" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="a40978be-1877-478d-8935-fa6b01334055" PortIndex="1" Type="0" ConnectionMode="1" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UndoRedoCommand CmdOperation="0" />
+  <UndoRedoCommand CmdOperation="0" />
+  <UndoRedoCommand CmdOperation="0" />
+  <UndoRedoCommand CmdOperation="0" />
+  <UndoRedoCommand CmdOperation="0" />
+  <UndoRedoCommand CmdOperation="1" />
+  <UndoRedoCommand CmdOperation="1" />
+  <UndoRedoCommand CmdOperation="1" />
+  <UndoRedoCommand CmdOperation="1" />
+  <UndoRedoCommand CmdOperation="1" />
+</Commands>

@@ -448,6 +448,19 @@ namespace Dynamo.ViewModels
         public BrowserItem TryAddChildCategory(BrowserItem parent, string childCategoryName)
         {
             var newCategoryName = parent.Name + CATEGORY_DELIMITER + childCategoryName;
+
+            // support long nested categories like Math.Math.StaticMembers.Abs
+            var parentItem  = parent as BrowserInternalElement;
+            while (parentItem != null)
+            {
+                var grandParent = parentItem.Parent;
+                if (null == grandParent)
+                    break;
+
+                newCategoryName = grandParent.Name + CATEGORY_DELIMITER + newCategoryName;
+                parentItem = grandParent as BrowserInternalElement;
+            }
+
             if (ContainsCategory(newCategoryName))
             {
                 return GetCategoryByName(newCategoryName);
@@ -797,27 +810,55 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        ///     Adds a DesignScript function
+        ///     Adds DesignScript function groups
         /// </summary>
         /// <param name="func"></param>
-        public void Add(FunctionItem func)
+        public void Add(IEnumerable<FunctionGroup> functionGroups)
         {
-            string name = func.MangledName;
-            string category = func.Category;
-            string description = func.Signature;
-            List<string> tags = new List<string>();
+            if (null == functionGroups)
+                return;
 
-            var searchEle = new DSFunctionNodeSearchElement(func);
-            searchEle.SetSearchable(true);
-
-            TryAddCategoryAndItem(category, searchEle);
-            SearchDictionary.Add(searchEle, func.SearchName);
-
-            if (tags.Count > 0)
+            foreach (var functionGroup in functionGroups)
             {
-                SearchDictionary.Add(searchEle, tags);
+                var functions = functionGroup.Functions.ToList();
+                if (!functions.Any())
+                    continue;
+
+                bool isOverloaded = functions.Count > 1;
+
+                foreach (var function in functions)
+                {
+                    // For overloaded functions, only parameters are displayed
+                    // for this item. E.g, for Count(), on UI it is:
+                    //
+                    // -> Abs
+                    //      +----------------+
+                    //      | dValue: double |
+                    //      +----------------+
+                    //      | nValue: int    |
+                    //      +----------------+
+                    var displayString = function.UserFriendlyName;
+                    var category = function.Category;
+
+                    if (isOverloaded)
+                    {
+                        displayString = string.Join(", ", function.Parameters.Select(p => p.ToString()));
+                        if (string.IsNullOrEmpty(displayString))
+                            displayString = "void";
+                        category = category + "." + function.UserFriendlyName; 
+                    }
+
+                    var searchElement = new DSFunctionNodeSearchElement(displayString, function);
+                    searchElement.SetSearchable(true);
+
+                    // Add this search eleemnt to the search view
+                    TryAddCategoryAndItem(category, searchElement);
+
+                    // function.QualifiedName is the search string for this
+                    // element
+                    SearchDictionary.Add(searchElement, function.QualifiedName);
+                }
             }
-            SearchDictionary.Add(searchEle, description);
         }
 
         /// <summary>
