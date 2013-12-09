@@ -813,10 +813,21 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        private void FadeOutTooltip(object parameter)
+        private void HideTooltip(object parameter)
         {
             if (dynSettings.Controller != null)
                 dynSettings.Controller.DynamoViewModel.HideInfoBubble(parameter);
+        }
+
+        private bool CanHideTooltip(object parameter)
+        {
+            return true;
+        }
+
+        private void FadeOutTooltip(object parameter)
+        {
+            if (dynSettings.Controller != null)
+                dynSettings.Controller.DynamoViewModel.FadeOutInfoBubble(parameter);
         }
 
         private bool CanFadeOutTooltip(object parameter)
