@@ -25,6 +25,14 @@ namespace DSRevitNodes.Elements
             get; private set;
         }
 
+        /// <summary>
+        /// Reference to the Element
+        /// </summary>
+        internal override Element InternalElement
+        {
+            get { return InternalDividedSurface; }
+        }
+
         #endregion
 
         #region Private constructors
@@ -171,9 +179,9 @@ namespace DSRevitNodes.Elements
         /// <param name="uDivs"></param>
         /// <param name="vDivs"></param>
         /// <returns></returns>
-        public static DSDividedSurface ByFaceUVDivisions(DSFaceReference face, int uDivs, int vDivs)
+        public static DSDividedSurface ByFaceAndUVDivisions(DSFaceReference face, int uDivs, int vDivs)
         {
-            return ByFaceUVDivisionsRotation(face, uDivs, vDivs, 0.0);
+            return ByFaceUVDivisionsAndRotation(face, uDivs, vDivs, 0.0);
         }
 
         /// <summary>
@@ -185,7 +193,7 @@ namespace DSRevitNodes.Elements
         /// <param name="vDivs"></param>
         /// <param name="gridRotation"></param>
         /// <returns></returns>
-        public static DSDividedSurface ByFaceUVDivisionsRotation(DSFaceReference face, int uDivs, int vDivs, double gridRotation)
+        public static DSDividedSurface ByFaceUVDivisionsAndRotation(DSFaceReference face, int uDivs, int vDivs, double gridRotation)
         {
 
             if (face == null)

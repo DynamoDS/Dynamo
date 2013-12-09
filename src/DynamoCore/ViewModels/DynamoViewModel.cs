@@ -1328,7 +1328,10 @@ namespace Dynamo.ViewModels
             DialogResult result = openFileDialog.ShowDialog();
             if (result == DialogResult.OK)
             {
-                dynSettings.Controller.EngineController.ImportLibraries(openFileDialog.FileNames.ToList());
+                foreach (var file in openFileDialog.FileNames)
+                {
+                    dynSettings.Controller.EngineController.ImportLibrary(file);
+                }
             }
         }
 

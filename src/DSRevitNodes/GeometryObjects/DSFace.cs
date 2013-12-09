@@ -1,10 +1,11 @@
 ﻿using System;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
+using DSRevitNodes.GeometryConversion;
 using DSRevitNodes.GeometryObjects;
 using DSRevitNodes.Graphics;
 
-namespace DSRevitNodes
+namespace DSRevitNodes.GeometryObjects
 {
     public class DSFace : IGeometryObject
     {
@@ -33,6 +34,9 @@ namespace DSRevitNodes
             }
         }
 
+        /// <summary>
+        /// Get the Edges of the Face
+        /// </summary>
         public DSEdge[] Edges
         {
             get
@@ -41,7 +45,29 @@ namespace DSRevitNodes
             }
         }
 
+        /// <summary>
+        /// Get the Surface Area of the face
+        /// </summary>
+        public double SurfaceArea
+        {
+            get
+            {
+                return InternalFace.Area;
+            }
+        }
+
         #endregion
+
+        /// <summary>
+        /// Evaluate a point on a Face given it's parameters
+        /// </summary>
+        /// <param name="u"></param>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        public Autodesk.DesignScript.Geometry.Point Evaluate(double u, double v)
+        {
+            return InternalFace.Evaluate(new UV(u, v)).ToPoint();
+        }
 
         #region Tesselation
 

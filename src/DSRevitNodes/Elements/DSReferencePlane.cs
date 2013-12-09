@@ -11,7 +11,7 @@ using Line = Autodesk.DesignScript.Geometry.Line;
 using Plane = Autodesk.DesignScript.Geometry.Plane;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
-namespace DSRevitNodes
+namespace DSRevitNodes.Elements
 {
     /// <summary>
     /// A Revit ReferencePlane
@@ -19,6 +19,8 @@ namespace DSRevitNodes
     [RegisterForTrace]
     public class DSReferencePlane : AbstractElement
     {
+        #region Internal properties
+
         /// <summary>
         /// Internal handle for the Revit object
         /// </summary>
@@ -26,6 +28,16 @@ namespace DSRevitNodes
         {
             get; private set;
         }
+
+        /// <summary>
+        /// Reference to the Element
+        /// </summary>
+        internal override Autodesk.Revit.DB.Element InternalElement
+        {
+            get { return InternalReferencePlane; }
+        }
+
+        #endregion
 
         #region Private constructors
 

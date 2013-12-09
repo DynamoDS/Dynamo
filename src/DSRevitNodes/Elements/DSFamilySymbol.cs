@@ -9,7 +9,7 @@ using DSNodeServices;
 using DSRevitNodes.Elements;
 using RevitServices.Transactions;
 
-namespace DSRevitNodes
+namespace DSRevitNodes.Elements
 {
     /// <summary>
     /// A Revit FamilySymbol
@@ -18,7 +18,7 @@ namespace DSRevitNodes
     public class DSFamilySymbol: AbstractElement
     {
 
-        #region internal Properties
+        #region Internal Properties
 
         /// <summary>
         /// Internal wrapper property
@@ -27,6 +27,14 @@ namespace DSRevitNodes
         {
             get;
             private set;
+        }
+
+        /// <summary>
+        /// Reference to the Element
+        /// </summary>
+        internal override Element InternalElement
+        {
+            get { return InternalFamilySymbol; }
         }
 
         #endregion
@@ -80,25 +88,6 @@ namespace DSRevitNodes
             get
             {
                 return DSFamily.FromExisting(this.InternalFamilySymbol.Family, true);
-            }
-        }
-
-        /// <summary>
-        /// Get a list of parameters from this FamilySymbol
-        /// </summary>
-        public DSParameter[] Parameters
-        {
-            get
-            {
-                var parms = this.InternalFamilySymbol.Parameters;
-                var parmsOut = new DSParameter[parms.Size];
-                var count = 0;
-                foreach (var param in parms)
-                {
-                    parmsOut[count++] = new DSParameter(param);
-                }
-
-                return parmsOut;
             }
         }
 

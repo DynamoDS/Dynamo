@@ -66,6 +66,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -74,13 +75,36 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnalysisDisplay\DSFaceAnalysisDisplay.cs" />
+    <Compile Include="AnalysisDisplay\DSPointAnalysisDisplay.cs" />
+    <Compile Include="AnalysisDisplay\DSVectorAnalysisDisplay.cs" />
     <Compile Include="Elements\AbstractElement.cs" />
+    <Compile Include="Elements\AbstractFamilyInstance.cs" />
+    <Compile Include="Elements\DSModelText.cs" />
+    <Compile Include="Elements\DSModelTextType.cs" />
+    <Compile Include="Elements\DSStructuralType.cs" />
+    <Compile Include="Elements\Views\AbstractPlanView.cs" />
+    <Compile Include="Elements\Views\AbstractView.cs" />
+    <Compile Include="Elements\Views\Packing\CygonRectanglePacker.cs" />
+    <Compile Include="Elements\Views\DSAxonometricView.cs" />
+    <Compile Include="Elements\Views\DSCeilingPlanView.cs" />
+    <Compile Include="Elements\Views\DSPerspectiveView.cs" />
     <Compile Include="Elements\DSFloorType.cs" />
     <Compile Include="Elements\DSForm.cs" />
     <Compile Include="Elements\DSSketchPlane.cs" />
+    <Compile Include="Elements\Views\DSDraftingView.cs" />
+    <Compile Include="Elements\Views\DSFloorPlanView.cs" />
+    <Compile Include="Elements\Views\DSSheet.cs" />
+    <Compile Include="Elements\Views\DSTableView.cs" />
+    <Compile Include="Elements\DSWallType.cs" />
+    <Compile Include="Elements\Views\DSSectionView.cs" />
+    <Compile Include="Elements\Views\Packing\OutOfSpaceException.cs" />
+    <Compile Include="Elements\Views\Packing\RectanglePacker.cs" />
     <Compile Include="GeometryConversion\ProtoToRevitCurve.cs" />
     <Compile Include="GeometryConversion\RevitToProtoCurve.cs" />
+    <Compile Include="GeometryObjects\DSBoundingBox.cs" />
     <Compile Include="GeometryObjects\DSPlanarFace.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="References\AbstractReference.cs" />
     <Compile Include="References\DSFaceReference.cs" />
     <Compile Include="GeometryObjects\DSCurveLoop.cs" />
@@ -110,9 +134,9 @@
     <Compile Include="References\DSCurveReference.cs" />
     <Compile Include="Elements\DSReferencePlane.cs" />
     <Compile Include="Elements\DSReferencePoint.cs" />
-    <Compile Include="Elements\DSSpatialField.cs" />
+    <Compile Include="AnalysisDisplay\AbstractAnalysisDisplay.cs" />
     <Compile Include="Elements\DSStucturalFraming.cs" />
-    <Compile Include="Elements\DSView.cs" />
+    <Compile Include="Elements\Views\AbstractView3D.cs" />
     <Compile Include="Elements\DSWall.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="References\DSPlaneReference.cs" />
