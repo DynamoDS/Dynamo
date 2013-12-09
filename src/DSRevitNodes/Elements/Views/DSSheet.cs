@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using DSNodeServices;
 using DSRevitNodes.GeometryObjects;
@@ -94,23 +95,27 @@ namespace DSRevitNodes.Elements
         /// <param name="views"></param>
         public DSSheet(string sheetName, string sheetNumber, FamilySymbol titleBlockFamilySymbol, IEnumerable<View> views)
         {
-            // Is there a way to set the sheet title block parameter on the View?  
-            // Presently this method DESTROYS the original sheet
 
             //Phase 1 - Check to see if the object exists
             var oldEle =
                 ElementBinder.GetElementFromTrace<Autodesk.Revit.DB.ViewSheet>(Document);
 
-            // Delete old element
+            // Rebind to Element
             if (oldEle != null)
             {
-               DocumentManager.GetInstance().DeleteElement(oldEle.Id);
+                InternalSetViewSheet(oldEle);
+                InternalSetSheetName(sheetName);
+                InternalSetSheetNumber(sheetNumber);
+                InternalSetTitleBlock(titleBlockFamilySymbol.Id);
+                InternalAddViewsToSheetView(views);
+
+                return;
             }
 
             //Phase 2 - There was no existing Element, create new one
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
-            // create sheet WITH title block ID
+            // create sheet with title block ID
             var sheet = Autodesk.Revit.DB.ViewSheet.Create(Document, titleBlockFamilySymbol.Id);
 
             InternalSetViewSheet(sheet);
@@ -219,6 +224,21 @@ namespace DSRevitNodes.Elements
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
             InternalViewSheet.SheetNumber = number;
+
+            TransactionManager.GetInstance().TransactionTaskDone();
+        }
+
+        /// <summary>
+        /// Set the title block id for the view
+        /// </summary>
+        /// <param name="newTitleBlockId"></param>
+        private void InternalSetTitleBlock(ElementId newTitleBlockId)
+        {
+            TransactionManager.GetInstance().EnsureInTransaction(Document);
+
+            // element collector result
+            new FilteredElementCollector(Document, InternalViewSheet.Id).OfCategory(BuiltInCategory.OST_TitleBlocks)
+                .ToElements().ToArray().ForEach(x => x.ChangeTypeId(newTitleBlockId));
 
             TransactionManager.GetInstance().TransactionTaskDone();
         }
