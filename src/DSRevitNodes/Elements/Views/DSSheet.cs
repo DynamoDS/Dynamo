@@ -247,6 +247,9 @@ namespace DSRevitNodes.Elements
 
         #region Public properties
 
+        /// <summary>
+        /// Get the SheetName of the Sheet
+        /// </summary>
         public string SheetName
         {
             get
@@ -255,11 +258,29 @@ namespace DSRevitNodes.Elements
             }
         }
 
+        /// <summary>
+        /// Get the SheetNumber of the Sheet
+        /// </summary>
         public string SheetNumber
         {
             get
             {
                 return InternalViewSheet.SheetNumber;
+            }
+        }
+
+        /// <summary>
+        /// Get the Views on a Sheet
+        /// </summary>
+        public AbstractView[] Views
+        {
+            get
+            {
+                return
+                    InternalViewSheet.Views.Cast<Autodesk.Revit.DB.View>()
+                        .ToList()
+                        .Select(x => (AbstractView) ElementSelector.WrapElement(x, true))
+                        .ToArray();
             }
         }
 
@@ -300,22 +321,12 @@ namespace DSRevitNodes.Elements
         /// <returns></returns>
         public static DSSheet ByNameNumberAndView(string sheetName, string sheetNumber, AbstractView view)
         {
-            if (sheetName == null)
-            {
-                throw new ArgumentNullException("sheetName");
-            }
-
-            if (sheetNumber == null)
-            {
-                throw new ArgumentNullException("sheetNumber");
-            }
-
-            return new DSSheet(sheetName, sheetNumber, new[] { view.InternalView });
+            return DSSheet.ByNameNumberAndViews(sheetName, sheetNumber, new[] { view });
         }
 
         /// <summary>
         /// Create a Revit Sheet by the sheet name, number, a title block FamilySymbol, and a collection of views.  This method will automatically
-        /// pack the views onto the sheet.  This method will rebuild the sheet, destroying existing references to the document.
+        /// pack the views onto the sheet. 
         /// </summary>
         /// <param name="sheetName"></param>
         /// <param name="sheetNumber"></param>
@@ -342,6 +353,20 @@ namespace DSRevitNodes.Elements
             return new DSSheet(sheetName, sheetNumber, titleBlockFamilySymbol.InternalFamilySymbol, views.Select(x => x.InternalView));
         }
 
+        /// <summary>
+        /// Create a Revit Sheet by the sheet name, number, a title block FamilySymbol, and a collection of views.  This method will automatically
+        /// pack the view onto the sheet.
+        /// </summary>
+        /// <param name="sheetName"></param>
+        /// <param name="sheetNumber"></param>
+        /// <param name="titleBlockFamilySymbol"></param>
+        /// <param name="view"></param>
+        /// <returns></returns>
+        public static DSSheet ByNameNumberTitleBlockAndView(string sheetName, string sheetNumber, DSFamilySymbol titleBlockFamilySymbol, AbstractView view)
+        {
+            return DSSheet.ByNameNumberTitleBlockAndViews(sheetName, sheetNumber, titleBlockFamilySymbol, new[] { view });
+        }
+
         #endregion
 
         #region Internal static constructors
@@ -364,119 +389,3 @@ namespace DSRevitNodes.Elements
 
     }
 }
-
-/*
-[NodeName("View Sheet")]
-[NodeCategory(BuiltinNodeCategories.REVIT_VIEW)]
-[NodeDescription("Create a view sheet.")]
-public class ViewSheet : RevitTransactionNodeWithOneOutput
-{
-    public ViewSheet()
-    {
-        InPortData.Add(new PortData("name", "The name of the sheet.", typeof(Value.String)));
-        InPortData.Add(new PortData("number", "The number of the sheet.", typeof(Value.String)));
-        InPortData.Add(new PortData("title block", "The title block to use.", typeof(Value.Container)));
-        InPortData.Add(new PortData("view(s)", "The view(s) to add to the sheet.", typeof(Value.List)));
-
-        OutPortData.Add(new PortData("sheet", "The view sheet.", typeof(Value.Container)));
-
-        RegisterAllPorts();
-
-        ArgumentLacing = LacingStrategy.Shortest;
-    }
-
-    public override Value Evaluate(FSharpList<Value> args)
-    {
-        var name = ((Value.String)args[0]).Item;
-        var number = ((Value.String)args[1]).Item;
-        var tb = (FamilySymbol)((Value.Container)args[2]).Item;
-
-        if (!args[3].IsList)
-            throw new Exception("The views input must be a list of views.");
-
-        var views = ((Value.List)args[3]).Item;
-
-        Autodesk.Revit.DB.ViewSheet sheet = null;
-
-        if (this.Elements.Any())
-        {
-            if (dynUtils.TryGetElement(this.Elements[0], out sheet))
-            {
-                if (sheet.Name != null && sheet.Name != name)
-                    sheet.Name = name;
-                if (number != null && sheet.SheetNumber != number)
-                    sheet.SheetNumber = number;
-            }
-            else
-            {
-                //create a new view sheet
-                sheet = Autodesk.Revit.DB.ViewSheet.Create(dynRevitSettings.Doc.Document, tb.Id);
-                sheet.Name = name;
-                sheet.SheetNumber = number;
-                Elements[0] = sheet.Id;
-            }
-        }
-        else
-        {
-            sheet = Autodesk.Revit.DB.ViewSheet.Create(dynRevitSettings.Doc.Document, tb.Id);
-            sheet.Name = name;
-            sheet.SheetNumber = number;
-            Elements.Add(sheet.Id);
-        }
-
-        //rearrange views on sheets
-        //first clear the collection of views on the sheet
-        //sheet.Views.Clear();
-
-        var width = sheet.Outline.Max.U - sheet.Outline.Min.U;
-        var height = sheet.Outline.Max.V - sheet.Outline.Min.V;
-        var packer = new CygonRectanglePacker(width, height);
-        foreach (var val in views)
-        {
-            var view = (View)((Value.Container)val).Item;
-
-            var viewWidth = view.Outline.Max.U - view.Outline.Min.U;
-            var viewHeight = view.Outline.Max.V - view.Outline.Min.V;
-
-            UV placement = null;
-            if (packer.TryPack(viewWidth, viewHeight, out placement))
-            {
-                if (sheet.Views.Contains(view))
-                {
-                    //move the view
-                    //find the corresponding viewport
-                    var collector = new FilteredElementCollector(dynRevitSettings.Doc.Document);
-                    collector.OfClass(typeof(Viewport));
-                    var found =
-                        collector.ToElements()
-                                 .Cast<Viewport>()
-                                 .Where(x => x.SheetId == sheet.Id && x.ViewId == view.Id);
-
-                    var enumerable = found as Viewport[] ?? found.ToArray();
-                    if (!enumerable.Any())
-                        continue;
-
-                    var viewport = enumerable.First();
-                    viewport.SetBoxCenter(new XYZ(placement.U + viewWidth / 2, placement.V + viewHeight / 2, 0));
-                }
-                else
-                {
-                    //place the view on the sheet
-                    if (Viewport.CanAddViewToSheet(dynRevitSettings.Doc.Document, sheet.Id, view.Id))
-                    {
-                        var viewport = Viewport.Create(dynRevitSettings.Doc.Document, sheet.Id, view.Id,
-                                                       new XYZ(placement.U + viewWidth / 2, placement.V + viewHeight / 2, 0));
-                    }
-                }
-            }
-            else
-            {
-                throw new Exception("View could not be packed on sheet.");
-            }
-        }
-
-        return Value.NewContainer(sheet);
-    }
-}
-
-*/
