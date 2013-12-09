@@ -110,7 +110,7 @@ namespace DSRevitNodes.Elements
             //Phase 2 - There was no existing Element, create new one
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
-            // create sheet without title block
+            // create sheet WITH title block ID
             var sheet = Autodesk.Revit.DB.ViewSheet.Create(Document, titleBlockFamilySymbol.Id);
 
             InternalSetViewSheet(sheet);
@@ -302,7 +302,7 @@ namespace DSRevitNodes.Elements
         /// <param name="titleBlockFamilySymbol"></param>
         /// <param name="views"></param>
         /// <returns></returns>
-        public static DSSheet ByNameNumberTitleBlockAndView(string sheetName, string sheetNumber, DSFamilySymbol titleBlockFamilySymbol, AbstractView[] views)
+        public static DSSheet ByNameNumberTitleBlockAndViews(string sheetName, string sheetNumber, DSFamilySymbol titleBlockFamilySymbol, AbstractView[] views)
         {
             if (sheetName == null)
             {
