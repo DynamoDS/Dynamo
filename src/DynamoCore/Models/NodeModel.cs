@@ -1598,46 +1598,21 @@ namespace Dynamo.Models
         /// </summary>
         public void ValidateConnections()
         {
-            Action setState = (() =>
+            // If a node is in erroneous state, then calling ValidateConnections 
+            // will not remove its error state (that has to be done before calling 
+            // ValidateConnections through some other means).
+            // 
+            if (this.State == ElementState.ERROR)
+                return;
+
+            // if there are inputs without connections mark as dead
+            bool hasPortWihtoutInput = inPorts.Any((x) =>
             {
-                // If a node is in erroneous state, then calling ValidateConnections 
-                // will not remove its error state (that has to be done before calling 
-                // ValidateConnections through some other means).
-                // 
-                if (this.State == ElementState.ERROR)
-                    return;
-
-                // if there are inputs without connections mark as dead
-                bool hasPortWihtoutInput = inPorts.Any((x) =>
-                {
-                    // When a given port has no input and it has no default value.
-                    return !x.Connectors.Any() && !(x.UsingDefaultValue && x.DefaultValueEnabled);
-                });
-
-                State = hasPortWihtoutInput ? ElementState.DEAD : ElementState.ACTIVE;
+                // When a given port has no input and it has no default value.
+                return !x.Connectors.Any() && !(x.UsingDefaultValue && x.DefaultValueEnabled);
             });
 
-            if (dynSettings.Controller != null &&
-                dynSettings.Controller.UIDispatcher != null &&
-                dynSettings.Controller.UIDispatcher.CheckAccess() == false)
-            {
-                // This is put in place to solve the crashing issue outlined in 
-                // the following defect. ValidateConnections can be called from 
-                // a background evaluation thread at any point in time, we do 
-                // not want such calls to update UI in anyway while we're here 
-                // (the UI update is caused by setting State property which leads
-                // to tool-tip update that triggers InfoBubble to update its UI,
-                // a problem that is currently being resolved and tested on a 
-                // separate branch). When the InfoBubble restructuring gets over,
-                // please ensure the following scenario is tested and continue to 
-                // work:
-                // 
-                //      http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-847
-                // 
-                dynSettings.Controller.UIDispatcher.BeginInvoke(setState);
-            }
-            else
-                setState();
+            State = hasPortWihtoutInput ? ElementState.DEAD : ElementState.ACTIVE;
         }
 
         public void Error(string p)
