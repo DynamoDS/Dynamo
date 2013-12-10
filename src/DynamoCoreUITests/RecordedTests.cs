@@ -1429,6 +1429,59 @@ namespace Dynamo.Tests.UI
 
         }
 
+        [Test, RequiresSTA]
+        public void Defect_MAGN_422()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-422
+            RunCommandsFromFile("Defect_MAGN_422.xml");
+
+            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(2, workspace.Connectors.Count);
+
+            //Check the CBN for input and output ports count
+            var cbn = GetNode("0a79dc3a-a37c-40a0-a631-eae730e8d3e2") as CodeBlockNodeModel;
+            Assert.AreNotEqual(ElementState.Error, cbn.State);
+            Assert.AreEqual(2, cbn.OutPorts.Count);
+            Assert.AreEqual(0, cbn.InPorts.Count);
+
+            //Check the position of output ports
+            Assert.AreEqual("x", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+
+            //Check the position of output ports
+            Assert.AreEqual("y", cbn.OutPorts[1].ToolTipContent);
+            Assert.AreEqual(40, cbn.OutPorts[1].MarginThickness.Top);
+
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_422_1()
+        {
+            // comment out first line and then keep to blank lines.
+            // a=10; after this keep tww mor blank lines.
+            // b=10;
+            // This test is about testing position of output ports when there 
+            // first line of CBN having comment and after that there are few blank lines.
+            RunCommandsFromFile("Defect_MAGN_422_1.xml");
+
+            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count);
+
+            //Check the CBN for input and output ports count
+            var cbn = GetNode("811be42d-b44b-434a-ad6f-ae2c8d5309b1") as CodeBlockNodeModel;
+            Assert.AreNotEqual(ElementState.Error, cbn.State);
+            Assert.AreEqual(2, cbn.OutPorts.Count);
+            Assert.AreEqual(0, cbn.InPorts.Count);
+
+            //Check the position of output ports
+            Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual(44, cbn.OutPorts[0].MarginThickness.Top);
+
+            //Check the position of output ports
+            Assert.AreEqual("b", cbn.OutPorts[1].ToolTipContent);
+            Assert.AreEqual(40, cbn.OutPorts[1].MarginThickness.Top);
+
+        }
         #endregion
     }
 
