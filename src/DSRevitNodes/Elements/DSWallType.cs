@@ -59,6 +59,18 @@ namespace DSRevitNodes.Elements
 
         #endregion
 
+        #region Public properties
+
+        public string Name 
+        {
+            get
+            {
+                return InternalWallType.Name;
+            }
+        }
+
+        #endregion
+
         #region Public static constructors
 
         /// <summary>
