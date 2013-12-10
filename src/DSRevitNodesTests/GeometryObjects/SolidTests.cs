@@ -64,16 +64,78 @@ namespace DSRevitNodesTests.GeometryObjects
             var transCrvs = crvs.Select(crv => crv.Transform(CoordinateSystem.WCS, planeCs)).Cast<Curve>().ToList();
 
             var revolve = DSSolid.ByRevolve(transCrvs, cs, 0, 3.14);
+            Assert.NotNull(revolve);
 
             var package = new RenderPackage(); 
             revolve.Tessellate(package);
 
-            var modelPath = Path.Combine(TestGeometryDirectory, @"Solid_ByRevolve.obj");
+            var modelPath = Path.Combine(TestGeometryDirectory, @"ByRevolve_ValidArgs.obj");
             if(File.Exists(modelPath))
                 File.Delete(modelPath);
-            WriteToOBJ(modelPath, new List<RenderPackage>(){package});
-            
+            WriteToOBJ(modelPath, new List<RenderPackage>(){package}); 
+        }
+
+        [Test]
+        public void ByRevolve_ValidArgs_NonVertical()
+        {
+            //create a unit rectangle in the world XY plane
+            var crvs = UnitRectangle();
+
+            var origin = Point.ByCoordinates(0, 0, 0);
+
+            var z = Vector.ByCoordinates(.5, .5, .5).Normalize();
+            var zTmp = Vector.ByCoordinates(0, 0, 1);
+            var x = z.Cross(zTmp).Normalize();
+            var y = z.Cross(x).Normalize();
+
+            var cs = CoordinateSystem.ByOriginVectors(origin, x, y, z);
+
+            var planeCs = CoordinateSystem.ByOriginVectors(origin, x, z, y);
+            var transCrvs = crvs.Select(crv => crv.Transform(CoordinateSystem.WCS, planeCs)).Cast<Curve>().ToList();
+
+            var revolve = DSSolid.ByRevolve(transCrvs, cs, 0, 3.14);
             Assert.NotNull(revolve);
+
+            var package = new RenderPackage();
+            revolve.Tessellate(package);
+
+            var modelPath = Path.Combine(TestGeometryDirectory, @"ByRevolve_ValidArgs_NonVertical.obj");
+            if (File.Exists(modelPath))
+                File.Delete(modelPath);
+            WriteToOBJ(modelPath, new List<RenderPackage>() { package });
+        }
+
+        [Test]
+        public void ByBlend_ValidArgs()
+        {
+            var rect1 = UnitRectangle();
+            var rect2 = UnitRectangle();
+
+            var originBottom = Point.ByCoordinates(0, 0, 0);
+            var x = Vector.ByCoordinates(1, 0, 0);
+            var y = Vector.ByCoordinates(0, 1, 0);
+            var z = Vector.ByCoordinates(0, 0, 1);
+
+            var originTop = Point.ByCoordinates(0, 0, 10);
+            var x1 = Vector.ByCoordinates(.5, .5, 0).Normalize();
+            var y1 = x1.Cross(z); 
+
+            var csBottom = CoordinateSystem.ByOriginVectors(originBottom, x, y, z);
+            var csTop = CoordinateSystem.ByOriginVectors(originTop, x1, y1, z);
+
+            var bottCurves = rect1.Select(crv => crv.Transform(CoordinateSystem.WCS, csBottom)).Cast<Curve>().ToList();
+            var topCurves = rect2.Select(crv => crv.Transform(CoordinateSystem.WCS, csTop)).Cast<Curve>().ToList();
+
+            var blend = DSSolid.ByBlend(new List<List<Curve>>{bottCurves,topCurves});
+            Assert.NotNull(blend);
+
+            var package = new RenderPackage();
+            blend.Tessellate(package);
+
+            var modelPath = Path.Combine(TestGeometryDirectory, @"ByBlend_ValidArgs.obj");
+            if (File.Exists(modelPath))
+                File.Delete(modelPath);
+            WriteToOBJ(modelPath, new List<RenderPackage>() { package });
         }
 
         private static List<Curve> UnitRectangle()
@@ -123,6 +185,7 @@ namespace DSRevitNodesTests.GeometryObjects
                 }
             }
         }
+
     }
 
     public class RenderPackage : IRenderPackage

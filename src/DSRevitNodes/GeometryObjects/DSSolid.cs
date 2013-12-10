@@ -50,6 +50,17 @@ namespace DSRevitNodes.Elements
             this.InternalSolid = result;
         }
 
+        /// <summary>
+        /// Internal contructor making a solid by blend
+        /// </summary>
+        /// <param name="loops"></param>
+        internal DSSolid(IEnumerable<CurveLoop> loops)
+        {
+            List<VertexPair> vertPairs = null;
+            var result = GeometryCreationUtilities.CreateBlendGeometry(loops.ElementAt(0), loops.ElementAt(1), vertPairs);
+            this.InternalSolid = result;
+        }
+
         internal DSSolid(Autodesk.Revit.DB.Solid x)
         {
             // TODO: Complete member initialization
@@ -134,6 +145,14 @@ namespace DSRevitNodes.Elements
             return new DSSolid(profile.InternalCurveLoop, direction.ToXyz(), distance);
         }
 
+        /// <summary>
+        /// Create geometry by revolving a closed curve around an axis.
+        /// </summary>
+        /// <param name="profile">The profile to revolve.</param>
+        /// <param name="coordinateSystem">The coordinate system whose Z axis will be the axis of revolution.</param>
+        /// <param name="startAngle">The start angle in radians.</param>
+        /// <param name="endAngle">The end angle in radians.</param>
+        /// <returns></returns>
         public static DSSolid ByRevolve(List<Autodesk.DesignScript.Geometry.Curve> profile,  CoordinateSystem coordinateSystem, double startAngle, double endAngle )
         {
             if (profile == null)
@@ -146,18 +165,34 @@ namespace DSRevitNodes.Elements
                 throw new ArgumentException("coordinate system");
             }
 
-            //convert the proto curves to revit curves
             var crvs = CurveLoop.Create(profile.Select(x => x.ToRevitType()).ToList());
 
             return new DSSolid( crvs, coordinateSystem.ToTransform(), startAngle, endAngle);
         }
 
-        static DSSolid ByBlend(List<List<DSCurve>> profiles)
+        /// <summary>
+        /// Create geometry by blending two profiles together.
+        /// </summary>
+        /// <param name="profiles">A list of lists of curves representing the profiles to blend.</param>
+        /// <returns></returns>
+        public static DSSolid ByBlend(List<List<Autodesk.DesignScript.Geometry.Curve>> profiles)
         {
-            throw new NotImplementedException();
+            if (profiles == null)
+            {
+                throw new ArgumentException("profiles");
+            }
+
+            if (profiles.Count != 2)
+            {
+                throw new Exception("You must have two profiles to create a blend.");
+            }
+
+            var loops = profiles.Select(x => CurveLoop.Create(x.Select(y => y.ToRevitType()).ToList()));
+
+            return new DSSolid(loops);
         }
 
-        static DSSolid BySweptBlend(List<List<DSCurve>> profiles, DSCurve spine)
+        public static DSSolid BySweptBlend(List<List<DSCurve>> profiles, DSCurve spine)
         {
             throw new NotImplementedException();
         }
