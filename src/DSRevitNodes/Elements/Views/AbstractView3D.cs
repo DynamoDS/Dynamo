@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ using RevitServices.Transactions;
 
 namespace DSRevitNodes.Elements
 {
+    [Browsable(false)]
     public abstract class AbstractView3D : AbstractView
     {
 
@@ -44,7 +46,7 @@ namespace DSRevitNodes.Elements
         /// <param name="eyePoint"></param>
         /// <param name="target"></param>
         /// <returns></returns>
-        public static ViewOrientation3D BuildOrientation3D( XYZ eyePoint, XYZ target )
+        protected static ViewOrientation3D BuildOrientation3D(XYZ eyePoint, XYZ target)
         {
             var globalUp = XYZ.BasisZ;
             var direction = target.Subtract(eyePoint);
@@ -58,7 +60,7 @@ namespace DSRevitNodes.Elements
         /// </summary>
         /// <param name="e"></param>
         /// <param name="pts"></param>
-        public static void GetPointCloud(Element e, List<XYZ> pts)
+        protected static void GetPointCloud(Element e, List<XYZ> pts)
         {
             var options = new Options()
             {
@@ -85,7 +87,7 @@ namespace DSRevitNodes.Elements
         /// </summary>
         /// <param name="geomInst"></param>
         /// <param name="pts"></param>
-        public static void GetPointCloud(GeometryInstance geomInst, List<XYZ> pts)
+        protected static void GetPointCloud(GeometryInstance geomInst, List<XYZ> pts)
         {
             foreach (var gObj in geomInst.GetInstanceGeometry())
             {
@@ -105,7 +107,7 @@ namespace DSRevitNodes.Elements
         /// </summary>
         /// <param name="solid"></param>
         /// <param name="pts"></param>
-        public static void GetPointCloud(Solid solid, List<XYZ> pts)
+        protected static void GetPointCloud(Solid solid, List<XYZ> pts)
         {
             foreach (Edge gEdge in solid.Edges)
             {
@@ -294,7 +296,7 @@ namespace DSRevitNodes.Elements
         /// </summary>
         /// <param name="doc"></param>
         /// <returns></returns>
-        public static FilteredElementCollector GetVisibleElementFilter()
+        protected static FilteredElementCollector GetVisibleElementFilter()
         {
             var fec = new FilteredElementCollector(Document);
             var filterList = new List<ElementFilter>();
