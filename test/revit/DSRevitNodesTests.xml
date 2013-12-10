@@ -133,6 +133,11 @@
 		<test name="ByLevelOffsetAndName_NullArgument" modelPath=".\empty.rfa"/>
       </testFixture>
 	  
+	  <testFixture name="FloorTypeTests">
+        <test name="ByName_ValidArgs" modelPath=".\empty.rfa"/>
+		<test name="ByName_NullArgument" modelPath=".\empty.rfa"/>
+      </testFixture>
+	  
 	<testFixture name="FloorTests">
         <test name="ByOutlineTypeAndLevel_ValidArgs" modelPath=".\empty.rfa"/>
 		<test name="ByOutlineTypeAndLevel_NullArgument" modelPath=".\empty.rfa"/>
