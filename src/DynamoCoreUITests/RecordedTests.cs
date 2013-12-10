@@ -1525,16 +1525,31 @@ namespace Dynamo.Tests.UI
 
         }
 
-        // TODO(Robin): Please remove this sample test case before committing
+        /// <summary>
+        /// Temporary workaround
+        /// Test case on creating simple operations and compare with NodeToCode value and Undo
+        /// Eventually the evaluation will be done at record playback side thus remove the need
+        /// of having multiple files.
+        /// </summary>
         [Test, RequiresSTA]
-        public void RecordedCommandWithMirrorExample()
+        public void TestCBNWithNodeToCode()
         {
-            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-613
-            RunCommandsFromFile("Defect_MAGN_613.xml");
+            RunCommandsFromFile("TestCBNOperationWithoutNodeToCode.xml");
+            AssertValue("c", 8); // Run playback is recorded in command file
 
-            // Run
-            Assert.DoesNotThrow(() => controller.RunExpression(null));
-            AssertValue("a", 1);
+            // Reset current test case
+            Exit();
+            Start();
+
+            RunCommandsFromFile("TestCBNOperationWithNodeToCode.xml");
+            AssertValue("c", 8); // Run playback is recorded in command file
+
+            // Reset current test case
+            Exit();
+            Start();
+
+            RunCommandsFromFile("TestCBNOperationWithNodeToCodeUndo.xml");
+            AssertValue("c", 8); // Run playback is recorded in command file
         }
 
         #endregion
