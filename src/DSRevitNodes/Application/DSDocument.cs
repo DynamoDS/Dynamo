@@ -12,7 +12,9 @@ namespace DSRevitNodes.Application
     /// </summary>
     public class DSDocument
     {
-
+        /// <summary>
+        /// Internal reference to the Document
+        /// </summary>
         internal Autodesk.Revit.DB.Document Document
         {
             get
@@ -21,6 +23,9 @@ namespace DSRevitNodes.Application
             }
         }
 
+        /// <summary>
+        /// Get the active view for the document
+        /// </summary>
         public AbstractView ActiveView 
         {
             get
@@ -29,6 +34,9 @@ namespace DSRevitNodes.Application
             }
         }
 
+        /// <summary>
+        /// Is the Document a Family?
+        /// </summary>
         public bool IsFamilyDocument
         {
             get
@@ -37,6 +45,10 @@ namespace DSRevitNodes.Application
             }
         }
 
+        /// <summary>
+        /// Get the current document
+        /// </summary>
+        /// <returns></returns>
         public static DSDocument Current()
         {
             return new DSDocument();
