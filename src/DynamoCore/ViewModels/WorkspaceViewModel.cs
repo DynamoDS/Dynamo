@@ -600,6 +600,72 @@ namespace Dynamo.ViewModels
                            .Max();
         }
 
+        /// <summary>
+        /// Get top left point of ILocatable element in this workspace
+        /// </summary>
+        public Point GetTopLeft()
+        {
+            // List of elements that should be take into account
+            List<ILocatable> iLocatableElements = new List<ILocatable>();
+            iLocatableElements.AddRange(_model.Nodes.ToList<ILocatable>());
+            iLocatableElements.AddRange(_model.Notes.ToList<ILocatable>());
+
+            return GetILocatableTopLeft(iLocatableElements);
+        }
+
+        /// <summary>
+        /// Get bottom right point of ILocatable elements in this workspace
+        /// </summary>
+        public Point GetBottomRight()
+        {
+            // List of elements that should be take into account
+            List<ILocatable> iLocatableElements = new List<ILocatable>();
+            iLocatableElements.AddRange(_model.Nodes.ToList<ILocatable>());
+            iLocatableElements.AddRange(_model.Notes.ToList<ILocatable>());
+
+            return GetILocatableBottomRight(iLocatableElements);
+        }
+
+        /// <summary>
+        /// Get the top left point of ILocatable elements
+        /// </summary>
+        /// <param name="elements">List of ILocatable</param>
+        /// <returns>Point that is top left of input elements</returns>
+        private Point GetILocatableTopLeft(List<ILocatable> elements)
+        {
+            if (elements.Count == 0) return new Point();
+
+            Point topLeft = new Point(double.MaxValue, double.MaxValue);
+
+            foreach (ILocatable n in elements)
+            {
+                topLeft.X = Math.Min(n.X, topLeft.X);
+                topLeft.Y = Math.Min(n.Y, topLeft.Y);
+            }
+
+            return topLeft;
+        }
+
+        /// <summary>
+        /// Get the bottom right point of ILocatable elements
+        /// </summary>
+        /// <param name="elements">List of ILocatable</param>
+        /// <returns>Point that is bottom right of input elements</returns>
+        private Point GetILocatableBottomRight(List<ILocatable> elements)
+        {
+            if (elements.Count == 0) return new Point();
+
+            Point bottomRight = new Point(double.MinValue, double.MinValue);
+
+            foreach (ILocatable n in elements)
+            {
+                bottomRight.X = Math.Max(n.X + n.Width, bottomRight.X);
+                bottomRight.Y = Math.Max(n.Y + n.Height, bottomRight.Y);
+            }
+
+            return bottomRight;
+        }
+
         public void AlignSelected(object parameter)
         {
             string alignType = parameter.ToString();

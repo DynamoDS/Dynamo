@@ -322,6 +322,9 @@ namespace Dynamo.Controls
         //    PackageManagerLoginButton.IsEnabled = e.Enabled;
         //}
 
+        /// <summary>
+        /// Save Canvas element as element
+        /// </summary>
         void _vm_RequestSaveImage(object sender, ImageSaveEventArgs e)
         {
             if (!string.IsNullOrEmpty(e.Path))
@@ -334,34 +337,64 @@ namespace Dynamo.Controls
                 //    return;
                 //}
 
+                DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
+                WorkspaceModel workspaceModel = dynSettings.Controller.DynamoViewModel.CurrentSpace;
+                WorkspaceViewModel workspaceViewModel = dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel;
+
+                // Save the state of the workspace before setting up for screen capture
+                double x = workspaceModel.X;
+                double y = workspaceModel.Y;
+                double zoom = workspaceModel.Zoom;
+                bool fullscreenWatchShowing = dynamoViewModel.FullscreenWatchShowing;
+                bool canNavigateBackground = dynamoViewModel.CanNavigateBackground;
+
                 var control = WPF.FindChild<DragCanvas>(this, null);
+                var zoomBorder = WPF.FindChild<ZoomBorder>(this, null);
 
-                double width = 1;
-                double height = 1;
+                Point topLeft = workspaceViewModel.GetTopLeft();
+                Point bottomRight = workspaceViewModel.GetBottomRight();
 
-                // connectors are most often within the bounding box of the nodes and notes
+                int width, height;
+                width = (int)(bottomRight.X - topLeft.X);
+                height = (int)(bottomRight.Y - topLeft.Y);
 
-                foreach (NodeModel n in dynSettings.Controller.DynamoModel.CurrentWorkspace.Nodes)
-                {
-                    width = Math.Max(n.X + n.Width, width);
-                    height = Math.Max(n.Y + n.Height, height);
-                }
+                // Get System DPI scale factor
+                Matrix m = PresentationSource.FromVisual(Application.Current.MainWindow).CompositionTarget.TransformToDevice;
+                double dpiX = m.M11 * 96.0;
+                double dpiY = m.M22 * 96.0;
 
-                foreach (NoteModel n in dynSettings.Controller.DynamoModel.CurrentWorkspace.Notes)
-                {
-                    width = Math.Max(n.X + n.Width, width);
-                    height = Math.Max(n.Y + n.Height, height);
-                }
+                // Get Scale between Image DPI over System DPI
+                // (E.g. System DPI 96, Image DPI is 144. Then dpiFactor will be 1.5)
+                double dpiXFactor = Configurations.ScreenCaptureDefaultDPI / dpiX;
+                double dpiYFactor = Configurations.ScreenCaptureDefaultDPI / dpiY;
 
-                var rtb = new RenderTargetBitmap(Math.Max(1, (int)width),
-                                                  Math.Max(1, (int)height),
-                                                  96,
-                                                  96,
-                                                  System.Windows.Media.PixelFormats.Default);
+                // Get the size of the image taking screen capture DPI into account
+                int imageDPIWidth = (int)(width * dpiXFactor);
+                int imageDPIHeight = (int)(height * dpiYFactor);
 
-                rtb.Render(control);
+                // The extra margin for the top bottom left and right ( scaled by Image DPI Scale )
+                int extraMarginX = (int)(Configurations.ScreenCaptureContentPaddingInPixel * dpiXFactor);
+                int extraMarginY = (int)(Configurations.ScreenCaptureContentPaddingInPixel * dpiYFactor);
 
-                //endcode as PNG
+                // Move canvas to a point temporary that is suitable for image capturing
+                var point = new Point();
+                point.X = -topLeft.X + extraMarginX;
+                point.Y = -topLeft.Y + extraMarginY;
+
+                workspaceViewModel.OnZoomChanged(this, new ZoomEventArgs(Configurations.ScreenCaptureDefaultScaling));
+                workspaceViewModel.OnCurrentOffsetChanged(this, new PointEventArgs(point));
+                workspaceViewModel.SetZoomCommand.Execute(Configurations.ScreenCaptureDefaultScaling);
+                workspaceViewModel.SetCurrentOffsetCommand.Execute(point);
+                dynamoViewModel.FullscreenWatchShowing = true;
+
+                var rtb = new RenderTargetBitmap(Math.Max(1, imageDPIWidth + 2 * extraMarginX),
+                                                  Math.Max(1, imageDPIHeight + 2 * extraMarginY),
+                                                  Configurations.ScreenCaptureDefaultDPI,
+                                                  Configurations.ScreenCaptureDefaultDPI,
+                                                  PixelFormats.Default);
+                rtb.Render(zoomBorder);
+
+                // Encode as PNG
                 var pngEncoder = new PngBitmapEncoder();
                 pngEncoder.Frames.Add(BitmapFrame.Create(rtb));
 
@@ -376,6 +409,14 @@ namespace Dynamo.Controls
                 {
                     DynamoLogger.Instance.Log("Failed to save the Workspace an image.");
                 }
+
+                // Bring the canvas back to previous state
+                workspaceViewModel.SetZoomCommand.Execute(zoom);
+                workspaceViewModel.SetCurrentOffsetCommand.Execute(new Point(x, y));
+                workspaceViewModel.OnZoomChanged(this, new ZoomEventArgs(zoom));
+                workspaceViewModel.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(x, y)));
+                dynamoViewModel.FullscreenWatchShowing = fullscreenWatchShowing;
+                dynamoViewModel.CanNavigateBackground = canNavigateBackground;
             }
         }
 
