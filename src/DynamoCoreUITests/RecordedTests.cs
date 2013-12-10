@@ -64,7 +64,7 @@ namespace Dynamo.Tests.UI
             return mirror;
         }
 
-        private void AssertValue(string varname, object value)
+        public void AssertValue(string varname, object value)
         {
             var mirror = GetRuntimeMirror(varname);
 
