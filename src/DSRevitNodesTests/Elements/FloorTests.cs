@@ -29,7 +29,7 @@ namespace DSRevitNodesTests.Elements
                 Line.ByStartPointEndPoint(Point.ByCoordinates(0, 100, 0), Point.ByCoordinates(0, 0, 0))
             };
 
-            var floorType = DSFloorType.ByName("structural");
+            var floorType = DSFloorType.ByName("Generic - 12\"");
 
             var floor = DSFloor.ByOutlineTypeAndLevel(outline, floorType, level);
             Assert.NotNull(floor);
@@ -49,7 +49,7 @@ namespace DSRevitNodesTests.Elements
                 Line.ByStartPointEndPoint(Point.ByCoordinates(0, 100, 0), Point.ByCoordinates(0, 0, 0))
             };
 
-            var floorType = DSFloorType.ByName("structural");
+            var floorType = DSFloorType.ByName("Generic - 12\"");
 
             Assert.Throws(typeof(ArgumentNullException), () => DSFloor.ByOutlineTypeAndLevel(null, floorType, level));
             Assert.Throws(typeof(ArgumentNullException), () => DSFloor.ByOutlineTypeAndLevel(outline, null, level));

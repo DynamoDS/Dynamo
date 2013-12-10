@@ -41,6 +41,17 @@ namespace DSRevitNodes.Elements
         }
 
         /// <summary>
+        /// Get the Name of the Element
+        /// </summary>
+        public string Name
+        {
+            get
+            {
+                return InternalElement.Name;
+            }
+        } 
+
+        /// <summary>
         /// A reference to the element
         /// </summary>
         internal abstract Element InternalElement

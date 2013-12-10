@@ -12,16 +12,16 @@ namespace DSRevitNodesTests.Elements
 {
 
     [TestFixture]
-    public class FloorTypeTests
+    public class WallTypeTests
     {
 
         [Test]
         public void ByName_ValidArgs()
         {
-            var floorTypeName = "Generic - 12\"";
-            var floorType = DSFloorType.ByName(floorTypeName);
-            Assert.NotNull(floorType);
-            Assert.AreEqual(floorTypeName, floorType.Name);
+            var wallTypeName = "Curtain Wall 1";
+            var wallType = DSWallType.ByName(wallTypeName);
+            Assert.NotNull(wallType);
+            Assert.AreEqual(wallTypeName, wallType.Name);
         }
 
         [Test]
