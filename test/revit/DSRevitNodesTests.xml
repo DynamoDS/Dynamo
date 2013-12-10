@@ -147,6 +147,13 @@
         <test name="ByPlane_ValidArgs" modelPath=".\Empty.rvt"/>
 		<test name="ByPlane_NullArgument" modelPath=".\Empty.rvt"/>
       </testFixture>
+	  
+	  <testFixture name="WallTests">
+        <test name="ByCurveAndHeight_ValidArgs" modelPath=".\Empty.rvt"/>
+		<test name="ByCurveAndHeight_NullArgs" modelPath=".\Empty.rvt"/>
+		<test name="ByCurveAndLevels_ValidArgs" modelPath=".\Empty.rvt"/>
+		<test name="ByCurveAndLevels_NullArgs" modelPath=".\Empty.rvt"/>
+      </testFixture>
 
 		</testAssembly>
 	</testAssemblies>
