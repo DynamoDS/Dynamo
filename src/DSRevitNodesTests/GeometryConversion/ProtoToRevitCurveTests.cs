@@ -17,6 +17,7 @@ namespace DSRevitNodesTests.GeometryConversion
         [Test]
         public void BSplineCurve_Basic()
         {
+
             var pts = new[]
             {
                 Point.ByCoordinates(10,2,3)

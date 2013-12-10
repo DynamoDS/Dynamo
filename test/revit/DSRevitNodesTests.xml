@@ -105,6 +105,15 @@
 		    <test name="Ellipse_Basic" modelPath=".\empty.rfa"/>
 		    <test name="CylindricalHelix_Basic" modelPath=".\empty.rfa"/>
       </testFixture>
+	 
+	 <testFixture name="ReferencePlaneTests">
+        <test name="ByLine_ValidArgs" modelPath=".\empty.rfa"/>
+		<test name="ByLine_NullInput" modelPath=".\empty.rfa"/>
+		<test name="ByStartPointEndPoint_NullInputBoth" modelPath=".\empty.rfa"/>
+		<test name="ByStartPointEndPoint_NullInput2" modelPath=".\empty.rfa"/>
+		<test name="ByStartPointEndPoint_NullInput1" modelPath=".\empty.rfa"/>
+      </testFixture>
+		
 
 		</testAssembly>
 	</testAssemblies>
