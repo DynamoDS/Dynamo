@@ -166,7 +166,7 @@ namespace DSRevitNodes.Elements
         /// </summary>
         /// <param name="plane"></param>
         /// <returns></returns>
-        public static DSSketchPlane FromPlane(Autodesk.DesignScript.Geometry.Plane plane)
+        public static DSSketchPlane ByPlane(Autodesk.DesignScript.Geometry.Plane plane)
         {
             if (plane == null)
             {

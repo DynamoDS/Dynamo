@@ -142,6 +142,11 @@
         <test name="ByOutlineTypeAndLevel_ValidArgs" modelPath=".\empty.rfa"/>
 		<test name="ByOutlineTypeAndLevel_NullArgument" modelPath=".\empty.rfa"/>
       </testFixture>
+	  
+	  <testFixture name="SketchPlaneTests">
+        <test name="ByPlane_ValidArgs" modelPath=".\empty.rfa"/>
+		<test name="ByPlane_NullArgument" modelPath=".\empty.rfa"/>
+      </testFixture>
 
 		</testAssembly>
 	</testAssemblies>
