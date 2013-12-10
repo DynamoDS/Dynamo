@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Xml;
 using Autodesk.Revit.DB;
 using DSNodeServices;
+using DSRevitNodes.GeometryObjects;
 using DSRevitNodes.References;
+using RevitServices.Persistence;
+using RevitServices.Transactions;
 
 namespace DSRevitNodes.Elements
 {
@@ -41,6 +45,24 @@ namespace DSRevitNodes.Elements
             InternalSetForm(form);
         }
 
+        /// <summary>
+        /// Create a Form by lofting
+        /// </summary>
+        /// <param name="isSolid"></param>
+        /// <param name="curves"></param>
+        private DSForm(bool isSolid, ReferenceArrayArray curves)
+        {
+            // clean it up
+            TransactionManager.GetInstance().EnsureInTransaction(Document);
+
+            var f = Document.FamilyCreate.NewLoftForm(isSolid, curves);
+            InternalSetForm(f);
+
+            TransactionManager.GetInstance().TransactionTaskDone();
+
+            ElementBinder.CleanupAndSetElementForTrace(Document, this.InternalElementId);
+        }
+
         #endregion
 
         #region Private mutator
@@ -54,6 +76,11 @@ namespace DSRevitNodes.Elements
 
         #endregion
 
+        #region Private helper methods 
+
+
+
+        #endregion
         #region Public properties
 
         public DSFaceReference[] FaceReferences
@@ -144,6 +171,26 @@ namespace DSRevitNodes.Elements
 
         #endregion
 
+        #region Public static constructors 
+
+        public static DSForm ByLoftingCurveReferences( DSCurveReference[] curves, bool isSolid )
+        {
+            // build references
+            var refArrArr = new ReferenceArrayArray();
+
+            foreach (var l in curves)
+            {
+                var refArr = new ReferenceArray();
+                refArr.Append(l.InternalReference);
+                refArrArr.Append(refArr);
+            }
+
+            return new DSForm(isSolid, refArrArr);
+
+        }
+
+        #endregion
+
         #region Internal static constructors
 
         /// <summary>
@@ -164,5 +211,4 @@ namespace DSRevitNodes.Elements
 
     }
 }
-
 

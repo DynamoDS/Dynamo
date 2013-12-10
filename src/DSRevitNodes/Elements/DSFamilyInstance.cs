@@ -232,6 +232,25 @@ namespace DSRevitNodes.Elements
             return new DSFamilyInstance(familySymbol.InternalFamilySymbol, p.ToXyz(), level.InternalLevel);
         }
 
+        /// <summary>
+        /// Obtain a collection of FamilyInstances from the Revit Document and use them in the Dynamo graph
+        /// </summary>
+        /// <param name="familySymbol"></param>
+        /// <returns></returns>
+        public static DSFamilyInstance[] ByFamilySymbol(DSFamilySymbol familySymbol)
+        {
+            if (familySymbol == null)
+            {
+                throw new ArgumentNullException("familySymbol");
+            }
+
+            return DocumentManager.GetInstance()
+                .ElementsOfType<FamilyInstance>()
+                .Where(x => x.Symbol.Id == familySymbol.InternalFamilySymbol.Id)
+                .Select(x => DSFamilyInstance.FromExisting(x, true))
+                .ToArray();
+        }
+
         #endregion
 
         #region Internal static constructors 
