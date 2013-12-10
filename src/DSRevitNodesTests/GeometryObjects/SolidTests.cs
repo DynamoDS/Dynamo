@@ -66,5 +66,29 @@ namespace DSRevitNodesTests.GeometryObjects
             Assert.AreEqual(5 + 5 + 0.5 + 0.5 + Math.Sqrt(2) * 5, extrusion.SurfaceArea, 0.01);
 
         }
+
+        [Test]
+        public void CanCreateARevolveWithValidArguments()
+        {
+            //create a curve curves
+            var pts1 = new[]
+            {
+                Point.ByCoordinates(0,0,0),
+                Point.ByCoordinates(0.4,2,0),
+                Point.ByCoordinates(0.8,4,0),
+                Point.ByCoordinates(1,2,0),
+            };
+            var wts = new double[]
+            {
+                1,1,1,1
+            };
+            var crv1 = DSNurbSpline.ByControlPointsAndWeights(pts1, wts);
+
+            var origin = Point.ByCoordinates(0, 0, 0);
+            var axis = Vector.ByCoordinateArrayN(new double[] {.5, .5, .5});
+            
+            var revolve = DSSolid.ByRevolve(new List<DSCurve>{crv1}, origin, axis, 0, 180);
+            Assert.NotNull(revolve);
+        }
     }
 }

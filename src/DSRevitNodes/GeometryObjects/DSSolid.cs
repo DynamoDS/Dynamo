@@ -33,6 +33,23 @@ namespace DSRevitNodes.Elements
             this.InternalSolid = result;
         }
 
+        /// <summary>
+        /// Internal constructor making a solid by revolve
+        /// </summary>
+        /// <param name="loop"></param>
+        /// <param name="trans"></param>
+        /// <param name="start">The start angle</param>
+        /// <param name="end">The end angle</param>
+        internal DSSolid(CurveLoop loop, Transform trans, double start, double end)
+        {
+            var loopList = new List<Autodesk.Revit.DB.CurveLoop> { loop };
+            var thisFrame = new Autodesk.Revit.DB.Frame();
+            thisFrame.Transform(trans);
+
+            var result = GeometryCreationUtilities.CreateRevolvedGeometry(thisFrame, loopList, start, end);
+            this.InternalSolid = result;
+        }
+
         internal DSSolid(Autodesk.Revit.DB.Solid x)
         {
             // TODO: Complete member initialization
@@ -117,9 +134,24 @@ namespace DSRevitNodes.Elements
             return new DSSolid(profile.InternalCurveLoop, direction.ToXyz(), distance);
         }
 
-        static DSSolid ByRevolve(List<DSCurve> profile, Vector axis )
+        public static DSSolid ByRevolve(List<DSCurve> profile,  Autodesk.DesignScript.Geometry.Point origin, Vector axis, double startAngle, double endAngle )
         {
-            throw new NotImplementedException();
+            if (profile == null)
+            {
+                throw new ArgumentException("profile");
+            }
+
+            if (axis == null)
+            {
+                throw new ArgumentException("axis");
+            }
+
+            var crvs = CurveLoop.Create(profile.Select(x => x.InternalCurve).ToList());
+            var trans = Transform.Identity;
+            trans.BasisZ = axis.ToXyz();
+            trans.Origin = origin.ToXyz();
+
+            return new DSSolid( crvs, trans, startAngle, endAngle);
         }
 
         static DSSolid ByBlend(List<List<DSCurve>> profiles)
