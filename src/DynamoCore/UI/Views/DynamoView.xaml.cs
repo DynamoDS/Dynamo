@@ -359,9 +359,8 @@ namespace Dynamo.Controls
                 height = (int)(bottomRight.Y - topLeft.Y);
 
                 // Get System DPI scale factor
-                Matrix m = PresentationSource.FromVisual(Application.Current.MainWindow).CompositionTarget.TransformToDevice;
-                double dpiX = m.M11 * 96.0;
-                double dpiY = m.M22 * 96.0;
+                double dpiX = 96.0;
+                double dpiY = 96.0;
 
                 // Get Scale between Image DPI over System DPI
                 // (E.g. System DPI 96, Image DPI is 144. Then dpiFactor will be 1.5)
