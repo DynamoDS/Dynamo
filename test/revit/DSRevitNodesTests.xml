@@ -134,18 +134,18 @@
       </testFixture>
 	  
 	  <testFixture name="FloorTypeTests">
-        <test name="ByName_ValidArgs" modelPath=".\empty.rfa"/>
-		<test name="ByName_NullArgument" modelPath=".\empty.rfa"/>
+        <test name="ByName_ValidArgs" modelPath=".\Empty.rvt"/>
+		<test name="ByName_NullArgument" modelPath=".\Empty.rvt"/>
       </testFixture>
 	  
 	<testFixture name="FloorTests">
-        <test name="ByOutlineTypeAndLevel_ValidArgs" modelPath=".\empty.rfa"/>
-		<test name="ByOutlineTypeAndLevel_NullArgument" modelPath=".\empty.rfa"/>
+        <test name="ByOutlineTypeAndLevel_ValidArgs" modelPath=".\Empty.rvt"/>
+		<test name="ByOutlineTypeAndLevel_NullArgument" modelPath=".\Empty.rvt"/>
       </testFixture>
 	  
 	  <testFixture name="SketchPlaneTests">
-        <test name="ByPlane_ValidArgs" modelPath=".\empty.rfa"/>
-		<test name="ByPlane_NullArgument" modelPath=".\empty.rfa"/>
+        <test name="ByPlane_ValidArgs" modelPath=".\Empty.rvt"/>
+		<test name="ByPlane_NullArgument" modelPath=".\Empty.rvt"/>
       </testFixture>
 
 		</testAssembly>
