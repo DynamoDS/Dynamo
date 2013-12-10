@@ -140,7 +140,15 @@ namespace Dynamo.Nodes
                 refPlane.Name = tmpName;
             }
 
-            dynRevitSettings.Controller.ElementNameStore.Add(refPlane.Id, name);
+            if (string.IsNullOrEmpty(name))
+            {
+                dynRevitSettings.Controller.ElementNameStore.Add(refPlane.Id, "ReferencePlane_"+tmpName);
+            }
+            else
+            {
+                dynRevitSettings.Controller.ElementNameStore.Add(refPlane.Id, name);
+            }
+            
 
             return FScheme.Value.NewContainer(refPlane);  
         }
