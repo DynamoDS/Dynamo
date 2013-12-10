@@ -134,24 +134,22 @@ namespace DSRevitNodes.Elements
             return new DSSolid(profile.InternalCurveLoop, direction.ToXyz(), distance);
         }
 
-        public static DSSolid ByRevolve(List<DSCurve> profile,  Autodesk.DesignScript.Geometry.Point origin, Vector axis, double startAngle, double endAngle )
+        public static DSSolid ByRevolve(List<Autodesk.DesignScript.Geometry.Curve> profile,  CoordinateSystem coordinateSystem, double startAngle, double endAngle )
         {
             if (profile == null)
             {
                 throw new ArgumentException("profile");
             }
 
-            if (axis == null)
+            if (coordinateSystem == null)
             {
-                throw new ArgumentException("axis");
+                throw new ArgumentException("coordinate system");
             }
 
-            var crvs = CurveLoop.Create(profile.Select(x => x.InternalCurve).ToList());
-            var trans = Transform.Identity;
-            trans.BasisZ = axis.ToXyz();
-            trans.Origin = origin.ToXyz();
+            //convert the proto curves to revit curves
+            var crvs = CurveLoop.Create(profile.Select(x => x.ToRevitType()).ToList());
 
-            return new DSSolid( crvs, trans, startAngle, endAngle);
+            return new DSSolid( crvs, coordinateSystem.ToTransform(), startAngle, endAngle);
         }
 
         static DSSolid ByBlend(List<List<DSCurve>> profiles)
@@ -177,9 +175,10 @@ namespace DSRevitNodes.Elements
             {
                 for (var i = 0; i < mesh.NumTriangles; i++)
                 {
+                    var triangle = mesh.get_Triangle(i);
                     for (var j = 0; j < 3; j++)
                     {
-                        var xyz = mesh.get_Triangle(i).get_Vertex(i);
+                        var xyz = triangle.get_Vertex(j);
                         package.PushTriangleVertex(xyz.X, xyz.Y, xyz.Z);
                     }
                 }

@@ -47,17 +47,12 @@ namespace DSRevitNodesTests.GeometryObjects
                 Point.ByCoordinates(0,0,0)
             };
 
-            var wts = new double[]
-            {
-                1,1,1,1
-            };
-
             var crvs = new[]
             {
-                DSNurbSpline.ByControlPointsAndWeights(pts1, wts),
-                DSNurbSpline.ByControlPointsAndWeights(pts2, wts),
-                DSNurbSpline.ByControlPointsAndWeights(pts3, wts),
-                DSNurbSpline.ByControlPointsAndWeights(pts4, wts)
+                BSplineCurve.ByPoints(pts1),
+                BSplineCurve.ByPoints(pts2),
+                BSplineCurve.ByPoints(pts3),
+                BSplineCurve.ByPoints(pts4)
             };
 
             // construct the curveloop
@@ -95,16 +90,11 @@ namespace DSRevitNodesTests.GeometryObjects
                 Point.ByCoordinates(0.0,0,0)
             };
 
-            var wts = new double[]
-            {
-                1,1,1,1
-            };
-
             var crvs = new[]
             {
-                DSNurbSpline.ByControlPointsAndWeights(pts1, wts),
-                DSNurbSpline.ByControlPointsAndWeights(pts2, wts),
-                DSNurbSpline.ByControlPointsAndWeights(pts3, wts)
+                BSplineCurve.ByPoints(pts1),
+                BSplineCurve.ByPoints(pts2),
+                BSplineCurve.ByPoints(pts3)
             };
 
             // construct the curveloop
@@ -134,15 +124,10 @@ namespace DSRevitNodesTests.GeometryObjects
                 Point.ByCoordinates(1,1,0)
             };
 
-            var wts = new double[]
-            {
-                1,1,1,1
-            };
-
             var crvs = new[]
             {
-                DSNurbSpline.ByControlPointsAndWeights(pts1, wts),
-                DSNurbSpline.ByControlPointsAndWeights(pts2, wts)
+                BSplineCurve.ByPoints(pts1),
+                BSplineCurve.ByPoints(pts2)
             };
 
             // construct the curveloop
@@ -172,15 +157,10 @@ namespace DSRevitNodesTests.GeometryObjects
                 Point.ByCoordinates(1,1,1)
             };
 
-            var wts = new double[]
-            {
-                1,1,1,1
-            };
-
             var crvs = new[]
             {
-                DSNurbSpline.ByControlPointsAndWeights(pts1, wts),
-                DSNurbSpline.ByControlPointsAndWeights(pts2, wts)
+                BSplineCurve.ByPoints(pts1),
+                BSplineCurve.ByPoints(pts2)
             };
 
             // construct the curveloop
