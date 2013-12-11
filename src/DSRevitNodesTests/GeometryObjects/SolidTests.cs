@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using DSRevitNodes.Elements;
@@ -138,6 +139,54 @@ namespace DSRevitNodesTests.GeometryObjects
             WriteToOBJ(modelPath, new List<RenderPackage>() { package });
         }
 
+        [Test]
+        public void BySweptBlend_ValidArgs()
+        {
+            var rect1 = UnitRectangle();
+
+            //make the path curve
+            var p1 = Point.ByCoordinates(0, 0, 0);
+            var p2 = Point.ByCoordinates(3, 0, 0);
+
+            //var spine = BSplineCurve.ByPoints(new []{p1,p2,p3,p4});
+            var spine = Line.ByStartPointEndPoint(p1, p2);
+
+            var cs1 = CoordinateSystem.ByOriginVectors(p1, Vector.ByCoordinates(0, 1, 0), Vector.ByCoordinates(0, 0, 1),
+                Vector.ByCoordinates(-1, 0, 0));
+            var cs2 = CoordinateSystem.ByOriginVectors(p2, Vector.ByCoordinates(0, 1, 0), Vector.ByCoordinates(0, 0, 1),
+                Vector.ByCoordinates(-1, 0, 0));
+
+            var startCurves = rect1.Select(crv => crv.Transform(CoordinateSystem.WCS, cs1)).Cast<Curve>().ToList();
+            var endCurves = rect1.Select(crv => crv.Transform(CoordinateSystem.WCS, cs2)).Cast<Curve>().ToList();
+
+            var blend = DSSolid.BySweptBlend(new List<List<Curve>> { startCurves, endCurves }, spine, new List<double>{0,1});
+            Assert.NotNull(blend);
+
+            var package = new RenderPackage();
+            blend.Tessellate(package);
+
+            var modelPath = Path.Combine(TestGeometryDirectory, @"BySweptBlend_ValidArgs.obj");
+            if (File.Exists(modelPath))
+                File.Delete(modelPath);
+            WriteToOBJ(modelPath, new List<RenderPackage>() { package });
+        }
+
+        [Test]
+        public void Cylinder_ValidArgs()
+        {
+            var cylinder = DSSolid.Cylinder(Point.ByCoordinates(0, 0, 0), 5, Vector.ByCoordinates(0,0,1), 10);
+            Assert.IsNotNull(cylinder);
+
+            var package = new RenderPackage();
+            cylinder.Tessellate(package);
+
+            var modelPath = Path.Combine(TestGeometryDirectory, @"Cylinder_ValidArgs.obj");
+            if (File.Exists(modelPath))
+                File.Delete(modelPath);
+            WriteToOBJ(modelPath, new List<RenderPackage>() { package });
+
+        }
+
         private static List<Curve> UnitRectangle()
         {
             // construct a unit rectangle
@@ -165,7 +214,7 @@ namespace DSRevitNodesTests.GeometryObjects
             return crvs;
         }
 
-        private static void WriteToOBJ(string path, List<RenderPackage> packages)
+        private static void WriteToOBJ(string path, IEnumerable<RenderPackage> packages)
         {
             using (TextWriter tw = new StreamWriter(path))
             {
