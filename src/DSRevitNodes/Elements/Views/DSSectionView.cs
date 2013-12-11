@@ -85,6 +85,8 @@ namespace DSRevitNodes.Elements
 
         private static ViewSection CreateSectionView(BoundingBoxXYZ bbox)
         {
+            TransactionManager.GetInstance().EnsureInTransaction(Document);
+
             // (sic) From the Dynamo legacy implementation
             var viewFam = DocumentManager.GetInstance().ElementsOfType<ViewFamilyType>()
                 .FirstOrDefault(x => x.ViewFamily == ViewFamily.Section);
@@ -94,7 +96,12 @@ namespace DSRevitNodes.Elements
                 throw new Exception("There is no three dimensional view family in the document");
             }
 
-            return ViewSection.CreateSection( Document, viewFam.Id, bbox);;
+            var viewSection = ViewSection.CreateSection( Document, viewFam.Id, bbox);
+
+            TransactionManager.GetInstance().TransactionTaskDone();
+
+            return viewSection;
+
         }
 
         #endregion
