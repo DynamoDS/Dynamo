@@ -80,6 +80,8 @@
         <test name="BySweptBlend_ValidArgs" modelPath=".\empty.rfa"/>
         <test name="Cylinder_ValidArgs" modelPath=".\empty.rfa"/>
         <test name="Sphere_ValidArgs" modelPath=".\empty.rfa"/>
+        <test name="Torus_ValidArgs" modelPath=".\empty.rfa"/>
+        <test name="BoxByMinimumMaximum_ValidArgs" modelPath=".\empty.rfa"/>
       </testFixture>
 
       <testFixture name="ModelCurveTests">
