@@ -216,6 +216,13 @@
         <test name="ByLevel_ValidArgs" modelPath=".\Empty.rvt"/>
 		<test name="ByLevel_BadArgs" modelPath=".\Empty.rvt"/>
       </testFixture>
+	  
+	  <testFixture name="SheetTests">
+        <test name="ByNameNumberAndViews_ValidArgs" modelPath=".\Empty.rvt"/>
+		<test name="ByNameNumberAndViews_BadArgs" modelPath=".\Empty.rvt"/>
+		<test name="ByNameNumberAndView_ValidArgs" modelPath=".\Empty.rvt"/>
+		<test name="ByNameNumberAndView_BadArgs" modelPath=".\Empty.rvt"/>
+      </testFixture>
 
 		</testAssembly>
 	</testAssemblies>

@@ -14,7 +14,7 @@ namespace DSRevitNodes.Elements
     /// A Revit ViewSection
     /// </summary>
     [RegisterForTrace]
-    public class DSSectionView : AbstractElement
+    public class DSSectionView : AbstractView
     {
 
         #region Internal properties
