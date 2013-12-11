@@ -162,6 +162,7 @@ namespace DSRevitNodesTests.GeometryObjects
             var p4 = Point.ByCoordinates(9, 0, 0);
 
             var spine = BSplineCurve.ByPoints(new []{p1,p2,p3,p4});
+            
             //var spine = Line.ByStartPointEndPoint(p1, p2);
 
             /*
@@ -170,7 +171,7 @@ namespace DSRevitNodesTests.GeometryObjects
             var cs2 = CoordinateSystem.ByOriginVectors(p2, Vector.ByCoordinates(0, 1, 0), Vector.ByCoordinates(0, 0, 1),
                 Vector.ByCoordinates(-1, 0, 0));
             */
-
+            
             var cs1 = rect1.Select(crv => crv.Transform(CoordinateSystem.WCS, spine.CoordinateSystemAtParameter(0))).Cast<Curve>().ToList();
             var cs2 = rect1.Select(crv => crv.Transform(CoordinateSystem.WCS, spine.CoordinateSystemAtParameter(.25))).Cast<Curve>().ToList();
             var cs3 = rect1.Select(crv => crv.Transform(CoordinateSystem.WCS, spine.CoordinateSystemAtParameter(.75))).Cast<Curve>().ToList();
@@ -214,6 +215,42 @@ namespace DSRevitNodesTests.GeometryObjects
             sphere.Tessellate(package);
 
             var modelPath = Path.Combine(TestGeometryDirectory, @"Sphere_ValidArgs.obj");
+            if (File.Exists(modelPath))
+                File.Delete(modelPath);
+            WriteToOBJ(modelPath, new List<RenderPackage>() { package });
+        }
+
+        [Test]
+        public void Torus_ValidArgs()
+        {
+            var axis = Vector.ByCoordinates(.5, .5, .5);
+            var center = Point.ByCoordinates(2, 3, 5);
+
+            var torus = DSSolid.Torus(axis, center, 3, 1);
+            Assert.IsNotNull(torus);
+
+            var package = new RenderPackage();
+            torus.Tessellate(package);
+
+            var modelPath = Path.Combine(TestGeometryDirectory, @"Torus_ValidArgs.obj");
+            if (File.Exists(modelPath))
+                File.Delete(modelPath);
+            WriteToOBJ(modelPath, new List<RenderPackage>() { package });
+        }
+
+        [Test]
+        public void BoxByMinimumMaximum_ValidArgs()
+        {
+            var min = Point.ByCoordinates(-2, -1, 5);
+            var max = Point.ByCoordinates(3, 5, 10);
+
+            var box = DSSolid.BoxByTwoCorners(min, max);
+            Assert.IsNotNull(box);
+
+            var package = new RenderPackage();
+            box.Tessellate(package);
+
+            var modelPath = Path.Combine(TestGeometryDirectory, @"BoxByMinimumMaximum_ValidArgs.obj");
             if (File.Exists(modelPath))
                 File.Delete(modelPath);
             WriteToOBJ(modelPath, new List<RenderPackage>() { package });
