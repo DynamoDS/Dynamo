@@ -49,7 +49,18 @@ namespace DSRevitNodes.Elements
             {
                 return InternalElement.Name;
             }
-        } 
+        }
+
+        /// <summary>
+        /// Get an Axis-aligned BoundingBox of the Element
+        /// </summary>
+        public DSBoundingBox BoundingBox
+        {
+            get
+            {
+                return BoundingBox.Max;
+            }
+        }
 
         /// <summary>
         /// A reference to the element
