@@ -187,6 +187,11 @@
         <test name="ByBoundingBox_ValidArgs" modelPath=".\Empty.rvt"/>
 		<test name="ByBoundingBox_NullArgs" modelPath=".\Empty.rvt"/>
       </testFixture>
+	  
+	  <testFixture name="DraftingViewTests">
+        <test name="ByName_ValidArgs" modelPath=".\Empty.rvt"/>
+		<test name="ByName_NullArgs" modelPath=".\Empty.rvt"/>
+      </testFixture>
 
 		</testAssembly>
 	</testAssemblies>

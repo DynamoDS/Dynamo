@@ -149,7 +149,7 @@ namespace DSRevitNodes.Elements
 
         #endregion
 
-        #region Public propertioes
+        #region Public properties
 
         /// <summary>
         /// Get the internal Geometric Plane
