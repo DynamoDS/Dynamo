@@ -1,7 +1,8 @@
-﻿using Autodesk.LibG;
+﻿using Autodesk.DesignScript.Geometry;
 using DSCoreNodes;
 using NUnit.Framework;
 using Point = Autodesk.DesignScript.Geometry.Point;
+using Vector = Autodesk.LibG.Vector;
 
 namespace DSCoreNodesTests
 {
@@ -11,6 +12,7 @@ namespace DSCoreNodesTests
         [Test]
         public void BSplineCurve()
         {
+            HostFactory.Instance.StartUp();
 
             // create spline
             var pts = new Autodesk.DesignScript.Geometry.Point[]
@@ -24,6 +26,9 @@ namespace DSCoreNodesTests
             var spline = Autodesk.DesignScript.Geometry.BSplineCurve.ByControlVertices(pts, 3);
 
             Assert.NotNull(spline);
+            Assert.AreEqual(3, spline.Degree);
+
+            HostFactory.Instance.ShutDown();
         }
 
         [Test]
