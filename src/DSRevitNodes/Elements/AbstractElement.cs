@@ -65,7 +65,8 @@ namespace DSRevitNodes.Elements
         /// <summary>
         /// A reference to the element
         /// </summary>
-        internal abstract Element InternalElement
+        [Browsable(false)]
+        public abstract Element InternalElement
         {
             get;
         }
