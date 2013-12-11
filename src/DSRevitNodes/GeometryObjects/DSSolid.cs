@@ -422,7 +422,7 @@ namespace DSRevitNodes.Elements
         }
 
         /// <summary>
-        /// Create a box by two corners
+        /// Create a box by minimum and maximum points.
         /// </summary>
         /// <returns></returns>
         public static DSSolid BoxByTwoCorners(Point minimum, Point maximum)
@@ -472,9 +472,20 @@ namespace DSRevitNodes.Elements
             return new DSSolid(new List<CurveLoop>{ cl },XYZ.BasisZ,height);
         }
 
-        public static DSSolid BoxByCenterAndDimensions()
+        /// <summary>
+        /// Create a box by center and dimensions.
+        /// </summary>
+        /// <param name="center"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
+        /// <returns></returns>
+        public static DSSolid BoxByCenterAndDimensions(Point center,double x, double y, double z)
         {
-            throw new NotImplementedException();
+            var bottom = center.ToXyz() - new XYZ(x / 2, y / 2, z / 2);
+            var top = center.ToXyz() + new XYZ(x / 2, y / 2, z / 2);
+
+            return BoxByTwoCorners(bottom.ToPoint(), top.ToPoint());
         }
 
         #endregion

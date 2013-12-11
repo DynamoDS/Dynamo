@@ -82,6 +82,7 @@
         <test name="Sphere_ValidArgs" modelPath=".\empty.rfa"/>
         <test name="Torus_ValidArgs" modelPath=".\empty.rfa"/>
         <test name="BoxByMinimumMaximum_ValidArgs" modelPath=".\empty.rfa"/>
+        <test name="BoxByCenterAndDimensions_ValidArgs" modelPath=".\empty.rfa"/>
       </testFixture>
 
       <testFixture name="ModelCurveTests">
