@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Autodesk.Revit.DB;
+using RevitServices.Elements;
 using RevitServices.Transactions;
 
 namespace RevitServices.Persistence
@@ -31,6 +32,17 @@ namespace RevitServices.Persistence
         private DocumentManager()
         {
                 
+        }
+
+        /// <summary>
+        /// Determine if Element exists in the current document
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public bool ElementExistsInDocument(ElementId id)
+        {
+            Element e = null;
+            return this.CurrentDBDocument.TryGetElement<Element>(id, out e);
         }
 
         /// <summary>
