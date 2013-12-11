@@ -8,6 +8,7 @@ using Autodesk.Revit.DB;
 using DSRevitNodes.GeometryConversion;
 using DSRevitNodes.GeometryObjects;
 using DSRevitNodes.Graphics;
+using ProtoCore.AST.AssociativeAST;
 using Curve = Autodesk.Revit.DB.Curve;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
@@ -115,6 +116,37 @@ namespace DSRevitNodes.Elements
             List<ICollection<Autodesk.Revit.DB.VertexPair>> vertPairs = null;
 
             var result = GeometryCreationUtilities.CreateSweptBlendGeometry(pathCurve, attachParams, profileLoops.ToList(), vertPairs);
+            this.InternalSolid = result;
+        }
+
+        /// <summary>
+        /// Internal constructor to make a solid by boolean operation
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="operationType"></param>
+        internal DSSolid(Autodesk.Revit.DB.Solid a, Autodesk.Revit.DB.Solid b, BooleanOperationsType operationType)
+        {
+            Autodesk.Revit.DB.Solid result = null;
+
+            switch (operationType)
+            {
+                case BooleanOperationsType.Difference:
+                    result = BooleanOperationsUtils.ExecuteBooleanOperation(a, b, BooleanOperationsType.Difference);
+                    break;
+                case BooleanOperationsType.Intersect:
+                    result = BooleanOperationsUtils.ExecuteBooleanOperation(a, b, BooleanOperationsType.Intersect);
+                    break;
+                case BooleanOperationsType.Union:
+                    result = BooleanOperationsUtils.ExecuteBooleanOperation(a, b, BooleanOperationsType.Union);
+                    break;
+            }
+
+            if (result == null)
+            {
+                throw new Exception("A boolean operation could not be completed with the provided solids.");
+            }
+
             this.InternalSolid = result;
         }
 
@@ -347,8 +379,8 @@ namespace DSRevitNodes.Elements
             var semicircle = Autodesk.Revit.DB.Arc.Create(origin, radius, 0, RevitPI, XYZ.BasisZ, XYZ.BasisX);
 
             // create axis curve of sphere - running from north to south pole
-            var axisCurve = Autodesk.Revit.DB.Line.CreateBound(new XYZ(0, 0, -radius),
-                new XYZ(0, 0, radius));
+            var axisCurve = Autodesk.Revit.DB.Line.CreateBound(new XYZ(origin.X, origin.Y, origin.Z-radius),
+                new XYZ(origin.X, origin.Y, origin.Z + radius));
 
             var circleLoop = Autodesk.Revit.DB.CurveLoop.Create(new List<Curve>() { semicircle, axisCurve });
 
@@ -486,6 +518,54 @@ namespace DSRevitNodes.Elements
             var top = center.ToXyz() + new XYZ(x / 2, y / 2, z / 2);
 
             return BoxByTwoCorners(bottom.ToPoint(), top.ToPoint());
+        }
+
+        /// <summary>
+        /// Create a solid by the boolean difference of two solids.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static DSSolid ByBooleanDifference(DSSolid a, DSSolid b)
+        {
+            if (a == null || b == null)
+            {
+                throw new ArgumentException();
+            }
+
+            return new DSSolid(a.InternalSolid, b.InternalSolid, BooleanOperationsType.Difference);
+        }
+
+        /// <summary>
+        /// Create a solid by the boolean union of two solids.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static DSSolid ByBooleanUnion(DSSolid a, DSSolid b)
+        {
+            if (a == null || b == null)
+            {
+                throw new ArgumentException();
+            }
+
+            return new DSSolid(a.InternalSolid, b.InternalSolid, BooleanOperationsType.Union);
+        }
+
+        /// <summary>
+        /// Create a solid by the boolean intersection of two solids.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static DSSolid ByBooleanIntersection(DSSolid a, DSSolid b)
+        {
+            if (a == null || b == null)
+            {
+                throw new ArgumentException();
+            }
+
+            return new DSSolid(a.InternalSolid, b.InternalSolid, BooleanOperationsType.Intersect);
         }
 
         #endregion
