@@ -14,6 +14,18 @@ namespace DSRevitNodesTests.GeometryConversion
     [TestFixture]
     internal class ProtoToRevitCurveTests
     {
+        [SetUp]
+        public void Setup()
+        {
+           HostFactory.Instance.StartUp(); 
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            HostFactory.Instance.ShutDown();
+        }
+
         [Test]
         public void BSplineCurve_Basic()
         {

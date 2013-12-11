@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using DSRevitNodes.Elements;
@@ -29,6 +28,18 @@ namespace DSRevitNodesTests.GeometryObjects
                 }
                 return geomDir;
             }    
+        }
+
+        [SetUp]
+        public void Setup()
+        {
+            HostFactory.Instance.StartUp();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            HostFactory.Instance.ShutDown();
         }
 
         [Test]
@@ -146,20 +157,26 @@ namespace DSRevitNodesTests.GeometryObjects
 
             //make the path curve
             var p1 = Point.ByCoordinates(0, 0, 0);
-            var p2 = Point.ByCoordinates(3, 0, 0);
+            var p2 = Point.ByCoordinates(3, .5, 0);
+            var p3 = Point.ByCoordinates(6, -.5, 0);
+            var p4 = Point.ByCoordinates(9, 0, 0);
 
-            //var spine = BSplineCurve.ByPoints(new []{p1,p2,p3,p4});
-            var spine = Line.ByStartPointEndPoint(p1, p2);
+            var spine = BSplineCurve.ByPoints(new []{p1,p2,p3,p4});
+            //var spine = Line.ByStartPointEndPoint(p1, p2);
 
+            /*
             var cs1 = CoordinateSystem.ByOriginVectors(p1, Vector.ByCoordinates(0, 1, 0), Vector.ByCoordinates(0, 0, 1),
                 Vector.ByCoordinates(-1, 0, 0));
             var cs2 = CoordinateSystem.ByOriginVectors(p2, Vector.ByCoordinates(0, 1, 0), Vector.ByCoordinates(0, 0, 1),
                 Vector.ByCoordinates(-1, 0, 0));
+            */
 
-            var startCurves = rect1.Select(crv => crv.Transform(CoordinateSystem.WCS, cs1)).Cast<Curve>().ToList();
-            var endCurves = rect1.Select(crv => crv.Transform(CoordinateSystem.WCS, cs2)).Cast<Curve>().ToList();
+            var cs1 = rect1.Select(crv => crv.Transform(CoordinateSystem.WCS, spine.CoordinateSystemAtParameter(0))).Cast<Curve>().ToList();
+            var cs2 = rect1.Select(crv => crv.Transform(CoordinateSystem.WCS, spine.CoordinateSystemAtParameter(.25))).Cast<Curve>().ToList();
+            var cs3 = rect1.Select(crv => crv.Transform(CoordinateSystem.WCS, spine.CoordinateSystemAtParameter(.75))).Cast<Curve>().ToList();
+            var cs4 = rect1.Select(crv => crv.Transform(CoordinateSystem.WCS, spine.CoordinateSystemAtParameter(1))).Cast<Curve>().ToList();
 
-            var blend = DSSolid.BySweptBlend(new List<List<Curve>> { startCurves, endCurves }, spine, new List<double>{0,1});
+            var blend = DSSolid.BySweptBlend(new List<List<Curve>> { cs1,cs2,cs3,cs4}, spine, new List<double>{0,.25,.75,1});
             Assert.NotNull(blend);
 
             var package = new RenderPackage();
