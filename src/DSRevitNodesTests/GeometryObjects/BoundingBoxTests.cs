@@ -16,7 +16,7 @@ namespace DSRevitNodesTests.GeometryObjects
         [Test]
         public void BoundingBoxPropertyOnAbstractElement()
         {
-            var famSym = DSFamilySymbol.ByName("Box.Box");
+            var famSym = DSFamilySymbol.ByName("Box");
             var pt = Point.ByCoordinates(0, 1, 2);
             var famInst = DSFamilyInstance.ByPoint(famSym, pt);
 

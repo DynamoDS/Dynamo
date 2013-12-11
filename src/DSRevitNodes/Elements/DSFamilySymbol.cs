@@ -97,31 +97,30 @@ namespace DSRevitNodes.Elements
         #region Public static constructors
 
         /// <summary>
-        /// Select a FamilySymbol given it's full name including parent family, delimited by a period.
-        /// For example, the FamilySymbol Box in the Family Mass would be identified as "Mass.Box"
+        /// Select a FamilySymbol given it's parent Family and the FamilySymbol's name.
         /// </summary>
-        /// <param name="name">The name of the FamilySymbol as FamilyName.FamilySymbolName </param>
+        /// <param name="family">The FamilySymbol's parent Family</param>
+        /// <param name="name">The name of the FamilySymbol</param>
         /// <returns></returns>
-        public static DSFamilySymbol ByDelimitedName(string name)
+        public static DSFamilySymbol ByFamilyAndName(DSFamily family, string name)
         {
-            if (name == null)
+            if (family == null)
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("family");
             }
 
-            // look up the loaded family
-            var fec = new Autodesk.Revit.DB.FilteredElementCollector(Document);
-            fec.OfClass(typeof(Autodesk.Revit.DB.Family));
+            if (name == null)
+            {
+                throw new ArgumentNullException("name");
+            }
 
             // obtain the family symbol with the provided name
-            var symbols = fec.Cast<Autodesk.Revit.DB.Family>()
-                            .SelectMany(x => x.Symbols.Cast<Autodesk.Revit.DB.FamilySymbol>());
-
-            var symbol = symbols.FirstOrDefault(x => x.Family.Name + "." + x.Name == name); 
+            var symbol =
+                family.InternalFamily.Symbols.Cast<Autodesk.Revit.DB.FamilySymbol>().FirstOrDefault(x => x.Name == name);
 
             if (symbol == null)
             {
-                throw new Exception("A FamilySymbol with the specified name does not exist in the document");
+               throw new Exception(String.Format("A FamilySymbol with the specified name, {0}, does not exist in the Family", name));
             }
 
             return new DSFamilySymbol(symbol)
@@ -131,7 +130,8 @@ namespace DSRevitNodes.Elements
         }
 
         /// <summary>
-        /// Select a FamilySymbol given it's full name
+        /// Select a FamilySymbol given it's name.  This method will return the first FamilySymbol it finds if there are
+        /// two or more FamilySymbol's with the same name.
         /// </summary>
         /// <param name="name">The name of the FamilySymbol</param>
         /// <returns></returns>
