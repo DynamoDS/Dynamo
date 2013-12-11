@@ -206,6 +206,11 @@
 		<test name="ByEyePointTargetAndElement_ValidArgs" modelPath=".\Empty.rvt"/>
 		<test name="ByEyePointTargetAndElement_BadArgs" modelPath=".\Empty.rvt"/>
       </testFixture>
+	  
+	  <testFixture name="FloorPlanViewTests">
+        <test name="ByLevel_ValidArgs" modelPath=".\Empty.rvt"/>
+		<test name="ByLevel_BadArgs" modelPath=".\Empty.rvt"/>
+      </testFixture>
 
 		</testAssembly>
 	</testAssemblies>
