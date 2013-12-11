@@ -11,18 +11,23 @@ using DSRevitNodes.Graphics;
 using ProtoCore.AST.AssociativeAST;
 using Curve = Autodesk.Revit.DB.Curve;
 using Point = Autodesk.DesignScript.Geometry.Point;
+using Solid = Autodesk.Revit.DB.Solid;
 
 namespace DSRevitNodes.Elements
 {
     public class DSSolid : IGeometryObject
     {
+        #region private members
         private Autodesk.Revit.DB.Solid x;
         private const double RevitPI = 3.14159265358979;
+        #endregion
 
+        #region internal properties
         internal Autodesk.Revit.DB.Solid InternalSolid
         {
             get; private set;
         }
+        #endregion
 
         #region Internal constructors
 
@@ -120,7 +125,7 @@ namespace DSRevitNodes.Elements
         }
 
         /// <summary>
-        /// Internal constructor to make a solid by boolean operation
+        /// Internal constructor to make a solid by boolean operation.
         /// </summary>
         /// <param name="a"></param>
         /// <param name="b"></param>
@@ -150,6 +155,101 @@ namespace DSRevitNodes.Elements
             this.InternalSolid = result;
         }
 
+        /// <summary>
+        /// Internal constructor to make a solid by extracting solids from an element.
+        /// </summary>
+        /// <param name="element"></param>
+        internal DSSolid(Element element)
+        {
+            var instanceSolids = new Dictionary<ElementId, List<GeometryObject>>();;
+            Solid mySolid = null;
+
+            var thisId = ElementId.InvalidElementId;
+
+            if (element != null)
+            {
+                thisId = element.Id;
+                instanceSolids[thisId] = new List<GeometryObject>();
+            }
+
+            bool bNotVisibleOption = false;
+            if (element is GenericForm)
+            {
+                var gF = (GenericForm)element;
+                if (!gF.Combinations.IsEmpty)
+                    bNotVisibleOption = true;
+            }
+            int nTry = (bNotVisibleOption) ? 2 : 1;
+            for (int iTry = 0; iTry < nTry && (mySolid == null); iTry++)
+            {
+                var geoOptions = new Autodesk.Revit.DB.Options();
+                geoOptions.ComputeReferences = true;
+                if (bNotVisibleOption && (iTry == 1))
+                    geoOptions.IncludeNonVisibleObjects = true;
+
+                GeometryObject geomObj = element.get_Geometry(geoOptions);
+                var geomElement = geomObj as GeometryElement;
+
+                if (geomElement != null)
+                {
+                    foreach (GeometryObject geob in geomElement)
+                    {
+                        var ginsta = geob as GeometryInstance;
+                        if (ginsta != null && thisId != ElementId.InvalidElementId)
+                        {
+                            GeometryElement instanceGeom = ginsta.GetInstanceGeometry();
+
+                            instanceSolids[thisId].Add(instanceGeom);
+
+                            foreach (GeometryObject geobInst in instanceGeom)
+                            {
+                                mySolid = geobInst as Solid;
+                                if (mySolid != null)
+                                {
+                                    FaceArray faceArr = mySolid.Faces;
+                                    var thisEnum = faceArr.GetEnumerator();
+                                    bool hasFace = false;
+                                    for (; thisEnum.MoveNext(); )
+                                    {
+                                        hasFace = true;
+                                        break;
+                                    }
+                                    if (!hasFace)
+                                        mySolid = null;
+                                    else
+                                        break;
+                                }
+                            }
+                            if (mySolid != null)
+                                break;
+                        }
+                        else
+                        {
+                            mySolid = geob as Solid;
+                            if (mySolid != null)
+                            {
+                                FaceArray faceArr = mySolid.Faces;
+                                var thisEnum = faceArr.GetEnumerator();
+                                bool hasFace = false;
+                                for (; thisEnum.MoveNext(); )
+                                {
+                                    hasFace = true;
+                                    break;
+                                }
+                                if (!hasFace)
+                                    mySolid = null;
+                                else
+                                    break;
+                            }
+
+                        }
+                    }
+                }
+            }
+
+            this.InternalSolid = mySolid;
+        }
+        
         internal DSSolid(Autodesk.Revit.DB.Solid x)
         {
             // TODO: Complete member initialization
@@ -566,6 +666,21 @@ namespace DSRevitNodes.Elements
             }
 
             return new DSSolid(a.InternalSolid, b.InternalSolid, BooleanOperationsType.Intersect);
+        }
+
+        /// <summary>
+        /// Create a solid by extracting solids from an element.
+        /// </summary>
+        /// <param name="element"></param>
+        /// <returns></returns>
+        public static DSSolid FromElement(AbstractElement element)
+        {
+            if (element == null)
+            {
+                throw new ArgumentException("element");
+            }
+
+            return new DSSolid(element.InternalElement);
         }
 
         #endregion

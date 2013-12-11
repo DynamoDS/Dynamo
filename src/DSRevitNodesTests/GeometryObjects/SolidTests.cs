@@ -9,6 +9,7 @@ using DSRevitNodes.Elements;
 using DSRevitNodes.GeometryConversion;
 using DSRevitNodes.GeometryObjects;
 using NUnit.Framework;
+using FreeFormElement = Autodesk.Revit.DB.FreeFormElement;
 
 namespace DSRevitNodesTests.GeometryObjects
 {
@@ -343,6 +344,31 @@ namespace DSRevitNodesTests.GeometryObjects
             WriteToOBJ(modelPath, new List<RenderPackage>() { package });
         }
 
+        [Test]
+        public void FromElement_ValidArgs()
+        {
+            var solidA = DSSolid.BoxByCenterAndDimensions(Point.ByCoordinates(0, 0, 0), 1, 1, 1);
+            var solidB = DSSolid.Sphere(Point.ByCoordinates(1, 1, 0), 1);
+            var difference = DSSolid.ByBooleanDifference(solidA, solidB);
+
+            var ff = DSFreeForm.BySolid(difference);
+
+            var extract = DSSolid.FromElement(ff);
+            Assert.IsNotNull(extract);
+
+            var package = new RenderPackage();
+            extract.Tessellate(package);
+
+            ExportModel("FromElement_ValidArgs.obj", package);
+        }
+
+        private void ExportModel(string fileName, RenderPackage package)
+        {
+            var modelPath = Path.Combine(TestGeometryDirectory, fileName);
+            if (File.Exists(modelPath))
+                File.Delete(modelPath);
+            WriteToOBJ(modelPath, new List<RenderPackage>() { package });
+        }
 
         private static List<Curve> UnitRectangle()
         {
