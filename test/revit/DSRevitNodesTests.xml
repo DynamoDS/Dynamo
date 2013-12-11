@@ -25,9 +25,10 @@
 			</testFixture>
 			
 			<testFixture name="FamilySymbolTests">
-				<test name="ByName_ValidInput" modelPath=".\MassWithBoxAndCone.rfa"/>
-				<test name="ByName_NonexistentName" modelPath=".\MassWithBoxAndCone.rfa"/>
-				<test name="ByName_NullArgument" modelPath=".\MassWithBoxAndCone.rfa"/>
+				<test name="ByName_GoodArgs" modelPath=".\MassWithBoxAndCone.rfa"/>
+				<test name="ByName_BadArgs" modelPath=".\MassWithBoxAndCone.rfa"/>
+        <test name="ByFamilyAndName_GoodArgs" modelPath=".\MassWithBoxAndCone.rfa"/>
+        <test name="ByFamilyAndName_BadArgs" modelPath=".\MassWithBoxAndCone.rfa"/>
 			</testFixture>
 
       <testFixture name="AdaptiveComponentTests">
@@ -184,6 +185,7 @@
 	  
 	  <testFixture name="SectionViewTests">
         <test name="ByBoundingBox_ValidArgs" modelPath=".\Empty.rvt"/>
+		<test name="ByBoundingBox_NullArgs" modelPath=".\Empty.rvt"/>
       </testFixture>
 
 		</testAssembly>
