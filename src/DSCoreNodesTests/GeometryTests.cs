@@ -1,6 +1,7 @@
 ﻿using Autodesk.LibG;
 using DSCoreNodes;
 using NUnit.Framework;
+using Point = Autodesk.DesignScript.Geometry.Point;
 
 namespace DSCoreNodesTests
 {
@@ -8,8 +9,27 @@ namespace DSCoreNodesTests
     class GeometryTests
     {
         [Test]
+        public void BSplineCurve()
+        {
+
+            // create spline
+            var pts = new Autodesk.DesignScript.Geometry.Point[]
+            {
+                Autodesk.DesignScript.Geometry.Point.ByCoordinates(0,0,0),
+                Autodesk.DesignScript.Geometry.Point.ByCoordinates(1,0,0),
+                Autodesk.DesignScript.Geometry.Point.ByCoordinates(3,0,0),
+                Autodesk.DesignScript.Geometry.Point.ByCoordinates(10,0,0)
+            };
+
+            var spline = Autodesk.DesignScript.Geometry.BSplineCurve.ByControlVertices(pts, 3);
+
+            Assert.NotNull(spline);
+        }
+
+        [Test]
         public void Domain2D()
         {
+
             //create a domain object
             var dom = new Domain2D(Vector.by_coordinates(0, 0), Vector.by_coordinates(1, 1));
 
