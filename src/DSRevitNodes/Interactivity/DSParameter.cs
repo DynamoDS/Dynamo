@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using DSRevitNodes.Annotations;
 
 namespace DSRevitNodes.Elements
 {

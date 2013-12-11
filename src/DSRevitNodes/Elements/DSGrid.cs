@@ -4,6 +4,7 @@ using Autodesk.DesignScript.Geometry;
 using DSNodeServices;
 using DSRevitNodes.Elements;
 using DSRevitNodes.GeometryConversion;
+using DSRevitNodes.References;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Point = Autodesk.DesignScript.Geometry.Point;
@@ -100,11 +101,25 @@ namespace DSRevitNodes.Elements
 
         #region Public properties
 
+        /// <summary>
+        /// Get the underlying Curve geometry from this Element
+        /// </summary>
         public Autodesk.DesignScript.Geometry.Curve Curve
         {
             get
             {
                 return this.InternalGrid.Curve.ToProtoType();
+            }
+        }
+
+        /// <summary>
+        /// Get a Reference to the underlying Curve Geometry of this Element
+        /// </summary>
+        public DSCurveReference CurveReference
+        {
+            get
+            {
+                return new DSCurveReference(this.InternalGrid.Curve);
             }
         }
 
@@ -138,7 +153,7 @@ namespace DSRevitNodes.Elements
         /// <param name="start"></param>
         /// <param name="end"></param>
         /// <returns></returns>
-        public static DSGrid ByStartAndEndPoint(Autodesk.DesignScript.Geometry.Point start, Autodesk.DesignScript.Geometry.Point end)
+        public static DSGrid ByStartPointEndPoint(Autodesk.DesignScript.Geometry.Point start, Autodesk.DesignScript.Geometry.Point end)
         {
             if (Document.IsFamilyDocument)
             {
