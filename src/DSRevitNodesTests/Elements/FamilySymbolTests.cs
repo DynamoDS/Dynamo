@@ -9,24 +9,38 @@ namespace DSRevitNodesTests
     public class FamilySymbolTests 
     {
         [Test]
-        public void ByName_ValidInput()
+        public void ByName_GoodArgs()
         {
-            var famSym = DSFamilySymbol.ByName("Box.Box");
+            var famSym = DSFamilySymbol.ByName("Box");
             Assert.NotNull(famSym);
             Assert.AreEqual("Box", famSym.Name);
             Assert.AreEqual("Box", famSym.Family.Name);
         }
 
         [Test]
-        public void ByName_NonexistentName()
+        public void ByName_BadArgs()
         {
             Assert.Throws(typeof(Exception), () => DSFamilySymbol.ByName("Turtle.BoxTurtle") );
+            Assert.Throws(typeof(System.ArgumentNullException), () => DSFamilySymbol.ByName(null));
         }
 
         [Test]
-        public void ByName_NullArgument()
+        public void ByFamilyAndName_GoodArgs()
         {
-            Assert.Throws(typeof(System.ArgumentNullException), () => DSFamilySymbol.ByName(null));
+            var fam = DSFamily.ByName("Box");
+            var famSym = DSFamilySymbol.ByFamilyAndName(fam, "Box");
+            Assert.NotNull(famSym);
+            Assert.AreEqual("Box", famSym.Name);
+            Assert.AreEqual("Box", famSym.Family.Name);
+        }
+
+        [Test]
+        public void ByFamilyAndName_BadArgs()
+        {
+            var fam = DSFamily.ByName("Box");
+            Assert.Throws(typeof(Exception), () => DSFamilySymbol.ByFamilyAndName(fam, "Turtle"));
+            Assert.Throws(typeof(System.ArgumentNullException), () => DSFamilySymbol.ByFamilyAndName(fam, null));
+            Assert.Throws(typeof(System.ArgumentNullException), () => DSFamilySymbol.ByFamilyAndName(null, "Turtle"));
         }
     }
 }

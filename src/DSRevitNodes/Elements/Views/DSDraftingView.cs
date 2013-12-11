@@ -30,7 +30,7 @@ namespace DSRevitNodes.Elements
         /// <summary>
         /// Reference to the Element
         /// </summary>
-        internal override Autodesk.Revit.DB.Element InternalElement
+        public override Autodesk.Revit.DB.Element InternalElement
         {
             get { return InternalViewDrafting; }
         }
@@ -88,11 +88,10 @@ namespace DSRevitNodes.Elements
         #region Public static constructors
 
         /// <summary>
-        /// Create a Revit Floor given it's curve outline and Level
+        /// Create a Revit DraftingView given it's name
         /// </summary>
-        /// <param name="outline"></param>
-        /// <param name="level"></param>
-        /// <returns>The floor</returns>
+        /// <param name="name">Name of the view</param>
+        /// <returns>The view</returns>
         public static DSDraftingView ByName( string name )
         {
             if (name == null)
