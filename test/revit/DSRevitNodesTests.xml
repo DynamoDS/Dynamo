@@ -181,6 +181,10 @@
 	  <testFixture name="BoundingBoxTests">
         <test name="BoundingBoxPropertyOnAbstractElement" modelPath=".\MassWithBoxAndCone.rfa"/>
       </testFixture>
+	  
+	  <testFixture name="SectionViewTests">
+        <test name="ByBoundingBox_ValidArgs" modelPath=".\Empty.rvt"/>
+      </testFixture>
 
 		</testAssembly>
 	</testAssemblies>

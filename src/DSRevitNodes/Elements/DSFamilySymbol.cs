@@ -7,6 +7,7 @@ using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using DSNodeServices;
 using DSRevitNodes.Elements;
+using RevitServices.Persistence;
 using RevitServices.Transactions;
 
 namespace DSRevitNodes.Elements
@@ -101,14 +102,12 @@ namespace DSRevitNodes.Elements
         /// </summary>
         /// <param name="name">The name of the FamilySymbol as FamilyName.FamilySymbolName </param>
         /// <returns></returns>
-        public static DSFamilySymbol ByName(string name)
+        public static DSFamilySymbol ByDelimitedName(string name)
         {
             if (name == null)
             {
                 throw new ArgumentNullException();
             }
-
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
 
             // look up the loaded family
             var fec = new Autodesk.Revit.DB.FilteredElementCollector(Document);
@@ -125,9 +124,38 @@ namespace DSRevitNodes.Elements
                 throw new Exception("A FamilySymbol with the specified name does not exist in the document");
             }
 
-            TransactionManager.GetInstance().TransactionTaskDone();
+            return new DSFamilySymbol(symbol)
+            {
+                IsRevitOwned = true
+            };
+        }
 
-            return new DSFamilySymbol(symbol);
+        /// <summary>
+        /// Select a FamilySymbol given it's full name
+        /// </summary>
+        /// <param name="name">The name of the FamilySymbol</param>
+        /// <returns></returns>
+        public static DSFamilySymbol ByName(string name)
+        {
+            if (name == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            // look up the loaded family
+            var symbol = DocumentManager.GetInstance()
+                .ElementsOfType<Autodesk.Revit.DB.FamilySymbol>()
+                .FirstOrDefault(x => x.Name == name);
+
+            if (symbol == null)
+            {
+                throw new Exception(String.Format("A FamilySymbol with the specified name, {0}, does not exist in the document", name));
+            }
+
+            return new DSFamilySymbol(symbol)
+            {
+                IsRevitOwned = true
+            };
         }
 
         #endregion
