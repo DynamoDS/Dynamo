@@ -84,6 +84,7 @@
     <Compile Include="Elements\ModelCurveTests.cs" />
     <Compile Include="Elements\ReferencePointTests.cs" />
     <Compile Include="Elements\SketchPlaneTests.cs" />
+    <Compile Include="Elements\Views\DraftingViewTests.cs" />
     <Compile Include="Elements\Views\SectionViewTests.cs" />
     <Compile Include="Elements\WallTests.cs" />
     <Compile Include="Elements\WallTypeTests.cs" />
