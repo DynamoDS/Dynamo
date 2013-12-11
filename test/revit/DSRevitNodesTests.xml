@@ -154,6 +154,21 @@
 		<test name="ByCurveAndLevels_ValidArgs" modelPath=".\Empty.rvt"/>
 		<test name="ByCurveAndLevels_NullArgs" modelPath=".\Empty.rvt"/>
       </testFixture>
+	  
+	  <testFixture name="MaterialTests">
+        <test name="ByName_ValidArgs" modelPath=".\Empty.rvt"/>
+		<test name="ByName_NullArgument" modelPath=".\Empty.rvt"/>
+		<test name="ByName_NonexistentName" modelPath=".\Empty.rvt"/>
+      </testFixture>
+	  
+	  <testFixture name="GridTests">
+        <test name="ByLine_ValidArgs" modelPath=".\Empty.rvt"/>
+		<test name="ByLine_NullArgs" modelPath=".\Empty.rvt"/>
+		<test name="ByStartPointEndPoint_ValidArgs" modelPath=".\Empty.rvt"/>
+		<test name="ByStartPointEndPoint_NullArgs" modelPath=".\Empty.rvt"/>
+		<test name="ByArc_ValidArgs" modelPath=".\Empty.rvt"/>
+		<test name="ByArc_NullArgs" modelPath=".\Empty.rvt"/>
+      </testFixture>
 
 		</testAssembly>
 	</testAssemblies>
