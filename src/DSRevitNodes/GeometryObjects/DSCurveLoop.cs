@@ -7,6 +7,7 @@ using System.Text;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
+using DSRevitNodes.GeometryConversion;
 
 namespace DSRevitNodes.GeometryObjects
 {
@@ -72,7 +73,7 @@ namespace DSRevitNodes.GeometryObjects
         /// </summary>
         /// <param name="curves"></param>
         /// <returns></returns>
-        public static DSCurveLoop ByCurves(DSCurve[] curves)
+        public static DSCurveLoop ByCurves(Autodesk.DesignScript.Geometry.Curve[] curves)
         {
             if (curves == null)
             {
@@ -80,7 +81,7 @@ namespace DSRevitNodes.GeometryObjects
             }
 
             var loop = new Autodesk.Revit.DB.CurveLoop();
-            curves.ForEach(x => loop.Append(x.InternalCurve)); 
+            curves.ForEach(x => loop.Append(x.ToRevitType())); 
             return new DSCurveLoop(loop);
         }
 
