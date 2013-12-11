@@ -64,7 +64,7 @@ namespace DSRevitNodes.Elements
         }
 
         /// <summary>
-        /// If possible, wrap the element in a 
+        /// If possible, wrap the element in a DS type
         /// </summary>
         /// <param name="ele"></param>
         /// <param name="isRevitOwned">Whether the returned object should be revit owned or not</param>

@@ -68,7 +68,7 @@ namespace DSRevitNodes.GeometryConversion
         private static Autodesk.Revit.DB.Arc Convert(Autodesk.DesignScript.Geometry.Circle circ)
         {
             var plane = circ.ContextCoordinateSystem.XYPlane.ToPlane();
-            return Autodesk.Revit.DB.Arc.Create(plane, circ.Radius, 0, 2*Math.PI);
+            return Autodesk.Revit.DB.Arc.Create(plane, circ.Radius, 0, 2*System.Math.PI);
         }
 
         /// <summary>
