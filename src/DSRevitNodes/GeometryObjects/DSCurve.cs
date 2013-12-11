@@ -27,7 +27,7 @@ namespace DSRevitNodes.GeometryObjects
         /// Tesselate the curve for visualization
         /// </summary>
         /// <param name="package"></param>
-        void IGraphicItem.Tessellate(IRenderPackage package)
+        public void Tessellate(IRenderPackage package)
         {
             this.InternalCurve.Tessellate()
                 .ToList()
