@@ -212,7 +212,7 @@ namespace DSRevitNodes.Elements
             {
                 var t = parms[i];
                 var point = Document.GetElement(id) as Autodesk.Revit.DB.ReferencePoint;
-                var ploc = new PointLocationOnCurve(PointOnCurveMeasurementType.NonNormalizedCurveParameter, t,
+                var ploc = new PointLocationOnCurve(PointOnCurveMeasurementType.NormalizedCurveParameter, t,
                                                     PointOnCurveMeasureFrom.Beginning);
                 var peref = Document.Application.Create.NewPointOnEdge(c.Reference, ploc);
                 point.SetPointElementReference(peref);

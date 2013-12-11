@@ -224,7 +224,11 @@
 		<test name="ByNameNumberAndView_ValidArgs" modelPath=".\Empty.rvt"/>
 		<test name="ByNameNumberAndView_BadArgs" modelPath=".\Empty.rvt"/>
       </testFixture>
-
+	  
+	  <testFixture name="StructuralFramingTests">
+        <test name="ByCurveLevelUpVectorAndType_ValidArgs" modelPath=".\Empty.rvt"/>
+		<test name="ByCurveLevelUpVectorAndType_BadArgs" modelPath=".\Empty.rvt"/>
+      </testFixture>
 		</testAssembly>
 	</testAssemblies>
 </tests>
