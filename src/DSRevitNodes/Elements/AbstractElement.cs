@@ -58,7 +58,7 @@ namespace DSRevitNodes.Elements
         {
             get
             {
-                return BoundingBox.Max;
+                return new DSBoundingBox(this.InternalElement.get_BoundingBox(null));
             }
         }
 

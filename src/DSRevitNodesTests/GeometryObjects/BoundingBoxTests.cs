@@ -17,6 +17,30 @@ namespace DSRevitNodesTests.GeometryObjects
         public void ByExtrusion_ValidArgs()
         {
 
+            // construct a unit rectangle
+            var pts1 = new[]
+            {
+                Point.ByCoordinates(0,0,0),
+                Point.ByCoordinates(0.4,0,0),
+                Point.ByCoordinates(0.8,0,0),
+                Point.ByCoordinates(1,0,0),
+            };
+
+            var pts2 = new[]
+            {
+                Point.ByCoordinates(1,0,0),
+                Point.ByCoordinates(1,0.4,0),
+                Point.ByCoordinates(1,0.8,0),
+                Point.ByCoordinates(1,1,0)
+            };
+
+            var pts3 = new[]
+            {
+                Point.ByCoordinates(1,1,0),
+                Point.ByCoordinates(0.8,0.8,0),
+                Point.ByCoordinates(0.4,0.4,0),
+                Point.ByCoordinates(0.0,0,0)
+            };
 
             var wts = new double[]
             {
