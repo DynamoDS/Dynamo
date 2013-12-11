@@ -22,7 +22,7 @@ namespace DSRevitNodesTests
                 Point.ByCoordinates(10, 0, 10),
                 Point.ByCoordinates(20, 0, 0)
             };
-            var fs = DSFamilySymbol.ByName("3PointAC.3PointAC");
+            var fs = DSFamilySymbol.ByName("3PointAC");
             var ac = DSAdaptiveComponent.ByPoints(pts, fs);
 
             Assert.NotNull(ac);
@@ -36,7 +36,7 @@ namespace DSRevitNodesTests
                 Point.ByCoordinates(0, 0, 0),
                 Point.ByCoordinates(10, 0, 10)
             };
-            var fs = DSFamilySymbol.ByName("3PointAC.3PointAC");
+            var fs = DSFamilySymbol.ByName("3PointAC");
 
             Assert.Throws(typeof (Exception), () => DSAdaptiveComponent.ByPoints(pts, fs));
         }
@@ -57,7 +57,7 @@ namespace DSRevitNodesTests
         [Test]
         public void ByPoints_NullPts()
         {
-            var fs = DSFamilySymbol.ByName("3PointAC.3PointAC");
+            var fs = DSFamilySymbol.ByName("3PointAC");
 
             Assert.Throws(typeof(ArgumentNullException), () => DSAdaptiveComponent.ByPoints(null, fs));
         }
@@ -83,7 +83,7 @@ namespace DSRevitNodesTests
             var crv = DSNurbSpline.ByControlPointsAndWeights(pts, wts);
 
             // obtain the family from the document
-            var fs = DSFamilySymbol.ByName("3PointAC.3PointAC");
+            var fs = DSFamilySymbol.ByName("3PointAC");
 
             // build the AC
             var parms = new double[]
