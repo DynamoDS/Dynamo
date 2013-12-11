@@ -70,7 +70,9 @@
     <Compile Include="Elements\DividedSurfaceTests.cs" />
     <Compile Include="Elements\FloorTests.cs" />
     <Compile Include="Elements\FloorTypeTests.cs" />
+    <Compile Include="Elements\GridTests.cs" />
     <Compile Include="Elements\LevelTests.cs" />
+    <Compile Include="Elements\MaterialTests.cs" />
     <Compile Include="Elements\ReferencePlaneTests.cs" />
     <Compile Include="Elements\ElementSelectorTests.cs" />
     <Compile Include="Elements\FamilyInstanceTests.cs" />
@@ -81,6 +83,8 @@
     <Compile Include="Elements\ModelCurveTests.cs" />
     <Compile Include="Elements\ReferencePointTests.cs" />
     <Compile Include="Elements\SketchPlaneTests.cs" />
+    <Compile Include="Elements\WallTests.cs" />
+    <Compile Include="Elements\WallTypeTests.cs" />
     <Compile Include="GeometryConversion\ProtoToRevitCurveTests.cs" />
     <Compile Include="GeometryConversion\RevitToProtoCurveTests.cs" />
     <Compile Include="GeometryObjects\CurveLoopTests.cs" />
