@@ -41,7 +41,6 @@ namespace DSRevitNodes.Elements
             get { return InternalFamilyInstance; }
         }
 
-
         #endregion
 
         #region Protected mutators
