@@ -14,7 +14,7 @@ namespace DSRevitNodes.Elements
     /// A Revit ViewDrafting
     /// </summary>
     [RegisterForTrace]
-    public class DSDraftingView : AbstractElement
+    public class DSDraftingView : AbstractView
     {
 
         #region Internal properties
