@@ -1109,17 +1109,28 @@ namespace Dynamo.Models
 
         #region Redefined Variables
 
-
+        /// <summary>
+        /// Public method that calls the variableDefinitions field to check and revalidate
+        /// all code block nodes if necessary
+        /// </summary>
         internal void RevalidateCodeBlockNodes()
         {
             this.variableDefinitions.ReValidateAllNodes();
         }
 
+        /// <summary>
+        /// Public API to load variable definitions from an xml element into the variableDefinitions
+        /// field.
+        /// </summary>
+        /// <param name="element"> The Xml Element containing the serialized data </param>
         internal void LoadVariableDefinitions(XmlElement element)
         {
             this.variableDefinitions.LoadDefinitions(element);
         }
 
+        //A class that contains the variable definition map, which maps the defined variable to 
+        //the code block nodes they are defined in. Inherits from model base so that it may be serialized
+        // and deserialized for Undo/Redo
         private class VariableDefinitions : ModelBase
         {
             private WorkspaceModel workspace;
@@ -1181,6 +1192,8 @@ namespace Dynamo.Models
 
             public void ReValidateAllNodes()
             {
+                //IDirty is set only when the map is reloaded. Hence any unnecessary revalidation
+                //is avoided.
                 if (this.IsDirty == true)
                 {
                     this.IsDirty = false;
@@ -1211,19 +1224,27 @@ namespace Dynamo.Models
 
             internal void LoadDefinitions(XmlElement element)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
-                this.GUID = helper.ReadGuid("guid");
-                Map = new Dictionary<String, List<Guid>>();
-                var variables = element.SelectNodes("Variable");
-                foreach (XmlNode variableNode in variables)
+                if (element == null) //If the save file was made before this was introduced
                 {
-                    var dictionaryHelper = new XmlElementHelper(variableNode as XmlElement);
-                    string variableName = dictionaryHelper.ReadString("DefinedVariableName");
-                    Map.Add(variableName, new List<Guid>());
-                    for (int i = 0; i < variableNode.Attributes.Count - 1; i++)
+                    this.GUID = Guid.NewGuid();
+                    Map = new Dictionary<String, List<Guid>>();
+                }
+                else
+                {
+                    XmlElementHelper helper = new XmlElementHelper(element);
+                    this.GUID = helper.ReadGuid("guid");
+                    Map = new Dictionary<String, List<Guid>>();
+                    var variables = element.SelectNodes("Variable");
+                    foreach (XmlNode variableNode in variables)
                     {
-                        Guid guid = dictionaryHelper.ReadGuid("DefiningNodeGuid" + i.ToString());
-                        Map[variableName].Add(guid);
+                        var dictionaryHelper = new XmlElementHelper(variableNode as XmlElement);
+                        string variableName = dictionaryHelper.ReadString("DefinedVariableName");
+                        Map.Add(variableName, new List<Guid>());
+                        for (int i = 0; i < variableNode.Attributes.Count - 1; i++)
+                        {
+                            Guid guid = dictionaryHelper.ReadGuid("DefiningNodeGuid" + i.ToString());
+                            Map[variableName].Add(guid);
+                        }
                     }
                 }
                 this.IsDirty = true;
@@ -1232,6 +1253,12 @@ namespace Dynamo.Models
 
         private VariableDefinitions variableDefinitions;
 
+        /// <summary>
+        /// Method to update the variable map with the new variable definitions present in the code
+        /// block node. Is called when the code block node data is changed.
+        /// Also revalidates any code block nodes whose state may be affected by the update of the table.
+        /// </summary>
+        /// <param name="cbn"> The code block node whose variables need to be updated in the map </param>
         internal void UpdateDefinedVariables(CodeBlockNodeModel cbn)
         {
             this.undoRecorder.RecordModificationForUndo(variableDefinitions);
@@ -1291,6 +1318,11 @@ namespace Dynamo.Models
                 CodeBlockNodeModel.ReValidate(model);
         }
 
+        /// <summary>
+        /// Returns the GUID of the node which defines the given variable
+        /// </summary>
+        /// <param name="variable"> The name of the defined variable </param>
+        /// <returns> The GUID of the Code Block Node that defines it </returns>
         internal Guid GetDefiningNode(String variable)
         {
             return variableDefinitions.Map[variable][0];

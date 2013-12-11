@@ -25,7 +25,7 @@ using Dynamo.DSEngine;
 
 namespace Dynamo.Models
 {
-     
+
     public delegate void FunctionNamePromptRequestHandler(object sender, FunctionNamePromptEventArgs e);
     public delegate void CleanupHandler(object sender, EventArgs e);
     public delegate void NodeHandler(NodeModel node);
@@ -228,8 +228,8 @@ namespace Dynamo.Models
         public ObservableCollection<WorkspaceModel> Workspaces
         {
             get { return _workSpaces; }
-            set 
-            { 
+            set
+            {
                 _workSpaces = value;
             }
         }
@@ -398,7 +398,7 @@ namespace Dynamo.Models
             return true;
         }
 
-        internal void OpenCustomNodeAndFocus( WorkspaceHeader workspaceHeader )
+        internal void OpenCustomNodeAndFocus(WorkspaceHeader workspaceHeader)
         {
             // load custom node
             var manager = dynSettings.Controller.CustomNodeManager;
@@ -414,16 +414,16 @@ namespace Dynamo.Models
             {
                 this.Workspaces.Add(ws);
             }
-            
+
             var vm = dynSettings.Controller.DynamoViewModel.Workspaces.First(x => x.Model == ws);
             vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(workspaceHeader.X, workspaceHeader.Y)));
 
             this.CurrentWorkspace = ws;
 
 
-        }   
-        
-        internal bool OpenDefinition( string xmlPath )
+        }
+
+        internal bool OpenDefinition(string xmlPath)
         {
             var workspaceInfo = WorkspaceHeader.FromPath(xmlPath);
 
@@ -573,8 +573,8 @@ namespace Dynamo.Models
 
             CurrentWorkspace.Connectors.Clear();
             CurrentWorkspace.Nodes.Clear();
-            CurrentWorkspace.Notes.Clear(); 
-            
+            CurrentWorkspace.Notes.Clear();
+
             dynSettings.Controller.ResetEngine();
         }
 
@@ -720,9 +720,9 @@ namespace Dynamo.Models
                     el.WorkSpace = CurrentWorkspace;
 
                     el.Load(
-                        elNode, 
+                        elNode,
                         string.IsNullOrEmpty(version)
-                            ? new Version(0, 0, 0, 0) 
+                            ? new Version(0, 0, 0, 0)
                             : new Version(version));
 
                     CurrentWorkspace.Nodes.Add(el);
@@ -835,7 +835,10 @@ namespace Dynamo.Models
                 DynamoLogger.Instance.Log(string.Format("{0} ellapsed for loading notes.", sw.Elapsed - previousElapsed));
 
                 #region Load Variable Definitions
-                CurrentWorkspace.LoadVariableDefinitions(varDefinitions[0] as XmlElement);
+                if (varDefinitions.Count == 0)
+                    CurrentWorkspace.LoadVariableDefinitions(null);
+                else
+                    CurrentWorkspace.LoadVariableDefinitions(varDefinitions[0] as XmlElement);
                 #endregion
 
                 foreach (NodeModel e in CurrentWorkspace.Nodes)
@@ -852,7 +855,7 @@ namespace Dynamo.Models
 
                 CurrentWorkspace.RevalidateCodeBlockNodes();
 
-                if(!string.IsNullOrEmpty(version))
+                if (!string.IsNullOrEmpty(version))
                     CurrentWorkspace.WorkspaceVersion = new Version(version);
 
                 #endregion
@@ -871,7 +874,7 @@ namespace Dynamo.Models
             return true;
         }
 
-        public CustomNodeDefinition NewCustomNodeWorkspace(   Guid id,
+        public CustomNodeDefinition NewCustomNodeWorkspace(Guid id,
                                                             string name,
                                                             string category,
                                                             string description,
@@ -1127,7 +1130,7 @@ namespace Dynamo.Models
         public void AddToSelection(object parameters)
         {
             var node = parameters as NodeModel;
-            
+
             //don't add if the object is null
             if (node == null)
                 return;
@@ -1288,7 +1291,7 @@ namespace Dynamo.Models
         internal static NodeModel CreateNodeInstance(string name)
         {
             NodeModel result;
-            
+
 #if USE_DSENGINE
             FunctionDescriptor functionItem = (dynSettings.Controller.EngineController.GetFunctionDescriptor(name));
             if (functionItem != null)
