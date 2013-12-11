@@ -211,6 +211,11 @@
         <test name="ByLevel_ValidArgs" modelPath=".\Empty.rvt"/>
 		<test name="ByLevel_BadArgs" modelPath=".\Empty.rvt"/>
       </testFixture>
+	  
+	  <testFixture name="CeilingPlanViewTests">
+        <test name="ByLevel_ValidArgs" modelPath=".\Empty.rvt"/>
+		<test name="ByLevel_BadArgs" modelPath=".\Empty.rvt"/>
+      </testFixture>
 
 		</testAssembly>
 	</testAssemblies>
