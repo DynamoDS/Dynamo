@@ -9,6 +9,11 @@ namespace DSCoreNodesTests
     [TestFixture]
     class GeometryTests
     {
+        /// <summary>
+        /// Example of calling ProtoGeometry methods from C#
+        /// This can be removed but is a good test to assert that ProtoGeometry
+        /// is working.  
+        /// </summary>
         [Test]
         public void BSplineCurve()
         {
@@ -27,6 +32,17 @@ namespace DSCoreNodesTests
 
             Assert.NotNull(spline);
             Assert.AreEqual(3, spline.Degree);
+            var eval0 = spline.PointAtParameter(0);
+            var eval1 = spline.PointAtParameter(1);
+
+            var expectedPoint0 = Point.ByCoordinates(0, 0, 0);
+            var expectedPoint1 = Point.ByCoordinates(10, 0, 0);
+
+            Assert.AreEqual(0, expectedPoint0.DistanceTo(eval0), 1e-6);
+            Assert.AreEqual(0, expectedPoint1.DistanceTo(eval1), 1e-6);
+
+            var closestPoint0 = spline.ClosestPointTo(expectedPoint0);
+            Assert.AreEqual(0, expectedPoint0.DistanceTo(closestPoint0), 1e-6);
 
             HostFactory.Instance.ShutDown();
         }
