@@ -37,7 +37,7 @@ namespace DSRevitNodes.Elements
         /// <summary>
         /// Reference to the Element
         /// </summary>
-        internal override Autodesk.Revit.DB.Element InternalElement
+        public override Autodesk.Revit.DB.Element InternalElement
         {
             get { return InternalModelCurve; }
         }
@@ -283,7 +283,7 @@ namespace DSRevitNodes.Elements
                 double llSqNew = newPlane.Normal.DotProduct(newPlane.Normal);
                 double dotP = newPlane.Normal.DotProduct(curPlane.Normal);
                 double dotSqNormalized = (dotP / llSqCur) * (dotP / llSqNew);
-                double angleTol = Math.PI / 1800.0;
+                double angleTol = System.Math.PI / 1800.0;
                 if (dotSqNormalized < 1.0 - angleTol * angleTol)
                     resetPlane = true;
             }
@@ -372,7 +372,7 @@ namespace DSRevitNodes.Elements
                 XYZ norm = null;
 
                 //keep old plane computations
-                if (Math.Abs(p0.Z - p2.Z) < 0.0001)
+                if (System.Math.Abs(p0.Z - p2.Z) < 0.0001)
                 {
                     norm = XYZ.BasisZ;
                 }

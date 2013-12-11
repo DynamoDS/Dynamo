@@ -580,9 +580,9 @@ namespace DSRevitNodes.Elements
                 if (faceAtIndex is PlanarFace)
                 {
                     var pFace = faceAtIndex as PlanarFace;
-                    if (Math.Abs(thisPlane.Normal.DotProduct(pFace.Normal)) < 0.99)
+                    if (System.Math.Abs(thisPlane.Normal.DotProduct(pFace.Normal)) < 0.99)
                         continue;
-                    if (Math.Abs(thisPlane.Normal.DotProduct(thisPlane.Origin - pFace.Origin)) > 0.1)
+                    if (System.Math.Abs(thisPlane.Normal.DotProduct(thisPlane.Origin - pFace.Origin)) > 0.1)
                         continue;
                     face = faceAtIndex;
                     break;

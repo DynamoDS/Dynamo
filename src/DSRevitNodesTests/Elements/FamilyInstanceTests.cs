@@ -13,7 +13,7 @@ namespace DSRevitNodesTests
         [Test]
         public void ByCoordinates_ValidInput()
         {
-            var famSym = DSFamilySymbol.ByName("Box.Box");
+            var famSym = DSFamilySymbol.ByName("Box");
             var famInst = DSFamilyInstance.ByCoordinates(famSym, 0, 1, 2);
             Assert.NotNull(famInst);
 
@@ -27,7 +27,7 @@ namespace DSRevitNodesTests
         [Test]
         public void ByPoint_ValidInput()
         {
-            var famSym = DSFamilySymbol.ByName("Box.Box");
+            var famSym = DSFamilySymbol.ByName("Box");
             var pt = Point.ByCoordinates(0, 1, 2);
             var famInst = DSFamilyInstance.ByPoint(famSym, pt);
             Assert.NotNull(famInst);
@@ -49,7 +49,7 @@ namespace DSRevitNodesTests
         [Test]
         public void ByPoint_NullPoint()
         {
-            var famSym = DSFamilySymbol.ByName("Box.Box");
+            var famSym = DSFamilySymbol.ByName("Box");
             Assert.Throws(typeof(System.ArgumentNullException), () => DSFamilyInstance.ByPoint(famSym, null));
         }
 

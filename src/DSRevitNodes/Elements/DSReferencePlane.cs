@@ -32,7 +32,7 @@ namespace DSRevitNodes.Elements
         /// <summary>
         /// Reference to the Element
         /// </summary>
-        internal override Autodesk.Revit.DB.Element InternalElement
+        public override Autodesk.Revit.DB.Element InternalElement
         {
             get { return InternalReferencePlane; }
         }
@@ -149,7 +149,7 @@ namespace DSRevitNodes.Elements
 
         #endregion
 
-        #region Public propertioes
+        #region Public properties
 
         /// <summary>
         /// Get the internal Geometric Plane

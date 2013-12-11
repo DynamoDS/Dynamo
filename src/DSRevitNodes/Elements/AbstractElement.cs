@@ -41,9 +41,32 @@ namespace DSRevitNodes.Elements
         }
 
         /// <summary>
+        /// Get the Name of the Element
+        /// </summary>
+        public string Name
+        {
+            get
+            {
+                return InternalElement.Name;
+            }
+        }
+
+        /// <summary>
+        /// Get an Axis-aligned BoundingBox of the Element
+        /// </summary>
+        public DSBoundingBox BoundingBox
+        {
+            get
+            {
+                return new DSBoundingBox(this.InternalElement.get_BoundingBox(null));
+            }
+        }
+
+        /// <summary>
         /// A reference to the element
         /// </summary>
-        internal abstract Element InternalElement
+        [Browsable(false)]
+        public abstract Element InternalElement
         {
             get;
         }
