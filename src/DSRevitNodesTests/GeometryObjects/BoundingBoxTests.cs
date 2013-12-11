@@ -14,52 +14,25 @@ namespace DSRevitNodesTests.GeometryObjects
     public class BoundingBoxTests
     {
         [Test]
-        public void ByExtrusion_ValidArgs()
+        public void BoundingBoxPropertyOnAbstractElement()
         {
+            var famSym = DSFamilySymbol.ByName("Box.Box");
+            var pt = Point.ByCoordinates(0, 1, 2);
+            var famInst = DSFamilyInstance.ByPoint(famSym, pt);
 
-            // construct a unit rectangle
-            var pts1 = new[]
-            {
-                Point.ByCoordinates(0,0,0),
-                Point.ByCoordinates(0.4,0,0),
-                Point.ByCoordinates(0.8,0,0),
-                Point.ByCoordinates(1,0,0),
-            };
+            var bbox = famInst.BoundingBox;
+            Assert.NotNull(bbox);
 
-            var pts2 = new[]
-            {
-                Point.ByCoordinates(1,0,0),
-                Point.ByCoordinates(1,0.4,0),
-                Point.ByCoordinates(1,0.8,0),
-                Point.ByCoordinates(1,1,0)
-            };
+            var max = bbox.Max;
+            var min = bbox.Min;
 
-            var pts3 = new[]
-            {
-                Point.ByCoordinates(1,1,0),
-                Point.ByCoordinates(0.8,0.8,0),
-                Point.ByCoordinates(0.4,0.4,0),
-                Point.ByCoordinates(0.0,0,0)
-            };
+            Assert.AreEqual(-15, min.X, 1e-6);
+            Assert.AreEqual(-14, min.Y, 1e-6);
+            Assert.AreEqual(2, min.Z, 1e-6);
 
-            var crvs = new[]
-            {
-                BSplineCurve.ByControlVertices(pts1, 3),
-                BSplineCurve.ByControlVertices(pts2, 3),
-                BSplineCurve.ByControlVertices(pts3, 3)
-            };
-
-            // construct the curveloop
-            var curveloop = DSCurveLoop.ByCurves(crvs);
-
-            var dir = Vector.ByCoordinates(0, 0, 1);
-            var dist = 5;
-            var extrusion = DSSolid.ByExtrusion(curveloop, dir, dist);
-
-            Assert.NotNull(extrusion);
-            Assert.AreEqual(2.5, extrusion.Volume, 0.01);
-            Assert.AreEqual(5 + 5 + 0.5 + 0.5 + Math.Sqrt(2) * 5, extrusion.SurfaceArea, 0.01);
-
+            Assert.AreEqual(15, max.X, 1e-6);
+            Assert.AreEqual(16, max.Y, 1e-6);
+            Assert.AreEqual(32, max.Z, 1e-6);
         }
     }
 }

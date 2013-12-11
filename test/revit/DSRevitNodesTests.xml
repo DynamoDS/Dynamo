@@ -177,6 +177,10 @@
 		<test name="ByArc_ValidArgs" modelPath=".\Empty.rvt"/>
 		<test name="ByArc_NullArgs" modelPath=".\Empty.rvt"/>
       </testFixture>
+	   
+	  <testFixture name="BoundingBoxTests">
+        <test name="BoundingBoxPropertyOnAbstractElement" modelPath=".\MassWithBoxAndCone.rfa"/>
+      </testFixture>
 
 		</testAssembly>
 	</testAssemblies>
