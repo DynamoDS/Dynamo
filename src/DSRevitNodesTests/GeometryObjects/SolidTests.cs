@@ -187,6 +187,21 @@ namespace DSRevitNodesTests.GeometryObjects
 
         }
 
+        [Test]
+        public void Sphere_ValidArgs()
+        {
+            var sphere = DSSolid.Sphere(Point.ByCoordinates(0, 0, 0), 10);
+            Assert.IsNotNull(sphere);
+
+            var package = new RenderPackage();
+            sphere.Tessellate(package);
+
+            var modelPath = Path.Combine(TestGeometryDirectory, @"Sphere_ValidArgs.obj");
+            if (File.Exists(modelPath))
+                File.Delete(modelPath);
+            WriteToOBJ(modelPath, new List<RenderPackage>() { package });
+        }
+
         private static List<Curve> UnitRectangle()
         {
             // construct a unit rectangle
