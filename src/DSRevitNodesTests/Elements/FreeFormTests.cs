@@ -42,16 +42,11 @@ namespace DSRevitNodesTests.Elements
                 Point.ByCoordinates(0.0,0,0)
             };
 
-            var wts = new double[]
-            {
-                1,1,1,1
-            };
-
             var crvs = new[]
             {
-                DSNurbSpline.ByControlPointsAndWeights(pts1, wts),
-                DSNurbSpline.ByControlPointsAndWeights(pts2, wts),
-                DSNurbSpline.ByControlPointsAndWeights(pts3, wts)
+                BSplineCurve.ByPoints(pts1),
+                BSplineCurve.ByPoints(pts2),
+                BSplineCurve.ByPoints(pts3)
             };
 
             // construct the curveloop
