@@ -9,6 +9,7 @@ using DSRevitNodes.GeometryConversion;
 using DSRevitNodes.GeometryObjects;
 using DSRevitNodes.Graphics;
 using Curve = Autodesk.Revit.DB.Curve;
+using Point = Autodesk.DesignScript.Geometry.Point;
 
 namespace DSRevitNodes.Elements
 {
@@ -30,9 +31,9 @@ namespace DSRevitNodes.Elements
         /// <param name="loops"></param>
         /// <param name="direction"></param>
         /// <param name="distance"></param>
-        internal DSSolid(CurveLoop loop, XYZ direction, double distance )
+        internal DSSolid(IEnumerable<CurveLoop> loops, XYZ direction, double distance )
         {
-            var result = GeometryCreationUtilities.CreateExtrusionGeometry(new List<CurveLoop>(){loop}, direction, distance);
+            var result = GeometryCreationUtilities.CreateExtrusionGeometry(loops.ToList(), direction, distance);
             this.InternalSolid = result;
         }
 
@@ -198,7 +199,7 @@ namespace DSRevitNodes.Elements
                 throw new ArgumentNullException("direction");
             }
 
-            return new DSSolid(profile.InternalCurveLoop, direction.ToXyz(), distance);
+            return new DSSolid(new List<CurveLoop>(){profile.InternalCurveLoop}, direction.ToXyz(), distance);
         }
 
         /// <summary>
@@ -319,7 +320,161 @@ namespace DSRevitNodes.Elements
             // create curve loop from cirle
             var circleLoop = Autodesk.Revit.DB.CurveLoop.Create(new List<Curve>() { arc1, arc2 });
 
-            return new DSSolid(circleLoop, axis, height);
+            return new DSSolid(new List<CurveLoop>{circleLoop}, axis, height);
+        }
+
+        /// <summary>
+        /// Create a sphere of a given radius at a given center point. 
+        /// </summary>
+        /// <param name="center"></param>
+        /// <param name="radius"></param>
+        /// <returns></returns>
+        public static DSSolid Sphere(Autodesk.DesignScript.Geometry.Point center, double radius)
+        {
+            if (center == null)
+            {
+                throw new ArgumentException("Center point is null.");
+            }
+
+            if (radius <= 0)
+            {
+                throw new ArgumentException("Radius must be greater than zero.");
+            }
+
+            var origin = center.ToXyz();
+
+            // create semicircular arc
+            var semicircle = Autodesk.Revit.DB.Arc.Create(origin, radius, 0, RevitPI, XYZ.BasisZ, XYZ.BasisX);
+
+            // create axis curve of sphere - running from north to south pole
+            var axisCurve = Autodesk.Revit.DB.Line.CreateBound(new XYZ(0, 0, -radius),
+                new XYZ(0, 0, radius));
+
+            var circleLoop = Autodesk.Revit.DB.CurveLoop.Create(new List<Curve>() { semicircle, axisCurve });
+
+            var trans = Transform.Identity;
+            trans.Origin = origin;
+            trans.BasisX = XYZ.BasisX;
+            trans.BasisY = XYZ.BasisY;
+            trans.BasisZ = XYZ.BasisZ;
+
+            return new DSSolid(circleLoop, trans, 0, 2*RevitPI);
+        }
+
+        /// <summary>
+        /// Create a torus aligned to an axis with a radius and a section radius.
+        /// </summary>
+        /// <param name="axis"></param>
+        /// <param name="center"></param>
+        /// <param name="radius"></param>
+        /// <param name="sectionRadius"></param>
+        /// <returns></returns>
+        public static DSSolid Torus(Vector axis, Point center, double radius, double sectionRadius)
+        {
+            if (center == null)
+            {
+                throw new ArgumentException("Center is null");
+            }
+
+            if (axis == null || axis.Length < 1e-6)
+            {
+                throw new ArgumentException("Your axis is null or is 0 length.");
+            }
+
+            if (radius <= 0)
+            {
+                throw new ArgumentException("The radius must be greater than zero.");
+            }
+
+            if (sectionRadius <= 0)
+            {
+                throw new ArgumentException("The section radius must be greater than zero.");
+            }
+
+            var revolveAxis = axis.ToXyz();
+
+            // get axis that is perp to axis by first generating random vector
+            var zaxis = revolveAxis.Normalize();
+            var randXyz = new XYZ(1, 0, 0);
+            if (zaxis.IsAlmostEqualTo(randXyz)) randXyz = new XYZ(0, 1, 0);
+            var yaxis = zaxis.CrossProduct(randXyz).Normalize();
+
+            // get second axis that is perp to axis
+            var xaxis = yaxis.CrossProduct(zaxis);
+
+            // form origin of the arc
+            var origin = center.ToXyz() + xaxis * radius;
+
+            // create circle (this is ridiculous but curve loop doesn't work with a circle
+            var arc1 = Ellipse.Create(origin, sectionRadius, sectionRadius, xaxis, zaxis, 0, RevitPI);
+            var arc2 = Ellipse.Create(origin, sectionRadius, sectionRadius, xaxis, zaxis, RevitPI, 2 * RevitPI);
+
+            // create curve loop from cirle
+            var circleLoop = CurveLoop.Create(new List<Curve>() { arc1, arc2 });
+
+            var trans = Transform.Identity;
+            trans.Origin = center.ToXyz();
+            trans.BasisX = xaxis;
+            trans.BasisY = yaxis;
+            trans.BasisZ = zaxis;
+
+            return new DSSolid(circleLoop, trans, 0, 2*RevitPI);
+        }
+
+        /// <summary>
+        /// Create a box by two corners
+        /// </summary>
+        /// <returns></returns>
+        public static DSSolid BoxByTwoCorners(Point minimum, Point maximum)
+        {
+            if ((maximum.Z-minimum.Z)<1e-6)
+            {
+                throw new ArgumentException("The minimum and maximum points specify a box with zero height.");
+            }
+
+            var bottomInput = minimum.ToXyz();
+            var topInput = maximum.ToXyz();
+
+            XYZ top, bottom;
+            if (bottomInput.Z > topInput.Z)
+            {
+                top = bottomInput;
+                bottom = topInput;
+            }
+            else
+            {
+                top = topInput;
+                bottom = bottomInput;
+            }
+
+            // obtain coordinates of base rectangle
+            var p0 = bottom;
+            var p1 = p0 + new XYZ(top.X - bottom.X, 0, 0);
+            var p2 = p1 + new XYZ(0, top.Y - bottom.Y, 0);
+            var p3 = p2 - new XYZ(top.X - bottom.X, 0, 0);
+
+            // form edges of base rect
+            var l1 = Autodesk.Revit.DB.Line.CreateBound(p0, p1);
+            var l2 = Autodesk.Revit.DB.Line.CreateBound(p1, p2);
+            var l3 = Autodesk.Revit.DB.Line.CreateBound(p2, p3);
+            var l4 = Autodesk.Revit.DB.Line.CreateBound(p3, p0);
+
+            // form curve loop from lines of base rect
+            var cl = new Autodesk.Revit.DB.CurveLoop();
+            cl.Append(l1);
+            cl.Append(l2);
+            cl.Append(l3);
+            cl.Append(l4);
+
+            // get height of box
+            var height = top.Z - bottom.Z;
+
+            return new DSSolid(new List<CurveLoop>{ cl },XYZ.BasisZ,height);
+        }
+
+        public static DSSolid BoxByCenterAndDimensions()
+        {
+            throw new NotImplementedException();
         }
 
         #endregion
