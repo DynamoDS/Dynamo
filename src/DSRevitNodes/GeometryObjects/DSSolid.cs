@@ -322,6 +322,59 @@ namespace DSRevitNodes.Elements
             return new DSSolid(circleLoop, axis, height);
         }
 
+        /// <summary>
+        /// Create sphere geometry of a given radius at a given center point. 
+        /// </summary>
+        /// <param name="center"></param>
+        /// <param name="radius"></param>
+        /// <returns></returns>
+        public static DSSolid Sphere(Autodesk.DesignScript.Geometry.Point center, double radius)
+        {
+            if (center == null)
+            {
+                throw new ArgumentException("Center point is null.");
+            }
+
+            if (radius <= 0)
+            {
+                throw new ArgumentException("Radius must be greater than zero.");
+            }
+
+            var origin = center.ToXyz();
+
+            // create semicircular arc
+            var semicircle = Autodesk.Revit.DB.Arc.Create(origin, radius, 0, RevitPI, XYZ.BasisZ, XYZ.BasisX);
+
+            // create axis curve of sphere - running from north to south pole
+            var axisCurve = Autodesk.Revit.DB.Line.CreateBound(new XYZ(0, 0, -radius),
+                new XYZ(0, 0, radius));
+
+            var circleLoop = Autodesk.Revit.DB.CurveLoop.Create(new List<Curve>() { semicircle, axisCurve });
+
+            var trans = Transform.Identity;
+            trans.Origin = origin;
+            trans.BasisX = XYZ.BasisX;
+            trans.BasisY = XYZ.BasisY;
+            trans.BasisZ = XYZ.BasisZ;
+
+            return new DSSolid(circleLoop, trans, 0, 2*RevitPI);
+        }
+
+        public static DSSolid Torus()
+        {
+            throw new NotImplementedException();
+        }
+
+        public static DSSolid BoxByTwoCorners()
+        {
+            throw new NotImplementedException();
+        }
+
+        public static DSSolid BoxByCenterAndDimensions()
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #region Tesselation
