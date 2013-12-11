@@ -692,55 +692,63 @@ namespace Dynamo.Controls
 
         private PointCollection GetFramePoints_NodeTooltipConnectLeft(double estimatedHeight, double estimatedWidth)
         {
-            PointCollection pointCollection = new PointCollection();
-
             if (ViewModel.TargetBotRight.X + estimatedWidth > dynSettings.Controller.DynamoViewModel.WorkspaceActualWidth)
             {
                 ViewModel.LimitedDirection = InfoBubbleViewModel.Direction.Right;
                 contentMargin = Configurations.NodeTooltipContentMarginRight;
-                //UpdateContent(Content);
-                pointCollection = GetFramePoints_NodeTooltipConnectRight(estimatedHeight, estimatedWidth);
+
+                return GeneratePointCollection_TooltipConnectRight(estimatedHeight, estimatedWidth);
             }
             else
-            {
-                double arrowHeight = Configurations.NodeTooltipArrowHeight_SideConnecting;
-                double arrowWidth = Configurations.NodeTooltipArrowWidth_SideConnecting;
-
-                pointCollection.Add(new Point(estimatedWidth, 0));
-                pointCollection.Add(new Point(arrowWidth, 0));
-                pointCollection.Add(new Point(arrowWidth, estimatedHeight / 2 - arrowHeight / 2));
-                pointCollection.Add(new Point(0, estimatedHeight / 2));
-                pointCollection.Add(new Point(arrowWidth, estimatedHeight / 2 + arrowHeight / 2));
-                pointCollection.Add(new Point(arrowWidth, estimatedHeight));
-                pointCollection.Add(new Point(estimatedWidth, estimatedHeight));
-            }
-            return pointCollection;
+                return GeneratePointCollection_TooltipConnectLeft(estimatedHeight, estimatedWidth);
         }
 
         private PointCollection GetFramePoints_NodeTooltipConnectRight(double estimatedHeight, double estimatedWidth)
         {
-            PointCollection pointCollection = new PointCollection();
-
             if (ViewModel.TargetTopLeft.X - estimatedWidth < 0)
             {
                 ViewModel.LimitedDirection = InfoBubbleViewModel.Direction.Left;
                 contentMargin = Configurations.NodeTooltipContentMarginLeft;
-                //UpdateContent(Content);
-                pointCollection = GetFramePoints_NodeTooltipConnectLeft(estimatedHeight, estimatedWidth);
+
+                return GeneratePointCollection_TooltipConnectLeft(estimatedHeight, estimatedWidth);
             }
             else
-            {
-                double arrowHeight = Configurations.NodeTooltipArrowHeight_SideConnecting;
-                double arrowWidth = Configurations.NodeTooltipArrowWidth_SideConnecting;
+                return GeneratePointCollection_TooltipConnectRight(estimatedHeight, estimatedWidth);
+        }
 
-                pointCollection.Add(new Point(estimatedWidth - arrowWidth, 0));
-                pointCollection.Add(new Point(0, 0));
-                pointCollection.Add(new Point(0, estimatedHeight));
-                pointCollection.Add(new Point(estimatedWidth - arrowWidth, estimatedHeight));
-                pointCollection.Add(new Point(estimatedWidth - arrowWidth, estimatedHeight / 2 + arrowHeight / 2));
-                pointCollection.Add(new Point(estimatedWidth, estimatedHeight / 2));
-                pointCollection.Add(new Point(estimatedWidth - arrowWidth, estimatedHeight / 2 - arrowHeight / 2));
-            }
+        private PointCollection GeneratePointCollection_TooltipConnectLeft(double estimatedHeight, double estimatedWidth)
+        {
+            PointCollection pointCollection = new PointCollection();
+
+            double arrowHeight = Configurations.NodeTooltipArrowHeight_SideConnecting;
+            double arrowWidth = Configurations.NodeTooltipArrowWidth_SideConnecting;
+
+            pointCollection.Add(new Point(estimatedWidth, 0));
+            pointCollection.Add(new Point(arrowWidth, 0));
+            pointCollection.Add(new Point(arrowWidth, estimatedHeight / 2 - arrowHeight / 2));
+            pointCollection.Add(new Point(0, estimatedHeight / 2));
+            pointCollection.Add(new Point(arrowWidth, estimatedHeight / 2 + arrowHeight / 2));
+            pointCollection.Add(new Point(arrowWidth, estimatedHeight));
+            pointCollection.Add(new Point(estimatedWidth, estimatedHeight));
+
+            return pointCollection;
+        }
+
+        private PointCollection GeneratePointCollection_TooltipConnectRight(double estimatedHeight, double estimatedWidth)
+        {
+            PointCollection pointCollection = new PointCollection();
+
+            double arrowHeight = Configurations.NodeTooltipArrowHeight_SideConnecting;
+            double arrowWidth = Configurations.NodeTooltipArrowWidth_SideConnecting;
+
+            pointCollection.Add(new Point(estimatedWidth - arrowWidth, 0));
+            pointCollection.Add(new Point(0, 0));
+            pointCollection.Add(new Point(0, estimatedHeight));
+            pointCollection.Add(new Point(estimatedWidth - arrowWidth, estimatedHeight));
+            pointCollection.Add(new Point(estimatedWidth - arrowWidth, estimatedHeight / 2 + arrowHeight / 2));
+            pointCollection.Add(new Point(estimatedWidth, estimatedHeight / 2));
+            pointCollection.Add(new Point(estimatedWidth - arrowWidth, estimatedHeight / 2 - arrowHeight / 2));
+
             return pointCollection;
         }
 
