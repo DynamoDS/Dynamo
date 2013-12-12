@@ -1,11 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file represents the results of running a test suite-->
-<test-results name="C:\Users\boyerp\Dropbox\Github\Autodesk\DynamoNew\Dynamo\bin\AnyCPU\Debug\DynamoTestFramework.dll" total="1" failures="0" not-run="0" date="2013-12-11" time="18:42:01" errors="0" inconclusive="0" ignored="0" skipped="0" invalid="0">
-  <test-suite name="DynamoTestFrameworkTests" description="Unit tests in Revit." time="0.7080708" asserts="3" type="TestFixture" result="Success" executed="True">
+<test-results name="C:\Users\boyerp\Dropbox\Github\Autodesk\DynamoNew\Dynamo\bin\AnyCPU\Debug\DynamoTestFramework.dll" total="2" failures="0" not-run="0" date="2013-12-11" time="19:01:37" errors="0" inconclusive="0" ignored="0" skipped="0" invalid="0">
+  <test-suite name="DynamoTestFrameworkTests" description="Unit tests in Revit." time="0.1460146" asserts="5" type="TestFixture" result="Success" executed="True">
     <results>
-      <test-suite name="StructuralFramingTests" description="Unit tests in Revit." time="0.7080708" asserts="3" type="TestFixture" result="Success" executed="True">
+      <test-suite name="ModelTextTypeTests" description="Unit tests in Revit." time="0.1460146" asserts="5" type="TestFixture" result="Success" executed="True">
         <results>
-          <test-case name="ByCurveLevelUpVectorAndType_ValidArgs" success="True" time="0.7080708" executed="True" asserts="3" result="Success" />
+          <test-case name="ByName_ValidArgs" success="True" time="0.0840084" executed="True" asserts="3" result="Success" />
+          <test-case name="ByName_BadArgs" success="True" time="0.0620062" executed="True" asserts="2" result="Success" />
         </results>
       </test-suite>
     </results>
