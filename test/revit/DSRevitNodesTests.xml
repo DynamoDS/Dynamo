@@ -120,7 +120,7 @@
         <test name="BSplineCurve_Basic" modelPath=".\empty.rfa"/>
         <test name="Circle_Basic" modelPath=".\empty.rfa"/>
         <test name="Arc_Basic" modelPath=".\empty.rfa"/>
-		    <test name="Line_Basic" modelPath=".\empty.rfa"/>
+		<test name="Line_Basic" modelPath=".\empty.rfa"/>
       </testFixture>
       
       <testFixture name="RevitToProtoCurveTests">

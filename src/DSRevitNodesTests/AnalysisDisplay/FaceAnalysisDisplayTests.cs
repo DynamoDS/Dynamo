@@ -16,7 +16,6 @@ namespace DSRevitNodesTests.AnalysisDisplay
         [Test]
         public void ByViewFacePointsAndValues_ValidArgs()
         {
-
             // get the face from the document
             var ele = ElementSelector.ByType<Autodesk.Revit.DB.Form>(true).FirstOrDefault();
             var form = ele as DSForm;
@@ -46,7 +45,6 @@ namespace DSRevitNodesTests.AnalysisDisplay
         [Test]
         public void ByViewFacePointsAndValues_BadArgs()
         {
-
             // get the face from the document
             var ele = ElementSelector.ByType<Autodesk.Revit.DB.Form>(true).FirstOrDefault();
             var form = ele as DSForm;

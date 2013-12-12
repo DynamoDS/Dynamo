@@ -19,14 +19,6 @@ namespace DSRevitNodes.GeometryObjects
             this.InternalEdge = x;
         }
 
-        //public DSCurve Curve
-        //{
-        //    get
-        //    {
-        //        return InternalEdge.AsCurve();
-        //    }
-        //}
-
         #region Tesselation
 
         public void Tessellate(IRenderPackage package)
