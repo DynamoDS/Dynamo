@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Windows.Controls;
 using Autodesk.DesignScript.Geometry;
+using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Structure;
 
 namespace DSRevitNodes.GeometryConversion
@@ -40,7 +42,6 @@ namespace DSRevitNodes.GeometryConversion
             }
 
             // presumably checking if the curve is circular is quite expensive, we don't do it
-
             return Autodesk.Revit.DB.NurbSpline.Create(crv.ControlVertices.ToXyzs(),
                 Enumerable.Repeat( 1.0, crv.ControlVertices.Count() ).ToList(),
                 crv.Knots.ToList(),
@@ -56,19 +57,47 @@ namespace DSRevitNodes.GeometryConversion
         /// <returns></returns>
         private static Autodesk.Revit.DB.Arc Convert(Autodesk.DesignScript.Geometry.Arc arc)
         {
-            var plane = arc.ContextCoordinateSystem.XYPlane.ToPlane();
-            return Autodesk.Revit.DB.Arc.Create(plane, arc.Radius, arc.StartAngle, arc.EndAngle);
+            // This is not the way to do this, but ProtoGeometry is so broken it's the only thing that works
+            var p0 = arc.PointAtParameter(0);
+            var p05 = arc.PointAtParameter(0.5);
+            var p1 = arc.PointAtParameter(1);
+
+            return Autodesk.Revit.DB.Arc.Create(p0.ToXyz(), p1.ToXyz(), p05.ToXyz());
+
+            //var center = arc.CenterPoint;
+            //var xaxis = arc.ContextCoordinateSystem.XAxis;
+            //var yaxis = arc.ContextCoordinateSystem.YAxis;
+            //var plane = new Autodesk.Revit.DB.Plane(xaxis.ToXyz(), yaxis.ToXyz(), center.ToXyz());
+
+            //return Autodesk.Revit.DB.Arc.Create(plane, arc.Radius, arc.StartAngle, arc.EndAngle);
         }
 
         /// <summary>
         /// Convert a DS Circle to a Revit Arc
         /// </summary>
-        /// <param name="arc"></param>
+        /// <param name="circ"></param>
         /// <returns></returns>
         private static Autodesk.Revit.DB.Arc Convert(Autodesk.DesignScript.Geometry.Circle circ)
         {
-            var plane = circ.ContextCoordinateSystem.XYPlane.ToPlane();
-            return Autodesk.Revit.DB.Arc.Create(plane, circ.Radius, 0, 2*System.Math.PI);
+            // This is a mess, but ProtoGeometry is so broken it's the only thing that works
+            var p0 = circ.PointAtParameter(0);
+            var p075 = circ.PointAtParameter(0.75);
+            var p025 = circ.PointAtParameter(0.25);
+            var p05 = circ.PointAtParameter(0.5);
+
+            var xaxis = p0.DirectionTo(p05).Normalize();
+            var yaxis = p025.DirectionTo(p075).Normalize();
+
+            return Autodesk.Revit.DB.Arc.Create(circ.CenterPoint.ToXyz(), circ.Radius, 0, 2*Math.PI, xaxis.ToXyz(),
+                yaxis.ToXyz());
+
+            //var center = circ.CenterPoint;
+            //var xaxis = circ.ContextCoordinateSystem.XAxis;
+            //var yaxis = circ.ContextCoordinateSystem.YAxis;
+            //var plane = new Autodesk.Revit.DB.Plane(xaxis.ToXyz(), yaxis.ToXyz(), center.ToXyz());
+
+            return Autodesk.Revit.DB.Arc.Create(circ.FirstPoint.ToXyz(), circ.SecondPoint.ToXyz(), circ.ThirdPoint.ToXyz());
+            //return Autodesk.Revit.DB.Arc.Create(plane, circ.Radius, 0, 2*System.Math.PI);
         }
 
         /// <summary>

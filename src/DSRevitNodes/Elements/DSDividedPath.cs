@@ -122,11 +122,6 @@ namespace DSRevitNodes.Elements
             return new DSDividedPath(curve, divisions);
         }
 
-        //public static DSDividedPath ByCurveAndDivisionsOfLength(DSCurve c, double length)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
         #endregion
 
         #region Internal static constructors
