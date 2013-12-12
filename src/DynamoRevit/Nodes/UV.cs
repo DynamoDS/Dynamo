@@ -1,4 +1,5 @@
-﻿using Dynamo.Models;
+﻿using Autodesk.DesignScript.Geometry;
+using Dynamo.Models;
 using Microsoft.FSharp.Collections;
 using Autodesk.Revit.DB;
 
@@ -47,8 +48,8 @@ namespace Dynamo.Nodes
             var min = (UV)((FScheme.Value.Container)args[0]).Item;
             var max = (UV)((FScheme.Value.Container)args[1]).Item;
 
-            var vmax = Autodesk.LibG.Vector.by_coordinates(max.U, max.V);
-            var vmin = Autodesk.LibG.Vector.by_coordinates(min.U, min.V);
+            var vmax = Vector.ByCoordinates(max.U, max.V,0);
+            var vmin = Vector.ByCoordinates(min.U, min.V,0);
 
             return FScheme.Value.NewContainer(DSCoreNodes.Domain2D.ByMinimumAndMaximum(vmin, vmax));
         }
@@ -82,11 +83,11 @@ namespace Dynamo.Nodes
 
             for (int i = 0; i <= ui; i++)
             {
-                double u = domain.Min.x() + i * us;
+                double u = domain.Min.X + i * us;
 
                 for (int j = 0; j <= vi; j++)
                 {
-                    double v = domain.Min.y() + j * vs;
+                    double v = domain.Min.Y + j * vs;
 
                     result = FSharpList<FScheme.Value>.Cons(
                         FScheme.Value.NewContainer(new UV(u, v)),
@@ -130,8 +131,8 @@ namespace Dynamo.Nodes
             //UV min = ((Value.Container)domain[0]).Item as UV;
             //UV max = ((Value.Container)domain[1]).Item as UV;
 
-            var min = new UV(domain.Min.x(), domain.Min.y());
-            var max = new UV(domain.Max.x(), domain.Max.y());
+            var min = new UV(domain.Min.X, domain.Min.Y);
+            var max = new UV(domain.Max.X, domain.Max.Y);
 
             var r = new System.Random();
             double uSpan = max.U - min.U;
