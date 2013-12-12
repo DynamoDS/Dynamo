@@ -229,6 +229,11 @@
         <test name="ByCurveLevelUpVectorAndType_ValidArgs" modelPath=".\Empty.rvt"/>
 		<test name="ByCurveLevelUpVectorAndType_BadArgs" modelPath=".\Empty.rvt"/>
       </testFixture>
+	  
+	  <testFixture name="ModelTextTypeTests">
+        <test name="ByName_ValidArgs" modelPath=".\Empty.rvt"/>
+		<test name="ByName_BadArgs" modelPath=".\Empty.rvt"/>
+      </testFixture>
 		</testAssembly>
 	</testAssemblies>
 </tests>
