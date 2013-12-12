@@ -11,7 +11,6 @@ using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
 using RevitServices.Persistence;
 using Binding = System.Windows.Data.Binding;
-using Grid = Autodesk.Revit.DB.Grid;
 
 namespace DSRevitNodes.Elements
 {
