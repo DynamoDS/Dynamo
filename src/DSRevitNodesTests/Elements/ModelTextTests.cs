@@ -2,10 +2,67 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Autodesk.DesignScript.Geometry;
+using DSRevitNodes.AnalysisDisplay;
+using DSRevitNodes.Elements;
+using NUnit.Framework;
+using RevitServices.Persistence;
 
 namespace DSRevitNodesTests.Elements
 {
-    class ModelTextTests
+    [TestFixture]
+    public class ModelTextTests
     {
+        [SetUp]
+        public void Setup()
+        {
+            HostFactory.Instance.StartUp();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            HostFactory.Instance.ShutDown();
+        }
+
+        [Test]
+        public void ByTextSketchPlaneAndPosition_ValidArgs()
+        {
+            var origin = Point.ByCoordinates(1, 2, 3);
+            var normal = Vector.ByCoordinates(0, 0, 1);
+            var plane = Plane.ByOriginNormal(origin, normal);
+            var text = "Snickers - why wait?";
+
+            var name = "Model Text 1";
+            var modelTextType = DSModelTextType.ByName(name);
+
+            var sketchPlane = DSSketchPlane.ByPlane(plane);
+
+            var structure = DSModelText.ByTextSketchPlaneAndPosition(text, sketchPlane, 0, 0, 1, modelTextType);
+
+            Assert.NotNull(structure);
+            Assert.NotNull(structure.InternalElement);
+            Assert.IsTrue(DocumentManager.GetInstance().ElementExistsInDocument(structure.InternalElement.Id));
+        }
+
+        [Test]
+        public void ByTextSketchPlaneAndPosition_BadArgs()
+        {
+            var origin = Point.ByCoordinates(1, 2, 3);
+            var normal = Vector.ByCoordinates(0, 0, 1);
+            var plane = Plane.ByOriginNormal(origin, normal);
+            var text = "Snickers - why wait?";
+
+            var name = "Model Text 1";
+            var modelTextType = DSModelTextType.ByName(name);
+
+            var sketchPlane = DSSketchPlane.ByPlane(plane);
+
+            Assert.Throws(typeof(System.ArgumentNullException), () => DSModelText.ByTextSketchPlaneAndPosition(null, sketchPlane, 0, 0, 1, modelTextType));
+            Assert.Throws(typeof(System.ArgumentNullException), () => DSModelText.ByTextSketchPlaneAndPosition(text, null, 0, 0, 1, modelTextType));
+            Assert.Throws(typeof(System.ArgumentNullException), () => DSModelText.ByTextSketchPlaneAndPosition(text, sketchPlane, 0, 0, 1, null));
+
+        }
+
     }
 }
