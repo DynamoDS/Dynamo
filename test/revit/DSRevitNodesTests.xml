@@ -239,11 +239,15 @@
 		<test name="ByName_BadArgs" modelPath=".\Empty.rvt"/>
       </testFixture>
 	  
-	  <testFixture name="ModelTextTests">
-        <test name="ByTextSketchPlaneAndPosition_ValidArgs" modelPath=".\withModelText.rfa"/>
-		<test name="ByTextSketchPlaneAndPosition_BadArgs" modelPath=".\withModelText.rfa"/>
+	  <testFixture name="PointAnalysisDisplayTests">
+        <test name="ByViewPointsAndValues_ValidArgs" modelPath=".\withModelText.rfa"/>
+		<test name="ByViewPointsAndValues_BadArgs" modelPath=".\withModelText.rfa"/>
       </testFixture>
 	  
+	  <testFixture name="VectorAnalysisDisplayTests">
+        <test name="ByViewPointsAndVectorValues_ValidArgs" modelPath=".\withModelText.rfa"/>
+		<test name="ByViewPointsAndVectorValues_BadArgs" modelPath=".\withModelText.rfa"/>
+      </testFixture>	  
 		</testAssembly>
 	</testAssemblies>
 </tests>

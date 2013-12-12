@@ -49,9 +49,12 @@ namespace DSRevitNodes.Application
         /// Get the current document
         /// </summary>
         /// <returns></returns>
-        public static DSDocument Current()
+        public static DSDocument Current
         {
-            return new DSDocument();
+            get
+            {
+                return new DSDocument();
+            }
         }
 
     }
