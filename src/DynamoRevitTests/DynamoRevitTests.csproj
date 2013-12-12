@@ -89,7 +89,6 @@
     <Compile Include="DynamoRevitTests.cs" />
     <Compile Include="FamilyTests.cs" />
     <Compile Include="IntersectionTests.cs" />
-    <Compile Include="NewNodeSampleTests.cs" />
     <Compile Include="LengthTests.cs" />
     <Compile Include="ModelTextTests.cs" />
     <Compile Include="ReferenceCurveTests.cs" />
