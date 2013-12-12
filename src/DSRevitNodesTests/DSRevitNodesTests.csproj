@@ -66,9 +66,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnalysisDisplay\FaceAnalysisDisplayTests.cs" />
+    <Compile Include="AnalysisDisplay\PointAnalysisDisplayTests.cs" />
+    <Compile Include="AnalysisDisplay\VectorAnalysisDisplayTests.cs" />
     <Compile Include="Elements\AdaptiveComponentTests.cs" />
     <Compile Include="Elements\DividedPathTests.cs" />
     <Compile Include="Elements\DividedSurfaceTests.cs" />
+    <Compile Include="Elements\DocumentTests.cs" />
     <Compile Include="Elements\FloorTests.cs" />
     <Compile Include="Elements\FloorTypeTests.cs" />
     <Compile Include="Elements\GridTests.cs" />
