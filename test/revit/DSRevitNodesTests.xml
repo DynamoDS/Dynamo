@@ -240,14 +240,20 @@
       </testFixture>
 	  
 	  <testFixture name="PointAnalysisDisplayTests">
-        <test name="ByViewPointsAndValues_ValidArgs" modelPath=".\withModelText.rfa"/>
-		<test name="ByViewPointsAndValues_BadArgs" modelPath=".\withModelText.rfa"/>
+        <test name="ByViewPointsAndValues_ValidArgs" modelPath=".\empty.rfa"/>
+		<test name="ByViewPointsAndValues_BadArgs" modelPath=".\empty.rfa"/>
       </testFixture>
 	  
 	  <testFixture name="VectorAnalysisDisplayTests">
-        <test name="ByViewPointsAndVectorValues_ValidArgs" modelPath=".\withModelText.rfa"/>
-		<test name="ByViewPointsAndVectorValues_BadArgs" modelPath=".\withModelText.rfa"/>
+        <test name="ByViewPointsAndVectorValues_ValidArgs" modelPath=".\empty.rfa"/>
+		<test name="ByViewPointsAndVectorValues_BadArgs" modelPath=".\empty.rfa"/>
       </testFixture>	  
+	  
+	  <testFixture name="FaceAnalysisDisplayTests">
+        <test name="ByViewFacePointsAndValues_ValidArgs" modelPath=".\block.rfa"/>
+		<test name="ByViewFacePointsAndValues_BadArgs" modelPath=".\block.rfa"/>
+      </testFixture>	
+
 		</testAssembly>
 	</testAssemblies>
 </tests>
