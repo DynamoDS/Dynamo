@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Autodesk.Revit.DB;
+using Autodesk.Revit.UI;
 using RevitServices.Elements;
 using RevitServices.Transactions;
 
@@ -74,6 +75,11 @@ namespace RevitServices.Persistence
         /// Dynamo is reponsible for updating this before use
         /// </summary>
         public Document CurrentDBDocument { get; set; }
+
+        /// <summary>
+        /// Provides the currently active UI document.
+        /// </summary>
+        public UIDocument CurrentUIDocument { get; set; }
 
         /// <summary>
         /// A method to clear some elements from the CurrentDBDocument.  This is intended

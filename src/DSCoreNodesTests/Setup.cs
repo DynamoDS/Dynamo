@@ -1,5 +1,4 @@
 ﻿using System;
-using Autodesk.LibG;
 using Dynamo.Utilities;
 using NUnit.Framework;
 
