@@ -79,7 +79,7 @@ namespace DSRevitNodes.Elements
 
             if (type == null)
             {
-                throw new Exception("There is no ModelTextType of the given name in the current Document");
+                throw new Exception(String.Format("There is no ModelTextType of the name, {0}, in the current Document", name));
             }
 
             return new DSModelTextType(type)

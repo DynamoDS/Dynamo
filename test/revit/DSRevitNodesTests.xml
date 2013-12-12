@@ -109,7 +109,9 @@
         <test name="BySolid_NullArgument" modelPath=".\empty.rfa"/>
       </testFixture>
       
+	  
       <testFixture name="FormTests">
+        <test name="ByLoftingCurveReferences_ValidArgs" modelPath=".\block.rfa"/>
         <test name="FaceReferencesProperty_ValidObject" modelPath=".\block.rfa"/>
 		    <test name="SolidsProperty_ValidObject" modelPath=".\block.rfa"/>
       </testFixture>
@@ -228,6 +230,31 @@
 		    <test name="ByNameNumberAndView_ValidArgs" modelPath=".\Empty.rvt"/>
 		    <test name="ByNameNumberAndView_BadArgs" modelPath=".\Empty.rvt"/>
       </testFixture>
+	  
+	  <testFixture name="StructuralFramingTests">
+        <test name="ByCurveLevelUpVectorAndType_ValidArgs" modelPath=".\Empty.rvt"/>
+		<test name="ByCurveLevelUpVectorAndType_BadArgs" modelPath=".\Empty.rvt"/>
+      </testFixture>
+	  
+	  <testFixture name="ModelTextTypeTests">
+        <test name="ByName_ValidArgs" modelPath=".\Empty.rvt"/>
+		<test name="ByName_BadArgs" modelPath=".\Empty.rvt"/>
+      </testFixture>
+	  
+	  <testFixture name="PointAnalysisDisplayTests">
+        <test name="ByViewPointsAndValues_ValidArgs" modelPath=".\empty.rfa"/>
+		<test name="ByViewPointsAndValues_BadArgs" modelPath=".\empty.rfa"/>
+      </testFixture>
+	  
+	  <testFixture name="VectorAnalysisDisplayTests">
+        <test name="ByViewPointsAndVectorValues_ValidArgs" modelPath=".\empty.rfa"/>
+		<test name="ByViewPointsAndVectorValues_BadArgs" modelPath=".\empty.rfa"/>
+      </testFixture>	  
+	  
+	  <testFixture name="FaceAnalysisDisplayTests">
+        <test name="ByViewFacePointsAndValues_ValidArgs" modelPath=".\block.rfa"/>
+		<test name="ByViewFacePointsAndValues_BadArgs" modelPath=".\block.rfa"/>
+      </testFixture>	
 
       <testFixture name="InteractivityTests">
         <test name="SelectElementASTGeneration" modelPath=".\Empty.rfa"/>

@@ -108,7 +108,7 @@ namespace DSRevitNodes.AnalysisDisplay
         /// <param name="samplePoints"></param>
         /// <param name="samples"></param>
         /// <returns></returns>
-        public static DSVectorAnalysisDisplay ByViewPointsAndVectors(AbstractView view,
+        public static DSVectorAnalysisDisplay ByViewPointsAndVectorValues(AbstractView view,
                         Autodesk.DesignScript.Geometry.Point[] samplePoints, Autodesk.DesignScript.Geometry.Vector[] samples)
         {
 
