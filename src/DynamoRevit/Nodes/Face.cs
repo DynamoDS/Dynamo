@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Autodesk.LibG;
+using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using Dynamo.Models;
 using Dynamo.Utilities;
@@ -328,8 +328,8 @@ namespace Dynamo.Nodes
                 bbox = f.GetBoundingBox();
             }
 
-            var min = Vector.by_coordinates(bbox.Min.U, bbox.Min.V);
-            var max = Vector.by_coordinates(bbox.Max.U, bbox.Max.V);
+            var min = Vector.ByCoordinates(bbox.Min.U, bbox.Min.V,0);
+            var max = Vector.ByCoordinates(bbox.Max.U, bbox.Max.V,0);
 
             return FScheme.Value.NewContainer(DSCoreNodes.Domain2D.ByMinimumAndMaximum(min, max));
         }

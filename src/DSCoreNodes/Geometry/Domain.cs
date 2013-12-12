@@ -1,4 +1,4 @@
-﻿using Autodesk.LibG;
+﻿using Autodesk.DesignScript.Geometry;
 
 namespace DSCoreNodes
 {
@@ -22,7 +22,7 @@ namespace DSCoreNodes
         /// </summary>
         public double USpan
         {
-            get { return Max.x() - Min.x(); }
+            get { return Max.X - Min.X; }
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace DSCoreNodes
         /// </summary>
         public double VSpan
         {
-            get { return Max.y() - Min.y(); }
+            get { return Max.Y - Min.Y; }
         }
 
         /// <summary>
