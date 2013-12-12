@@ -9,6 +9,7 @@ using DSRevitNodes.Elements;
 using DSRevitNodes.GeometryConversion;
 using DSRevitNodes.GeometryObjects;
 using NUnit.Framework;
+using FreeFormElement = Autodesk.Revit.DB.FreeFormElement;
 
 namespace DSRevitNodesTests.GeometryObjects
 {
@@ -227,7 +228,7 @@ namespace DSRevitNodesTests.GeometryObjects
         [Test]
         public void Sphere_ValidArgs()
         {
-            var sphere = DSSolid.Sphere(Point.ByCoordinates(0, 0, 0), 10);
+            var sphere = DSSolid.Sphere(Point.ByCoordinates(0, 5, 3), 10);
             Assert.IsNotNull(sphere);
 
             var package = new RenderPackage();
@@ -287,6 +288,83 @@ namespace DSRevitNodesTests.GeometryObjects
             box.Tessellate(package);
 
             var modelPath = Path.Combine(TestGeometryDirectory, @"BoxByCenterAndDimensions_ValidArgs.obj");
+            if (File.Exists(modelPath))
+                File.Delete(modelPath);
+            WriteToOBJ(modelPath, new List<RenderPackage>() { package });
+        }
+
+        [Test]
+        public void ByBooleanUnion_ValidArgs()
+        {
+            var solidA = DSSolid.BoxByCenterAndDimensions(Point.ByCoordinates(0, 0, 0), 1, 1, 1);
+            var solidB = DSSolid.Sphere(Point.ByCoordinates(1, 1, 0), 1);
+            var union = DSSolid.ByBooleanUnion(solidA, solidB);
+            Assert.IsNotNull(union);
+
+            var package = new RenderPackage();
+            union.Tessellate(package);
+
+            var modelPath = Path.Combine(TestGeometryDirectory, @"ByBooleanUnion_ValidArgs.obj");
+            if (File.Exists(modelPath))
+                File.Delete(modelPath);
+            WriteToOBJ(modelPath, new List<RenderPackage>() { package });
+        }
+
+        [Test]
+        public void ByBooleanIntersect_ValidArgs()
+        {
+            var solidA = DSSolid.BoxByCenterAndDimensions(Point.ByCoordinates(0, 0, 0), 1, 1, 1);
+            var solidB = DSSolid.Sphere(Point.ByCoordinates(1, 1, 0), 1);
+            var xSect = DSSolid.ByBooleanIntersection(solidA, solidB);
+            Assert.IsNotNull(xSect);
+
+            var package = new RenderPackage();
+            xSect.Tessellate(package);
+
+            var modelPath = Path.Combine(TestGeometryDirectory, @"ByBooleanIntersect_ValidArgs.obj");
+            if (File.Exists(modelPath))
+                File.Delete(modelPath);
+            WriteToOBJ(modelPath, new List<RenderPackage>() { package });
+        }
+
+        [Test]
+        public void ByBooleanDifference_ValidArgs()
+        {
+            var solidA = DSSolid.BoxByCenterAndDimensions(Point.ByCoordinates(0, 0, 0), 1, 1, 1);
+            var solidB = DSSolid.Sphere(Point.ByCoordinates(1, 1, 0), 1);
+            var difference = DSSolid.ByBooleanDifference(solidA, solidB);
+            Assert.IsNotNull(difference);
+
+            var package = new RenderPackage();
+            difference.Tessellate(package);
+
+            var modelPath = Path.Combine(TestGeometryDirectory, @"ByBooleanDifference_ValidArgs.obj");
+            if (File.Exists(modelPath))
+                File.Delete(modelPath);
+            WriteToOBJ(modelPath, new List<RenderPackage>() { package });
+        }
+
+        [Test]
+        public void FromElement_ValidArgs()
+        {
+            var solidA = DSSolid.BoxByCenterAndDimensions(Point.ByCoordinates(0, 0, 0), 1, 1, 1);
+            var solidB = DSSolid.Sphere(Point.ByCoordinates(1, 1, 0), 1);
+            var difference = DSSolid.ByBooleanDifference(solidA, solidB);
+
+            var ff = DSFreeForm.BySolid(difference);
+
+            var extract = DSSolid.FromElement(ff);
+            Assert.IsNotNull(extract);
+
+            var package = new RenderPackage();
+            extract.Tessellate(package);
+
+            ExportModel("FromElement_ValidArgs.obj", package);
+        }
+
+        private void ExportModel(string fileName, RenderPackage package)
+        {
+            var modelPath = Path.Combine(TestGeometryDirectory, fileName);
             if (File.Exists(modelPath))
                 File.Delete(modelPath);
             WriteToOBJ(modelPath, new List<RenderPackage>() { package });

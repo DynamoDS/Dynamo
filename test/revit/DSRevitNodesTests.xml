@@ -94,6 +94,10 @@
         <test name="Torus_ValidArgs" modelPath=".\empty.rfa"/>
         <test name="BoxByMinimumMaximum_ValidArgs" modelPath=".\empty.rfa"/>
         <test name="BoxByCenterAndDimensions_ValidArgs" modelPath=".\empty.rfa"/>
+        <test name="ByBooleanUnion_ValidArgs" modelPath=".\empty.rfa"/>
+        <test name="ByBooleanIntersect_ValidArgs" modelPath=".\empty.rfa"/>
+        <test name="ByBooleanDifference_ValidArgs" modelPath=".\empty.rfa"/>
+        <test name="FromElement_ValidArgs" modelPath=".\empty.rfa"/>
       </testFixture>
 
       <testFixture name="ModelCurveTests">
