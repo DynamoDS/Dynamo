@@ -130,105 +130,109 @@
 		    <test name="CylindricalHelix_Basic" modelPath=".\empty.rfa"/>
       </testFixture>
 	 
-	 <testFixture name="ReferencePlaneTests">
+	   <testFixture name="ReferencePlaneTests">
         <test name="ByLine_ValidArgs" modelPath=".\empty.rfa"/>
-		<test name="ByLine_NullInput" modelPath=".\empty.rfa"/>
-		<test name="ByStartPointEndPoint_NullInputBoth" modelPath=".\empty.rfa"/>
-		<test name="ByStartPointEndPoint_NullInput2" modelPath=".\empty.rfa"/>
-		<test name="ByStartPointEndPoint_NullInput1" modelPath=".\empty.rfa"/>
+		    <test name="ByLine_NullInput" modelPath=".\empty.rfa"/>
+		    <test name="ByStartPointEndPoint_NullInputBoth" modelPath=".\empty.rfa"/>
+		    <test name="ByStartPointEndPoint_NullInput2" modelPath=".\empty.rfa"/>
+		    <test name="ByStartPointEndPoint_NullInput1" modelPath=".\empty.rfa"/>
       </testFixture>
 		
-	  <testFixture name="LevelTests">
+	    <testFixture name="LevelTests">
         <test name="ByElevationAndName_ValidArgs" modelPath=".\empty.rfa"/>
-		<test name="ByElevationAndName_NullArgument" modelPath=".\empty.rfa"/>
-		<test name="ByElevation_ValidArgs" modelPath=".\empty.rfa"/>
-		<test name="ByLevelAndOffset_ValidArgs" modelPath=".\empty.rfa"/>
-		<test name="ByLevelOffsetAndName_ValidArgs" modelPath=".\empty.rfa"/>
-		<test name="ByLevelOffsetAndName_NullArgument" modelPath=".\empty.rfa"/>
+		    <test name="ByElevationAndName_NullArgument" modelPath=".\empty.rfa"/>
+		    <test name="ByElevation_ValidArgs" modelPath=".\empty.rfa"/>
+		    <test name="ByLevelAndOffset_ValidArgs" modelPath=".\empty.rfa"/>
+		    <test name="ByLevelOffsetAndName_ValidArgs" modelPath=".\empty.rfa"/>
+		    <test name="ByLevelOffsetAndName_NullArgument" modelPath=".\empty.rfa"/>
       </testFixture>
 	  
-	  <testFixture name="FloorTypeTests">
+	    <testFixture name="FloorTypeTests">
         <test name="ByName_ValidArgs" modelPath=".\Empty.rvt"/>
-		<test name="ByName_NullArgument" modelPath=".\Empty.rvt"/>
+        <test name="ByName_NullArgument" modelPath=".\Empty.rvt"/>
       </testFixture>
 	  
-	<testFixture name="FloorTests">
+	    <testFixture name="FloorTests">
         <test name="ByOutlineTypeAndLevel_ValidArgs" modelPath=".\Empty.rvt"/>
-		<test name="ByOutlineTypeAndLevel_NullArgument" modelPath=".\Empty.rvt"/>
+	      <test name="ByOutlineTypeAndLevel_NullArgument" modelPath=".\Empty.rvt"/>
       </testFixture>
 	  
-	  <testFixture name="SketchPlaneTests">
+	    <testFixture name="SketchPlaneTests">
         <test name="ByPlane_ValidArgs" modelPath=".\Empty.rvt"/>
-		<test name="ByPlane_NullArgument" modelPath=".\Empty.rvt"/>
+		    <test name="ByPlane_NullArgument" modelPath=".\Empty.rvt"/>
       </testFixture>
 	  
-	  <testFixture name="WallTests">
+	    <testFixture name="WallTests">
         <test name="ByCurveAndHeight_ValidArgs" modelPath=".\Empty.rvt"/>
-		<test name="ByCurveAndHeight_NullArgs" modelPath=".\Empty.rvt"/>
-		<test name="ByCurveAndLevels_ValidArgs" modelPath=".\Empty.rvt"/>
-		<test name="ByCurveAndLevels_NullArgs" modelPath=".\Empty.rvt"/>
+		    <test name="ByCurveAndHeight_NullArgs" modelPath=".\Empty.rvt"/>
+		    <test name="ByCurveAndLevels_ValidArgs" modelPath=".\Empty.rvt"/>
+		    <test name="ByCurveAndLevels_NullArgs" modelPath=".\Empty.rvt"/>
       </testFixture>
 	  
-	  <testFixture name="MaterialTests">
+	    <testFixture name="MaterialTests">
         <test name="ByName_ValidArgs" modelPath=".\Empty.rvt"/>
-		<test name="ByName_NullArgument" modelPath=".\Empty.rvt"/>
-		<test name="ByName_NonexistentName" modelPath=".\Empty.rvt"/>
+		    <test name="ByName_NullArgument" modelPath=".\Empty.rvt"/>
+		    <test name="ByName_NonexistentName" modelPath=".\Empty.rvt"/>
       </testFixture>
 	  
-	  <testFixture name="GridTests">
+	    <testFixture name="GridTests">
         <test name="ByLine_ValidArgs" modelPath=".\Empty.rvt"/>
-		<test name="ByLine_NullArgs" modelPath=".\Empty.rvt"/>
-		<test name="ByStartPointEndPoint_ValidArgs" modelPath=".\Empty.rvt"/>
-		<test name="ByStartPointEndPoint_NullArgs" modelPath=".\Empty.rvt"/>
-		<test name="ByArc_ValidArgs" modelPath=".\Empty.rvt"/>
-		<test name="ByArc_NullArgs" modelPath=".\Empty.rvt"/>
+		    <test name="ByLine_NullArgs" modelPath=".\Empty.rvt"/>
+		    <test name="ByStartPointEndPoint_ValidArgs" modelPath=".\Empty.rvt"/>
+		    <test name="ByStartPointEndPoint_NullArgs" modelPath=".\Empty.rvt"/>
+		    <test name="ByArc_ValidArgs" modelPath=".\Empty.rvt"/>
+		    <test name="ByArc_NullArgs" modelPath=".\Empty.rvt"/>
       </testFixture>
 	   
-	  <testFixture name="BoundingBoxTests">
+	    <testFixture name="BoundingBoxTests">
         <test name="BoundingBoxPropertyOnAbstractElement" modelPath=".\MassWithBoxAndCone.rfa"/>
       </testFixture>
 	  
-	  <testFixture name="SectionViewTests">
+	    <testFixture name="SectionViewTests">
         <test name="ByBoundingBox_ValidArgs" modelPath=".\Empty.rvt"/>
-		<test name="ByBoundingBox_NullArgs" modelPath=".\Empty.rvt"/>
+		    <test name="ByBoundingBox_NullArgs" modelPath=".\Empty.rvt"/>
       </testFixture>
 	  
-	  <testFixture name="DraftingViewTests">
+	    <testFixture name="DraftingViewTests">
         <test name="ByName_ValidArgs" modelPath=".\Empty.rvt"/>
-		<test name="ByName_NullArgs" modelPath=".\Empty.rvt"/>
+		    <test name="ByName_NullArgs" modelPath=".\Empty.rvt"/>
       </testFixture>
 	  
-	<testFixture name="AxonometricViewTests">
+	    <testFixture name="AxonometricViewTests">
         <test name="ByEyePointTargetAndBoundingBox_ValidArgs" modelPath=".\Empty.rvt"/>
-		<test name="ByEyePointTargetAndBoundingBox_BadArgs" modelPath=".\Empty.rvt"/>
-		<test name="ByEyePointTargetAndElement_ValidArgs" modelPath=".\Empty.rvt"/>
-		<test name="ByEyePointTargetAndElement_BadArgs" modelPath=".\Empty.rvt"/>
+		    <test name="ByEyePointTargetAndBoundingBox_BadArgs" modelPath=".\Empty.rvt"/>
+		    <test name="ByEyePointTargetAndElement_ValidArgs" modelPath=".\Empty.rvt"/>
+		    <test name="ByEyePointTargetAndElement_BadArgs" modelPath=".\Empty.rvt"/>
       </testFixture>
 	  
 	  <testFixture name="PerspectiveViewTests">
         <test name="ByEyePointTargetAndBoundingBox_ValidArgs" modelPath=".\Empty.rvt"/>
-		<test name="ByEyePointTargetAndBoundingBox_BadArgs" modelPath=".\Empty.rvt"/>
-		<test name="ByEyePointTargetAndElement_ValidArgs" modelPath=".\Empty.rvt"/>
-		<test name="ByEyePointTargetAndElement_BadArgs" modelPath=".\Empty.rvt"/>
+		    <test name="ByEyePointTargetAndBoundingBox_BadArgs" modelPath=".\Empty.rvt"/>
+		    <test name="ByEyePointTargetAndElement_ValidArgs" modelPath=".\Empty.rvt"/>
+		    <test name="ByEyePointTargetAndElement_BadArgs" modelPath=".\Empty.rvt"/>
       </testFixture>
 	  
-	  <testFixture name="FloorPlanViewTests">
+	    <testFixture name="FloorPlanViewTests">
         <test name="ByLevel_ValidArgs" modelPath=".\Empty.rvt"/>
-		<test name="ByLevel_BadArgs" modelPath=".\Empty.rvt"/>
+		    <test name="ByLevel_BadArgs" modelPath=".\Empty.rvt"/>
       </testFixture>
 	  
-	  <testFixture name="CeilingPlanViewTests">
+	    <testFixture name="CeilingPlanViewTests">
         <test name="ByLevel_ValidArgs" modelPath=".\Empty.rvt"/>
-		<test name="ByLevel_BadArgs" modelPath=".\Empty.rvt"/>
+		    <test name="ByLevel_BadArgs" modelPath=".\Empty.rvt"/>
       </testFixture>
 	  
-	  <testFixture name="SheetTests">
+	    <testFixture name="SheetTests">
         <test name="ByNameNumberAndViews_ValidArgs" modelPath=".\Empty.rvt"/>
-		<test name="ByNameNumberAndViews_BadArgs" modelPath=".\Empty.rvt"/>
-		<test name="ByNameNumberAndView_ValidArgs" modelPath=".\Empty.rvt"/>
-		<test name="ByNameNumberAndView_BadArgs" modelPath=".\Empty.rvt"/>
+		    <test name="ByNameNumberAndViews_BadArgs" modelPath=".\Empty.rvt"/>
+		    <test name="ByNameNumberAndView_ValidArgs" modelPath=".\Empty.rvt"/>
+		    <test name="ByNameNumberAndView_BadArgs" modelPath=".\Empty.rvt"/>
       </testFixture>
 
+      <testFixture name="InteractivityTests">
+        <test name="SelectElementASTGeneration" modelPath=".\Empty.rfa"/>
+      </testFixture>
+      
 		</testAssembly>
 	</testAssemblies>
 </tests>
