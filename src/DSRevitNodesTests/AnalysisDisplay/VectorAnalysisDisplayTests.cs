@@ -8,7 +8,7 @@ using DSRevitNodes.Application;
 using DSRevitNodes.Elements;
 using NUnit.Framework;
 
-namespace DSRevitNodesTests.Elements
+namespace DSRevitNodesTests.AnalysisDisplay
 {
     [TestFixture]
     public class VectorAnalysisDisplayTests
