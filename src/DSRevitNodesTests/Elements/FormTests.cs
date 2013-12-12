@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Autodesk.Revit.DB;
 using DSRevitNodes.Elements;
 using NUnit.Framework;
+using RevitServices.Persistence;
 
 namespace DSRevitNodesTests.Elements
 {
@@ -13,17 +15,17 @@ namespace DSRevitNodesTests.Elements
         [Test]
         public void ByLoftingCurveReferences_ValidArgs()
         {
+            var eles =
+                ElementSelector.ByType<Autodesk.Revit.DB.CurveElement>(true)
+                    .Cast<DSModelCurve>()
+                    .Select(x => x.CurveReference);
 
+            Assert.AreEqual(2, eles.Count());
 
+            var loft = DSForm.ByLoftingCurveReferences(eles.ToArray(), false);
 
-
-            var ele = ElementSelector.ByType<Autodesk.Revit.DB.Form>(true).FirstOrDefault();
-            Assert.NotNull(ele);
-
-            var form = ele as DSForm;
-            var faces = form.FaceReferences;
-            Assert.IsTrue(faces.All(x => x != null));
-            Assert.AreEqual(6, faces.Length);
+            Assert.NotNull(loft);
+            Assert.IsTrue(DocumentManager.GetInstance().ElementExistsInDocument(loft.InternalElement.Id));
         }
 
         [Test]
