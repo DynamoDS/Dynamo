@@ -234,6 +234,12 @@
         <test name="ByName_ValidArgs" modelPath=".\Empty.rvt"/>
 		<test name="ByName_BadArgs" modelPath=".\Empty.rvt"/>
       </testFixture>
+	  
+	  <testFixture name="ModelTextTests">
+        <test name="ByTextSketchPlaneAndPosition_ValidArgs" modelPath=".\withModelText.rfa"/>
+		<test name="ByTextSketchPlaneAndPosition_BadArgs" modelPath=".\withModelText.rfa"/>
+      </testFixture>
+	  
 		</testAssembly>
 	</testAssemblies>
 </tests>
