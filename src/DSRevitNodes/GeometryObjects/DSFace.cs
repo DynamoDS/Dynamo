@@ -8,8 +8,9 @@ using Face = Autodesk.DesignScript.Geometry.Face;
 
 namespace DSRevitNodes.GeometryObjects
 {
-    public class DSFace : IGeometryObject
+    public class DSFace : AbstractGeometryObject
     {
+
         internal Autodesk.Revit.DB.Face InternalFace
         {
             get; private set;
@@ -23,6 +24,11 @@ namespace DSRevitNodes.GeometryObjects
         private void InternalSetFace(Autodesk.Revit.DB.Face face)
         {
             this.InternalFace = face;
+        }
+
+        protected override GeometryObject InternalGeometryObject
+        {
+            get { return InternalFace; }
         }
 
         #region Public properties
@@ -77,7 +83,7 @@ namespace DSRevitNodes.GeometryObjects
 
         #region Tesselation
 
-        public void Tessellate(IRenderPackage package)
+        public override void Tessellate(IRenderPackage package)
         {
             var mesh = this.InternalFace.Triangulate(GraphicsManager.TesselationLevelOfDetail);
 
