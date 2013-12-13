@@ -44,7 +44,7 @@ namespace DSCoreNodes
         /// </summary>
         [Browsable(false)]
         public override Node BuildAst()
-        {
+        { 
             return new DoubleNode(Value.ToString(CultureInfo.InvariantCulture));
         }
 
