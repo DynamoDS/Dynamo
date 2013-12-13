@@ -49,12 +49,9 @@ namespace DSRevitNodesTests.GeometryObjects
         {
             var crvs = UnitRectangle();
 
-            // construct the curveloop
-            var curveloop = DSCurveLoop.ByCurves(crvs.ToArray());
-
             var dir = Vector.ByCoordinates(0, 0, 1);
             var dist = 5;
-            var extrusion = DSSolid.ByExtrusion(curveloop, dir, dist);
+            var extrusion = DSSolid.ByExtrusion(crvs.ToArray(), dir, dist);
 
             Assert.NotNull(extrusion);
             Assert.AreEqual(2.5, extrusion.Volume, 0.01);

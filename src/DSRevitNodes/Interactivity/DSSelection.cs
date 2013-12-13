@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -14,6 +15,7 @@ using Binding = System.Windows.Data.Binding;
 
 namespace DSRevitNodes.Elements
 {
+    [Browsable(false)]
     public class DSSingleSelect : NodeWithUI
     {
         private ElementId _selected;
@@ -111,6 +113,7 @@ namespace DSRevitNodes.Elements
         }
     }
 
+    [Browsable(false)]
     public class DSMultiSelect : NodeWithUI
     {
         public override void SetupCustomUIElements(dynNodeView nodeUI)
