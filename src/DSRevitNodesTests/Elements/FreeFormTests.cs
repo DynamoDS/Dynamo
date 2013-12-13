@@ -49,15 +49,11 @@ namespace DSRevitNodesTests.Elements
                 BSplineCurve.ByPoints(pts3)
             };
 
-            // construct the curveloop
-            var curveloop = DSCurveLoop.ByCurves(crvs);
-            Assert.NotNull(curveloop);
-
             var dir = Vector.ByCoordinates(0, 0, 1);
             var dist = 5;
 
             // construct the extrusion
-            var extrusion = DSSolid.ByExtrusion(curveloop, dir, dist);
+            var extrusion = DSSolid.ByExtrusion(crvs, dir, dist);
             Assert.NotNull(extrusion);
 
             // construct the freeform element

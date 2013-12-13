@@ -13,20 +13,32 @@ namespace DSRevitNodesTests.GeometryConversion
     [TestFixture]
     public class RevitToProtoCurveTests
     {
+        [SetUp]
+        public void Setup()
+        {
+            HostFactory.Instance.StartUp();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            HostFactory.Instance.ShutDown();
+        }
+
         [Test]
         public void NurbSpline_Rational()
         {
-            // Quarter arc
             var pts = new List<Autodesk.Revit.DB.XYZ>()
             {
                 new Autodesk.Revit.DB.XYZ(1,0,0),
                 new Autodesk.Revit.DB.XYZ(1,1,0),
-                new Autodesk.Revit.DB.XYZ(0,1,0)
+                new Autodesk.Revit.DB.XYZ(0,1,0),
+                new Autodesk.Revit.DB.XYZ(0,2,0)
             };
 
             var wts = new List<double>()
             {
-                1, Math.Sqrt(2)/2, 1
+                1, Math.Sqrt(2)/2, 1, 1
             };
 
             var revitSpline = Autodesk.Revit.DB.NurbSpline.Create(pts, wts);
@@ -82,7 +94,7 @@ namespace DSRevitNodesTests.GeometryConversion
 
             var protoSpline = (Autodesk.DesignScript.Geometry.BSplineCurve)protoCurve;
 
-            Assert.AreEqual(3, protoSpline.Degree );
+            Assert.AreEqual( 2, protoSpline.Degree );
             var start = protoSpline.StartPoint;
             var end = protoSpline.EndPoint;
             var startT = protoSpline.StartTangent;
@@ -97,8 +109,8 @@ namespace DSRevitNodesTests.GeometryConversion
             Assert.AreEqual(pts[2].Z, end.Z, 1e-6);
 
             Assert.AreEqual(ts.EndTangent.X, endT.X, 1e-6);
-            Assert.AreEqual(ts.EndTangent.X, endT.Y, 1e-6);
-            Assert.AreEqual(ts.EndTangent.X, endT.Z, 1e-6);
+            Assert.AreEqual(ts.EndTangent.Y, endT.Y, 1e-6);
+            Assert.AreEqual(ts.EndTangent.Z, endT.Z, 1e-6);
 
             Assert.AreEqual(ts.StartTangent.X, startT.X, 1e-6);
             Assert.AreEqual(ts.StartTangent.Y, startT.Y, 1e-6);
@@ -156,8 +168,8 @@ namespace DSRevitNodesTests.GeometryConversion
             Assert.IsAssignableFrom<Autodesk.DesignScript.Geometry.Arc>(pc);
             var pa = (Autodesk.DesignScript.Geometry.Arc)pc;
 
-            Assert.AreEqual(sp, pa.StartAngle);
-            Assert.AreEqual(ep, pa.EndAngle);
+            Assert.AreEqual(sp, pa.StartAngle * 180 / Math.PI);
+            Assert.AreEqual(ep, pa.EndAngle * 180 / Math.PI);
 
             Assert.AreEqual(x.ToVector(), pa.ContextCoordinateSystem.XAxis);
             Assert.AreEqual(y.ToVector(), pa.ContextCoordinateSystem.YAxis);

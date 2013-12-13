@@ -93,5 +93,14 @@ namespace DSRevitNodes.Elements
                 DocumentManager.GetInstance().DeleteElement(this.InternalElementId);
             }
         }
+
+        /// <summary>
+        /// A basic implementation of ToString for Elements
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return InternalElement.ToString();
+        }
     }
 }

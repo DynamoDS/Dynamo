@@ -1,11 +1,50 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file represents the results of running a test suite-->
-<test-results name="C:\Users\boyerp\Dropbox\Github\Autodesk\DynamoNew\Dynamo\bin\AnyCPU\Debug\DynamoTestFramework.dll" total="1" failures="0" not-run="0" date="2013-12-12" time="13:31:17" errors="0" inconclusive="0" ignored="0" skipped="0" invalid="0">
-  <test-suite name="DynamoTestFrameworkTests" description="Unit tests in Revit." time="0.6550655" asserts="4" type="TestFixture" result="Success" executed="True">
+<test-results name="C:\Users\boyerp\Dropbox\Github\Autodesk\DynamoNew\Dynamo\bin\AnyCPU\Debug\DynamoTestFramework.dll" total="6" failures="3" not-run="0" date="2013-12-12" time="14:00:23" errors="1" inconclusive="1" ignored="0" skipped="0" invalid="0">
+  <test-suite name="DynamoTestFrameworkTests" description="Unit tests in Revit." time="4.1914191" asserts="20" type="TestFixture" result="Failure" executed="True">
     <results>
-      <test-suite name="ProtoToRevitCurveTests" description="Unit tests in Revit." time="0.6550655" asserts="4" type="TestFixture" result="Success" executed="True">
+      <test-suite name="RevitToProtoCurveTests" description="Unit tests in Revit." time="4.1914191" asserts="20" type="TestFixture" result="Failure" executed="True">
         <results>
-          <test-case name="BSplineCurve_Basic" success="True" time="0.6550655" executed="True" asserts="4" result="Success" />
+          <test-case name="NurbSpline_Rational" success="False" time="0.6620662" executed="True" asserts="0" result="Error">
+            <failure>
+              <message>System.Exception : No conversion for rational NURBS curves</message>
+              <stack-trace>   at DSRevitNodes.GeometryConversion.RevitToProtoCurve.Convert(NurbSpline crv) in c:\Users\boyerp\Dropbox\Github\Autodesk\DynamoNew\Dynamo\src\DSRevitNodes\GeometryConversion\RevitToProtoCurve.cs:line 40
+   at System.Dynamic.UpdateDelegates.UpdateAndExecute2[T0,T1,TRet](CallSite site, T0 arg0, T1 arg1)
+   at DSRevitNodes.GeometryConversion.RevitToProtoCurve.ToProtoType(Curve crv) in c:\Users\boyerp\Dropbox\Github\Autodesk\DynamoNew\Dynamo\src\DSRevitNodes\GeometryConversion\RevitToProtoCurve.cs:line 23
+   at DSRevitNodesTests.GeometryConversion.RevitToProtoCurveTests.NurbSpline_Rational() in c:\Users\boyerp\Dropbox\Github\Autodesk\DynamoNew\Dynamo\src\DSRevitNodesTests\GeometryConversion\RevitToProtoCurveTests.cs:line 46</stack-trace>
+            </failure>
+          </test-case>
+          <test-case name="HermiteSpline_Basic" success="False" time="0.6570657" executed="True" asserts="11" result="Failure">
+            <failure>
+              <message>  Expected: 0.0d +/- 9.9999999999999995E-07d
+  But was:  1.0d
+</message>
+              <stack-trace>   at NUnit.Framework.Assert.That(Object actual, IResolveConstraint expression, String message, Object[] args)
+   at NUnit.Framework.Assert.AssertDoublesAreEqual(Double expected, Double actual, Double delta, String message, Object[] args)
+   at NUnit.Framework.Assert.AreEqual(Double expected, Double actual, Double delta)
+   at DSRevitNodesTests.GeometryConversion.RevitToProtoCurveTests.HermiteSpline_Basic() in c:\Users\boyerp\Dropbox\Github\Autodesk\DynamoNew\Dynamo\src\DSRevitNodesTests\GeometryConversion\RevitToProtoCurveTests.cs:line 112</stack-trace>
+            </failure>
+          </test-case>
+          <test-case name="Line_Basic" success="True" time="0.6920692" executed="True" asserts="4" result="Success" />
+          <test-case name="Arc_Basic" success="False" time="0.6650665" executed="True" asserts="3" result="Failure">
+            <failure>
+              <message>  Expected: 0.10000000000000001d
+  But was:  84.270422048691771d
+</message>
+              <stack-trace>   at NUnit.Framework.Assert.That(Object actual, IResolveConstraint expression, String message, Object[] args)
+   at DSRevitNodesTests.GeometryConversion.RevitToProtoCurveTests.Arc_Basic() in c:\Users\boyerp\Dropbox\Github\Autodesk\DynamoNew\Dynamo\src\DSRevitNodesTests\GeometryConversion\RevitToProtoCurveTests.cs:line 171</stack-trace>
+            </failure>
+          </test-case>
+          <test-case name="Ellipse_Basic" success="False" time="0.8560856" executed="True" asserts="2" result="Failure">
+            <failure>
+              <message>  Expected: assignable from &lt;Autodesk.DesignScript.Geometry.Arc&gt;
+  But was:  &lt;Autodesk.DesignScript.Geometry.UnknownCurve&gt;
+</message>
+              <stack-trace>   at NUnit.Framework.Assert.That(Object actual, IResolveConstraint expression, String message, Object[] args)
+   at DSRevitNodesTests.GeometryConversion.RevitToProtoCurveTests.Ellipse_Basic() in c:\Users\boyerp\Dropbox\Github\Autodesk\DynamoNew\Dynamo\src\DSRevitNodesTests\GeometryConversion\RevitToProtoCurveTests.cs:line 202</stack-trace>
+            </failure>
+          </test-case>
+          <test-case name="CylindricalHelix_Basic" success="False" time="0.6590659" executed="True" asserts="0" result="Inconclusive" />
         </results>
       </test-suite>
     </results>
