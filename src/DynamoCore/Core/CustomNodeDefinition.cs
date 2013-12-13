@@ -268,15 +268,15 @@ namespace Dynamo
 
             // Find output elements for the node
             List<Output> outputs = WorkspaceModel.Nodes.OfType<Output>().ToList();
-            
+ 
             var topMost = new List<Tuple<int, NodeModel>>();
             
             // if we found output nodes, add select their inputs
             // these will serve as the function output
             if (outputs.Any())
             {
-                topMost.AddRange(outputs.Where(x => x.HasInput(0)).Select(x => new Tuple<int, NodeModel>(0, x))); 
-                ReturnKeys = outputs.Select(x => string.IsNullOrEmpty(x.Symbol) ? x.AstIdentifierForPreview.Value : x.Symbol);
+                topMost.AddRange(outputs.Where(x => x.HasInput(0)).Select(x => new Tuple<int, NodeModel>(0, x)));
+                ReturnKeys = outputs.Select(x => x.Symbol);
             }
             else
             {
@@ -338,9 +338,7 @@ namespace Dynamo
             var success = controller.GenerateGraphSyncDataForCustomNode(
                 FunctionId,
                 WorkspaceModel.Nodes.Where(x => !(x is Symbol)) ,
-                topMost.Zip(ReturnKeys, (t, key) =>
-                    new Tuple<string, AssociativeNode>(key, t.Item2.GetAstIdentifierForOutputIndex(t.Item1) as AssociativeNode)).ToList(),
-                // topMost.Select(x => x.Item2.GetAstIdentifierForOutputIndex(x.Item1) as AssociativeNode).ToList(),
+                topMost.Select(x => x.Item2.GetAstIdentifierForOutputIndex(x.Item1) as AssociativeNode).ToList(),
                 parameters);
 
             if (success)

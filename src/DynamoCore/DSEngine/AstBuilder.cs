@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Dynamo.Models;
+using GraphToDSCompiler;
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
@@ -375,9 +376,10 @@ namespace Dynamo.DSEngine
         /// <param name="funcBody"></param>
         /// <param name="outputs"></param>
         /// <param name="parameters"></param>
-        public void CompileCustomNodeDefinition( Guid functionGuid, 
+        public void CompileCustomNodeDefinition( 
+                        Guid functionGuid, 
                         IEnumerable<NodeModel> funcBody, 
-                        List<Tuple<string, AssociativeNode>> outputs,
+                        List<AssociativeNode> outputs,
                         IEnumerable<string> parameters)
         {
             OnAstNodeBuilding(functionGuid);
@@ -385,53 +387,30 @@ namespace Dynamo.DSEngine
             var functionBody = new CodeBlockNode();
             functionBody.Body.AddRange(CompileToAstNodes(funcBody, false));
 
-            string returnStatemen = string.Empty;
+            AssociativeNode returnValue;
             if (outputs.Count > 1)
             {
-                // Create a return dictionary. E.g., suppose outputs are r1, r2
-                // The return expression should be {"r1" = ..., "r2" = ...}.
-                // 
-                // As the DS compiler has supported this syntax yet, the 
-                // workaround is to create an empty array firstly and then set 
-                // key-values. I.e., 
-                //
-                //     return_array = {};
-                //     return_array["r1"] = ...;
-                //     return_array["r2"] = ...;
-                //     return = return_array;
-                string returnVar = "_return_array";
-                var buf = new StringBuilder();
-                buf.AppendLine(string.Format("{0} = {{}};", returnVar));
-                string template = "{0}[\"{1}\"] = {2};";
-                outputs.ForEach(t => buf.AppendLine(string.Format(template, returnVar, t.Item1, t.Item2)));
-                buf.AppendLine(string.Format("return = {0};", returnVar));
-
-                CodeBlockNode commentNode;
-                var rootNode = GraphToDSCompiler.GraphUtilities.Parse(buf.ToString(), out commentNode);
-                var statements = rootNode as CodeBlockNode;
-                if (statements != null)
-                {
-                    functionBody.Body.AddRange(statements.Body);                
-                }
-                else
-                {
-                    functionBody.Body.Add(AstFactory.BuildReturnStatement(AstFactory.BuildNullNode()));
-                }
+                // Return an array for multiple outputs.
+                returnValue = AstFactory.BuildExprList(outputs);
             }
             else
             {
-                var rhs = outputs.Count == 1 ? outputs[0].Item2 : AstFactory.BuildNullNode();
-                functionBody.Body.Add(AstFactory.BuildReturnStatement(rhs));
+                // For single output, directly return that identifier or null.
+                returnValue = outputs.Count == 1 ? outputs[0] : new NullNode(); 
             }
+            functionBody.Body.Add(AstFactory.BuildReturnStatement(returnValue));
 
             //Create a new function definition
             var functionDef = new FunctionDefinitionNode
             {
-                Name = StringConstants.FunctionPrefix + functionGuid.ToString().Replace("-", string.Empty),
+                Name = StringConstants.FunctionPrefix 
+                    + functionGuid.ToString().Replace("-", string.Empty),
+
                 Signature = new ArgumentSignatureNode 
                 { 
                     Arguments = parameters.Select(p => AstFactory.BuildParamNode(p)).ToList()
                 },
+
                 FunctionBody = functionBody,
             };
 
