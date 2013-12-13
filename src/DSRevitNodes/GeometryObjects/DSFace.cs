@@ -1,10 +1,7 @@
-﻿using System;
-using Autodesk.DesignScript.Interfaces;
+﻿using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
 using DSRevitNodes.GeometryConversion;
-using DSRevitNodes.GeometryObjects;
 using DSRevitNodes.Graphics;
-using Face = Autodesk.DesignScript.Geometry.Face;
 
 namespace DSRevitNodes.GeometryObjects
 {
