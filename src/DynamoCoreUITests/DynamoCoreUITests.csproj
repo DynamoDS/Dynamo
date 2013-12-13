@@ -49,6 +49,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\bin\AnyCPU\Debug\FSchemeInterop.dll</HintPath>
     </Reference>
+    <Reference Include="GraphToDSCompiler, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\DesignScript\GraphToDSCompiler.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
     </Reference>
@@ -58,6 +62,10 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="ProtoCore, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\DesignScript\ProtoCore.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xaml" />
@@ -85,6 +93,10 @@
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoCore</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DynamoElementsTests\DynamoCoreTests.csproj">
+      <Project>{472084ed-1067-4b2c-8737-3839a6143eb2}</Project>
+      <Name>DynamoCoreTests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DynamoPython\DynamoPython.csproj">
       <Project>{2B0F2800-6F62-4869-9074-088C5F6DCCA2}</Project>
       <Name>DynamoPython</Name>
@@ -97,6 +109,9 @@
       <Project>{B9E338CA-6677-4772-B01D-1FCEABCDAAAB}</Project>
       <Name>DynamoWatch3D</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
