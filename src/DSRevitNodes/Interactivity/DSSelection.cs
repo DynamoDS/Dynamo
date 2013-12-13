@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -77,6 +78,14 @@ namespace DSRevitNodes.Elements
                 else if (SelectedElement is Reference)
                 {
                     return "Reference ID: " + (SelectedElement as Reference).ElementId;
+                }
+                else if (SelectedElement is List<Element>)
+                {
+                    var elements = SelectedElement as List<Element>;
+                    var sb = new StringBuilder();
+                    elements.ForEach(x=>sb.Append(x.Id.IntegerValue+","));
+
+                    return "Elements:" + sb.ToString();
                 }
 
                 return _selectionText;
@@ -157,6 +166,14 @@ namespace DSRevitNodes.Elements
                     }
                 };
             }
+            else if (SelectedElement is Curve)
+            {
+                throw new NotImplementedException();
+            }
+            else if (SelectedElement is Face)
+            {
+                throw new NotImplementedException();
+            }
 
             return node;
         }
@@ -231,6 +248,11 @@ namespace DSRevitNodes.Elements
             return new DSElementSelection<Reference>(SelectionHelper.RequestReferenceXYZSelection, "Select a point on a face.");
         }
 
+        public static DSElementSelection<List<Element>> SelectMultipleElements()
+        {
+            return new DSElementSelection<List<Element>>(SelectionHelper.RequestMultipleCurveElementsSelection, "Select elements.");
+        }
+
         #endregion
 
         /// <summary>
@@ -253,19 +275,6 @@ namespace DSRevitNodes.Elements
             {
                 DynamoLogger.Instance.Log(e);
             }
-        }
-    }
-
-    public class DSMultiSelect : NodeWithUI
-    {
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override Node BuildAst()
-        {
-            throw new System.NotImplementedException();
         }
     }
 }
