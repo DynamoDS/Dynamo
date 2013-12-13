@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Net.Mime;
@@ -11,6 +12,7 @@ namespace DSRevitNodes.Elements
     /// <summary>
     /// An abstract Revit View - All view types inherit from this type
     /// </summary>
+    [Browsable(false)]
     public abstract class AbstractView : AbstractElement
     {
         /// <summary>
