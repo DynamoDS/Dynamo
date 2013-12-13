@@ -480,7 +480,7 @@ namespace Dynamo.Models
             if (OutPortData.Count == 1)
                 return AstIdentifierForPreview;
 
-            string nameAndValue = AstIdentifierBase + "_" + outputIndex;
+            string nameAndValue = AstIdentifierBase + "[" + outputIndex + "]";
 
             return new IdentifierNode { Name = nameAndValue, Value = nameAndValue };
         }
