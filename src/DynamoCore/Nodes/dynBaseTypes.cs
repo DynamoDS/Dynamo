@@ -3594,14 +3594,22 @@ namespace Dynamo.Nodes
                    .Zip(inputAstNodes, Tuple.Create)
                    .ToDictionary(x => x.Item1, x => x.Item2);
 
-            List<AssociativeNode> newInputs = _parsed.Count == 1
-                ? new List<AssociativeNode> { _parsed[0].GetAstNode(paramDict) }
-                : _parsed.Select(x => x.GetAstNode(paramDict)).ToList();
+            AssociativeNode rhs;
 
-            AssociativeNode rhs =
-                newInputs.Count == 1
-                    ? newInputs[0]
-                    : AstFactory.BuildExprList(newInputs);
+            if (null == _parsed)
+            {
+                rhs = AstFactory.BuildNullNode();
+            }
+            else
+            {
+                List<AssociativeNode> newInputs = _parsed.Count == 1
+                    ? new List<AssociativeNode> { _parsed[0].GetAstNode(paramDict) }
+                    : _parsed.Select(x => x.GetAstNode(paramDict)).ToList();
+
+                rhs = newInputs.Count == 1 
+                        ? newInputs[0] 
+                        : AstFactory.BuildExprList(newInputs);
+            }
 
             var assignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), rhs);
 

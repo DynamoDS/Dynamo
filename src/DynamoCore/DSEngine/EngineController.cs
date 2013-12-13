@@ -215,7 +215,7 @@ namespace Dynamo.DSEngine
         public bool GenerateGraphSyncDataForCustomNode(
             Guid id,
             IEnumerable<NodeModel> nodes,
-            List<Tuple<string, AssociativeNode>> outputs,
+            List<AssociativeNode> outputs,
             IEnumerable<string> parameters)
         {
             astBuilder.CompileCustomNodeDefinition(id, nodes, outputs, parameters);
