@@ -3,21 +3,18 @@
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Dynamo.CS.props" />
   </ImportGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{09EC17AF-24D2-4542-A913-0C27AE345C18}</ProjectGuid>
+    <ProjectGuid>{75940ACC-3708-4526-8D91-7E3365BAF682}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DSCoreNodesTests</RootNamespace>
-    <AssemblyName>DSCoreNodesTests</AssemblyName>
+    <RootNamespace>DSRevitNodesUI</RootNamespace>
+    <AssemblyName>DSRevitNodesUI</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -37,51 +34,47 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DynamoCore, Version=0.6.3.28673, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="DynamoCore">
       <HintPath>..\..\bin\AnyCPU\Debug\DynamoCore.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Practices.Prism, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework">
-      <HintPath>$(NunitPath)\nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="ProtoCore, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="ProtoCore">
       <HintPath>..\..\extern\DesignScript\ProtoCore.dll</HintPath>
     </Reference>
-    <Reference Include="ProtoGeometry, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\DesignScript\ProtoGeometry.dll</HintPath>
+    <Reference Include="RevitAPI">
+      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit Architecture 2014\RevitAPI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="ProtoInterface, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\DesignScript\ProtoInterface.dll</HintPath>
+    <Reference Include="RevitAPIUI">
+      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit Architecture 2014\RevitAPIUI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GeometryTests.cs" />
-    <Compile Include="NodeWithUITests.cs" />
+    <Compile Include="DSSelection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Setup.cs" />
+    <Compile Include="SelectionHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DSCoreNodesUI\DSCoreNodesUI.csproj">
       <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
       <Name>DSCoreNodesUI</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DSCoreNodes\DSCoreNodes.csproj">
-      <Project>{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}</Project>
-      <Name>DSCoreNodes</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
-      <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
-      <Name>DynamoUtilities</Name>
-      <Private>False</Private>
+    <ProjectReference Include="..\RevitServices\RevitServices.csproj">
+      <Project>{e4701f9e-41ab-4044-8166-85d924feb632}</Project>
+      <Name>RevitServices</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
