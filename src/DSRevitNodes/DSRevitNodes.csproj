@@ -120,7 +120,6 @@
     <Compile Include="GeometryConversion\RevitToProtoCurve.cs" />
     <Compile Include="GeometryObjects\DSBoundingBox.cs" />
     <Compile Include="GeometryObjects\DSPlanarFace.cs" />
-    <Compile Include="Interactivity\SelectionHelper.cs" />
     <Compile Include="References\AbstractReference.cs" />
     <Compile Include="References\DSFaceReference.cs" />
     <Compile Include="GeometryObjects\DSCurveLoop.cs" />
@@ -131,7 +130,6 @@
     <Compile Include="GeometryObjects\DSNurbSpline.cs" />
     <Compile Include="GeometryObjects\IGeometryObject.cs" />
     <Compile Include="Graphics\GraphicsManager.cs" />
-    <Compile Include="Interactivity\DSSelection.cs" />
     <Compile Include="Interactivity\DSParameter.cs" />
     <Compile Include="GeometryObjects\DSCurve.cs" />
     <Compile Include="GeometryObjects\DSSolid.cs" />

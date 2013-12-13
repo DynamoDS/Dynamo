@@ -117,6 +117,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DSCoreNodesUI\DSCoreNodesUI.csproj">
+      <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
+      <Name>DSCoreNodesUI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DSRevitNodesUI\DSRevitNodesUI.csproj">
+      <Project>{75940acc-3708-4526-8d91-7e3365baf682}</Project>
+      <Name>DSRevitNodesUI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DSRevitNodes\DSRevitNodes.csproj">
       <Project>{0bc2a611-bd0e-4fcc-a1de-81f14ed369b2}</Project>
       <Name>DSRevitNodes</Name>

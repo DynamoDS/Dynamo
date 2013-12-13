@@ -14,7 +14,6 @@ namespace Dynamo.Tests
             //create an element in revit
             var sphere = DSSolid.Sphere(Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), 5);
             var element = DSFreeForm.BySolid(sphere);
-
             var sel = DSElementSelection<Element>.SelectElement();
             sel.SelectedElement = element.InternalElement;
 
