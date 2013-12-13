@@ -473,9 +473,12 @@ namespace Dynamo.Nodes
 
         private void SetPreviewVariable(BinaryExpressionNode lastStatement)
         {
-            previewVariable = "temp" + Guid.NewGuid().ToString();
-            previewVariable = previewVariable.Replace('-', '_');
-            previewExpressionAST = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(new IdentifierNode(previewVariable), lastStatement.LeftNode, Operator.assign);
+            if (null != lastStatement)
+            {
+                previewVariable = "temp" + Guid.NewGuid().ToString();
+                previewVariable = previewVariable.Replace('-', '_');
+                previewExpressionAST = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(new IdentifierNode(previewVariable), lastStatement.LeftNode, Operator.assign);
+            }
         }
 
         /// <summary>
@@ -1107,7 +1110,7 @@ namespace Dynamo.Nodes
             }
             else if (parsedNode is FunctionDefinitionNode)
             {
-                throw new NotImplementedException();
+                // Handle function definitions in CBN
             }
             else
                 throw new ArgumentException("Must be func def or assignment");
