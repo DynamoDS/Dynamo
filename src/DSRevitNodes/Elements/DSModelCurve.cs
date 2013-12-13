@@ -225,9 +225,12 @@ namespace DSRevitNodes.Elements
         /// </summary>
         /// <param name="modelCurve"></param>
         /// <returns></returns>
-        internal static DSModelCurve FromExisting(Autodesk.Revit.DB.ModelCurve modelCurve)
+        internal static DSModelCurve FromExisting(Autodesk.Revit.DB.ModelCurve modelCurve, bool isRevitOwned)
         {
-            return new DSModelCurve(modelCurve);
+            return new DSModelCurve(modelCurve)
+            {
+                IsRevitOwned = isRevitOwned
+            };
         }
 
         #endregion

@@ -1,19 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file represents the results of running a test suite-->
-<test-results name="C:\Users\boyerp\Dropbox\Github\Autodesk\DynamoNew\Dynamo\bin\AnyCPU\Debug\DynamoTestFramework.dll" total="1" failures="0" not-run="0" date="2013-12-11" time="16:20:59" errors="1" inconclusive="0" ignored="0" skipped="0" invalid="0">
-  <test-suite name="DynamoTestFrameworkTests" description="Unit tests in Revit." time="0.6680668" asserts="0" type="TestFixture" result="Success" executed="True">
+<test-results name="C:\Users\boyerp\Dropbox\Github\Autodesk\DynamoNew\Dynamo\bin\AnyCPU\Debug\DynamoTestFramework.dll" total="1" failures="0" not-run="0" date="2013-12-12" time="10:54:47" errors="0" inconclusive="0" ignored="0" skipped="0" invalid="0">
+  <test-suite name="DynamoTestFrameworkTests" description="Unit tests in Revit." time="0.4910491" asserts="3" type="TestFixture" result="Success" executed="True">
     <results>
-      <test-suite name="SheetTests" description="Unit tests in Revit." time="0.6680668" asserts="0" type="TestFixture" result="Success" executed="True">
+      <test-suite name="FormTests" description="Unit tests in Revit." time="0.4910491" asserts="3" type="TestFixture" result="Success" executed="True">
         <results>
-          <test-case name="ByNameNumberAndViews_ValidArgs" success="False" time="0.6680668" executed="True" asserts="0" result="Error">
-            <failure>
-              <message>System.Exception : View could not be packed on sheet.</message>
-              <stack-trace>   at DSRevitNodes.Elements.DSSheet.InternalAddViewsToSheetView(IEnumerable`1 views) in c:\Users\boyerp\Dropbox\Github\Autodesk\DynamoNew\Dynamo\src\DSRevitNodes\Elements\Views\DSSheet.cs:line 189
-   at DSRevitNodes.Elements.DSSheet..ctor(String nameOfSheet, String numberOfSheet, IEnumerable`1 views) in c:\Users\boyerp\Dropbox\Github\Autodesk\DynamoNew\Dynamo\src\DSRevitNodes\Elements\Views\DSSheet.cs:line 82
-   at DSRevitNodes.Elements.DSSheet.ByNameNumberAndViews(String sheetName, String sheetNumber, AbstractView[] views) in c:\Users\boyerp\Dropbox\Github\Autodesk\DynamoNew\Dynamo\src\DSRevitNodes\Elements\Views\DSSheet.cs:line 311
-   at DSRevitNodesTests.SheetTests.ByNameNumberAndViews_ValidArgs() in c:\Users\boyerp\Dropbox\Github\Autodesk\DynamoNew\Dynamo\src\DSRevitNodesTests\Elements\Views\SheetTests.cs:line 33</stack-trace>
-            </failure>
-          </test-case>
+          <test-case name="ByLoftingCurveReferences_ValidArgs" success="True" time="0.4910491" executed="True" asserts="3" result="Success" />
         </results>
       </test-suite>
     </results>

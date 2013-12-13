@@ -264,6 +264,21 @@ namespace DSRevitNodes.Elements
                 throw new Exception("ModelText Elements can only be created in a Family Document");
             }
 
+            if (text == null)
+            {
+                throw new ArgumentNullException("text");
+            }
+
+            if (sketchPlane == null)
+            {
+                throw new ArgumentNullException("sketchPlane");
+            }
+
+            if (modelTextType == null)
+            {
+                throw new ArgumentNullException("modelTextType");
+            }
+
             return new DSModelText(text, sketchPlane.InternalSketchPlane, xCoordinateInPlane, yCoordinateInPlane,
                 textDepth, modelTextType.InternalModelTextType);
         }
