@@ -119,7 +119,7 @@ namespace Dynamo.DSEngine
                 }
                 else
                 {
-                    string thisVar = GraphToDSCompiler.GraphUtilities.ASTListToCode(new List<AssociativeNode> { node.AstIdentifierForPreview });
+                    string thisVar = node.AstIdentifierForPreview.ToString();
                     newVar = GenerateShortVariable();
                     sb = sb.Replace(thisVar, newVar);
                     variableNames.Add(thisVar, newVar);
@@ -135,7 +135,7 @@ namespace Dynamo.DSEngine
                         continue;
                     if (!(inputNode is CodeBlockNodeModel))
                     {
-                        string inputVar = GraphToDSCompiler.GraphUtilities.ASTListToCode(new List<AssociativeNode> { inputNode.AstIdentifierForPreview });
+                        string inputVar = inputNode.AstIdentifierForPreview.ToString(); 
                         if (!variableNames.ContainsKey(inputVar))
                         {
                             newVar = GenerateShortVariable();

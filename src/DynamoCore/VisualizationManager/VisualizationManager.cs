@@ -511,7 +511,7 @@ namespace Dynamo
         private static string GetDrawableId(NodeModel node, int outPortIndex)
         {
             var output = node.GetAstIdentifierForOutputIndex(outPortIndex);
-            return GraphToDSCompiler.GraphUtilities.ASTListToCode(new List<ProtoCore.AST.AssociativeAST.AssociativeNode> { output });
+            return output.ToString();
         }
 
         /// <summary>
