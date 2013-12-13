@@ -8,7 +8,6 @@ using Autodesk.Revit.DB;
 using DSRevitNodes.GeometryConversion;
 using DSRevitNodes.GeometryObjects;
 using DSRevitNodes.Graphics;
-using ProtoCore.AST.AssociativeAST;
 using Curve = Autodesk.Revit.DB.Curve;
 using Point = Autodesk.DesignScript.Geometry.Point;
 using Solid = Autodesk.Revit.DB.Solid;

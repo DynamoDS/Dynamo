@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
-using System.Windows.Controls;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Structure;
