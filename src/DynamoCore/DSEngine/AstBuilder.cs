@@ -412,6 +412,8 @@ namespace Dynamo.DSEngine
                 },
 
                 FunctionBody = functionBody,
+
+                ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, false)
             };
 
             OnAstNodeBuilt(functionGuid, new[] { functionDef });
