@@ -18,21 +18,21 @@ using Binding = System.Windows.Data.Binding;
 
 namespace DSRevitNodes.Elements
 {
-    public abstract class DSElementSelectionBase<T> : NodeWithUI 
+    public abstract class DSSelectionBase<T> : NodeWithUI 
     {
         private T _selected;
         private bool _canSelect;
         private string _selectionText;
-         
+        
         /// <summary>
         /// The message to display in the interface during selection.
         /// </summary>
-        protected string _selectionMessage;
+        protected string selectionMessage;
 
         /// <summary>
         /// The selection action.
         /// </summary>
-        protected Func<string, T> _selectionAction;
+        protected Func<string, T> selectionAction;
 
         /// <summary>
         /// The Element which is selected.
@@ -175,7 +175,7 @@ namespace DSRevitNodes.Elements
             {
                 throw new NotImplementedException();
             }
-
+            
             return node;
         }
 
@@ -183,76 +183,76 @@ namespace DSRevitNodes.Elements
     }
 
 
-    public class DSElementSelection<T> : DSElementSelectionBase<T>
+    public class DSSelection<T> : DSSelectionBase<T>
     {
 
         #region internal constructors
 
-        internal DSElementSelection(Func<string, T> action, string message)
+        internal DSSelection(Func<string, T> action, string message)
         {
-            _selectionAction = action;
-            _selectionMessage = message;
+            selectionAction = action;
+            selectionMessage = message;
         }
         
         #endregion
 
         #region public static constructors
 
-        public static DSElementSelection<Element> SelectAnalysisResults()
+        public static DSSelection<Element> SelectAnalysisResults()
         {
-            return new DSElementSelection<Element>(SelectionHelper.RequestAnalysisResultInstanceSelection, "Select an analysis result.");
+            return new DSSelection<Element>(SelectionHelper.RequestAnalysisResultInstanceSelection, "Select an analysis result.");
         }
 
-        public static DSElementSelection<Element> SelectElement()
+        public static DSSelection<Element> SelectElement()
         {
-            return new DSElementSelection<Element>(SelectionHelper.RequestModelElementSelection, "Select Model Element");
+            return new DSSelection<Element>(SelectionHelper.RequestModelElementSelection, "Select Model Element");
         }
 
-        public static DSElementSelection<FamilyInstance> SelectFamilyInstance()
+        public static DSSelection<FamilyInstance> SelectFamilyInstance()
         {
-            return new DSElementSelection<FamilyInstance>(SelectionHelper.RequestFamilyInstanceSelection, "Select a family instance.");
+            return new DSSelection<FamilyInstance>(SelectionHelper.RequestFamilyInstanceSelection, "Select a family instance.");
         }
 
-        public static DSElementSelection<Form> SelectDividedSurfaceFamilies()
+        public static DSSelection<Form> SelectDividedSurfaceFamilies()
         {
-            return new DSElementSelection<Form>(SelectionHelper.RequestFormSelection, "Select a divided surface.");
+            return new DSSelection<Form>(SelectionHelper.RequestFormSelection, "Select a divided surface.");
         }
 
-        public static DSElementSelection<Reference> SelectFace()
+        public static DSSelection<Reference> SelectFace()
         {
-            return new DSElementSelection<Reference>(SelectionHelper.RequestFaceReferenceSelection, "Select a face.");
+            return new DSSelection<Reference>(SelectionHelper.RequestFaceReferenceSelection, "Select a face.");
         }
 
-        public static DSElementSelection<Reference> SelectEdge()
+        public static DSSelection<Reference> SelectEdge()
         {
-            return new DSElementSelection<Reference>(SelectionHelper.RequestEdgeReferenceSelection, "Select an edge.");
+            return new DSSelection<Reference>(SelectionHelper.RequestEdgeReferenceSelection, "Select an edge.");
         }
 
-        public static DSElementSelection<CurveElement> SelectCurve()
+        public static DSSelection<CurveElement> SelectCurve()
         {
-            return new DSElementSelection<CurveElement>(SelectionHelper.RequestCurveElementSelection, "Select a curve.");
+            return new DSSelection<CurveElement>(SelectionHelper.RequestCurveElementSelection, "Select a curve.");
         }
 
-        public static DSElementSelection<ReferencePoint> SelectReferencePoint()
+        public static DSSelection<ReferencePoint> SelectReferencePoint()
         {
-            return new DSElementSelection<ReferencePoint>(SelectionHelper.RequestReferencePointSelection,
+            return new DSSelection<ReferencePoint>(SelectionHelper.RequestReferencePointSelection,
                 "Select a reference point.");
         }
 
-        public static DSElementSelection<Level> SelectLevel()
+        public static DSSelection<Level> SelectLevel()
         {
-            return new DSElementSelection<Level>(SelectionHelper.RequestLevelSelection,
+            return new DSSelection<Level>(SelectionHelper.RequestLevelSelection,
                 "Select a level.");
         }
 
-        public static DSElementSelection<Reference> SelectPointOnElement()
+        public static DSSelection<Reference> SelectPointOnElement()
         {
-            return new DSElementSelection<Reference>(SelectionHelper.RequestReferenceXYZSelection, "Select a point on a face.");
+            return new DSSelection<Reference>(SelectionHelper.RequestReferenceXYZSelection, "Select a point on a face.");
         }
 
-        public static DSElementSelection<List<Element>> SelectMultipleElements()
+        public static DSSelection<List<Element>> SelectMultipleElements()
         {
-            return new DSElementSelection<List<Element>>(SelectionHelper.RequestMultipleCurveElementsSelection, "Select elements.");
+            return new DSSelection<List<Element>>(SelectionHelper.RequestMultipleCurveElementsSelection, "Select elements.");
         }
 
         #endregion
@@ -265,7 +265,8 @@ namespace DSRevitNodes.Elements
         {
             try
             {
-                SelectedElement =  _selectionAction(_selectionMessage);
+                //call the delegate associated with a selection type
+                SelectedElement =  selectionAction(selectionMessage);
                 RaisePropertyChanged("SelectionText");
                 RequiresRecalc = true;
             }
