@@ -215,10 +215,10 @@ namespace Dynamo.DSEngine
         public bool GenerateGraphSyncDataForCustomNode(
             Guid id,
             IEnumerable<NodeModel> nodes,
-            List<AssociativeNode> outputs,
+            List<Tuple<string, AssociativeNode>> outputs,
             IEnumerable<string> parameters)
         {
-            astBuilder.CompileCustomNodeDefinition(id, nodes, outputs, parameters, true);
+            astBuilder.CompileCustomNodeDefinition(id, nodes, outputs, parameters);
             return VerifyGraphSyncData();
         }
 
@@ -287,7 +287,7 @@ namespace Dynamo.DSEngine
             while (true)
             {
                 shortVarCounter++;
-                string var = AstBuilder.StringConstants.SHORT_VAR_PREFIX + shortVarCounter.ToString();
+                string var = AstBuilder.StringConstants.ShortVarPrefix + shortVarCounter.ToString();
 
                 if (!HasVariableDefined(var))
                     return var;

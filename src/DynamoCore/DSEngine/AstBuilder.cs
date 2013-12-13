@@ -2,9 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Dynamo.Models;
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
+using ProtoCore.DSASM;
 using ProtoCore.DSDefinitions;
 using ProtoScript.Runners;
 using Type = ProtoCore.Type;
@@ -197,10 +199,11 @@ namespace Dynamo.DSEngine
     {
         internal class StringConstants
         {
-            public const string PARAM_PREFIX = @"p_";
-            public const string FUNCTION_PREFIX = @"func_";
-            public const string VAR_PREFIX = @"var_";
-            public const string SHORT_VAR_PREFIX = @"t_";
+            public const string ParamPrefix = @"p_";
+            public const string FunctionPrefix = @"func_";
+            public const string VarPrefix = @"var_";
+            public const string ShortVarPrefix = @"t_";
+            public const string CustomNodeReturnVariable = @"%arr";
         }
 
         public class ASTBuildingEventArgs : EventArgs
@@ -244,7 +247,10 @@ namespace Dynamo.DSEngine
         {
             MarkFlag flag;
             if (!nodeFlags.TryGetValue(node, out flag))
-                return;
+            {
+                flag = MarkFlag.NoMark;
+                nodeFlags[node] = flag;
+            }
 
             if (MarkFlag.TempMark == flag) 
                 return;
@@ -275,7 +281,7 @@ namespace Dynamo.DSEngine
             foreach (var candidate in TSortCandidates(nodeFlags))
                 MarkNode(candidate, nodeFlags, sortedNodes);
 
-            return sortedNodes;
+            return sortedNodes.Where(n => nodes.Contains(n));
         }
 
         private IEnumerable<NodeModel> TSortCandidates(Dictionary<NodeModel, MarkFlag> nodeFlags)
@@ -290,18 +296,7 @@ namespace Dynamo.DSEngine
             }
         }
 
-        /// <summary>
-        /// Compile a dynamo node to the corresponding Ast Nodes
-        /// </summary>
-        /// <param name="node"></param>
-        public IEnumerable<AssociativeNode> CompileToAstNodes(NodeModel node)
-        {
-            var result = new List<AssociativeNode>();
-            _CompileToAstNodes(node, result);
-            return result;
-        }
-
-        private void _CompileToAstNodes(NodeModel node, List<AssociativeNode> resultList)
+        private void _CompileToAstNodes(NodeModel node, List<AssociativeNode> resultList, bool isDeltaExecution)
         {
             var inputAstNodes = new List<AssociativeNode>();
             foreach (var index in Enumerable.Range(0, node.InPortData.Count))
@@ -329,11 +324,13 @@ namespace Dynamo.DSEngine
                 DynamoLogger.Instance.Log("Error in Node. Not sent for building and compiling");
             }
 
-            OnAstNodeBuilding(node.GUID);
+            if (isDeltaExecution)
+            {
+                OnAstNodeBuilding(node.GUID);
+            }
 
             var astNodes = node.BuildAst(inputAstNodes);
-
-            if (astNodes != null)
+            if (astNodes != null && isDeltaExecution)
             {
                 OnAstNodeBuilt(node.GUID, astNodes);
             }
@@ -361,7 +358,7 @@ namespace Dynamo.DSEngine
 
             foreach (var node in sortedNodes)
             {
-                _CompileToAstNodes(node, result);
+                _CompileToAstNodes(node, result, isDeltaExecution);
 
                 if (isDeltaExecution)
                     node.isDirty = false;
@@ -378,70 +375,64 @@ namespace Dynamo.DSEngine
         /// <param name="funcBody"></param>
         /// <param name="outputs"></param>
         /// <param name="parameters"></param>
-        /// <param name="isDeltaExecution"></param>
-        public void CompileCustomNodeDefinition(
-            Guid functionGuid, IEnumerable<NodeModel> funcBody, List<AssociativeNode> outputs,
-            IEnumerable<string> parameters, bool isDeltaExecution)
+        public void CompileCustomNodeDefinition( Guid functionGuid, 
+                        IEnumerable<NodeModel> funcBody, 
+                        List<Tuple<string, AssociativeNode>> outputs,
+                        IEnumerable<string> parameters)
         {
             OnAstNodeBuilding(functionGuid);
 
-            string name = functionGuid.ToString().Replace("-", string.Empty);
-
             var functionBody = new CodeBlockNode();
+            functionBody.Body.AddRange(CompileToAstNodes(funcBody, false));
 
-            functionBody.Body.AddRange(CompileToAstNodes(funcBody, isDeltaExecution));
-
-            AssociativeNode top;
-
+            string returnStatemen = string.Empty;
             if (outputs.Count > 1)
             {
-                top = AstFactory.BuildExprList(outputs);
-            }
-            else if (outputs.Count == 1)
-            {
-                top = outputs[0];
+                // Create a return dictionary. E.g., suppose outputs are r1, r2
+                // The return expression should be {"r1" = ..., "r2" = ...}.
+                // 
+                // As the DS compiler has supported this syntax yet, the 
+                // workaround is to create an empty array firstly and then set 
+                // key-values. I.e., 
+                //
+                //     return_array = {};
+                //     return_array["r1"] = ...;
+                //     return_array["r2"] = ...;
+                //     return = return_array;
+                string returnVar = "_return_array";
+                var buf = new StringBuilder();
+                buf.AppendLine(string.Format("{0} = {{}};", returnVar));
+                string template = "{0}[\"{1}\"] = {2};";
+                outputs.ForEach(t => buf.AppendLine(string.Format(template, returnVar, t.Item1, t.Item2)));
+                buf.AppendLine(string.Format("return = {0};", returnVar));
+
+                CodeBlockNode commentNode;
+                var rootNode = GraphToDSCompiler.GraphUtilities.Parse(buf.ToString(), out commentNode);
+                var statements = rootNode as CodeBlockNode;
+                if (statements != null)
+                {
+                    functionBody.Body.AddRange(statements.Body);                
+                }
+                else
+                {
+                    functionBody.Body.Add(AstFactory.BuildReturnStatement(AstFactory.BuildNullNode()));
+                }
             }
             else
             {
-                // if the custom node is empty, it will initially return null
-                top = AstFactory.BuildNullNode();
+                var rhs = outputs.Count == 1 ? outputs[0].Item2 : AstFactory.BuildNullNode();
+                functionBody.Body.Add(AstFactory.BuildReturnStatement(rhs));
             }
-
-            var returnNode = new ReturnNode { ReturnExpr = top };
-            functionBody.Body.Add(returnNode);
 
             //Create a new function definition
             var functionDef = new FunctionDefinitionNode
             {
-                //name is the GUID of the custom node
-                Name = name,
-
-                //signature contains all input names
-                Signature =
-                    new ArgumentSignatureNode
-                    {
-                        Arguments =
-                            parameters.Select(
-                                paramName =>
-                                    new VarDeclNode
-                                    {
-                                        NameNode =
-                                            new IdentifierNode
-                                            {
-                                                Value = paramName, Name = paramName,
-                                                datatype =
-                                                    new Type
-                                                    {
-                                                        Name = "var", IsIndexable = false, rank = 0,
-                                                        UID = (int)PrimitiveType.kTypeVar
-                                                    }
-                                            },
-                                        ArgumentType = new Type { Name = "var" }
-                                    }).ToList()
-                    },
-
-                //body is the compiled workspace
-                FunctionBody = functionBody
+                Name = StringConstants.FunctionPrefix + functionGuid.ToString().Replace("-", string.Empty),
+                Signature = new ArgumentSignatureNode 
+                { 
+                    Arguments = parameters.Select(p => AstFactory.BuildParamNode(p)).ToList()
+                },
+                FunctionBody = functionBody,
             };
 
             OnAstNodeBuilt(functionGuid, new[] { functionDef });
@@ -469,7 +460,7 @@ namespace Dynamo.DSEngine
             {
                 if (func.FormalArguments[i] == null)
                 {
-                    VarDeclNode param = AstFactory.BuildParamNode(StringConstants.PARAM_PREFIX + paramPostfix);
+                    VarDeclNode param = AstFactory.BuildParamNode(StringConstants.ParamPrefix + paramPostfix);
                     partialArgs.Add(param);
 
                     func.FormalArguments[i] = param.NameNode;
@@ -497,7 +488,7 @@ namespace Dynamo.DSEngine
                 IsDNI = false,
                 ExternLibName = null,
                 Name =
-                    StringConstants.FUNCTION_PREFIX
+                    StringConstants.FunctionPrefix
                     + Guid.NewGuid().ToString().Replace("-", string.Empty),
                 Signature = new ArgumentSignatureNode { Arguments = partialArgs },
                 FunctionBody = funcBody

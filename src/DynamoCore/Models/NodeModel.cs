@@ -428,7 +428,7 @@ namespace Dynamo.Models
         /// </summary>
         protected string AstIdentifierBase
         {
-            get { return AstBuilder.StringConstants.VAR_PREFIX + GUID.ToString().Replace("-", string.Empty); }
+            get { return AstBuilder.StringConstants.VarPrefix + GUID.ToString().Replace("-", string.Empty); }
         }
 
         /// <summary>
