@@ -128,7 +128,7 @@
     <Compile Include="GeometryConversion\Extensions.cs" />
     <Compile Include="GeometryObjects\DSEdge.cs" />
     <Compile Include="GeometryObjects\DSNurbSpline.cs" />
-    <Compile Include="GeometryObjects\IGeometryObject.cs" />
+    <Compile Include="GeometryObjects\AbstractGeometryObject.cs" />
     <Compile Include="Graphics\GraphicsManager.cs" />
     <Compile Include="Interactivity\DSParameter.cs" />
     <Compile Include="GeometryObjects\DSCurve.cs" />

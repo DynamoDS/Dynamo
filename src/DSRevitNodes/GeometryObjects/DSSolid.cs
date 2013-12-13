@@ -15,18 +15,26 @@ using Solid = Autodesk.Revit.DB.Solid;
 
 namespace DSRevitNodes.Elements
 {
-    public class DSSolid : IGeometryObject
+    public class DSSolid : AbstractGeometryObject
     {
         #region private members
-        private Autodesk.Revit.DB.Solid x;
+
         private const double RevitPI = 3.14159265358979;
+
         #endregion
 
         #region internal properties
+
         internal Autodesk.Revit.DB.Solid InternalSolid
         {
             get; private set;
         }
+
+        protected override GeometryObject InternalGeometryObject
+        {
+            get { return InternalSolid; }
+        }
+
         #endregion
 
         #region Internal constructors
@@ -122,6 +130,11 @@ namespace DSRevitNodes.Elements
 
             var result = GeometryCreationUtilities.CreateSweptBlendGeometry(pathCurve, attachParams, profileLoops.ToList(), vertPairs);
             this.InternalSolid = result;
+        }
+
+        internal DSSolid(Autodesk.Revit.DB.Solid x)
+        {
+            this.InternalSolid = x;
         }
 
         /// <summary>
@@ -250,11 +263,7 @@ namespace DSRevitNodes.Elements
             this.InternalSolid = mySolid;
         }
         
-        internal DSSolid(Autodesk.Revit.DB.Solid x)
-        {
-            // TODO: Complete member initialization
-            this.x = x;
-        }
+
 
         #endregion
 
@@ -319,11 +328,11 @@ namespace DSRevitNodes.Elements
         /// <param name="direction"></param>
         /// <param name="distance"></param>
         /// <returns></returns>
-        public static DSSolid ByExtrusion(DSCurveLoop profile, Vector direction, double distance)
+        public static DSSolid ByExtrusion(Autodesk.DesignScript.Geometry.Curve[] closedProfileCurves, Vector direction, double distance)
         {
-            if (profile == null)
+            if (closedProfileCurves == null)
             {
-                throw new ArgumentNullException("profile");
+                throw new ArgumentNullException("closedProfileCurves");
             }
 
             if (direction == null)
@@ -331,7 +340,10 @@ namespace DSRevitNodes.Elements
                 throw new ArgumentNullException("direction");
             }
 
-            return new DSSolid(new List<CurveLoop>(){profile.InternalCurveLoop}, direction.ToXyz(), distance);
+            var loop = new Autodesk.Revit.DB.CurveLoop();
+            closedProfileCurves.ForEach(x => loop.Append( x.ToRevitType()));
+
+            return new DSSolid(new List<CurveLoop>() { loop }, direction.ToXyz(), distance);
         }
 
         /// <summary>
@@ -687,7 +699,7 @@ namespace DSRevitNodes.Elements
 
         #region Tesselation
 
-        public void Tessellate(IRenderPackage package)
+        public override void Tessellate(IRenderPackage package)
         {
             var meshes = this.InternalSolid.Faces.Cast<Autodesk.Revit.DB.Face>()
                 .Select(x => x.Triangulate(GraphicsManager.TesselationLevelOfDetail));
