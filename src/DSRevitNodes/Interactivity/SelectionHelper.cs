@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Analysis;
 using Autodesk.Revit.UI.Selection;
@@ -59,7 +60,7 @@ namespace DSRevitNodes.Interactivity
             return c;
         }
 
-        public static IList<Element> RequestMultipleCurveElementsSelection(string message)
+        public static List<Element> RequestMultipleCurveElementsSelection(string message)
         {
             var doc = DocumentManager.GetInstance().CurrentUIDocument;
 
@@ -71,7 +72,7 @@ namespace DSRevitNodes.Interactivity
             var ca = new ElementArray();
             ISelectionFilter selFilter = new CurveSelectionFilter();
             return doc.Selection.PickElementsByRectangle(//selFilter,
-                "Window select multiple curves.") as IList<Element>;
+                "Window select multiple curves.").ToList();
 
         }
 
