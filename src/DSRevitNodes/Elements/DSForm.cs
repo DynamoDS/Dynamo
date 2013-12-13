@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
-using System.Xml;
 using Autodesk.Revit.DB;
 using DSNodeServices;
 using DSRevitNodes.GeometryObjects;

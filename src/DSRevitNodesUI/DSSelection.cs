@@ -259,7 +259,7 @@ namespace DSRevitNodes.Elements
 
         /// <summary>
         /// Callback when selection button is clicked. 
-        /// Calls the selection action, and wraps the result in an AbstractElement
+        /// Calls the selection action, and stores the ElementId(s) of the selected objects.
         /// </summary>
         protected override void OnSelectClick()
         {
