@@ -4,6 +4,7 @@ using Autodesk.Revit.DB;
 using DSRevitNodes.GeometryConversion;
 using DSRevitNodes.GeometryObjects;
 using DSRevitNodes.Graphics;
+using Face = Autodesk.DesignScript.Geometry.Face;
 
 namespace DSRevitNodes.GeometryObjects
 {
@@ -67,6 +68,11 @@ namespace DSRevitNodes.GeometryObjects
         public Autodesk.DesignScript.Geometry.Point Evaluate(double u, double v)
         {
             return InternalFace.Evaluate(new UV(u, v)).ToPoint();
+        }
+
+        public static DSFace FromExisting(Autodesk.Revit.DB.Face f)
+        {
+            return new DSFace(f);
         }
 
         #region Tesselation

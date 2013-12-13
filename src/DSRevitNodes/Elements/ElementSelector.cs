@@ -98,6 +98,10 @@ namespace DSRevitNodes.Elements
             {
                 result = DSFamilySymbol.FromExisting(ele as Autodesk.Revit.DB.FamilySymbol, isRevitOwned);
             }
+            else if (ele is Autodesk.Revit.DB.ModelCurve)
+            {
+                result = DSModelCurve.FromExisting(ele as Autodesk.Revit.DB.ModelCurve, isRevitOwned);
+            }
             else if (ele is Autodesk.Revit.DB.Family)
             {
                 result = DSFamily.FromExisting(ele as Autodesk.Revit.DB.Family, isRevitOwned);
