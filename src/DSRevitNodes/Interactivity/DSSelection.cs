@@ -1,30 +1,43 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
+
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using Autodesk.Revit.DB;
-using Autodesk.Revit.UI.Selection;
 using DSCoreNodes;
+using DSRevitNodes.Interactivity;
+using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Nodes;
 using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
-using RevitServices.Persistence;
 using Binding = System.Windows.Data.Binding;
 
 namespace DSRevitNodes.Elements
 {
-    [Browsable(false)]
-    public class DSSingleSelect : NodeWithUI
+    public abstract class DSElementSelectionBase<T> : NodeWithUI 
     {
-        private ElementId _selected;
+        private T _selected;
         private bool _canSelect;
+        private string _selectionText;
+         
+        /// <summary>
+        /// The message to display in the interface during selection.
+        /// </summary>
+        protected string _selectionMessage;
+
+        /// <summary>
+        /// The selection action.
+        /// </summary>
+        protected Func<string, T> _selectionAction;
 
         /// <summary>
         /// The Element which is selected.
         /// </summary>
-        public virtual ElementId SelectedElement
+        public T SelectedElement
         {
             get { return _selected; }
             set
@@ -47,6 +60,44 @@ namespace DSRevitNodes.Elements
             }
         }
 
+        /// <summary>
+        /// The text that describes this selection.
+        /// </summary>
+        public string SelectionText
+        {
+            get
+            {
+                if (SelectedElement == null)
+                {
+                    return "Nothing selected.";
+                }
+
+                if (SelectedElement is Element)
+                {
+                    return (SelectedElement as Element).Name;
+                }
+                else if (SelectedElement is Reference)
+                {
+                    return "Reference ID: " + (SelectedElement as Reference).ElementId;
+                }
+                else if (SelectedElement is List<Element>)
+                {
+                    var elements = SelectedElement as List<Element>;
+                    var sb = new StringBuilder();
+                    elements.ForEach(x=>sb.Append(x.Id.IntegerValue+","));
+
+                    return "Elements:" + sb.ToString();
+                }
+
+                return _selectionText;
+            }
+            set
+            {
+                _selectionText = value;
+                RaisePropertyChanged("SelectionText");
+            }
+        }
+        
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a button to the inputGrid on the dynElement
@@ -85,45 +136,147 @@ namespace DSRevitNodes.Elements
         /// <summary>
         /// Override this to perform custom selection logic.
         /// </summary>
-        protected virtual void OnSelectClick()
-        {
+        protected abstract void OnSelectClick();
 
-            var doc = DocumentManager.GetInstance().CurrentUIDocument;
-
-            var choices = doc.Selection;
-            choices.Elements.Clear();
-
-            var eleRef = doc.Selection.PickObject(ObjectType.Element);
-            if (eleRef != null)
-            {
-                SelectedElement = eleRef.ElementId;
-            }
-        }
-
+        #region public methods
+        
         public override Node BuildAst()
         {
-            return new FunctionCallNode
+            FunctionCallNode node = null;
+
+            if (SelectedElement is Element)
             {
-                Function = new IdentifierNode("DSRevitNodes.Elements.DSElementFactory.ByElementId"),
-                FormalArguments = new List<AssociativeNode>
+                node = new FunctionCallNode
                 {
-                    new IntNode(SelectedElement.IntegerValue.ToString())
-                }
-            };
+                    Function = new IdentifierNode("DSRevitNodes.Elements.DSElementFactory.ByElementId"),
+                    FormalArguments = new List<AssociativeNode>
+                    {
+                        new IntNode((SelectedElement as Element).Id.IntegerValue.ToString(CultureInfo.InvariantCulture))
+                    }
+                };
+            }
+            else if (SelectedElement is Reference)
+            {
+                node = new FunctionCallNode
+                {
+                    Function = new IdentifierNode("DSRevitNodes.Elements.DSElementFactory.ByElementId"),
+                    FormalArguments = new List<AssociativeNode>
+                    {
+                        new IntNode(
+                            (SelectedElement as Reference).ElementId.IntegerValue.ToString(CultureInfo.InvariantCulture))
+                    }
+                };
+            }
+            else if (SelectedElement is Curve)
+            {
+                throw new NotImplementedException();
+            }
+            else if (SelectedElement is Face)
+            {
+                throw new NotImplementedException();
+            }
+
+            return node;
         }
+
+        #endregion
     }
 
-    [Browsable(false)]
-    public class DSMultiSelect : NodeWithUI
+
+    public class DSElementSelection<T> : DSElementSelectionBase<T>
     {
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+
+        #region internal constructors
+
+        internal DSElementSelection(Func<string, T> action, string message)
         {
-            throw new System.NotImplementedException();
+            _selectionAction = action;
+            _selectionMessage = message;
+        }
+        
+        #endregion
+
+        #region public static constructors
+
+        public static DSElementSelection<Element> SelectAnalysisResults()
+        {
+            return new DSElementSelection<Element>(SelectionHelper.RequestAnalysisResultInstanceSelection, "Select an analysis result.");
         }
 
-        public override Node BuildAst()
+        public static DSElementSelection<Element> SelectElement()
         {
-            throw new System.NotImplementedException();
+            return new DSElementSelection<Element>(SelectionHelper.RequestModelElementSelection, "Select Model Element");
+        }
+
+        public static DSElementSelection<FamilyInstance> SelectFamilyInstance()
+        {
+            return new DSElementSelection<FamilyInstance>(SelectionHelper.RequestFamilyInstanceSelection, "Select a family instance.");
+        }
+
+        public static DSElementSelection<Form> SelectDividedSurfaceFamilies()
+        {
+            return new DSElementSelection<Form>(SelectionHelper.RequestFormSelection, "Select a divided surface.");
+        }
+
+        public static DSElementSelection<Reference> SelectFace()
+        {
+            return new DSElementSelection<Reference>(SelectionHelper.RequestFaceReferenceSelection, "Select a face.");
+        }
+
+        public static DSElementSelection<Reference> SelectEdge()
+        {
+            return new DSElementSelection<Reference>(SelectionHelper.RequestEdgeReferenceSelection, "Select an edge.");
+        }
+
+        public static DSElementSelection<CurveElement> SelectCurve()
+        {
+            return new DSElementSelection<CurveElement>(SelectionHelper.RequestCurveElementSelection, "Select a curve.");
+        }
+
+        public static DSElementSelection<ReferencePoint> SelectReferencePoint()
+        {
+            return new DSElementSelection<ReferencePoint>(SelectionHelper.RequestReferencePointSelection,
+                "Select a reference point.");
+        }
+
+        public static DSElementSelection<Level> SelectLevel()
+        {
+            return new DSElementSelection<Level>(SelectionHelper.RequestLevelSelection,
+                "Select a level.");
+        }
+
+        public static DSElementSelection<Reference> SelectPointOnElement()
+        {
+            return new DSElementSelection<Reference>(SelectionHelper.RequestReferenceXYZSelection, "Select a point on a face.");
+        }
+
+        public static DSElementSelection<List<Element>> SelectMultipleElements()
+        {
+            return new DSElementSelection<List<Element>>(SelectionHelper.RequestMultipleCurveElementsSelection, "Select elements.");
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Callback when selection button is clicked. 
+        /// Calls the selection action, and wraps the result in an AbstractElement
+        /// </summary>
+        protected override void OnSelectClick()
+        {
+            try
+            {
+                SelectedElement =  _selectionAction(_selectionMessage);
+                RaisePropertyChanged("SelectionText");
+                RequiresRecalc = true;
+            }
+            catch (OperationCanceledException)
+            {
+                CanSelect = true;
+            }
+            catch (Exception e)
+            {
+                DynamoLogger.Instance.Log(e);
+            }
         }
     }
 }
