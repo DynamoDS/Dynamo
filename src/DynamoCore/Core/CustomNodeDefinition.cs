@@ -8,6 +8,7 @@ using Dynamo.FSchemeInterop.Node;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
+using Dynamo.DSEngine;
 using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo
@@ -24,6 +25,11 @@ namespace Dynamo
         public string Name
         {
             get { return FunctionId.ToString(); }
+        }
+
+        public string FunctionName
+        {
+            get { return AstBuilder.StringConstants.FunctionPrefix + Name.Replace("-", string.Empty); }
         }
 
         public Guid FunctionId { get; internal set; }
@@ -262,17 +268,15 @@ namespace Dynamo
 
             // Find output elements for the node
             List<Output> outputs = WorkspaceModel.Nodes.OfType<Output>().ToList();
-
+            
             var topMost = new List<Tuple<int, NodeModel>>();
             
             // if we found output nodes, add select their inputs
             // these will serve as the function output
             if (outputs.Any())
             {
-                topMost.AddRange(
-                    outputs.Where(x => x.HasInput(0)).Select(x => x.Inputs[0]));
-
-                ReturnKeys = outputs.Select(x => x.Symbol);
+                topMost.AddRange(outputs.Where(x => x.HasInput(0)).Select(x => new Tuple<int, NodeModel>(0, x))); 
+                ReturnKeys = outputs.Select(x => string.IsNullOrEmpty(x.Symbol) ? x.AstIdentifierForPreview.Value : x.Symbol);
             }
             else
             {
@@ -314,7 +318,7 @@ namespace Dynamo
 
             //Find function entry point, and then compile
             var inputNodes = WorkspaceModel.Nodes.OfType<Symbol>().ToList();
-            var parameters = inputNodes.Select(x => x.GUID.ToString());
+            var parameters = inputNodes.Select(x => string.IsNullOrEmpty(x.InputSymbol) ? x.AstIdentifierForPreview.Value: x.InputSymbol);
             Parameters = inputNodes.Select(x => x.InputSymbol);
 
             //Update existing function nodes which point to this function to match its changes
@@ -333,8 +337,10 @@ namespace Dynamo
 
             var success = controller.GenerateGraphSyncDataForCustomNode(
                 FunctionId,
-                WorkspaceModel.Nodes.Where(x => !(x is Output)),
-                topMost.Select(x => x.Item2.GetAstIdentifierForOutputIndex(x.Item1) as AssociativeNode).ToList(),
+                WorkspaceModel.Nodes.Where(x => !(x is Symbol)) ,
+                topMost.Zip(ReturnKeys, (t, key) =>
+                    new Tuple<string, AssociativeNode>(key, t.Item2.GetAstIdentifierForOutputIndex(t.Item1) as AssociativeNode)).ToList(),
+                // topMost.Select(x => x.Item2.GetAstIdentifierForOutputIndex(x.Item1) as AssociativeNode).ToList(),
                 parameters);
 
             if (success)
