@@ -1,13 +1,11 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using Autodesk.Revit.DB;
-using DSNodeServices;
 using RevitServices.Elements;
 using RevitServices.Persistence;
-using RevitServices.Transactions;
 
 namespace DSRevitNodes.Elements
 {
@@ -26,6 +24,30 @@ namespace DSRevitNodes.Elements
         }
 
         /// <summary>
+        /// Get a collection of wrapped elements from the current document by id.
+        /// </summary>
+        /// <param name="elementIds">A list of element ids.</param>
+        /// <param name="areRevitOwned">Whether the object returned should be revit owned or not.</param>
+        /// <returns></returns>
+        public static IEnumerable<AbstractElement> ByElementIds(IList<int> elementIds, bool areRevitOwned)
+        {
+            var abEls = new List<AbstractElement>();
+
+            foreach (var id in elementIds)
+            {
+                var ele = InternalGetElementById(id);
+                if (ele != null)
+                {
+                    abEls.Add(WrapElement(ele, areRevitOwned));
+                }
+
+                throw new Exception("Could not get the element from the document.");
+            }
+
+            return abEls;
+        }
+
+        /// <summary>
         /// A factory method for looking up and obtaining elements
         /// from the revit project.
         /// </summary>
@@ -41,7 +63,7 @@ namespace DSRevitNodes.Elements
                 return WrapElement(ele, isRevitOwned);
             }
             
-            throw new Exception("Could not get the element from the document");
+            throw new Exception("Could not get the element from the document.");
         }
 
         /// <summary>

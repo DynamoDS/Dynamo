@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,7 +12,9 @@ using DSCoreNodes;
 using DSRevitNodes.Interactivity;
 using Dynamo;
 using Dynamo.Controls;
+using Dynamo.DSEngine;
 using Dynamo.Nodes;
+using Dynamo.Utilities;
 using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
 using Binding = System.Windows.Data.Binding;
@@ -34,6 +37,8 @@ namespace DSRevitNodes.Elements
         /// </summary>
         protected Func<string, T> selectionAction;
 
+        protected Action unwrapAction;
+ 
         /// <summary>
         /// The Element which is selected.
         /// </summary>
@@ -142,13 +147,13 @@ namespace DSRevitNodes.Elements
         
         public override Node BuildAst()
         {
-            FunctionCallNode node = null;
+            AssociativeNode node = null;
 
             if (SelectedElement is Element)
             {
                 node = new FunctionCallNode
                 {
-                    Function = new IdentifierNode("DSRevitNodes.Elements.DSElementFactory.ByElementId"),
+                    Function = new IdentifierNode("DSRevitNodes.Elements.ElementSelector.ByElementId"),
                     FormalArguments = new List<AssociativeNode>
                     {
                         new IntNode((SelectedElement as Element).Id.IntegerValue.ToString(CultureInfo.InvariantCulture))
@@ -159,23 +164,29 @@ namespace DSRevitNodes.Elements
             {
                 node = new FunctionCallNode
                 {
-                    Function = new IdentifierNode("DSRevitNodes.Elements.DSElementFactory.ByElementId"),
+                    Function = new IdentifierNode("DSRevitNodes.Elements.ElementSelector.ByElementId"),
                     FormalArguments = new List<AssociativeNode>
-                    {
+                    { 
                         new IntNode(
                             (SelectedElement as Reference).ElementId.IntegerValue.ToString(CultureInfo.InvariantCulture))
                     }
                 };
             }
-            else if (SelectedElement is Curve)
+            else if (SelectedElement is List<Element>)
             {
-                throw new NotImplementedException();
+                var els = SelectedElement as List<Element>;
+
+                var newInputs = els.Select(el => new FunctionCallNode
+                {
+                    Function = new IdentifierNode("DSRevitNodes.Elements.ElementSelector.ByElementIds"), FormalArguments = new List<AssociativeNode>
+                    {
+                        new IntNode(el.Id.IntegerValue.ToString(CultureInfo.InvariantCulture))
+                    }
+                }).Cast<AssociativeNode>().ToList();
+
+                node = AstFactory.BuildExprList(newInputs);
+
             }
-            else if (SelectedElement is Face)
-            {
-                throw new NotImplementedException();
-            }
-            
             return node;
         }
 
