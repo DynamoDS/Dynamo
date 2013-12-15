@@ -53,14 +53,14 @@ namespace Dynamo.Core
 
         public static double PreviewMaxWidth = 500;
         public static double PreviewMaxHeight;
-        public static double PreviewMinWidth = 220;
-        public static double PreviewMinHeight = 50;
+        public static double PreviewMinWidth = 40;
+        public static double PreviewMinHeight = 30;
         public static double PreviewDefaultMaxWidth = 300;
         public static double PreviewDefaultMaxHeight = 200;
 
-        public static double PreviewCondensedMaxWidth = 300;
-        public static double PreviewCondensedMinWidth = 40;
+        public static double PreviewCondensedMaxWidth = 300;        
         public static double PreviewCondensedMaxHeight = 200;
+        public static double PreviewCondensedMinWidth = 40;
         public static double PreviewCondensedMinHeight = 0;
         public static double PreviewCondensedContentMaxWidth = PreviewCondensedMaxWidth - 10;
         public static double PreviewCondensedContentMaxHeight = PreviewCondensedMaxHeight - 17;
