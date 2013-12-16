@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -12,11 +11,10 @@ using DSCoreNodes;
 using DSRevitNodes.Interactivity;
 using Dynamo;
 using Dynamo.Controls;
-using Dynamo.DSEngine;
 using Dynamo.Nodes;
-using Dynamo.Utilities;
 using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
+using RevitServices.Persistence;
 using Binding = System.Windows.Data.Binding;
 
 namespace DSRevitNodes.Elements
@@ -162,15 +160,40 @@ namespace DSRevitNodes.Elements
             }
             else if (SelectedElement is Reference)
             {
-                node = new FunctionCallNode
+                var geomRef = SelectedElement as Reference;
+                var geob =
+                        DocumentManager.GetInstance()
+                            .CurrentDBDocument.GetElement(geomRef)
+                            .GetGeometryObjectFromReference(geomRef);
+                var stringNode = new StringNode
                 {
-                    Function = new IdentifierNode("DSRevitNodes.Elements.ElementSelector.ByElementId"),
-                    FormalArguments = new List<AssociativeNode>
-                    { 
-                        new IntNode(
-                            (SelectedElement as Reference).ElementId.IntegerValue.ToString(CultureInfo.InvariantCulture))
-                    }
+                    value = (SelectedElement as Reference).ConvertToStableRepresentation(
+                        DocumentManager.GetInstance().CurrentDBDocument)
                 };
+
+                if (geob is Curve)
+                {
+                    node = new FunctionCallNode
+                    {
+                        Function = new IdentifierNode("DSRevitNodes.GeoemtryObjects.GeometryObjectSelector.ByCurve"),
+                        FormalArguments = new List<AssociativeNode>
+                        { 
+                            stringNode
+                        }
+                    };
+                }
+                else
+                {
+                    
+                    node = new FunctionCallNode
+                    {
+                        Function = new IdentifierNode("DSRevitNodes.GeoemtryObjects.GeometryObjectSelector.ByReferenceId"),
+                        FormalArguments = new List<AssociativeNode>
+                        { 
+                            stringNode
+                        }
+                    };
+                }
             }
             else if (SelectedElement is List<Element>)
             {
@@ -178,25 +201,24 @@ namespace DSRevitNodes.Elements
 
                 var newInputs = els.Select(el => new FunctionCallNode
                 {
-                    Function = new IdentifierNode("DSRevitNodes.Elements.ElementSelector.ByElementIds"), FormalArguments = new List<AssociativeNode>
+                    Function = new IdentifierNode("DSRevitNodes.Elements.ElementSelector.ByElementIds"), 
+                    FormalArguments = new List<AssociativeNode>
                     {
                         new IntNode(el.Id.IntegerValue.ToString(CultureInfo.InvariantCulture))
                     }
                 }).Cast<AssociativeNode>().ToList();
 
                 node = AstFactory.BuildExprList(newInputs);
-
             }
             return node;
         }
 
         #endregion
     }
-
-
+    
+    //TODO: DSSelection needs to respond to document modification events
     public class DSSelection<T> : DSSelectionBase<T>
     {
-
         #region internal constructors
 
         internal DSSelection(Func<string, T> action, string message)
@@ -224,9 +246,9 @@ namespace DSRevitNodes.Elements
             return new DSSelection<FamilyInstance>(SelectionHelper.RequestFamilyInstanceSelection, "Select a family instance.");
         }
 
-        public static DSSelection<Form> SelectDividedSurfaceFamilies()
+        public static DSSelection<List<FamilyInstance>> SelectDividedSurfaceFamilies()
         {
-            return new DSSelection<Form>(SelectionHelper.RequestFormSelection, "Select a divided surface.");
+            return new DSSelection<List<FamilyInstance>>(SelectionHelper.RequestDividedSurfaceFamilyInstancesSelection, "Select a divided surface.");
         }
 
         public static DSSelection<Reference> SelectFace()
