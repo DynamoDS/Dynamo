@@ -181,16 +181,22 @@ namespace Dynamo.Views
             // to the same WorkspaceViewModel
 
             // Remove registration of event listener
-            ViewModel.CurrentOffsetChanged -= new PointEventHandler(vm_CurrentOffsetChanged);
-            ViewModel.ZoomChanged -= new ZoomEventHandler(vm_ZoomChanged);
-            ViewModel.RequestZoomToViewportCenter -= new ZoomEventHandler(vm_ZoomAtViewportCenter);
-            ViewModel.RequestZoomToViewportPoint -= new ZoomEventHandler(vm_ZoomAtViewportPoint);
-            ViewModel.RequestZoomToFitView -= new ZoomEventHandler(vm_ZoomToFitView);
-            ViewModel.RequestCenterViewOnElement -= new NodeEventHandler(CenterViewOnElement);
-            ViewModel.RequestNodeCentered -= new NodeEventHandler(vm_RequestNodeCentered);
-            ViewModel.RequestAddViewToOuterCanvas -= new ViewEventHandler(vm_RequestAddViewToOuterCanvas);
-            ViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
-            ViewModel.RequestSelectionBoxUpdate -= VmOnRequestSelectionBoxUpdate;
+            if (e.OldValue != null)
+            {
+                WorkspaceViewModel oldViewModel = (WorkspaceViewModel)e.OldValue;
+
+                oldViewModel.CurrentOffsetChanged -= new PointEventHandler(vm_CurrentOffsetChanged);
+                oldViewModel.ZoomChanged -= new ZoomEventHandler(vm_ZoomChanged);
+                oldViewModel.RequestZoomToViewportCenter -= new ZoomEventHandler(vm_ZoomAtViewportCenter);
+                oldViewModel.RequestZoomToViewportPoint -= new ZoomEventHandler(vm_ZoomAtViewportPoint);
+                oldViewModel.RequestZoomToFitView -= new ZoomEventHandler(vm_ZoomToFitView);
+                oldViewModel.RequestCenterViewOnElement -= new NodeEventHandler(CenterViewOnElement);
+                oldViewModel.RequestNodeCentered -= new NodeEventHandler(vm_RequestNodeCentered);
+                oldViewModel.RequestAddViewToOuterCanvas -= new ViewEventHandler(vm_RequestAddViewToOuterCanvas);
+                oldViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
+                oldViewModel.RequestSelectionBoxUpdate -= VmOnRequestSelectionBoxUpdate;
+            }
+            
 
             // Adding registration of event listener
             ViewModel.CurrentOffsetChanged += new PointEventHandler(vm_CurrentOffsetChanged);

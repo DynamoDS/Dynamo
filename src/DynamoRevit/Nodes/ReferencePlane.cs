@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Autodesk.Revit.DB;
 using Dynamo.Models;
 using Dynamo.Revit;
@@ -15,6 +16,7 @@ namespace Dynamo.Nodes
         public ReferencePlane()
         {
             InPortData.Add(new PortData("l", "Geometry Line.", typeof(FScheme.Value.Container)));
+            InPortData.Add(new PortData("name", "The name of the reference plane.", typeof(FScheme.Value.String)));
             OutPortData.Add(new PortData("ref", "Reference Plane", typeof(FScheme.Value.Container)));
 
             RegisterAllPorts();
@@ -26,19 +28,24 @@ namespace Dynamo.Nodes
         {
             //Ref plane elements take in one geometry curve 
             var c = (Line)((FScheme.Value.Container)args[0]).Item;
+            var name = ((FScheme.Value.String) args[1]).Item;
+
+            //give the plane a unique name temporarily
+            //it will be renamed after evaluation when the element
+            //name store is flushed
+            var tmpName = Guid.NewGuid().ToString();
 
             Autodesk.Revit.DB.ReferencePlane refPlane;
             Line line;
             XYZ bubbleEnd;
             XYZ freeEnd;
-            string name;
 
             if (this.Elements.Any())
             {
                 if (dynUtils.TryGetElement(this.Elements[0], out refPlane))
                 {
                     //...and if we're successful, update it's position (well for now make a new one with the same name)... 
-                    name = refPlane.Name;
+                    //name = refPlane.Name;
 
                     XYZ oldBubbleEnd = refPlane.BubbleEnd;
                     XYZ oldFreeEnd = refPlane.FreeEnd;
@@ -59,6 +66,7 @@ namespace Dynamo.Nodes
                         ElementTransformUtils.MoveElement(this.UIDocument.Document, refPlane.Id, moveVec);
                         refPlane.BubbleEnd = bubbleEnd;
                         refPlane.FreeEnd = freeEnd;
+                        refPlane.Name = tmpName;
                     }
                     catch
                     {
@@ -81,7 +89,7 @@ namespace Dynamo.Nodes
                                 XYZ.BasisZ,
                                 this.UIDocument.ActiveView
                             );
-                        refPlane.Name = name;
+                        refPlane.Name = tmpName;
                     }
                 }
                 else
@@ -105,6 +113,7 @@ namespace Dynamo.Nodes
                             this.UIDocument.ActiveView
                         );
                     this.Elements[0] = refPlane.Id;
+                    refPlane.Name = tmpName;
                 }
             }
             else
@@ -128,7 +137,18 @@ namespace Dynamo.Nodes
                         this.UIDocument.ActiveView
                     );
                 this.Elements.Add(refPlane.Id);
+                refPlane.Name = tmpName;
             }
+
+            if (string.IsNullOrEmpty(name))
+            {
+                dynRevitSettings.Controller.ElementNameStore.Add(refPlane.Id, "ReferencePlane_"+tmpName);
+            }
+            else
+            {
+                dynRevitSettings.Controller.ElementNameStore.Add(refPlane.Id, name);
+            }
+            
 
             return FScheme.Value.NewContainer(refPlane);  
         }
