@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Mail;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
@@ -10,18 +9,31 @@ using DSRevitNodes.GeometryObjects;
 using DSRevitNodes.Graphics;
 using Curve = Autodesk.Revit.DB.Curve;
 using Point = Autodesk.DesignScript.Geometry.Point;
+using Solid = Autodesk.Revit.DB.Solid;
 
 namespace DSRevitNodes.Elements
 {
-    public class DSSolid : IGeometryObject
+    public class DSSolid : AbstractGeometryObject
     {
-        private Autodesk.Revit.DB.Solid x;
+        #region private members
+
         private const double RevitPI = 3.14159265358979;
+
+        #endregion
+
+        #region internal properties
 
         internal Autodesk.Revit.DB.Solid InternalSolid
         {
             get; private set;
         }
+
+        protected override GeometryObject InternalGeometryObject
+        {
+            get { return InternalSolid; }
+        }
+
+        #endregion
 
         #region Internal constructors
 
@@ -120,9 +132,136 @@ namespace DSRevitNodes.Elements
 
         internal DSSolid(Autodesk.Revit.DB.Solid x)
         {
-            // TODO: Complete member initialization
-            this.x = x;
+            this.InternalSolid = x;
         }
+
+        /// <summary>
+        /// Internal constructor to make a solid by boolean operation.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="operationType"></param>
+        internal DSSolid(Autodesk.Revit.DB.Solid a, Autodesk.Revit.DB.Solid b, BooleanOperationsType operationType)
+        {
+            Autodesk.Revit.DB.Solid result = null;
+
+            switch (operationType)
+            {
+                case BooleanOperationsType.Difference:
+                    result = BooleanOperationsUtils.ExecuteBooleanOperation(a, b, BooleanOperationsType.Difference);
+                    break;
+                case BooleanOperationsType.Intersect:
+                    result = BooleanOperationsUtils.ExecuteBooleanOperation(a, b, BooleanOperationsType.Intersect);
+                    break;
+                case BooleanOperationsType.Union:
+                    result = BooleanOperationsUtils.ExecuteBooleanOperation(a, b, BooleanOperationsType.Union);
+                    break;
+            }
+
+            if (result == null)
+            {
+                throw new Exception("A boolean operation could not be completed with the provided solids.");
+            }
+
+            this.InternalSolid = result;
+        }
+
+        /// <summary>
+        /// Internal constructor to make a solid by extracting solids from an element.
+        /// </summary>
+        /// <param name="element"></param>
+        internal DSSolid(Element element)
+        {
+            var instanceSolids = new Dictionary<ElementId, List<GeometryObject>>();;
+            Solid mySolid = null;
+
+            var thisId = ElementId.InvalidElementId;
+
+            if (element != null)
+            {
+                thisId = element.Id;
+                instanceSolids[thisId] = new List<GeometryObject>();
+            }
+
+            bool bNotVisibleOption = false;
+            if (element is GenericForm)
+            {
+                var gF = (GenericForm)element;
+                if (!gF.Combinations.IsEmpty)
+                    bNotVisibleOption = true;
+            }
+            int nTry = (bNotVisibleOption) ? 2 : 1;
+            for (int iTry = 0; iTry < nTry && (mySolid == null); iTry++)
+            {
+                var geoOptions = new Autodesk.Revit.DB.Options();
+                geoOptions.ComputeReferences = true;
+                if (bNotVisibleOption && (iTry == 1))
+                    geoOptions.IncludeNonVisibleObjects = true;
+
+                GeometryObject geomObj = element.get_Geometry(geoOptions);
+                var geomElement = geomObj as GeometryElement;
+
+                if (geomElement != null)
+                {
+                    foreach (GeometryObject geob in geomElement)
+                    {
+                        var ginsta = geob as GeometryInstance;
+                        if (ginsta != null && thisId != ElementId.InvalidElementId)
+                        {
+                            GeometryElement instanceGeom = ginsta.GetInstanceGeometry();
+
+                            instanceSolids[thisId].Add(instanceGeom);
+
+                            foreach (GeometryObject geobInst in instanceGeom)
+                            {
+                                mySolid = geobInst as Solid;
+                                if (mySolid != null)
+                                {
+                                    FaceArray faceArr = mySolid.Faces;
+                                    var thisEnum = faceArr.GetEnumerator();
+                                    bool hasFace = false;
+                                    for (; thisEnum.MoveNext(); )
+                                    {
+                                        hasFace = true;
+                                        break;
+                                    }
+                                    if (!hasFace)
+                                        mySolid = null;
+                                    else
+                                        break;
+                                }
+                            }
+                            if (mySolid != null)
+                                break;
+                        }
+                        else
+                        {
+                            mySolid = geob as Solid;
+                            if (mySolid != null)
+                            {
+                                FaceArray faceArr = mySolid.Faces;
+                                var thisEnum = faceArr.GetEnumerator();
+                                bool hasFace = false;
+                                for (; thisEnum.MoveNext(); )
+                                {
+                                    hasFace = true;
+                                    break;
+                                }
+                                if (!hasFace)
+                                    mySolid = null;
+                                else
+                                    break;
+                            }
+
+                        }
+                    }
+                }
+            }
+
+            this.InternalSolid = mySolid;
+        }
+        
+
 
         #endregion
 
@@ -136,7 +275,7 @@ namespace DSRevitNodes.Elements
             get
             {
                 return this.InternalSolid.Faces.Cast<Autodesk.Revit.DB.Face>()
-                            .Select(x => new DSFace(x))
+                            .Select(DSFace.FromExisting)
                             .ToArray();
             }
         }
@@ -149,7 +288,7 @@ namespace DSRevitNodes.Elements
             get
             {
                 return this.InternalSolid.Edges.Cast<Autodesk.Revit.DB.Edge>()
-                    .Select(x => new DSEdge(x))
+                    .Select(DSEdge.FromExisting)
                     .ToArray();
             }
         }
@@ -187,11 +326,11 @@ namespace DSRevitNodes.Elements
         /// <param name="direction"></param>
         /// <param name="distance"></param>
         /// <returns></returns>
-        public static DSSolid ByExtrusion(DSCurveLoop profile, Vector direction, double distance)
+        public static DSSolid ByExtrusion(Autodesk.DesignScript.Geometry.Curve[] closedProfileCurves, Vector direction, double distance)
         {
-            if (profile == null)
+            if (closedProfileCurves == null)
             {
-                throw new ArgumentNullException("profile");
+                throw new ArgumentNullException("closedProfileCurves");
             }
 
             if (direction == null)
@@ -199,7 +338,10 @@ namespace DSRevitNodes.Elements
                 throw new ArgumentNullException("direction");
             }
 
-            return new DSSolid(new List<CurveLoop>(){profile.InternalCurveLoop}, direction.ToXyz(), distance);
+            var loop = new Autodesk.Revit.DB.CurveLoop();
+            closedProfileCurves.ForEach(x => loop.Append( x.ToRevitType()));
+
+            return new DSSolid(new List<CurveLoop>() { loop }, direction.ToXyz(), distance);
         }
 
         /// <summary>
@@ -347,8 +489,8 @@ namespace DSRevitNodes.Elements
             var semicircle = Autodesk.Revit.DB.Arc.Create(origin, radius, 0, RevitPI, XYZ.BasisZ, XYZ.BasisX);
 
             // create axis curve of sphere - running from north to south pole
-            var axisCurve = Autodesk.Revit.DB.Line.CreateBound(new XYZ(0, 0, -radius),
-                new XYZ(0, 0, radius));
+            var axisCurve = Autodesk.Revit.DB.Line.CreateBound(new XYZ(origin.X, origin.Y, origin.Z-radius),
+                new XYZ(origin.X, origin.Y, origin.Z + radius));
 
             var circleLoop = Autodesk.Revit.DB.CurveLoop.Create(new List<Curve>() { semicircle, axisCurve });
 
@@ -422,7 +564,7 @@ namespace DSRevitNodes.Elements
         }
 
         /// <summary>
-        /// Create a box by two corners
+        /// Create a box by minimum and maximum points.
         /// </summary>
         /// <returns></returns>
         public static DSSolid BoxByTwoCorners(Point minimum, Point maximum)
@@ -472,16 +614,90 @@ namespace DSRevitNodes.Elements
             return new DSSolid(new List<CurveLoop>{ cl },XYZ.BasisZ,height);
         }
 
-        public static DSSolid BoxByCenterAndDimensions()
+        /// <summary>
+        /// Create a box by center and dimensions.
+        /// </summary>
+        /// <param name="center"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
+        /// <returns></returns>
+        public static DSSolid BoxByCenterAndDimensions(Point center,double x, double y, double z)
         {
-            throw new NotImplementedException();
+            var bottom = center.ToXyz() - new XYZ(x / 2, y / 2, z / 2);
+            var top = center.ToXyz() + new XYZ(x / 2, y / 2, z / 2);
+
+            return BoxByTwoCorners(bottom.ToPoint(), top.ToPoint());
+        }
+
+        /// <summary>
+        /// Create a solid by the boolean difference of two solids.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static DSSolid ByBooleanDifference(DSSolid a, DSSolid b)
+        {
+            if (a == null || b == null)
+            {
+                throw new ArgumentException();
+            }
+
+            return new DSSolid(a.InternalSolid, b.InternalSolid, BooleanOperationsType.Difference);
+        }
+
+        /// <summary>
+        /// Create a solid by the boolean union of two solids.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static DSSolid ByBooleanUnion(DSSolid a, DSSolid b)
+        {
+            if (a == null || b == null)
+            {
+                throw new ArgumentException();
+            }
+
+            return new DSSolid(a.InternalSolid, b.InternalSolid, BooleanOperationsType.Union);
+        }
+
+        /// <summary>
+        /// Create a solid by the boolean intersection of two solids.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static DSSolid ByBooleanIntersection(DSSolid a, DSSolid b)
+        {
+            if (a == null || b == null)
+            {
+                throw new ArgumentException();
+            }
+
+            return new DSSolid(a.InternalSolid, b.InternalSolid, BooleanOperationsType.Intersect);
+        }
+
+        /// <summary>
+        /// Create a solid by extracting solids from an element.
+        /// </summary>
+        /// <param name="element"></param>
+        /// <returns></returns>
+        public static DSSolid FromElement(AbstractElement element)
+        {
+            if (element == null)
+            {
+                throw new ArgumentException("element");
+            }
+
+            return new DSSolid(element.InternalElement);
         }
 
         #endregion
 
         #region Tesselation
 
-        public void Tessellate(IRenderPackage package)
+        public override void Tessellate(IRenderPackage package)
         {
             var meshes = this.InternalSolid.Faces.Cast<Autodesk.Revit.DB.Face>()
                 .Select(x => x.Triangulate(GraphicsManager.TesselationLevelOfDetail));

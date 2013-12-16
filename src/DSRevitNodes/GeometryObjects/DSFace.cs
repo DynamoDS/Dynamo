@@ -1,14 +1,14 @@
-﻿using System;
-using Autodesk.DesignScript.Interfaces;
+﻿using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
 using DSRevitNodes.GeometryConversion;
-using DSRevitNodes.GeometryObjects;
+using DSRevitNodes.GeometryIntersection;
 using DSRevitNodes.Graphics;
 
 namespace DSRevitNodes.GeometryObjects
 {
-    public class DSFace : IGeometryObject
+    public class DSFace : AbstractGeometryObject
     {
+
         internal Autodesk.Revit.DB.Face InternalFace
         {
             get; private set;
@@ -22,6 +22,11 @@ namespace DSRevitNodes.GeometryObjects
         private void InternalSetFace(Autodesk.Revit.DB.Face face)
         {
             this.InternalFace = face;
+        }
+
+        protected override GeometryObject InternalGeometryObject
+        {
+            get { return InternalFace; }
         }
 
         #region Public properties
@@ -64,14 +69,49 @@ namespace DSRevitNodes.GeometryObjects
         /// <param name="u"></param>
         /// <param name="v"></param>
         /// <returns></returns>
-        public Autodesk.DesignScript.Geometry.Point Evaluate(double u, double v)
+        public Autodesk.DesignScript.Geometry.Point PointAtParameter(double u, double v)
         {
+           
             return InternalFace.Evaluate(new UV(u, v)).ToPoint();
+        }
+
+        /// <summary>
+        /// Project a point onto a face
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        public Autodesk.DesignScript.Geometry.Point Project(Autodesk.DesignScript.Geometry.Point point)
+        {
+            var result = InternalFace.Project(point.ToXyz());
+            try
+            {
+                return result.XYZPoint.ToPoint();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Evaluate the normal on a Face given it's parameters
+        /// </summary>
+        /// <param name="u"></param>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        public Autodesk.DesignScript.Geometry.Vector NormalAtParameter(double u, double v)
+        {
+            return InternalFace.ComputeNormal(new UV(u, v)).ToVector();
+        }
+
+        public static DSFace FromExisting(Autodesk.Revit.DB.Face f)
+        {
+            return new DSFace(f);
         }
 
         #region Tesselation
 
-        public void Tessellate(IRenderPackage package)
+        public override void Tessellate(IRenderPackage package)
         {
             var mesh = this.InternalFace.Triangulate(GraphicsManager.TesselationLevelOfDetail);
 

@@ -30,7 +30,7 @@ namespace DSRevitNodes.Application
         {
             get
             {
-                return (AbstractView) ElementSelector.WrapElement(Document.ActiveView, true);
+                return (AbstractView) ElementWrappingExtensions.ToDSType(Document.ActiveView, true);
             }
         }
 
@@ -49,9 +49,12 @@ namespace DSRevitNodes.Application
         /// Get the current document
         /// </summary>
         /// <returns></returns>
-        public static DSDocument Current()
+        public static DSDocument Current
         {
-            return new DSDocument();
+            get
+            {
+                return new DSDocument();
+            }
         }
 
     }

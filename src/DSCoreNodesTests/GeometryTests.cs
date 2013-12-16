@@ -2,7 +2,6 @@
 using DSCoreNodes;
 using NUnit.Framework;
 using Point = Autodesk.DesignScript.Geometry.Point;
-using Vector = Autodesk.LibG.Vector;
 
 namespace DSCoreNodesTests
 {
@@ -52,13 +51,13 @@ namespace DSCoreNodesTests
         {
 
             //create a domain object
-            var dom = new Domain2D(Vector.by_coordinates(0, 0), Vector.by_coordinates(1, 1));
+            var dom = new Domain2D(Vector.ByCoordinates(0, 0, 0), Vector.ByCoordinates(1, 1, 0));
 
             //assert the min and max of the domain
-            Assert.IsTrue(dom.Min.x() == 0);
-            Assert.IsTrue(dom.Min.y() == 0);
-            Assert.IsTrue(dom.Max.x() == 1);
-            Assert.IsTrue(dom.Max.y() == 1);
+            Assert.IsTrue(dom.Min.X == 0);
+            Assert.IsTrue(dom.Min.Y == 0);
+            Assert.IsTrue(dom.Max.X == 1);
+            Assert.IsTrue(dom.Max.Y == 1);
 
             //assert the spans of the domain
             Assert.IsTrue(dom.USpan == 1);

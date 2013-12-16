@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,17 +17,21 @@ namespace DSCoreNodes
     /// <summary>
     /// All Custom-UI nodes inherit this.
     /// </summary>
-    public abstract class NodeWithUI : NodeModel
+    [Browsable(false)]
+    public abstract class NodeWithUI : DSFunction
     {
         //We can remove this from NodeModel and only use it here.
+        [Browsable(false)]
         public abstract void SetupCustomUIElements(dynNodeView nodeUI);
 
+        [Browsable(false)]
         public abstract Node BuildAst();
     }
 
     /// <summary>
     /// Sample that contains a slider and produces a number.
     /// </summary>
+    [Browsable(false)]
     public class NumberSlider : NodeWithUI
     {
         public NumberSlider()
@@ -37,8 +42,9 @@ namespace DSCoreNodes
         /// <summary>
         /// Builds the custom AST that contains information bound to the UI.
         /// </summary>
+        [Browsable(false)]
         public override Node BuildAst()
-        {
+        { 
             return new DoubleNode(Value.ToString(CultureInfo.InvariantCulture));
         }
 
@@ -46,6 +52,7 @@ namespace DSCoreNodes
         /// UI is initialized and bindings are setup here.
         /// </summary>
         /// <param name="nodeUI">UI view that we can customize the UI of.</param>
+        [Browsable(false)]
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a slider control to the input grid of the control
@@ -125,4 +132,5 @@ namespace DSCoreNodes
         }
         #endregion
     }
+
 }

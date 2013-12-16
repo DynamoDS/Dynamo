@@ -65,7 +65,8 @@ namespace DSRevitNodes.Elements
         /// <summary>
         /// A reference to the element
         /// </summary>
-        internal abstract Element InternalElement
+        [Browsable(false)]
+        public abstract Element InternalElement
         {
             get;
         }
@@ -91,6 +92,15 @@ namespace DSRevitNodes.Elements
             {
                 DocumentManager.GetInstance().DeleteElement(this.InternalElementId);
             }
+        }
+
+        /// <summary>
+        /// A basic implementation of ToString for Elements
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return InternalElement.ToString();
         }
     }
 }

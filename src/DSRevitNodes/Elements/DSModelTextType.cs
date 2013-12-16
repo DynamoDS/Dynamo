@@ -25,7 +25,7 @@ namespace DSRevitNodes.Elements
         /// <summary>
         /// Reference to the Element
         /// </summary>
-        internal override Autodesk.Revit.DB.Element InternalElement
+        public override Autodesk.Revit.DB.Element InternalElement
         {
             get { return InternalModelTextType; }
         }
@@ -79,7 +79,7 @@ namespace DSRevitNodes.Elements
 
             if (type == null)
             {
-                throw new Exception("There is no ModelTextType of the given name in the current Document");
+                throw new Exception(String.Format("There is no ModelTextType of the name, {0}, in the current Document", name));
             }
 
             return new DSModelTextType(type)

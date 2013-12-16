@@ -31,7 +31,7 @@ namespace DSRevitNodes.Elements
         /// <summary>
         /// Reference to the Element
         /// </summary>
-        internal override Element InternalElement
+        public override Autodesk.Revit.DB.Element InternalElement
         {
             get { return InternalView3D; }
         }

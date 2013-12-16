@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Deployment.Internal;
 using System.Linq;
 using System.Text;
@@ -14,7 +13,7 @@ namespace DSRevitNodes.GeometryObjects
     /// <summary>
     /// A class representing a Revit CurveLoop
     /// </summary>
-    public class DSCurveLoop : IGeometryObject
+    public class DSCurveLoop
     {
         #region Internal properties
 
@@ -83,21 +82,6 @@ namespace DSRevitNodes.GeometryObjects
             var loop = new Autodesk.Revit.DB.CurveLoop();
             curves.ForEach(x => loop.Append(x.ToRevitType())); 
             return new DSCurveLoop(loop);
-        }
-
-        #endregion
-
-        #region Tesselation
-
-        /// <summary>
-        /// Tesselate the curve for visualization
-        /// </summary>
-        /// <param name="package"></param>
-        void IGraphicItem.Tessellate(IRenderPackage package)
-        {
-            this.InternalCurveLoop.SelectMany(x=>x.Tessellate())
-                .ToList()
-                .ForEach(x => package.PushLineStripVertex(x.X, x.Y, x.Z));
         }
 
         #endregion

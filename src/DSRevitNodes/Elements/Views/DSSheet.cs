@@ -33,7 +33,7 @@ namespace DSRevitNodes.Elements
         /// <summary>
         /// Reference to the Element
         /// </summary>
-        internal override Autodesk.Revit.DB.Element InternalElement
+        public override Autodesk.Revit.DB.Element InternalElement
         {
             get { return InternalViewSheet; }
         }
@@ -279,7 +279,7 @@ namespace DSRevitNodes.Elements
                 return
                     InternalViewSheet.Views.Cast<Autodesk.Revit.DB.View>()
                         .ToList()
-                        .Select(x => (AbstractView) ElementSelector.WrapElement(x, true))
+                        .Select(x => (AbstractView) ElementWrappingExtensions.ToDSType(x, true))
                         .ToArray();
             }
         }

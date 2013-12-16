@@ -14,7 +14,7 @@ namespace DSRevitNodes.Elements
     /// A Revit ViewSection
     /// </summary>
     [RegisterForTrace]
-    public class DSSectionView : AbstractElement
+    public class DSSectionView : AbstractView
     {
 
         #region Internal properties
@@ -31,7 +31,7 @@ namespace DSRevitNodes.Elements
         /// <summary>
         /// Reference to the Element
         /// </summary>
-        internal override Autodesk.Revit.DB.Element InternalElement
+        public override Autodesk.Revit.DB.Element InternalElement
         {
             get { return InternalViewSection; }
         }
@@ -85,6 +85,8 @@ namespace DSRevitNodes.Elements
 
         private static ViewSection CreateSectionView(BoundingBoxXYZ bbox)
         {
+            TransactionManager.GetInstance().EnsureInTransaction(Document);
+
             // (sic) From the Dynamo legacy implementation
             var viewFam = DocumentManager.GetInstance().ElementsOfType<ViewFamilyType>()
                 .FirstOrDefault(x => x.ViewFamily == ViewFamily.Section);
@@ -94,7 +96,12 @@ namespace DSRevitNodes.Elements
                 throw new Exception("There is no three dimensional view family in the document");
             }
 
-            return ViewSection.CreateSection( Document, viewFam.Id, bbox);;
+            var viewSection = ViewSection.CreateSection( Document, viewFam.Id, bbox);
+
+            TransactionManager.GetInstance().TransactionTaskDone();
+
+            return viewSection;
+
         }
 
         #endregion
@@ -115,6 +122,7 @@ namespace DSRevitNodes.Elements
 
             return new DSSectionView(box.InternalBoundingBoxXyz);
         }
+
         #endregion
 
         #region Internal static constructors

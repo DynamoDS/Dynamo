@@ -406,11 +406,8 @@ namespace Dynamo.Nodes
             if (OutPortData.Count == 1)
             {
                 var outputIdentiferNode = GetAstIdentifierForOutputIndex(0);
-                string outputIdentifier =
-                    GraphUtilities.ASTListToCode(new List<AssociativeNode> { outputIdentiferNode });
-                string thisIdentifier =
-                    GraphUtilities.ASTListToCode(
-                        new List<AssociativeNode> { AstIdentifierForPreview });
+                string outputIdentifier = outputIdentiferNode.ToString();
+                string thisIdentifier = AstIdentifierForPreview.ToString();
                 if (!string.Equals(outputIdentifier, thisIdentifier))
                 {
                     resultAst.Add(

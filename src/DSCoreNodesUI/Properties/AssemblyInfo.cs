@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("DynamoAsm")]
+[assembly: AssemblyTitle("DSCoreNodesUI")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("DynamoAsm")]
+[assembly: AssemblyProduct("DSCoreNodesUI")]
 [assembly: AssemblyCopyright("Copyright ©  2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("6004065c-957d-47eb-973b-faf99d3d1456")]
+[assembly: Guid("719d70c8-5955-456d-a5e6-dd217f906e3a")]
 
 // Version information for an assembly consists of the following four values:
 //

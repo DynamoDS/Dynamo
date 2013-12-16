@@ -79,11 +79,6 @@
     <Reference Include="JobMonitor">
       <HintPath>..\..\extern\DynamoRaaS\JobMonitor.dll</HintPath>
     </Reference>
-    <Reference Include="LibGNet, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\DynamoAsm\LibGNet.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="MathNet.Numerics, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\mathnet-numerics-build\lib\Net40\MathNet.Numerics.dll</HintPath>
@@ -181,7 +176,6 @@
     <Compile Include="ElementsContainer.cs" />
     <Compile Include="DynamoRevit.cs" />
     <Compile Include="Nodes\Annotation.cs" />
-    <Compile Include="Nodes\New Node Samples\SelectElement.cs" />
     <Compile Include="Nodes\AdaptiveComponents.cs" />
     <Compile Include="Nodes\Arc.cs" />
     <Compile Include="Nodes\Circle.cs" />
@@ -247,7 +241,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource_en_us.resx</DependentUpon>
     </Compile>
-    <Compile Include="RevitToLibGConversions.cs" />
     <Compile Include="Views\Partials.cs" />
     <Compile Include="ViewModels\DynamoRevitViewModel.cs" />
     <Compile Include="VisualizationManager\VisualizationManagerRevit.cs" />

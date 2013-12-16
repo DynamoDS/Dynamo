@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using DSNodeServices;
@@ -14,6 +15,9 @@ using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Numerics.LinearAlgebra.Generic;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
+using Curve = Autodesk.Revit.DB.Curve;
+using Line = Autodesk.Revit.DB.Line;
+using Plane = Autodesk.Revit.DB.Plane;
 
 namespace DSRevitNodes.Elements
 {
@@ -37,7 +41,7 @@ namespace DSRevitNodes.Elements
         /// <summary>
         /// Reference to the Element
         /// </summary>
-        internal override Autodesk.Revit.DB.Element InternalElement
+        public override Autodesk.Revit.DB.Element InternalElement
         {
             get { return InternalModelCurve; }
         }
@@ -216,7 +220,7 @@ namespace DSRevitNodes.Elements
             {
                 throw new Exception("The curve is not planar");
             }
-
+            
             return new DSModelCurve(curve.ToRevitType());
         }
 
@@ -225,9 +229,12 @@ namespace DSRevitNodes.Elements
         /// </summary>
         /// <param name="modelCurve"></param>
         /// <returns></returns>
-        internal static DSModelCurve FromExisting(Autodesk.Revit.DB.ModelCurve modelCurve)
+        internal static DSModelCurve FromExisting(Autodesk.Revit.DB.ModelCurve modelCurve, bool isRevitOwned)
         {
-            return new DSModelCurve(modelCurve);
+            return new DSModelCurve(modelCurve)
+            {
+                IsRevitOwned = isRevitOwned
+            };
         }
 
         #endregion

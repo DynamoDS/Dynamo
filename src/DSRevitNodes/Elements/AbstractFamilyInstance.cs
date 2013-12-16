@@ -1,16 +1,8 @@
-﻿using System;
-using System.ComponentModel;
-using Autodesk.DesignScript.Geometry;
+﻿using System.ComponentModel;
 using Autodesk.Revit.DB;
-using Autodesk.Revit.DB.Structure;
 using DSNodeServices;
-using DSRevitNodes.Elements;
-using DSRevitNodes.GeometryObjects;
-using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Point = Autodesk.DesignScript.Geometry.Point;
-using Curve = Autodesk.DesignScript.Geometry.Curve;
-using Face = Autodesk.DesignScript.Geometry.Face;
 
 namespace DSRevitNodes.Elements
 {
@@ -36,11 +28,10 @@ namespace DSRevitNodes.Elements
         /// <summary>
         /// Reference to the Element
         /// </summary>
-        internal override Element InternalElement
+        public override Autodesk.Revit.DB.Element InternalElement
         {
             get { return InternalFamilyInstance; }
         }
-
 
         #endregion
 

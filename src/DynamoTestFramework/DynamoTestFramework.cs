@@ -91,6 +91,8 @@ namespace Dynamo.Tests
 
                 // setup revit services
                 DocumentManager.GetInstance().CurrentDBDocument = RevitData.Document.Document;
+                DocumentManager.GetInstance().CurrentUIDocument = RevitData.Application.ActiveUIDocument;
+
                 TransactionManager.SetupManager(new DebugTransactionStrategy());
 
                 bool canReadData = (0 < dataMap.Count);
