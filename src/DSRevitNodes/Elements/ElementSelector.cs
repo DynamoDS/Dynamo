@@ -1,13 +1,11 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using Autodesk.Revit.DB;
-using DSNodeServices;
 using RevitServices.Elements;
 using RevitServices.Persistence;
-using RevitServices.Transactions;
 
 namespace DSRevitNodes.Elements
 {
@@ -41,7 +39,7 @@ namespace DSRevitNodes.Elements
                 return WrapElement(ele, isRevitOwned);
             }
             
-            throw new Exception("Could not get the element from the document");
+            throw new Exception("Could not get the element from the document.");
         }
 
         /// <summary>

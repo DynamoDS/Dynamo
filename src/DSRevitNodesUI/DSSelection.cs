@@ -1,7 +1,7 @@
-
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,26 +14,29 @@ using Dynamo.Controls;
 using Dynamo.Nodes;
 using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
+using RevitServices.Persistence;
 using Binding = System.Windows.Data.Binding;
 
 namespace DSRevitNodes.Elements
 {
-    public abstract class DSElementSelectionBase<T> : NodeWithUI 
+    public abstract class DSSelectionBase<T> : NodeWithUI 
     {
         private T _selected;
         private bool _canSelect;
         private string _selectionText;
-         
+        
         /// <summary>
         /// The message to display in the interface during selection.
         /// </summary>
-        protected string _selectionMessage;
+        protected string selectionMessage;
 
         /// <summary>
         /// The selection action.
         /// </summary>
-        protected Func<string, T> _selectionAction;
+        protected Func<string, T> selectionAction;
 
+        protected Action unwrapAction;
+ 
         /// <summary>
         /// The Element which is selected.
         /// </summary>
@@ -142,13 +145,13 @@ namespace DSRevitNodes.Elements
         
         public override Node BuildAst()
         {
-            FunctionCallNode node = null;
+            AssociativeNode node = null;
 
             if (SelectedElement is Element)
             {
                 node = new FunctionCallNode
                 {
-                    Function = new IdentifierNode("DSRevitNodes.Elements.DSElementFactory.ByElementId"),
+                    Function = new IdentifierNode("DSRevitNodes.Elements.ElementSelector.ByElementId"),
                     FormalArguments = new List<AssociativeNode>
                     {
                         new IntNode((SelectedElement as Element).Id.IntegerValue.ToString(CultureInfo.InvariantCulture))
@@ -157,102 +160,132 @@ namespace DSRevitNodes.Elements
             }
             else if (SelectedElement is Reference)
             {
-                node = new FunctionCallNode
+                var geomRef = SelectedElement as Reference;
+                var geob =
+                        DocumentManager.GetInstance()
+                            .CurrentDBDocument.GetElement(geomRef)
+                            .GetGeometryObjectFromReference(geomRef);
+                var stringNode = new StringNode
                 {
-                    Function = new IdentifierNode("DSRevitNodes.Elements.DSElementFactory.ByElementId"),
+                    value = (SelectedElement as Reference).ConvertToStableRepresentation(
+                        DocumentManager.GetInstance().CurrentDBDocument)
+                };
+
+                if (geob is Curve)
+                {
+                    node = new FunctionCallNode
+                    {
+                        Function = new IdentifierNode("DSRevitNodes.GeoemtryObjects.GeometryObjectSelector.ByCurve"),
+                        FormalArguments = new List<AssociativeNode>
+                        { 
+                            stringNode
+                        }
+                    };
+                }
+                else
+                {
+                    
+                    node = new FunctionCallNode
+                    {
+                        Function = new IdentifierNode("DSRevitNodes.GeoemtryObjects.GeometryObjectSelector.ByReferenceId"),
+                        FormalArguments = new List<AssociativeNode>
+                        { 
+                            stringNode
+                        }
+                    };
+                }
+            }
+            else if (SelectedElement is List<Element>)
+            {
+                var els = SelectedElement as List<Element>;
+
+                var newInputs = els.Select(el => new FunctionCallNode
+                {
+                    Function = new IdentifierNode("DSRevitNodes.Elements.ElementSelector.ByElementIds"), 
                     FormalArguments = new List<AssociativeNode>
                     {
-                        new IntNode(
-                            (SelectedElement as Reference).ElementId.IntegerValue.ToString(CultureInfo.InvariantCulture))
+                        new IntNode(el.Id.IntegerValue.ToString(CultureInfo.InvariantCulture))
                     }
-                };
-            }
-            else if (SelectedElement is Curve)
-            {
-                throw new NotImplementedException();
-            }
-            else if (SelectedElement is Face)
-            {
-                throw new NotImplementedException();
-            }
+                }).Cast<AssociativeNode>().ToList();
 
+                node = AstFactory.BuildExprList(newInputs);
+            }
             return node;
         }
 
         #endregion
     }
-
-
-    public class DSElementSelection<T> : DSElementSelectionBase<T>
+    
+    //TODO: DSSelection needs to respond to document modification events
+    public class DSSelection<T> : DSSelectionBase<T>
     {
-
         #region internal constructors
 
-        internal DSElementSelection(Func<string, T> action, string message)
+        internal DSSelection(Func<string, T> action, string message)
         {
-            _selectionAction = action;
-            _selectionMessage = message;
+            selectionAction = action;
+            selectionMessage = message;
         }
         
         #endregion
 
         #region public static constructors
 
-        public static DSElementSelection<Element> SelectAnalysisResults()
+        public static DSSelection<Element> SelectAnalysisResults()
         {
-            return new DSElementSelection<Element>(SelectionHelper.RequestAnalysisResultInstanceSelection, "Select an analysis result.");
+            return new DSSelection<Element>(SelectionHelper.RequestAnalysisResultInstanceSelection, "Select an analysis result.");
         }
 
-        public static DSElementSelection<Element> SelectElement()
+        public static DSSelection<Element> SelectElement()
         {
-            return new DSElementSelection<Element>(SelectionHelper.RequestModelElementSelection, "Select Model Element");
+            return new DSSelection<Element>(SelectionHelper.RequestModelElementSelection, "Select Model Element");
         }
 
-        public static DSElementSelection<FamilyInstance> SelectFamilyInstance()
+        public static DSSelection<FamilyInstance> SelectFamilyInstance()
         {
-            return new DSElementSelection<FamilyInstance>(SelectionHelper.RequestFamilyInstanceSelection, "Select a family instance.");
+            return new DSSelection<FamilyInstance>(SelectionHelper.RequestFamilyInstanceSelection, "Select a family instance.");
         }
 
-        public static DSElementSelection<Form> SelectDividedSurfaceFamilies()
+        public static DSSelection<List<FamilyInstance>> SelectDividedSurfaceFamilies()
         {
-            return new DSElementSelection<Form>(SelectionHelper.RequestFormSelection, "Select a divided surface.");
+            return new DSSelection<List<FamilyInstance>>(SelectionHelper.RequestDividedSurfaceFamilyInstancesSelection, "Select a divided surface.");
         }
 
-        public static DSElementSelection<Reference> SelectFace()
+        public static DSSelection<Reference> SelectFace()
         {
-            return new DSElementSelection<Reference>(SelectionHelper.RequestFaceReferenceSelection, "Select a face.");
+            return new DSSelection<Reference>(SelectionHelper.RequestFaceReferenceSelection, "Select a face.");
         }
 
-        public static DSElementSelection<Reference> SelectEdge()
+        public static DSSelection<Reference> SelectEdge()
         {
-            return new DSElementSelection<Reference>(SelectionHelper.RequestEdgeReferenceSelection, "Select an edge.");
+            return new DSSelection<Reference>(SelectionHelper.RequestEdgeReferenceSelection, "Select an edge.");
         }
 
-        public static DSElementSelection<CurveElement> SelectCurve()
+        public static DSSelection<CurveElement> SelectCurve()
         {
-            return new DSElementSelection<CurveElement>(SelectionHelper.RequestCurveElementSelection, "Select a curve.");
+            return new DSSelection<CurveElement>(SelectionHelper.RequestCurveElementSelection, "Select a curve.");
         }
 
-        public static DSElementSelection<ReferencePoint> SelectReferencePoint()
+        public static DSSelection<ReferencePoint> SelectReferencePoint()
         {
-            return new DSElementSelection<ReferencePoint>(SelectionHelper.RequestReferencePointSelection,
+            return new DSSelection<ReferencePoint>(SelectionHelper.RequestReferencePointSelection,
                 "Select a reference point.");
         }
 
-        public static DSElementSelection<Level> SelectLevel()
+        public static DSSelection<Level> SelectLevel()
         {
-            return new DSElementSelection<Level>(SelectionHelper.RequestLevelSelection,
+            return new DSSelection<Level>(SelectionHelper.RequestLevelSelection,
                 "Select a level.");
         }
 
-        public static DSElementSelection<Reference> SelectPointOnElement()
+        public static DSSelection<Reference> SelectPointOnElement()
         {
-            return new DSElementSelection<Reference>(SelectionHelper.RequestReferenceXYZSelection, "Select a point on a face.");
+            return new DSSelection<Reference>(SelectionHelper.RequestReferenceXYZSelection, "Select a point on a face.");
         }
 
-        public static DSElementSelection<List<Element>> SelectMultipleElements()
+        public static DSSelection<List<Element>> SelectMultipleElements()
         {
-            return new DSElementSelection<List<Element>>(SelectionHelper.RequestMultipleCurveElementsSelection, "Select elements.");
+            return new DSSelection<List<Element>>(SelectionHelper.RequestMultipleCurveElementsSelection, "Select elements.");
         }
 
         #endregion
@@ -265,7 +298,8 @@ namespace DSRevitNodes.Elements
         {
             try
             {
-                SelectedElement =  _selectionAction(_selectionMessage);
+                //call the delegate associated with a selection type
+                SelectedElement =  selectionAction(selectionMessage);
                 RaisePropertyChanged("SelectionText");
                 RequiresRecalc = true;
             }

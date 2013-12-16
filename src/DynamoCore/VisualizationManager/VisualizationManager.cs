@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -7,18 +6,13 @@ using System.Diagnostics;
 using System.Text;
 using System.Windows.Media.Media3D;
 using System.Linq;
-using Autodesk.LibG;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.Utilities;
 using HelixToolkit.Wpf;
 using Microsoft.Practices.Prism.ViewModel;
 using Newtonsoft.Json;
-using Octree.OctreeSearch;
-using Octree.Tools.Point;
-using Double = System.Double;
 using String = System.String;
 using Dynamo.DSEngine;
 
@@ -188,7 +182,7 @@ namespace Dynamo
             
             dynSettings.Controller.DynamoModel.NodeDeleted += DynamoModel_NodeDeleted;
 
-            Visualizers.Add(typeof(GraphicItem), VisualizationManagerASM.DrawLibGGraphicItem);
+            //Visualizers.Add(typeof(GraphicItem), VisualizationManagerASM.DrawLibGGraphicItem);
 #if USE_DSENGINE
             Visualizers.Add(typeof(Autodesk.DesignScript.Interfaces.IGraphicItem), VisualizationManagerDSGeometry.DrawDesignScriptGraphicItem);
 #endif
@@ -511,7 +505,7 @@ namespace Dynamo
         private static string GetDrawableId(NodeModel node, int outPortIndex)
         {
             var output = node.GetAstIdentifierForOutputIndex(outPortIndex);
-            return GraphToDSCompiler.GraphUtilities.ASTListToCode(new List<ProtoCore.AST.AssociativeAST.AssociativeNode> { output });
+            return output.ToString();
         }
 
         /// <summary>

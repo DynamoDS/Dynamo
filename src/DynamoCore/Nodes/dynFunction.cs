@@ -6,6 +6,7 @@ using Dynamo.FSchemeInterop.Node;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
+using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Nodes
 {
@@ -511,6 +512,13 @@ namespace Dynamo.Nodes
             return ((FScheme.Value.Function)Controller.FSchemeEnvironment.LookupSymbol(Symbol))
                 .Item.Invoke(args);
         }
+
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
+        {
+            var rhs = AstFactory.BuildFunctionCall(Definition.FunctionName, inputAstNodes);
+            var funcCall = AstFactory.BuildAssignment(this.AstIdentifierForPreview, rhs);
+            return new AssociativeNode[] { funcCall };
+        }
     }
 
     [NodeName("Input")]
@@ -518,6 +526,7 @@ namespace Dynamo.Nodes
     [NodeDescription("A function parameter, use with custom nodes")]
     [NodeSearchTags("variable", "argument", "parameter")]
     [IsInteractive(false)]
+    [IsDesignScriptCompatible]
     public partial class Symbol : NodeModel
     {
         public Symbol()
@@ -546,6 +555,14 @@ namespace Dynamo.Nodes
                 ReportModification();
                 RaisePropertyChanged("InputSymbol");
             }
+        }
+
+        public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
+        {
+            if (string.IsNullOrEmpty(InputSymbol))
+                return AstIdentifierForPreview;
+            else
+                return AstFactory.BuildIdentifier(InputSymbol);
         }
 
         protected internal override INode Build(
@@ -588,6 +605,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("A function output, use with custom nodes")]
     [IsInteractive(false)]
+    [IsDesignScriptCompatible]
     public partial class Output : NodeModel
     {
         public Output()
@@ -616,6 +634,25 @@ namespace Dynamo.Nodes
                 ReportModification();
                 RaisePropertyChanged("Symbol");
             }
+        }
+
+        public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
+        {
+            if (outputIndex < 0 || outputIndex > OutPortData.Count)
+                throw new ArgumentOutOfRangeException("outputIndex", @"Index must correspond to an OutPortData index.");
+
+            return AstIdentifierForPreview;
+        }
+
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
+        {
+            AssociativeNode assignment;
+            if (null == inputAstNodes || inputAstNodes.Count == 0)
+                assignment = AstFactory.BuildAssignment(AstIdentifierForPreview, AstFactory.BuildNullNode());
+            else
+                assignment = AstFactory.BuildAssignment(AstIdentifierForPreview, inputAstNodes[0]);
+
+            return new AssociativeNode[] { assignment };
         }
 
         protected override void SaveNode(

@@ -124,15 +124,13 @@ namespace DSRevitNodes.Interactivity
 
         }
 
-        // MDJ TODO - this is really hacky. I want to just use the face but evaluating 
-        //the ref fails later on in pointOnSurface, the ref just returns void, not sure why.
         public static Reference RequestFaceReferenceSelection(string message)
         {
             var doc = DocumentManager.GetInstance().CurrentUIDocument;
 
             Reference faceRef = null;
 
-            Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+            var choices = doc.Selection;
             choices.Elements.Clear();
 
             DynamoLogger.Instance.Log(message);
@@ -358,6 +356,51 @@ namespace DSRevitNodes.Interactivity
             Reference xyzRef = doc.Selection.PickObject(ObjectType.PointOnElement);
 
             return xyzRef;
+        }
+
+        public static List<FamilyInstance> RequestDividedSurfaceFamilyInstancesSelection(string message)
+        {
+            var form = RequestFormSelection(message);
+
+            var result = new List<FamilyInstance>();
+
+            var dsd = form.GetDividedSurfaceData();
+
+            if (dsd == null)
+                throw new Exception("The selected form has no divided surface data.");
+
+            foreach (Reference r in dsd.GetReferencesWithDividedSurfaces())
+            {
+                var ds = dsd.GetDividedSurfaceForReference(r);
+
+                var gn = new GridNode();
+
+                int u = 0;
+                while (u < ds.NumberOfUGridlines)
+                {
+                    gn.UIndex = u;
+
+                    int v = 0;
+                    while (v < ds.NumberOfVGridlines)
+                    {
+                        gn.VIndex = v;
+
+                        //"Reports whether a grid node is a "seed node," a node that is associated with one or more tiles."
+                        if (ds.IsSeedNode(gn))
+                        {
+                            var fi = ds.GetTileFamilyInstance(gn, 0);
+
+                            //put the family instance into the tree
+                            result.Add(fi);
+                        }
+                        v = v + 1;
+                    }
+
+                    u = u + 1;
+                }
+            }
+
+            return result;
         }
     }
 }

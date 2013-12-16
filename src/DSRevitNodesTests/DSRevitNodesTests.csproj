@@ -114,7 +114,7 @@
     <Compile Include="GeometryObjects\CurveLoopTests.cs" />
     <Compile Include="GeometryObjects\NurbSplineTests.cs" />
     <Compile Include="GeometryObjects\SolidTests.cs" />
-    <Compile Include="Interactivity\InteractivityTests.cs" />
+    <Compile Include="Interactivity\SelectionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
