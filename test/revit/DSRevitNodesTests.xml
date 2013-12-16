@@ -260,6 +260,12 @@
         <test name="SelectElementASTGeneration" modelPath=".\Empty.rfa"/>
       </testFixture>
       
+	  <testFixture name="FaceIntersectTests">
+        <test name="IntersectingFaceFace_ValidArgs" modelPath=".\empty.rfa"/>
+        <test name="IntersectingFaceFace_BadArgs" modelPath=".\empty.rfa"/>
+        <test name="NonIntersectingFaceFace_ValidArgs" modelPath=".\empty.rfa"/>
+      </testFixture>
+	  
 		</testAssembly>
 	</testAssemblies>
 </tests>

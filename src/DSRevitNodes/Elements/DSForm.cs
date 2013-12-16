@@ -80,13 +80,28 @@ namespace DSRevitNodes.Elements
 
 
         #endregion
+
         #region Public properties
 
+        /// <summary>
+        /// Get the FaceReferences from this Element
+        /// </summary>
         public DSFaceReference[] FaceReferences
         {
             get
             {
                 return EnumerateFaces().Select(x => new DSFaceReference(x)).ToArray();
+            }
+        }
+
+        /// <summary>
+        /// Get the Faces from this Element
+        /// </summary>
+        public DSFace[] Faces
+        {
+            get
+            {
+                return EnumerateFaces().Select(DSFace.FromExisting).ToArray();
             }
         }
 
