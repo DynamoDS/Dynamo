@@ -3,17 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
-using Autodesk.Revit.DB.Structure;
 using DSNodeServices;
-using DSRevitNodes.Elements;
 using DSRevitNodes.GeometryConversion;
 using DSRevitNodes.GeometryObjects;
 using DSRevitNodes.References;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 using Point = Autodesk.DesignScript.Geometry.Point;
-using Curve = Autodesk.DesignScript.Geometry.Curve;
-using Face = Autodesk.DesignScript.Geometry.Face;
 
 namespace DSRevitNodes.Elements
 {

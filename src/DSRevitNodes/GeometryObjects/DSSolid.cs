@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Mail;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
