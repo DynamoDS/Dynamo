@@ -13,6 +13,7 @@ namespace Dynamo.Tests
     class 
         VisualizationManagerTests : DynamoUnitTest
     {
+        /*
         [Test]
         public void CanVisualizeASMPoints()
         {
@@ -461,5 +462,6 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(viz.Visualizations.SelectMany(x => x.Value.Text).Count(), 5);
         }
+        */
     }
 }
