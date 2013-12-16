@@ -124,8 +124,6 @@ namespace DSRevitNodes.Interactivity
 
         }
 
-        // MDJ TODO - this is really hacky. I want to just use the face but evaluating 
-        //the ref fails later on in pointOnSurface, the ref just returns void, not sure why.
         public static Reference RequestFaceReferenceSelection(string message)
         {
             var doc = DocumentManager.GetInstance().CurrentUIDocument;
