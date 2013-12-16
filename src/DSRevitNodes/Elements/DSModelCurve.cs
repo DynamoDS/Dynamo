@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using DSNodeServices;
@@ -14,6 +15,9 @@ using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Numerics.LinearAlgebra.Generic;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
+using Curve = Autodesk.Revit.DB.Curve;
+using Line = Autodesk.Revit.DB.Line;
+using Plane = Autodesk.Revit.DB.Plane;
 
 namespace DSRevitNodes.Elements
 {
@@ -216,7 +220,7 @@ namespace DSRevitNodes.Elements
             {
                 throw new Exception("The curve is not planar");
             }
-
+            
             return new DSModelCurve(curve.ToRevitType());
         }
 
