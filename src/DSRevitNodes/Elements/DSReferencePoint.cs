@@ -92,12 +92,13 @@ namespace DSRevitNodes.Elements
         /// <param name="parameter"></param>
         /// <param name="measurementType"></param>
         /// <param name="measureFrom"></param>
-        private DSReferencePoint( Reference curveReference, double parameter, PointOnCurveMeasurementType measurementType, PointOnCurveMeasureFrom measureFrom )
+        private DSReferencePoint(Reference curveReference, double parameter, PointOnCurveMeasurementType measurementType,
+            PointOnCurveMeasureFrom measureFrom)
         {
             //Phase 1 - Check to see if the object exists and should be rebound
-            var oldRefPt = 
+            var oldRefPt =
                 ElementBinder.GetElementFromTrace<Autodesk.Revit.DB.ReferencePoint>(Document);
-             
+
             //There was a point, rebind to that, and adjust its position
             if (oldRefPt != null)
             {
@@ -127,7 +128,7 @@ namespace DSRevitNodes.Elements
         private DSReferencePoint(double x, double y, double z)
         {
             //Phase 1 - Check to see if the object exists and should be rebound
-            var oldRefPt = 
+            var oldRefPt =
                 ElementBinder.GetElementFromTrace<Autodesk.Revit.DB.ReferencePoint>(Document);
 
             //There was a point, rebind to that, and adjust its position
@@ -171,7 +172,8 @@ namespace DSRevitNodes.Elements
             TransactionManager.GetInstance().TransactionTaskDone();
         }
 
-        private void InternalSetPointOnCurve(Reference curveReference, double parameter, PointOnCurveMeasurementType measurementType, PointOnCurveMeasureFrom measureFrom)
+        private void InternalSetPointOnCurve(Reference curveReference, double parameter,
+            PointOnCurveMeasurementType measurementType, PointOnCurveMeasureFrom measureFrom)
         {
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
@@ -214,7 +216,14 @@ namespace DSRevitNodes.Elements
             set { InternalSetPosition(new XYZ(X, Y, value)); }
         }
 
-        
+        public Point Point
+        {
+            get
+            {
+                return InternalReferencePoint.Position.ToPoint();
+            }
+        }
+
         public Plane XYPlane
         {
             get

@@ -1,6 +1,7 @@
 ﻿using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
 using DSRevitNodes.GeometryConversion;
+using DSRevitNodes.GeometryIntersection;
 using DSRevitNodes.Graphics;
 
 namespace DSRevitNodes.GeometryObjects
@@ -68,9 +69,39 @@ namespace DSRevitNodes.GeometryObjects
         /// <param name="u"></param>
         /// <param name="v"></param>
         /// <returns></returns>
-        public Autodesk.DesignScript.Geometry.Point Evaluate(double u, double v)
+        public Autodesk.DesignScript.Geometry.Point PointAtParameter(double u, double v)
         {
+           
             return InternalFace.Evaluate(new UV(u, v)).ToPoint();
+        }
+
+        /// <summary>
+        /// Project a point onto a face
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        public Autodesk.DesignScript.Geometry.Point Project(Autodesk.DesignScript.Geometry.Point point)
+        {
+            var result = InternalFace.Project(point.ToXyz());
+            try
+            {
+                return result.XYZPoint.ToPoint();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Evaluate the normal on a Face given it's parameters
+        /// </summary>
+        /// <param name="u"></param>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        public Autodesk.DesignScript.Geometry.Vector NormalAtParameter(double u, double v)
+        {
+            return InternalFace.ComputeNormal(new UV(u, v)).ToVector();
         }
 
         public static DSFace FromExisting(Autodesk.Revit.DB.Face f)

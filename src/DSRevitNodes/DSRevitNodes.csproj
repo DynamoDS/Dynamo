@@ -98,6 +98,7 @@
     <Compile Include="Elements\Views\Packing\RectanglePacker.cs" />
     <Compile Include="GeometryConversion\ProtoToRevitCurve.cs" />
     <Compile Include="GeometryConversion\RevitToProtoCurve.cs" />
+    <Compile Include="GeometryIntersection\DSFaceIntersect.cs" />
     <Compile Include="GeometryObjects\DSBoundingBox.cs" />
     <Compile Include="GeometryObjects\DSPlanarFace.cs" />
     <Compile Include="GeometryObjects\GeometryObjectSelector.cs" />
