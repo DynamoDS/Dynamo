@@ -279,7 +279,7 @@ namespace DSRevitNodes.Elements
                 return
                     InternalViewSheet.Views.Cast<Autodesk.Revit.DB.View>()
                         .ToList()
-                        .Select(x => (AbstractView) ElementSelector.WrapElement(x, true))
+                        .Select(x => (AbstractView) ElementWrappingExtensions.ToDSType(x, true))
                         .ToArray();
             }
         }

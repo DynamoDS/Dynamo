@@ -76,9 +76,11 @@
     <Compile Include="Application\DSDocument.cs" />
     <Compile Include="Elements\AbstractElement.cs" />
     <Compile Include="Elements\AbstractFamilyInstance.cs" />
+    <Compile Include="Elements\DSElement.cs" />
     <Compile Include="Elements\DSModelText.cs" />
     <Compile Include="Elements\DSModelTextType.cs" />
     <Compile Include="Elements\DSStructuralType.cs" />
+    <Compile Include="Elements\ElementWrappingExtensions.cs" />
     <Compile Include="Elements\Views\AbstractPlanView.cs" />
     <Compile Include="Elements\Views\AbstractView.cs" />
     <Compile Include="Elements\Views\Packing\CygonRectanglePacker.cs" />
@@ -91,7 +93,6 @@
     <Compile Include="Elements\Views\DSDraftingView.cs" />
     <Compile Include="Elements\Views\DSFloorPlanView.cs" />
     <Compile Include="Elements\Views\DSSheet.cs" />
-    <Compile Include="Elements\Views\DSTableView.cs" />
     <Compile Include="Elements\DSWallType.cs" />
     <Compile Include="Elements\Views\DSSectionView.cs" />
     <Compile Include="Elements\Views\Packing\OutOfSpaceException.cs" />

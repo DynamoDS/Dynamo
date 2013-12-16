@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.Structure;
 using RevitServices.Elements;
 using RevitServices.Persistence;
 
@@ -20,7 +22,7 @@ namespace DSRevitNodes.Elements
         /// <returns></returns>
         public static IEnumerable<AbstractElement> ByType<T>(bool isRevitOwned) where T : Autodesk.Revit.DB.Element
         {
-            return DocumentManager.GetInstance().ElementsOfType<T>().Select(x => WrapElement(x, isRevitOwned));
+            return DocumentManager.GetInstance().ElementsOfType<T>().Select(x => x.ToDSType(isRevitOwned));
         }
 
         /// <summary>
@@ -36,7 +38,7 @@ namespace DSRevitNodes.Elements
 
             if (ele != null)
             {
-                return WrapElement(ele, isRevitOwned);
+                return ele.ToDSType(isRevitOwned);
             }
             
             throw new Exception("Could not get the element from the document.");
@@ -55,71 +57,10 @@ namespace DSRevitNodes.Elements
 
             if (ele != null)
             {
-                return WrapElement(ele, isRevitOwned);
+                return ele.ToDSType(isRevitOwned);
             }
 
             throw new Exception("Could not get the element from the document");
-        }
-
-        /// <summary>
-        /// If possible, wrap the element in a DS type
-        /// </summary>
-        /// <param name="ele"></param>
-        /// <param name="isRevitOwned">Whether the returned object should be revit owned or not</param>
-        /// <returns></returns>
-        public static AbstractElement WrapElement(Autodesk.Revit.DB.Element ele, bool isRevitOwned)
-        {
-            AbstractElement result = null;
-
-            if (ele is Autodesk.Revit.DB.ReferencePoint)
-            {
-                result = DSReferencePoint.FromExisting(ele as Autodesk.Revit.DB.ReferencePoint, isRevitOwned);
-            }
-            else if (ele is Autodesk.Revit.DB.Form)
-            {
-                result = DSForm.FromExisting(ele as Autodesk.Revit.DB.Form, isRevitOwned);
-            }
-            else if (ele is Autodesk.Revit.DB.FreeFormElement)
-            {
-                result = DSFreeForm.FromExisting(ele as Autodesk.Revit.DB.FreeFormElement, isRevitOwned);
-            }
-            else if (ele is Autodesk.Revit.DB.FamilyInstance &&
-                AdaptiveComponentInstanceUtils.HasAdaptiveFamilySymbol(ele as Autodesk.Revit.DB.FamilyInstance))
-            {
-                result = DSAdaptiveComponent.FromExisting(ele as Autodesk.Revit.DB.FamilyInstance, isRevitOwned);
-            }
-            else if (ele is Autodesk.Revit.DB.FamilyInstance)
-            {
-                result = DSFamilyInstance.FromExisting(ele as Autodesk.Revit.DB.FamilyInstance, isRevitOwned);
-            }
-            else if (ele is Autodesk.Revit.DB.FamilySymbol)
-            {
-                result = DSFamilySymbol.FromExisting(ele as Autodesk.Revit.DB.FamilySymbol, isRevitOwned);
-            }
-            else if (ele is Autodesk.Revit.DB.ModelCurve)
-            {
-                result = DSModelCurve.FromExisting(ele as Autodesk.Revit.DB.ModelCurve, isRevitOwned);
-            }
-            else if (ele is Autodesk.Revit.DB.Family)
-            {
-                result = DSFamily.FromExisting(ele as Autodesk.Revit.DB.Family, isRevitOwned);
-            }
-            else if (ele is Autodesk.Revit.DB.DividedPath)
-            {
-                result = DSDividedPath.FromExisting(ele as Autodesk.Revit.DB.DividedPath, isRevitOwned);
-            }
-            else if (ele is Autodesk.Revit.DB.DividedSurface)
-            {
-                result = DSDividedSurface.FromExisting(ele as Autodesk.Revit.DB.DividedSurface, isRevitOwned);
-            }
-
-            if (result == null)
-            {
-                throw new Exception("The Element cannot be wrapped as there is no existing type that wraps it.");
-            }
-
-            return result;
-
         }
 
         /// <summary>
@@ -156,6 +97,5 @@ namespace DSRevitNodes.Elements
 
             return ele;
         }
-
     }
 }
