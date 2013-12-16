@@ -15,17 +15,19 @@ namespace DSRevitNodes.GeometryObjects
             get; private set;
         }
 
-
-
-        internal DSEdge(Autodesk.Revit.DB.Edge x)
+        private DSEdge(Autodesk.Revit.DB.Edge x)
         {
             this.InternalEdge = x;
         }
 
-
         protected override GeometryObject InternalGeometryObject
         {
             get { return InternalEdge; }
+        }
+
+        internal static DSEdge FromExisting(Autodesk.Revit.DB.Edge f)
+        {
+            return new DSEdge(f);
         }
 
         #region Tesselation

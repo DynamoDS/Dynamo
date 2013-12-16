@@ -276,7 +276,7 @@ namespace DSRevitNodes.Elements
             get
             {
                 return this.InternalSolid.Faces.Cast<Autodesk.Revit.DB.Face>()
-                            .Select(x => new DSFace(x))
+                            .Select(DSFace.FromExisting)
                             .ToArray();
             }
         }
@@ -289,7 +289,7 @@ namespace DSRevitNodes.Elements
             get
             {
                 return this.InternalSolid.Edges.Cast<Autodesk.Revit.DB.Edge>()
-                    .Select(x => new DSEdge(x))
+                    .Select(DSEdge.FromExisting)
                     .ToArray();
             }
         }
