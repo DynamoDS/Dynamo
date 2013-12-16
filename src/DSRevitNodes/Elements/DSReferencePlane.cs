@@ -42,6 +42,15 @@ namespace DSRevitNodes.Elements
         #region Private constructors
 
         /// <summary>
+        /// Internal reference plane
+        /// </summary>
+        /// <param name="referencePlane"></param>
+        private DSReferencePlane( Autodesk.Revit.DB.ReferencePlane referencePlane)
+        {
+            this.InternalReferencePlane = referencePlane;
+        }
+
+        /// <summary>
         /// Constructor used internally by public static constructors
         /// </summary>
         /// <param name="bubbleEnd"></param>
@@ -211,6 +220,18 @@ namespace DSRevitNodes.Elements
             }
 
             return new DSReferencePlane(start.ToXyz(), end.ToXyz());
+        }
+
+        #endregion
+
+        #region Internal static constructors
+
+        internal static DSReferencePlane FromExisting(ReferencePlane ele, bool isRevitOwned)
+        {
+            return new DSReferencePlane(ele)
+            {
+                IsRevitOwned = isRevitOwned
+            };
         }
 
         #endregion

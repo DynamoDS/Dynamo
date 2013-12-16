@@ -1,22 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file represents the results of running a test suite-->
-<test-results name="C:\Users\boyerp\Dropbox\Github\Autodesk\DynamoNew\Dynamo\bin\AnyCPU\Debug\DynamoTestFramework.dll" total="3" failures="1" not-run="0" date="2013-12-16" time="16:29:53" errors="0" inconclusive="0" ignored="0" skipped="0" invalid="0">
-  <test-suite name="DynamoTestFrameworkTests" description="Unit tests in Revit." time="1.999" asserts="7" type="TestFixture" result="Failure" executed="True">
+<test-results name="C:\Users\boyerp\Dropbox\Github\Autodesk\DynamoNew\Dynamo\bin\AnyCPU\Debug\DynamoTestFramework.dll" total="5" failures="0" not-run="0" date="2013-12-16" time="17:57:15" errors="0" inconclusive="0" ignored="0" skipped="0" invalid="0">
+  <test-suite name="DynamoTestFrameworkTests" description="Unit tests in Revit." time="0.901" asserts="18" type="TestFixture" result="Success" executed="True">
     <results>
-      <test-suite name="FaceIntersectTests" description="Unit tests in Revit." time="1.999" asserts="7" type="TestFixture" result="Failure" executed="True">
+      <test-suite name="ElementSelectorTests" description="Unit tests in Revit." time="0.901" asserts="18" type="TestFixture" result="Success" executed="True">
         <results>
-          <test-case name="IntersectingFaceFace_ValidArgs" success="True" time="0.66" executed="True" asserts="4" result="Success" />
-          <test-case name="IntersectingFaceFace_BadArgs" success="True" time="0.668" executed="True" asserts="2" result="Success" />
-          <test-case name="NonIntersectingFaceFace_ValidArgs" success="False" time="0.671" executed="True" asserts="1" result="Failure">
-            <failure>
-              <message>  Expected: 0
-  But was:  1
-</message>
-              <stack-trace>   at NUnit.Framework.Assert.That(Object actual, IResolveConstraint expression, String message, Object[] args)
-   at NUnit.Framework.Assert.AreEqual(Int32 expected, Int32 actual)
-   at DSRevitNodesTests.GeometryIntersection.FaceIntersectTests.NonIntersectingFaceFace_ValidArgs() in c:\Users\boyerp\Dropbox\Github\Autodesk\DynamoNew\Dynamo\src\DSRevitNodesTests\GeometryIntersection\FaceIntersectTests.cs:line 169</stack-trace>
-            </failure>
-          </test-case>
+          <test-case name="FamilyByElementId_ValidArgs" success="True" time="0.362" executed="True" asserts="3" result="Success" />
+          <test-case name="FormByType_ValidArgs" success="True" time="0.108" executed="True" asserts="1" result="Success" />
+          <test-case name="FamilyByUniqueId_ValidArgs" success="True" time="0.123" executed="True" asserts="4" result="Success" />
+          <test-case name="FamilySymbolByElementId_ValidArgs" success="True" time="0.164" executed="True" asserts="5" result="Success" />
+          <test-case name="FamilySymbolByUniqueId_ValidArgs" success="True" time="0.144" executed="True" asserts="5" result="Success" />
         </results>
       </test-suite>
     </results>

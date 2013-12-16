@@ -30,7 +30,7 @@ namespace DSRevitNodes.Application
         {
             get
             {
-                return (AbstractView) ElementSelector.WrapElement(Document.ActiveView, true);
+                return (AbstractView) ElementWrappingExtensions.ToDSType(Document.ActiveView, true);
             }
         }
 
