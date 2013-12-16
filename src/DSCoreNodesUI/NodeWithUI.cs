@@ -18,7 +18,7 @@ namespace DSCoreNodes
     /// All Custom-UI nodes inherit this.
     /// </summary>
     [Browsable(false)]
-    public abstract class NodeWithUI : NodeModel
+    public abstract class NodeWithUI : DSFunction
     {
         //We can remove this from NodeModel and only use it here.
         [Browsable(false)]
@@ -44,7 +44,7 @@ namespace DSCoreNodes
         /// </summary>
         [Browsable(false)]
         public override Node BuildAst()
-        {
+        { 
             return new DoubleNode(Value.ToString(CultureInfo.InvariantCulture));
         }
 

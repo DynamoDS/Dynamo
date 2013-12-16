@@ -256,7 +256,7 @@
 		<test name="ByViewFacePointsAndValues_BadArgs" modelPath=".\block.rfa"/>
       </testFixture>	
 
-      <testFixture name="InteractivityTests">
+      <testFixture name="SelectionTests">
         <test name="SelectElementASTGeneration" modelPath=".\Empty.rfa"/>
       </testFixture>
       
