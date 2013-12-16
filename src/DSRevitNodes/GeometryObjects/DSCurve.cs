@@ -16,18 +16,23 @@ namespace DSRevitNodes.GeometryObjects
     /// <summary>
     /// Class representing a Revit Curve
     /// </summary>
-    public abstract class DSCurve : IGeometryObject
+    public abstract class DSCurve : AbstractGeometryObject
     {
         internal Autodesk.Revit.DB.Curve InternalCurve
         {
             get; set;
         }
 
+        protected override GeometryObject InternalGeometryObject
+        {
+            get { return InternalCurve; }
+        }
+
         /// <summary>
         /// Tesselate the curve for visualization
         /// </summary>
         /// <param name="package"></param>
-        public void Tessellate(IRenderPackage package)
+        public override void Tessellate(IRenderPackage package)
         {
             this.InternalCurve.Tessellate()
                 .ToList()

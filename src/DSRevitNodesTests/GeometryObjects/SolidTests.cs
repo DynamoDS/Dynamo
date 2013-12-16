@@ -6,8 +6,10 @@ using System.Reflection;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using DSRevitNodes.Elements;
+using DSRevitNodes.GeometryConversion;
 using DSRevitNodes.GeometryObjects;
 using NUnit.Framework;
+using FreeFormElement = Autodesk.Revit.DB.FreeFormElement;
 
 namespace DSRevitNodesTests.GeometryObjects
 {
@@ -47,12 +49,9 @@ namespace DSRevitNodesTests.GeometryObjects
         {
             var crvs = UnitRectangle();
 
-            // construct the curveloop
-            var curveloop = DSCurveLoop.ByCurves(crvs.ToArray());
-
             var dir = Vector.ByCoordinates(0, 0, 1);
             var dist = 5;
-            var extrusion = DSSolid.ByExtrusion(curveloop, dir, dist);
+            var extrusion = DSSolid.ByExtrusion(crvs.ToArray(), dir, dist);
 
             Assert.NotNull(extrusion);
             Assert.AreEqual(2.5, extrusion.Volume, 0.01);
@@ -153,37 +152,55 @@ namespace DSRevitNodesTests.GeometryObjects
         [Test]
         public void BySweptBlend_ValidArgs()
         {
+            var package = new RenderPackage();
+
             var rect1 = UnitRectangle();
 
             //make the path curve
             var p1 = Point.ByCoordinates(0, 0, 0);
-            var p2 = Point.ByCoordinates(3, .5, 0);
+            var p2 = Point.ByCoordinates(3, .5, .25);
             var p3 = Point.ByCoordinates(6, -.5, 0);
-            var p4 = Point.ByCoordinates(9, 0, 0);
+            var p4 = Point.ByCoordinates(9, 0, .25);
 
             var spine = BSplineCurve.ByPoints(new []{p1,p2,p3,p4});
-            
-            //var spine = Line.ByStartPointEndPoint(p1, p2);
 
-            /*
-            var cs1 = CoordinateSystem.ByOriginVectors(p1, Vector.ByCoordinates(0, 1, 0), Vector.ByCoordinates(0, 0, 1),
-                Vector.ByCoordinates(-1, 0, 0));
-            var cs2 = CoordinateSystem.ByOriginVectors(p2, Vector.ByCoordinates(0, 1, 0), Vector.ByCoordinates(0, 0, 1),
-                Vector.ByCoordinates(-1, 0, 0));
-            */
-            
-            var cs1 = rect1.Select(crv => crv.Transform(CoordinateSystem.WCS, spine.CoordinateSystemAtParameter(0))).Cast<Curve>().ToList();
-            var cs2 = rect1.Select(crv => crv.Transform(CoordinateSystem.WCS, spine.CoordinateSystemAtParameter(.25))).Cast<Curve>().ToList();
-            var cs3 = rect1.Select(crv => crv.Transform(CoordinateSystem.WCS, spine.CoordinateSystemAtParameter(.75))).Cast<Curve>().ToList();
-            var cs4 = rect1.Select(crv => crv.Transform(CoordinateSystem.WCS, spine.CoordinateSystemAtParameter(1))).Cast<Curve>().ToList();
+            var csA = spine.CoordinateSystemAtParameter(0);
+            var csB = spine.CoordinateSystemAtParameter(.25);
+            var csC = spine.CoordinateSystemAtParameter(.75);
+            var csD = spine.CoordinateSystemAtParameter(1);
+
+            DrawCS(csA, package);
+            DrawCS(csB, package);
+            DrawCS(csC, package);
+            DrawCS(csD, package);
+            DrawCurve(spine.ToRevitType(), package);
+
+            var profCSA = CoordinateSystem.ByOriginVectors(spine.PointAtParameter(0), csA.YAxis, csA.ZAxis);
+            var profCSB = CoordinateSystem.ByOriginVectors(spine.PointAtParameter(.25), csB.YAxis, csB.ZAxis);
+            var profCSC = CoordinateSystem.ByOriginVectors(spine.PointAtParameter(.75), csC.YAxis, csC.ZAxis);
+            var profCSD = CoordinateSystem.ByOriginVectors(spine.PointAtParameter(1), csD.YAxis, csD.ZAxis);
+
+            var cs1 = rect1.Select(crv => crv.Transform(CoordinateSystem.WCS, profCSA)).Cast<Curve>().ToList();
+            var cs2 = rect1.Select(crv => crv.Transform(CoordinateSystem.WCS, profCSB)).Cast<Curve>().ToList();
+            var cs3 = rect1.Select(crv => crv.Transform(CoordinateSystem.WCS, profCSC)).Cast<Curve>().ToList();
+            var cs4 = rect1.Select(crv => crv.Transform(CoordinateSystem.WCS, profCSD)).Cast<Curve>().ToList();
+
+            cs1.ForEach(x => DrawCurve(x.ToRevitType(), package));
+            cs2.ForEach(x => DrawCurve(x.ToRevitType(), package));
+            cs3.ForEach(x => DrawCurve(x.ToRevitType(), package));
+            cs4.ForEach(x => DrawCurve(x.ToRevitType(), package));
+
+            var modelPath = Path.Combine(TestGeometryDirectory, @"BySweptBlend_ValidArgs_Setup.obj");
+            if (File.Exists(modelPath))
+                File.Delete(modelPath);
+            WriteToOBJ(modelPath, new List<RenderPackage>() { package });
 
             var blend = DSSolid.BySweptBlend(new List<List<Curve>> { cs1,cs2,cs3,cs4}, spine, new List<double>{0,.25,.75,1});
             Assert.NotNull(blend);
 
-            var package = new RenderPackage();
             blend.Tessellate(package);
 
-            var modelPath = Path.Combine(TestGeometryDirectory, @"BySweptBlend_ValidArgs.obj");
+            modelPath = Path.Combine(TestGeometryDirectory, @"BySweptBlend_ValidArgs.obj");
             if (File.Exists(modelPath))
                 File.Delete(modelPath);
             WriteToOBJ(modelPath, new List<RenderPackage>() { package });
@@ -208,7 +225,7 @@ namespace DSRevitNodesTests.GeometryObjects
         [Test]
         public void Sphere_ValidArgs()
         {
-            var sphere = DSSolid.Sphere(Point.ByCoordinates(0, 0, 0), 10);
+            var sphere = DSSolid.Sphere(Point.ByCoordinates(0, 5, 3), 10);
             Assert.IsNotNull(sphere);
 
             var package = new RenderPackage();
@@ -256,6 +273,100 @@ namespace DSRevitNodesTests.GeometryObjects
             WriteToOBJ(modelPath, new List<RenderPackage>() { package });
         }
 
+        [Test]
+        public void BoxByCenterAndDimensions_ValidArgs()
+        {
+            var center = Point.ByCoordinates(-2, -1, 5);
+
+            var box = DSSolid.BoxByCenterAndDimensions(center, 2, 5, 10);
+            Assert.IsNotNull(box);
+
+            var package = new RenderPackage();
+            box.Tessellate(package);
+
+            var modelPath = Path.Combine(TestGeometryDirectory, @"BoxByCenterAndDimensions_ValidArgs.obj");
+            if (File.Exists(modelPath))
+                File.Delete(modelPath);
+            WriteToOBJ(modelPath, new List<RenderPackage>() { package });
+        }
+
+        [Test]
+        public void ByBooleanUnion_ValidArgs()
+        {
+            var solidA = DSSolid.BoxByCenterAndDimensions(Point.ByCoordinates(0, 0, 0), 1, 1, 1);
+            var solidB = DSSolid.Sphere(Point.ByCoordinates(1, 1, 0), 1);
+            var union = DSSolid.ByBooleanUnion(solidA, solidB);
+            Assert.IsNotNull(union);
+
+            var package = new RenderPackage();
+            union.Tessellate(package);
+
+            var modelPath = Path.Combine(TestGeometryDirectory, @"ByBooleanUnion_ValidArgs.obj");
+            if (File.Exists(modelPath))
+                File.Delete(modelPath);
+            WriteToOBJ(modelPath, new List<RenderPackage>() { package });
+        }
+
+        [Test]
+        public void ByBooleanIntersect_ValidArgs()
+        {
+            var solidA = DSSolid.BoxByCenterAndDimensions(Point.ByCoordinates(0, 0, 0), 1, 1, 1);
+            var solidB = DSSolid.Sphere(Point.ByCoordinates(1, 1, 0), 1);
+            var xSect = DSSolid.ByBooleanIntersection(solidA, solidB);
+            Assert.IsNotNull(xSect);
+
+            var package = new RenderPackage();
+            xSect.Tessellate(package);
+
+            var modelPath = Path.Combine(TestGeometryDirectory, @"ByBooleanIntersect_ValidArgs.obj");
+            if (File.Exists(modelPath))
+                File.Delete(modelPath);
+            WriteToOBJ(modelPath, new List<RenderPackage>() { package });
+        }
+
+        [Test]
+        public void ByBooleanDifference_ValidArgs()
+        {
+            var solidA = DSSolid.BoxByCenterAndDimensions(Point.ByCoordinates(0, 0, 0), 1, 1, 1);
+            var solidB = DSSolid.Sphere(Point.ByCoordinates(1, 1, 0), 1);
+            var difference = DSSolid.ByBooleanDifference(solidA, solidB);
+            Assert.IsNotNull(difference);
+
+            var package = new RenderPackage();
+            difference.Tessellate(package);
+
+            var modelPath = Path.Combine(TestGeometryDirectory, @"ByBooleanDifference_ValidArgs.obj");
+            if (File.Exists(modelPath))
+                File.Delete(modelPath);
+            WriteToOBJ(modelPath, new List<RenderPackage>() { package });
+        }
+
+        [Test]
+        public void FromElement_ValidArgs()
+        {
+            var solidA = DSSolid.BoxByCenterAndDimensions(Point.ByCoordinates(0, 0, 0), 1, 1, 1);
+            var solidB = DSSolid.Sphere(Point.ByCoordinates(1, 1, 0), 1);
+            var difference = DSSolid.ByBooleanDifference(solidA, solidB);
+
+            var ff = DSFreeForm.BySolid(difference);
+
+            var extract = DSSolid.FromElement(ff);
+            Assert.IsNotNull(extract);
+
+            var package = new RenderPackage();
+            extract.Tessellate(package);
+
+            ExportModel("FromElement_ValidArgs.obj", package);
+        }
+
+        private void ExportModel(string fileName, RenderPackage package)
+        {
+            var modelPath = Path.Combine(TestGeometryDirectory, fileName);
+            if (File.Exists(modelPath))
+                File.Delete(modelPath);
+            WriteToOBJ(modelPath, new List<RenderPackage>() { package });
+        }
+
         private static List<Curve> UnitRectangle()
         {
             // construct a unit rectangle
@@ -289,21 +400,86 @@ namespace DSRevitNodesTests.GeometryObjects
             {
                 foreach (var package in packages)
                 {
+                    int vertCount = 0;
+
                     for (int i = 0; i < package.TriangleVertices.Count; i += 3)
                     {
                         tw.WriteLine(string.Format("v {0} {1} {2}", package.TriangleVertices[i], package.TriangleVertices[i+1], package.TriangleVertices[i+2]));
+                        vertCount++;
                     }
 
-                    int count = 1;
-                    for (int i = 0; i < (package.TriangleVertices.Count/3)/3; i ++)
+                    for (int i = 0; i < package.LineStripVertices.Count - 3; i+=3)
                     {
-                        tw.WriteLine(string.Format("f {0} {1} {2}", count, count + 1, count + 2));
-                        count += 3;
+                        var a = Point.ByCoordinates(package.LineStripVertices[i], package.LineStripVertices[i + 1], package.LineStripVertices[i + 2]);
+                        var b = Point.ByCoordinates(package.LineStripVertices[i + 3], package.LineStripVertices[i + 4], package.LineStripVertices[i + 5]);
+                        var v1 = Vector.ByCoordinates(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
+                        var vNorm = v1.Cross(Vector.ByCoordinates(0, 0, 1));
+                        var c =(Point) b.Translate(vNorm, .025);
+                        var d =(Point) a.Translate(vNorm, .025);
+
+                        tw.WriteLine(string.Format("v {0} {1} {2}", a.X, a.Y, a.Z));
+                        tw.WriteLine(string.Format("v {0} {1} {2}", b.X, b.Y, c.Z));
+                        tw.WriteLine(string.Format("v {0} {1} {2}", c.X, c.Y, c.Z));
+
+                        tw.WriteLine(string.Format("v {0} {1} {2}", c.X, c.Y, c.Z));
+                        tw.WriteLine(string.Format("v {0} {1} {2}", d.X, d.Y, d.Z));
+                        tw.WriteLine(string.Format("v {0} {1} {2}", a.X, a.Y, a.Z));
+
+                        vertCount += 6;
+                    }
+
+                    for (int i = 0; i < vertCount; i +=3)
+                    {
+                        tw.WriteLine(string.Format("f {0} {1} {2}", i+1, i + 2, i + 3));
                     }
                 }
             }
         }
 
+        private static void DrawCurve(Autodesk.Revit.DB.Curve curve, RenderPackage package)
+        {
+            var pts = curve.Tessellate().ToList();
+
+            for (int i =0; i < pts.Count-1; i++)
+            {
+                var pt = pts[i];
+                var pt1 = pts[i+1];
+                package.PushLineStripVertex(pt.X, pt.Y, pt.Z);
+                package.PushLineStripVertex(pt1.X, pt1.Y, pt1.Z);
+            }
+        }
+
+        private static void DrawCS(CoordinateSystem cs, RenderPackage package)
+        {
+            //ccw unit rect points
+            var a = Point.ByCoordinates(-.25, -.25, 0);
+            var b = Point.ByCoordinates(.25, -.25, 0);
+            var c = Point.ByCoordinates(.25, .25, 0);
+            var d = Point.ByCoordinates(-.25, .25, 0);
+
+            var planes = new List<Plane>() {cs.XYPlane, cs.YZPlane, cs.ZXPlane};
+            foreach (var p in planes)
+            {
+                var z = p.Normal.Normalize();
+                var y = z.IsParallel(Vector.ByCoordinates(0,0,1))? Vector.ByCoordinates(0,1,0) : z.Cross(Vector.ByCoordinates(0, 0, 1)).Normalize();
+                var x = z.Cross(y).Normalize();
+
+                var newCS = CoordinateSystem.ByOriginVectors(cs.Origin, x,y,z);
+
+                var pA = (Point)a.Transform(CoordinateSystem.WCS, newCS);
+                var pB = (Point)b.Transform(CoordinateSystem.WCS, newCS);
+                var pC = (Point)c.Transform(CoordinateSystem.WCS, newCS);
+                var pD = (Point)d.Transform(CoordinateSystem.WCS, newCS);
+
+                package.PushTriangleVertex(pA.X, pA.Y, pA.Z);
+                package.PushTriangleVertex(pB.X, pB.Y, pB.Z);
+                package.PushTriangleVertex(pC.X, pC.Y, pC.Z);
+
+                package.PushTriangleVertex(pC.X, pC.Y, pC.Z);
+                package.PushTriangleVertex(pD.X, pD.Y, pD.Z);
+                package.PushTriangleVertex(pA.X, pA.Y, pA.Z);
+            }
+        }
     }
 
     public class RenderPackage : IRenderPackage
@@ -368,9 +544,9 @@ namespace DSRevitNodesTests.GeometryObjects
 
         public void PushLineStripVertex(double x, double y, double z)
         {
-            TriangleVertices.Add(x);
-            TriangleVertices.Add(y);
-            TriangleVertices.Add(z);
+            LineStripVertices.Add(x);
+            LineStripVertices.Add(y);
+            LineStripVertices.Add(z);
         }
 
         public void PushLineStripVertexCount(int n)

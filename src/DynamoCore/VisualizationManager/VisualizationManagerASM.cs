@@ -1,12 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Text;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
-using Autodesk.LibG;
 using Dynamo.Models;
 using Dynamo.Selection;
 using HelixToolkit.Wpf;
-using Microsoft.FSharp.Collections;
 
 namespace Dynamo
 {
@@ -18,6 +15,7 @@ namespace Dynamo
             DrawToAlternateContext = false;
         }
 
+        /*
         public static void DrawLibGGraphicItem(NodeModel node, object geom, string tag, RenderDescription rd,  Octree.OctreeSearch.Octree octree)
         {
             var selected = DynamoSelection.Instance.Selection.Contains(node);
@@ -203,6 +201,6 @@ namespace Dynamo
 
                 #endregion
             }
-        }
+        }*/
     }
 }

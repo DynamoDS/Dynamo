@@ -30,7 +30,7 @@ namespace DSRevitNodes.Elements
         /// <summary>
         /// Reference to the Element
         /// </summary>
-        internal override Element InternalElement
+        public override Autodesk.Revit.DB.Element InternalElement
         {
             get { return InternalDividedPath; }
         }
@@ -121,11 +121,6 @@ namespace DSRevitNodes.Elements
 
             return new DSDividedPath(curve, divisions);
         }
-
-        //public static DSDividedPath ByCurveAndDivisionsOfLength(DSCurve c, double length)
-        //{
-        //    throw new NotImplementedException();
-        //}
 
         #endregion
 

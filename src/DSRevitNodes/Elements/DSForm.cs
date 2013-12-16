@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
-using System.Xml;
 using Autodesk.Revit.DB;
 using DSNodeServices;
 using DSRevitNodes.GeometryObjects;
@@ -27,7 +26,7 @@ namespace DSRevitNodes.Elements
         /// <summary>
         /// Reference to the Element
         /// </summary>
-        internal override Element InternalElement
+        public override Autodesk.Revit.DB.Element InternalElement
         {
             get { return InternalForm; }
         }
@@ -81,13 +80,28 @@ namespace DSRevitNodes.Elements
 
 
         #endregion
+
         #region Public properties
 
+        /// <summary>
+        /// Get the FaceReferences from this Element
+        /// </summary>
         public DSFaceReference[] FaceReferences
         {
             get
             {
                 return EnumerateFaces().Select(x => new DSFaceReference(x)).ToArray();
+            }
+        }
+
+        /// <summary>
+        /// Get the Faces from this Element
+        /// </summary>
+        public DSFace[] Faces
+        {
+            get
+            {
+                return EnumerateFaces().Select(DSFace.FromExisting).ToArray();
             }
         }
 
