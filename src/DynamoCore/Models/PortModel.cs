@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Forms.VisualStyles;
 using Dynamo.FSchemeInterop;
 using System.Windows.Media;
 using System.Xml;
@@ -124,7 +125,7 @@ namespace Dynamo.Models
                 {
                     var port = Owner.InPortData[Index];
                     if (port.HasDefaultValue)
-                        return FScheme.print(port.DefaultValue);
+                        return FScheme.print(port.DefaultValue as FScheme.Value);
                 }
                 return "";
             }
@@ -298,14 +299,18 @@ namespace Dynamo.Models
         public string NickName { get; internal set; }
         public string ToolTipString { get; internal set; }
         public Type PortType { get; set; }
-        public FScheme.Value DefaultValue { get; set; }
+        public object DefaultValue { get; set; }
         public double VerticalMargin { get; set; }
 
-        public PortData(string nickName, string tip, Type portType=null, FScheme.Value defaultValue=null)
+        public PortData(string nickName, string tip)
+            : this(nickName, tip, typeof(FScheme.Value.Container), null)
+        { }
+
+        public PortData(string nickName, string tip, Type portType, object defaultValue=null)
         {
             NickName = nickName;
             ToolTipString = tip;
-            PortType = portType ?? typeof(FScheme.Value.Container);
+            PortType = portType;
             DefaultValue = defaultValue;
             VerticalMargin = 0;
         }
