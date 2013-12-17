@@ -197,7 +197,6 @@
     <Compile Include="Nodes\SolarRadiation.cs" />
     <Compile Include="Nodes\FamilyType.cs" />
     <Compile Include="Nodes\Plane.cs" />
-    <Compile Include="Nodes\Solid.cs" />
     <Compile Include="Nodes\Tesselation.cs" />
     <Compile Include="Nodes\Transaction.cs" />
     <Compile Include="Nodes\SunPath.cs" />
