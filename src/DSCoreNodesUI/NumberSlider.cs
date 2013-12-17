@@ -10,11 +10,10 @@ using System.Xml;
 using DSCoreNodesUI;
 using Dynamo.Controls;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
 
-namespace DSCoreNodes
+namespace Dynamo.Nodes
 {
     /// <summary>
     /// Sample that contains a slider and produces a number.

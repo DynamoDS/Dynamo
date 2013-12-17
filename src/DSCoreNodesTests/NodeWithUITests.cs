@@ -1,4 +1,4 @@
-﻿// NOTE: The following namespace has been updated. This test use to fail in unit 
+// NOTE: The following namespace has been updated. This test use to fail in unit 
 // test, the reason is that LibGNet.dll could not be loaded. That was because the
 // right "AppDomain.CurrentDomain.AssemblyResolve" callback has not been set to 
 // resolve the library path when this test is run.
@@ -13,7 +13,7 @@
 // 
 using System.Collections.Generic;
 using System.Linq;
-using DSCoreNodes;
+using Dynamo.Nodes;
 using NUnit.Framework;
 using ProtoCore.AST.AssociativeAST;
 
