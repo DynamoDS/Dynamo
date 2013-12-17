@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Dynamo.DSEngine;
+﻿using System.Collections.Generic;
 using Dynamo.Models;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 
-namespace DSCoreNodes.Core
+namespace DSCoreNodes
 {
     /// <summary>
     /// Methods for handling boolean logic.
