@@ -3260,7 +3260,7 @@ namespace Dynamo.Nodes
 
         #endregion
 
-        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             var rhs = AstFactory.BuildDoubleNode(Value);
             var assignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), rhs);
