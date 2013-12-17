@@ -607,12 +607,12 @@ namespace DSCoreNodes
 
                 while (index < list.Count)
                 {
-                    var currentRow = (int)Math.Ceiling((index + 1)/(double)subLength);
+                    var currentRow = (int)System.Math.Ceiling((index + 1)/(double)subLength);
                     currList.Add(list[index]);
                     index += subLength + 1;
 
                     //ensure we are skipping a row to get the next index
-                    var nextRow = (int)Math.Ceiling((index + 1)/(double)subLength);
+                    var nextRow = (int)System.Math.Ceiling((index + 1) / (double)subLength);
                     if (nextRow > currentRow + 1 || nextRow == currentRow)
                         break;
                 }
@@ -655,12 +655,12 @@ namespace DSCoreNodes
 
                 while (index < list.Count)
                 {
-                    var currentRow = (int)Math.Ceiling((index + 1)/(double)subLength);
+                    var currentRow = (int)System.Math.Ceiling((index + 1)/(double)subLength);
                     currList.Add(list[index]);
                     index += subLength - 1;
 
                     //ensure we are skipping a row to get the next index
-                    var nextRow = (int)Math.Ceiling((index + 1)/(double)subLength);
+                    var nextRow = (int)System.Math.Ceiling((index + 1) / (double)subLength);
                     if (nextRow > currentRow + 1 || nextRow == currentRow)
                         break;
                 }
