@@ -2,85 +2,82 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.FSharp.Collections;
-using Microsoft.FSharp.Core;
 
 namespace DSCoreNodes
 {
     /// <summary>
-    /// Methods for creating and manipulating Lists.
+    ///     Methods for creating and manipulating Lists.
     /// </summary>
     public class List
     {
         /// <summary>
-        /// Creates a new list containing the elements of the given list but in reverse order.
+        ///     Creates a new list containing the elements of the given list but in reverse order.
         /// </summary>
         /// <param name="list">List to be reversed.</param>
-        public static IEnumerable<T> Reverse<T>(IEnumerable<T> list)
+        public static IList<T> Reverse<T>(IEnumerable<T> list)
         {
-            return list.Reverse();
+            return list.Reverse().ToList();
         }
 
         /// <summary>
-        /// Creates a new list containing the given elements.
+        ///     Creates a new list containing the given elements.
         /// </summary>
         /// <param name="elements">Elements to be stored in the new list.</param>
-        public static IEnumerable<T> NewList<T>(params T[] elements)
+        public static IList<T> NewList<T>(params T[] elements)
         {
-            return elements;
+            return elements.ToList();
         }
 
         /// <summary>
-        /// Sorts a list using the built-in natural ordering.
+        ///     Sorts a list using the built-in natural ordering.
         /// </summary>
         /// <param name="list">List to be sorted.</param>
-        public static IEnumerable<T> Sort<T>(IEnumerable<T> list)
+        public static IList<T> Sort<T>(IEnumerable<T> list)
         {
-            var lst = list.ToList();
+            List<T> lst = list.ToList();
             lst.Sort();
             return lst;
         }
 
         /// <summary>
-        /// Sorts a list using a key projection. A projection is created for each element,
-        /// and that value is used to order the original elements.
+        ///     Sorts a list using a key projection. A projection is created for each element,
+        ///     and that value is used to order the original elements.
         /// </summary>
         /// <param name="list">List to be sorted.</param>
         /// <param name="keyProjection">
-        /// Function that consumes an element from the list and produces an orderable value.
+        ///     Function that consumes an element from the list and produces an orderable value.
         /// </param>
         /// <returns></returns>
-        public static IList<T> SortByKey<T, TKey>(
-            IEnumerable<T> list, Converter<T, TKey> keyProjection)
+        public static IList<T> SortByKey<T, TKey>(IEnumerable<T> list, Converter<T, TKey> keyProjection)
         {
             var sortedList = new SortedList<TKey, T>();
 
-            foreach (var item in list)
+            foreach (T item in list)
                 sortedList.Add(keyProjection(item), item);
 
             return sortedList.Select(x => x.Value).ToList();
         }
 
         /// <summary>
-        /// Sorts a list using a comparison function. Given two elements from the list, the comparison
-        /// function determines which element should appear first in the sorted list.
+        ///     Sorts a list using a comparison function. Given two elements from the list, the comparison
+        ///     function determines which element should appear first in the sorted list.
         /// </summary>
         /// <param name="list">List to be sorted.</param>
         /// <param name="comparison">
-        /// Function that consumes two elements from the list and produces a value determining the order
-        /// of the two elements as follows: a value less than zero if the first element should appear
-        /// before the second, zero if the values are considered the same, and a value greater than
-        /// zero if the second element should appear before the first.
+        ///     Function that consumes two elements from the list and produces a value determining the order
+        ///     of the two elements as follows: a value less than zero if the first element should appear
+        ///     before the second, zero if the values are considered the same, and a value greater than
+        ///     zero if the second element should appear before the first.
         /// </param>
         public static IList<T> SortByComparison<T>(IEnumerable<T> list, Comparison<T> comparison)
         {
-            var rtn = list.ToList();
+            List<T> rtn = list.ToList();
             rtn.Sort(comparison);
-            return rtn.ToList();
+            return rtn;
         }
 
         /// <summary>
-        /// Returns the minimum value from a list.
+        ///     Returns the minimum value from a list.
         /// </summary>
         /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <param name="list">List to take the minimum value from.</param>
@@ -90,29 +87,28 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// Returns the minimum value from a list using a key projection. The minimum
-        /// value is the element in the list that the key projection produces the smallest
-        /// value for.
+        ///     Returns the minimum value from a list using a key projection. The minimum
+        ///     value is the element in the list that the key projection produces the smallest
+        ///     value for.
         /// </summary>
         /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <typeparam name="TKey">Type that the Key Projection produces.</typeparam>
         /// <param name="list">List to take the minimum value from.</param>
         /// <param name="keyProjection">
-        /// Function that consumes an element from the list and produces an orderable value.
+        ///     Function that consumes an element from the list and produces an orderable value.
         /// </param>
-        public static T MinimumValueByKey<T, TKey>(
-            IEnumerable<T> list, Func<T, TKey> keyProjection)
+        public static T MinimumValueByKey<T, TKey>(IEnumerable<T> list, Func<T, TKey> keyProjection)
         {
             var sortedList = new SortedList<TKey, T>();
 
-            foreach (var item in list)
+            foreach (T item in list)
                 sortedList.Add(keyProjection(item), item);
 
             return sortedList.First().Value;
         }
 
         /// <summary>
-        /// Returns the maximum value from a list.
+        ///     Returns the maximum value from a list.
         /// </summary>
         /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <param name="list">List to take the maximum value from.</param>
@@ -122,56 +118,35 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// Returns the maximum value from a list using a key projection. The maximum
-        /// value is the element in the list that the key projection produces the largest
-        /// value for.
+        ///     Returns the maximum value from a list using a key projection. The maximum
+        ///     value is the element in the list that the key projection produces the largest
+        ///     value for.
         /// </summary>
         /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <typeparam name="TKey">Type that the Key Projection produces.</typeparam>
         /// <param name="list">List to take the maximum value from.</param>
         /// <param name="keyProjection">
-        /// Function that consumes an element from the list and produces an orderable value.
+        ///     Function that consumes an element from the list and produces an orderable value.
         /// </param>
-        public static T MaximumValueByKey<T, TKey>(
-            IEnumerable<T> list, Converter<T, TKey> keyProjection)
+        public static T MaximumValueByKey<T, TKey>(IEnumerable<T> list, Converter<T, TKey> keyProjection)
         {
             var sortedList = new SortedList<TKey, T>();
 
-            foreach (var item in list)
+            foreach (T item in list)
                 sortedList.Add(keyProjection(item), item);
 
             return sortedList.Last().Value;
         }
 
         /// <summary>
-        /// Reduces a list of values into a new value using a reduction function.
-        /// </summary>
-        /// <typeparam name="T">Type of the contents of the list.</typeparam>
-        /// <typeparam name="TState">Type of the reduced output.</typeparam>
-        /// <param name="list">List to be reduced.</param>
-        /// <param name="seed">
-        /// Starting value for the reduction. If the list being reduced is
-        /// empty, this will immediately be returned.
-        /// </param>
-        /// <param name="reducer">
-        /// A function that consumes an element in the list and a reduction state. It must produce
-        /// a new reduction state by combining the element with the current reduction state.
-        /// </param>
-        public static TState Reduce<T, TState>(
-            IEnumerable<T> list, TState seed, Func<T, TState, TState> reducer)
-        {
-            return list.Aggregate(seed, (a, x) => reducer(x, a));
-        }
-
-        /// <summary>
-        /// Creates a new list containing all the elements of an old list for which
-        /// the given predicate function returns True.
+        ///     Creates a new list containing all the elements of an old list for which
+        ///     the given predicate function returns True.
         /// </summary>
         /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <param name="list">List to be filtered.</param>
         /// <param name="predicate">
-        /// Function to be applied to all elements in the list. All elements that make the
-        ///  predicate produce True will be stored in the output list.
+        ///     Function to be applied to all elements in the list. All elements that make the
+        ///     predicate produce True will be stored in the output list.
         /// </param>
         public static IList<T> Filter<T>(IEnumerable<T> list, Func<T, bool> predicate)
         {
@@ -179,14 +154,14 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// Creates a new list containing all the elements of an old list for which
-        /// the given predicate function returns False.
+        ///     Creates a new list containing all the elements of an old list for which
+        ///     the given predicate function returns False.
         /// </summary>
         /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <param name="list">List to be filtered.</param>
         /// <param name="predicate">
-        /// Function to be applied to all elements in the list. All elements that make the
-        /// predicate produce False will be stored in the output list.
+        ///     Function to be applied to all elements in the list. All elements that make the
+        ///     predicate produce False will be stored in the output list.
         /// </param>
         public static IList<T> FilterOut<T>(IEnumerable<T> list, Func<T, bool> predicate)
         {
@@ -194,17 +169,37 @@ namespace DSCoreNodes
             return list.Where(x => !predicate(x)).ToList();
         }
 
+        /*
+
         /// <summary>
-        /// Produces a new list by applying a projection function to each element of the input list(s) and
-        /// storing the result.
+        ///     Reduces a list of values into a new value using a reduction function.
+        /// </summary>
+        /// <typeparam name="T">Type of the contents of the list.</typeparam>
+        /// <typeparam name="TState">Type of the reduced output.</typeparam>
+        /// <param name="list">List to be reduced.</param>
+        /// <param name="seed">
+        ///     Starting value for the reduction. If the list being reduced is
+        ///     empty, this will immediately be returned.
+        /// </param>
+        /// <param name="reducer">
+        ///     A function that consumes an element in the list and a reduction state. It must produce
+        ///     a new reduction state by combining the element with the current reduction state.
+        /// </param>
+        public static TState Reduce<T, TState>(IEnumerable<T> list, TState seed, Func<T, TState, TState> reducer)
+        {
+            return list.Aggregate(seed, (a, x) => reducer(x, a));
+        }
+
+        /// <summary>
+        ///     Produces a new list by applying a projection function to each element of the input list(s) and
+        ///     storing the result.
         /// </summary>
         /// <param name="projection">
-        /// Function that consumes an element from each input list and produces a value that is stored
-        /// in the output list.
+        ///     Function that consumes an element from each input list and produces a value that is stored
+        ///     in the output list.
         /// </param>
         /// <param name="lists">Lists to be combined/mapped into a new list.</param>
-        public static IList<object> Map(
-            Function.MapDelegate projection, params IEnumerable<object>[] lists)
+        public static IList<object> Map(Function.MapDelegate projection, params IEnumerable<object>[] lists)
         {
             if (!lists.Any())
                 throw new ArgumentException("Need at least one list to map.");
@@ -212,26 +207,24 @@ namespace DSCoreNodes
             IEnumerable<List<object>> argList = lists[0].Select(x => new List<object> { x });
 
             foreach (var pair in
-                lists.Skip(1)
-                     .SelectMany(list => list.Zip(argList, (o, objects) => new { o, objects })))
-            {
+                lists.Skip(1).SelectMany(list => list.Zip(argList, (o, objects) => new { o, objects })))
                 pair.objects.Add(pair.o);
-            }
 
             return argList.Select(x => projection(x.ToArray())).ToList();
         }
 
         /// <summary>
-        /// Produces a new list by applying a projection function to all combinations of elements from the
-        /// input lists and storing the result.
+        ///     Produces a new list by applying a projection function to all combinations of elements from the
+        ///     input lists and storing the result.
         /// </summary>
         /// <param name="projection">
-        /// Function that consumes an element from each input list and produces a value that is stored
-        /// in the output list.
+        ///     Function that consumes an element from each input list and produces a value that is stored
+        ///     in the output list.
         /// </param>
         /// <param name="lists">Lists to take the cartesion product of.</param>
-        public static IEnumerable<object> CartesianProduct(
-            Function.MapDelegate projection, params IEnumerable<object>[] lists)
+        public static IList<object> CartesianProduct(
+            Function.MapDelegate projection,
+            params IEnumerable<object>[] lists)
         {
             if (!lists.Any())
                 throw new ArgumentException("Need at least one list to map.");
@@ -240,10 +233,10 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// Applies a function to each element of the input list(s). Does not accumulate results.
+        ///     Applies a function to each element of the input list(s). Does not accumulate results.
         /// </summary>
         /// <param name="action">
-        /// Function that consumed an element from each input list. Return value is ignored.
+        ///     Function that consumed an element from each input list. Return value is ignored.
         /// </param>
         /// <param name="lists">Lists to be iterated over.</param>
         public static void ForEach(Function.MapDelegate action, params IEnumerable<object>[] lists)
@@ -254,23 +247,22 @@ namespace DSCoreNodes
             IEnumerable<List<object>> argList = lists[0].Select(x => new List<object> { x });
 
             foreach (var pair in
-                lists.Skip(1)
-                     .SelectMany(list => list.Zip(argList, (o, objects) => new { o, objects })))
-            {
+                lists.Skip(1).SelectMany(list => list.Zip(argList, (o, objects) => new { o, objects })))
                 pair.objects.Add(pair.o);
-            }
 
             foreach (var args in argList)
                 action(args.ToArray());
         }
+         
+        */
 
         /// <summary>
-        /// Determines if the given predicate function returns True when applied to all of the
-        /// elements in the given list.
+        ///     Determines if the given predicate function returns True when applied to all of the
+        ///     elements in the given list.
         /// </summary>
         /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <param name="predicate">
-        /// Function to be applied to all elements in the list, returns a boolean value.
+        ///     Function to be applied to all elements in the list, returns a boolean value.
         /// </param>
         /// <param name="list">List to be tested.</param>
         public static bool TrueForAll<T>(Func<T, bool> predicate, IEnumerable<T> list)
@@ -279,12 +271,12 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// Determines if the given predicate function returns True when applied to any of the
-        /// elements in the given list.
+        ///     Determines if the given predicate function returns True when applied to any of the
+        ///     elements in the given list.
         /// </summary>
         /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <param name="predicate">
-        /// Function to be applied to all elements in the list, returns a boolean value.
+        ///     Function to be applied to all elements in the list, returns a boolean value.
         /// </param>
         /// <param name="list">List to be tested.</param>
         public static bool TrueForAny<T>(Func<T, bool> predicate, IEnumerable<T> list)
@@ -293,8 +285,8 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// Given a list, produces the first item in the list, and a new list containing all items
-        /// except the first.
+        ///     Given a list, produces the first item in the list, and a new list containing all items
+        ///     except the first.
         /// </summary>
         /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <param name="list">List to be split.</param>
@@ -304,7 +296,7 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// Produces a new list by adding an item to the beginning of a given list.
+        ///     Produces a new list by adding an item to the beginning of a given list.
         /// </summary>
         /// <param name="o">Item to be added.</param>
         /// <param name="list">List to add on to.</param>
@@ -316,12 +308,12 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// Fetches the given amount of elements from the start of the given list.
+        ///     Fetches the given amount of elements from the start of the given list.
         /// </summary>
         /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <param name="list">List to take from.</param>
         /// <param name="amount">
-        /// Amount of elements to take. If negative, elements are taken from the end of the list.
+        ///     Amount of elements to take. If negative, elements are taken from the end of the list.
         /// </param>
         public static IList<T> TakeFromList<T>(IList<T> list, int amount)
         {
@@ -329,12 +321,12 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// Removes the given amount of elements from the start of the given list.
+        ///     Removes the given amount of elements from the start of the given list.
         /// </summary>
         /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <param name="list">List to remove elements from.</param>
         /// <param name="amount">
-        /// Amount of elements to remove. If negative, elements are removed from the end of the list.
+        ///     Amount of elements to remove. If negative, elements are removed from the end of the list.
         /// </param>
         public static IList<T> DropFromList<T>(IList<T> list, int amount)
         {
@@ -342,24 +334,26 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// Shifts indices in the given list to the right by the given amount.
+        ///     Shifts indices in the given list to the right by the given amount.
         /// </summary>
         /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <param name="list">List to be shifted.</param>
         /// <param name="amount">
-        /// Amount to shift indices by. If negative, indices will be shifted to the left.
+        ///     Amount to shift indices by. If negative, indices will be shifted to the left.
         /// </param>
-        public static IEnumerable<T> ShiftListIndices<T>(IList<T> list, int amount)
+        public static IList<T> ShiftListIndices<T>(IList<T> list, int amount)
         {
-            if (amount == 0) return list;
+            if (amount == 0)
+                return list;
 
-            return amount < 0
-                ? list.Skip(-amount).Concat(list.Take(-amount))
-                : list.Skip(list.Count - amount).Concat(list.Take(list.Count - amount));
+            return
+                (amount < 0
+                    ? list.Skip(-amount).Concat(list.Take(-amount))
+                    : list.Skip(list.Count - amount).Concat(list.Take(list.Count - amount))).ToList();
         }
 
         /// <summary>
-        /// Gets an element from the given list that's located at the specified index.
+        ///     Gets an element from the given list that's located at the specified index.
         /// </summary>
         /// <param name="list">List to fetch an element from.</param>
         /// <param name="index">Index of the element to be fetched.</param>
@@ -369,17 +363,16 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// Gets a single sub-list from the given list, based on starting index, amount of elements 
-        /// to take, and a step amount.
+        ///     Gets a single sub-list from the given list, based on starting index, amount of elements
+        ///     to take, and a step amount.
         /// </summary>
         /// <param name="list">List to take a slice of.</param>
         /// <param name="start">Index to start the slice from.</param>
         /// <param name="count">Number of elements to take in the slice.</param>
         /// <param name="step">
-        /// Amount the indices of the elements are separate by in the original list.
+        ///     Amount the indices of the elements are separate by in the original list.
         /// </param>
-        public static IList SliceList(
-            IList list, int? start = null, int? count = null, int step = 1)
+        public static IList SliceList(IList list, int? start = null, int? count = null, int step = 1)
         {
             #region Disabled python-like slicing capability
 
@@ -436,7 +429,7 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// Removes an element from the given list at the specified index.
+        ///     Removes an element from the given list at the specified index.
         /// </summary>
         /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <param name="list">List to remove an element from.</param>
@@ -447,7 +440,7 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// Removes elements from the given list at the specified indices.
+        ///     Removes elements from the given list at the specified indices.
         /// </summary>
         /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <param name="list">List to remove elements from.</param>
@@ -459,40 +452,40 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// Removes elements from the given list at indices that are multiples
-        /// of the given value, after the given offset.
+        ///     Removes elements from the given list at indices that are multiples
+        ///     of the given value, after the given offset.
         /// </summary>
         /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <param name="list">List to remove elements from/</param>
         /// <param name="n">Indices that are multiples of this argument will be removed.</param>
         /// <param name="offset">
-        /// Amount of elements to be ignored from the start of the list.
+        ///     Amount of elements to be ignored from the start of the list.
         /// </param>
-        public static IList<T> DropEveryNth<T>(IList<T> list, int n, int offset=0)
+        public static IList<T> DropEveryNth<T>(IList<T> list, int n, int offset = 0)
         {
             return list.Skip(offset).Where((_, i) => (i + 1)%n != 0).ToList();
         }
 
         /// <summary>
-        /// Fetches elements from the given list at indices that are multiples
-        /// of the given value, after the given offset.
+        ///     Fetches elements from the given list at indices that are multiples
+        ///     of the given value, after the given offset.
         /// </summary>
         /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <param name="list">List to take elements from.</param>
         /// <param name="n">
-        /// Indices that are multiples of this number (after the offset)
-        /// will be fetched.
+        ///     Indices that are multiples of this number (after the offset)
+        ///     will be fetched.
         /// </param>
         /// <param name="offset">
-        /// Amount of elements to be ignored from the start of the list.
+        ///     Amount of elements to be ignored from the start of the list.
         /// </param>
-        public static IList<T> TakeEveryNth<T>(IList<T> list, int n, int offset=0)
+        public static IList<T> TakeEveryNth<T>(IList<T> list, int n, int offset = 0)
         {
             return list.Skip(offset).Where((_, i) => (i + 1)%n == 0).ToList();
         }
 
         /// <summary>
-        /// An Empty List.
+        ///     An Empty List.
         /// </summary>
         public static IList Empty()
         {
@@ -500,7 +493,7 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// Determines if the given list is empty.
+        ///     Determines if the given list is empty.
         /// </summary>
         /// <param name="list">List to check for elements.</param>
         public static bool IsEmpty(IList list)
@@ -509,7 +502,7 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// Gets the number of elements stored in the given list.
+        ///     Gets the number of elements stored in the given list.
         /// </summary>
         /// <param name="list">List to get the element count of.</param>
         public static int Count(IList list)
@@ -518,19 +511,20 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// Concatenates all given lists into a single list.
+        ///     Concatenates all given lists into a single list.
         /// </summary>
         /// <param name="lists">Lists to join into one.</param>
         public static IList Join(params IList[] lists)
         {
             var result = new ArrayList();
-            foreach (var list in lists)
+            foreach (IList list in lists)
                 result.AddRange(list);
-            return result;;
+            return result;
+            ;
         }
 
         /// <summary>
-        /// Gets the first item in a list.
+        ///     Gets the first item in a list.
         /// </summary>
         /// <param name="list">List to get the first item from.</param>
         public static object First(IList list)
@@ -539,7 +533,7 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// Removes the first item from the given list.
+        ///     Removes the first item from the given list.
         /// </summary>
         /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <param name="list">List to get the rest of.</param>
@@ -549,8 +543,8 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// Creates a list of lists out of an existing list with each sub-list containing
-        /// the given amount of elements.
+        ///     Creates a list of lists out of an existing list with each sub-list containing
+        ///     the given amount of elements.
         /// </summary>
         /// <param name="list">List to partition.</param>
         /// <param name="subLength">Length of each new sub-list.</param>
@@ -563,7 +557,7 @@ namespace DSCoreNodes
             var currList = new ArrayList();
             int count = 0;
 
-            foreach (var v in list)
+            foreach (object v in list)
             {
                 count++;
                 currList.Add(v);
@@ -583,7 +577,7 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// Create a diagonal lists of lists from top left to lower right.
+        ///     Create a diagonal lists of lists from top left to lower right.
         /// </summary>
         /// <param name="list">A list</param>
         /// <param name="subLength">Length of each new sub-list.</param>
@@ -593,6 +587,7 @@ namespace DSCoreNodes
                 return list;
 
             var finalList = new ArrayList();
+            var currList = new ArrayList();
 
             var startIndices = new List<int>();
 
@@ -604,34 +599,35 @@ namespace DSCoreNodes
 
             //get indices along 'top' of array
             for (int i = 0; i < subLength; i++)
-            {
                 startIndices.Add(i);
-            }
 
             foreach (int start in startIndices)
             {
                 int index = start;
-                var currList = new ArrayList();
 
                 while (index < list.Count)
                 {
-                    var currentRow = (int)Math.Ceiling((index + 1) / (double)subLength);
+                    var currentRow = (int)Math.Ceiling((index + 1)/(double)subLength);
                     currList.Add(list[index]);
                     index += subLength + 1;
 
                     //ensure we are skipping a row to get the next index
-                    var nextRow = (int)Math.Ceiling((index + 1) / (double)subLength);
+                    var nextRow = (int)Math.Ceiling((index + 1)/(double)subLength);
                     if (nextRow > currentRow + 1 || nextRow == currentRow)
                         break;
                 }
                 finalList.Add(currList);
+                currList = new ArrayList();
             }
+
+            if (currList.Count > 0)
+                finalList.Add(currList);
 
             return finalList;
         }
 
         /// <summary>
-        /// Create a diagonal lists of lists from top right to lower left.
+        ///     Create a diagonal lists of lists from top right to lower left.
         /// </summary>
         /// <param name="list">A list.</param>
         /// <param name="subLength">Length of each new sib-list.</param>
@@ -659,12 +655,12 @@ namespace DSCoreNodes
 
                 while (index < list.Count)
                 {
-                    var currentRow = (int)Math.Ceiling((index + 1) / (double)subLength);
+                    var currentRow = (int)Math.Ceiling((index + 1)/(double)subLength);
                     currList.Add(list[index]);
                     index += subLength - 1;
 
                     //ensure we are skipping a row to get the next index
-                    var nextRow = (int)Math.Ceiling((index + 1) / (double)subLength);
+                    var nextRow = (int)Math.Ceiling((index + 1)/(double)subLength);
                     if (nextRow > currentRow + 1 || nextRow == currentRow)
                         break;
                 }
@@ -675,7 +671,7 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// Swaps rows and columns in a list of lists.
+        ///     Swaps rows and columns in a list of lists.
         /// </summary>
         /// <param name="lists">A list of lists to be transposed.</param>
         public static IList<IList> Transpose(IList<IList<object>> lists)
@@ -683,20 +679,16 @@ namespace DSCoreNodes
             if (!lists.Any())
                 return new List<IList>();
 
-            var argList = lists[0].Select(x => new ArrayList { x } as IList);
+            var argList = lists[0].Select(x => new ArrayList { x } as IList).ToList();
 
-            foreach (var pair in
-                lists.Skip(1)
-                     .SelectMany(list => list.Zip(argList, (o, objects) => new { o, objects })))
-            {
-                pair.objects.Add(pair.o);
-            }
+            foreach (var pair in lists.Skip(1).SelectMany(list => list.Zip(argList, (o, objs) => new { o, objs })))
+                pair.objs.Add(pair.o);
 
-            return argList.ToList();
+            return argList;
         }
 
         /// <summary>
-        /// Creates a list containing the given item the given number of times.
+        ///     Creates a list containing the given item the given number of times.
         /// </summary>
         /// <param name="thing">The thing to repeat.</param>
         /// <param name="amount">The number of times to repeat.</param>
@@ -706,8 +698,8 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// Flattens a nested list of lists into a single list containing no
-        /// sub-lists.
+        ///     Flattens a nested list of lists into a single list containing no
+        ///     sub-lists.
         /// </summary>
         /// <param name="list">List to flatten.</param>
         public static IList FlattenCompletely(IList<object> list)
@@ -716,15 +708,17 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// Flattens a nested list of lists by a certain amount.
+        ///     Flattens a nested list of lists by a certain amount.
         /// </summary>
         /// <param name="list">List to flatten.</param>
-        /// <param name="amt">Layers of nesting to remove.</param>s
+        /// <param name="amt">Layers of nesting to remove.</param>
+        /// s
         public static IList Flatten(IList<object> list, int amt)
         {
             throw new NotImplementedException();
         }
     }
+
 
     //TODO
     /*

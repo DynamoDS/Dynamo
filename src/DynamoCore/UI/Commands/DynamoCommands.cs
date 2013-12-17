@@ -63,6 +63,18 @@ namespace Dynamo.ViewModels
 
         #region The Actual Command Handlers (Private)
 
+        private void OpenFileImpl(OpenFileCommand command)
+        {
+            string xmlFilePath = command.XmlFilePath;
+            dynSettings.Controller.DynamoModel.OpenInternal(xmlFilePath);
+        }
+
+        private void RunCancelImpl(RunCancelCommand command)
+        {
+            dynSettings.Controller.RunCancelInternal(
+                command.ShowErrors, command.CancelRun);
+        }
+
         private void CreateNodeImpl(CreateNodeCommand command)
         {
             NodeModel nodeModel = Model.CreateNode(

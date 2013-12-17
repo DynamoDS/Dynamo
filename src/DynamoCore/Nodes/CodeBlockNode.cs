@@ -147,7 +147,6 @@ namespace Dynamo.Nodes
                 {
                     if (value != null)
                     {
-                        this.State = ElementState.Error;
                         string errorMessage = null;
                         DisableReporting();
                         {
@@ -158,7 +157,7 @@ namespace Dynamo.Nodes
                             //Save the connectors so that we can recreate them at the correct positions
                             SaveAndDeleteConnectors(inportConnections, outportConnections);
 
-                            if (code == "")
+                            if (string.IsNullOrEmpty(code))
                             {
                                 WorkSpace.UndoRecorder.PopFromUndoGroup();
                                 WorkSpace.UndoRecorder.RecordCreationForUndo(this);
@@ -473,9 +472,12 @@ namespace Dynamo.Nodes
 
         private void SetPreviewVariable(BinaryExpressionNode lastStatement)
         {
-            previewVariable = "temp" + Guid.NewGuid().ToString();
-            previewVariable = previewVariable.Replace('-', '_');
-            previewExpressionAST = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(new IdentifierNode(previewVariable), lastStatement.LeftNode, Operator.assign);
+            if (null != lastStatement)
+            {
+                previewVariable = "temp" + Guid.NewGuid().ToString();
+                previewVariable = previewVariable.Replace('-', '_');
+                previewExpressionAST = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(new IdentifierNode(previewVariable), lastStatement.LeftNode, Operator.assign);
+            }
         }
 
         /// <summary>
@@ -1107,7 +1109,7 @@ namespace Dynamo.Nodes
             }
             else if (parsedNode is FunctionDefinitionNode)
             {
-                throw new NotImplementedException();
+                // Handle function definitions in CBN
             }
             else
                 throw new ArgumentException("Must be func def or assignment");

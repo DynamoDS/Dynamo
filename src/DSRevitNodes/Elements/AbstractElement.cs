@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using Autodesk.Revit.DB;
 using DSRevitNodes.GeometryObjects;
 using RevitServices.Persistence;
@@ -28,9 +29,44 @@ namespace DSRevitNodes.Elements
         internal bool IsRevitOwned = false;
 
         /// <summary>
+        /// Obtain all of the Parameters from an Element
+        /// </summary>
+        public DSParameter[] Parameters
+        {
+            get
+            {
+                var parms = this.InternalElement.Parameters;
+                return parms.Cast<Autodesk.Revit.DB.Parameter>().Select(x => new DSParameter(x)).ToArray();
+            }
+        }
+
+        /// <summary>
+        /// Get the Name of the Element
+        /// </summary>
+        public string Name
+        {
+            get
+            {
+                return InternalElement.Name;
+            }
+        }
+
+        /// <summary>
+        /// Get an Axis-aligned BoundingBox of the Element
+        /// </summary>
+        public DSBoundingBox BoundingBox
+        {
+            get
+            {
+                return new DSBoundingBox(this.InternalElement.get_BoundingBox(null));
+            }
+        }
+
+        /// <summary>
         /// A reference to the element
         /// </summary>
-        internal abstract Element InternalElement
+        [Browsable(false)]
+        public abstract Element InternalElement
         {
             get;
         }
@@ -56,6 +92,15 @@ namespace DSRevitNodes.Elements
             {
                 DocumentManager.GetInstance().DeleteElement(this.InternalElementId);
             }
+        }
+
+        /// <summary>
+        /// A basic implementation of ToString for Elements
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return InternalElement.ToString();
         }
     }
 }

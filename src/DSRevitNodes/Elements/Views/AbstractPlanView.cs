@@ -10,7 +10,7 @@ namespace DSRevitNodes.Elements
     /// <summary>
     /// Base class for Revit Plan views
     /// </summary>
-    public class AbstractPlanView : AbstractElement
+    public class AbstractPlanView : AbstractView
     {
 
         #region Internal properties
@@ -27,7 +27,7 @@ namespace DSRevitNodes.Elements
         /// <summary>
         /// Reference to the Element
         /// </summary>
-        internal override Autodesk.Revit.DB.Element InternalElement
+        public override Autodesk.Revit.DB.Element InternalElement
         {
             get { return InternalViewPlan; }
         }

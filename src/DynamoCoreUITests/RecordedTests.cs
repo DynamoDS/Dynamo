@@ -15,6 +15,10 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using NUnit.Framework;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using Dynamo.Tests;
+using ProtoCore.DSASM;
+using ProtoCore.Mirror;
+using Dynamo.Tests;
 
 namespace Dynamo.Tests.UI
 {
@@ -43,6 +47,69 @@ namespace Dynamo.Tests.UI
             this.controller = null;
         }
 
+        private string GetVarName(string guid)
+        {
+            var model = controller.DynamoModel;
+            var node = model.CurrentWorkspace.NodeFromWorkspace(guid);
+            Assert.IsNotNull(node);
+            return node.VariableToPreview;
+        }
+
+        private RuntimeMirror GetRuntimeMirror(string varName)
+        {
+            RuntimeMirror mirror = null;
+            mirror = controller.EngineController.GetMirror(varName);
+
+            Assert.IsNotNull(mirror);
+            return mirror;
+        }
+
+        public void AssertValue(string varname, object value)
+        {
+            var mirror = GetRuntimeMirror(varname);
+
+            Console.WriteLine(varname + " = " + mirror.GetStringData());
+            StackValue svValue = mirror.GetData().GetStackValue();
+
+            if (value == null)
+            {
+                Assert.IsTrue(StackUtils.IsNull(svValue));
+            }
+            else if (value is double)
+            {
+                Assert.AreEqual(svValue.opdata_d, Convert.ToDouble(value));
+            }
+            else if (value is int)
+            {
+                Assert.AreEqual(svValue.opdata, Convert.ToInt64(value));
+            }
+            else if (value is IEnumerable<int>)
+            {
+                var values = (value as IEnumerable<int>).ToList().Select(v => (object)v).ToList();
+                Assert.IsTrue(mirror.GetUtils().CompareArrays(varname, values, typeof(Int64)));
+            }
+            else if (value is IEnumerable<double>)
+            {
+                var values = (value as IEnumerable<double>).ToList().Select(v => (object)v).ToList();
+                Assert.IsTrue(mirror.GetUtils().CompareArrays(varname, values, typeof(double)));
+            }
+        }
+
+        private void AssertPreviewValue(string guid, object value)
+        {
+            string previewVariable = GetVarName(guid);
+            AssertValue(previewVariable, value);
+        }
+
+        private void AssertIsPointer(string guid)
+        {
+            string varname = GetVarName(guid);
+            var mirror = GetRuntimeMirror(varname);
+
+            StackValue svValue = mirror.GetData().GetStackValue();
+            Assert.IsTrue(StackUtils.IsValidPointer(svValue));
+        }
+
         #endregion
 
         #region Recorded Test Cases for Command Framework
@@ -57,6 +124,18 @@ namespace Dynamo.Tests.UI
 
             var number = GetNode("045decd1-7454-4b85-b92e-d59d35f31ab2") as DoubleInput;
             Assert.AreEqual("12.34", number.Value);
+        }
+
+        [Test, RequiresSTA]
+        public void TestRunCancelCommand()
+        {
+            bool showErrors = randomizer.Next(2) == 0;
+            bool cancelRun = randomizer.Next(2) == 0;
+
+            var cmdOne = new DynCmd.RunCancelCommand(showErrors, cancelRun);
+            var cmdTwo = DuplicateAndCompare(cmdOne);
+            Assert.AreEqual(cmdOne.ShowErrors, cmdTwo.ShowErrors);
+            Assert.AreEqual(cmdOne.CancelRun, cmdTwo.CancelRun);
         }
 
         [Test, RequiresSTA]
@@ -285,6 +364,7 @@ namespace Dynamo.Tests.UI
     }
 
 #if !USE_DSENGINE
+
     class RecordedTestsFScheme : RecordedTests
     {
         [Test, RequiresSTA]
@@ -470,6 +550,23 @@ namespace Dynamo.Tests.UI
         }
 
         [Test, RequiresSTA]
+        public void TestCreateNodesAndRunExpression()
+        {
+            RunCommandsFromFile("CreateNodesAndRunExpression.xml");
+            var number1 = GetNode("e37873fb-ef3f-4864-b7e5-9417e0ad014c") as DoubleInput;
+            var number2 = GetNode("977ce97c-22f5-4155-ae22-d0c3a6f82f19") as DoubleInput;
+            var addition = GetNode("cf8c52b1-fbee-4674-ba73-6ee0d09463f2") as Addition;
+
+            Assert.IsNotNull(number1);
+            Assert.IsNotNull(number2);
+            Assert.IsNotNull(addition);
+
+            Assert.AreEqual(4, ((number1.OldValue as FScheme.Value.Number).Item), 0.000001);
+            Assert.AreEqual(2, ((number2.OldValue as FScheme.Value.Number).Item), 0.000001);
+            Assert.AreEqual(6, ((addition.OldValue as FScheme.Value.Number).Item), 0.000001);
+        }
+
+        [Test, RequiresSTA]
         public void TestCreateNodes()
         {
             RunCommandsFromFile("CreateNodesAndConnectors.xml");
@@ -632,9 +729,8 @@ namespace Dynamo.Tests.UI
 
     class RecordedTestsDSEngine : RecordedTests
     {
+        #region Basic CodeBlockNode Test Cases
 
-// Basic CBN test cases will go here
-    
         [Test, RequiresSTA]
         public void TestBasicCodeBlockNodePortCreation()
         {
@@ -869,7 +965,10 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual("CBN", cbn.NickName);
         }
 
-// Test Cases from Defects will go here.
+        #endregion
+
+        #region Defect Verifications Test Cases
+
         [Test, RequiresSTA]
         public void Defect_MAGN_159()
         {
@@ -1426,6 +1525,98 @@ namespace Dynamo.Tests.UI
 
         }
 
+        /// <summary>
+        /// Temporary workaround
+        /// Test case on creating simple operations and compare with NodeToCode value and Undo
+        /// Eventually the evaluation will be done at record playback side thus remove the need
+        /// of having multiple files.
+        /// </summary>
+        [Test, RequiresSTA]
+        public void TestCBNWithNodeToCode()
+        {
+            RunCommandsFromFile("TestCBNOperationWithoutNodeToCode.xml");
+            AssertValue("c", 8); // Run playback is recorded in command file
+
+            // Reset current test case
+            Exit();
+            Start();
+
+            RunCommandsFromFile("TestCBNOperationWithNodeToCode.xml");
+            AssertValue("c", 8); // Run playback is recorded in command file
+
+            // Reset current test case
+            Exit();
+            Start();
+
+            RunCommandsFromFile("TestCBNOperationWithNodeToCodeUndo.xml");
+            AssertValue("c", 8); // Run playback is recorded in command file
+        }
+
+        #endregion
+
+        #region Private Helper Methods
+
+        private ModelBase GetNode(string guid)
+        {
+            Guid id = Guid.Parse(guid);
+            return workspace.GetModelInternal(id);
+        }
+
+        private void VerifyModelExistence(Dictionary<string, bool> modelExistenceMap)
+        {
+            var nodes = workspace.Nodes;
+            foreach (var pair in modelExistenceMap)
+            {
+                Guid guid = Guid.Parse(pair.Key);
+                var node = nodes.FirstOrDefault((x) => (x.GUID == guid));
+                bool nodeExists = (null != node);
+                Assert.AreEqual(nodeExists, pair.Value);
+            }
+        }
+
+        private void RunCommandsFromFile(string commandFileName, bool autoRun = false)
+        {
+            string commandFilePath = DynamoTestUI.GetTestDirectory();
+            commandFilePath = Path.Combine(commandFilePath, @"core\recorded\");
+            commandFilePath = Path.Combine(commandFilePath, commandFileName);
+
+            // Create the controller to run alongside the view.
+            controller = DynamoController.MakeSandbox(commandFilePath);
+            controller.Testing = true;
+            controller.DynamoViewModel.DynamicRunEnabled = autoRun;
+
+            // Create the view.
+            var dynamoView = new DynamoView();
+            dynamoView.DataContext = controller.DynamoViewModel;
+            controller.UIDispatcher = dynamoView.Dispatcher;
+            dynamoView.ShowDialog();
+
+            Assert.IsNotNull(controller);
+            Assert.IsNotNull(controller.DynamoModel);
+            Assert.IsNotNull(controller.DynamoModel.CurrentWorkspace);
+            workspace = controller.DynamoModel.CurrentWorkspace;
+            workspaceViewModel = controller.DynamoViewModel.CurrentSpaceViewModel;
+        }
+
+        private CmdType DuplicateAndCompare<CmdType>(CmdType command)
+            where CmdType : DynCmd.RecordableCommand
+        {
+            Assert.IsNotNull(command); // Ensure we have an input command.
+
+            // Serialize the command into an XmlElement.
+            XmlDocument xmlDocument = new XmlDocument();
+            XmlElement element = command.Serialize(xmlDocument);
+            Assert.IsNotNull(element);
+
+            // Deserialized the XmlElement into a new instance of the command.
+            var duplicate = DynCmd.RecordableCommand.Deserialize(element);
+            Assert.IsNotNull(duplicate);
+            Assert.IsTrue(duplicate is CmdType);
+            return duplicate as CmdType;
+        }
+
+        #endregion
     }
+
 #endif
 }
