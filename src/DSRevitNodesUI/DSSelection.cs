@@ -8,16 +8,14 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using Autodesk.Revit.DB;
 using DSRevitNodes.Interactivity;
-using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
 using RevitServices.Persistence;
 using Binding = System.Windows.Data.Binding;
 
-namespace DSRevitNodes.Elements
+namespace Dynamo.Nodes
 {
     public abstract class DSSelectionBase<T> : NodeModel 
     {
@@ -216,7 +214,11 @@ namespace DSRevitNodes.Elements
 
         #endregion
     }
-    
+
+    [NodeName("Selection")]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeDescription("Select an element from the Revit document.")] //<--Change the descp :|
+    [IsDesignScriptCompatible]
     //TODO: DSSelection needs to respond to document modification events
     public class DSSelection<T> : DSSelectionBase<T>
     {
