@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Policy;
 
-namespace DSCoreNodes.Core
+namespace DSCoreNodes
 {
     /// <summary>
     /// Methods for handling higher-order functions.
@@ -23,7 +24,7 @@ namespace DSCoreNodes.Core
         {
             if (!funcs.Any())
             {
-                throw new ArgumentException("Need at least one function to perform composition.", "funcs");
+                throw new ArgumentException("Need at least one function to perform composition.");
             }
 
             return funcs.Skip(1).Aggregate(funcs[0], (func, a) => x => func(a(x)));
