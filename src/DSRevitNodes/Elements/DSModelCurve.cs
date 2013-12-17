@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using DSNodeServices;
@@ -14,6 +15,9 @@ using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Numerics.LinearAlgebra.Generic;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
+using Curve = Autodesk.Revit.DB.Curve;
+using Line = Autodesk.Revit.DB.Line;
+using Plane = Autodesk.Revit.DB.Plane;
 
 namespace DSRevitNodes.Elements
 {
@@ -37,7 +41,7 @@ namespace DSRevitNodes.Elements
         /// <summary>
         /// Reference to the Element
         /// </summary>
-        internal override Autodesk.Revit.DB.Element InternalElement
+        public override Autodesk.Revit.DB.Element InternalElement
         {
             get { return InternalModelCurve; }
         }
@@ -175,7 +179,7 @@ namespace DSRevitNodes.Elements
         #region Public Properties
 
         /// <summary>
-        /// Obtain the reference curve for this geometry curve
+        /// Obtain the reference curve for this ModelCurve
         /// </summary>
         public DSCurveReference CurveReference
         {
@@ -184,6 +188,18 @@ namespace DSRevitNodes.Elements
                 return new DSCurveReference(InternalModelCurve.GeometryCurve);
             }
         }
+
+        /// <summary>
+        /// Obtain the geometry curve for this geometry curve
+        /// </summary>
+        public Autodesk.DesignScript.Geometry.Curve Curve
+        {
+            get
+            {
+                return InternalModelCurve.GeometryCurve.ToProtoType();
+            }
+        }
+
         #endregion
 
         #region Public constructor
@@ -204,7 +220,7 @@ namespace DSRevitNodes.Elements
             {
                 throw new Exception("The curve is not planar");
             }
-
+            
             return new DSModelCurve(curve.ToRevitType());
         }
 
@@ -213,9 +229,12 @@ namespace DSRevitNodes.Elements
         /// </summary>
         /// <param name="modelCurve"></param>
         /// <returns></returns>
-        internal static DSModelCurve FromExisting(Autodesk.Revit.DB.ModelCurve modelCurve)
+        internal static DSModelCurve FromExisting(Autodesk.Revit.DB.ModelCurve modelCurve, bool isRevitOwned)
         {
-            return new DSModelCurve(modelCurve);
+            return new DSModelCurve(modelCurve)
+            {
+                IsRevitOwned = isRevitOwned
+            };
         }
 
         #endregion
@@ -271,7 +290,7 @@ namespace DSRevitNodes.Elements
                 double llSqNew = newPlane.Normal.DotProduct(newPlane.Normal);
                 double dotP = newPlane.Normal.DotProduct(curPlane.Normal);
                 double dotSqNormalized = (dotP / llSqCur) * (dotP / llSqNew);
-                double angleTol = Math.PI / 1800.0;
+                double angleTol = System.Math.PI / 1800.0;
                 if (dotSqNormalized < 1.0 - angleTol * angleTol)
                     resetPlane = true;
             }
@@ -360,7 +379,7 @@ namespace DSRevitNodes.Elements
                 XYZ norm = null;
 
                 //keep old plane computations
-                if (Math.Abs(p0.Z - p2.Z) < 0.0001)
+                if (System.Math.Abs(p0.Z - p2.Z) < 0.0001)
                 {
                     norm = XYZ.BasisZ;
                 }

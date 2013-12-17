@@ -5,7 +5,10 @@ using System.Linq;
 using System.Text;
 using Autodesk.Revit.DB;
 using DSNodeServices;
+using DSRevitNodes.GeometryObjects;
 using DSRevitNodes.References;
+using RevitServices.Persistence;
+using RevitServices.Transactions;
 
 namespace DSRevitNodes.Elements
 {
@@ -23,7 +26,7 @@ namespace DSRevitNodes.Elements
         /// <summary>
         /// Reference to the Element
         /// </summary>
-        internal override Element InternalElement
+        public override Autodesk.Revit.DB.Element InternalElement
         {
             get { return InternalForm; }
         }
@@ -41,6 +44,24 @@ namespace DSRevitNodes.Elements
             InternalSetForm(form);
         }
 
+        /// <summary>
+        /// Create a Form by lofting
+        /// </summary>
+        /// <param name="isSolid"></param>
+        /// <param name="curves"></param>
+        private DSForm(bool isSolid, ReferenceArrayArray curves)
+        {
+            // clean it up
+            TransactionManager.GetInstance().EnsureInTransaction(Document);
+
+            var f = Document.FamilyCreate.NewLoftForm(isSolid, curves);
+            InternalSetForm(f);
+
+            TransactionManager.GetInstance().TransactionTaskDone();
+
+            ElementBinder.CleanupAndSetElementForTrace(Document, this.InternalElementId);
+        }
+
         #endregion
 
         #region Private mutator
@@ -54,13 +75,33 @@ namespace DSRevitNodes.Elements
 
         #endregion
 
+        #region Private helper methods 
+
+
+
+        #endregion
+
         #region Public properties
 
+        /// <summary>
+        /// Get the FaceReferences from this Element
+        /// </summary>
         public DSFaceReference[] FaceReferences
         {
             get
             {
                 return EnumerateFaces().Select(x => new DSFaceReference(x)).ToArray();
+            }
+        }
+
+        /// <summary>
+        /// Get the Faces from this Element
+        /// </summary>
+        public DSFace[] Faces
+        {
+            get
+            {
+                return EnumerateFaces().Select(DSFace.FromExisting).ToArray();
             }
         }
 
@@ -144,6 +185,26 @@ namespace DSRevitNodes.Elements
 
         #endregion
 
+        #region Public static constructors 
+
+        public static DSForm ByLoftingCurveReferences( DSCurveReference[] curves, bool isSolid )
+        {
+            // build references
+            var refArrArr = new ReferenceArrayArray();
+
+            foreach (var l in curves)
+            {
+                var refArr = new ReferenceArray();
+                refArr.Append(l.InternalReference);
+                refArrArr.Append(refArr);
+            }
+
+            return new DSForm(isSolid, refArrArr);
+
+        }
+
+        #endregion
+
         #region Internal static constructors
 
         /// <summary>
@@ -164,5 +225,4 @@ namespace DSRevitNodes.Elements
 
     }
 }
-
 

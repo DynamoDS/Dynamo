@@ -136,9 +136,24 @@ namespace DSRevitNodes.Elements
         /// <returns></returns>
         public static DSPerspectiveView ByEyePointTargetAndElement(Autodesk.DesignScript.Geometry.Point eyePoint, Autodesk.DesignScript.Geometry.Point target, AbstractElement element, string name, bool isolateElement)
         {
+            if (eyePoint == null)
+            {
+                throw new ArgumentNullException("eyePoint");
+            }
+
+            if (target == null)
+            {
+                throw new ArgumentNullException("target");
+            }
+
             if (element == null)
             {
                 throw new ArgumentNullException("element");
+            }
+
+            if (name == null)
+            {
+                throw new ArgumentNullException("name");
             }
 
             return new DSPerspectiveView(eyePoint.ToXyz(), target.ToXyz(), element.InternalElement, name, isolateElement);
@@ -158,6 +173,21 @@ namespace DSRevitNodes.Elements
             if (boundingBox == null)
             {
                 throw new ArgumentNullException("boundingBox");
+            }
+
+            if (eyePoint == null)
+            {
+                throw new ArgumentNullException("eyePoint");
+            }
+
+            if (target == null)
+            {
+                throw new ArgumentNullException("target");
+            }
+
+            if (name == null)
+            {
+                throw new ArgumentNullException("name");
             }
 
             return new DSPerspectiveView(eyePoint.ToXyz(), target.ToXyz(), boundingBox.InternalBoundingBoxXyz, name, isolateElement);

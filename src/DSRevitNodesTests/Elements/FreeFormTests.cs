@@ -42,27 +42,18 @@ namespace DSRevitNodesTests.Elements
                 Point.ByCoordinates(0.0,0,0)
             };
 
-            var wts = new double[]
-            {
-                1,1,1,1
-            };
-
             var crvs = new[]
             {
-                DSNurbSpline.ByControlPointsAndWeights(pts1, wts),
-                DSNurbSpline.ByControlPointsAndWeights(pts2, wts),
-                DSNurbSpline.ByControlPointsAndWeights(pts3, wts)
+                BSplineCurve.ByPoints(pts1),
+                BSplineCurve.ByPoints(pts2),
+                BSplineCurve.ByPoints(pts3)
             };
-
-            // construct the curveloop
-            var curveloop = DSCurveLoop.ByCurves(crvs);
-            Assert.NotNull(curveloop);
 
             var dir = Vector.ByCoordinates(0, 0, 1);
             var dist = 5;
 
             // construct the extrusion
-            var extrusion = DSSolid.ByExtrusion(curveloop, dir, dist);
+            var extrusion = DSSolid.ByExtrusion(crvs, dir, dist);
             Assert.NotNull(extrusion);
 
             // construct the freeform element

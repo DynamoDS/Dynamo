@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Autodesk.LibG;
-
 using Microsoft.FSharp.Core;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
@@ -103,7 +100,7 @@ namespace Dynamo.FSchemeInterop
         /// <param name="value">A Value object that returns Container</param>
         /// <param name="convertedValue">The holder for the obtained value</param>
         /// <returns>False if the first param returns false for IsContainer</returns>
-        public static bool Convert(FScheme.Value value, ref Autodesk.LibG.Geometry convertedValue)
+        /*public static bool Convert(FScheme.Value value, ref Autodesk.LibG.Geometry convertedValue)
         {
             convertedValue = null;
             if (!value.IsContainer)
@@ -111,7 +108,7 @@ namespace Dynamo.FSchemeInterop
             object itemValue = (value as Value.Container).Item;
             convertedValue = itemValue as Autodesk.LibG.Geometry;
             return (convertedValue != null);
-        }
+        }*/
 
 
         /// <summary>

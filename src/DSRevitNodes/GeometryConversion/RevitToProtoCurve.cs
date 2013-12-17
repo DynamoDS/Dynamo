@@ -69,17 +69,7 @@ namespace DSRevitNodes.GeometryConversion
         /// <returns></returns>
         private static Autodesk.DesignScript.Geometry.Arc Convert(Autodesk.Revit.DB.Arc crv)
         {
-            var x = crv.XDirection.ToVector();
-            var y = crv.YDirection.ToVector();
-            var c = crv.Center.ToPoint();
-
-            var a = Autodesk.DesignScript.Geometry.Arc.ByCenterPointRadiusAngle(c, crv.Radius,
-                crv.GetEndParameter(0), crv.GetEndParameter(1), crv.Normal.ToVector());
-
-            var at = a.Transform(a.ContextCoordinateSystem,
-                CoordinateSystem.ByOriginVectors(c, x, y) );
-
-            return (Autodesk.DesignScript.Geometry.Arc) at;
+            return Arc.ByPointsOnCurve(crv.get_EndPoint(0).ToPoint(), crv.get_EndPoint(1).ToPoint(), crv.Evaluate(0.5, true).ToPoint());
         }
 
         /// <summary>
@@ -106,7 +96,8 @@ namespace DSRevitNodes.GeometryConversion
 
             var nonUniScale = CoordinateSystem.ByOriginVectors(unitArc.CenterPoint,
                 unitArc.ContextCoordinateSystem.XAxis.Scale(crv.RadiusX),
-                unitArc.ContextCoordinateSystem.XAxis.Scale(crv.RadiusX));
+                unitArc.ContextCoordinateSystem.YAxis.Scale(crv.RadiusY));
+
             var trf = (Curve) unitArc.Transform(unitArc.ContextCoordinateSystem, nonUniScale);
 
             return trf;

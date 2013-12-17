@@ -103,6 +103,7 @@ namespace Dynamo.Nodes
         }
     }
 
+    /*
     [NodeName("Reference Curve")]
     [NodeCategory(BuiltinNodeCategories.REVIT_REFERENCE)]
     [NodeDescription("Creates a reference curve.")]
@@ -214,4 +215,5 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewContainer(mc);
         }
     }
+     * */
 }

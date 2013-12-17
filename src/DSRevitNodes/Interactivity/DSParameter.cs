@@ -7,12 +7,24 @@ namespace DSRevitNodes.Elements
 {
     public class DSParameter
     {
-        private object param;
 
-        public DSParameter(object param)
-        {
-            // TODO: Complete member initialization
-            this.param = param;
+        private Autodesk.Revit.DB.Parameter InternalParameter
+        { 
+            get; set;
         }
+
+        internal DSParameter(Autodesk.Revit.DB.Parameter internalParameter)
+        {
+            this.InternalParameter = internalParameter;
+        }
+
+        public string Name
+        {
+            get
+            {
+                return InternalParameter.Definition.Name;
+            }
+        }
+
     }
 }

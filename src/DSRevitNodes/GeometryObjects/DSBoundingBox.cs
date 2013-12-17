@@ -35,7 +35,7 @@ namespace DSRevitNodes.GeometryObjects
             }
         } 
 
-        private DSBoundingBox(BoundingBoxXYZ box)
+        internal DSBoundingBox(BoundingBoxXYZ box)
         {
             InternalBoundingBoxXyz = box;
         }

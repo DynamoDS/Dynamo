@@ -37,20 +37,33 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DSCoreNodes, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\AnyCPU\Debug\DSCoreNodes.dll</HintPath>
+    </Reference>
+    <Reference Include="DynamoCore, Version=0.6.3.28673, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\AnyCPU\Debug\DynamoCore.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Practices.Prism, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="nunit.framework">
       <HintPath>$(NunitPath)\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="RevitAPIUI">
-      <HintPath>$(REVITAPI)\RevitAPIUI.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="ProtoCore, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\DesignScript\ProtoCore.dll</HintPath>
     </Reference>
-    <Reference Include="ProtoGeometry">
+    <Reference Include="ProtoGeometry, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\DesignScript\ProtoGeometry.dll</HintPath>
     </Reference>
     <Reference Include="ProtoInterface, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\DesignScript\ProtoInterface.dll</HintPath>
+    </Reference>
+    <Reference Include="RevitAPIUI">
+      <HintPath>$(REVITAPI)\RevitAPIUI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPI">
       <HintPath>$(REVITAPI)\RevitAPI.dll</HintPath>
@@ -58,16 +71,23 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnalysisDisplay\FaceAnalysisDisplayTests.cs" />
+    <Compile Include="AnalysisDisplay\PointAnalysisDisplayTests.cs" />
+    <Compile Include="AnalysisDisplay\VectorAnalysisDisplayTests.cs" />
     <Compile Include="Elements\AdaptiveComponentTests.cs" />
     <Compile Include="Elements\DividedPathTests.cs" />
     <Compile Include="Elements\DividedSurfaceTests.cs" />
+    <Compile Include="Elements\DocumentTests.cs" />
+    <Compile Include="Elements\FloorTests.cs" />
+    <Compile Include="Elements\FloorTypeTests.cs" />
+    <Compile Include="Elements\GridTests.cs" />
+    <Compile Include="Elements\LevelTests.cs" />
+    <Compile Include="Elements\MaterialTests.cs" />
+    <Compile Include="Elements\ModelTextTests.cs" />
+    <Compile Include="Elements\ModelTextTypeTests.cs" />
+    <Compile Include="Elements\ReferencePlaneTests.cs" />
     <Compile Include="Elements\ElementSelectorTests.cs" />
     <Compile Include="Elements\FamilyInstanceTests.cs" />
     <Compile Include="Elements\FamilySymbolTests.cs" />
@@ -76,14 +96,36 @@
     <Compile Include="Elements\FreeFormTests.cs" />
     <Compile Include="Elements\ModelCurveTests.cs" />
     <Compile Include="Elements\ReferencePointTests.cs" />
+    <Compile Include="Elements\SketchPlaneTests.cs" />
+    <Compile Include="Elements\StructuralFramingTests.cs" />
+    <Compile Include="Elements\Views\AxonometricViewTests.cs" />
+    <Compile Include="Elements\Views\CeilingPlanViewTests.cs" />
+    <Compile Include="Elements\Views\DraftingViewTests.cs" />
+    <Compile Include="Elements\Views\FloorPlanViewTests.cs" />
+    <Compile Include="Elements\Views\PerspectiveViewTests.cs" />
+    <Compile Include="Elements\Views\SectionViewTests.cs" />
+    <Compile Include="Elements\Views\SheetTests.cs" />
+    <Compile Include="Elements\WallTests.cs" />
+    <Compile Include="Elements\WallTypeTests.cs" />
     <Compile Include="GeometryConversion\ProtoToRevitCurveTests.cs" />
     <Compile Include="GeometryConversion\RevitToProtoCurveTests.cs" />
+    <Compile Include="GeometryIntersection\FaceIntersectTests.cs" />
+    <Compile Include="GeometryObjects\BoundingBoxTests.cs" />
     <Compile Include="GeometryObjects\CurveLoopTests.cs" />
     <Compile Include="GeometryObjects\NurbSplineTests.cs" />
     <Compile Include="GeometryObjects\SolidTests.cs" />
+    <Compile Include="Interactivity\SelectionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DSCoreNodesUI\DSCoreNodesUI.csproj">
+      <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
+      <Name>DSCoreNodesUI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DSRevitNodesUI\DSRevitNodesUI.csproj">
+      <Project>{75940acc-3708-4526-8d91-7e3365baf682}</Project>
+      <Name>DSRevitNodesUI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DSRevitNodes\DSRevitNodes.csproj">
       <Project>{0bc2a611-bd0e-4fcc-a1de-81f14ed369b2}</Project>
       <Name>DSRevitNodes</Name>

@@ -84,7 +84,6 @@ namespace Dynamo.Nodes
                 });
         }
 
-
         /// <summary>
         /// Override this to perform custom selection logic.
         /// </summary>

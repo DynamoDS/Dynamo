@@ -91,6 +91,16 @@ namespace DSRevitNodes.GeometryConversion
         }
 
         /// <summary>
+        /// Convert array of vectors to list of xyz's
+        /// </summary>
+        /// <param name="list">The list to convert</param>
+        /// <returns></returns>
+        public static XYZ[] ToXyzs(this Autodesk.DesignScript.Geometry.Vector[] list)
+        {
+            return list.ToList().ConvertAll((x) => new XYZ(x.X, x.Y, x.Z)).ToArray();
+        }
+
+        /// <summary>
         /// Convert array of points to list of xyz's
         /// </summary>
         /// <param name="list">The list to convert</param>

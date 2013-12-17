@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Media.Media3D;
 using Dynamo.Controls;
-using Dynamo.Nodes;
 using Dynamo.Utilities;
 using NUnit.Framework;
 
@@ -50,6 +48,7 @@ namespace Dynamo.Tests.UI
                 Ui.Close();
         }
 
+        /*
         [Test]
         public void VisualizationInSyncWithPreviewUpstream()
         {
@@ -91,5 +90,6 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(0, points.Count);
 
         }
+        */
     }
 }

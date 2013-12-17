@@ -7,6 +7,7 @@ using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using DSNodeServices;
 using DSRevitNodes.Elements;
+using RevitServices.Persistence;
 using RevitServices.Transactions;
 
 namespace DSRevitNodes.Elements
@@ -32,7 +33,7 @@ namespace DSRevitNodes.Elements
         /// <summary>
         /// Reference to the Element
         /// </summary>
-        internal override Element InternalElement
+        public override Autodesk.Revit.DB.Element InternalElement
         {
             get { return InternalFamilySymbol; }
         }
@@ -91,34 +92,48 @@ namespace DSRevitNodes.Elements
             }
         }
 
-        /// <summary>
-        /// Get a list of parameters from this FamilySymbol
-        /// </summary>
-        public DSParameter[] Parameters
-        {
-            get
-            {
-                var parms = this.InternalFamilySymbol.Parameters;
-                var parmsOut = new DSParameter[parms.Size];
-                var count = 0;
-                foreach (var param in parms)
-                {
-                    parmsOut[count++] = new DSParameter(param);
-                }
-
-                return parmsOut;
-            }
-        }
-
         #endregion
 
         #region Public static constructors
 
         /// <summary>
-        /// Select a FamilySymbol given it's full name including parent family, delimited by a period.
-        /// For example, the FamilySymbol Box in the Family Mass would be identified as "Mass.Box"
+        /// Select a FamilySymbol given it's parent Family and the FamilySymbol's name.
         /// </summary>
-        /// <param name="name">The name of the FamilySymbol as FamilyName.FamilySymbolName </param>
+        /// <param name="family">The FamilySymbol's parent Family</param>
+        /// <param name="name">The name of the FamilySymbol</param>
+        /// <returns></returns>
+        public static DSFamilySymbol ByFamilyAndName(DSFamily family, string name)
+        {
+            if (family == null)
+            {
+                throw new ArgumentNullException("family");
+            }
+
+            if (name == null)
+            {
+                throw new ArgumentNullException("name");
+            }
+
+            // obtain the family symbol with the provided name
+            var symbol =
+                family.InternalFamily.Symbols.Cast<Autodesk.Revit.DB.FamilySymbol>().FirstOrDefault(x => x.Name == name);
+
+            if (symbol == null)
+            {
+               throw new Exception(String.Format("A FamilySymbol with the specified name, {0}, does not exist in the Family", name));
+            }
+
+            return new DSFamilySymbol(symbol)
+            {
+                IsRevitOwned = true
+            };
+        }
+
+        /// <summary>
+        /// Select a FamilySymbol given it's name.  This method will return the first FamilySymbol it finds if there are
+        /// two or more FamilySymbol's with the same name.
+        /// </summary>
+        /// <param name="name">The name of the FamilySymbol</param>
         /// <returns></returns>
         public static DSFamilySymbol ByName(string name)
         {
@@ -127,26 +142,20 @@ namespace DSRevitNodes.Elements
                 throw new ArgumentNullException();
             }
 
-            TransactionManager.GetInstance().EnsureInTransaction(Document);
-
             // look up the loaded family
-            var fec = new Autodesk.Revit.DB.FilteredElementCollector(Document);
-            fec.OfClass(typeof(Autodesk.Revit.DB.Family));
-
-            // obtain the family symbol with the provided name
-            var symbols = fec.Cast<Autodesk.Revit.DB.Family>()
-                            .SelectMany(x => x.Symbols.Cast<Autodesk.Revit.DB.FamilySymbol>());
-
-            var symbol = symbols.FirstOrDefault(x => x.Family.Name + "." + x.Name == name); 
+            var symbol = DocumentManager.GetInstance()
+                .ElementsOfType<Autodesk.Revit.DB.FamilySymbol>()
+                .FirstOrDefault(x => x.Name == name);
 
             if (symbol == null)
             {
-                throw new Exception("A FamilySymbol with the specified name does not exist in the document");
+                throw new Exception(String.Format("A FamilySymbol with the specified name, {0}, does not exist in the document", name));
             }
 
-            TransactionManager.GetInstance().TransactionTaskDone();
-
-            return new DSFamilySymbol(symbol);
+            return new DSFamilySymbol(symbol)
+            {
+                IsRevitOwned = true
+            };
         }
 
         #endregion
