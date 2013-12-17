@@ -301,11 +301,11 @@ namespace Dynamo.Models
         public FScheme.Value DefaultValue { get; set; }
         public double VerticalMargin { get; set; }
 
-        public PortData(string nickName, string tip, Type portType, FScheme.Value defaultValue=null)
+        public PortData(string nickName, string tip, Type portType=null, FScheme.Value defaultValue=null)
         {
             NickName = nickName;
             ToolTipString = tip;
-            PortType = portType;
+            PortType = portType ?? typeof(FScheme.Value.Container);
             DefaultValue = defaultValue;
             VerticalMargin = 0;
         }
