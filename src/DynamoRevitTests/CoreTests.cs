@@ -75,6 +75,8 @@ namespace Dynamo.Tests
             Assert.AreEqual(20, fec.ToElements().Count());
         }
 
+        /*
+
         [Test]
         public void ElementNodeReassociation()
         {
@@ -124,7 +126,7 @@ namespace Dynamo.Tests
             var finalVal = (ReferencePoint)((FScheme.Value.Container)refPtNode.OldValue).Item;
             Assert.AreEqual(oldId, finalVal.Id);
         }
-
+        */
         [Test]
         public void SwitchDocuments()
         {

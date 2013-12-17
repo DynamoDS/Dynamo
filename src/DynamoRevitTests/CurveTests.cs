@@ -158,6 +158,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(2, fec.ToElements().Count);
         }
 
+        /*
         [Test]
         public void ClosedCurve()
         {
@@ -178,6 +179,8 @@ namespace Dynamo.Tests
             Assert.Greater(actualVolume, volumeMin);
             Assert.Less(actualVolume, volumeMax);
         }
+
+         * */
 
         [Test]
         public void CurvebyPointsEllipse()
