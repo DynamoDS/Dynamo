@@ -32,7 +32,6 @@ namespace Dynamo.Nodes
         private List<string> inputIdentifiers = new List<string>();
         private List<string> tempVariables = new List<string>();
         private string previewVariable = null;
-        private Node previewExpressionAST = new NullNode();
         private bool shouldFocus = true;
 
         #region Public Methods
@@ -345,11 +344,6 @@ namespace Dynamo.Nodes
                 resultNodes.Add(astNode as ProtoCore.AST.AssociativeAST.AssociativeNode);
             }
 
-            if (previewExpressionAST == null)
-                throw new ArgumentNullException("preview node not set properly");
-            else if (!(previewExpressionAST is NullNode))
-                resultNodes.Add(ProtoCore.Utils.NodeUtils.Clone(previewExpressionAST) as AssociativeNode);
-
             return resultNodes;
         }
 
@@ -397,8 +391,7 @@ namespace Dynamo.Nodes
 
             if (Code.Equals("")) //If its null then set preview to null
             {
-                previewExpressionAST = new NullNode();
-                return;
+                previewVariable = null;
             }
 
             //Parse the text and assign each AST node to a statement instance
@@ -425,9 +418,9 @@ namespace Dynamo.Nodes
                     }
 
                     if (parsedNodes.Count > 0)
-                    {
-                        SetPreviewVariable(parsedNodes[parsedNodes.Count - 1] as BinaryExpressionNode);
-                    }
+                        SetPreviewVariable(parsedNodes);
+                    else
+                        previewVariable = null;
                 }
                 else
                 {
@@ -470,13 +463,19 @@ namespace Dynamo.Nodes
             SetPorts(unboundIdentifiers); //Set the input and output ports based on the statements
         }
 
-        private void SetPreviewVariable(BinaryExpressionNode lastStatement)
+        private void SetPreviewVariable(List<Node> parsedNodes)
         {
-            if (null != lastStatement)
+            for (int i = parsedNodes.Count - 1; i >= 0; i--)
             {
-                previewVariable = "temp" + Guid.NewGuid().ToString();
-                previewVariable = previewVariable.Replace('-', '_');
-                previewExpressionAST = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(new IdentifierNode(previewVariable), lastStatement.LeftNode, Operator.assign);
+                var statement = parsedNodes[i] as BinaryExpressionNode;
+                if (null != statement)
+                {
+                    /*previewVariable = "temp" + Guid.NewGuid().ToString();
+                    previewVariable = previewVariable.Replace('-', '_');
+                    previewExpressionAST = new ProtoCore.AST.AssociativeAST.BinaryExpressionNode(new IdentifierNode(previewVariable), lastStatement.LeftNode, Operator.assign);*/
+                    previewVariable = (statement.LeftNode as IdentifierNode).Value;
+                    break;
+                }
             }
         }
 
@@ -572,19 +571,25 @@ namespace Dynamo.Nodes
                     currentOffset += 1;
                 }
 
-                //Calculate extra margin required due to text wrapping
+                // CRASH:Extract Statement from code does not work for Function calls and causes it to crash
+                //       Hence, am commenting out the formatting die to text wrapping until it gets fixed
+                /*//Calculate extra margin required due to text wrapping
                 if (i != 0)
                 {
                     Node statementNode = codeStatements[i - 1].AstNode;
-                    if (this.TempVariables.Contains(Statement.GetDefinedVariableNames(codeStatements[i - 1], true)[0]))
-                        statementNode = (statementNode as BinaryExpressionNode).RightNode;
 
-                    string stmntText = ProtoCore.Utils.ParserUtils.ExtractStatementFromCode(codeToParse, codeStatements[i - 1].AstNode);
+                    if (!(statementNode is FunctionDefinitionNode))
+                    {
+                        string firstDefinedVariable = Statement.GetDefinedVariableNames(codeStatements[i - 1], true)[0];
+                        if (this.TempVariables.Contains(firstDefinedVariable))
+                            statementNode = (statementNode as BinaryExpressionNode).RightNode;
+                    }
+                    string stmntText = ProtoCore.Utils.ParserUtils.ExtractStatementFromCode(code, statementNode);
 
                     textWrapping = GetExtraLinesDueToTextWrapping(stmntText) * 20;
                 }
                 else
-                    textWrapping = 0;
+                    textWrapping = 0;  */
 
                 result.Add(margin + initialMarginRequired + textWrapping);
                 initialMarginRequired = 0;
