@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Web;
 using System.Windows;
 using System.Xml;
 using Dynamo.Selection;
@@ -204,7 +205,7 @@ namespace Dynamo.Models
 
         public XmlElement Serialize(XmlDocument xmlDocument, SaveContext context)
         {
-            string typeName = this.GetType().ToString();
+            string typeName = this.GetType().ToString().Replace("+",""); // Temp fix : must find out how to encode properly
             XmlElement element = xmlDocument.CreateElement(typeName);
             this.SerializeCore(element, context);
             return element;

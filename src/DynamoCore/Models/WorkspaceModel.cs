@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
+using System.Web;
 using System.Windows;
 using System.Xml;
 using System.Globalization;
@@ -329,6 +330,8 @@ namespace Dynamo.Models
             WorkspaceSaved += OnWorkspaceSaved;
             WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
             undoRecorder = new UndoRedoRecorder(this);
+
+            variableDefinitions = new VariableDefinitions(this);
         }
 
 
@@ -422,13 +425,19 @@ namespace Dynamo.Models
         internal void Undo()
         {
             if (null != undoRecorder)
+            {
                 undoRecorder.Undo();
+                RevalidateCodeBlockNodes();
+            }
         }
 
         internal void Redo()
         {
             if (null != undoRecorder)
+            {
                 undoRecorder.Redo();
+                RevalidateCodeBlockNodes();
+            }
         }
 
         internal void ClearUndoRecorder()
@@ -708,6 +717,9 @@ namespace Dynamo.Models
             if (null == foundModel && (Notes.Count > 0))
                 foundModel = Notes.FirstOrDefault((x) => (x.GUID == modelGuid));
 
+            if (null == foundModel && modelGuid == variableDefinitions.GUID)
+                foundModel = variableDefinitions;
+
             return foundModel;
         }
 
@@ -838,6 +850,11 @@ namespace Dynamo.Models
                     note.SetAttribute("y", n.Y.ToString(CultureInfo.InvariantCulture));
                 }
 
+                //save the variable definitions
+                var varDefinitions = xmlDoc.CreateElement("VariableDefinitions");
+                root.AppendChild(varDefinitions);
+                this.variableDefinitions.SaveDefinitions(xmlDoc, varDefinitions, SaveContext.File);
+
                 return xmlDoc;
             }
             catch (Exception ex)
@@ -878,6 +895,8 @@ namespace Dynamo.Models
                 this.HasUnsavedChanges = true;
             }
         }
+
+        #region Node To Code
 
         /// <summary>
         /// After command framework is implemented, this method should now be only 
@@ -1004,6 +1023,8 @@ namespace Dynamo.Models
             Modified();
         }
 
+        #endregion
+
         #region Node To Code Reconnection
 
         /// <summary>
@@ -1086,22 +1107,227 @@ namespace Dynamo.Models
         }
         #endregion
 
+        #region Redefined Variables
+
         /// <summary>
-        /// This function finds if any variable declared in the specified code block exists in the workspace
-        /// If it does, it returns the name of the first such variable it finds, otherwise returns null
+        /// Public method that calls the variableDefinitions field to check and revalidate
+        /// all code block nodes if necessary
         /// </summary>
-        /// <param name="codeBlockNode">The code block node whose variables need to
-        /// be chacked for redeclaration</param>
-        /// <returns> the name of the first redefined variable (if exists). Else it returns null</returns>
-        internal String GetFirstRedefinedVariable(CodeBlockNodeModel codeBlockNode)
+        internal void RevalidateCodeBlockNodes()
         {
-            List<string> newDefVars = codeBlockNode.GetDefinedVariableNames();
-            return (from cbn in Nodes.OfType<CodeBlockNodeModel>().Where(x => x != codeBlockNode)
-                    select cbn.GetDefinedVariableNames()
-                        into oldDefVars
-                        from newVar in newDefVars
-                        where oldDefVars.Contains(newVar)
-                        select newVar).FirstOrDefault();
+            this.variableDefinitions.ReValidateAllNodes();
         }
+
+        /// <summary>
+        /// Public API to load variable definitions from an xml element into the variableDefinitions
+        /// field.
+        /// </summary>
+        /// <param name="element"> The Xml Element containing the serialized data </param>
+        internal void LoadVariableDefinitions(XmlElement element)
+        {
+            this.variableDefinitions.LoadDefinitions(element);
+        }
+
+        //A class that contains the variable definition map, which maps the defined variable to 
+        //the code block nodes they are defined in. Inherits from model base so that it may be serialized
+        // and deserialized for Undo/Redo
+        private class VariableDefinitions : ModelBase
+        {
+            private WorkspaceModel workspace;
+            public Dictionary<string, List<Guid>> Map { get; set; }
+            public bool IsDirty { get; set; }
+
+            public VariableDefinitions(WorkspaceModel workSpace)
+            {
+                Map = new Dictionary<String, List<Guid>>();
+                this.GUID = Guid.NewGuid();
+                this.workspace = workSpace;
+                this.IsDirty = false;
+            }
+
+            protected override void SerializeCore(XmlElement element, SaveContext context)
+            {
+                if (context == SaveContext.Undo)
+                {
+                    XmlElementHelper helper = new XmlElementHelper(element);
+                    helper.SetAttribute("guid", GUID);
+                    XmlDocument xmlDoc = element.OwnerDocument;
+                    foreach (string variable in Map.Keys)
+                    {
+                        var guidList = xmlDoc.CreateElement("Variable");
+                        XmlElementHelper dictionaryHelper = new XmlElementHelper(guidList);
+                        dictionaryHelper.SetAttribute("DefinedVariableName", variable);
+                        for (int i = 0; i < Map[variable].Count; i++)
+                        {
+                            Guid guid = Map[variable][i];
+                            dictionaryHelper.SetAttribute("DefiningNodeGuid" + i.ToString(), guid);
+                        }
+                        element.AppendChild(guidList);
+                    }
+                }
+            }
+
+            protected override void DeserializeCore(XmlElement element, SaveContext context)
+            {
+                if (context == SaveContext.Undo)
+                {
+                    XmlElementHelper helper = new XmlElementHelper(element);
+                    this.GUID = helper.ReadGuid("guid");
+                    Map = new Dictionary<String, List<Guid>>();
+                    var variables = element.SelectNodes("Variable");
+                    foreach (XmlNode variableNode in variables)
+                    {
+                        var dictionaryHelper = new XmlElementHelper(variableNode as XmlElement);
+                        string variableName = dictionaryHelper.ReadString("DefinedVariableName");
+                        Map.Add(variableName, new List<Guid>());
+                        for (int i = 0; i < variableNode.Attributes.Count - 1; i++)
+                        {
+                            Guid guid = dictionaryHelper.ReadGuid("DefiningNodeGuid" + i.ToString());
+                            Map[variableName].Add(guid);
+                        }
+                    }
+                    this.IsDirty = true;
+                }
+            }
+
+            public void ReValidateAllNodes()
+            {
+                //IDirty is set only when the map is reloaded. Hence any unnecessary revalidation
+                //is avoided.
+                if (this.IsDirty == true)
+                {
+                    this.IsDirty = false;
+                    foreach (var node in this.workspace.Nodes.Where(x => x is CodeBlockNodeModel))
+                    {
+                        CodeBlockNodeModel.ReValidate(node as CodeBlockNodeModel);
+                    }
+                }
+            }
+
+            internal void SaveDefinitions(XmlDocument xmlDoc, XmlElement element, SaveContext saveContext)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("guid", GUID);
+                foreach (string variable in Map.Keys)
+                {
+                    var guidList = xmlDoc.CreateElement("Variable");
+                    XmlElementHelper dictionaryHelper = new XmlElementHelper(guidList);
+                    dictionaryHelper.SetAttribute("DefinedVariableName", variable);
+                    for (int i = 0; i < Map[variable].Count; i++)
+                    {
+                        Guid guid = Map[variable][i];
+                        dictionaryHelper.SetAttribute("DefiningNodeGuid" + i.ToString(), guid);
+                    }
+                    element.AppendChild(guidList);
+                }
+            }
+
+            internal void LoadDefinitions(XmlElement element)
+            {
+                if (element == null) //If the save file was made before this was introduced
+                {
+                    this.GUID = Guid.NewGuid();
+                    Map = new Dictionary<String, List<Guid>>();
+                }
+                else
+                {
+                    XmlElementHelper helper = new XmlElementHelper(element);
+                    this.GUID = helper.ReadGuid("guid");
+                    Map = new Dictionary<String, List<Guid>>();
+                    var variables = element.SelectNodes("Variable");
+                    foreach (XmlNode variableNode in variables)
+                    {
+                        var dictionaryHelper = new XmlElementHelper(variableNode as XmlElement);
+                        string variableName = dictionaryHelper.ReadString("DefinedVariableName");
+                        Map.Add(variableName, new List<Guid>());
+                        for (int i = 0; i < variableNode.Attributes.Count - 1; i++)
+                        {
+                            Guid guid = dictionaryHelper.ReadGuid("DefiningNodeGuid" + i.ToString());
+                            Map[variableName].Add(guid);
+                        }
+                    }
+                }
+                this.IsDirty = true;
+            }
+        }
+
+        private VariableDefinitions variableDefinitions;
+
+        /// <summary>
+        /// Method to update the variable map with the new variable definitions present in the code
+        /// block node. Is called when the code block node data is changed.
+        /// Also revalidates any code block nodes whose state may be affected by the update of the table.
+        /// </summary>
+        /// <param name="cbn"> The code block node whose variables need to be updated in the map </param>
+        internal void UpdateDefinedVariables(CodeBlockNodeModel cbn)
+        {
+            this.undoRecorder.RecordModificationForUndo(variableDefinitions);
+
+            var definedVariableMap = variableDefinitions.Map;
+
+            List<string> currentDefinedVars = cbn.GetDefinedVariableNames();
+            var modelsToReValidate = new HashSet<CodeBlockNodeModel>();
+            if (currentDefinedVars.Count != 0)
+                modelsToReValidate.Add(cbn);
+
+            //Find out the variables that were defined in that cbn previously
+            var previouslyDefinedVariableMap = definedVariableMap.Keys.Where(x => definedVariableMap[x].Contains(cbn.GUID)).ToList<string>();
+            for (int i = 0; i < previouslyDefinedVariableMap.Count(); i++)
+            {
+                var variable = previouslyDefinedVariableMap[i];
+                if (currentDefinedVars.Contains(variable))
+                {
+                    //It was defined before and is defined again. Dont process it again.
+                    currentDefinedVars.Remove(variable);
+                }
+                else
+                {
+                    //It was defined before and now it is not defined, remove it form the map.
+                    definedVariableMap[variable].Remove(cbn.GUID);
+                    if (definedVariableMap[variable].Count == 0)
+                        definedVariableMap.Remove(variable);
+                    else
+                    {
+                        //Get the first node that defines this variable and save it for reprocessing
+                        var nodeId = definedVariableMap[variable][0];
+                        var node = Nodes.Where(x => x.GUID == nodeId).First() as CodeBlockNodeModel;
+                        modelsToReValidate.Add(node);
+                    }
+                }
+            }
+
+            //So by this point we have removed all the variables from currentDefVars that were defined before
+            //So now we go through the ones that were newly defined.
+            foreach (var variable in currentDefinedVars)
+            {
+                if (definedVariableMap.ContainsKey(variable))
+                {
+                    //Been defined before elsewhere.
+                    definedVariableMap[variable].Add(cbn.GUID);
+                }
+                else
+                {
+                    //Never been defined before
+                    definedVariableMap.Add(variable, new List<Guid>());
+                    definedVariableMap[variable].Add(cbn.GUID);
+                }
+            }
+
+            //Reprocess those models
+            foreach (var model in modelsToReValidate)
+                CodeBlockNodeModel.ReValidate(model);
+        }
+
+        /// <summary>
+        /// Returns the GUID of the node which defines the given variable
+        /// </summary>
+        /// <param name="variable"> The name of the defined variable </param>
+        /// <returns> The GUID of the Code Block Node that defines it </returns>
+        internal Guid GetDefiningNode(String variable)
+        {
+            return variableDefinitions.Map[variable][0];
+        }
+
+        #endregion
     }
 }
