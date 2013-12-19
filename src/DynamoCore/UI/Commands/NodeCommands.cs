@@ -107,13 +107,10 @@ namespace Dynamo.ViewModels
 
         public DelegateCommand SetupCustomUIElementsCommand
         {
-            get
-            {
-                if(_setupCustomUiElementsCommand == null)
-                    _setupCustomUiElementsCommand = 
-                        new DelegateCommand(SetupCustomUIElements, CanSetupCustomUIElements);
-
-                return _setupCustomUiElementsCommand;
+            get {
+                return _setupCustomUiElementsCommand
+                    ?? (_setupCustomUiElementsCommand =
+                        new DelegateCommand(SetupCustomUIElements, CanSetupCustomUIElements));
             }
         }
 

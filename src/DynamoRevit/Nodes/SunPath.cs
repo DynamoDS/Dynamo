@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -9,6 +10,9 @@ using Dynamo.Models;
 using Dynamo.Revit.SyncedNodeExtensions;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
+using Color = System.Windows.Media.Color;
+using Grid = System.Windows.Controls.Grid;
+using Transform = Autodesk.Revit.DB.Transform;
 
 namespace Dynamo.Nodes
 {
@@ -17,8 +21,8 @@ namespace Dynamo.Nodes
     [NodeDescription("Returns the current Sun Path direction.")]
     public class SunPathDirection : NodeWithOneOutput
     {
-        System.Windows.Controls.TextBox tb;
-        System.Windows.Controls.Button sunPathButt;
+        TextBox tb;
+        Button sunPathButt;
         FScheme.Value data = FScheme.Value.NewList(FSharpList<FScheme.Value>.Empty);
 
         public SunPathDirection()
@@ -31,32 +35,31 @@ namespace Dynamo.Nodes
 
         void Controller_RevitDocumentChanged(object sender, EventArgs e)
         {
-            pickedSunAndShadowSettings = null;
+            _pickedSunAndShadowSettings = null;
         }
 
-        public override void SetupCustomUIElements(object ui)
+        public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            var nodeUI = ui as dynNodeView;
-
             //add a button to the inputGrid on the dynElement
-            sunPathButt = new dynNodeButton();
+            sunPathButt = new NodeButton
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
+                Content = "Use SunPath\nfrom Current View"
+            };
 
-            sunPathButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-            sunPathButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             sunPathButt.Click += registerButt_Click;
-            sunPathButt.Content = "Use SunPath\nfrom Current View";
-            sunPathButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-            sunPathButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
 
-            tb = new System.Windows.Controls.TextBox();
-            tb.Text = "No SunPath Registered";
-            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-            tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
-            tb.Background = backgroundBrush;
-            tb.BorderThickness = new Thickness(0);
-            tb.IsReadOnly = true;
-            tb.IsReadOnlyCaretVisible = false;
+            tb = new TextBox
+            {
+                Text = "No SunPath Registered",
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
+                Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0)),
+                BorderThickness = new Thickness(0),
+                IsReadOnly = true,
+                IsReadOnlyCaretVisible = false
+            };
 
             nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
             nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
@@ -64,8 +67,8 @@ namespace Dynamo.Nodes
             nodeUI.inputGrid.Children.Add(tb);
             nodeUI.inputGrid.Children.Add(sunPathButt);
 
-            System.Windows.Controls.Grid.SetRow(sunPathButt, 0);
-            System.Windows.Controls.Grid.SetRow(tb, 1);
+            Grid.SetRow(sunPathButt, 0);
+            Grid.SetRow(tb, 1);
 
         }
 
@@ -83,13 +86,13 @@ namespace Dynamo.Nodes
 
             //double altitude = sunSettings.Altitude;
             double altitude = sunSettings.GetFrameAltitude(sunSettings.ActiveFrame);
-            Autodesk.Revit.DB.Transform altitudeRotation = Autodesk.Revit.DB.Transform.get_Rotation(XYZ.Zero, XYZ.BasisX, altitude);
+            Transform altitudeRotation = Transform.get_Rotation(XYZ.Zero, XYZ.BasisX, altitude);
             XYZ altitudeDirection = altitudeRotation.OfVector(initialDirection);
 
             //double azimuth = sunSettings.Azimuth;
             double azimuth = sunSettings.GetFrameAzimuth(sunSettings.ActiveFrame);
             double actualAzimuth = 2 * Math.PI - azimuth;
-            Autodesk.Revit.DB.Transform azimuthRotation = Autodesk.Revit.DB.Transform.get_Rotation(XYZ.Zero, XYZ.BasisZ, actualAzimuth);
+            Transform azimuthRotation = Transform.get_Rotation(XYZ.Zero, XYZ.BasisZ, actualAzimuth);
             XYZ sunDirection = azimuthRotation.OfVector(altitudeDirection);
             XYZ scaledSunVector = sunDirection.Multiply(100);
 
@@ -97,31 +100,21 @@ namespace Dynamo.Nodes
 
         }
 
-        public SunAndShadowSettings pickedSunAndShadowSettings;
+        private SunAndShadowSettings _pickedSunAndShadowSettings;
 
         public SunAndShadowSettings PickedSunAndShadowSettings
         {
-            get { return pickedSunAndShadowSettings; }
+            get { return _pickedSunAndShadowSettings; }
             set
             {
-                pickedSunAndShadowSettings = value;
+                _pickedSunAndShadowSettings = value;
                 //NotifyPropertyChanged("PickedSunAndShadowSettings");
             }
         }
 
-        private ElementId sunAndShadowSettingsID;
+        private ElementId _sunAndShadowSettingsID;
 
-        private ElementId SunAndShadowSettingsID
-        {
-            get { return sunAndShadowSettingsID; }
-            set
-            {
-                sunAndShadowSettingsID = value;
-                //NotifyPropertyChanged("SunAndShadowSettingsID");
-            }
-        }
-
-        void registerButt_Click(object sender, System.Windows.RoutedEventArgs e)
+        void registerButt_Click(object sender, RoutedEventArgs e)
         {
             //data = Value.NewList(FSharpList<Value>.Empty);
 
@@ -131,19 +124,19 @@ namespace Dynamo.Nodes
 
             if (PickedSunAndShadowSettings != null)
             {
-                sunAndShadowSettingsID = activeView.SunAndShadowSettings.Id;
-                this.RegisterEvalOnModified(sunAndShadowSettingsID); // register with the DMU, TODO - watch out for view changes, as sun is view specific
+                _sunAndShadowSettingsID = activeView.SunAndShadowSettings.Id;
+                this.RegisterEvalOnModified(_sunAndShadowSettingsID); // register with the DMU, TODO - watch out for view changes, as sun is view specific
                 XYZ sunVector = GetSunDirection(PickedSunAndShadowSettings);
 
 
-                this.data = FScheme.Value.NewContainer(sunVector);
+                data = FScheme.Value.NewContainer(sunVector);
 
-                this.tb.Text = PickedSunAndShadowSettings.Name;
+                tb.Text = PickedSunAndShadowSettings.Name;
             }
             else
             {
                 //sunPathButt.Content = "Select Instance";
-                this.tb.Text = "Nothing Selected";
+                tb.Text = "Nothing Selected";
             }
         }
 
@@ -154,11 +147,11 @@ namespace Dynamo.Nodes
                 throw new Exception("The sun and shadow settings have not been selected. Click to pick the sun and shadow settings from the active view.");
             }
 
-            if (PickedSunAndShadowSettings.Id.IntegerValue == sunAndShadowSettingsID.IntegerValue) // sanity check
+            if (PickedSunAndShadowSettings.Id.IntegerValue == _sunAndShadowSettingsID.IntegerValue) // sanity check
             {
 
                 XYZ sunVector = GetSunDirection(PickedSunAndShadowSettings);
-                this.data = FScheme.Value.NewContainer(sunVector);
+                data = FScheme.Value.NewContainer(sunVector);
                 return data;
             }
             else
@@ -168,36 +161,36 @@ namespace Dynamo.Nodes
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
             //Debug.WriteLine(pd.Object.GetType().ToString());
-            if (this.PickedSunAndShadowSettings != null)
+            if (PickedSunAndShadowSettings != null)
             {
                 XmlElement outEl = xmlDoc.CreateElement("instance");
-                outEl.SetAttribute("id", this.PickedSunAndShadowSettings.Id.ToString());
+                outEl.SetAttribute("id", PickedSunAndShadowSettings.Id.ToString());
                 nodeElement.AppendChild(outEl);
             }
         }
 
         protected override void LoadNode(XmlNode nodeElement)
         {
-            foreach (XmlNode subNode in nodeElement.ChildNodes)
+            foreach (
+                XmlNode subNode in
+                    nodeElement.ChildNodes.Cast<XmlNode>()
+                               .Where(subNode => subNode.Name.Equals("instance")))
             {
-                if (subNode.Name.Equals("instance"))
+                try
                 {
-                    try
+                    PickedSunAndShadowSettings =
+                        dynRevitSettings.Doc.Document.GetElement(
+                            new ElementId(Convert.ToInt32(subNode.Attributes[0].Value))) as
+                            SunAndShadowSettings;
+                    if (PickedSunAndShadowSettings != null)
                     {
-                        this.PickedSunAndShadowSettings = dynRevitSettings.Doc.Document.GetElement(
-                           new ElementId(Convert.ToInt32(subNode.Attributes[0].Value))
-                        ) as SunAndShadowSettings;
-                        if (this.PickedSunAndShadowSettings != null)
-                        {
-                            sunAndShadowSettingsID = PickedSunAndShadowSettings.Id;
-                            this.tb.Text = this.PickedSunAndShadowSettings.Name;
-                            this.sunPathButt.Content = "Use SunPath from Current View";
-                        }
+                        _sunAndShadowSettingsID = PickedSunAndShadowSettings.Id;
+                        tb.Text = PickedSunAndShadowSettings.Name;
+                        sunPathButt.Content = "Use SunPath from Current View";
                     }
-                    catch { }
                 }
+                catch { }
             }
         }
-
     }
 }

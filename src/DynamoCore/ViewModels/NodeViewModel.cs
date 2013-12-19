@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Collections.ObjectModel;
+using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
@@ -749,9 +750,9 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        private void SetupCustomUIElements(object NodeUI)
+        private void SetupCustomUIElements(object nodeUI)
         {
-            nodeLogic.SetupCustomUIElements(NodeUI);
+            nodeLogic.SetupCustomUIElements(nodeUI as dynNodeView);
         }
 
         private bool CanSetupCustomUIElements(object NodeUI)

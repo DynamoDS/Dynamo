@@ -401,7 +401,9 @@ namespace Dynamo.Nodes
             }
 
             var resultAst = new List<AssociativeNode>
-            { AstFactory.BuildAssignment(AstIdentifierForPreview, rhs) };
+            {
+                AstFactory.BuildAssignment(AstIdentifierForPreview, rhs)
+            };
 
             if (OutPortData.Count == 1)
             {

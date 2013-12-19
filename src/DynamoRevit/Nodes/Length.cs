@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Xml;
@@ -30,7 +32,12 @@ namespace Dynamo.Nodes
 
         public LengthInput()
         {
-            OutPortData.Add(new PortData("length", "The length. Stored internally as decimal feet.", typeof(FScheme.Value.Number)));
+            OutPortData.Add(
+                new PortData(
+                    "length",
+                    "The length. Stored internally as decimal feet.",
+                    typeof(FScheme.Value.Number)));
+
             RegisterAllPorts();
         }
 
@@ -39,30 +46,33 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewNumber(Value);
         }
 
-        public override void SetupCustomUIElements(object ui)
+        public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            var nodeUI = ui as dynNodeView;
-
             //add an edit window option to the 
             //main context window
-            var editWindowItem = new System.Windows.Controls.MenuItem();
-            editWindowItem.Header = "Edit...";
-            editWindowItem.IsCheckable = false;
+            var editWindowItem = new MenuItem
+            {
+                Header = "Edit...",
+                IsCheckable = false
+            };
 
             nodeUI.MainContextMenu.Items.Add(editWindowItem);
 
-            editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
+            editWindowItem.Click += editWindowItem_Click;
             //add a text box to the input grid of the control
-            var tb = new DynamoTextBox();
-            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-            tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            var tb = new DynamoTextBox
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
+                Background =
+                    new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
+            };
             nodeUI.inputGrid.Children.Add(tb);
-            System.Windows.Controls.Grid.SetColumn(tb, 0);
-            System.Windows.Controls.Grid.SetRow(tb, 0);
-            tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
+            Grid.SetColumn(tb, 0);
+            Grid.SetRow(tb, 0);
 
             tb.DataContext = this;
-            tb.BindToProperty(new System.Windows.Data.Binding("Value")
+            tb.BindToProperty(new Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
                 Converter = new RevitProjectUnitsConverter(),
@@ -80,7 +90,7 @@ namespace Dynamo.Nodes
             if (name == "Value")
             {
                 var converter = new RevitProjectUnitsConverter();
-                this.Value = ((double)converter.ConvertBack(value, typeof(double), null, null));
+                Value = ((double)converter.ConvertBack(value, typeof(double), null, null));
                 return true; // UpdateValueCore handled.
             }
 
@@ -89,8 +99,8 @@ namespace Dynamo.Nodes
 
         private void editWindowItem_Click(object sender, RoutedEventArgs e)
         {
-            var editWindow = new EditWindow() { DataContext = this };
-            editWindow.BindToProperty(null, new System.Windows.Data.Binding("Value")
+            var editWindow = new EditWindow { DataContext = this };
+            editWindow.BindToProperty(null, new Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
                 Converter = new RevitProjectUnitsConverter(),
@@ -112,15 +122,15 @@ namespace Dynamo.Nodes
 
         protected override void LoadNode(XmlNode nodeElement)
         {
-            foreach (XmlNode subNode in nodeElement.ChildNodes)
-            {
-                // this node now stores a double, having previously stored a measure type
-                // by checking for the measure type as well we allow for loading of older files.
-                if (subNode.Name.Equals(typeof(double).FullName) || subNode.Name.Equals("Dynamo.Measure.Foot"))
-                {
-                    Value = DeserializeValue(subNode.Attributes[0].Value);
-                }
-            }
+            var query =
+                nodeElement.ChildNodes.Cast<XmlNode>()
+                           .Where(
+                               subNode =>
+                                   subNode.Name.Equals(typeof(double).FullName)
+                                       || subNode.Name.Equals("Dynamo.Measure.Foot"));
+            
+            foreach (XmlNode subNode in query)
+                Value = DeserializeValue(subNode.Attributes[0].Value);
         }
 
         public override string PrintExpression()

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Windows;
 using System.Reflection;
 using System.Threading;
+using Dynamo.Controls;
 using Dynamo.Nodes;
 using System.Xml;
 using Dynamo.DSEngine;
@@ -789,8 +790,8 @@ namespace Dynamo.Models
         /// <summary>
         ///     Called back from the view to enable users to setup their own view elements
         /// </summary>
-        /// <param name="parameter"></param>
-        public virtual void SetupCustomUIElements(object nodeUI) { }
+        /// <param name="view"></param>
+        public virtual void SetupCustomUIElements(dynNodeView view) { }
 
         private void SetTooltip()
         {

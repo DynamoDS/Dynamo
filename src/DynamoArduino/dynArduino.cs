@@ -2,6 +2,8 @@
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
 using System.Xml;
 using System.IO.Ports;
 using Dynamo.Controls;
@@ -19,7 +21,7 @@ namespace Dynamo.Nodes
     public partial class Arduino : NodeWithOneOutput
     {
         SerialPort port;
-        System.Windows.Controls.MenuItem comItem;
+        MenuItem comItem;
 
         public Arduino()
         {
@@ -45,11 +47,11 @@ namespace Dynamo.Nodes
 
         }
 
-        System.Windows.Controls.MenuItem lastComItem = null;
+        MenuItem lastComItem = null;
         
-        void comItem_Checked(object sender, System.Windows.RoutedEventArgs e)
+        void comItem_Checked(object sender, RoutedEventArgs e)
         {
-            System.Windows.Controls.MenuItem comItem = e.Source as System.Windows.Controls.MenuItem;
+            MenuItem comItem = e.Source as MenuItem;
 
             if (lastComItem != null)
             {
@@ -124,11 +126,9 @@ namespace Dynamo.Nodes
             return Value.NewContainer(port); // pass the port downstream
         }
 
-        public override void SetupCustomUIElements(object ui)
+        public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            var nodeUI = ui as dynNodeView;
-
-            string[] serialPortNames = System.IO.Ports.SerialPort.GetPortNames();
+            string[] serialPortNames = SerialPort.GetPortNames();
 
             foreach (string portName in serialPortNames)
             {
@@ -137,7 +137,7 @@ namespace Dynamo.Nodes
                 {
                     lastComItem.IsChecked = false; // uncheck last checked item
                 }
-                comItem = new System.Windows.Controls.MenuItem();
+                comItem = new MenuItem();
                 comItem.Header = portName;
                 comItem.IsCheckable = true;
                 comItem.IsChecked = true;
