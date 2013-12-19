@@ -17,35 +17,6 @@ namespace Dynamo.Tests
     [Category("DSExecution")]
     class AstBuilderTest: DynamoUnitTest
     {
-        private class AstNodeTestContainer: IAstNodeContainer
-        {
-            public AstNodeTestContainer()
-            {
-                AstNodes = new List<AssociativeNode>();
-            }
-
-            public void OnAstNodeBuilding(Guid node)
-            {
-            
-            }
-
-            public void OnAstNodeBuilt(Guid node, IEnumerable<AssociativeNode> astNodes)
-            {
-                AstNodes.AddRange(astNodes); 
-            }
-
-            public void Reset()
-            {
-                AstNodes.Clear();
-            }
-
-            public List<AssociativeNode> AstNodes
-            {
-                get;
-                set;
-            }
-        }
-
         private class ShuffleUtil<T>
         {
             private Random random;
@@ -75,14 +46,10 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(GetTestDirectory(), @"core\astbuilder\complex.dyn");
             model.Open(openPath);
 
-            AstNodeTestContainer container = new AstNodeTestContainer();
-            AstBuilder builder = new AstBuilder(container);
-            builder.CompileToAstNodes(model.CurrentWorkspace.Nodes, false);
-
-            var astNodes = container.AstNodes;
+            AstBuilder builder = new AstBuilder(null);
+            var astNodes = builder.CompileToAstNodes(model.CurrentWorkspace.Nodes, false);
             string code = GraphToDSCompiler.GraphUtilities.ASTListToCode(astNodes);
             Console.WriteLine(code);
-            container.Reset();
         }
 
         [Test]
