@@ -29,24 +29,15 @@ namespace Dynamo.Nodes
         {
             string data = ((Value.String)args[0]).Item;
 
-            var SumValue = 0.0;
-            double doubleSRValue = 0;
+            int intTest;
 
-            foreach (string line in data.Split(new char[] { '\r', '\n' }).Where(x => x.Length > 0))
-            {
-                string[] values = line.Split(',');
+            var sumValue = (from line in data.Split(new[] { '\r', '\n' }).Where(x => x.Length > 0)
+                            select line.Split(',')
+                            into values
+                            where int.TryParse(values[0], out intTest)
+                            select double.Parse(values[1])).Sum();
 
-                //int i = 0;
-                int intTest = 0;// used in TryParse below. returns 0 if not an int and >0 if an int.
-
-                if (int.TryParse(values[0], out intTest)) // test the first value. if the first value is an int, then we know we are passed the header lines and into data
-                {
-                    doubleSRValue = double.Parse(values[1]); // the 2nd value is the one we want
-                    SumValue += doubleSRValue; // compute the sum but adding current value with previous values
-                }
-            }
-
-            return Value.NewNumber(SumValue);
+            return Value.NewNumber(sumValue);
         }
     }
 
@@ -62,46 +53,37 @@ namespace Dynamo.Nodes
 
         }
 
-        public override void SetupCustomUIElements(object ui)
+        public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            var nodeUI = ui as dynNodeView;
-
             //add a button to the inputGrid on the dynElement
-            Button analysisResultButt = new dynNodeButton();
+            var analysisResultButt = new NodeButton
+            {
+                Margin = new Thickness(0, 0, 0, 0),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
+                Content = "Select AR"
+            };
+
+            analysisResultButt.Click += analysisResultButt_Click;
+
             nodeUI.inputGrid.Children.Add(analysisResultButt);
-            analysisResultButt.Margin = new Thickness(0, 0, 0, 0);
-            analysisResultButt.HorizontalAlignment = HorizontalAlignment.Center;
-            analysisResultButt.VerticalAlignment = VerticalAlignment.Center;
-            analysisResultButt.Click += new RoutedEventHandler(analysisResultButt_Click);
-            analysisResultButt.Content = "Select AR";
-            analysisResultButt.HorizontalAlignment = HorizontalAlignment.Stretch;
-            analysisResultButt.VerticalAlignment = VerticalAlignment.Center;
         }
 
-        public Element pickedAnalysisResult;
+        private Element _pickedAnalysisResult;
 
         public Element PickedAnalysisResult
         {
-            get { return pickedAnalysisResult; }
+            get { return _pickedAnalysisResult; }
             set
             {
-                pickedAnalysisResult = value;
+                _pickedAnalysisResult = value;
                 //NotifyPropertyChanged("PickedAnalysisResult");
-                this.RequiresRecalc = true;
+                RequiresRecalc = true;
             }
         }
 
-        private ElementId analysisResultID;
+        private ElementId _analysisResultID;
 
-        private ElementId AnalysisResultID
-        {
-            get { return analysisResultID; }
-            set
-            {
-                analysisResultID = value;
-                //NotifyPropertyChanged("AnalysisResultID");
-            }
-        }
         void analysisResultButt_Click(object sender, RoutedEventArgs e)
         {
             PickedAnalysisResult =
@@ -109,7 +91,7 @@ namespace Dynamo.Nodes
 
             if (PickedAnalysisResult != null)
             {
-                AnalysisResultID = PickedAnalysisResult.Id;
+                _analysisResultID = PickedAnalysisResult.Id;
             }
         }
 
@@ -118,16 +100,18 @@ namespace Dynamo.Nodes
         {
             if (PickedAnalysisResult != null)
             {
-                if (PickedAnalysisResult.Id.IntegerValue == AnalysisResultID.IntegerValue) // sanity check
+                if (PickedAnalysisResult.Id.IntegerValue == _analysisResultID.IntegerValue) // sanity check
                 {
-                    Autodesk.Revit.DB.Analysis.SpatialFieldManager dmu_sfm = dynRevitSettings.SpatialFieldManagerUpdated as Autodesk.Revit.DB.Analysis.SpatialFieldManager;
+                    var dmuSfm =
+                        dynRevitSettings.SpatialFieldManagerUpdated as
+                            Autodesk.Revit.DB.Analysis.SpatialFieldManager;
 
-                    if (pickedAnalysisResult.Id.IntegerValue == dmu_sfm.Id.IntegerValue)
+                    if (_pickedAnalysisResult.Id.IntegerValue == dmuSfm.Id.IntegerValue)
                     {
                         TaskDialog.Show("ah hah", "picked sfm equals saved one from dmu");
                     }
 
-                    return Value.NewContainer(this.PickedAnalysisResult);
+                    return Value.NewContainer(PickedAnalysisResult);
                 }
             }
 

@@ -104,7 +104,7 @@ namespace DSRevitNodes.Elements
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a button to the inputGrid on the dynElement
-            var selectButton = new dynNodeButton
+            var selectButton = new NodeButton
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Center

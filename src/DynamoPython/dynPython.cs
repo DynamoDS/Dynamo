@@ -94,10 +94,8 @@ namespace Dynamo.Nodes
                 + "OUT = 0";
         }
 
-        public override void SetupCustomUIElements(object ui)
+        public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            var nodeUI = ui as dynNodeView;
-
             //topControl.Height = 200;
             //topControl.Width = 300;
 
@@ -112,7 +110,7 @@ namespace Dynamo.Nodes
             editWindowItem.Click += delegate { EditScriptContent(); };
             nodeUI.UpdateLayout();
 
-            nodeUI.MouseDown += new MouseButtonEventHandler(nodeUI_MouseDown);
+            nodeUI.MouseDown += nodeUI_MouseDown;
         }
 
         void nodeUI_MouseDown(object sender, MouseButtonEventArgs e)
@@ -340,10 +338,8 @@ namespace Dynamo.Nodes
                 + "OUT = 0";
         }
 
-        public override void SetupCustomUIElements(object ui)
+        public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            var nodeUI = ui as dynNodeView;
-
             //topControl.Height = 200;
             //topControl.Width = 300;
 

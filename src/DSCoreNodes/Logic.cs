@@ -34,7 +34,7 @@ namespace DSCoreNodes
                 {
                     AstFactory.BuildAssignment(
                         GetAstIdentifierForOutputIndex(0),
-                        new BinaryExpressionNode(inputAstNodes[0], inputAstNodes[1], _op))
+                        AstFactory.BuildBinaryExpression(inputAstNodes[0], inputAstNodes[1], _op))
                 };
             }
         }

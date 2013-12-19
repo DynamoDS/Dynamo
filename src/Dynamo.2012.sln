@@ -2,6 +2,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCore", "DynamoCore\DynamoCore.csproj", "{7858FA8C-475F-4B8E-B468-1F8200778CF8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{126C6420-C7A2-43B0-8B08-206C6C4C1348} = {126C6420-C7A2-43B0-8B08-206C6C4C1348}
+		{F0E5A3E5-BDD0-41AE-848E-DED9EFC5FA7F} = {F0E5A3E5-BDD0-41AE-848E-DED9EFC5FA7F}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoRevit", "DynamoRevit\DynamoRevit.csproj", "{FD56AE51-739E-4893-8DE4-925D60C7097C}"
 	ProjectSection(ProjectDependencies) = postProject

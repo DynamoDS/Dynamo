@@ -22,7 +22,7 @@ namespace DSCoreNodes
     {
         //We can remove this from NodeModel and only use it here.
         [Browsable(false)]
-        public abstract void SetupCustomUIElements(dynNodeView nodeUI);
+        public new abstract void SetupCustomUIElements(dynNodeView nodeUI);
 
         [Browsable(false)]
         public abstract Node BuildAst();

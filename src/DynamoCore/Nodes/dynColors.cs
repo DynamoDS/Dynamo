@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Controls;
 using System.Xml;
 using Dynamo.Controls;
 using Dynamo.Models;
@@ -7,7 +8,6 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.FSharp.Collections;
-using Color = System.Drawing.Color;
 using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Nodes
@@ -66,10 +66,10 @@ namespace Dynamo.Nodes
     {
         public Color()
         {
-            InPortData.Add(new PortData("A", "The alpha part of the color between 0 and 255", typeof(Value.Number), FScheme.Value.NewNumber(255)));
-            InPortData.Add(new PortData("R", "The red part of the color between 0 and 255", typeof(Value.Number), FScheme.Value.NewNumber(0)));
-            InPortData.Add(new PortData("G", "The green part of the color between 0 and 255", typeof(Value.Number), FScheme.Value.NewNumber(0)));
-            InPortData.Add(new PortData("B", "The blue part of the color between 0 and 255", typeof(Value.Number), FScheme.Value.NewNumber(0)));
+            InPortData.Add(new PortData("A", "The alpha part of the color between 0 and 255", typeof(Value.Number), Value.NewNumber(255)));
+            InPortData.Add(new PortData("R", "The red part of the color between 0 and 255", typeof(Value.Number), Value.NewNumber(0)));
+            InPortData.Add(new PortData("G", "The green part of the color between 0 and 255", typeof(Value.Number), Value.NewNumber(0)));
+            InPortData.Add(new PortData("B", "The blue part of the color between 0 and 255", typeof(Value.Number), Value.NewNumber(0)));
             OutPortData.Add(new PortData("c", "The color", typeof(Value.Container)));
 
             RegisterAllPorts();
@@ -214,13 +214,11 @@ namespace Dynamo.Nodes
             return Value.NewContainer(returnColor);
         }
 
-        public override void SetupCustomUIElements(object ui)
+        public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            var nodeUI = ui as dynNodeView;
-
             base.SetupCustomUIElements(nodeUI);
             
-            var drawPlane = new System.Windows.Controls.Image
+            var drawPlane = new Image
                 {
                     Stretch = Stretch.Fill,
                     HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -230,7 +228,7 @@ namespace Dynamo.Nodes
 
             nodeUI.inputGrid.Children.Add(drawPlane);
 
-            this.RequestChangeColorRange += delegate
+            RequestChangeColorRange += delegate
             {
                 DispatchOnUIThread(delegate
                 {
@@ -245,19 +243,19 @@ namespace Dynamo.Nodes
         {
             //var drawPlane = new System.Windows.Controls.Image();
 
-            int Size = 64;
+            const int size = 64;
 
-            int width = 1;
-            int height = Size;
+            const int width = 1;
+            const int height = size;
 
             var bitmap = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
             var pixels = new uint[width * height];
 
-            for (int i = 0; i < Size; i++)
+            for (int i = 0; i < size; i++)
             {
-                var newRed = start.R + ((end.R - start.R)/Size)*i;
-                var newGreen = start.G + ((end.G - start.G) / Size) * i;
-                var newBlue = start.B + ((end.B - start.B) / Size) * i;
+                var newRed = start.R + ((end.R - start.R)/size)*i;
+                var newGreen = start.G + ((end.G - start.G) / size) * i;
+                var newBlue = start.B + ((end.B - start.B) / size) * i;
 
                 //pixels[i] = (uint)((newBlue << 16) + (newGreen << 8) + (newRed << 0));
                 pixels[i] = (uint)((255 << 24) + (newRed << 16) + (newGreen << 8) + newBlue);
@@ -268,7 +266,7 @@ namespace Dynamo.Nodes
             return bitmap;
         }
 
-        [NodeMigrationAttribute("0.6.2.0","0.6.3.0")]
+        [NodeMigration("0.6.2.0","0.6.3.0")]
         public void UpdateLacability(XmlNode node)
         {
             //if the laceability has been set on this node to disabled, then set it to longest

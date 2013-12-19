@@ -12,10 +12,8 @@ namespace Dynamo.Revit
 {
     public partial class RevitTransactionNode : NodeModel
     {
-        public override void SetupCustomUIElements(object ui)
+        public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            var nodeUI = ui as dynNodeView;
-
             base.SetupCustomUIElements(nodeUI);
 
             var mi = new MenuItem
