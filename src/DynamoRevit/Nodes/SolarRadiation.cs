@@ -50,7 +50,6 @@ namespace Dynamo.Nodes
         {
             OutPortData.Add(new PortData("ar", "Analysis Results referenced by this operation.", typeof(Value.Container)));
             RegisterAllPorts();
-
         }
 
         public override void SetupCustomUIElements(dynNodeView nodeUI)

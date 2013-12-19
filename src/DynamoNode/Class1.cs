@@ -1,3 +1,4 @@
+using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Revit;
@@ -27,7 +28,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(object nodeUI)
+        public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //If you have custom UI elements which you want to
             //add to the node, set them up here.
