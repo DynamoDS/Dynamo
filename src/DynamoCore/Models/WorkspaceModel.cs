@@ -1110,7 +1110,7 @@ namespace Dynamo.Models
         #region Redefined Variables
 
         /// <summary>
-        /// Public method that calls the variableDefinitions field to check and revalidate
+        /// Method that calls the variableDefinitions field to check and revalidate
         /// all code block nodes if necessary
         /// </summary>
         internal void RevalidateCodeBlockNodes()
@@ -1119,7 +1119,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Public API to load variable definitions from an xml element into the variableDefinitions
+        /// Method to load variable definitions from an xml element into the variableDefinitions
         /// field.
         /// </summary>
         /// <param name="element"> The Xml Element containing the serialized data </param>
@@ -1154,6 +1154,8 @@ namespace Dynamo.Models
                     XmlDocument xmlDoc = element.OwnerDocument;
                     foreach (string variable in Map.Keys)
                     {
+                        //For each entry in the Map, create a new element (for each variable)
+                        //To this element, add the variable name and guids of all nodes as attributes
                         var guidList = xmlDoc.CreateElement("Variable");
                         XmlElementHelper dictionaryHelper = new XmlElementHelper(guidList);
                         dictionaryHelper.SetAttribute("DefinedVariableName", variable);
@@ -1177,6 +1179,9 @@ namespace Dynamo.Models
                     var variables = element.SelectNodes("Variable");
                     foreach (XmlNode variableNode in variables)
                     {
+                        //Get all the entries through the elements called 'Variables'. Then get the
+                        //name and guid of nodes from the appropriate attributes. Using this data,
+                        //create new entries to the dictionary
                         var dictionaryHelper = new XmlElementHelper(variableNode as XmlElement);
                         string variableName = dictionaryHelper.ReadString("DefinedVariableName");
                         Map.Add(variableName, new List<Guid>());
@@ -1186,6 +1191,8 @@ namespace Dynamo.Models
                             Map[variableName].Add(guid);
                         }
                     }
+                    //Since the table has been updated, set IsDirty to true so that the CBNs can be
+                    //validated again.
                     this.IsDirty = true;
                 }
             }
@@ -1197,9 +1204,10 @@ namespace Dynamo.Models
                 if (this.IsDirty == true)
                 {
                     this.IsDirty = false;
+                    //For all CBNs in the workspace, validate them using the ValidateDefinedVariables method
                     foreach (var node in this.workspace.Nodes.Where(x => x is CodeBlockNodeModel))
                     {
-                        CodeBlockNodeModel.ReValidate(node as CodeBlockNodeModel);
+                        CodeBlockNodeModel.ValidateDefinedVariables(node as CodeBlockNodeModel);
                     }
                 }
             }
@@ -1210,6 +1218,8 @@ namespace Dynamo.Models
                 helper.SetAttribute("guid", GUID);
                 foreach (string variable in Map.Keys)
                 {
+                    //Similar to Serialize Core. Store each entry in the dictionary as an element
+                    //with appropriate attributes.
                     var guidList = xmlDoc.CreateElement("Variable");
                     XmlElementHelper dictionaryHelper = new XmlElementHelper(guidList);
                     dictionaryHelper.SetAttribute("DefinedVariableName", variable);
@@ -1227,10 +1237,24 @@ namespace Dynamo.Models
                 if (element == null) //If the save file was made before this was introduced
                 {
                     this.GUID = Guid.NewGuid();
-                    Map = new Dictionary<String, List<Guid>>();
+                    Map = new Dictionary<String, List<Guid>>(); //Create a new Map.
+
+                    //Now recompute the table by getting all the CodeBlockNodes to update the table.
+                    //Since the update defined variables requires an action group to be opened,
+                    //create a new action group and then pop it off from the stack.
+                    workspace.undoRecorder.BeginActionGroup();
+                    workspace.undoRecorder.RecordCreationForUndo(this);
+                    foreach (var node in workspace.Nodes)
+                    {
+                        if (node is CodeBlockNodeModel)
+                            workspace.UpdateDefinedVariables(node as CodeBlockNodeModel);
+                    }
+                    workspace.undoRecorder.EndActionGroup();
+                    workspace.undoRecorder.PopFromUndoGroup(); //Remove the unwanted action group
                 }
                 else
                 {
+                    //Otherwise load the dictionary like normal
                     XmlElementHelper helper = new XmlElementHelper(element);
                     this.GUID = helper.ReadGuid("guid");
                     Map = new Dictionary<String, List<Guid>>();
@@ -1315,7 +1339,7 @@ namespace Dynamo.Models
 
             //Reprocess those models
             foreach (var model in modelsToReValidate)
-                CodeBlockNodeModel.ReValidate(model);
+                CodeBlockNodeModel.ValidateDefinedVariables(model);
         }
 
         /// <summary>

@@ -104,11 +104,20 @@ namespace Dynamo.Nodes
             return cbn.inputIdentifiers.IndexOf(variableName);
         }
 
-        public static void ReValidate(CodeBlockNodeModel cbn)
+        /// <summary>
+        /// Makes sure that all variables defined in the code block node passed are not
+        /// redefinitions of variables defined in other nodes
+        /// If there is a redefinition, it then sets to node to an Error state
+        /// </summary>
+        /// <param name="cbn"> The code block node whose variables need to be validated </param>
+        public static void ValidateDefinedVariables(CodeBlockNodeModel cbn)
         {
+            //Make sure that the node did not have any parse error
             if (cbn.GetDefinedVariableNames().Count == 0 && cbn.State == ElementState.Error)
                 return;
 
+            //Get the variable definitons from the VariableMap in workspace and assert that
+            //the variables are defined in this node
             foreach (string variable in cbn.GetDefinedVariableNames())
             {
                 var ownerGuid = cbn.WorkSpace.GetDefiningNode(variable);
@@ -119,6 +128,7 @@ namespace Dynamo.Nodes
                 }
             }
 
+            //If it is correct, then validate the connections of the node
             cbn.State = ElementState.Active;
             cbn.ValidateConnections();
         }
@@ -184,7 +194,7 @@ namespace Dynamo.Nodes
                         if (errorMessage != null)
                             Error(errorMessage);
                         else
-                            CodeBlockNodeModel.ReValidate(this);
+                            CodeBlockNodeModel.ValidateDefinedVariables(this);
                     }
                     else
                         code = null;
@@ -219,6 +229,7 @@ namespace Dynamo.Nodes
             base.SaveNode(xmlDoc, nodeElement, context);
             var helper = new XmlElementHelper(nodeElement);
             helper.SetAttribute("CodeText", code);
+            helper.SetAttribute("CodeToParse", codeToParse); //Save the random generated variable names as well
             helper.SetAttribute("ShouldFocus", shouldFocus);
         }
 
@@ -226,8 +237,17 @@ namespace Dynamo.Nodes
         {
             base.LoadNode(nodeElement);
             var helper = new XmlElementHelper(nodeElement as XmlElement);
-            code = helper.ReadString("CodeText");
+            try //Try to read the CodeToParse attribute. This may not be created for all files
+            {
+                code = helper.ReadString("CodeToParse");
+            }
+            catch //If it was not present, then use the CodeText property only
+            {
+                code = helper.ReadString("CodeText");
+            }
             ProcessCodeDirect();
+            //After using the CodeToParse to process the node, change the code back to the user text
+            code = helper.ReadString("CodeText"); 
             shouldFocus = helper.ReadBoolean("ShouldFocus");
         }
 
@@ -279,6 +299,7 @@ namespace Dynamo.Nodes
             base.SerializeCore(element, context);
             var helper = new XmlElementHelper(element);
             helper.SetAttribute("CodeText", code);
+            helper.SetAttribute("CodeToParse", codeToParse); //Save the randomly generated temp names as well
             helper.SetAttribute("ShouldFocus", shouldFocus);
         }
 
@@ -289,8 +310,17 @@ namespace Dynamo.Nodes
             {
                 var helper = new XmlElementHelper(element);
                 shouldFocus = helper.ReadBoolean("ShouldFocus");
-                code = helper.ReadString("CodeText");
+                try //Try to read the parsed code. It may not be there for all files
+                {
+                    code = helper.ReadString("CodeToParse");
+                }
+                catch //If it is not present, use the CodeText attribute only
+                {
+                    code = helper.ReadString("CodeText");
+                }
                 ProcessCodeDirect();
+                //After using the parsed code for processing, change it back to the user typed code
+                code = helper.ReadString("CodeText");
             }
         }
 
