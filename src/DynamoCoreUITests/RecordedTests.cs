@@ -965,6 +965,111 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual("CBN", cbn.NickName);
         }
 
+        [Test, RequiresSTA]
+        public void TestVariableRedefinitionError_1()
+        {
+            /*Following Steps were done:
+            1.Made CBN1 with code "a = 4;"
+            2.Made CBN2 with code "b = 6;"
+            3.Made CBN3 with code "b = 7;"
+            4.Made CBN4 with code "a = 3; \n b = 9;"
+            */
+            RunCommandsFromFile("VariableRedefinitionError_1.xml");
+            Assert.AreEqual(4, workspace.Nodes.Count);
+
+            var cbn3 = GetNode("7a998dd3-6dbb-4e5a-908e-3d3faa33a558") as CodeBlockNodeModel;
+            var cbn4 = GetNode("8dc7c3da-f281-4641-9619-7f26045ad180") as CodeBlockNodeModel;
+
+            Assert.AreEqual(ElementState.Error, cbn3.State);
+            Assert.AreEqual(ElementState.Error, cbn4.State);
+        }
+
+        [Test, RequiresSTA]
+        public void TestVariableRedefinitionError_2()
+        {
+            /*Following Steps were done:
+            1.Made CBN1 with code "a = 4;"
+            2.Made CBN2 with code "b = 6;"
+            3.Made CBN3 with code "b = 7;"
+            4.Made CBN4 with code "a = 3; \n b = 9;"
+            5.Changed CBN4's value to "a = 3;"
+            */
+            RunCommandsFromFile("VariableRedefinitionError_2.xml");
+            Assert.AreEqual(4, workspace.Nodes.Count);
+
+            var cbn3 = GetNode("7a998dd3-6dbb-4e5a-908e-3d3faa33a558") as CodeBlockNodeModel;
+            var cbn4 = GetNode("8dc7c3da-f281-4641-9619-7f26045ad180") as CodeBlockNodeModel;
+
+            Assert.AreEqual(ElementState.Error, cbn3.State);
+            Assert.AreEqual(ElementState.Error, cbn4.State);
+        }
+
+        [Test, RequiresSTA]
+        public void TestVariableRedefinitionError_3()
+        {
+            /*Following Steps were done:
+            1.Made CBN1 with code "a = 4;"
+            2.Made CBN2 with code "b = 6;"
+            3.Made CBN3 with code "b = 7;"
+            4.Made CBN4 with code "a = 3; \n b = 9;"
+            5.Changed CBN4's value to "a = 3;"
+            6.Deleted CBN1 and CBN2.
+            */
+            RunCommandsFromFile("VariableRedefinitionError_3.xml");
+            Assert.AreEqual(2, workspace.Nodes.Count);
+
+            var cbn3 = GetNode("7a998dd3-6dbb-4e5a-908e-3d3faa33a558") as CodeBlockNodeModel;
+            var cbn4 = GetNode("8dc7c3da-f281-4641-9619-7f26045ad180") as CodeBlockNodeModel;
+
+            Assert.AreEqual(ElementState.Active, cbn3.State);
+            Assert.AreEqual(ElementState.Active, cbn4.State);
+        }
+
+        [Test, RequiresSTA]
+        public void TestVariableRedefinitionError_Undo()
+        {
+            /*Following Steps were done:
+            1.Made CBN1 with code "a = 4;"
+            2.Made CBN2 with code "b = 6;"
+            3.Made CBN3 with code "b = 7;"
+            4.Made CBN4 with code "a = 3; \n b = 9;"
+            5.Changed CBN4's value to "a = 3;"
+            6.Deleted CBN1 and CBN2.
+            7.Did Undo
+            */
+            RunCommandsFromFile("VariableRedefinitionError_Undo.xml");
+            Assert.AreEqual(4, workspace.Nodes.Count);
+
+            var cbn3 = GetNode("7a998dd3-6dbb-4e5a-908e-3d3faa33a558") as CodeBlockNodeModel;
+            var cbn4 = GetNode("8dc7c3da-f281-4641-9619-7f26045ad180") as CodeBlockNodeModel;
+
+            Assert.AreEqual(ElementState.Error, cbn3.State);
+            Assert.AreEqual(ElementState.Error, cbn4.State);
+        }
+
+        [Test, RequiresSTA]
+        public void TestVariableRedefinitionError_Redo()
+        {
+            /*Following Steps were done:
+            1.Made CBN1 with code "a = 4;"
+            2.Made CBN2 with code "b = 6;"
+            3.Made CBN3 with code "b = 7;"
+            4.Made CBN4 with code "a = 3; \n b = 9;"
+            5.Changed CBN4's value to "a = 3;"
+            6.Deleted CBN1 and CBN2.
+            7.Did Undo
+            8.Did Redo
+            */
+            RunCommandsFromFile("VariableRedefinitionError_Redo.xml");
+            Assert.AreEqual(2, workspace.Nodes.Count);
+
+            var cbn3 = GetNode("7a998dd3-6dbb-4e5a-908e-3d3faa33a558") as CodeBlockNodeModel;
+            var cbn4 = GetNode("8dc7c3da-f281-4641-9619-7f26045ad180") as CodeBlockNodeModel;
+
+            Assert.AreEqual(ElementState.Active, cbn3.State);
+            Assert.AreEqual(ElementState.Active, cbn4.State);
+        }
+
         #endregion
 
         #region Defect Verifications Test Cases
