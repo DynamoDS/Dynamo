@@ -1783,6 +1783,22 @@ namespace Dynamo.Tests.UI
             AssertValue("b", new MockPoint(2, 0, 1));
             AssertValue("c", 1);
         }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_807_DS()
+        {
+            // [Crash]Dynamo crashes if there is an error in the node Geometry and is connected to other CBN
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-807
+            // Create   CBN1    [1;]
+            // Create   CBN2    [a = Point.ByCoordinates(x,1,2);]
+            // Connect  CBN1 to CBN2-x
+            // Run Graph
+            // Modify   CBN2    [Point.ByCoordinates(x,1,2);]
+
+            // Should not crash
+            RunCommandsFromFile("Defect_MAGN_807_DS.xml");
+            Assert.Pass("Execution completed successfully");
+        }
         #endregion
 
         #region Private Helper Methods
