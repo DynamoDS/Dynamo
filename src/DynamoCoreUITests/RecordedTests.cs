@@ -1698,6 +1698,30 @@ namespace Dynamo.Tests.UI
             // Expected a = 2
             AssertValue("a", 2);
         }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_750_DS()
+        {
+            // Input modified on second run was not evaluated
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-750
+
+            // Create   CBN1    [a = 1;]
+            //                  [b = a;]
+            //                  [b = b + 1;]
+            // Run Graph
+            // Expected b = 2
+            RunCommandsFromFile("Defect_MAGN_750_DS_Run1.xml");
+            AssertValue("b", "2");
+
+            // Reset current test case
+            Exit();
+            Start();
+
+            // Modify (a = 1) to (a = 2);
+            // Expected b = 3
+            RunCommandsFromFile("Defect_MAGN_750_DS_Run2.xml");
+            AssertValue("b", "3");
+        }
         #endregion
 
         #region Private Helper Methods
