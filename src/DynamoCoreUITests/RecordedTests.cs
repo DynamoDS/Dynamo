@@ -1602,6 +1602,43 @@ namespace Dynamo.Tests.UI
             RunCommandsFromFile("TestCBNOperationWithNodeToCodeUndo.xml");
             AssertValue("c", 8); // Run playback is recorded in command file
         }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_773_DS()
+        {
+            // CBN in some case changing input from singleton to array does not create geometry and 
+            // the preview is wrong
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-773
+
+            // Create   CBN1 [a = 1;]
+            // Create   CBN2 [b = ll+4;]
+            // Connect  CBN1'a to CBN2'll
+            // Create   CBN3 [c = h12-3;]
+            // Connect  CBN2-b to CBN3-h12
+            // Create   CBN4 [d=Point.ByCoordinates(w45,0,0);]
+            // Connect  CBN3-h12 to CBN4-w45
+            // Run Graph
+            RunCommandsFromFile("Defect_MAGN_773_DS_Run1.xml");
+
+            // Expected d to be Point(x=2,y=0,z=0);
+            AssertValue("d", new MockPoint(2, 0, 0));
+
+            // Reset current test case
+            Exit();
+            Start();
+
+            // Modify CBN1 to [a = 1..5;]
+            RunCommandsFromFile("Defect_MAGN_773_DS_Run2.xml");
+
+            // Expected d to be point of collection = (2,0,0), (3,0,0), (4,0,0), (5,0,0), (6,0,0)
+            List<MockPoint> expectedPoints = new List<MockPoint>();
+            expectedPoints.Add(new MockPoint(2, 0, 0));
+            expectedPoints.Add(new MockPoint(3, 0, 0));
+            expectedPoints.Add(new MockPoint(4, 0, 0));
+            expectedPoints.Add(new MockPoint(5, 0, 0));
+            expectedPoints.Add(new MockPoint(6, 0, 0));
+            AssertValue("d", expectedPoints);
+        }
         #endregion
 
         #region Private Helper Methods
