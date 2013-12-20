@@ -1759,6 +1759,30 @@ namespace Dynamo.Tests.UI
             // Expected a = null;
             AssertValue("a", null);
         }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_782_DS()
+        {
+            // CBN Geometry displayed only for the last statement
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-782
+            // Create   CBN1    [a = Point.ByCoordinates(1,0,1);]
+            //                  [b = Point.ByCoordinates(2,0,1);]
+            //                  [c = a.X;]
+            // Run Graph
+
+            // Expected 2 points
+            RunCommandsFromFile("Defect_MAGN_782_DS.xml");
+
+            // TODO(Robin) : Unable to validate Geometry directly using VisualizationManager
+            // as VisualizationManager's elements are cleared after dynamo UI shutdown before
+            // reaching this statement. This will be resolve once validation is added to
+            // command framework.
+
+            // Instead validate the DS values
+            AssertValue("a", new MockPoint(1, 0, 1));
+            AssertValue("b", new MockPoint(2, 0, 1));
+            AssertValue("c", 1);
+        }
         #endregion
 
         #region Private Helper Methods
