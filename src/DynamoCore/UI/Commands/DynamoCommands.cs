@@ -86,12 +86,18 @@ namespace Dynamo.ViewModels
                 command.TransformCoordinates);
 
             CurrentSpace.RecordCreatedModel(nodeModel);
+
+            UndoCommand.RaiseCanExecuteChanged();
+            RedoCommand.RaiseCanExecuteChanged();
         }
 
         private void CreateNoteImpl(CreateNoteCommand command)
         {
             NoteModel noteModel = Model.AddNoteInternal(command, null);
             CurrentSpace.RecordCreatedModel(noteModel);
+
+            UndoCommand.RaiseCanExecuteChanged();
+            RedoCommand.RaiseCanExecuteChanged();
         }
 
         private void SelectModelImpl(SelectModelCommand command)
@@ -173,6 +179,9 @@ namespace Dynamo.ViewModels
             }
 
             _model.DeleteModelInternal(modelsToDelete);
+
+            UndoCommand.RaiseCanExecuteChanged();
+            RedoCommand.RaiseCanExecuteChanged();
         }
 
         private void UndoRedoImpl(UndoRedoCommand command)
