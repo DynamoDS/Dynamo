@@ -1639,6 +1639,21 @@ namespace Dynamo.Tests.UI
             expectedPoints.Add(new MockPoint(6, 0, 0));
             AssertValue("d", expectedPoints);
         }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_559_DS()
+        {
+            // Multiple variable declarations are permitted
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-559
+
+            // Create   CBN1    [a = 1..5;]
+            // Create   CBN2    [a = 6..10;]
+            // Run graph
+            RunCommandsFromFile("Defect_MAGN_559_DS.xml");
+
+            // Expected a = 1..5; (ignore CBN2 as it should be in error state)
+            AssertValue("a", new int[] { 1, 2, 3, 4, 5 });
+        }
         #endregion
 
         #region Private Helper Methods
