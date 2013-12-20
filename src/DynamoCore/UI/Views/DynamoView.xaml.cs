@@ -351,8 +351,8 @@ namespace Dynamo.Controls
                 var control = WPF.FindChild<DragCanvas>(this, null);
                 var zoomBorder = WPF.FindChild<ZoomBorder>(this, null);
 
-                Point topLeft = workspaceViewModel.GetTopLeft();
-                Point bottomRight = workspaceViewModel.GetBottomRight();
+                Point topLeft = workspaceViewModel.GetTopLeftPointInLocatables();
+                Point bottomRight = workspaceViewModel.GetBottomRightPointInLocatables();
 
                 int width, height;
                 width = (int)(bottomRight.X - topLeft.X);
