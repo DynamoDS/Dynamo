@@ -1722,6 +1722,25 @@ namespace Dynamo.Tests.UI
             RunCommandsFromFile("Defect_MAGN_750_DS_Run2.xml");
             AssertValue("b", "3");
         }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_584_DS()
+        {
+            // Changing array to singleton results in null output.
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-584
+
+            // Create   CBN1    [a = {1,2,3};]
+            //                  [a[0] = 2;   ]
+            // Create   Math.Sin
+            // Connect  CBN1-a[0] to Math.Sin
+            // Create   CBN2    [b;]
+            // Connect  Math.Sin to CBN2-b
+            // Run graph
+            RunCommandsFromFile("Defect_MAGN_584_DS.xml");
+
+            // Expected a = Sin(2);
+            AssertValue("b", Math.Sin(2.0 / 180 * Math.PI));
+        }
         #endregion
 
         #region Private Helper Methods
