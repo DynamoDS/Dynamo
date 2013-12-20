@@ -1674,6 +1674,30 @@ namespace Dynamo.Tests.UI
             // Instead validate the DS values
             AssertValue("a", new MockPoint(0, 1, 2));
         }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_707_DS()
+        {
+            // [Regression]Editing the codeblock does not evaluate , show the previous value
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-707
+
+            // Create   CBN1    [a = 1;]
+            // Run graph
+            RunCommandsFromFile("Defect_MAGN_707_DS_Run1.xml");
+
+            // Expected a = 1
+            AssertValue("a", 1);
+
+            // Reset current test case
+            Exit();
+            Start();
+
+            // Modify   CBN1    [a = 2;];
+            RunCommandsFromFile("Defect_MAGN_707_DS_Run2.xml");
+
+            // Expected a = 2
+            AssertValue("a", 2);
+        }
         #endregion
 
         #region Private Helper Methods
