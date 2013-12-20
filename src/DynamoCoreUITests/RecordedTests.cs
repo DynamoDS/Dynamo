@@ -55,7 +55,7 @@ namespace Dynamo.Tests.UI
             return node.VariableToPreview;
         }
 
-        private RuntimeMirror GetRuntimeMirror(string varName)
+        public RuntimeMirror GetRuntimeMirror(string varName)
         {
             RuntimeMirror mirror = null;
             mirror = controller.EngineController.GetMirror(varName);
@@ -66,22 +66,31 @@ namespace Dynamo.Tests.UI
 
         public void AssertValue(string varname, object value)
         {
-            var mirror = GetRuntimeMirror(varname);
 
-            Console.WriteLine(varname + " = " + mirror.GetStringData());
-            StackValue svValue = mirror.GetData().GetStackValue();
-
+            RuntimeMirror mirror = controller.EngineController.GetMirror(varname);
             if (value == null)
             {
-                Assert.IsTrue(StackUtils.IsNull(svValue));
+                Assert.IsNull(mirror);
+                return;
             }
-            else if (value is double)
+            
+            Console.WriteLine(varname + " = " + mirror.GetStringData());
+
+            // Get value of the data
+            var data = mirror.GetData();
+            var dataValue = data.Data;
+
+            //StackValue svValue = data.GetStackValue();
+            
+            if (value is double)
             {
-                Assert.AreEqual(svValue.opdata_d, Convert.ToDouble(value));
+                //Assert.AreEqual(svValue.opdata_d, Convert.ToDouble(value), 0.01);
+                Assert.AreEqual(Convert.ToDouble(dataValue), Convert.ToDouble(value), 0.01);
             }
             else if (value is int)
             {
-                Assert.AreEqual(svValue.opdata, Convert.ToInt64(value));
+                //Assert.AreEqual(svValue.opdata, Convert.ToInt64(value));
+                Assert.AreEqual(Convert.ToInt64(dataValue), Convert.ToInt64(value));
             }
             else if (value is IEnumerable<int>)
             {
@@ -92,6 +101,29 @@ namespace Dynamo.Tests.UI
             {
                 var values = (value as IEnumerable<double>).ToList().Select(v => (object)v).ToList();
                 Assert.IsTrue(mirror.GetUtils().CompareArrays(varname, values, typeof(double)));
+            }
+            else if (value is MockPoint)
+            {
+                AssertCompareDSPoint((MockPoint)value, dataValue);
+            }
+            else if (value is IEnumerable<MockPoint>)
+            {
+                Assert.True(data.IsCollection);
+
+                // Get all point from the collection
+                var expectedValues = value as IEnumerable<MockPoint>;
+                List<object> actualValues = data.GetElements().Select((x) => x.Data).ToList();
+
+                // Check same number of elements
+                Assert.AreEqual(expectedValues.Count(), actualValues.Count());
+                
+                // Check each element(Point) for same value
+                int i = 0;
+                foreach (var expectedPoint in expectedValues)
+                {
+                    AssertCompareDSPoint(expectedPoint, actualValues[i]);
+                    i++;
+                }
             }
         }
 
@@ -108,6 +140,25 @@ namespace Dynamo.Tests.UI
 
             StackValue svValue = mirror.GetData().GetStackValue();
             Assert.IsTrue(StackUtils.IsValidPointer(svValue));
+        }
+
+        private void AssertCompareDSPoint(MockPoint expectedPoint, object actualValue)
+        {
+            // Expected value to be null
+            if (expectedPoint == null)
+            {
+                Assert.True(actualValue == null);
+                return;
+            }
+
+            // Ensure actualValue is DS Point
+            var actualPoint = actualValue as Autodesk.DesignScript.Geometry.Point;
+            Assert.NotNull(actualPoint);
+
+            // Compare the actual and expected point
+            Assert.AreEqual(expectedPoint.X, actualPoint.X);
+            Assert.AreEqual(expectedPoint.Y, actualPoint.Y);
+            Assert.AreEqual(expectedPoint.Z, actualPoint.Z);
         }
 
         #endregion
@@ -1551,7 +1602,6 @@ namespace Dynamo.Tests.UI
             RunCommandsFromFile("TestCBNOperationWithNodeToCodeUndo.xml");
             AssertValue("c", 8); // Run playback is recorded in command file
         }
-
         #endregion
 
         #region Private Helper Methods
@@ -1596,6 +1646,8 @@ namespace Dynamo.Tests.UI
             Assert.IsNotNull(controller.DynamoModel.CurrentWorkspace);
             workspace = controller.DynamoModel.CurrentWorkspace;
             workspaceViewModel = controller.DynamoViewModel.CurrentSpaceViewModel;
+
+            dynSettings.Controller = controller;
         }
 
         private CmdType DuplicateAndCompare<CmdType>(CmdType command)
@@ -1614,9 +1666,29 @@ namespace Dynamo.Tests.UI
             Assert.IsTrue(duplicate is CmdType);
             return duplicate as CmdType;
         }
-
         #endregion
     }
 
 #endif
+}
+
+public class MockPoint
+{
+    public double X { get; set; }
+    public double Y { get; set; }
+    public double Z { get; set; }
+
+    public MockPoint()
+    {
+        X = 0;
+        Y = 0;
+        Z = 0;
+    }
+
+    public MockPoint(int x, int y, int z)
+    {
+        X = x;
+        Y = y;
+        Z = z;
+    }
 }
