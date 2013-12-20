@@ -1741,6 +1741,24 @@ namespace Dynamo.Tests.UI
             // Expected a = Sin(2);
             AssertValue("b", Math.Sin(2.0 / 180 * Math.PI));
         }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_600_DS()
+        {
+            // CBN remembers the last computed value of a variable,
+            // even when the variable is not defined
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-600
+
+            // Create   CBN1    [b = 1;]
+            // Run Graph
+            // Delete   CBN1
+            // Create   CBN2    [a = b;]
+            // Run Graph
+            RunCommandsFromFile("Defect_MAGN_600_DS.xml");
+
+            // Expected a = null;
+            AssertValue("a", null);
+        }
         #endregion
 
         #region Private Helper Methods
