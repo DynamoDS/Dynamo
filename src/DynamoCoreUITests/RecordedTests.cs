@@ -1641,6 +1641,40 @@ namespace Dynamo.Tests.UI
         }
 
         [Test, RequiresSTA]
+        public void Defect_MAGN_765_DS()
+        {
+            // Geometry disappears after second run with modification
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-765
+            // Create   CBN1    [x = 10;]
+            //                  [y = 20;]
+            //                  [z = 30;]
+            // Create Point.ByCoordinates1
+            // Create Point.ByCoordinates2
+            // Connect both Point.ByCoordinates-X to CBN1-x
+            // Connect both Point.ByCoordinates-Y to CBN1-y
+            // Connect both Point.ByCoordinates-Z to CBN1-z
+            // Create   CBN2    [a;]
+            //                  [b;]
+            // Connect Point.ByCoordinates1 to CBN2-a;
+            // Connect Point.ByCoordinates2 to CBN2-b;
+            // Run Graph
+            // Edit     CBN1    z to 20;
+            // Run Graph again
+
+            RunCommandsFromFile("Defect_MAGN_765_DS.xml");
+            // Expected 2 points
+
+            // TODO(Robin) : Unable to validate Geometry directly using VisualizationManager
+            // as VisualizationManager's elements are cleared after dynamo UI shutdown before
+            // reaching this statement. This will be resolve once validation is added to
+            // command framework.
+
+            // Instead validate the DS values
+            AssertValue("a", new MockPoint(10, 20, 20));
+            AssertValue("b", new MockPoint(10, 20, 20));
+        }
+
+        [Test, RequiresSTA]
         public void Defect_MAGN_559_DS()
         {
             // Multiple variable declarations are permitted
