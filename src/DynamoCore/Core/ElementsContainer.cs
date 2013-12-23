@@ -6,7 +6,7 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Core
 {
-    public class ElementsContainer <T>
+    public abstract class ElementsContainer <T>
     {
         internal Dictionary<Guid, List<List<T>>> storedElementIds =
             new Dictionary<Guid, List<List<T>>>();
