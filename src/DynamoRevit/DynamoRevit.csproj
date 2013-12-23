@@ -150,7 +150,7 @@
     <Compile Include="RevitSettings.cs" />
     <Compile Include="RevitTransactionNode.cs" />
     <Compile Include="RevitUtils.cs" />
-    <Compile Include="ElementsContainer.cs" />
+    <Compile Include="RevitElementsContainer.cs" />
     <Compile Include="DynamoRevit.cs" />
     <Compile Include="Nodes\Annotation.cs" />
     <Compile Include="Nodes\AdaptiveComponents.cs" />

@@ -14,7 +14,7 @@ namespace Dynamo.Nodes
 {
     public class FunctionWithRevit : Function
     {
-        internal ElementsContainer ElementsContainer = new ElementsContainer();
+        internal RevitElementsContainer ElementsContainer = new RevitElementsContainer();
 
         protected internal FunctionWithRevit(IEnumerable<string> inputs, IEnumerable<string> outputs, FunctionDefinition functionDefinition)
             : base(inputs, outputs, functionDefinition)
