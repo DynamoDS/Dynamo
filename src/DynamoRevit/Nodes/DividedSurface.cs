@@ -65,7 +65,7 @@ namespace Dynamo.Nodes
                 if (divSurf.USpacingRule.Number != (int)uDiv)
                     divSurf.USpacingRule.Number = (int)uDiv;
                 if (divSurf.VSpacingRule.Number != (int)vDiv)
-                    divSurf.VSpacingRule.Number = (int)uDiv;
+                    divSurf.VSpacingRule.Number = (int)vDiv;
             }
 
             //Fin

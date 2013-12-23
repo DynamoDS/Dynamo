@@ -475,5 +475,34 @@ namespace Dynamo.Tests
 
         #endregion
 
+        #region Defects
+
+        /// <summary>
+        /// TODO: This is to verify the fix for the following user report issue.
+        /// Note that however this test case does not completely simulate the 
+        /// user scenario -- the "Watch.Process" does not even get called for 
+        /// some reason. This test case passes now, but should be revisit later
+        /// for an enhancement which allows "Watch.Process" to be called (and 
+        /// crash without the fix).
+        /// </summary>
+        [Ignore, Test]
+        public void Defect_MAGN_883()
+        {
+            string testDir = GetTestDirectory();
+            string openPath = Path.Combine(testDir, @"core\excel\Defect_MAGN_883.dyn");
+            Controller.DynamoModel.Open(openPath);
+
+            Assert.AreEqual(6, Controller.DynamoViewModel.CurrentSpace.Nodes.Count);
+
+            var workspace = Controller.DynamoModel.CurrentWorkspace;
+            var filename = workspace.FirstNodeFromWorkspace<StringFilename>();
+
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.Value.Replace(@"..\..\..\test", testDir);
+            Controller.RunExpression(null);
+            Assert.Pass("RunExpression should no longer crash (Defect_MAGN_883)");
+        }
+
+        #endregion
     }
 }

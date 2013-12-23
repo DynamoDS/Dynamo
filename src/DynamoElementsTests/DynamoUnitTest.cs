@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using Dynamo.FSchemeInterop;
 using Dynamo.Utilities;
@@ -32,6 +34,18 @@ namespace Dynamo.Tests
             }
 
             base.Cleanup();
+        }
+
+        protected void VerifyModelExistence(Dictionary<string, bool> modelExistenceMap)
+        {
+            var nodes = Controller.DynamoModel.CurrentWorkspace.Nodes;
+            foreach (var pair in modelExistenceMap)
+            {
+                Guid guid = Guid.Parse(pair.Key);
+                var node = nodes.FirstOrDefault((x) => (x.GUID == guid));
+                bool nodeExists = (null != node);
+                Assert.AreEqual(nodeExists, pair.Value);
+            }
         }
 
         private void StartDynamo()

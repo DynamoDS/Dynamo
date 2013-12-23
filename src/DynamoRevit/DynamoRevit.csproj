@@ -47,6 +47,9 @@
     <NoWarn>618</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DynamoRaaS">
+      <HintPath>..\..\extern\DynamoRaaS\DynamoRaaS.dll</HintPath>
+    </Reference>
     <Reference Include="FScheme, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\bin\AnyCPU\Debug\FScheme.dll</HintPath>
@@ -68,6 +71,9 @@
     </Reference>
     <Reference Include="HelixToolkit.Wpf">
       <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="JobMonitor">
+      <HintPath>..\..\extern\DynamoRaaS\JobMonitor.dll</HintPath>
     </Reference>
     <Reference Include="LibGNet, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
@@ -113,6 +119,12 @@
     <Reference Include="RevitAPIUI">
       <HintPath>$(REVITAPI)\RevitAPIUI.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="RevitRaaS">
+      <HintPath>..\..\extern\DynamoRaaS\RevitRaaS.dll</HintPath>
+    </Reference>
+    <Reference Include="SDF">
+      <HintPath>..\..\extern\DynamoRaaS\SDF.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -210,6 +222,7 @@
     <Compile Include="Views\Partials.cs" />
     <Compile Include="ViewModels\DynamoRevitViewModel.cs" />
     <Compile Include="VisualizationManager\VisualizationManagerRevit.cs" />
+    <Compile Include="WorkspaceMigrationsRevit.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

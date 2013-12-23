@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
 using Dynamo.Nodes;
 using Dynamo.PackageManager.UI;
@@ -46,7 +49,7 @@ namespace Dynamo.PackageManager
                     this._uploading = value;
                     this.RaisePropertyChanged("Uploading");
                     dynSettings.Controller.UIDispatcher.BeginInvoke(
-                        (Action) (() => ((DelegateCommand<object>) this.SubmitCommand).RaiseCanExecuteChanged()));
+                        (Action) (() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
 
@@ -104,8 +107,7 @@ namespace Dynamo.PackageManager
         {
             get
             {
-                _packageContents = _packageContents ??
-                                   FunctionDefinitions.Select((def) => new PackageItemRootViewModel(def))
+                _packageContents = FunctionDefinitions.Select((def) => new PackageItemRootViewModel(def))
                                                       .ToList();
                 return _packageContents;
             }
@@ -144,7 +146,7 @@ namespace Dynamo.PackageManager
                     this._name = value;
                     this.RaisePropertyChanged("Name");
                     dynSettings.Controller.UIDispatcher.BeginInvoke(
-                        (Action)(() => ((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged()));
+                        (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
         }
@@ -210,7 +212,7 @@ namespace Dynamo.PackageManager
                     this._Description = value;
                     this.RaisePropertyChanged("Description");
                     dynSettings.Controller.UIDispatcher.BeginInvoke(
-                        (Action)(() => ((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged()));
+                        (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
         }
@@ -272,7 +274,7 @@ namespace Dynamo.PackageManager
                     this._MinorVersion = value;
                     this.RaisePropertyChanged("MinorVersion");
                     dynSettings.Controller.UIDispatcher.BeginInvoke(
-                        (Action)(() => ((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged()));
+                        (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
         }
@@ -295,7 +297,7 @@ namespace Dynamo.PackageManager
                     this._BuildVersion = value;
                     this.RaisePropertyChanged("BuildVersion");
                     dynSettings.Controller.UIDispatcher.BeginInvoke(
-                        (Action)(() => ((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged()));
+                        (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
         }
@@ -318,7 +320,7 @@ namespace Dynamo.PackageManager
                     this._MajorVersion = value;
                     this.RaisePropertyChanged("MajorVersion");
                     dynSettings.Controller.UIDispatcher.BeginInvoke(
-                        (Action)(() => ((DelegateCommand<object>)this.SubmitCommand).RaiseCanExecuteChanged()));
+                        (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
         }
@@ -333,6 +335,21 @@ namespace Dynamo.PackageManager
             get { return !HasDependencies; }
         }
 
+        /// <summary>
+        /// SubmitCommand property </summary>
+        /// <value>
+        /// A command which, when executed, submits the current package</value>
+        public DelegateCommand SubmitCommand { get; private set; }
+
+        /// <summary>
+        /// SubmitCommand property </summary>
+        /// <value>
+        /// A command which, when executed, submits the current package</value>
+        public DelegateCommand ShowAddFileDialogAndAddCommand { get; private set; }
+
+        /// <summary>
+        /// The package used for this submission
+        /// </summary>
         public Package Package { get; set; }
 
         /// <summary>
@@ -389,7 +406,8 @@ namespace Dynamo.PackageManager
         public PublishPackageViewModel(PackageManagerClient client)
         {
             Client = client;
-            this.SubmitCommand = new DelegateCommand<object>(this.Submit, this.CanSubmit);
+            this.SubmitCommand = new DelegateCommand(this.Submit, this.CanSubmit);
+            this.ShowAddFileDialogAndAddCommand = new DelegateCommand(this.ShowAddFileDialogAndAdd, this.CanShowAddFileDialogAndAdd);
             this.Dependencies = new ObservableCollection<PackageDependency>();
         }
 
@@ -448,55 +466,6 @@ namespace Dynamo.PackageManager
                 this.ErrorString = ((PackageUploadHandle) sender).ErrorString;
                 this.Uploading = false;
             } 
-        }
-
-        /// <summary>
-        /// SubmitCommand property </summary>
-        /// <value>
-        /// A command which, when executed, submits the current package</value>
-        public ICommand SubmitCommand { get; private set; }
-
-        /// <summary>
-        /// Delegate used to submit the element</summary>
-        private void Submit(object arg)
-        {
-
-            try
-            {
-
-                var newpkg = Package == null;
-
-                Package = Package ?? new Package("", this.Name, this.FullVersion);
-
-                Package.VersionName = FullVersion;
-                Package.Description = Description;
-                Package.Group = Group;
-                Package.Keywords = KeywordList;
-
-                var files = GetAllFiles().ToList();
-                
-                Package.Contents = String.Join(", ", GetAllNodeNameDescriptionPairs().Select((pair) => pair.Item1 + " - " + pair.Item2));
-
-                Package.Dependencies.Clear();
-                GetAllDependencies().ToList().ForEach( Package.Dependencies.Add );
-
-                if (newpkg) dynSettings.PackageLoader.LocalPackages.Add( Package );
-
-                var handle = Client.Publish(Package, files, IsNewVersion);
-
-                if (handle == null)
-                    throw new Exception("Failed to authenticate.  Are you logged in?");
-
-                this.Uploading = true;
-                this.UploadHandle = handle;
-
-            }
-            catch (Exception e)
-            {
-                ErrorString = e.Message;
-                Dynamo.DynamoLogger.Instance.Log(e);
-            }
-
         }
 
         private IEnumerable<FunctionDefinition> AllDependentFuncDefs()
@@ -603,9 +572,110 @@ namespace Dynamo.PackageManager
             }
         }
 
+        private void ShowAddFileDialogAndAdd()
+        {
+            // show file open dialog
+            FileDialog fDialog = null;
+
+            if (fDialog == null)
+            {
+                fDialog = new OpenFileDialog()
+                {
+                    Filter = "Dynamo Custom Node Definitions (*.dyf)|*.dyf",
+                    Title = "Add Custom Node To Package..."
+                };
+            }
+
+            // if you've got the current space path, use it as the inital dir
+            if (!string.IsNullOrEmpty(dynSettings.Controller.DynamoViewModel.Model.CurrentWorkspace.FileName))
+            {
+                var fi = new FileInfo(dynSettings.Controller.DynamoViewModel.Model.CurrentWorkspace.FileName);
+                fDialog.InitialDirectory = fi.DirectoryName;
+            }
+            else // use the samples directory, if it exists
+            {
+                Assembly dynamoAssembly = Assembly.GetExecutingAssembly();
+                string location = Path.GetDirectoryName(dynamoAssembly.Location);
+                string path = Path.Combine(location, "definitions");
+
+                if (Directory.Exists(path))
+                {
+                    fDialog.InitialDirectory = path;
+                }
+            }
+
+            if (fDialog.ShowDialog() == DialogResult.OK)
+            {
+                
+                var nodeInfo = dynSettings.Controller.CustomNodeManager.AddFileToPath(fDialog.FileName);
+                if (nodeInfo != null)
+                {
+                    // add the new packages folder to path
+                    dynSettings.Controller.CustomNodeManager.AddDirectoryToSearchPath(Path.GetDirectoryName(fDialog.FileName));
+                    dynSettings.Controller.CustomNodeManager.UpdateSearchPath();
+                    
+                    var funcDef = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(nodeInfo.Guid);
+
+                    if (funcDef != null && this.FunctionDefinitions.All(x => x.FunctionId != funcDef.FunctionId))
+                    {
+                        this.FunctionDefinitions.Add(funcDef);
+                        this.GetAllDependencies();
+                        this.RaisePropertyChanged("PackageContents");
+                    }
+                }
+            }
+        }
+
+        private bool CanShowAddFileDialogAndAdd()
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Delegate used to submit the element</summary>
+        private void Submit()
+        {
+
+            try
+            {
+                var newpkg = Package == null;
+
+                Package = Package ?? new Package("", this.Name, this.FullVersion);
+
+                Package.VersionName = FullVersion;
+                Package.Description = Description;
+                Package.Group = Group;
+                Package.Keywords = KeywordList;
+
+                var files = GetAllFiles().ToList();
+
+                Package.Contents = String.Join(", ", GetAllNodeNameDescriptionPairs().Select((pair) => pair.Item1 + " - " + pair.Item2));
+
+                Package.Dependencies.Clear();
+                GetAllDependencies().ToList().ForEach(Package.Dependencies.Add);
+
+                if (newpkg) dynSettings.PackageLoader.LocalPackages.Add(Package);
+
+                var handle = Client.Publish(Package, files, IsNewVersion);
+
+                if (handle == null)
+                    throw new Exception("Failed to authenticate.  Are you logged in?");
+
+                this.Uploading = true;
+                this.UploadHandle = handle;
+
+            }
+            catch (Exception e)
+            {
+                ErrorString = e.Message;
+                Dynamo.DynamoLogger.Instance.Log(e);
+            }
+
+        }
+
         /// <summary>
         /// Delegate used to submit the element </summary>
-        private bool CanSubmit(object arg)
+        private bool CanSubmit()
         {
 
             if (Description.Length <= 10)

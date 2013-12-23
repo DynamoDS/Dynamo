@@ -55,7 +55,40 @@
                            IsHitTestVisible="False"
                            Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}">Search...</TextBlock>
 
-                <!--<Button Width="80" Grid.Column="1" Click="ButtonBase_OnClick" Style="{DynamicResource ResourceKey=SImageButton}" Tag="..\Images\search_24.png" >Search</Button>-->
+                <Button Width="80" Grid.Column="1" Click="SortButton_OnClick" 
+                        Style="{DynamicResource ResourceKey=STextButton}" >Sort by
+
+                    <Button.ContextMenu>
+
+                        <ContextMenu>
+                            
+                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="NAME" Margin="3" 
+                                      IsCheckable="True" Header="Name"
+                                      IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter},ConverterParameter=NAME, Mode=TwoWay}" />
+                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="LAST_UPDATE" Margin="3" 
+                                      IsCheckable="True" Header="Most Recent Update"
+                                      IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter},ConverterParameter=LAST_UPDATE, Mode=TwoWay}" />
+                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="DOWNLOADS" Margin="3" 
+                                      IsCheckable="True" Header="Downloads"
+                                      IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter},ConverterParameter=DOWNLOADS, Mode=TwoWay}" />
+                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="VOTES" Margin="3" 
+                                      IsCheckable="True" Header="Votes"
+                                      IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter},ConverterParameter=VOTES, Mode=TwoWay}" />
+                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="MAINTAINERS" Margin="3" 
+                                      IsCheckable="True" Header="Author" 
+                                      IsChecked="{Binding Path=SortingKey,Converter={StaticResource EnumToBoolConverter},ConverterParameter=MAINTAINERS, Mode=TwoWay}" />
+                            <Separator></Separator>
+                            <MenuItem Command="{Binding Path=SetSortingDirectionCommand}" CommandParameter="ASCENDING" Margin="3" 
+                                      IsCheckable="True" Header="Ascending"
+                                      IsChecked="{Binding Path=SortingDirection, Converter={StaticResource EnumToBoolConverter},ConverterParameter=ASCENDING, Mode=TwoWay}" />
+                            <MenuItem Command="{Binding Path=SetSortingDirectionCommand}" CommandParameter="DESCENDING" Margin="3" 
+                                      IsCheckable="True" Header="Descending"
+                                      IsChecked="{Binding Path=SortingDirection, Converter={StaticResource EnumToBoolConverter},ConverterParameter=DESCENDING, Mode=TwoWay}" />
+                        </ContextMenu>
+
+                    </Button.ContextMenu>
+
+                </Button>
 
             </Grid>
 
@@ -70,8 +103,6 @@
                                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#111"/>
                                 <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#000" />
                             </Style.Resources>
-
-                            <!--<EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick"/>-->
 
                         </Style>
 
@@ -96,8 +127,8 @@
                                                 </Style.Triggers>
                                             </Style>
                                         </Border.Style>
-                                    
-                                        <StackPanel Width ="445" Name="SearchEle">
+
+                                    <VirtualizingStackPanel Width ="445" Name="SearchEle">
 
                                         <TextBlock Text="DEPRECATED" Padding="5" Foreground ="#555" ToolTip="The maintainers of this package have indicated that they will no longer be updating it.  Use at your own risk!" FontSize="10">
                                             <TextBlock.Style>
@@ -115,60 +146,58 @@
                                             </TextBlock.Style>
                                         </TextBlock>
                                             
-                                        <StackPanel Orientation="Horizontal" Margin="5">
+                                        <VirtualizingStackPanel Orientation="Horizontal" Margin="5">
 
                                             <Border Width="275" BorderThickness ="0,0,1,0" BorderBrush="#222" >
-                                                <StackPanel>
-                                                    <TextBlock FontSize="14" Name="name" Text="{Binding Path=Name}" HorizontalAlignment="Left" Foreground="AliceBlue" Margin="5,5,0,5"/>
-                                                    <TextBlock FontSize="11" Margin="3" Foreground="#777" Text="{Binding Path=Description}" TextWrapping="Wrap" TextTrimming="WordEllipsis" MaxHeight="80"/>
-                                                </StackPanel>
+                                                <VirtualizingStackPanel>
+                                                    <TextBlock FontSize="14" Name="name" Text="{Binding Path=Name}" HorizontalAlignment="Left" Foreground="WhiteSmoke" Margin="5,5,0,5"/>
+                                                    <TextBlock FontSize="12" Text="{Binding Path=Maintainers}" Foreground="#AAA" Margin="5,5,0,5"/>
+                                                    <TextBlock FontSize="11" Margin="3" Foreground="#999" Text="{Binding Path=Description}" TextWrapping="Wrap" TextTrimming="WordEllipsis" MaxHeight="20"/>
+                                                </VirtualizingStackPanel>
                                             </Border>
                                     
                                              <Border>
-                                                <StackPanel Width="170">
+                                                <VirtualizingStackPanel Width="170">
 
-                                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                                    <VirtualizingStackPanel Orientation="Horizontal" Margin="0,0,0,8">
 
-                                                        <StackPanel Orientation="Horizontal" Margin="10,5,5,5" MinWidth="55">
+                                                        <VirtualizingStackPanel Orientation="Horizontal" Margin="10,5,5,5" MinWidth="55">
                                                             <TextBlock FontSize="10" FontWeight="Bold" Text="Installs   " Foreground="Gray" />
                                                             <TextBlock FontSize="10" HorizontalAlignment="Left" MaxWidth="300" TextWrapping ="Wrap" Text="{Binding Path=Downloads}" Foreground="Gray"  />
-                                                        </StackPanel>
+                                                        </VirtualizingStackPanel>
 
                                                         <Border Margin="5,5,5,5" MinWidth="40" MaxWidth="40">
                                                             <TextBlock FontSize="10" HorizontalAlignment="Right" MaxWidth="300" TextWrapping ="Wrap" Text="{Binding Path=Votes}" Foreground="Gray"  />
                                                         </Border>
 
-                                                        <StackPanel Orientation="Horizontal" >
-                                                            <Button Name="UpvoteButton" ToolTip="Vote in support of this package" HorizontalAlignment="Right" Content="↑" Command="{Binding Path=UpvoteCommand}" Style="{DynamicResource ResourceKey=SBadgeButton}" />
-                                                            <Button Name="DownvoteButton" ToolTip="Downvote to voice lack of support for this package" HorizontalAlignment="Right" Content="↓" Command="{Binding Path=DownvoteCommand}" Style="{DynamicResource ResourceKey=SBadgeButton}" />
-                                                        </StackPanel>
+                                                        <VirtualizingStackPanel Orientation="Horizontal" >
+                                                            <Button Name="UpvoteButton" ToolTip="Vote in support of this package" HorizontalAlignment="Right" Content="↑" Padding="10" Command="{Binding Path=UpvoteCommand}" Style="{DynamicResource ResourceKey=SBadgeButton}" />
+                                                            <Button Name="DownvoteButton" ToolTip="Downvote to voice lack of support for this package" HorizontalAlignment="Right" Content="↓" Padding="10" Command="{Binding Path=DownvoteCommand}" Style="{DynamicResource ResourceKey=SBadgeButton}" />
+                                                        </VirtualizingStackPanel>
                                                         
-                                                    </StackPanel>
-                                                
-                                                    <StackPanel Orientation="Vertical" Margin="5,0,5,5">
-                                                        <StackPanel Orientation="Horizontal" Margin="0">
-                                                            <Button Name="LatestButton" Width="90" ToolTip="Download latest version" HorizontalAlignment="Right" Content="⇓ Install" Command="{Binding Path=DownloadLatest}" Style="{DynamicResource ResourceKey=SBadgeButton}" />
-                                                            <Button Name="ExpandButton" Width="60" ToolTip="See more package versions, maintainers, and more..." HorizontalAlignment="Right" Content="↴ More" Command="{Binding Path=ToggleIsExpanded}" Style="{DynamicResource ResourceKey=SBadgeButton}" />
-                                                        </StackPanel>
-                                                    </StackPanel>
+                                                    </VirtualizingStackPanel>
 
-                                                </StackPanel>
+                                                    <VirtualizingStackPanel Orientation="Vertical" Margin="5,0,5,5">
+                                                        <VirtualizingStackPanel Orientation="Horizontal" Margin="0">
+                                                            <Button Name="LatestButton" Width="90" ToolTip="Install latest version" HorizontalAlignment="Right" Content="⇓ Install" Command="{Binding Path=DownloadLatest}" Style="{DynamicResource ResourceKey=SBadgeButton}" />
+                                                            <Button Name="ExpandButton" Width="60" ToolTip="See more package versions and more..." HorizontalAlignment="Right" Content="↴ More" Command="{Binding Path=ToggleIsExpanded}" Style="{DynamicResource ResourceKey=SBadgeButton}" />
+                                                        </VirtualizingStackPanel>
+                                                    </VirtualizingStackPanel>
+
+                                                </VirtualizingStackPanel>
                                              </Border>
-                                        </StackPanel>
+                                        </VirtualizingStackPanel>
 
-                                        <StackPanel Visibility="{Binding Path=IsExpanded, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" Background="#222">
+                                        <VirtualizingStackPanel Visibility="{Binding Path=IsExpanded, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" Background="#222">
 
-                                            <StackPanel Orientation="Horizontal" Margin="10,10,0,0" Visibility="{Binding Path=Keywords, Converter={StaticResource EmptyStringToCollapsedConverter}}">
+                                            <TextBlock FontSize="11" Foreground="WhiteSmoke" Text="{Binding Path=Description}" TextWrapping="Wrap" Margin="10,10,10,0" />
+
+                                            <VirtualizingStackPanel Orientation="Horizontal" Margin="10,10,0,0" Visibility="{Binding Path=Keywords, Converter={StaticResource EmptyStringToCollapsedConverter}}">
                                                 <TextBlock FontSize="11" FontWeight="Bold" Text="Keywords: " Foreground="WhiteSmoke"  Padding="0,0,5,0"/>
                                                 <TextBlock FontSize="11" Text="{Binding Path=Keywords}" Foreground="WhiteSmoke" />
-                                            </StackPanel>
-                                        
-                                            <StackPanel Orientation="Horizontal" Margin="10,10,0,0">
-                                                <TextBlock FontSize="11" FontWeight="Bold" Text="Maintainers: " Foreground="WhiteSmoke"  Padding="0,0,5,0"/>
-                                                <TextBlock FontSize="11" Text="{Binding Path=Maintainers}" Foreground="WhiteSmoke" />
-                                            </StackPanel>
+                                            </VirtualizingStackPanel>
 
-                                            <StackPanel Orientation="Horizontal" Margin="10,10,0,10">
+                                            <VirtualizingStackPanel Orientation="Horizontal" Margin="10,10,0,10">
                                                 <TextBlock FontSize="11" FontWeight="Bold" Text="Versions: " Foreground="WhiteSmoke"  Padding="0,0,5,0"/>
                                                 <ListBox Name="Versions" ItemsSource="{Binding Path=Versions}" BorderThickness="0" Padding="0" Margin="10,0,0,0" Background="Transparent" >
 
@@ -192,11 +221,11 @@
                                                     </ListBox.ItemTemplate>
 
                                                 </ListBox>
-                                            </StackPanel>
-                                        </StackPanel>
+                                            </VirtualizingStackPanel>
+                                        </VirtualizingStackPanel>
 
 
-                                    </StackPanel>
+                                    </VirtualizingStackPanel>
                                     
                                 </Border>
                             </Border>
