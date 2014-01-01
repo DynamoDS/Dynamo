@@ -803,13 +803,10 @@ namespace Dynamo.Models
             IEnumerable<ConnectorModel> outConnectors = _outPorts.SelectMany(x => x.Connectors);
             IEnumerable<ConnectorModel> inConnectors = _inPorts.SelectMany(x => x.Connectors);
 
-            foreach (
-                ConnectorModel c in outConnectors.Where(c => !DynamoSelection.Instance.Selection.Contains(c.End.Owner)))
+            foreach (var c in outConnectors.Where(c => !DynamoSelection.Instance.Selection.Contains(c.End.Owner)))
                 DynamoSelection.Instance.Selection.Add(c.End.Owner);
 
-            foreach (
-                ConnectorModel c in inConnectors.Where(c => !DynamoSelection.Instance.Selection.Contains(c.Start.Owner))
-                )
+            foreach (var c in inConnectors.Where(c => !DynamoSelection.Instance.Selection.Contains(c.Start.Owner)))
                 DynamoSelection.Instance.Selection.Add(c.Start.Owner);
         }
 
