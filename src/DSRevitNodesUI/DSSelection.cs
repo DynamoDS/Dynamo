@@ -7,10 +7,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using Autodesk.Revit.DB;
-using DSCoreNodes;
 using DSRevitNodes.Interactivity;
 using Dynamo;
 using Dynamo.Controls;
+using Dynamo.Models;
 using Dynamo.Nodes;
 using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
@@ -19,7 +19,7 @@ using Binding = System.Windows.Data.Binding;
 
 namespace DSRevitNodes.Elements
 {
-    public abstract class DSSelectionBase<T> : NodeWithUI 
+    public abstract class DSSelectionBase<T> : NodeModel 
     {
         private T _selected;
         private bool _canSelect;
@@ -142,8 +142,8 @@ namespace DSRevitNodes.Elements
         protected abstract void OnSelectClick();
 
         #region public methods
-        
-        public override Node BuildAst()
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             AssociativeNode node = null;
 
@@ -210,7 +210,8 @@ namespace DSRevitNodes.Elements
 
                 node = AstFactory.BuildExprList(newInputs);
             }
-            return node;
+
+            return new [] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
         }
 
         #endregion

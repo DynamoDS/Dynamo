@@ -1,4 +1,6 @@
-﻿using Autodesk.Revit.DB;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Autodesk.Revit.DB;
 using DSRevitNodes.Elements;
 using NUnit.Framework;
 using ProtoCore.AST.AssociativeAST;
@@ -17,16 +19,14 @@ namespace Dynamo.Tests
             var sel = DSSelection<Element>.SelectElement();
             sel.SelectedElement = element.InternalElement;
 
-            var buildOutput = sel.BuildAst();
+            var buildOutput = sel.BuildOutputAst(new List<AssociativeNode>());
 
-            Assert.IsInstanceOf<FunctionCallNode>(buildOutput);
-
-            var funCall = buildOutput as FunctionCallNode;
+            var funCall = (FunctionCallNode)((BinaryExpressionNode)buildOutput.First()).RightNode;
 
             Assert.IsInstanceOf<IdentifierNode>(funCall.Function);
             Assert.AreEqual(1, funCall.FormalArguments.Count);
             Assert.IsInstanceOf<IntNode>(funCall.FormalArguments[0]);
-            Assert.AreEqual(element.InternalElement.Id.IntegerValue.ToString(), (funCall.FormalArguments[0] as IntNode).value);
+            Assert.AreEqual(element.InternalElement.Id.IntegerValue.ToString(), ((IntNode)funCall.FormalArguments[0]).value);
         }
     }
 }
