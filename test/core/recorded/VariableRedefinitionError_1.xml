@@ -1,0 +1,20 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="6dc725c0-f1ee-4fb8-b1fa-d98371c8b8f0" NodeName="Code Block" X="160" Y="178" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="6dc725c0-f1ee-4fb8-b1fa-d98371c8b8f0" Name="Code" Value="a = 4" />
+  <SelectInRegionCommand X="227" Y="191" Width="2" Height="0" IsCrossSelection="false" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="527a0877-0efd-4520-b3c2-5db486353d2d" NodeName="Code Block" X="247" Y="328" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="527a0877-0efd-4520-b3c2-5db486353d2d" Name="Code" Value="b = 6" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="7a998dd3-6dbb-4e5a-908e-3d3faa33a558" NodeName="Code Block" X="445" Y="195" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="7a998dd3-6dbb-4e5a-908e-3d3faa33a558" Name="Code" Value="b = 7" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="8dc7c3da-f281-4641-9619-7f26045ad180" NodeName="Code Block" X="474" Y="387" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="8dc7c3da-f281-4641-9619-7f26045ad180" Name="Code" Value="a = 3;&#xD;&#xA;b = 9;" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+</Commands>

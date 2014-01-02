@@ -54,26 +54,6 @@ namespace Dynamo.Nodes
         }
 
         /// <summary>
-        ///     It removes all the in ports and out ports so that the user knows there is an error.
-        /// </summary>
-        /// <param name="errorMessage"> Error message to be displayed </param>
-        public void ProcessError()
-        {
-            DynamoLogger.Instance.Log("Error in Code Block Node");
-
-            //Remove all ports
-            int size = InPortData.Count;
-            for (int i = 0; i < size; i++)
-                InPortData.RemoveAt(0);
-            size = OutPortData.Count;
-            for (int i = 0; i < size; i++)
-                OutPortData.RemoveAt(0);
-            RegisterAllPorts();
-
-            previewVariable = null;
-        }
-
-        /// <summary>
         /// Formats user text by :
         /// 1.Removing whitespaces form the front and back (whitespaces -> space, tab or enter)
         /// 2.Removes unnecessary semi colons
@@ -124,6 +104,35 @@ namespace Dynamo.Nodes
             return cbn.inputIdentifiers.IndexOf(variableName);
         }
 
+        /// <summary>
+        /// Makes sure that all variables defined in the code block node passed are not
+        /// redefinitions of variables defined in other nodes
+        /// If there is a redefinition, it then sets to node to an Error state
+        /// </summary>
+        /// <param name="cbn"> The code block node whose variables need to be validated </param>
+        public static void ValidateDefinedVariables(CodeBlockNodeModel cbn)
+        {
+            //Make sure that the node did not have any parse error
+            if (cbn.GetDefinedVariableNames().Count == 0 && cbn.State == ElementState.Error)
+                return;
+
+            //Get the variable definitons from the VariableMap in workspace and assert that
+            //the variables are defined in this node
+            foreach (string variable in cbn.GetDefinedVariableNames())
+            {
+                var ownerGuid = cbn.WorkSpace.GetDefiningNode(variable);
+                if (ownerGuid != cbn.GUID)
+                {
+                    cbn.Error(variable + " is redefined!");
+                    return;
+                }
+            }
+
+            //If it is correct, then validate the connections of the node
+            cbn.State = ElementState.Active;
+            cbn.ValidateConnections();
+        }
+
         #endregion
 
         #region Properties
@@ -168,6 +177,9 @@ namespace Dynamo.Nodes
 
                             //Recreate connectors that can be reused
                             LoadAndCreateConnectors(inportConnections, outportConnections);
+
+                            this.WorkSpace.UpdateDefinedVariables(this);
+
                             WorkSpace.UndoRecorder.EndActionGroup();
                         }
                         RaisePropertyChanged("Code");
@@ -177,8 +189,12 @@ namespace Dynamo.Nodes
                             WorkSpace.Modified();
                         EnableReporting();
 
+                        //Error messages must change the state only after enable reporting is set
+                        //Hence functions must be recalled here
                         if (errorMessage != null)
                             Error(errorMessage);
+                        else
+                            CodeBlockNodeModel.ValidateDefinedVariables(this);
                     }
                     else
                         code = null;
@@ -213,6 +229,7 @@ namespace Dynamo.Nodes
             base.SaveNode(xmlDoc, nodeElement, context);
             var helper = new XmlElementHelper(nodeElement);
             helper.SetAttribute("CodeText", code);
+            helper.SetAttribute("CodeToParse", codeToParse); //Save the random generated variable names as well
             helper.SetAttribute("ShouldFocus", shouldFocus);
         }
 
@@ -220,8 +237,17 @@ namespace Dynamo.Nodes
         {
             base.LoadNode(nodeElement);
             var helper = new XmlElementHelper(nodeElement as XmlElement);
-            code = helper.ReadString("CodeText");
+            try //Try to read the CodeToParse attribute. This may not be created for all files
+            {
+                code = helper.ReadString("CodeToParse");
+            }
+            catch //If it was not present, then use the CodeText property only
+            {
+                code = helper.ReadString("CodeText");
+            }
             ProcessCodeDirect();
+            //After using the CodeToParse to process the node, change the code back to the user text
+            code = helper.ReadString("CodeText"); 
             shouldFocus = helper.ReadBoolean("ShouldFocus");
         }
 
@@ -261,11 +287,19 @@ namespace Dynamo.Nodes
             return base.UpdateValueCore(name, value);
         }
 
+        public override void Destroy()
+        {
+            base.Destroy();
+            this.codeStatements.Clear();
+            this.WorkSpace.UpdateDefinedVariables(this);
+        }
+
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
             base.SerializeCore(element, context);
             var helper = new XmlElementHelper(element);
             helper.SetAttribute("CodeText", code);
+            helper.SetAttribute("CodeToParse", codeToParse); //Save the randomly generated temp names as well
             helper.SetAttribute("ShouldFocus", shouldFocus);
         }
 
@@ -276,8 +310,17 @@ namespace Dynamo.Nodes
             {
                 var helper = new XmlElementHelper(element);
                 shouldFocus = helper.ReadBoolean("ShouldFocus");
-                code = helper.ReadString("CodeText");
+                try //Try to read the parsed code. It may not be there for all files
+                {
+                    code = helper.ReadString("CodeToParse");
+                }
+                catch //If it is not present, use the CodeText attribute only
+                {
+                    code = helper.ReadString("CodeText");
+                }
                 ProcessCodeDirect();
+                //After using the parsed code for processing, change it back to the user typed code
+                code = helper.ReadString("CodeText");
             }
         }
 
@@ -373,10 +416,10 @@ namespace Dynamo.Nodes
             ProcessCode(ref errorMessage);
             RaisePropertyChanged("Code");
             RequiresRecalc = true;
-            if (WorkSpace != null)
-                WorkSpace.Modified();
             if (errorMessage != null)
                 Error(errorMessage);
+            if (WorkSpace != null)
+                WorkSpace.Modified();
         }
 
         private void ProcessCode(ref string errorMessage)
@@ -426,7 +469,6 @@ namespace Dynamo.Nodes
                 {
                     if (errors == null)
                     {
-                        ProcessError();
                         errorMessage = "Errors not getting sent from compiler to UI";
                     }
 
@@ -438,26 +480,13 @@ namespace Dynamo.Nodes
                         for (; i < errors.Count - 1; i++)
                             errorMessage += (errors[i].Message + "\n");
                         errorMessage += errors[i].Message;
-                        ProcessError();
                     }
-                    return;
                 }
             }
             catch (Exception e)
             {
                 errorMessage = e.Message;
                 previewVariable = null;
-                ProcessError();
-                return;
-            }
-
-            //Make sure variables have not been declared in other Code block nodes.
-            string redefinedVariable = this.WorkSpace.GetFirstRedefinedVariable(this);
-            if (redefinedVariable != null)
-            {
-                ProcessError();
-                errorMessage = redefinedVariable + " is already defined";
-                return;
             }
 
             SetPorts(unboundIdentifiers); //Set the input and output ports based on the statements
