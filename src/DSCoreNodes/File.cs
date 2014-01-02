@@ -48,7 +48,7 @@ namespace DSCoreNodes
                 }
             }
 
-            public override void SetupCustomUIElements(dynNodeView view)
+            public void SetupCustomUIElements(dynNodeView view)
             {
                 //add a button to the inputGrid on the dynElement
                 var readFileButton = new NodeButton

@@ -35,7 +35,7 @@ namespace Dynamo.Nodes
 {
     public abstract partial class VariableInput
     {
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public void SetupCustomUIElements(dynNodeView nodeUI)
         {
             var addButton = new NodeButton
             {
@@ -113,7 +113,7 @@ namespace Dynamo.Nodes
 
     public partial class VariableInputAndOutput
     {
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public void SetupCustomUIElements(dynNodeView nodeUI)
         {
             var addButton = new NodeButton
             {
@@ -180,7 +180,7 @@ namespace Dynamo.Nodes
 
     public partial class Sublists
     {
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a text box to the input grid of the control
             var tb = new DynamoTextBox
@@ -222,7 +222,7 @@ namespace Dynamo.Nodes
 
     public partial class Breakpoint
     {
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a text box to the input grid of the control
             var button = new NodeButton
@@ -258,7 +258,7 @@ namespace Dynamo.Nodes
 
     public abstract partial class BasicInteractive<T>
     {
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public virtual void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add an edit window option to the 
             //main context window
@@ -273,9 +273,10 @@ namespace Dynamo.Nodes
         }
     }
 
+
     public partial class DoubleInput
     {
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a text box to the input grid of the control
             var tb = new DynamoTextBox(Value ?? "0.0")
@@ -317,7 +318,7 @@ namespace Dynamo.Nodes
     //public partial class AngleInput : DoubleInput
     //{
 
-    //    public override void SetupCustomUIElements(object ui)
+    //    public override void InitializeUI(object ui)
     //    {
     //        var nodeUI = ui as dynNodeView;
 
@@ -348,6 +349,8 @@ namespace Dynamo.Nodes
     {
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
+            //base.SetupCustomUIElements(nodeUI);
+
             //add a slider control to the input grid of the control
             var tbSlider = new DynamoSlider(this)
             {
@@ -481,6 +484,8 @@ namespace Dynamo.Nodes
     {
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
+            //base.SetupCustomUIElements(nodeUI);
+
             //add a slider control to the input grid of the control
             var tbSlider = new DynamoSlider(this)
             {
@@ -616,6 +621,8 @@ namespace Dynamo.Nodes
     {
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
+            //base.SetupCustomUIElements(nodeUI);
+
             //add a text box to the input grid of the control
             var rbTrue = new RadioButton();
             var rbFalse = new RadioButton();
@@ -673,8 +680,6 @@ namespace Dynamo.Nodes
     {
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            base.SetupCustomUIElements(nodeUI);
-
             //add a text box to the input grid of the control
             var tb = new StringTextBox
             {
@@ -721,6 +726,8 @@ namespace Dynamo.Nodes
     {
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
+            //base.SetupCustomUIElements(nodeUI);
+
             //add a button to the inputGrid on the dynElement
             var readFileButton = new NodeButton
             {
@@ -781,9 +788,9 @@ namespace Dynamo.Nodes
 
     public abstract partial class DropDrownBase
     {
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            base.SetupCustomUIElements(nodeUI);
+            base.InitializeUI(nodeUI);
 
             //add a drop down list to the window
             var combo = new ComboBox
@@ -822,7 +829,7 @@ namespace Dynamo.Nodes
 
     public abstract partial class Enum
     {
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public void SetupCustomUIElements(dynNodeView nodeUI)
         {
             var comboBox = new ComboBox
             {
@@ -852,7 +859,7 @@ namespace Dynamo.Nodes
 
     public partial class Formula
     {
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public void SetupCustomUIElements(dynNodeView nodeUI)
         {
             var tb = new DynamoTextBox(FormulaString)
             {
@@ -891,7 +898,7 @@ namespace Dynamo.Nodes
 
     public partial class CodeBlockNodeModel
     {
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public void SetupCustomUIElements(dynNodeView nodeUI)
         {
             var tb = new CodeNodeTextBox(Code)
             {
@@ -929,7 +936,7 @@ namespace Dynamo.Nodes
 
     public partial class Output
     {
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a text box to the input grid of the control
             var tb = new DynamoTextBox(Symbol)
@@ -967,7 +974,7 @@ namespace Dynamo.Nodes
 
     public partial class Symbol
     {
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a text box to the input grid of the control
             var tb = new DynamoTextBox(InputSymbol)
@@ -1005,7 +1012,7 @@ namespace Dynamo.Nodes
 
     public partial class Watch
     {
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public void SetupCustomUIElements(dynNodeView nodeUI)
         {
             watchTree = new WatchTree();
 
@@ -1162,7 +1169,7 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewList(FSharpList<FScheme.Value>.Empty);
         }
 
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public void SetupCustomUIElements(dynNodeView nodeUI)
         {
             _image1 = new Image
             {

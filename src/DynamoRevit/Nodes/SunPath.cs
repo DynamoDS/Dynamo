@@ -38,7 +38,7 @@ namespace Dynamo.Nodes
             _pickedSunAndShadowSettings = null;
         }
 
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a button to the inputGrid on the dynElement
             sunPathButt = new NodeButton

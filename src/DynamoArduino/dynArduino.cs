@@ -126,7 +126,7 @@ namespace Dynamo.Nodes
             return Value.NewContainer(port); // pass the port downstream
         }
 
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public void SetupCustomUIElements(dynNodeView nodeUI)
         {
             string[] serialPortNames = SerialPort.GetPortNames();
 

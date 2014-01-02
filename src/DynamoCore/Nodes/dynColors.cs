@@ -214,9 +214,9 @@ namespace Dynamo.Nodes
             return Value.NewContainer(returnColor);
         }
 
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            base.SetupCustomUIElements(nodeUI);
+            base.InitializeUI(nodeUI);
             
             var drawPlane = new Image
                 {
