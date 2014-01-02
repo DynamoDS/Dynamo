@@ -15,6 +15,7 @@ using Dynamo.Tests;
 using Dynamo.ViewModels;
 using Microsoft.FSharp.Collections;
 using NUnit.Framework;
+using RevitServices.Persistence;
 using CurveByPoints = Autodesk.Revit.DB.CurveByPoints;
 using DividedSurface = Autodesk.Revit.DB.DividedSurface;
 using ModelCurve = Autodesk.Revit.DB.ModelCurve;
@@ -61,8 +62,8 @@ namespace Dynamo.Tests
 
             _emptyModelPath = Path.Combine(_testPath, "empty.rfa");
 
-            if (dynRevitSettings.Revit.Application.VersionNumber.Contains("2014") &&
-                dynRevitSettings.Revit.Application.VersionName.Contains("Vasari"))
+            if (DocumentManager.GetInstance().CurrentUIApplication.Application.VersionNumber.Contains("2014") &&
+                DocumentManager.GetInstance().CurrentUIApplication.Application.VersionName.Contains("Vasari"))
             {
                 _emptyModelPath = Path.Combine(_testPath, "emptyV.rfa");
                 _emptyModelPath1 = Path.Combine(_testPath, "emptyV1.rfa");
@@ -107,8 +108,8 @@ namespace Dynamo.Tests
 
                 SketchPlane sp1 = dynRevitSettings.Doc.Document.FamilyCreate.NewSketchPlane(p1);
                 SketchPlane sp2 = dynRevitSettings.Doc.Document.FamilyCreate.NewSketchPlane(p2);
-                Curve c1 = dynRevitSettings.Revit.Application.Create.NewLineBound(XYZ.Zero, new XYZ(1, 0, 0));
-                Curve c2 = dynRevitSettings.Revit.Application.Create.NewLineBound(new XYZ(0, 0, 5), new XYZ(1, 0, 5));
+                Curve c1 = DocumentManager.GetInstance().CurrentUIApplication.Application.Create.NewLineBound(XYZ.Zero, new XYZ(1, 0, 0));
+                Curve c2 = DocumentManager.GetInstance().CurrentUIApplication.Application.Create.NewLineBound(new XYZ(0, 0, 5), new XYZ(1, 0, 5));
                 mc1 = dynRevitSettings.Doc.Document.FamilyCreate.NewModelCurve(c1, sp1);
                 mc2 = dynRevitSettings.Doc.Document.FamilyCreate.NewModelCurve(c2, sp2);
 
@@ -130,7 +131,7 @@ namespace Dynamo.Tests
                 Plane p1 = new Plane(XYZ.BasisZ, XYZ.Zero);
 
                 SketchPlane sp1 = dynRevitSettings.Doc.Document.FamilyCreate.NewSketchPlane(p1);
-                Curve c1 = dynRevitSettings.Revit.Application.Create.NewLineBound(XYZ.Zero, new XYZ(1, 0, 0));
+                Curve c1 = DocumentManager.GetInstance().CurrentUIApplication.Application.Create.NewLineBound(XYZ.Zero, new XYZ(1, 0, 0));
                 mc1 = dynRevitSettings.Doc.Document.FamilyCreate.NewModelCurve(c1, sp1);
 
                 _trans.Commit();
@@ -143,7 +144,7 @@ namespace Dynamo.Tests
         protected void SwapCurrentModel(string modelPath)
         {
             Document initialDoc = dynRevitSettings.Doc.Document;
-            dynRevitSettings.Revit.OpenAndActivateDocument(modelPath);
+            DocumentManager.GetInstance().CurrentUIApplication.OpenAndActivateDocument(modelPath);
             initialDoc.Close(false);
         }
 

@@ -228,7 +228,7 @@ namespace Dynamo.Tests
             var fecLevel = new FilteredElementCollector(DocumentManager.GetInstance().CurrentDBDocument);
             fecLevel.OfClass(typeof(Level));
 
-            dynRevitSettings.Revit = DocumentManager.GetInstance().CurrentUIApplication;
+            DocumentManager.GetInstance().CurrentUIApplication = DocumentManager.GetInstance().CurrentUIApplication;
             dynRevitSettings.Doc = DocumentManager.GetInstance().CurrentUIDocument;
             dynRevitSettings.DefaultLevel = defaultLevel;
 
