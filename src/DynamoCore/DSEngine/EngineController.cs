@@ -17,7 +17,7 @@ namespace Dynamo.DSEngine
     /// A controller to coordinate the interactions between some DesignScript
     /// sub components like library managment, live runner and so on.
     /// </summary>
-    public class EngineController: IAstNodeContainer
+    public class EngineController: IAstNodeContainer, IDisposable
     {
         private LiveRunnerServices liveRunnerServices;
         private LibraryServices libraryServices;
@@ -25,6 +25,7 @@ namespace Dynamo.DSEngine
         private SyncDataManager syncDataManager;
         private Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
         private int shortVarCounter = 0;
+        private DynamoController controller;
 
         internal EngineController(DynamoController controller, bool isReset)
         {
@@ -41,7 +42,19 @@ namespace Dynamo.DSEngine
 
             astBuilder = new AstBuilder(this);
             syncDataManager = new SyncDataManager();
-            controller.DynamoModel.NodeDeleted += NodeDeleted;
+
+            this.controller = controller;
+            this.controller.DynamoModel.NodeDeleted += NodeDeleted;
+        }
+
+        public void Dispose()
+        {
+            this.controller.DynamoModel.NodeDeleted -= NodeDeleted;
+            liveRunnerServices.Dispose();
+
+            libraryServices.LibraryLoading -= this.LibraryLoading;
+            libraryServices.LibraryLoadFailed -= this.LibraryLoadFailed;
+            libraryServices.LibraryLoaded -= this.LibraryLoaded;
         }
 
         /// <summary>
