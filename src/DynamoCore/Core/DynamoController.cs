@@ -288,6 +288,9 @@ namespace Dynamo
 
         public virtual void ShutDown()
         {
+            EngineController.Dispose();
+            EngineController = null;
+
             PreferenceSettings.Save();
 
             VisualizationManager.ClearVisualizations();
@@ -601,6 +604,9 @@ namespace Dynamo
 
         public void ResetEngine()
         {
+            if (EngineController != null)
+                EngineController.Dispose();
+
             EngineController = new EngineController(this, true);
         }
 
