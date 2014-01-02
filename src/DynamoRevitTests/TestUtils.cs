@@ -2,6 +2,7 @@
 using System.Linq;
 using Autodesk.Revit.DB;
 using Dynamo.Utilities;
+using RevitServices.Persistence;
 
 namespace Dynamo.Tests
 {
@@ -14,7 +15,7 @@ namespace Dynamo.Tests
         /// <returns></returns>
         public static IEnumerable<FamilyInstance> GetAllFamilyInstancesWithTypeName(string typeName)
         {
-            FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
             fec.OfClass(typeof(FamilyInstance));
             return fec.ToElements().Where(x => ((FamilyInstance)x).Symbol.Name == typeName).Cast<FamilyInstance>();
         }

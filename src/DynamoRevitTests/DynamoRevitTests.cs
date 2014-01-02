@@ -99,19 +99,19 @@ namespace Dynamo.Tests
         protected void CreateTwoModelCurves(out ModelCurve mc1, out ModelCurve mc2)
         {
             //create two model curves 
-            using (_trans = _trans = new Transaction(dynRevitSettings.Doc.Document, "CreateTwoModelCurves"))
+            using (_trans = _trans = new Transaction(DocumentManager.GetInstance().CurrentUIDocument.Document, "CreateTwoModelCurves"))
             {
                 _trans.Start();
 
                 Plane p1 = new Plane(XYZ.BasisZ, XYZ.Zero);
                 Plane p2 = new Plane(XYZ.BasisZ, new XYZ(0, 0, 5));
 
-                SketchPlane sp1 = dynRevitSettings.Doc.Document.FamilyCreate.NewSketchPlane(p1);
-                SketchPlane sp2 = dynRevitSettings.Doc.Document.FamilyCreate.NewSketchPlane(p2);
+                SketchPlane sp1 = DocumentManager.GetInstance().CurrentUIDocument.Document.FamilyCreate.NewSketchPlane(p1);
+                SketchPlane sp2 = DocumentManager.GetInstance().CurrentUIDocument.Document.FamilyCreate.NewSketchPlane(p2);
                 Curve c1 = DocumentManager.GetInstance().CurrentUIApplication.Application.Create.NewLineBound(XYZ.Zero, new XYZ(1, 0, 0));
                 Curve c2 = DocumentManager.GetInstance().CurrentUIApplication.Application.Create.NewLineBound(new XYZ(0, 0, 5), new XYZ(1, 0, 5));
-                mc1 = dynRevitSettings.Doc.Document.FamilyCreate.NewModelCurve(c1, sp1);
-                mc2 = dynRevitSettings.Doc.Document.FamilyCreate.NewModelCurve(c2, sp2);
+                mc1 = DocumentManager.GetInstance().CurrentUIDocument.Document.FamilyCreate.NewModelCurve(c1, sp1);
+                mc2 = DocumentManager.GetInstance().CurrentUIDocument.Document.FamilyCreate.NewModelCurve(c2, sp2);
 
                 _trans.Commit();
             }
@@ -124,15 +124,15 @@ namespace Dynamo.Tests
         protected void CreateOneModelCurve(out ModelCurve mc1)
         {
             //create two model curves 
-            using (_trans = _trans = new Transaction(dynRevitSettings.Doc.Document, "CreateTwoModelCurves"))
+            using (_trans = _trans = new Transaction(DocumentManager.GetInstance().CurrentUIDocument.Document, "CreateTwoModelCurves"))
             {
                 _trans.Start();
 
                 Plane p1 = new Plane(XYZ.BasisZ, XYZ.Zero);
 
-                SketchPlane sp1 = dynRevitSettings.Doc.Document.FamilyCreate.NewSketchPlane(p1);
+                SketchPlane sp1 = DocumentManager.GetInstance().CurrentUIDocument.Document.FamilyCreate.NewSketchPlane(p1);
                 Curve c1 = DocumentManager.GetInstance().CurrentUIApplication.Application.Create.NewLineBound(XYZ.Zero, new XYZ(1, 0, 0));
-                mc1 = dynRevitSettings.Doc.Document.FamilyCreate.NewModelCurve(c1, sp1);
+                mc1 = DocumentManager.GetInstance().CurrentUIDocument.Document.FamilyCreate.NewModelCurve(c1, sp1);
 
                 _trans.Commit();
             }
@@ -143,7 +143,7 @@ namespace Dynamo.Tests
         /// </summary>
         protected void SwapCurrentModel(string modelPath)
         {
-            Document initialDoc = dynRevitSettings.Doc.Document;
+            Document initialDoc = DocumentManager.GetInstance().CurrentUIDocument.Document;
             DocumentManager.GetInstance().CurrentUIApplication.OpenAndActivateDocument(modelPath);
             initialDoc.Close(false);
         }

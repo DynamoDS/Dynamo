@@ -11,6 +11,7 @@ using Microsoft.FSharp.Collections;
 
 using Dynamo.Utilities;
 using RevitServices.Elements;
+using RevitServices.Persistence;
 using RevitServices.Threading;
 using ChangeType = RevitServices.Elements.ChangeType;
 using Value = Dynamo.FScheme.Value;
@@ -28,7 +29,7 @@ namespace Dynamo.Revit
         //TODO: Move from dynElementSettings to another static area in DynamoRevit
         protected Autodesk.Revit.UI.UIDocument UIDocument
         {
-            get { return dynRevitSettings.Doc; }
+            get { return DocumentManager.GetInstance().CurrentUIDocument; }
         }
 
         // this contains a list of all the elements created over all previous
@@ -319,7 +320,7 @@ namespace Dynamo.Revit
                            {
                                try
                                {
-                                   dynRevitSettings.Doc.Document.Delete(e);
+                                   DocumentManager.GetInstance().CurrentUIDocument.Document.Delete(e);
                                }
                                catch (Autodesk.Revit.Exceptions.InvalidOperationException)
                                {

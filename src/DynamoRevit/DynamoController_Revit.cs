@@ -108,7 +108,7 @@ namespace Dynamo
 
                     if (_keeperId != ElementId.InvalidElementId)
                     {
-                        dynRevitSettings.Doc.Document.Delete(_keeperId);
+                        DocumentManager.GetInstance().CurrentUIDocument.Document.Delete(_keeperId);
                         _keeperId = ElementId.InvalidElementId;
                     }
 
@@ -228,7 +228,7 @@ namespace Dynamo
                 return;
             }
 
-            var styles = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            var styles = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
             styles.OfClass(typeof(GraphicsStyle));
 
             var gStyle = styles.ToElements().FirstOrDefault(x => x.Name == "Dynamo");
@@ -240,12 +240,12 @@ namespace Dynamo
 
                     if (_keeperId != ElementId.InvalidElementId)
                     {
-                        dynRevitSettings.Doc.Document.Delete(_keeperId);
+                        DocumentManager.GetInstance().CurrentUIDocument.Document.Delete(_keeperId);
                         _keeperId = ElementId.InvalidElementId;
                     }
 
                     var argsM = new object[4];
-                    argsM[0] = dynRevitSettings.Doc.Document;
+                    argsM[0] = DocumentManager.GetInstance().CurrentUIDocument.Document;
                     argsM[1] = ElementId.InvalidElementId;
                     argsM[2] = geoms;
                     if (gStyle != null)
@@ -302,7 +302,7 @@ namespace Dynamo
         private void FindNodesFromSelection()
         {
             var selectedIds =
-                dynRevitSettings.Doc.Selection.Elements.Cast<Element>().Select(x => x.Id);
+                DocumentManager.GetInstance().CurrentUIDocument.Selection.Elements.Cast<Element>().Select(x => x.Id);
             var transNodes =
                 dynSettings.Controller.DynamoModel.CurrentWorkspace.Nodes
                            .OfType<RevitTransactionNode>();
@@ -323,9 +323,9 @@ namespace Dynamo
         private void Application_DocumentOpened(object sender, DocumentOpenedEventArgs e)
         {
             //when a document is opened 
-            if (dynRevitSettings.Doc == null)
+            if (DocumentManager.GetInstance().CurrentUIDocument == null)
             {
-                dynRevitSettings.Doc = DocumentManager.GetInstance().CurrentUIApplication.ActiveUIDocument;
+                DocumentManager.GetInstance().CurrentUIDocument = DocumentManager.GetInstance().CurrentUIApplication.ActiveUIDocument;
                 DynamoViewModel.RunEnabled = true;
 
                 ResetForNewDocument();
@@ -337,15 +337,15 @@ namespace Dynamo
             //Disable running against revit without a document
             if (DocumentManager.GetInstance().CurrentUIApplication.ActiveUIDocument == null)
             {
-                dynRevitSettings.Doc = null;
+                DocumentManager.GetInstance().CurrentUIDocument = null;
                 DynamoViewModel.RunEnabled = false;
                 DynamoLogger.Instance.LogWarning("Dynamo no longer has an active document.", WarningLevel.Moderate);
             }
             else
             {
-                dynRevitSettings.Doc = DocumentManager.GetInstance().CurrentUIApplication.ActiveUIDocument;
+                DocumentManager.GetInstance().CurrentUIDocument = DocumentManager.GetInstance().CurrentUIApplication.ActiveUIDocument;
                 DynamoViewModel.RunEnabled = true;
-                DynamoLogger.Instance.LogWarning(string.Format("Dynamo is now pointing at document: {0}", dynRevitSettings.Doc.Document.PathName), WarningLevel.Moderate);
+                DynamoLogger.Instance.LogWarning(string.Format("Dynamo is now pointing at document: {0}", DocumentManager.GetInstance().CurrentUIDocument.Document.PathName), WarningLevel.Moderate);
             }
 
             ResetForNewDocument();
@@ -354,10 +354,10 @@ namespace Dynamo
         void Revit_ViewActivated(object sender, Autodesk.Revit.UI.Events.ViewActivatedEventArgs e)
         {
             //if Dynamo doesn't have a view, then latch onto this one
-            if (dynRevitSettings.Doc == null)
+            if (DocumentManager.GetInstance().CurrentUIDocument == null)
             {
-                dynRevitSettings.Doc = DocumentManager.GetInstance().CurrentUIApplication.ActiveUIDocument;
-                DynamoLogger.Instance.LogWarning(string.Format("Dynamo is now pointing at document: {0}", dynRevitSettings.Doc.Document.PathName), WarningLevel.Moderate);
+                DocumentManager.GetInstance().CurrentUIDocument = DocumentManager.GetInstance().CurrentUIApplication.ActiveUIDocument;
+                DynamoLogger.Instance.LogWarning(string.Format("Dynamo is now pointing at document: {0}", DocumentManager.GetInstance().CurrentUIDocument.Document.PathName), WarningLevel.Moderate);
 
                 ResetForNewDocument();
             }
@@ -437,13 +437,13 @@ namespace Dynamo
                         {
                             if (!TransactionManager.TransactionActive)
                             {
-                                TransactionManager.StartTransaction(dynRevitSettings.Doc.Document);
+                                TransactionManager.StartTransaction(DocumentManager.GetInstance().CurrentUIDocument.Document);
                             }
-                            return new SubTransaction(dynRevitSettings.Doc.Document);
+                            return new SubTransaction(DocumentManager.GetInstance().CurrentUIDocument.Document);
                         }));
 
-                addToBindings("__revit__", dynRevitSettings.Doc.Application);
-                addToBindings("__doc__", dynRevitSettings.Doc.Application.ActiveUIDocument.Document);
+                addToBindings("__revit__", DocumentManager.GetInstance().CurrentUIDocument.Application);
+                addToBindings("__doc__", DocumentManager.GetInstance().CurrentUIDocument.Application.ActiveUIDocument.Document);
 
                 var pythonEngine = ironPythonAssembly.GetType("DynamoPython.PythonEngine");
                 _evaluatorField = pythonEngine.GetField("Evaluator");
@@ -558,7 +558,7 @@ namespace Dynamo
                 var element = value as Element;
                 var id = element.Id;
 
-                node.Clicked += () => dynRevitSettings.Doc.ShowElements(element);
+                node.Clicked += () => DocumentManager.GetInstance().CurrentUIDocument.ShowElements(element);
 
                 node.Link = id.IntegerValue.ToString(CultureInfo.InvariantCulture);
             }
@@ -685,7 +685,7 @@ namespace Dynamo
                 //      there is nothing to be deleted?
 
                 //Initialize a transaction (if one hasn't been aleady)
-                _transaction = TransactionManager.StartTransaction(dynRevitSettings.Doc.Document);
+                _transaction = TransactionManager.StartTransaction(DocumentManager.GetInstance().CurrentUIDocument.Document);
 
                 //Reset all elements
                 var query = dynSettings.Controller.DynamoModel.AllNodes
@@ -760,12 +760,12 @@ namespace Dynamo
             RevThread.IdlePromise.ExecuteOnShutdown(
                 delegate
                 {
-                    var transaction = new Autodesk.Revit.DB.Transaction(dynRevitSettings.Doc.Document, "Dynamo Script");
+                    var transaction = new Autodesk.Revit.DB.Transaction(DocumentManager.GetInstance().CurrentUIDocument.Document, "Dynamo Script");
                     transaction.Start();
 
                     if (_keeperId != ElementId.InvalidElementId)
                     {
-                        dynRevitSettings.Doc.Document.Delete(_keeperId);
+                        DocumentManager.GetInstance().CurrentUIDocument.Document.Delete(_keeperId);
                         _keeperId = ElementId.InvalidElementId;
                     }
 
@@ -780,7 +780,7 @@ namespace Dynamo
 
         protected override void Run()
         {
-            DocumentManager.GetInstance().CurrentDBDocument = dynRevitSettings.Doc.Document;
+            DocumentManager.GetInstance().CurrentDBDocument = DocumentManager.GetInstance().CurrentUIDocument.Document;
 
             if (!DynamoViewModel.RunInDebug)
             {
@@ -864,7 +864,7 @@ namespace Dynamo
 
         public void InitTransaction()
         {
-            _transaction = TransactionManager.StartTransaction(dynRevitSettings.Doc.Document);
+            _transaction = TransactionManager.StartTransaction(DocumentManager.GetInstance().CurrentUIDocument.Document);
         }
 
         public void EndTransaction()

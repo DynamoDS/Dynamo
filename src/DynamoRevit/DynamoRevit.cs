@@ -147,7 +147,7 @@ namespace Dynamo.Applications
                 DocumentManager.GetInstance().CurrentUIDocument = revit.Application.ActiveUIDocument;
                 DocumentManager.GetInstance().CurrentUIApplication = revit.Application;
                 
-                dynRevitSettings.Doc = revit.Application.ActiveUIDocument;
+                DocumentManager.GetInstance().CurrentUIDocument = revit.Application.ActiveUIDocument;
 
                 dynRevitSettings.DefaultLevel = defaultLevel;
 

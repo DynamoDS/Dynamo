@@ -4,6 +4,7 @@ using Autodesk.Revit.DB;
 using Dynamo.Utilities;
 using Autodesk.Revit.DB.Events;
 using Autodesk.Revit.ApplicationServices;
+using RevitServices.Persistence;
 
 namespace Dynamo
 {
@@ -126,7 +127,7 @@ namespace Dynamo
 
         void Application_DocumentChanged(object sender, DocumentChangedEventArgs args)
         {
-            if (args.GetDocument().Equals(dynRevitSettings.Doc.Document))
+            if (args.GetDocument().Equals(DocumentManager.GetInstance().CurrentUIDocument.Document))
             {
                 processUpdates(
                    args.GetModifiedElementIds(),

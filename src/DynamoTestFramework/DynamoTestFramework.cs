@@ -229,7 +229,7 @@ namespace Dynamo.Tests
             fecLevel.OfClass(typeof(Level));
 
             DocumentManager.GetInstance().CurrentUIApplication = DocumentManager.GetInstance().CurrentUIApplication;
-            dynRevitSettings.Doc = DocumentManager.GetInstance().CurrentUIDocument;
+            DocumentManager.GetInstance().CurrentUIDocument = DocumentManager.GetInstance().CurrentUIDocument;
             dynRevitSettings.DefaultLevel = defaultLevel;
 
             //create dynamo

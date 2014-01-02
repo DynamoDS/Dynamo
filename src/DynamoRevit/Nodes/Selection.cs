@@ -14,6 +14,7 @@ using Dynamo.Models;
 using Dynamo.Revit.SyncedNodeExtensions; //Gives the RegisterEval... methods
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
+using RevitServices.Persistence;
 using RevitServices.Threading;
 using Value = Dynamo.FScheme.Value;
 using TextBox = System.Windows.Controls.TextBox;
@@ -238,7 +239,7 @@ namespace Dynamo.Nodes
                     var id = subNode.Attributes[0].Value;
                     try
                     {
-                        saved = dynRevitSettings.Doc.Document.GetElement(id); // FamilyInstance;
+                        saved = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(id); // FamilyInstance;
                     }
                     catch
                     {
@@ -323,7 +324,7 @@ namespace Dynamo.Nodes
             {
                 _reference = _selectionAction(_selectionMessage);
                 if (_reference != null)
-                    SelectedElement = dynRevitSettings.Doc.Document.GetElement(_reference.ElementId);
+                    SelectedElement = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(_reference.ElementId);
                 RaisePropertyChanged("SelectionText");
                 RequiresRecalc = true;
             }
@@ -573,7 +574,7 @@ namespace Dynamo.Nodes
                     var id = subNode.Attributes[0].Value;
                     try
                     {
-                        saved = dynRevitSettings.Doc.Document.GetElement(id);
+                        saved = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(id);
                     }
                     catch
                     {
@@ -728,10 +729,10 @@ namespace Dynamo.Nodes
             var opts = new Options { ComputeReferences = true };
 
             var face =
-                (Autodesk.Revit.DB.Face)dynRevitSettings.Doc.Document.GetElement(_reference).GetGeometryObjectFromReference(_reference);
+                (Autodesk.Revit.DB.Face)DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(_reference).GetGeometryObjectFromReference(_reference);
 
             //TODO: Is there a better way to get a face that has a reference?
-            foreach (GeometryObject geob in dynRevitSettings.Doc.Document.GetElement(_reference).get_Geometry(opts))
+            foreach (GeometryObject geob in DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(_reference).get_Geometry(opts))
             {
                 if (FindFaceInGeometryObject(geob, ref face))
                     break;
@@ -788,7 +789,7 @@ namespace Dynamo.Nodes
         {
             if(_reference != null)
                 nodeElement.SetAttribute(
-                    "faceRef", _reference.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
+                    "faceRef", _reference.ConvertToStableRepresentation(DocumentManager.GetInstance().CurrentUIDocument.Document));
         }
 
         protected override void LoadNode(XmlNode nodeElement)
@@ -796,9 +797,9 @@ namespace Dynamo.Nodes
             try
             {
                 _reference = Reference.ParseFromStableRepresentation(
-                    dynRevitSettings.Doc.Document, nodeElement.Attributes["faceRef"].Value);
+                    DocumentManager.GetInstance().CurrentUIDocument.Document, nodeElement.Attributes["faceRef"].Value);
                 if (_reference != null)
-                    SelectedElement = dynRevitSettings.Doc.Document.GetElement(_reference.ElementId);
+                    SelectedElement = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(_reference.ElementId);
             }
             catch { }
         }
@@ -840,7 +841,7 @@ namespace Dynamo.Nodes
         {
             if(_reference != null)
                 nodeElement.SetAttribute(
-                    "edgeRef", _reference.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
+                    "edgeRef", _reference.ConvertToStableRepresentation(DocumentManager.GetInstance().CurrentUIDocument.Document));
         }
 
         protected override void LoadNode(XmlNode nodeElement)
@@ -848,9 +849,9 @@ namespace Dynamo.Nodes
             try
             {
                 _reference = Reference.ParseFromStableRepresentation(
-                    dynRevitSettings.Doc.Document, nodeElement.Attributes["edgeRef"].Value);
+                    DocumentManager.GetInstance().CurrentUIDocument.Document, nodeElement.Attributes["edgeRef"].Value);
                 if (_reference != null)
-                    SelectedElement = dynRevitSettings.Doc.Document.GetElement(_reference.ElementId);
+                    SelectedElement = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(_reference.ElementId);
             }
             catch { }
         }
@@ -893,7 +894,7 @@ namespace Dynamo.Nodes
                     var id = subNode.Attributes[0].Value;
                     try
                     {
-                        saved = dynRevitSettings.Doc.Document.GetElement(id);
+                        saved = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(id);
                             // FamilyInstance;
                     }
                     catch
@@ -1069,7 +1070,7 @@ namespace Dynamo.Nodes
                 _reference.ElementReferenceType != ElementReferenceType.REFERENCE_TYPE_LINEAR )
             {
                 ElementId refElementId = _reference.ElementId;
-                Element refElement = dynRevitSettings.Doc.Document.GetElement(refElementId);
+                Element refElement = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(refElementId);
                 if (refElement is ReferencePoint)
                 {
                     ReferencePoint rp = refElement as ReferencePoint;
@@ -1258,7 +1259,7 @@ namespace Dynamo.Nodes
         {
             if(_reference != null)
                 nodeElement.SetAttribute(
-                    "refXYZ", _reference.ConvertToStableRepresentation(dynRevitSettings.Doc.Document));
+                    "refXYZ", _reference.ConvertToStableRepresentation(DocumentManager.GetInstance().CurrentUIDocument.Document));
                 nodeElement.SetAttribute("refXYZparam0", _param0.ToString(CultureInfo.InvariantCulture));
                 nodeElement.SetAttribute("refXYZparam1", _param1.ToString(CultureInfo.InvariantCulture));
         }
@@ -1268,9 +1269,9 @@ namespace Dynamo.Nodes
             try
             {
                 _reference = Reference.ParseFromStableRepresentation(
-                    dynRevitSettings.Doc.Document, nodeElement.Attributes["refXYZ"].Value);
+                    DocumentManager.GetInstance().CurrentUIDocument.Document, nodeElement.Attributes["refXYZ"].Value);
                 if (_reference != null)
-                    SelectedElement = dynRevitSettings.Doc.Document.GetElement(
+                    SelectedElement = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(
                         _reference.ElementId);
                 _param0 = Convert.ToDouble(nodeElement.Attributes["refXYZparam0"].Value);
                 _param1 = Convert.ToDouble(nodeElement.Attributes["refXYZparam1"].Value);

@@ -6,6 +6,7 @@ using Dynamo.Models;
 using Dynamo.Revit;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
+using RevitServices.Persistence;
 
 namespace Dynamo.Nodes
 {
@@ -24,7 +25,7 @@ namespace Dynamo.Nodes
         }
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
-            var doc = dynRevitSettings.Doc;
+            var doc = DocumentManager.GetInstance().CurrentUIDocument;
             var refCurveList = ((FScheme.Value.List)args[0]).Item.Select(
                x => (((FScheme.Value.Container)x).Item is Autodesk.Revit.DB.ModelCurve ?
                    ((Autodesk.Revit.DB.ModelCurve)((FScheme.Value.Container)x).Item)
