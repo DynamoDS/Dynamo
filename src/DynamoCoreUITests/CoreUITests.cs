@@ -54,6 +54,15 @@ namespace Dynamo.Tests.UI
         [TearDown]
         public void Exit()
         {
+            try
+            {
+                Controller.ShutDown();
+            }
+            catch (Exception e)
+            {
+
+            }
+
             if (Ui.IsLoaded)
                 Ui.Close();
         }

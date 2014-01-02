@@ -17,7 +17,7 @@ namespace Dynamo.DSEngine
         }
     }
 
-    public class LiveRunnerServices
+    public class LiveRunnerServices : IDisposable
     {
         private ILiveRunner liveRunner;
         private EngineController controller;
@@ -31,6 +31,14 @@ namespace Dynamo.DSEngine
             liveRunner.NodeValueReady += NodeValueReady;
         }
       
+        public void Dispose()
+        {
+            liveRunner.GraphUpdateReady -= GraphUpdateReady;
+            liveRunner.NodeValueReady -= NodeValueReady;
+            if (liveRunner is IDisposable)
+                (liveRunner as IDisposable).Dispose();
+        }
+
         public ProtoCore.Core Core
         {
             get
