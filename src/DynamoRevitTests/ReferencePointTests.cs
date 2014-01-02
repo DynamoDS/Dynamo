@@ -24,11 +24,11 @@ namespace Dynamo.Tests
                 fails.SetClearAfterRollback(true);
                 trans.SetFailureHandlingOptions(fails);
 
-                ReferencePoint rp = dynRevitSettings.Doc.Document.FamilyCreate.NewReferencePoint(new XYZ());
+                ReferencePoint rp = DocumentManager.GetInstance().CurrentUIDocument.Document.FamilyCreate.NewReferencePoint(new XYZ());
 
                 //make a filter for reference points.
                 ElementClassFilter ef = new ElementClassFilter(typeof(ReferencePoint));
-                FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+                FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
                 fec.WherePasses(ef);
                 Assert.AreEqual(1, fec.ToElements().Count());
 

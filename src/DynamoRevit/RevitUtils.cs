@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Reflection;
-using System.Diagnostics;
-
-using System.Windows.Media.Media3D;
-using Autodesk.Revit.UI;
 using Dynamo.Models;
 using Autodesk.Revit.Creation;
 using Dynamo.Nodes;
@@ -18,7 +13,6 @@ using Dynamo.FSchemeInterop;
 using Microsoft.FSharp.Collections;
 using RevitServices.Persistence;
 using Document = Autodesk.Revit.Creation.Document;
-using Expression = Dynamo.FScheme.Expression;
 using Face = Autodesk.Revit.DB.Face;
 using ModelCurve = Autodesk.Revit.DB.ModelCurve;
 using Plane = Autodesk.Revit.DB.Plane;
@@ -135,13 +129,13 @@ namespace Dynamo.Utilities
                 api_base_type == typeof(FamilyItemFactory) ||
                 api_base_type == typeof(ItemFactoryBase))
             {
-                if (dynRevitSettings.Doc.Document.IsFamilyDocument)
+                if (DocumentManager.GetInstance().CurrentUIDocument.Document.IsFamilyDocument)
                 {
-                    invocationTargetList.Add(dynRevitSettings.Doc.Document.FamilyCreate);
+                    invocationTargetList.Add(DocumentManager.GetInstance().CurrentUIDocument.Document.FamilyCreate);
                 }
                 else
                 {
-                    invocationTargetList.Add(dynRevitSettings.Doc.Document.Create);
+                    invocationTargetList.Add(DocumentManager.GetInstance().CurrentUIDocument.Document.Create);
                 }
             }
             else if (api_base_type == typeof(Application))
@@ -469,7 +463,7 @@ namespace Dynamo.Utilities
             List<XYZ> orderedEigenvectors;
             BestFitLine.PrincipalComponentsAnalysis(xyzs, out meanPt, out orderedEigenvectors);
             var normal = orderedEigenvectors[0].CrossProduct(orderedEigenvectors[1]);
-            var plane = dynRevitSettings.Doc.Application.Application.Create.NewPlane(normal, meanPt);
+            var plane = DocumentManager.GetInstance().CurrentUIDocument.Application.Application.Create.NewPlane(normal, meanPt);
             return plane;
         }
         
@@ -477,9 +471,9 @@ namespace Dynamo.Utilities
         {
             Plane plane = GetPlaneFromCurve(c, false);
             SketchPlane sp = null;
-            sp = dynRevitSettings.Doc.Document.IsFamilyDocument ? 
-                dynRevitSettings.Doc.Document.FamilyCreate.NewSketchPlane(plane) : 
-                dynRevitSettings.Doc.Document.Create.NewSketchPlane(plane);
+            sp = DocumentManager.GetInstance().CurrentUIDocument.Document.IsFamilyDocument ? 
+                DocumentManager.GetInstance().CurrentUIDocument.Document.FamilyCreate.NewSketchPlane(plane) : 
+                DocumentManager.GetInstance().CurrentUIDocument.Document.Create.NewSketchPlane(plane);
 
             return sp;
         }
@@ -509,7 +503,7 @@ namespace Dynamo.Utilities
                 var ns = c as Autodesk.Revit.DB.NurbSpline;
                 BestFitLine.PrincipalComponentsAnalysis(ns.CtrlPoints.ToList(), out meanPt, out orderedEigenvectors);
                 normal = orderedEigenvectors[0].CrossProduct(orderedEigenvectors[1]).Normalize();
-                plane = dynRevitSettings.Doc.Application.Application.Create.NewPlane(normal, meanPt);
+                plane = DocumentManager.GetInstance().CurrentUIDocument.Application.Application.Create.NewPlane(normal, meanPt);
 
                 var projPoints = new List<XYZ>();
                 foreach (var pt in ns.CtrlPoints)
@@ -749,7 +743,7 @@ namespace Dynamo.Utilities
 
         private static void AddReferencesToArray(ReferenceArray refArr, FSharpList<Value> lst)
         {
-            dynRevitSettings.Doc.RefreshActiveView();
+            DocumentManager.GetInstance().CurrentUIDocument.RefreshActiveView();
 
             foreach (Value vInner in lst)
             {
@@ -811,7 +805,7 @@ namespace Dynamo.Utilities
 
         private static void AddCurvesToArray(CurveArray crvArr, FSharpList<Value> lst)
         {
-            dynRevitSettings.Doc.RefreshActiveView();
+            DocumentManager.GetInstance().CurrentUIDocument.RefreshActiveView();
 
             foreach (Value vInner in lst)
             {
@@ -918,7 +912,7 @@ namespace Dynamo.Utilities
                     if (output == typeof(ReferencePoint))
                     {
                         ElementId a = (ElementId)item;
-                        Element el = dynRevitSettings.Doc.Document.GetElement(a);
+                        Element el = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(a);
                         ReferencePoint rp = (ReferencePoint)el;
                         return rp;
                     }
@@ -931,11 +925,11 @@ namespace Dynamo.Utilities
                     Reference a = (Reference)item;
                     if(output.IsAssignableFrom(typeof(Element)))
                     {
-                        Element e = dynRevitSettings.Doc.Document.GetElement(a);
+                        Element e = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(a);
                     }
                     else if (output == typeof(Face))
                     {
-                        Face f = (Face)dynRevitSettings.Doc.Document.GetElement(a.ElementId).GetGeometryObjectFromReference(a);
+                        Face f = (Face)DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(a.ElementId).GetGeometryObjectFromReference(a);
                         return f;
                     }
                 }

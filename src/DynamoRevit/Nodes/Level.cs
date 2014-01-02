@@ -4,6 +4,7 @@ using Dynamo.Models;
 using Dynamo.Revit;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
+using RevitServices.Persistence;
 
 namespace Dynamo.Nodes
 {
@@ -78,7 +79,7 @@ namespace Dynamo.Nodes
             Items.Clear();
 
             //find all levels in the project
-            var levelColl = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            var levelColl = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
             levelColl.OfClass(typeof(Autodesk.Revit.DB.Level));
 
             levelColl.ToElements().ToList().ForEach(x => Items.Add(new DynamoDropDownItem(x.Name, x)));

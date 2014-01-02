@@ -8,6 +8,7 @@ using Autodesk.Revit.DB.Structure;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
+using RevitServices.Persistence;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.Revit;
 
@@ -92,13 +93,13 @@ namespace Dynamo.Nodes
             if (instData.Any())
             {
                 ICollection<ElementId> ids;
-                if (dynRevitSettings.Doc.Document.IsFamilyDocument)
+                if (DocumentManager.GetInstance().CurrentUIDocument.Document.IsFamilyDocument)
                 {
-                    ids = dynRevitSettings.Doc.Document.FamilyCreate.NewFamilyInstances2(instData);
+                    ids = DocumentManager.GetInstance().CurrentUIDocument.Document.FamilyCreate.NewFamilyInstances2(instData);
                 }
                 else
                 {
-                    ids = dynRevitSettings.Doc.Document.Create.NewFamilyInstances2(instData);
+                    ids = DocumentManager.GetInstance().CurrentUIDocument.Document.Create.NewFamilyInstances2(instData);
                 }
 
                 //add our batch-created instances ids'
@@ -138,7 +139,7 @@ namespace Dynamo.Nodes
             //add all of the instances
             results = Elements.Aggregate(results,
                 (current, id) =>
-                    FSharpList<Value>.Cons(Value.NewContainer(dynRevitSettings.Doc.Document.GetElement(id)), current));
+                    FSharpList<Value>.Cons(Value.NewContainer(DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(id)), current));
             results.Reverse();
 
             return Value.NewList(results);
@@ -160,7 +161,7 @@ namespace Dynamo.Nodes
             int i = 0;
             foreach (ElementId id in placePointIds)
             {
-                var point = dynRevitSettings.Doc.Document.GetElement(id) as ReferencePoint;
+                var point = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(id) as ReferencePoint;
                 var pt = (XYZ) ((Value.Container) pts.ElementAt(i)).Item;
                 point.Position = pt;
                 i++;

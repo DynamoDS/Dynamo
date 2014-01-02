@@ -7,6 +7,7 @@ using Dynamo.Utilities;
 using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Numerics.LinearAlgebra.Generic;
 using Microsoft.FSharp.Collections;
+using RevitServices.Persistence;
 
 namespace Dynamo.Nodes
 {
@@ -1159,7 +1160,7 @@ namespace Dynamo.Nodes
                 Reference r = (Reference)((FScheme.Value.Container)args[1]).Item;
                 if (r != null)
                 {
-                    Element refElem = dynRevitSettings.Doc.Document.GetElement(r.ElementId);
+                    Element refElem = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(r.ElementId);
                     if (refElem != null)
                     {
                         GeometryObject geob = refElem.GetGeometryObjectFromReference(r);

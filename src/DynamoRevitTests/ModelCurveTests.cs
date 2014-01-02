@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using System.Text;
 using Autodesk.Revit.DB;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using NUnit.Framework;
+using RevitServices.Persistence;
 using ModelCurve = Autodesk.Revit.DB.ModelCurve;
 
 namespace Dynamo.Tests
@@ -25,7 +23,7 @@ namespace Dynamo.Tests
             model.Open(testPath);
             dynSettings.Controller.RunExpression(true);
 
-            var fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            var fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
             fec.OfClass(typeof(CurveElement));
 
             //verify five model curves created

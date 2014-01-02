@@ -354,7 +354,7 @@ namespace Dynamo.Nodes
                     refPtArr.Append(refPoint);
                 }
             }
-            c = dynRevitSettings.Doc.Document.FamilyCreate.NewCurveByPoints(refPtArr);
+            c = DocumentManager.GetInstance().CurrentUIDocument.Document.FamilyCreate.NewCurveByPoints(refPtArr);
             return c;
         }
     }
@@ -792,7 +792,7 @@ namespace Dynamo.Nodes
                 var r = (Reference)((Value.Container)args[1]).Item;
                 if (r != null)
                 {
-                    var refElem = dynRevitSettings.Doc.Document.GetElement(r.ElementId);
+                    var refElem = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(r.ElementId);
                     if (refElem != null)
                     {
                         GeometryObject geob = refElem.GetGeometryObjectFromReference(r);
@@ -899,7 +899,7 @@ namespace Dynamo.Nodes
                 curve = curveRef == null
                               ? (Curve)((Value.Container)args[0]).Item
                               : (Curve)
-                                dynRevitSettings.Doc.Document.GetElement(curveRef.ElementId)
+                                DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(curveRef.ElementId)
                                                 .GetGeometryObjectFromReference(curveRef);
             }
 

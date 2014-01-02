@@ -9,6 +9,7 @@ using Dynamo.Utilities;
 using Dynamo.Measure;
 
 using System.Reflection;
+using RevitServices.Persistence;
 
 namespace Dynamo.Controls
 {
@@ -33,7 +34,7 @@ namespace Dynamo.Controls
                     //r2013
                     System.Reflection.Assembly revitAPIAssembly = System.Reflection.Assembly.GetAssembly(RevitDoc);
                     ProjectUnitType = revitAPIAssembly.GetType("Autodesk.Revit.DB.ProjectUnit", false);
-                    unitObject = (Object)propertyInfoItem.GetValue((Object)dynRevitSettings.Doc.Document, null);
+                    unitObject = (Object)propertyInfoItem.GetValue((Object)DocumentManager.GetInstance().CurrentUIDocument.Document, null);
                     break;
                 }
             }
@@ -46,7 +47,7 @@ namespace Dynamo.Controls
                     {
                         //r2014
                         object[] argsM = new object[0];
-                        unitObject = ds.Invoke(dynRevitSettings.Doc.Document, argsM);
+                        unitObject = ds.Invoke(DocumentManager.GetInstance().CurrentUIDocument.Document, argsM);
                         System.Reflection.Assembly revitAPIAssembly = System.Reflection.Assembly.GetAssembly(RevitDoc);
                         ProjectUnitType = revitAPIAssembly.GetType("Autodesk.Revit.DB.Units", false);
                         break;
