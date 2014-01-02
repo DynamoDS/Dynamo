@@ -94,7 +94,7 @@ namespace Dynamo.Nodes
                 + "OUT = 0";
         }
 
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //topControl.Height = 200;
             //topControl.Width = 300;
@@ -338,7 +338,7 @@ namespace Dynamo.Nodes
                 + "OUT = 0";
         }
 
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //topControl.Height = 200;
             //topControl.Width = 300;
@@ -355,10 +355,6 @@ namespace Dynamo.Nodes
             nodeUI.UpdateLayout();
 
             nodeUI.MouseDown += new MouseButtonEventHandler(nodeUI_MouseDown);
-
-
-            base.SetupCustomUIElements(nodeUI); // call the base class method to setup the +/- buttons
-
         }
 
         void nodeUI_MouseDown(object sender, MouseButtonEventArgs e)

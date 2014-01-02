@@ -73,7 +73,7 @@ namespace Dynamo.Nodes
             return input;
         }
 
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public void SetupCustomUIElements(dynNodeView nodeUI)
         {
             var mi = new MenuItem { Header = "Zoom to Fit" };
             mi.Click += mi_Click;

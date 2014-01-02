@@ -41,7 +41,7 @@ namespace Dynamo.Nodes
         public const string CORE_TIME = "Core.Time";
         public const string CORE_SCRIPTING = "Core.Scripting";
         public const string CORE_FUNCTIONS = "Core.Functions";
-       
+
         public const string LOGIC = "Logic";
         public const string LOGIC_MATH_ARITHMETIC = "Logic.Math.Arithmetic";
         public const string LOGIC_MATH_ROUNDING = "Logic.Math.Rounding";
@@ -57,42 +57,42 @@ namespace Dynamo.Nodes
 
         public const string GEOMETRY = "Geometry";
 
-            public const string GEOMETRY_CURVE_CREATE = "Geometry.Curve.Create";
-            public const string GEOMETRY_CURVE_DIVIDE = "Geometry.Curve.Divide";
-            public const string GEOMETRY_CURVE_PRIMITIVES = "Geometry.Curve.Primitives";
-            public const string GEOMETRY_CURVE_QUERY = "Geometry.Curve.Query";
-            public const string GEOMETRY_CURVE_FIT = "Geometry.Curve.Fit";
+        public const string GEOMETRY_CURVE_CREATE = "Geometry.Curve.Create";
+        public const string GEOMETRY_CURVE_DIVIDE = "Geometry.Curve.Divide";
+        public const string GEOMETRY_CURVE_PRIMITIVES = "Geometry.Curve.Primitives";
+        public const string GEOMETRY_CURVE_QUERY = "Geometry.Curve.Query";
+        public const string GEOMETRY_CURVE_FIT = "Geometry.Curve.Fit";
 
-            public const string GEOMETRY_POINT_CREATE = "Geometry.Point.Create";
-            public const string GEOMETRY_POINT_MODIFY = "Geometry.Point.Modify";
-            public const string GEOMETRY_POINT_QUERY = "Geometry.Point.Query";
-            public const string GEOMETRY_POINT_GRID = "Geometry.Point.Grid";
-            public const string GEOMETRY_POINT_TESSELATE = "Geometry.Point.Tesselate";
+        public const string GEOMETRY_POINT_CREATE = "Geometry.Point.Create";
+        public const string GEOMETRY_POINT_MODIFY = "Geometry.Point.Modify";
+        public const string GEOMETRY_POINT_QUERY = "Geometry.Point.Query";
+        public const string GEOMETRY_POINT_GRID = "Geometry.Point.Grid";
+        public const string GEOMETRY_POINT_TESSELATE = "Geometry.Point.Tesselate";
 
-            public const string GEOMETRY_SOLID_BOOLEAN = "Geometry.Solid.Boolean";
-            public const string GEOMETRY_SOLID_CREATE = "Geometry.Solid.Create";
-            public const string GEOMETRY_SOLID_MODIFY = "Geometry.Solid.Modify";
-            public const string GEOMETRY_SOLID_PRIMITIVES = "Geometry.Solid.Primitives";
-            public const string GEOMETRY_SOLID_QUERY = "Geometry.Solid.Extract";
-            public const string GEOMETRY_SOLID_REPAIR = "Geometry.Solid.Repair";
+        public const string GEOMETRY_SOLID_BOOLEAN = "Geometry.Solid.Boolean";
+        public const string GEOMETRY_SOLID_CREATE = "Geometry.Solid.Create";
+        public const string GEOMETRY_SOLID_MODIFY = "Geometry.Solid.Modify";
+        public const string GEOMETRY_SOLID_PRIMITIVES = "Geometry.Solid.Primitives";
+        public const string GEOMETRY_SOLID_QUERY = "Geometry.Solid.Extract";
+        public const string GEOMETRY_SOLID_REPAIR = "Geometry.Solid.Repair";
 
-            public const string GEOMETRY_SURFACE_CREATE = "Geometry.Surface.Create";
-            public const string GEOMETRY_SURFACE_QUERY = "Geometry.Surface.Query";
-            public const string GEOMETRY_SURFACE_UV = "Geometry.Surface.UV";
-            public const string GEOMETRY_SURFACE_DIVIDE = "Geometry.Surface.Divide";
+        public const string GEOMETRY_SURFACE_CREATE = "Geometry.Surface.Create";
+        public const string GEOMETRY_SURFACE_QUERY = "Geometry.Surface.Query";
+        public const string GEOMETRY_SURFACE_UV = "Geometry.Surface.UV";
+        public const string GEOMETRY_SURFACE_DIVIDE = "Geometry.Surface.Divide";
 
-            public const string GEOMETRY_TRANSFORM_APPLY = "Geometry.Transform.Apply";
-            public const string GEOMETRY_TRANSFORM_MODIFY = "Geometry.Transform.Modify";
-            public const string GEOMETRY_TRANSFORM_CREATE = "Geometry.Transform.Create";
+        public const string GEOMETRY_TRANSFORM_APPLY = "Geometry.Transform.Apply";
+        public const string GEOMETRY_TRANSFORM_MODIFY = "Geometry.Transform.Modify";
+        public const string GEOMETRY_TRANSFORM_CREATE = "Geometry.Transform.Create";
 
-            public const string GEOMETRY_INTERSECT = "Geometry.Intersect";
+        public const string GEOMETRY_INTERSECT = "Geometry.Intersect";
 
-            public const string GEOMETRY_EXPERIMENTAL_PRIMITIVES = "Geometry.Experimental.Primitives";
-            public const string GEOMETRY_EXPERIMENTAL_SURFACE = "Geometry.Experimental.Surface";
-            public const string GEOMETRY_EXPERIMENTAL_CURVE = "Geometry.Experimental.Curve";
-            public const string GEOMETRY_EXPERIMENTAL_SOLID = "Geometry.Experimental.Solid";
-            public const string GEOMETRY_EXPERIMENTAL_MODIFY = "Geometry.Experimental.Modify";
-            public const string GEOMETRY_EXPERIMENTAL_VIEW = "Geometry.Experimental.View";
+        public const string GEOMETRY_EXPERIMENTAL_PRIMITIVES = "Geometry.Experimental.Primitives";
+        public const string GEOMETRY_EXPERIMENTAL_SURFACE = "Geometry.Experimental.Surface";
+        public const string GEOMETRY_EXPERIMENTAL_CURVE = "Geometry.Experimental.Curve";
+        public const string GEOMETRY_EXPERIMENTAL_SOLID = "Geometry.Experimental.Solid";
+        public const string GEOMETRY_EXPERIMENTAL_MODIFY = "Geometry.Experimental.Modify";
+        public const string GEOMETRY_EXPERIMENTAL_VIEW = "Geometry.Experimental.View";
 
         public const string REVIT = "Revit";
         public const string REVIT_DOCUMENT = "Revit.Document";
@@ -118,9 +118,8 @@ namespace Dynamo.Nodes
         public const string IO_FILE = "Input/Output.File";
         public const string IO_NETWORK = "Input/Output.Network";
         public const string IO_HARDWARE = "Input/Output.Hardware";
-
-
     }
+
 
     public static class Utilities
     {
@@ -3725,11 +3724,13 @@ namespace Dynamo.Nodes
 
             public AssociativeNode GetAstNode(Dictionary<string, AssociativeNode> idLookup)
             {
-                RangeExprNode rangeExpr = new RangeExprNode();
-                rangeExpr.FromNode = _start.GetAstNode(idLookup);
-                rangeExpr.ToNode = _step.GetAstNode(idLookup);
-                rangeExpr.StepNode = _step.GetAstNode(idLookup);
-                rangeExpr.stepoperator = ProtoCore.DSASM.RangeStepOperator.stepsize;
+                var rangeExpr = new RangeExprNode
+                {
+                    FromNode = _start.GetAstNode(idLookup),
+                    ToNode = _step.GetAstNode(idLookup),
+                    StepNode = _step.GetAstNode(idLookup),
+                    stepoperator = ProtoCore.DSASM.RangeStepOperator.stepsize
+                };
                 return rangeExpr;
             }
         }
@@ -3804,11 +3805,13 @@ namespace Dynamo.Nodes
 
             public AssociativeNode GetAstNode(Dictionary<string, AssociativeNode> idLookup)
             {
-                RangeExprNode rangeExpr = new RangeExprNode();
-                rangeExpr.FromNode = _start.GetAstNode(idLookup);
-                rangeExpr.ToNode = _end.GetAstNode(idLookup);
-                rangeExpr.StepNode = _step.GetAstNode(idLookup);
-                rangeExpr.stepoperator = GetRangeExpressionOperator();
+                var rangeExpr = new RangeExprNode
+                {
+                    FromNode = _start.GetAstNode(idLookup),
+                    ToNode = _end.GetAstNode(idLookup),
+                    StepNode = _step.GetAstNode(idLookup),
+                    stepoperator = GetRangeExpressionOperator()
+                };
                 return rangeExpr;
             }
         }
@@ -4058,7 +4061,7 @@ namespace Dynamo.Nodes
             base.SerializeCore(element, context); //Base implementation must be called.
             if (context == SaveContext.Undo)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
                 helper.SetAttribute("min", Min);
                 helper.SetAttribute("max", Max);
             }
@@ -4069,7 +4072,7 @@ namespace Dynamo.Nodes
             base.DeserializeCore(element, context); //Base implementation must be called.
             if (context == SaveContext.Undo)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
                 Min = helper.ReadDouble("min");
                 Max = helper.ReadDouble("max");
             }
@@ -4196,7 +4199,7 @@ namespace Dynamo.Nodes
             base.SerializeCore(element, context); //Base implementation must be called.
             if (context == SaveContext.Undo)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
                 helper.SetAttribute("min", Min);
                 helper.SetAttribute("max", Max);
             }
@@ -4207,7 +4210,7 @@ namespace Dynamo.Nodes
             base.DeserializeCore(element, context); //Base implementation must be called.
             if (context == SaveContext.Undo)
             {
-                XmlElementHelper helper = new XmlElementHelper(element);
+                var helper = new XmlElementHelper(element);
                 Min = helper.ReadInteger("min");
                 Max = helper.ReadInteger("max");
             }

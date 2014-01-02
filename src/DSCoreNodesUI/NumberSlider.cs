@@ -45,7 +45,7 @@ namespace DSCoreNodes
         /// </summary>
         /// <param name="nodeUI">UI view that we can customize the UI of.</param>
         [Browsable(false)]
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a slider control to the input grid of the control
             var slider = new DynamoSlider(this)

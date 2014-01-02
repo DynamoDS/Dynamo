@@ -46,7 +46,7 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewNumber(Value);
         }
 
-        public override void SetupCustomUIElements(dynNodeView nodeUI)
+        public void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add an edit window option to the 
             //main context window
