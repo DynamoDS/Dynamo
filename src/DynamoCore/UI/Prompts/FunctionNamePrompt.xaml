@@ -31,7 +31,7 @@
                     <TextBlock>A unique name for the node.</TextBlock>
                 </Label.ToolTip>
             </Label>
-            <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="nameBox" Padding="5" />
+            <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="nameBox" Padding="5" Tag="Name of Custom Node" />
             <TextBlock Name="nameView" Foreground="WhiteSmoke" FontSize="13" Padding="5"></TextBlock>
 
             <Label Content="Description" Foreground="DarkGray" Height="28"  HorizontalAlignment="Left" Name="DescriptionLabel" VerticalAlignment="Top" >
@@ -39,7 +39,7 @@
                     <TextBlock>A description that helps people understand what the node might be used for.</TextBlock>
                 </Label.ToolTip>
             </Label>
-            <TextBox Style="{DynamicResource SDarkTextBox}" MaxHeight="64" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Name="DescriptionInput" Padding="5" MinLines="3" TextWrapping="Wrap" AcceptsReturn="True" />
+            <TextBox Style="{DynamicResource SDarkTextBox}" MaxHeight="64" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Name="DescriptionInput" Padding="5" MinLines="3" TextWrapping="Wrap" AcceptsReturn="True" Tag="Description of Custom Node"/>
 
             <Label Content="Category" Foreground="DarkGray" Height="28" HorizontalAlignment="Stretch" Name="label2"  />
             <ComboBox FontSize="14" Style="{DynamicResource ResourceKey=SComboBox}" Background="Black" Foreground="White" HorizontalAlignment="Stretch" Name="categoryBox" Margin="0" IsEditable="True" TabIndex="1" />
