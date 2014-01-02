@@ -16,6 +16,7 @@ using Autodesk.Revit.DB;
 using Dynamo.FSchemeInterop;
 
 using Microsoft.FSharp.Collections;
+using RevitServices.Persistence;
 using Document = Autodesk.Revit.Creation.Document;
 using Expression = Dynamo.FScheme.Expression;
 using Face = Autodesk.Revit.DB.Face;
@@ -145,7 +146,7 @@ namespace Dynamo.Utilities
             }
             else if (api_base_type == typeof(Application))
             {
-                invocationTargetList.Add(dynRevitSettings.Revit.Application.Create);
+                invocationTargetList.Add(DocumentManager.GetInstance().CurrentUIApplication.Application.Create);
             }
             else
             {
@@ -500,7 +501,7 @@ namespace Dynamo.Utilities
                     projPoints.Add(proj);
                 }
 
-                return dynRevitSettings.Revit.Application.Create.NewHermiteSpline(projPoints, false);
+                return DocumentManager.GetInstance().CurrentUIApplication.Application.Create.NewHermiteSpline(projPoints, false);
             }
 
             if (c is Autodesk.Revit.DB.NurbSpline)
@@ -517,7 +518,7 @@ namespace Dynamo.Utilities
                     projPoints.Add(proj);
                 }
 
-                return dynRevitSettings.Revit.Application.Create.NewNurbSpline(projPoints, ns.Weights, ns.Knots, ns.Degree, ns.isClosed, ns.isRational);
+                return DocumentManager.GetInstance().CurrentUIApplication.Application.Create.NewNurbSpline(projPoints, ns.Weights, ns.Knots, ns.Degree, ns.isClosed, ns.isRational);
             }
 
             return c;

@@ -9,6 +9,7 @@ using System.Collections;
 using Autodesk.Revit.UI.Selection;
 using Autodesk.Revit.DB.Analysis;
 using Dynamo.Revit;
+using RevitServices.Persistence;
 
 namespace Dynamo.Utilities
 {
@@ -110,7 +111,7 @@ namespace Dynamo.Utilities
         static HashSet<ElementId> userSelectedElements = new HashSet<ElementId>();
 
         public static Element SpatialFieldManagerUpdated { get; set; }
-        public static UIApplication Revit { get; set; }
+        //public static UIApplication Revit { get; set; }
         public static UIDocument Doc { get; set; }
         public static Level DefaultLevel { get; set; }
         public static DynamoWarningSwallower WarningSwallower { get; set; }
@@ -216,7 +217,7 @@ namespace Dynamo.Utilities
 
                 Reference curveRef = doc.Selection.PickObject(ObjectType.Element);
 
-                c = dynRevitSettings.Revit.ActiveUIDocument.Document.GetElement(curveRef) as CurveElement;
+                c = DocumentManager.GetInstance().CurrentUIApplication.ActiveUIDocument.Document.GetElement(curveRef) as CurveElement;
 
                 return c;
             }

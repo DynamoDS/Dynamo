@@ -8,6 +8,7 @@ using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using NUnit.Framework;
+using RevitServices.Persistence;
 
 namespace Dynamo.Tests
 {
@@ -144,9 +145,9 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, fec.ToElements().Count());
 
             //open a new document and activate it
-            UIDocument initialDoc = dynRevitSettings.Revit.ActiveUIDocument;
+            UIDocument initialDoc = DocumentManager.GetInstance().CurrentUIApplication.ActiveUIDocument;
             string shellPath = Path.Combine(_testPath, @".\empty1.rfa");
-            dynRevitSettings.Revit.OpenAndActivateDocument(shellPath);
+            DocumentManager.GetInstance().CurrentUIApplication.OpenAndActivateDocument(shellPath);
             initialDoc.Document.Close(false);
 
             ////assert that the doc is set on the controller
@@ -164,9 +165,9 @@ namespace Dynamo.Tests
             //Assert.AreEqual(1, fec.ToElements().Count());
 
             //finish out by restoring the original
-            //initialDoc = dynRevitSettings.Revit.ActiveUIDocument;
+            //initialDoc = DocumentManager.GetInstance().CurrentUIApplication.ActiveUIDocument;
             //shellPath = Path.Combine(_testPath, @"empty.rfa");
-            //dynRevitSettings.Revit.OpenAndActivateDocument(shellPath);
+            //DocumentManager.GetInstance().CurrentUIApplication.OpenAndActivateDocument(shellPath);
             //initialDoc.Document.Close(false);
 
         }

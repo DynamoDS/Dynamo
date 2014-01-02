@@ -5,6 +5,7 @@ using Autodesk.Revit.DB;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
+using RevitServices.Persistence;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.FSchemeInterop;
 using Dynamo.Revit;
@@ -67,7 +68,7 @@ namespace Dynamo.Nodes
             var enumerable = pts as XYZ[] ?? pts.ToArray();
             for (var i = 1; i < enumerable.Count(); i++)
             {
-                var l = dynRevitSettings.Revit.Application.Create.NewLineBound(enumerable.ElementAt(i), enumerable.ElementAt(i - 1));
+                var l = DocumentManager.GetInstance().CurrentUIApplication.Application.Create.NewLineBound(enumerable.ElementAt(i), enumerable.ElementAt(i - 1));
 
                 results = FSharpList<Value>.Cons(Value.NewContainer(l), results);
             }
@@ -526,7 +527,7 @@ namespace Dynamo.Nodes
                     if (thisDist > tolMax &&  thisEnd.DistanceTo(prevEnd) < tolMin && (c is Line))
                     {
                         prevEnd = thisStart;
-                        Curve flippedCurve = /* Line.CreateBound */ dynRevitSettings.Revit.Application.Create.NewLineBound(thisEnd, thisStart);
+                        Curve flippedCurve = /* Line.CreateBound */ DocumentManager.GetInstance().CurrentUIApplication.Application.Create.NewLineBound(thisEnd, thisStart);
                         curvesWithFlip.Add(flippedCurve);
                         continue;
                     }
@@ -549,7 +550,7 @@ namespace Dynamo.Nodes
                                 {
                                     if (c is Line)
                                     {
-                                        Curve flippedCurve = /* Line.CreateBound */ dynRevitSettings.Revit.Application.Create.NewLineBound(prevEnd, thisStart);
+                                        Curve flippedCurve = /* Line.CreateBound */ DocumentManager.GetInstance().CurrentUIApplication.Application.Create.NewLineBound(prevEnd, thisStart);
                                         prevEnd = thisStart;
                                         curvesWithFlip.Add(flippedCurve);
                                         continue;
