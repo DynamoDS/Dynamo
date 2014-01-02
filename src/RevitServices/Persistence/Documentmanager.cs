@@ -82,6 +82,11 @@ namespace RevitServices.Persistence
         public UIDocument CurrentUIDocument { get; set; }
 
         /// <summary>
+        /// Provides the current UIApplication
+        /// </summary>
+        public UIApplication CurrentUIApplication { get; set; }
+
+        /// <summary>
         /// A method to clear some elements from the CurrentDBDocument.  This is intended
         /// only as a temporary fix until trace properly handles model cleanup
         /// </summary>

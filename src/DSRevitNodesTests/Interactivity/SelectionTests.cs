@@ -16,7 +16,7 @@ namespace Dynamo.Tests
         {
             ReferencePoint refPoint = null;
 
-            using (var trans = new Transaction(DocumentManager.GetInstance().CurrentDBDocument, "Create a ReferencePoint"))
+            using (var trans = new Transaction(DocumentManager.GetInstance().CurrentDBDocument, "CreateAndDeleteAreReferencePoint"))
             {
                 trans.Start();
 
