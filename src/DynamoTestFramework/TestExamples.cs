@@ -1,6 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 using Autodesk.Revit.DB;
+using RevitServices.Persistence;
 
 namespace Dynamo.Tests
 {
@@ -10,12 +11,12 @@ namespace Dynamo.Tests
         [Test]
         public void TestOne()
         {
-            using (var t = new Transaction(RevitData.Document.Document))
+            using (var t = new Transaction(DocumentManager.GetInstance().CurrentDBDocument))
             {
                 if (t.Start("Test one.") == TransactionStatus.Started)
                 {
                     //create a reference point
-                    var pt = RevitData.Document.Document.FamilyCreate.NewReferencePoint(new XYZ(5, 5, 5));
+                    var pt = DocumentManager.GetInstance().CurrentDBDocument.FamilyCreate.NewReferencePoint(new XYZ(5, 5, 5));
 
                     if (t.Commit() != TransactionStatus.Committed)
                     {
@@ -29,7 +30,7 @@ namespace Dynamo.Tests
             }
 
             //verify that the point was created
-            var collector = new FilteredElementCollector(RevitData.Document.Document);
+            var collector = new FilteredElementCollector(DocumentManager.GetInstance().CurrentDBDocument);
             collector.OfClass(typeof (ReferencePoint));
 
             Assert.AreEqual(1, collector.ToElements().Count);

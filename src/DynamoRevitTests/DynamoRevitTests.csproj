@@ -122,6 +122,10 @@
       <Project>{745CCA0F-549E-4756-A31E-41BF7F905B8A}</Project>
       <Name>DynamoTestFramework</Name>
     </ProjectReference>
+    <ProjectReference Include="..\RevitServices\RevitServices.csproj">
+      <Project>{e4701f9e-41ab-4044-8166-85d924feb632}</Project>
+      <Name>RevitServices</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

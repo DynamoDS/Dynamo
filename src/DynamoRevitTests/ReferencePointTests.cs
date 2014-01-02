@@ -6,6 +6,7 @@ using System.Text;
 using Autodesk.Revit.DB;
 using Dynamo.Utilities;
 using NUnit.Framework;
+using RevitServices.Persistence;
 
 namespace Dynamo.Tests
 {
@@ -15,7 +16,7 @@ namespace Dynamo.Tests
         [Test]
         public void CanCreateAndDeleteAReferencePoint()
         {
-            using (var trans = new Transaction(RevitData.Document.Document, "CreateAndDeleteAreReferencePoint"))
+            using (var trans = new Transaction(DocumentManager.GetInstance().CurrentDBDocument, "CreateAndDeleteAreReferencePoint"))
             {
                 trans.Start();
 
@@ -31,7 +32,7 @@ namespace Dynamo.Tests
                 fec.WherePasses(ef);
                 Assert.AreEqual(1, fec.ToElements().Count());
 
-                RevitData.Document.Document.Delete(rp);
+                DocumentManager.GetInstance().CurrentDBDocument.Delete(rp);
                 trans.Commit();
             }
         }
