@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Xml;
+using DSCoreNodesUI;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -19,7 +20,7 @@ namespace DSCoreNodes
     /// Sample that contains a slider and produces a number.
     /// </summary>
     [Browsable(false)]
-    public class NumberSlider : NodeModel
+    public class NumberSlider : NodeModel, IWpfNode
     {
         public NumberSlider()
         {
