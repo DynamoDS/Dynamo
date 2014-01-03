@@ -20,7 +20,6 @@ using Dynamo.ViewModels;
 using Microsoft.FSharp.Collections;
 
 using Binding = System.Windows.Data.Binding;
-using Button = System.Windows.Controls.Button;
 using ComboBox = System.Windows.Controls.ComboBox;
 using DialogResult = System.Windows.Forms.DialogResult;
 using FolderBrowserDialog = System.Windows.Forms.FolderBrowserDialog;
@@ -30,6 +29,7 @@ using MenuItem = System.Windows.Controls.MenuItem;
 using RadioButton = System.Windows.Controls.RadioButton;
 using TextBox = System.Windows.Controls.TextBox;
 using VerticalAlignment = System.Windows.VerticalAlignment;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Nodes
 {
@@ -37,22 +37,14 @@ namespace Dynamo.Nodes
     {
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            var addButton = new NodeButton
-            {
-                Content = "+",
-                Width = 20,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center
-            };
+            var addButton = new DynamoNodeButton(this, "AddInPort");
+            addButton.Content = "+";
+            addButton.Width = 20;
             //addButton.Height = 20;
 
-            var subButton = new NodeButton
-            {
-                Content = "-",
-                Width = 20,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Top
-            };
+            var subButton = new DynamoNodeButton(this, "RemoveInPort");
+            subButton.Content = "-";
+            subButton.Width = 20;
             //subButton.Height = 20;
 
             var wp = new WrapPanel
@@ -64,28 +56,6 @@ namespace Dynamo.Nodes
             wp.Children.Add(subButton);
 
             nodeUI.inputGrid.Children.Add(wp);
-
-            //nodeUI.inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            //nodeUI.inputGrid.ColumnDefinitions.Add(new ColumnDefinition());
-
-            //nodeUI.inputGrid.Children.Add(addButton);
-            //System.Windows.Controls.Grid.SetColumn(addButton, 0);
-
-            //nodeUI.inputGrid.Children.Add(subButton);
-            //System.Windows.Controls.Grid.SetColumn(subButton, 1);
-
-            addButton.Click += delegate
-            {
-                WorkSpace.RecordModelForModification(this);
-                AddInput();
-                RegisterAllPorts();
-            };
-            subButton.Click += delegate
-            {
-                RecordModels();
-                RemoveInput();
-                RegisterAllPorts();
-            };
         }
 
         private void RecordModels()
@@ -109,27 +79,51 @@ namespace Dynamo.Nodes
                 WorkSpace.RecordModelForModification(this);
         }
 
+        protected override bool HandleModelEventCore(string eventName)
+        {
+            if (eventName == "AddInPort")
+            {
+                AddInput();
+                RegisterAllPorts();
+                return true; // Handled here.
+            }
+            else if (eventName == "RemoveInPort")
+            {
+                // When an in-port is removed, it is possible that a connector 
+                // is almost removed along with it. Both node modification and 
+                // connector deletion have to be recorded as one action group.
+                // But before HandleModelEventCore is called, node modification 
+                // has already been recorded (in WorkspaceModel.SendModelEvent).
+                // For that reason, that entry on the undo-stack needs to be 
+                // popped (the node modification will be recorded here instead).
+                // 
+                this.WorkSpace.UndoRecorder.PopFromUndoGroup();
+
+                RecordModels();
+                RemoveInput();
+                RegisterAllPorts();
+                return true; // Handled here.
+            }
+
+            return base.HandleModelEventCore(eventName);
+        }
     }
 
     public partial class VariableInputAndOutput
     {
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            var addButton = new NodeButton
-            {
-                Content = "+",
-                Width = 20,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center
-            };
+            var addButton = new DynamoNodeButton(this, "AddInPort");
+            addButton.Content = "+";
+            addButton.Width = 20;
+            addButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+            addButton.VerticalAlignment = System.Windows.VerticalAlignment.Center;
 
-            var subButton = new NodeButton
-            {
-                Content = "-",
-                Width = 20,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Top
-            };
+            var subButton = new DynamoNodeButton(this, "RemoveInPort");
+            subButton.Content = "-";
+            subButton.Width = 20;
+            subButton.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+            subButton.VerticalAlignment = System.Windows.VerticalAlignment.Top;
 
             var wp = new WrapPanel
             {
@@ -140,19 +134,6 @@ namespace Dynamo.Nodes
             wp.Children.Add(subButton);
 
             nodeUI.inputGrid.Children.Add(wp);
-
-            addButton.Click += delegate
-            {
-                WorkSpace.RecordModelForModification(this);
-                AddInput();
-                RegisterAllPorts();
-            };
-            subButton.Click += delegate
-            {
-                RecordModels();
-                RemoveInput();
-                RegisterAllPorts();
-            };
         }
 
         private void RecordModels()
@@ -175,6 +156,35 @@ namespace Dynamo.Nodes
             }
             else
                 WorkSpace.RecordModelForModification(this);
+        }
+
+        protected override bool HandleModelEventCore(string eventName)
+        {
+            if (eventName == "AddInPort")
+            {
+                AddInput();
+                RegisterAllPorts();
+                return true; // Handled here.
+            }
+            else if (eventName == "RemoveInPort")
+            {
+                // When an in-port is removed, it is possible that a connector 
+                // is almost removed along with it. Both node modification and 
+                // connector deletion have to be recorded as one action group.
+                // But before HandleModelEventCore is called, node modification 
+                // has already been recorded (in WorkspaceModel.SendModelEvent).
+                // For that reason, that entry on the undo-stack needs to be 
+                // popped (the node modification will be recorded here instead).
+                // 
+                this.WorkSpace.UndoRecorder.PopFromUndoGroup();
+
+                RecordModels();
+                RemoveInput();
+                RegisterAllPorts();
+                return true; // Handled here.
+            }
+
+            return base.HandleModelEventCore(eventName);
         }
     }
 
@@ -224,13 +234,10 @@ namespace Dynamo.Nodes
     {
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            //add a text box to the input grid of the control
-            var button = new NodeButton
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Top
-            };
-
+            var button = new DynamoNodeButton();
+            button.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            button.VerticalAlignment = System.Windows.VerticalAlignment.Top;
+            //inputGrid.RowDefinitions.Add(new RowDefinition());
             nodeUI.inputGrid.Children.Add(button);
             Grid.SetColumn(button, 0);
             Grid.SetRow(button, 0);
@@ -726,14 +733,8 @@ namespace Dynamo.Nodes
     {
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
-            //base.SetupCustomUIElements(nodeUI);
-
             //add a button to the inputGrid on the dynElement
-            var readFileButton = new NodeButton
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Top
-            };
+            var readFileButton = new DynamoNodeButton();
 
             //readFileButton.Margin = new System.Windows.Thickness(4);
             readFileButton.Click += readFileButton_Click;
@@ -1089,12 +1090,38 @@ namespace Dynamo.Nodes
         }
     }
 
-    public class NodeButton : Button
+    public class DynamoNodeButton : System.Windows.Controls.Button
     {
-        public NodeButton()
+        private string eventName = string.Empty;
+        private ModelBase model = null;
+
+        public DynamoNodeButton()
+            : base()
         {
             Style = (Style)SharedDictionaryManager.DynamoModernDictionary["SNodeTextButton"];
             Margin = new Thickness(1, 0, 1, 0);
+        }
+
+        public DynamoNodeButton(ModelBase model, string eventName)
+            : this()
+        {
+            this.model = model;
+            this.eventName = eventName;
+            this.Click += OnDynamoNodeButtonClick;
+        }
+
+        private void OnDynamoNodeButtonClick(object sender, RoutedEventArgs e)
+        {
+            // If this DynamoNodeButton was created with an associated model 
+            // and the event name, then the owner of this button (a ModelBase) 
+            // needs the "DynCmd.ModelEventCommand" to be sent when user clicks
+            // on the button.
+            // 
+            if (null != this.model && (!string.IsNullOrEmpty(this.eventName)))
+            {
+                var command = new DynCmd.ModelEventCommand(model.GUID, eventName);
+                dynSettings.Controller.DynamoViewModel.ExecuteCommand(command);
+            }
         }
     }
 

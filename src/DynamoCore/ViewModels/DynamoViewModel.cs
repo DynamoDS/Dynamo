@@ -932,13 +932,12 @@ namespace Dynamo.ViewModels
             if (!FullscreenWatchShowing)
                 return;
 
-            if (CanNavigateBackground)
+            CanNavigateBackground = !CanNavigateBackground;
+
+            if (!CanNavigateBackground)
             {
-                CanNavigateBackground = false;
-            }
-            else
-            {
-                CanNavigateBackground = true;
+                // Return focus back to Search View (Search Field)
+                dynSettings.Controller.SearchViewModel.OnRequestReturnFocusToSearch(this, new EventArgs());
             }
         }
 
@@ -1364,7 +1363,8 @@ namespace Dynamo.ViewModels
         {
             InfoBubbleDataPacket data = (InfoBubbleDataPacket)parameter;
             controller.InfoBubbleViewModel.UpdateContentCommand.Execute(data);
-            controller.InfoBubbleViewModel.FadeInCommand.Execute(null);
+            controller.InfoBubbleViewModel.OnRequestAction(
+                new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.FadeIn));
         }
 
         internal bool CanShowInfoBubble(object parameter)
@@ -1374,12 +1374,14 @@ namespace Dynamo.ViewModels
 
         public void HideInfoBubble(object parameter)
         {
-            controller.InfoBubbleViewModel.FadeOutCommand.Execute(null);
+            controller.InfoBubbleViewModel.OnRequestAction(
+                new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Hide));
         }
 
-        internal bool CanHideInfoBubble(object parameter)
+        public void FadeOutInfoBubble(object parameter)
         {
-            return true;
+            controller.InfoBubbleViewModel.OnRequestAction(
+                new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.FadeOut));
         }
 
         public void TogglePreviewBubbleVisibility(object parameter)

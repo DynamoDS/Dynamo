@@ -125,6 +125,9 @@ namespace Dynamo.ViewModels
                     case "UndoRedoCommand":
                         command = UndoRedoCommand.DeserializeCore(element);
                         break;
+                    case "ModelEventCommand":
+                        command = ModelEventCommand.DeserializeCore(element);
+                        break;
                     case "UpdateModelValueCommand":
                         command = UpdateModelValueCommand.DeserializeCore(element);
                         break;
@@ -702,6 +705,50 @@ namespace Dynamo.ViewModels
             {
                 XmlElementHelper helper = new XmlElementHelper(element);
                 helper.SetAttribute("CmdOperation", ((int)this.CmdOperation));
+            }
+
+            #endregion
+        }
+
+        public class ModelEventCommand : RecordableCommand
+        {
+            #region Public Class Methods
+
+            internal ModelEventCommand(Guid modelGuid, string eventName)
+            {
+                this.ModelGuid = modelGuid;
+                this.EventName = eventName;
+            }
+
+            internal static ModelEventCommand DeserializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                Guid modelGuid = helper.ReadGuid("ModelGuid");
+                string eventName = helper.ReadString("EventName");
+                return new ModelEventCommand(modelGuid, eventName);
+            }
+
+            #endregion
+
+            #region Public Command Properties
+
+            internal Guid ModelGuid { get; private set; }
+            internal string EventName { get; private set; }
+
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+            {
+                dynamoViewModel.SendModelEventImpl(this);
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("ModelGuid", this.ModelGuid);
+                helper.SetAttribute("EventName", this.EventName);
             }
 
             #endregion

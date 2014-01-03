@@ -167,19 +167,16 @@ namespace Dynamo.Models
             get { return _state; }
             set
             {
-                //don't bother changing the state
-                //when we are not reporting modifications
-                //used when clearing the workbench
-                //to avoid nodes recoloring when connectors
-                //are deleted
-                if (IsReportingModifications)
-                {
-                    if (value != ElementState.Error)
-                        SetTooltip();
+                if (value != ElementState.Error)
+                    ClearTooltipText();
 
-                    _state = value;
+                _state = value;
+
+                // Suppress notification if not reporting. Reporting is disabled 
+                // in cases like clearing the workbench to avoid nodes recoloring 
+                // as connectors are deleted.
+                if (IsReportingModifications)
                     RaisePropertyChanged("State");
-                }
             }
         }
 
@@ -802,9 +799,16 @@ namespace Dynamo.Models
         // ReSharper disable once UnusedParameter.Local
         private void SetupCustomUIElements(object view) { }
 
-        private void SetTooltip()
+        private void ClearTooltipText()
         {
             ToolTipText = "";
+        }
+
+        protected void ClearError()
+        {
+            State = ElementState.Dead;
+            ClearTooltipText();
+            ValidateConnections();
         }
 
         public void SelectNeighbors()
@@ -1387,10 +1391,6 @@ namespace Dynamo.Models
                 ReportPosition();
             }
         }
-
-        #endregion
-
-        #region FScheme Compilation
 
         /// <summary>
         ///     Compiles this Element into a ProcedureCallNode. Override this instead of Build() if you don't want to set up all

@@ -66,7 +66,7 @@
                 </Style>
             </Button.Style>
         </Button>
-        <RepeatButton Command="{Binding Path=ZoomInCommand}" IsEnabled="{Binding Path=ZoomEnabled, Mode=OneWay}">
+        <RepeatButton Command="{Binding Path=ZoomInCommand}">
             <RepeatButton.Resources>
                 <Image x:Key="Normal"
                        Source="/DynamoCore;component/UI/Images/zoomin_normal.png"/>

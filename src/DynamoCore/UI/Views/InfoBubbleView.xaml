@@ -5,43 +5,25 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:controls="clr-namespace:Dynamo.Controls"
              mc:Ignorable="d"
-             Name="InfoBubbleWindowUserControl">
+             Name="InfoBubbleWindowUserControl"
+             Loaded="InfoBubbleWindowUserControl_Loaded">
     <UserControl.Resources>
         <ResourceDictionary>
-            <controls:OpacityToVisibilityConverter x:Key="OpacityToVisibilityConverter"/>
             <controls:InfoBubbleStyleToVisibilityConverter x:Key="StyleToVisibilityConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid x:Name="mainGrid" Background="Transparent" HorizontalAlignment="Left" VerticalAlignment="Top"
-          Margin="{Binding Path=Margin}"
            MouseLeave="InfoBubble_MouseLeave" MouseMove="MainGrid_MouseMove" MouseWheel="InfoBubble_MouseWheel">
 
-        <Polygon Name="backgroundPolygon" Fill="{Binding Path=FrameFill}" Stroke="{Binding Path=FrameStrokeColor}" 
-                 StrokeThickness="{Binding Path=FrameStrokeThickness}" Points="{Binding Path=FramePoints}"
-                 Margin="0, 0, 0, 0" MouseMove="InfoBubble_MouseMove" MouseEnter="InfoBubble_MouseEnter" PreviewMouseDown="InfoBubble_PreviewMouseDown">
+        <Polygon Name="backgroundPolygon" Margin="0, 0, 0, 0" 
+                 MouseMove="InfoBubble_MouseMove" MouseEnter="InfoBubble_MouseEnter" MouseDown="InfoBubble_PreviewMouseDown"
+                 RenderOptions.EdgeMode="Aliased">
         </Polygon>
 
         <StackPanel Name="ContentContainer" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                    MaxHeight="{Binding Path=MaxHeight}" MaxWidth="{Binding Path=MaxWidth}"
-                    MinWidth="{Binding Path=MinWidth}" MinHeight="{Binding Path=MinHeight}"
                     MouseEnter="ContentContainer_MouseEnter">
             <StackPanel.Resources>
-                <Style TargetType="{x:Type TextBox}">
-                    <Setter Property="IsReadOnly" Value="True"/>
-                    <Setter Property="BorderThickness" Value="0"/>
-                    <Setter Property="Background" Value="Transparent"/>
-                    <Setter Property="Foreground" Value="{Binding Path=TextForeground}"/>
-                    <Setter Property="FontWeight" Value="{Binding Path=TextFontWeight}"/>
-                    <Setter Property="FontSize" Value="{Binding Path=TextFontSize}"/>
-                    <Setter Property="Margin" Value="{Binding Path=ContentMargin}"/>
-                    <Setter Property="MaxWidth" Value="{Binding Path=ContentMaxWidth}"/>
-                    <Setter Property="MaxHeight" Value="{Binding Path=ContentMaxHeight}"/>
-                    <Setter Property="HorizontalAlignment" Value="Center"/>
-                    <Setter Property="VerticalAlignment" Value="Center"/>
-                    <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
-                    <Setter Property="TextWrapping" Value="Wrap"/>
-                </Style>
                 <Style x:Key="{x:Type ScrollBar}" TargetType="{x:Type ScrollBar}">
                     <Setter Property="Stylus.IsFlicksEnabled" Value="false" />
                     <Setter Property="Foreground" Value="Gray" />

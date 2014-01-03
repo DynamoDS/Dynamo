@@ -168,12 +168,38 @@ namespace Dynamo.Views
         }
 
         /// <summary>
-        /// Handler for the DataContextChangedEvent. Hanndles registration of event listeners.
+        /// This WorkspaceView will be supporting multiple WorkspaceViewModel
+        /// E.g. Home Workspace, Custom Workspaces
+        /// 
+        /// Handler for the DataContextChangedEvent. Handles registration of event listeners.
+        /// Called during switching of workspace. 
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         void dynWorkspaceView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
+            // Remove before adding registration of event listener to prevent multiple registration 
+            // to the same WorkspaceViewModel
+
+            // Remove registration of event listener
+            if (e.OldValue != null)
+            {
+                WorkspaceViewModel oldViewModel = (WorkspaceViewModel)e.OldValue;
+
+                oldViewModel.CurrentOffsetChanged -= new PointEventHandler(vm_CurrentOffsetChanged);
+                oldViewModel.ZoomChanged -= new ZoomEventHandler(vm_ZoomChanged);
+                oldViewModel.RequestZoomToViewportCenter -= new ZoomEventHandler(vm_ZoomAtViewportCenter);
+                oldViewModel.RequestZoomToViewportPoint -= new ZoomEventHandler(vm_ZoomAtViewportPoint);
+                oldViewModel.RequestZoomToFitView -= new ZoomEventHandler(vm_ZoomToFitView);
+                oldViewModel.RequestCenterViewOnElement -= new NodeEventHandler(CenterViewOnElement);
+                oldViewModel.RequestNodeCentered -= new NodeEventHandler(vm_RequestNodeCentered);
+                oldViewModel.RequestAddViewToOuterCanvas -= new ViewEventHandler(vm_RequestAddViewToOuterCanvas);
+                oldViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
+                oldViewModel.RequestSelectionBoxUpdate -= VmOnRequestSelectionBoxUpdate;
+            }
+            
+
+            // Adding registration of event listener
             ViewModel.CurrentOffsetChanged += new PointEventHandler(vm_CurrentOffsetChanged);
             ViewModel.ZoomChanged += new ZoomEventHandler(vm_ZoomChanged);
             ViewModel.RequestZoomToViewportCenter += new ZoomEventHandler(vm_ZoomAtViewportCenter);
@@ -182,9 +208,9 @@ namespace Dynamo.Views
             ViewModel.RequestCenterViewOnElement += new NodeEventHandler(CenterViewOnElement);
             ViewModel.RequestNodeCentered += new NodeEventHandler(vm_RequestNodeCentered);
             ViewModel.RequestAddViewToOuterCanvas += new ViewEventHandler(vm_RequestAddViewToOuterCanvas);
-            ViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
             ViewModel.WorkspacePropertyEditRequested += VmOnWorkspacePropertyEditRequested;
             ViewModel.RequestSelectionBoxUpdate += VmOnRequestSelectionBoxUpdate;
+
             ViewModel.Loaded();
 
             outerCanvas.Children.Remove(zoomAndPanControl);
@@ -336,18 +362,6 @@ namespace Dynamo.Views
             node.X = dropPt.X;
             node.Y = dropPt.Y;
             node.ReportPosition();
-        }
-
-        void zoomBorder_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (e.MiddleButton == MouseButtonState.Pressed)
-                (DataContext as WorkspaceViewModel).SetCurrentOffsetCommand.Execute((sender as ZoomBorder).GetTranslateTransformOrigin());
-        }
-
-        void zoomBorder_MouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            if (e.MiddleButton == MouseButtonState.Pressed)
-                (DataContext as WorkspaceViewModel).SetCurrentOffsetCommand.Execute((sender as ZoomBorder).GetTranslateTransformOrigin());
         }
 
         void vm_CurrentOffsetChanged(object sender, EventArgs e)

@@ -16,8 +16,8 @@ namespace Dynamo.ViewModels
         private DelegateCommand _toggleIsUpstreamVisibleCommand;
         private DelegateCommand _renameCommand;
         private DelegateCommand _showTooltipCommand;
+        private DelegateCommand _hideTooltipCommand;
         private DelegateCommand _fadeOutTooltipCommand;
-        private DelegateCommand _collapseTooltipCommand;
         private DelegateCommand showPreviewCommand;
         private DelegateCommand hidePreviewCommand;
         private DelegateCommand _setModelSizeCommand;
@@ -160,6 +160,16 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public DelegateCommand HideTooltipCommand
+        {
+            get
+            {
+                if (_hideTooltipCommand == null)
+                    _hideTooltipCommand = new DelegateCommand(HideTooltip, CanHideTooltip);
+                return _hideTooltipCommand;
+            }
+        }
+
         public DelegateCommand FadeOutTooltipCommand
         {
             get
@@ -167,16 +177,6 @@ namespace Dynamo.ViewModels
                 if (_fadeOutTooltipCommand == null)
                     _fadeOutTooltipCommand = new DelegateCommand(FadeOutTooltip, CanFadeOutTooltip);
                 return _fadeOutTooltipCommand;
-            }
-        }
-
-        public DelegateCommand CollapseTooltipCommand
-        {
-            get
-            {
-                if (_collapseTooltipCommand == null)
-                    _collapseTooltipCommand = new DelegateCommand(CollapseTooltip, CanCollapseTooltip);
-                return _collapseTooltipCommand;
             }
         }
 

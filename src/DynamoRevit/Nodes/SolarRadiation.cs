@@ -55,16 +55,7 @@ namespace Dynamo.Nodes
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a button to the inputGrid on the dynElement
-            var analysisResultButt = new NodeButton
-            {
-                Margin = new Thickness(0, 0, 0, 0),
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Center,
-                Content = "Select AR"
-            };
-
-            analysisResultButt.Click += analysisResultButt_Click;
-
+            Button analysisResultButt = new DynamoNodeButton();
             nodeUI.inputGrid.Children.Add(analysisResultButt);
         }
 

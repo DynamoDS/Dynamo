@@ -41,25 +41,24 @@ namespace Dynamo.Nodes
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a button to the inputGrid on the dynElement
-            sunPathButt = new NodeButton
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Center,
-                Content = "Use SunPath\nfrom Current View"
-            };
+            sunPathButt = new DynamoNodeButton();
 
-            sunPathButt.Click += registerButt_Click;
+            sunPathButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+            sunPathButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            sunPathButt.Click += new System.Windows.RoutedEventHandler(registerButt_Click);
+            sunPathButt.Content = "Use SunPath\nfrom Current View";
+            sunPathButt.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            sunPathButt.VerticalAlignment = System.Windows.VerticalAlignment.Center;
 
-            tb = new TextBox
-            {
-                Text = "No SunPath Registered",
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Center,
-                Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0)),
-                BorderThickness = new Thickness(0),
-                IsReadOnly = true,
-                IsReadOnlyCaretVisible = false
-            };
+            tb = new System.Windows.Controls.TextBox();
+            tb.Text = "No SunPath Registered";
+            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            SolidColorBrush backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
+            tb.Background = backgroundBrush;
+            tb.BorderThickness = new Thickness(0);
+            tb.IsReadOnly = true;
+            tb.IsReadOnlyCaretVisible = false;
 
             nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
             nodeUI.inputGrid.RowDefinitions.Add(new RowDefinition());
