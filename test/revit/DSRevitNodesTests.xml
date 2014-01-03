@@ -258,6 +258,8 @@
 
       <testFixture name="SelectionTests">
         <test name="SelectElementASTGeneration" modelPath=".\Empty.rfa"/>
+        <test name="SelectElementsASTGeneration" modelPath=".\Empty.rfa"/>
+        <test name="SelectReferenceASTGeneration" modelPath=".\Empty.rfa"/>
       </testFixture>
       
 	  <testFixture name="FaceIntersectTests">
