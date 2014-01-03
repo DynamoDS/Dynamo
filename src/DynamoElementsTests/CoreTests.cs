@@ -188,6 +188,44 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void ValidateConnectionsDoesNotClearError()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            model.CreateNode(100.0, 300.0, "Number");
+            Assert.AreEqual(1, model.Nodes.Count());
+
+            // Make sure we have the number node created in active state.
+            var numberNode = model.Nodes[0] as DoubleInput;
+            Assert.IsNotNull(numberNode);
+            Assert.AreEqual(ElementState.Active, numberNode.State);
+
+            // Entering an invalid value will cause it to be erroneous.
+            numberNode.Value = "--"; // Invalid numeric value.
+            Assert.AreEqual(ElementState.Error, numberNode.State);
+            Assert.IsNotEmpty(numberNode.ToolTipText); // Error tooltip text.
+
+            // Ensure the number node is not selected now.
+            Assert.AreEqual(false, numberNode.IsSelected);
+
+            // Try to select the node and make sure it is still erroneous.
+            model.AddToSelection(numberNode);
+            Assert.AreEqual(true, numberNode.IsSelected);
+            Assert.AreEqual(ElementState.Error, numberNode.State);
+            Assert.IsNotEmpty(numberNode.ToolTipText); // Error tooltip text.
+
+            // Deselect the node and ensure its error state isn't cleared.
+            DynamoSelection.Instance.Selection.Remove(numberNode);
+            Assert.AreEqual(false, numberNode.IsSelected);
+            Assert.AreEqual(ElementState.Error, numberNode.State);
+            Assert.IsNotEmpty(numberNode.ToolTipText); // Error tooltip text.
+
+            // Update to valid numeric value, should cause the node to be active.
+            numberNode.Value = "1234";
+            Assert.AreEqual(ElementState.Active, numberNode.State);
+            Assert.IsEmpty(numberNode.ToolTipText); // Error tooltip is gone.
+        }
+
+        [Test]
         public void CanAdd1NodeToClipboardAndPaste()
         {
             var model = dynSettings.Controller.DynamoModel;

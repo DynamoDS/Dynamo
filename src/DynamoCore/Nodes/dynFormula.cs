@@ -36,13 +36,19 @@ namespace Dynamo.Nodes
                     _formulaString = value;
                     if (value != null)
                     {
-                        DisableReporting();
-                        ProcessFormula();
-                        RaisePropertyChanged("FormulaString");
-                        RequiresRecalc = true;
-                        EnableReporting();
-                        if (WorkSpace != null)
-                            WorkSpace.Modified();
+                        ElementState oldState = this.State;
+                        {
+                            DisableReporting();
+                            ProcessFormula();
+                            RaisePropertyChanged("FormulaString");
+                            RequiresRecalc = true;
+                            EnableReporting();
+                            if (WorkSpace != null)
+                                WorkSpace.Modified();
+                        }
+
+                        if (oldState != this.State)
+                            RaisePropertyChanged("State");
                     }
                 }
             }
@@ -180,9 +186,10 @@ namespace Dynamo.Nodes
             {
                 InPortData.Add(new PortData(p.Item1, "variable", p.Item2));
             }
-
+            
             RegisterInputPorts();
-            ValidateConnections();
+            ClearError();
+
         }
 
         public override Value Evaluate(FSharpList<Value> args)

@@ -1218,23 +1218,6 @@ namespace Dynamo.Controls
         }
     }
 
-    public class OpacityToVisibilityConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            double opacity = (double)value;
-            if (opacity <= 0)
-                return Visibility.Collapsed;
-            return Visibility.Visible;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return null;
-
-        }
-    }
-
     public class BoolToShowAllPreviewNameConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

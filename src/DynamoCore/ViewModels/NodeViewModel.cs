@@ -228,7 +228,7 @@ namespace Dynamo.ViewModels
                 if(this.PreviewBubble == null)
                     return false;
 
-                return !this.PreviewBubble.IsShowPreviewByDefault;
+                return (this.PreviewBubble.InfoBubbleState == InfoBubbleViewModel.State.Minimized);
             }
         }
 
@@ -300,6 +300,7 @@ namespace Dynamo.ViewModels
             dynSettings.Controller.PropertyChanged += Controller_PropertyChanged;
             
             this.ErrorBubble = new InfoBubbleViewModel();
+            this.ErrorBubble.PropertyChanged += ErrorBubble_PropertyChanged;
 
             // Nodes mentioned in switch cases will not have preview bubble
             switch (nodeLogic.Name)
@@ -415,6 +416,7 @@ namespace Dynamo.ViewModels
                     break;
                 case "ToolTipText":
                     UpdateErrorBubbleContent();
+                    // TODO Update preview bubble visibility to false
                     break;
                 case "IsVisible":
                     RaisePropertyChanged("IsVisible");
@@ -452,11 +454,23 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private void ErrorBubble_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            // TODO set preview to be no visible
+
+            //switch (e.PropertyName)
+            //{
+            //    case "IsShowPreviewByDefault":
+            //        RaisePropertyChanged("IsPreviewInsetVisible");
+            //        break;
+            //}
+        }
+
         private void PreviewBubble_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
-                case "IsShowPreviewByDefault":
+                case "InfoBubbleState":
                     RaisePropertyChanged("IsPreviewInsetVisible");
                     break;
             }
@@ -467,17 +481,14 @@ namespace Dynamo.ViewModels
             if (this.PreviewBubble == null)
                 return;
 
-            this.PreviewBubble.IsShowPreviewByDefault = dynSettings.Controller.IsShowPreviewByDefault;
             UpdatePreviewBubbleContent();
             if (dynSettings.Controller.IsShowPreviewByDefault)
             {
-                this.PreviewBubble.SetAlwaysVisibleCommand.Execute(true);
-                this.PreviewBubble.InstantAppearCommand.Execute(null);
+                this.PreviewBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
             }
             else
             {
-                this.PreviewBubble.SetAlwaysVisibleCommand.Execute(false);
-                this.PreviewBubble.InstantCollapseCommand.Execute(null);
+                this.PreviewBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Minimized);
             }
         }
 
@@ -505,27 +516,26 @@ namespace Dynamo.ViewModels
                 return;
             if (string.IsNullOrEmpty(NodeModel.ToolTipText))
             {
-                // TODO: Opacity is no longer in use
-                if (ErrorBubble.Opacity != 0)
+                if (NodeModel.State != ElementState.Error)
                 {
-                    ErrorBubble.SetAlwaysVisibleCommand.Execute(false);
-                    ErrorBubble.InstantCollapseCommand.Execute(null);
+                    ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Minimized);
                 }
             }
             else
             {
-                InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.Error;
+                if (!dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Errors.Contains(this.ErrorBubble))
+                    return;
+
+                Point topLeft = new Point(NodeModel.X, NodeModel.Y);
+                Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
+                InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.ErrorCondensed;
+                // NOTE!: If tooltip is not cached here, it will be cleared once the dispatcher is invoked below
                 string content = NodeModel.ToolTipText;
                 InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Bottom;
-                InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, GetTopLeft(), GetBotRight(), content, connectingDirection);
-                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.BeginInvoke((new Action(() =>
-                {
-                    if (!dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Errors.Contains(this.ErrorBubble))
-                        return;
-                    this.ErrorBubble.UpdateContentCommand.Execute(data);
-                    this.ErrorBubble.SetAlwaysVisibleCommand.Execute(true);
-                    this.ErrorBubble.InstantAppearCommand.Execute(null);
-                })));
+                InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
+
+                this.ErrorBubble.UpdateContentCommand.Execute(data);
+                this.ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
             }
         }
 
@@ -550,12 +560,9 @@ namespace Dynamo.ViewModels
             InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Top;
             InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, GetTopLeft(), GetBotRight(), content, connectingDirection);
 
-            //update preview bubble
-            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.BeginInvoke((new Action(() =>
-            {
-                if (dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Previews.Contains(this.PreviewBubble))
-                    this.PreviewBubble.UpdateContentCommand.Execute(data);
-            })));
+            var vm = dynSettings.Controller.DynamoViewModel;
+            if (vm.CurrentSpaceViewModel.Previews.Contains(this.PreviewBubble))
+                this.PreviewBubble.UpdateContentCommand.Execute(data);
         }
 
         private void UpdatePreviewBubblePosition()
@@ -816,20 +823,26 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        private void FadeOutTooltip(object parameter)
+        private void HideTooltip(object parameter)
         {
             if (dynSettings.Controller != null)
                 dynSettings.Controller.DynamoViewModel.HideInfoBubble(parameter);
         }
 
-        private bool CanFadeOutTooltip(object parameter)
+        private bool CanHideTooltip(object parameter)
         {
             return true;
         }
 
-        private void CollapseTooltip(object parameter)
+        private void FadeOutTooltip(object parameter)
         {
-            dynSettings.Controller.InfoBubbleViewModel.InstantCollapseCommand.Execute(null);
+            if (dynSettings.Controller != null)
+                dynSettings.Controller.DynamoViewModel.FadeOutInfoBubble(parameter);
+        }
+
+        private bool CanFadeOutTooltip(object parameter)
+        {
+            return true;
         }
 
         private bool CanCollapseTooltip(object parameter)
@@ -844,7 +857,8 @@ namespace Dynamo.ViewModels
 
             UpdatePreviewBubbleContent();
             this.PreviewBubble.ZIndex = 5;
-            this.PreviewBubble.InstantAppearCommand.Execute(null);
+            this.PreviewBubble.OnRequestAction(
+                new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Show));
         }
 
         private bool CanShowPreview(object parameter)

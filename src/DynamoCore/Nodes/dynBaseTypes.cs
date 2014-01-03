@@ -1778,6 +1778,7 @@ namespace Dynamo.Nodes
                 }
 
                 RegisterInputPorts();
+                ClearError();
             }
             catch (Exception e)
             {
@@ -3428,6 +3429,7 @@ namespace Dynamo.Nodes
                     }
 
                     RegisterInputPorts();
+                    ClearError();
 
                     ArgumentLacing = InPortData.Any() ? LacingStrategy.Longest : LacingStrategy.Disabled;
                 }

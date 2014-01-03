@@ -215,11 +215,12 @@ namespace Dynamo.Search
 
         private void Button_MouseEnter(object sender, MouseEventArgs e)
         {
-            Grid g = (Grid)sender;
+            Button b = (Button)sender;
+            Grid g = (Grid)b.Parent;
             Label lb = (Label)(g.Children[0]);
             var bc = new BrushConverter();
             lb.Foreground = (Brush)bc.ConvertFromString("#cccccc");
-            Image collapsestate = (Image)g.Children[1];
+            Image collapsestate = (Image)(b).Content;
             var collapsestateSource = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/expand_hover.png");
             BitmapImage bmi = new BitmapImage(collapsestateSource);
             RotateTransform rotateTransform = new RotateTransform(-90, 16, 16);
@@ -230,11 +231,12 @@ namespace Dynamo.Search
 
         private void buttonGrid_MouseLeave(object sender, MouseEventArgs e)
         {
-            Grid g = (Grid)sender;
+            Button b = (Button)sender;
+            Grid g = (Grid)b.Parent;
             Label lb = (Label)(g.Children[0]);
             var bc = new BrushConverter();
             lb.Foreground = (Brush)bc.ConvertFromString("#aaaaaa");
-            Image collapsestate = (Image)g.Children[1];
+            Image collapsestate = (Image)(b).Content;
             var collapsestateSource = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/expand_normal.png");
             collapsestate.Source = new BitmapImage(collapsestateSource);
             

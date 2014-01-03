@@ -220,15 +220,22 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        /// This function removes the top item from the UndoStack
+        /// This function removes the top most item from the UndoStack. In 
+        /// order to preserve continuity of both undo and redo stacks, a pop 
+        /// action cannot be done when undo has unwinded some user actions, 
+        /// leaving them on the redo stack. This partially helps making sure 
+        /// the method is only called when the caller recognizes the most 
+        /// recent item that was pushed onto the undo stack (and that it does 
+        /// not accidentally pop an action that is irrelevant).
         /// </summary>
         public void PopFromUndoGroup()
         {
             if (this.redoStack.Count > 0)
             {
                 throw new InvalidOperationException(
-                    "UndoStack cannot be pop with non-empty RedoStack");
+                    "UndoStack cannot be popped with non-empty RedoStack");
             }
+
             PopActionGroupFromUndoStack();
         }
 

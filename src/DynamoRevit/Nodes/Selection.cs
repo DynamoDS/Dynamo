@@ -143,7 +143,7 @@ namespace Dynamo.Nodes
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a button to the inputGrid on the dynElement
-            var selectButton = new NodeButton
+            var selectButton = new DynamoNodeButton
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Center
@@ -465,7 +465,7 @@ namespace Dynamo.Nodes
         public void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a button to the inputGrid on the dynElement
-            _selectButton = new NodeButton
+            _selectButton = new DynamoNodeButton
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Center

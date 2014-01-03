@@ -852,6 +852,32 @@ namespace Dynamo.Models
             RaisePropertyChanged("Position");
         }
 
+        internal void SendModelEvent(Guid modelGuid, string eventName)
+        {
+            ModelBase model = this.GetModelInternal(modelGuid);
+            if (null != model)
+            {
+                RecordModelForModification(model);
+                if (!model.HandleModelEvent(eventName))
+                {
+                    string type = model.GetType().FullName;
+                    string message = string.Format(
+                        "ModelBase.HandleModelEvent call not handled.\n\n" + 
+                        "Model type: {0}\n" +
+                        "Model GUID: {1}\n" + 
+                        "Event name: {2}",
+                        type, modelGuid.ToString(), eventName);
+
+                    // All 'HandleModelEvent' calls must be handled by one of 
+                    // the ModelBase derived classes that the 'SendModelEvent'
+                    // is intended for.
+                    throw new InvalidOperationException(message);
+                }
+
+                this.HasUnsavedChanges = true;
+            }
+        }
+
         internal void UpdateModelValue(Guid modelGuid, string name, string value)
         {
             ModelBase model = GetModelInternal(modelGuid);

@@ -51,7 +51,7 @@ namespace DSCoreNodes
             public void SetupCustomUIElements(dynNodeView view)
             {
                 //add a button to the inputGrid on the dynElement
-                var readFileButton = new NodeButton
+                var readFileButton = new DynamoNodeButton()
                 {
                     HorizontalAlignment = HorizontalAlignment.Stretch,
                     VerticalAlignment = VerticalAlignment.Top
