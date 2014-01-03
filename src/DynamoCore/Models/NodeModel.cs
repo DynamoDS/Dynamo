@@ -1392,6 +1392,10 @@ namespace Dynamo.Models
             }
         }
 
+        #endregion
+
+        #region FScheme Compilation
+
         /// <summary>
         ///     Compiles this Element into a ProcedureCallNode. Override this instead of Build() if you don't want to set up all
         ///     of the inputs for the ProcedureCallNode.
