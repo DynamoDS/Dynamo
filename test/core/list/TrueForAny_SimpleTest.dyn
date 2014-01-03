@@ -1,0 +1,18 @@
+<Workspace Version="0.6.3.5265" X="-10.3598962312201" Y="-464.674519353196" zoom="1.3" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.OrMap type="Dynamo.Nodes.OrMap" guid="3960776a-4c6c-40d8-8b7e-dbe5db38d75b" nickname="True For Any" x="328.45166842961" y="615.789257311316" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Division type="Dynamo.Nodes.Division" guid="86f522d6-42bb-4b13-841f-a431d4e67f67" nickname="Divide" x="177.45166842961" y="514.789257311316" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="b72fbc6f-44e2-47a8-a286-0f14d1ea40a5" nickname="Number" x="44.4516684296098" y="544.789257311316" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="387f66b9-8f28-4b53-bea4-eeb6c97b31c1" nickname="Number" x="47.4516684296098" y="692.789257311316" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="10..15" />
+    </Dynamo.Nodes.DoubleInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="86f522d6-42bb-4b13-841f-a431d4e67f67" start_index="0" end="3960776a-4c6c-40d8-8b7e-dbe5db38d75b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b72fbc6f-44e2-47a8-a286-0f14d1ea40a5" start_index="0" end="86f522d6-42bb-4b13-841f-a431d4e67f67" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="387f66b9-8f28-4b53-bea4-eeb6c97b31c1" start_index="0" end="3960776a-4c6c-40d8-8b7e-dbe5db38d75b" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
