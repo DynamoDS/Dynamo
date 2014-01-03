@@ -5,7 +5,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using System.Windows.Threading;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Events;
@@ -19,11 +18,8 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Greg;
-using ProtoScript.Runners;
-using RevitServices;
 using RevitServices.Elements;
 using RevitServices.Persistence;
-using RevitServices.Threading;
 using RevitServices.Transactions;
 using ChangeType = RevitServices.Elements.ChangeType;
 using CurveLoop = Autodesk.Revit.DB.CurveLoop;
@@ -35,12 +31,15 @@ namespace Dynamo
 {
     public class DynamoController_Revit : DynamoController
     {
+        private ElementId _keeperId = ElementId.InvalidElementId;
         public RevitServicesUpdater Updater { get; private set; }
-
         public PredicateTraverser CheckManualTransaction { get; private set; }
         public PredicateTraverser CheckRequiresTransaction { get; private set; }
 
-        private ElementId _keeperId = ElementId.InvalidElementId;
+        /// <summary>
+        /// A dictionary which temporarily stores element names for setting after element deletion.
+        /// </summary>
+        public Dictionary<ElementId, string> ElementNameStore { get; set; }
 
         /// <summary>
         /// A visualization manager responsible for generating geometry for rendering.
@@ -97,6 +96,7 @@ namespace Dynamo
             TransactionManager.FailuresRaised += TransactionManager_FailuresRaised;
 
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrationsRevit));
+            ElementNameStore = new Dictionary<ElementId, string>();
         }
 
         private void CleanupVisualizations(object sender, EventArgs e)
@@ -701,14 +701,57 @@ namespace Dynamo
                 _transaction.CommitTransaction(); //Close global transaction.
             };
 
+            //Rename Delegate
+            Action rename = delegate
+            {
+                InitTransaction();
+
+                foreach (var kvp in ElementNameStore)
+                {
+                    //find the element and rename it
+                    Element el = null;
+
+                    if (dynUtils.TryGetElement(kvp.Key, out el))
+                    {
+                        //if the element is not stored with a unique name
+                        //add a unique suffix to it
+                        try
+                        {
+                            if (el is Autodesk.Revit.DB.ReferencePlane)
+                            {
+                                var rp = el as Autodesk.Revit.DB.ReferencePlane;
+                                rp.Name = kvp.Value;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            if (el is Autodesk.Revit.DB.ReferencePlane)
+                            {
+                                var rp = el as Autodesk.Revit.DB.ReferencePlane;
+                                rp.Name = kvp.Value +"_"+ Guid.NewGuid();
+                            }
+                        }
+                    }
+                }
+
+                ElementNameStore.Clear();
+
+                EndTransaction();
+            };
+
             //If we're in a debug run or not already in the idle thread, then run the Cleanup Delegate
             //from the idle thread. Otherwise, just run it in this thread.
             if (dynSettings.Controller.DynamoViewModel.RunInDebug || !InIdleThread && !Testing)
             {
-                RevThread.IdlePromise.ExecuteOnIdleSync(cleanup);
+                IdlePromise.ExecuteOnIdle(cleanup, false);
+                IdlePromise.ExecuteOnIdle(rename, false);
             }
             else
+            {
                 cleanup();
+                rename();
+            }
+                
 
         }
 
