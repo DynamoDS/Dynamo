@@ -358,11 +358,11 @@ namespace DSRevitNodes.Interactivity
             return xyzRef;
         }
 
-        public static List<FamilyInstance> RequestDividedSurfaceFamilyInstancesSelection(string message)
+        public static List<Element> RequestDividedSurfaceFamilyInstancesSelection(string message)
         {
             var form = RequestFormSelection(message);
 
-            var result = new List<FamilyInstance>();
+            var result = new List<Element>();
 
             var dsd = form.GetDividedSurfaceData();
 
