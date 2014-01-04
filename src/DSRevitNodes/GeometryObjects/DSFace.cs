@@ -104,7 +104,7 @@ namespace DSRevitNodes.GeometryObjects
             return InternalFace.ComputeNormal(new UV(u, v)).ToVector();
         }
 
-        public static DSFace FromExisting(Autodesk.Revit.DB.Face f)
+        internal static DSFace FromExisting(Autodesk.Revit.DB.Face f)
         {
             return new DSFace(f);
         }
