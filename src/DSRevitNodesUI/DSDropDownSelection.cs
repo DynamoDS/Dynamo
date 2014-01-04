@@ -155,13 +155,32 @@ namespace Dynamo.Nodes
         }
     }
 
-    public abstract class DSElementsDropDown : DSDropDownBase
+    public abstract class DSElementsOfTypeDropDown : DSDropDownBase
     {
-        protected DSElementsDropDown(string typeName) : base(typeName){ }
+        protected DSElementsOfTypeDropDown(string typeName) : base(typeName) { }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            return base.BuildOutputAst(inputAstNodes);
+            //create a document collector to get the elements in the document
+            //of the type that are stored in the selected item
+            var fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentDBDocument);
+            fec.OfClass(Items[SelectedIndex].Item as Type);
+            var els = fec.ToElements();
+
+            AssociativeNode node = null;
+
+            var newInputs = els.Select(el => new FunctionCallNode
+            {
+                Function = new IdentifierNode("DSRevitNodes.Elements.ElementSelector.ByElementId"),
+                FormalArguments = new List<AssociativeNode>
+                {
+                    new IntNode(el.Id.IntegerValue.ToString(CultureInfo.InvariantCulture))
+                }
+            }).Cast<AssociativeNode>().ToList();
+
+            node = AstFactory.BuildExprList(newInputs);
+
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
         }
     }
 
@@ -269,7 +288,7 @@ namespace Dynamo.Nodes
     [NodeSearchTags("elements", "type")]
     [IsInteractive(true)]
     [IsDesignScriptCompatible]
-    public class DSSelectAllElementsOfType : DSElementDropDown
+    public class DSSelectAllElementsOfType : DSElementsOfTypeDropDown
     {
         public DSSelectAllElementsOfType():base("Elements"){}
         
