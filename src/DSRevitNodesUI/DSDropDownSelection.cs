@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -131,6 +132,33 @@ namespace Dynamo.Nodes
             combo.SetBinding(Selector.SelectedIndexProperty, indexBinding);
         }
 
+    }
+
+    public abstract class DSElementDropDown : DSDropDownBase
+    {
+        protected DSElementDropDown(string typeName) : base(typeName) { }
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            AssociativeNode node = null;
+
+            node = new FunctionCallNode
+            {
+                Function = new IdentifierNode("DSRevitNodes.Elements.ElementSelector.ByElementId"),
+                FormalArguments = new List<AssociativeNode>
+                {
+                    new IntNode((Items[SelectedIndex].Item as ElementType).Id.IntegerValue.ToString(CultureInfo.InvariantCulture))
+                }
+            };
+
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
+        }
+    }
+
+    public abstract class DSElementsDropDown : DSDropDownBase
+    {
+        protected DSElementsDropDown(string typeName) : base(typeName){ }
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             return base.BuildOutputAst(inputAstNodes);
@@ -138,12 +166,12 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Select Family Type")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a Family Type.")]
     [NodeSearchTags("family", "type")]
     [IsInteractive(true)]
     [IsDesignScriptCompatible]
-    public class DSFamilyTypeSelection : DSDropDownBase
+    public class DSFamilyTypeSelection : DSElementDropDown
     {
         private Type internalType;
 
@@ -154,25 +182,32 @@ namespace Dynamo.Nodes
             Items.Clear();
 
             var fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentDBDocument);
+
             fec.OfClass(typeof(Family));
+            if (fec.ToElements().Count == 0)
+            {
+                Items.Add(new DynamoDropDownItem("No family types available.", null));
+                SelectedIndex = 0;
+                return;
+            }
 
             foreach (Family family in fec.ToElements())
             {
                 foreach (FamilySymbol fs in family.Symbols)
                 {
-                    Items.Add(new DynamoDropDownItem(fs.Name, fs));
+                    Items.Add(new DynamoDropDownItem(string.Format("{0}:{1}", family.Name, fs.Name), fs));
                 }
             }
         }
     }
 
     [NodeName("Select Wall Type")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a Wall Type.")]
     [NodeSearchTags("wall", "type")]
     [IsInteractive(true)]
     [IsDesignScriptCompatible]
-    public class DSWallTypeSelection : DSDropDownBase
+    public class DSWallTypeSelection : DSElementDropDown
     {
         public DSWallTypeSelection(): base("Wall Type"){}
 
@@ -181,7 +216,15 @@ namespace Dynamo.Nodes
             Items.Clear();
 
             var fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentDBDocument);
+
             fec.OfClass(typeof(WallType));
+            if (fec.ToElements().Count == 0)
+            {
+                Items.Add(new DynamoDropDownItem("No wall types available.", null));
+                SelectedIndex = 0;
+                return;
+            }
+
             foreach (WallType wt in fec.ToElements())
             {
                 Items.Add(new DynamoDropDownItem(wt.Name, wt));
@@ -190,12 +233,12 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Select Floor Type")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_FAMILIES)]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("Select a Floor Type.")]
-    [NodeSearchTags("wall", "type")]
+    [NodeSearchTags("floor", "type")]
     [IsInteractive(true)]
     [IsDesignScriptCompatible]
-    public class DSFloorTypeSelection : DSDropDownBase
+    public class DSFloorTypeSelection : DSElementDropDown
     {
         public DSFloorTypeSelection() : base("Floor Type") { }
 
@@ -204,10 +247,53 @@ namespace Dynamo.Nodes
             Items.Clear();
 
             var fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentDBDocument);
+
             fec.OfClass(typeof(FloorType));
+            if (fec.ToElements().Count == 0)
+            {
+                Items.Add(new DynamoDropDownItem("No floor types available.", null));
+                SelectedIndex = 0;
+                return;
+            }
+
             foreach (FloorType ft in fec.ToElements())
             {
                 Items.Add(new DynamoDropDownItem(ft.Name, ft));
+            }
+        }
+    }
+
+    [NodeName("Select All Elements of Type")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
+    [NodeDescription("Select all elements of a type.")]
+    [NodeSearchTags("elements", "type")]
+    [IsInteractive(true)]
+    [IsDesignScriptCompatible]
+    public class DSSelectAllElementsOfType : DSElementDropDown
+    {
+        public DSSelectAllElementsOfType():base("Elements"){}
+        
+        protected override void PopulateItems()
+        {
+            Items.Clear();
+
+            var fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentDBDocument);
+
+            fec.WherePasses(
+              new LogicalOrFilter(
+                new ElementIsElementTypeFilter(false),
+                new ElementIsElementTypeFilter(true)));
+
+            if (fec.ToElements().Count == 0)
+            {
+                Items.Add(new DynamoDropDownItem("No elements available in the document.", null));
+                SelectedIndex = 0;
+                return;
+            }
+
+            foreach (var group in fec.ToElements().GroupBy(x => x.GetType()))
+            {
+                Items.Add(new DynamoDropDownItem(group.Key.ToString(), group.Key));
             }
         }
     }
