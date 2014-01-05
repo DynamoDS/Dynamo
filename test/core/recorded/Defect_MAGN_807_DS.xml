@@ -1,0 +1,15 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="94141405-4421-48ad-92ce-00887339bb30" NodeName="Code Block" X="291" Y="147" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="94141405-4421-48ad-92ce-00887339bb30" Name="Code" Value="1" />
+  <CreateNodeCommand NodeId="a81983a7-2714-4dad-9d88-587280f53748" NodeName="Code Block" X="430" Y="165" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="a81983a7-2714-4dad-9d88-587280f53748" Name="Code" Value="a = Point.ByCoordinates(x, 1, 2)" />
+  <MakeConnectionCommand NodeId="a81983a7-2714-4dad-9d88-587280f53748" PortIndex="0" Type="0" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="94141405-4421-48ad-92ce-00887339bb30" PortIndex="0" Type="1" ConnectionMode="1" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="a81983a7-2714-4dad-9d88-587280f53748" Name="Code" Value="Point.ByCoordinates(x, 1, 2);" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+</Commands>

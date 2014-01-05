@@ -1,0 +1,14 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="c0fb356e-5a6b-4a35-a9ca-fb75d1532a63" NodeName="Code Block" X="150" Y="142" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="c0fb356e-5a6b-4a35-a9ca-fb75d1532a63" Name="Code" Value="a = 1..5;" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="ab89fd2c-0cad-4a15-81c9-1b69fa37cdf0" NodeName="Code Block" X="87" Y="250" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="ab89fd2c-0cad-4a15-81c9-1b69fa37cdf0" Name="Code" Value="a = 6..10" />
+  <SelectModelCommand ModelGuid="ab89fd2c-0cad-4a15-81c9-1b69fa37cdf0" Modifiers="0" />
+  <DragSelectionCommand X="64" Y="235" DragOperation="0" />
+  <DragSelectionCommand X="137" Y="256" DragOperation="1" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+</Commands>

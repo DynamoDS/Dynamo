@@ -62,7 +62,7 @@ namespace Dynamo.Tests.UI
             return node.VariableToPreview;
         }
 
-        private RuntimeMirror GetRuntimeMirror(string varName)
+        public RuntimeMirror GetRuntimeMirror(string varName)
         {
             RuntimeMirror mirror = null;
             mirror = controller.EngineController.GetMirror(varName);
@@ -73,22 +73,31 @@ namespace Dynamo.Tests.UI
 
         public void AssertValue(string varname, object value)
         {
-            var mirror = GetRuntimeMirror(varname);
 
-            Console.WriteLine(varname + " = " + mirror.GetStringData());
-            StackValue svValue = mirror.GetData().GetStackValue();
-
+            RuntimeMirror mirror = controller.EngineController.GetMirror(varname);
             if (value == null)
             {
-                Assert.IsTrue(StackUtils.IsNull(svValue));
+                Assert.IsNull(mirror);
+                return;
             }
-            else if (value is double)
+            
+            Console.WriteLine(varname + " = " + mirror.GetStringData());
+
+            // Get value of the data
+            var data = mirror.GetData();
+            var dataValue = data.Data;
+
+            //StackValue svValue = data.GetStackValue();
+            
+            if (value is double)
             {
-                Assert.AreEqual(svValue.opdata_d, Convert.ToDouble(value));
+                //Assert.AreEqual(svValue.opdata_d, Convert.ToDouble(value), 0.01);
+                Assert.AreEqual(Convert.ToDouble(dataValue), Convert.ToDouble(value), 0.01);
             }
             else if (value is int)
             {
-                Assert.AreEqual(svValue.opdata, Convert.ToInt64(value));
+                //Assert.AreEqual(svValue.opdata, Convert.ToInt64(value));
+                Assert.AreEqual(Convert.ToInt64(dataValue), Convert.ToInt64(value));
             }
             else if (value is IEnumerable<int>)
             {
@@ -99,6 +108,29 @@ namespace Dynamo.Tests.UI
             {
                 var values = (value as IEnumerable<double>).ToList().Select(v => (object)v).ToList();
                 Assert.IsTrue(mirror.GetUtils().CompareArrays(varname, values, typeof(double)));
+            }
+            else if (value is MockPoint)
+            {
+                AssertCompareDSPoint((MockPoint)value, dataValue);
+            }
+            else if (value is IEnumerable<MockPoint>)
+            {
+                Assert.True(data.IsCollection);
+
+                // Get all point from the collection
+                var expectedValues = value as IEnumerable<MockPoint>;
+                List<object> actualValues = data.GetElements().Select((x) => x.Data).ToList();
+
+                // Check same number of elements
+                Assert.AreEqual(expectedValues.Count(), actualValues.Count());
+                
+                // Check each element(Point) for same value
+                int i = 0;
+                foreach (var expectedPoint in expectedValues)
+                {
+                    AssertCompareDSPoint(expectedPoint, actualValues[i]);
+                    i++;
+                }
             }
         }
 
@@ -115,6 +147,25 @@ namespace Dynamo.Tests.UI
 
             StackValue svValue = mirror.GetData().GetStackValue();
             Assert.IsTrue(StackUtils.IsValidPointer(svValue));
+        }
+
+        private void AssertCompareDSPoint(MockPoint expectedPoint, object actualValue)
+        {
+            // Expected value to be null
+            if (expectedPoint == null)
+            {
+                Assert.True(actualValue == null);
+                return;
+            }
+
+            // Ensure actualValue is DS Point
+            var actualPoint = actualValue as Autodesk.DesignScript.Geometry.Point;
+            Assert.NotNull(actualPoint);
+
+            // Compare the actual and expected point
+            Assert.AreEqual(expectedPoint.X, actualPoint.X);
+            Assert.AreEqual(expectedPoint.Y, actualPoint.Y);
+            Assert.AreEqual(expectedPoint.Z, actualPoint.Z);
         }
 
         #endregion
@@ -1559,6 +1610,236 @@ namespace Dynamo.Tests.UI
             AssertValue("c", 8); // Run playback is recorded in command file
         }
 
+        [Test, RequiresSTA]
+        public void Defect_MAGN_773_DS()
+        {
+            // CBN in some case changing input from singleton to array does not create geometry and 
+            // the preview is wrong
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-773
+
+            // Create   CBN1 [a = 1;]
+            // Create   CBN2 [b = ll+4;]
+            // Connect  CBN1'a to CBN2'll
+            // Create   CBN3 [c = h12-3;]
+            // Connect  CBN2-b to CBN3-h12
+            // Create   CBN4 [d=Point.ByCoordinates(w45,0,0);]
+            // Connect  CBN3-h12 to CBN4-w45
+            // Run Graph
+            RunCommandsFromFile("Defect_MAGN_773_DS_Run1.xml");
+
+            // Expected d to be Point(x=2,y=0,z=0);
+            AssertValue("d", new MockPoint(2, 0, 0));
+
+            // Reset current test case
+            Exit();
+            Start();
+
+            // Modify CBN1 to [a = 1..5;]
+            RunCommandsFromFile("Defect_MAGN_773_DS_Run2.xml");
+
+            // Expected d to be point of collection = (2,0,0), (3,0,0), (4,0,0), (5,0,0), (6,0,0)
+            List<MockPoint> expectedPoints = new List<MockPoint>();
+            expectedPoints.Add(new MockPoint(2, 0, 0));
+            expectedPoints.Add(new MockPoint(3, 0, 0));
+            expectedPoints.Add(new MockPoint(4, 0, 0));
+            expectedPoints.Add(new MockPoint(5, 0, 0));
+            expectedPoints.Add(new MockPoint(6, 0, 0));
+            AssertValue("d", expectedPoints);
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_765_DS()
+        {
+            // Geometry disappears after second run with modification
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-765
+            // Create   CBN1    [x = 10;]
+            //                  [y = 20;]
+            //                  [z = 30;]
+            // Create Point.ByCoordinates1
+            // Create Point.ByCoordinates2
+            // Connect both Point.ByCoordinates-X to CBN1-x
+            // Connect both Point.ByCoordinates-Y to CBN1-y
+            // Connect both Point.ByCoordinates-Z to CBN1-z
+            // Create   CBN2    [a;]
+            //                  [b;]
+            // Connect Point.ByCoordinates1 to CBN2-a;
+            // Connect Point.ByCoordinates2 to CBN2-b;
+            // Run Graph
+            // Edit     CBN1    z to 20;
+            // Run Graph again
+
+            RunCommandsFromFile("Defect_MAGN_765_DS.xml");
+            // Expected 2 points
+
+            // TODO(Robin) : Unable to validate Geometry directly using VisualizationManager
+            // as VisualizationManager's elements are cleared after dynamo UI shutdown before
+            // reaching this statement. This will be resolve once validation is added to
+            // command framework.
+
+            // Instead validate the DS values
+            AssertValue("a", new MockPoint(10, 20, 20));
+            AssertValue("b", new MockPoint(10, 20, 20));
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_559_DS()
+        {
+            // Multiple variable declarations are permitted
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-559
+
+            // Create   CBN1    [a = 1..5;]
+            // Create   CBN2    [a = 6..10;]
+            // Run graph
+            RunCommandsFromFile("Defect_MAGN_559_DS.xml");
+
+            // Expected a = 1..5; (ignore CBN2 as it should be in error state)
+            AssertValue("a", new int[] { 1, 2, 3, 4, 5 });
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_626_DS()
+        {
+            // CBN that evalaute correct, does not display geometry output
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-626
+
+            // Create   CBN1    [a=Point.ByCoordinates(0,1,2);]
+            // Run Graph
+            RunCommandsFromFile("Defect_MAGN_626_DS.xml");
+
+            // Expected: VisualizationManager to have one geometry point;
+            // TODO(Robin) : Unable to validate Geometry directly using VisualizationManager
+            // as VisualizationManager's elements are cleared after dynamo UI shutdown before
+            // reaching this statement. This will be resolve once validation is added to
+            // command framework.
+
+            // Instead validate the DS values
+            AssertValue("a", new MockPoint(0, 1, 2));
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_707_DS()
+        {
+            // [Regression]Editing the codeblock does not evaluate , show the previous value
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-707
+
+            // Create   CBN1    [a = 1;]
+            // Run graph
+            RunCommandsFromFile("Defect_MAGN_707_DS_Run1.xml");
+
+            // Expected a = 1
+            AssertValue("a", 1);
+
+            // Reset current test case
+            Exit();
+            Start();
+
+            // Modify   CBN1    [a = 2;];
+            RunCommandsFromFile("Defect_MAGN_707_DS_Run2.xml");
+
+            // Expected a = 2
+            AssertValue("a", 2);
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_750_DS()
+        {
+            // Input modified on second run was not evaluated
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-750
+
+            // Create   CBN1    [a = 1;]
+            //                  [b = a;]
+            //                  [b = b + 1;]
+            // Run Graph
+            // Expected b = 2
+            RunCommandsFromFile("Defect_MAGN_750_DS_Run1.xml");
+            AssertValue("b", "2");
+
+            // Reset current test case
+            Exit();
+            Start();
+
+            // Modify (a = 1) to (a = 2);
+            // Expected b = 3
+            RunCommandsFromFile("Defect_MAGN_750_DS_Run2.xml");
+            AssertValue("b", "3");
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_584_DS()
+        {
+            // Changing array to singleton results in null output.
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-584
+
+            // Create   CBN1    [a = {1,2,3};]
+            //                  [a[0] = 2;   ]
+            // Create   Math.Sin
+            // Connect  CBN1-a[0] to Math.Sin
+            // Create   CBN2    [b;]
+            // Connect  Math.Sin to CBN2-b
+            // Run graph
+            RunCommandsFromFile("Defect_MAGN_584_DS.xml");
+
+            // Expected a = Sin(2);
+            AssertValue("b", Math.Sin(2.0 / 180 * Math.PI));
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_600_DS()
+        {
+            // CBN remembers the last computed value of a variable,
+            // even when the variable is not defined
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-600
+
+            // Create   CBN1    [b = 1;]
+            // Run Graph
+            // Delete   CBN1
+            // Create   CBN2    [a = b;]
+            // Run Graph
+            RunCommandsFromFile("Defect_MAGN_600_DS.xml");
+
+            // Expected a = null;
+            AssertValue("a", null);
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_782_DS()
+        {
+            // CBN Geometry displayed only for the last statement
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-782
+            // Create   CBN1    [a = Point.ByCoordinates(1,0,1);]
+            //                  [b = Point.ByCoordinates(2,0,1);]
+            //                  [c = a.X;]
+            // Run Graph
+
+            // Expected 2 points
+            RunCommandsFromFile("Defect_MAGN_782_DS.xml");
+
+            // TODO(Robin) : Unable to validate Geometry directly using VisualizationManager
+            // as VisualizationManager's elements are cleared after dynamo UI shutdown before
+            // reaching this statement. This will be resolve once validation is added to
+            // command framework.
+
+            // Instead validate the DS values
+            AssertValue("a", new MockPoint(1, 0, 1));
+            AssertValue("b", new MockPoint(2, 0, 1));
+            AssertValue("c", 1);
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_807_DS()
+        {
+            // [Crash]Dynamo crashes if there is an error in the node Geometry and is connected to other CBN
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-807
+            // Create   CBN1    [1;]
+            // Create   CBN2    [a = Point.ByCoordinates(x,1,2);]
+            // Connect  CBN1 to CBN2-x
+            // Run Graph
+            // Modify   CBN2    [Point.ByCoordinates(x,1,2);]
+
+            // Should not crash
+            RunCommandsFromFile("Defect_MAGN_807_DS.xml");
+            Assert.Pass("Execution completed successfully");
+        }
         #endregion
 
         #region Private Helper Methods
@@ -1603,6 +1884,8 @@ namespace Dynamo.Tests.UI
             Assert.IsNotNull(controller.DynamoModel.CurrentWorkspace);
             workspace = controller.DynamoModel.CurrentWorkspace;
             workspaceViewModel = controller.DynamoViewModel.CurrentSpaceViewModel;
+
+            dynSettings.Controller = controller;
         }
 
         private CmdType DuplicateAndCompare<CmdType>(CmdType command)
@@ -1621,9 +1904,29 @@ namespace Dynamo.Tests.UI
             Assert.IsTrue(duplicate is CmdType);
             return duplicate as CmdType;
         }
-
         #endregion
     }
 
 #endif
+}
+
+public class MockPoint
+{
+    public double X { get; set; }
+    public double Y { get; set; }
+    public double Z { get; set; }
+
+    public MockPoint()
+    {
+        X = 0;
+        Y = 0;
+        Z = 0;
+    }
+
+    public MockPoint(int x, int y, int z)
+    {
+        X = x;
+        Y = y;
+        Z = z;
+    }
 }
