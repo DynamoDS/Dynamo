@@ -1,0 +1,12 @@
+<Workspace Version="0.6.3.5265" X="-101.135202297703" Y="-418.333333333333" zoom="1.7" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.Smooth type="Dynamo.Nodes.Smooth" guid="e367bd22-e0ef-402e-b6c0-3a7aaee2be63" nickname="Smooth" x="281.844236645707" y="469.313725490196" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="af1a8b84-87d7-4b19-991d-35d75bec85c7" nickname="Number" x="87.1383542927662" y="430.490196078431" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="10.25..20.23..#6" />
+    </Dynamo.Nodes.DoubleInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="af1a8b84-87d7-4b19-991d-35d75bec85c7" start_index="0" end="e367bd22-e0ef-402e-b6c0-3a7aaee2be63" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
