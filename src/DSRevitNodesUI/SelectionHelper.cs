@@ -11,13 +11,13 @@ namespace DSRevitNodes.Interactivity
 {
     internal class SelectionHelper
     {
-        public static Autodesk.Revit.DB.ReferencePoint RequestReferencePointSelection(string message)
+        public static ReferencePoint RequestReferencePointSelection(string message)
         {
             var doc = DocumentManager.GetInstance().CurrentUIDocument;
 
             ReferencePoint rp = null;
 
-            Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+            Selection choices = doc.Selection;
 
             choices.Elements.Clear();
 
@@ -46,7 +46,7 @@ namespace DSRevitNodes.Interactivity
 
             CurveElement c = null;
 
-            Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+            Selection choices = doc.Selection;
 
             choices.Elements.Clear();
 
@@ -64,7 +64,7 @@ namespace DSRevitNodes.Interactivity
         {
             var doc = DocumentManager.GetInstance().CurrentUIDocument;
 
-            Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+            Selection choices = doc.Selection;
             choices.Elements.Clear();
 
             DynamoLogger.Instance.Log(message);
@@ -99,7 +99,7 @@ namespace DSRevitNodes.Interactivity
 
             Face f = null;
 
-            Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+            Selection choices = doc.Selection;
 
             choices.Elements.Clear();
 
@@ -143,7 +143,7 @@ namespace DSRevitNodes.Interactivity
         {
             var doc = DocumentManager.GetInstance().CurrentUIDocument;
 
-            Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+            Selection choices = doc.Selection;
             choices.Elements.Clear();
 
             DynamoLogger.Instance.Log(message);
@@ -159,19 +159,21 @@ namespace DSRevitNodes.Interactivity
 
             Form f = null;
 
-            Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+            Selection choices = doc.Selection;
 
             choices.Elements.Clear();
 
             DynamoLogger.Instance.Log(message);
 
             //create some geometry options so that we computer references
+            /*
             var opts = new Options
             {
                 ComputeReferences = true,
                 DetailLevel = ViewDetailLevel.Medium,
                 IncludeNonVisibleObjects = false
             };
+            */
 
             Reference formRef = doc.Selection.PickObject(ObjectType.Element);
 
@@ -191,7 +193,7 @@ namespace DSRevitNodes.Interactivity
             {
                 //FamilySymbol fs = null;
 
-                Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+                Selection choices = doc.Selection;
 
                 choices.Elements.Clear();
 
@@ -208,9 +210,9 @@ namespace DSRevitNodes.Interactivity
                     {
                         return fi.Symbol;
                     }
-                    else return null;
+                    return null;
                 }
-                else return null;
+                return null;
             }
             catch (Exception ex)
             {
@@ -225,7 +227,7 @@ namespace DSRevitNodes.Interactivity
 
             try
             {
-                Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+                Selection choices = doc.Selection;
 
                 choices.Elements.Clear();
 
@@ -239,8 +241,7 @@ namespace DSRevitNodes.Interactivity
                     var inst = doc.Document.GetElement(fsRef.ElementId) as FamilyInstance;
                     return inst;
                 }
-                else
-                    return null;
+                return null;
             }
             catch (Exception ex)
             {
@@ -255,7 +256,7 @@ namespace DSRevitNodes.Interactivity
 
             Level l = null;
 
-            Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+            Selection choices = doc.Selection;
 
             choices.Elements.Clear();
 
@@ -279,16 +280,15 @@ namespace DSRevitNodes.Interactivity
             try
             {
 
-                View view = doc.ActiveView as View;
+                var view = doc.ActiveView;
 
                 SpatialFieldManager sfm = SpatialFieldManager.GetSpatialFieldManager(view);
-                Element AnalysisResult;
 
                 if (sfm != null)
                 {
                     sfm.GetRegisteredResults();
 
-                    Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+                    Selection choices = doc.Selection;
 
                     choices.Elements.Clear();
 
@@ -299,17 +299,13 @@ namespace DSRevitNodes.Interactivity
 
                     if (fsRef != null)
                     {
-                        AnalysisResult = doc.Document.GetElement(fsRef.ElementId) as Element;
+                        var analysisResult = doc.Document.GetElement(fsRef.ElementId);
 
-                        if (AnalysisResult != null)
-                        {
-                            return AnalysisResult;
-                        }
-                        else return null;
+                        return analysisResult;
                     }
-                    else return null;
+                    return null;
                 }
-                else return null;
+                return null;
             }
             catch (Exception ex)
             {
@@ -324,7 +320,7 @@ namespace DSRevitNodes.Interactivity
 
             Element selectedElement = null;
 
-            Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+            Selection choices = doc.Selection;
 
             choices.Elements.Clear();
 
@@ -348,7 +344,7 @@ namespace DSRevitNodes.Interactivity
         {
             var doc = DocumentManager.GetInstance().CurrentUIDocument;
 
-            Autodesk.Revit.UI.Selection.Selection choices = doc.Selection;
+            Selection choices = doc.Selection;
             choices.Elements.Clear();
 
             DynamoLogger.Instance.Log(message);

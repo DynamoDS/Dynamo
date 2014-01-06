@@ -11,6 +11,7 @@ using System.Xml;
 using Autodesk.Revit.DB;
 using Dynamo.Controls;
 using Dynamo.Models;
+using Dynamo.UI;
 using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
 using RevitServices.Persistence;
@@ -21,7 +22,7 @@ namespace Dynamo.Nodes
     /// <summary>
     /// Base class for all nodes allowing selection using a drop-down
     /// </summary>
-    public abstract class DSDropDownBase : NodeModel
+    public abstract class DSDropDownBase : NodeModel, IWpfNode
     {
         private ObservableCollection<DynamoDropDownItem> items = new ObservableCollection<DynamoDropDownItem>();
         public ObservableCollection<DynamoDropDownItem> Items
