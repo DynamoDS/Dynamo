@@ -52,7 +52,6 @@
     <Compile Include="Function.cs" />
     <Compile Include="List.cs" />
     <Compile Include="Math.cs" />
-    <Compile Include="ObjectWithPropertyDictionary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="String.cs" />
   </ItemGroup>
