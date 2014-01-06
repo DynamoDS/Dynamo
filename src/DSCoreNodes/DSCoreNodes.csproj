@@ -55,7 +55,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Optimize.cs" />
-    <Compile Include="File.cs" />
     <Compile Include="Function.cs" />
     <Compile Include="Geometry\Domain.cs" />
     <Compile Include="List.cs" />

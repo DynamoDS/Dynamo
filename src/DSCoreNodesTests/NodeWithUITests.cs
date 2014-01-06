@@ -25,7 +25,7 @@ namespace DSCoreNodesTests
         [Test]
         public void SliderASTGeneration()
         {
-            var sliderNode = new NumberSlider { Value = 10 };
+            var sliderNode = new DoubleSlider { Value = 10 };
             var buildOutput = sliderNode.BuildOutputAst(new List<AssociativeNode>());
 
             Assert.AreEqual(
