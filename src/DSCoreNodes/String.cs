@@ -1,14 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Media;
-using Dynamo.Controls;
-using Dynamo.Models;
-using Dynamo.Nodes;
-using Dynamo.Utilities;
-using Microsoft.Win32;
 
 namespace DSCoreNodes
 {
@@ -17,6 +8,15 @@ namespace DSCoreNodes
     /// </summary>
     public static class String
     {
+        /// <summary>
+        /// Converts an object to a string representation.
+        /// </summary>
+        /// <param name="o">Object to serialize.</param>
+        public static string FromObject(object o)
+        {
+            return o.ToString();
+        }
+
         /// <summary>
         /// Concatenates multiple strings into a single string.
         /// </summary>

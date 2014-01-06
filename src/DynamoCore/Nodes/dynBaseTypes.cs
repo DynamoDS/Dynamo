@@ -3162,7 +3162,6 @@ namespace Dynamo.Nodes
 
     #region Base Classes
 
-    [IsInteractive(true)]
     public abstract partial class BasicInteractive<T> : NodeWithOneOutput
     {
         private T _value;
