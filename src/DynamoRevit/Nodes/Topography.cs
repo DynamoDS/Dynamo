@@ -39,15 +39,9 @@ namespace Dynamo.Nodes
             {
                 if (dynUtils.TryGetElement(Elements[0], out topo))
                 {
-                    //adjust the points - first pass we'll just
-                    //delete all the points
-                    var topoPts = topo.GetPoints();
-                    topo.DeletePoints(topoPts);
-
-                    topo.AddPoints(newPts);
-                }
-                else
-                {
+                    //In Revit 2014, a transaction edit scope is required to edit a topo surface
+                    //we can not currently handle this as it generates a transaction group
+                    //so just delete the existing surface and remake.
                     DeleteElement(Elements[0]);
 
                     topo = CreateTopographySurface(newPts);
