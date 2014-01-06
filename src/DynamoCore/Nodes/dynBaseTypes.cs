@@ -1640,6 +1640,27 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Last of List")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_QUERY)]
+    [NodeDescription("Gets the last element of a list")]
+    [NodeSearchTags("car")]
+    public class Last : BuiltinFunction
+    {
+        public Last()
+            : base(FScheme.Last)
+        {
+            InPortData.Add(new PortData("list", "A list", typeof(Value.List)));
+            OutPortData.Add(new PortData("first", "First element in the list", typeof(object)));
+
+            RegisterAllPorts();
+        }
+
+        protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
+        {
+            return builder.Build(this, inputs);
+        }
+    }
+
     [NodeName("Rest of List")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_QUERY)]
     [NodeDescription("Gets the Tail of a list (list with the first element removed).")]
