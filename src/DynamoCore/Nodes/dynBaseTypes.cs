@@ -1643,7 +1643,7 @@ namespace Dynamo.Nodes
     [NodeName("Last of List")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_QUERY)]
     [NodeDescription("Gets the last element of a list")]
-    [NodeSearchTags("car")]
+    [NodeSearchTags("last")]
     public class Last : BuiltinFunction
     {
         public Last()
