@@ -157,7 +157,7 @@ namespace Dynamo.Nodes
     [Browsable(false)]
     public class IntegerSlider : DSCoreNodesUI.Integer
     {
-        public IntegerSliderInput()
+        public IntegerSlider()
         {
             RegisterAllPorts();
 

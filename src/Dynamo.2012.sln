@@ -62,6 +62,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSCoreNodesUI", "DSCoreNodesUI\DSCoreNodesUI.csproj", "{D8262D40-4880-41E4-91E4-AF8F480C8637}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSRevitNodesUI", "DSRevitNodesUI\DSRevitNodesUI.csproj", "{75940ACC-3708-4526-8D91-7E3365BAF682}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7858FA8C-475F-4B8E-B468-1F8200778CF8} = {7858FA8C-475F-4B8E-B468-1F8200778CF8}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
