@@ -440,7 +440,7 @@ let Rev =     function [List(l)]            -> List(List.rev l)                 
 let Len =     function [List(l)]            -> Number(double l.Length)                | m -> malformed "len"     <| List(m)
 let Append =  function [List(l1); List(l2)] -> List(List.append l1 l2)                | m -> malformed "append"  <| List(m)
 let IsEmpty = function [List(l)]            -> Number(if l.IsEmpty then 1. else 0.)   | m -> malformed "empty?"  <| List(m)
-let Last =    function [List(l)]            -> last l.Tail                            | m -> malformed "last"    <| List(m)
+let Last =    function [List(l)]            -> last l                                 | m -> malformed "last"    <| List(m)
 
 let Take = function 
     | [Number(n); List(l)] ->
