@@ -7,10 +7,9 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Xml;
-using DSCoreNodesUI;
 using Dynamo.Controls;
 using Dynamo.Models;
-using ProtoCore.AST;
+using Dynamo.UI;
 using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Nodes

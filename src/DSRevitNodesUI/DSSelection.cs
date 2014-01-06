@@ -11,12 +11,13 @@ using Autodesk.Revit.DB;
 using DSRevitNodes.Interactivity;
 using Dynamo.Controls;
 using Dynamo.Models;
+using Dynamo.UI;
 using ProtoCore.AST.AssociativeAST;
 using RevitServices.Persistence;
 
 namespace Dynamo.Nodes
 {
-    public abstract class DSSelectionBase : NodeModel 
+    public abstract class DSSelectionBase : NodeModel, IWpfNode
     {
         protected bool _canSelect = true;
         protected string _selectionText ="";
@@ -86,6 +87,8 @@ namespace Dynamo.Nodes
         /// Override this to perform custom selection logic.
         /// </summary>
         protected abstract void OnSelectClick();
+
+        public abstract void SetupCustomUIElements(dynNodeView view);
     }
 
     public abstract class DSElementSelection : DSSelectionBase 
@@ -158,7 +161,7 @@ namespace Dynamo.Nodes
 
         #region public methods
 
-        public void SetupCustomUIElements(dynNodeView nodeUI)
+        public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a button to the inputGrid on the dynElement
             var selectButton = new DynamoNodeButton()
@@ -325,7 +328,7 @@ namespace Dynamo.Nodes
 
         #region public methods
 
-        public void SetupCustomUIElements(dynNodeView nodeUI)
+        public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a button to the inputGrid on the dynElement
             var selectButton = new DynamoNodeButton()
@@ -514,7 +517,7 @@ namespace Dynamo.Nodes
 
         #region public methods
 
-        public void SetupCustomUIElements(dynNodeView nodeUI)
+        public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a button to the inputGrid on the dynElement
             var selectButton = new DynamoNodeButton()
