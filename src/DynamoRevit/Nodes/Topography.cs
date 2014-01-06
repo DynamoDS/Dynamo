@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
+using Dynamo.FSchemeInterop;
 using Dynamo.Models;
 using Dynamo.Revit;
 using Dynamo.Utilities;
@@ -12,7 +14,7 @@ using Value = Dynamo.FScheme.Value;
 namespace Dynamo.Nodes
 {
     [NodeName("Topography From Points")]
-    [NodeSearchTags("topography","points")]
+    [NodeSearchTags("topography","topo","points")]
     class TopographyFromPoints:RevitTransactionNodeWithOneOutput
     {
         public TopographyFromPoints()
@@ -65,5 +67,46 @@ namespace Dynamo.Nodes
             return TopographySurface.Create(dynRevitSettings.Doc.Document, points);
         }
 
+        [NodeMigration(from:"0.7.0")]
+        public static XmlElement Migrate(XmlElement element)
+        {
+            //DSRevitNodes.DSTopography.ByPoints
+            return element;
+        }
     }
+
+    [NodeName("Points from Topography")]
+    [NodeSearchTags("topography", "points")]
+    class PointsFromTopography : NodeWithOneOutput
+    {
+        public PointsFromTopography()
+        {
+            InPortData.Add(new PortData("topography", "The topography surface.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("points", "A list of points from the topography.", typeof(Value.List)));
+            RegisterAllPorts();
+            ArgumentLacing = LacingStrategy.Longest;
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var topo = (TopographySurface) ((Value.Container) args[0]).Item;
+            
+            if (!topo.GetPoints().Any())
+                throw new Exception("There are no points in the topography surface.");
+
+            var pts = topo.GetPoints().Select(Value.NewContainer);
+            
+            return Value.NewList(Utils.SequenceToFSharpList(pts));
+        }
+
+        [NodeMigration(from:"0.7.0")]
+        public static XmlElement Migrate(XmlElement element)
+        {
+            //DSRevitNodes.DSTopography.Points
+            return element;
+        }
+
+    }
+
+
 }
