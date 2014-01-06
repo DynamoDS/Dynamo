@@ -64,7 +64,6 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GeometryTests.cs" />
     <Compile Include="ListTests.cs" />
     <Compile Include="NodeWithUITests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
