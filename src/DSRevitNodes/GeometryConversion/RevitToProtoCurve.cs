@@ -29,7 +29,7 @@ namespace DSRevitNodes.GeometryConversion
         /// </summary>
         /// <param name="crv"></param>
         /// <returns></returns>
-        private static Autodesk.DesignScript.Geometry.BSplineCurve Convert(Autodesk.Revit.DB.NurbSpline crv)
+        private static Autodesk.DesignScript.Geometry.NurbsCurve Convert(Autodesk.Revit.DB.NurbSpline crv)
         {
             // TODO: there is no conversion routine for rational curves in the current ProtoGeometry interface
             if (crv.isRational)
@@ -37,7 +37,7 @@ namespace DSRevitNodes.GeometryConversion
                 throw new Exception("No conversion for rational NURBS curves");
             }
 
-            return BSplineCurve.ByControlVertices(crv.CtrlPoints.Select(x => x.ToPoint()).ToArray(), crv.Degree);
+            return NurbsCurve.ByControlVertices(crv.CtrlPoints.Select(x => x.ToPoint()).ToArray(), crv.Degree);
         }
 
         /// <summary>
@@ -45,9 +45,9 @@ namespace DSRevitNodes.GeometryConversion
         /// </summary>
         /// <param name="crv"></param>
         /// <returns></returns>
-        private static Autodesk.DesignScript.Geometry.BSplineCurve Convert(Autodesk.Revit.DB.HermiteSpline crv)
+        private static Autodesk.DesignScript.Geometry.NurbsCurve Convert(Autodesk.Revit.DB.HermiteSpline crv)
         {
-            return BSplineCurve.ByPoints(crv.ControlPoints.Select(x => x.ToPoint()).ToArray(),
+            return NurbsCurve.ByPoints(crv.ControlPoints.Select(x => x.ToPoint()).ToArray(),
                 crv.Tangents.First().ToVector(), crv.Tangents.Last().ToVector());
         }
 
@@ -77,10 +77,10 @@ namespace DSRevitNodes.GeometryConversion
         /// </summary>
         /// <param name="crv"></param>
         /// <returns></returns>
-        private static Autodesk.DesignScript.Geometry.BSplineCurve Convert(Autodesk.Revit.DB.PolyLine crv)
+        private static Autodesk.DesignScript.Geometry.NurbsCurve Convert(Autodesk.Revit.DB.PolyLine crv)
         {
             return
-                Autodesk.DesignScript.Geometry.BSplineCurve.ByControlVertices(
+                Autodesk.DesignScript.Geometry.NurbsCurve.ByControlVertices(
                     crv.GetCoordinates().Select(x => x.ToPoint()).ToArray(), 1);
         }
 
@@ -108,7 +108,7 @@ namespace DSRevitNodes.GeometryConversion
         /// </summary>
         /// <param name="crv"></param>
         /// <returns></returns>
-        private static Autodesk.DesignScript.Geometry.BSplineCurve Convert(Autodesk.Revit.DB.CylindricalHelix crv)
+        private static Autodesk.DesignScript.Geometry.Curve Convert(Autodesk.Revit.DB.CylindricalHelix crv)
         {
             // for now, we omit the implementation until we have weights
             throw new NotImplementedException();

@@ -27,7 +27,7 @@ namespace DSRevitNodesTests
                 Point.ByCoordinates(10,0,0)
             };
 
-            var spline = BSplineCurve.ByControlVertices( pts, 3 );
+            var spline = NurbsCurve.ByControlVertices( pts, 3 );
             Assert.NotNull(spline);
 
             // build model curve from spline
@@ -59,7 +59,7 @@ namespace DSRevitNodesTests
                 Point.ByCoordinates(10,0,0)
             };
 
-            var spline = BSplineCurve.ByControlVertices(pts, 3);
+            var spline = NurbsCurve.ByControlVertices(pts, 3);
             Assert.NotNull(spline);
 
             // build model curve from spline

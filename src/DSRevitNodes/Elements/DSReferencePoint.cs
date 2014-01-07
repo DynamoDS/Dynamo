@@ -60,7 +60,7 @@ namespace DSRevitNodes.Elements
         /// </summary>
         /// <param name="faceReference"></param>
         /// <param name="uv"></param>
-        private DSReferencePoint(Reference faceReference, UV uv)
+        private DSReferencePoint(Autodesk.Revit.DB.Reference faceReference, Autodesk.Revit.DB.UV uv)
         {
             //Phase 1 - Check to see if the object exists and should be rebound
             var oldRefPt =
@@ -162,7 +162,7 @@ namespace DSRevitNodes.Elements
             TransactionManager.GetInstance().TransactionTaskDone();
         }
 
-        private void InternalSetPointOnFace(Reference faceReference, UV uv)
+        private void InternalSetPointOnFace(Reference faceReference, Autodesk.Revit.DB.UV uv)
         {
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
@@ -387,7 +387,7 @@ namespace DSRevitNodes.Elements
                 throw new ArgumentNullException("face");
             }
 
-            return new DSReferencePoint(face.InternalReference, new UV(u,v) );
+            return new DSReferencePoint(face.InternalReference, new Autodesk.Revit.DB.UV(u, v));
         }
 
         #endregion

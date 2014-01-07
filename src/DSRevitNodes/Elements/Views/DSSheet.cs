@@ -154,7 +154,7 @@ namespace DSRevitNodes.Elements
                 var viewWidth = view.Outline.Max.U - view.Outline.Min.U;
                 var viewHeight = view.Outline.Max.V - view.Outline.Min.V;
 
-                UV placement = null;
+                Autodesk.Revit.DB.UV placement = null;
                 if (packer.TryPack(viewWidth, viewHeight, out placement))
                 {
                     if (sheet.Views.Contains(view))

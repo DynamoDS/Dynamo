@@ -170,7 +170,7 @@ namespace DSRevitNodes.Elements
         /// Set the positions of the InternalFamilyInstace from an array of uvs
         /// </summary>
         /// <param name="points"></param>
-        private void InternalSetUvsAndFace( UV[] uvs, Autodesk.Revit.DB.Face f)
+        private void InternalSetUvsAndFace(Autodesk.Revit.DB.UV[] uvs, Autodesk.Revit.DB.Face f)
         {
             TransactionManager.GetInstance().EnsureInTransaction(Document);
 
