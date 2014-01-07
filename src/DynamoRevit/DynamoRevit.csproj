@@ -12,7 +12,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dynamo.Applications</RootNamespace>
-    <AssemblyName>DynamoRevit</AssemblyName>
+    <AssemblyName>DynamoRevitDS</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
@@ -60,7 +60,11 @@
       <HintPath>..\..\bin\AnyCPU\Debug\FSchemeInterop.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="FSharp.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="FSharp.Core" />
+    <Reference Include="GraphToDSCompiler, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\DesignScript\GraphToDSCompiler.dll</HintPath>
+    </Reference>
     <Reference Include="Greg, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\greg\Greg.dll</HintPath>
@@ -74,11 +78,6 @@
     </Reference>
     <Reference Include="JobMonitor">
       <HintPath>..\..\extern\DynamoRaaS\JobMonitor.dll</HintPath>
-    </Reference>
-    <Reference Include="LibGNet, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\DynamoAsm\LibGNet.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="MathNet.Numerics, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -107,6 +106,30 @@
     </Reference>
     <Reference Include="PresentationFramework">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="ProtoAssociative, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\DesignScript\ProtoAssociative.dll</HintPath>
+    </Reference>
+    <Reference Include="ProtoCore, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\DesignScript\ProtoCore.dll</HintPath>
+    </Reference>
+    <Reference Include="ProtoGeometry, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\DesignScript\ProtoGeometry.dll</HintPath>
+    </Reference>
+    <Reference Include="ProtoImperative, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\DesignScript\ProtoImperative.dll</HintPath>
+    </Reference>
+    <Reference Include="ProtoInterface, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\DesignScript\ProtoInterface.dll</HintPath>
+    </Reference>
+    <Reference Include="ProtoScript, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\DesignScript\ProtoScript.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp, Version=104.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -153,53 +176,34 @@
     <Compile Include="RevitUtils.cs" />
     <Compile Include="ElementsContainer.cs" />
     <Compile Include="DynamoRevit.cs" />
-    <Compile Include="Nodes\Annotation.cs" />
     <Compile Include="Nodes\AdaptiveComponents.cs" />
     <Compile Include="Nodes\Arc.cs" />
-    <Compile Include="Nodes\Circle.cs" />
-    <Compile Include="Nodes\DividedSurface.cs" />
     <Compile Include="Nodes\Element.cs" />
     <Compile Include="Nodes\Ellipse.cs" />
-    <Compile Include="Nodes\FreeForm.cs" />
-    <Compile Include="Nodes\HermiteSpline.cs" />
     <Compile Include="Nodes\Length.cs" />
     <Compile Include="Nodes\Line.cs" />
-    <Compile Include="Nodes\ModelCurve.cs" />
-    <Compile Include="Nodes\NurbsSpline.cs" />
     <Compile Include="Nodes\Rectangle.cs" />
     <Compile Include="Nodes\ReferenceCurve.cs" />
-    <Compile Include="Nodes\AnalysisDisplay.cs" />
     <Compile Include="Nodes\Curve.cs" />
-    <Compile Include="Nodes\Grid.cs" />
-    <Compile Include="Nodes\DividedCurve.cs" />
     <Compile Include="Nodes\Face.cs" />
     <Compile Include="Nodes\FamilyInstance.cs" />
     <Compile Include="Nodes\GeometryBase.cs" />
     <Compile Include="Nodes\Intersect.cs" />
     <Compile Include="Nodes\MeasurementBase.cs" />
     <Compile Include="ModelUpdater.cs" />
-    <Compile Include="Nodes\ReferencePoint.cs" />
-    <Compile Include="Nodes\Project.cs" />
     <Compile Include="Nodes\Selection.cs" />
     <Compile Include="Nodes\SimplexNoise.cs" />
     <Compile Include="Nodes\Level.cs" />
     <Compile Include="Nodes\RayBounce.cs" />
-    <Compile Include="Nodes\ReferencePlane.cs" />
     <Compile Include="Nodes\SolarRadiation.cs" />
     <Compile Include="Nodes\FamilyType.cs" />
     <Compile Include="Nodes\Plane.cs" />
-    <Compile Include="Nodes\Solid.cs" />
-    <Compile Include="Nodes\StructuralFraming.cs" />
     <Compile Include="Nodes\Tesselation.cs" />
     <Compile Include="Nodes\Transaction.cs" />
     <Compile Include="Nodes\SunPath.cs" />
     <Compile Include="Nodes\Transform.cs" />
     <Compile Include="Nodes\UV.cs" />
-    <Compile Include="Nodes\View.cs" />
     <Compile Include="IdlePromise.cs" />
-    <Compile Include="Nodes\Floor.cs" />
-    <Compile Include="Nodes\Material.cs" />
-    <Compile Include="Nodes\Wall.cs" />
     <Compile Include="Nodes\XYZ.cs" />
     <Compile Include="OutOfSpaceException.cs" />
     <Compile Include="ParticleSystem\DynamicRelaxation.cs" />
@@ -219,7 +223,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource_en_us.resx</DependentUpon>
     </Compile>
-    <Compile Include="RevitToLibGConversions.cs" />
     <Compile Include="Views\Partials.cs" />
     <Compile Include="ViewModels\DynamoRevitViewModel.cs" />
     <Compile Include="VisualizationManager\VisualizationManagerRevit.cs" />
@@ -241,6 +244,10 @@
       <Project>{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}</Project>
       <Name>DSCoreNodes</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DSRevitNodes\DSRevitNodes.csproj">
+      <Project>{0BC2A611-BD0E-4FCC-A1DE-81F14ED369B2}</Project>
+      <Name>DSRevitNodes</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoCore</Name>
@@ -249,6 +256,10 @@
     <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
       <Name>DynamoUtilities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RevitServices\RevitServices.csproj">
+      <Project>{E4701F9E-41AB-4044-8166-85D924FEB632}</Project>
+      <Name>RevitServices</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -259,6 +270,7 @@
     <Content Include="Resources\logo_square_32x32.png" />
     <Content Include="Resources\logo_square_64x64.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

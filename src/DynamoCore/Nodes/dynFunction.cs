@@ -4,10 +4,9 @@ using System.Linq;
 using System.Xml;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
-using String = System.String;
+using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Nodes
 {
@@ -16,7 +15,7 @@ namespace Dynamo.Nodes
     public partial class Function : NodeWithOneOutput
     {
         protected internal Function(
-            IEnumerable<string> inputs, IEnumerable<string> outputs, FunctionDefinition def)
+            IEnumerable<string> inputs, IEnumerable<string> outputs, CustomNodeDefinition def)
         {
             _def = def;
 
@@ -36,11 +35,11 @@ namespace Dynamo.Nodes
 
         public new string Name
         {
-            get { return this.Definition.WorkspaceModel.Name; }
+            get { return Definition.WorkspaceModel.Name; }
             set
             {
-                this.Definition.WorkspaceModel.Name = value;
-                this.RaisePropertyChanged("Name");
+                Definition.WorkspaceModel.Name = value;
+                RaisePropertyChanged("Name");
             }
         }
 
@@ -48,14 +47,14 @@ namespace Dynamo.Nodes
         {
             get
             {
-                if (this.Definition == null)
+                if (Definition == null)
                     return string.Empty;
-                return this.Definition.WorkspaceModel.Description;
+                return Definition.WorkspaceModel.Description;
             }
             set
             {
-                this.Definition.WorkspaceModel.Description = value;
-                this.RaisePropertyChanged("Description");
+                Definition.WorkspaceModel.Description = value;
+                RaisePropertyChanged("Description");
             }
         }
 
@@ -68,10 +67,10 @@ namespace Dynamo.Nodes
 
                 if (
                     dynSettings.Controller.CustomNodeManager.NodeInfos.ContainsKey(
-                        this.Definition.FunctionId))
+                        Definition.FunctionId))
                     return
                         dynSettings.Controller.CustomNodeManager.NodeInfos[
-                            this.Definition.FunctionId].Description;
+                            Definition.FunctionId].Description;
                 else
                 {
                     return "Custom Nodes";
@@ -79,9 +78,9 @@ namespace Dynamo.Nodes
             }
         }
 
-        private FunctionDefinition _def;
+        private CustomNodeDefinition _def;
 
-        public FunctionDefinition Definition
+        public CustomNodeDefinition Definition
         {
             get { return _def; }
             internal set
@@ -118,7 +117,7 @@ namespace Dynamo.Nodes
                         //Recursion detection start.
                         Definition.RequiresRecalc = false;
 
-                        //TODO: move this to RequiresRecalc property of FunctionDefinition?
+                        //TODO: move this to RequiresRecalc property of CustomNodeDefinition?
                         foreach (var dep in Definition.Dependencies)
                             dep.RequiresRecalc = false;
                     }
@@ -455,10 +454,10 @@ namespace Dynamo.Nodes
             var manager = dynSettings.Controller.CustomNodeManager;
 
             // if there is a node with this name, use it instead
-            if (manager.Contains(this.NickName))
+            if (manager.Contains(NickName))
             {
-                var guid = manager.GetGuidFromName(this.NickName);
-                this.Symbol = guid.ToString();
+                var guid = manager.GetGuidFromName(NickName);
+                Symbol = guid.ToString();
                 return true;
             }
 
@@ -467,7 +466,7 @@ namespace Dynamo.Nodes
 
         private void LoadProxyCustomNode(Guid funcId)
         {
-            var proxyDef = new FunctionDefinition(funcId)
+            var proxyDef = new CustomNodeDefinition(funcId)
             {
                 WorkspaceModel =
                     new CustomNodeWorkspaceModel(
@@ -480,7 +479,7 @@ namespace Dynamo.Nodes
             SetInputs(new List<string>());
             SetOutputs(new List<string>());
             RegisterAllPorts();
-            State = ElementState.ERROR;
+            State = ElementState.Error;
 
             var userMsg = "Failed to load custom node: " + NickName +
                           ".  Replacing with proxy custom node.";
@@ -513,6 +512,13 @@ namespace Dynamo.Nodes
             return ((FScheme.Value.Function)Controller.FSchemeEnvironment.LookupSymbol(Symbol))
                 .Item.Invoke(args);
         }
+
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
+        {
+            var rhs = AstFactory.BuildFunctionCall(Definition.FunctionName, inputAstNodes);
+            var funcCall = AstFactory.BuildAssignment(this.AstIdentifierForPreview, rhs);
+            return new AssociativeNode[] { funcCall };
+        }
     }
 
     [NodeName("Input")]
@@ -520,6 +526,7 @@ namespace Dynamo.Nodes
     [NodeDescription("A function parameter, use with custom nodes")]
     [NodeSearchTags("variable", "argument", "parameter")]
     [IsInteractive(false)]
+    [IsDesignScriptCompatible]
     public partial class Symbol : NodeModel
     {
         public Symbol()
@@ -548,6 +555,14 @@ namespace Dynamo.Nodes
                 ReportModification();
                 RaisePropertyChanged("InputSymbol");
             }
+        }
+
+        public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
+        {
+            if (string.IsNullOrEmpty(InputSymbol))
+                return AstIdentifierForPreview;
+            else
+                return AstFactory.BuildIdentifier(InputSymbol);
         }
 
         protected internal override INode Build(
@@ -590,6 +605,7 @@ namespace Dynamo.Nodes
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("A function output, use with custom nodes")]
     [IsInteractive(false)]
+    [IsDesignScriptCompatible]
     public partial class Output : NodeModel
     {
         public Output()
@@ -618,6 +634,25 @@ namespace Dynamo.Nodes
                 ReportModification();
                 RaisePropertyChanged("Symbol");
             }
+        }
+
+        public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
+        {
+            if (outputIndex < 0 || outputIndex > OutPortData.Count)
+                throw new ArgumentOutOfRangeException("outputIndex", @"Index must correspond to an OutPortData index.");
+
+            return AstIdentifierForPreview;
+        }
+
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
+        {
+            AssociativeNode assignment;
+            if (null == inputAstNodes || inputAstNodes.Count == 0)
+                assignment = AstFactory.BuildAssignment(AstIdentifierForPreview, AstFactory.BuildNullNode());
+            else
+                assignment = AstFactory.BuildAssignment(AstIdentifierForPreview, inputAstNodes[0]);
+
+            return new AssociativeNode[] { assignment };
         }
 
         protected override void SaveNode(

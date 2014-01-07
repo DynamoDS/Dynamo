@@ -30,5 +30,17 @@ namespace Dynamo.Tests
             model.Open(testFilePath);
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(null));
         }
+
+        [Test]
+        public void Defect_MAGN_781()
+        {
+            // Details steps are here: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-781
+
+            DynamoModel model = Controller.DynamoModel;
+            string testFilePath = Path.Combine(localDynamoStringTestFloder, "Defect_MAGN_781.dyf");
+
+            model.Open(testFilePath);
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(null));
+        }
     }
 }

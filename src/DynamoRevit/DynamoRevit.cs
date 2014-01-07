@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Reflection;
@@ -13,15 +12,19 @@ using System.Windows.Threading;
 using Autodesk.Revit.UI.Events;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
-using Autodesk.Revit.DB.Analysis;
 using Autodesk.Revit.UI;
 
 using Dynamo.Applications.Properties;
 using Dynamo.Controls;
 using Dynamo.Utilities;
+using RevitServices.Elements;
+using RevitServices.Transactions;
+using RevitServices.Persistence;
+
 using IWin32Window = System.Windows.Interop.IWin32Window;
 using MessageBox = System.Windows.Forms.MessageBox;
 using Rectangle = System.Drawing.Rectangle;
+using RevThread = RevitServices.Threading;
 using Dynamo.FSchemeInterop;
 using System.IO;
 
@@ -32,7 +35,7 @@ namespace Dynamo.Applications
     public class DynamoRevitApp : IExternalApplication
     {
         private static readonly string m_AssemblyName = Assembly.GetExecutingAssembly().Location;
-        public static DynamoUpdater Updater;
+        public static RevitServicesUpdater Updater;
         private static ResourceManager res;
         public static ExecutionEnvironment env;
 
@@ -46,13 +49,12 @@ namespace Dynamo.Applications
                 RibbonPanel ribbonPanel = application.CreateRibbonPanel(res.GetString("App_Description"));
 
                 //Create a push button in the ribbon panel 
-                var pushButton = ribbonPanel.AddItem(new PushButtonData("Dynamo",
+                var pushButton = ribbonPanel.AddItem(new PushButtonData("DynamoDS",
                                                                         res.GetString("App_Name"), m_AssemblyName,
                                                                         "Dynamo.Applications.DynamoRevit")) as
                                  PushButton;
 
                 Bitmap dynamoIcon = Resources.logo_square_32x32;
-
 
                 BitmapSource bitmapSource = Imaging.CreateBitmapSourceFromHBitmap(
                     dynamoIcon.GetHbitmap(),
@@ -63,30 +65,11 @@ namespace Dynamo.Applications
                 pushButton.LargeImage = bitmapSource;
                 pushButton.Image = bitmapSource;
 
-                IdlePromise.RegisterIdle(application);
+                RevThread.IdlePromise.RegisterIdle(application);
 
-                Updater = new DynamoUpdater(application.ActiveAddInId, application.ControlledApplication);
-                if (!UpdaterRegistry.IsUpdaterRegistered(Updater.GetUpdaterId()))
-                    UpdaterRegistry.RegisterUpdater(Updater);
+                Updater = new RevitServicesUpdater(application.ControlledApplication);
 
-                var SpatialFieldFilter = new ElementClassFilter(typeof (SpatialFieldManager));
-                var familyFilter = new ElementClassFilter(typeof (FamilyInstance));
-                var refPointFilter = new ElementCategoryFilter(BuiltInCategory.OST_ReferencePoints);
-                var modelCurveFilter = new ElementClassFilter(typeof (CurveElement));
-                var sunFilter = new ElementClassFilter(typeof (SunAndShadowSettings));
-                IList<ElementFilter> filterList = new List<ElementFilter>();
-
-                filterList.Add(SpatialFieldFilter);
-                filterList.Add(familyFilter);
-                filterList.Add(modelCurveFilter);
-                filterList.Add(refPointFilter);
-                filterList.Add(sunFilter);
-
-                ElementFilter filter = new LogicalOrFilter(filterList);
-
-                UpdaterRegistry.AddTrigger(Updater.GetUpdaterId(), filter, Element.GetChangeTypeAny());
-                UpdaterRegistry.AddTrigger(Updater.GetUpdaterId(), filter, Element.GetChangeTypeElementDeletion());
-                UpdaterRegistry.AddTrigger(Updater.GetUpdaterId(), filter, Element.GetChangeTypeElementAddition());
+                TransactionManager.SetupManager(new DebugTransactionStrategy());
 
                 env = new ExecutionEnvironment();
 
@@ -101,7 +84,7 @@ namespace Dynamo.Applications
 
         public Result OnShutdown(UIControlledApplication application)
         {
-            UpdaterRegistry.UnregisterUpdater(Updater.GetUpdaterId());
+            //UpdaterRegistry.UnregisterUpdater(Updater.GetUpdaterId());
 
             //if(Application.Current != null)
             //    Application.Current.Shutdown();
@@ -115,8 +98,6 @@ namespace Dynamo.Applications
     internal class DynamoRevit : IExternalCommand
     {
         private static DynamoView dynamoView;
-        private UIDocument m_doc;
-        private UIApplication m_revit;
         private DynamoController dynamoController;
         private static bool isRunning = false;
         public static double? dynamoViewX = null;
@@ -152,29 +133,34 @@ namespace Dynamo.Applications
 
             try
             {
-                m_revit = revit.Application;
-                m_doc = m_revit.ActiveUIDocument;
 
                 #region default level
 
                 Level defaultLevel = null;
-                var fecLevel = new FilteredElementCollector(m_doc.Document);
+                var fecLevel = new FilteredElementCollector(revit.Application.ActiveUIDocument.Document);
                 fecLevel.OfClass(typeof (Level));
                 defaultLevel = fecLevel.ToElements()[0] as Level;
 
                 #endregion
 
-                dynRevitSettings.Revit = m_revit;
-                dynRevitSettings.Doc = m_doc;
-                dynRevitSettings.DefaultLevel = defaultLevel;
+                DocumentManager.GetInstance().CurrentDBDocument = revit.Application.ActiveUIDocument.Document;
+                DocumentManager.GetInstance().CurrentUIDocument = revit.Application.ActiveUIDocument;
+                DocumentManager.GetInstance().CurrentUIApplication = revit.Application;
                 
-                IdlePromise.ExecuteOnIdle(delegate
+                DocumentManager.GetInstance().CurrentUIDocument = revit.Application.ActiveUIDocument;
+
+                dynRevitSettings.DefaultLevel = defaultLevel;
+
+                //TODO: has to be changed when we handle multiple docs
+                DynamoRevitApp.Updater.DocumentToWatch = revit.Application.ActiveUIDocument.Document;
+                
+                RevThread.IdlePromise.ExecuteOnIdleAsync(delegate
                 {
                     //get window handle
                     IntPtr mwHandle = Process.GetCurrentProcess().MainWindowHandle;
 
-                    Regex r = new Regex(@"\b(Autodesk |Structure |MEP |Architecture )\b");
-                    string context = r.Replace(m_revit.Application.VersionName, "");
+                    var r = new Regex(@"\b(Autodesk |Structure |MEP |Architecture )\b");
+                    string context = r.Replace(revit.Application.Application.VersionName, "");
 
                     //they changed the application version name conventions for vasari
                     //it no longer has a version year so we can't compare it to other versions
@@ -287,7 +273,7 @@ namespace Dynamo.Applications
 
             try
             {
-                dynSettings.Controller.OnRequestsCrashPrompt(this, args);
+                dynSettings.Controller.OnRequestsCrashPrompt(this, new CrashPromptArgs(args.Exception.Message + "\n\n" + args.Exception.StackTrace));
                 dynSettings.Controller.DynamoViewModel.Exit(false); // don't allow cancellation
             }
             catch
@@ -313,8 +299,8 @@ namespace Dynamo.Applications
             dynamoViewY = dynamoView.Top;
             dynamoViewWidth = dynamoView.ActualWidth;
             dynamoViewHeight = dynamoView.ActualHeight;
-            IdlePromise.ClearPromises();
-            IdlePromise.Shutdown();
+            RevThread.IdlePromise.ClearPromises();
+            RevThread.IdlePromise.Shutdown();
         }
 
         /// <summary>

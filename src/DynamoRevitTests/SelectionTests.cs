@@ -4,6 +4,7 @@ using Autodesk.Revit.DB;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using NUnit.Framework;
+using RevitServices.Persistence;
 
 namespace Dynamo.Tests
 {
@@ -27,7 +28,7 @@ namespace Dynamo.Tests
 
             //assert that we have the right number of family symbols
             //in the node's items source
-            FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
             fec.OfClass(typeof(Family));
             int count = 0;
             foreach (Family f in fec.ToElements())

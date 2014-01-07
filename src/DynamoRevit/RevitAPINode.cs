@@ -6,6 +6,7 @@ using Dynamo.Revit;
 
 
 using Microsoft.FSharp.Collections;
+using RevitServices.Persistence;
 using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Nodes
@@ -88,7 +89,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return Value.NewContainer(dynRevitSettings.Doc.Document);
+            return Value.NewContainer(DocumentManager.GetInstance().CurrentUIDocument.Document);
         }
     }
 }

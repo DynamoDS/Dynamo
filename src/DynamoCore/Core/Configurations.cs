@@ -14,6 +14,12 @@ namespace Dynamo.Core
         public static readonly double PixelSharpeningConstant = 0.5;
         #endregion
 
+        #region Usage Reporting Error Message
+        public static string GitHubBugReportingLink = "https://github.com/ikeough/Dynamo/issues?state=open";
+
+        public static string UsageReportingErrorMessage = "Uh oh...\n\rWe're sorry - we tried to save your decisions, but something went wrong. The decision probably hasn't been saved. This really shouldn't have happened. Please get in touch via GitHub and send us this information.\n\rYou can also try deleting [FILEPATH] and trying again.\n\rDepending on your previous choice, instrumentation may still be running, if you're worried about this, please consider not using Dynamo until we've got back to you to solve the problem.\n\rSorry about that.";
+        #endregion
+
         #region Canvas Configurations
         //public static readonly double Minimum
 
@@ -21,6 +27,13 @@ namespace Dynamo.Core
         public static readonly int GridSpacing = 100;
         public static readonly int GridThickness = 2;
         public static readonly Color GridLineColor = Color.FromRgb(232, 232, 232);
+
+        // Canvas Control
+        public static readonly double ZoomIncrement = 0.05;
+
+        // Double Clicking
+        // Maximum distance allowed between first and second click to be accepted as a double click
+        public static readonly int DoubleClickAcceptableDistance = 10; // in pixel
         #endregion
 
         #region Tab Bar Configurations
@@ -55,14 +68,14 @@ namespace Dynamo.Core
 
         public static double PreviewMaxWidth = 500;
         public static double PreviewMaxHeight;
-        public static double PreviewMinWidth = 220;
-        public static double PreviewMinHeight = 50;
+        public static double PreviewMinWidth = 40;
+        public static double PreviewMinHeight = 30;
         public static double PreviewDefaultMaxWidth = 300;
         public static double PreviewDefaultMaxHeight = 200;
 
-        public static double PreviewCondensedMaxWidth = 300;
-        public static double PreviewCondensedMinWidth = 40;
+        public static double PreviewCondensedMaxWidth = 300;        
         public static double PreviewCondensedMaxHeight = 200;
+        public static double PreviewCondensedMinWidth = 40;
         public static double PreviewCondensedMinHeight = 0;
         public static double PreviewCondensedContentMaxWidth = PreviewCondensedMaxWidth - 10;
         public static double PreviewCondensedContentMaxHeight = PreviewCondensedMaxHeight - 17;
@@ -83,6 +96,13 @@ namespace Dynamo.Core
         public static double ErrorContentMaxWidth = ErrorMaxWidth - 10;
         public static double ErrorContentMaxHeight = ErrorMaxHeight - 16;
 
+        public static double ErrorCondensedMaxWidth = 75;
+        public static double ErrorCondensedMinWidth = 25;
+        public static double ErrorCondensedMaxHeight = 50;
+        public static double ErrorCondensedMinHeight = 25;
+        public static double ErrorCondensedContentMaxWidth = ErrorCondensedMaxWidth - 10;
+        public static double ErrorCondensedContentMaxHeight = ErrorCondensedMaxHeight - 16;
+
         public static double ErrorTextFontSize = 13;
         public static FontWeight ErrorTextFontWeight = FontWeights.Light;
         public static SolidColorBrush ErrorTextForeground = new SolidColorBrush(Color.FromRgb(190, 70, 70));
@@ -95,6 +115,7 @@ namespace Dynamo.Core
         #endregion
 
         #region Node Tooltip
+        public static int ToolTipFadeInDelayInMS = 2000;
 
         public static SolidColorBrush NodeTooltipFrameFill = new SolidColorBrush(Color.FromRgb(255, 255, 255));
         public static double NodeTooltipFrameStrokeThickness = 1;
@@ -143,6 +164,11 @@ namespace Dynamo.Core
 
         #endregion
 
+        #endregion
+
+        #region CodeBlockNode
+        public static readonly int CBNMaxPortNameLength = 24;
+        public static readonly int CBNMaxTextBoxWidth = 500;
         #endregion
     }
 

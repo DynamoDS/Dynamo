@@ -3,6 +3,7 @@ using System.Linq;
 using Autodesk.Revit.DB;
 using Dynamo.Utilities;
 using NUnit.Framework;
+using RevitServices.Persistence;
 
 namespace Dynamo.Tests
 {
@@ -21,7 +22,7 @@ namespace Dynamo.Tests
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
             //ensure that the bounce curve count is the same
-            var curveColl = new FilteredElementCollector(dynRevitSettings.Doc.Document, dynRevitSettings.Doc.ActiveView.Id);
+            var curveColl = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document, DocumentManager.GetInstance().CurrentUIDocument.ActiveView.Id);
             curveColl.OfClass(typeof(CurveElement));
             Assert.AreEqual(curveColl.ToElements().Count(), 36);
         }

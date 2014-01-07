@@ -46,13 +46,13 @@ namespace Dynamo.Models
         {
             if (args.PropertyName == "Name" || args.PropertyName == "Category" || args.PropertyName == "Description")
             {
-                this.HasUnsavedChanges = true;
+                HasUnsavedChanges = true;
             }
         }
 
         #endregion
 
-        public FunctionDefinition FunctionDefinition
+        public CustomNodeDefinition CustomNodeDefinition
         {
             get { return dynSettings.Controller.CustomNodeManager.GetDefinitionFromWorkspace(this); }
         }
@@ -61,32 +61,34 @@ namespace Dynamo.Models
         {
             base.Modified();
 
-            if (this.FunctionDefinition == null) return;
-            this.FunctionDefinition.RequiresRecalc = true;
-            this.FunctionDefinition.SyncWithWorkspace(false, true);
+            if (CustomNodeDefinition == null) 
+                return;
+
+            CustomNodeDefinition.RequiresRecalc = true;
+            CustomNodeDefinition.SyncWithWorkspace(false, true);
         }
 
         public List<Function> GetExistingNodes()
         {
             return dynSettings.Controller.DynamoModel.AllNodes
                 .OfType<Function>()
-                .Where(el => el.Definition == this.FunctionDefinition)
+                .Where(el => el.Definition == CustomNodeDefinition)
                 .ToList();
         }
 
         public override bool SaveAs(string newPath)
         {
-            var originalPath = this.FileName;
-            var originalGuid = this.FunctionDefinition.FunctionId;
+            var originalPath = FileName;
+            var originalGuid = CustomNodeDefinition.FunctionId;
             var newGuid = Guid.NewGuid();
             var doRefactor = originalPath != newPath && originalPath != null;
 
-            this.Name = Path.GetFileNameWithoutExtension(newPath);
+            Name = Path.GetFileNameWithoutExtension(newPath);
 
             // need to do change the function id temporarily so saved file is correct
             if (doRefactor)
             {
-                this.FunctionDefinition.FunctionId = newGuid;
+                CustomNodeDefinition.FunctionId = newGuid;
             }
 
             if (!base.SaveAs(newPath))
@@ -96,14 +98,14 @@ namespace Dynamo.Models
 
             if (doRefactor)
             {
-                this.FunctionDefinition.FunctionId = originalGuid;
+                CustomNodeDefinition.FunctionId = originalGuid;
             }
 
             if (originalPath == null)
             {
-                this.FunctionDefinition.AddToSearch();
+                CustomNodeDefinition.AddToSearch();
                 dynSettings.Controller.SearchViewModel.SearchAndUpdateResultsSync();
-                this.FunctionDefinition.UpdateCustomNodeManager();
+                CustomNodeDefinition.UpdateCustomNodeManager();
             }
 
             // A SaveAs to an existing function id prompts the creation of a new 
@@ -113,12 +115,12 @@ namespace Dynamo.Models
                 // if the original path does not exist
                 if ( !File.Exists(originalPath) )
                 {
-                    this.FunctionDefinition.FunctionId = newGuid;
-                    this.FunctionDefinition.SyncWithWorkspace(true, true);
+                    CustomNodeDefinition.FunctionId = newGuid;
+                    CustomNodeDefinition.SyncWithWorkspace(true, true);
                     return false;
                 }
 
-                var newDef = this.FunctionDefinition;
+                var newDef = CustomNodeDefinition;
 
                 // reload the original funcdef from its path
                 dynSettings.CustomNodeManager.Remove(originalGuid);
@@ -157,9 +159,9 @@ namespace Dynamo.Models
             var doc = base.GetXml();
 
             Guid guid;
-            if (this.FunctionDefinition != null)
+            if (CustomNodeDefinition != null)
             {
-                guid = this.FunctionDefinition.FunctionId;
+                guid = CustomNodeDefinition.FunctionId;
             }
             else
             {

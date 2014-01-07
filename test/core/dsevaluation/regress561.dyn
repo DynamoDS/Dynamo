@@ -1,0 +1,14 @@
+<Workspace Version="0.6.2.22372" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="5fd03407-7814-4317-bb1e-86763751f4d3" nickname="Code Block" x="134" y="175.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="1;&#xA;2;&#xA;3;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="8774296c-5269-450b-959d-ce4020ddbf80" nickname="Point.ByCoordinates" x="259" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Dynamo.DSEngine.FunctionItem Assembly="ProtoGeometry.dll" Category="ProtoGeometry.Point" ClassName="Point" Name="ByCoordinates" DisplayName="Point.ByCoordinates" Type="Constructor" Parameters="x;y;z" ReturnKeys="" />
+    </Dynamo.Nodes.DSFunction>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="5fd03407-7814-4317-bb1e-86763751f4d3" start_index="0" end="8774296c-5269-450b-959d-ce4020ddbf80" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5fd03407-7814-4317-bb1e-86763751f4d3" start_index="1" end="8774296c-5269-450b-959d-ce4020ddbf80" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5fd03407-7814-4317-bb1e-86763751f4d3" start_index="2" end="8774296c-5269-450b-959d-ce4020ddbf80" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

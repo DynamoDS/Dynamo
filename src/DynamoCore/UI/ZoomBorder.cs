@@ -19,19 +19,6 @@ namespace Dynamo.Controls
 {
     public class ZoomBorder : Border
     {
-        private FrameworkElement _mouseArea;
-        public FrameworkElement MouseArea
-        {
-            get
-            {
-                if (_mouseArea == null)
-                {
-                    FrameworkElement outerCanvas = Parent as FrameworkElement;
-                    _mouseArea = outerCanvas.Parent as FrameworkElement;
-                }
-                return _mouseArea;
-            }
-        }
         private UIElement child = null;
         private Point origin;
         private Point start;
@@ -88,10 +75,10 @@ namespace Dynamo.Controls
         void ZoomBorder_Loaded(object sender, RoutedEventArgs e)
         {
             // Uses Outer Canvas to trigger events
-            MouseArea.MouseWheel += child_MouseWheel;
-            MouseArea.MouseDown += child_MouseDown;
-            MouseArea.MouseUp += child_MouseUp;
-            MouseArea.MouseMove += child_MouseMove;
+            this.MouseWheel += child_MouseWheel;
+            this.MouseDown += child_MouseDown;
+            this.MouseUp += child_MouseUp;
+            this.MouseMove += child_MouseMove;
         }
 
         public void Reset()
@@ -148,6 +135,9 @@ namespace Dynamo.Controls
                 WorkspaceViewModel vm = DataContext as WorkspaceViewModel;
                 vm.OnRequestZoomToViewportPoint(this, new ZoomEventArgs(zoom, mousePosition));
 
+                // Update WorkspaceModel without triggering property changed
+                vm.SetCurrentOffsetCommand.Execute(GetTranslateTransformOrigin());
+
                 // Reset Fit View Toggle
                 if ( vm.ResetFitViewToggleCommand.CanExecute(null) )
                     vm.ResetFitViewToggleCommand.Execute(null);
@@ -183,13 +173,19 @@ namespace Dynamo.Controls
             {
                 if (child.IsMouseCaptured)
                 {
+                    // Change ZoomBorder's child translation
                     var tt = GetTranslateTransform(child);
                     Vector v = start - e.GetPosition(this);
                     tt.X = origin.X - v.X;
                     tt.Y = origin.Y - v.Y;
 
-                    // Reset Fit View Toggle
+                    
                     WorkspaceViewModel vm = DataContext as WorkspaceViewModel;
+
+                    // Update WorkspaceModel without triggering property changed
+                    vm.SetCurrentOffsetCommand.Execute(GetTranslateTransformOrigin());
+                    
+                    // Reset Fit View Toggle
                     if (vm.ResetFitViewToggleCommand.CanExecute(null))
                         vm.ResetFitViewToggleCommand.Execute(null);
                 }
@@ -261,11 +257,6 @@ namespace Dynamo.Controls
 
             // GridLine binds to ItemsControl
             this.itemsControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("GridLines"){
-                Mode = BindingMode.OneWay
-            });
-
-            this.SetBinding(EndlessGrid.RenderTransformProperty, new Binding("Transform")
-            {
                 Mode = BindingMode.OneWay
             });
         }

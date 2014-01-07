@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
 using Dynamo.Models;
+using Dynamo.Utilities;
+using Dynamo.Core;
 
 namespace Dynamo
 {
@@ -21,6 +23,12 @@ namespace Dynamo
         const string DYNAMO_SETTINGS_FILE = "DynamoSettings.xml";
 
         // Variables of the settings that will be persistent
+
+        #region Collect Information Settings
+        public bool IsFirstRun { get; set; }
+        public bool IsUsageReportingApproved { get; set; }
+        #endregion
+
         public bool ShowConsole { get; set; }
         public bool ShowConnector { get; set; }
         public ConnectorType ConnectorType { get; set; }
@@ -29,6 +37,9 @@ namespace Dynamo
         public PreferenceSettings()
         {
             // Default Settings
+            this.IsFirstRun = true;
+            this.IsUsageReportingApproved = false;
+
             this.ShowConsole = false;
             this.ShowConnector = true;
             this.ConnectorType = ConnectorType.BEZIER;
@@ -55,6 +66,7 @@ namespace Dynamo
             
             return false;
         }
+
         /// <summary>
         /// Save PreferenceSettings in a default directory when no path is specified
         /// </summary>
@@ -84,7 +96,7 @@ namespace Dynamo
             
             if (string.IsNullOrEmpty(filePath) || (!File.Exists(filePath)))
                 return settings;
-            
+
             try
             {
                 XmlSerializer serializer = new XmlSerializer(typeof(PreferenceSettings));

@@ -569,6 +569,25 @@ namespace Dynamo.Tests
                 recorder.Clear(); // Clearing with an open group.
             });
         }
+
+        [Test]
+        public void TestPopFromUndoGroup()
+        {
+            //Assert that it cannot pop from an empty undostack
+            Assert.Throws<InvalidOperationException>(() => { recorder.PopFromUndoGroup(); });
+
+            //Add models
+            workspace.AddModel(new DummyModel(1, 10));
+            workspace.AddModel(new DummyModel(2, 10));
+
+            Assert.AreEqual(true, recorder.CanUndo);
+            Assert.AreEqual(false, recorder.CanRedo);
+
+            recorder.Undo();
+
+            //Assert that there was an Action Group that was just pushed on top of the undo stack
+            Assert.Throws<InvalidOperationException>(() => { recorder.PopFromUndoGroup(); });
+        }
     }
 
     internal class SerializationTests : DynamoUnitTest
@@ -589,7 +608,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(true, sumNode.IsVisible);
             Assert.AreEqual(true, sumNode.IsUpstreamVisible);
             Assert.AreEqual(true, sumNode.InteractionEnabled);
-            Assert.AreEqual(ElementState.DEAD, sumNode.State);
+            Assert.AreEqual(ElementState.Dead, sumNode.State);
 
             //Serialize node and then change values
             XmlDocument xmlDoc = new XmlDocument();
@@ -601,7 +620,7 @@ namespace Dynamo.Tests
             sumNode.IsVisible = false;
             sumNode.IsUpstreamVisible = false;
             sumNode.InteractionEnabled = false;
-            sumNode.State = ElementState.ACTIVE;
+            sumNode.State = ElementState.Active;
 
             //Assert New Changes
             Assert.AreEqual(250, sumNode.X);
@@ -611,7 +630,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(false, sumNode.IsVisible);
             Assert.AreEqual(false, sumNode.IsUpstreamVisible);
             Assert.AreEqual(false, sumNode.InteractionEnabled);
-            Assert.AreEqual(ElementState.ACTIVE, sumNode.State);
+            Assert.AreEqual(ElementState.Active, sumNode.State);
 
             //Deserialize and Assert Old values
             sumNode.Deserialize(serializedEl, SaveContext.Undo);
@@ -623,7 +642,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(true, sumNode.IsVisible);
             Assert.AreEqual(true, sumNode.IsUpstreamVisible);
             Assert.AreEqual(true, sumNode.InteractionEnabled);
-            Assert.AreEqual(ElementState.DEAD, sumNode.State);
+            Assert.AreEqual(ElementState.Dead, sumNode.State);
         }
 
         [Test]
