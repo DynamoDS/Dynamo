@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using DSCoreNodesUI;
 using Dynamo.Models;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
@@ -9,7 +10,7 @@ namespace DSCoreNodes.Logic
     /// <summary>
     /// Abstract base class for short-circuiting binary logic operators.
     /// </summary>
-    public abstract class BinaryLogic : NodeModel
+    public abstract class BinaryLogic : VariableInputNode
     {
         private readonly Operator _op;
 
@@ -31,6 +32,16 @@ namespace DSCoreNodes.Logic
                     GetAstIdentifierForOutputIndex(0),
                     AstFactory.BuildBinaryExpression(inputAstNodes[0], inputAstNodes[1], _op))
             };
+        }
+
+        protected override string InputRootName
+        {
+            get { return "bool"; }
+        }
+
+        protected override string TooltipRootName
+        {
+            get { return "Boolean #"; }
         }
     }
 
