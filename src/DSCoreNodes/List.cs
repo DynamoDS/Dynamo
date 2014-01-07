@@ -520,7 +520,6 @@ namespace DSCoreNodes
             foreach (IList list in lists)
                 result.AddRange(list);
             return result;
-            ;
         }
 
         /// <summary>

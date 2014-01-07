@@ -9,6 +9,7 @@ using Dynamo.Models;
 using Dynamo.Utilities;
 
 using Microsoft.FSharp.Collections;
+using RevitServices.Persistence;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.Revit;
 
@@ -50,7 +51,7 @@ namespace Dynamo.Nodes
 
         public override void PopulateItems() //(IEnumerable set, bool readOnly)
         {
-            var doc = dynRevitSettings.Doc.Document;
+            var doc = DocumentManager.GetInstance().CurrentUIDocument.Document;
 
             this.Items.Clear();
 
@@ -157,7 +158,7 @@ namespace Dynamo.Nodes
 
         protected override void LoadNode(XmlNode nodeElement)
         {
-            var doc = dynRevitSettings.Doc.Document;
+            var doc = DocumentManager.GetInstance().CurrentUIDocument.Document;
 
             int index = -1;
 
@@ -860,7 +861,7 @@ namespace Dynamo.Nodes
                 FSharpList<Value> refPts = FSharpList<Value>.Empty;
                 foreach (var id in refPtIds)
                 {
-                    var pt = dynRevitSettings.Doc.Document.GetElement(id) as ReferencePoint;
+                    var pt = DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(id) as ReferencePoint;
                     refPts = FSharpList<Value>.Cons(Value.NewContainer(pt.Position), refPts);
                 }
                 return Value.NewList(Utils.SequenceToFSharpList(refPts.Reverse()));

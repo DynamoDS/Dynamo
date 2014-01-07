@@ -1,8 +1,9 @@
+using System;
+using System.Collections.Generic;
 using Dynamo.Controls;
-using Dynamo.Core;
 using Dynamo.Models;
-using Dynamo.Revit;
-using Microsoft.FSharp.Collections;
+using Dynamo.UI;
+using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Nodes
 {
@@ -12,7 +13,7 @@ namespace Dynamo.Nodes
     [NodeName("My Node")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
     [NodeDescription("A description for your node which will appear in the tooltip.")]
-    public class CustomNode : NodeWithOneOutput
+    public class CustomNode : NodeModel, IWpfNode
     {
         public CustomNode()
         {
@@ -36,10 +37,9 @@ namespace Dynamo.Nodes
             //to have them appear in the center of the node.
         }
 
-        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            //Return a Value object
-            return FScheme.Value.NewNumber(0);
+            throw new NotImplementedException("FILL ME IN");
         }
     }
 }

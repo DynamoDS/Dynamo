@@ -10,6 +10,7 @@ using Dynamo.Models;
 using Dynamo.Revit.SyncedNodeExtensions;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
+using RevitServices.Persistence;
 using Color = System.Windows.Media.Color;
 using Grid = System.Windows.Controls.Grid;
 using Transform = Autodesk.Revit.DB.Transform;
@@ -117,7 +118,7 @@ namespace Dynamo.Nodes
         {
             //data = Value.NewList(FSharpList<Value>.Empty);
 
-            View activeView = dynRevitSettings.Doc.ActiveView;
+            View activeView = DocumentManager.GetInstance().CurrentUIDocument.ActiveView;
             PickedSunAndShadowSettings = activeView.SunAndShadowSettings;
 
 
@@ -178,7 +179,7 @@ namespace Dynamo.Nodes
                 try
                 {
                     PickedSunAndShadowSettings =
-                        dynRevitSettings.Doc.Document.GetElement(
+                        DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(
                             new ElementId(Convert.ToInt32(subNode.Attributes[0].Value))) as
                             SunAndShadowSettings;
                     if (PickedSunAndShadowSettings != null)

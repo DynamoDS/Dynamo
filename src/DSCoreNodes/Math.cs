@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace DSCoreNodes
@@ -43,6 +44,15 @@ namespace DSCoreNodes
             {
                 return System.Math.PI*2;
             }
+        }
+
+        /// <summary>
+        /// Averages a list of numbers.
+        /// </summary>
+        /// <param name="numbers">List of numbers to be averaged.</param>
+        public static double Average(IEnumerable<double> numbers)
+        {
+            return numbers.Average();
         }
     }
 }

@@ -9,6 +9,7 @@ using Dynamo.Utilities;
 using Dynamo.Revit;
 using System.Xml;
 using Autodesk.Revit.DB;
+using RevitServices.Persistence;
 using RevitServices.Threading;
 using RevThread = RevitServices.Threading;
 
@@ -95,7 +96,7 @@ namespace Dynamo.Nodes
                             {
                                 try
                                 {
-                                    runElements.Add(dynRevitSettings.Doc.Document.GetElement(eid).Id);
+                                    runElements.Add(DocumentManager.GetInstance().CurrentUIDocument.Document.GetElement(eid).Id);
                                 }
                                 catch (NullReferenceException)
                                 {

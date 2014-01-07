@@ -1,9 +1,8 @@
 ﻿using Autodesk.Revit.DB;
-using Dynamo.Utilities;
 using NUnit.Framework;
-using RevitServices;
 using System;
 using RevitServices.Elements;
+using RevitServices.Persistence;
 using RevitServices.Transactions;
 
 namespace RevitServicesTests
@@ -13,7 +12,7 @@ namespace RevitServicesTests
     {
         Document Document
         {
-            get { return dynRevitSettings.Doc.Document; }
+            get { return DocumentManager.GetInstance().CurrentUIDocument.Document; }
         }
 
         [Test]

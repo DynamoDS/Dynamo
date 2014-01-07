@@ -296,8 +296,8 @@ namespace Dynamo.Models
 
     public class PortData
     {
-        public string NickName { get; internal set; }
-        public string ToolTipString { get; internal set; }
+        public string NickName { get; set; }
+        public string ToolTipString { get; set; }
         public Type PortType { get; set; }
         public object DefaultValue { get; set; }
         public double VerticalMargin { get; set; }

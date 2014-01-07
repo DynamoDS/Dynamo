@@ -22,16 +22,6 @@ using RevitServices.Transactions;
 
 namespace Dynamo.Tests
 {
-    /// <summary>
-    /// The Revit data class holds static references to the document and application
-    /// for use in the tests.
-    /// </summary>
-    public class RevitData
-    {
-        public static UIDocument Document { get; set; }
-        public static UIApplication Application { get; set; }
-    }
-
     [Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
     [Journaling(JournalingMode.UsingCommandData)]
@@ -86,15 +76,11 @@ namespace Dynamo.Tests
 
             try
             {
-                RevitData.Application = revit.Application;
-                RevitData.Document = RevitData.Application.ActiveUIDocument;
-
-                // setup revit services
-                DocumentManager.GetInstance().CurrentDBDocument = RevitData.Document.Document;
-                DocumentManager.GetInstance().CurrentUIDocument = RevitData.Application.ActiveUIDocument;
-
-                TransactionManager.SetupManager(new DebugTransactionStrategy());
-
+                var docManager = DocumentManager.GetInstance();
+                docManager.CurrentUIApplication = revit.Application;
+                docManager.CurrentDBDocument = revit.Application.ActiveUIDocument.Document;
+                docManager.CurrentUIDocument = revit.Application.ActiveUIDocument;
+                
                 bool canReadData = (0 < dataMap.Count);
 
                 if (canReadData)
@@ -239,16 +225,16 @@ namespace Dynamo.Tests
         private void StartDynamo()
         {
             Level defaultLevel = null;
-            var fecLevel = new FilteredElementCollector(RevitData.Document.Document);
+            var fecLevel = new FilteredElementCollector(DocumentManager.GetInstance().CurrentDBDocument);
             fecLevel.OfClass(typeof(Level));
 
-            dynRevitSettings.Revit = RevitData.Application;
-            dynRevitSettings.Doc = RevitData.Document;
+            DocumentManager.GetInstance().CurrentUIApplication = DocumentManager.GetInstance().CurrentUIApplication;
+            DocumentManager.GetInstance().CurrentUIDocument = DocumentManager.GetInstance().CurrentUIDocument;
             dynRevitSettings.DefaultLevel = defaultLevel;
 
             //create dynamo
             var r = new Regex(@"\b(Autodesk |Structure |MEP |Architecture )\b");
-            string context = r.Replace(RevitData.Application.Application.VersionName, "");
+            string context = r.Replace(DocumentManager.GetInstance().CurrentUIApplication.Application.VersionName, "");
 
             // create the transaction manager object
             TransactionManager.SetupManager(new DebugTransactionStrategy());

@@ -103,6 +103,7 @@
     <Compile Include="GeometryObjects\DSBoundingBox.cs" />
     <Compile Include="GeometryObjects\DSPlanarFace.cs" />
     <Compile Include="GeometryObjects\GeometryObjectSelector.cs" />
+    <Compile Include="Geometry\Domain.cs" />
     <Compile Include="References\AbstractReference.cs" />
     <Compile Include="References\DSFaceReference.cs" />
     <Compile Include="GeometryObjects\DSCurveLoop.cs" />
