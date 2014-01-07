@@ -16,14 +16,14 @@ namespace DSCoreNodesUI.HigherOrder
             RegisterAllPorts();
         }
 
-        protected override string GetInputRootName()
+        protected override string InputRootName
         {
-            return "arg";
+            get { return "arg"; }
         }
 
-        protected override string GetTooltipRootName()
+        protected override string TooltipRootName
         {
-            return "Argument #";
+            get { return "Argument #"; }
         }
 
         protected override void RemoveInput()
