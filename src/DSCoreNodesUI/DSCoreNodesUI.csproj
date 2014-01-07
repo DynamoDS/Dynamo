@@ -53,11 +53,14 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BasicInteractive.cs" />
-    <Compile Include="BoolSelector.cs" />
-    <Compile Include="File.cs" />
-    <Compile Include="Logic.cs" />
-    <Compile Include="Sliders.cs" />
+    <Compile Include="HigherOrder\Apply.cs" />
+    <Compile Include="HigherOrder\MapCombineLacing.cs" />
+    <Compile Include="Input\BasicInteractive.cs" />
+    <Compile Include="Input\BoolSelector.cs" />
+    <Compile Include="Input\File.cs" />
+    <Compile Include="Logic\AndOr.cs" />
+    <Compile Include="Input\Sliders.cs" />
+    <Compile Include="Logic\If.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

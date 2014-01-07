@@ -15,7 +15,7 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace DSCoreNodesUI
 {
-    public abstract class BasicInteractive<T> : NodeModel, Dynamo.UI.IWpfNode
+    public abstract class BasicInteractive<T> : NodeModel, IWpfNode
     {
         private T _value;
         public T Value
