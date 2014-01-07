@@ -8,9 +8,9 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace DSCoreNodesUI.HigherOrder
 {
-    public class Apply : VariableInputNode
+    public class ApplyFunction : VariableInputNode
     {
-        public Apply()
+        public ApplyFunction()
         {
             InPortData.Add(new PortData("func", "Function to apply."));
             RegisterAllPorts();
