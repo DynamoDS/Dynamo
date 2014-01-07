@@ -18,8 +18,8 @@ namespace DSCoreNodesUI
             throw new NotImplementedException();
         }
 
-        protected abstract string GetInputRootName();
-        protected abstract string GetTooltipRootName();
+        protected abstract string InputRootName { get; }
+        protected abstract string TooltipRootName { get; }
 
         protected virtual int GetInputNameIndex()
         {
@@ -41,7 +41,7 @@ namespace DSCoreNodesUI
         {
             var idx = GetInputNameIndex();
             InPortData.Add(
-                new PortData(GetInputRootName() + idx, GetTooltipRootName() + idx, typeof(object)));
+                new PortData(InputRootName + idx, TooltipRootName + idx, typeof(object)));
         }
 
         #region Load/Save
