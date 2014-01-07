@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoRevit", "DynamoRevit\
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FScheme.2012", "FScheme\FScheme.2012.fsproj", "{F0E5A3E5-BDD0-41AE-848E-DED9EFC5FA7F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FSchemeInterop2012", "FSchemeInterop\FSchemeInterop2012.csproj", "{126C6420-C7A2-43B0-8B08-206C6C4C1348}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoSandbox", "DynamoSandbox\DynamoSandbox.csproj", "{0EFABBF0-2B81-4423-B8E2-6111FBE69B79}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoPython", "DynamoPython\DynamoPython.csproj", "{2B0F2800-6F62-4869-9074-088C5F6DCCA2}"
@@ -55,7 +57,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSNodeServices", "DSNodeSer
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSNodeServicesTest", "DSNodeServicesTest\DSNodeServicesTest.csproj", "{1B8062D6-941C-4FF5-96FF-F1D6E0D92588}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FSchemeInterop2012", "FSchemeInterop\FSchemeInterop2012.csproj", "{126C6420-C7A2-43B0-8B08-206C6C4C1348}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5A0047AF-ED33-47DD-9257-FE458ED3337D}"
+	ProjectSection(SolutionItems) = preProject
+		Config.xml = Config.xml
+		HtmlConfig.xml = HtmlConfig.xml
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSRevitNodes", "DSRevitNodes\DSRevitNodes.csproj", "{0BC2A611-BD0E-4FCC-A1DE-81F14ED369B2}"
 EndProject
