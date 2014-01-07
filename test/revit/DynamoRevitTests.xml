@@ -151,6 +151,10 @@
 				<test name="XYZToPolarCoordinates" runDynamo="True" modelPath=".\empty.rfa"/>
 				<test name="XYZToSphericalCoordinates" runDynamo="True" modelPath=".\empty.rfa"/>
 			</testFixture>
+      <testFixture name="TopographyTests">
+        <test name="TopographyFromPoints" runDynamo="True" modelPath=".\empty.rvt"/>
+        <test name ="PointsFromTopography" runDynamo="True" modelPath=".\Topography\topography.rvt"/>
+      </testFixture>
 		</testAssembly>
 	</testAssemblies>
 </tests>
