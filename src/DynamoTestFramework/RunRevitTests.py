@@ -26,22 +26,23 @@ class Test:
 
 #http://stackoverflow.com/questions/4158502/python-kill-or-terminate-subprocess-when-timeout
 class RunCmd(threading.Thread):
-    def __init__(self, cmd, timeout):
-        threading.Thread.__init__(self)
-        self.cmd = cmd
-        self.timeout = timeout
+	def __init__(self, cmd, timeout):
+		threading.Thread.__init__(self)
+		self.cmd = cmd
+		self.timeout = timeout
 
-    def run(self):
-        self.p = sub.Popen(self.cmd)
-        self.p.wait()
+	def run(self):
+		self.p = sub.Popen(self.cmd)
+		self.p.wait()
 
-    def Run(self):
-        self.start()
-        self.join(self.timeout)
+	def Run(self):
+		self.start()
+		self.join(self.timeout)
 
-        if self.is_alive():
-            self.p.terminate()      #use self.p.kill() if process needs a kill -9
-            self.join()
+		if self.is_alive():
+			print 'Test timed out.'
+			self.p.terminate()      #use self.p.kill() if process needs a kill -9
+			self.join()
 
 def main():
 
@@ -92,7 +93,7 @@ def run_tests(tests):
 		#Run Revit passing the journal file as a parameter
 		print 'running ' + test.fixtureName + ':' + test.testName
 		#run_cmd( ['Revit', os.path.abspath(journal)] )
-		RunCmd(['Revit', os.path.abspath(journal)], 180 ).Run()
+		RunCmd(['Revit', os.path.abspath(journal)], 120 ).Run()
 
 		#Cleanup temporary journal file
 	 	os.remove(journal)
