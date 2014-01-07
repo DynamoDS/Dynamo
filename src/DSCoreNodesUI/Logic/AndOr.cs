@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using DSCoreNodesUI;
 using Dynamo.Models;
 using ProtoCore.AST.AssociativeAST;
@@ -30,8 +31,23 @@ namespace DSCoreNodes.Logic
             {
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
-                    AstFactory.BuildBinaryExpression(inputAstNodes[0], inputAstNodes[1], _op))
+                    BuildNestedOpCall(inputAstNodes))
             };
+        }
+
+        private AssociativeNode BuildNestedOpCall(List<AssociativeNode> inputAstNodes)
+        {
+            return inputAstNodes.Skip(1)
+                                .Aggregate(
+                                    inputAstNodes.First(),
+                                    (current, node) =>
+                                        AstFactory.BuildBinaryExpression(node, current, _op));
+        }
+
+        protected override void RemoveInput()
+        {
+            if (InPortData.Count > 2)
+                base.RemoveInput();
         }
 
         protected override string InputRootName
