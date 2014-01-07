@@ -25,7 +25,7 @@ namespace Dynamo.Nodes
             u = ((FScheme.Value.Number)args[0]).Item;
             v = ((FScheme.Value.Number)args[1]).Item;
 
-            return FScheme.Value.NewContainer(new UV(u, v));
+            return FScheme.Value.NewContainer(new Autodesk.Revit.DB.UV(u, v));
         }
     }
 
@@ -45,8 +45,8 @@ namespace Dynamo.Nodes
 
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
-            var min = (UV)((FScheme.Value.Container)args[0]).Item;
-            var max = (UV)((FScheme.Value.Container)args[1]).Item;
+            var min = (Autodesk.Revit.DB.UV)((FScheme.Value.Container)args[0]).Item;
+            var max = (Autodesk.Revit.DB.UV)((FScheme.Value.Container)args[1]).Item;
 
             var vmax = Vector.ByCoordinates(max.U, max.V,0);
             var vmin = Vector.ByCoordinates(min.U, min.V,0);
@@ -90,7 +90,7 @@ namespace Dynamo.Nodes
                     double v = domain.Min.Y + j * vs;
 
                     result = FSharpList<FScheme.Value>.Cons(
-                        FScheme.Value.NewContainer(new UV(u, v)),
+                        FScheme.Value.NewContainer(new Autodesk.Revit.DB.UV(u, v)),
                         result
                     );
                 }
@@ -131,8 +131,8 @@ namespace Dynamo.Nodes
             //UV min = ((Value.Container)domain[0]).Item as UV;
             //UV max = ((Value.Container)domain[1]).Item as UV;
 
-            var min = new UV(domain.Min.X, domain.Min.Y);
-            var max = new UV(domain.Max.X, domain.Max.Y);
+            var min = new Autodesk.Revit.DB.UV(domain.Min.X, domain.Min.Y);
+            var max = new Autodesk.Revit.DB.UV(domain.Max.X, domain.Max.Y);
 
             var r = new System.Random();
             double uSpan = max.U - min.U;
@@ -143,7 +143,7 @@ namespace Dynamo.Nodes
                 for (int j = 0; j < vi; j++)
                 {
                     result = FSharpList<FScheme.Value>.Cons(
-                        FScheme.Value.NewContainer(new UV(min.U + r.NextDouble() * uSpan, min.V + r.NextDouble() * vSpan)),
+                        FScheme.Value.NewContainer(new Autodesk.Revit.DB.UV(min.U + r.NextDouble() * uSpan, min.V + r.NextDouble() * vSpan)),
                         result
                     );
                 }
