@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Xml;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
@@ -67,11 +69,62 @@ namespace Dynamo.Nodes
             return TopographySurface.Create(dynRevitSettings.Doc.Document, points);
         }
 
-        [NodeMigration(from:"0.7.0")]
-        public static XmlElement Migrate(XmlElement element)
+        [NodeMigration(from:"0.6.3")]
+        public static void Migrate(XmlDocument doc, XmlElement oldNodeElement)
         {
-            //DSRevitNodes.DSTopography.ByPoints
-            return element;
+            //Migrate the topography node from 0.6.3 to 0.7.0
+            //No connectors need to be altered as the new version of this node
+            //will have the same number of input and outputs connectors.
+
+            //Get the executing assembly location to build the assembly path
+            //for the node library. This will need work as we might be loading
+            //the assemblies from a package. How do we convey this?
+            var assemblyDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+            var oldAttribs = GetOldAttributesToCarryOver(oldNodeElement);
+
+            var newNodeElement = CreateNewFunctionNodeElement(doc, oldAttribs, assemblyDir, 
+                "DSTopography.ByPoints", "DSRevitNodes.dll", "DSTopography.ByPoints@list");
+
+            var elements = doc.GetElementsByTagName("Elements");
+            var elementsRoot = elements[0];
+            elementsRoot.RemoveChild(oldNodeElement);   //remove the old
+            elementsRoot.AppendChild(newNodeElement);   //add the new
+        }
+
+        private static XmlElement CreateNewFunctionNodeElement(
+            XmlDocument doc, 
+            Dictionary<string, string> oldAttribs, 
+            string assemblyDir,
+            string methodName,
+            string assemblyName, 
+            string signature)
+        {
+            var newNodeElement = doc.CreateElement("Dynamo.Nodes.DSFunction");
+            newNodeElement.SetAttribute("type", "Dynamo.Nodes.DSFunction");
+            newNodeElement.SetAttribute("guid", oldAttribs["guid"]);
+            newNodeElement.SetAttribute("nickname", methodName);
+            newNodeElement.SetAttribute("x", oldAttribs["x"]);
+            newNodeElement.SetAttribute("y", oldAttribs["y"]);
+            newNodeElement.SetAttribute("isVisible", oldAttribs["isVisible"]);
+            newNodeElement.SetAttribute("isUpstreamVisible", oldAttribs["isUpstreamVisible"]);
+            newNodeElement.SetAttribute("lacing", oldAttribs["lacing"]);
+            newNodeElement.SetAttribute("assembly", Path.Combine(assemblyDir, assemblyName));
+            newNodeElement.SetAttribute("function", signature);
+            return newNodeElement;
+        }
+
+        private static Dictionary<string,string> GetOldAttributesToCarryOver(XmlElement oldNodeElement)
+        {
+            var oldAttribs = new Dictionary<string, string>();
+            oldAttribs["guid"] = oldNodeElement.Attributes["guid"].Value;
+            oldAttribs["isVisible"] = oldNodeElement.Attributes["isVisible"].Value;
+            oldAttribs["isUpstreamVisible"] = oldNodeElement.Attributes["isUpstreamVisible"].Value;
+            oldAttribs["lacing"] = oldNodeElement.Attributes["lacing"].Value;
+            oldAttribs["x"] = oldNodeElement.Attributes["x"].Value;
+            oldAttribs["y"] = oldNodeElement.Attributes["y"].Value;
+
+            return oldAttribs;
         }
     }
 
