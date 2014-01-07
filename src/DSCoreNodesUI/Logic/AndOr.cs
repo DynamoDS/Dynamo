@@ -31,11 +31,11 @@ namespace DSCoreNodes.Logic
             {
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
-                    BuildNestedOpCall(inputAstNodes))
+                    BuildNestedOpCall(Enumerable.Reverse(inputAstNodes)))
             };
         }
 
-        private AssociativeNode BuildNestedOpCall(List<AssociativeNode> inputAstNodes)
+        private AssociativeNode BuildNestedOpCall(IEnumerable<AssociativeNode> inputAstNodes)
         {
             return inputAstNodes.Skip(1)
                                 .Aggregate(
