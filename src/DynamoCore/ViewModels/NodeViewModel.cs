@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Collections.ObjectModel;
+using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
@@ -110,8 +111,19 @@ namespace Dynamo.ViewModels
                 {
                     return "Not available in custom nodes";
                 }
+
+#if USE_DSENGINE
+                return NodeModel.PrintValue(nodeLogic.VariableToPreview,
+                                            0,
+                                            Configurations.PreviewMaxListLength,
+                                            0,
+                                            Configurations.PreviewMaxListDepth,
+                                            Configurations.PreviewMaxLength);
+#else
                 return NodeModel.PrintValue(nodeLogic.OldValue, 0, Configurations.PreviewMaxListLength, 0, 
                     Configurations.PreviewMaxListDepth, Configurations.PreviewMaxLength);
+
+#endif
             }
         }
 
@@ -216,7 +228,7 @@ namespace Dynamo.ViewModels
                 if(this.PreviewBubble == null)
                     return false;
 
-                return !this.PreviewBubble.IsShowPreviewByDefault;
+                return (this.PreviewBubble.InfoBubbleState == InfoBubbleViewModel.State.Minimized);
             }
         }
 
@@ -283,10 +295,12 @@ namespace Dynamo.ViewModels
             logic.OutPorts.CollectionChanged += outports_collectionChanged;
 
             logic.PropertyChanged += logic_PropertyChanged;
-            dynSettings.Controller.DynamoViewModel.Model.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Model_PropertyChanged);
+
+            dynSettings.Controller.DynamoViewModel.Model.PropertyChanged += Model_PropertyChanged;
             dynSettings.Controller.PropertyChanged += Controller_PropertyChanged;
             
             this.ErrorBubble = new InfoBubbleViewModel();
+            this.ErrorBubble.PropertyChanged += ErrorBubble_PropertyChanged;
 
             // Nodes mentioned in switch cases will not have preview bubble
             switch (nodeLogic.Name)
@@ -374,6 +388,9 @@ namespace Dynamo.ViewModels
                     UpdatePreviewBubbleContent();
                     RaisePropertyChanged("CanDisplayLabels");
                     break;
+                case "IsUpdated":
+                    UpdatePreviewBubbleContent();
+                    break;
                 case "X":
                     RaisePropertyChanged("Left");
                     UpdateErrorBubblePosition();
@@ -399,6 +416,7 @@ namespace Dynamo.ViewModels
                     break;
                 case "ToolTipText":
                     UpdateErrorBubbleContent();
+                    // TODO Update preview bubble visibility to false
                     break;
                 case "IsVisible":
                     RaisePropertyChanged("IsVisible");
@@ -419,6 +437,10 @@ namespace Dynamo.ViewModels
                 case "DisplayLabels":
                     RaisePropertyChanged("IsDisplayingLables");
                     break;
+                case "Position":
+                    UpdateErrorBubblePosition();
+                    UpdatePreviewBubblePosition();
+                    break;
             }
         }
 
@@ -432,11 +454,23 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private void ErrorBubble_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            // TODO set preview to be no visible
+
+            //switch (e.PropertyName)
+            //{
+            //    case "IsShowPreviewByDefault":
+            //        RaisePropertyChanged("IsPreviewInsetVisible");
+            //        break;
+            //}
+        }
+
         private void PreviewBubble_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
-                case "IsShowPreviewByDefault":
+                case "InfoBubbleState":
                     RaisePropertyChanged("IsPreviewInsetVisible");
                     break;
             }
@@ -447,17 +481,14 @@ namespace Dynamo.ViewModels
             if (this.PreviewBubble == null)
                 return;
 
-            this.PreviewBubble.IsShowPreviewByDefault = dynSettings.Controller.IsShowPreviewByDefault;
             UpdatePreviewBubbleContent();
             if (dynSettings.Controller.IsShowPreviewByDefault)
             {
-                this.PreviewBubble.SetAlwaysVisibleCommand.Execute(true);
-                this.PreviewBubble.InstantAppearCommand.Execute(null);
+                this.PreviewBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
             }
             else
             {
-                this.PreviewBubble.SetAlwaysVisibleCommand.Execute(false);
-                this.PreviewBubble.InstantCollapseCommand.Execute(null);
+                this.PreviewBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Minimized);
             }
         }
 
@@ -485,29 +516,26 @@ namespace Dynamo.ViewModels
                 return;
             if (string.IsNullOrEmpty(NodeModel.ToolTipText))
             {
-                // TODO: Opacity is no longer in use
-                if (ErrorBubble.Opacity != 0)
+                if (NodeModel.State != ElementState.Error)
                 {
-                    ErrorBubble.SetAlwaysVisibleCommand.Execute(false);
-                    ErrorBubble.InstantCollapseCommand.Execute(null);
+                    ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Minimized);
                 }
             }
             else
             {
+                if (!dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Errors.Contains(this.ErrorBubble))
+                    return;
+
                 Point topLeft = new Point(NodeModel.X, NodeModel.Y);
                 Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
-                InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.Error;
+                InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.ErrorCondensed;
+                // NOTE!: If tooltip is not cached here, it will be cleared once the dispatcher is invoked below
                 string content = NodeModel.ToolTipText;
                 InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Bottom;
                 InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
-                dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.BeginInvoke((new Action(() =>
-                {
-                    if (!dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Errors.Contains(this.ErrorBubble))
-                        return;
-                    this.ErrorBubble.UpdateContentCommand.Execute(data);
-                    this.ErrorBubble.SetAlwaysVisibleCommand.Execute(true);
-                    this.ErrorBubble.InstantAppearCommand.Execute(null);
-                })));
+
+                this.ErrorBubble.UpdateContentCommand.Execute(data);
+                this.ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
             }
         }
 
@@ -515,11 +543,9 @@ namespace Dynamo.ViewModels
         {
             if (this.ErrorBubble == null)
                 return;
-            Point topLeft = new Point(NodeModel.X, NodeModel.Y);
-            Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
             InfoBubbleDataPacket data = new InfoBubbleDataPacket();
-            data.TopLeft = topLeft;
-            data.BotRight = botRight;
+            data.TopLeft = GetTopLeft();
+            data.BotRight = GetBotRight();
             this.ErrorBubble.UpdatePositionCommand.Execute(data);
         }
 
@@ -530,29 +556,22 @@ namespace Dynamo.ViewModels
 
             //create data packet to send to preview bubble
             InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.PreviewCondensed;
-            Point topLeft = new Point(NodeModel.X, NodeModel.Y);
-            Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
             string content = this.OldValue;
             InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Top;
-            InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
+            InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, GetTopLeft(), GetBotRight(), content, connectingDirection);
 
-            //update preview bubble
-            dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Dispatcher.BeginInvoke((new Action(() =>
-            {
-                if (dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Previews.Contains(this.PreviewBubble))
-                    this.PreviewBubble.UpdateContentCommand.Execute(data);
-            })));
+            var vm = dynSettings.Controller.DynamoViewModel;
+            if (vm.CurrentSpaceViewModel.Previews.Contains(this.PreviewBubble))
+                this.PreviewBubble.UpdateContentCommand.Execute(data);
         }
 
         private void UpdatePreviewBubblePosition()
         {
             if (this.PreviewBubble == null || this.NodeModel is Watch)
                 return;
-            Point topLeft = new Point(NodeModel.X, NodeModel.Y);
-            Point botRight = new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
             InfoBubbleDataPacket data = new InfoBubbleDataPacket();
-            data.TopLeft = topLeft;
-            data.BotRight = botRight;
+            data.TopLeft = GetTopLeft();
+            data.BotRight = GetBotRight();
             this.PreviewBubble.UpdatePositionCommand.Execute(data);
         }
 
@@ -738,9 +757,9 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        private void SetupCustomUIElements(object NodeUI)
+        private void SetupCustomUIElements(object nodeUI)
         {
-            nodeLogic.SetupCustomUIElements(NodeUI);
+            nodeLogic.InitializeUI(nodeUI);
         }
 
         private bool CanSetupCustomUIElements(object NodeUI)
@@ -804,20 +823,26 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        private void FadeOutTooltip(object parameter)
+        private void HideTooltip(object parameter)
         {
             if (dynSettings.Controller != null)
                 dynSettings.Controller.DynamoViewModel.HideInfoBubble(parameter);
         }
 
-        private bool CanFadeOutTooltip(object parameter)
+        private bool CanHideTooltip(object parameter)
         {
             return true;
         }
 
-        private void CollapseTooltip(object parameter)
+        private void FadeOutTooltip(object parameter)
         {
-            dynSettings.Controller.InfoBubbleViewModel.InstantCollapseCommand.Execute(null);
+            if (dynSettings.Controller != null)
+                dynSettings.Controller.DynamoViewModel.FadeOutInfoBubble(parameter);
+        }
+
+        private bool CanFadeOutTooltip(object parameter)
+        {
+            return true;
         }
 
         private bool CanCollapseTooltip(object parameter)
@@ -832,7 +857,8 @@ namespace Dynamo.ViewModels
 
             UpdatePreviewBubbleContent();
             this.PreviewBubble.ZIndex = 5;
-            this.PreviewBubble.InstantAppearCommand.Execute(null);
+            this.PreviewBubble.OnRequestAction(
+                new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Show));
         }
 
         private bool CanShowPreview(object parameter)
@@ -881,6 +907,18 @@ namespace Dynamo.ViewModels
 
             return false;
         }
+
+        #region Private Helper Methods
+        private Point GetTopLeft()
+        {
+            return new Point(NodeModel.X, NodeModel.Y);
+        }
+
+        private Point GetBotRight()
+        {
+            return new Point(NodeModel.X + NodeModel.Width, NodeModel.Y + NodeModel.Height);
+        }
+        #endregion
     }
 
     public class NodeHelpEventArgs : EventArgs

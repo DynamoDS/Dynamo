@@ -62,6 +62,9 @@ limitations under the License.
     <WarningLevel>4</WarningLevel>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(ExecutionEngine)' != 'FScheme' ">
+    <DefineConstants>$(DefineConstants);USE_DSENGINE</DefineConstants>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="FScheme, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -73,7 +76,7 @@ limitations under the License.
       <HintPath>..\..\bin\AnyCPU\Debug\FSchemeInterop.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="FSharp.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="FSharp.Core" />
     <Reference Include="Greg, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\greg\Greg.dll</HintPath>
@@ -82,10 +85,7 @@ limitations under the License.
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="LibGNet">
-      <HintPath>..\..\extern\DynamoAsm\LibGNet.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
     </Reference>
@@ -104,17 +104,13 @@ limitations under the License.
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\greg\RestSharp.dll</HintPath>
     </Reference>
+    <Reference Include="ProtoInterface">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\DesignScript\ProtoInterface.dll</HintPath>
+    </Reference>
     <Reference Include="ProtoCore">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\DesignScript\ProtoCore.dll</HintPath>
-    </Reference>
-    <Reference Include="ProtoImperative">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\DesignScript\ProtoImperative.dll</HintPath>
-    </Reference>
-    <Reference Include="ProtoAssociative">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\DesignScript\ProtoAssociative.dll</HintPath>
     </Reference>
     <Reference Include="ProtoScript">
       <SpecificVersion>False</SpecificVersion>
@@ -123,6 +119,10 @@ limitations under the License.
     <Reference Include="GraphToDSCompiler">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\DesignScript\GraphToDSCompiler.dll</HintPath>
+    </Reference>
+    <Reference Include="DesignScriptStudio.Renderer">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\DesignScript\DesignScriptStudio.Renderer.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -151,16 +151,23 @@ limitations under the License.
     <Compile Include="Core\UndoRedoRecorder.cs" />
     <Compile Include="Core\Configurations.cs" />
     <Compile Include="DSEngine\AstBuilder.cs" />
+    <Compile Include="DSEngine\DSLibrary.cs" />
+    <Compile Include="DSEngine\EngineController.cs" />
+    <Compile Include="DSEngine\LiveRunnerServices.cs" />
+    <Compile Include="DSEngine\NodeToCode.cs" />
+    <Compile Include="Interfaces\IWpfNode.cs" />
     <Compile Include="Models\CustomNodeWorkspaceModel.cs" />
     <Compile Include="Models\HomeWorkspaceModel.cs" />
+    <Compile Include="Nodes\CodeBlockNode.cs" />
     <Compile Include="Models\WorkspaceMigrations.cs" />
     <Compile Include="Nodes\dynDSFunction.cs" />
     <Compile Include="Models\Migration.cs" />
-    <Compile Include="Core\FunctionDefinition.cs" />
+    <Compile Include="Core\CustomNodeDefinition.cs" />
     <Compile Include="Core\PreferenceSettings.cs" />
-    <Compile Include="Nodes\Geometry.cs" />
     <Compile Include="PackageManager\PackageManagerClient.cs" />
     <Compile Include="Search\SearchElements\CustomNodeSearchElement.cs" />
+    <Compile Include="Search\SearchElements\DSFunctionNodeSearchElement.cs" />
+    <Compile Include="Services\UsageReportingManager.cs" />
     <Compile Include="UI\Commands\AutomationSettings.cs" />
     <Compile Include="UI\Commands\BrowserItemCommands.cs" />
     <Compile Include="UI\Commands\Commands.cs" />
@@ -185,6 +192,9 @@ limitations under the License.
     </Compile>
     <Compile Include="UI\SharedResourceDictionary.cs" />
     <Compile Include="UI\HandlingEventTrigger.cs" />
+    <Compile Include="UI\Prompts\UsageReportingAgreementPrompt.xaml.cs">
+      <DependentUpon>UsageReportingAgreementPrompt.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Views\InfoBubbleView.xaml.cs">
       <DependentUpon>InfoBubbleView.xaml</DependentUpon>
     </Compile>
@@ -349,9 +359,11 @@ limitations under the License.
     <Compile Include="VisualizationManager\octree\Vector3f.cs" />
     <Compile Include="VisualizationManager\RenderDescription.cs" />
     <Compile Include="VisualizationManager\STLExport.cs" />
+    <Compile Include="DSEngine\RenderPackage.cs" />
     <Compile Include="VisualizationManager\Visualization.cs" />
     <Compile Include="VisualizationManager\VisualizationManager.cs" />
     <Compile Include="VisualizationManager\VisualizationManagerASM.cs" />
+    <Compile Include="DSEngine\VisualizationManagerDSGeometry.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -397,10 +409,6 @@ limitations under the License.
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DSCoreNodes\DSCoreNodes.csproj">
-      <Project>{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}</Project>
-      <Name>DSCoreNodes</Name>
-    </ProjectReference>
     <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
       <Name>DynamoUtilities</Name>
@@ -453,6 +461,8 @@ limitations under the License.
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Themes\Ports.xaml">
+    </Page>
+    <Page Include="UI\Prompts\UsageReportingAgreementPrompt.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -648,10 +658,17 @@ limitations under the License.
     <Resource Include="UI\Images\resize_horizontal.png" />
     <Resource Include="UI\Images\resize_vertical.cur" />
     <Resource Include="UI\Images\resize_vertical.png" />
+    <Resource Include="UI\Images\consent_form_image.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\crash_pic.png" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y "$(SolutionDir)..\extern\DesignScript\*" "$(OutputPath)"</PostBuildEvent>
+    <PostBuildEvent>copy /Y "$(SolutionDir)..\extern\DesignScript\*" "$(OutputPath)"
+mkdir "$(OutputPath)\dll"
+copy /Y "$(SolutionDir)..\extern\DynamoAsm\*" "$(OutputPath)\dll"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1,0 +1,26 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="66d45d63-3ab6-4c1a-95dc-5532252a6654" NodeName="Code Block" X="157" Y="186" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="66d45d63-3ab6-4c1a-95dc-5532252a6654" Name="Code" Value="a=10;" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="a1faecba-749f-491b-83dd-c594bc7d6afd" NodeName="Code Block" X="89" Y="341" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="a1faecba-749f-491b-83dd-c594bc7d6afd" Name="Code" Value="b=10;" />
+  <CreateNodeCommand NodeId="0761516b-ad6c-4caa-a95a-2684ef23a9eb" NodeName="+@," X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <MakeConnectionCommand NodeId="66d45d63-3ab6-4c1a-95dc-5532252a6654" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="0761516b-ad6c-4caa-a95a-2684ef23a9eb" PortIndex="0" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="a1faecba-749f-491b-83dd-c594bc7d6afd" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="0761516b-ad6c-4caa-a95a-2684ef23a9eb" PortIndex="1" Type="0" ConnectionMode="1" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectModelCommand ModelGuid="a1faecba-749f-491b-83dd-c594bc7d6afd" Modifiers="0" />
+  <DragSelectionCommand X="49" Y="323" DragOperation="0" />
+  <DragSelectionCommand X="204" Y="440" DragOperation="1" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectModelCommand ModelGuid="66d45d63-3ab6-4c1a-95dc-5532252a6654" Modifiers="0" />
+  <DragSelectionCommand X="122" Y="167" DragOperation="0" />
+  <DragSelectionCommand X="294" Y="58" DragOperation="1" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UndoRedoCommand CmdOperation="0" />
+  <UndoRedoCommand CmdOperation="0" />
+</Commands>

@@ -13,6 +13,7 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Greg.Responses;
 using Microsoft.Practices.Prism.ViewModel;
+using Dynamo.DSEngine;
 
 namespace Dynamo.ViewModels
 {
@@ -447,6 +448,19 @@ namespace Dynamo.ViewModels
         public BrowserItem TryAddChildCategory(BrowserItem parent, string childCategoryName)
         {
             var newCategoryName = parent.Name + CATEGORY_DELIMITER + childCategoryName;
+
+            // support long nested categories like Math.Math.StaticMembers.Abs
+            var parentItem  = parent as BrowserInternalElement;
+            while (parentItem != null)
+            {
+                var grandParent = parentItem.Parent;
+                if (null == grandParent)
+                    break;
+
+                newCategoryName = grandParent.Name + CATEGORY_DELIMITER + newCategoryName;
+                parentItem = grandParent as BrowserInternalElement;
+            }
+
             if (ContainsCategory(newCategoryName))
             {
                 return GetCategoryByName(newCategoryName);
@@ -793,6 +807,58 @@ namespace Dynamo.ViewModels
             if (searchEleItem != null)
                 _searchElements.Add(searchEleItem);
 
+        }
+
+        /// <summary>
+        ///     Adds DesignScript function groups
+        /// </summary>
+        /// <param name="func"></param>
+        public void Add(IEnumerable<FunctionGroup> functionGroups)
+        {
+            if (null == functionGroups)
+                return;
+
+            foreach (var functionGroup in functionGroups)
+            {
+                var functions = functionGroup.Functions.ToList();
+                if (!functions.Any())
+                    continue;
+
+                bool isOverloaded = functions.Count > 1;
+
+                foreach (var function in functions)
+                {
+                    // For overloaded functions, only parameters are displayed
+                    // for this item. E.g, for Count(), on UI it is:
+                    //
+                    // -> Abs
+                    //      +----------------+
+                    //      | dValue: double |
+                    //      +----------------+
+                    //      | nValue: int    |
+                    //      +----------------+
+                    var displayString = function.UserFriendlyName;
+                    var category = function.Category;
+
+                    if (isOverloaded)
+                    {
+                        displayString = string.Join(", ", function.Parameters.Select(p => p.ToString()));
+                        if (string.IsNullOrEmpty(displayString))
+                            displayString = "void";
+                        category = category + "." + function.UserFriendlyName; 
+                    }
+
+                    var searchElement = new DSFunctionNodeSearchElement(displayString, function);
+                    searchElement.SetSearchable(true);
+
+                    // Add this search eleemnt to the search view
+                    TryAddCategoryAndItem(category, searchElement);
+
+                    // function.QualifiedName is the search string for this
+                    // element
+                    SearchDictionary.Add(searchElement, function.QualifiedName);
+                }
+            }
         }
 
         /// <summary>

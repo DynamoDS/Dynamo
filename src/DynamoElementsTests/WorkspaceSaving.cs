@@ -471,7 +471,7 @@ namespace Dynamo.Tests
             var newPath = this.GetNewFileNameOnTempPath("dyf");
             workspace.SaveAs(newPath);
 
-            var newDef = workspace.FunctionDefinition;
+            var newDef = workspace.CustomNodeDefinition;
 
             Assert.AreNotEqual(Guid.Empty, initialId);
             Assert.AreNotEqual(Guid.Empty, newDef.FunctionId);
@@ -495,7 +495,7 @@ namespace Dynamo.Tests
                 model.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel) as CustomNodeWorkspaceModel;
 
             Assert.IsNotNull(nodeWorkspace);
-            var oldId = nodeWorkspace.FunctionDefinition.FunctionId;
+            var oldId = nodeWorkspace.CustomNodeDefinition.FunctionId;
 
             var newPath = this.GetNewFileNameOnTempPath("dyf");
             var res = nodeWorkspace.SaveAs(newPath); // introduces new function id
@@ -504,7 +504,7 @@ namespace Dynamo.Tests
             Assert.IsTrue(File.Exists(newPath));
 
             // workspace now has different function id
-            var newDef = nodeWorkspace.FunctionDefinition;
+            var newDef = nodeWorkspace.CustomNodeDefinition;
 
             Assert.AreNotEqual(newDef.FunctionId, oldId);
 
@@ -526,7 +526,7 @@ namespace Dynamo.Tests
                 model.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel) as CustomNodeWorkspaceModel;
             
             Assert.IsNotNull(nodeWorkspace);
-            var oldId = nodeWorkspace.FunctionDefinition.FunctionId;
+            var oldId = nodeWorkspace.CustomNodeDefinition.FunctionId;
 
             var newPath = this.GetNewFileNameOnTempPath("dyf");
             var res = nodeWorkspace.SaveAs(newPath); // introduces new function id
@@ -535,7 +535,7 @@ namespace Dynamo.Tests
             Assert.IsTrue(File.Exists(newPath));
 
             // workspace now has different function id
-            var newDef = nodeWorkspace.FunctionDefinition;
+            var newDef = nodeWorkspace.CustomNodeDefinition;
             Assert.IsTrue(Controller.CustomNodeManager.IsInitialized(newDef.FunctionId));
             Assert.IsTrue(Controller.CustomNodeManager.IsInitialized(oldId));
         }
@@ -556,12 +556,12 @@ namespace Dynamo.Tests
                 model.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel) as CustomNodeWorkspaceModel;
 
             Assert.IsNotNull(nodeWorkspace);
-            var oldId = nodeWorkspace.FunctionDefinition.FunctionId;
+            var oldId = nodeWorkspace.CustomNodeDefinition.FunctionId;
 
             var newPath = this.GetNewFileNameOnTempPath("dyf");
             nodeWorkspace.SaveAs(newPath);
 
-            var newDef = nodeWorkspace.FunctionDefinition;
+            var newDef = nodeWorkspace.CustomNodeDefinition;
 
             // if symbol isn't present, we would throw an unbound identifier
             Assert.DoesNotThrow(() =>
@@ -599,7 +599,7 @@ namespace Dynamo.Tests
             Assert.IsTrue(File.Exists(newPath));
 
             // get new function id
-            var newDef = nodeWorkspace.FunctionDefinition;
+            var newDef = nodeWorkspace.CustomNodeDefinition;
 
             // put in workspace
             model.Home(null);
@@ -633,13 +633,13 @@ namespace Dynamo.Tests
                 model.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel) as CustomNodeWorkspaceModel;
 
             Assert.IsNotNull(nodeWorkspace);
-            var oldId = nodeWorkspace.FunctionDefinition.FunctionId;
+            var oldId = nodeWorkspace.CustomNodeDefinition.FunctionId;
 
             var newPath = Path.Combine(TempFolder, "Constant2.dyf");
             var originalNumElements = Controller.SearchViewModel.SearchDictionary.NumElements;
             nodeWorkspace.SaveAs(newPath); // introduces new function id
 
-            var newId = nodeWorkspace.FunctionDefinition.FunctionId;
+            var newId = nodeWorkspace.CustomNodeDefinition.FunctionId;
             
             Controller.SearchViewModel.SearchAndUpdateResultsSync("Constant2");
             Assert.AreEqual(originalNumElements + 1, Controller.SearchViewModel.SearchDictionary.NumElements);
@@ -677,7 +677,7 @@ namespace Dynamo.Tests
                 model.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel) as CustomNodeWorkspaceModel;
 
             Assert.IsNotNull(nodeWorkspace);
-            var oldId = nodeWorkspace.FunctionDefinition.FunctionId;
+            var oldId = nodeWorkspace.CustomNodeDefinition.FunctionId;
 
             // place the custom node a few times in home workspace
             var homeWorkspace = model.Workspaces.OfType<HomeWorkspaceModel>().First();
@@ -692,7 +692,7 @@ namespace Dynamo.Tests
             Assert.IsTrue(res);
             Assert.IsTrue(File.Exists(newPath));
 
-            Assert.IsNotNull(nodeWorkspace.FunctionDefinition);
+            Assert.IsNotNull(nodeWorkspace.CustomNodeDefinition);
 
             // can get instances of original custom node
             Assert.AreEqual(10, homeWorkspace.Nodes.Count);
@@ -717,7 +717,7 @@ namespace Dynamo.Tests
                 model.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel) as CustomNodeWorkspaceModel;
 
             Assert.IsNotNull(nodeWorkspace);
-            var oldId = nodeWorkspace.FunctionDefinition.FunctionId;
+            var oldId = nodeWorkspace.CustomNodeDefinition.FunctionId;
 
             var newPath = this.GetNewFileNameOnTempPath("dyf");
             var originalNumElements = Controller.SearchViewModel.SearchDictionary.NumElements;
@@ -725,7 +725,7 @@ namespace Dynamo.Tests
             // save as
             nodeWorkspace.SaveAs(newPath); // introduces new function id
 
-            var newId = nodeWorkspace.FunctionDefinition.FunctionId;
+            var newId = nodeWorkspace.CustomNodeDefinition.FunctionId;
 
             // refactor oldId with new name
 
@@ -771,7 +771,7 @@ namespace Dynamo.Tests
                 model.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel) as CustomNodeWorkspaceModel;
 
             Assert.IsNotNull(nodeWorkspace);
-            var oldId = nodeWorkspace.FunctionDefinition.FunctionId;
+            var oldId = nodeWorkspace.CustomNodeDefinition.FunctionId;
 
             var newPath = this.GetNewFileNameOnTempPath("dyf");
             var originalNumElements = Controller.SearchViewModel.SearchDictionary.NumElements;
@@ -779,7 +779,7 @@ namespace Dynamo.Tests
             // save as
             nodeWorkspace.SaveAs(newPath); // introduces new function id
 
-            var newId = nodeWorkspace.FunctionDefinition.FunctionId;
+            var newId = nodeWorkspace.CustomNodeDefinition.FunctionId;
 
             // refactor oldId with new name
 
@@ -830,7 +830,7 @@ namespace Dynamo.Tests
                 var newPath = this.GetNewFileNameOnTempPath("dyf");
                 workspace.SaveAs(newPath);
 
-                var newId = workspace.FunctionDefinition.FunctionId;
+                var newId = workspace.CustomNodeDefinition.FunctionId;
                 var newName = workspace.Name;
 
                 listGuids.Add(newId);

@@ -177,6 +177,20 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// This method is currently used as a way to send an event to ModelBase 
+        /// derived objects. Its primary use is in DynamoNodeButton class, which 
+        /// sends this event when clicked.
+        /// </summary>
+        /// <param name="eventName">The name of the event.</param>
+        /// <returns>Returns true if the call has been handled, or false otherwise.
+        /// </returns>
+        /// 
+        public bool HandleModelEvent(string eventName)
+        {
+            return this.HandleModelEventCore(eventName);
+        }
+
+        /// <summary>
         /// This method is supplied as a generic way for command framework to update
         /// a given named-value in a ModelBase (which has to work under both user 
         /// and playback scenarios). During playback, the command framework issues 
@@ -194,6 +208,11 @@ namespace Dynamo.Models
         /// </returns>
         /// 
         protected virtual bool UpdateValueCore(string name, string value)
+        {
+            return false; // Base class does not handle this.
+        }
+
+        protected virtual bool HandleModelEventCore(string eventName)
         {
             return false; // Base class does not handle this.
         }

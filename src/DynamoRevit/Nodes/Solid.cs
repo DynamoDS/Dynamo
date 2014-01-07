@@ -827,7 +827,7 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewContainer(result);
         }
     }
-
+    /*
     [NodeName("Solid from Element")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_SOLID_QUERY)]
     [NodeDescription("Creates reference to the solid in the element's geometry objects.")]
@@ -946,7 +946,8 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewContainer(mySolid);
         }
     }
-
+    */
+    /*
     [NodeName("Cylinder")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_SOLID_PRIMITIVES)]
     [NodeDescription("Create a cylinder from the axis, origin, radius, and height")]
@@ -998,7 +999,7 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewContainer(CylinderByAxisOriginRadiusHeight(axis, origin, radius, height));
         }
     }
-
+    */
     [NodeName("Sphere")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_SOLID_PRIMITIVES)]
     [NodeDescription("Creates sphere from a center point and axis")]

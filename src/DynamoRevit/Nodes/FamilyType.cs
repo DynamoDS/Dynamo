@@ -6,6 +6,7 @@ using Dynamo.Models;
 using Dynamo.Revit;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
+using RevitServices.Persistence;
 
 namespace Dynamo.Nodes
 {
@@ -29,7 +30,7 @@ namespace Dynamo.Nodes
             Items.Clear();
 
             //load all the currently loaded types into the combo list
-            var fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            var fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
             fec.OfClass(typeof(Family));
             foreach (Family f in fec.ToElements())
             {
@@ -305,7 +306,7 @@ namespace Dynamo.Nodes
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
             var symbol = (FamilySymbol)((FScheme.Value.Container)args[0]).Item;
-            var collector = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            var collector = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
             collector.OfClass(typeof(FamilyInstance));
             var fis = collector.ToElements().Where(x => x is FamilyInstance).Cast<FamilyInstance>().Where(x => x.Symbol.Name == symbol.Name);
             var results = fis.Aggregate(FSharpList<FScheme.Value>.Empty,

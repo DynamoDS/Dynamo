@@ -4,6 +4,7 @@ using Autodesk.Revit.DB;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using NUnit.Framework;
+using RevitServices.Persistence;
 using DividedSurface = Autodesk.Revit.DB.DividedSurface;
 
 namespace Dynamo.Tests
@@ -25,7 +26,7 @@ namespace Dynamo.Tests
             model.Open(testPath);
             dynSettings.Controller.RunExpression(true);
 
-            FilteredElementCollector fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
             fec.OfClass(typeof(DividedSurface));
 
             //did it create a divided surface?

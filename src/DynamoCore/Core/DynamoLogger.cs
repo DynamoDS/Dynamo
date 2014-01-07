@@ -3,6 +3,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using Dynamo.Models;
+using Dynamo.Services;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo
@@ -85,6 +86,8 @@ namespace Dynamo
         /// <param name="message"></param>
         public void Log(string message, LogLevel level)
         {
+            InstrumentationLogger.LogInfo("LogMessage-" + level.ToString(), message);
+
             switch (level)
             {
                 //write to the console
@@ -163,20 +166,20 @@ namespace Dynamo
         /// Log some node info
         /// </summary>
         /// <param name="node"></param>
-        public void Log(NodeModel node)
+        /*public void Log(NodeModel node)
         {
             string exp = node.PrintExpression();
             Log("> " + exp, LogLevel.Console);
-        }
+        }*/
 
         /// <summary>
         /// Log an expression
         /// </summary>
         /// <param name="expression"></param>
-        public void Log(FScheme.Expression expression)
+        /*public void Log(FScheme.Expression expression)
         {
             Instance.Log(FScheme.printExpression("\t", expression), LogLevel.Console);
-        }
+        }*/
 
         public void ClearLog()
         {

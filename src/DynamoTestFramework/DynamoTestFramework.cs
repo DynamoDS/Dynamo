@@ -17,19 +17,11 @@ using Dynamo.NUnit.Tests;
 using Dynamo.Utilities;
 using NUnit.Core;
 using NUnit.Core.Filters;
+using RevitServices.Persistence;
+using RevitServices.Transactions;
 
 namespace Dynamo.Tests
 {
-    /// <summary>
-    /// The Revit data class holds static references to the document and application
-    /// for use in the tests.
-    /// </summary>
-    public class RevitData
-    {
-        public static UIDocument Document { get; set; }
-        public static UIApplication Application { get; set; }
-    }
-
     [Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
     [Journaling(JournalingMode.UsingCommandData)]
@@ -84,9 +76,11 @@ namespace Dynamo.Tests
 
             try
             {
-                RevitData.Application = revit.Application;
-                RevitData.Document = RevitData.Application.ActiveUIDocument;
-
+                var docManager = DocumentManager.GetInstance();
+                docManager.CurrentUIApplication = revit.Application;
+                docManager.CurrentDBDocument = revit.Application.ActiveUIDocument.Document;
+                docManager.CurrentUIDocument = revit.Application.ActiveUIDocument;
+                
                 bool canReadData = (0 < dataMap.Count);
 
                 if (canReadData)
@@ -109,7 +103,15 @@ namespace Dynamo.Tests
                     }
                     if (dataMap.ContainsKey("runDynamo"))
                     {
-                        runDynamo = Convert.ToBoolean(dataMap["runDynamo"]);
+                        try
+                        {
+                            runDynamo = Convert.ToBoolean(dataMap["runDynamo"]);
+                        }
+                        catch
+                        {
+                            runDynamo = false;
+                        }
+
                     }
                 }
 
@@ -223,16 +225,19 @@ namespace Dynamo.Tests
         private void StartDynamo()
         {
             Level defaultLevel = null;
-            var fecLevel = new FilteredElementCollector(RevitData.Document.Document);
+            var fecLevel = new FilteredElementCollector(DocumentManager.GetInstance().CurrentDBDocument);
             fecLevel.OfClass(typeof(Level));
 
-            dynRevitSettings.Revit = RevitData.Application;
-            dynRevitSettings.Doc = RevitData.Document;
+            DocumentManager.GetInstance().CurrentUIApplication = DocumentManager.GetInstance().CurrentUIApplication;
+            DocumentManager.GetInstance().CurrentUIDocument = DocumentManager.GetInstance().CurrentUIDocument;
             dynRevitSettings.DefaultLevel = defaultLevel;
 
             //create dynamo
             var r = new Regex(@"\b(Autodesk |Structure |MEP |Architecture )\b");
-            string context = r.Replace(RevitData.Application.Application.VersionName, "");
+            string context = r.Replace(DocumentManager.GetInstance().CurrentUIApplication.Application.VersionName, "");
+
+            // create the transaction manager object
+            TransactionManager.SetupManager(new DebugTransactionStrategy());
 
             var dynamoController = new DynamoController_Revit(DynamoRevitApp.env, DynamoRevitApp.Updater, typeof(DynamoRevitViewModel), context)
                 {
@@ -387,6 +392,8 @@ namespace Dynamo.Tests
                     testCase.result = "Cancelled";
                     break;
                 case ResultState.Error:
+                    var f = new failureType {message = result.Message, stacktrace = result.StackTrace};
+                    testCase.Item = f;
                     testCase.result = "Error";
                     break;
                 case ResultState.Failure:

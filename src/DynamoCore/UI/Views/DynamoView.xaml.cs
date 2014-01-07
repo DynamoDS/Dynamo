@@ -26,6 +26,7 @@ using Dynamo.UI.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Dynamo.Core;
+using Dynamo.Services;
 
 namespace Dynamo.Controls
 {
@@ -76,6 +77,9 @@ namespace Dynamo.Controls
             InitializeComponent();
             InitializeShortcutBar();
 
+#if !USE_DSENGINE
+            LibraryManagerMenu.Visibility = System.Windows.Visibility.Collapsed;
+#endif
             this.Loaded += dynBench_Activated;
 
             //setup InfoBubble for library items tooltip
@@ -121,23 +125,23 @@ namespace Dynamo.Controls
             screenShotButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/screenshot_disabled.png";
             screenShotButton.ImgHoverSource = "/DynamoCore;component/UI/Images/screenshot_hover.png";
 
+            ShortcutBarItem undoButton = new ShortcutBarItem();
+            undoButton.ShortcutToolTip = "Undo [Ctrl + Z]";
+            undoButton.ShortcutCommand = viewModel.UndoCommand;
+            undoButton.ShortcutCommandParameter = null;
+            undoButton.ImgNormalSource = "/DynamoCore;component/UI/Images/undo_normal.png";
+            undoButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/undo_disabled.png";
+            undoButton.ImgHoverSource = "/DynamoCore;component/UI/Images/undo_hover.png";
+
+            ShortcutBarItem redoButton = new ShortcutBarItem();
+            redoButton.ShortcutToolTip = "Redo [Ctrl + Y]";
+            redoButton.ShortcutCommand = viewModel.RedoCommand;
+            redoButton.ShortcutCommandParameter = null;
+            redoButton.ImgNormalSource = "/DynamoCore;component/UI/Images/redo_normal.png";
+            redoButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/redo_disabled.png";
+            redoButton.ImgHoverSource = "/DynamoCore;component/UI/Images/redo_hover.png";
+
             // PLACEHOLDER FOR FUTURE SHORTCUTS
-            //ShortcutBarItem undoButton = new ShortcutBarItem();
-            //undoButton.ShortcutToolTip = "Undo [Ctrl + Z]";
-            ////undoButton.ShortcutCommand = viewModel.; // Function implementation in progress
-            //undoButton.ShortcutCommandParameter = null;
-            //undoButton.ImgNormalSource = "/DynamoCore;component/UI/Images/undo_normal.png";
-            //undoButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/undo_disabled.png";
-            //undoButton.ImgHoverSource = "/DynamoCore;component/UI/Images/undo_hover.png";
-
-            //ShortcutBarItem redoButton = new ShortcutBarItem();
-            //redoButton.ShortcutToolTip = "Redo [Ctrl + Y]";
-            ////redoButton.ShortcutCommand = viewModel.; // Function implementation in progress
-            //redoButton.ShortcutCommandParameter = null;
-            //redoButton.ImgNormalSource = "/DynamoCore;component/UI/Images/redo_normal.png";
-            //redoButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/redo_disabled.png";
-            //redoButton.ImgHoverSource = "/DynamoCore;component/UI/Images/redo_hover.png";
-
             //ShortcutBarItem runButton = new ShortcutBarItem();
             //runButton.ShortcutToolTip = "Run [Ctrl + R]";
             ////runButton.ShortcutCommand = viewModel.RunExpressionCommand; // Function implementation in progress
@@ -149,10 +153,11 @@ namespace Dynamo.Controls
             shortcutBar.ShortcutBarItems.Add(newScriptButton);
             shortcutBar.ShortcutBarItems.Add(openScriptButton);
             shortcutBar.ShortcutBarItems.Add(saveButton);
-            shortcutBar.ShortcutBarRightSideItems.Add(screenShotButton);
-            //shortcutBar.ShortcutBarItems.Add(undoButton);
-            //shortcutBar.ShortcutBarItems.Add(redoButton);
+            shortcutBar.ShortcutBarItems.Add(undoButton);
+            shortcutBar.ShortcutBarItems.Add(redoButton);
             //shortcutBar.ShortcutBarItems.Add(runButton);            
+
+            shortcutBar.ShortcutBarRightSideItems.Add(screenShotButton);
 
             shortcutBarGrid.Children.Add(shortcutBar);
         }
@@ -164,6 +169,9 @@ namespace Dynamo.Controls
 
         private void dynBench_Activated(object sender, EventArgs e)
         {
+            // If first run, Collect Info Prompt will appear
+            UsageReportingManager.Instance.CheckIsFirstRun();
+
             this.WorkspaceTabs.SelectedIndex = 0;
             _vm = (DataContext as DynamoViewModel);
             _vm.Model.RequestLayoutUpdate += vm_RequestLayoutUpdate;
@@ -184,23 +192,23 @@ namespace Dynamo.Controls
 
             //PACKAGE MANAGER
             _vm.RequestPackagePublishDialog += _vm_RequestRequestPackageManagerPublish;
-            _vm.RequestManagePackagesDialog += new EventHandler(_vm_RequestShowInstalledPackages);
-            _vm.RequestPackageManagerSearchDialog += new EventHandler(_vm_RequestShowPackageManagerSearch);
+            _vm.RequestManagePackagesDialog += _vm_RequestShowInstalledPackages;
+            _vm.RequestPackageManagerSearchDialog += _vm_RequestShowPackageManagerSearch;
 
             //FUNCTION NAME PROMPT
             _vm.Model.RequestsFunctionNamePrompt += _vm_RequestsFunctionNamePrompt;
 
-            _vm.SidebarClosed += new EventHandler(_vm_SidebarClosed);
-            _vm.RequestClose += new EventHandler(_vm_RequestClose);
-            _vm.RequestSaveImage += new ImageSaveEventHandler(_vm_RequestSaveImage);
+            _vm.RequestClose += _vm_RequestClose;
+            _vm.RequestSaveImage += _vm_RequestSaveImage;
+            _vm.SidebarClosed += _vm_SidebarClosed;
 
-            dynSettings.Controller.RequestsCrashPrompt += new DynamoController.CrashPromptHandler(Controller_RequestsCrashPrompt);
+            dynSettings.Controller.RequestsCrashPrompt += Controller_RequestsCrashPrompt;
 
-            DynamoSelection.Instance.Selection.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Selection_CollectionChanged);
+            DynamoSelection.Instance.Selection.CollectionChanged += Selection_CollectionChanged;
 
-            _vm.RequestUserSaveWorkflow += new WorkspaceSaveEventHandler(_vm_RequestUserSaveWorkflow);
+            _vm.RequestUserSaveWorkflow += _vm_RequestUserSaveWorkflow;
 
-            dynSettings.Controller.ClipBoard.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(ClipBoard_CollectionChanged);
+            dynSettings.Controller.ClipBoard.CollectionChanged += ClipBoard_CollectionChanged;
 
             // Kick start the automation run, if possible.
             _vm.BeginCommandPlayback(this);
@@ -309,10 +317,10 @@ namespace Dynamo.Controls
             _vm.CopyCommand.RaiseCanExecuteChanged();
             _vm.PasteCommand.RaiseCanExecuteChanged();
         }
-
-        void Controller_RequestsCrashPrompt(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        
+        void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)
         {
-            var prompt = new CrashPrompt(e.Exception.Message + "\n\n" + e.Exception.StackTrace);
+            var prompt = new CrashPrompt(args);
             prompt.ShowDialog();
         }
 

@@ -21,6 +21,7 @@ using String = System.String;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using ProtoCore.DSASM;
 using Dynamo.ViewModels;
+using Dynamo.DSEngine;
 
 namespace Dynamo.Models
 {
@@ -267,7 +268,6 @@ namespace Dynamo.Models
 
         public DynamoModel()
         {
-            
         }
 
         public virtual void OnCleanup(EventArgs e)
@@ -338,8 +338,20 @@ namespace Dynamo.Models
         /// <param name="parameters">The path the the file.</param>
         public void Open(object parameters)
         {
-            string xmlPath = parameters as string;
+            string xmlFilePath = parameters as string;
+            var command = new DynCmd.OpenFileCommand(xmlFilePath);
+            dynSettings.Controller.DynamoViewModel.ExecuteCommand(command);
+        }
 
+        internal bool CanOpen(object parameters)
+        {
+            if (File.Exists(parameters.ToString()))
+                return true;
+            return false;
+        }
+
+        internal void OpenInternal(string xmlPath)
+        {
             dynSettings.Controller.IsUILocked = true;
 
             if (!OpenDefinition(xmlPath))
@@ -357,13 +369,6 @@ namespace Dynamo.Models
 
             //clear the clipboard to avoid copying between dyns
             dynSettings.Controller.ClipBoard.Clear();
-        }
-
-        internal bool CanOpen(object parameters)
-        {
-            if (File.Exists(parameters.ToString()))
-                return true;
-            return false;
         }
 
         internal void PostUIActivation(object parameter)
@@ -573,7 +578,9 @@ namespace Dynamo.Models
 
             CurrentWorkspace.Connectors.Clear();
             CurrentWorkspace.Nodes.Clear();
-            CurrentWorkspace.Notes.Clear();
+            CurrentWorkspace.Notes.Clear(); 
+            
+            dynSettings.Controller.ResetEngine();
         }
 
         /// <summary>
@@ -862,7 +869,7 @@ namespace Dynamo.Models
             return true;
         }
 
-        public FunctionDefinition NewCustomNodeWorkspace(   Guid id,
+        public CustomNodeDefinition NewCustomNodeWorkspace(   Guid id,
                                                             string name,
                                                             string category,
                                                             string description,
@@ -882,7 +889,7 @@ namespace Dynamo.Models
             workSpace.Nodes.ToList();
             workSpace.Connectors.ToList();
 
-            var functionDefinition = new FunctionDefinition(id)
+            var functionDefinition = new CustomNodeDefinition(id)
             {
                 WorkspaceModel = workSpace
             };
@@ -1020,6 +1027,10 @@ namespace Dynamo.Models
                 string nodeName = node.GetType().ToString();
                 if (node is Function)
                     nodeName = ((node as Function).Definition.FunctionId).ToString();
+#if USE_DSENGINE
+                else if (node is DSFunction)
+                    nodeName = ((node as DSFunction).Definition.MangledName);
+#endif
 
                 var xmlDoc = new XmlDocument();
                 var dynEl = xmlDoc.CreateElement(node.GetType().ToString());
@@ -1275,13 +1286,13 @@ namespace Dynamo.Models
         internal static NodeModel CreateNodeInstance(string name)
         {
             NodeModel result;
-
-            if (dynSettings.Controller.BuiltInFunctions.ContainsKey(name))
-            {
-                var method = dynSettings.Controller.BuiltInFunctions[name];
-                result = new DSFunction(method as ProcedureNode);
-            }
-            else if (dynSettings.Controller.BuiltInTypesByName.ContainsKey(name))
+            
+#if USE_DSENGINE
+            FunctionDescriptor functionItem = (dynSettings.Controller.EngineController.GetFunctionDescriptor(name));
+            if (functionItem != null)
+                return new DSFunction(functionItem);
+#endif
+            if (dynSettings.Controller.BuiltInTypesByName.ContainsKey(name))
             {
                 TypeLoadData tld = dynSettings.Controller.BuiltInTypesByName[name];
 
@@ -1295,7 +1306,6 @@ namespace Dynamo.Models
                 TypeLoadData tld = dynSettings.Controller.BuiltInTypesByNickname[name];
                 try
                 {
-
                     ObjectHandle obj = Activator.CreateInstanceFrom(tld.Assembly.Location, tld.Type.FullName);
                     var newEl = (NodeModel)obj.Unwrap();
                     newEl.DisableInteraction();
@@ -1318,7 +1328,7 @@ namespace Dynamo.Models
                 }
                 else
                 {
-                    DynamoLogger.Instance.Log("Failed to find FunctionDefinition.");
+                    DynamoLogger.Instance.Log("Failed to find CustomNodeDefinition.");
                     return null;
                 }
             }
