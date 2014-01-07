@@ -1475,11 +1475,6 @@ namespace Dynamo.Nodes
 
             RegisterAllPorts();
         }
-
-        protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
-        {
-            return builder.Build(this, inputs);
-        }
     }
 
     [NodeName("Rest of List")]

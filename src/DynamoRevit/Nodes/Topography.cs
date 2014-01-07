@@ -11,6 +11,7 @@ using Dynamo.Models;
 using Dynamo.Revit;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
+using RevitServices.Persistence;
 using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Nodes
@@ -66,7 +67,8 @@ namespace Dynamo.Nodes
 
         private TopographySurface CreateTopographySurface(List<XYZ> points)
         {
-            return TopographySurface.Create(dynRevitSettings.Doc.Document, points);
+            var document = DocumentManager.GetInstance().CurrentDBDocument;
+            return TopographySurface.Create(document, points);
         }
 
         [NodeMigration(from:"0.6.3")]
