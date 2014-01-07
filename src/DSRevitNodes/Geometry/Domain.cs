@@ -5,7 +5,7 @@ namespace DSCoreNodes
     /// <summary>
     /// A two dimensional UV domain specified by minimum and maximum UVs.
     /// </summary>
-    public class Domain2D : ObjectWithPropertyDictionary
+    public class Domain2D
     {
         /// <summary>
         /// The minimum of the domain.
@@ -60,18 +60,12 @@ namespace DSCoreNodes
             return string.Format("Min:{0},Max:{1}", Min.ToString(), Max.ToString());
         }
 
-        public override void Dispose()
-        {
-            //delete the elements
-
-            //unregisters with the persistence manager
-        }
     }
 
     /// <summary>
     /// A one dimensional domain specified by minimum and maximum.
     /// </summary>
-    public class Domain : ObjectWithPropertyDictionary
+    public class Domain
     {
         /// <summary>
         /// The minimum of the domain.
@@ -116,13 +110,6 @@ namespace DSCoreNodes
         public override string ToString()
         {
             return string.Format("Min:{0},Max:{1}", Min.ToString(), Max.ToString());
-        }
-
-        public override void Dispose()
-        {
-            //delete the elements
-
-            //unregisters with the persistence manager
         }
     }
 }

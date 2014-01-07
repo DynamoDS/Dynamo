@@ -768,7 +768,7 @@ namespace DSRevitNodes.Elements
                 double coord3 = (index < 2) ? sizeRect : -sizeRect;
                 double coord4 = (index == 0 || index == 3) ? -sizeRect : sizeRect;
                 XYZ pnt1 = thisPlane.Origin + coord3 * thisPlane.XVec + coord4 * thisPlane.YVec;
-                //Line cLine = dynRevitSettings.Revit.Application.Create.NewLineBound(pnt0, pnt1);
+                //Line cLine = DocumentManager.GetInstance().CurrentUIApplication.Application.Create.NewLineBound(pnt0, pnt1);
                 var cLine = Autodesk.Revit.DB.Line.CreateBound(pnt0, pnt1);
                 cLoop.Append(cLine);
             }

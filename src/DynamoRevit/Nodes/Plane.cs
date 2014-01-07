@@ -7,6 +7,7 @@ using Dynamo.Models;
 using Dynamo.Revit;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
+using RevitServices.Persistence;
 
 namespace Dynamo.Nodes
 {
@@ -29,7 +30,7 @@ namespace Dynamo.Nodes
             XYZ ptA = (XYZ)((FScheme.Value.Container)args[0]).Item;
             XYZ ptB = (XYZ)((FScheme.Value.Container)args[1]).Item;
 
-            var plane = dynRevitSettings.Doc.Application.Application.Create.NewPlane(
+            var plane = DocumentManager.GetInstance().CurrentUIDocument.Application.Application.Create.NewPlane(
                ptA, ptB
             );
 
@@ -51,7 +52,7 @@ namespace Dynamo.Nodes
 
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
-            var plane = dynRevitSettings.Doc.Application.Application.Create.NewPlane(
+            var plane = DocumentManager.GetInstance().CurrentUIDocument.Application.Application.Create.NewPlane(
                new XYZ(0, 0, 1), new XYZ()
             );
 
@@ -73,7 +74,7 @@ namespace Dynamo.Nodes
 
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
-            var plane = dynRevitSettings.Doc.Application.Application.Create.NewPlane(
+            var plane = DocumentManager.GetInstance().CurrentUIDocument.Application.Application.Create.NewPlane(
                new XYZ(0, 1, 0), new XYZ()
             );
 
@@ -95,7 +96,7 @@ namespace Dynamo.Nodes
 
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
-            var plane = dynRevitSettings.Doc.Application.Application.Create.NewPlane(
+            var plane = DocumentManager.GetInstance().CurrentUIDocument.Application.Application.Create.NewPlane(
                new XYZ(1, 0, 0), new XYZ()
             );
             return FScheme.Value.NewContainer(plane);
@@ -294,7 +295,7 @@ namespace Dynamo.Nodes
 
             var normal = orderedEigenvectors[0].CrossProduct(orderedEigenvectors[1]);
 
-            var plane = dynRevitSettings.Doc.Application.Application.Create.NewPlane(normal, meanPt);
+            var plane = DocumentManager.GetInstance().CurrentUIDocument.Application.Application.Create.NewPlane(normal, meanPt);
 
             // take first 3 pts to form simplified normal 
             var bma = ptList[1] - ptList[0];

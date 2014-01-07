@@ -72,8 +72,8 @@
 //        [Test]
 //        public void SolidBySkeleton()
 //        {
-//            if (!dynRevitSettings.Revit.Application.VersionNumber.Contains("2013") &&
-//                             dynRevitSettings.Revit.Application.VersionName.Contains("Vasari"))
+//            if (!DocumentManager.GetInstance().CurrentUIApplication.Application.VersionNumber.Contains("2013") &&
+//                             DocumentManager.GetInstance().CurrentUIApplication.Application.VersionName.Contains("Vasari"))
 //            {
 //                var model = dynSettings.Controller.DynamoModel;
 

@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using Dynamo.Selection;
+using Dynamo.UI;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -14,7 +15,7 @@ namespace Dynamo.Nodes
     /// <summary>
     /// Interaction logic for dynNoteView.xaml
     /// </summary>
-    public partial class dynNoteView : UserControl, IViewModelView<NoteViewModel>
+    public partial class dynNoteView : IViewModelView<NoteViewModel>
     {
         public NoteViewModel ViewModel { get; private set; }
 

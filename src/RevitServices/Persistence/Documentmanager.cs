@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using RevitServices.Elements;
@@ -80,6 +79,11 @@ namespace RevitServices.Persistence
         /// Provides the currently active UI document.
         /// </summary>
         public UIDocument CurrentUIDocument { get; set; }
+
+        /// <summary>
+        /// Provides the current UIApplication
+        /// </summary>
+        public UIApplication CurrentUIApplication { get; set; }
 
         /// <summary>
         /// A method to clear some elements from the CurrentDBDocument.  This is intended

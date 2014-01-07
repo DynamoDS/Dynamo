@@ -1461,6 +1461,22 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Last of List")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_QUERY)]
+    [NodeDescription("Gets the last element of a list")]
+    [NodeSearchTags("last")]
+    public class Last : BuiltinFunction
+    {
+        public Last()
+            : base(FScheme.Last)
+        {
+            InPortData.Add(new PortData("list", "A list", typeof(Value.List)));
+            OutPortData.Add(new PortData("first", "First element in the list", typeof(object)));
+
+            RegisterAllPorts();
+        }
+    }
+
     [NodeName("Rest of List")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_QUERY)]
     [NodeDescription("Gets the Tail of a list (list with the first element removed).")]
@@ -3162,7 +3178,6 @@ namespace Dynamo.Nodes
 
     #region Base Classes
 
-    [IsInteractive(true)]
     public abstract partial class BasicInteractive<T> : NodeWithOneOutput
     {
         private T _value;
