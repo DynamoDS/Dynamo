@@ -1,7 +1,8 @@
 import sys
 import os
 import fnmatch
-import subprocess
+import subprocess as sub
+import threading
 import xml.etree.ElementTree as ET
 import argparse
 import time
@@ -22,6 +23,26 @@ class Test:
 		self.runDynamo = runDynamo
 	def __repr__(self):
 		return "<Test name:%s fixture:%s assembly:%s resultsPath:%s modelPath:%s pluginGUID:%s pluginClass:%s runDynamo:%s>" % (self.testName, self.fixtureName, self.testAssembly, self.resultsPath, self.modelPath, self.pluginGUID, self.pluginClass, self.runDynamo)
+
+#http://stackoverflow.com/questions/4158502/python-kill-or-terminate-subprocess-when-timeout
+class RunCmd(threading.Thread):
+	def __init__(self, cmd, timeout):
+		threading.Thread.__init__(self)
+		self.cmd = cmd
+		self.timeout = timeout
+
+	def run(self):
+		self.p = sub.Popen(self.cmd)
+		self.p.wait()
+
+	def Run(self):
+		self.start()
+		self.join(self.timeout)
+
+		if self.is_alive():
+			print 'Test timed out.'
+			self.p.terminate()      #use self.p.kill() if process needs a kill -9
+			self.join()
 
 def main():
 
@@ -71,7 +92,8 @@ def run_tests(tests):
 
 		#Run Revit passing the journal file as a parameter
 		print 'running ' + test.fixtureName + ':' + test.testName
-		run_cmd( ['Revit', os.path.abspath(journal)] )
+		#run_cmd( ['Revit', os.path.abspath(journal)] )
+		RunCmd(['Revit', os.path.abspath(journal)], 120 ).Run()
 
 		#Cleanup temporary journal file
 	 	os.remove(journal)
@@ -103,7 +125,7 @@ def parse_input_file(inputFile, resultsPath, requestedFixture, requestedTest):
 	return tests
 
 def run_cmd( args, printOutput = True, cwd = None ):	
-	p = subprocess.Popen(args, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd = cwd)
+	p = sub.Popen(args, shell=True, stdout=sub.PIPE, stderr=sub.STDOUT, cwd = cwd)
 	
 	out = ''
 
