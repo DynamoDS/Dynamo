@@ -162,7 +162,7 @@ namespace DSRevitNodesTests.GeometryObjects
             var p3 = Point.ByCoordinates(6, -.5, 0);
             var p4 = Point.ByCoordinates(9, 0, .25);
 
-            var spine = BSplineCurve.ByPoints(new []{p1,p2,p3,p4});
+            var spine = NurbsCurve.ByPoints(new []{p1,p2,p3,p4});
 
             var csA = spine.CoordinateSystemAtParameter(0);
             var csB = spine.CoordinateSystemAtParameter(.25);

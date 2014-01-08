@@ -49,10 +49,10 @@ namespace DSRevitNodesTests.GeometryObjects
 
             var crvs = new[]
             {
-                BSplineCurve.ByPoints(pts1),
-                BSplineCurve.ByPoints(pts2),
-                BSplineCurve.ByPoints(pts3),
-                BSplineCurve.ByPoints(pts4)
+                NurbsCurve.ByPoints(pts1),
+                NurbsCurve.ByPoints(pts2),
+                NurbsCurve.ByPoints(pts3),
+                NurbsCurve.ByPoints(pts4)
             };
 
             // construct the curveloop
@@ -92,9 +92,9 @@ namespace DSRevitNodesTests.GeometryObjects
 
             var crvs = new[]
             {
-                BSplineCurve.ByPoints(pts1),
-                BSplineCurve.ByPoints(pts2),
-                BSplineCurve.ByPoints(pts3)
+                NurbsCurve.ByPoints(pts1),
+                NurbsCurve.ByPoints(pts2),
+                NurbsCurve.ByPoints(pts3)
             };
 
             // construct the curveloop
@@ -126,8 +126,8 @@ namespace DSRevitNodesTests.GeometryObjects
 
             var crvs = new[]
             {
-                BSplineCurve.ByPoints(pts1),
-                BSplineCurve.ByPoints(pts2)
+                NurbsCurve.ByPoints(pts1),
+                NurbsCurve.ByPoints(pts2)
             };
 
             // construct the curveloop
@@ -159,8 +159,8 @@ namespace DSRevitNodesTests.GeometryObjects
 
             var crvs = new[]
             {
-                BSplineCurve.ByPoints(pts1),
-                BSplineCurve.ByPoints(pts2)
+                NurbsCurve.ByPoints(pts1),
+                NurbsCurve.ByPoints(pts2)
             };
 
             // construct the curveloop

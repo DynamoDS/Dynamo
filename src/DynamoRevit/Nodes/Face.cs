@@ -169,7 +169,7 @@ namespace Dynamo.Nodes
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
             var faceRef = ((FScheme.Value.Container)args[0]).Item as Reference;
-            var uv = (UV)((FScheme.Value.Container)args[1]).Item;
+            var uv = (Autodesk.Revit.DB.UV)((FScheme.Value.Container)args[1]).Item;
 
             var t = Transform.Identity;
 
@@ -216,7 +216,7 @@ namespace Dynamo.Nodes
             if (f != null)
             {
                 //each item in the list will be a reference point
-                UV param = (UV)(args[0] as FScheme.Value.Container).Item;
+                Autodesk.Revit.DB.UV param = (Autodesk.Revit.DB.UV)(args[0] as FScheme.Value.Container).Item;
                 face_point = f.Evaluate(param);
             }
 
@@ -250,7 +250,7 @@ namespace Dynamo.Nodes
             if (f != null)
             {
                 //each item in the list will be a reference point
-                UV uv = (UV)(args[0] as FScheme.Value.Container).Item;
+                Autodesk.Revit.DB.UV uv = (Autodesk.Revit.DB.UV)(args[0] as FScheme.Value.Container).Item;
                 norm = f.ComputeNormal(uv);
             }
 

@@ -395,7 +395,7 @@ namespace Dynamo.Models
         ///     ProtoAST Identifier for result of the node before any output unpacking has taken place.
         ///     If there is only one output for the node, this is equivalent to GetAstIdentifierForOutputIndex(0).
         /// </summary>
-        protected internal IdentifierNode AstIdentifierForPreview
+        internal IdentifierNode AstIdentifierForPreview
         {
             get
             {
@@ -1391,6 +1391,10 @@ namespace Dynamo.Models
                 ReportPosition();
             }
         }
+
+        #endregion
+
+        #region FScheme Compilation
 
         /// <summary>
         ///     Compiles this Element into a ProcedureCallNode. Override this instead of Build() if you don't want to set up all

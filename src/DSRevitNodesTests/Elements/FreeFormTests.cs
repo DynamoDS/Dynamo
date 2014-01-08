@@ -44,9 +44,9 @@ namespace DSRevitNodesTests.Elements
 
             var crvs = new[]
             {
-                BSplineCurve.ByPoints(pts1),
-                BSplineCurve.ByPoints(pts2),
-                BSplineCurve.ByPoints(pts3)
+                NurbsCurve.ByPoints(pts1),
+                NurbsCurve.ByPoints(pts2),
+                NurbsCurve.ByPoints(pts3)
             };
 
             var dir = Vector.ByCoordinates(0, 0, 1);
