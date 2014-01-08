@@ -744,7 +744,7 @@ namespace Dynamo.ViewModels
             return false;
         }
 
-        private double _zoomIncrement = 0.05;
+        private double _zoomIncrement = 0.01;
 
         private void ZoomIn(object o)
         {
