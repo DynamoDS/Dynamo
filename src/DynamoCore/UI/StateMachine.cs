@@ -207,7 +207,7 @@ namespace Dynamo.ViewModels
         internal bool CheckActiveConnectorCompatibility(PortViewModel portVM)
         {
             // Check if required ports exist
-            if ( this.activeConnector == null || portVM == null )
+            if (this.activeConnector == null || portVM == null)
                 return false;
 
             PortModel srcPortM = this.activeConnector.ActiveStartPort;
@@ -455,6 +455,8 @@ namespace Dynamo.ViewModels
 
             #region User Input Event Handlers
 
+            private MouseClickHistory prevClick;
+
             internal bool HandleLeftButtonDown(object sender, MouseButtonEventArgs e)
             {
                 if (false != ignoreMouseClick)
@@ -462,6 +464,8 @@ namespace Dynamo.ViewModels
                     ignoreMouseClick = false;
                     return false;
                 }
+
+                MouseClickHistory curClick = new MouseClickHistory(sender, e);
 
                 bool eventHandled = false;
                 if (this.currentState == State.Connection)
@@ -482,8 +486,15 @@ namespace Dynamo.ViewModels
                     // then the state machine should initiate a drag operation.
                     if (null != GetSelectableFromPoint(mouseDownPos))
                         InitiateDragSequence();
+                    else if (e.Source is Dynamo.Controls.EndlessGrid && MouseClickHistory.CheckIsDoubleClick(prevClick, curClick))
+                    {
+                        CreateCodeBlockNode(mouseDownPos); // Double clicking on background (EndlessGrid)
+                        prevClick = null;
+                    }
                     else
                         InitiateWindowSelectionSequence();
+
+                    prevClick = curClick;
 
                     eventHandled = true; // Mouse event handled.
                 }
@@ -495,6 +506,42 @@ namespace Dynamo.ViewModels
                 dynSettings.ReturnFocusToSearch();
 
                 return eventHandled;
+            }
+
+            public class MouseClickHistory
+            {
+                public int Timestamp { get; set; }
+                public object Source { get; set; }
+                public Point Position { get; set; }
+
+                public MouseClickHistory(object sender, MouseButtonEventArgs e)
+                {
+                    this.Timestamp = e.Timestamp;
+                    this.Source = e.Source;
+
+                    IInputElement element = sender as IInputElement;
+                    this.Position = e.GetPosition(element);
+                }
+
+                public static bool CheckIsDoubleClick(MouseClickHistory prevClick, MouseClickHistory curClick)
+                {
+                    if (prevClick == null || (curClick.Source != prevClick.Source))
+                        return false; // Click events did not come from same source
+
+                    int clickInterval = curClick.Timestamp - prevClick.Timestamp;
+                    if (clickInterval > System.Windows.Forms.SystemInformation.DoubleClickTime)
+                        return false; // Time difference is more than system DoubleClickTime
+
+                    double diff = Math.Abs(prevClick.Position.X - curClick.Position.X);
+                    if (diff > Configurations.DoubleClickAcceptableDistance)
+                        return false; // Click is beyond acceptable threshold.
+
+                    diff = Math.Abs(prevClick.Position.Y - curClick.Position.Y);
+                    if (diff > Configurations.DoubleClickAcceptableDistance)
+                        return false; // Click is beyond acceptable threshold.
+
+                    return true;
+                }
             }
 
             #region Create CodeBlockNode

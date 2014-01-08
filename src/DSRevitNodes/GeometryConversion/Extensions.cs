@@ -117,9 +117,9 @@ namespace DSRevitNodes.GeometryConversion
         /// </summary>
         /// <param name="uvArr"></param>
         /// <returns></returns>
-        public static UV[] ToUvs(this double[][] uvArr)
+        internal static Autodesk.Revit.DB.UV[] ToUvs(this double[][] uvArr)
         {
-            var uvs = new UV[uvArr.Length];
+            var uvs = new Autodesk.Revit.DB.UV[uvArr.Length];
             var count = 0;
             foreach (var row in uvArr)
             {

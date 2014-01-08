@@ -46,9 +46,9 @@ namespace DSRevitNodesTests.GeometryConversion
             var protoCurve = revitSpline.ToProtoType();
 
             Assert.NotNull(protoCurve);
-            Assert.IsAssignableFrom<Autodesk.DesignScript.Geometry.BSplineCurve>(protoCurve);
+            Assert.IsAssignableFrom<Autodesk.DesignScript.Geometry.NurbsCurve>(protoCurve);
 
-            var protoSpline = (Autodesk.DesignScript.Geometry.BSplineCurve) protoCurve;
+            var protoSpline = (Autodesk.DesignScript.Geometry.NurbsCurve) protoCurve;
 
             Assert.AreEqual(revitSpline.Degree, protoSpline.Degree);
            
@@ -90,9 +90,9 @@ namespace DSRevitNodesTests.GeometryConversion
             var protoCurve = revitSpline.ToProtoType();
 
             Assert.NotNull(protoCurve);
-            Assert.IsAssignableFrom<Autodesk.DesignScript.Geometry.BSplineCurve>(protoCurve);
+            Assert.IsAssignableFrom<Autodesk.DesignScript.Geometry.NurbsCurve>(protoCurve);
 
-            var protoSpline = (Autodesk.DesignScript.Geometry.BSplineCurve)protoCurve;
+            var protoSpline = (Autodesk.DesignScript.Geometry.NurbsCurve)protoCurve;
 
             Assert.AreEqual( 2, protoSpline.Degree );
             var start = protoSpline.StartPoint;
