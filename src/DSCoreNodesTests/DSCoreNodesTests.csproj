@@ -67,6 +67,7 @@
     <Compile Include="ListTests.cs" />
     <Compile Include="NodeWithUITests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProtoNodesTests.cs" />
     <Compile Include="Setup.cs" />
   </ItemGroup>
   <ItemGroup>
