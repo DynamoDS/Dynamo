@@ -5124,6 +5124,78 @@ namespace Dynamo.Nodes
 
     #endregion
 
+    [NodeName("Length")]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeDescription("Enter a length in project units.")]
+    [NodeSearchTags("Imperial", "Metric", "Length", "Project", "units")]
+    public partial class LengthInput : NodeWithOneOutput
+    {
+        private Measure.Length _length;
+
+        public double Value
+        {
+            get
+            {
+                return _length.Value;
+            }
+            set
+            {
+                _length.Value = value;
+                RaisePropertyChanged("Value");
+            }
+        }
+
+        public LengthInput()
+        {
+            _length = new Measure.Length(0.0);
+            OutPortData.Add(new PortData("length", "The length. Stored internally as decimal meters.", typeof(FScheme.Value.Number)));
+            RegisterAllPorts();
+        }
+
+        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+        {
+            //return FScheme.Value.NewNumber(Value);
+            return FScheme.Value.NewContainer(_length);
+        }
+
+        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        {
+            XmlElement outEl = xmlDoc.CreateElement(typeof(double).FullName);
+            outEl.SetAttribute("value", Value.ToString(CultureInfo.InvariantCulture));
+            nodeElement.AppendChild(outEl);
+        }
+
+        protected override void LoadNode(XmlNode nodeElement)
+        {
+            foreach (XmlNode subNode in nodeElement.ChildNodes)
+            {
+                // this node now stores a double, having previously stored a measure type
+                // by checking for the measure type as well we allow for loading of older files.
+                if (subNode.Name.Equals(typeof(double).FullName) || subNode.Name.Equals("Dynamo.Measure.Foot"))
+                {
+                    Value = DeserializeValue(subNode.Attributes[0].Value);
+                }
+            }
+        }
+
+        public override string PrintExpression()
+        {
+            return Value.ToString();
+        }
+
+        protected double DeserializeValue(string val)
+        {
+            try
+            {
+                return Convert.ToDouble(val, CultureInfo.InvariantCulture);
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+    }
+
     /// <summary>
     /// A class used to store a name and associated item for a drop down menu
     /// </summary>

@@ -295,6 +295,23 @@
                         <MenuItem Focusable="False" Header="_Publish Current Workspace..." Command="{Binding Path=DataContext.PublishCurrentWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="publishCurrent" />
                     </MenuItem>
 
+                    <MenuItem Header="_Settings" Name="SettingsMenu" Focusable="False" IsEnabled="True">
+                        <MenuItem Focusable="False" Header="Length Units" Name="LengthUnitsMenu">
+                            <MenuItem Name="units_inch_1" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=DecimalInch, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="DecimalInch" Header="Decimal Inch"/>
+                            <MenuItem Name="units_inch_2" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=FractionalInch, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="FractionalInch" Header="Fractional Inch"/>
+                            <MenuItem Name="units_foot_1" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=DecimalFoot, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="DecimalFoot" Header="Decimal Foot"/>
+                            <MenuItem Name="units_foot_2" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=FractionalFoot, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="FractionalFoot" Header="Fractional Foot"/>
+                            <MenuItem Name="units_mm" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Millimeter, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="Millimeter" Header="Millimeter"/>
+                            <MenuItem Name="units_cm" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Centimeter, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="Centimeter" Header="Centimeter"/>
+                            <MenuItem Name="units_m" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Meter, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="Meter" Header="Meter"/>
+                        </MenuItem>
+                        <!--<MenuItem Focusable="False" Header="Area Units" Name="AreaUnitsMenu">
+                            
+                        </MenuItem>
+                        <MenuItem Focusable="False" Header="Volume Units" Name="VolumeUnitsMenu">
+                            
+                        </MenuItem>-->
+                    </MenuItem>
                     <MenuItem Header="Help" Focusable="False">
                         <MenuItem Focusable="False" Header="Samples" Name="SamplesMenu">
                             <MenuItem.Icon>
@@ -305,7 +322,7 @@
                         <MenuItem Header="_Go To Project Website" Command="{Binding GoToSourceCodeCommand}"  Name="sourceCode" Focusable="False"/>
                         <MenuItem Header="_Go To Project Wiki" Command="{Binding GoToWikiCommand}"  Name="wiki" Focusable="False"/>
                     </MenuItem>
-
+                    
                 </Menu>
 
                 <!--Titlebar buttons-->

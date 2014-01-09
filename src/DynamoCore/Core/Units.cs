@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using Dynamo.Utilities;
 
 namespace Dynamo.Measure
 {
@@ -44,30 +45,6 @@ namespace Dynamo.Measure
         Meters
     }
 
-    public class UnitsManager
-    {
-        private static UnitsManager _instance;
-
-        public static UnitsManager Instance
-        {
-            get { return _instance ?? (_instance = new UnitsManager()); }
-        }
-
-        public DynamoVolumeUnit VolumeUnit { get; set; }
-
-        public DynamoAreaUnit AreaUnit { get; set; }
-
-        public DynamoLengthUnit LengthUnit { get; set; }
-
-        public UnitsManager()
-        {
-            //default units to be set to SI
-            LengthUnit = DynamoLengthUnit.FractionalFoot;
-            VolumeUnit = DynamoVolumeUnit.CubicMeter;
-            AreaUnit = DynamoAreaUnit.SquareMeter;
-        }
-    }
-
     public abstract class MeasurementBase
     {
         internal double _value;
@@ -109,7 +86,7 @@ namespace Dynamo.Measure
             double total = 0.0;
             if (double.TryParse(value, NumberStyles.Number, CultureInfo.CurrentCulture, out total))
             {
-                switch (UnitsManager.Instance.LengthUnit)
+                switch (dynSettings.Controller.PreferenceSettings.LengthUnit)
                 {
                     case DynamoLengthUnit.Centimeter:
                         _value =  total / 100;
@@ -166,7 +143,7 @@ namespace Dynamo.Measure
         /// <returns></returns>
         public override string ToString()
         {
-            switch (UnitsManager.Instance.LengthUnit)
+            switch (dynSettings.Controller.PreferenceSettings.LengthUnit)
             {
                 case DynamoLengthUnit.Millimeter:
                     return ToMillimeterString();
@@ -262,7 +239,7 @@ namespace Dynamo.Measure
 
         public override string ToString()
         {
-            switch (UnitsManager.Instance.LengthUnit)
+            switch (dynSettings.Controller.PreferenceSettings.LengthUnit)
             {
                 case DynamoLengthUnit.Millimeter:
                     return ToSquareMillimeterString();
@@ -348,7 +325,7 @@ namespace Dynamo.Measure
 
         public override string ToString()
         {
-            switch (UnitsManager.Instance.LengthUnit)
+            switch (dynSettings.Controller.PreferenceSettings.LengthUnit)
             {
                 case DynamoLengthUnit.Millimeter:
                     return ToCubicMillimeterString();
