@@ -7,7 +7,6 @@ using ProtoCore.DSASM;
 
 namespace DSCoreNodes.Logic
 {
-    //TODO: Make Variable Input?
     /// <summary>
     /// Abstract base class for short-circuiting binary logic operators.
     /// </summary>
@@ -25,23 +24,19 @@ namespace DSCoreNodes.Logic
             RegisterAllPorts();
         }
 
-        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        public override IEnumerable<AssociativeNode> BuildOutputAst(
+            List<AssociativeNode> inputAstNodes)
         {
+            var inputs = inputAstNodes as IEnumerable<AssociativeNode>;
             return new[]
             {
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
-                    BuildNestedOpCall(Enumerable.Reverse(inputAstNodes)))
+                    inputs.Reverse()
+                          .Aggregate(
+                              (current, node) =>
+                                  AstFactory.BuildBinaryExpression(node, current, _op)))
             };
-        }
-
-        private AssociativeNode BuildNestedOpCall(IEnumerable<AssociativeNode> inputAstNodes)
-        {
-            return inputAstNodes.Skip(1)
-                                .Aggregate(
-                                    inputAstNodes.First(),
-                                    (current, node) =>
-                                        AstFactory.BuildBinaryExpression(node, current, _op));
         }
 
         protected override void RemoveInput()
