@@ -1285,4 +1285,20 @@ namespace Dynamo.Controls
             return null;
         }
     }
+
+    public class LengthConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var length = new Measure.Length((double)value);
+            return length.ToString();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var length = new Measure.Length(0.0);
+            length.SetValueFromString(value.ToString());
+            return length.Value;
+        }
+    }
 }
