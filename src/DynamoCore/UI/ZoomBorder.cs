@@ -143,7 +143,8 @@ namespace Dynamo.Controls
         {
             if (child != null)
             {
-                double zoom = e.Delta > 0 ? .1 : -.1;
+                //double zoom = e.Delta > 0 ? .1 : -.1;
+                double zoom = e.Delta > 0 ? 1 : -1;
                 Point mousePosition = e.GetPosition(child);
                 WorkspaceViewModel vm = DataContext as WorkspaceViewModel;
                 vm.OnRequestZoomToViewportPoint(this, new ZoomEventArgs(zoom, mousePosition));

@@ -103,6 +103,7 @@
     <Compile Include="ModelTextTests.cs" />
     <Compile Include="ReferenceCurveTests.cs" />
     <Compile Include="SelectionTests.cs" />
+    <Compile Include="TopographyTests.cs" />
     <Compile Include="XYZTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PythonTests.cs" />
