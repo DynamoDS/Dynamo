@@ -4,13 +4,33 @@ using System.Text.RegularExpressions;
 
 namespace Dynamo.Measure
 {
-    public enum DynamoUnitType
+    public enum DynamoLengthUnit
     {
-        Inches, 
-        Feet,
-        Millimeters,
-        Centimeters,
-        Meters
+        DecimalInch,
+        FractionalInch,
+        DecimalFoot,
+        FractionalFoot,
+        Millimeter,
+        Centimeter,
+        Meter
+    }
+
+    public enum DynamoAreaUnit
+    {
+        SquareInch, 
+        SquareFoot,
+        SquareMillimeter,
+        SquareCentimeter,
+        SquareMeter
+    }
+
+    public enum DynamoVolumeUnit
+    {
+        CubicInch,
+        CubicFeet,
+        CubicMillimeter,
+        CubicCentimeter,
+        CubicMeter
     }
 
     public enum DynamoUnitDisplayType
@@ -24,39 +44,255 @@ namespace Dynamo.Measure
         Meters
     }
 
+    public class UnitsManager
+    {
+        private static UnitsManager _instance;
+
+        public static UnitsManager Instance
+        {
+            get { return _instance ?? (_instance = new UnitsManager()); }
+        }
+
+        public DynamoVolumeUnit VolumeUnit { get; set; }
+
+        public DynamoAreaUnit AreaUnit { get; set; }
+
+        public DynamoLengthUnit LengthUnit { get; set; }
+
+        public UnitsManager()
+        {
+            //default units to be set to SI
+            LengthUnit = DynamoLengthUnit.Meter;
+            VolumeUnit = DynamoVolumeUnit.CubicMeter;
+            AreaUnit = DynamoAreaUnit.SquareMeter;
+        }
+    }
+
+    public abstract class MeasurementBase
+    {
+        internal double _value;
+
+        public double Value
+        {
+            get { return _value; }
+            set { _value = value; }
+        }
+
+        /// <summary>
+        /// Converts a string representation for storage in SI units.
+        /// </summary>
+        /// <param name="value"></param>
+        public abstract void SetValueFromString(string value);
+    }
+
+    public class Length : MeasurementBase
+    {
+        public Length(double value)
+        {
+            _value = value;
+        }
+
+        /// <summary>
+        /// Sets the internal value by parsing the string and converting to SI units.
+        /// </summary>
+        /// <param name="value"></param>
+        public override void SetValueFromString(string value)
+        {
+            //first try to parse the input as a number
+            //it it's parsable, then just cram it into
+            //whatever the project units are
+            double total = 0.0;
+            if (double.TryParse(value, NumberStyles.Number, CultureInfo.CurrentCulture, out total))
+            {
+                switch (UnitsManager.Instance.LengthUnit)
+                {
+                    case DynamoLengthUnit.Centimeter:
+                        _value =  total / 100;
+                        return;
+
+                    case DynamoLengthUnit.Millimeter:
+                        _value = total / 1000;
+                        return;
+
+                    case DynamoLengthUnit.Meter:
+                        _value = total;
+                        return;
+
+                    case DynamoLengthUnit.FractionalInch:
+                        _value = total * .0254;
+                        return;
+
+                    case DynamoLengthUnit.FractionalFoot:
+                        _value = total * .3048;
+                        return;
+
+                    case DynamoLengthUnit.DecimalInch:
+                        _value = total * .0254;
+                        return;
+
+                    case DynamoLengthUnit.DecimalFoot:
+                        _value = total * .3048;
+                        return;
+                }
+            }
+
+            double fractionalInch = 0.0;
+            double feet, inch, m, cm, mm, numerator, denominator;
+            Utils.ParseLengthFromString(value, out feet, out inch, out m, out cm, out mm, out numerator, out denominator);
+
+            if (denominator != 0)
+                fractionalInch = numerator / denominator;
+
+            if (feet < 0)
+                total = (feet - inch / 12.0 - fractionalInch / 12.0)*.3048;
+            else
+                total = (feet + inch / 12.0 + fractionalInch / 12.0)*.3048;
+
+            total += m;
+            total += cm/100;
+            total += mm/1000;
+
+            _value = total;
+        }
+
+        /// <summary>
+        /// Returns a string representation of the length in the project units.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            switch (UnitsManager.Instance.LengthUnit)
+            {
+                case DynamoLengthUnit.Millimeter:
+                    return ToMillimeterString();
+                case DynamoLengthUnit.Centimeter:
+                    return ToCentimeterString();
+                case DynamoLengthUnit.Meter:
+                    return ToMeterString();
+                case DynamoLengthUnit.DecimalInch:
+                    return ToDecimalInchString();
+                case DynamoLengthUnit.FractionalInch:
+                    return ToFractionalInchString();
+                case DynamoLengthUnit.DecimalFoot:
+                    return ToDecimalFootString();
+                case DynamoLengthUnit.FractionalFoot:
+                    return ToFractionalFootString();
+                default:
+                    return ToMeterString();
+            }
+        }
+
+        private double ToMillimeters()
+        {
+            return _value * 1000;
+        }
+
+        private double ToCentimeters()
+        {
+            return _value * 100;
+        }
+
+        private double ToMeters()
+        {
+            return _value;
+        }
+
+        private double ToInches()
+        {
+            return _value * 39.370079;
+        }
+
+        private double ToFeet()
+        {
+            return _value * 3.28084;
+        }
+
+        private string ToMillimeterString()
+        {
+            return ToMillimeters().ToString("0.00", CultureInfo.InvariantCulture) + " mm";
+        }
+
+        public string ToCentimeterString()
+        {
+            return ToCentimeters().ToString("0.00", CultureInfo.InvariantCulture) + " cm";
+        }
+
+        public string ToMeterString()
+        {
+            return ToMeters().ToString("0.00", CultureInfo.InvariantCulture) + " m";
+        }
+
+        public string ToDecimalInchString()
+        {
+            return ToInches().ToString("0.00", CultureInfo.CurrentCulture) + " in";
+        }
+
+        public string ToFractionalInchString()
+        {
+            return Utils.ToFractionalInches(ToInches());
+        }
+
+        public string ToDecimalFootString()
+        {
+            return ToFeet().ToString("0.00", CultureInfo.CurrentCulture) + " ft";
+        }
+
+        public string ToFractionalFootString()
+        {
+            return Utils.ToFeetAndFractionalInches(ToFeet());
+        }
+    }
+
+    public class Area : MeasurementBase
+    {
+        public override void SetValueFromString(string value)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class Volume : MeasurementBase
+    {
+        public override void SetValueFromString(string value)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /*
     /// <summary>
     /// An Inch.
     /// </summary>
     public static class Inch
     {
-        public static double ConvertTo(double value, DynamoUnitType unitType)
+        public static double ConvertTo(double value, DynamoLengthUnit unitType)
         {
             switch (unitType)
             {
-                case DynamoUnitType.Feet:
+                case DynamoLengthUnit.Foot:
                     return Math.Round(value * 0.083333, 4);
-                case DynamoUnitType.Millimeters:
+                case DynamoLengthUnit.Millimeter:
                     return Math.Round(value * 25.4, 4);
-                case DynamoUnitType.Centimeters:
+                case DynamoLengthUnit.Centimeter:
                     return Math.Round(value * 2.54, 4);
-                case DynamoUnitType.Meters:
+                case DynamoLengthUnit.Meter:
                     return Math.Round(value * .0254, 4);
                 default:
                     return value;
             }
         }
 
-        public static double ConvertFrom(double value, DynamoUnitType unitType)
+        public static double ConvertFrom(double value, DynamoLengthUnit unitType)
         {
             switch (unitType)
             {
-                case DynamoUnitType.Feet:
+                case DynamoLengthUnit.Foot:
                     return value / 0.083333;
-                case DynamoUnitType.Millimeters:
+                case DynamoLengthUnit.Millimeter:
                     return value / 25.4;
-                case DynamoUnitType.Centimeters:
+                case DynamoLengthUnit.Centimeter:
                     return value / 2.54;
-                case DynamoUnitType.Meters:
+                case DynamoLengthUnit.Meter:
                     return value / .0254;
                 default:
                     return value;
@@ -68,19 +304,19 @@ namespace Dynamo.Measure
             switch (unitType)
             {
                 case DynamoUnitDisplayType.FractionalInches:
-                    return ConvertFrom(Utils.FromFeetAndFractionalInches(value), DynamoUnitType.Feet);
+                    return ConvertFrom(Utils.FromFeetAndFractionalInches(value), DynamoLengthUnit.Foot);
                 case DynamoUnitDisplayType.DecimalInches:
-                    return ConvertFrom(Utils.ParseUnit(value, "in"), DynamoUnitType.Inches);
+                    return ConvertFrom(Utils.ParseUnit(value, "in"), DynamoLengthUnit.Inch);
                 case DynamoUnitDisplayType.DecimalFeet:
-                    return ConvertFrom(Utils.ParseUnit(value, "ft"), DynamoUnitType.Feet);
+                    return ConvertFrom(Utils.ParseUnit(value, "ft"), DynamoLengthUnit.Foot);
                 case DynamoUnitDisplayType.FractionalFeetInches:
-                    return ConvertFrom(Utils.FromFeetAndFractionalInches(value), DynamoUnitType.Feet);
+                    return ConvertFrom(Utils.FromFeetAndFractionalInches(value), DynamoLengthUnit.Foot);
                 case DynamoUnitDisplayType.Millimeters:
-                    return ConvertFrom(Utils.ParseUnit(value, "mm"), DynamoUnitType.Millimeters);
+                    return ConvertFrom(Utils.ParseUnit(value, "mm"), DynamoLengthUnit.Millimeter);
                 case DynamoUnitDisplayType.Centimeters:
-                    return ConvertFrom(Utils.ParseUnit(value, "cm"), DynamoUnitType.Centimeters);
+                    return ConvertFrom(Utils.ParseUnit(value, "cm"), DynamoLengthUnit.Centimeter);
                 case DynamoUnitDisplayType.Meters:
-                    return ConvertFrom(Utils.ParseUnit(value, "m"), DynamoUnitType.Meters);
+                    return ConvertFrom(Utils.ParseUnit(value, "m"), DynamoLengthUnit.Meter);
                 default:
                     return 0.0;
             }
@@ -91,25 +327,25 @@ namespace Dynamo.Measure
             switch (unitType)
             {
                 case DynamoUnitDisplayType.FractionalInches:
-                    return Utils.ToFractionalInches(ConvertTo(value, DynamoUnitType.Inches));
+                    return Utils.ToFractionalInches(ConvertTo(value, DynamoLengthUnit.Inch));
 
                 case DynamoUnitDisplayType.DecimalInches:
-                    return ConvertTo(value, DynamoUnitType.Inches).ToString("0.00", CultureInfo.CurrentCulture) + " in";
+                    return ConvertTo(value, DynamoLengthUnit.Inch).ToString("0.00", CultureInfo.CurrentCulture) + " in";
 
                 case DynamoUnitDisplayType.DecimalFeet:
-                    return ConvertTo(value, DynamoUnitType.Feet).ToString("0.00", CultureInfo.CurrentCulture) + " ft";
+                    return ConvertTo(value, DynamoLengthUnit.Foot).ToString("0.00", CultureInfo.CurrentCulture) + " ft";
 
                 case DynamoUnitDisplayType.FractionalFeetInches:
-                    return Utils.ToFeetAndFractionalInches(ConvertTo(value, DynamoUnitType.Feet));
+                    return Utils.ToFeetAndFractionalInches(ConvertTo(value, DynamoLengthUnit.Foot));
 
                 case DynamoUnitDisplayType.Millimeters:
-                    return ConvertTo(value, DynamoUnitType.Millimeters).ToString("0.00", CultureInfo.CurrentCulture) + " mm";
+                    return ConvertTo(value, DynamoLengthUnit.Millimeter).ToString("0.00", CultureInfo.CurrentCulture) + " mm";
 
                 case DynamoUnitDisplayType.Centimeters:
-                    return ConvertTo(value, DynamoUnitType.Centimeters).ToString("0.00", CultureInfo.CurrentCulture) + " cm";
+                    return ConvertTo(value, DynamoLengthUnit.Centimeter).ToString("0.00", CultureInfo.CurrentCulture) + " cm";
 
                 case DynamoUnitDisplayType.Meters:
-                    return ConvertTo(value, DynamoUnitType.Meters).ToString("0.00", CultureInfo.CurrentCulture) + " m";
+                    return ConvertTo(value, DynamoLengthUnit.Meter).ToString("0.00", CultureInfo.CurrentCulture) + " m";
 
                 default:
                     return value.ToString();
@@ -127,34 +363,34 @@ namespace Dynamo.Measure
     /// </summary>
     public static class Foot
     {
-        public static double ConvertTo(double value, DynamoUnitType unitType)
+        public static double ConvertTo(double value, DynamoLengthUnit unitType)
         {
             switch (unitType)
             {
-                case DynamoUnitType.Inches:
+                case DynamoLengthUnit.Inch:
                     return value * 12.0;
-                case DynamoUnitType.Millimeters:
+                case DynamoLengthUnit.Millimeter:
                     return value * 304.8;
-                case DynamoUnitType.Centimeters:
+                case DynamoLengthUnit.Centimeter:
                     return value * 30.48;
-                case DynamoUnitType.Meters:
+                case DynamoLengthUnit.Meter:
                     return value * .3048;
                 default:
                     return value;
             }
         }
 
-        public static double ConvertFrom(double value, DynamoUnitType unitType)
+        public static double ConvertFrom(double value, DynamoLengthUnit unitType)
         {
             switch (unitType)
             {
-                case DynamoUnitType.Inches:
+                case DynamoLengthUnit.Inch:
                     return value / 12.0;
-                case DynamoUnitType.Millimeters:
+                case DynamoLengthUnit.Millimeter:
                     return value / 304.8;
-                case DynamoUnitType.Centimeters:
+                case DynamoLengthUnit.Centimeter:
                     return value / 30.48;
-                case DynamoUnitType.Meters:
+                case DynamoLengthUnit.Meter:
                     return value / .3048;
                 default:
                     return value;
@@ -166,19 +402,19 @@ namespace Dynamo.Measure
             switch (unitType)
             {
                 case DynamoUnitDisplayType.FractionalInches:
-                    return ConvertFrom(Utils.FromFeetAndFractionalInches(value), DynamoUnitType.Feet);
+                    return ConvertFrom(Utils.FromFeetAndFractionalInches(value), DynamoLengthUnit.Foot);
                 case DynamoUnitDisplayType.DecimalInches:
-                    return ConvertFrom(Utils.ParseUnit(value, "in"), DynamoUnitType.Inches);
+                    return ConvertFrom(Utils.ParseUnit(value, "in"), DynamoLengthUnit.Inch);
                 case DynamoUnitDisplayType.DecimalFeet:
-                    return ConvertFrom(Utils.ParseUnit(value, "ft"), DynamoUnitType.Feet);
+                    return ConvertFrom(Utils.ParseUnit(value, "ft"), DynamoLengthUnit.Foot);
                 case DynamoUnitDisplayType.FractionalFeetInches:
-                    return ConvertFrom(Utils.FromFeetAndFractionalInches(value), DynamoUnitType.Feet);
+                    return ConvertFrom(Utils.FromFeetAndFractionalInches(value), DynamoLengthUnit.Foot);
                 case DynamoUnitDisplayType.Millimeters:
-                    return ConvertFrom(Utils.ParseUnit(value, "mm"), DynamoUnitType.Millimeters);
+                    return ConvertFrom(Utils.ParseUnit(value, "mm"), DynamoLengthUnit.Millimeter);
                 case DynamoUnitDisplayType.Centimeters:
-                    return ConvertFrom(Utils.ParseUnit(value, "cm"), DynamoUnitType.Centimeters);
+                    return ConvertFrom(Utils.ParseUnit(value, "cm"), DynamoLengthUnit.Centimeter);
                 case DynamoUnitDisplayType.Meters:
-                    return ConvertFrom(Utils.ParseUnit(value, "m"), DynamoUnitType.Meters);
+                    return ConvertFrom(Utils.ParseUnit(value, "m"), DynamoLengthUnit.Meter);
                 default:
                     return 0.0;
             }
@@ -225,24 +461,24 @@ namespace Dynamo.Measure
     /// </summary>
     public static class Millimeter
     {
-        public static double ConvertTo(double value, DynamoUnitType unitType)
+        public static double ConvertTo(double value, DynamoLengthUnit unitType)
         {
             switch (unitType)
             {
-                case DynamoUnitType.Feet:
+                case DynamoLengthUnit.Foot:
                     return value * .003281;
-                case DynamoUnitType.Inches:
+                case DynamoLengthUnit.Inch:
                     return value * .03937;
-                case DynamoUnitType.Centimeters:
+                case DynamoLengthUnit.Centimeter:
                     return value * 0.1;
-                case DynamoUnitType.Meters:
+                case DynamoLengthUnit.Meter:
                     return value * 0.001;
                 default:
                     return value;
             }
         }
 
-        public static double ConvertFrom(double value, DynamoUnitType unitType)
+        public static double ConvertFrom(double value, DynamoLengthUnit unitType)
         {
             switch (unitType)
             {
@@ -270,34 +506,34 @@ namespace Dynamo.Measure
     /// </summary>
     public static class Centimeter
     {
-        public static double ConvertTo(double value, DynamoUnitType unitType)
+        public static double ConvertTo(double value, DynamoLengthUnit unitType)
         {
             switch (unitType)
             {
-                case DynamoUnitType.Feet:
+                case DynamoLengthUnit.Foot:
                     return value * 0.032808;
-                case DynamoUnitType.Inches:
+                case DynamoLengthUnit.Inch:
                     return value * 0.393701;
-                case DynamoUnitType.Millimeters:
+                case DynamoLengthUnit.Millimeter:
                     return value * 10;
-                case DynamoUnitType.Meters:
+                case DynamoLengthUnit.Meter:
                     return value * .01;
                 default:
                     return value;
             }
         }
 
-        public static double ConvertFrom(double value, DynamoUnitType unitType)
+        public static double ConvertFrom(double value, DynamoLengthUnit unitType)
         {
             switch (unitType)
             {
-                case DynamoUnitType.Feet:
+                case DynamoLengthUnit.Foot:
                     return value / 0.032808;
-                case DynamoUnitType.Inches:
+                case DynamoLengthUnit.Inch:
                     return value / 0.393701;
-                case DynamoUnitType.Millimeters:
+                case DynamoLengthUnit.Millimeter:
                     return value / 10;
-                case DynamoUnitType.Meters:
+                case DynamoLengthUnit.Meter:
                     return value / .01;
                 default:
                     return value;
@@ -315,34 +551,34 @@ namespace Dynamo.Measure
     /// </summary>
     public static class Meter
     {
-        public static double ConvertTo(double value, DynamoUnitType unitType)
+        public static double ConvertTo(double value, DynamoLengthUnit unitType)
         {
             switch (unitType)
             {
-                case DynamoUnitType.Feet:
+                case DynamoLengthUnit.Foot:
                     return value * 3.28084;
-                case DynamoUnitType.Inches:
+                case DynamoLengthUnit.Inch:
                     return value * 39.370079;
-                case DynamoUnitType.Millimeters:
+                case DynamoLengthUnit.Millimeter:
                     return value * 1000;
-                case DynamoUnitType.Centimeters:
+                case DynamoLengthUnit.Centimeter:
                     return value * 100;
                 default:
                     return value;
             }
         }
 
-        public static double ConvertFrom(double value, DynamoUnitType unitType)
+        public static double ConvertFrom(double value, DynamoLengthUnit unitType)
         {
             switch (unitType)
             {
-                case DynamoUnitType.Feet:
+                case DynamoLengthUnit.Foot:
                     return value / 3.28084;
-                case DynamoUnitType.Inches:
+                case DynamoLengthUnit.Inch:
                     return value / 39.370079;
-                case DynamoUnitType.Millimeters:
+                case DynamoLengthUnit.Millimeter:
                     return value / 1000;
-                case DynamoUnitType.Centimeters:
+                case DynamoLengthUnit.Centimeter:
                     return value / 100;
                 default:
                     return value;
@@ -354,6 +590,7 @@ namespace Dynamo.Measure
             return value.ToString("0.00", CultureInfo.InvariantCulture) + " m";
         }
     }
+    */
 
     public static class Extensions
     {

@@ -12,6 +12,7 @@ using System.Reflection;
 
 namespace Dynamo.Controls
 {
+    /*
     /// <summary>
     /// Converts input in project units to decimal feet.
     /// </summary>
@@ -190,6 +191,22 @@ namespace Dynamo.Controls
             total += mm*0.003281;
 
             return total;
+        }
+    }*/
+
+    public class LengthConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var length = new Measure.Length((double) value);
+            return length.ToString();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var length = new Measure.Length(0.0);
+            length.SetValueFromString(value.ToString());
+            return length.Value;
         }
     }
 }
