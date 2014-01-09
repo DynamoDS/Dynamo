@@ -465,14 +465,16 @@ namespace Dynamo.ViewModels
             if (this.PreviewBubble == null)
                 return;
 
-            UpdatePreviewBubbleContent();
-            if (dynSettings.Controller.IsShowPreviewByDefault)
+            var vm = dynSettings.Controller.DynamoViewModel;
+            if (vm.CurrentSpaceViewModel.Nodes.Contains(this))
             {
-                this.PreviewBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
-            }
-            else
-            {
-                this.PreviewBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Minimized);
+                UpdatePreviewBubbleContent();
+
+                var command = this.PreviewBubble.ChangeInfoBubbleStateCommand;
+                if (dynSettings.Controller.IsShowPreviewByDefault)
+                    command.Execute(InfoBubbleViewModel.State.Pinned);
+                else
+                    command.Execute(InfoBubbleViewModel.State.Minimized);
             }
         }
 
@@ -540,6 +542,10 @@ namespace Dynamo.ViewModels
             if (this.PreviewBubble == null || this.NodeModel is Watch || dynSettings.Controller == null)
                 return;
 
+            var vm = dynSettings.Controller.DynamoViewModel;
+            if (!vm.CurrentSpaceViewModel.Previews.Contains(this.PreviewBubble))
+                return;
+
             //create data packet to send to preview bubble
             InfoBubbleViewModel.Style style = InfoBubbleViewModel.Style.PreviewCondensed;
             Point topLeft = new Point(NodeModel.X, NodeModel.Y);
@@ -547,10 +553,7 @@ namespace Dynamo.ViewModels
             string content = this.OldValue;
             InfoBubbleViewModel.Direction connectingDirection = InfoBubbleViewModel.Direction.Top;
             InfoBubbleDataPacket data = new InfoBubbleDataPacket(style, topLeft, botRight, content, connectingDirection);
-
-            var vm = dynSettings.Controller.DynamoViewModel;
-            if (vm.CurrentSpaceViewModel.Previews.Contains(this.PreviewBubble))
-                this.PreviewBubble.UpdateContentCommand.Execute(data);
+            this.PreviewBubble.UpdateContentCommand.Execute(data);
         }
 
         private void UpdatePreviewBubblePosition()
