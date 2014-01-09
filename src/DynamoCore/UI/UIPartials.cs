@@ -1092,13 +1092,20 @@ namespace Dynamo.Nodes
             });
 
             tb.OnChangeCommitted += delegate { RequiresRecalc = true; };
+
+            dynSettings.Controller.PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
+        }
+
+        void PreferenceSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            RaisePropertyChanged("Value");
+            RequiresRecalc = true;
         }
 
         protected override bool UpdateValueCore(string name, string value)
         {
             if (name == "Value")
             {
-                //var converter = new RevitProjectUnitsConverter();
                 var converter = new Controls.LengthConverter();
                 this.Value = ((double)converter.ConvertBack(value, typeof(double), null, null));
                 return true; // UpdateValueCore handled.
@@ -1113,9 +1120,7 @@ namespace Dynamo.Nodes
             editWindow.BindToProperty(null, new System.Windows.Data.Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
-                //Converter = new RevitProjectUnitsConverter(),
                 Converter = new Controls.LengthConverter(),
-                //ConverterParameter = Measure,
                 NotifyOnValidationError = false,
                 Source = this,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
