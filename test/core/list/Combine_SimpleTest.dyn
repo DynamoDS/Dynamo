@@ -1,0 +1,18 @@
+<Workspace Version="0.6.3.5265" X="-860.084659672071" Y="-504.239152424808" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.Combine type="Dynamo.Nodes.Combine" guid="e0cbb116-6c81-4e74-90c6-a5235cfb9eea" nickname="Combine" x="1163.66915850657" y="824.212151647807" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="3cdaa491-60a0-4dcc-88ae-2411f27d3169" nickname="Number" x="990.521722609134" y="837.642998578654" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="20..200..#20" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="ba0f729f-9bf5-4e56-b74b-b3f01d3e0ead" nickname="Number" x="1032.52172260913" y="938.322485758141" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="5..24" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Division type="Dynamo.Nodes.Division" guid="d1d1e083-8d15-4a69-b1b8-0a4d166ac698" nickname="Divide" x="1009.52172260913" y="692.963511399167" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="3cdaa491-60a0-4dcc-88ae-2411f27d3169" start_index="0" end="e0cbb116-6c81-4e74-90c6-a5235cfb9eea" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ba0f729f-9bf5-4e56-b74b-b3f01d3e0ead" start_index="0" end="e0cbb116-6c81-4e74-90c6-a5235cfb9eea" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d1d1e083-8d15-4a69-b1b8-0a4d166ac698" start_index="0" end="e0cbb116-6c81-4e74-90c6-a5235cfb9eea" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
