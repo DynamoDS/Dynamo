@@ -259,6 +259,79 @@ namespace Dynamo.Measure
         {
             throw new NotImplementedException();
         }
+
+        public override string ToString()
+        {
+            switch (UnitsManager.Instance.LengthUnit)
+            {
+                case DynamoLengthUnit.Millimeter:
+                    return ToSquareMillimeterString();
+                case DynamoLengthUnit.Centimeter:
+                    return ToSquareCentimeterString();
+                case DynamoLengthUnit.Meter:
+                    return ToSquareMeterString();
+                case DynamoLengthUnit.DecimalInch:
+                    return ToSquareInchString();
+                case DynamoLengthUnit.FractionalInch:
+                    return ToSquareInchString();
+                case DynamoLengthUnit.DecimalFoot:
+                    return ToSquareFootString();
+                case DynamoLengthUnit.FractionalFoot:
+                    return ToSquareFootString();
+                default:
+                    return ToSquareMeterString();  
+            }
+        }
+
+        private double ToSquareMillimeters()
+        {
+            return _value*1000000;
+        }
+
+        private double ToSquareCentimeters()
+        {
+            return _value*10000;
+        }
+
+        private double ToSquareMeters()
+        {
+            return _value;
+        }
+
+        private double ToSquareInches()
+        {
+            return _value*1550;
+        }
+
+        private double ToSquareFeet()
+        {
+            return _value*10.7639;
+        }
+
+        private string ToSquareMillimeterString()
+        {
+            return ToSquareMillimeters().ToString("0.00", CultureInfo.InvariantCulture) + " mm²";
+        }
+
+        private string ToSquareCentimeterString()
+        {
+            return ToSquareCentimeters().ToString("0.00", CultureInfo.InvariantCulture) + " cm²";
+        }
+
+        private string ToSquareMeterString()
+        {
+            return ToSquareMeters().ToString("0.00", CultureInfo.InvariantCulture) + " m²";
+        }
+
+        private string ToSquareInchString()
+        {
+            return ToSquareInches().ToString("0.00", CultureInfo.InvariantCulture) + " in²";
+        }
+
+        private string ToSquareFootString()
+        {
+            return ToSquareFeet().ToString("0.00", CultureInfo.InvariantCulture) + " ft²";
+        }
     }
 
     /// <summary>
@@ -271,6 +344,79 @@ namespace Dynamo.Measure
         public override void SetValueFromString(string value)
         {
             throw new NotImplementedException();
+        }
+
+        public override string ToString()
+        {
+            switch (UnitsManager.Instance.LengthUnit)
+            {
+                case DynamoLengthUnit.Millimeter:
+                    return ToCubicMillimeterString();
+                case DynamoLengthUnit.Centimeter:
+                    return ToCubicCentimeterString();
+                case DynamoLengthUnit.Meter:
+                    return ToCubicMeterString();
+                case DynamoLengthUnit.DecimalInch:
+                    return ToCubicInchString();
+                case DynamoLengthUnit.FractionalInch:
+                    return ToCubicInchString();
+                case DynamoLengthUnit.DecimalFoot:
+                    return ToCubicFootString();
+                case DynamoLengthUnit.FractionalFoot:
+                    return ToCubicFootString();
+                default:
+                    return ToCubicMeterString();
+            }
+        }
+
+        private double ToCubicMillimeters()
+        {
+            return _value * 1000000000;
+        }
+
+        private double ToCubicCentimeters()
+        {
+            return _value * 1000000;
+        }
+
+        private double ToCubicMeters()
+        {
+            return _value;
+        }
+
+        private double ToCubicInches()
+        {
+            return _value * 61023.7;
+        }
+
+        private double ToCubicFeet()
+        {
+            return _value * 35.3147;
+        }
+
+        private string ToCubicMillimeterString()
+        {
+            return ToCubicMillimeters().ToString("0.00", CultureInfo.InvariantCulture) + " mm³";
+        }
+
+        private string ToCubicCentimeterString()
+        {
+            return ToCubicCentimeters().ToString("0.00", CultureInfo.InvariantCulture) + " cm³";
+        }
+
+        private string ToCubicMeterString()
+        {
+            return ToCubicMeters().ToString("0.00", CultureInfo.InvariantCulture) + " m³";
+        }
+
+        private string ToCubicInchString()
+        {
+            return ToCubicInches().ToString("0.00", CultureInfo.InvariantCulture) + " in³";
+        }
+
+        private string ToCubicFootString()
+        {
+            return ToCubicFeet().ToString("0.00", CultureInfo.InvariantCulture) + " ft³";
         }
     }
 
@@ -805,6 +951,16 @@ namespace Dynamo.Measure
                 double.TryParse(match.Groups["cm"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.CurrentCulture, out cm);
                 double.TryParse(match.Groups["mm"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.CurrentCulture, out mm);
             }
+        }
+
+        public static void ParseVolumeFromString()
+        {
+            
+        }
+
+        public static void ParseAreaFromString()
+        {
+        
         }
     }
 }
