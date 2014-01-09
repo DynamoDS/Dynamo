@@ -62,7 +62,7 @@ namespace Dynamo.Measure
         public UnitsManager()
         {
             //default units to be set to SI
-            LengthUnit = DynamoLengthUnit.Meter;
+            LengthUnit = DynamoLengthUnit.FractionalFoot;
             VolumeUnit = DynamoVolumeUnit.CubicMeter;
             AreaUnit = DynamoAreaUnit.SquareMeter;
         }
@@ -78,19 +78,24 @@ namespace Dynamo.Measure
             set { _value = value; }
         }
 
+        protected MeasurementBase(double value)
+        {
+            _value = value;
+        }
+
         /// <summary>
-        /// Converts a string representation for storage in SI units.
+        /// Converts a string representation to an internal double value in SI units.
         /// </summary>
         /// <param name="value"></param>
         public abstract void SetValueFromString(string value);
     }
 
+    /// <summary>
+    /// A length stored as meters.
+    /// </summary>
     public class Length : MeasurementBase
     {
-        public Length(double value)
-        {
-            _value = value;
-        }
+        public Length(double value):base(value){}
 
         /// <summary>
         /// Sets the internal value by parsing the string and converting to SI units.
@@ -243,16 +248,26 @@ namespace Dynamo.Measure
         }
     }
 
+    /// <summary>
+    /// An area stored as square meters.
+    /// </summary>
     public class Area : MeasurementBase
     {
+        public Area(double value) : base(value){}
+
         public override void SetValueFromString(string value)
         {
             throw new NotImplementedException();
         }
     }
 
+    /// <summary>
+    /// A volume stored as cubic meters.
+    /// </summary>
     public class Volume : MeasurementBase
     {
+        public Volume(double value) : base(value){}
+
         public override void SetValueFromString(string value)
         {
             throw new NotImplementedException();
