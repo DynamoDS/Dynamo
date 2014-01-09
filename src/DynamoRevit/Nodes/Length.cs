@@ -3,11 +3,13 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Xml;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.UI.Prompts;
 using Microsoft.FSharp.Collections;
+using Microsoft.FSharp.Core;
 
 namespace Dynamo.Nodes
 {
@@ -17,26 +19,35 @@ namespace Dynamo.Nodes
     [NodeSearchTags("Imperial", "Metric", "Length", "Project", "units")]
     public class LengthInput : NodeWithOneOutput
     {
-        private double _value;
+        private Measure.Length _length;
+
+        //private double _value;
         public double Value
         {
-            get { return _value; }
+            get
+            {
+                //return _value;
+                return _length.Value;
+            }
             set
             {
-                _value = value;
+                //_value = value;
+                _length.Value = value;
                 RaisePropertyChanged("Value");
             }
         }
 
         public LengthInput()
         {
-            OutPortData.Add(new PortData("length", "The length. Stored internally as decimal feet.", typeof(FScheme.Value.Number)));
+            _length = new Measure.Length(0.0);
+            OutPortData.Add(new PortData("length", "The length. Stored internally as decimal meters.", typeof(FScheme.Value.Number)));
             RegisterAllPorts();
         }
 
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
-            return FScheme.Value.NewNumber(Value);
+            //return FScheme.Value.NewNumber(Value);
+            return FScheme.Value.NewContainer(_length);
         }
 
         public override void SetupCustomUIElements(object ui)
@@ -65,7 +76,8 @@ namespace Dynamo.Nodes
             tb.BindToProperty(new System.Windows.Data.Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
-                Converter = new RevitProjectUnitsConverter(),
+                //Converter = new RevitProjectUnitsConverter(),
+                Converter = new Controls.LengthConverter(),
                 //ConverterParameter = Measure,
                 NotifyOnValidationError = false,
                 Source = this,
@@ -79,7 +91,8 @@ namespace Dynamo.Nodes
         {
             if (name == "Value")
             {
-                var converter = new RevitProjectUnitsConverter();
+                //var converter = new RevitProjectUnitsConverter();
+                var converter = new Controls.LengthConverter();
                 this.Value = ((double)converter.ConvertBack(value, typeof(double), null, null));
                 return true; // UpdateValueCore handled.
             }
@@ -93,7 +106,8 @@ namespace Dynamo.Nodes
             editWindow.BindToProperty(null, new System.Windows.Data.Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
-                Converter = new RevitProjectUnitsConverter(),
+                //Converter = new RevitProjectUnitsConverter(),
+                Converter = new Controls.LengthConverter(),
                 //ConverterParameter = Measure,
                 NotifyOnValidationError = false,
                 Source = this,

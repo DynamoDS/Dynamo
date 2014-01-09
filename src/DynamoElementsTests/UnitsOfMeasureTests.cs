@@ -6,6 +6,7 @@ namespace Dynamo.Tests
 {
     internal class UnitsOfMeasureTests
     {
+        /*
         [Test]
         public void MeasurementConversionsValidInput()
         {
@@ -287,5 +288,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(0.0, Utils.FromFeetAndFractionalInches("\""));
             Assert.AreEqual(0.0, Utils.FromFeetAndFractionalInches("6.5"));
         }
+         * */
     }
 }
