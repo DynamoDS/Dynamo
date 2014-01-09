@@ -375,7 +375,7 @@ namespace Dynamo.Views
 
         void vm_ZoomAtViewportCenter(object sender, EventArgs e)
         {
-            double zoom = (e as ZoomEventArgs).Zoom;
+            double zoom = AdjustZoomForCurrentZoomAmount((e as ZoomEventArgs).Zoom);
 
             // Limit Zoom
             double resultZoom = ViewModel._model.Zoom + zoom;
@@ -397,9 +397,23 @@ namespace Dynamo.Views
             ZoomAtViewportPoint(zoom, relativePoint);
         }
 
+        private double AdjustZoomForCurrentZoomAmount(double zoom)
+        {
+            const double upperLimit = .6;
+            const double lowerLimit = .01;
+
+            //quadratic adjustment
+            //var adjustedZoom = (lowerLimit + Math.Pow((ViewModel._model.Zoom / WorkspaceModel.ZOOM_MAXIMUM), 2) * (upperLimit - lowerLimit)) * zoom;
+
+            //linear adjustment
+            var adjustedZoom = (lowerLimit + (ViewModel._model.Zoom / WorkspaceModel.ZOOM_MAXIMUM) * (upperLimit - lowerLimit)) * zoom;
+
+            return adjustedZoom;
+        }
+
         void vm_ZoomAtViewportPoint(object sender, EventArgs e)
         {
-            double zoom = (e as ZoomEventArgs).Zoom;
+            double zoom = AdjustZoomForCurrentZoomAmount((e as ZoomEventArgs).Zoom);
             Point point = (e as ZoomEventArgs).Point;
 
             ZoomAtViewportPoint(zoom, point);
