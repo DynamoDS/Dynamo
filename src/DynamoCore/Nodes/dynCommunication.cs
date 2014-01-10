@@ -4,7 +4,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.IO;
 using Dynamo.Models;
-using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Value = Dynamo.FScheme.Value;
 

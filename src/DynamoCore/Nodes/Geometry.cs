@@ -1,5 +1,4 @@
-﻿using DSCoreNodes;
-using Dynamo.Models;
+﻿using Dynamo.Models;
 using Microsoft.FSharp.Collections;
 
 namespace Dynamo.Nodes

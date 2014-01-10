@@ -4,10 +4,8 @@ using System.Linq;
 using System.Xml;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
-using String = System.String;
 
 namespace Dynamo.Nodes
 {
