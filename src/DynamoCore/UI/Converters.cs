@@ -7,8 +7,10 @@ using System.IO;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
+using Dynamo.Measure;
 using Dynamo.Models;
 using System.Web;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.PackageManager;
 using System.Windows.Controls;
@@ -1286,19 +1288,36 @@ namespace Dynamo.Controls
         }
     }
 
-    public class LengthConverter : IValueConverter
+    public class MeasureConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var length = new Measure.Length((double)value);
-            return length.ToString();
+            MeasurementBase measure = null;
+
+            if (parameter is Length)
+            {
+                measure = new Length((double)value);
+            }
+            else if (parameter is Area)
+            {
+                measure = new Area((double)value);
+            }
+            return measure.ToString();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var length = new Measure.Length(0.0);
-            length.SetValueFromString(value.ToString());
-            return length.Value;
+            MeasurementBase measure = null;
+            if (parameter is Length)
+            {
+                measure = new Length(0.0);
+            }
+            else if (parameter is Area)
+            {
+                measure = new Area(0.0);
+            }
+            measure.SetValueFromString(value.ToString());
+            return measure.Value;
         }
     }
 }

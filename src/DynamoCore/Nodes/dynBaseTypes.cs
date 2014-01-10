@@ -7,8 +7,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Xml;
-using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
+using Dynamo.Measure;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
@@ -18,6 +18,7 @@ using Value = Dynamo.FScheme.Value;
 using System.Globalization;
 using ProtoCore.AST.AssociativeAST;
 using Dynamo.DSEngine;
+using Utils = Dynamo.FSchemeInterop.Utils;
 
 namespace Dynamo.Nodes
 {
@@ -5124,38 +5125,26 @@ namespace Dynamo.Nodes
 
     #endregion
 
-    [NodeName("Length")]
-    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("Enter a length in project units.")]
-    [NodeSearchTags("Imperial", "Metric", "Length", "Project", "units")]
-    public partial class LengthInput : NodeWithOneOutput
+    public abstract partial class MeasurementInputBase : NodeWithOneOutput
     {
-        private Measure.Length _length;
+        protected MeasurementBase _measure;
 
         public double Value
         {
             get
             {
-                return _length.Value;
+                return _measure.Value;
             }
             set
             {
-                _length.Value = value;
+                _measure.Value = value;
                 RaisePropertyChanged("Value");
             }
         }
 
-        public LengthInput()
-        {
-            _length = new Measure.Length(0.0);
-            OutPortData.Add(new PortData("length", "The length. Stored internally as decimal meters.", typeof(FScheme.Value.Number)));
-            RegisterAllPorts();
-        }
-
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
-            //return FScheme.Value.NewNumber(Value);
-            return FScheme.Value.NewContainer(_length);
+            return FScheme.Value.NewContainer(_measure);
         }
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
@@ -5193,6 +5182,34 @@ namespace Dynamo.Nodes
             {
                 return 0;
             }
+        }
+    }
+
+    [NodeName("Length")]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeDescription("Enter a length in project units.")]
+    [NodeSearchTags("Imperial", "Metric", "Length", "Project", "units")]
+    public class LengthInput : MeasurementInputBase
+    {
+        public LengthInput()
+        {
+            _measure = new Measure.Length(0.0);
+            OutPortData.Add(new PortData("length", "The length. Stored internally as decimal meters.", typeof(FScheme.Value.Container)));
+            RegisterAllPorts();
+        }
+    }
+
+    [NodeName("Area")]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeDescription("Enter an area in project units.")]
+    [NodeSearchTags("Imperial", "Metric", "Area", "Project", "units")]
+    public class AreaInput : MeasurementInputBase
+    {
+        public AreaInput()
+        {
+            _measure = new Measure.Area(0.0);
+            OutPortData.Add(new PortData("area", "The area. Stored internally as decimal meters squared.", typeof(FScheme.Value.Container)));
+            RegisterAllPorts();
         }
     }
 
