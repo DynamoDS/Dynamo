@@ -288,21 +288,17 @@ namespace Dynamo.Measure
 
         public override string ToString()
         {
-            switch (dynSettings.Controller.PreferenceSettings.LengthUnit)
+            switch (dynSettings.Controller.PreferenceSettings.AreaUnit)
             {
-                case DynamoLengthUnit.Millimeter:
+                case DynamoAreaUnit.SquareMillimeter:
                     return ToSquareMillimeterString();
-                case DynamoLengthUnit.Centimeter:
+                case DynamoAreaUnit.SquareCentimeter:
                     return ToSquareCentimeterString();
-                case DynamoLengthUnit.Meter:
+                case DynamoAreaUnit.SquareMeter:
                     return ToSquareMeterString();
-                case DynamoLengthUnit.DecimalInch:
+                case DynamoAreaUnit.SquareInch:
                     return ToSquareInchString();
-                case DynamoLengthUnit.FractionalInch:
-                    return ToSquareInchString();
-                case DynamoLengthUnit.DecimalFoot:
-                    return ToSquareFootString();
-                case DynamoLengthUnit.FractionalFoot:
+                case DynamoAreaUnit.SquareFoot:
                     return ToSquareFootString();
                 default:
                     return ToSquareMeterString();  
