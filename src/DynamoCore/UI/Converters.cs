@@ -1292,7 +1292,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            MeasurementBase measure = null;
+            SIUnit measure = null;
 
             if (parameter is Length)
             {
@@ -1307,7 +1307,7 @@ namespace Dynamo.Controls
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            MeasurementBase measure = null;
+            SIUnit measure = null;
             if (parameter is Length)
             {
                 measure = new Length(0.0);

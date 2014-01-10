@@ -2557,6 +2557,12 @@ namespace Dynamo.Nodes
         }
     }
 
+    public class MathematicalArgumentException : Exception
+    {
+        public MathematicalArgumentException():base("The result could not be computed given the provided inputs."){}
+        public MathematicalArgumentException(string message):base(message){}
+    }
+
     [NodeName("Add")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_MATH_ARITHMETIC)]
     [NodeDescription("Adds two numbers.")]
@@ -2573,16 +2579,30 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var x = ((Value.Number)args[0]).Item;
-            var y = ((Value.Number)args[1]).Item;
+            //number + number
+            if (args[0].IsNumber && args[1].IsNumber)
+            {
+                var x = ((Value.Number)args[0]).Item;
+                var y = ((Value.Number)args[1]).Item;
+                return Value.NewNumber(x + y);
+            }
 
-            return Value.NewNumber(x + y);
+            //unit + unit
+            if (args[0].IsContainer && args[1].IsContainer)
+            {
+                var x = SIUnit.UnwrapFromValue(args[0]);
+                var y = SIUnit.UnwrapFromValue(args[1]);
+                return Value.NewContainer(x + y);
+            }
+
+            throw new MathematicalArgumentException();
         }
 
         protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
         {
             return builder.Build(this, inputs);
         }
+
     }
 
     [NodeName("Subtract")]
@@ -2601,10 +2621,23 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var x = ((Value.Number)args[0]).Item;
-            var y = ((Value.Number)args[1]).Item;
+            //number - number
+            if (args[0].IsNumber && args[1].IsNumber)
+            {
+                var x = ((Value.Number)args[0]).Item;
+                var y = ((Value.Number)args[1]).Item;
+                return Value.NewNumber(x - y);
+            }
 
-            return Value.NewNumber(x - y);
+            //unit - unit
+            if (args[0].IsContainer && args[1].IsContainer)
+            {
+                var x = SIUnit.UnwrapFromValue(args[0]);
+                var y = SIUnit.UnwrapFromValue(args[1]);
+                return Value.NewContainer(x - y);
+            }
+
+            throw new MathematicalArgumentException();
         }
 
         protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
@@ -2629,10 +2662,41 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var x = ((Value.Number)args[0]).Item;
-            var y = ((Value.Number)args[1]).Item;
+            //double + double
+            if (args[0].IsNumber && args[1].IsNumber)
+            {
+                var x = ((Value.Number)args[0]).Item;
+                var y = ((Value.Number)args[1]).Item;
+                return Value.NewNumber(x * y);
+            }
 
-            return Value.NewNumber(x * y);
+            //double * unit
+            if (args[0].IsNumber && args[1].IsContainer)
+            {
+                var x = ((Value.Number)args[0]).Item;
+                var y = SIUnit.UnwrapFromValue(args[1]);
+                return Value.NewContainer(x * y);
+            }
+
+            //unit * double
+            if (args[0].IsContainer && args[1].IsNumber)
+            {
+                var x = SIUnit.UnwrapFromValue(args[0]);
+                var y = ((Value.Number)args[1]).Item;
+                
+                return Value.NewContainer(x * y);
+            }
+
+            //unit * unit
+            if (args[0].IsContainer && args[1].IsContainer)
+            {
+                var x = SIUnit.UnwrapFromValue(args[0]);
+                var y = SIUnit.UnwrapFromValue(args[1]);
+
+                return Value.NewContainer(x * y);
+            }
+
+            throw new MathematicalArgumentException();
         }
 
         protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
@@ -2657,10 +2721,39 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var x = ((Value.Number)args[0]).Item;
-            var y = ((Value.Number)args[1]).Item;
+            //double / double
+            if (args[0].IsNumber && args[1].IsNumber)
+            {
+                var x = ((Value.Number)args[0]).Item;
+                var y = ((Value.Number)args[1]).Item;
+                return Value.NewNumber(x / y);
+            }
 
-            return Value.NewNumber(x / y);
+            //unit / double
+            if (args[0].IsContainer && args[1].IsNumber)
+            {
+                var x = SIUnit.UnwrapFromValue(args[0]);
+                var y = ((Value.Number)args[1]).Item;
+
+                return Value.NewContainer(x / y);
+            }
+
+            //unit / unit
+            if (args[0].IsContainer && args[1].IsContainer)
+            {
+                //units of same type will cancel
+                var x = SIUnit.UnwrapFromValue(args[0]);
+                var y = SIUnit.UnwrapFromValue(args[1]);
+
+                if (x.GetType() == y.GetType())
+                {
+                    return Value.NewNumber(x/y);
+                }
+
+                return Value.NewContainer(x / y);
+            }
+
+            throw new MathematicalArgumentException();
         }
 
         protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
@@ -2686,10 +2779,23 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var x = ((Value.Number)args[0]).Item;
-            var y = ((Value.Number)args[1]).Item;
+            //number % number
+            if (args[0].IsNumber && args[1].IsNumber)
+            {
+                var x = ((Value.Number)args[0]).Item;
+                var y = ((Value.Number)args[1]).Item;
+                return Value.NewNumber(x % y);
+            }
 
-            return Value.NewNumber(x % y);
+            //unit % unit
+            if (args[0].IsContainer && args[1].IsContainer)
+            {
+                var x = SIUnit.UnwrapFromValue(args[0]);
+                var y = SIUnit.UnwrapFromValue(args[1]);
+                return Value.NewContainer(x % y);
+            }
+            
+            throw new MathematicalArgumentException();
         }
 
         protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
@@ -5127,7 +5233,7 @@ namespace Dynamo.Nodes
 
     public abstract partial class MeasurementInputBase : NodeWithOneOutput
     {
-        protected MeasurementBase _measure;
+        protected SIUnit _measure;
 
         public double Value
         {
