@@ -1750,5 +1750,37 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Volume")]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
+    [NodeDescription("Measures the volume of a solid")]
+    public class VolumeMeasure : MeasurementBase
+    {
+        public VolumeMeasure()
+        {
+            InPortData.Add(new PortData("s", "The solid whose volume you wish to calculate.", typeof(FScheme.Value.Container)));//Ref to a face of a form
+            OutPortData.Add(new PortData("v", "The volume of the solid.", typeof(FScheme.Value.Number)));
+
+            RegisterAllPorts();
+        }
+
+        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+        {
+            double volume = 0.0;
+
+            object arg0 = ((FScheme.Value.Container)args[0]).Item;
+
+            var thisSolid = arg0 as Autodesk.Revit.DB.Solid;
+
+            if (thisSolid != null) 
+            {
+                volume = thisSolid.Volume;
+            }
+
+            //Fin
+            return FScheme.Value.NewNumber(volume);
+        }
+    }
+
+
     #endregion
 }
