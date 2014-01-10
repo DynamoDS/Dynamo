@@ -909,5 +909,68 @@ namespace Dynamo.Nodes
             return Value.NewContainer(DSCoreNodes.Domain.ByMinimumAndMaximum(start, end));
         }
     }
+    [NodeName("Curve Length")]
+    [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
+    [NodeDescription("Measure length of a curve (or an edge)")]
+    public class CurveLength : MeasurementBase
+    {
+        public CurveLength()
+        {
+            InPortData.Add(new PortData("c", "The curve to measure as  Curve, Edge, or Reference to Curve or Edge.", typeof(FScheme.Value.Container)));//Ref to a face of a form
+            OutPortData.Add(new PortData("l", "The length of the curve (Number).", typeof(FScheme.Value.Number)));
+
+            RegisterAllPorts();
+        }
+
+        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+        {
+            double length = 0.0;
+
+            object arg0 = ((FScheme.Value.Container)args[0]).Item;
+
+            Autodesk.Revit.DB.GeometryObject curveOrEdge = null;
+
+            if (arg0 is Reference)
+            {
+                var curveRef = arg0 as Reference;
+                 
+                curveOrEdge = dynRevitSettings.Doc.Document.GetElement(curveRef.ElementId)
+                            .GetGeometryObjectFromReference(curveRef) as Autodesk.Revit.DB.GeometryObject;
+                if (!(curveOrEdge is Autodesk.Revit.DB.Curve || curveOrEdge is Autodesk.Revit.DB.Edge))
+                    throw new Exception("Reference is not to curve or edge.");
+
+            }
+            else if (arg0 is CurveElement)
+            {
+                var curveElem = arg0 as CurveElement;
+                curveOrEdge = curveElem.GeometryCurve;
+            }
+            else if (arg0 is Autodesk.Revit.DB.GeometryObject)
+            {
+                curveOrEdge = arg0 as Autodesk.Revit.DB.GeometryObject;
+            }
+            else
+            {
+                throw new Exception("Argument is not a curve or a edge.");
+            }
+            if (curveOrEdge is Autodesk.Revit.DB.Curve)
+            {
+                var thisCurve = curveOrEdge as Autodesk.Revit.DB.Curve;
+                length = thisCurve.Length;
+            }
+            else if (curveOrEdge is Autodesk.Revit.DB.Edge)
+            {
+                var thisEdge = curveOrEdge as Autodesk.Revit.DB.Edge;
+                length = thisEdge.AsCurve().Length;
+            }
+            else
+            {
+                throw new Exception("Argument is not a curve or a edge.");
+            }
+
+            //Fin
+            return FScheme.Value.NewNumber(length);
+        }
+    }
 }
 
