@@ -181,6 +181,7 @@ namespace Dynamo.ViewModels
 
         public DelegateCommand ExportToSTLCommand { get; set; }
         public DelegateCommand SetLengthUnitCommand { get; set; }
+        public DelegateCommand SetAreaUnitcommand { get; set; }
 
         /// <summary>
         /// An observable collection of workspace view models which tracks the model
@@ -544,6 +545,7 @@ namespace Dynamo.ViewModels
 
             ExportToSTLCommand = new DelegateCommand(ExportToSTL, CanExportToSTL);
             SetLengthUnitCommand = new DelegateCommand(SetLengthUnit, CanSetLengthUnit);
+            SetAreaUnitcommand = new DelegateCommand(SetAreaUnit, CanSetAreaUnit);
 
             DynamoLogger.Instance.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Instance_PropertyChanged);
 
@@ -1406,6 +1408,36 @@ namespace Dynamo.ViewModels
         }
 
         internal bool CanSetLengthUnit(object parameter)
+        {
+            return true;
+        }
+
+        private void SetAreaUnit(object parameter)
+        {
+            switch (parameter.ToString())
+            {
+                case "SquareInch":
+                    Controller.PreferenceSettings.AreaUnit = DynamoAreaUnit.SquareInch;
+                    return;
+                case "SquareFoot":
+                    Controller.PreferenceSettings.AreaUnit = DynamoAreaUnit.SquareFoot;
+                    return;
+                case "SquareMillimeter":
+                    Controller.PreferenceSettings.AreaUnit = DynamoAreaUnit.SquareMillimeter;
+                    return;
+                case "SquareCentimeter":
+                    Controller.PreferenceSettings.AreaUnit = DynamoAreaUnit.SquareCentimeter;
+                    return;
+                case "SquareMeter":
+                    Controller.PreferenceSettings.AreaUnit = DynamoAreaUnit.SquareMeter;
+                    return;
+                default:
+                    Controller.PreferenceSettings.AreaUnit = DynamoAreaUnit.SquareMeter;
+                    return;
+            }
+        }
+
+        internal bool CanSetAreaUnit(object parameter)
         {
             return true;
         }

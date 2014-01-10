@@ -305,10 +305,14 @@
                             <MenuItem Name="units_cm" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Centimeter, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="Centimeter" Header="Centimeter"/>
                             <MenuItem Name="units_m" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Meter, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="Meter" Header="Meter"/>
                         </MenuItem>
-                        <!--<MenuItem Focusable="False" Header="Area Units" Name="AreaUnitsMenu">
-                            
+                        <MenuItem Focusable="False" Header="Area Units" Name="AreaUnitsMenu">
+                            <MenuItem Name="units_area_inch" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareInch, Mode=TwoWay}" Command="{Binding SetAreaUnitCommand}" CommandParameter="SquareInch" Header="Square Inch"/>
+                            <MenuItem Name="units_area_foot" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareFoot, Mode=TwoWay}" Command="{Binding SetAreaUnitCommand}" CommandParameter="SquareFoot" Header="Square Foot"/>
+                            <MenuItem Name="units_area_millimeter" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareMillimeter, Mode=TwoWay}" Command="{Binding SetAreaUnitCommand}" CommandParameter="SquareMillimeter" Header="Square Millimeter"/>
+                            <MenuItem Name="units_area_centimeter" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareCentimeter, Mode=TwoWay}" Command="{Binding SetAreaUnitCommand}" CommandParameter="SquareCentimeter" Header="Square Centimeter"/>
+                            <MenuItem Name="units_area_meter" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareMeter, Mode=TwoWay}" Command="{Binding SetAreaUnitCommand}" CommandParameter="SquareMeter" Header="Square Meter"/>
                         </MenuItem>
-                        <MenuItem Focusable="False" Header="Volume Units" Name="VolumeUnitsMenu">
+                        <!--<MenuItem Focusable="False" Header="Volume Units" Name="VolumeUnitsMenu">
                             
                         </MenuItem>-->
                     </MenuItem>
