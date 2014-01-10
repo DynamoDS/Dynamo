@@ -72,6 +72,11 @@ namespace Dynamo.Measure
     /// </summary>
     public class Length : MeasurementBase
     {
+        private const double meter_to_millimeter = 1000;
+        private const double meter_to_centimeter = 100;
+        private const double meter_to_inch = 39.3701;
+        private const double meter_to_foot = 3.28084;
+
         public Length(double value):base(value){}
 
         /// <summary>
@@ -89,11 +94,11 @@ namespace Dynamo.Measure
                 switch (dynSettings.Controller.PreferenceSettings.LengthUnit)
                 {
                     case DynamoLengthUnit.Centimeter:
-                        _value =  total / 100;
+                        _value =  total / meter_to_centimeter;
                         return;
 
                     case DynamoLengthUnit.Millimeter:
-                        _value = total / 1000;
+                        _value = total / meter_to_millimeter;
                         return;
 
                     case DynamoLengthUnit.Meter:
@@ -101,19 +106,19 @@ namespace Dynamo.Measure
                         return;
 
                     case DynamoLengthUnit.FractionalInch:
-                        _value = total * .0254;
+                        _value = total / meter_to_inch;
                         return;
 
                     case DynamoLengthUnit.FractionalFoot:
-                        _value = total * .3048;
+                        _value = total / meter_to_foot;
                         return;
 
                     case DynamoLengthUnit.DecimalInch:
-                        _value = total * .0254;
+                        _value = total / meter_to_inch;
                         return;
 
                     case DynamoLengthUnit.DecimalFoot:
-                        _value = total * .3048;
+                        _value = total / meter_to_foot;
                         return;
                 }
             }
@@ -126,13 +131,13 @@ namespace Dynamo.Measure
                 fractionalInch = numerator / denominator;
 
             if (feet < 0)
-                total = (feet - inch / 12.0 - fractionalInch / 12.0)*.3048;
+                total = (feet - inch / 12.0 - fractionalInch / 12.0)/meter_to_foot;
             else
-                total = (feet + inch / 12.0 + fractionalInch / 12.0)*.3048;
+                total = (feet + inch / 12.0 + fractionalInch / 12.0)/meter_to_foot;
 
             total += m;
-            total += cm/100;
-            total += mm/1000;
+            total += cm/meter_to_centimeter;
+            total += mm/meter_to_millimeter;
 
             _value = total;
         }
@@ -230,11 +235,55 @@ namespace Dynamo.Measure
     /// </summary>
     public class Area : MeasurementBase
     {
+        private const double square_meters_to_square_millimeters = 1000000;
+        private const double square_meters_to_square_centimeters = 10000;
+        private const double square_meters_to_square_inch = 1550;
+        private const double square_meters_to_square_foot = 10.7639;
+
         public Area(double value) : base(value){}
 
         public override void SetValueFromString(string value)
         {
-            throw new NotImplementedException();
+            //first try to parse the input as a number
+            //it it's parsable, then just cram it into
+            //whatever the project units are
+            double total = 0.0;
+            if (Double.TryParse(value, NumberStyles.Number, CultureInfo.CurrentCulture, out total))
+            {
+                switch (dynSettings.Controller.PreferenceSettings.AreaUnit)
+                {
+                    case DynamoAreaUnit.SquareMillimeter:
+                        _value = total / square_meters_to_square_millimeters;
+                        return;
+
+                    case DynamoAreaUnit.SquareCentimeter:
+                        _value = total / square_meters_to_square_centimeters;
+                        return;
+
+                    case DynamoAreaUnit.SquareMeter:
+                        _value = total;
+                        return;
+
+                    case DynamoAreaUnit.SquareInch:
+                        _value = total / square_meters_to_square_inch;
+                        return;
+
+                    case DynamoAreaUnit.SquareFoot:
+                        _value = total / square_meters_to_square_foot;
+                        return;
+                }
+            }
+
+            double sq_mm, sq_cm, sq_m, sq_in, sq_ft;
+            Utils.ParseAreaFromString(value, out sq_in, out sq_ft, out sq_mm, out sq_cm, out sq_m);
+
+            total += sq_mm / square_meters_to_square_millimeters;
+            total += sq_cm / square_meters_to_square_centimeters;
+            total += sq_m;
+            total += sq_in / square_meters_to_square_inch;
+            total += sq_ft / square_meters_to_square_foot;
+
+            _value = total;
         }
 
         public override string ToString()
@@ -597,12 +646,37 @@ namespace Dynamo.Measure
             }
         }
 
-        public static void ParseVolumeFromString()
+        public static void ParseAreaFromString(string value, out double square_inch, out double square_foot, out double square_millimeter,  out double square_centimeter, out double square_meter)
         {
+            const string pattern =
+                @"((?<square_inches>((\+|-)?\d+([.,]\d{1,})?))(in2|sqin|in²))*\s*((?<square_feet>((\+|-)?\d+([.,]\d{1,})?))(ft2|sqft|ft²))*\s*((?<square_millimeters>((\+|-)?\d+([.,]\d{1,})?))(mm2|sqmm|mm²))*\s*((?<square_centimeters>((\+|-)?\d+([.,]\d{1,})?))(cm2|sqcm|cm²))*\s*((?<square_meters>((\+|-)?\d+([.,]\d{1,})?))(m2|sqm|m²))*\s*";
             
+            square_inch = 0.0;
+            square_foot = 0.0;
+            square_millimeter = 0.0;
+            square_centimeter = 0.0;
+            square_meter = 0.0;
+
+            const RegexOptions opts = RegexOptions.None;
+            var regex = new Regex(pattern, opts);
+            Match match = regex.Match(value.Trim().ToLower());
+            if (match.Success)
+            {
+                double.TryParse(match.Groups["square_inches"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.CurrentCulture, out square_inch);
+                double.TryParse(match.Groups["square_feet"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.CurrentCulture, out square_foot);
+                double.TryParse(match.Groups["square_millimeters"].Value,
+                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.CurrentCulture,
+                    out square_millimeter);
+                double.TryParse(match.Groups["square_centiimeters"].Value,
+                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.CurrentCulture,
+                    out square_centimeter);
+                double.TryParse(match.Groups["square_meters"].Value,
+                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.CurrentCulture,
+                    out square_meter);
+            }
         }
 
-        public static void ParseAreaFromString()
+        public static void ParseVolumeFromString()
         {
         
         }

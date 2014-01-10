@@ -1055,7 +1055,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    public partial class LengthInput
+    public abstract partial class MeasurementInputBase
     {
         public override void SetupCustomUIElements(object ui)
         {
@@ -1083,9 +1083,8 @@ namespace Dynamo.Nodes
             tb.BindToProperty(new System.Windows.Data.Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
-                //Converter = new RevitProjectUnitsConverter(),
-                Converter = new Controls.LengthConverter(),
-                //ConverterParameter = Measure,
+                Converter = new Controls.MeasureConverter(),
+                ConverterParameter = _measure,
                 NotifyOnValidationError = false,
                 Source = this,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
@@ -1106,8 +1105,8 @@ namespace Dynamo.Nodes
         {
             if (name == "Value")
             {
-                var converter = new Controls.LengthConverter();
-                this.Value = ((double)converter.ConvertBack(value, typeof(double), null, null));
+                var converter = new Controls.MeasureConverter();
+                this.Value = ((double)converter.ConvertBack(value, typeof(double), _measure, null));
                 return true; // UpdateValueCore handled.
             }
 
@@ -1120,7 +1119,8 @@ namespace Dynamo.Nodes
             editWindow.BindToProperty(null, new System.Windows.Data.Binding("Value")
             {
                 Mode = BindingMode.TwoWay,
-                Converter = new Controls.LengthConverter(),
+                Converter = new Controls.MeasureConverter(),
+                ConverterParameter = _measure,
                 NotifyOnValidationError = false,
                 Source = this,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
