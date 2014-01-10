@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using Dynamo.Nodes;
 using Dynamo.Utilities;
+using Double = System.Double;
 
 namespace Dynamo.Measure
 {
@@ -45,7 +47,14 @@ namespace Dynamo.Measure
         Meters
     }
 
-    public abstract class MeasurementBase
+    public class IncompatibleUnitsException : Exception
+    {
+        public IncompatibleUnitsException():base("Incompatible units."){}
+        public IncompatibleUnitsException(string message) : base(message){}
+        public IncompatibleUnitsException(string message, Exception inner) : base(message, inner){}
+    }
+
+    public abstract class SIUnit
     {
         internal double _value;
 
@@ -55,7 +64,7 @@ namespace Dynamo.Measure
             set { _value = value; }
         }
 
-        protected MeasurementBase(double value)
+        protected SIUnit(double value)
         {
             _value = value;
         }
@@ -65,12 +74,82 @@ namespace Dynamo.Measure
         /// </summary>
         /// <param name="value"></param>
         public abstract void SetValueFromString(string value);
+
+        public static SIUnit UnwrapFromValue(FScheme.Value value)
+        {
+            if (value.IsContainer)
+            {
+                var measure = ((FScheme.Value.Container) value).Item as SIUnit;
+                if (measure != null)
+                {
+                    return measure;
+                } 
+            }
+            
+            throw new Exception("SIUnit could not be unwrapped from value.");
+        }
+
+        public abstract SIUnit Add(SIUnit x);
+        public abstract SIUnit Subtract(SIUnit x);
+        public abstract SIUnit Multiply(SIUnit x);
+        public abstract SIUnit Multiply(double x);
+        public abstract dynamic Divide(SIUnit x);
+        public abstract SIUnit Divide(double x);
+        public abstract SIUnit Modulo(SIUnit x);
+
+        public static SIUnit operator +(SIUnit x, SIUnit y)
+        {
+            return x.Add(y);
+        }
+
+        public static SIUnit operator -(SIUnit x, SIUnit y)
+        {
+            return x.Subtract(y);
+        }
+
+        public static SIUnit operator *(SIUnit x, SIUnit y)
+        {
+            return x.Multiply(y);
+        }
+
+        public static SIUnit operator *(SIUnit x, double y)
+        {
+            return x.Multiply(y);
+        }
+
+        public static SIUnit operator *(double x, SIUnit y)
+        {
+            return y.Multiply(x);
+        }
+
+        public static dynamic operator /(SIUnit x, SIUnit y)
+        {
+            //units will cancel
+            if (x.GetType() == y.GetType())
+            {
+                return x.Value / y.Value;
+            }    
+            else
+            {
+                return x.Divide(y);
+            }
+        }
+
+        public static SIUnit operator /(SIUnit x, double y)
+        {
+            return x.Divide(y);
+        }
+
+        public static SIUnit operator %(SIUnit x, SIUnit y)
+        {
+            return x.Modulo(y);
+        }
     }
 
     /// <summary>
     /// A length stored as meters.
     /// </summary>
-    public class Length : MeasurementBase
+    public class Length : SIUnit
     {
         private const double meter_to_millimeter = 1000;
         private const double meter_to_centimeter = 100;
@@ -140,6 +219,51 @@ namespace Dynamo.Measure
             total += mm/meter_to_millimeter;
 
             _value = total;
+        }
+
+        public override SIUnit Add(SIUnit x)
+        {
+            return new Length(_value + x.Value);
+        }
+
+        public override SIUnit Subtract(SIUnit x)
+        {
+            return new Length(_value - x.Value);
+        }
+
+        public override SIUnit Multiply(SIUnit x)
+        {
+            if (x is Length)
+            {
+                return new Area(_value * x.Value);
+            }
+
+            throw new IncompatibleUnitsException();
+        }
+
+        public override SIUnit Multiply(double x)
+        {
+            return new Length(_value * x);
+        }
+
+        public override dynamic Divide(SIUnit x)
+        {
+            if (x is Length)
+            {
+                return _value/x.Value;
+            }
+
+            throw new IncompatibleUnitsException();
+        }
+
+        public override SIUnit Divide(double x)
+        {
+            return new Length(_value / x);
+        }
+
+        public override SIUnit Modulo(SIUnit x)
+        {
+            return new Length(_value % x.Value);
         }
 
         /// <summary>
@@ -228,12 +352,13 @@ namespace Dynamo.Measure
         {
             return Utils.ToFeetAndFractionalInches(ToFeet());
         }
+
     }
 
     /// <summary>
     /// An area stored as square meters.
     /// </summary>
-    public class Area : MeasurementBase
+    public class Area : SIUnit
     {
         private const double square_meters_to_square_millimeters = 1000000;
         private const double square_meters_to_square_centimeters = 10000;
@@ -284,6 +409,59 @@ namespace Dynamo.Measure
             total += sq_ft / square_meters_to_square_foot;
 
             _value = total;
+        }
+
+        public override SIUnit Add(SIUnit x)
+        {
+            return new Area(_value + x.Value);
+        }
+
+        public override SIUnit Subtract(SIUnit x)
+        {
+            return new Area(_value - x.Value);
+        }
+
+        public override SIUnit Multiply(SIUnit x)
+        {
+            if (x is Length)
+            {
+                //return a volume
+                return new Volume(_value * x.Value);
+            }
+            
+            throw new IncompatibleUnitsException();
+        }
+
+        public override SIUnit Multiply(double x)
+        {
+            return new Area(_value * x);
+        }
+
+        public override dynamic Divide(SIUnit x)
+        {
+            if (x is Area)
+            {
+                //return a double
+                return _value/x.Value;
+            }
+
+            if (x is Length)
+            {
+                //return length
+                return new Length(_value/x.Value);
+            }
+
+            throw new IncompatibleUnitsException();
+        }
+
+        public override SIUnit Divide(double x)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SIUnit Modulo(SIUnit x)
+        {
+            throw new NotImplementedException();
         }
 
         public override string ToString()
@@ -359,11 +537,46 @@ namespace Dynamo.Measure
     /// <summary>
     /// A volume stored as cubic meters.
     /// </summary>
-    public class Volume : MeasurementBase
+    public class Volume : SIUnit
     {
         public Volume(double value) : base(value){}
 
         public override void SetValueFromString(string value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SIUnit Add(SIUnit x)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SIUnit Subtract(SIUnit x)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SIUnit Multiply(SIUnit x)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SIUnit Multiply(double x)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override dynamic Divide(SIUnit x)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SIUnit Divide(double x)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SIUnit Modulo(SIUnit x)
         {
             throw new NotImplementedException();
         }
