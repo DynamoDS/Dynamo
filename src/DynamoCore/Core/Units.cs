@@ -817,14 +817,20 @@ namespace Dynamo.Measure
                 return string.Format("{0}{1}\"", sign, inches).Trim();
             else if(string.IsNullOrEmpty(inches))
                 return string.Format("{0}{1}\"", sign, fraction).Trim();
-            
+
+            if (fraction == "1")
+            {
+                fraction = "";
+                inches = (double.Parse(inches) + 1).ToString(CultureInfo.InvariantCulture);
+                return string.Format("{0}{1}\"", sign, inches).Trim();
+            }
             return string.Format("{0}{1} {2}\"", sign, inches, fraction).Trim();
         }
     
         public static void ParseLengthFromString(string value, out double feet, 
             out double inch, out double m, out double cm, out double mm, out double numerator, out double denominator )
         {
-            string pattern = @"(((?<ft>((\+|-)?\d+([.,]\d{1,2})?))('|ft))*\s*((?<in>(?<num>(\+|-)?\d+([.,]\d{1,2})?)/(?<den>\d+([.,]\d{1,2})?)*(""|in))|(?<in>(?<wholeInch>(\+|-)?\d+([.,]\d{1,2})?)*(\s|-)*(?<num>(\+|-)?\d+([.,]\d{1,2})?)/(?<den>\d+([.,]\d{1,2})?)*(""|in))|(?<in>(?<wholeInch>(\+|-)?\d+([.,]\d{1,2})?)(""|in)))?)*((?<m>((\+|-)?\d+([.,]\d{1,2})?))m($|\s))*((?<cm>((\+|-)?\d+([.,]\d{1,2})?))cm($|\s))*((?<mm>((\+|-)?\d+([.,]\d{1,2})?))mm($|\s))*";
+            string pattern = @"(((?<ft>((\+|-)?\d+([.,]\d{1,2})?))( ?)('|ft))*\s*((?<in>(?<num>(\+|-)?\d+([.,]\d{1,2})?)/(?<den>\d+([.,]\d{1,2})?)*( ?)(""|in))|(?<in>(?<wholeInch>(\+|-)?\d+([.,]\d{1,2})?)*(\s|-)*(?<num>(\+|-)?\d+([.,]\d{1,2})?)/(?<den>\d+([.,]\d{1,2})?)*( ?)(""|in))|(?<in>(?<wholeInch>(\+|-)?\d+([.,]\d{1,2})?)( ?)(""|in)))?)*((?<m>((\+|-)?\d+([.,]\d{1,2})?))( ?)m($|\s))*((?<cm>((\+|-)?\d+([.,]\d{1,2})?))( ?)cm($|\s))*((?<mm>((\+|-)?\d+([.,]\d{1,2})?))( ?)mm($|\s))*";
 
             feet = 0.0;
             inch = 0.0;
