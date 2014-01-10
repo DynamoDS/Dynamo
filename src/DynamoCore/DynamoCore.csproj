@@ -160,6 +160,7 @@ limitations under the License.
     <Compile Include="Core\FunctionDefinition.cs" />
     <Compile Include="Core\PreferenceSettings.cs" />
     <Compile Include="Nodes\Geometry.cs" />
+    <Compile Include="Nodes\Measurement.cs" />
     <Compile Include="PackageManager\PackageManagerClient.cs" />
     <Compile Include="Search\SearchElements\CustomNodeSearchElement.cs" />
     <Compile Include="UI\Commands\AutomationSettings.cs" />
