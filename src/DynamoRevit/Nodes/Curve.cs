@@ -934,8 +934,9 @@ namespace Dynamo.Nodes
             if (arg0 is Reference)
             {
                 var curveRef = arg0 as Reference;
-                 
-                curveOrEdge = dynRevitSettings.Doc.Document.GetElement(curveRef.ElementId)
+
+                var document = DocumentManager.GetInstance().CurrentDBDocument;
+                curveOrEdge = document.GetElement(curveRef.ElementId)
                             .GetGeometryObjectFromReference(curveRef) as Autodesk.Revit.DB.GeometryObject;
                 if (!(curveOrEdge is Autodesk.Revit.DB.Curve || curveOrEdge is Autodesk.Revit.DB.Edge))
                     throw new Exception("Reference is not to curve or edge.");
