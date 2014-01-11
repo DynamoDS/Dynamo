@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using Dynamo.Utilities;
@@ -44,13 +45,6 @@ namespace Dynamo.Measure
         Millimeters,
         Centimeters,
         Meters
-    }
-
-    public class IncompatibleUnitsException : Exception
-    {
-        public IncompatibleUnitsException():base("Incompatible units."){}
-        public IncompatibleUnitsException(string message) : base(message){}
-        public IncompatibleUnitsException(string message, Exception inner) : base(message, inner){}
     }
 
     public abstract class SIUnit
@@ -142,6 +136,26 @@ namespace Dynamo.Measure
         public static SIUnit operator %(SIUnit x, SIUnit y)
         {
             return x.Modulo(y);
+        }
+
+        public override bool Equals(Object obj) 
+        {
+            return obj is SIUnit && this == (SIUnit)obj;
+        }
+        
+        public override int GetHashCode() 
+        {
+            return Value.GetHashCode();
+        }
+        
+        public static bool operator ==(SIUnit x, SIUnit y)
+        {
+            return x.GetType() == y.GetType() && x.Value == y.Value;
+        }
+        
+        public static bool operator !=(SIUnit x, SIUnit y) 
+        {
+            return !(x == y);
         }
     }
 
@@ -292,66 +306,88 @@ namespace Dynamo.Measure
             }
         }
 
-        private double ToMillimeters()
+        internal string ToString(DynamoLengthUnit lengthUnit)
+        {
+            switch (lengthUnit)
+            {
+                case DynamoLengthUnit.Millimeter:
+                    return ToMillimeterString();
+                case DynamoLengthUnit.Centimeter:
+                    return ToCentimeterString();
+                case DynamoLengthUnit.Meter:
+                    return ToMeterString();
+                case DynamoLengthUnit.DecimalInch:
+                    return ToDecimalInchString();
+                case DynamoLengthUnit.FractionalInch:
+                    return ToFractionalInchString();
+                case DynamoLengthUnit.DecimalFoot:
+                    return ToDecimalFootString();
+                case DynamoLengthUnit.FractionalFoot:
+                    return ToFractionalFootString();
+                default:
+                    return ToMeterString();
+            }
+        }
+
+        internal double ToMillimeters()
         {
             return _value * 1000;
         }
 
-        private double ToCentimeters()
+        internal double ToCentimeters()
         {
             return _value * 100;
         }
 
-        private double ToMeters()
+        internal double ToMeters()
         {
             return _value;
         }
 
-        private double ToInches()
+        internal double ToInches()
         {
             return _value * 39.370079;
         }
 
-        private double ToFeet()
+        internal double ToFeet()
         {
             return _value * 3.28084;
         }
 
-        private string ToMillimeterString()
+        internal string ToMillimeterString()
         {
             return ToMillimeters().ToString("0.00", CultureInfo.InvariantCulture) + " mm";
         }
 
-        public string ToCentimeterString()
+        internal string ToCentimeterString()
         {
             return ToCentimeters().ToString("0.00", CultureInfo.InvariantCulture) + " cm";
         }
 
-        public string ToMeterString()
+        internal string ToMeterString()
         {
             return ToMeters().ToString("0.00", CultureInfo.InvariantCulture) + " m";
         }
 
-        public string ToDecimalInchString()
+        internal string ToDecimalInchString()
         {
             return ToInches().ToString("0.00", CultureInfo.CurrentCulture) + " in";
         }
 
-        public string ToFractionalInchString()
+        internal string ToFractionalInchString()
         {
             return Utils.ToFractionalInches(ToInches());
         }
 
-        public string ToDecimalFootString()
+        internal string ToDecimalFootString()
         {
             return ToFeet().ToString("0.00", CultureInfo.CurrentCulture) + " ft";
         }
 
-        public string ToFractionalFootString()
+        internal string ToFractionalFootString()
         {
             return Utils.ToFeetAndFractionalInches(ToFeet());
         }
-
     }
 
     /// <summary>
@@ -482,52 +518,52 @@ namespace Dynamo.Measure
             }
         }
 
-        private double ToSquareMillimeters()
+        internal double ToSquareMillimeters()
         {
             return _value*1000000;
         }
 
-        private double ToSquareCentimeters()
+        internal double ToSquareCentimeters()
         {
             return _value*10000;
         }
 
-        private double ToSquareMeters()
+        internal double ToSquareMeters()
         {
             return _value;
         }
 
-        private double ToSquareInches()
+        internal double ToSquareInches()
         {
             return _value*1550;
         }
 
-        private double ToSquareFeet()
+        internal double ToSquareFeet()
         {
             return _value*10.7639;
         }
 
-        private string ToSquareMillimeterString()
+        internal string ToSquareMillimeterString()
         {
             return ToSquareMillimeters().ToString("0.00", CultureInfo.InvariantCulture) + " mm²";
         }
 
-        private string ToSquareCentimeterString()
+        internal string ToSquareCentimeterString()
         {
             return ToSquareCentimeters().ToString("0.00", CultureInfo.InvariantCulture) + " cm²";
         }
 
-        private string ToSquareMeterString()
+        internal string ToSquareMeterString()
         {
             return ToSquareMeters().ToString("0.00", CultureInfo.InvariantCulture) + " m²";
         }
 
-        private string ToSquareInchString()
+        internal string ToSquareInchString()
         {
             return ToSquareInches().ToString("0.00", CultureInfo.InvariantCulture) + " in²";
         }
 
-        private string ToSquareFootString()
+        internal string ToSquareFootString()
         {
             return ToSquareFeet().ToString("0.00", CultureInfo.InvariantCulture) + " ft²";
         }
@@ -603,52 +639,52 @@ namespace Dynamo.Measure
             }
         }
 
-        private double ToCubicMillimeters()
+        internal double ToCubicMillimeters()
         {
             return _value * 1000000000;
         }
 
-        private double ToCubicCentimeters()
+        internal double ToCubicCentimeters()
         {
             return _value * 1000000;
         }
 
-        private double ToCubicMeters()
+        internal double ToCubicMeters()
         {
             return _value;
         }
 
-        private double ToCubicInches()
+        internal double ToCubicInches()
         {
             return _value * 61023.7;
         }
 
-        private double ToCubicFeet()
+        internal double ToCubicFeet()
         {
             return _value * 35.3147;
         }
 
-        private string ToCubicMillimeterString()
+        internal string ToCubicMillimeterString()
         {
             return ToCubicMillimeters().ToString("0.00", CultureInfo.InvariantCulture) + " mm³";
         }
 
-        private string ToCubicCentimeterString()
+        internal string ToCubicCentimeterString()
         {
             return ToCubicCentimeters().ToString("0.00", CultureInfo.InvariantCulture) + " cm³";
         }
 
-        private string ToCubicMeterString()
+        internal string ToCubicMeterString()
         {
             return ToCubicMeters().ToString("0.00", CultureInfo.InvariantCulture) + " m³";
         }
 
-        private string ToCubicInchString()
+        internal string ToCubicInchString()
         {
             return ToCubicInches().ToString("0.00", CultureInfo.InvariantCulture) + " in³";
         }
 
-        private string ToCubicFootString()
+        internal string ToCubicFootString()
         {
             return ToCubicFeet().ToString("0.00", CultureInfo.InvariantCulture) + " ft³";
         }
@@ -660,6 +696,13 @@ namespace Dynamo.Measure
         {
             return (Math.Abs(double1 - double2) <= precision);
         }
+    }
+
+    public class IncompatibleUnitsException : Exception
+    {
+        public IncompatibleUnitsException() : base("Incompatible units.") { }
+        public IncompatibleUnitsException(string message) : base(message) { }
+        public IncompatibleUnitsException(string message, Exception inner) : base(message, inner) { }
     }
 
     /// <summary>
@@ -719,6 +762,15 @@ namespace Dynamo.Measure
             return "";
         }
 
+        private static double RoundToSignificantDigits(double d, int digits)
+        {
+            if (d == 0)
+                return 0;
+
+            double scale = Math.Pow(10, Math.Floor(Math.Log10(Math.Abs(d))) + 1);
+            return scale * Math.Round(d / scale, digits);
+        }
+
         public static double ParseUnit(string value, string unitSymbol)
         {
             double m;
@@ -767,6 +819,7 @@ namespace Dynamo.Measure
         /// <param name="value"></param>
         /// <returns></returns>
         public static string ToFeetAndFractionalInches(double decimalFeet)
+
         {
             double wholeFeet = 0.0;
             double partialFeet = 0.0;
@@ -787,7 +840,8 @@ namespace Dynamo.Measure
 
             string fractionalInches = ToFractionalInches(Math.Round(partialFeet * 12.0,4));
 
-            if (fractionalInches == "11 1\"")
+            if (fractionalInches == "11 1\"" ||
+                fractionalInches == "12\"")
             {
                 //add a foot to the whole feet
                 wholeFeet += 1.0;
@@ -806,6 +860,8 @@ namespace Dynamo.Measure
 
         public static string ToFractionalInches(double decimalInches)
         {
+            decimalInches = RoundToSignificantDigits(decimalInches, 5);
+
             string inches = Utils.ParseWholeInchesToString(decimalInches);
             string fraction = Utils.ParsePartialInchesToString(decimalInches, 0.015625);
 
