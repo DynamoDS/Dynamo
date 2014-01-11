@@ -138,25 +138,6 @@ namespace Dynamo.Measure
             return x.Modulo(y);
         }
 
-        public override bool Equals(Object obj) 
-        {
-            return obj is SIUnit && this == (SIUnit)obj;
-        }
-        
-        public override int GetHashCode() 
-        {
-            return Value.GetHashCode();
-        }
-        
-        public static bool operator ==(SIUnit x, SIUnit y)
-        {
-            return x.GetType() == y.GetType() && x.Value == y.Value;
-        }
-        
-        public static bool operator !=(SIUnit x, SIUnit y) 
-        {
-            return !(x == y);
-        }
     }
 
     /// <summary>
