@@ -4,13 +4,21 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:controls="clr-namespace:Dynamo.Controls"
+             xmlns:core="clr-namespace:Dynamo.Core"
              mc:Ignorable="d"
              Name="InfoBubbleWindowUserControl"
              Loaded="InfoBubbleWindowUserControl_Loaded">
     <UserControl.Resources>
         <ResourceDictionary>
             <controls:InfoBubbleStyleToVisibilityConverter x:Key="StyleToVisibilityConverter"/>
+            <Storyboard x:Key="fadeInStoryBoard" Name="fadeInStoryBoard" TargetName="mainGrid" Storyboard.TargetProperty="Opacity">
+                <DoubleAnimation Name ="countUpDoubleAnimation" From="0" To="0.95" Duration="0:0:.25" FillBehavior="HoldEnd" Completed="CountUpDoubleAnimation_Completed"/>
+            </Storyboard>
+            <Storyboard x:Key="fadeOutStoryBoard" Name="fadeOutStoryBoard" TargetName="mainGrid" Storyboard.TargetProperty="Opacity">
+                <DoubleAnimation Name ="countDownDoubleAnimation" From="0.95" To="0" Duration="0:0:.25" FillBehavior="HoldEnd" Completed="CountDownDoubleAnimation_Completed"/>
+            </Storyboard>
         </ResourceDictionary>
+        
     </UserControl.Resources>
 
     <Grid x:Name="mainGrid" Background="Transparent" HorizontalAlignment="Left" VerticalAlignment="Top"

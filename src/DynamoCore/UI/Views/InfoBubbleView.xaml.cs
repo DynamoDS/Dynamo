@@ -128,9 +128,8 @@ namespace Dynamo.Controls
         {
             InitializeComponent();
 
-            // Setup storyboard used for animating fading in and fading out of info bubble
-            SetupFadeInStoryBoard();
-            SetupFadeOutStoryBoard();
+            fadeInStoryBoard = (Storyboard)FindResource("fadeInStoryBoard");
+            fadeOutStoryBoard = (Storyboard)FindResource("fadeOutStoryBoard");
 
             ContentFontSize = Configurations.PreviewTextFontSize;
             preview_LastMaxWidth = double.MaxValue;
@@ -160,40 +159,6 @@ namespace Dynamo.Controls
                 }
             }
         }
-
-        #region Setup animation storyboard
-        private void SetupFadeInStoryBoard()
-        {
-            DoubleAnimation countUpDoubleAnimation = new DoubleAnimation();
-            countUpDoubleAnimation.From = 0.0;
-            countUpDoubleAnimation.To = Configurations.MaxOpacity;
-            countUpDoubleAnimation.Duration =
-                new Duration(TimeSpan.FromMilliseconds(Configurations.FadeInDurationInMilliseconds));
-            countUpDoubleAnimation.FillBehavior = FillBehavior.HoldEnd;
-            countUpDoubleAnimation.Completed += CountUpDoubleAnimation_Completed;
-
-            fadeInStoryBoard = new Storyboard();
-            fadeInStoryBoard.Children.Add(countUpDoubleAnimation);
-            Storyboard.SetTargetName(countUpDoubleAnimation, mainGrid.Name);
-            Storyboard.SetTargetProperty(countUpDoubleAnimation, new PropertyPath(Grid.OpacityProperty));
-        }
-
-        private void SetupFadeOutStoryBoard()
-        {
-            DoubleAnimation countDownDoubleAnimation = new DoubleAnimation();
-            countDownDoubleAnimation.From = Configurations.MaxOpacity;
-            countDownDoubleAnimation.To = 0.0;
-            countDownDoubleAnimation.Duration =
-                new Duration(TimeSpan.FromMilliseconds(Configurations.FadeOutDurationInMilliseconds));
-            countDownDoubleAnimation.FillBehavior = FillBehavior.HoldEnd;
-            countDownDoubleAnimation.Completed += CountDownDoubleAnimation_Completed;
-
-            fadeOutStoryBoard = new Storyboard();
-            fadeOutStoryBoard.Children.Add(countDownDoubleAnimation);
-            Storyboard.SetTargetName(countDownDoubleAnimation, mainGrid.Name);
-            Storyboard.SetTargetProperty(countDownDoubleAnimation, new PropertyPath(Grid.OpacityProperty));
-        }
-        #endregion
 
         #region FadeIn FadeOut Event Handling
 
