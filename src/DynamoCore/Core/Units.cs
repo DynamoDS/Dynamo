@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Double = System.Double;
 
@@ -31,21 +29,10 @@ namespace Dynamo.Measure
     public enum DynamoVolumeUnit
     {
         CubicInch,
-        CubicFeet,
+        CubicFoot,
         CubicMillimeter,
         CubicCentimeter,
         CubicMeter
-    }
-
-    public enum DynamoUnitDisplayType
-    {
-        DecimalInches,
-        DecimalFeet,
-        FractionalInches,
-        FractionalFeetInches,
-        Millimeters,
-        Centimeters,
-        Meters
     }
 
     public abstract class SIUnit
@@ -676,7 +663,7 @@ namespace Dynamo.Measure
                         _value = total / cubic_meters_to_cubic_inches;
                         return;
 
-                    case DynamoVolumeUnit.CubicFeet:
+                    case DynamoVolumeUnit.CubicFoot:
                         _value = total / cubic_meters_to_cubic_feet;
                         return;
                 }
@@ -696,21 +683,17 @@ namespace Dynamo.Measure
 
         public override string ToString()
         {
-            switch (dynSettings.Controller.PreferenceSettings.LengthUnit)
+            switch (dynSettings.Controller.PreferenceSettings.VolumeUnit)
             {
-                case DynamoLengthUnit.Millimeter:
+                case DynamoVolumeUnit.CubicMillimeter:
                     return ToCubicMillimeterString();
-                case DynamoLengthUnit.Centimeter:
+                case DynamoVolumeUnit.CubicCentimeter:
                     return ToCubicCentimeterString();
-                case DynamoLengthUnit.Meter:
+                case DynamoVolumeUnit.CubicMeter:
                     return ToCubicMeterString();
-                case DynamoLengthUnit.DecimalInch:
+                case DynamoVolumeUnit.CubicInch:
                     return ToCubicInchString();
-                case DynamoLengthUnit.FractionalInch:
-                    return ToCubicInchString();
-                case DynamoLengthUnit.DecimalFoot:
-                    return ToCubicFootString();
-                case DynamoLengthUnit.FractionalFoot:
+                case DynamoVolumeUnit.CubicFoot:
                     return ToCubicFootString();
                 default:
                     return ToCubicMeterString();

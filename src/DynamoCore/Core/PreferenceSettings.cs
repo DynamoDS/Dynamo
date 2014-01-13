@@ -66,8 +66,8 @@ namespace Dynamo
             this.ConnectorType = ConnectorType.BEZIER;
             this.FullscreenWatchShowing = true;
             this.LengthUnit = DynamoLengthUnit.Meter;
-            this.VolumeUnit = DynamoVolumeUnit.CubicMeter;
             this.AreaUnit = DynamoAreaUnit.SquareMeter;
+            this.VolumeUnit = DynamoVolumeUnit.CubicMeter;
         }
 
         /// <summary>

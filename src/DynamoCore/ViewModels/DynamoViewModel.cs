@@ -180,8 +180,10 @@ namespace Dynamo.ViewModels
         public DelegateCommand TogglePreviewBubbleVisibilityCommand { get; set; }
 
         public DelegateCommand ExportToSTLCommand { get; set; }
+
         public DelegateCommand SetLengthUnitCommand { get; set; }
-        public DelegateCommand SetAreaUnitcommand { get; set; }
+        public DelegateCommand SetAreaUnitCommand { get; set; }
+        public DelegateCommand SetVolumeUnitCommand { get; set; }
 
         /// <summary>
         /// An observable collection of workspace view models which tracks the model
@@ -544,8 +546,10 @@ namespace Dynamo.ViewModels
             TogglePreviewBubbleVisibilityCommand = new DelegateCommand(TogglePreviewBubbleVisibility, CanTogglePreviewBubbleVisibility);
 
             ExportToSTLCommand = new DelegateCommand(ExportToSTL, CanExportToSTL);
+
             SetLengthUnitCommand = new DelegateCommand(SetLengthUnit, CanSetLengthUnit);
-            SetAreaUnitcommand = new DelegateCommand(SetAreaUnit, CanSetAreaUnit);
+            SetAreaUnitCommand = new DelegateCommand(SetAreaUnit, CanSetAreaUnit);
+            SetVolumeUnitCommand = new DelegateCommand(SetVolumeUnit, CanSetVolumeUnit);
 
             DynamoLogger.Instance.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Instance_PropertyChanged);
 
@@ -1438,6 +1442,36 @@ namespace Dynamo.ViewModels
         }
 
         internal bool CanSetAreaUnit(object parameter)
+        {
+            return true;
+        }
+
+        private void SetVolumeUnit(object parameter)
+        {
+            switch (parameter.ToString())
+            {
+                case "CubicInch":
+                    Controller.PreferenceSettings.VolumeUnit = DynamoVolumeUnit.CubicInch;
+                    return;
+                case "CubicFoot":
+                    Controller.PreferenceSettings.VolumeUnit = DynamoVolumeUnit.CubicFoot;
+                    return;
+                case "CubicMillimeter":
+                    Controller.PreferenceSettings.VolumeUnit = DynamoVolumeUnit.CubicMillimeter;
+                    return;
+                case "CubicCentimeter":
+                    Controller.PreferenceSettings.VolumeUnit = DynamoVolumeUnit.CubicCentimeter;
+                    return;
+                case "CubicMeter":
+                    Controller.PreferenceSettings.VolumeUnit = DynamoVolumeUnit.CubicMeter;
+                    return;
+                default:
+                    Controller.PreferenceSettings.VolumeUnit = DynamoVolumeUnit.CubicMeter;
+                    return;
+            }
+        }
+
+        internal bool CanSetVolumeUnit(object parameter)
         {
             return true;
         }
