@@ -2815,10 +2815,37 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var x = ((Value.Number)args[0]).Item;
-            var y = ((Value.Number)args[1]).Item;
+            //number ^ number
+            if (args[0].IsNumber && args[1].IsNumber)
+            {
+                var x = ((Value.Number)args[0]).Item;
+                var y = ((Value.Number)args[1]).Item;
 
-            return Value.NewNumber(Math.Pow(x,y));
+                return Value.NewNumber(Math.Pow(x, y));
+            }
+
+            //unit ^ number
+            if (args[0].IsContainer && args[1].IsNumber)
+            {
+                var length = (((Value.Container) args[0]).Item) as Measure.Length;
+                if (length != null)
+                {
+                    var x = SIUnit.UnwrapFromValue(args[0]);
+                    var y = ((Value.Number)args[1]).Item;
+
+                    if (y == 2)
+                    {
+                        return Value.NewContainer(new Area(Math.Pow(x.Value, y)));
+                    }
+                    else if (y == 3)
+                    {
+                        return Value.NewContainer(new Volume(Math.Pow(x.Value, y)));
+                    }
+                }
+            }
+
+            throw new MathematicalArgumentException();
+            
         }
 
         protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)

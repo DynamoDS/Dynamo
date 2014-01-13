@@ -312,6 +312,13 @@
                             <MenuItem Name="units_area_centimeter" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareCentimeter, Mode=TwoWay}" Command="{Binding SetAreaUnitCommand}" CommandParameter="SquareCentimeter" Header="Square Centimeter"/>
                             <MenuItem Name="units_area_meter" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.AreaUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=SquareMeter, Mode=TwoWay}" Command="{Binding SetAreaUnitCommand}" CommandParameter="SquareMeter" Header="Square Meter"/>
                         </MenuItem>
+                        <MenuItem Focusable="False" Header="Volume Units" Name="VolumeUnitsMenu">
+                            <MenuItem Name="units_volume_inch" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicInch, Mode=TwoWay}" Command="{Binding SetVolumeUnitCommand}" CommandParameter="CubicInch" Header="Cubic Inch"/>
+                            <MenuItem Name="units_volume_foot" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicFoot, Mode=TwoWay}" Command="{Binding SetVolumeUnitCommand}" CommandParameter="CubicFoot" Header="Cubic Foot"/>
+                            <MenuItem Name="units_volume_millimeter" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicMillimeter, Mode=TwoWay}" Command="{Binding SetVolumeUnitCommand}" CommandParameter="CubicMillimeter" Header="Cubic Millimeter"/>
+                            <MenuItem Name="units_volume_centimeter" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicCentimeter, Mode=TwoWay}" Command="{Binding SetVolumeUnitCommand}" CommandParameter="CubicCentimeter" Header="Cubic Centimeter"/>
+                            <MenuItem Name="units_volume_meter" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.VolumeUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CubicMeter, Mode=TwoWay}" Command="{Binding SetVolumeUnitCommand}" CommandParameter="SquareMeter" Header="Cubic Meter"/>
+                        </MenuItem>
                         <!--<MenuItem Focusable="False" Header="Volume Units" Name="VolumeUnitsMenu">
                             
                         </MenuItem>-->
