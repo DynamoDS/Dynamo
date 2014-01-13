@@ -55,7 +55,7 @@
                     <PathGeometry>
                         <PathGeometry.Figures>
                             <PathFigureCollection>
-                                <PathFigure StartPoint="{Binding CurvePoint0}">
+                                <PathFigure x:Name="BezFigure" StartPoint="{Binding CurvePoint0}">
                                     <PathFigure.Segments>
                                         <PathSegmentCollection>
                                             <BezierSegment Point1="{Binding CurvePoint1}" Point2="{Binding CurvePoint2}" Point3="{Binding CurvePoint3}" />
@@ -75,7 +75,7 @@
                     <PathGeometry>
                         <PathGeometry.Figures>
                             <PathFigureCollection>
-                                <PathFigure StartPoint="{Binding CurvePoint0}">
+                                <PathFigure x:Name="PlineFigure" StartPoint="{Binding CurvePoint0}">
                                     <PathFigure.Segments>
                                         <PathSegmentCollection>
                                             <LineSegment Point="{Binding CurvePoint1}"/>
