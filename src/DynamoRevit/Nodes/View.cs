@@ -467,9 +467,12 @@ namespace Dynamo.Nodes
     {
         public SaveImageFromRevitView()
         {
-            InPortData.Add(new PortData("view", "The view to save an image of.", typeof(Value.Container)));
-            InPortData.Add(new PortData("filename", "The file to save the image as.", typeof(Value.String)));
-            OutPortData.Add(new PortData("image", "An image of the revit view.", typeof(Value.Container)));
+            InPortData.Add(
+                new PortData("view", "The view to save an image of.", typeof(Value.Container)));
+            InPortData.Add(
+                new PortData("filename", "The file to save the image as.", typeof(Value.String)));
+            OutPortData.Add(
+                new PortData("image", "An image of the revit view.", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -477,32 +480,64 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             var view = (View)((Value.Container)args[0]).Item;
-            string pathName = ((Value.String)args[1]).Item;
 
-            //string name = view.ViewName;
-            //string pathName = path; +"\\" + name;
+            var fullPath = ((Value.String)args[1]).Item;
+
+            string pathName = fullPath;
+            string extension = null;
+
+            var fileType = ImageFileType.PNG;
+            if (Path.HasExtension(fullPath))
+            {
+                extension = Path.GetExtension(fullPath).ToLower();
+                switch (extension)
+                {
+                    case ".jpg":
+                        fileType = ImageFileType.JPEGLossless;
+                        break;
+                    case ".png":
+                        fileType = ImageFileType.PNG;
+                        break;
+                    case ".bmp":
+                        fileType = ImageFileType.BMP;
+                        break;
+                    case ".tga":
+                        fileType = ImageFileType.TARGA;
+                        break;
+                    case ".tif":
+                        fileType = ImageFileType.TIFF;
+                        break;
+                }
+                pathName = Path.Combine(
+                    Path.GetDirectoryName(fullPath),
+                    Path.GetFileNameWithoutExtension(fullPath));
+            }
 
             var options = new ImageExportOptions
             {
                 ExportRange = ExportRange.SetOfViews,
                 FilePath = pathName,
-                HLRandWFViewsFileType = ImageFileType.PNG,
+                HLRandWFViewsFileType = fileType,
                 ImageResolution = ImageResolution.DPI_72,
                 ZoomType = ZoomFitType.Zoom,
-                ShadowViewsFileType = ImageFileType.PNG
+                ShadowViewsFileType = fileType
             };
 
             options.SetViewsAndSheets(new List<ElementId> { view.Id });
 
-            dynRevitSettings.Doc.Document.ExportImage(options);//revit only has a method to save image to disk.
+            dynRevitSettings.Doc.Document.ExportImage(options);
+                //revit only has a method to save image to disk.
+
+            //hack - rename saved file to match specified file name
+            //File.Move(string.Format("{0} - {1} - {2}.png", pathName, view.ViewType, view.ViewName), pathName + ".png");
+
             //hack - make sure to change the read image below if other file types are supported
-            Image image = Image.FromFile(pathName + ".png");
+            //Image image = Image.FromFile(pathName + (extension ?? ".png"));
 
-            return Value.NewContainer(image);
+            return Value.NewDummy("wrote image file"); //NewContainer(image);
         }
-
     }
-    
+
     [NodeName("Watch Image")]
     [NodeDescription("Previews an image")]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
