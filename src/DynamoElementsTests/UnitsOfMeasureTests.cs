@@ -43,6 +43,147 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void SetAreaFromString()
+        {
+            var area = new Area(1.0);
+
+            area.SetValueFromString("1 mm²");
+            Assert.AreEqual(1.0e-6 , area.Value, 0.001);
+
+            area.SetValueFromString("1mm²");
+            Assert.AreEqual(1.0e-6, area.Value, 0.001);
+
+            area.SetValueFromString("1 mm2");
+            Assert.AreEqual(1.0e-6, area.Value, 0.001);
+
+            area.SetValueFromString("1 sqmm");
+            Assert.AreEqual(1.0e-6, area.Value, 0.001);
+
+
+            area.SetValueFromString("1 cm²");
+            Assert.AreEqual(0.0001, area.Value, 0.001);
+
+            area.SetValueFromString("1cm²");
+            Assert.AreEqual(0.0001, area.Value, 0.001);
+
+            area.SetValueFromString("1 cm2");
+            Assert.AreEqual(0.0001, area.Value, 0.001);
+
+            area.SetValueFromString("1 sqcm");
+            Assert.AreEqual(0.0001, area.Value, 0.001);
+
+
+            area.SetValueFromString("1 m²");
+            Assert.AreEqual(1, area.Value, 0.001);
+
+            area.SetValueFromString("1m²");
+            Assert.AreEqual(1, area.Value, 0.001);
+
+            area.SetValueFromString("1 m2");
+            Assert.AreEqual(1, area.Value, 0.001);
+
+            area.SetValueFromString("1 sqm");
+            Assert.AreEqual(1, area.Value, 0.001);
+
+
+            area.SetValueFromString("1 in²");
+            Assert.AreEqual(0.00064516, area.Value, 0.001);
+
+            area.SetValueFromString("1in²");
+            Assert.AreEqual(0.00064516, area.Value, 0.001);
+
+            area.SetValueFromString("1 in2");
+            Assert.AreEqual(0.00064516, area.Value, 0.001);
+
+            area.SetValueFromString("1 sqin");
+            Assert.AreEqual(0.00064516, area.Value, 0.001);
+
+
+            area.SetValueFromString("1 ft²");
+            Assert.AreEqual(0.092903, area.Value, 0.001);
+
+            area.SetValueFromString("1ft²");
+            Assert.AreEqual(0.092903, area.Value, 0.001);
+
+            area.SetValueFromString("1 ft2");
+            Assert.AreEqual(0.092903, area.Value, 0.001);
+
+            area.SetValueFromString("1 sqft");
+            Assert.AreEqual(0.092903, area.Value, 0.001);
+
+        }
+
+        [Test]
+        public void SetVolumeFromString()
+        {
+            var volume = new Volume(1.0);
+
+            volume.SetValueFromString("1 mm³");
+            Assert.AreEqual(1.0e-9, volume.Value, 0.001);
+
+            volume.SetValueFromString("1mm³");
+            Assert.AreEqual(1.0e-9, volume.Value, 0.001);
+
+            volume.SetValueFromString("1 mm3");
+            Assert.AreEqual(1.0e-9, volume.Value, 0.001);
+
+            volume.SetValueFromString("1 cumm");
+            Assert.AreEqual(1.0e-9, volume.Value, 0.001);
+
+
+            volume.SetValueFromString("1 cm³");
+            Assert.AreEqual(1.0e-6, volume.Value, 0.001);
+
+            volume.SetValueFromString("1cm³");
+            Assert.AreEqual(1.0e-6, volume.Value, 0.001);
+
+            volume.SetValueFromString("1 cm3");
+            Assert.AreEqual(1.0e-6, volume.Value, 0.001);
+
+            volume.SetValueFromString("1 cucm");
+            Assert.AreEqual(1.0e-6, volume.Value, 0.001);
+
+
+            volume.SetValueFromString("1 m³");
+            Assert.AreEqual(1, volume.Value, 0.001);
+
+            volume.SetValueFromString("1m³");
+            Assert.AreEqual(1, volume.Value, 0.001);
+
+            volume.SetValueFromString("1 m3");
+            Assert.AreEqual(1, volume.Value, 0.001);
+
+            volume.SetValueFromString("1 cum");
+            Assert.AreEqual(1, volume.Value, 0.001);
+
+
+            volume.SetValueFromString("1 in³");
+            Assert.AreEqual(1.6387e-5, volume.Value, 0.001);
+
+            volume.SetValueFromString("1in³");
+            Assert.AreEqual(1.6387e-5, volume.Value, 0.001);
+
+            volume.SetValueFromString("1 in3");
+            Assert.AreEqual(1.6387e-5, volume.Value, 0.001);
+
+            volume.SetValueFromString("1 cuin");
+            Assert.AreEqual(1.6387e-5, volume.Value, 0.001);
+
+
+            volume.SetValueFromString("1 ft³");
+            Assert.AreEqual(0.0283168, volume.Value, 0.001);
+
+            volume.SetValueFromString("1ft³");
+            Assert.AreEqual(0.0283168, volume.Value, 0.001);
+
+            volume.SetValueFromString("1 ft3");
+            Assert.AreEqual(0.0283168, volume.Value, 0.001);
+
+            volume.SetValueFromString("1 cuft");
+            Assert.AreEqual(0.0283168, volume.Value, 0.001);
+        }
+
+        [Test]
         public void ToFractonialInchRepresentation()
         {
             var length = new Length(0.03175); //1.25"
