@@ -2557,12 +2557,6 @@ namespace Dynamo.Nodes
         }
     }
 
-    public class MathematicalArgumentException : Exception
-    {
-        public MathematicalArgumentException():base("The result could not be computed given the provided inputs."){}
-        public MathematicalArgumentException(string message):base(message){}
-    }
-
     [NodeName("Add")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_MATH_ARITHMETIC)]
     [NodeDescription("Adds two numbers.")]

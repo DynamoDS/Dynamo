@@ -70,7 +70,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Length")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("Enter a length in project units.")]
+    [NodeDescription("Enter a length.")]
     [NodeSearchTags("Imperial", "Metric", "Length", "Project", "units")]
     public class LengthInput : MeasurementInputBase
     {
@@ -84,7 +84,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Area")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("Enter an area in project units.")]
+    [NodeDescription("Enter an area.")]
     [NodeSearchTags("Imperial", "Metric", "Area", "Project", "units")]
     public class AreaInput : MeasurementInputBase
     {
@@ -92,6 +92,20 @@ namespace Dynamo.Nodes
         {
             _measure = new Measure.Area(0.0);
             OutPortData.Add(new PortData("area", "The area. Stored internally as decimal meters squared.", typeof(FScheme.Value.Container)));
+            RegisterAllPorts();
+        }
+    }
+
+    [NodeName("Volume")]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeDescription("Enter a volume.")]
+    [NodeSearchTags("Imperial", "Metric", "volume", "Project", "units")]
+    public class VolumeInput : MeasurementInputBase
+    {
+        public VolumeInput()
+        {
+            _measure = new Measure.Volume(0.0);
+            OutPortData.Add(new PortData("volume", "The volume. Stored internally as decimal meters cubed.", typeof(FScheme.Value.Container)));
             RegisterAllPorts();
         }
     }
