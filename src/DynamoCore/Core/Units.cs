@@ -183,7 +183,7 @@ namespace Dynamo.Measure
                 return new Area(_value * x.Value);
             }
 
-            throw new IncompatibleUnitsException();
+            throw new UnitsException(GetType(), x.GetType());
         }
 
         public override SIUnit Multiply(double x)
@@ -198,7 +198,7 @@ namespace Dynamo.Measure
                 return _value/x.Value;
             }
 
-            throw new IncompatibleUnitsException();
+            throw new UnitsException(GetType(), x.GetType());
         }
 
         public override SIUnit Divide(double x)
@@ -418,8 +418,8 @@ namespace Dynamo.Measure
                 //return a volume
                 return new Volume(_value * x.Value);
             }
-            
-            throw new IncompatibleUnitsException();
+
+            throw new UnitsException(GetType(), x.GetType());
         }
 
         public override SIUnit Multiply(double x)
@@ -441,17 +441,22 @@ namespace Dynamo.Measure
                 return new Length(_value/x.Value);
             }
 
-            throw new IncompatibleUnitsException();
+            throw new UnitsException(GetType(), x.GetType());
         }
 
         public override SIUnit Divide(double x)
         {
-            throw new NotImplementedException();
+            return new Area(_value/x);
         }
 
         public override SIUnit Modulo(SIUnit x)
         {
-            throw new NotImplementedException();
+            if (x is Area)
+            {
+                return new Area(_value % x.Value);
+            }
+            
+            throw new UnitsException(GetType(), x.GetType());
         }
 
         #endregion
@@ -604,7 +609,7 @@ namespace Dynamo.Measure
 
         public override SIUnit Multiply(SIUnit x)
         {
-            throw new MathematicalArgumentException();
+            throw new UnitsException(GetType(), x.GetType());
         }
 
         public override SIUnit Multiply(double x)
@@ -623,7 +628,7 @@ namespace Dynamo.Measure
                 return new Length(_value/x.Value);
             }
 
-            throw new MathematicalArgumentException();
+            throw new UnitsException(GetType(), x.GetType());
         }
 
         public override SIUnit Divide(double x)
@@ -633,7 +638,12 @@ namespace Dynamo.Measure
 
         public override SIUnit Modulo(SIUnit x)
         {
-            return new Volume(_value % x.Value);
+            if (x is Volume)
+            {
+                return new Volume(_value % x.Value);
+            }
+            
+            throw new MathematicalArgumentException();
         }
 
         #endregion
@@ -770,13 +780,6 @@ namespace Dynamo.Measure
         {
             return (Math.Abs(double1 - double2) <= precision);
         }
-    }
-
-    public class IncompatibleUnitsException : Exception
-    {
-        public IncompatibleUnitsException() : base("Incompatible units.") { }
-        public IncompatibleUnitsException(string message) : base(message) { }
-        public IncompatibleUnitsException(string message, Exception inner) : base(message, inner) { }
     }
 
     /// <summary>
@@ -1049,5 +1052,16 @@ namespace Dynamo.Measure
                     out cubic_meter);
             }
         }
+    }
+
+    public class MathematicalArgumentException : Exception
+    {
+        public MathematicalArgumentException() : base("The result could not be computed given the provided inputs.") { }
+        public MathematicalArgumentException(string message) : base(message) { }
+    }
+
+    public class UnitsException : MathematicalArgumentException
+    {
+        public UnitsException(Type a, Type b) : base(string.Format("{0} and {1} are incompatible for this operation.", a, b)) { }
     }
 }

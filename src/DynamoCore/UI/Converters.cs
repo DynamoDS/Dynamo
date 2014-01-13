@@ -1302,6 +1302,10 @@ namespace Dynamo.Controls
             {
                 measure = new Area((double)value);
             }
+            else if (parameter is Volume)
+            {
+                measure = new Volume((double)value);
+            }
             return measure.ToString();
         }
 
@@ -1315,6 +1319,10 @@ namespace Dynamo.Controls
             else if (parameter is Area)
             {
                 measure = new Area(0.0);
+            }
+            else if (parameter is Volume)
+            {
+                measure = new Volume(0.0);
             }
             measure.SetValueFromString(value.ToString());
             return measure.Value;
