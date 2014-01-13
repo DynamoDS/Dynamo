@@ -559,7 +559,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Identity")]
-    [NodeCategory(BuiltinNodeCategories.CORE_INPUT )]
+    [NodeCategory(BuiltinNodeCategories.CORE_FUNCTIONS)]
     [NodeDescription("Identity function")]
     public class Identity : NodeWithOneOutput
     {
@@ -578,6 +578,26 @@ namespace Dynamo.Nodes
         protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
         {
             return builder.Build(this, inputs);
+        }
+    }
+
+
+    [NodeName("Is Null?")]
+    [NodeCategory(BuiltinNodeCategories.CORE)]
+    [NodeDescription("Determines if the given value is null.")]
+    public class IsNull : NodeWithOneOutput
+    {
+        public IsNull()
+        {
+            InPortData.Add(new PortData("", "Any data", typeof(object)));
+            OutPortData.Add(new PortData("null?", "Is the input null?", typeof(bool)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            return args[0] == null || (args[0] as dynamic).Item == null;
         }
     }
 
