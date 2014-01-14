@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Dynamo.Utilities;
+using Microsoft.FSharp.Collections;
 using Double = System.Double;
 
 namespace Dynamo.Measure
@@ -216,6 +218,12 @@ namespace Dynamo.Measure
         /// <returns></returns>
         public static FScheme.Value UnwrapToDoubleWithHostUnitConversion(FScheme.Value value)
         {
+            if (value.IsList)
+            {
+                //recursively convert items in list
+                return ConvertListToHostUnits((FScheme.Value.List)value);
+            }
+            
             if (value.IsContainer)
             {
                 var unit = ((FScheme.Value.Container) value).Item as SIUnit;
@@ -226,6 +234,12 @@ namespace Dynamo.Measure
             }
 
             return value;
+        }
+
+        public static FScheme.Value ConvertListToHostUnits(FScheme.Value.List value)
+        {
+            var list = value.Item;
+            return FScheme.Value.NewList(FSchemeInterop.Utils.SequenceToFSharpList(list.Select(UnwrapToDoubleWithHostUnitConversion)));
         }
 
         public static SIUnit UnwrapToSIUnit(FScheme.Value value)
@@ -248,6 +262,7 @@ namespace Dynamo.Measure
     /// </summary>
     public class Length : SIUnit
     {
+
         public Length(double value):base(value){}
 
         public static Length FromFeet(double value)
