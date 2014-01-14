@@ -1029,7 +1029,8 @@ namespace Dynamo.Models
 
         protected virtual void __eval_internal(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
         {
-            if (this.GetType() != typeof(Watch))
+            var t = GetType();
+            if (t != typeof(Watch) && !typeof(MathBase).IsAssignableFrom(t) )
             {
                 args = Utils.SequenceToFSharpList(args.Select(SIUnit.UnwrapToDoubleWithHostUnitConversion));
             }
