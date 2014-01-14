@@ -27,7 +27,7 @@ namespace Dynamo
         public bool ShowConnector { get; set; }
         public ConnectorType ConnectorType { get; set; }
         public bool FullscreenWatchShowing { get; set; }
-
+        
         public DynamoLengthUnit LengthUnit
         {
             get { return _lengthUnit; }

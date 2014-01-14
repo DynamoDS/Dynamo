@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Threading;
+using System.Web.UI.HtmlControls;
 using Dynamo.Measure;
 using Dynamo.Nodes;
 using System.Xml;
@@ -1030,8 +1031,7 @@ namespace Dynamo.Models
         {
             if (this.GetType() != typeof(Watch))
             {
-                //unwrap unit args to doubles
-                args = Utils.SequenceToFSharpList(args.Select(SIUnit.UnwrapToDouble));
+                args = Utils.SequenceToFSharpList(args.Select(SIUnit.UnwrapToDoubleWithHostUnitConversion));
             }
 
             _errorCount = 0;
