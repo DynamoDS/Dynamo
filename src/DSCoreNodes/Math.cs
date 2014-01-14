@@ -8,7 +8,7 @@ namespace DSCoreNodes
     /// <summary>
     /// Methods for performing Mathematical operations.
     /// </summary>
-    public static class Math
+    public static class DSMath
     {
         /// <summary>
         /// Generates a random double in the range of [0, 1).
