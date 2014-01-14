@@ -405,7 +405,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(0.0, Utils.FromFeetAndFractionalInches("6.5"));
         }
 
-       
         [Test]
         public void UnitsMath()
         {
