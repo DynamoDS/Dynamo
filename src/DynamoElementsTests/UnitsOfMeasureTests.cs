@@ -405,37 +405,85 @@ namespace Dynamo.Tests
             Assert.AreEqual(0.0, Utils.FromFeetAndFractionalInches("6.5"));
         }
 
-        /*
+       
         [Test]
-        public void UnitMath()
+        public void UnitsMath()
         {
             var length = new Length(2.0);
             var area = new Area(2.0);
             var volume = new Volume(2.0);
 
             //addition
-            Assert.AreEqual(4, (length + length).Value);
-            Assert.AreEqual(4, (area + area).Value);
-            Assert.AreEqual(4, (volume + volume).Value);
+            var length_add = length + length;
+            Assert.AreEqual(4, length_add.Value);
+            var area_add = area + area;
+            Assert.AreEqual(4, area_add.Value);
+            var volume_add = volume + volume;
+            Assert.AreEqual(4, volume_add.Value);
 
+            Assert.Throws<UnitsException>(() => { var test = length + area; });
+            Assert.Throws<UnitsException>(() => { var test = area + volume; });
+            Assert.Throws<UnitsException>(() => { var test = length + volume; });
+            
             //subtraction
-            Assert.AreEqual(0, (length - length).Value);
-            Assert.AreEqual(0, (area - area).Value);
-            Assert.AreEqual(0, (volume - volume).Value);
+            var length_sub = length - length;
+            Assert.AreEqual(0, length_sub.Value);
+            var area_sub = area - area;
+            Assert.AreEqual(0, area_sub.Value);
+            var volume_sub = volume - volume;
+            Assert.AreEqual(0, volume_sub.Value);
+
+            Assert.Throws<UnitsException>(() => { var test = length - area; });
+            Assert.Throws<UnitsException>(() => { var test = area - volume; });
+            Assert.Throws<UnitsException>(() => { var test = length - volume; });
+            Assert.Throws<UnitsException>(() => { var test = area - length; });
+            Assert.Throws<UnitsException>(() => { var test = volume - area; });
+            Assert.Throws<UnitsException>(() => { var test = volume - length; });
 
             //multiplication
             Assert.AreEqual(4, (length * length).Value);
-            Assert.AreEqual(4, (area * area).Value);
-            Assert.AreEqual(4, (volume * volume).Value);
+            Assert.Throws<UnitsException>(() => { var test = area * area; });
+            Assert.Throws<UnitsException>(() => { var test = volume * area; });
+            Assert.Throws<UnitsException>(() => { var test = length * volume; });
 
             //division
-            Assert.AreEqual(4, length / length);
-            Assert.AreEqual(4, area / area);
-            Assert.AreEqual(4, volume / volume);
+            Assert.AreEqual(1, length / length);
+            Assert.AreEqual(1, area / area);
+            Assert.AreEqual(1, volume / volume);
+            Assert.Throws<UnitsException>(() => { var test = length / area; });
+            Assert.Throws<UnitsException>(() => { var test = area / volume; });
+            Assert.Throws<UnitsException>(() => { var test = length / volume; });
 
             //modulo
+            var length_mod = length%length;
+            Assert.AreEqual(0, length_mod.Value);
+            var area_mode = area%area;
+            Assert.AreEqual(0, area_mode.Value);
+            var volume_mod = volume%volume;
+            Assert.AreEqual(0, volume_mod.Value);
+            Assert.Throws<UnitsException>(() => { var test = length % area; });
+            Assert.Throws<UnitsException>(() => { var test = area % volume; });
+            Assert.Throws<UnitsException>(() => { var test = length % volume; });
+            Assert.Throws<UnitsException>(() => { var test = area % length; });
+            Assert.Throws<UnitsException>(() => { var test = volume % area; });
+            Assert.Throws<UnitsException>(() => { var test = volume % length; });
         }
-         * */
+
+        [Test]
+        public void UnitsNegatives()
+        {
+            //construction
+            Assert.DoesNotThrow(() => { var test = new Length(-2.0); });
+            Assert.Throws<MathematicalArgumentException>(() => { var test = new Area(-2.0); });
+            Assert.Throws<MathematicalArgumentException>(() => { var test = new Volume(-2.0); });
+
+            var length = new Length(2.0);
+            var area = new Area(2.0);
+            var volume = new Volume(2.0);
+
+            Assert.Throws<MathematicalArgumentException>(() => { var test = new Area(10.0) - new Area(12.0); });
+            Assert.Throws<MathematicalArgumentException>(() => { var test = new Volume(10.0) - new Volume(12.0); });
+        }
 
     }
 }
