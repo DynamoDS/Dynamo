@@ -86,6 +86,7 @@ limitations under the License.
       <HintPath>..\..\extern\DynamoAsm\LibGNet.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
     </Reference>
@@ -159,6 +160,7 @@ limitations under the License.
     <Compile Include="Core\FunctionDefinition.cs" />
     <Compile Include="Core\PreferenceSettings.cs" />
     <Compile Include="Nodes\Geometry.cs" />
+    <Compile Include="Nodes\Measurement.cs" />
     <Compile Include="PackageManager\PackageManagerClient.cs" />
     <Compile Include="Search\SearchElements\CustomNodeSearchElement.cs" />
     <Compile Include="UI\Commands\AutomationSettings.cs" />

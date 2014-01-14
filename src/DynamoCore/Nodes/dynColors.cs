@@ -7,7 +7,6 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.FSharp.Collections;
-using Color = System.Drawing.Color;
 using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Nodes

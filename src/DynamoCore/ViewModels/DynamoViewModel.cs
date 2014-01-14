@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
+using Dynamo.Measure;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
@@ -179,6 +180,10 @@ namespace Dynamo.ViewModels
         public DelegateCommand TogglePreviewBubbleVisibilityCommand { get; set; }
 
         public DelegateCommand ExportToSTLCommand { get; set; }
+
+        public DelegateCommand SetLengthUnitCommand { get; set; }
+        public DelegateCommand SetAreaUnitCommand { get; set; }
+        public DelegateCommand SetVolumeUnitCommand { get; set; }
 
         /// <summary>
         /// An observable collection of workspace view models which tracks the model
@@ -541,6 +546,10 @@ namespace Dynamo.ViewModels
             TogglePreviewBubbleVisibilityCommand = new DelegateCommand(TogglePreviewBubbleVisibility, CanTogglePreviewBubbleVisibility);
 
             ExportToSTLCommand = new DelegateCommand(ExportToSTL, CanExportToSTL);
+
+            SetLengthUnitCommand = new DelegateCommand(SetLengthUnit, CanSetLengthUnit);
+            SetAreaUnitCommand = new DelegateCommand(SetAreaUnit, CanSetAreaUnit);
+            SetVolumeUnitCommand = new DelegateCommand(SetVolumeUnit, CanSetVolumeUnit);
 
             DynamoLogger.Instance.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Instance_PropertyChanged);
 
@@ -1369,6 +1378,102 @@ namespace Dynamo.ViewModels
         }
 
         internal bool CanExportToSTL(object parameter)
+        {
+            return true;
+        }
+
+        private void SetLengthUnit(object parameter)
+        {
+            switch (parameter.ToString())
+            {
+                case "FractionalInch":
+                    Controller.PreferenceSettings.LengthUnit = DynamoLengthUnit.FractionalInch;
+                    return;
+                case "DecimalInch":
+                    Controller.PreferenceSettings.LengthUnit = DynamoLengthUnit.DecimalInch;
+                    return;
+                case "FractionalFoot":
+                    Controller.PreferenceSettings.LengthUnit = DynamoLengthUnit.FractionalFoot;
+                    return;
+                case "DecimalFoot":
+                    Controller.PreferenceSettings.LengthUnit = DynamoLengthUnit.DecimalFoot;
+                    return;
+                case "Meter":
+                    Controller.PreferenceSettings.LengthUnit = DynamoLengthUnit.Meter;
+                    return;
+                case "Millimeter":
+                    Controller.PreferenceSettings.LengthUnit = DynamoLengthUnit.Millimeter;
+                    return;
+                case "Centimeter":
+                    Controller.PreferenceSettings.LengthUnit = DynamoLengthUnit.Centimeter;
+                    return;
+                default:
+                    Controller.PreferenceSettings.LengthUnit = DynamoLengthUnit.Meter;
+                    return;
+            }
+        }
+
+        internal bool CanSetLengthUnit(object parameter)
+        {
+            return true;
+        }
+
+        private void SetAreaUnit(object parameter)
+        {
+            switch (parameter.ToString())
+            {
+                case "SquareInch":
+                    Controller.PreferenceSettings.AreaUnit = DynamoAreaUnit.SquareInch;
+                    return;
+                case "SquareFoot":
+                    Controller.PreferenceSettings.AreaUnit = DynamoAreaUnit.SquareFoot;
+                    return;
+                case "SquareMillimeter":
+                    Controller.PreferenceSettings.AreaUnit = DynamoAreaUnit.SquareMillimeter;
+                    return;
+                case "SquareCentimeter":
+                    Controller.PreferenceSettings.AreaUnit = DynamoAreaUnit.SquareCentimeter;
+                    return;
+                case "SquareMeter":
+                    Controller.PreferenceSettings.AreaUnit = DynamoAreaUnit.SquareMeter;
+                    return;
+                default:
+                    Controller.PreferenceSettings.AreaUnit = DynamoAreaUnit.SquareMeter;
+                    return;
+            }
+        }
+
+        internal bool CanSetAreaUnit(object parameter)
+        {
+            return true;
+        }
+
+        private void SetVolumeUnit(object parameter)
+        {
+            switch (parameter.ToString())
+            {
+                case "CubicInch":
+                    Controller.PreferenceSettings.VolumeUnit = DynamoVolumeUnit.CubicInch;
+                    return;
+                case "CubicFoot":
+                    Controller.PreferenceSettings.VolumeUnit = DynamoVolumeUnit.CubicFoot;
+                    return;
+                case "CubicMillimeter":
+                    Controller.PreferenceSettings.VolumeUnit = DynamoVolumeUnit.CubicMillimeter;
+                    return;
+                case "CubicCentimeter":
+                    Controller.PreferenceSettings.VolumeUnit = DynamoVolumeUnit.CubicCentimeter;
+                    return;
+                case "CubicMeter":
+                    Controller.PreferenceSettings.VolumeUnit = DynamoVolumeUnit.CubicMeter;
+                    return;
+                default:
+                    Controller.PreferenceSettings.VolumeUnit = DynamoVolumeUnit.CubicMeter;
+                    return;
+            }
+        }
+
+        internal bool CanSetVolumeUnit(object parameter)
         {
             return true;
         }
