@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using Dynamo.Utilities;
 using Double = System.Double;
@@ -535,6 +536,25 @@ namespace Dynamo.Measure
                     return ToSquareMeterString();  
             }
         }
+
+        public string ToString(DynamoAreaUnit unit)
+        {
+            switch (unit)
+            {
+                case DynamoAreaUnit.SquareMillimeter:
+                    return ToSquareMillimeterString();
+                case DynamoAreaUnit.SquareCentimeter:
+                    return ToSquareCentimeterString();
+                case DynamoAreaUnit.SquareMeter:
+                    return ToSquareMeterString();
+                case DynamoAreaUnit.SquareInch:
+                    return ToSquareInchString();
+                case DynamoAreaUnit.SquareFoot:
+                    return ToSquareFootString();
+                default:
+                    return ToSquareMeterString();
+            }
+        }
         
         #endregion
 
@@ -737,6 +757,25 @@ namespace Dynamo.Measure
             }
         }
 
+        public string ToString(DynamoVolumeUnit unit)
+        {
+            switch (unit)
+            {
+                case DynamoVolumeUnit.CubicMillimeter:
+                    return ToCubicMillimeterString();
+                case DynamoVolumeUnit.CubicCentimeter:
+                    return ToCubicCentimeterString();
+                case DynamoVolumeUnit.CubicMeter:
+                    return ToCubicMeterString();
+                case DynamoVolumeUnit.CubicInch:
+                    return ToCubicInchString();
+                case DynamoVolumeUnit.CubicFoot:
+                    return ToCubicFootString();
+                default:
+                    return ToCubicMeterString();
+            }
+        }
+
         #endregion
 
         #region conversion
@@ -794,11 +833,26 @@ namespace Dynamo.Measure
         #endregion
     }
 
-    public static class Extensions
+    public static class UnitExtensions
     {
         public static bool AlmostEquals(this double double1, double double2, double precision)
         {
             return (Math.Abs(double1 - double2) <= precision);
+        }
+
+        public static Length ToLength(this Double value)
+        {
+            return new Length(value);
+        }
+
+        public static Area ToArea(this Double value)
+        {
+            return new Area(value);
+        }
+
+        public static Volume ToVolume(this Double value)
+        {
+            return new Volume(value);
         }
     }
 
@@ -1083,5 +1137,21 @@ namespace Dynamo.Measure
     public class UnitsException : MathematicalArgumentException
     {
         public UnitsException(Type a, Type b) : base(string.Format("{0} and {1} are incompatible for this operation.", a, b)) { }
+    }
+
+    public interface ILength
+    {
+        Length ToLength();
+    }
+
+    public interface IArea
+    {
+        Area ToArea();
+    }
+
+    public interface IVolume
+    {
+
+        Volume ToVolume();
     }
 }
