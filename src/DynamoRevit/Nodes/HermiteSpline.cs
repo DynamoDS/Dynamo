@@ -5,6 +5,7 @@ using Dynamo.FSchemeInterop;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
+using RevitServices.Persistence;
 
 namespace Dynamo.Nodes
 {
@@ -43,7 +44,8 @@ namespace Dynamo.Nodes
             }
             if (pts.Count() > 0)
             {
-                hs = dynRevitSettings.Doc.Application.Application.Create.NewHermiteSpline(ctrlPts, false);
+                var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
+                hs = document.Application.Create.NewHermiteSpline(ctrlPts, false);
             }
 
             return FScheme.Value.NewContainer(hs);
