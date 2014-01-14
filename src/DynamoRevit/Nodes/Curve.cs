@@ -969,7 +969,7 @@ namespace Dynamo.Nodes
             }
 
             //Fin
-            return FScheme.Value.NewContainer(new Measure.Length(length));
+            return FScheme.Value.NewContainer(Measure.Length.FromFeet(length));
         }
     }
 }

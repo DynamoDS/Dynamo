@@ -1823,7 +1823,7 @@ namespace Dynamo.Nodes
             }
 
             //Fin
-            return FScheme.Value.NewContainer(new Measure.Volume(volume));
+            return FScheme.Value.NewContainer(Measure.Volume.FromCubicFeet(volume));
         }
     }
 

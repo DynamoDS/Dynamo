@@ -166,6 +166,11 @@ namespace Dynamo.Measure
 
         public Length(double value):base(value){}
 
+        public static Length FromFeet(double value)
+        {
+            return new Length(value/meter_to_foot);
+        }
+
         #region math
 
         public override SIUnit Add(SIUnit x)
@@ -418,6 +423,11 @@ namespace Dynamo.Measure
             }
         }
 
+        public static Area FromSquareFeet(double value)
+        {
+            return new Area(value / square_meters_to_square_foot);
+        }
+
         #region math
 
         public override SIUnit Add(SIUnit x)
@@ -645,6 +655,11 @@ namespace Dynamo.Measure
             {
                 throw new MathematicalArgumentException("You can not create a negative volume.");
             }
+        }
+
+        public static Volume FromCubicFeet(double value)
+        {
+            return new Volume(value / cubic_meters_to_cubic_feet);
         }
 
         #region math
