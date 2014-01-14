@@ -155,12 +155,18 @@ namespace Dynamo.Measure
 
         public override SIUnit Add(SIUnit x)
         {
-            return new Length(_value + x.Value);
+            if(x is Length)
+                return new Length(_value + x.Value);
+
+            throw new UnitsException(GetType(), x.GetType());
         }
 
         public override SIUnit Subtract(SIUnit x)
         {
-            return new Length(_value - x.Value);
+            if(x is Length)
+                return new Length(_value - x.Value);
+
+            throw new UnitsException(GetType(), x.GetType());
         }
 
         public override SIUnit Multiply(SIUnit x)
@@ -195,7 +201,10 @@ namespace Dynamo.Measure
 
         public override SIUnit Modulo(SIUnit x)
         {
-            return new Length(_value % x.Value);
+            if(x is Length)
+                return new Length(_value % x.Value);
+
+            throw new UnitsException(GetType(), x.GetType());
         }
 
         #endregion
@@ -384,18 +393,32 @@ namespace Dynamo.Measure
         private const double square_meters_to_square_inch = 1550;
         private const double square_meters_to_square_foot = 10.7639;
 
-        public Area(double value) : base(value){}
+        public Area():base(0.0){}
+
+        public Area(double value) : base(value)
+        {
+            if (value < 0)
+            {
+                throw new MathematicalArgumentException("You can not create a negative volume.");
+            }
+        }
 
         #region math
 
         public override SIUnit Add(SIUnit x)
         {
-            return new Area(_value + x.Value);
+            if(x is Area)
+                return new Area(_value + x.Value);
+
+            throw new UnitsException(GetType(), x.GetType());
         }
 
         public override SIUnit Subtract(SIUnit x)
         {
-            return new Area(_value - x.Value);
+            if(x is Area)
+                return new Area(_value - x.Value);
+
+            throw new UnitsException(GetType(), x.GetType());
         }
 
         public override SIUnit Multiply(SIUnit x)
@@ -580,18 +603,32 @@ namespace Dynamo.Measure
         private const double cubic_meters_to_cubic_inches = 61023.7;
         private const double cubic_meters_to_cubic_feet = 35.3147;
 
-        public Volume(double value) : base(value){}
+        public Volume():base(0.0){}
+
+        public Volume(double value) : base(value)
+        {
+            if (value < 0)
+            {
+                throw new MathematicalArgumentException("You can not create a negative volume.");
+            }
+        }
 
         #region math
 
         public override SIUnit Add(SIUnit x)
         {
-            return new Volume(_value + x.Value);
+            if(x is Volume)
+                return new Volume(_value + x.Value);
+
+            throw new UnitsException(GetType(), x.GetType());
         }
 
         public override SIUnit Subtract(SIUnit x)
         {
-            return new Volume(_value - x.Value);
+            if(x is Volume)
+                return new Volume(_value - x.Value);
+
+            throw new UnitsException(GetType(), x.GetType());
         }
 
         public override SIUnit Multiply(SIUnit x)
@@ -630,7 +667,7 @@ namespace Dynamo.Measure
                 return new Volume(_value % x.Value);
             }
             
-            throw new MathematicalArgumentException();
+            throw new UnitsException(GetType(), x.GetType());
         }
 
         #endregion
