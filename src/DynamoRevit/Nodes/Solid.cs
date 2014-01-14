@@ -1796,7 +1796,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Volume")]
+    [NodeName("Solid Volume")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
     [NodeDescription("Measures the volume of a solid")]
     public class VolumeMeasure : MeasurementBase
