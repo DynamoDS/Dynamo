@@ -85,6 +85,10 @@ limitations under the License.
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="LibGNet">
+      <HintPath>..\..\extern\DynamoAsm\LibGNet.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
@@ -164,6 +168,8 @@ limitations under the License.
     <Compile Include="Models\Migration.cs" />
     <Compile Include="Core\CustomNodeDefinition.cs" />
     <Compile Include="Core\PreferenceSettings.cs" />
+    <Compile Include="Nodes\Geometry.cs" />
+    <Compile Include="Nodes\Measurement.cs" />
     <Compile Include="PackageManager\PackageManagerClient.cs" />
     <Compile Include="Search\SearchElements\CustomNodeSearchElement.cs" />
     <Compile Include="Search\SearchElements\DSFunctionNodeSearchElement.cs" />

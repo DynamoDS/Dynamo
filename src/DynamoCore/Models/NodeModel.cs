@@ -336,6 +336,8 @@ namespace Dynamo.Models
             get { return dynSettings.Controller; }
         }
 
+        private int _errorCount;
+
         /// <summary>
         ///     Determines whether or not the output of this Element will be saved. If true, Evaluate() will not be called
         ///     unless IsDirty is true. Otherwise, Evaluate will be called regardless of the IsDirty value.
@@ -1694,6 +1696,8 @@ namespace Dynamo.Models
 
                     if (dynSettings.Controller.Testing)
                         throw new Exception(ex.Message);
+
+                    _errorCount++;
                 }
 
 
@@ -1720,7 +1724,10 @@ namespace Dynamo.Models
             FSharpList<FScheme.Value> args,
             Dictionary<PortData, FScheme.Value> outPuts)
         {
+            _errorCount = 0;
             __eval_internal_recursive(args, outPuts);
+            if (_errorCount > 1)
+                Error(string.Format("{0} runs generated errors.\n\n{1}", _errorCount, ToolTipText));
         }
 
         protected virtual void __eval_internal_recursive(
