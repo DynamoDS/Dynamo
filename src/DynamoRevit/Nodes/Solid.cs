@@ -1797,7 +1797,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Volume")]
+    [NodeName("Solid Volume")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
     [NodeDescription("Measures the volume of a solid")]
     public class VolumeMeasure : MeasurementBase
@@ -1824,7 +1824,7 @@ namespace Dynamo.Nodes
             }
 
             //Fin
-            return FScheme.Value.NewNumber(volume);
+            return FScheme.Value.NewContainer(Measure.Volume.FromCubicFeet(volume));
         }
     }
 
