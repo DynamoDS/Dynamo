@@ -164,7 +164,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Converters.cs" />
     <Compile Include="Nodes\Facet.cs" />
     <Compile Include="Nodes\Topography.cs" />
     <Compile Include="Packing\CygonRectanglePacker.cs" />
@@ -181,6 +180,8 @@
     <Compile Include="Nodes\Element.cs" />
     <Compile Include="Nodes\Ellipse.cs" />
     <Compile Include="Nodes\Length.cs" />
+    <Compile Include="Nodes\FreeForm.cs" />
+    <Compile Include="Nodes\HermiteSpline.cs" />
     <Compile Include="Nodes\Line.cs" />
     <Compile Include="Nodes\Rectangle.cs" />
     <Compile Include="Nodes\ReferenceCurve.cs" />
