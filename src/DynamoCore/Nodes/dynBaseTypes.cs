@@ -2604,8 +2604,8 @@ namespace Dynamo.Nodes
             //unit + unit
             if (args[0].IsContainer && args[1].IsContainer)
             {
-                var x = SIUnit.Unwrap(args[0]);
-                var y = SIUnit.Unwrap(args[1]);
+                var x = SIUnit.UnwrapToSIUnit(args[0]);
+                var y = SIUnit.UnwrapToSIUnit(args[1]);
                 return Value.NewContainer(x + y);
             }
 
@@ -2646,8 +2646,8 @@ namespace Dynamo.Nodes
             //unit - unit
             if (args[0].IsContainer && args[1].IsContainer)
             {
-                var x = SIUnit.Unwrap(args[0]);
-                var y = SIUnit.Unwrap(args[1]);
+                var x = SIUnit.UnwrapToSIUnit(args[0]);
+                var y = SIUnit.UnwrapToSIUnit(args[1]);
                 return Value.NewContainer(x - y);
             }
 
@@ -2688,14 +2688,14 @@ namespace Dynamo.Nodes
             if (args[0].IsNumber && args[1].IsContainer)
             {
                 var x = ((Value.Number)args[0]).Item;
-                var y = SIUnit.Unwrap(args[1]);
+                var y = SIUnit.UnwrapToSIUnit(args[1]);
                 return Value.NewContainer(x * y);
             }
 
             //unit * double
             if (args[0].IsContainer && args[1].IsNumber)
             {
-                var x = SIUnit.Unwrap(args[0]);
+                var x = SIUnit.UnwrapToSIUnit(args[0]);
                 var y = ((Value.Number)args[1]).Item;
                 
                 return Value.NewContainer(x * y);
@@ -2704,8 +2704,8 @@ namespace Dynamo.Nodes
             //unit * unit
             if (args[0].IsContainer && args[1].IsContainer)
             {
-                var x = SIUnit.Unwrap(args[0]);
-                var y = SIUnit.Unwrap(args[1]);
+                var x = SIUnit.UnwrapToSIUnit(args[0]);
+                var y = SIUnit.UnwrapToSIUnit(args[1]);
 
                 return Value.NewContainer(x * y);
             }
@@ -2746,7 +2746,7 @@ namespace Dynamo.Nodes
             //unit / double
             if (args[0].IsContainer && args[1].IsNumber)
             {
-                var x = SIUnit.Unwrap(args[0]);
+                var x = SIUnit.UnwrapToSIUnit(args[0]);
                 var y = ((Value.Number)args[1]).Item;
 
                 return Value.NewContainer(x / y);
@@ -2756,8 +2756,8 @@ namespace Dynamo.Nodes
             if (args[0].IsContainer && args[1].IsContainer)
             {
                 //units of same type will cancel
-                var x = SIUnit.Unwrap(args[0]);
-                var y = SIUnit.Unwrap(args[1]);
+                var x = SIUnit.UnwrapToSIUnit(args[0]);
+                var y = SIUnit.UnwrapToSIUnit(args[1]);
 
                 if (x.GetType() == y.GetType())
                 {
@@ -2804,8 +2804,8 @@ namespace Dynamo.Nodes
             //unit % unit
             if (args[0].IsContainer && args[1].IsContainer)
             {
-                var x = SIUnit.Unwrap(args[0]);
-                var y = SIUnit.Unwrap(args[1]);
+                var x = SIUnit.UnwrapToSIUnit(args[0]);
+                var y = SIUnit.UnwrapToSIUnit(args[1]);
                 return Value.NewContainer(x % y);
             }
             
@@ -2850,7 +2850,7 @@ namespace Dynamo.Nodes
                 var length = (((Value.Container) args[0]).Item) as Measure.Length;
                 if (length != null)
                 {
-                    var x = SIUnit.Unwrap(args[0]);
+                    var x = SIUnit.UnwrapToSIUnit(args[0]);
                     var y = ((Value.Number)args[1]).Item;
 
                     if (y == 2)

@@ -125,13 +125,22 @@ namespace Dynamo.Measure
 
         #endregion
 
-        public static dynamic Unwrap(FScheme.Value value)
+        public static FScheme.Value UnwrapToDouble(FScheme.Value value)
         {
-            if (value.IsNumber)
+            if (value.IsContainer)
             {
-                return ((FScheme.Value.Number) value).Item;
+                var unit = ((FScheme.Value.Container) value).Item as SIUnit;
+                if (unit != null)
+                {
+                    return FScheme.Value.NewNumber(unit.Value);
+                }
             }
 
+            return value;
+        }
+
+        public static SIUnit UnwrapToSIUnit(FScheme.Value value)
+        {
             if (value.IsContainer)
             {
                 var measure = ((FScheme.Value.Container)value).Item as SIUnit;
