@@ -205,7 +205,7 @@ namespace Dynamo.Nodes
                     }
                     else if (arg.Value.IsContainer)
                     {
-                        e.Parameters[parameter] = SIUnit.UnwrapFromValue(arg.Value).Value;  
+                        e.Parameters[parameter] = SIUnit.Unwrap(arg.Value).Value;  
                     }
                 }  
             }

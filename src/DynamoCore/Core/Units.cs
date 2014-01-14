@@ -125,8 +125,13 @@ namespace Dynamo.Measure
 
         #endregion
 
-        public static SIUnit UnwrapFromValue(FScheme.Value value)
+        public static dynamic Unwrap(FScheme.Value value)
         {
+            if (value.IsNumber)
+            {
+                return ((FScheme.Value.Number) value).Item;
+            }
+
             if (value.IsContainer)
             {
                 var measure = ((FScheme.Value.Container)value).Item as SIUnit;
@@ -136,7 +141,7 @@ namespace Dynamo.Measure
                 }
             }
 
-            throw new Exception("SIUnit could not be unwrapped from value.");
+            throw new Exception("The value was not convertible to a number or a unit.");
         }
     }
 
