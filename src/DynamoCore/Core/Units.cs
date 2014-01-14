@@ -147,6 +147,9 @@ namespace Dynamo.Measure
         public abstract dynamic Divide(SIUnit x);
         public abstract SIUnit Divide(double x);
         public abstract SIUnit Modulo(SIUnit x);
+        public abstract SIUnit Round();
+        public abstract SIUnit Ceiling();
+        public abstract SIUnit Floor();
 
         #region operator overloads
 
@@ -236,7 +239,7 @@ namespace Dynamo.Measure
                 }
             }
 
-            throw new Exception("The value was not convertible to a number or a unit.");
+            throw new Exception("The value was not convertible to a unit of measure.");
         }
     }
 
@@ -306,6 +309,21 @@ namespace Dynamo.Measure
                 return new Length(_value % x.Value);
 
             throw new UnitsException(GetType(), x.GetType());
+        }
+
+        public override SIUnit Round()
+        {
+            return new Length(Math.Round(_value));
+        }
+
+        public override SIUnit Ceiling()
+        {
+            return new Length(Math.Ceiling(_value));
+        }
+
+        public override SIUnit Floor()
+        {
+            return new Length(Math.Floor(_value));
         }
 
         public override double ConvertToHostUnits()
@@ -505,6 +523,21 @@ namespace Dynamo.Measure
             throw new UnitsException(GetType(), x.GetType());
         }
 
+        public override SIUnit Round()
+        {
+            return new Area(Math.Round(_value));
+        }
+
+        public override SIUnit Ceiling()
+        {
+            return new Area(Math.Ceiling(_value));
+        }
+
+        public override SIUnit Floor()
+        {
+            return new Volume(Math.Floor(_value));
+        }
+
         public override double ConvertToHostUnits()
         {
             return _value*dynSettings.Controller.HostApplicationAreaConversion;
@@ -671,6 +704,21 @@ namespace Dynamo.Measure
             }
             
             throw new UnitsException(GetType(), x.GetType());
+        }
+
+        public override SIUnit Round()
+        {
+            return new Volume(Math.Round(_value));
+        }
+
+        public override SIUnit Ceiling()
+        {
+            return new Volume(Math.Ceiling(_value));
+        }
+
+        public override SIUnit Floor()
+        {
+            return new Volume(Math.Floor(_value));
         }
 
         public override double ConvertToHostUnits()

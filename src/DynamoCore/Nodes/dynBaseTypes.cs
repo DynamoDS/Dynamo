@@ -2889,9 +2889,18 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return Value.NewNumber(
-               Math.Round(((Value.Number)args[0]).Item)
-            );
+            if (args[0].IsNumber)
+            {
+                return Value.NewNumber(Math.Round(((Value.Number)args[0]).Item));
+            }
+            
+            if (args[0].IsContainer)
+            {
+                var x = SIUnit.UnwrapToSIUnit(args[0]);
+                return Value.NewContainer(x.Round());
+            }
+
+            throw new MathematicalArgumentException();
         }
 
         protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
@@ -2916,9 +2925,18 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return Value.NewNumber(
-               Math.Floor(((Value.Number)args[0]).Item)
-            );
+            if (args[0].IsNumber)
+            {
+                return Value.NewNumber(Math.Floor(((Value.Number)args[0]).Item));
+            }
+
+            if (args[0].IsContainer)
+            {
+                var x = SIUnit.UnwrapToSIUnit(args[0]);
+                return Value.NewContainer(x.Floor());
+            }
+
+            throw new MathematicalArgumentException();
         }
 
         protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
@@ -2943,9 +2961,18 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return Value.NewNumber(
-               Math.Ceiling(((Value.Number)args[0]).Item)
-            );
+            if (args[0].IsNumber)
+            {
+                return Value.NewNumber(Math.Ceiling(((Value.Number)args[0]).Item));
+            }
+
+            if (args[0].IsContainer)
+            {
+                var x = SIUnit.UnwrapToSIUnit(args[0]);
+                return Value.NewContainer(x.Ceiling());
+            }
+            
+            throw new MathematicalArgumentException();
         }
 
         protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
