@@ -484,5 +484,20 @@ namespace Dynamo.Tests
             Assert.Throws<MathematicalArgumentException>(() => { var test = new Volume(10.0) - new Volume(12.0); });
         }
 
+        [Test]
+        public void Extensions()
+        {
+            const double x = 5.0;
+
+            var length = x.ToLength();
+            Assert.AreEqual("5.00 m", length.ToString(DynamoLengthUnit.Meter));
+
+            var area = x.ToArea();
+            Assert.AreEqual("5.00 m²", area.ToString(DynamoAreaUnit.SquareMeter));
+
+            var volume = x.ToVolume();
+            Assert.AreEqual("5.00 m³", volume.ToString(DynamoVolumeUnit.CubicMeter));
+
+        }
     }
 }
