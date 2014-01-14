@@ -511,7 +511,7 @@ namespace Dynamo.Nodes
     }
 
     [DoNotLoadOnPlatforms(Context.REVIT_2013, Context.VASARI_2013)]
-    [NodeName("Area")]
+    [NodeName("Surface Area")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_EXPERIMENTAL_SURFACE)]
     [NodeDescription("Get the area of a Surface.")]
     [NodeSearchable(false)]

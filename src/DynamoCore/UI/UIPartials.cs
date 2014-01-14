@@ -1078,6 +1078,81 @@ namespace Dynamo.Nodes
         }
     }
 
+    public abstract partial class MeasurementInputBase
+    {
+        public override void SetupCustomUIElements(object ui)
+        {
+            var nodeUI = ui as dynNodeView;
+
+            //add an edit window option to the 
+            //main context window
+            var editWindowItem = new System.Windows.Controls.MenuItem();
+            editWindowItem.Header = "Edit...";
+            editWindowItem.IsCheckable = false;
+
+            nodeUI.MainContextMenu.Items.Add(editWindowItem);
+
+            editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
+            //add a text box to the input grid of the control
+            var tb = new DynamoTextBox();
+            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            nodeUI.inputGrid.Children.Add(tb);
+            System.Windows.Controls.Grid.SetColumn(tb, 0);
+            System.Windows.Controls.Grid.SetRow(tb, 0);
+            tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
+
+            tb.DataContext = this;
+            tb.BindToProperty(new System.Windows.Data.Binding("Value")
+            {
+                Mode = BindingMode.TwoWay,
+                Converter = new Controls.MeasureConverter(),
+                ConverterParameter = _measure,
+                NotifyOnValidationError = false,
+                Source = this,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            });
+
+            tb.OnChangeCommitted += delegate { RequiresRecalc = true; };
+
+            dynSettings.Controller.PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
+        }
+
+        void PreferenceSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            RaisePropertyChanged("Value");
+            RequiresRecalc = true;
+        }
+
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (name == "Value")
+            {
+                var converter = new Controls.MeasureConverter();
+                this.Value = ((double)converter.ConvertBack(value, typeof(double), _measure, null));
+                return true; // UpdateValueCore handled.
+            }
+
+            return base.UpdateValueCore(name, value);
+        }
+
+        private void editWindowItem_Click(object sender, RoutedEventArgs e)
+        {
+            var editWindow = new EditWindow() { DataContext = this };
+            editWindow.BindToProperty(null, new System.Windows.Data.Binding("Value")
+            {
+                Mode = BindingMode.TwoWay,
+                Converter = new Controls.MeasureConverter(),
+                ConverterParameter = _measure,
+                NotifyOnValidationError = false,
+                Source = this,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            });
+
+            editWindow.ShowDialog();
+        }
+    }
+
     public class DynamoNodeButton : System.Windows.Controls.Button
     {
         private string eventName = string.Empty;
