@@ -1028,11 +1028,14 @@ namespace Dynamo.Models
 
         protected virtual void __eval_internal(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
         {
-            //unwrap unit args to doubles
-            var doubleArgs = Utils.SequenceToFSharpList(args.Select(SIUnit.UnwrapToDouble));
+            if (this.GetType() != typeof(Watch))
+            {
+                //unwrap unit args to doubles
+                args = Utils.SequenceToFSharpList(args.Select(SIUnit.UnwrapToDouble));
+            }
 
             _errorCount = 0;
-            __eval_internal_recursive(doubleArgs, outPuts);
+            __eval_internal_recursive(args, outPuts);
             if (_errorCount > 1)
                 Error(string.Format("{0} runs generated errors.\n\n{1}", _errorCount, ToolTipText));
         }

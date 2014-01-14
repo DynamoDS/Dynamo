@@ -1823,7 +1823,7 @@ namespace Dynamo.Nodes
             }
 
             //Fin
-            return FScheme.Value.NewNumber(volume);
+            return FScheme.Value.NewContainer(new Measure.Volume(volume));
         }
     }
 
