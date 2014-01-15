@@ -7,6 +7,8 @@ using System.Diagnostics;
 using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Threading;
+using System.Web.UI.HtmlControls;
+using Dynamo.Measure;
 using Dynamo.Nodes;
 using System.Xml;
 using Dynamo.Selection;
@@ -19,6 +21,7 @@ using String = System.String;
 using Value = Dynamo.FScheme.Value;
 using ProtoCore.AST.AssociativeAST;
 using Dynamo.DSEngine;
+using Utils = Dynamo.FSchemeInterop.Utils;
 
 namespace Dynamo.Models
 {
@@ -1021,6 +1024,12 @@ namespace Dynamo.Models
 
         protected virtual void __eval_internal(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
         {
+            var t = GetType();
+            if (t != typeof(Watch) && !typeof(MathBase).IsAssignableFrom(t) )
+            {
+                args = Utils.SequenceToFSharpList(args.Select(SIUnit.UnwrapToDoubleWithHostUnitConversion));
+            }
+
             _errorCount = 0;
             __eval_internal_recursive(args, outPuts);
             if (_errorCount > 1)
