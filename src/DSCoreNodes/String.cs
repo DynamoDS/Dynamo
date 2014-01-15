@@ -99,5 +99,16 @@ namespace DSCoreNodes
         {
             return str.Contains(search);
         }
+
+        /// <summary>
+        /// Replaces all occurrances of text in a string with other text.
+        /// </summary>
+        /// <param name="str">String to replace substrings in.</param>
+        /// <param name="searchFor">Text to be replaced.</param>
+        /// <param name="replaceWith">Text to replace with.</param>
+        public static string Replace(string str, string searchFor, string replaceWith)
+        {
+            return str.Replace(searchFor, replaceWith);
+        }
     }
 }
