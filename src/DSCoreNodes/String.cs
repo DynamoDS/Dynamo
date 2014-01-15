@@ -162,5 +162,46 @@ namespace DSCoreNodes
         {
             return str.TrimEnd();
         }
+
+        /// <summary>
+        ///     Finds the zero-based index of the first occurance of a sub-string inside a string.
+        ///     Returns -1 if no index could be found.
+        /// </summary>
+        /// <param name="str">A string to search in.</param>
+        /// <param name="searchFor">Substring to search for.</param>
+        /// <param name="start">Index to start searching at.</param>
+        /// <param name="count">The number of character positions to examine.</param>
+        /// <param name="ignoreCase">Whether or not comparison takes case into account.</param>
+        public static int IndexOf(string str, string searchFor, int start = 0, int? count = null, bool ignoreCase = false)
+        {
+            return str.IndexOf(
+                searchFor,
+                start,
+                count ?? (str.Length - start),
+                ignoreCase
+                    ? StringComparison.InvariantCultureIgnoreCase
+                    : StringComparison.InvariantCulture);
+        }
+
+        /// <summary>
+        ///     Finds the zero-based index of the last occurance of a sub-string inside a string.
+        ///     Returns -1 if no index could be found.
+        /// </summary>
+        /// <param name="str">A string to search in.</param>
+        /// <param name="searchFor">Substring to search for.</param>
+        /// <param name="start">Index to start searching at.</param>
+        /// <param name="count">The number of character positions to examine.</param>
+        /// <param name="ignoreCase">Whether or not comparison takes case into account.</param>
+        public static int LastIndexOf(
+            string str, string searchFor, int start = 0, int? count = null, bool ignoreCase = false)
+        {
+            return str.LastIndexOf(
+                searchFor,
+                start,
+                count ?? (str.Length - start),
+                ignoreCase
+                    ? StringComparison.InvariantCultureIgnoreCase
+                    : StringComparison.InvariantCulture);
+        }
     }
 }
