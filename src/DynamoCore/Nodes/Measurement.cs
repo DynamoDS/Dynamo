@@ -80,6 +80,13 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("length", "The length. Stored internally as decimal meters.", typeof(FScheme.Value.Container)));
             RegisterAllPorts();
         }
+
+        [NodeMigrationAttribute(from:"0.6.2")]
+        public void MigrateLengthFromFeetToMeters(XmlNode node)
+        {
+            //length values were previously stored as decimal feet
+            //convert them internally to SI meters.
+        }
     }
 
     [NodeName("Area")]
