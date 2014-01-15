@@ -86,6 +86,17 @@ namespace Dynamo.Nodes
         {
             //length values were previously stored as decimal feet
             //convert them internally to SI meters.
+            foreach (XmlNode child in node.ChildNodes)
+            {
+                if (child.Name == "System.Double")
+                {
+                    if (child.Attributes != null && child.Attributes.Count > 0)
+                    {
+                        var valueAttrib = child.Attributes["value"];
+                        valueAttrib.Value = (double.Parse(valueAttrib.Value)/SIUnit.ToFoot).ToString(CultureInfo.InvariantCulture);
+                    }
+                }
+            }
         }
     }
 
