@@ -197,6 +197,9 @@ limitations under the License.
     <Compile Include="UI\Views\ZoomAndPanControl.xaml.cs">
       <DependentUpon>ZoomAndPanControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UpdateManager\BinaryVersion.cs" />
+    <Compile Include="UpdateManager\ILoggerWrapper.cs" />
+    <Compile Include="UpdateManager\UpdateManager.cs" />
     <Compile Include="Utilities\CursorLibrary.cs" />
     <Compile Include="Utilities\XmlHelper.cs" />
     <Compile Include="ViewModels\EndlessGridViewModel.cs" />
