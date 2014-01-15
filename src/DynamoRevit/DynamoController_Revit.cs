@@ -10,6 +10,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Events;
 using Dynamo.Controls;
 using Dynamo.FSchemeInterop;
+using Dynamo.Measure;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
@@ -97,6 +98,10 @@ namespace Dynamo
 
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrationsRevit));
             ElementNameStore = new Dictionary<ElementId, string>();
+
+            HostApplicationAreaConversion = SIUnit.ToSquareFoot;
+            HostApplicationLengthConversion = SIUnit.ToFoot;
+            HostApplicationVolumeConversion = SIUnit.ToCubicFoot;
         }
 
         private void CleanupVisualizations(object sender, EventArgs e)
