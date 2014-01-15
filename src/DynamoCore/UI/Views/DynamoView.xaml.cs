@@ -16,6 +16,7 @@ using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
 using Dynamo.Search;
 using Dynamo.Selection;
+using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using String = System.String;

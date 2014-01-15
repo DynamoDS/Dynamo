@@ -150,7 +150,7 @@ limitations under the License.
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\UndoRedoRecorder.cs" />
-    <Compile Include="Core\Configurations.cs" />
+    <Compile Include="UI\Configurations.cs" />
     <Compile Include="DSEngine\AstBuilder.cs" />
     <Compile Include="Models\CustomNodeWorkspaceModel.cs" />
     <Compile Include="Models\HomeWorkspaceModel.cs" />

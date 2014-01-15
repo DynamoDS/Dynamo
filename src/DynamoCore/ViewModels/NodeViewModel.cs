@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
+using Dynamo.UI;
 using Dynamo.Utilities;
 using System.Windows;
 using Dynamo.Core;
