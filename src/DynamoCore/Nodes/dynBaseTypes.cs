@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Xml;
 using Dynamo.FSchemeInterop.Node;
-using Dynamo.Measure;
+using Dynamo.Units;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
@@ -2906,7 +2906,7 @@ namespace Dynamo.Nodes
             //unit ^ number
             if (args[0].IsContainer && args[1].IsNumber)
             {
-                var length = (((Value.Container) args[0]).Item) as Measure.Length;
+                var length = (((Value.Container) args[0]).Item) as Units.Length;
                 if (length != null)
                 {
                     var x = SIUnit.UnwrapToSIUnit(args[0]);

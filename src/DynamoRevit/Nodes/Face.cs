@@ -290,7 +290,7 @@ namespace Dynamo.Nodes
             }
 
             //Fin
-            return FScheme.Value.NewContainer(Measure.Area.FromSquareFeet(area));
+            return FScheme.Value.NewContainer(Units.Area.FromSquareFeet(area));
         }
     }
 
