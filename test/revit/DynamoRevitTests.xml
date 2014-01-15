@@ -55,6 +55,7 @@
 				<test name="CurveCurveIntersection" runDynamo="True" modelPath=".\Intersect\CurveCurveIntersection.rfa"/>
 				<test name="CurveFaceIntersection" runDynamo="True" modelPath=".\Intersect\CurveFaceIntersection.rfa"/>
 				<test name="FaceFaceIntersection" runDynamo="True" modelPath=".\Intersect\FaceFaceIntersection.rfa"/>
+        <test name="EdgePlaneIntersection" runDynamo="True" modelPath=".\Intersect\EdgePlaneIntersection.rfa"/>
 			</testFixture>
 			<testFixture name="LengthTests">
 				<test name="Length" runDynamo="True" modelPath=".\empty.rfa"/>
