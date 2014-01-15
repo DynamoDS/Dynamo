@@ -113,5 +113,27 @@ namespace DSCoreNodes
         {
             return str.Replace(searchFor, replaceWith);
         }
+
+        /// <summary>
+        ///     Determines if the given string ends with the given substring.
+        /// </summary>
+        /// <param name="str">String to search the end of.</param>
+        /// <param name="searchFor">Substring to search the end for.</param>
+        /// <param name="ignoreCase">Whether or not comparison takes case into account.</param>
+        public static bool EndsWith(string str, string searchFor, bool ignoreCase = false)
+        {
+            return str.EndsWith(searchFor, ignoreCase, CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        ///     Determines if the given string starts with the given substring.
+        /// </summary>
+        /// <param name="str">String to search the start of.</param>
+        /// <param name="searchFor">Substring to search the start for.</param>
+        /// <param name="ignoreCase">Whether or not comparison takes case into account.</param>
+        public static bool StartsWith(string str, string searchFor, bool ignoreCase = false)
+        {
+            return str.StartsWith(searchFor, ignoreCase, CultureInfo.InvariantCulture);
+        }
     }
 }
