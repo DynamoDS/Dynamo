@@ -233,5 +233,30 @@ namespace DSCoreNodes
 
             return str.PadRight(totalWidth, padChar[0]);
         }
+
+        /// <summary>
+        ///     Inserts a string into another string at a given index.
+        /// </summary>
+        /// <param name="str">String to insert into.</param>
+        /// <param name="index">Index to insert at.</param>
+        /// <param name="toInsert">String to be inserted.</param>
+        public static string Insert(string str, int index, string toInsert)
+        {
+            return str.Insert(index, toInsert);
+        }
+
+        /// <summary>
+        ///     Removes characters from a string.
+        /// </summary>
+        /// <param name="str">String to remove characters from.</param>
+        /// <param name="startIndex">Index to start removal.</param>
+        /// <param name="count">
+        ///     Amount of characters to remove, by default will remove all characters from
+        ///     the given startIndex to the end of the string.
+        /// </param>
+        public static string Remove(string str, int startIndex, int? count = null)
+        {
+            return str.Remove(startIndex, count ?? (str.Length - startIndex));
+        }
     }
 }
