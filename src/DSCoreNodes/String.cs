@@ -6,7 +6,7 @@ namespace DSCoreNodes
     /// <summary>
     /// Methods for managing strings.
     /// </summary>
-    public static class String
+    public class String
     {
         /// <summary>
         /// Converts an object to a string representation.

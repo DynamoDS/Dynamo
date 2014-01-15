@@ -9,7 +9,7 @@ namespace DSCoreNodes
     /// <summary>
     ///     Methods for creating and manipulating Lists.
     /// </summary>
-    public static class List
+    public class List
     {
         /// <summary>
         ///     Creates a new list containing the elements of the given list but in reverse order.
