@@ -1720,20 +1720,21 @@ namespace Dynamo.Models
 
         protected virtual void OnRunCancelled() { }
 
-        protected virtual void __eval_internal(
-            FSharpList<FScheme.Value> args,
-            Dictionary<PortData, FScheme.Value> outPuts)
+        protected virtual void __eval_internal(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
         {
+            var t = GetType();
+            if (t != typeof(Watch) && !typeof(MathBase).IsAssignableFrom(t) )
+            {
+                args = Utils.SequenceToFSharpList(args.Select(Dynamo.Measure.SIUnit.UnwrapToDoubleWithHostUnitConversion));
+            }
+
             _errorCount = 0;
             __eval_internal_recursive(args, outPuts);
             if (_errorCount > 1)
                 Error(string.Format("{0} runs generated errors.\n\n{1}", _errorCount, ToolTipText));
         }
 
-        protected virtual void __eval_internal_recursive(
-            FSharpList<FScheme.Value> args,
-            Dictionary<PortData, FScheme.Value> outPuts,
-            int level = 0)
+        protected virtual void __eval_internal_recursive(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts, int level = 0)
         {
             try
             {

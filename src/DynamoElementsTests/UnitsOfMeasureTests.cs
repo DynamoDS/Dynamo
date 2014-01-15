@@ -248,19 +248,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void ConvertMeters()
-        {
-            var length = new Length(1.0);
-
-            Assert.AreEqual(1000.0, length.ToMillimeters(), 0.001);
-            Assert.AreEqual(100.0, length.ToCentimeters(), 0.001);
-            Assert.AreEqual(1.0, length.ToMeters(), 0.001);
-            Assert.AreEqual(39.370079, length.ToInches(), 0.001);
-            Assert.AreEqual(3.28084, length.ToFeet(), 0.001);
-            Assert.AreEqual("1.00 m", length.ToString(DynamoLengthUnit.Meter));
-        }
-
-        [Test]
         public void FromFeetAndFractionalInches()
         {
             Assert.AreEqual(1.0, Utils.FromFeetAndFractionalInches("1'"));
@@ -405,7 +392,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(0.0, Utils.FromFeetAndFractionalInches("6.5"));
         }
 
-       
         [Test]
         public void UnitsMath()
         {
@@ -485,5 +471,20 @@ namespace Dynamo.Tests
             Assert.Throws<MathematicalArgumentException>(() => { var test = new Volume(10.0) - new Volume(12.0); });
         }
 
+        [Test]
+        public void Extensions()
+        {
+            const double x = 5.0;
+
+            var length = x.ToLength();
+            Assert.AreEqual("5.00 m", length.ToString(DynamoLengthUnit.Meter));
+
+            var area = x.ToArea();
+            Assert.AreEqual("5.00 m²", area.ToString(DynamoAreaUnit.SquareMeter));
+
+            var volume = x.ToVolume();
+            Assert.AreEqual("5.00 m³", volume.ToString(DynamoVolumeUnit.CubicMeter));
+
+        }
     }
 }

@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 using Dynamo.Utilities;
+using Microsoft.FSharp.Collections;
 using Double = System.Double;
 
 namespace Dynamo.Measure
@@ -37,7 +40,82 @@ namespace Dynamo.Measure
 
     public abstract class SIUnit
     {
+        private static double meter_to_millimeter = 1000;
+        private static double meter_to_centimeter = 100;
+        private static double meter_to_inch = 39.3701;
+        private static double meter_to_foot = 3.28084;
+
+        private static double square_meters_to_square_millimeters = 1000000;
+        private static double square_meters_to_square_centimeters = 10000;
+        private static double square_meters_to_square_inch = 1550;
+        private static double square_meters_to_square_foot = 10.7639;
+
+        private static double cubic_meters_to_cubic_millimeters = 1000000000;
+        private static double cubic_meters_to_cubic_centimeters = 1000000;
+        private static double cubic_meters_to_cubic_inches = 61023.7;
+        private static double cubic_meters_to_cubic_feet = 35.3147;
+
         internal double _value;
+
+        public static double ToMillimeter
+        {
+            get { return meter_to_millimeter; }
+        }
+
+        public static double ToCentimeter
+        {
+            get { return meter_to_centimeter; }
+        }
+
+        public static double ToInch
+        {
+            get { return meter_to_inch; }
+        }
+
+        public static double ToFoot
+        {
+            get { return meter_to_foot; }
+        }
+
+        public static double ToSquareMillimeters
+        {
+            get { return square_meters_to_square_millimeters; }
+        }
+
+        public static double ToSquareCentimeters
+        {
+            get { return square_meters_to_square_centimeters; }
+        }
+
+        public static double ToSquareInch
+        {
+            get { return square_meters_to_square_inch; }
+        }
+
+        public static double ToSquareFoot
+        {
+            get { return square_meters_to_square_foot; }
+        }
+
+        public static double ToCubicMillimeter
+        {
+            get { return cubic_meters_to_cubic_millimeters; }
+        }
+
+        public static double ToCubicCentimeter
+        {
+            get { return cubic_meters_to_cubic_centimeters; }
+        }
+
+        public static double ToCubicInch
+        {
+            get { return cubic_meters_to_cubic_inches; }
+        }
+
+        public static double ToCubicFoot
+        {
+            get { return cubic_meters_to_cubic_feet; }
+        }
 
         /// <summary>
         /// The internal value of the unit.
@@ -71,6 +149,9 @@ namespace Dynamo.Measure
         public abstract dynamic Divide(SIUnit x);
         public abstract SIUnit Divide(double x);
         public abstract SIUnit Modulo(SIUnit x);
+        public abstract SIUnit Round();
+        public abstract SIUnit Ceiling();
+        public abstract SIUnit Floor();
 
         #region operator overloads
 
@@ -124,7 +205,44 @@ namespace Dynamo.Measure
 
         #endregion
 
-        public static SIUnit UnwrapFromValue(FScheme.Value value)
+        public abstract double ConvertToHostUnits();
+
+        /// <summary>
+        /// Unwrap an FScheme value containing a number or a unit to a double.
+        /// If the value contains a unit object, convert the internal value of the
+        /// unit object to the units required by the host application as specified
+        /// in the preference settings. If the value contains a number, do not 
+        /// apply a conversion.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static FScheme.Value UnwrapToDoubleWithHostUnitConversion(FScheme.Value value)
+        {
+            if (value.IsList)
+            {
+                //recursively convert items in list
+                return ConvertListToHostUnits((FScheme.Value.List)value);
+            }
+            
+            if (value.IsContainer)
+            {
+                var unit = ((FScheme.Value.Container) value).Item as SIUnit;
+                if (unit != null)
+                {
+                    return FScheme.Value.NewNumber(unit.ConvertToHostUnits());
+                }
+            }
+
+            return value;
+        }
+
+        public static FScheme.Value ConvertListToHostUnits(FScheme.Value.List value)
+        {
+            var list = value.Item;
+            return FScheme.Value.NewList(FSchemeInterop.Utils.SequenceToFSharpList(list.Select(UnwrapToDoubleWithHostUnitConversion)));
+        }
+
+        public static SIUnit UnwrapToSIUnit(FScheme.Value value)
         {
             if (value.IsContainer)
             {
@@ -135,7 +253,7 @@ namespace Dynamo.Measure
                 }
             }
 
-            throw new Exception("SIUnit could not be unwrapped from value.");
+            throw new Exception("The value was not convertible to a unit of measure.");
         }
     }
 
@@ -144,12 +262,13 @@ namespace Dynamo.Measure
     /// </summary>
     public class Length : SIUnit
     {
-        private const double meter_to_millimeter = 1000;
-        private const double meter_to_centimeter = 100;
-        private const double meter_to_inch = 39.3701;
-        private const double meter_to_foot = 3.28084;
 
         public Length(double value):base(value){}
+
+        public static Length FromFeet(double value)
+        {
+            return new Length(value/ToFoot);
+        }
 
         #region math
 
@@ -207,6 +326,26 @@ namespace Dynamo.Measure
             throw new UnitsException(GetType(), x.GetType());
         }
 
+        public override SIUnit Round()
+        {
+            return new Length(Math.Round(_value));
+        }
+
+        public override SIUnit Ceiling()
+        {
+            return new Length(Math.Ceiling(_value));
+        }
+
+        public override SIUnit Floor()
+        {
+            return new Length(Math.Floor(_value));
+        }
+
+        public override double ConvertToHostUnits()
+        {
+            return _value * dynSettings.Controller.HostApplicationLengthConversion;
+        }
+
         #endregion
 
         #region string
@@ -222,11 +361,11 @@ namespace Dynamo.Measure
                 switch (dynSettings.Controller.PreferenceSettings.LengthUnit)
                 {
                     case DynamoLengthUnit.Centimeter:
-                        _value = total / meter_to_centimeter;
+                        _value = total / ToCentimeter;
                         return;
 
                     case DynamoLengthUnit.Millimeter:
-                        _value = total / meter_to_millimeter;
+                        _value = total / ToMillimeter;
                         return;
 
                     case DynamoLengthUnit.Meter:
@@ -234,19 +373,19 @@ namespace Dynamo.Measure
                         return;
 
                     case DynamoLengthUnit.FractionalInch:
-                        _value = total / meter_to_inch;
+                        _value = total / ToInch;
                         return;
 
                     case DynamoLengthUnit.FractionalFoot:
-                        _value = total / meter_to_foot;
+                        _value = total / ToFoot;
                         return;
 
                     case DynamoLengthUnit.DecimalInch:
-                        _value = total / meter_to_inch;
+                        _value = total / ToInch;
                         return;
 
                     case DynamoLengthUnit.DecimalFoot:
-                        _value = total / meter_to_foot;
+                        _value = total / ToFoot;
                         return;
                 }
             }
@@ -259,125 +398,55 @@ namespace Dynamo.Measure
                 fractionalInch = numerator / denominator;
 
             if (feet < 0)
-                total = (feet - inch / 12.0 - fractionalInch / 12.0) / meter_to_foot;
+                total = (feet - inch / 12.0 - fractionalInch / 12.0) / ToFoot;
             else
-                total = (feet + inch / 12.0 + fractionalInch / 12.0) / meter_to_foot;
+                total = (feet + inch / 12.0 + fractionalInch / 12.0) / ToFoot;
 
             total += m;
-            total += cm / meter_to_centimeter;
-            total += mm / meter_to_millimeter;
+            total += cm / ToCentimeter;
+            total += mm / ToMillimeter;
 
             _value = total;
         }
 
         public override string ToString()
         {
-            switch (dynSettings.Controller.PreferenceSettings.LengthUnit)
+            return BuildString(dynSettings.Controller.PreferenceSettings.LengthUnit);
+        }
+
+        internal string ToString(DynamoLengthUnit unit)
+        {
+            return BuildString(unit);
+        }
+
+        private string BuildString(DynamoLengthUnit unit)
+        {
+            switch (unit)
             {
                 case DynamoLengthUnit.Millimeter:
-                    return ToMillimeterString();
+                    return (_value * SIUnit.ToMillimeter).ToString("0.00", CultureInfo.InvariantCulture) + " mm";
+
                 case DynamoLengthUnit.Centimeter:
-                    return ToCentimeterString();
+                    return (_value * SIUnit.ToCentimeter).ToString("0.00", CultureInfo.InvariantCulture) + " cm";
+
                 case DynamoLengthUnit.Meter:
-                    return ToMeterString();
+                    return _value.ToString("0.00", CultureInfo.InvariantCulture) + " m";
+
                 case DynamoLengthUnit.DecimalInch:
-                    return ToDecimalInchString();
+                    return (_value * SIUnit.ToInch).ToString("0.00", CultureInfo.CurrentCulture) + " in";
+
                 case DynamoLengthUnit.FractionalInch:
-                    return ToFractionalInchString();
+                    return Utils.ToFractionalInches(_value * SIUnit.ToInch);
+
                 case DynamoLengthUnit.DecimalFoot:
-                    return ToDecimalFootString();
+                    return (_value * SIUnit.ToFoot).ToString("0.00", CultureInfo.CurrentCulture) + " ft";
+
                 case DynamoLengthUnit.FractionalFoot:
-                    return ToFractionalFootString();
+                    return Utils.ToFeetAndFractionalInches(_value * SIUnit.ToFoot);
+
                 default:
-                    return ToMeterString();
+                    return _value.ToString("0.00", CultureInfo.InvariantCulture) + " m";
             }
-        }
-
-        internal string ToString(DynamoLengthUnit lengthUnit)
-        {
-            switch (lengthUnit)
-            {
-                case DynamoLengthUnit.Millimeter:
-                    return ToMillimeterString();
-                case DynamoLengthUnit.Centimeter:
-                    return ToCentimeterString();
-                case DynamoLengthUnit.Meter:
-                    return ToMeterString();
-                case DynamoLengthUnit.DecimalInch:
-                    return ToDecimalInchString();
-                case DynamoLengthUnit.FractionalInch:
-                    return ToFractionalInchString();
-                case DynamoLengthUnit.DecimalFoot:
-                    return ToDecimalFootString();
-                case DynamoLengthUnit.FractionalFoot:
-                    return ToFractionalFootString();
-                default:
-                    return ToMeterString();
-            }
-        }
-
-        #endregion
-
-        #region conversion
-
-        internal double ToMillimeters()
-        {
-            return _value * 1000;
-        }
-
-        internal double ToCentimeters()
-        {
-            return _value * 100;
-        }
-
-        internal double ToMeters()
-        {
-            return _value;
-        }
-
-        internal double ToInches()
-        {
-            return _value * 39.370079;
-        }
-
-        internal double ToFeet()
-        {
-            return _value * 3.28084;
-        }
-
-        internal string ToMillimeterString()
-        {
-            return ToMillimeters().ToString("0.00", CultureInfo.InvariantCulture) + " mm";
-        }
-
-        internal string ToCentimeterString()
-        {
-            return ToCentimeters().ToString("0.00", CultureInfo.InvariantCulture) + " cm";
-        }
-
-        internal string ToMeterString()
-        {
-            return ToMeters().ToString("0.00", CultureInfo.InvariantCulture) + " m";
-        }
-
-        internal string ToDecimalInchString()
-        {
-            return ToInches().ToString("0.00", CultureInfo.CurrentCulture) + " in";
-        }
-
-        internal string ToFractionalInchString()
-        {
-            return Utils.ToFractionalInches(ToInches());
-        }
-
-        internal string ToDecimalFootString()
-        {
-            return ToFeet().ToString("0.00", CultureInfo.CurrentCulture) + " ft";
-        }
-
-        internal string ToFractionalFootString()
-        {
-            return Utils.ToFeetAndFractionalInches(ToFeet());
         }
 
         #endregion
@@ -388,11 +457,6 @@ namespace Dynamo.Measure
     /// </summary>
     public class Area : SIUnit
     {
-        private const double square_meters_to_square_millimeters = 1000000;
-        private const double square_meters_to_square_centimeters = 10000;
-        private const double square_meters_to_square_inch = 1550;
-        private const double square_meters_to_square_foot = 10.7639;
-
         public Area():base(0.0){}
 
         public Area(double value) : base(value)
@@ -401,6 +465,11 @@ namespace Dynamo.Measure
             {
                 throw new MathematicalArgumentException("You can not create a negative volume.");
             }
+        }
+
+        public static Area FromSquareFeet(double value)
+        {
+            return new Area(value / ToSquareFoot);
         }
 
         #region math
@@ -469,6 +538,26 @@ namespace Dynamo.Measure
             throw new UnitsException(GetType(), x.GetType());
         }
 
+        public override SIUnit Round()
+        {
+            return new Area(Math.Round(_value));
+        }
+
+        public override SIUnit Ceiling()
+        {
+            return new Area(Math.Ceiling(_value));
+        }
+
+        public override SIUnit Floor()
+        {
+            return new Volume(Math.Floor(_value));
+        }
+
+        public override double ConvertToHostUnits()
+        {
+            return _value*dynSettings.Controller.HostApplicationAreaConversion;
+        }
+
         #endregion
 
         #region string
@@ -484,11 +573,11 @@ namespace Dynamo.Measure
                 switch (dynSettings.Controller.PreferenceSettings.AreaUnit)
                 {
                     case DynamoAreaUnit.SquareMillimeter:
-                        _value = total / square_meters_to_square_millimeters;
+                        _value = total / SIUnit.ToSquareMillimeters;
                         return;
 
                     case DynamoAreaUnit.SquareCentimeter:
-                        _value = total / square_meters_to_square_centimeters;
+                        _value = total / SIUnit.ToSquareCentimeters;
                         return;
 
                     case DynamoAreaUnit.SquareMeter:
@@ -496,11 +585,11 @@ namespace Dynamo.Measure
                         return;
 
                     case DynamoAreaUnit.SquareInch:
-                        _value = total / square_meters_to_square_inch;
+                        _value = total / SIUnit.ToSquareInch;
                         return;
 
                     case DynamoAreaUnit.SquareFoot:
-                        _value = total / square_meters_to_square_foot;
+                        _value = total / SIUnit.ToSquareFoot;
                         return;
                 }
             }
@@ -508,89 +597,51 @@ namespace Dynamo.Measure
             double sq_mm, sq_cm, sq_m, sq_in, sq_ft;
             Utils.ParseAreaFromString(value, out sq_in, out sq_ft, out sq_mm, out sq_cm, out sq_m);
 
-            total += sq_mm / square_meters_to_square_millimeters;
-            total += sq_cm / square_meters_to_square_centimeters;
+            total += sq_mm / SIUnit.ToSquareMillimeters;
+            total += sq_cm / SIUnit.ToSquareCentimeters;
             total += sq_m;
-            total += sq_in / square_meters_to_square_inch;
-            total += sq_ft / square_meters_to_square_foot;
+            total += sq_in / SIUnit.ToSquareInch;
+            total += sq_ft / SIUnit.ToSquareFoot;
 
             _value = total;
         }
 
         public override string ToString()
         {
-            switch (dynSettings.Controller.PreferenceSettings.AreaUnit)
+            return BuildString(dynSettings.Controller.PreferenceSettings.AreaUnit);
+        }
+
+        public string ToString(DynamoAreaUnit unit)
+        {
+            return BuildString(unit);
+        }
+
+        private string BuildString(DynamoAreaUnit unit)
+        {
+            switch (unit)
             {
                 case DynamoAreaUnit.SquareMillimeter:
-                    return ToSquareMillimeterString();
+                    return (_value*SIUnit.ToSquareMillimeters).ToString("0.00", CultureInfo.InvariantCulture) + " mm²";
+
                 case DynamoAreaUnit.SquareCentimeter:
-                    return ToSquareCentimeterString();
+                    return (_value*SIUnit.ToSquareCentimeters).ToString("0.00", CultureInfo.InvariantCulture) + " cm²";
+
                 case DynamoAreaUnit.SquareMeter:
-                    return ToSquareMeterString();
+                    return _value.ToString("0.00", CultureInfo.InvariantCulture) + " m²";
+
                 case DynamoAreaUnit.SquareInch:
-                    return ToSquareInchString();
+                    return (_value*SIUnit.ToSquareInch).ToString("0.00", CultureInfo.InvariantCulture) + " in²";
+
                 case DynamoAreaUnit.SquareFoot:
-                    return ToSquareFootString();
+                    return (_value*SIUnit.ToSquareFoot).ToString("0.00", CultureInfo.InvariantCulture) + " ft²";
+
                 default:
-                    return ToSquareMeterString();  
+                    return _value.ToString("0.00", CultureInfo.InvariantCulture) + " m²";
             }
         }
-        
-        #endregion
-
-        #region conversion
-
-        internal double ToSquareMillimeters()
-        {
-            return _value * square_meters_to_square_millimeters;
-        }
-
-        internal double ToSquareCentimeters()
-        {
-            return _value * square_meters_to_square_centimeters;
-        }
-
-        internal double ToSquareMeters()
-        {
-            return _value;
-        }
-
-        internal double ToSquareInches()
-        {
-            return _value * square_meters_to_square_inch;
-        }
-
-        internal double ToSquareFeet()
-        {
-            return _value * square_meters_to_square_foot;
-        }
-
-        internal string ToSquareMillimeterString()
-        {
-            return ToSquareMillimeters().ToString("0.00", CultureInfo.InvariantCulture) + " mm²";
-        }
-
-        internal string ToSquareCentimeterString()
-        {
-            return ToSquareCentimeters().ToString("0.00", CultureInfo.InvariantCulture) + " cm²";
-        }
-
-        internal string ToSquareMeterString()
-        {
-            return ToSquareMeters().ToString("0.00", CultureInfo.InvariantCulture) + " m²";
-        }
-
-        internal string ToSquareInchString()
-        {
-            return ToSquareInches().ToString("0.00", CultureInfo.InvariantCulture) + " in²";
-        }
-
-        internal string ToSquareFootString()
-        {
-            return ToSquareFeet().ToString("0.00", CultureInfo.InvariantCulture) + " ft²";
-        }
 
         #endregion
+
     }
 
     /// <summary>
@@ -598,11 +649,6 @@ namespace Dynamo.Measure
     /// </summary>
     public class Volume : SIUnit
     {
-        private const double cubic_meters_to_cubic_millimeters = 1000000000;
-        private const double cubic_meters_to_cubic_centimeters = 1000000;
-        private const double cubic_meters_to_cubic_inches = 61023.7;
-        private const double cubic_meters_to_cubic_feet = 35.3147;
-
         public Volume():base(0.0){}
 
         public Volume(double value) : base(value)
@@ -611,6 +657,11 @@ namespace Dynamo.Measure
             {
                 throw new MathematicalArgumentException("You can not create a negative volume.");
             }
+        }
+
+        public static Volume FromCubicFeet(double value)
+        {
+            return new Volume(value / SIUnit.ToCubicFoot);
         }
 
         #region math
@@ -670,6 +721,26 @@ namespace Dynamo.Measure
             throw new UnitsException(GetType(), x.GetType());
         }
 
+        public override SIUnit Round()
+        {
+            return new Volume(Math.Round(_value));
+        }
+
+        public override SIUnit Ceiling()
+        {
+            return new Volume(Math.Ceiling(_value));
+        }
+
+        public override SIUnit Floor()
+        {
+            return new Volume(Math.Floor(_value));
+        }
+
+        public override double ConvertToHostUnits()
+        {
+            return _value*dynSettings.Controller.HostApplicationVolumeConversion;
+        }
+
         #endregion
 
         #region string
@@ -685,11 +756,11 @@ namespace Dynamo.Measure
                 switch (dynSettings.Controller.PreferenceSettings.VolumeUnit)
                 {
                     case DynamoVolumeUnit.CubicMillimeter:
-                        _value = total / cubic_meters_to_cubic_millimeters;
+                        _value = total / SIUnit.ToCubicMillimeter;
                         return;
 
                     case DynamoVolumeUnit.CubicCentimeter:
-                        _value = total / cubic_meters_to_cubic_centimeters;
+                        _value = total / SIUnit.ToCubicCentimeter;
                         return;
 
                     case DynamoVolumeUnit.CubicMeter:
@@ -697,11 +768,11 @@ namespace Dynamo.Measure
                         return;
 
                     case DynamoVolumeUnit.CubicInch:
-                        _value = total / cubic_meters_to_cubic_inches;
+                        _value = total / SIUnit.ToCubicInch;
                         return;
 
                     case DynamoVolumeUnit.CubicFoot:
-                        _value = total / cubic_meters_to_cubic_feet;
+                        _value = total / SIUnit.ToCubicFoot;
                         return;
                 }
             }
@@ -709,96 +780,73 @@ namespace Dynamo.Measure
             double cu_mm, cu_cm, cu_m, cu_in, cu_ft;
             Utils.ParseVolumeFromString(value, out cu_in, out cu_ft, out cu_mm, out cu_cm, out cu_m);
 
-            total += cu_mm / cubic_meters_to_cubic_millimeters;
-            total += cu_cm / cubic_meters_to_cubic_centimeters;
+            total += cu_mm / ToCubicMillimeter;
+            total += cu_cm / ToCubicCentimeter;
             total += cu_m;
-            total += cu_in / cubic_meters_to_cubic_inches;
-            total += cu_ft / cubic_meters_to_cubic_feet;
+            total += cu_in / ToCubicInch;
+            total += cu_ft / ToCubicFoot;
 
             _value = total;
         }
 
         public override string ToString()
         {
-            switch (dynSettings.Controller.PreferenceSettings.VolumeUnit)
+            return BuildString(dynSettings.Controller.PreferenceSettings.VolumeUnit);
+        }
+
+        public string ToString(DynamoVolumeUnit unit)
+        {
+            return BuildString(unit);
+        }
+
+        private string BuildString(DynamoVolumeUnit unit)
+        {
+            switch (unit)
             {
                 case DynamoVolumeUnit.CubicMillimeter:
-                    return ToCubicMillimeterString();
+                    return (_value * SIUnit.ToCubicMillimeter).ToString("0.00", CultureInfo.InvariantCulture) + " mm³";
+
                 case DynamoVolumeUnit.CubicCentimeter:
-                    return ToCubicCentimeterString();
+                    return (_value * SIUnit.ToCubicCentimeter).ToString("0.00", CultureInfo.InvariantCulture) + " cm³";
+
                 case DynamoVolumeUnit.CubicMeter:
-                    return ToCubicMeterString();
+                    return _value.ToString("0.00", CultureInfo.InvariantCulture) + " m³";
+
                 case DynamoVolumeUnit.CubicInch:
-                    return ToCubicInchString();
+                    return (_value * SIUnit.ToCubicInch).ToString("0.00", CultureInfo.InvariantCulture) + " in³";
+
                 case DynamoVolumeUnit.CubicFoot:
-                    return ToCubicFootString();
+                    return (_value * SIUnit.ToCubicFoot).ToString("0.00", CultureInfo.InvariantCulture) + " ft³";
+
                 default:
-                    return ToCubicMeterString();
+                    return _value.ToString("0.00", CultureInfo.InvariantCulture) + " m³";
             }
         }
 
         #endregion
 
-        #region conversion
-
-        internal double ToCubicMillimeters()
-        {
-            return _value * cubic_meters_to_cubic_millimeters;
-        }
-
-        internal double ToCubicCentimeters()
-        {
-            return _value * cubic_meters_to_cubic_centimeters;
-        }
-
-        internal double ToCubicMeters()
-        {
-            return _value;
-        }
-
-        internal double ToCubicInches()
-        {
-            return _value * cubic_meters_to_cubic_inches;
-        }
-
-        internal double ToCubicFeet()
-        {
-            return _value * cubic_meters_to_cubic_feet;
-        }
-
-        internal string ToCubicMillimeterString()
-        {
-            return ToCubicMillimeters().ToString("0.00", CultureInfo.InvariantCulture) + " mm³";
-        }
-
-        internal string ToCubicCentimeterString()
-        {
-            return ToCubicCentimeters().ToString("0.00", CultureInfo.InvariantCulture) + " cm³";
-        }
-
-        internal string ToCubicMeterString()
-        {
-            return ToCubicMeters().ToString("0.00", CultureInfo.InvariantCulture) + " m³";
-        }
-
-        internal string ToCubicInchString()
-        {
-            return ToCubicInches().ToString("0.00", CultureInfo.InvariantCulture) + " in³";
-        }
-
-        internal string ToCubicFootString()
-        {
-            return ToCubicFeet().ToString("0.00", CultureInfo.InvariantCulture) + " ft³";
-        }
-
-        #endregion
     }
 
-    public static class Extensions
+    public static class UnitExtensions
     {
         public static bool AlmostEquals(this double double1, double double2, double precision)
         {
             return (Math.Abs(double1 - double2) <= precision);
+        }
+
+        public static Length ToLength(this Double value)
+        {
+            return new Length(value);
+        }
+
+        public static Area ToArea(this Double value)
+        {
+            return new Area(value);
+        }
+
+        public static Volume ToVolume(this Double value)
+        {
+            return new Volume(value);
         }
     }
 
@@ -1083,5 +1131,10 @@ namespace Dynamo.Measure
     public class UnitsException : MathematicalArgumentException
     {
         public UnitsException(Type a, Type b) : base(string.Format("{0} and {1} are incompatible for this operation.", a, b)) { }
+    }
+
+    public interface IUnitInput
+    {
+        double ConvertToHostUnits();
     }
 }
