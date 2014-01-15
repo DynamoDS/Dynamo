@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections;
+using System.Globalization;
+using System.Windows.Markup;
 
 namespace DSCoreNodes
 {
@@ -9,7 +11,7 @@ namespace DSCoreNodes
     public class String
     {
         /// <summary>
-        /// Converts an object to a string representation.
+        ///     Converts an object to a string representation.
         /// </summary>
         /// <param name="obj">Object to serialize.</param>
         public static string FromObject(object obj)
@@ -18,7 +20,7 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// Concatenates multiple strings into a single string.
+        ///     Concatenates multiple strings into a single string.
         /// </summary>
         public static string Concat(params string[] strings)
         {
@@ -26,7 +28,7 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// Returns the number of characters contained in the given string.
+        ///     Returns the number of characters contained in the given string.
         /// </summary>
         /// <param name="str">String to take the length of.</param>
         public static int Length(string str)
@@ -35,12 +37,12 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// Divides a single string into a list of strings, determined by
-        /// the given separater strings.
+        ///     Divides a single string into a list of strings, determined by
+        ///     the given separater strings.
         /// </summary>
         /// <param name="str">String to split up.</param>
         /// <param name="separaters">
-        /// Strings that, if present, determine the end and start of a split.
+        ///     Strings that, if present, determine the end and start of a split.
         /// </param>
         public static IList Split(string str, params string[] separaters)
         {
@@ -48,8 +50,8 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// Concatenates multiple strings into a single string, inserting the given
-        /// separator between each joined string.
+        ///     Concatenates multiple strings into a single string, inserting the given
+        ///     separator between each joined string.
         /// </summary>
         /// <param name="separator">String to be inserted between joined strings.</param>
         /// <param name="strings">Strings to be joined into a single string.</param>
@@ -68,7 +70,7 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// Converts the given string to all lowercase characters.
+        ///     Converts the given string to all lowercase characters.
         /// </summary>
         /// <param name="str">String to be made lowercase.</param>
         public static string ToLower(string str)
@@ -77,12 +79,12 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// Retrieves a substring from the given string. The substring starts at the given
-        /// character position and has the given length.
+        ///     Retrieves a substring from the given string. The substring starts at the given
+        ///     character position and has the given length.
         /// </summary>
         /// <param name="str">String to take substring of.</param>
         /// <param name="start">
-        /// Starting character position of the substring in the original string.
+        ///     Starting character position of the substring in the original string.
         /// </param>
         /// <param name="length">Number of characters in the substring.</param>
         public static string Substring(string str, int start, int length)
@@ -91,17 +93,18 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// Determines if the given string contains the given substring.
+        ///     Determines if the given string contains the given substring.
         /// </summary>
         /// <param name="str">String to search in.</param>
-        /// <param name="search">Substring to search for.</param>
-        public static bool Contains(string str, string search)
+        /// <param name="searchFor">Substring to search for.</param>
+        /// <param name="ignoreCase">Whether or not comparison takes case into account.</param>
+        public static bool Contains(string str, string searchFor, bool ignoreCase = false)
         {
-            return str.Contains(search);
+            return !ignoreCase ? str.Contains(searchFor) : str.ToLowerInvariant().Contains(searchFor.ToLowerInvariant());
         }
 
         /// <summary>
-        /// Replaces all occurrances of text in a string with other text.
+        ///     Replaces all occurrances of text in a string with other text.
         /// </summary>
         /// <param name="str">String to replace substrings in.</param>
         /// <param name="searchFor">Text to be replaced.</param>
