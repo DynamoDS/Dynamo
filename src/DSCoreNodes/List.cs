@@ -2,13 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace DSCoreNodes
 {
     /// <summary>
     ///     Methods for creating and manipulating Lists.
     /// </summary>
-    public static class List
+    public class List
     {
         /// <summary>
         ///     Creates a new list containing the elements of the given list but in reverse order.
@@ -545,9 +546,9 @@ namespace DSCoreNodes
         ///     Creates a list of lists out of an existing list with each sub-list containing
         ///     the given amount of elements.
         /// </summary>
-        /// <param name="list">List to partition.</param>
+        /// <param name="list">List to chop up.</param>
         /// <param name="subLength">Length of each new sub-list.</param>
-        public static IList PartitionList(IList list, int subLength)
+        public static IList Chop(IList list, int subLength)
         {
             if (list.Count < subLength)
                 return list;
@@ -727,6 +728,28 @@ namespace DSCoreNodes
                 throw new ArgumentException("Cannot get the last item in an empty list.", "list");
 
             return list[list.Count - 1];
+        }
+
+        /// <summary>
+        ///     Shuffles a list, randomizing the order of its elements.
+        /// </summary>
+        /// <param name="list">List to shuffle.</param>
+        public static IList<T> Shuffle<T>(IList<T> list)
+        {
+            var rng = new Random();
+            return list.OrderBy(_ => rng.Next()).ToList();
+        }
+
+        /// <summary>
+        ///     Applies a key mapping function to each item in the given list, and produces
+        ///     a new list of lists where each sublist contains elements for which the key
+        ///     mapping function produced the same result.
+        /// </summary>
+        /// <param name="list">List to group into sublists.</param>
+        /// <param name="keyProjection">Function that produces grouping values.</param>
+        public static IList<IList<T>> GroupByKey<T>(IList<T> list, Func<T, object> keyProjection)
+        {
+            return list.GroupBy(keyProjection).Select(x => x.ToList() as IList<T>).ToList();
         }
     }
 

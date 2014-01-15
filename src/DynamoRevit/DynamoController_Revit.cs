@@ -34,8 +34,8 @@ namespace Dynamo
     {
         private ElementId _keeperId = ElementId.InvalidElementId;
         public RevitServicesUpdater Updater { get; private set; }
-        public NodeModel.PredicateTraverser CheckManualTransaction { get; private set; }
-        public NodeModel.PredicateTraverser CheckRequiresTransaction { get; private set; }
+        public PredicateTraverser CheckManualTransaction { get; private set; }
+        public PredicateTraverser CheckRequiresTransaction { get; private set; }
 
         /// <summary>
         /// A dictionary which temporarily stores element names for setting after element deletion.
