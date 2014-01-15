@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -6,6 +7,7 @@ using Double = System.Double;
 
 namespace Dynamo.Units
 {
+    [Browsable(false)]
     public enum DynamoLengthUnit
     {
         DecimalInch,
@@ -17,6 +19,7 @@ namespace Dynamo.Units
         Meter
     }
 
+    [Browsable(false)]
     public enum DynamoAreaUnit
     {
         SquareInch, 
@@ -26,6 +29,7 @@ namespace Dynamo.Units
         SquareMeter
     }
 
+    [Browsable(false)]
     public enum DynamoVolumeUnit
     {
         CubicInch,
@@ -35,6 +39,7 @@ namespace Dynamo.Units
         CubicMeter
     }
 
+    [Browsable(false)]
     public class UnitsManager
     {
         private static UnitsManager _instance;
@@ -879,6 +884,7 @@ namespace Dynamo.Units
 
     }
 
+    [Browsable(false)]
     public static class UnitExtensions
     {
         public static bool AlmostEquals(this double double1, double double2, double precision)
@@ -905,6 +911,7 @@ namespace Dynamo.Units
     /// <summary>
     /// Utility class for operating on units of measure.
     /// </summary>
+    [Browsable(false)]
     public class Utils
     {
         public static string ParseWholeInchesToString(double value)
@@ -1174,19 +1181,16 @@ namespace Dynamo.Units
         }
     }
 
+    [Browsable(false)]
     public class MathematicalArgumentException : Exception
     {
         public MathematicalArgumentException() : base("The result could not be computed given the provided inputs.") { }
         public MathematicalArgumentException(string message) : base(message) { }
     }
 
+    [Browsable(false)]
     public class UnitsException : MathematicalArgumentException
     {
         public UnitsException(Type a, Type b) : base(string.Format("{0} and {1} are incompatible for this operation.", a, b)) { }
-    }
-
-    public interface IUnitInput
-    {
-        double ConvertToHostUnits();
     }
 }
