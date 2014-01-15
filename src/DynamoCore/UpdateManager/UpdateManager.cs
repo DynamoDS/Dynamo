@@ -6,6 +6,7 @@ using System.Net;
 using System.ComponentModel;
 using System.Windows;
 using Dynamo.Core;
+using Dynamo.UI;
 
 namespace Dynamo.UpdateManager
 {
