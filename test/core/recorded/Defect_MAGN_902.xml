@@ -1,0 +1,21 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="8df04dcc-93c1-4390-85f3-8704c5539385" NodeName="Code Block" X="153" Y="181" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="8df04dcc-93c1-4390-85f3-8704c5539385" Name="Code" Value="a={1,2,3};" />
+  <SelectInRegionCommand X="238" Y="413" Width="2" Height="1" IsCrossSelection="true" />
+  <CreateNodeCommand NodeId="c77cc249-dfcd-495d-86a4-efa4ea08db28" NodeName="Code Block" X="238" Y="413" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="c77cc249-dfcd-495d-86a4-efa4ea08db28" Name="Code" Value="b=1..3;&#xD;&#xA;b[0]=a;" />
+  <CreateNodeCommand NodeId="7b4f8976-a4c7-4cd3-8a9a-a80c0c1840cb" NodeName="Code Block" X="417" Y="216" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="7b4f8976-a4c7-4cd3-8a9a-a80c0c1840cb" Name="Code" Value="c=a;" />
+  <MakeConnectionCommand NodeId="c77cc249-dfcd-495d-86a4-efa4ea08db28" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="7b4f8976-a4c7-4cd3-8a9a-a80c0c1840cb" PortIndex="0" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="8df04dcc-93c1-4390-85f3-8704c5539385" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="c77cc249-dfcd-495d-86a4-efa4ea08db28" PortIndex="0" Type="0" ConnectionMode="1" />
+  <SelectModelCommand ModelGuid="8df04dcc-93c1-4390-85f3-8704c5539385" Modifiers="0" />
+  <SelectModelCommand ModelGuid="7b4f8976-a4c7-4cd3-8a9a-a80c0c1840cb" Modifiers="4" />
+  <ConvertNodesToCodeCommand NodeId="ca54f349-a26b-4d4a-a9d2-d32518e34079" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+</Commands>
