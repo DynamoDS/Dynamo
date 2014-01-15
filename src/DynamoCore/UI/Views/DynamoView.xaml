@@ -299,16 +299,13 @@
                         <MenuItem Focusable="False" Header="_Publish Selected Nodes..." Command="{Binding Path=DataContext.PublishSelectedNodesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="publishSelected" />
                         <MenuItem Focusable="False" Header="_Publish Current Workspace..." Command="{Binding Path=DataContext.PublishCurrentWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"  Name="publishCurrent" />
                     </MenuItem>
-                    
-                    <MenuItem Header="_Settings" Name="settingsMenu" Focusable="False">
+
+                    <MenuItem Header="_Settings" Name="SettingsMenu" Focusable="False" IsEnabled="True">
                         <MenuItem Header="_Enable usability data reporting"
                                   Name="ToggleIsUsageReportingApprovedCommand"
                                   Command="{Binding Path=ToggleIsUsageReportingApprovedCommand, Source={x:Static service:UsageReportingManager.Instance} }"
                                   IsChecked="{Binding Path=IsUsageReportingApproved, Mode=OneWay, Source={x:Static service:UsageReportingManager.Instance} }"
                                   Focusable="False"/>
-                    </MenuItem>
-
-                    <MenuItem Header="_Settings" Name="SettingsMenu" Focusable="False" IsEnabled="True">
                         <MenuItem Focusable="False" Header="Length Units" Name="LengthUnitsMenu">
                             <MenuItem Name="units_inch_1" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=DecimalInch, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="DecimalInch" Header="Decimal Inch"/>
                             <MenuItem Name="units_inch_2" IsCheckable="True" IsChecked="{Binding Controller.PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=FractionalInch, Mode=TwoWay}" Command="{Binding SetLengthUnitCommand}" CommandParameter="FractionalInch" Header="Fractional Inch"/>
