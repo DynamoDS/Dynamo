@@ -14,6 +14,7 @@ using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.Selection;
 using Dynamo.Services;
+using Dynamo.Units;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Microsoft.Practices.Prism.ViewModel;
@@ -159,10 +160,6 @@ namespace Dynamo
             private set { _engineController = value; }
         }
 
-        public double HostApplicationLengthConversion { get; set; }
-        public double HostApplicationAreaConversion { get; set; }
-        public double HostApplicationVolumeConversion { get; set; }
-
         #endregion
 
         #region events
@@ -284,9 +281,6 @@ namespace Dynamo
 
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrations));
 
-            HostApplicationAreaConversion = 1.0;
-            HostApplicationLengthConversion = 1.0;
-            HostApplicationVolumeConversion = 1.0;
         }
 
         #endregion
