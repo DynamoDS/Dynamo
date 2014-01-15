@@ -55,9 +55,6 @@
         <GradientStop Color="{DynamicResource ControlMediumColor}" Offset="0.5" />
         <GradientStop Color="{DynamicResource ControlLightColor}" Offset="1" />
     </LinearGradientBrush>
-
-    <!-- Import -->
-    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     
     <!-- Embedded Font -->
     <!-- Open Sans (under Apache License, version 2.0)

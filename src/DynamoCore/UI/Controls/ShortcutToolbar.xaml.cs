@@ -87,16 +87,5 @@ namespace Dynamo.UI.Controls
             get { return shortcutToolTip; }
             set { shortcutToolTip = value; }
         }
-
-        public bool IsEnabled
-        {
-            get
-            {
-                if (this.shortcutCommand != null)
-                    return this.shortcutCommand.CanExecute(null);
-
-                return false;
-            }
-        }
     }
 }

@@ -159,6 +159,7 @@
                     Style="{StaticResource SZoomFadeText}"
                     Grid.Row="0" Grid.Column="0"
                     MouseDown="NickNameBlock_OnMouseDown" 
+                    MouseUp="NickNameBlock_OnMouseUp"
                     MouseEnter="NickNameBlock_OnMouseEnter" 
                     MouseLeave="NickNameBlock_OnMouseLeave">
         </TextBlock>

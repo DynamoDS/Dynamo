@@ -121,23 +121,23 @@ namespace Dynamo.Controls
             screenShotButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/screenshot_disabled.png";
             screenShotButton.ImgHoverSource = "/DynamoCore;component/UI/Images/screenshot_hover.png";
 
+            ShortcutBarItem undoButton = new ShortcutBarItem();
+            undoButton.ShortcutToolTip = "Undo [Ctrl + Z]";
+            undoButton.ShortcutCommand = viewModel.UndoCommand;
+            undoButton.ShortcutCommandParameter = null;
+            undoButton.ImgNormalSource = "/DynamoCore;component/UI/Images/undo_normal.png";
+            undoButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/undo_disabled.png";
+            undoButton.ImgHoverSource = "/DynamoCore;component/UI/Images/undo_hover.png";
+
+            ShortcutBarItem redoButton = new ShortcutBarItem();
+            redoButton.ShortcutToolTip = "Redo [Ctrl + Y]";
+            redoButton.ShortcutCommand = viewModel.RedoCommand;
+            redoButton.ShortcutCommandParameter = null;
+            redoButton.ImgNormalSource = "/DynamoCore;component/UI/Images/redo_normal.png";
+            redoButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/redo_disabled.png";
+            redoButton.ImgHoverSource = "/DynamoCore;component/UI/Images/redo_hover.png";
+
             // PLACEHOLDER FOR FUTURE SHORTCUTS
-            //ShortcutBarItem undoButton = new ShortcutBarItem();
-            //undoButton.ShortcutToolTip = "Undo [Ctrl + Z]";
-            ////undoButton.ShortcutCommand = viewModel.; // Function implementation in progress
-            //undoButton.ShortcutCommandParameter = null;
-            //undoButton.ImgNormalSource = "/DynamoCore;component/UI/Images/undo_normal.png";
-            //undoButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/undo_disabled.png";
-            //undoButton.ImgHoverSource = "/DynamoCore;component/UI/Images/undo_hover.png";
-
-            //ShortcutBarItem redoButton = new ShortcutBarItem();
-            //redoButton.ShortcutToolTip = "Redo [Ctrl + Y]";
-            ////redoButton.ShortcutCommand = viewModel.; // Function implementation in progress
-            //redoButton.ShortcutCommandParameter = null;
-            //redoButton.ImgNormalSource = "/DynamoCore;component/UI/Images/redo_normal.png";
-            //redoButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/redo_disabled.png";
-            //redoButton.ImgHoverSource = "/DynamoCore;component/UI/Images/redo_hover.png";
-
             //ShortcutBarItem runButton = new ShortcutBarItem();
             //runButton.ShortcutToolTip = "Run [Ctrl + R]";
             ////runButton.ShortcutCommand = viewModel.RunExpressionCommand; // Function implementation in progress
@@ -149,10 +149,11 @@ namespace Dynamo.Controls
             shortcutBar.ShortcutBarItems.Add(newScriptButton);
             shortcutBar.ShortcutBarItems.Add(openScriptButton);
             shortcutBar.ShortcutBarItems.Add(saveButton);
-            shortcutBar.ShortcutBarRightSideItems.Add(screenShotButton);
-            //shortcutBar.ShortcutBarItems.Add(undoButton);
-            //shortcutBar.ShortcutBarItems.Add(redoButton);
+            shortcutBar.ShortcutBarItems.Add(undoButton);
+            shortcutBar.ShortcutBarItems.Add(redoButton);
             //shortcutBar.ShortcutBarItems.Add(runButton);            
+
+            shortcutBar.ShortcutBarRightSideItems.Add(screenShotButton);
 
             shortcutBarGrid.Children.Add(shortcutBar);
         }

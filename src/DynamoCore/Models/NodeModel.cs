@@ -171,21 +171,16 @@ namespace Dynamo.Models
             }
             set
             {
-                //don't bother changing the state
-                //when we are not reporting modifications
-                //used when clearing the workbench
-                //to avoid nodes recoloring when connectors
-                //are deleted
-                if (IsReportingModifications)
-                {
-                    if (value != ElementState.ERROR)
-                    {
-                        SetTooltip();
-                    }
+                if (value != ElementState.ERROR)
+                    ClearTooltipText();
 
-                    state = value;
+                state = value;
+
+                // Suppress notification if not reporting. Reporting is disabled 
+                // in cases like clearing the workbench to avoid nodes recoloring 
+                // as connectors are deleted.
+                if (IsReportingModifications)
                     RaisePropertyChanged("State");
-                }
             }
         }
 
@@ -978,7 +973,7 @@ namespace Dynamo.Models
                                 evalDict.OrderBy(pair => OutPortData.IndexOf(pair.Key))
                                     .Select(pair => pair.Value)));
 
-                    ValidateConnections();
+                    ClearError();
                 }
                 catch (CancelEvaluationException)
                 {
@@ -1600,7 +1595,7 @@ namespace Dynamo.Models
             }
         }
 
-        void SetTooltip()
+        protected void ClearTooltipText()
         {
             ToolTipText = "";
         }
@@ -1616,44 +1611,34 @@ namespace Dynamo.Models
         /// </summary>
         public void ValidateConnections()
         {
+            // If a node is in erroneous state, then calling ValidateConnections 
+            // will not remove its error state (that has to be done before calling 
+            // ValidateConnections through some other means).
+            // 
+            if (this.State == ElementState.ERROR)
+                return;
 
-            Action setState = (() =>
-                {
-
-                    // if there are inputs without connections
-                    // mark as dead
-                    State = inPorts.Any(x => !x.Connectors.Any() && !(x.UsingDefaultValue && x.DefaultValueEnabled))
-                                ? ElementState.DEAD
-                                : ElementState.ACTIVE;
-                });
-
-            if (dynSettings.Controller != null &&
-                dynSettings.Controller.UIDispatcher != null &&
-                dynSettings.Controller.UIDispatcher.CheckAccess() == false)
+            // if there are inputs without connections mark as dead
+            bool hasPortWihtoutInput = inPorts.Any((x) =>
             {
-                // This is put in place to solve the crashing issue outlined in 
-                // the following defect. ValidateConnections can be called from 
-                // a background evaluation thread at any point in time, we do 
-                // not want such calls to update UI in anyway while we're here 
-                // (the UI update is caused by setting State property which leads
-                // to tool-tip update that triggers InfoBubble to update its UI,
-                // a problem that is currently being resolved and tested on a 
-                // separate branch). When the InfoBubble restructuring gets over,
-                // please ensure the following scenario is tested and continue to 
-                // work:
-                // 
-                //      http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-847
-                // 
-                dynSettings.Controller.UIDispatcher.BeginInvoke(setState);
-            }
-            else
-                setState();
+                // When a given port has no input and it has no default value.
+                return !x.Connectors.Any() && !(x.UsingDefaultValue && x.DefaultValueEnabled);
+            });
+
+            State = hasPortWihtoutInput ? ElementState.DEAD : ElementState.ACTIVE;
         }
 
         public void Error(string p)
         {
             State = ElementState.ERROR;
             ToolTipText = p;
+        }
+
+        protected void ClearError()
+        {
+            State = ElementState.DEAD;
+            ClearTooltipText();
+            ValidateConnections();
         }
 
         public void SelectNeighbors()
