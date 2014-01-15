@@ -217,7 +217,7 @@ namespace DSCoreNodesTests
         {
             Assert.AreEqual(
                 new ArrayList { new ArrayList { 0, 1 }, new ArrayList { 2, 3 } },
-                List.PartitionList(new ArrayList { 0, 1, 2, 3 }, 2));
+                List.Chop(new ArrayList { 0, 1, 2, 3 }, 2));
         }
 
         [Test]
