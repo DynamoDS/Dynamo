@@ -1,10 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Xml.Serialization;
-using Dynamo.Measure;
+using Dynamo.Units;
 using Dynamo.Models;
-using Dynamo.Utilities;
-using Dynamo.Core;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo
@@ -18,9 +16,6 @@ namespace Dynamo
     public class PreferenceSettings : NotificationObject
     {
         public static string DYNAMO_TEST_PATH = null;
-        private DynamoLengthUnit _lengthUnit;
-        private DynamoAreaUnit _areaUnit;
-        private DynamoVolumeUnit _volumeUnit;
         const string DYNAMO_SETTINGS_DIRECTORY = @"Autodesk\Dynamo\";
         const string DYNAMO_SETTINGS_FILE = "DynamoSettings.xml";
 
@@ -38,30 +33,30 @@ namespace Dynamo
         
         public DynamoLengthUnit LengthUnit
         {
-            get { return _lengthUnit; }
+            get { return UnitsManager.Instance.LengthUnit; }
             set
             {
-                _lengthUnit = value;
+                UnitsManager.Instance.LengthUnit = value;
                 RaisePropertyChanged("LengthUnit");
             }
         }
 
         public DynamoAreaUnit AreaUnit
         {
-            get { return _areaUnit; }
+            get { return UnitsManager.Instance.AreaUnit; }
             set
             {
-                _areaUnit = value;
+                UnitsManager.Instance.AreaUnit = value;
                 RaisePropertyChanged("AreaUnit");
             }
         }
 
         public DynamoVolumeUnit VolumeUnit
         {
-            get { return _volumeUnit; }
+            get { return UnitsManager.Instance.VolumeUnit; }
             set
             {
-                _volumeUnit = value;
+                UnitsManager.Instance.VolumeUnit = value;
                 RaisePropertyChanged("VolumeUnit");
             }
         }
