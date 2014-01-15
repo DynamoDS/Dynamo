@@ -203,5 +203,35 @@ namespace DSCoreNodes
                     ? StringComparison.InvariantCultureIgnoreCase
                     : StringComparison.InvariantCulture);
         }
+
+        /// <summary>
+        ///     Right-aligns the characters in the given string by padding them with spaces on the left,
+        ///     for a specified total length.
+        /// </summary>
+        /// <param name="str">String to pad.</param>
+        /// <param name="totalWidth">Total length of the string after padding.</param>
+        /// <param name="padChar">Character to pad with, defaults to space.</param>
+        public static string PadLeft(string str, int totalWidth, string padChar = " ")
+        {
+            if (padChar.Length != 1)
+                throw new ArgumentException("padChar string must contain a single character.", "padChar");
+
+            return str.PadLeft(totalWidth);
+        }
+
+        /// <summary>
+        ///     Left-aligns the characters in the given string by padding them with spaces on the right,
+        ///     for a specified total length.
+        /// </summary>
+        /// <param name="str">String to pad.</param>
+        /// <param name="totalWidth">Total length of the string after padding.</param>
+        /// <param name="padChar">Character to pad with, defaults to space.</param>
+        public static string PadRight(string str, int totalWidth, string padChar = " ")
+        {
+            if (padChar.Length != 1)
+                throw new ArgumentException("padChar string must contain a single character.", "padChar");
+
+            return str.PadRight(totalWidth, padChar[0]);
+        }
     }
 }
