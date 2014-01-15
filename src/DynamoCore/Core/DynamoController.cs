@@ -16,6 +16,7 @@ using Dynamo.ViewModels;
 using Microsoft.Practices.Prism.ViewModel;
 using NUnit.Framework;
 using String = System.String;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo
 {
@@ -139,7 +140,6 @@ namespace Dynamo
             }
         }
 
-        private ConnectorType _connectorType;
         public ConnectorType ConnectorType
         {
             get { return PreferenceSettings.ConnectorType; }
@@ -549,28 +549,40 @@ namespace Dynamo
             VisualizationManager.ClearRenderables();
         }
 
-        public void CancelRun(object parameter)
+        public void CancelRunCmd(object parameter)
         {
-            RunCancelled = true;
+            var command = new DynCmd.RunCancelCommand(false, true);
+            DynamoViewModel.ExecuteCommand(command);
         }
 
-        internal bool CanCancelRun(object parameter)
+        internal bool CanCancelRunCmd(object parameter)
         {
             return true;
         }
 
-        public void RunExpression(object parameters)
+        public void RunExpression(object parameters) // For unit test cases.
         {
             RunExpression(Convert.ToBoolean(parameters));
         }
 
-        internal bool CanRunExpression(object parameters)
+        internal void RunExprCmd(object parameters)
         {
-            if (dynSettings.Controller == null)
-            {
-                return false;
-            }
-            return true;
+            bool showErrors = Convert.ToBoolean(parameters);
+            var command = new DynCmd.RunCancelCommand(showErrors, false);
+            DynamoViewModel.ExecuteCommand(command);
+        }
+
+        internal bool CanRunExprCmd(object parameters)
+        {
+            return (dynSettings.Controller != null);
+        }
+
+        internal void RunCancelInternal(bool showErrors, bool cancelRun)
+        {
+            if (cancelRun != false)
+                RunCancelled = true;
+            else
+                RunExpression(showErrors);
         }
 
         public void DisplayFunction(object parameters)

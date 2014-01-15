@@ -9,11 +9,6 @@ namespace Dynamo.Core
 {
     public class Configurations
     {
-        #region Dynamo Universal Constants
-        // Add 0.5 to place the point in the middle of a pixel to sharpen it
-        public static readonly double PixelSharpeningConstant = 0.5;
-        #endregion
-
         #region Canvas Configurations
         //public static readonly double Minimum
 
@@ -21,6 +16,9 @@ namespace Dynamo.Core
         public static readonly int GridSpacing = 100;
         public static readonly int GridThickness = 2;
         public static readonly Color GridLineColor = Color.FromRgb(232, 232, 232);
+
+        // Canvas Control
+        public static readonly double ZoomIncrement = 0.05;
         #endregion
 
         #region Tab Bar Configurations
@@ -55,14 +53,14 @@ namespace Dynamo.Core
 
         public static double PreviewMaxWidth = 500;
         public static double PreviewMaxHeight;
-        public static double PreviewMinWidth = 220;
-        public static double PreviewMinHeight = 50;
+        public static double PreviewMinWidth = 40;
+        public static double PreviewMinHeight = 30;
         public static double PreviewDefaultMaxWidth = 300;
         public static double PreviewDefaultMaxHeight = 200;
 
-        public static double PreviewCondensedMaxWidth = 300;
-        public static double PreviewCondensedMinWidth = 40;
+        public static double PreviewCondensedMaxWidth = 300;        
         public static double PreviewCondensedMaxHeight = 200;
+        public static double PreviewCondensedMinWidth = 40;
         public static double PreviewCondensedMinHeight = 0;
         public static double PreviewCondensedContentMaxWidth = PreviewCondensedMaxWidth - 10;
         public static double PreviewCondensedContentMaxHeight = PreviewCondensedMaxHeight - 17;
@@ -83,6 +81,13 @@ namespace Dynamo.Core
         public static double ErrorContentMaxWidth = ErrorMaxWidth - 10;
         public static double ErrorContentMaxHeight = ErrorMaxHeight - 16;
 
+        public static double ErrorCondensedMaxWidth = 75;
+        public static double ErrorCondensedMinWidth = 25;
+        public static double ErrorCondensedMaxHeight = 50;
+        public static double ErrorCondensedMinHeight = 25;
+        public static double ErrorCondensedContentMaxWidth = ErrorCondensedMaxWidth - 10;
+        public static double ErrorCondensedContentMaxHeight = ErrorCondensedMaxHeight - 16;
+
         public static double ErrorTextFontSize = 13;
         public static FontWeight ErrorTextFontWeight = FontWeights.Light;
         public static SolidColorBrush ErrorTextForeground = new SolidColorBrush(Color.FromRgb(190, 70, 70));
@@ -95,6 +100,7 @@ namespace Dynamo.Core
         #endregion
 
         #region Node Tooltip
+        public static int ToolTipFadeInDelayInMS = 1000;
 
         public static SolidColorBrush NodeTooltipFrameFill = new SolidColorBrush(Color.FromRgb(255, 255, 255));
         public static double NodeTooltipFrameStrokeThickness = 1;

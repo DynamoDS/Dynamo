@@ -63,6 +63,18 @@ namespace Dynamo.ViewModels
 
         #region The Actual Command Handlers (Private)
 
+        private void OpenFileImpl(OpenFileCommand command)
+        {
+            string xmlFilePath = command.XmlFilePath;
+            dynSettings.Controller.DynamoModel.OpenInternal(xmlFilePath);
+        }
+
+        private void RunCancelImpl(RunCancelCommand command)
+        {
+            dynSettings.Controller.RunCancelInternal(
+                command.ShowErrors, command.CancelRun);
+        }
+
         private void CreateNodeImpl(CreateNodeCommand command)
         {
             NodeModel nodeModel = Model.CreateNode(
@@ -74,12 +86,18 @@ namespace Dynamo.ViewModels
                 command.TransformCoordinates);
 
             CurrentSpace.RecordCreatedModel(nodeModel);
+
+            UndoCommand.RaiseCanExecuteChanged();
+            RedoCommand.RaiseCanExecuteChanged();
         }
 
         private void CreateNoteImpl(CreateNoteCommand command)
         {
             NoteModel noteModel = Model.AddNoteInternal(command, null);
             CurrentSpace.RecordCreatedModel(noteModel);
+
+            UndoCommand.RaiseCanExecuteChanged();
+            RedoCommand.RaiseCanExecuteChanged();
         }
 
         private void SelectModelImpl(SelectModelCommand command)
@@ -161,6 +179,9 @@ namespace Dynamo.ViewModels
             }
 
             _model.DeleteModelInternal(modelsToDelete);
+
+            UndoCommand.RaiseCanExecuteChanged();
+            RedoCommand.RaiseCanExecuteChanged();
         }
 
         private void UndoRedoImpl(UndoRedoCommand command)
@@ -169,6 +190,14 @@ namespace Dynamo.ViewModels
                 CurrentSpace.Undo();
             else if (command.CmdOperation == UndoRedoCommand.Operation.Redo)
                 CurrentSpace.Redo();
+
+            UndoCommand.RaiseCanExecuteChanged();
+            RedoCommand.RaiseCanExecuteChanged();
+        }
+
+        private void SendModelEventImpl(ModelEventCommand command)
+        {
+            CurrentSpace.SendModelEvent(command.ModelGuid, command.EventName);
 
             UndoCommand.RaiseCanExecuteChanged();
             RedoCommand.RaiseCanExecuteChanged();

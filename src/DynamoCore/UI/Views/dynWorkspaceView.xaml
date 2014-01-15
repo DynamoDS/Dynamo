@@ -21,8 +21,7 @@
                  Grid.Column="2"
                  IsHitTestVisible="{Binding Path=DataContext.ShouldBeHitTestVisible, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type TabControl}}}">
             
-            <controls:ZoomBorder ClipToBounds="True" MouseWheel="zoomBorder_MouseWheel" BorderThickness="0"
-                                 MouseMove="zoomBorder_MouseMove" x:Name="zoomBorder"
+            <controls:ZoomBorder ClipToBounds="True" BorderThickness="0" x:Name="zoomBorder"
                                  Width="{Binding Path=ActualWidth, ElementName=outerCanvas}"
                                  Height="{Binding Path=ActualHeight, ElementName=outerCanvas}"
                                  Cursor="{Binding CurrentCursor}"

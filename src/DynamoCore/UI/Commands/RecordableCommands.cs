@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -94,6 +95,12 @@ namespace Dynamo.ViewModels
 
                 switch (element.Name)
                 {
+                    case "OpenFileCommand":
+                        command = OpenFileCommand.DeserializeCore(element);
+                        break;
+                    case "RunCancelCommand":
+                        command = RunCancelCommand.DeserializeCore(element);
+                        break;
                     case "CreateNodeCommand":
                         command = CreateNodeCommand.DeserializeCore(element);
                         break;
@@ -117,6 +124,9 @@ namespace Dynamo.ViewModels
                         break;
                     case "UndoRedoCommand":
                         command = UndoRedoCommand.DeserializeCore(element);
+                        break;
+                    case "ModelEventCommand":
+                        command = ModelEventCommand.DeserializeCore(element);
                         break;
                     case "UpdateModelValueCommand":
                         command = UpdateModelValueCommand.DeserializeCore(element);
@@ -184,6 +194,109 @@ namespace Dynamo.ViewModels
             /// here must be exactly what DeserializeCore method expects.</param>
             /// 
             protected abstract void SerializeCore(XmlElement element);
+
+            #endregion
+        }
+
+        public class OpenFileCommand : RecordableCommand
+        {
+            #region Public Class Methods
+
+            public OpenFileCommand(string xmlFilePath)
+            {
+                this.XmlFilePath = xmlFilePath;
+            }
+
+            internal static OpenFileCommand DeserializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                string xmlFilePath = helper.ReadString("XmlFilePath");
+                if (File.Exists(xmlFilePath) == false)
+                {
+                    // Try to find the file right next to the command XML file.
+                    string xmlFileName = Path.GetFileName(xmlFilePath);
+                    Uri uri = new Uri(element.OwnerDocument.BaseURI);
+                    string directory = Path.GetDirectoryName(uri.AbsolutePath);
+                    xmlFilePath = Path.Combine(directory, xmlFileName);
+
+                    // If it still cannot be resolved, fall back to system search.
+                    if (File.Exists(xmlFilePath) == false)
+                        xmlFilePath = Path.GetFullPath(xmlFileName);
+
+                    if (File.Exists(xmlFilePath) == false) // When all else fail.
+                    {
+                        var message = "Target file cannot be found!";
+                        throw new FileNotFoundException(message, xmlFileName);
+                    }
+                }
+
+                return new OpenFileCommand(xmlFilePath);
+            }
+
+            #endregion
+
+            #region Public Command Properties
+
+            internal string XmlFilePath { get; private set; }
+
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+            {
+                dynamoViewModel.OpenFileImpl(this);
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("XmlFilePath", this.XmlFilePath);
+            }
+
+            #endregion
+        }
+
+        public class RunCancelCommand : RecordableCommand
+        {
+            #region Public Class Methods
+
+            public RunCancelCommand(bool showErrors, bool cancelRun)
+            {
+                this.ShowErrors = showErrors;
+                this.CancelRun = cancelRun;
+            }
+
+            internal static RunCancelCommand DeserializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                bool showErrors = helper.ReadBoolean("ShowErrors");
+                bool cancelRun = helper.ReadBoolean("CancelRun");
+                return new RunCancelCommand(showErrors, cancelRun);
+            }
+
+            #endregion
+
+            #region Public Command Properties
+
+            internal bool ShowErrors { get; private set; }
+            internal bool CancelRun { get; private set; }
+
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+            {
+                dynamoViewModel.RunCancelImpl(this);
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("ShowErrors", this.ShowErrors);
+                helper.SetAttribute("CancelRun", this.CancelRun);
+            }
 
             #endregion
         }
@@ -594,6 +707,50 @@ namespace Dynamo.ViewModels
             #endregion
         }
 
+        public class ModelEventCommand : RecordableCommand
+        {
+            #region Public Class Methods
+
+            internal ModelEventCommand(Guid modelGuid, string eventName)
+            {
+                this.ModelGuid = modelGuid;
+                this.EventName = eventName;
+            }
+
+            internal static ModelEventCommand DeserializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                Guid modelGuid = helper.ReadGuid("ModelGuid");
+                string eventName = helper.ReadString("EventName");
+                return new ModelEventCommand(modelGuid, eventName);
+            }
+
+            #endregion
+
+            #region Public Command Properties
+
+            internal Guid ModelGuid { get; private set; }
+            internal string EventName { get; private set; }
+
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoViewModel dynamoViewModel)
+            {
+                dynamoViewModel.SendModelEventImpl(this);
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("ModelGuid", this.ModelGuid);
+                helper.SetAttribute("EventName", this.EventName);
+            }
+
+            #endregion
+        }
+
         public class UpdateModelValueCommand : RecordableCommand
         {
             #region Public Class Methods
@@ -643,11 +800,11 @@ namespace Dynamo.ViewModels
         }
     }
 
-    // internal class XxxYyyCommand : RecordableCommand
+    // public class XxxYyyCommand : RecordableCommand
     // {
     //     #region Public Class Methods
     // 
-    //     internal XxxYyyCommand()
+    //     public XxxYyyCommand()
     //     {
     //     }
     // 

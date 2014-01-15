@@ -26,8 +26,7 @@
                     <DataTemplate>
                         <Button ToolTip="{Binding ShortcutToolTip}"
                                     Command="{Binding ShortcutCommand}"
-                                    CommandParameter="{Binding ShortcutCommandParameter}"
-                                    IsEnabled="{Binding IsEnabled}">
+                                    CommandParameter="{Binding ShortcutCommandParameter}">
                             <Button.Resources>
                                 <Image x:Key="Normal"
                                            Width="25"
@@ -77,8 +76,7 @@
                         <DataTemplate>
                             <Button ToolTip="{Binding ShortcutToolTip}"
                                     Command="{Binding ShortcutCommand}"
-                                    CommandParameter="{Binding ShortcutCommandParameter}"
-                                    IsEnabled="{Binding IsEnabled}">
+                                    CommandParameter="{Binding ShortcutCommandParameter}">
                                 <Button.Resources>
                                     <Image x:Key="Normal"
                                            Width="25"
