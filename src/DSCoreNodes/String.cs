@@ -11,10 +11,10 @@ namespace DSCoreNodes
         /// <summary>
         /// Converts an object to a string representation.
         /// </summary>
-        /// <param name="o">Object to serialize.</param>
-        public static string FromObject(object o)
+        /// <param name="obj">Object to serialize.</param>
+        public static string FromObject(object obj)
         {
-            return o.ToString();
+            return obj.ToString();
         }
 
         /// <summary>
@@ -28,23 +28,23 @@ namespace DSCoreNodes
         /// <summary>
         /// Returns the number of characters contained in the given string.
         /// </summary>
-        /// <param name="s">String to take the length of.</param>
-        public static int Length(string s)
+        /// <param name="str">String to take the length of.</param>
+        public static int Length(string str)
         {
-            return s.Length;
+            return str.Length;
         }
 
         /// <summary>
         /// Divides a single string into a list of strings, determined by
         /// the given separater strings.
         /// </summary>
-        /// <param name="s">String to split up.</param>
+        /// <param name="str">String to split up.</param>
         /// <param name="separaters">
         /// Strings that, if present, determine the end and start of a split.
         /// </param>
-        public static IList Split(string s, params string[] separaters)
+        public static IList Split(string str, params string[] separaters)
         {
-            return s.Split(separaters, StringSplitOptions.RemoveEmptyEntries);
+            return str.Split(separaters, StringSplitOptions.RemoveEmptyEntries);
         }
 
         /// <summary>
@@ -61,43 +61,43 @@ namespace DSCoreNodes
         /// <summary>
         /// Converts the given string to all uppercase characters.
         /// </summary>
-        /// <param name="s">String to be made uppercase.</param>
-        public static string ToUpper(string s)
+        /// <param name="str">String to be made uppercase.</param>
+        public static string ToUpper(string str)
         {
-            return s.ToUpper();
+            return str.ToUpper();
         }
 
         /// <summary>
         /// Converts the given string to all lowercase characters.
         /// </summary>
-        /// <param name="s">String to be made lowercase.</param>
-        public static string ToLower(string s)
+        /// <param name="str">String to be made lowercase.</param>
+        public static string ToLower(string str)
         {
-            return s.ToLower();
+            return str.ToLower();
         }
 
         /// <summary>
         /// Retrieves a substring from the given string. The substring starts at the given
         /// character position and has the given length.
         /// </summary>
-        /// <param name="s">String to take substring of.</param>
+        /// <param name="str">String to take substring of.</param>
         /// <param name="start">
         /// Starting character position of the substring in the original string.
         /// </param>
         /// <param name="length">Number of characters in the substring.</param>
-        public static string Substring(string s, int start, int length)
+        public static string Substring(string str, int start, int length)
         {
-            return s.Substring(start, length);
+            return str.Substring(start, length);
         }
 
         /// <summary>
         /// Determines if the given string contains the given substring.
         /// </summary>
-        /// <param name="s">String to search in.</param>
+        /// <param name="str">String to search in.</param>
         /// <param name="search">Substring to search for.</param>
-        public static bool Contains(string s, string search)
+        public static bool Contains(string str, string search)
         {
-            return s.Contains(search);
+            return str.Contains(search);
         }
     }
 }
