@@ -135,5 +135,32 @@ namespace DSCoreNodes
         {
             return str.StartsWith(searchFor, ignoreCase, CultureInfo.InvariantCulture);
         }
+
+        /// <summary>
+        ///     Removes all whitespace from the start and end of the given string.
+        /// </summary>
+        /// <param name="str">String to trim.</param>
+        public static string TrimWhitespace(string str)
+        {
+            return str.Trim();
+        }
+
+        /// <summary>
+        ///     Removes all whitespace from the start of the given string.
+        /// </summary>
+        /// <param name="str">String to trim.</param>
+        public static string TrimLeadingWhitespace(string str)
+        {
+            return str.TrimStart();
+        }
+
+        /// <summary>
+        ///     Removes all whitespace from the end of the given string.
+        /// </summary>
+        /// <param name="str">String to trim.</param>
+        public static string TrimTrailingWhitespace(string str)
+        {
+            return str.TrimEnd();
+        }
     }
 }
