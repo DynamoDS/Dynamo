@@ -42,5 +42,17 @@ namespace Dynamo.Tests
             model.Open(testPath);
             Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
+
+        [Test]
+        public void EdgePlaneIntersection()
+        {
+            var model = dynSettings.Controller.DynamoModel;
+
+            string samplePath = Path.Combine(_testPath, @".\Intersect\EdgePlaneIntersection.dyn");
+            string testPath = Path.GetFullPath(samplePath);
+
+            model.Open(testPath);
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+        }
     }
 }
