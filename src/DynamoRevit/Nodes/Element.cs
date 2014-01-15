@@ -121,7 +121,7 @@ namespace Dynamo.Nodes
         {
             var a = ((FScheme.Value.Container)args[0]).Item;
 
-            return FScheme.Value.NewContainer(Measure.Length.FromFeet(getHeight(a)));
+            return FScheme.Value.NewContainer(Units.Length.FromFeet(getHeight(a)));
         }
     }
 }

@@ -288,7 +288,6 @@ limitations under the License.
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Nodes\dynFormula.cs" />
-    <Compile Include="Core\Units.cs" />
     <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\ObservableDictionary.cs" />
     <Compile Include="Utilities\TrulyObservableCollection.cs" />
@@ -402,6 +401,10 @@ limitations under the License.
     <ProjectReference Include="..\DSCoreNodes\DSCoreNodes.csproj">
       <Project>{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}</Project>
       <Name>DSCoreNodes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoUnits\DynamoUnits.csproj">
+      <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
+      <Name>DynamoUnits</Name>
     </ProjectReference>
     <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>

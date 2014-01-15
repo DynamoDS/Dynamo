@@ -156,10 +156,6 @@ namespace Dynamo
             set { isShowPreViewByDefault = value; RaisePropertyChanged("IsShowPreviewByDefault"); }
         }
 
-        public double HostApplicationLengthConversion { get; set; }
-        public double HostApplicationAreaConversion { get; set; }
-        public double HostApplicationVolumeConversion { get; set; }
-
         #endregion
 
         #region events
@@ -279,9 +275,6 @@ namespace Dynamo
 
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrations));
 
-            HostApplicationAreaConversion = 1.0;
-            HostApplicationLengthConversion = 1.0;
-            HostApplicationVolumeConversion = 1.0;
         }
 
         #endregion
