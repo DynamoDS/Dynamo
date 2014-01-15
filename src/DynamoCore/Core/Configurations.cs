@@ -150,6 +150,8 @@ namespace Dynamo.Core
         #endregion
 
         #endregion
+
+        public const string AppVersionFileName = @".\appversion.txt";
     }
 
     public class ResourceNames
