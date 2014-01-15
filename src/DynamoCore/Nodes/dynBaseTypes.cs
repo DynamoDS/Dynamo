@@ -1392,6 +1392,28 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Shuffle List")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_MODIFY)]
+    [NodeDescription("Randomizes the order of items in a list.")]
+    public class Shuffle : NodeWithOneOutput
+    {
+        public Shuffle()
+        {
+            InPortData.Add(new PortData("list", "A list", typeof(Value.List)));
+            OutPortData.Add(new PortData("shuffled", "Randomized list.", typeof(Value.List)));
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var list = ((Value.List)args[0]).Item;
+
+            var rng = new System.Random();
+
+            return Value.NewList(Utils.SequenceToFSharpList(list.OrderBy(_ => rng.Next())));
+        }
+    }
+
     [NodeName("Group by Key")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_MODIFY)]
     [NodeDescription("Groups list items into sublists by generating matching keys.")]
