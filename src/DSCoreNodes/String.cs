@@ -1,24 +1,26 @@
 ﻿using System;
 using System.Collections;
+using System.Globalization;
+using System.Windows.Markup;
 
 namespace DSCoreNodes
 {
     /// <summary>
     /// Methods for managing strings.
     /// </summary>
-    public static class String
+    public class String
     {
         /// <summary>
-        /// Converts an object to a string representation.
+        ///     Converts an object to a string representation.
         /// </summary>
-        /// <param name="o">Object to serialize.</param>
-        public static string FromObject(object o)
+        /// <param name="obj">Object to serialize.</param>
+        public static string FromObject(object obj)
         {
-            return o.ToString();
+            return obj.ToString();
         }
 
         /// <summary>
-        /// Concatenates multiple strings into a single string.
+        ///     Concatenates multiple strings into a single string.
         /// </summary>
         public static string Concat(params string[] strings)
         {
@@ -26,30 +28,30 @@ namespace DSCoreNodes
         }
 
         /// <summary>
-        /// Returns the number of characters contained in the given string.
+        ///     Returns the number of characters contained in the given string.
         /// </summary>
-        /// <param name="s">String to take the length of.</param>
-        public static int Length(string s)
+        /// <param name="str">String to take the length of.</param>
+        public static int Length(string str)
         {
-            return s.Length;
+            return str.Length;
         }
 
         /// <summary>
-        /// Divides a single string into a list of strings, determined by
-        /// the given separater strings.
+        ///     Divides a single string into a list of strings, determined by
+        ///     the given separater strings.
         /// </summary>
-        /// <param name="s">String to split up.</param>
+        /// <param name="str">String to split up.</param>
         /// <param name="separaters">
-        /// Strings that, if present, determine the end and start of a split.
+        ///     Strings that, if present, determine the end and start of a split.
         /// </param>
-        public static IList Split(string s, params string[] separaters)
+        public static IList Split(string str, params string[] separaters)
         {
-            return s.Split(separaters, StringSplitOptions.RemoveEmptyEntries);
+            return str.Split(separaters, StringSplitOptions.RemoveEmptyEntries);
         }
 
         /// <summary>
-        /// Concatenates multiple strings into a single string, inserting the given
-        /// separator between each joined string.
+        ///     Concatenates multiple strings into a single string, inserting the given
+        ///     separator between each joined string.
         /// </summary>
         /// <param name="separator">String to be inserted between joined strings.</param>
         /// <param name="strings">Strings to be joined into a single string.</param>
@@ -61,43 +63,200 @@ namespace DSCoreNodes
         /// <summary>
         /// Converts the given string to all uppercase characters.
         /// </summary>
-        /// <param name="s">String to be made uppercase.</param>
-        public static string ToUpper(string s)
+        /// <param name="str">String to be made uppercase.</param>
+        public static string ToUpper(string str)
         {
-            return s.ToUpper();
+            return str.ToUpper();
         }
 
         /// <summary>
-        /// Converts the given string to all lowercase characters.
+        ///     Converts the given string to all lowercase characters.
         /// </summary>
-        /// <param name="s">String to be made lowercase.</param>
-        public static string ToLower(string s)
+        /// <param name="str">String to be made lowercase.</param>
+        public static string ToLower(string str)
         {
-            return s.ToLower();
+            return str.ToLower();
         }
 
         /// <summary>
-        /// Retrieves a substring from the given string. The substring starts at the given
-        /// character position and has the given length.
+        ///     Retrieves a substring from the given string. The substring starts at the given
+        ///     character position and has the given length.
         /// </summary>
-        /// <param name="s">String to take substring of.</param>
+        /// <param name="str">String to take substring of.</param>
         /// <param name="start">
-        /// Starting character position of the substring in the original string.
+        ///     Starting character position of the substring in the original string.
         /// </param>
         /// <param name="length">Number of characters in the substring.</param>
-        public static string Substring(string s, int start, int length)
+        public static string Substring(string str, int start, int length)
         {
-            return s.Substring(start, length);
+            return str.Substring(start, length);
         }
 
         /// <summary>
-        /// Determines if the given string contains the given substring.
+        ///     Determines if the given string contains the given substring.
         /// </summary>
-        /// <param name="s">String to search in.</param>
-        /// <param name="search">Substring to search for.</param>
-        public static bool Contains(string s, string search)
+        /// <param name="str">String to search in.</param>
+        /// <param name="searchFor">Substring to search for.</param>
+        /// <param name="ignoreCase">Whether or not comparison takes case into account.</param>
+        public static bool Contains(string str, string searchFor, bool ignoreCase = false)
         {
-            return s.Contains(search);
+            return !ignoreCase ? str.Contains(searchFor) : str.ToLowerInvariant().Contains(searchFor.ToLowerInvariant());
+        }
+
+        /// <summary>
+        ///     Replaces all occurrances of text in a string with other text.
+        /// </summary>
+        /// <param name="str">String to replace substrings in.</param>
+        /// <param name="searchFor">Text to be replaced.</param>
+        /// <param name="replaceWith">Text to replace with.</param>
+        public static string Replace(string str, string searchFor, string replaceWith)
+        {
+            return str.Replace(searchFor, replaceWith);
+        }
+
+        /// <summary>
+        ///     Determines if the given string ends with the given substring.
+        /// </summary>
+        /// <param name="str">String to search the end of.</param>
+        /// <param name="searchFor">Substring to search the end for.</param>
+        /// <param name="ignoreCase">Whether or not comparison takes case into account.</param>
+        public static bool EndsWith(string str, string searchFor, bool ignoreCase = false)
+        {
+            return str.EndsWith(searchFor, ignoreCase, CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        ///     Determines if the given string starts with the given substring.
+        /// </summary>
+        /// <param name="str">String to search the start of.</param>
+        /// <param name="searchFor">Substring to search the start for.</param>
+        /// <param name="ignoreCase">Whether or not comparison takes case into account.</param>
+        public static bool StartsWith(string str, string searchFor, bool ignoreCase = false)
+        {
+            return str.StartsWith(searchFor, ignoreCase, CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        ///     Removes all whitespace from the start and end of the given string.
+        /// </summary>
+        /// <param name="str">String to trim.</param>
+        public static string TrimWhitespace(string str)
+        {
+            return str.Trim();
+        }
+
+        /// <summary>
+        ///     Removes all whitespace from the start of the given string.
+        /// </summary>
+        /// <param name="str">String to trim.</param>
+        public static string TrimLeadingWhitespace(string str)
+        {
+            return str.TrimStart();
+        }
+
+        /// <summary>
+        ///     Removes all whitespace from the end of the given string.
+        /// </summary>
+        /// <param name="str">String to trim.</param>
+        public static string TrimTrailingWhitespace(string str)
+        {
+            return str.TrimEnd();
+        }
+
+        /// <summary>
+        ///     Finds the zero-based index of the first occurance of a sub-string inside a string.
+        ///     Returns -1 if no index could be found.
+        /// </summary>
+        /// <param name="str">A string to search in.</param>
+        /// <param name="searchFor">Substring to search for.</param>
+        /// <param name="start">Index to start searching at.</param>
+        /// <param name="count">The number of character positions to examine.</param>
+        /// <param name="ignoreCase">Whether or not comparison takes case into account.</param>
+        public static int IndexOf(string str, string searchFor, int start = 0, int? count = null, bool ignoreCase = false)
+        {
+            return str.IndexOf(
+                searchFor,
+                start,
+                count ?? (str.Length - start),
+                ignoreCase
+                    ? StringComparison.InvariantCultureIgnoreCase
+                    : StringComparison.InvariantCulture);
+        }
+
+        /// <summary>
+        ///     Finds the zero-based index of the last occurance of a sub-string inside a string.
+        ///     Returns -1 if no index could be found.
+        /// </summary>
+        /// <param name="str">A string to search in.</param>
+        /// <param name="searchFor">Substring to search for.</param>
+        /// <param name="start">Index to start searching at.</param>
+        /// <param name="count">The number of character positions to examine.</param>
+        /// <param name="ignoreCase">Whether or not comparison takes case into account.</param>
+        public static int LastIndexOf(
+            string str, string searchFor, int start = 0, int? count = null, bool ignoreCase = false)
+        {
+            return str.LastIndexOf(
+                searchFor,
+                start,
+                count ?? (str.Length - start),
+                ignoreCase
+                    ? StringComparison.InvariantCultureIgnoreCase
+                    : StringComparison.InvariantCulture);
+        }
+
+        /// <summary>
+        ///     Right-aligns the characters in the given string by padding them with spaces on the left,
+        ///     for a specified total length.
+        /// </summary>
+        /// <param name="str">String to pad.</param>
+        /// <param name="totalWidth">Total length of the string after padding.</param>
+        /// <param name="padChar">Character to pad with, defaults to space.</param>
+        public static string PadLeft(string str, int totalWidth, string padChar = " ")
+        {
+            if (padChar.Length != 1)
+                throw new ArgumentException("padChar string must contain a single character.", "padChar");
+
+            return str.PadLeft(totalWidth);
+        }
+
+        /// <summary>
+        ///     Left-aligns the characters in the given string by padding them with spaces on the right,
+        ///     for a specified total length.
+        /// </summary>
+        /// <param name="str">String to pad.</param>
+        /// <param name="totalWidth">Total length of the string after padding.</param>
+        /// <param name="padChar">Character to pad with, defaults to space.</param>
+        public static string PadRight(string str, int totalWidth, string padChar = " ")
+        {
+            if (padChar.Length != 1)
+                throw new ArgumentException("padChar string must contain a single character.", "padChar");
+
+            return str.PadRight(totalWidth, padChar[0]);
+        }
+
+        /// <summary>
+        ///     Inserts a string into another string at a given index.
+        /// </summary>
+        /// <param name="str">String to insert into.</param>
+        /// <param name="index">Index to insert at.</param>
+        /// <param name="toInsert">String to be inserted.</param>
+        public static string Insert(string str, int index, string toInsert)
+        {
+            return str.Insert(index, toInsert);
+        }
+
+        /// <summary>
+        ///     Removes characters from a string.
+        /// </summary>
+        /// <param name="str">String to remove characters from.</param>
+        /// <param name="startIndex">Index to start removal.</param>
+        /// <param name="count">
+        ///     Amount of characters to remove, by default will remove all characters from
+        ///     the given startIndex to the end of the string.
+        /// </param>
+        public static string Remove(string str, int startIndex, int? count = null)
+        {
+            return str.Remove(startIndex, count ?? (str.Length - startIndex));
         }
     }
 }

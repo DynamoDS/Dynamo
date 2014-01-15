@@ -7,7 +7,7 @@ namespace DSCoreNodes
     /// <summary>
     /// 
     /// </summary>
-    public static class Optimize
+    public class Optimize
     {
         public static double NewtonRootFind1DNoDeriv(
             Func<double, double> objFunc, double start, int maxIters)
