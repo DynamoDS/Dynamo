@@ -370,8 +370,9 @@ namespace Dynamo.Nodes
             if (e.ClickCount >= 2)
             {
                 EditScriptContent();
+                e.Handled = true;
             }
-            e.Handled = true;
+            
         }
 
         public override bool RequiresRecalc
