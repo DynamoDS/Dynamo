@@ -34,6 +34,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FScheme, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\AnyCPU\Debug\FScheme.dll</HintPath>
+    </Reference>
+    <Reference Include="FSchemeInterop, Version=0.5.3.24285, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\AnyCPU\Debug\FSchemeInterop.dll</HintPath>
+    </Reference>
     <Reference Include="FSharp.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -46,16 +54,6 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Units.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\FSchemeInterop\FSchemeInterop2012.csproj">
-      <Project>{126c6420-c7a2-43b0-8b08-206c6c4c1348}</Project>
-      <Name>FSchemeInterop2012</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\FScheme\FScheme.2012.fsproj">
-      <Project>{f0e5a3e5-bdd0-41ae-848e-ded9efc5fa7f}</Project>
-      <Name>FScheme.2012</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
