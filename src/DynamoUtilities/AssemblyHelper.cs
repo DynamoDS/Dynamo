@@ -38,7 +38,7 @@ namespace Dynamo.Utilities
         public static string GetLibGPath()
         {
             string dll_dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\dll";
-            string libGPath = Path.Combine(dll_dir, "LibGNet.dll");
+            string libGPath = Path.Combine(dll_dir, "LibG.Managed.dll");
             return libGPath;
         }
     }

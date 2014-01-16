@@ -85,9 +85,6 @@ limitations under the License.
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="LibG.Managed">
-      <HintPath>..\..\extern\DynamoAsm\LibG.Managed.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
@@ -680,7 +677,8 @@ limitations under the License.
   <PropertyGroup>
     <PostBuildEvent>copy /Y "$(SolutionDir)..\extern\DesignScript\*" "$(OutputPath)"
 mkdir "$(OutputPath)\dll"
-copy /Y "$(SolutionDir)..\extern\DynamoAsm\*" "$(OutputPath)\dll"</PostBuildEvent>
+copy /Y "$(SolutionDir)..\extern\DynamoAsm\*" "$(OutputPath)\dll"
+copy /Y "$(SolutionDir)..\extern\DynamoAsm\LibG.ProtoInterface.dll" "$(OutputPath)"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
