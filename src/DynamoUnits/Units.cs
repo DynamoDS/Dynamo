@@ -74,16 +74,19 @@ namespace Dynamo.Units
 
     public abstract class SIUnit
     {
+        //length conversions
         private static double meter_to_millimeter = 1000;
         private static double meter_to_centimeter = 100;
         private static double meter_to_inch = 39.3701;
         private static double meter_to_foot = 3.28084;
 
+        //area conversions
         private static double square_meters_to_square_millimeters = 1000000;
         private static double square_meters_to_square_centimeters = 10000;
         private static double square_meters_to_square_inch = 1550;
         private static double square_meters_to_square_foot = 10.7639;
 
+        //volume conversions
         private static double cubic_meters_to_cubic_millimeters = 1000000000;
         private static double cubic_meters_to_cubic_centimeters = 1000000;
         private static double cubic_meters_to_cubic_inches = 61023.7;
@@ -879,6 +882,147 @@ namespace Dynamo.Units
 
     }
 
+    /// <summary>
+    /// A luminous intensity stored as candela
+    /// </summary>
+    public class LuminousIntensity : SIUnit
+    {
+        public LuminousIntensity(double value) : base(value)
+        {
+
+        }
+
+        public override void SetValueFromString(string value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SIUnit Add(SIUnit x)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SIUnit Subtract(SIUnit x)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SIUnit Multiply(SIUnit x)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SIUnit Multiply(double x)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override dynamic Divide(SIUnit x)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SIUnit Divide(double x)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SIUnit Modulo(SIUnit x)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SIUnit Round()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SIUnit Ceiling()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SIUnit Floor()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override double ConvertToHostUnits()
+        {
+            return _value;
+        }
+    }
+
+    /// <summary>
+    /// A luminance stored as candela/m²
+    /// </summary>
+    public class Luminance : SIUnit
+    {
+        public Luminance(double value) : base(value)
+        {
+        }
+
+        public override void SetValueFromString(string value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SIUnit Add(SIUnit x)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SIUnit Subtract(SIUnit x)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SIUnit Multiply(SIUnit x)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SIUnit Multiply(double x)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override dynamic Divide(SIUnit x)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SIUnit Divide(double x)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SIUnit Modulo(SIUnit x)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SIUnit Round()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SIUnit Ceiling()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SIUnit Floor()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override double ConvertToHostUnits()
+        {
+            return _value;
+        }
+    }
+    
     public static class UnitExtensions
     {
         public static bool AlmostEquals(this double double1, double double2, double precision)
