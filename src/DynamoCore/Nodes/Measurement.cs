@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Xml;
-using Dynamo.Measure;
+using Dynamo.Units;
 using Dynamo.Models;
 using Microsoft.FSharp.Collections;
 
@@ -76,7 +76,7 @@ namespace Dynamo.Nodes
     {
         public LengthInput()
         {
-            _measure = new Measure.Length(0.0);
+            _measure = new Units.Length(0.0);
             OutPortData.Add(new PortData("length", "The length. Stored internally as decimal meters.", typeof(FScheme.Value.Container)));
             RegisterAllPorts();
         }
@@ -86,6 +86,17 @@ namespace Dynamo.Nodes
         {
             //length values were previously stored as decimal feet
             //convert them internally to SI meters.
+            foreach (XmlNode child in node.ChildNodes)
+            {
+                if (child.Name == "System.Double")
+                {
+                    if (child.Attributes != null && child.Attributes.Count > 0)
+                    {
+                        var valueAttrib = child.Attributes["value"];
+                        valueAttrib.Value = (double.Parse(valueAttrib.Value)/SIUnit.ToFoot).ToString(CultureInfo.InvariantCulture);
+                    }
+                }
+            }
         }
     }
 
@@ -97,7 +108,7 @@ namespace Dynamo.Nodes
     {
         public AreaInput()
         {
-            _measure = new Measure.Area(0.0);
+            _measure = new Units.Area(0.0);
             OutPortData.Add(new PortData("area", "The area. Stored internally as decimal meters squared.", typeof(FScheme.Value.Container)));
             RegisterAllPorts();
         }
@@ -111,7 +122,7 @@ namespace Dynamo.Nodes
     {
         public VolumeInput()
         {
-            _measure = new Measure.Volume(0.0);
+            _measure = new Units.Volume(0.0);
             OutPortData.Add(new PortData("volume", "The volume. Stored internally as decimal meters cubed.", typeof(FScheme.Value.Container)));
             RegisterAllPorts();
         }
