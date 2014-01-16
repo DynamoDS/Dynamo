@@ -279,6 +279,20 @@ namespace Dynamo
 
             var updateManager = UpdateManager.UpdateManager.CreateInstance(DynamoLogger.Instance);
             updateManager.CheckForProductUpdate();
+            updateManager.UpdateDownloaded += updateManager_UpdateDownloaded;
+        }
+
+        void updateManager_UpdateDownloaded(object sender, UpdateDownloadedEventArgs e)
+        {
+            if (e.Error != null)
+            {
+                DynamoLogger.Instance.LogInfo("UpdateDownloaded",e.Error.Message);
+                DynamoLogger.Instance.LogWarning("An update could not be downloaded from the server.", WarningLevel.Moderate);
+                return;
+            }
+
+            //write the update location to the file
+            
         }
 
         #endregion
