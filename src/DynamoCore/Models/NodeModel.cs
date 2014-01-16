@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
+using System.Diagnostics;
+using System.Collections.ObjectModel;
+using Dynamo.Units;
 using Dynamo.Nodes;
 using System.Xml;
 using Dynamo.DSEngine;
-using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Selection;
 using Dynamo.Utilities;
@@ -18,6 +18,7 @@ using Microsoft.FSharp.Core;
 using ProtoCore.AST.AssociativeAST;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
+using Utils = Dynamo.FSchemeInterop.Utils;
 
 namespace Dynamo.Models
 {
@@ -1723,9 +1724,10 @@ namespace Dynamo.Models
         protected virtual void __eval_internal(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
         {
             var t = GetType();
-            if (t != typeof(Watch) && !typeof(MathBase).IsAssignableFrom(t) )
+
+            if (t != typeof(Watch) && !typeof(MathBase).IsAssignableFrom(t))
             {
-                args = Utils.SequenceToFSharpList(args.Select(Dynamo.Measure.SIUnit.UnwrapToDoubleWithHostUnitConversion));
+                args = Utils.SequenceToFSharpList(args.Select(SIUnit.UnwrapToDoubleWithHostUnitConversion));
             }
 
             _errorCount = 0;

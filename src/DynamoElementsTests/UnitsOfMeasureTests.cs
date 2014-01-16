@@ -1,5 +1,6 @@
-﻿using NUnit.Framework;
-using Dynamo.Measure;
+﻿using Dynamo.Nodes;
+using NUnit.Framework;
+using Dynamo.Units;
 
 namespace Dynamo.Tests
 {
@@ -9,7 +10,7 @@ namespace Dynamo.Tests
         public void SetLengthsFromString()
         {
             //feet tests
-            var length = new Length(1.0);
+            var length = new Dynamo.Units.Length(1.0);
 
             length.SetValueFromString("1' 3\"");
             Assert.AreEqual(0.381, length.Value, 0.001);
@@ -186,7 +187,7 @@ namespace Dynamo.Tests
         [Test]
         public void ToFractonialInchRepresentation()
         {
-            var length = new Length(0.03175); //1.25"
+            var length = new Dynamo.Units.Length(0.03175); //1.25"
             Assert.AreEqual("1 1/4\"", length.ToString(DynamoLengthUnit.FractionalInch));
 
             length.Value = -0.03175;
@@ -221,7 +222,7 @@ namespace Dynamo.Tests
         public void ToFractionalFootRepresentations()
         {
             //test just the fractional case
-            var length = new Length(0.0762); //.25"
+            var length = new Units.Length(0.0762); //.25"
             Assert.AreEqual("3\"", length.ToString(DynamoLengthUnit.FractionalFoot));
 
             length.Value = -0.0762;
@@ -395,9 +396,9 @@ namespace Dynamo.Tests
         [Test]
         public void UnitsMath()
         {
-            var length = new Length(2.0);
-            var area = new Area(2.0);
-            var volume = new Volume(2.0);
+            var length = new Units.Length(2.0);
+            var area = new Units.Area(2.0);
+            var volume = new Units.Volume(2.0);
 
             //addition
             var length_add = length + length;
@@ -459,11 +460,11 @@ namespace Dynamo.Tests
         public void UnitsNegatives()
         {
             //construction
-            Assert.DoesNotThrow(() => { var test = new Length(-2.0); });
+            Assert.DoesNotThrow(() => { var test = new Units.Length(-2.0); });
             Assert.Throws<MathematicalArgumentException>(() => { var test = new Area(-2.0); });
             Assert.Throws<MathematicalArgumentException>(() => { var test = new Volume(-2.0); });
 
-            var length = new Length(2.0);
+            var length = new Units.Length(2.0);
             var area = new Area(2.0);
             var volume = new Volume(2.0);
 

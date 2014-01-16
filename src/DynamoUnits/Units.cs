@@ -1,14 +1,13 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
-using Dynamo.Utilities;
-using Microsoft.FSharp.Collections;
 using Double = System.Double;
 
-namespace Dynamo.Measure
+namespace Dynamo.Units
 {
+    [Browsable(false)]
     public enum DynamoLengthUnit
     {
         DecimalInch,
@@ -20,6 +19,7 @@ namespace Dynamo.Measure
         Meter
     }
 
+    [Browsable(false)]
     public enum DynamoAreaUnit
     {
         SquareInch, 
@@ -29,6 +29,7 @@ namespace Dynamo.Measure
         SquareMeter
     }
 
+    [Browsable(false)]
     public enum DynamoVolumeUnit
     {
         CubicInch,
@@ -36,6 +37,44 @@ namespace Dynamo.Measure
         CubicMillimeter,
         CubicCentimeter,
         CubicMeter
+    }
+
+    [Browsable(false)]
+    public class UnitsManager
+    {
+        private static UnitsManager _instance;
+
+        public DynamoLengthUnit HostApplicationInternalLengthUnit { get; set; }
+        
+        public DynamoAreaUnit HostApplicationInternalAreaUnit { get; set; }
+        
+        public DynamoVolumeUnit HostApplicationInternalVolumeUnit { get; set; }
+
+        public DynamoLengthUnit LengthUnit { get; set; }
+
+        public DynamoAreaUnit AreaUnit { get; set; }
+
+        public DynamoVolumeUnit VolumeUnit { get; set; }
+
+        public static UnitsManager Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new UnitsManager();
+                }
+
+                return _instance;
+            }
+        }
+
+        private UnitsManager()
+        {
+            LengthUnit = DynamoLengthUnit.Meter;
+            AreaUnit = DynamoAreaUnit.SquareMeter;
+            VolumeUnit = DynamoVolumeUnit.CubicMeter;
+        }
     }
 
     public abstract class SIUnit
@@ -205,8 +244,6 @@ namespace Dynamo.Measure
 
         #endregion
 
-        public abstract double ConvertToHostUnits();
-
         /// <summary>
         /// Unwrap an FScheme value containing a number or a unit to a double.
         /// If the value contains a unit object, convert the internal value of the
@@ -223,10 +260,10 @@ namespace Dynamo.Measure
                 //recursively convert items in list
                 return ConvertListToHostUnits((FScheme.Value.List)value);
             }
-            
+
             if (value.IsContainer)
             {
-                var unit = ((FScheme.Value.Container) value).Item as SIUnit;
+                var unit = ((FScheme.Value.Container)value).Item as SIUnit;
                 if (unit != null)
                 {
                     return FScheme.Value.NewNumber(unit.ConvertToHostUnits());
@@ -255,6 +292,9 @@ namespace Dynamo.Measure
 
             throw new Exception("The value was not convertible to a unit of measure.");
         }
+
+        public abstract double ConvertToHostUnits();
+
     }
 
     /// <summary>
@@ -262,7 +302,6 @@ namespace Dynamo.Measure
     /// </summary>
     public class Length : SIUnit
     {
-
         public Length(double value):base(value){}
 
         public static Length FromFeet(double value)
@@ -343,7 +382,13 @@ namespace Dynamo.Measure
 
         public override double ConvertToHostUnits()
         {
-            return _value * dynSettings.Controller.HostApplicationLengthConversion;
+            switch (UnitsManager.Instance.HostApplicationInternalLengthUnit)
+            {
+                case DynamoLengthUnit.DecimalFoot:
+                    return _value / ToFoot;
+                default:
+                    return _value;
+            }
         }
 
         #endregion
@@ -358,7 +403,7 @@ namespace Dynamo.Measure
             double total = 0.0;
             if (double.TryParse(value, NumberStyles.Number, CultureInfo.CurrentCulture, out total))
             {
-                switch (dynSettings.Controller.PreferenceSettings.LengthUnit)
+                switch (UnitsManager.Instance.LengthUnit)
                 {
                     case DynamoLengthUnit.Centimeter:
                         _value = total / ToCentimeter;
@@ -411,10 +456,10 @@ namespace Dynamo.Measure
 
         public override string ToString()
         {
-            return BuildString(dynSettings.Controller.PreferenceSettings.LengthUnit);
+            return BuildString(UnitsManager.Instance.LengthUnit);
         }
 
-        internal string ToString(DynamoLengthUnit unit)
+        public string ToString(DynamoLengthUnit unit)
         {
             return BuildString(unit);
         }
@@ -555,7 +600,13 @@ namespace Dynamo.Measure
 
         public override double ConvertToHostUnits()
         {
-            return _value*dynSettings.Controller.HostApplicationAreaConversion;
+            switch (UnitsManager.Instance.HostApplicationInternalAreaUnit)
+            {
+                case DynamoAreaUnit.SquareFoot:
+                    return _value/ToSquareFoot;
+                default:
+                    return _value;
+            }
         }
 
         #endregion
@@ -570,7 +621,7 @@ namespace Dynamo.Measure
             double total = 0.0;
             if (Double.TryParse(value, NumberStyles.Number, CultureInfo.CurrentCulture, out total))
             {
-                switch (dynSettings.Controller.PreferenceSettings.AreaUnit)
+                switch (UnitsManager.Instance.AreaUnit)
                 {
                     case DynamoAreaUnit.SquareMillimeter:
                         _value = total / SIUnit.ToSquareMillimeters;
@@ -608,7 +659,7 @@ namespace Dynamo.Measure
 
         public override string ToString()
         {
-            return BuildString(dynSettings.Controller.PreferenceSettings.AreaUnit);
+            return BuildString(UnitsManager.Instance.AreaUnit);
         }
 
         public string ToString(DynamoAreaUnit unit)
@@ -738,7 +789,13 @@ namespace Dynamo.Measure
 
         public override double ConvertToHostUnits()
         {
-            return _value*dynSettings.Controller.HostApplicationVolumeConversion;
+            switch (UnitsManager.Instance.VolumeUnit)
+            {
+                case DynamoVolumeUnit.CubicFoot:
+                    return _value/ToCubicFoot;
+                default:
+                    return _value;
+            }
         }
 
         #endregion
@@ -753,7 +810,7 @@ namespace Dynamo.Measure
             double total = 0.0;
             if (Double.TryParse(value, NumberStyles.Number, CultureInfo.CurrentCulture, out total))
             {
-                switch (dynSettings.Controller.PreferenceSettings.VolumeUnit)
+                switch (UnitsManager.Instance.VolumeUnit)
                 {
                     case DynamoVolumeUnit.CubicMillimeter:
                         _value = total / SIUnit.ToCubicMillimeter;
@@ -791,7 +848,7 @@ namespace Dynamo.Measure
 
         public override string ToString()
         {
-            return BuildString(dynSettings.Controller.PreferenceSettings.VolumeUnit);
+            return BuildString(UnitsManager.Instance.VolumeUnit);
         }
 
         public string ToString(DynamoVolumeUnit unit)
@@ -827,6 +884,7 @@ namespace Dynamo.Measure
 
     }
 
+    [Browsable(false)]
     public static class UnitExtensions
     {
         public static bool AlmostEquals(this double double1, double double2, double precision)
@@ -853,6 +911,7 @@ namespace Dynamo.Measure
     /// <summary>
     /// Utility class for operating on units of measure.
     /// </summary>
+    [Browsable(false)]
     public class Utils
     {
         public static string ParseWholeInchesToString(double value)
@@ -1122,19 +1181,16 @@ namespace Dynamo.Measure
         }
     }
 
+    [Browsable(false)]
     public class MathematicalArgumentException : Exception
     {
         public MathematicalArgumentException() : base("The result could not be computed given the provided inputs.") { }
         public MathematicalArgumentException(string message) : base(message) { }
     }
 
+    [Browsable(false)]
     public class UnitsException : MathematicalArgumentException
     {
         public UnitsException(Type a, Type b) : base(string.Format("{0} and {1} are incompatible for this operation.", a, b)) { }
-    }
-
-    public interface IUnitInput
-    {
-        double ConvertToHostUnits();
     }
 }
