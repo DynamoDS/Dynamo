@@ -85,9 +85,8 @@ limitations under the License.
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="LibGNet">
-      <HintPath>..\..\extern\DynamoAsm\LibGNet.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="LibG.Managed">
+      <HintPath>..\..\extern\DynamoAsm\LibG.Managed.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Practices.Prism">
@@ -419,7 +418,7 @@ limitations under the License.
       <Name>DynamoUnits</Name>
     </ProjectReference>
     <ProjectReference Include="..\DynamoUnits\DynamoUnits.csproj">
-      <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
+      <Project>{6E0A079E-85F1-45A1-AD5B-9855E4344809}</Project>
       <Name>DynamoUnits</Name>
     </ProjectReference>
     <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
