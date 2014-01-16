@@ -13,6 +13,8 @@ using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.UpdateManager;
+
 using Microsoft.Practices.Prism.ViewModel;
 using NUnit.Framework;
 using String = System.String;
@@ -275,6 +277,8 @@ namespace Dynamo
 
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrations));
 
+            var updateManager = UpdateManager.UpdateManager.CreateInstance(DynamoLogger.Instance);
+            updateManager.CheckForProductUpdate();
         }
 
         #endregion

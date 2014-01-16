@@ -5,7 +5,6 @@ using System.IO;
 using System.Net;
 using System.ComponentModel;
 using System.Windows;
-using Dynamo.Core;
 using Dynamo.UI;
 
 namespace Dynamo.UpdateManager
@@ -41,7 +40,7 @@ namespace Dynamo.UpdateManager
             public string InstallerURL;
         }
 
-        private UpdateManager(ILoggerWrapper logger)
+        private UpdateManager(DynamoLogger logger)
         {
             this.logger = logger;
         }
@@ -50,7 +49,7 @@ namespace Dynamo.UpdateManager
         private bool versionCheckInProgress = false;
         private BinaryVersion productVersion = null;
         private AppVersionInfo? updateInfo;
-        private ILoggerWrapper logger = null;
+        private DynamoLogger logger = null;
 
         #endregion
 
@@ -66,7 +65,7 @@ namespace Dynamo.UpdateManager
 
         #region Public Class Properties
 
-        public static UpdateManager CreateInstance(ILoggerWrapper logger)
+        public static UpdateManager CreateInstance(DynamoLogger logger)
         {
             if (null != UpdateManager.self) // This method has already been called before.
                 throw new InvalidOperationException("UpdateManager.CreateInstance called twice");
@@ -140,7 +139,7 @@ namespace Dynamo.UpdateManager
             if (false != versionCheckInProgress)
                 return;
 
-            logger.LogInfo("RequestUpdateVersionInfo", "RequestUpdateVersionInfo");
+            logger.Log("RequestUpdateVersionInfo", "RequestUpdateVersionInfo");
 
             string exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
             string appVersionFileName = Path.Combine(Path.GetDirectoryName(exePath), Configurations.AppVersionFileName);

@@ -1,17 +1,15 @@
 ﻿using System;
 using System.IO;
-using System.Reflection;
 using System.Text;
 using Dynamo.Models;
-using Dynamo.UpdateManager;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo
 {
     public enum LogLevel{Console, File, Warning}
-    public enum WarningLevel{Mild, Moderate, Severe}
+    public enum WarningLevel{Mild, Moderate, Error}
 
-    public class DynamoLogger:NotificationObject, ILoggerWrapper
+    public class DynamoLogger:NotificationObject
     {
         const string DYNAMO_LOG_DIRECTORY = @"Autodesk\Dynamo\Logs\";
 
@@ -134,6 +132,18 @@ namespace Dynamo
             Log(message, LogLevel.Console);
         }
 
+        public void LogError(string tag, string error)
+        {
+            Warning = error;
+            WarningLevel = WarningLevel.Error;
+            Log(tag, error);
+        }
+
+        public void LogInfo(string tag, string info)
+        {
+            Log(tag, LogLevel.File);
+        }
+
         public void ResetWarning()
         {
             Warning = "";
@@ -177,6 +187,16 @@ namespace Dynamo
         public void Log(FScheme.Expression expression)
         {
             Instance.Log(FScheme.printExpression("\t", expression), LogLevel.Console);
+        }
+
+        /// <summary>
+        /// Log some data with an associated tag
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="data"></param>
+        public void Log(string tag, string data)
+        {
+            Log(string.Format("{0}:{1}", tag, data));
         }
 
         public void ClearLog()
@@ -232,41 +252,6 @@ namespace Dynamo
 
             if (ConsoleWriter != null)
                 ConsoleWriter = null;
-        }
-
-        public void EnableLogging(bool enable)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void LogInfo(string tag, string data)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void LogDebug(string tag, string data)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void LogPerf(string tag, string data)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void LogError(string tag, string data)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void FORCE_Log(string tag, string data)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CancelProcessing()
-        {
-            throw new NotImplementedException();
         }
     }
 }
