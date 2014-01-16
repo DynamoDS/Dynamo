@@ -3,6 +3,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using Dynamo.Models;
+using Dynamo.UpdateManager;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo
@@ -10,7 +11,7 @@ namespace Dynamo
     public enum LogLevel{Console, File, Warning}
     public enum WarningLevel{Mild, Moderate, Severe}
 
-    public class DynamoLogger:NotificationObject
+    public class DynamoLogger:NotificationObject, ILoggerWrapper
     {
         const string DYNAMO_LOG_DIRECTORY = @"Autodesk\Dynamo\Logs\";
 
@@ -231,6 +232,41 @@ namespace Dynamo
 
             if (ConsoleWriter != null)
                 ConsoleWriter = null;
+        }
+
+        public void EnableLogging(bool enable)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void LogInfo(string tag, string data)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void LogDebug(string tag, string data)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void LogPerf(string tag, string data)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void LogError(string tag, string data)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void FORCE_Log(string tag, string data)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CancelProcessing()
+        {
+            throw new NotImplementedException();
         }
     }
 }
