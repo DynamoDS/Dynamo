@@ -168,9 +168,9 @@ namespace Dynamo.UpdateManager
         public void QuitAndInstallUpdate()
         {
             string message = string.Format("{0} needs to be closed for a smooth update.\n\n" +
-                "Click OK to close {0}\nClick CANCEL to cancel the update", "DesignScript Application");
+                "Click OK to close {0}\nClick CANCEL to cancel the update", "Dynamo");
 
-            MessageBoxResult result = MessageBox.Show(message, "Install DesignScript", MessageBoxButton.OKCancel);
+            MessageBoxResult result = MessageBox.Show(message, "Install Dynamo", MessageBoxButton.OKCancel);
             bool installUpdate = result == MessageBoxResult.OK;
 
             logger.LogInfo("UpdateManager-QuitAndInstallUpdate",
