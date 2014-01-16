@@ -151,7 +151,8 @@ namespace Dynamo.Nodes
 
         public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
         {
-            var crv = (Curve)((Value.Container)args[0]).Item;
+            var crv = dynRevitUtils.UnwrapCurveOrEdgeFromValue(args[0]);
+
             Face face = null;
             Autodesk.Revit.DB.Plane thisPlane = null;
 
@@ -262,8 +263,8 @@ namespace Dynamo.Nodes
 
         public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
         {
-            var crv1 = (Curve)((Value.Container)args[0]).Item;
-            var crv2 = (Curve)((Value.Container)args[1]).Item;
+            var crv1 = dynRevitUtils.UnwrapCurveOrEdgeFromValue(args[0]);
+            var crv2 = dynRevitUtils.UnwrapCurveOrEdgeFromValue(args[1]);
 
             IntersectionResultArray xsects;
             SetComparisonResult result = crv1.Intersect(crv2, out xsects);
@@ -373,7 +374,7 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var curve = (Curve) ((Value.Container) args[0]).Item;
+            var curve = dynRevitUtils.UnwrapCurveOrEdgeFromValue(args[0]);
             var plane = (Autodesk.Revit.DB.Plane) ((Value.Container) args[1]).Item;
 
             var curvePts = curve.Tessellate();
