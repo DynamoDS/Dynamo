@@ -45,8 +45,15 @@ namespace Dynamo.Nodes
             {
                 excel = (Excel.Application)Marshal.GetActiveObject("Excel.Application");
             }
-            catch (COMException)
+            catch (COMException e)
             {
+                // 0x800401E3 - the excel process simply was not running, we continue if we
+                // encounter this exception
+
+                if ( !e.ToString().Contains("0x800401E3") )
+                {
+                    throw new Exception("Error setting up communication with Excel.  Try closing any open Excel instances.");
+                } 
             }
 
             if (excel == null) excel = new Microsoft.Office.Interop.Excel.Application();
@@ -66,7 +73,7 @@ namespace Dynamo.Nodes
         /// <summary>
         /// Check if the excel process is running
         /// </summary>
-        public static bool IsExcelProcessRunning
+        public static bool ExcelProcessRunning
         {
             get
             {
@@ -77,54 +84,40 @@ namespace Dynamo.Nodes
         /// <summary>
         /// Check if this object holds a reference to Excel
         /// </summary>
-        public static bool HasExcelReference
+        public static bool HasValidExcelReference
         {
-            get { return _excelApp != null; }
-        }
-
-        /// <summary>
-        /// Close all Excel workbooks without saving, removing any references to the 
-        /// excel app and perform garbage collection
-        /// </summary>
-        public static void TryQuitAndCleanupWithoutSaving()
-        {
-            if (_excelApp != null)
-            {
-                _excelApp.Workbooks.Cast<Workbook>().ToList().ForEach((wb) => wb.Close(false));
-                _excelApp.Quit();
-                while (Marshal.ReleaseComObject(_excelApp) > 0)
-                {
-
-                }
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-                _excelApp = null;
-            }
+            get { return _excelApp != null;  }
         }
 
         /// <summary>
         /// Close all Excel workbooks and provide SaveAs dialog if needed.  Also, perform
         /// garbage collection and remove references to Excel App
         /// </summary>
-        public static void TryQuitAndCleanup()
+        public static void TryQuitAndCleanup(bool saveWorkbooks)
         {
-            if (_excelApp != null)
+            if (HasValidExcelReference)
             {
-                _excelApp.Workbooks.Cast<Workbook>().ToList().ForEach((wb) => wb.Close(true));
-                _excelApp.Quit();
+                if (ExcelProcessRunning)
+                {
+                    ExcelApp.Workbooks.Cast<Workbook>().ToList().ForEach((wb) => wb.Close(saveWorkbooks));
+                    ExcelApp.Quit();
+                }
+                
                 while (Marshal.ReleaseComObject(_excelApp) > 0)
                 {
 
                 }
+
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
+
                 _excelApp = null;
             }
         }
 
         private static void DynamoModelOnCleaningUp(object sender, EventArgs eventArgs)
         {
-            TryQuitAndCleanup();
+            TryQuitAndCleanup(true);
         }
 
     }
