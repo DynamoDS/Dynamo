@@ -16,13 +16,17 @@ namespace Dynamo.Nodes
 
     public class ExcelInterop {
 
-        private static Microsoft.Office.Interop.Excel.Application _excelApp;
-        public static Microsoft.Office.Interop.Excel.Application ExcelApp
+        private static Microsoft.Office.Interop.Excel.Application _app;
+        public static Microsoft.Office.Interop.Excel.Application App
         {
             get
             {
-                _excelApp = _excelApp ?? RegisterAndGetApp();
-                return _excelApp;
+                if (_app == null || !ExcelProcessRunning)
+                {
+                    _app = RegisterAndGetApp();
+                }
+                if (_showOnStartup) _app.Visible = true;
+                return _app;
             }
         }
 
@@ -86,7 +90,7 @@ namespace Dynamo.Nodes
         /// </summary>
         public static bool HasValidExcelReference
         {
-            get { return _excelApp != null;  }
+            get { return _app != null;  }
         }
 
         /// <summary>
@@ -99,11 +103,11 @@ namespace Dynamo.Nodes
             {
                 if (ExcelProcessRunning)
                 {
-                    ExcelApp.Workbooks.Cast<Workbook>().ToList().ForEach((wb) => wb.Close(saveWorkbooks));
-                    ExcelApp.Quit();
+                    App.Workbooks.Cast<Workbook>().ToList().ForEach((wb) => wb.Close(saveWorkbooks));
+                    App.Quit();
                 }
                 
-                while (Marshal.ReleaseComObject(_excelApp) > 0)
+                while (Marshal.ReleaseComObject(_app) > 0)
                 {
 
                 }
@@ -111,15 +115,45 @@ namespace Dynamo.Nodes
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
 
-                _excelApp = null;
+                _app = null;
             }
         }
+
+
 
         private static void DynamoModelOnCleaningUp(object sender, EventArgs eventArgs)
         {
             TryQuitAndCleanup(true);
         }
 
+    }
+
+    [NodeName("New Excel Workbook")]
+    [NodeCategory("Input/Output.Office.Excel")]
+    [NodeDescription("Create a new Excel Workbook object.  \n\nThis node requires Microsoft Excel to be installed.")]
+    public class NewExcelWorkbook : NodeWithOneOutput
+    {
+
+        public NewExcelWorkbook()
+        {
+            OutPortData.Add(new PortData("workbook", "The new Excel Workbook ", typeof(FScheme.Value.Container)));
+            RegisterAllPorts();
+        }
+
+        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+        {
+            var workbook = ExcelInterop.App.Workbooks.Add();
+            workbook.BeforeClose += WorkbookOnBeforeClose;
+
+            return FScheme.Value.NewContainer(workbook);
+        }
+
+        private void WorkbookOnBeforeClose(ref bool cancel)
+        {
+            this.isDirty = true;
+            this.MarkDirty();
+        }
+        
     }
 
     [NodeName("Open Excel Workbook")]
@@ -139,20 +173,28 @@ namespace Dynamo.Nodes
             storedPath = ((FScheme.Value.String)args[0]).Item;
 
             var workbookOpen = 
-                ExcelInterop.ExcelApp.Workbooks.Cast<Workbook>().FirstOrDefault(e => e.FullName == storedPath);
+                ExcelInterop.App.Workbooks.Cast<Workbook>().FirstOrDefault(e => e.FullName == storedPath);
 
             if (workbookOpen != null)
             {
+                workbookOpen.BeforeClose += WorkbookOnBeforeClose;
                 return FScheme.Value.NewContainer(workbookOpen);
             }
 
             if (File.Exists(storedPath))
             {
-                var workbook = ExcelInterop.ExcelApp.Workbooks.Open(storedPath, true, false);
+                var workbook = ExcelInterop.App.Workbooks.Open(storedPath, true, false);
+                workbook.BeforeClose += WorkbookOnBeforeClose;
                 return FScheme.Value.NewContainer(workbook);
             }
 
             return FScheme.Value.NewContainer(null);
+        }
+
+        private void WorkbookOnBeforeClose(ref bool cancel)
+        {
+            this.isDirty = true;
+            this.MarkDirty();
         }
 
     }
@@ -290,6 +332,8 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
+        #region Helper methods
+
         public List<List<FScheme.Value>> ConvertTo2DList(FScheme.Value v)
         {
             if (v.IsList)
@@ -360,6 +404,8 @@ namespace Dynamo.Nodes
             }
         }
 
+        #endregion
+
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
             var worksheet = (Worksheet)((FScheme.Value.Container)args[0]).Item;
@@ -413,26 +459,6 @@ namespace Dynamo.Nodes
             worksheet.Name = name;
 
             return FScheme.Value.NewContainer(worksheet);
-        }
-
-    }
-
-    [NodeName("New Excel Workbook")]
-    [NodeCategory("Input/Output.Office.Excel")]
-    [NodeDescription("Create a new Excel Workbook object.  \n\nThis node requires Microsoft Excel to be installed.")]
-    public class NewExcelWorkbook : NodeWithOneOutput
-    {
-
-        public NewExcelWorkbook()
-        {
-            OutPortData.Add(new PortData("workbook", "The new Excel Workbook ", typeof(FScheme.Value.Container)));
-            RegisterAllPorts();
-        }
-
-        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
-        {
-            var workbook = ExcelInterop.ExcelApp.Workbooks.Add();
-            return FScheme.Value.NewContainer(workbook);
         }
 
     }
