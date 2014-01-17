@@ -1,4 +1,6 @@
-﻿namespace Dynamo.UpdateManager
+﻿using System.Linq;
+
+namespace Dynamo.UpdateManager
 {
     public class BinaryVersion
     {
@@ -10,7 +12,7 @@
                 return null;
 
             string[] parts = version.Split('.');
-            if (null == parts || (parts.Length != 4))
+            if (null == parts || (parts.Length < 3))
                 return null;
 
             ushort major = 0, minor = 0, build = 0, priv = 0;
@@ -20,8 +22,11 @@
                 return null;
             if (!ushort.TryParse(parts[2], out build))
                 return null;
-            if (!ushort.TryParse(parts[3], out priv))
-                return null;
+            if (parts.Length > 3)
+            {
+                if (!ushort.TryParse(parts[3], out priv))
+                    return null;
+            }
 
             return new BinaryVersion(major, minor, build, priv);
         }

@@ -147,7 +147,7 @@ namespace Dynamo.UI
 
         #endregion
 
-        public const string AppVersionFileName = @".\appversion.txt";
+        public const string UpdateDownloadLocation = "http://dyn-builds-data.s3-us-west-2.amazonaws.com/";
     }
 
     public class ResourceNames

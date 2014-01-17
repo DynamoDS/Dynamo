@@ -13,7 +13,6 @@ using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using Dynamo.UpdateManager;
 
 using Microsoft.Practices.Prism.ViewModel;
 using NUnit.Framework;
@@ -280,20 +279,20 @@ namespace Dynamo
             var updateManager = UpdateManager.UpdateManager.CreateInstance(DynamoLogger.Instance);
             updateManager.CheckForProductUpdate();
             updateManager.UpdateDownloaded += updateManager_UpdateDownloaded;
+            updateManager.ShutdownRequested += updateManager_ShutdownRequested;
         }
 
-        void updateManager_UpdateDownloaded(object sender, UpdateDownloadedEventArgs e)
+        void updateManager_UpdateDownloaded(object sender, UpdateManager.UpdateDownloadedEventArgs e)
         {
-            if (e.Error != null)
-            {
-                DynamoLogger.Instance.LogInfo("UpdateDownloaded",e.Error.Message);
-                DynamoLogger.Instance.LogWarning("An update could not be downloaded from the server.", WarningLevel.Moderate);
-                return;
-            }
-
-            //write the update location to the file
-            
+            UpdateManager.UpdateManager.Instance.QuitAndInstallUpdate();
         }
+
+        void updateManager_ShutdownRequested(object sender, EventArgs e)
+        {
+            ShutDown();
+            UpdateManager.UpdateManager.Instance.HostApplicationBeginQuit(this, e);
+        }
+
 
         #endregion
 
@@ -309,6 +308,8 @@ namespace Dynamo
             Selection.DynamoSelection.Instance.ClearSelection();
 
             DynamoLogger.Instance.FinishLogging();
+
+
         }
 
         #region Running
