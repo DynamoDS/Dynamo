@@ -2,10 +2,14 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.ComponentModel;
+using System.Reflection;
 using System.Windows;
+using System.Xml;
 using Dynamo.UI;
+using System.Xml.Linq;
 
 namespace Dynamo.UpdateManager
 {
@@ -141,28 +145,10 @@ namespace Dynamo.UpdateManager
 
             logger.Log("RequestUpdateVersionInfo", "RequestUpdateVersionInfo");
 
-            string exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
-            string appVersionFileName = Path.Combine(Path.GetDirectoryName(exePath), Configurations.AppVersionFileName);
-
-            if (!File.Exists(appVersionFileName))
-            {
-                logger.LogError("RequestUpdateVersionInfo",
-                    string.Format("'{0}' not found!", Configurations.AppVersionFileName));
-                return;
-            }
-
-            string[] appVersionInfo = File.ReadAllLines(appVersionFileName);
-            if (appVersionInfo.Length != 3)
-            {
-                logger.LogError("RequestUpdateVersionInfo",
-                    string.Format("Invalid '{0}' format!", Configurations.AppVersionFileName));
-                return;
-            }
-
             versionCheckInProgress = true;
             WebClient client = new WebClient();
             client.OpenReadCompleted += new OpenReadCompletedEventHandler(OnUpdateVersionRequested);
-            client.OpenReadAsync(new System.Uri(appVersionInfo[1]));
+            client.OpenReadAsync(new System.Uri(Configurations.UpdateDownloadLocation));
         }
 
         public void QuitAndInstallUpdate()
@@ -211,32 +197,47 @@ namespace Dynamo.UpdateManager
                 return;
             }
 
-            List<string> versionInfo = new List<string>();
-            using (StreamReader streamReader = new StreamReader(e.Result))
-            {
-                string line;
-                while (!string.IsNullOrEmpty(line = streamReader.ReadLine()))
-                {
-                    versionInfo.Add(line);
-                }
-            }
+            //element in the response from s3 will be of the form:
+            /*
+            <Contents>
+                <Key>DynamoDailyInstall20130622T1917.exe</Key>
+                <LastModified>2013-06-22T23:17:54.000Z</LastModified>
+                <ETag>"f143035f2ef294f928a1e9a197d2d5af"</ETag>
+                <Size>32389918</Size>
+                <StorageClass>STANDARD</StorageClass>
+            </Contents>
+             */
 
-            if (versionInfo.Count != 3)
+            XNamespace ns = "http://s3.amazonaws.com/doc/2006-03-01/";
+            var doc = XDocument.Load(e.Result);
+
+            var bucketresult = doc.Element(ns + "ListBucketResult");
+            var builds = bucketresult.Descendants(ns + "LastModified").
+                OrderByDescending(x => DateTime.Parse(x.Value)).
+                Where(x => x.Parent.Value.Contains("DynamoInstall")).
+                Select(x => x.Parent);
+
+            if (!builds.Any())
             {
                 versionCheckInProgress = false;
                 return;
             }
 
+            var latestBuild = builds.First();
+            var latestBuildFileName = builds.Elements(ns + "Key").First().Value;
+            var latestBuildDownloadUrl = Path.Combine(Configurations.UpdateDownloadLocation, latestBuildFileName);
+            var latestBuildVersion = BinaryVersion.FromString(Path.GetFileNameWithoutExtension(latestBuildFileName).Remove(0, 13));
+
             updateInfo = new AppVersionInfo()
             {
-                Version = BinaryVersion.FromString(versionInfo[0]),
-                VersionInfoURL = versionInfo[1],
-                InstallerURL = versionInfo[2]
+                Version = latestBuildVersion,
+                VersionInfoURL = Configurations.UpdateDownloadLocation,
+                InstallerURL = latestBuildDownloadUrl
             };
 
             logger.LogInfo("UpdateManager-OnUpdateVersionRequested",
                 string.Format("Product Version: {0} Available Version : {1}",
-                ProductVersion.ToString(), AvailableVersion.ToString()));
+                ProductVersion.ToString(), latestBuildVersion.ToString()));
 
             if (updateInfo.Value.Version <= this.ProductVersion)
             {
