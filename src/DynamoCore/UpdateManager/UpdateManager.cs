@@ -140,15 +140,15 @@ namespace Dynamo.UpdateManager
         /// </summary>
         public void CheckForProductUpdate()
         {
-            if (false != versionCheckInProgress)
+            if (versionCheckInProgress != false)
                 return;
 
             logger.Log("RequestUpdateVersionInfo", "RequestUpdateVersionInfo");
 
             versionCheckInProgress = true;
-            WebClient client = new WebClient();
-            client.OpenReadCompleted += new OpenReadCompletedEventHandler(OnUpdateVersionRequested);
-            client.OpenReadAsync(new System.Uri(Configurations.UpdateDownloadLocation));
+            var client = new WebClient();
+            client.OpenReadCompleted += OnUpdateVersionRequested;
+            client.OpenReadAsync(new Uri(Configurations.UpdateDownloadLocation));
         }
 
         public void QuitAndInstallUpdate()
@@ -217,14 +217,15 @@ namespace Dynamo.UpdateManager
                 Where(x => x.Parent.Value.Contains("DynamoInstall")).
                 Select(x => x.Parent);
 
-            if (!builds.Any())
+            var xElements = builds as XElement[] ?? builds.ToArray();
+            if (!xElements.Any())
             {
                 versionCheckInProgress = false;
                 return;
             }
 
-            var latestBuild = builds.First();
-            var latestBuildFileName = builds.Elements(ns + "Key").First().Value;
+            var latestBuild = xElements.First();
+            var latestBuildFileName = latestBuild.Element(ns + "Key").Value;
             var latestBuildDownloadUrl = Path.Combine(Configurations.UpdateDownloadLocation, latestBuildFileName);
             var latestBuildVersion = BinaryVersion.FromString(Path.GetFileNameWithoutExtension(latestBuildFileName).Remove(0, 13));
 
@@ -239,11 +240,11 @@ namespace Dynamo.UpdateManager
                 string.Format("Product Version: {0} Available Version : {1}",
                 ProductVersion.ToString(), latestBuildVersion.ToString()));
 
-            if (updateInfo.Value.Version <= this.ProductVersion)
-            {
-                versionCheckInProgress = false;
-                return; // Up-to-date, no download required.
-            }
+            //if (updateInfo.Value.Version <= this.ProductVersion)
+            //{
+            //    versionCheckInProgress = false;
+            //    return; // Up-to-date, no download required.
+            //}
 
             DownloadUpdatePackage(updateInfo.Value.InstallerURL, updateInfo.Value.Version);
         }
@@ -291,8 +292,9 @@ namespace Dynamo.UpdateManager
 
             try
             {
-                downloadedFileName = Path.GetFileNameWithoutExtension(url);
-                downloadedFileName += "." + version.ToString() + Path.GetExtension(url);
+                //downloadedFileName = Path.GetFileNameWithoutExtension(url);
+                //downloadedFileName += "." + version.ToString() + Path.GetExtension(url);
+                downloadedFileName = Path.GetFileName(url);
                 downloadedFilePath = Path.Combine(Path.GetTempPath(), downloadedFileName);
 
                 if (File.Exists(downloadedFilePath))

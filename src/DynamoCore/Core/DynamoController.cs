@@ -289,10 +289,12 @@ namespace Dynamo
 
         void updateManager_ShutdownRequested(object sender, EventArgs e)
         {
-            ShutDown();
-            UpdateManager.UpdateManager.Instance.HostApplicationBeginQuit(this, e);
+            UIDispatcher.Invoke((Action) delegate
+            {
+                ShutDown();
+                UpdateManager.UpdateManager.Instance.HostApplicationBeginQuit(this, e);
+            });
         }
-
 
         #endregion
 
@@ -308,8 +310,6 @@ namespace Dynamo
             Selection.DynamoSelection.Instance.ClearSelection();
 
             DynamoLogger.Instance.FinishLogging();
-
-
         }
 
         #region Running
