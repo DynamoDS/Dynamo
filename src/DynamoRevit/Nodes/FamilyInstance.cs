@@ -4,14 +4,15 @@ using System.Globalization;
 using System.Linq;
 using System.Xml;
 using Autodesk.Revit.DB;
-using Dynamo.FSchemeInterop;
 using Dynamo.Models;
+using Dynamo.Units;
 using Dynamo.Utilities;
 
 using Microsoft.FSharp.Collections;
 
 using Value = Dynamo.FScheme.Value;
 using Dynamo.Revit;
+using Utils = Dynamo.FSchemeInterop.Utils;
 
 namespace Dynamo.Nodes
 {
@@ -940,7 +941,21 @@ namespace Dynamo.Nodes
                     switch (param.StorageType)
                     {
                         case StorageType.Double:
-                            outPuts[pd] = FScheme.Value.NewNumber(param.AsDouble());
+                            switch (param.Definition.ParameterType)
+                            {
+                                case ParameterType.Length:
+                                    outPuts[pd] = Value.NewContainer(Units.Length.FromFeet(param.AsDouble()));
+                                    break;
+                                case ParameterType.Area:
+                                    outPuts[pd] = Value.NewContainer(Units.Area.FromSquareFeet(param.AsDouble()));
+                                    break;
+                                case ParameterType.Force:
+                                    outPuts[pd] = Value.NewContainer(Units.Volume.FromCubicFeet(param.AsDouble()));
+                                    break;
+                                default:
+                                    outPuts[pd] = Value.NewNumber(param.AsDouble());
+                                    break;
+                            }
                             break;
                         case StorageType.ElementId:
                             outPuts[pd] = FScheme.Value.NewContainer(param.AsElementId());
