@@ -383,7 +383,7 @@ namespace Dynamo.Units
             switch (UnitsManager.Instance.HostApplicationInternalLengthUnit)
             {
                 case DynamoLengthUnit.DecimalFoot:
-                    return _value / ToFoot;
+                    return _value * ToFoot;
                 default:
                     return _value;
             }
@@ -512,7 +512,7 @@ namespace Dynamo.Units
 
         public static Area FromSquareFeet(double value)
         {
-            return new Area(value / ToSquareFoot);
+            return new Area(value * ToSquareFoot);
         }
 
         #region math
@@ -710,7 +710,7 @@ namespace Dynamo.Units
 
         public static Volume FromCubicFeet(double value)
         {
-            return new Volume(value / SIUnit.ToCubicFoot);
+            return new Volume(value * ToCubicFoot);
         }
 
         #region math
