@@ -68,14 +68,14 @@ namespace Dynamo.UpdateManager
 
         public static UpdateManager CreateInstance(DynamoLogger logger)
         {
-            if (null != UpdateManager.self) // This method has already been called before.
-                throw new InvalidOperationException("UpdateManager.CreateInstance called twice");
+            if (self != null) return self;
 
             if (null == logger)
                 throw new ArgumentNullException("logger", "Unspecified logger (61578808A807)");
 
-            UpdateManager.self = new UpdateManager(logger);
-            return UpdateManager.self;
+            self = new UpdateManager(logger);
+
+            return self;
         }
 
         /// <summary>
