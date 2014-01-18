@@ -7,7 +7,6 @@ using Microsoft.FSharp.Collections;
 
 namespace Dynamo.Nodes
 {
-
     public abstract partial class MeasurementInputBase : NodeWithOneOutput
     {
         protected SIUnit _measure;
@@ -99,8 +98,6 @@ namespace Dynamo.Nodes
             }
         }
     }
-
-    
 
     [NodeName("Area")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
