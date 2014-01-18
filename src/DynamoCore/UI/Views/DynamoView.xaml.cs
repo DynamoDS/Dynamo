@@ -483,7 +483,7 @@ namespace Dynamo.Controls
                 return;
             }
 
-            dynSettings.Controller.ShutDown();
+            dynSettings.Controller.ShutDown(false);
         }
 
         private void WindowClosed(object sender, EventArgs e)
