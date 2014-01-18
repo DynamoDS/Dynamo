@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.ComponentModel;
-using System.Reflection;
 using System.Windows;
-using System.Xml;
 using Dynamo.UI;
 using System.Xml.Linq;
 
@@ -153,8 +150,8 @@ namespace Dynamo.UpdateManager
 
         public void QuitAndInstallUpdate()
         {
-            string message = string.Format("{0} needs to be closed for a smooth update.\n\n" +
-                "Click OK to close {0}\nClick CANCEL to cancel the update", "Dynamo");
+            string message = string.Format("An update is available for {0}.\n\n" +
+                "Click OK to close {0} and install\nClick CANCEL to cancel the update.", "Dynamo");
 
             MessageBoxResult result = MessageBox.Show(message, "Install Dynamo", MessageBoxButton.OKCancel);
             bool installUpdate = result == MessageBoxResult.OK;
@@ -240,11 +237,11 @@ namespace Dynamo.UpdateManager
                 string.Format("Product Version: {0} Available Version : {1}",
                 ProductVersion.ToString(), latestBuildVersion.ToString()));
 
-            //if (updateInfo.Value.Version <= this.ProductVersion)
-            //{
-            //    versionCheckInProgress = false;
-            //    return; // Up-to-date, no download required.
-            //}
+            if (updateInfo.Value.Version <= this.ProductVersion)
+            {
+                versionCheckInProgress = false;
+                return; // Up-to-date, no download required.
+            }
 
             DownloadUpdatePackage(updateInfo.Value.InstallerURL, updateInfo.Value.Version);
         }

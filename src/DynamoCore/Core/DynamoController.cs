@@ -16,6 +16,7 @@ using Dynamo.ViewModels;
 
 using Microsoft.Practices.Prism.ViewModel;
 using NUnit.Framework;
+using NUnit.Framework.Constraints;
 using String = System.String;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
@@ -291,14 +292,14 @@ namespace Dynamo
         {
             UIDispatcher.Invoke((Action) delegate
             {
-                ShutDown();
+                ShutDown(true);
                 UpdateManager.UpdateManager.Instance.HostApplicationBeginQuit(this, e);
             });
         }
 
         #endregion
 
-        public virtual void ShutDown()
+        public virtual void ShutDown(bool shutDownHost)
         {
             PreferenceSettings.Save();
 
