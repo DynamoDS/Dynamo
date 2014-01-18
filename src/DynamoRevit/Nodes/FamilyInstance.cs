@@ -108,8 +108,6 @@ namespace Dynamo.Nodes
                         new DynamoDropDownItem(
                             string.Format("{0}(Type)({1})", p.Definition.Name, getStorageTypeString(p.StorageType)), p));
                 }
-
-
             }
             else
             {
@@ -520,8 +518,6 @@ namespace Dynamo.Nodes
             return curve;
         }
 
-
-
         private Value AddCurves(FamilyInstance fi, GeometryElement geomElem, int count, ref CurveArray curves)
         {
             foreach (GeometryObject geomObj in geomElem)
@@ -771,7 +767,21 @@ namespace Dynamo.Nodes
         {
             if (p.StorageType == StorageType.Double)
             {
-                return Value.NewNumber(p.AsDouble());
+                switch (p.Definition.ParameterType)
+                {
+                    case ParameterType.Length:
+                        return Value.NewContainer(Units.Length.FromFeet(p.AsDouble()));
+                        break;
+                    case ParameterType.Area:
+                        return Value.NewContainer(Units.Area.FromSquareFeet(p.AsDouble()));
+                        break;
+                    case ParameterType.Volume:
+                        return Value.NewContainer(Units.Volume.FromCubicFeet(p.AsDouble()));
+                        break;
+                    default:
+                        return Value.NewNumber(p.AsDouble());
+                        break;
+                }
             }
             else if (p.StorageType == StorageType.Integer)
             {
@@ -949,7 +959,7 @@ namespace Dynamo.Nodes
                                 case ParameterType.Area:
                                     outPuts[pd] = Value.NewContainer(Units.Area.FromSquareFeet(param.AsDouble()));
                                     break;
-                                case ParameterType.Force:
+                                case ParameterType.Volume:
                                     outPuts[pd] = Value.NewContainer(Units.Volume.FromCubicFeet(param.AsDouble()));
                                     break;
                                 default:
