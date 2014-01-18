@@ -77,20 +77,20 @@ namespace Dynamo.Units
         //length conversions
         private static double meter_to_millimeter = 1000;
         private static double meter_to_centimeter = 100;
-        private static double meter_to_inch = 39.3701;
-        private static double meter_to_foot = 3.28084;
+        private static double meter_to_inch = 39.37007874 ;
+        private static double meter_to_foot = 3.280839895;
 
         //area conversions
         private static double square_meters_to_square_millimeters = 1000000;
         private static double square_meters_to_square_centimeters = 10000;
-        private static double square_meters_to_square_inch = 1550;
-        private static double square_meters_to_square_foot = 10.7639;
+        private static double square_meters_to_square_inch = 1550.0031;
+        private static double square_meters_to_square_foot = 10.763910417;
 
         //volume conversions
         private static double cubic_meters_to_cubic_millimeters = 1000000000;
         private static double cubic_meters_to_cubic_centimeters = 1000000;
-        private static double cubic_meters_to_cubic_inches = 61023.7;
-        private static double cubic_meters_to_cubic_feet = 35.3147;
+        private static double cubic_meters_to_cubic_inches = 61023.744095;
+        private static double cubic_meters_to_cubic_feet = 5.314666721;
 
         internal double _value;
 
