@@ -5452,10 +5452,7 @@ namespace Dynamo.Nodes
             catch { }
         }
 
-        public virtual void PopulateItems()
-        {
-            //override in child classes
-        }
+        public abstract void PopulateItems();
 
         /// <summary>
         /// When the dropdown is opened, the node's implementation of PopulateItemsHash is called

@@ -28,8 +28,6 @@ namespace Dynamo.Nodes
 
         public override void PopulateItems()
         {
-            base.PopulateItems();
-
             Items.Clear();
 
             //find all the structural framing family types in the project
