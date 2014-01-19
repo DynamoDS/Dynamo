@@ -90,7 +90,7 @@ namespace Dynamo.Units
         private static double cubic_meters_to_cubic_millimeters = 1000000000;
         private static double cubic_meters_to_cubic_centimeters = 1000000;
         private static double cubic_meters_to_cubic_inches = 61023.744095;
-        private static double cubic_meters_to_cubic_feet = 5.314666721;
+        private static double cubic_meters_to_cubic_feet = 35.3147;
 
         internal double _value;
 
