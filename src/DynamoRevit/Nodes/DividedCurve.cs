@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Diagnostics;
+using System.Linq;
 using System.Collections.Generic;
 using Autodesk.Revit.DB;
 using Dynamo.Models;
@@ -91,7 +93,6 @@ namespace Dynamo.Nodes
             }
             refList.Clear();
 
-
             return Value.NewContainer(divPath);
         }
 
@@ -114,6 +115,44 @@ namespace Dynamo.Nodes
                     divPath.MinimumDistance = xi;
                     break;
             }
+        }
+    }
+
+    [NodeName("XYZs From Divided Path")]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_DIVIDE)]
+    [NodeDescription("Get the points along a divided path.")]
+    public class PointsOnDividedPath : NodeWithOneOutput
+    {
+        public PointsOnDividedPath()
+        {
+            InPortData.Add(new PortData("divided path", "A divided path from which to get the points.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("xyzs", "The points along the divided path.", typeof(Value.List)));
+            RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var path = (Autodesk.Revit.DB.DividedPath) ((Value.Container) args[0]).Item;
+
+            var pts = FSharpList<Value>.Empty;
+
+            var geom = path.get_Geometry(dynRevitSettings.GeometryOptions);
+
+            if (geom == null)
+            {
+                throw new Exception("There is no up to date point information. Try placing a transaction node before this node on the canvas.");
+            }
+
+            foreach (var geob in geom)
+            {
+                Debug.WriteLine(string.Format("Divided path contains a {0}", geob));
+                var pt = (Point) geob;
+                pts = FSharpList<Value>.Cons(Value.NewContainer(pt.Coord), pts);
+            }
+
+            return Value.NewList(pts);
         }
     }
 
