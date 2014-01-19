@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Collections.Generic;
 using Autodesk.Revit.DB;
 using Dynamo.Models;
@@ -11,6 +10,28 @@ using Dynamo.Revit;
 
 namespace Dynamo.Nodes
 {
+    [NodeName("Spacing Rule Layout")]
+    [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_DIVIDE)]
+    [NodeDescription("The spacing rule layout to be applied to a divided path.")]
+    public class DividedPathSpacingRuleLayout : DropDrownBase
+    {
+        public DividedPathSpacingRuleLayout()
+        {
+            OutPortData.Add(new PortData("spacing rule layout", "The spacing rule layout.", typeof(Value.Container)));
+            RegisterAllPorts();
+            PopulateItems();
+        }
+
+        public override void PopulateItems()
+        {
+            Items.Clear();
+            foreach (SpacingRuleLayout suit in (SpacingRuleLayout[])System.Enum.GetValues(typeof(SpacingRuleLayout)))
+            {
+                Items.Add(new DynamoDropDownItem(suit.ToString(), suit));
+            }
+        }
+    }
+
     [NodeName("Divided Path")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_DIVIDE)]
     [NodeDescription("Divides curves or edges and makes a DividedPath.")]

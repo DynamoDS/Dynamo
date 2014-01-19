@@ -307,7 +307,6 @@ limitations under the License.
     <Compile Include="Search\SearchElements\CommandElement.cs" />
     <Compile Include="Core\DynamoController.cs" />
     <Compile Include="Utilities\Guid.cs" />
-    <Compile Include="Nodes\dynEnum.cs" />
     <Compile Include="UI\Commands\SearchCommands.cs" />
     <Compile Include="Search\SearchElements\CategorySearchElement.cs" />
     <Compile Include="Search\SearchElements\NodeSearchElement.cs" />
