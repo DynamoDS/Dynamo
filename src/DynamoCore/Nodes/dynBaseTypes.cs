@@ -4241,7 +4241,7 @@ namespace Dynamo.Nodes
         private static IDoubleInputToken ParseToken(string id, HashSet<string> identifiers, List<string> list)
         {
             double dbl;
-            if (double.TryParse(id, NumberStyles.Any, CultureInfo.CurrentCulture, out dbl))
+            if (double.TryParse(id, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
                 return new DoubleToken(dbl);
 
             var match = Sublists.IdentifierPattern.Match(id);
