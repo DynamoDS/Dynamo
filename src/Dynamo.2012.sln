@@ -38,6 +38,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSRevitNodesTests", "DSRevitNodesTests\DSRevitNodesTests.csproj", "{9E79DC8D-25B1-491F-B094-EA39DE1BBC66}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSCoreNodes", "DSCoreNodes\DSCoreNodes.csproj", "{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7858FA8C-475F-4B8E-B468-1F8200778CF8} = {7858FA8C-475F-4B8E-B468-1F8200778CF8}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSCoreNodesTests", "DSCoreNodesTests\DSCoreNodesTests.csproj", "{09EC17AF-24D2-4542-A913-0C27AE345C18}"
 EndProject
@@ -67,6 +70,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSRevitNodes", "DSRevitNodes\DSRevitNodes.csproj", "{0BC2A611-BD0E-4FCC-A1DE-81F14ED369B2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoUnits", "DynamoUnits\DynamoUnits.csproj", "{6E0A079E-85F1-45A1-AD5B-9855E4344809}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F0E5A3E5-BDD0-41AE-848E-DED9EFC5FA7F} = {F0E5A3E5-BDD0-41AE-848E-DED9EFC5FA7F}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSRevitNodesUI", "DSRevitNodesUI\DSRevitNodesUI.csproj", "{75940ACC-3708-4526-8D91-7E3365BAF682}"
 EndProject
