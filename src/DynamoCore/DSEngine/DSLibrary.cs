@@ -590,12 +590,20 @@ namespace Dynamo.DSEngine
                 return;
             }
 
-            library = Path.GetFullPath(library);
-            if (!File.Exists(library))
+            // Give add-in folder a higher priority and look alongside "DynamoCore.dll".
+            string assemblyName = Path.GetFileName(library); // Strip out possible directory.
+            string currAsmLocation = System.Reflection.Assembly.GetCallingAssembly().Location;
+            library = Path.Combine(Path.GetDirectoryName(currAsmLocation), assemblyName);
+
+            if (!File.Exists(library)) // Not found under add-in folder...
             {
-                string errorMessage = string.Format("Cannot find library path: {0}.", library);
-                OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
-                return;
+                library = Path.GetFullPath(library);
+                if (!File.Exists(library))
+                {
+                    string errorMessage = string.Format("Cannot find library path: {0}.", library);
+                    OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
+                    return;
+                }
             }
 
             OnLibraryLoading(new LibraryLoadingEventArgs(library));
