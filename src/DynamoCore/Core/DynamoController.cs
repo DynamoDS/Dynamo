@@ -17,10 +17,13 @@ using Dynamo.Services;
 using Dynamo.Units;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+
 using Microsoft.Practices.Prism.ViewModel;
 using NUnit.Framework;
+using NUnit.Framework.Constraints;
 using String = System.String;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using Dynamo.UI;
 
 namespace Dynamo
 {
@@ -281,11 +284,29 @@ namespace Dynamo
 
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrations));
 
+            var updateManager = UpdateManager.UpdateManager.CreateInstance(DynamoLogger.Instance);
+            //updateManager.CheckForProductUpdate();
+            updateManager.UpdateDownloaded += updateManager_UpdateDownloaded;
+            updateManager.ShutdownRequested += updateManager_ShutdownRequested;
+        }
+
+        void updateManager_UpdateDownloaded(object sender, UpdateManager.UpdateDownloadedEventArgs e)
+        {
+            UpdateManager.UpdateManager.Instance.QuitAndInstallUpdate();
+        }
+
+        void updateManager_ShutdownRequested(object sender, EventArgs e)
+        {
+            UIDispatcher.Invoke((Action) delegate
+            {
+                ShutDown(true);
+                UpdateManager.UpdateManager.Instance.HostApplicationBeginQuit(this, e);
+            });
         }
 
         #endregion
 
-        public virtual void ShutDown()
+        public virtual void ShutDown(bool shutDownHost)
         {
             EngineController.Dispose();
             EngineController = null;

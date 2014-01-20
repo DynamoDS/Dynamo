@@ -737,7 +737,7 @@
 
                         <Style TargetType="{x:Type TabItem}">
                             <Setter Property="MaxWidth"
-                                    Value="{Binding Source={x:Static core:Configurations.TabDefaultWidth}}" />
+                                    Value="{Binding Source={x:Static ui:Configurations.TabDefaultWidth}}" />
                             <Setter Property="Width">
                                 <Setter.Value>
                                     <MultiBinding Converter="{StaticResource TabSizeConverter}">

@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Media;
 
-namespace Dynamo.Core
+namespace Dynamo.UI
 {
     public class Configurations
     {
@@ -167,9 +163,13 @@ namespace Dynamo.Core
         #endregion
 
         #region CodeBlockNode
+
         public static readonly int CBNMaxPortNameLength = 24;
         public static readonly int CBNMaxTextBoxWidth = 500;
+
         #endregion
+
+        public const string UpdateDownloadLocation = "http://dyn-builds-data.s3-us-west-2.amazonaws.com/";
     }
 
     public class ResourceNames

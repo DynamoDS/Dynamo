@@ -1046,7 +1046,7 @@ namespace Dynamo.ViewModels
             //request the UI to close its window
             OnRequestClose(this, EventArgs.Empty);
 
-            dynSettings.Controller.ShutDown();
+            dynSettings.Controller.ShutDown(false);
         }
 
         internal bool CanExit(object allowCancel)
