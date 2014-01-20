@@ -91,6 +91,14 @@ namespace Dynamo.Nodes
             }
         }
 
+        protected override internal bool isDirty
+        {
+            get 
+            { 
+                return base.isDirty ? true : RequiresRecalc;
+            }
+        }
+
         public override bool RequiresRecalc
         {
             get
