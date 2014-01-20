@@ -128,7 +128,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     Returns if this node requires a recalculation without checking input nodes.
         /// </summary>
-        protected internal bool isDirty
+        protected internal virtual bool isDirty
         {
             get { return _isDirty; }
             set { RequiresRecalc = value; }
