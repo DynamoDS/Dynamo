@@ -36,6 +36,9 @@
 				<test name="CurvebyPointsEllipse" runDynamo="True" modelPath=".\empty.rfa"/>
 				<test name="GetCurveDomain" runDynamo="True" modelPath=".\Curve\GetCurveDomain.rfa"/>
 			</testFixture>
+      <!--<testFixture name="DividedCurveTests">
+        <test name="DividedCurve" runDynamo="True" modelPath =".\DividedCurve\DividedCurve.rfa"/>
+      </testFixture>-->
 			<testFixture name="DividedSurfaceTests">
 				<test name="DividedSurface" runDynamo="True" modelPath=".\DividedSurface\DividedSurface.rfa"/>
 			</testFixture>

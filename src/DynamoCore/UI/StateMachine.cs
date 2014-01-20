@@ -9,6 +9,7 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using Dynamo.Core;
+using Dynamo.UI;
 
 namespace Dynamo.ViewModels
 {

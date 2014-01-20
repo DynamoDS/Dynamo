@@ -26,7 +26,7 @@ namespace Dynamo.Tests
         {
             try
             {
-                Controller.ShutDown();
+                Controller.ShutDown(false);
             }
             catch (Exception ex)
             {

@@ -7,7 +7,6 @@ using Microsoft.FSharp.Collections;
 
 namespace Dynamo.Nodes
 {
-
     public abstract partial class MeasurementInputBase : NodeWithOneOutput
     {
         protected SIUnit _measure;
@@ -127,4 +126,61 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
     }
+
+    public abstract class UnitFromNumberBase : NodeWithOneOutput
+    {
+        protected SIUnit _measure;
+
+        protected UnitFromNumberBase()
+        {
+            _measure = new Units.Length(0.0);
+            InPortData.Add(new PortData("value", "A number to be converted to a unit.", typeof(FScheme.Value.Number)));
+            OutPortData.Add(new PortData("unit", "The unit. Stored internally as SI units.", typeof(FScheme.Value.Container)));
+            RegisterAllPorts();
+        }
+
+        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
+        {
+            var val = ((FScheme.Value.Number)args[0]).Item;
+            _measure.Value = val;
+            return FScheme.Value.NewContainer(_measure);
+        }
+    }
+
+    [NodeName("Length from Number")]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeDescription("Create a length unit from a number.")]
+    [NodeSearchTags("Imperial", "Metric", "Length", "Project", "units")]
+    public class LengthFromNumber : UnitFromNumberBase
+    {
+        public LengthFromNumber()
+        {
+            _measure = new Units.Length(0.0);
+        }
+    }
+
+    [NodeName("Area from Number")]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeDescription("Create an area unit from a number.")]
+    [NodeSearchTags("Imperial", "Metric", "Area", "Project", "units")]
+    public class AreaFromNumber : UnitFromNumberBase
+    {
+        public AreaFromNumber()
+        {
+            _measure = new Units.Area(0.0);
+        }
+    }
+
+    [NodeName("Volume from Number")]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeDescription("Create a volume unit from a number.")]
+    [NodeSearchTags("Imperial", "Metric", "Volume", "Project", "units")]
+    public class VolumeFromNumber : UnitFromNumberBase
+    {
+        public VolumeFromNumber()
+        {
+            _measure = new Units.Volume(0.0);
+        }
+    }
 }
+

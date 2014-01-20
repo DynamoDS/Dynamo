@@ -7,6 +7,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
+using Dynamo.UI;
 using Dynamo.Units;
 using Dynamo.Models;
 using System.Web;
@@ -1178,7 +1179,7 @@ namespace Dynamo.Controls
                         return new System.Windows.Media.SolidColorBrush(Colors.Gray);
                     case WarningLevel.Moderate:
                         return new System.Windows.Media.SolidColorBrush(Colors.Gold);
-                    case WarningLevel.Severe:
+                    case WarningLevel.Error:
                         return new System.Windows.Media.SolidColorBrush(Colors.Tomato);
                 }
             }
