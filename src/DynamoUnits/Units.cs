@@ -519,6 +519,7 @@ namespace Dynamo.Units
             if (double.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out total))
             {
                 _value = total/UnitsManager.Instance.UiLengthConversion;
+                return;
             }
 
             double fractionalInch = 0.0;
@@ -714,6 +715,7 @@ namespace Dynamo.Units
             if (Double.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out total))
             {
                 _value = total/UnitsManager.Instance.UiAreaConversion;
+                return;
             }
 
             double sq_mm, sq_cm, sq_m, sq_in, sq_ft;
@@ -888,6 +890,7 @@ namespace Dynamo.Units
             if (Double.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out total))
             {
                 _value = total/UnitsManager.Instance.UiVolumeConversion;
+                return;
             }
 
             double cu_mm, cu_cm, cu_m, cu_in, cu_ft;
