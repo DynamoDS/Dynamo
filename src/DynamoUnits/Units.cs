@@ -43,18 +43,124 @@ namespace Dynamo.Units
     public class UnitsManager
     {
         private static UnitsManager _instance;
+        private double _uiLengthConversion;
+        private double _uiAreaConversion;
+        private double _uiVolumeConversion;
+        private DynamoLengthUnit _lengthUnit;
+        private DynamoAreaUnit _areaUnit;
+        private DynamoVolumeUnit _volumeUnit;
 
         public DynamoLengthUnit HostApplicationInternalLengthUnit { get; set; }
-        
+
         public DynamoAreaUnit HostApplicationInternalAreaUnit { get; set; }
-        
+
         public DynamoVolumeUnit HostApplicationInternalVolumeUnit { get; set; }
 
-        public DynamoLengthUnit LengthUnit { get; set; }
+        public DynamoLengthUnit LengthUnit
+        {
+            get { return _lengthUnit; }
+            set
+            {
+                _lengthUnit = value;
 
-        public DynamoAreaUnit AreaUnit { get; set; }
+                switch (LengthUnit)
+                {
+                    case DynamoLengthUnit.Millimeter:
+                        _uiLengthConversion = SIUnit.ToMillimeter;
+                        break;
+                    case DynamoLengthUnit.Centimeter:
+                        _uiLengthConversion = SIUnit.ToCentimeter;
+                        break;
+                    case DynamoLengthUnit.Meter:
+                        _uiLengthConversion = 1.0;
+                        break;
+                    case DynamoLengthUnit.DecimalInch:
+                        _uiLengthConversion = SIUnit.ToInch;
+                        break;
+                    case DynamoLengthUnit.FractionalInch:
+                        _uiLengthConversion = SIUnit.ToInch;
+                        break;
+                    case DynamoLengthUnit.DecimalFoot:
+                        _uiLengthConversion = SIUnit.ToFoot;
+                        break;
+                    case DynamoLengthUnit.FractionalFoot:
+                        _uiLengthConversion = SIUnit.ToFoot;
+                        break;
 
-        public DynamoVolumeUnit VolumeUnit { get; set; }
+                }
+            }
+        }
+
+        public DynamoAreaUnit AreaUnit
+        {
+            get { return _areaUnit; }
+            set
+            {
+                _areaUnit = value;
+
+                switch (AreaUnit)
+                {
+                    case DynamoAreaUnit.SquareMillimeter:
+                        _uiAreaConversion = SIUnit.ToMillimeter;
+                        break;
+                    case DynamoAreaUnit.SquareCentimeter:
+                        _uiAreaConversion = SIUnit.ToCentimeter;
+                        break;
+                    case DynamoAreaUnit.SquareMeter:
+                        _uiAreaConversion = 1.0;
+                        break;
+                    case DynamoAreaUnit.SquareInch:
+                        _uiAreaConversion = SIUnit.ToSquareInch;
+                        break;
+                    case DynamoAreaUnit.SquareFoot:
+                        _uiAreaConversion = SIUnit.ToSquareFoot;
+                        break;
+                }
+            }
+        }
+
+        public DynamoVolumeUnit VolumeUnit
+        {
+            get { return _volumeUnit; }
+            set
+            {
+                _volumeUnit = value;
+
+                switch (VolumeUnit)
+                {
+                    case DynamoVolumeUnit.CubicMillimeter:
+                        _uiVolumeConversion = SIUnit.ToCubicMillimeter;
+                        break;
+                    case DynamoVolumeUnit.CubicCentimeter:
+                        _uiVolumeConversion = SIUnit.ToCubicCentimeter;
+                        break;
+                    case DynamoVolumeUnit.CubicMeter:
+                        _uiVolumeConversion = 1.0;
+                        break;
+                    case DynamoVolumeUnit.CubicInch:
+                        _uiVolumeConversion = SIUnit.ToCubicInch;
+                        break;
+                    case DynamoVolumeUnit.CubicFoot:
+                        _uiVolumeConversion = SIUnit.ToCubicFoot;
+                        break;
+                }
+            }
+        }
+
+        public double UiLengthConversion
+        {
+            get { return _uiLengthConversion; }
+        }
+
+        public double UiAreaConversion
+        {
+            get { return _uiAreaConversion; }
+        }
+
+        public double UiVolumeConversion
+        {
+            get { return _uiVolumeConversion; }
+        }
 
         public static UnitsManager Instance
         {
@@ -107,6 +213,11 @@ namespace Dynamo.Units
         public static double ToCentimeter
         {
             get { return meter_to_centimeter; }
+        }
+
+        public static double ToMeter
+        {
+            get { return 1.0; }
         }
 
         public static double ToInch
@@ -370,17 +481,23 @@ namespace Dynamo.Units
 
         public override SIUnit Round()
         {
-            return new Length(Math.Round(_value));
+            var val = _value * UnitsManager.Instance.UiLengthConversion;
+            double round = Math.Round(val);
+            return new Length(round / UnitsManager.Instance.UiLengthConversion);
         }
 
         public override SIUnit Ceiling()
         {
-            return new Length(Math.Ceiling(_value));
+            var val = _value * UnitsManager.Instance.UiLengthConversion;
+            double round = Math.Ceiling(val);
+            return new Length(round / UnitsManager.Instance.UiLengthConversion);
         }
 
         public override SIUnit Floor()
         {
-            return new Length(Math.Floor(_value));
+            var val = _value * UnitsManager.Instance.UiLengthConversion;
+            double round = Math.Floor(val);
+            return new Length(round / UnitsManager.Instance.UiLengthConversion);
         }
 
         public override double ConvertToHostUnits()
@@ -404,38 +521,9 @@ namespace Dynamo.Units
             //it it's parsable, then just cram it into
             //whatever the project units are
             double total = 0.0;
-            if (double.TryParse(value, NumberStyles.Number, CultureInfo.CurrentCulture, out total))
+            if (double.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out total))
             {
-                switch (UnitsManager.Instance.LengthUnit)
-                {
-                    case DynamoLengthUnit.Centimeter:
-                        _value = total / ToCentimeter;
-                        return;
-
-                    case DynamoLengthUnit.Millimeter:
-                        _value = total / ToMillimeter;
-                        return;
-
-                    case DynamoLengthUnit.Meter:
-                        _value = total;
-                        return;
-
-                    case DynamoLengthUnit.FractionalInch:
-                        _value = total / ToInch;
-                        return;
-
-                    case DynamoLengthUnit.FractionalFoot:
-                        _value = total / ToFoot;
-                        return;
-
-                    case DynamoLengthUnit.DecimalInch:
-                        _value = total / ToInch;
-                        return;
-
-                    case DynamoLengthUnit.DecimalFoot:
-                        _value = total / ToFoot;
-                        return;
-                }
+                _value = total/UnitsManager.Instance.UiLengthConversion;
             }
 
             double fractionalInch = 0.0;
@@ -481,13 +569,13 @@ namespace Dynamo.Units
                     return _value.ToString("0.00", CultureInfo.InvariantCulture) + " m";
 
                 case DynamoLengthUnit.DecimalInch:
-                    return (_value * SIUnit.ToInch).ToString("0.00", CultureInfo.CurrentCulture) + " in";
+                    return (_value * SIUnit.ToInch).ToString("0.00", CultureInfo.InvariantCulture) + " in";
 
                 case DynamoLengthUnit.FractionalInch:
                     return Utils.ToFractionalInches(_value * SIUnit.ToInch);
 
                 case DynamoLengthUnit.DecimalFoot:
-                    return (_value * SIUnit.ToFoot).ToString("0.00", CultureInfo.CurrentCulture) + " ft";
+                    return (_value * SIUnit.ToFoot).ToString("0.00", CultureInfo.InvariantCulture) + " ft";
 
                 case DynamoLengthUnit.FractionalFoot:
                     return Utils.ToFeetAndFractionalInches(_value * SIUnit.ToFoot);
@@ -588,17 +676,23 @@ namespace Dynamo.Units
 
         public override SIUnit Round()
         {
-            return new Area(Math.Round(_value));
+            var val = _value * UnitsManager.Instance.UiAreaConversion;
+            double round = Math.Round(val);
+            return new Length(round / UnitsManager.Instance.UiAreaConversion);
         }
 
         public override SIUnit Ceiling()
         {
-            return new Area(Math.Ceiling(_value));
+            var val = _value * UnitsManager.Instance.UiAreaConversion;
+            double round = Math.Ceiling(val);
+            return new Length(round / UnitsManager.Instance.UiAreaConversion);
         }
 
         public override SIUnit Floor()
         {
-            return new Volume(Math.Floor(_value));
+            var val = _value * UnitsManager.Instance.UiAreaConversion;
+            double round = Math.Floor(val);
+            return new Length(round / UnitsManager.Instance.UiAreaConversion);
         }
 
         public override double ConvertToHostUnits()
@@ -622,30 +716,9 @@ namespace Dynamo.Units
             //it it's parsable, then just cram it into
             //whatever the project units are
             double total = 0.0;
-            if (Double.TryParse(value, NumberStyles.Number, CultureInfo.CurrentCulture, out total))
+            if (Double.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out total))
             {
-                switch (UnitsManager.Instance.AreaUnit)
-                {
-                    case DynamoAreaUnit.SquareMillimeter:
-                        _value = total / SIUnit.ToSquareMillimeters;
-                        return;
-
-                    case DynamoAreaUnit.SquareCentimeter:
-                        _value = total / SIUnit.ToSquareCentimeters;
-                        return;
-
-                    case DynamoAreaUnit.SquareMeter:
-                        _value = total;
-                        return;
-
-                    case DynamoAreaUnit.SquareInch:
-                        _value = total / SIUnit.ToSquareInch;
-                        return;
-
-                    case DynamoAreaUnit.SquareFoot:
-                        _value = total / SIUnit.ToSquareFoot;
-                        return;
-                }
+                _value = total/UnitsManager.Instance.UiAreaConversion;
             }
 
             double sq_mm, sq_cm, sq_m, sq_in, sq_ft;
@@ -777,17 +850,23 @@ namespace Dynamo.Units
 
         public override SIUnit Round()
         {
-            return new Volume(Math.Round(_value));
+            var val = _value * UnitsManager.Instance.UiVolumeConversion;
+            double round = Math.Round(val);
+            return new Length(round / UnitsManager.Instance.UiVolumeConversion);
         }
 
         public override SIUnit Ceiling()
         {
-            return new Volume(Math.Ceiling(_value));
+            var val = _value * UnitsManager.Instance.UiVolumeConversion;
+            double round = Math.Ceiling(val);
+            return new Length(round / UnitsManager.Instance.UiVolumeConversion);
         }
 
         public override SIUnit Floor()
         {
-            return new Volume(Math.Floor(_value));
+            var val = _value * UnitsManager.Instance.UiVolumeConversion;
+            double round = Math.Floor(val);
+            return new Length(round / UnitsManager.Instance.UiVolumeConversion);
         }
 
         public override double ConvertToHostUnits()
@@ -811,30 +890,9 @@ namespace Dynamo.Units
             //it it's parsable, then just cram it into
             //whatever the project units are
             double total = 0.0;
-            if (Double.TryParse(value, NumberStyles.Number, CultureInfo.CurrentCulture, out total))
+            if (Double.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out total))
             {
-                switch (UnitsManager.Instance.VolumeUnit)
-                {
-                    case DynamoVolumeUnit.CubicMillimeter:
-                        _value = total / SIUnit.ToCubicMillimeter;
-                        return;
-
-                    case DynamoVolumeUnit.CubicCentimeter:
-                        _value = total / SIUnit.ToCubicCentimeter;
-                        return;
-
-                    case DynamoVolumeUnit.CubicMeter:
-                        _value = total;
-                        return;
-
-                    case DynamoVolumeUnit.CubicInch:
-                        _value = total / SIUnit.ToCubicInch;
-                        return;
-
-                    case DynamoVolumeUnit.CubicFoot:
-                        _value = total / SIUnit.ToCubicFoot;
-                        return;
-                }
+                _value = total/UnitsManager.Instance.UiVolumeConversion;
             }
 
             double cu_mm, cu_cm, cu_m, cu_in, cu_ft;
@@ -1126,7 +1184,7 @@ namespace Dynamo.Units
             if (value.ToLower().Contains(unitSymbol))
                 value = value.Replace(unitSymbol, "");
 
-            if (!double.TryParse(value, NumberStyles.Any, CultureInfo.CurrentCulture, out m))
+            if (!double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out m))
             {
                 return 0.0;
             }
@@ -1167,8 +1225,9 @@ namespace Dynamo.Units
         /// <param name="value"></param>
         /// <returns></returns>
         public static string ToFeetAndFractionalInches(double decimalFeet)
-
         {
+            decimalFeet = RoundToSignificantDigits(decimalFeet, 5);
+
             double wholeFeet = 0.0;
             double partialFeet = 0.0;
 
@@ -1250,17 +1309,17 @@ namespace Dynamo.Units
             if (match.Success)
             {
                 //parse imperial values
-                double.TryParse(match.Groups["ft"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.CurrentCulture, out feet);
-                double.TryParse(match.Groups["wholeInch"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.CurrentCulture, out inch);
-                double.TryParse(match.Groups["num"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.CurrentCulture,
+                double.TryParse(match.Groups["ft"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out feet);
+                double.TryParse(match.Groups["wholeInch"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out inch);
+                double.TryParse(match.Groups["num"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture,
                                 out numerator);
-                double.TryParse(match.Groups["den"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.CurrentCulture,
+                double.TryParse(match.Groups["den"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture,
                                 out denominator);
 
                 //parse metric values
-                double.TryParse(match.Groups["m"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.CurrentCulture, out m);
-                double.TryParse(match.Groups["cm"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.CurrentCulture, out cm);
-                double.TryParse(match.Groups["mm"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.CurrentCulture, out mm);
+                double.TryParse(match.Groups["m"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out m);
+                double.TryParse(match.Groups["cm"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out cm);
+                double.TryParse(match.Groups["mm"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out mm);
             }
         }
 
@@ -1280,16 +1339,16 @@ namespace Dynamo.Units
             Match match = regex.Match(value.Trim().ToLower());
             if (match.Success)
             {
-                double.TryParse(match.Groups["square_inches"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.CurrentCulture, out square_inch);
-                double.TryParse(match.Groups["square_feet"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.CurrentCulture, out square_foot);
+                double.TryParse(match.Groups["square_inches"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out square_inch);
+                double.TryParse(match.Groups["square_feet"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out square_foot);
                 double.TryParse(match.Groups["square_millimeters"].Value,
-                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.CurrentCulture,
+                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture,
                     out square_millimeter);
                 double.TryParse(match.Groups["square_centimeters"].Value,
-                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.CurrentCulture,
+                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture,
                     out square_centimeter);
                 double.TryParse(match.Groups["square_meters"].Value,
-                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.CurrentCulture,
+                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture,
                     out square_meter);
             }
         }
@@ -1310,16 +1369,16 @@ namespace Dynamo.Units
             Match match = regex.Match(value.Trim().ToLower());
             if (match.Success)
             {
-                double.TryParse(match.Groups["cubic_inches"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.CurrentCulture, out cubic_inch);
-                double.TryParse(match.Groups["cubic_feet"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.CurrentCulture, out cubic_foot);
+                double.TryParse(match.Groups["cubic_inches"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out cubic_inch);
+                double.TryParse(match.Groups["cubic_feet"].Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out cubic_foot);
                 double.TryParse(match.Groups["cubic_millimeters"].Value,
-                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.CurrentCulture,
+                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture,
                     out cubic_millimeter);
                 double.TryParse(match.Groups["cubic_centimeters"].Value,
-                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.CurrentCulture,
+                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture,
                     out cubic_centimeter);
                 double.TryParse(match.Groups["cubic_meters"].Value,
-                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.CurrentCulture,
+                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture,
                     out cubic_meter);
             }
         }
