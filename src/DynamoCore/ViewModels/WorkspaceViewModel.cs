@@ -11,6 +11,7 @@ using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
+using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.Controls;
 using System.Windows.Threading;

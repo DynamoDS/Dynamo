@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Reflection;
 using System.Text;
 using Dynamo.Models;
 using Dynamo.Services;
@@ -9,7 +8,7 @@ using Microsoft.Practices.Prism.ViewModel;
 namespace Dynamo
 {
     public enum LogLevel{Console, File, Warning}
-    public enum WarningLevel{Mild, Moderate, Severe}
+    public enum WarningLevel{Mild, Moderate, Error}
 
     public class DynamoLogger:NotificationObject
     {
@@ -136,6 +135,18 @@ namespace Dynamo
             Log(message, LogLevel.Console);
         }
 
+        public void LogError(string tag, string error)
+        {
+            Warning = error;
+            WarningLevel = WarningLevel.Error;
+            Log(tag, error);
+        }
+
+        public void LogInfo(string tag, string info)
+        {
+            Log(tag, LogLevel.File);
+        }
+
         public void ResetWarning()
         {
             Warning = "";
@@ -180,6 +191,16 @@ namespace Dynamo
         {
             Instance.Log(FScheme.printExpression("\t", expression), LogLevel.Console);
         }*/
+
+        /// <summary>
+        /// Log some data with an associated tag
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="data"></param>
+        public void Log(string tag, string data)
+        {
+            Log(string.Format("{0}:{1}", tag, data));
+        }
 
         public void ClearLog()
         {

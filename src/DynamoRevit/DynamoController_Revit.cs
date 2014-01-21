@@ -5,9 +5,11 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Windows.Forms;
 using System.Windows.Threading;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Events;
+using Autodesk.Revit.UI;
 using Dynamo.Controls;
 using Dynamo.FSchemeInterop;
 using Dynamo.Models;
@@ -15,6 +17,7 @@ using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Revit;
 using Dynamo.Selection;
+using Dynamo.Units;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Greg;
@@ -97,6 +100,10 @@ namespace Dynamo
 
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrationsRevit));
             ElementNameStore = new Dictionary<ElementId, string>();
+
+            UnitsManager.Instance.HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot;
+            UnitsManager.Instance.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
+            UnitsManager.Instance.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
         }
 
         private void CleanupVisualizations(object sender, EventArgs e)
@@ -755,7 +762,7 @@ namespace Dynamo
 
         }
 
-        public override void ShutDown()
+        public override void ShutDown(bool shutDownHost)
         {
             RevThread.IdlePromise.ExecuteOnShutdown(
                 delegate
@@ -773,9 +780,25 @@ namespace Dynamo
                 }
                 );
 
-            base.ShutDown();
+            base.ShutDown(shutDownHost);
             Updater.UnRegisterAllChangeHooks();
             RevertPythonBindings();
+
+            if (shutDownHost)
+            {
+                //shut down revit
+                var exitCommand = RevitCommandId.LookupPostableCommandId(PostableCommand.ExitRevit);
+                var uiapp = DocumentManager.GetInstance().CurrentUIApplication;
+                if (uiapp.CanPostCommand(exitCommand))
+                {
+                    uiapp.PostCommand(exitCommand);
+                }
+                else
+                {
+                    MessageBox.Show(
+                        "A command in progress prevented Dynamo from closing revit. Dynamo update will be cancelled.");
+                }
+            }
         }
 
         protected override void Run()

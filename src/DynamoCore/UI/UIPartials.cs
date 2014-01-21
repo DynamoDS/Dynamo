@@ -828,36 +828,6 @@ namespace Dynamo.Nodes
 
     }
 
-    public abstract partial class Enum
-    {
-        public void SetupCustomUIElements(dynNodeView nodeUI)
-        {
-            var comboBox = new ComboBox
-            {
-                MinWidth = 150,
-                Padding = new Thickness(8),
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Center
-            };
-
-            nodeUI.inputGrid.Children.Add(comboBox);
-
-            Grid.SetColumn(comboBox, 0);
-            Grid.SetRow(comboBox, 0);
-
-            comboBox.ItemsSource = Items;
-            comboBox.SelectedIndex = SelectedIndex;
-
-            comboBox.SelectionChanged += delegate
-            {
-                if (comboBox.SelectedIndex == -1) return;
-                RequiresRecalc = true;
-                SelectedIndex = comboBox.SelectedIndex;
-            };
-        }
-
-    }
-
     public partial class Formula
     {
         public void SetupCustomUIElements(dynNodeView nodeUI)

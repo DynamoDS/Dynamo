@@ -61,6 +61,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="LibGNet, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\DynamoAsm\LibGNet.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Practices.Prism, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
@@ -122,6 +128,10 @@
     <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoUnits\DynamoUnits.csproj">
+      <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
+      <Name>DynamoUnits</Name>
     </ProjectReference>
     <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>

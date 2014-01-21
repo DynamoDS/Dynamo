@@ -850,9 +850,6 @@ namespace Dynamo.Models
                         DynamoLogger.Instance.Log(string.Format("{0} ellapsed for loading workspace.", sw.Elapsed));
                     }));
 
-                if(!string.IsNullOrEmpty(version))
-                    CurrentWorkspace.WorkspaceVersion = new Version(version);
-
                 #endregion
 
                 HomeSpace.FileName = xmlPath;

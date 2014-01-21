@@ -8,7 +8,6 @@ using Dynamo.FSchemeInterop.Node;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
-using Dynamo.DSEngine;
 using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo

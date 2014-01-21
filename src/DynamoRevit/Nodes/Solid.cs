@@ -1022,9 +1022,9 @@ namespace Dynamo.Nodes
             // create semicircular arc
             var semicircle = dynRevitSettings.Doc.Application.Application.Create.NewArc(center, radius, 0, Circle.RevitPI, XYZ.BasisZ, XYZ.BasisX);
 
-            // create axis curve of cylinder - running from north to south pole
-            var axisCurve = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(new XYZ(0, 0, -radius),
-                new XYZ(0, 0, radius));
+            // create axis curve of cylinder
+            var axisCurve = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(new XYZ(0, 0, -radius) + center,
+                new XYZ(0, 0, radius) + center );
 
             var circleLoop = Autodesk.Revit.DB.CurveLoop.Create(new List<Curve>() { semicircle, axisCurve });
 
@@ -1221,15 +1221,15 @@ namespace Dynamo.Nodes
 
     #region Solid Manipulation
 
-    [NodeName("Explode Solid")]
+    [NodeName("Explode")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_SOLID_QUERY)]
     [NodeDescription("Creates list of faces of solid or edges of face")]
-    public class GeometryObjectsFromRoot : NodeWithOneOutput
+    public class GeometryObjectsFromRoot : GeometryBase
     {
 
         public GeometryObjectsFromRoot()
         {
-            InPortData.Add(new PortData("Explode Geometry Object", "Solid to extract faces or face to extract edges", typeof(FScheme.Value.Container)));
+            InPortData.Add(new PortData("Geometry Object to explode", "Solid to extract faces, face to extract edges, facet or polyline to extract lines, or mesh to extract facets.", typeof(FScheme.Value.Container)));
             OutPortData.Add(new PortData("Exploded Geometry objects", "List", typeof(FScheme.Value.List)));
 
             RegisterAllPorts();
@@ -1242,7 +1242,23 @@ namespace Dynamo.Nodes
             if (((FScheme.Value.Container)args[0]).Item is Solid)
                 thisSolid = (Solid)((FScheme.Value.Container)args[0]).Item;
 
-            Autodesk.Revit.DB.Face thisFace = thisSolid == null ? (Autodesk.Revit.DB.Face)(((FScheme.Value.Container)args[0]).Item) : null;
+            Autodesk.Revit.DB.Face thisFace = null;
+
+            if (thisSolid == null && ((FScheme.Value.Container)args[0]).Item is Face)
+                thisFace =  (Autodesk.Revit.DB.Face)(((FScheme.Value.Container)args[0]).Item);
+
+            Autodesk.Revit.DB.PolyLine thisPolyline = null;
+            if (thisSolid == null && thisFace == null && ((FScheme.Value.Container)args[0]).Item is PolyLine)
+                thisPolyline = (Autodesk.Revit.DB.PolyLine)(((FScheme.Value.Container)args[0]).Item);
+
+            Autodesk.Revit.DB.Mesh thisMesh = null;
+            if (thisSolid == null && thisFace == null && thisPolyline == null &&  ((FScheme.Value.Container)args[0]).Item is Autodesk.Revit.DB.Mesh)
+                thisMesh = (Autodesk.Revit.DB.Mesh)(((FScheme.Value.Container)args[0]).Item);
+
+            Facet thisAsFacet = null;
+            if (thisSolid == null && thisFace == null && thisPolyline == null && thisMesh == null &&
+                ((FScheme.Value.Container)args[0]).Item is Facet)
+                thisAsFacet = (Facet)(((FScheme.Value.Container)args[0]).Item);
 
             var result = FSharpList<FScheme.Value>.Empty;
 
@@ -1273,6 +1289,37 @@ namespace Dynamo.Nodes
                         if (curEdge != null)
                             result = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewContainer(curEdge), result);
                     }
+                }
+            }
+            else if (thisPolyline != null)
+            {
+                var xyzList = thisPolyline.GetCoordinates();
+                int num = xyzList.Count;
+                for (int ii = 0; ii < num - 1; ii++)
+                {
+                    Autodesk.Revit.DB.Line curLine = Autodesk.Revit.DB.Line.CreateBound(xyzList[ii], xyzList[ii + 1]);
+                    result = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewContainer(curLine), result);
+                }
+            }
+            else if (thisMesh != null)
+            {
+                int num = thisMesh.NumTriangles;
+                for (int ii = 0; ii < num; ii++)
+                {
+                    var oneTriangle = thisMesh.get_Triangle(ii);
+                    var thisFacet = new Facet(oneTriangle.get_Vertex(0), oneTriangle.get_Vertex(1), oneTriangle.get_Vertex(2));
+                    result = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewContainer(thisFacet), result);
+                }
+            }
+            else if (thisAsFacet != null)
+            {
+                var xyzList = thisAsFacet.Points;
+                int num = xyzList.Count;
+                for (int ii = 0; ii < num; ii++)
+                {
+                    int jj = (ii + 1)%num;
+                    Autodesk.Revit.DB.Line curLine = Autodesk.Revit.DB.Line.CreateBound(xyzList[ii], xyzList[jj]);
+                    result = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewContainer(curLine), result);
                 }
             }
 
@@ -1750,7 +1797,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Volume")]
+    [NodeName("Solid Volume")]
     [NodeCategory(BuiltinNodeCategories.ANALYZE_MEASURE)]
     [NodeDescription("Measures the volume of a solid")]
     public class VolumeMeasure : MeasurementBase
@@ -1777,7 +1824,7 @@ namespace Dynamo.Nodes
             }
 
             //Fin
-            return FScheme.Value.NewNumber(volume);
+            return FScheme.Value.NewContainer(Units.Volume.FromCubicFeet(volume));
         }
     }
 
