@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Xml.Serialization;
+using Dynamo.Units;
 using Dynamo.Models;
-using Dynamo.Utilities;
-using Dynamo.Core;
+using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo
 {
@@ -16,7 +13,7 @@ namespace Dynamo
     /// from a XML file from DYNAMO_SETTINGS_FILE.
     /// When GUI is closed, the settings into the XML file.
     /// </summary>
-    public class PreferenceSettings
+    public class PreferenceSettings : NotificationObject
     {
         public static string DYNAMO_TEST_PATH = null;
         const string DYNAMO_SETTINGS_DIRECTORY = @"Autodesk\Dynamo\";
@@ -33,6 +30,36 @@ namespace Dynamo
         public bool ShowConnector { get; set; }
         public ConnectorType ConnectorType { get; set; }
         public bool FullscreenWatchShowing { get; set; }
+        
+        public DynamoLengthUnit LengthUnit
+        {
+            get { return UnitsManager.Instance.LengthUnit; }
+            set
+            {
+                UnitsManager.Instance.LengthUnit = value;
+                RaisePropertyChanged("LengthUnit");
+            }
+        }
+
+        public DynamoAreaUnit AreaUnit
+        {
+            get { return UnitsManager.Instance.AreaUnit; }
+            set
+            {
+                UnitsManager.Instance.AreaUnit = value;
+                RaisePropertyChanged("AreaUnit");
+            }
+        }
+
+        public DynamoVolumeUnit VolumeUnit
+        {
+            get { return UnitsManager.Instance.VolumeUnit; }
+            set
+            {
+                UnitsManager.Instance.VolumeUnit = value;
+                RaisePropertyChanged("VolumeUnit");
+            }
+        }
 
         public PreferenceSettings()
         {
@@ -44,6 +71,9 @@ namespace Dynamo
             this.ShowConnector = true;
             this.ConnectorType = ConnectorType.BEZIER;
             this.FullscreenWatchShowing = true;
+            this.LengthUnit = DynamoLengthUnit.Meter;
+            this.AreaUnit = DynamoAreaUnit.SquareMeter;
+            this.VolumeUnit = DynamoVolumeUnit.CubicMeter;
         }
 
         /// <summary>
@@ -108,6 +138,7 @@ namespace Dynamo
             
             return settings;
         }
+        
         /// <summary>
         /// Return PreferenceSettings from Default XML path
         /// </summary>

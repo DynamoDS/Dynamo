@@ -64,18 +64,18 @@ namespace Dynamo.Nodes
 
             string dllDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\dll";
 
-            if (!assemblies.Any(x => x.FullName.Contains("LibGNet")))
+            if (!assemblies.Any(x => x.FullName.Contains("LibG.Managed")))
             {
                 //LibG could not be found, possibly because we haven't used a node
                 //that requires it yet. Let's load it...
-                string libGPath = Path.Combine(dllDir, "LibGNet.dll");
+                string libGPath = Path.Combine(dllDir, "LibG.Managed.dll");
                 Assembly.LoadFrom(libGPath);
 
                 //refresh the collection of loaded assemblies
                 assemblies = AppDomain.CurrentDomain.GetAssemblies();
             }
 
-            if (assemblies.Any(x => x.FullName.Contains("LibGNet")))
+            if (assemblies.Any(x => x.FullName.Contains("LibG.Managed")))
             {
                 _script = _script + "import sys\n"
                     + "import clr\n"
@@ -83,7 +83,7 @@ namespace Dynamo.Nodes
                     + "exec_path = r'" + dllDir + "'\n"
                     + "sys.path.append(path)\n"
                     + "sys.path.append(exec_path)\n"
-                    + "clr.AddReference('LibGNet')\n"
+                    + "clr.AddReference('LibG.Managed')\n"
                     + "from Autodesk.LibG import *\n";
             }
 
@@ -308,18 +308,18 @@ namespace Dynamo.Nodes
 
             string dllDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\dll";
 
-            if (!assemblies.Any(x => x.FullName.Contains("LibGNet")))
+            if (!assemblies.Any(x => x.FullName.Contains("LibG.Managed")))
             {
                 //LibG could not be found, possibly because we haven't used a node
                 //that requires it yet. Let's load it...
-                string libGPath = Path.Combine(dllDir, "LibGNet.dll");
+                string libGPath = Path.Combine(dllDir, "LibG.Managed.dll");
                 Assembly.LoadFrom(libGPath);
 
                 //refresh the collection of loaded assemblies
                 assemblies = AppDomain.CurrentDomain.GetAssemblies();
             }
 
-            if (assemblies.Any(x => x.FullName.Contains("LibGNet")))
+            if (assemblies.Any(x => x.FullName.Contains("LibG.Managed")))
             {
                 _script = _script + "import sys\n"
                     + "import clr\n"
@@ -327,7 +327,7 @@ namespace Dynamo.Nodes
                     + "exec_path = r'" + dllDir + "'\n"
                     + "sys.path.append(path)\n"
                     + "sys.path.append(exec_path)\n"
-                    + "clr.AddReference('LibGNet')\n"
+                    + "clr.AddReference('LibG.Managed')\n"
                     + "from Autodesk.LibG import *\n";
             }
 
@@ -362,8 +362,9 @@ namespace Dynamo.Nodes
             if (e.ClickCount >= 2)
             {
                 EditScriptContent();
+                e.Handled = true;
             }
-            e.Handled = true;
+            
         }
 
         public override bool RequiresRecalc

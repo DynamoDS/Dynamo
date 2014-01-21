@@ -124,7 +124,7 @@ namespace DynamoPython
                 }
             }
 
-            if (!assemblies.Any(x => x.FullName.Contains("LibGNet")))
+            if (!assemblies.Any(x => x.FullName.Contains("LibG.Managed")))
             {
                 AssemblyHelper.LoadLibG();
 
@@ -132,14 +132,14 @@ namespace DynamoPython
                 assemblies = AppDomain.CurrentDomain.GetAssemblies();
             }
 
-            if (assemblies.Any(x => x.FullName.Contains("LibGNet")))
+            if (assemblies.Any(x => x.FullName.Contains("LibG.Managed")))
             {
                 try
                 {
                     _scope.Engine.CreateScriptSourceFromString("import clr\n", SourceCodeKind.Statements).Execute(_scope);
 
                     var libGImports =
-                        "import clr\nclr.AddReference('LibGNet')\nfrom Autodesk.LibG import *\n";
+                        "import clr\nclr.AddReference('LibG.Managed')\nfrom Autodesk.LibG import *\n";
 
                     _scope.Engine.CreateScriptSourceFromString(libGImports, SourceCodeKind.Statements).Execute(_scope);
                 }

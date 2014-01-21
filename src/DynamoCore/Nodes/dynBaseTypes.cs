@@ -7,8 +7,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Xml;
-using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
+using Dynamo.Units;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
@@ -18,6 +18,7 @@ using Value = Dynamo.FScheme.Value;
 using System.Globalization;
 using ProtoCore.AST.AssociativeAST;
 using Dynamo.DSEngine;
+using Utils = Dynamo.FSchemeInterop.Utils;
 
 namespace Dynamo.Nodes
 {
@@ -558,7 +559,7 @@ namespace Dynamo.Nodes
     }
 
     [NodeName("Identity")]
-    [NodeCategory(BuiltinNodeCategories.CORE_INPUT )]
+    [NodeCategory(BuiltinNodeCategories.CORE_FUNCTIONS)]
     [NodeDescription("Identity function")]
     public class Identity : NodeWithOneOutput
     {
@@ -572,6 +573,26 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             return args[0];
+        }
+    }
+
+
+    [NodeName("Is Null?")]
+    [NodeCategory(BuiltinNodeCategories.CORE)]
+    [NodeDescription("Determines if the given value is null.")]
+    public class IsNull : NodeWithOneOutput
+    {
+        public IsNull()
+        {
+            InPortData.Add(new PortData("", "Any data", typeof(object)));
+            OutPortData.Add(new PortData("null?", "Is the input null?", typeof(bool)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            return args[0] == null || (args[0] as dynamic).Item == null;
         }
     }
 
@@ -1242,6 +1263,64 @@ namespace Dynamo.Nodes
             {
                 throw new Exception("\"index\" argument not a number or a list of numbers.");
             }
+        }
+    }
+
+    [NodeName("Shuffle List")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_MODIFY)]
+    [NodeDescription("Randomizes the order of items in a list.")]
+    public class Shuffle : NodeWithOneOutput
+    {
+        public Shuffle()
+        {
+            InPortData.Add(new PortData("list", "A list", typeof(Value.List)));
+            OutPortData.Add(new PortData("shuffled", "Randomized list.", typeof(Value.List)));
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var list = ((Value.List)args[0]).Item;
+
+            var rng = new System.Random();
+
+            return Value.NewList(Utils.SequenceToFSharpList(list.OrderBy(_ => rng.Next())));
+        }
+    }
+
+    [NodeName("Group by Key")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_MODIFY)]
+    [NodeDescription("Groups list items into sublists by generating matching keys.")]
+    public class GroupBy : NodeWithOneOutput
+    {
+        public GroupBy()
+        {
+            InPortData.Add(
+                new PortData(
+                    "f(x)",
+                    "Key Mapper: items from the list are passed in, items for which the function produces the same output are grouped together.",
+                    typeof(object)));
+            InPortData.Add(new PortData("list", "List of items to be grouped.", typeof(Value.List)));
+            
+            OutPortData.Add(
+                new PortData(
+                    "grouped",
+                    "List of lists, where each sub-list contains items for which the Key Mapper produced the same value.",
+                    typeof(Value.List)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var mapper = ((Value.Function)args[0]).Item;
+            var list = ((Value.List)args[1]).Item;
+
+            return
+                Value.NewList(
+                    Utils.SequenceToFSharpList(
+                        list.GroupBy(x => mapper.Invoke(Utils.MakeFSharpList(x)))
+                            .Select(x => Value.NewList(Utils.SequenceToFSharpList(x)))));
         }
     }
 
@@ -2297,10 +2376,23 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var x = ((Value.Number)args[0]).Item;
-            var y = ((Value.Number)args[1]).Item;
+            //number + number
+            if (args[0].IsNumber && args[1].IsNumber)
+            {
+                var x = ((Value.Number)args[0]).Item;
+                var y = ((Value.Number)args[1]).Item;
+                return Value.NewNumber(x + y);
+            }
 
-            return Value.NewNumber(x + y);
+            //unit + unit
+            if (args[0].IsContainer && args[1].IsContainer)
+            {
+                var x = SIUnit.UnwrapToSIUnit(args[0]);
+                var y = SIUnit.UnwrapToSIUnit(args[1]);
+                return Value.NewContainer(x + y);
+            }
+
+            throw new MathematicalArgumentException();
         }
     }
 
@@ -2320,10 +2412,23 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var x = ((Value.Number)args[0]).Item;
-            var y = ((Value.Number)args[1]).Item;
+            //number - number
+            if (args[0].IsNumber && args[1].IsNumber)
+            {
+                var x = ((Value.Number)args[0]).Item;
+                var y = ((Value.Number)args[1]).Item;
+                return Value.NewNumber(x - y);
+            }
 
-            return Value.NewNumber(x - y);
+            //unit - unit
+            if (args[0].IsContainer && args[1].IsContainer)
+            {
+                var x = SIUnit.UnwrapToSIUnit(args[0]);
+                var y = SIUnit.UnwrapToSIUnit(args[1]);
+                return Value.NewContainer(x - y);
+            }
+
+            throw new MathematicalArgumentException();
         }
     }
 
@@ -2343,10 +2448,41 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var x = ((Value.Number)args[0]).Item;
-            var y = ((Value.Number)args[1]).Item;
+            //double + double
+            if (args[0].IsNumber && args[1].IsNumber)
+            {
+                var x = ((Value.Number)args[0]).Item;
+                var y = ((Value.Number)args[1]).Item;
+                return Value.NewNumber(x * y);
+            }
 
-            return Value.NewNumber(x * y);
+            //double * unit
+            if (args[0].IsNumber && args[1].IsContainer)
+            {
+                var x = ((Value.Number)args[0]).Item;
+                var y = SIUnit.UnwrapToSIUnit(args[1]);
+                return Value.NewContainer(x * y);
+            }
+
+            //unit * double
+            if (args[0].IsContainer && args[1].IsNumber)
+            {
+                var x = SIUnit.UnwrapToSIUnit(args[0]);
+                var y = ((Value.Number)args[1]).Item;
+                
+                return Value.NewContainer(x * y);
+            }
+
+            //unit * unit
+            if (args[0].IsContainer && args[1].IsContainer)
+            {
+                var x = SIUnit.UnwrapToSIUnit(args[0]);
+                var y = SIUnit.UnwrapToSIUnit(args[1]);
+
+                return Value.NewContainer(x * y);
+            }
+
+            throw new MathematicalArgumentException();
         }
     }
 
@@ -2366,10 +2502,39 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var x = ((Value.Number)args[0]).Item;
-            var y = ((Value.Number)args[1]).Item;
+            //double / double
+            if (args[0].IsNumber && args[1].IsNumber)
+            {
+                var x = ((Value.Number)args[0]).Item;
+                var y = ((Value.Number)args[1]).Item;
+                return Value.NewNumber(x / y);
+            }
 
-            return Value.NewNumber(x / y);
+            //unit / double
+            if (args[0].IsContainer && args[1].IsNumber)
+            {
+                var x = SIUnit.UnwrapToSIUnit(args[0]);
+                var y = ((Value.Number)args[1]).Item;
+
+                return Value.NewContainer(x / y);
+            }
+
+            //unit / unit
+            if (args[0].IsContainer && args[1].IsContainer)
+            {
+                //units of same type will cancel
+                var x = SIUnit.UnwrapToSIUnit(args[0]);
+                var y = SIUnit.UnwrapToSIUnit(args[1]);
+
+                if (x.GetType() == y.GetType())
+                {
+                    return Value.NewNumber(x/y);
+                }
+
+                return Value.NewContainer(x / y);
+            }
+
+            throw new MathematicalArgumentException();
         }
     }
 
@@ -2390,10 +2555,23 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var x = ((Value.Number)args[0]).Item;
-            var y = ((Value.Number)args[1]).Item;
+            //number % number
+            if (args[0].IsNumber && args[1].IsNumber)
+            {
+                var x = ((Value.Number)args[0]).Item;
+                var y = ((Value.Number)args[1]).Item;
+                return Value.NewNumber(x % y);
+            }
 
-            return Value.NewNumber(x % y);
+            //unit % unit
+            if (args[0].IsContainer && args[1].IsContainer)
+            {
+                var x = SIUnit.UnwrapToSIUnit(args[0]);
+                var y = SIUnit.UnwrapToSIUnit(args[1]);
+                return Value.NewContainer(x % y);
+            }
+            
+            throw new MathematicalArgumentException();
         }
     }
 
@@ -2414,10 +2592,37 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            var x = ((Value.Number)args[0]).Item;
-            var y = ((Value.Number)args[1]).Item;
+            //number ^ number
+            if (args[0].IsNumber && args[1].IsNumber)
+            {
+                var x = ((Value.Number)args[0]).Item;
+                var y = ((Value.Number)args[1]).Item;
 
-            return Value.NewNumber(Math.Pow(x,y));
+                return Value.NewNumber(Math.Pow(x, y));
+            }
+
+            //unit ^ number
+            if (args[0].IsContainer && args[1].IsNumber)
+            {
+                var length = (((Value.Container) args[0]).Item) as Units.Length;
+                if (length != null)
+                {
+                    var x = SIUnit.UnwrapToSIUnit(args[0]);
+                    var y = ((Value.Number)args[1]).Item;
+
+                    if (y == 2)
+                    {
+                        return Value.NewContainer(new Area(Math.Pow(x.Value, y)));
+                    }
+                    else if (y == 3)
+                    {
+                        return Value.NewContainer(new Volume(Math.Pow(x.Value, y)));
+                    }
+                }
+            }
+
+            throw new MathematicalArgumentException();
+            
         }
     }
 
@@ -2436,9 +2641,18 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return Value.NewNumber(
-               Math.Round(((Value.Number)args[0]).Item)
-            );
+            if (args[0].IsNumber)
+            {
+                return Value.NewNumber(Math.Round(((Value.Number)args[0]).Item));
+            }
+            
+            if (args[0].IsContainer)
+            {
+                var x = SIUnit.UnwrapToSIUnit(args[0]);
+                return Value.NewContainer(x.Round());
+            }
+
+            throw new MathematicalArgumentException();
         }
     }
 
@@ -2458,9 +2672,18 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return Value.NewNumber(
-               Math.Floor(((Value.Number)args[0]).Item)
-            );
+            if (args[0].IsNumber)
+            {
+                return Value.NewNumber(Math.Floor(((Value.Number)args[0]).Item));
+            }
+
+            if (args[0].IsContainer)
+            {
+                var x = SIUnit.UnwrapToSIUnit(args[0]);
+                return Value.NewContainer(x.Floor());
+            }
+
+            throw new MathematicalArgumentException();
         }
     }
 
@@ -2480,9 +2703,18 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return Value.NewNumber(
-               Math.Ceiling(((Value.Number)args[0]).Item)
-            );
+            if (args[0].IsNumber)
+            {
+                return Value.NewNumber(Math.Ceiling(((Value.Number)args[0]).Item));
+            }
+
+            if (args[0].IsContainer)
+            {
+                var x = SIUnit.UnwrapToSIUnit(args[0]);
+                return Value.NewContainer(x.Ceiling());
+            }
+            
+            throw new MathematicalArgumentException();
         }
     }
 
@@ -3575,7 +3807,7 @@ namespace Dynamo.Nodes
         private static IDoubleInputToken ParseToken(string id, HashSet<string> identifiers, List<string> list)
         {
             double dbl;
-            if (double.TryParse(id, NumberStyles.Any, CultureInfo.CurrentCulture, out dbl))
+            if (double.TryParse(id, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
                 return new DoubleToken(dbl);
 
             var match = Sublists.IdentifierPattern.Match(id);
@@ -4728,10 +4960,7 @@ namespace Dynamo.Nodes
             catch { }
         }
 
-        public virtual void PopulateItems()
-        {
-            //override in child classes
-        }
+        public abstract void PopulateItems();
 
         /// <summary>
         /// When the dropdown is opened, the node's implementation of PopulateItemsHash is called

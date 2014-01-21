@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
+using System.Diagnostics;
+using System.Collections.ObjectModel;
+using Dynamo.Units;
 using Dynamo.Nodes;
 using System.Xml;
 using Dynamo.DSEngine;
-using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Selection;
 using Dynamo.Utilities;
@@ -18,6 +18,7 @@ using Microsoft.FSharp.Core;
 using ProtoCore.AST.AssociativeAST;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
+using Utils = Dynamo.FSchemeInterop.Utils;
 
 namespace Dynamo.Models
 {
@@ -127,7 +128,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     Returns if this node requires a recalculation without checking input nodes.
         /// </summary>
-        protected internal bool isDirty
+        protected internal virtual bool isDirty
         {
             get { return _isDirty; }
             set { RequiresRecalc = value; }
@@ -335,6 +336,8 @@ namespace Dynamo.Models
         {
             get { return dynSettings.Controller; }
         }
+
+        private int _errorCount;
 
         /// <summary>
         ///     Determines whether or not the output of this Element will be saved. If true, Evaluate() will not be called
@@ -1694,6 +1697,8 @@ namespace Dynamo.Models
 
                     if (dynSettings.Controller.Testing)
                         throw new Exception(ex.Message);
+
+                    _errorCount++;
                 }
 
 
@@ -1716,17 +1721,22 @@ namespace Dynamo.Models
 
         protected virtual void OnRunCancelled() { }
 
-        protected virtual void __eval_internal(
-            FSharpList<FScheme.Value> args,
-            Dictionary<PortData, FScheme.Value> outPuts)
+        protected virtual void __eval_internal(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
         {
+            var t = GetType();
+
+            if (t != typeof(Watch) && !typeof(MathBase).IsAssignableFrom(t))
+            {
+                args = Utils.SequenceToFSharpList(args.Select(SIUnit.UnwrapToDoubleWithHostUnitConversion));
+            }
+
+            _errorCount = 0;
             __eval_internal_recursive(args, outPuts);
+            if (_errorCount > 1)
+                Error(string.Format("{0} runs generated errors.\n\n{1}", _errorCount, ToolTipText));
         }
 
-        protected virtual void __eval_internal_recursive(
-            FSharpList<FScheme.Value> args,
-            Dictionary<PortData, FScheme.Value> outPuts,
-            int level = 0)
+        protected virtual void __eval_internal_recursive(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts, int level = 0)
         {
             try
             {

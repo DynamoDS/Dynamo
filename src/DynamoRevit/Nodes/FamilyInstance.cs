@@ -4,14 +4,15 @@ using System.Globalization;
 using System.Linq;
 using System.Xml;
 using Autodesk.Revit.DB;
-using Dynamo.FSchemeInterop;
 using Dynamo.Models;
+using Dynamo.Units;
 using Dynamo.Utilities;
 
 using Microsoft.FSharp.Collections;
 using RevitServices.Persistence;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.Revit;
+using Utils = Dynamo.FSchemeInterop.Utils;
 
 namespace Dynamo.Nodes
 {
@@ -107,8 +108,6 @@ namespace Dynamo.Nodes
                         new DynamoDropDownItem(
                             string.Format("{0}(Type)({1})", p.Definition.Name, getStorageTypeString(p.StorageType)), p));
                 }
-
-
             }
             else
             {
@@ -519,7 +518,6 @@ namespace Dynamo.Nodes
             return curve;
         }
 
-
         private Value AddCurves(FamilyInstance fi, GeometryElement geomElem, int count, ref CurveArray curves)
         {
             foreach (GeometryObject geomObj in geomElem)
@@ -757,7 +755,21 @@ namespace Dynamo.Nodes
         {
             if (p.StorageType == StorageType.Double)
             {
-                return Value.NewNumber(p.AsDouble());
+                switch (p.Definition.ParameterType)
+                {
+                    case ParameterType.Length:
+                        return Value.NewContainer(Units.Length.FromFeet(p.AsDouble()));
+                        break;
+                    case ParameterType.Area:
+                        return Value.NewContainer(Units.Area.FromSquareFeet(p.AsDouble()));
+                        break;
+                    case ParameterType.Volume:
+                        return Value.NewContainer(Units.Volume.FromCubicFeet(p.AsDouble()));
+                        break;
+                    default:
+                        return Value.NewNumber(p.AsDouble());
+                        break;
+                }
             }
             else if (p.StorageType == StorageType.Integer)
             {
@@ -927,7 +939,21 @@ namespace Dynamo.Nodes
                     switch (param.StorageType)
                     {
                         case StorageType.Double:
-                            outPuts[pd] = FScheme.Value.NewNumber(param.AsDouble());
+                            switch (param.Definition.ParameterType)
+                            {
+                                case ParameterType.Length:
+                                    outPuts[pd] = Value.NewContainer(Units.Length.FromFeet(param.AsDouble()));
+                                    break;
+                                case ParameterType.Area:
+                                    outPuts[pd] = Value.NewContainer(Units.Area.FromSquareFeet(param.AsDouble()));
+                                    break;
+                                case ParameterType.Volume:
+                                    outPuts[pd] = Value.NewContainer(Units.Volume.FromCubicFeet(param.AsDouble()));
+                                    break;
+                                default:
+                                    outPuts[pd] = Value.NewNumber(param.AsDouble());
+                                    break;
+                            }
                             break;
                         case StorageType.ElementId:
                             outPuts[pd] = FScheme.Value.NewContainer(param.AsElementId());

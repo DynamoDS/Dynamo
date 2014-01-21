@@ -655,7 +655,7 @@ namespace Dynamo.Nodes
             double thickness = ((Value.Number)args[1]).Item;
             XYZ normal = (XYZ)((Value.Container)args[2]).Item;
 
-            Autodesk.Revit.DB.CurveLoop thickenLoop = Autodesk.Revit.DB.CurveLoop.CreateViaThicken(curve.Clone(), thickness, normal);
+            Autodesk.Revit.DB.CurveLoop thickenLoop = Autodesk.Revit.DB.CurveLoop.CreateViaThicken(curve.Clone(), 2.0 * thickness, normal);
 
             if (thickenLoop == null)
                 throw new Exception("Could not offset curve");
@@ -971,7 +971,7 @@ namespace Dynamo.Nodes
             }
 
             //Fin
-            return FScheme.Value.NewNumber(length);
+            return FScheme.Value.NewContainer(Units.Length.FromFeet(length));
         }
     }
 }

@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
-using System.Windows.Media.Imaging;
 using System.Xml;
+using Dynamo.Units;
 using Dynamo.Models;
 using Microsoft.FSharp.Collections;
-using Dynamo.FSchemeInterop;
 using Value = Dynamo.FScheme.Value;
 using Dynamo.Utilities;
 
 using NCalc;
+using Utils = Dynamo.FSchemeInterop.Utils;
 
 namespace Dynamo.Nodes
 {
@@ -206,7 +205,16 @@ namespace Dynamo.Nodes
                 if (arg.Value.IsFunction)
                     functionLookup[parameter] = arg.Value;
                 else
-                    e.Parameters[parameter] = ((Value.Number)arg.Value).Item;
+                {
+                    if (arg.Value.IsNumber)
+                    {
+                        e.Parameters[parameter] = ((Value.Number)arg.Value).Item;  
+                    }
+                    else if (arg.Value.IsContainer)
+                    {
+                        e.Parameters[parameter] = SIUnit.UnwrapToSIUnit(arg.Value).Value;  
+                    }
+                }  
             }
 
             e.EvaluateFunction += delegate(string name, FunctionArgs fArgs)
