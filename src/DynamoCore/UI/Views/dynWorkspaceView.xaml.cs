@@ -250,8 +250,6 @@ namespace Dynamo.Views
                 if (args.CanEditName) workspace.Name = args.Name;
                 workspace.Description = args.Description;
                 workspace.Category = args.Category;
-                // workspace.Author = "";
-
             }
         }
 

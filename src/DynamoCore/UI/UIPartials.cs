@@ -341,6 +341,98 @@ namespace Dynamo.Nodes
         }
     }
 
+    public partial class Function : NodeWithOneOutput
+    {
+        public override void SetupCustomUIElements(object ui)
+        {
+            var nodeUI = ui as dynNodeView;
+
+            nodeUI.MainContextMenu.Items.Add(new System.Windows.Controls.Separator());
+
+            // edit contents
+            var editItem = new System.Windows.Controls.MenuItem
+            {
+                Header = "Edit Custom Node...",
+                IsCheckable = false
+            };
+            nodeUI.MainContextMenu.Items.Add(editItem);
+            editItem.Click += (sender, args) => GoToWorkspace(nodeUI.ViewModel);
+
+            // edit properties
+            var editPropertiesItem = new System.Windows.Controls.MenuItem
+            {
+                Header = "Edit Custom Node Properties...",
+                IsCheckable = false
+            };
+            nodeUI.MainContextMenu.Items.Add(editPropertiesItem);
+            editPropertiesItem.Click += (sender, args) => EditCustomNodeProperties();
+
+            // publish
+            var publishCustomNodeItem = new System.Windows.Controls.MenuItem
+            {
+                Header = "Publish This Custom Node...",
+                IsCheckable = false
+            };
+            nodeUI.MainContextMenu.Items.Add(publishCustomNodeItem);
+            publishCustomNodeItem.Click += (sender, args) =>
+            {
+                GoToWorkspace(nodeUI.ViewModel);
+                if (dynSettings.Controller.DynamoViewModel.PublishCurrentWorkspaceCommand.CanExecute(null))
+                {
+                    dynSettings.Controller.DynamoViewModel.PublishCurrentWorkspaceCommand.Execute(null);
+                } 
+            };
+
+            nodeUI.UpdateLayout();
+        }
+
+        private void EditCustomNodeProperties()
+        {
+            var workspace = this.Definition.WorkspaceModel;
+
+            // copy these strings
+            var newName = workspace.Name.Substring(0);
+            var newCategory = workspace.Category.Substring(0);
+            var newDescription = workspace.Description.Substring(0);
+
+            var args = new FunctionNamePromptEventArgs
+            {
+                Name = newName,
+                Description = newDescription,
+                Category = newCategory,
+                CanEditName = false
+            };
+
+            dynSettings.Controller.DynamoModel.OnRequestsFunctionNamePrompt(this, args);
+
+            if (args.Success)
+            {
+                if (workspace is CustomNodeWorkspaceModel)
+                {
+                    var def = (workspace as CustomNodeWorkspaceModel).FunctionDefinition;
+                    dynSettings.CustomNodeManager.Refactor(def.FunctionId, args.CanEditName ? args.Name : workspace.Name, args.Category, args.Description);
+                }
+
+                if (args.CanEditName) workspace.Name = args.Name;
+                workspace.Description = args.Description;
+                workspace.Category = args.Category;
+
+                workspace.Save();
+            }
+        }
+
+        private void GoToWorkspace( NodeViewModel viewModel )
+        {
+            if (viewModel == null) return;
+
+            if (viewModel.GotoWorkspaceCommand.CanExecute(null))
+            {
+                viewModel.GotoWorkspaceCommand.Execute(null);
+            }
+        }
+
+    }  
+
     //public partial class AngleInput : DoubleInput
     //{
 
