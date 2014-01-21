@@ -183,7 +183,10 @@ namespace Dynamo.Controls
             e.Handled = true;
 
             var helpDialog = new NodeHelpPrompt(e.Model);
+            helpDialog.Owner = Window.GetWindow(this);
+            
             helpDialog.Show();
+
         }
 
         void NodeLogic_DispatchedToUI(object sender, UIDispatcherEventArgs e)
