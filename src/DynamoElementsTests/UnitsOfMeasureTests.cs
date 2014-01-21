@@ -1,5 +1,4 @@
-﻿using Dynamo.Nodes;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using Dynamo.Units;
 
 namespace Dynamo.Tests
@@ -486,6 +485,37 @@ namespace Dynamo.Tests
             var volume = x.ToVolume();
             Assert.AreEqual("5.00 m³", volume.ToString(DynamoVolumeUnit.CubicMeter));
 
+        }
+
+        [Test]
+        public void UiRounding()
+        {
+            UnitsManager.Instance.LengthUnit = DynamoLengthUnit.FractionalFoot;
+
+            var length = Units.Length.FromFeet(1.5);
+            Assert.AreEqual("2' 0\"", ((Units.Length)length.Round()).ToString(DynamoLengthUnit.FractionalFoot));
+            Assert.AreEqual("2' 0\"", ((Units.Length)length.Ceiling()).ToString(DynamoLengthUnit.FractionalFoot));
+            Assert.AreEqual("1' 0\"", ((Units.Length)length.Floor()).ToString(DynamoLengthUnit.FractionalFoot));
+
+            length = Units.Length.FromFeet(1.2);
+            Assert.AreEqual("1' 0\"", ((Units.Length)length.Round()).ToString(DynamoLengthUnit.FractionalFoot));
+            Assert.AreEqual("2' 0\"", ((Units.Length)length.Ceiling()).ToString(DynamoLengthUnit.FractionalFoot));
+            Assert.AreEqual("1' 0\"", ((Units.Length)length.Floor()).ToString(DynamoLengthUnit.FractionalFoot));
+
+            length = Units.Length.FromFeet(-1.5);
+            Assert.AreEqual("-2' 0\"", ((Units.Length)length.Round()).ToString(DynamoLengthUnit.FractionalFoot));
+            Assert.AreEqual("-1' 0\"", ((Units.Length)length.Ceiling()).ToString(DynamoLengthUnit.FractionalFoot));
+            Assert.AreEqual("-2' 0\"", ((Units.Length)length.Floor()).ToString(DynamoLengthUnit.FractionalFoot));
+
+            length = Units.Length.FromFeet(-1.2);
+            Assert.AreEqual("-1' 0\"", ((Units.Length)length.Round()).ToString(DynamoLengthUnit.FractionalFoot));
+            Assert.AreEqual("-1' 0\"", ((Units.Length)length.Ceiling()).ToString(DynamoLengthUnit.FractionalFoot));
+            Assert.AreEqual("-2' 0\"", ((Units.Length)length.Floor()).ToString(DynamoLengthUnit.FractionalFoot));
+
+            //this fails as explained here:
+            //http://msdn.microsoft.com/en-us/library/wyk4d9cy(v=vs.110).aspx
+            //length = Units.Length.FromFeet(.5);
+            //Assert.AreEqual("1' 0\"", ((Units.Length)length.Round()).ToString(DynamoLengthUnit.FractionalFoot));
         }
     }
 }
