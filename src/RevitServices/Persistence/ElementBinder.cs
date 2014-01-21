@@ -5,8 +5,11 @@ using DSNodeServices;
 
 namespace RevitServices.Persistence
 {
+    /// <summary>
+    /// Holds a  representation of a Revit ID that supports serialisation
+    /// </summary>
     [Serializable]
-    internal class SerializableId : ISerializable
+    public class SerializableId : ISerializable
     {
         public String StringID { get; set; }
         public int IntID { get; set; }
