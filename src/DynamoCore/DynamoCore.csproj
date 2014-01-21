@@ -682,8 +682,8 @@ limitations under the License.
   <PropertyGroup>
     <PostBuildEvent>copy /Y "$(SolutionDir)..\extern\DesignScript\*" "$(OutputPath)"
 mkdir "$(OutputPath)\dll"
-copy /Y "$(SolutionDir)..\extern\DynamoAsm\*" "$(OutputPath)\dll"
-copy /Y "$(SolutionDir)..\extern\DynamoAsm\LibG.ProtoInterface.dll" "$(OutputPath)"</PostBuildEvent>
+copy /Y "$(SolutionDir)..\extern\LibG\x64\$(Configuration)\*" "$(OutputPath)\dll"
+copy /Y "$(SolutionDir)..\extern\LibG\x64\Common\*" "$(OutputPath)\dll"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
