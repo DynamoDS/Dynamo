@@ -165,6 +165,8 @@ namespace Dynamo.Controls
                 Title = "Edit Node Name"
             };
 
+            editWindow.Owner = Window.GetWindow(this);
+
             editWindow.BindToProperty(null, new Binding("NickName")
             {
                 Mode = BindingMode.TwoWay,
