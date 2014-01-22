@@ -442,7 +442,7 @@ namespace Dynamo.Nodes
         {
             InPortData.Add(new PortData("a", "Start (XYZ).", typeof(FScheme.Value.Container)));//Ref to a face of a form
             InPortData.Add(new PortData("b", "End (XYZ)", typeof(FScheme.Value.Container)));//Ref to a face of a form
-            OutPortData.Add(new PortData("d", "The distance between the two XYZs (Number).", typeof(FScheme.Value.Number)));
+            OutPortData.Add(new PortData("d", "The distance between the two XYZs (Number).", typeof(FScheme.Value.Container)));
 
             RegisterAllPorts();
         }
