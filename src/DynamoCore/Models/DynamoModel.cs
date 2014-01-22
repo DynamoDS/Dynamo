@@ -1150,11 +1150,8 @@ namespace Dynamo.Models
             var args = new FunctionNamePromptEventArgs();
             OnRequestsFunctionNamePrompt(this, args);
 
-            //string name = "", category = "";
-            //if (ShowNewFunctionDialog(ref name, ref category))
             if (args.Success)
             {
-                //NewFunction(Guid.NewGuid(), name, category, true);
                 NewCustomNodeWorkspace(Guid.NewGuid(), args.Name, args.Category, args.Description, true);
             }
         }
