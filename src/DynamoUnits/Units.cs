@@ -96,10 +96,10 @@ namespace Dynamo.Units
                 switch (AreaUnit)
                 {
                     case DynamoAreaUnit.SquareMillimeter:
-                        _uiAreaConversion = SIUnit.ToMillimeter;
+                        _uiAreaConversion = SIUnit.ToSquareMillimeters;
                         break;
                     case DynamoAreaUnit.SquareCentimeter:
-                        _uiAreaConversion = SIUnit.ToCentimeter;
+                        _uiAreaConversion = SIUnit.ToSquareCentimeters;
                         break;
                     case DynamoAreaUnit.SquareMeter:
                         _uiAreaConversion = 1.0;
