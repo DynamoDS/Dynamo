@@ -117,12 +117,10 @@ namespace Dynamo.Controls
             // OnNodeViewLoaded, and it needs ViewModel for size computation).
             // 
             // ViewModel = this.DataContext as NodeViewModel;
-
             ViewModel.NodeLogic.DispatchedToUI += NodeLogic_DispatchedToUI;
             ViewModel.RequestShowNodeHelp += ViewModel_RequestShowNodeHelp;
             ViewModel.RequestShowNodeRename += ViewModel_RequestShowNodeRename;
             ViewModel.RequestsSelection += ViewModel_RequestsSelection;
-
             ViewModel.NodeLogic.PropertyChanged += NodeLogic_PropertyChanged;
         }
 
@@ -165,6 +163,8 @@ namespace Dynamo.Controls
                 Title = "Edit Node Name"
             };
 
+            editWindow.Owner = Window.GetWindow(this);
+
             editWindow.BindToProperty(null, new Binding("NickName")
             {
                 Mode = BindingMode.TwoWay,
@@ -178,8 +178,15 @@ namespace Dynamo.Controls
 
         void ViewModel_RequestShowNodeHelp(object sender, NodeHelpEventArgs e)
         {
+            if (e.Handled) return;
+
+            e.Handled = true;
+
             var helpDialog = new NodeHelpPrompt(e.Model);
+            helpDialog.Owner = Window.GetWindow(this);
+            
             helpDialog.Show();
+
         }
 
         void NodeLogic_DispatchedToUI(object sender, UIDispatcherEventArgs e)

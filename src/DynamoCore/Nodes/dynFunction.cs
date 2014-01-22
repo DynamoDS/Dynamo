@@ -70,7 +70,7 @@ namespace Dynamo.Nodes
                         Definition.FunctionId))
                     return
                         dynSettings.Controller.CustomNodeManager.NodeInfos[
-                            Definition.FunctionId].Description;
+                            this.Definition.FunctionId].Category;
                 else
                 {
                     return "Custom Nodes";
