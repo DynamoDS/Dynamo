@@ -91,6 +91,7 @@
                     <MenuItem  Header="_New Node From Selection"  Name="NodeFromSelection" Command="{Binding NodeFromSelectionCommand}" />
                     <MenuItem  Header="_Nodes From Selected Geometry" Visibility="{Binding Path=CanFindNodesFromElements, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"  
                                Name="ShowElementsInContext" Command="{Binding FindNodesFromSelectionCommand}" />
+                    <Separator Visibility="{Binding Path=IsHomeSpace, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}" ></Separator>
                     <MenuItem  Header="_Edit Custom Node Properties..."  Name="EditProperties" Click="WorkspacePropertyEditClick" Visibility="{Binding Path=IsHomeSpace, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"  />
                     <MenuItem  Header="_Publish This Custom Node..."  Name="Publish" Command="{Binding DynamoViewModel.PublishCurrentWorkspaceCommand}"  Visibility="{Binding Path=IsHomeSpace, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"  />
                 

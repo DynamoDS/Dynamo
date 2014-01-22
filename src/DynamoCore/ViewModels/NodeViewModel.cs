@@ -906,9 +906,11 @@ namespace Dynamo.ViewModels
     public class NodeHelpEventArgs : EventArgs
     {
         public NodeModel Model { get; set; }
+        public bool Handled { get; set; }
         public NodeHelpEventArgs(NodeModel model)
         {
             Model = model;
+            Handled = false;
         }
     }
 }
