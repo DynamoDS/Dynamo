@@ -47,15 +47,37 @@ namespace Dynamo.PackageManager
         /// <value>
         ///     Specifies whether the user is logged in or not.
         /// </value>
-        public bool IsLoggedIn { get; internal set; }
+        public bool LoggedIn {
+            get
+            {
+                if (Client.Provider == null) return false;
+                
+            } 
+        }
 
         #endregion
 
         public PackageManagerClient()
         {
-            Client = new Client(null, "http://54.225.121.251"); // initialize authenticator later
-            IsLoggedIn = false;
+            Client = new Client(null, "http://54.225.121.251"); 
         }
+
+        #region Under construction
+
+        public bool IsNewestVerstion(string packageId, string currentVersion, ref string newerVersion)
+        {
+
+            return false;
+        }
+
+        public bool IsUserPackageOwner(string packageId)
+        {
+            if (!LoggedIn) return false;
+
+            return true;
+        }
+
+        #endregion
 
         public bool Upvote(string packageId)
         {
