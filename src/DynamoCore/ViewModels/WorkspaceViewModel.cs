@@ -342,6 +342,8 @@ namespace Dynamo.ViewModels
             _model.Connectors.CollectionChanged += Connectors_CollectionChanged;
 
 
+            DynamoSelection.Instance.Selection.CollectionChanged += this.AlignSelectionCanExecuteChanged;
+
             // sync collections
             Nodes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Nodes));
             Connectors_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Connectors));
