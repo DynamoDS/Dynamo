@@ -402,7 +402,7 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("ptA", "Element to measure to.", typeof(Value.Container)));
             InPortData.Add(new PortData("ptB", "A Reference point.", typeof(Value.Container)));
 
-            OutPortData.Add(new PortData("dist", "Distance between points.", typeof(Value.Number)));
+            OutPortData.Add(new PortData("dist", "Distance between points.", typeof(Value.Container)));
 
             RegisterAllPorts();
         }
@@ -434,7 +434,7 @@ namespace Dynamo.Nodes
             XYZ ptB = this.getXYZ(((Value.Container)args[1]).Item);
 
             //Return the calculated distance.
-            return Value.NewNumber(ptA.DistanceTo(ptB));
+            return Value.NewContainer(Units.Length.FromFeet(ptA.DistanceTo(ptB)));
         }
     }
 }
