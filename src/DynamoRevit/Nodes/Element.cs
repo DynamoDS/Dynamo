@@ -80,7 +80,7 @@ namespace Dynamo.Nodes
         public Height()
         {
             InPortData.Add(new PortData("elem", "Level, Family Instance, RefPoint, XYZ", typeof(FScheme.Value.Container)));//add elements here when adding switch statements 
-            OutPortData.Add(new PortData("h", "The height of an element in z relative to project 0.", typeof(FScheme.Value.Number)));
+            OutPortData.Add(new PortData("h", "The height of an element in z relative to project 0.", typeof(FScheme.Value.Container)));
 
             RegisterAllPorts();
         }
