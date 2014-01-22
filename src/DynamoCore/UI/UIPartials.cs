@@ -15,6 +15,7 @@ using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.UI;
 using Dynamo.UI.Prompts;
+using Dynamo.Units;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Nodes;
@@ -1088,6 +1089,35 @@ namespace Dynamo.Nodes
                 watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty, sourceBinding);
             });
 
+            dynSettings.Controller.PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
+        }
+
+        void PreferenceSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            //if the units settings have been modified in the UI, watch has
+            //to immediately update to show unit objects in the correct format
+            if (e.PropertyName == "LengthUnit" ||
+                e.PropertyName == "AreaUnit" ||
+                e.PropertyName == "VolumeUnit")
+            {
+                string prefix = "";
+                int count = 0;
+
+                DispatchOnUIThread(
+                    delegate
+                    {
+                        //unhook the binding
+                        OnRequestBindingUnhook(EventArgs.Empty);
+
+                        Root.Children.Clear();
+
+                        Root.Children.Add(Process(OldValue, prefix, count));
+                        count++;
+
+                        //rehook the binding
+                        OnRequestBindingRehook(EventArgs.Empty);
+                    });
+            }
         }
 
     }
@@ -1155,11 +1185,11 @@ namespace Dynamo.Nodes
             editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
             //add a text box to the input grid of the control
             var tb = new DynamoTextBox();
-            tb.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-            tb.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            tb.HorizontalAlignment = HorizontalAlignment.Stretch;
+            tb.VerticalAlignment = VerticalAlignment.Center;
             nodeUI.inputGrid.Children.Add(tb);
-            System.Windows.Controls.Grid.SetColumn(tb, 0);
-            System.Windows.Controls.Grid.SetRow(tb, 0);
+            Grid.SetColumn(tb, 0);
+            Grid.SetRow(tb, 0);
             tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
 
             tb.DataContext = this;
@@ -1180,8 +1210,13 @@ namespace Dynamo.Nodes
 
         void PreferenceSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            RaisePropertyChanged("Value");
-            RequiresRecalc = true;
+            if (e.PropertyName == "AreaUnit" ||
+                e.PropertyName == "VolumeUnit" ||
+                e.PropertyName == "LengthUnit")
+            {
+                RaisePropertyChanged("Value");
+                RequiresRecalc = true;
+            }
         }
 
         protected override bool UpdateValueCore(string name, string value)
