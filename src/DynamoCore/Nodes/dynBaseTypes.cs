@@ -598,7 +598,8 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return args[0] == null || (args[0] as dynamic).Item == null;
+            var nullity = args[0] == null || (args[0] as dynamic).Item == null;
+            return FScheme.Value.NewNumber(nullity ? 1 : 0);
         }
     }
 
