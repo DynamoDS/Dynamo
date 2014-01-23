@@ -1,0 +1,25 @@
+<Workspace Version="0.6.3.12415" X="103.574800589445" Y="30.6979192778709" zoom="1.09319343496533" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="d4cba9c1-d800-4b47-a921-87b0fe8c355b" nickname="Code Block" x="33.0123135447153" y="93.4163171047508" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="points      = Point.ByCoordinates(4, 0, 0..7); &#xA;points[1]   = points[1].Translate(-1, 0, 0); &#xA;points[5]   = points[5].Translate(1, 0, 0); &#xA;curve = NurbsCurve.ByPoints(points);&#xA;axisOrigin  = Point.ByCoordinates(0, 0, 0); &#xA;axis        = Vector.ByCoordinates(0, 0, 1); &#xA;startAngle = 0;&#xA;endAngle=360;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="f1c8bd08-7876-49f2-8adf-da0288ef66ff" nickname="RevolvedSurface.ByProfileAxisOriginDirectionAngle" x="531.980976717187" y="257.130481778908" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="ProtoGeometry.dll" function="RevolvedSurface.ByProfileAxisOriginDirectionAngle@Curve,Point,Vector,double,double" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="38f5074c-ed9a-4b44-b1db-008755b5bb50" nickname="CoordinateSystem.AtParameter" x="841.322786081512" y="463.30540945206" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="ProtoGeometry.dll" function="CoordinateSystem.AtParameter@Surface,double,double" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="a2932319-25c3-47a4-9d25-40c24eb40ee0" nickname="Code Block" x="717.265222695567" y="516.890308596306" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0.5;&#xA;0.25;" ShouldFocus="false" />
+    <Dynamo.Nodes.Watch3D type="Dynamo.Nodes.Watch3D" guid="c056a6f6-5fef-42ba-9791-784ca497403c" nickname="Watch 3D" x="933.143049790067" y="47.0938953518592" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <view width="210" height="257">
+        <camera pos_x="8.75396784427788" pos_y="21.5247687313173" pos_z="9.17241630185115" look_x="-8.75396784427788" look_y="-21.5247687313173" look_z="-9.17341630185116" />
+      </view>
+    </Dynamo.Nodes.Watch3D>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="d4cba9c1-d800-4b47-a921-87b0fe8c355b" start_index="1" end="f1c8bd08-7876-49f2-8adf-da0288ef66ff" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d4cba9c1-d800-4b47-a921-87b0fe8c355b" start_index="1" end="c056a6f6-5fef-42ba-9791-784ca497403c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d4cba9c1-d800-4b47-a921-87b0fe8c355b" start_index="2" end="f1c8bd08-7876-49f2-8adf-da0288ef66ff" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d4cba9c1-d800-4b47-a921-87b0fe8c355b" start_index="3" end="f1c8bd08-7876-49f2-8adf-da0288ef66ff" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d4cba9c1-d800-4b47-a921-87b0fe8c355b" start_index="4" end="f1c8bd08-7876-49f2-8adf-da0288ef66ff" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d4cba9c1-d800-4b47-a921-87b0fe8c355b" start_index="5" end="f1c8bd08-7876-49f2-8adf-da0288ef66ff" end_index="4" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f1c8bd08-7876-49f2-8adf-da0288ef66ff" start_index="0" end="38f5074c-ed9a-4b44-b1db-008755b5bb50" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a2932319-25c3-47a4-9d25-40c24eb40ee0" start_index="0" end="38f5074c-ed9a-4b44-b1db-008755b5bb50" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a2932319-25c3-47a4-9d25-40c24eb40ee0" start_index="1" end="38f5074c-ed9a-4b44-b1db-008755b5bb50" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
