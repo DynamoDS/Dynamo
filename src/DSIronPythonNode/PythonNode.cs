@@ -19,10 +19,10 @@ namespace DSIronPythonNode
     {
         public static object EvaluateIronPythonScript(string code, IList names, IList values)
         {
-            var amt = Math.Min(names.Count, values.Count);
-
             var engine = Python.CreateEngine();
             var scope = engine.CreateScope();
+
+            var amt = Math.Min(names.Count, values.Count);
 
             for (int i = 0; i < amt; i++)
             {
