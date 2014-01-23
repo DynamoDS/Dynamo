@@ -280,19 +280,16 @@ namespace Dynamo
         /// <param name="client">The client, to which the provider will be attached</param>
         private void RegisterSingleSignOn(PackageManagerClient client)
         {
-            if (_singleSignOnAssembly == null)
-                _singleSignOnAssembly = LoadSSONet();
-            client.Client.Provider = new RevitOxygenProvider(new DispatcherSynchronizationContext(this.UIDispatcher));
+            _singleSignOnAssembly = _singleSignOnAssembly ?? LoadSSONet();
+            client.Client.Provider = client.Client.Provider ?? new RevitOxygenProvider(new DispatcherSynchronizationContext(this.UIDispatcher));
         }
 
         /// <summary>
-        /// Delay loading of the SSONet.dll, which is used by the package manager to
-        /// get authentication information.  Internally uses Assembly.LoadFrom so the DLL
-        /// will be loaded into the Load From context or extracted from the Load context
-        /// if already present there.
+        /// Delay loading of the SSONet.dll, which is used by the package manager for 
+        /// authentication information.
         /// </summary>
         /// <returns>The SSONet assembly</returns>
-        public Assembly LoadSSONet()
+        private Assembly LoadSSONet()
         {
             // get the location of RevitAPI assembly.  SSONet is in the same directory.
             var revitAPIAss = Assembly.GetAssembly(typeof(XYZ)); // any type loaded from RevitAPI
