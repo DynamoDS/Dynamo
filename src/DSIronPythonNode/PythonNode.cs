@@ -3,9 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml;
@@ -13,7 +10,6 @@ using DSCoreNodesUI;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.UI;
 using Dynamo.Utilities;
 using IronPython.Hosting;
 using ProtoCore.AST.AssociativeAST;
@@ -40,24 +36,66 @@ namespace DSIronPythonNode
         }
     }
 
-    [Browsable(false)]
-    public class PythonNode : VariableInputNode
+    public abstract class PythonNodeBase : VariableInputNode
     {
-        public PythonNode()
+        protected PythonNodeBase()
         {
-            RegisterAllPorts();
-            _script = InitializeDefaultScript();
-
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
+        protected override string InputRootName
+        {
+            get { return "IN"; }
+        }
+
+        protected override string TooltipRootName
+        {
+            get { return "Input #"; }
+        }
+
+        protected AssociativeNode CreateOutputAST(
+            AssociativeNode codeInputNode, List<AssociativeNode> inputAstNodes,
+            List<Tuple<string, AssociativeNode>> additionalBindings)
+        {
+            var names = additionalBindings.Select(x => x.Item1).ToList();
+            names.Add("IN");
+
+            var vals = additionalBindings.Select(x => x.Item2).ToList();
+            vals.Add(AstFactory.BuildExprList(inputAstNodes));
+
+            return AstFactory.BuildAssignment(
+                GetAstIdentifierForOutputIndex(0),
+                AstFactory.BuildFunctionCall(
+                    "DSIronPythonNode.IronPythonEvaluator.EvaluateIronPythonScript",
+                    new List<AssociativeNode>
+                    {
+                        codeInputNode,
+                        AstFactory.BuildExprList(
+                            names.Select(x => AstFactory.BuildStringNode(x) as AssociativeNode)
+                                 .ToList()),
+                        AstFactory.BuildExprList(vals)
+                    }));
+        }
+    }
+
+    [Browsable(false)]
+    public class PythonNode : PythonNodeBase
+    {
+        public PythonNode()
+        {
+            _script = "# Default imports\n\n"
+                + "#The input to this node will be stored in the IN0...INX variable(s).\n"
+                + "dataEnteringNode = IN0\n\n" + "#Assign your output to the OUT variable\n"
+                + "OUT = 0";
+            OutPortData.Add(new PortData("OUT", "Result of the python script"));
+            RegisterAllPorts();
+        }
+
         private string _script;
+
         public string Script
         {
-            get
-            {
-                return _script;
-            }
+            get { return _script; }
             set
             {
                 if (_script != value)
@@ -68,22 +106,9 @@ namespace DSIronPythonNode
             }
         }
 
-        private string InitializeDefaultScript()
-        {
-            return "# Default imports\n\n"
-                + "#The input to this node will be stored in the IN0...INX variable(s).\n"
-                + "dataEnteringNode = IN0\n\n"
-                + "#Assign your output to the OUT variable\n"
-                + "OUT = 0";
-        }
-
         public override void SetupCustomUIElements(dynNodeView view)
         {
-            var editWindowItem = new MenuItem
-            {
-                Header = "Edit...",
-                IsCheckable = false
-            };
+            var editWindowItem = new MenuItem { Header = "Edit...", IsCheckable = false };
             view.MainContextMenu.Items.Add(editWindowItem);
             editWindowItem.Click += delegate { EditScriptContent(); };
             view.UpdateLayout();
@@ -91,7 +116,7 @@ namespace DSIronPythonNode
             view.MouseDown += view_MouseDown;
         }
 
-        void view_MouseDown(object sender, MouseButtonEventArgs e)
+        private void view_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ClickCount >= 2)
             {
@@ -107,36 +132,15 @@ namespace DSIronPythonNode
             editWindow.ShowDialog();
         }
 
-        protected override string InputRootName
-        {
-            get { return "IN"; }
-        }
-
-        protected override string TooltipRootName
-        {
-            get { return "Input #"; }
-        }
-
         public override IEnumerable<AssociativeNode> BuildOutputAst(
             List<AssociativeNode> inputAstNodes)
         {
             return new[]
             {
-                AstFactory.BuildAssignment(
-                    GetAstIdentifierForOutputIndex(0),
-                    AstFactory.BuildFunctionCall(
-                        "DSIronPythonNode.IronPythonEvaluator.EvaluateIronPythonScript",
-                        new List<AssociativeNode>
-                        {
-                            AstFactory.BuildStringNode(_script),
-                            AstFactory.BuildExprList(
-                                new List<AssociativeNode> { AstFactory.BuildStringNode("IN") }),
-                            AstFactory.BuildExprList(
-                                new List<AssociativeNode>
-                                {
-                                    AstFactory.BuildExprList(inputAstNodes)
-                                })
-                        }))
+                CreateOutputAST(
+                    AstFactory.BuildStringNode(_script),
+                    inputAstNodes,
+                    new List<Tuple<string, AssociativeNode>>())
             };
         }
 
@@ -153,24 +157,24 @@ namespace DSIronPythonNode
 
         #region Save/Load
 
-        protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
+        protected override void SaveNode(
+            XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
+            base.SaveNode(xmlDoc, nodeElement, context);
+
             XmlElement script = xmlDoc.CreateElement("Script");
             //script.InnerText = this.tb.Text;
             script.InnerText = _script;
             nodeElement.AppendChild(script);
-
-            // save the number of inputs
-            nodeElement.SetAttribute("inputs", (InPortData.Count).ToString());
         }
 
         protected override void LoadNode(XmlNode nodeElement)
         {
-            var inputAttr = nodeElement.Attributes["inputs"];
-            int inputs = inputAttr == null ? 1 : Convert.ToInt32(inputAttr.Value);
-            this.SetNumInputs(inputs);
+            base.LoadNode(nodeElement);
 
-            var scriptNode = nodeElement.ChildNodes.Cast<XmlNode>().FirstOrDefault(x => x.Name == "Script");
+            var scriptNode =
+                nodeElement.ChildNodes.Cast<XmlNode>().FirstOrDefault(x => x.Name == "Script");
+            
             if (scriptNode != null)
             {
                 _script = scriptNode.InnerText;
@@ -198,4 +202,38 @@ namespace DSIronPythonNode
 
         #endregion
     }
+
+    [Browsable(false)]
+    public class PythonStringNode : PythonNodeBase
+    {
+        public PythonStringNode()
+        {
+            InPortData.Add(new PortData("script", "Python script to run."));
+            RegisterAllPorts();
+        }
+
+        protected override void RemoveInput()
+        {
+            if (InPortData.Count > 1)
+                base.RemoveInput();
+        }
+
+        protected override int GetInputIndex()
+        {
+            return base.GetInputIndex() - 1;
+        }
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(
+            List<AssociativeNode> inputAstNodes)
+        {
+            return new[]
+            {
+                CreateOutputAST(
+                    inputAstNodes[0],
+                    inputAstNodes.Skip(1).ToList(),
+                    new List<Tuple<string, AssociativeNode>>())
+            };
+        }
+    }
+
 }
