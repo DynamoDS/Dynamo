@@ -9,7 +9,6 @@ using System.Xml;
 using DSCoreNodesUI;
 using Dynamo.Controls;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Utilities;
 using IronPython.Hosting;
 using ProtoCore.AST.AssociativeAST;
@@ -127,7 +126,7 @@ namespace DSIronPythonNode
 
         private void EditScriptContent()
         {
-            var editWindow = new ScriptEditWindow();
+            var editWindow = new ScriptEditorWindow();
             editWindow.Initialize(GUID, "ScriptContent", Script);
             editWindow.ShowDialog();
         }
@@ -189,7 +188,7 @@ namespace DSIronPythonNode
         {
             base.SerializeCore(element, context);
             var helper = new XmlElementHelper(element);
-            helper.SetAttribute("Script", this.Script);
+            helper.SetAttribute("Script", Script);
         }
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
@@ -197,7 +196,7 @@ namespace DSIronPythonNode
             base.DeserializeCore(element, context);
             var helper = new XmlElementHelper(element);
             var script = helper.ReadString("Script", string.Empty);
-            this._script = script;
+            _script = script;
         }
 
         #endregion
