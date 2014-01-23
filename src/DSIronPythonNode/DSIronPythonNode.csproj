@@ -37,16 +37,9 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="ProtoCore">
-      <HintPath>..\..\bin\AnyCPU\Release\ProtoCore.dll</HintPath>
-    </Reference>
-    <Reference Include="ProtoInterface, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
+    <Reference Include="ProtoCore, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\DesignScript\ProtoInterface.dll</HintPath>
-    </Reference>
-    <Reference Include="ProtoScript, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\DesignScript\ProtoScript.dll</HintPath>
+      <HintPath>..\..\extern\DesignScript\ProtoCore.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

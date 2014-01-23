@@ -305,7 +305,7 @@ namespace Dynamo.Models
         /// WorkspaceModel.RecordModelsForUndo method which allows for multiple 
         /// modifications in a single action group.
         /// </summary>
-        internal UndoRedoRecorder UndoRecorder
+        public UndoRedoRecorder UndoRecorder
         {
             get { return undoRecorder; }
         }
@@ -437,7 +437,7 @@ namespace Dynamo.Models
         }
 
         // See RecordModelsForModification below for more details.
-        internal void RecordModelForModification(ModelBase model)
+        public void RecordModelForModification(ModelBase model)
         {
             if (null != model)
             {
@@ -918,7 +918,7 @@ namespace Dynamo.Models
         {
             if (null != parameters) // See above for details of this exception.
             {
-                var message = "Internal error, argument must be null";
+                const string message = "Internal error, argument must be null";
                 throw new ArgumentException(message, "parameters");
             }
 
