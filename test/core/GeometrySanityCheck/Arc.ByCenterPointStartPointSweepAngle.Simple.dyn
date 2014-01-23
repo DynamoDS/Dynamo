@@ -1,0 +1,39 @@
+<Workspace Version="0.6.3.35885" X="572.494810744811" Y="257.645451770452" zoom="0.5" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="1ba88dd8-e540-4fe9-93dd-f2865ae11464" nickname="Arc.ByCenterPointStartPointSweepAngle" x="-91.4478021978024" y="184.302503052503" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Dynamo.DSEngine.FunctionItem Assembly="ProtoGeometry.dll" Category="ProtoGeometry.Arc" ClassName="Arc" Name="ByCenterPointStartPointSweepAngle" DisplayName="Arc.ByCenterPointStartPointSweepAngle" Type="Constructor" Parameters="centerPoint;startPoint;sweepAngle" ReturnKeys="" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="9c8247a5-8cd1-4b5b-bee9-13aaa5bcf261" nickname="Point.ByCoordinates" x="-360.73137973138" y="100.214285714286" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Dynamo.DSEngine.FunctionItem Assembly="ProtoGeometry.dll" Category="ProtoGeometry.Point" ClassName="Point" Name="ByCoordinates" DisplayName="Point.ByCoordinates" Type="Constructor" Parameters="x;y;z" ReturnKeys="" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="0b8f0b5c-32bd-46f4-8721-9cbe3f953f42" nickname="Code Block" x="-607" y="73" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0;&#xA;5;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="4519a392-15b4-4a89-8832-236a726704e9" nickname="Point.ByCoordinates" x="-347.047619047619" y="225.966422466423" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Dynamo.DSEngine.FunctionItem Assembly="ProtoGeometry.dll" Category="ProtoGeometry.Point" ClassName="Point" Name="ByCoordinates" DisplayName="Point.ByCoordinates" Type="Constructor" Parameters="x;y;z" ReturnKeys="" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="5783f8a4-df9d-4795-9e4e-28a0fd758dfe" nickname="Code Block" x="-398" y="343" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="180;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="ad9a75d9-51cf-43e7-8980-03257cfc9cd7" nickname="Arc.getCenterPoint" x="221.206349206349" y="148.347374847375" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Dynamo.DSEngine.FunctionItem Assembly="ProtoGeometry.dll" Category="ProtoGeometry.Arc" ClassName="Arc" Name="CenterPoint" DisplayName="Arc.getCenterPoint" Type="InstanceProperty" Parameters="" ReturnKeys="" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="182bc120-c723-4aad-9b41-f256fd4d4115" nickname="Arc.getRadius" x="228.984126984127" y="281.680708180708" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Dynamo.DSEngine.FunctionItem Assembly="ProtoGeometry.dll" Category="ProtoGeometry.Arc" ClassName="Arc" Name="Radius" DisplayName="Arc.getRadius" Type="InstanceProperty" Parameters="" ReturnKeys="" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="7c20ccc7-822a-4c6e-997a-4b3b42bd5ef5" nickname="Arc.getSweepAngle" x="215.650793650794" y="408.347374847375" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Dynamo.DSEngine.FunctionItem Assembly="ProtoGeometry.dll" Category="ProtoGeometry.Arc" ClassName="Arc" Name="SweepAngle" DisplayName="Arc.getSweepAngle" Type="InstanceProperty" Parameters="" ReturnKeys="" />
+    </Dynamo.Nodes.DSFunction>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="1ba88dd8-e540-4fe9-93dd-f2865ae11464" start_index="0" end="ad9a75d9-51cf-43e7-8980-03257cfc9cd7" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1ba88dd8-e540-4fe9-93dd-f2865ae11464" start_index="0" end="182bc120-c723-4aad-9b41-f256fd4d4115" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1ba88dd8-e540-4fe9-93dd-f2865ae11464" start_index="0" end="7c20ccc7-822a-4c6e-997a-4b3b42bd5ef5" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9c8247a5-8cd1-4b5b-bee9-13aaa5bcf261" start_index="0" end="1ba88dd8-e540-4fe9-93dd-f2865ae11464" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0b8f0b5c-32bd-46f4-8721-9cbe3f953f42" start_index="0" end="4519a392-15b4-4a89-8832-236a726704e9" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0b8f0b5c-32bd-46f4-8721-9cbe3f953f42" start_index="0" end="4519a392-15b4-4a89-8832-236a726704e9" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0b8f0b5c-32bd-46f4-8721-9cbe3f953f42" start_index="0" end="9c8247a5-8cd1-4b5b-bee9-13aaa5bcf261" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0b8f0b5c-32bd-46f4-8721-9cbe3f953f42" start_index="0" end="9c8247a5-8cd1-4b5b-bee9-13aaa5bcf261" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0b8f0b5c-32bd-46f4-8721-9cbe3f953f42" start_index="0" end="9c8247a5-8cd1-4b5b-bee9-13aaa5bcf261" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0b8f0b5c-32bd-46f4-8721-9cbe3f953f42" start_index="1" end="4519a392-15b4-4a89-8832-236a726704e9" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4519a392-15b4-4a89-8832-236a726704e9" start_index="0" end="1ba88dd8-e540-4fe9-93dd-f2865ae11464" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5783f8a4-df9d-4795-9e4e-28a0fd758dfe" start_index="0" end="1ba88dd8-e540-4fe9-93dd-f2865ae11464" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
