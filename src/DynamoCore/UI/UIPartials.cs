@@ -33,6 +33,37 @@ using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.Nodes
 {
+    public abstract partial class Enum : NodeWithOneOutput
+     {
+         public override void SetupCustomUIElements(object ui)
+         {
+             var nodeUI = ui as dynNodeView;
+ 
+             var comboBox = new ComboBox
+             {
+                 MinWidth = 150,
+                 Padding = new Thickness(8),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                 VerticalAlignment = VerticalAlignment.Center
+             };
+
+             nodeUI.inputGrid.Children.Add(comboBox);
+ 
+             Grid.SetColumn(comboBox, 0);
+            Grid.SetRow(comboBox, 0);
+ 
+             comboBox.ItemsSource = this.Items;
+             comboBox.SelectedIndex = this.SelectedIndex;
+ 
+             comboBox.SelectionChanged += delegate
+             {
+                 if (comboBox.SelectedIndex == -1) return;
+                 this.RequiresRecalc = true;
+                 this.SelectedIndex = comboBox.SelectedIndex;
+             };
+         }
+ 
+     }
     public abstract partial class VariableInput : NodeWithOneOutput
     {
         public override void SetupCustomUIElements(object ui)
