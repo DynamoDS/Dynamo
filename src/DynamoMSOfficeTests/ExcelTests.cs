@@ -33,8 +33,7 @@ namespace Dynamo.Tests
         [TearDown]
         public override void Cleanup()
         {
-            // suppress SaveAs by using this method
-            ExcelInterop.TryQuitAndCleanupWithoutSaving();
+            ExcelInterop.TryQuitAndCleanup(false);
             base.Cleanup();
         }
 

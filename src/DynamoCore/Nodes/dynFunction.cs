@@ -70,7 +70,7 @@ namespace Dynamo.Nodes
                         Definition.FunctionId))
                     return
                         dynSettings.Controller.CustomNodeManager.NodeInfos[
-                            Definition.FunctionId].Description;
+                            this.Definition.FunctionId].Category;
                 else
                 {
                     return "Custom Nodes";
@@ -88,6 +88,14 @@ namespace Dynamo.Nodes
                 _def = value;
                 if (value != null)
                     Symbol = value.FunctionId.ToString();
+            }
+        }
+
+        protected override internal bool isDirty
+        {
+            get 
+            { 
+                return base.isDirty ? true : RequiresRecalc;
             }
         }
 

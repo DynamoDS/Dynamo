@@ -8,9 +8,9 @@ using ProtoCore.AST.AssociativeAST;
 namespace Dynamo.Nodes
 {
     /// <summary>
-    ///     Create a custom node.
+    /// Create a custom node.
     /// </summary>
-    [NodeName("My Node")]
+    [NodeName("Node with Number")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
     [NodeDescription("A description for your node which will appear in the tooltip.")]
     public class CustomNode : NodeModel, IWpfNode
@@ -19,11 +19,11 @@ namespace Dynamo.Nodes
         {
             //Define some input ports an input port will be created for 
             //each port data object you add to the InPortData collection
-            InPortData.Add(new PortData("in", "The first port's description.", typeof (FScheme.Value.Container)));
+            InPortData.Add(new PortData("in", "The first port's description.", typeof (FScheme.Value.Number)));
 
             //Define some output ports an output port will be created for 
             //the port data object you add to the OutPortData collection
-            OutPortData.Add(new PortData("out", "The output value.", typeof (FScheme.Value.Container)));
+            OutPortData.Add(new PortData("out", "The output value.", typeof (FScheme.Value.Number)));
 
             //Setup all the ports on the node
             RegisterAllPorts();

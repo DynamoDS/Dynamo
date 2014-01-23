@@ -2,6 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Diagnostics;
+
+using System.Windows.Media.Media3D;
+using Autodesk.Revit.DB.Architecture;
+using Autodesk.Revit.DB.Electrical;
+using Autodesk.Revit.DB.Structure;
+using Autodesk.Revit.UI;
 using Dynamo.Models;
 using Autodesk.Revit.Creation;
 using Dynamo.Nodes;
@@ -12,9 +19,13 @@ using Dynamo.FSchemeInterop;
 
 using Microsoft.FSharp.Collections;
 using RevitServices.Persistence;
+using CurveLoop = Autodesk.Revit.DB.CurveLoop;
+using DividedSurface = Autodesk.Revit.DB.DividedSurface;
 using Document = Autodesk.Revit.Creation.Document;
 using Face = Autodesk.Revit.DB.Face;
+using HermiteSpline = Autodesk.Revit.DB.HermiteSpline;
 using ModelCurve = Autodesk.Revit.DB.ModelCurve;
+using ModelText = Autodesk.Revit.DB.ModelText;
 using Plane = Autodesk.Revit.DB.Plane;
 using ReferencePlane = Autodesk.Revit.DB.ReferencePlane;
 using SketchPlane = Autodesk.Revit.DB.SketchPlane;
@@ -420,7 +431,7 @@ namespace Dynamo.Utilities
 
             }
 
-            Autodesk.Revit.DB.CurveLoop cLoop = new Autodesk.Revit.DB.CurveLoop();
+            CurveLoop cLoop = new CurveLoop();
             cLoop.Append(c.Clone());
             if (cLoop.HasPlane())
             {
@@ -484,9 +495,9 @@ namespace Dynamo.Utilities
             List<XYZ> orderedEigenvectors;
             XYZ normal;
 
-            if (c is Autodesk.Revit.DB.HermiteSpline)
+            if (c is HermiteSpline)
             {
-                var hs = c as Autodesk.Revit.DB.HermiteSpline;
+                var hs = c as HermiteSpline;
                 plane = GetPlaneFromCurve(c, false);
                 var projPoints = new List<XYZ>();
                 foreach (var pt in hs.ControlPoints)
@@ -498,9 +509,9 @@ namespace Dynamo.Utilities
                 return DocumentManager.GetInstance().CurrentUIApplication.Application.Create.NewHermiteSpline(projPoints, false);
             }
 
-            if (c is Autodesk.Revit.DB.NurbSpline)
+            if (c is NurbSpline)
             {
-                var ns = c as Autodesk.Revit.DB.NurbSpline;
+                var ns = c as NurbSpline;
                 BestFitLine.PrincipalComponentsAnalysis(ns.CtrlPoints.ToList(), out meanPt, out orderedEigenvectors);
                 normal = orderedEigenvectors[0].CrossProduct(orderedEigenvectors[1]).Normalize();
                 plane = DocumentManager.GetInstance().CurrentUIDocument.Application.Application.Create.NewPlane(normal, meanPt);
@@ -581,35 +592,35 @@ namespace Dynamo.Utilities
             //Autodesk.Revit.DB.Analysis.SpatialFieldManager;
             //Autodesk.Revit.DB.AreaScheme;
             //Autodesk.Revit.DB.AppearanceAssetElement;
-            var FContinuousRail = new ElementClassFilter(typeof(Autodesk.Revit.DB.Architecture.ContinuousRail));
-            var FRailing = new ElementClassFilter(typeof(Autodesk.Revit.DB.Architecture.Railing));
-            var FStairs = new ElementClassFilter(typeof(Autodesk.Revit.DB.Architecture.Stairs));
-            var FStairsLanding = new ElementClassFilter(typeof(Autodesk.Revit.DB.Architecture.StairsLanding));
+            var FContinuousRail = new ElementClassFilter(typeof(ContinuousRail));
+            var FRailing = new ElementClassFilter(typeof(Railing));
+            var FStairs = new ElementClassFilter(typeof(Stairs));
+            var FStairsLanding = new ElementClassFilter(typeof(StairsLanding));
             //var FStairsPath = new ElementClassFilter(typeof(Autodesk.Revit.DB.Architecture.StairsPath));
             //var FStairsRun = new ElementClassFilter(typeof(Autodesk.Revit.DB.Architecture.StairsRun));
-            var FTopographySurface = new ElementClassFilter(typeof(Autodesk.Revit.DB.Architecture.TopographySurface));
+            var FTopographySurface = new ElementClassFilter(typeof(TopographySurface));
             //Autodesk.Revit.DB.AreaScheme;
-            var FAssemblyInstance = new ElementClassFilter(typeof(Autodesk.Revit.DB.AssemblyInstance));
-            var FBaseArray = new ElementClassFilter(typeof(Autodesk.Revit.DB.BaseArray));
+            var FAssemblyInstance = new ElementClassFilter(typeof(AssemblyInstance));
+            var FBaseArray = new ElementClassFilter(typeof(BaseArray));
             //ElementClassFilter FBasePoint = new ElementClassFilter(typeof(Autodesk.Revit.DB.BasePoint));
-            var FBeamSystem = new ElementClassFilter(typeof(Autodesk.Revit.DB.BeamSystem));
-            var FBoundaryConditions = new ElementClassFilter(typeof(Autodesk.Revit.DB.BoundaryConditions));
+            var FBeamSystem = new ElementClassFilter(typeof(BeamSystem));
+            var FBoundaryConditions = new ElementClassFilter(typeof(BoundaryConditions));
             //ElementClassFilter FCombinableElement = new ElementClassFilter(typeof(Autodesk.Revit.DB.CombinableElement));
             //Autodesk.Revit.DB..::..ComponentRepeater
             //Autodesk.Revit.DB..::..ComponentRepeaterSlot
-            var FConnectorElement = new ElementClassFilter(typeof(Autodesk.Revit.DB.ConnectorElement));
-            var FControl = new ElementClassFilter(typeof(Autodesk.Revit.DB.Control));
-            var FCurveElement = new ElementClassFilter(typeof(Autodesk.Revit.DB.CurveElement));
+            var FConnectorElement = new ElementClassFilter(typeof(ConnectorElement));
+            var FControl = new ElementClassFilter(typeof(Control));
+            var FCurveElement = new ElementClassFilter(typeof(CurveElement));
             //Autodesk.Revit.DB.DesignOption;
             //Autodesk.Revit.DB.Dimension;
             //Autodesk.Revit.DB..::..DisplacementElement
-            var FDividedSurface = new ElementClassFilter(typeof(Autodesk.Revit.DB.DividedSurface));
-            var FCableTrayConduitRunBase = new ElementClassFilter(typeof(Autodesk.Revit.DB.Electrical.CableTrayConduitRunBase));
+            var FDividedSurface = new ElementClassFilter(typeof(DividedSurface));
+            var FCableTrayConduitRunBase = new ElementClassFilter(typeof(CableTrayConduitRunBase));
             //Autodesk.Revit.DB.Electrical.ElectricalDemandFactorDefinition;
             //Autodesk.Revit.DB.Electrical.ElectricalLoadClassification;
             //Autodesk.Revit.DB.Electrical.PanelScheduleSheetInstance;
             //Autodesk.Revit.DB.Electrical.PanelScheduleTemplate;
-            var FElementType = new ElementClassFilter(typeof(Autodesk.Revit.DB.ElementType));
+            var FElementType = new ElementClassFilter(typeof(ElementType));
             //Autodesk.Revit.DB..::..ElevationMarker
             //ElementClassFilter FFamilyBase = new ElementClassFilter(typeof(Autodesk.Revit.DB.FamilyBase));
             //Autodesk.Revit.DB.FilledRegion;
@@ -618,19 +629,19 @@ namespace Dynamo.Utilities
             //Autodesk.Revit.DB.GraphicsStyle;
             //Autodesk.Revit.DB.Grid;
             //ElementClassFilter FGroup = new ElementClassFilter(typeof(Autodesk.Revit.DB.Group));
-            var FHostObject = new ElementClassFilter(typeof(Autodesk.Revit.DB.HostObject));
+            var FHostObject = new ElementClassFilter(typeof(HostObject));
             //Autodesk.Revit.DB.IndependentTag;
-            var FInstance = new ElementClassFilter(typeof(Autodesk.Revit.DB.Instance));
+            var FInstance = new ElementClassFilter(typeof(Instance));
             //Autodesk.Revit.DB.Level;
             //Autodesk.Revit.DB.LinePatternElement;
             //Autodesk.Revit.DB.Material;
             //Autodesk.Revit.DB.Mechanical.Zone;
-            var FMEPSystem = new ElementClassFilter(typeof(Autodesk.Revit.DB.MEPSystem));
-            var FModelText = new ElementClassFilter(typeof(Autodesk.Revit.DB.ModelText));
+            var FMEPSystem = new ElementClassFilter(typeof(MEPSystem));
+            var FModelText = new ElementClassFilter(typeof(ModelText));
             //Autodesk.Revit.DB..::..MultiReferenceAnnotation
-            var FOpening = new ElementClassFilter(typeof(Autodesk.Revit.DB.Opening));
-            var FPart = new ElementClassFilter(typeof(Autodesk.Revit.DB.Part));
-            var FPartMaker = new ElementClassFilter(typeof(Autodesk.Revit.DB.PartMaker));
+            var FOpening = new ElementClassFilter(typeof(Opening));
+            var FPart = new ElementClassFilter(typeof(Part));
+            var FPartMaker = new ElementClassFilter(typeof(PartMaker));
             //Autodesk.Revit.DB.Phase;
             //Autodesk.Revit.DB..::..PhaseFilter
             //Autodesk.Revit.DB.PrintSetting;
@@ -638,31 +649,31 @@ namespace Dynamo.Utilities
             //Autodesk.Revit.DB.PropertyLine;
             //ElementClassFilter FPropertySetElement = new ElementClassFilter(typeof(Autodesk.Revit.DB.PropertySetElement));
             //Autodesk.Revit.DB.PropertySetLibrary;
-            var FReferencePlane = new ElementClassFilter(typeof(Autodesk.Revit.DB.ReferencePlane));
-            var FReferencePoint = new ElementClassFilter(typeof(Autodesk.Revit.DB.ReferencePoint));
+            var FReferencePlane = new ElementClassFilter(typeof(ReferencePlane));
+            var FReferencePoint = new ElementClassFilter(typeof(ReferencePoint));
             //Autodesk.Revit.DB..::..ScheduleSheetInstance
             //Autodesk.Revit.DB..::..Segment
             //ElementClassFilter FSketchBase = new ElementClassFilter(typeof(Autodesk.Revit.DB.SketchBase));
             //ElementClassFilter FSketchPlane = new ElementClassFilter(typeof(Autodesk.Revit.DB.SketchPlane));
-            var FSpatialElement = new ElementClassFilter(typeof(Autodesk.Revit.DB.SpatialElement));
+            var FSpatialElement = new ElementClassFilter(typeof(SpatialElement));
             //Autodesk.Revit.DB..::..SpatialElementCalculationLocation
             //ElementClassFilter FSpatialElementTag = new ElementClassFilter(typeof(Autodesk.Revit.DB.SpatialElementTag));
             //Autodesk.Revit.DB.Structure..::..AnalyticalLink
             //Autodesk.Revit.DB.Structure.AnalyticalModel;
-            var FAreaReinforcement = new ElementClassFilter(typeof(Autodesk.Revit.DB.Structure.AreaReinforcement));
+            var FAreaReinforcement = new ElementClassFilter(typeof(AreaReinforcement));
             //Autodesk.Revit.DB.Structure..::..FabricArea
             //Autodesk.Revit.DB.Structure..::..FabricReinSpanSymbolControl
             //Autodesk.Revit.DB.Structure..::..FabricSheet
-            var FHub = new ElementClassFilter(typeof(Autodesk.Revit.DB.Structure.Hub));
+            var FHub = new ElementClassFilter(typeof(Hub));
             //Autodesk.Revit.DB.Structure.LoadBase;
             //Autodesk.Revit.DB.Structure.LoadCase;
             //Autodesk.Revit.DB.Structure.LoadCombination;
             //Autodesk.Revit.DB.Structure.LoadNature;
             //Autodesk.Revit.DB.Structure.LoadUsage;
-            var FPathReinforcement = new ElementClassFilter(typeof(Autodesk.Revit.DB.Structure.PathReinforcement));
-            var FRebar = new ElementClassFilter(typeof(Autodesk.Revit.DB.Structure.Rebar));
+            var FPathReinforcement = new ElementClassFilter(typeof(PathReinforcement));
+            var FRebar = new ElementClassFilter(typeof(Rebar));
             //Autodesk.Revit.DB.Structure..::..RebarInSystem
-            var FTruss = new ElementClassFilter(typeof(Autodesk.Revit.DB.Structure.Truss));
+            var FTruss = new ElementClassFilter(typeof(Truss));
             //Autodesk.Revit.DB.SunAndShadowSettings;
             //Autodesk.Revit.DB.TextElement;
             //Autodesk.Revit.DB.View;
@@ -717,7 +728,24 @@ namespace Dynamo.Utilities
 
             return fec;
         }
-  
+
+        public static Curve UnwrapCurveOrEdgeFromValue(Value arg)
+        {
+            var crv = ((Value.Container) arg).Item as Curve;
+            if (crv == null)
+            {
+                var edge = ((Value.Container) arg).Item as Edge;
+                if (edge != null)
+                {
+                    crv = edge.AsCurve();
+                }
+                else
+                {
+                    throw new Exception("The first argument is not a curve or an edge.");
+                }
+            }
+            return crv;
+        }
     }
 
     /// <summary>

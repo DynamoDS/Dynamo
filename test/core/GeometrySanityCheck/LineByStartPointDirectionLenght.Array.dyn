@@ -1,0 +1,12 @@
+<Workspace Version="0.6.3.21749" X="-31.7609443305792" Y="-427.252642381639" zoom="1.07333337109291" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="675d9c24-a5f2-4bba-aae1-29201e3b3351" nickname="Line.ByStartPointDirectionLength" x="828.171656170624" y="546.186098278553" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="ProtoGeometry.dll" function="Line.ByStartPointDirectionLength@Point,Vector,double" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="44239e61-6c56-43d8-88aa-e99481cd47f2" nickname="Code Block" x="214.205538250427" y="469.149225977041" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="Point.ByCoordinates(0..100..#10,0,0);&#xA;Vector.ByCoordinates(0,0,1);&#xA;1..10;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="44239e61-6c56-43d8-88aa-e99481cd47f2" start_index="0" end="675d9c24-a5f2-4bba-aae1-29201e3b3351" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="44239e61-6c56-43d8-88aa-e99481cd47f2" start_index="1" end="675d9c24-a5f2-4bba-aae1-29201e3b3351" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="44239e61-6c56-43d8-88aa-e99481cd47f2" start_index="2" end="675d9c24-a5f2-4bba-aae1-29201e3b3351" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

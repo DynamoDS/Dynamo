@@ -44,13 +44,6 @@ namespace Dynamo.Tests.UI
         [TearDown]
         public void Exit()
         {
-            try
-            {
-                this.controller.ShutDown();
-            }
-            catch (Exception e)
-            {
-            }
             this.controller = null;
         }
 
@@ -1558,6 +1551,76 @@ namespace Dynamo.Tests.UI
             RunCommandsFromFile("TestCBNOperationWithNodeToCodeUndo.xml");
             AssertValue("c", 8); // Run playback is recorded in command file
         }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_902()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-902
+            RunCommandsFromFile("Defect_MAGN_902.xml");
+
+            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(2, workspace.Connectors.Count);
+
+            ////Check the CBN for input and output ports count
+            //var cbn = GetNode("09eb3645-f5e9-4186-8543-2195e7740eb2") as CodeBlockNodeModel;
+            //Assert.AreNotEqual(ElementState.Error, cbn.State);
+            //Assert.AreEqual(1, cbn.OutPorts.Count);
+            //Assert.AreEqual(0, cbn.InPorts.Count);
+
+            ////Check the position of ports
+            //Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
+            //Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_422()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-422
+            RunCommandsFromFile("Defect_MAGN_422.xml");
+
+            Assert.AreEqual(2, workspace.Nodes.Count);
+            Assert.AreEqual(2, workspace.Connectors.Count);
+
+            //Check the CBN for input and output ports count
+            var cbn = GetNode("0a79dc3a-a37c-40a0-a631-eae730e8d3e2") as CodeBlockNodeModel;
+            Assert.AreNotEqual(ElementState.Error, cbn.State);
+            Assert.AreEqual(2, cbn.OutPorts.Count);
+            Assert.AreEqual(0, cbn.InPorts.Count);
+
+            //Check the position of ports and their names
+            Assert.AreEqual("x", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual(4, cbn.OutPorts[0].MarginThickness.Top);
+
+            Assert.AreEqual("y", cbn.OutPorts[1].ToolTipContent);
+            Assert.AreEqual(40, cbn.OutPorts[1].MarginThickness.Top);
+
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_422_1()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-422
+            RunCommandsFromFile("Defect_MAGN_422_1.xml");
+
+            Assert.AreEqual(1, workspace.Nodes.Count);
+            Assert.AreEqual(0, workspace.Connectors.Count);
+
+            //Check the CBN for input and output ports count
+            var cbn = GetNode("811be42d-b44b-434a-ad6f-ae2c8d5309b1") as CodeBlockNodeModel;
+            Assert.AreNotEqual(ElementState.Error, cbn.State);
+            Assert.AreEqual(2, cbn.OutPorts.Count);
+            Assert.AreEqual(0, cbn.InPorts.Count);
+
+            //Check the position of ports and their names
+            Assert.AreEqual("a", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual(44, cbn.OutPorts[0].MarginThickness.Top);
+
+            Assert.AreEqual("b", cbn.OutPorts[1].ToolTipContent);
+            Assert.AreEqual(40, cbn.OutPorts[1].MarginThickness.Top);
+
+        }
+
 
         #endregion
 
