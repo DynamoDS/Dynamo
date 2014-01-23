@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Dynamo;
@@ -12,10 +11,9 @@ using IronPython.Runtime.Types;
 using Microsoft.Scripting.Actions;
 using Microsoft.Scripting.Hosting;
 using Microsoft.Scripting;
-using System.Threading;
 using System.Reflection;
 
-namespace DynamoPython
+namespace Dynamo.Python
 {
     /// <summary>
     /// Provides code completion for the Python Editor
@@ -92,7 +90,7 @@ namespace DynamoPython
         /// </summary>
         public IronPythonCompletionProvider()
         {
-            _engine = Python.CreateEngine();
+            _engine = IronPython.Hosting.Python.CreateEngine();
             _scope = _engine.CreateScope();
 
             VariableTypes = new Dictionary<string, Type>();
