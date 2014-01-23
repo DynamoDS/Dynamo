@@ -39,7 +39,7 @@ namespace DSCoreNodesUI
         /// <summary>
         /// Fetches the index number to use for the next port.
         /// </summary>
-        protected virtual int GetInputNameIndex()
+        protected virtual int GetInputIndex()
         {
             return InPortData.Count;
         }
@@ -63,7 +63,7 @@ namespace DSCoreNodesUI
         /// </summary>
         protected virtual void AddInput()
         {
-            var idx = GetInputNameIndex();
+            var idx = GetInputIndex();
             InPortData.Add(
                 new PortData(InputRootName + idx, TooltipRootName + idx, typeof(object)));
         }
