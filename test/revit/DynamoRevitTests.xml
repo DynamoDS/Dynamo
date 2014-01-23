@@ -36,6 +36,9 @@
 				<test name="CurvebyPointsEllipse" runDynamo="True" modelPath=".\empty.rfa"/>
 				<test name="GetCurveDomain" runDynamo="True" modelPath=".\Curve\GetCurveDomain.rfa"/>
 			</testFixture>
+      <!--<testFixture name="DividedCurveTests">
+        <test name="DividedCurve" runDynamo="True" modelPath =".\DividedCurve\DividedCurve.rfa"/>
+      </testFixture>-->
 			<testFixture name="DividedSurfaceTests">
 				<test name="DividedSurface" runDynamo="True" modelPath=".\DividedSurface\DividedSurface.rfa"/>
 			</testFixture>
@@ -55,6 +58,7 @@
 				<test name="CurveCurveIntersection" runDynamo="True" modelPath=".\Intersect\CurveCurveIntersection.rfa"/>
 				<test name="CurveFaceIntersection" runDynamo="True" modelPath=".\Intersect\CurveFaceIntersection.rfa"/>
 				<test name="FaceFaceIntersection" runDynamo="True" modelPath=".\Intersect\FaceFaceIntersection.rfa"/>
+        <test name="EdgePlaneIntersection" runDynamo="True" modelPath=".\Intersect\EdgePlaneIntersection.rfa"/>
 			</testFixture>
 			<testFixture name="LengthTests">
 				<test name="Length" runDynamo="True" modelPath=".\empty.rfa"/>

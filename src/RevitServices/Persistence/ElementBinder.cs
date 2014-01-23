@@ -5,15 +5,38 @@ using DSNodeServices;
 
 namespace RevitServices.Persistence
 {
+    /// <summary>
+    /// Holds a  representation of a Revit ID that supports serialisation
+    /// </summary>
     [Serializable]
-    internal class SerializableId : ISerializable
+    public class SerializableId : ISerializable
     {
-        public String stringID { get; set; }
-        public int intID { get; set; }
+        public String StringID { get; set; }
+        public int IntID { get; set; }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            throw new NotImplementedException();
+            info.AddValue("stringID", StringID, typeof(string));
+            info.AddValue("intID", IntID, typeof(int));
+        }
+
+        public SerializableId()
+        {
+            StringID = "";
+            IntID = int.MinValue;
+
+        }
+
+        /// <summary>
+        /// Ctor used by the serialisation engine
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
+        public SerializableId(SerializationInfo info, StreamingContext context)
+        {
+            StringID = (string) info.GetValue("stringID", typeof (string));
+            IntID = (int)info.GetValue("intID", typeof(int));
+
         }
     }
 
@@ -36,7 +59,7 @@ namespace RevitServices.Persistence
             if (id == null)
                 return null; //There was no usable data in the trace cache
 
-            var traceDataInt = id.intID;
+            var traceDataInt = id.IntID;
             return new Autodesk.Revit.DB.ElementId(traceDataInt);
         }
 
@@ -90,7 +113,7 @@ namespace RevitServices.Persistence
         public static void SetElementForTrace(ElementId elementId)
         {
             SerializableId id = new SerializableId();
-            id.intID = elementId.IntegerValue;
+            id.IntID = elementId.IntegerValue;
 
             // if we're mutating the current Element id, that means we need to 
             // clean up the old object

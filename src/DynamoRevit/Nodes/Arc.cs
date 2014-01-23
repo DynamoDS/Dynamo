@@ -57,7 +57,7 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Arc by Center, Normal, Radius")]
+    [NodeName("Arc by Center, Radius, Parameters")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_CREATE)]
     [NodeDescription("Creates a geometric arc given a center point and two end parameters. Start and End Values may be between 0 and 2*PI in Radians")]
     [NodeSearchTags("arc", "circle", "center", "radius")]
@@ -65,10 +65,11 @@ namespace Dynamo.Nodes
     {
         public ArcCenter()
         {
-            InPortData.Add(new PortData("center", "center XYZ or Coordinate System", typeof(FScheme.Value.Container)));
+            InPortData.Add(new PortData("center", "center xyz or transform", typeof(FScheme.Value.Container)));
             InPortData.Add(new PortData("radius", "Radius", typeof(FScheme.Value.Number)));
             InPortData.Add(new PortData("start", "Start Param", typeof(FScheme.Value.Number)));
             InPortData.Add(new PortData("end", "End Param", typeof(FScheme.Value.Number)));
+
             OutPortData.Add(new PortData("arc", "Arc", typeof(FScheme.Value.Container)));
 
             RegisterAllPorts();
@@ -107,6 +108,7 @@ namespace Dynamo.Nodes
             return FScheme.Value.NewContainer(a);
         }
     }
+
 
     [NodeName("Best Fit Arc")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_FIT)]

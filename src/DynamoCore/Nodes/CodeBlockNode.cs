@@ -17,6 +17,7 @@ using Operator = ProtoCore.DSASM.Operator;
 using NUnit.Framework;
 using System.Windows.Media;
 using System.Windows;
+using Dynamo.UI;
 
 namespace Dynamo.Nodes
 {

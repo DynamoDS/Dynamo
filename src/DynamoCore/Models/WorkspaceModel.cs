@@ -331,7 +331,6 @@ namespace Dynamo.Models
             undoRecorder = new UndoRedoRecorder(this);
         }
 
-
         public abstract void OnDisplayed();
 
         /// <summary>

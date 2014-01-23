@@ -7,7 +7,8 @@ using System.IO;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
-using Dynamo.Measure;
+using Dynamo.UI;
+using Dynamo.Units;
 using Dynamo.Models;
 using System.Web;
 using Dynamo.Utilities;
@@ -996,7 +997,7 @@ namespace Dynamo.Controls
         public virtual object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //source -> target
-            string val = ((double)value).ToString("0.000", CultureInfo.CurrentCulture);
+            string val = ((double)value).ToString("0.000", CultureInfo.InvariantCulture);
             //Debug.WriteLine(string.Format("Converting {0} -> {1}", value, val));
             return value == null ? "" : val;
 
@@ -1008,7 +1009,7 @@ namespace Dynamo.Controls
             //return value.ToString();
 
             double val = 0.0;
-            double.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.CurrentCulture, out val);
+            double.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out val);
             //Debug.WriteLine(string.Format("Converting {0} -> {1}", value, val));
             return val;
         }
@@ -1020,7 +1021,7 @@ namespace Dynamo.Controls
         public virtual object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //source -> target
-            string val = ((int)value).ToString("0", CultureInfo.CurrentCulture);
+            string val = ((int)value).ToString("0", CultureInfo.InvariantCulture);
             return value == null ? "" : val;
         }
 
@@ -1028,7 +1029,7 @@ namespace Dynamo.Controls
         {
             //target -> source
             int val = 0;
-            int.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.CurrentCulture, out val);
+            int.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out val);
             return val;
         }
     }
@@ -1042,7 +1043,7 @@ namespace Dynamo.Controls
             double dbl;
             if (double.TryParse(value as string, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
             {
-                return(dbl.ToString("0.000", CultureInfo.CurrentCulture));
+                return(dbl.ToString("0.000", CultureInfo.InvariantCulture));
             }
             return value ?? "0.000";
         }
@@ -1052,7 +1053,7 @@ namespace Dynamo.Controls
             //target -> source
             //units are entered as culture-specific, so we need to store them as invariant
             double dbl;
-            if (double.TryParse(value as string, NumberStyles.Any, CultureInfo.CurrentCulture, out dbl))
+            if (double.TryParse(value as string, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
             {
                 return dbl;
             }
@@ -1178,7 +1179,7 @@ namespace Dynamo.Controls
                         return new System.Windows.Media.SolidColorBrush(Colors.Gray);
                     case WarningLevel.Moderate:
                         return new System.Windows.Media.SolidColorBrush(Colors.Gold);
-                    case WarningLevel.Severe:
+                    case WarningLevel.Error:
                         return new System.Windows.Media.SolidColorBrush(Colors.Tomato);
                 }
             }

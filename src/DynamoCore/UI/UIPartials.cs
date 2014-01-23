@@ -15,6 +15,7 @@ using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.UI;
 using Dynamo.UI.Prompts;
+using Dynamo.Units;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Microsoft.FSharp.Collections;
@@ -321,6 +322,98 @@ namespace Dynamo.Nodes
             return base.UpdateValueCore(name, value);
         }
     }
+
+    public partial class Function
+    {
+        public void SetupCustomUIElements(object ui)
+        {
+            var nodeUI = ui as dynNodeView;
+
+            nodeUI.MainContextMenu.Items.Add(new System.Windows.Controls.Separator());
+
+            // edit contents
+            var editItem = new System.Windows.Controls.MenuItem
+            {
+                Header = "Edit Custom Node...",
+                IsCheckable = false
+            };
+            nodeUI.MainContextMenu.Items.Add(editItem);
+            editItem.Click += (sender, args) => GoToWorkspace(nodeUI.ViewModel);
+
+            // edit properties
+            var editPropertiesItem = new System.Windows.Controls.MenuItem
+            {
+                Header = "Edit Custom Node Properties...",
+                IsCheckable = false
+            };
+            nodeUI.MainContextMenu.Items.Add(editPropertiesItem);
+            editPropertiesItem.Click += (sender, args) => EditCustomNodeProperties();
+
+            // publish
+            var publishCustomNodeItem = new System.Windows.Controls.MenuItem
+            {
+                Header = "Publish This Custom Node...",
+                IsCheckable = false
+            };
+            nodeUI.MainContextMenu.Items.Add(publishCustomNodeItem);
+            publishCustomNodeItem.Click += (sender, args) =>
+            {
+                GoToWorkspace(nodeUI.ViewModel);
+                if (dynSettings.Controller.DynamoViewModel.PublishCurrentWorkspaceCommand.CanExecute(null))
+                {
+                    dynSettings.Controller.DynamoViewModel.PublishCurrentWorkspaceCommand.Execute(null);
+                } 
+            };
+
+            nodeUI.UpdateLayout();
+        }
+
+        private void EditCustomNodeProperties()
+        {
+            var workspace = this.Definition.WorkspaceModel;
+
+            // copy these strings
+            var newName = workspace.Name.Substring(0);
+            var newCategory = workspace.Category.Substring(0);
+            var newDescription = workspace.Description.Substring(0);
+
+            var args = new FunctionNamePromptEventArgs
+            {
+                Name = newName,
+                Description = newDescription,
+                Category = newCategory,
+                CanEditName = false
+            };
+
+            dynSettings.Controller.DynamoModel.OnRequestsFunctionNamePrompt(this, args);
+
+            if (args.Success)
+            {
+                if (workspace is CustomNodeWorkspaceModel)
+                {
+                    var def = (workspace as CustomNodeWorkspaceModel).CustomNodeDefinition;
+                    dynSettings.CustomNodeManager.Refactor(def.FunctionId, args.CanEditName ? args.Name : workspace.Name, args.Category, args.Description);
+                }
+
+                if (args.CanEditName) workspace.Name = args.Name;
+                workspace.Description = args.Description;
+                workspace.Category = args.Category;
+
+                workspace.Save();
+            }
+        }
+
+        private void GoToWorkspace( NodeViewModel viewModel )
+        {
+            if (viewModel == null) return;
+
+            if (viewModel.GotoWorkspaceCommand.CanExecute(null))
+            {
+                viewModel.GotoWorkspaceCommand.Execute(null);
+            }
+        }
+
+    }  
 
     //public partial class AngleInput : DoubleInput
     //{
@@ -828,36 +921,6 @@ namespace Dynamo.Nodes
 
     }
 
-    public abstract partial class Enum
-    {
-        public void SetupCustomUIElements(dynNodeView nodeUI)
-        {
-            var comboBox = new ComboBox
-            {
-                MinWidth = 150,
-                Padding = new Thickness(8),
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Center
-            };
-
-            nodeUI.inputGrid.Children.Add(comboBox);
-
-            Grid.SetColumn(comboBox, 0);
-            Grid.SetRow(comboBox, 0);
-
-            comboBox.ItemsSource = Items;
-            comboBox.SelectedIndex = SelectedIndex;
-
-            comboBox.SelectionChanged += delegate
-            {
-                if (comboBox.SelectedIndex == -1) return;
-                RequiresRecalc = true;
-                SelectedIndex = comboBox.SelectedIndex;
-            };
-        }
-
-    }
-
     public partial class Formula
     {
         public void SetupCustomUIElements(dynNodeView nodeUI)
@@ -1041,6 +1104,35 @@ namespace Dynamo.Nodes
                 watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty, sourceBinding);
             };
 
+            dynSettings.Controller.PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
+        }
+
+        void PreferenceSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            //if the units settings have been modified in the UI, watch has
+            //to immediately update to show unit objects in the correct format
+            if (e.PropertyName == "LengthUnit" ||
+                e.PropertyName == "AreaUnit" ||
+                e.PropertyName == "VolumeUnit")
+            {
+                string prefix = "";
+                int count = 0;
+
+                DispatchOnUIThread(
+                    delegate
+                    {
+                        //unhook the binding
+                        OnRequestBindingUnhook(EventArgs.Empty);
+
+                        Root.Children.Clear();
+
+                        Root.Children.Add(Process(OldValue, prefix, count));
+                        count++;
+
+                        //rehook the binding
+                        OnRequestBindingRehook(EventArgs.Empty);
+                    });
+            }
         }
 
     }
@@ -1087,6 +1179,86 @@ namespace Dynamo.Nodes
             }
 
             return base.UpdateValueCore(name, value);
+        }
+    }
+
+    public abstract partial class MeasurementInputBase
+    {
+        public void SetupCustomUIElements(object ui)
+        {
+            var nodeUI = ui as dynNodeView;
+
+            //add an edit window option to the 
+            //main context window
+            var editWindowItem = new System.Windows.Controls.MenuItem();
+            editWindowItem.Header = "Edit...";
+            editWindowItem.IsCheckable = false;
+
+            nodeUI.MainContextMenu.Items.Add(editWindowItem);
+
+            editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
+            //add a text box to the input grid of the control
+            var tb = new DynamoTextBox();
+            tb.HorizontalAlignment = HorizontalAlignment.Stretch;
+            tb.VerticalAlignment = VerticalAlignment.Center;
+            nodeUI.inputGrid.Children.Add(tb);
+            Grid.SetColumn(tb, 0);
+            Grid.SetRow(tb, 0);
+            tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
+
+            tb.DataContext = this;
+            tb.BindToProperty(new System.Windows.Data.Binding("Value")
+            {
+                Mode = BindingMode.TwoWay,
+                Converter = new Controls.MeasureConverter(),
+                ConverterParameter = _measure,
+                NotifyOnValidationError = false,
+                Source = this,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            });
+
+            tb.OnChangeCommitted += delegate { RequiresRecalc = true; };
+
+            dynSettings.Controller.PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
+        }
+
+        void PreferenceSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "AreaUnit" ||
+                e.PropertyName == "VolumeUnit" ||
+                e.PropertyName == "LengthUnit")
+            {
+                RaisePropertyChanged("Value");
+                RequiresRecalc = true;
+            }
+        }
+
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (name == "Value")
+            {
+                var converter = new Controls.MeasureConverter();
+                this.Value = ((double)converter.ConvertBack(value, typeof(double), _measure, null));
+                return true; // UpdateValueCore handled.
+            }
+
+            return base.UpdateValueCore(name, value);
+        }
+
+        private void editWindowItem_Click(object sender, RoutedEventArgs e)
+        {
+            var editWindow = new EditWindow() { DataContext = this };
+            editWindow.BindToProperty(null, new System.Windows.Data.Binding("Value")
+            {
+                Mode = BindingMode.TwoWay,
+                Converter = new Controls.MeasureConverter(),
+                ConverterParameter = _measure,
+                NotifyOnValidationError = false,
+                Source = this,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            });
+
+            editWindow.ShowDialog();
         }
     }
 

@@ -1,4 +1,7 @@
-﻿using Autodesk.Revit.DB;
+﻿using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using Autodesk.Revit.DB;
 using NUnit.Framework;
 using System;
 using RevitServices.Elements;
@@ -137,5 +140,39 @@ namespace RevitServicesTests
             //TODO
             Assert.Inconclusive("TODO: find an example that would cause revit to emit failures");
         }
+
+
+        [Test]
+        public void TestRoundTripElementSerialisation()
+        {
+
+            // Use a BinaryFormatter or SoapFormatter.
+            IFormatter formatter = new BinaryFormatter();
+            //IFormatter formatter = new SoapFormatter();
+
+
+            // Create an instance of the type and serialize it.
+            SerializableId elementId = new SerializableId();
+            elementId.IntID = 42;
+            elementId.StringID = "{BE507CAC-7F23-43D6-A2B4-13F6AF09046F}";
+
+
+            //Serialise to a test memory stream
+            MemoryStream m = new MemoryStream();
+            formatter.Serialize(m, elementId);
+            m.Flush();
+
+
+            //Reset the stream
+            m.Seek(0, SeekOrigin.Begin);
+
+            //Readback
+            SerializableId readback = (SerializableId)formatter.Deserialize(m);
+            
+            Assert.IsTrue(readback.IntID == 42);
+            Assert.IsTrue(readback.StringID.Equals("{BE507CAC-7F23-43D6-A2B4-13F6AF09046F}"));
+
+        }
+
     }
 }

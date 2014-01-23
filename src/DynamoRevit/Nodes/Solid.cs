@@ -1022,9 +1022,9 @@ namespace Dynamo.Nodes
             // create semicircular arc
             var semicircle = dynRevitSettings.Doc.Application.Application.Create.NewArc(center, radius, 0, Circle.RevitPI, XYZ.BasisZ, XYZ.BasisX);
 
-            // create axis curve of cylinder - running from north to south pole
-            var axisCurve = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(new XYZ(0, 0, -radius),
-                new XYZ(0, 0, radius));
+            // create axis curve of cylinder
+            var axisCurve = dynRevitSettings.Doc.Application.Application.Create.NewLineBound(new XYZ(0, 0, -radius) + center,
+                new XYZ(0, 0, radius) + center );
 
             var circleLoop = Autodesk.Revit.DB.CurveLoop.Create(new List<Curve>() { semicircle, axisCurve });
 
@@ -1824,7 +1824,7 @@ namespace Dynamo.Nodes
             }
 
             //Fin
-            return FScheme.Value.NewContainer(Measure.Volume.FromCubicFeet(volume));
+            return FScheme.Value.NewContainer(Units.Volume.FromCubicFeet(volume));
         }
     }
 

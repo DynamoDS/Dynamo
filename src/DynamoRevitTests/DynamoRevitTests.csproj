@@ -77,6 +77,7 @@
   <ItemGroup>
     <Compile Include="AdaptiveComponentTests.cs" />
     <Compile Include="AnalysisDisplayTests.cs" />
+    <Compile Include="DividedCurveTests.cs" />
     <Compile Include="MaterialTests.cs" />
     <Compile Include="ModelCurveTests.cs" />
     <Compile Include="RayBounceTests.cs" />

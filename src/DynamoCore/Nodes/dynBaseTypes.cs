@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Xml;
 using Dynamo.FSchemeInterop.Node;
-using Dynamo.Measure;
+using Dynamo.Units;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
@@ -592,7 +592,8 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return args[0] == null || (args[0] as dynamic).Item == null;
+            var nullity = args[0] == null || (args[0] as dynamic).Item == null;
+            return FScheme.Value.NewNumber(nullity ? 1 : 0);
         }
     }
 
@@ -1263,6 +1264,64 @@ namespace Dynamo.Nodes
             {
                 throw new Exception("\"index\" argument not a number or a list of numbers.");
             }
+        }
+    }
+
+    [NodeName("Shuffle List")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_MODIFY)]
+    [NodeDescription("Randomizes the order of items in a list.")]
+    public class Shuffle : NodeWithOneOutput
+    {
+        public Shuffle()
+        {
+            InPortData.Add(new PortData("list", "A list", typeof(Value.List)));
+            OutPortData.Add(new PortData("shuffled", "Randomized list.", typeof(Value.List)));
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var list = ((Value.List)args[0]).Item;
+
+            var rng = new System.Random();
+
+            return Value.NewList(Utils.SequenceToFSharpList(list.OrderBy(_ => rng.Next())));
+        }
+    }
+
+    [NodeName("Group by Key")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_MODIFY)]
+    [NodeDescription("Groups list items into sublists by generating matching keys.")]
+    public class GroupBy : NodeWithOneOutput
+    {
+        public GroupBy()
+        {
+            InPortData.Add(
+                new PortData(
+                    "f(x)",
+                    "Key Mapper: items from the list are passed in, items for which the function produces the same output are grouped together.",
+                    typeof(object)));
+            InPortData.Add(new PortData("list", "List of items to be grouped.", typeof(Value.List)));
+            
+            OutPortData.Add(
+                new PortData(
+                    "grouped",
+                    "List of lists, where each sub-list contains items for which the Key Mapper produced the same value.",
+                    typeof(Value.List)));
+
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var mapper = ((Value.Function)args[0]).Item;
+            var list = ((Value.List)args[1]).Item;
+
+            return
+                Value.NewList(
+                    Utils.SequenceToFSharpList(
+                        list.GroupBy(x => mapper.Invoke(Utils.MakeFSharpList(x)))
+                            .Select(x => Value.NewList(Utils.SequenceToFSharpList(x)))));
         }
     }
 
@@ -2546,7 +2605,7 @@ namespace Dynamo.Nodes
             //unit ^ number
             if (args[0].IsContainer && args[1].IsNumber)
             {
-                var length = (((Value.Container) args[0]).Item) as Measure.Length;
+                var length = (((Value.Container) args[0]).Item) as Units.Length;
                 if (length != null)
                 {
                     var x = SIUnit.UnwrapToSIUnit(args[0]);
@@ -3749,7 +3808,7 @@ namespace Dynamo.Nodes
         private static IDoubleInputToken ParseToken(string id, HashSet<string> identifiers, List<string> list)
         {
             double dbl;
-            if (double.TryParse(id, NumberStyles.Any, CultureInfo.CurrentCulture, out dbl))
+            if (double.TryParse(id, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
                 return new DoubleToken(dbl);
 
             var match = Sublists.IdentifierPattern.Match(id);
@@ -4902,10 +4961,7 @@ namespace Dynamo.Nodes
             catch { }
         }
 
-        public virtual void PopulateItems()
-        {
-            //override in child classes
-        }
+        public abstract void PopulateItems();
 
         /// <summary>
         /// When the dropdown is opened, the node's implementation of PopulateItemsHash is called

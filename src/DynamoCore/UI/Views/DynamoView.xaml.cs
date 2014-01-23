@@ -16,6 +16,7 @@ using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
 using Dynamo.Search;
 using Dynamo.Selection;
+using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using String = System.String;
@@ -489,7 +490,7 @@ namespace Dynamo.Controls
                 return;
             }
 
-            dynSettings.Controller.ShutDown();
+            dynSettings.Controller.ShutDown(false);
         }
 
         private void WindowClosed(object sender, EventArgs e)

@@ -850,9 +850,6 @@ namespace Dynamo.Models
                         DynamoLogger.Instance.Log(string.Format("{0} ellapsed for loading workspace.", sw.Elapsed));
                     }));
 
-                if(!string.IsNullOrEmpty(version))
-                    CurrentWorkspace.WorkspaceVersion = new Version(version);
-
                 #endregion
 
                 HomeSpace.FileName = xmlPath;
@@ -1159,11 +1156,8 @@ namespace Dynamo.Models
             var args = new FunctionNamePromptEventArgs();
             OnRequestsFunctionNamePrompt(this, args);
 
-            //string name = "", category = "";
-            //if (ShowNewFunctionDialog(ref name, ref category))
             if (args.Success)
             {
-                //NewFunction(Guid.NewGuid(), name, category, true);
                 NewCustomNodeWorkspace(Guid.NewGuid(), args.Name, args.Category, args.Description, true);
             }
         }
