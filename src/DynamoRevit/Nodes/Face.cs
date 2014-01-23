@@ -266,7 +266,7 @@ namespace Dynamo.Nodes
         public SurfaceArea()
         {
             InPortData.Add(new PortData("f", "The face whose surface area you wish to calculate (Reference).", typeof(FScheme.Value.Container)));//Ref to a face of a form
-            OutPortData.Add(new PortData("a", "The surface area of the face (Number).", typeof(FScheme.Value.Number)));
+            OutPortData.Add(new PortData("a", "The surface area of the face (Number).", typeof(FScheme.Value.Container)));
 
             RegisterAllPorts();
         }

@@ -15,6 +15,7 @@ using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.UI;
 using Dynamo.UI.Prompts;
+using Dynamo.Units;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Microsoft.FSharp.Collections;
@@ -1103,6 +1104,35 @@ namespace Dynamo.Nodes
                 watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty, sourceBinding);
             };
 
+            dynSettings.Controller.PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
+        }
+
+        void PreferenceSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            //if the units settings have been modified in the UI, watch has
+            //to immediately update to show unit objects in the correct format
+            if (e.PropertyName == "LengthUnit" ||
+                e.PropertyName == "AreaUnit" ||
+                e.PropertyName == "VolumeUnit")
+            {
+                string prefix = "";
+                int count = 0;
+
+                DispatchOnUIThread(
+                    delegate
+                    {
+                        //unhook the binding
+                        OnRequestBindingUnhook(EventArgs.Empty);
+
+                        Root.Children.Clear();
+
+                        Root.Children.Add(Process(OldValue, prefix, count));
+                        count++;
+
+                        //rehook the binding
+                        OnRequestBindingRehook(EventArgs.Empty);
+                    });
+            }
         }
 
     }
@@ -1149,6 +1179,86 @@ namespace Dynamo.Nodes
             }
 
             return base.UpdateValueCore(name, value);
+        }
+    }
+
+    public abstract partial class MeasurementInputBase
+    {
+        public void SetupCustomUIElements(object ui)
+        {
+            var nodeUI = ui as dynNodeView;
+
+            //add an edit window option to the 
+            //main context window
+            var editWindowItem = new System.Windows.Controls.MenuItem();
+            editWindowItem.Header = "Edit...";
+            editWindowItem.IsCheckable = false;
+
+            nodeUI.MainContextMenu.Items.Add(editWindowItem);
+
+            editWindowItem.Click += new RoutedEventHandler(editWindowItem_Click);
+            //add a text box to the input grid of the control
+            var tb = new DynamoTextBox();
+            tb.HorizontalAlignment = HorizontalAlignment.Stretch;
+            tb.VerticalAlignment = VerticalAlignment.Center;
+            nodeUI.inputGrid.Children.Add(tb);
+            Grid.SetColumn(tb, 0);
+            Grid.SetRow(tb, 0);
+            tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
+
+            tb.DataContext = this;
+            tb.BindToProperty(new System.Windows.Data.Binding("Value")
+            {
+                Mode = BindingMode.TwoWay,
+                Converter = new Controls.MeasureConverter(),
+                ConverterParameter = _measure,
+                NotifyOnValidationError = false,
+                Source = this,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            });
+
+            tb.OnChangeCommitted += delegate { RequiresRecalc = true; };
+
+            dynSettings.Controller.PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
+        }
+
+        void PreferenceSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "AreaUnit" ||
+                e.PropertyName == "VolumeUnit" ||
+                e.PropertyName == "LengthUnit")
+            {
+                RaisePropertyChanged("Value");
+                RequiresRecalc = true;
+            }
+        }
+
+        protected override bool UpdateValueCore(string name, string value)
+        {
+            if (name == "Value")
+            {
+                var converter = new Controls.MeasureConverter();
+                this.Value = ((double)converter.ConvertBack(value, typeof(double), _measure, null));
+                return true; // UpdateValueCore handled.
+            }
+
+            return base.UpdateValueCore(name, value);
+        }
+
+        private void editWindowItem_Click(object sender, RoutedEventArgs e)
+        {
+            var editWindow = new EditWindow() { DataContext = this };
+            editWindow.BindToProperty(null, new System.Windows.Data.Binding("Value")
+            {
+                Mode = BindingMode.TwoWay,
+                Converter = new Controls.MeasureConverter(),
+                ConverterParameter = _measure,
+                NotifyOnValidationError = false,
+                Source = this,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            });
+
+            editWindow.ShowDialog();
         }
     }
 
