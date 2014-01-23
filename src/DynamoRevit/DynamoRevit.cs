@@ -128,6 +128,7 @@ namespace Dynamo.Applications
         public Result Execute(ExternalCommandData revit, ref string message, ElementSet elements)
         {
             AppDomain.CurrentDomain.AssemblyResolve += Dynamo.Utilities.AssemblyHelper.CurrentDomain_AssemblyResolve;
+            AppDomain.CurrentDomain.AssemblyResolve += DynamoRaaS.AssemblyHelper.ResolveAssemblies;
 
             //Add an assembly load step for the System.Windows.Interactivity assembly
             //Revit owns a version of this as well. Adding our step here prevents a duplicative
