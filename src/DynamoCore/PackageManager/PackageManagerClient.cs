@@ -13,6 +13,7 @@ using Dynamo.Utilities;
 using Greg;
 using Greg.Requests;
 using Greg.Responses;
+using Greg.Utility;
 
 namespace Dynamo.PackageManager
 {
@@ -34,6 +35,11 @@ namespace Dynamo.PackageManager
         #region Properties
 
         /// <summary>
+        /// A cached version of the package list.  Updated by ListAll()
+        /// </summary>
+        public List<PackageManagerSearchElement> CachedPackageList { get; private set; }
+
+        /// <summary>
         ///     Client property
         /// </summary>
         /// <value>
@@ -47,15 +53,93 @@ namespace Dynamo.PackageManager
         /// <value>
         ///     Specifies whether the user is logged in or not.
         /// </value>
-        public bool IsLoggedIn { get; internal set; }
+        public bool LoggedIn {
+            get
+            {
+                dynSettings.Controller.DynamoViewModel.OnRequestAuthentication(); 
+
+                try
+                {
+                    return (Client.Provider as dynamic).LoggedIn;
+                } 
+                catch
+                {
+                    return false;
+                }
+            } 
+        }
+
+        /// <summary>
+        /// The username of the current user, if logged in.  Otherwise null
+        /// </summary>
+        public string Username
+        {
+            get
+            {
+                dynSettings.Controller.DynamoViewModel.OnRequestAuthentication();
+
+                try
+                {
+                    return (Client.Provider as dynamic).Username;
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+        }
 
         #endregion
 
         public PackageManagerClient()
         {
-            Client = new Client(null, "http://54.225.121.251"); // initialize authenticator later
-            IsLoggedIn = false;
+            Client = new Client(null, "http://54.225.121.251"); 
+            this.CachedPackageList = new List<PackageManagerSearchElement>();
         }
+
+        #region Under construction
+
+        public bool IsNewestVersion(string packageId, string currentVersion, ref string newerVersion )
+        {
+            var searchEle = CachedPackageList.FirstOrDefault(x => x.Id == packageId);
+            
+            PackageHeader header = null;
+            if (searchEle != null)
+            {
+                header = searchEle.Header;
+            }
+
+            if (header == null)
+            {
+                DownloadPackageHeader(packageId, out header);
+            }
+
+            if (header == null)
+            {
+                return false;
+            }
+
+            return !PackageUtilities.IsNewerVersion(currentVersion, header._id);
+        }
+
+        public bool IsUserPackageOwner(string packageId)
+        {
+            if (!LoggedIn) return false;
+            var un = this.Username;
+
+            if (un == null) return false;
+
+            if (CachedPackageList.Any(x => x.Id == packageId && x.Maintainers.Contains(un)))
+            {
+                return true;
+            }
+
+            var l = ListAll();
+            return l.Any(x => x.Id == packageId && x.Maintainers.Contains(un));
+
+        }
+
+        #endregion
 
         public bool Upvote(string packageId)
         {
@@ -95,14 +179,16 @@ namespace Dynamo.PackageManager
             {
                 var nv = Greg.Requests.HeaderCollectionDownload.ByEngine("dynamo");
                 var pkgResponse = Client.ExecuteAndDeserializeWithContent<List<PackageHeader>>(nv);
-                return
+                this.CachedPackageList = 
                     pkgResponse.content
                                .Select((header) => new PackageManagerSearchElement(header))
                                .ToList();
+
+                return CachedPackageList;
             }
             catch
             {
-                return new List<PackageManagerSearchElement>();
+                return CachedPackageList;
             }
         }
 
@@ -425,6 +511,7 @@ namespace Dynamo.PackageManager
                 return new PackageManagerResult("Failed to send.", false);
             }
         }
+
     }
 
     public class LoginStateEventArgs : EventArgs
