@@ -84,6 +84,8 @@ namespace Dynamo.Nodes
             Items.Clear();
 
             wallTypesColl.ToElements().ToList().ForEach(x => Items.Add(new DynamoDropDownItem(x.Name, x)));
+
+            Items = Items.OrderBy(x => x.Name).ToObservableCollection<DynamoDropDownItem>();
         }
     }
 }
