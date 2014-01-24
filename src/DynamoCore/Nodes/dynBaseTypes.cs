@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -5394,7 +5395,7 @@ namespace Dynamo.Nodes
     /// </summary>
     public abstract partial class DropDrownBase : NodeWithOneOutput
     {
-        private ObservableCollection<DynamoDropDownItem> items = new ObservableCollection<DynamoDropDownItem>();
+        protected ObservableCollection<DynamoDropDownItem> items = new ObservableCollection<DynamoDropDownItem>();
         public ObservableCollection<DynamoDropDownItem> Items
         {
             get { return items; }
@@ -5428,17 +5429,6 @@ namespace Dynamo.Nodes
             Items.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Items_CollectionChanged);
         }
 
-        void Items_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            //sort the collection when changed
-            //rehook the collection changed event
-            var sortedItems = from item in Items
-                              orderby item.Name
-                              select item;
-            Items = sortedItems.ToObservableCollection();
-            Items.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Items_CollectionChanged);
-        }
-
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
             nodeElement.SetAttribute("index", SelectedIndex.ToString());
@@ -5463,6 +5453,16 @@ namespace Dynamo.Nodes
         void combo_DropDownOpened(object sender, EventArgs e)
         {
             PopulateItems();
+        }
+
+        /// <summary>
+        /// Executed when the items collection has changed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void Items_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            //SortItems();
         }
 
         /// <summary>
