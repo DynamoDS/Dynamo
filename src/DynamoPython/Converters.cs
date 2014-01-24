@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Dynamo;
 using Dynamo.FSchemeInterop;
+using IronPython.Runtime;
 using Microsoft.FSharp.Collections;
 using Microsoft.FSharp.Core;
 
@@ -11,15 +13,6 @@ namespace DynamoPython
 {
     internal static class Converters
     {
-        internal static FScheme.Value convertPyFunction(Func<IList<dynamic>, dynamic> pyf)
-        {
-            return FScheme.Value.NewFunction(
-                FSharpFunc<FSharpList<FScheme.Value>, FScheme.Value>.FromConverter(
-                    args =>
-                        convertToValue(
-                            pyf(args.Select(ex => convertFromValue(ex)).ToList()))));
-        }
-
         internal static FScheme.Value convertToValue(dynamic data)
         {
             if (data is FScheme.Value)
@@ -56,17 +49,15 @@ namespace DynamoPython
                 return FScheme.Value.NewList(result);
             }
 
-            //else if (data is PythonFunction)
-            //{
-            //   return FuncContainer.MakeFunction(
-            //      new FScheme.ExternFunc(
-            //         args =>
-            //            convertToValue(
-            //               data(args.Select(ex => convertFromValue(ex)))
-            //            )
-            //      )
-            //   );
-            //}
+            /*else if (data is PythonFunction)
+            {
+                var func = data as PythonFunction;
+                return FScheme.Value.NewFunction(
+                    delegate(FSharpList<FScheme.Value> args)
+                    {
+                        convertToValue(func.__call__())
+                    });
+            }*/
             //else if (data is Func<dynamic, dynamic>)
             //{
             //   return Value.NewCurrent(FuncContainer.MakeContinuation(
@@ -92,34 +83,15 @@ namespace DynamoPython
                 return ((FScheme.Value.String)exp).Item;
             else if (exp.IsContainer)
                 return ((FScheme.Value.Container)exp).Item;
-            //else if (exp.IsFunction)
-            //{
-            //   return new Func<IList<dynamic>, dynamic>(
-            //      args =>
-            //         ((Value.Function)exp).Item
-            //            .Invoke(ExecutionEnvironment.IDENT)
-            //            .Invoke(Utils.convertSequence(args.Select(
-            //               x => (Value)Converters.convertToValue(x)
-            //            )))
-            //   );
-            //}
-            //else if (exp.IsSpecial)
-            //{
-            //   return new Func<IList<dynamic>, dynamic>(
-            //      args =>
-            //         ((Value.Special)exp).Item
-            //            .Invoke(ExecutionEnvironment.IDENT)
-            //            .Invoke(
-            //}
-            //else if (exp.IsCurrent)
-            //{
-            //   return new Func<dynamic, dynamic>(
-            //      ex => 
-            //         Converters.convertFromValue(
-            //            ((Value.Current)exp).Item.Invoke(Converters.convertToValue(ex))
-            //         )
-            //   );
-            //}
+            else if (exp.IsFunction)
+            {
+                var func = ((FScheme.Value.Function)exp).Item;
+                Func<IList<dynamic>, dynamic> wrapped =
+                    args =>
+                        convertFromValue(
+                            func.Invoke(args.Select(convertToValue).SequenceToFSharpList()));
+                return wrapped;
+            }
             else
                 throw new Exception("Not allowed to pass Functions into a Python Script.");
         }
