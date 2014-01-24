@@ -14,11 +14,6 @@ namespace DynamoPython
 {
     internal static class Converters
     {
-        internal static FScheme.Value convertToValue(dynamic data)
-        {
-            return convertToValue(data, null);
-        }
-
         internal static FScheme.Value convertToValue(dynamic data, ObjectOperations invoker)
         {
             if (data is FScheme.Value)
@@ -33,18 +28,18 @@ namespace DynamoPython
 
                 //data.reverse(); // this breaks under certain circumstances
 
-                List<dynamic> reversal_list = new List<dynamic>();
+                var reversalList = new List<dynamic>();
 
                 foreach (var x in data)
                 {
-                    reversal_list.Add(x);
+                    reversalList.Add(x);
                 }
 
-                for (int i = reversal_list.Count - 1; i >= 0; --i)
+                for (int i = reversalList.Count - 1; i >= 0; --i)
                 {
-                    var x = reversal_list[i];
+                    var x = reversalList[i];
 
-                    result = FSharpList<FScheme.Value>.Cons(convertToValue(x), result);
+                    result = FSharpList<FScheme.Value>.Cons(convertToValue(x, invoker), result);
                 }
 
                 //foreach (var x in data)
@@ -62,29 +57,33 @@ namespace DynamoPython
                         Utils.ConvertToFSchemeFunc(
                             args =>
                                 convertToValue(
-                                    invoker.Invoke(data, args.Select(x => convertFromValue(x) as object).ToArray()))));
+                                    invoker.Invoke(
+                                        data,
+                                        args.Select(x => convertFromValue(x, invoker) as object)
+                                            .ToArray()),
+                                    invoker)));
             }
-            //else if (data is Func<dynamic, dynamic>)
-            //{
-            //   return Value.NewCurrent(FuncContainer.MakeContinuation(
-            //      new Continuation(
-            //         exp =>
-            //            convertToValue(
-            //               data(convertFromValue(exp))
-            //            )
-            //      )
-            //   ));
-            //}
+            else if (data is PyWrapper)
+            {
+                var func = data as PyWrapper;
+                return
+                    FScheme.Value.NewFunction(
+                        Utils.ConvertToFSchemeFunc(
+                            args =>
+                                convertToValue(
+                                    func(args.Select(a => convertFromValue(a, invoker)).ToArray()),
+                                    invoker)));
+            }
             else
                 return FScheme.Value.NewContainer(data);
         }
 
         private delegate dynamic PyWrapper(params dynamic[] args);
 
-        internal static dynamic convertFromValue(FScheme.Value exp)
+        internal static dynamic convertFromValue(FScheme.Value exp, ObjectOperations invoker)
         {
             if (exp.IsList)
-                return ((FScheme.Value.List)exp).Item.Select(x => convertFromValue(x)).ToList();
+                return ((FScheme.Value.List)exp).Item.Select(x => convertFromValue(x, invoker)).ToList();
             else if (exp.IsNumber)
                 return ((FScheme.Value.Number)exp).Item;
             else if (exp.IsString)
@@ -97,7 +96,7 @@ namespace DynamoPython
                 PyWrapper wrapped =
                     args =>
                         convertFromValue(
-                            func.Invoke(args.Select(convertToValue).SequenceToFSharpList()));
+                            func.Invoke(args.Select(a => convertToValue(a, invoker) as FScheme.Value).SequenceToFSharpList()), invoker);
                 return wrapped;
             }
             else
