@@ -403,13 +403,12 @@ namespace Dynamo.Units
         }
 
         public abstract double ConvertToHostUnits();
-
     }
 
     /// <summary>
     /// A length stored as meters.
     /// </summary>
-    public class Length : SIUnit
+    public class Length : SIUnit, IComparable
     {
         public Length(double value):base(value){}
 
@@ -582,12 +581,23 @@ namespace Dynamo.Units
         }
 
         #endregion
+
+        public int CompareTo(object obj)
+        {
+            if (obj == null) return 1;
+
+            var otherLength = obj as Length;
+            if (otherLength != null)
+                return _value.CompareTo(otherLength.Value);
+            else
+                throw new ArgumentException("Object is not a Length");
+        }
     }
 
     /// <summary>
     /// An area stored as square meters.
     /// </summary>
-    public class Area : SIUnit
+    public class Area : SIUnit, IComparable
     {
         public Area():base(0.0){}
 
@@ -735,6 +745,17 @@ namespace Dynamo.Units
             return BuildString(UnitsManager.Instance.AreaUnit);
         }
 
+        public int CompareTo(object obj)
+        {
+            if (obj == null) return 1;
+
+            var otherArea = obj as Area;
+            if (otherArea != null)
+                return _value.CompareTo(otherArea.Value);
+            else
+                throw new ArgumentException("Object is not an Area");
+        }
+
         public string ToString(DynamoAreaUnit unit)
         {
             return BuildString(unit);
@@ -771,7 +792,7 @@ namespace Dynamo.Units
     /// <summary>
     /// A volume stored as cubic meters.
     /// </summary>
-    public class Volume : SIUnit
+    public class Volume : SIUnit, IComparable
     {
         public Volume():base(0.0){}
 
@@ -940,6 +961,17 @@ namespace Dynamo.Units
         }
 
         #endregion
+
+        public int CompareTo(object obj)
+        {
+            if (obj == null) return 1;
+
+            var otherVolume = obj as Area;
+            if (otherVolume != null)
+                return _value.CompareTo(otherVolume.Value);
+            else
+                throw new ArgumentException("Object is not a Volume");
+        }
 
     }
 
