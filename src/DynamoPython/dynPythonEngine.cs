@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Dynamo;
+using IronPython.Hosting;
+using IronPython.Runtime;
 using Microsoft.Scripting;
 using Microsoft.Scripting.Hosting;
 using Python = IronPython.Hosting.Python;
@@ -48,7 +50,7 @@ namespace DynamoPython
             {
                 dynamic output = scope.GetVariable("OUT");
 
-                result = Converters.convertToValue(output);
+                result = Converters.convertToValue(output, scope.Engine.CreateOperations());
             }
 
             return result;

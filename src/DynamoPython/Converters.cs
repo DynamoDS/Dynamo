@@ -8,12 +8,18 @@ using Dynamo.FSchemeInterop;
 using IronPython.Runtime;
 using Microsoft.FSharp.Collections;
 using Microsoft.FSharp.Core;
+using Microsoft.Scripting.Hosting;
 
 namespace DynamoPython
 {
     internal static class Converters
     {
         internal static FScheme.Value convertToValue(dynamic data)
+        {
+            return convertToValue(data, null);
+        }
+
+        internal static FScheme.Value convertToValue(dynamic data, ObjectOperations invoker)
         {
             if (data is FScheme.Value)
                 return data;
@@ -49,15 +55,15 @@ namespace DynamoPython
                 return FScheme.Value.NewList(result);
             }
 
-            /*else if (data is PythonFunction)
+            else if (data is PythonFunction)
             {
-                var func = data as PythonFunction;
-                return FScheme.Value.NewFunction(
-                    delegate(FSharpList<FScheme.Value> args)
-                    {
-                        convertToValue(func.__call__())
-                    });
-            }*/
+                return
+                    FScheme.Value.NewFunction(
+                        Utils.ConvertToFSchemeFunc(
+                            args =>
+                                convertToValue(
+                                    invoker.Invoke(data, args.Select(x => convertFromValue(x) as object).ToArray()))));
+            }
             //else if (data is Func<dynamic, dynamic>)
             //{
             //   return Value.NewCurrent(FuncContainer.MakeContinuation(
@@ -73,6 +79,8 @@ namespace DynamoPython
                 return FScheme.Value.NewContainer(data);
         }
 
+        private delegate dynamic PyWrapper(params dynamic[] args);
+
         internal static dynamic convertFromValue(FScheme.Value exp)
         {
             if (exp.IsList)
@@ -86,7 +94,7 @@ namespace DynamoPython
             else if (exp.IsFunction)
             {
                 var func = ((FScheme.Value.Function)exp).Item;
-                Func<IList<dynamic>, dynamic> wrapped =
+                PyWrapper wrapped =
                     args =>
                         convertFromValue(
                             func.Invoke(args.Select(convertToValue).SequenceToFSharpList()));
