@@ -4,13 +4,16 @@ using Microsoft.FSharp.Collections;
 namespace Dynamo.Nodes
 {
     /// <summary>
-    /// Create a custom node.
+    /// A node which has one output and returns a number
     /// </summary>
     [NodeName("Node with Number")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
     [NodeDescription("A description for your node which will appear in the tooltip.")]
     public class NodeWithNumber : NodeWithOneOutput
     {
+        /// <summary>
+        /// The default constructor.
+        /// </summary>
         public NodeWithNumber()
         {
             //Define some input ports an input port will be created for 
@@ -18,13 +21,18 @@ namespace Dynamo.Nodes
             InPortData.Add(new PortData("in", "The first port's description.", typeof (FScheme.Value.Number)));
 
             //Define some output ports an output port will be created for 
-            //the port data object you add to the OutPortData collection
+            //the port data object you add to the OutPortData collection.
             OutPortData.Add(new PortData("out", "The output value.", typeof (FScheme.Value.Number)));
 
             //Setup all the ports on the node
             RegisterAllPorts();
         }
 
+        /// <summary>
+        /// Called after the construction of the node object, from the UI layer, to allow for the setup
+        /// of additional UI elements (buttons, sliders, etc.) on the node. 
+        /// </summary>
+        /// <param name="nodeUI">The node ui view into which your custom elements will be added.</param>
         public override void SetupCustomUIElements(object nodeUI)
         {
             //If you have custom UI elements which you want to
@@ -33,6 +41,11 @@ namespace Dynamo.Nodes
             //to have them appear in the center of the node.
         }
 
+        /// <summary>
+        /// The evaluation entry point for a node.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns>An FScheme Value object.</returns>
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
             //let's say the thing coming in is a number.
@@ -48,7 +61,7 @@ namespace Dynamo.Nodes
     }
 
     /// <summary>
-    /// Create a custom node.
+    /// A node which has one output and returns a list.
     /// </summary>
     [NodeName("Node With List")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
