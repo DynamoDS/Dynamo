@@ -3659,27 +3659,21 @@ namespace Dynamo.Nodes
         private INode nestedBegins(Stack<Tuple<int, NodeModel>> inputs, Dictionary<NodeModel, Dictionary<int, INode>> preBuilt)
         {
             var popped = inputs.Pop();
-            var firstVal = popped.Item2.Build(preBuilt, popped.Item1);
+            INode firstVal = popped == null ? new BeginNode() : popped.Item2.Build(preBuilt, popped.Item1);
 
             if (inputs.Any())
             {
-                var newBegin = new BeginNode(new List<string>() { "expr1", "expr2" });
+                var newBegin = new BeginNode(new List<string> { "expr1", "expr2" });
                 newBegin.ConnectInput("expr1", nestedBegins(inputs, preBuilt));
                 newBegin.ConnectInput("expr2", firstVal);
                 return newBegin;
             }
-            else
-                return firstVal;
+            
+            return firstVal;
         }
 
         protected internal override INode Build(Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
-            if (!Enumerable.Range(0, InPortData.Count).All(HasInput))
-            {
-                Error("All inputs must be connected.");
-                throw new Exception("Begin Node requires all inputs to be connected.");
-            }
-            
             Dictionary<int, INode> result;
             if (!preBuilt.TryGetValue(this, out result))
             {
@@ -3687,7 +3681,8 @@ namespace Dynamo.Nodes
                 result[outPort] = 
                     nestedBegins(
                         new Stack<Tuple<int, NodeModel>>(
-                            Enumerable.Range(0, InPortData.Count).Select(x => Inputs[x])),
+                            Enumerable.Range(0, InPortData.Count).Select(
+                                x => HasInput(x) ? Inputs[x] : null)),
                     preBuilt);
                 preBuilt[this] = result;
             }
