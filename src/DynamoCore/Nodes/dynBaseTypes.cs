@@ -7,7 +7,9 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Windows.Input;
 using System.Xml;
+using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Units;
 using Dynamo.Models;
@@ -735,16 +737,55 @@ namespace Dynamo.Nodes
     [NodeName("Sort by Key")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_MODIFY)]
     [NodeDescription("Returns a sorted list, using the given key mapper. The key mapper must return either all numbers or all strings.")]
-    public class SortBy : BuiltinFunction
+    public class SortBy : NodeWithOneOutput
     {
         public SortBy()
-            : base(FScheme.SortBy)
         {
             InPortData.Add(new PortData("f(x)", "Key Mapper", typeof(object), Value.NewFunction(Utils.ConvertToFSchemeFunc(FScheme.Identity))));
             InPortData.Add(new PortData("list", "List to sort", typeof(Value.List)));
             OutPortData.Add(new PortData("sorted", "Sorted list", typeof(Value.List)));
 
             RegisterAllPorts();
+        }
+
+        private static IComparable ToComparable(Value value)
+        {
+            if (value.IsNumber)
+                return (value as Value.Number).Item;
+
+            if (value.IsString)
+                return (value as Value.String).Item;
+
+            if (value.IsContainer)
+            {
+                var unboxed = (value as Value.Container).Item;
+                if (unboxed is IComparable)
+                    return unboxed as IComparable;
+            }
+
+            throw new Exception(
+                string.Format(
+                    "Key mapper result {0} is not Comparable, and thus cannot be sorted.",
+                    (value as dynamic).Item));
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var keyMapper = ((Value.Function)args[0]).Item;
+            var unsorted = ((Value.List)args[1]).Item;
+
+            try
+            {
+                return
+                    Value.NewList(
+                        Utils.SequenceToFSharpList(
+                            unsorted.OrderBy(
+                                x => ToComparable(keyMapper.Invoke(Utils.MakeFSharpList(x))))));
+            }
+            catch (ArgumentException e)
+            {
+                throw e; //TODO: Better error message
+            }
         }
 
         protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
