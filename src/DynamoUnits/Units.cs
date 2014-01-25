@@ -605,7 +605,7 @@ namespace Dynamo.Units
         {
             if (value < 0)
             {
-                throw new MathematicalArgumentException("You can not create a negative volume.");
+                throw new MathematicalArgumentException("You can not create a negative area.");
             }
         }
 
@@ -966,7 +966,7 @@ namespace Dynamo.Units
         {
             if (obj == null) return 1;
 
-            var otherVolume = obj as Area;
+            var otherVolume = obj as Volume;
             if (otherVolume != null)
                 return _value.CompareTo(otherVolume.Value);
             else
