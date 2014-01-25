@@ -1,6 +1,8 @@
 ﻿using Dynamo.Models;
 using Microsoft.FSharp.Collections;
 
+//IMPORTANT!! In order for Dynamo to recognize your node, it must
+//be in the Dynamo.Nodes workspace. 
 namespace Dynamo.Nodes
 {
     /// <summary>
