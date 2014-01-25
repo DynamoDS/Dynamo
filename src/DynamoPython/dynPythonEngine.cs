@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Dynamo;
+using IronPython.Hosting;
+using IronPython.Runtime;
 using Microsoft.Scripting;
 using Microsoft.Scripting.Hosting;
 using Python = IronPython.Hosting.Python;
@@ -22,13 +24,20 @@ namespace DynamoPython
             _source = _engine.CreateScriptSourceFromString(code, SourceCodeKind.Statements);
         }
 
-        public FScheme.Value Evaluate(IEnumerable<KeyValuePair<string, dynamic>> bindings)
+        public FScheme.Value Evaluate(IEnumerable<KeyValuePair<string, dynamic>> bindings, IEnumerable<KeyValuePair<string, FScheme.Value>> inputs)
         {
             var scope = _engine.CreateScope();
 
             foreach (var bind in bindings)
             {
                 scope.SetVariable(bind.Key, bind.Value);
+            }
+
+            var ops = scope.Engine.CreateOperations();
+
+            foreach (var input in inputs)
+            {
+                scope.SetVariable(input.Key, Converters.convertFromValue(input.Value, ops));
             }
 
             try
@@ -48,7 +57,7 @@ namespace DynamoPython
             {
                 dynamic output = scope.GetVariable("OUT");
 
-                result = Converters.convertToValue(output);
+                result = Converters.convertToValue(output, ops);
             }
 
             return result;

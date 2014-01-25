@@ -505,18 +505,18 @@ namespace Dynamo
         //    }
         //}
 
-        Value newEval(bool dirty, string script, dynamic bindings)
+        Value newEval(bool dirty, string script, dynamic bindings, dynamic inputs)
         {
             bool transactionRunning = Transaction != null && Transaction.GetStatus() == TransactionStatus.Started;
 
             Value result = null;
 
             if (dynRevitSettings.Controller.InIdleThread)
-                result = _oldPyEval(dirty, script, bindings);
+                result = _oldPyEval(dirty, script, bindings, inputs);
             else
             {
                 result = IdlePromise<Value>.ExecuteOnIdle(
-                   () => _oldPyEval(dirty, script, bindings));
+                   () => _oldPyEval(dirty, script, bindings, inputs));
             }
 
             if (transactionRunning)
