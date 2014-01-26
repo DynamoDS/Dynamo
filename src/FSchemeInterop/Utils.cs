@@ -135,7 +135,7 @@ namespace Dynamo.FSchemeInterop
         /// <typeparam name="T"></typeparam>
         /// <param name="seq"></param>
         /// <returns></returns>
-        public static FSharpList<T> SequenceToFSharpList<T>(IEnumerable<T> seq)
+        public static FSharpList<T> SequenceToFSharpList<T>(this IEnumerable<T> seq)
         {
             return ListModule.OfSeq(seq);
         }

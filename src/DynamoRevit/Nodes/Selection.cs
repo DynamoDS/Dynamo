@@ -11,6 +11,7 @@ using Autodesk.Revit.DB;
 using Dynamo.Controls;
 using Dynamo.FSchemeInterop;
 using Dynamo.Models;
+using Dynamo.Revit;
 using Dynamo.Revit.SyncedNodeExtensions; //Gives the RegisterEval... methods
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
@@ -1279,6 +1280,72 @@ namespace Dynamo.Nodes
                 _init = true;
             }
             catch { }
+        }
+    }
+
+    [NodeName("Category")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
+    [NodeDescription("Select all elements by category.")]
+    public class Categories : EnumAsConstants
+    {
+        public Categories():base(typeof(BuiltInCategory)){}
+    }
+
+    [NodeName("All Elements of Category")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
+    [NodeDescription("All elements in the active document of a given category.")]
+    public class AllElementsOfCategory : NodeWithOneOutput
+    {
+        public AllElementsOfCategory()
+        {
+            InPortData.Add(new PortData("category", "A category.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("elements", "All elements in the active document of a given category.", typeof(Value.List)));
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var cat = (BuiltInCategory) ((Value.Container) args[0]).Item;
+
+            //get the selected category and select all elements
+            //in the document of that category
+            var fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentDBDocument);
+            fec.OfCategory(cat);
+
+            var results = fec.ToElements().Aggregate(FSharpList<Value>.Empty, (current, el) => FSharpList<Value>.Cons(Value.NewContainer(el), current));
+            return Value.NewList(results);
+        }
+    }
+
+    [NodeName("Element Types")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
+    [NodeDescription("All element subtypes.")]
+    public class ElementTypes : AllChildrenOfType
+    {
+        public ElementTypes() : base(typeof (Element)){}
+    }
+
+    [NodeName("All Elements of Type")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
+    [NodeDescription("All elements in the active document of a given type.")]
+    public class AllElementsOfType : NodeWithOneOutput
+    {
+        public AllElementsOfType()
+        {
+            InPortData.Add(new PortData("element type", "An element type.", typeof(Value.Container)));
+            OutPortData.Add(new PortData("elements", "All elements in the active document of a given type.", typeof(Value.List)));
+            RegisterAllPorts();
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var elementType = (Type) ((Value.Container) args[0]).Item;
+
+            var collector = new FilteredElementCollector(DocumentManager.GetInstance().CurrentDBDocument);
+            collector.OfClass(elementType);
+
+            var results = collector.ToElements().Aggregate(FSharpList<Value>.Empty, (current, el) => FSharpList<Value>.Cons(Value.NewContainer(el), current));
+            return Value.NewList(results);
         }
     }
 }
