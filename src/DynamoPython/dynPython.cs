@@ -152,23 +152,26 @@ namespace Dynamo.Nodes
             }
         }
 
-        private IEnumerable<KeyValuePair<string, dynamic>> MakeBindings(IEnumerable<Value> args)
+        private IEnumerable<KeyValuePair<string, Value>> MakeBindings(IEnumerable<Value> args)
         {
             //Zip up our inputs
             var bindings = InPortData
                .Select(x => x.NickName)
-               .Zip(args, (s, v) => new KeyValuePair<string, dynamic>(s, Converters.convertFromValue(v)))
-               .Concat(PythonBindings.Bindings)
+               .Zip(args, (s, v) => new KeyValuePair<string, Value>(s, v))
                .ToList();
 
-            bindings.Add(new KeyValuePair<string, dynamic>("__persistent__", _stateDict));
+            //bindings.Add(new KeyValuePair<string, dynamic>("__persistent__", _stateDict));
 
             return bindings;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            Value result = PythonEngine.Evaluator(_dirty, _script, MakeBindings(args));
+            var bindings = new List<KeyValuePair<string, dynamic>>
+            {
+                new KeyValuePair<string, dynamic>("__persistent__", _stateDict)
+            };
+            Value result = PythonEngine.Evaluator(_dirty, _script, bindings, MakeBindings(args));
             _lastEvalValue = result;
 
             Draw();
@@ -403,23 +406,26 @@ namespace Dynamo.Nodes
             }
         }
 
-        private IEnumerable<KeyValuePair<string, dynamic>> MakeBindings(IEnumerable<Value> args)
+        private IEnumerable<KeyValuePair<string, Value>> MakeBindings(IEnumerable<Value> args)
         {
             //Zip up our inputs
             var bindings = InPortData
                .Select(x => x.NickName)
-               .Zip(args, (s, v) => new KeyValuePair<string, dynamic>(s, Converters.convertFromValue(v)))
-               .Concat(PythonBindings.Bindings)
+               .Zip(args, (s, v) => new KeyValuePair<string, Value>(s, v))
                .ToList();
 
-            bindings.Add(new KeyValuePair<string, dynamic>("__persistent__", _stateDict));
+            //bindings.Add(new KeyValuePair<string, dynamic>("__persistent__", _stateDict));
 
             return bindings;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            Value result = PythonEngine.Evaluator(_dirty, _script, MakeBindings(args));
+            var bindings = new List<KeyValuePair<string, dynamic>>
+            {
+                new KeyValuePair<string, dynamic>("__persistent__", _stateDict)
+            };
+            Value result = PythonEngine.Evaluator(_dirty, _script, bindings, MakeBindings(args));
             _lastEvalValue = result;
 
             Draw();
@@ -494,17 +500,17 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        private IEnumerable<KeyValuePair<string, dynamic>> makeBindings(IEnumerable<Value> args)
+        private IEnumerable<KeyValuePair<string, Value>> makeBindings(IEnumerable<Value> args)
         {
             //Zip up our inputs
             var bindings = 
                InPortData
                .Select(x => x.NickName)
-               .Zip(args, (s, v) => new KeyValuePair<string, dynamic>(s, Converters.convertFromValue(v)))
-               .Concat(PythonBindings.Bindings)
+               .Zip(args, (s, v) => new KeyValuePair<string, Value>(s, v))
+               //.Concat(PythonBindings.Bindings)
                .ToList();
 
-            bindings.Add(new KeyValuePair<string, dynamic>("__persistent__", _stateDict));
+            //bindings.Add(new KeyValuePair<string, dynamic>("__persistent__", _stateDict));
 
             return bindings;
         }
@@ -512,8 +518,12 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             var script = ((Value.String) args[0]).Item;
-            var bindings = makeBindings(args);
-            var value = PythonEngine.Evaluator( RequiresRecalc, script, bindings);
+            var inputs = makeBindings(args);
+            var bindings = new List<KeyValuePair<string, dynamic>>
+            {
+                new KeyValuePair<string, dynamic>("__persistent__", _stateDict)
+            };
+            var value = PythonEngine.Evaluator(RequiresRecalc, script, bindings, inputs);
             return value;
         }
     }
