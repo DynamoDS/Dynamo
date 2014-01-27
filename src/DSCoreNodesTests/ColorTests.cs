@@ -27,16 +27,16 @@ namespace DSCoreNodesTests
             Assert.AreEqual(40, color.InternalColor.B);
         }
 
-        [Test]
-        public void TestConstructorBySystemColor()
-        {
-            System.Drawing.Color original = System.Drawing.Color.FromArgb(10, 20, 30, 40);
-            DSColor color = DSColor.BySystemColor(original);
-            Assert.AreEqual(10, color.InternalColor.A);
-            Assert.AreEqual(20, color.InternalColor.R);
-            Assert.AreEqual(30, color.InternalColor.G);
-            Assert.AreEqual(40, color.InternalColor.B);
-        }
+        // [Test]
+        // public void TestConstructorBySystemColor()
+        // {
+        //     System.Drawing.Color original = System.Drawing.Color.FromArgb(10, 20, 30, 40);
+        //     DSColor color = DSColor.BySystemColor(original);
+        //     Assert.AreEqual(10, color.InternalColor.A);
+        //     Assert.AreEqual(20, color.InternalColor.R);
+        //     Assert.AreEqual(30, color.InternalColor.G);
+        //     Assert.AreEqual(40, color.InternalColor.B);
+        // }
 
         [Test]
         public void TestBrightness()

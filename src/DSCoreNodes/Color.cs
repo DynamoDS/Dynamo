@@ -25,10 +25,15 @@ namespace DSCoreNodes
             return new DSColor(a, r, g, b);
         }
 
+        // This fails "GraphUtilities.PreloadAssembly", fix later.
+        // After fixing, restore "TestConstructorBySystemColor" test case.
+        // 
+#if false
         public static DSColor BySystemColor(System.Drawing.Color c)
         {
             return new DSColor(c.A, c.R, c.G, c.B);
         }
+#endif
 
         public static float Brightness(DSColor c)
         {
