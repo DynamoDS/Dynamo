@@ -17,15 +17,26 @@ namespace DSCoreNodesTests
     internal static class ProtoNodesTests
     {
         [Test]
-        public static void CanStartupAsmAndCreateSimpleCircle()
+        public static void CanDoSimpleLoft()
         {
             HostFactory.Instance.StartUp();
 
-            var x = Point.ByCoordinates(0, 0, 0);
-            var y = Point.ByCoordinates(1, 0, 0);
-            var z = Point.ByCoordinates(2, 2, 0);
+            var points0 = new Point[10];
+            var points1 = new Point[10];
 
-            var c = Circle.ByPointsOnCurve(x, y, z);
+            for (int i = 0; i < 10; ++i)
+            {
+                points0[i] = Point.ByCoordinates(i, 0, 0);
+                points1[i] = Point.ByCoordinates(i, 10, 10);
+            }
+
+            var crv0 = NurbsCurve.ByControlVertices(points0);
+            var crv1 = NurbsCurve.ByControlVertices(points1);
+
+            var srf = Surface.LoftFromCrossSections(new[] { crv0, crv1 });
+            Assert.NotNull(srf);
+
+            Console.WriteLine(srf.PointAtParameter(0.5,0.5));
 
             HostFactory.Instance.ShutDown();
         }
