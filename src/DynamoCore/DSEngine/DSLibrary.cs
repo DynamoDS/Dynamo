@@ -490,7 +490,10 @@ namespace Dynamo.DSEngine
                 return functionGroups.Values;
             }
 
-            return null;
+            // Return an empty list instead of 'null' as some of the caller may
+            // not have the opportunity to check against 'null' enumerator (for
+            // example, an inner iterator in a nested LINQ statement).
+            return new List<FunctionGroup>();
         }
 
         /// <summary>
