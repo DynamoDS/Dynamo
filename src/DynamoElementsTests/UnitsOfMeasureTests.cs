@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿using System;
+using System.Collections.Generic;
+using NUnit.Framework;
 using Dynamo.Units;
 
 namespace Dynamo.Tests
@@ -516,6 +518,52 @@ namespace Dynamo.Tests
             //http://msdn.microsoft.com/en-us/library/wyk4d9cy(v=vs.110).aspx
             //length = Units.Length.FromFeet(.5);
             //Assert.AreEqual("1' 0\"", ((Units.Length)length.Round()).ToString(DynamoLengthUnit.FractionalFoot));
+        }
+
+        [Test]
+        public void Sorting()
+        {
+            //tests of units IComparability
+            var l1 = new Length(-13.0);
+            var l2 = new Length(27.0);
+            var l3 = new Length(0.0);
+            var l4 = new Length(.0000001);
+
+            var lengths = new List<Length> {l4, l3, l1, l2};
+            lengths.Sort();
+
+            Assert.AreEqual(l1.Value, lengths[0].Value);
+            Assert.AreEqual(l2.Value, lengths[3].Value);
+            Assert.AreEqual(l3.Value, lengths[1].Value);
+            Assert.AreEqual(l4.Value, lengths[2].Value);
+
+            var a2 = new Area(27.0);
+            var a3 = new Area(0.0);
+            var a4 = new Area(.0000001);
+
+            var areas = new List<Area> {a4, a3, a2};
+            areas.Sort();
+
+            Assert.AreEqual(a2.Value, areas[2].Value);
+            Assert.AreEqual(a3.Value, areas[0].Value);
+            Assert.AreEqual(a4.Value, areas[1].Value);
+
+            var v2 = new Volume(27.0);
+            var v3 = new Volume(0.0);
+            var v4 = new Volume(.0000001);
+
+            var volumes = new List<Volume> {v4, v3, v2};
+            volumes.Sort();
+
+            Assert.AreEqual(v2.Value, volumes[2].Value);
+            Assert.AreEqual(v3.Value, volumes[0].Value);
+            Assert.AreEqual(v4.Value, volumes[1].Value);
+
+            //test that we're not comparing units 
+            //that can't be compared
+            var mixedList = new List<SIUnit> {l2, a4, v4};
+            Assert.Throws<InvalidOperationException>(mixedList.Sort);
+
         }
     }
 }
