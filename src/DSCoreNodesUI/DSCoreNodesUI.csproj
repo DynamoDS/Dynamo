@@ -51,6 +51,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DropDown.cs" />
+    <Compile Include="Enum.cs" />
     <Compile Include="HigherOrder\Apply.cs" />
     <Compile Include="HigherOrder\MapCombineLacing.cs" />
     <Compile Include="Input\BasicInteractive.cs" />

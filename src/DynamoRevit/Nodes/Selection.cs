@@ -1283,14 +1283,6 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Category")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
-    [NodeDescription("Select all elements by category.")]
-    public class Categories : EnumAsConstants
-    {
-        public Categories():base(typeof(BuiltInCategory)){}
-    }
-
     [NodeName("All Elements of Category")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("All elements in the active document of a given category.")]

@@ -27,7 +27,7 @@ namespace DSRevitNodesTests.Elements
         [Test]
         public void ByName_NullArgument()
         {
-            Assert.Throws(typeof(ArgumentNullException), () => DSFloorType.ByName(null));
+            Assert.Throws(typeof(ArgumentNullException), () => DSElementType.ByName(null));
         }
 
     }

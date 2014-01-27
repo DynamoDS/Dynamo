@@ -74,9 +74,12 @@
     <Compile Include="AnalysisDisplay\DSPointAnalysisDisplay.cs" />
     <Compile Include="AnalysisDisplay\DSVectorAnalysisDisplay.cs" />
     <Compile Include="Application\DSDocument.cs" />
+    <Compile Include="DSCategory.cs" />
     <Compile Include="Elements\AbstractElement.cs" />
     <Compile Include="Elements\AbstractFamilyInstance.cs" />
     <Compile Include="Elements\DSElement.cs" />
+    <Compile Include="Elements\DSElementType.cs" />
+    <Compile Include="Elements\DSFloorType.cs" />
     <Compile Include="Elements\DSModelText.cs" />
     <Compile Include="Elements\DSModelTextType.cs" />
     <Compile Include="Elements\DSStructuralType.cs" />
@@ -87,7 +90,6 @@
     <Compile Include="Elements\Views\DSAxonometricView.cs" />
     <Compile Include="Elements\Views\DSCeilingPlanView.cs" />
     <Compile Include="Elements\Views\DSPerspectiveView.cs" />
-    <Compile Include="Elements\DSFloorType.cs" />
     <Compile Include="Elements\DSForm.cs" />
     <Compile Include="Elements\DSSketchPlane.cs" />
     <Compile Include="Elements\Views\DSDraftingView.cs" />
