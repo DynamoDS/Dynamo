@@ -8,18 +8,18 @@ using System.Windows.Media.Imaging;
 
 namespace DSCoreNodes
 {
-    public class Color
+    public class DSColor // TODO(Ben): Rename after namespace support is done :)
     {
         private System.Drawing.Color color = System.Drawing.Color.FromArgb(255, 0, 0, 0);
 
-        private Color(int a, int r, int g, int b)
+        private DSColor(int a, int r, int g, int b)
         {
             this.color = System.Drawing.Color.FromArgb(a, r, g, b);
         }
 
-        public static Color ByARGB(int a, int r, int g, int b)
+        public static DSColor ByARGB(int a, int r, int g, int b)
         {
-            return new Color(a, r, g, b);
+            return new DSColor(a, r, g, b);
         }
     }
 
