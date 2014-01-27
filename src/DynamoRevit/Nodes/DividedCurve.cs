@@ -14,23 +14,9 @@ namespace Dynamo.Nodes
     [NodeName("Spacing Rule Layout")]
     [NodeCategory(BuiltinNodeCategories.GEOMETRY_CURVE_DIVIDE)]
     [NodeDescription("The spacing rule layout to be applied to a divided path.")]
-    public class DividedPathSpacingRuleLayout : DropDrownBase
+    public class DividedPathSpacingRuleLayout : EnumAsConstants
     {
-        public DividedPathSpacingRuleLayout()
-        {
-            OutPortData.Add(new PortData("spacing rule layout", "The spacing rule layout.", typeof(Value.Container)));
-            RegisterAllPorts();
-            PopulateItems();
-        }
-
-        public override void PopulateItems()
-        {
-            Items.Clear();
-            foreach (SpacingRuleLayout suit in (SpacingRuleLayout[])System.Enum.GetValues(typeof(SpacingRuleLayout)))
-            {
-                Items.Add(new DynamoDropDownItem(suit.ToString(), suit));
-            }
-        }
+        public DividedPathSpacingRuleLayout():base(typeof(SpacingRuleLayout)){}
     }
 
     [NodeName("Divided Path")]

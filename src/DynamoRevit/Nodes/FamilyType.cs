@@ -39,6 +39,8 @@ namespace Dynamo.Nodes
                     Items.Add(new DynamoDropDownItem(f.Name + ":" + fs.Name, fs));
                 }
             }
+
+            Items = Items.OrderBy(x => x.Name).ToObservableCollection<DynamoDropDownItem>();
         }
 
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)

@@ -38,6 +38,8 @@ namespace Dynamo.Nodes
 
             foreach (var e in collector.ToElements())
                 Items.Add(new DynamoDropDownItem(e.Name, e));
+
+            Items = Items.OrderBy(x => x.Name).ToObservableCollection<DynamoDropDownItem>();
         }
 
     }

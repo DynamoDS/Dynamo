@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Windows.Input;
 using System.Xml;
+using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Units;
 using Dynamo.Models;
@@ -708,16 +711,55 @@ namespace Dynamo.Nodes
     [NodeName("Sort by Key")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_MODIFY)]
     [NodeDescription("Returns a sorted list, using the given key mapper. The key mapper must return either all numbers or all strings.")]
-    public class SortBy : BuiltinFunction
+    public class SortBy : NodeWithOneOutput
     {
         public SortBy()
-            : base(FScheme.SortBy)
         {
             InPortData.Add(new PortData("f(x)", "Key Mapper", typeof(object), Value.NewFunction(Utils.ConvertToFSchemeFunc(FScheme.Identity))));
             InPortData.Add(new PortData("list", "List to sort", typeof(Value.List)));
             OutPortData.Add(new PortData("sorted", "Sorted list", typeof(Value.List)));
 
             RegisterAllPorts();
+        }
+
+        private static IComparable ToComparable(Value value)
+        {
+            if (value.IsNumber)
+                return (value as Value.Number).Item;
+
+            if (value.IsString)
+                return (value as Value.String).Item;
+
+            if (value.IsContainer)
+            {
+                var unboxed = (value as Value.Container).Item;
+                if (unboxed is IComparable)
+                    return unboxed as IComparable;
+            }
+
+            throw new Exception(
+                string.Format(
+                    "Key mapper result {0} is not Comparable, and thus cannot be sorted.",
+                    (value as dynamic).Item));
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var keyMapper = ((Value.Function)args[0]).Item;
+            var unsorted = ((Value.List)args[1]).Item;
+
+            try
+            {
+                return
+                    Value.NewList(
+                        Utils.SequenceToFSharpList(
+                            unsorted.OrderBy(
+                                x => ToComparable(keyMapper.Invoke(Utils.MakeFSharpList(x))))));
+            }
+            catch (ArgumentException e)
+            {
+                throw e; //TODO: Better error message
+            }
         }
     }
 
@@ -3200,27 +3242,21 @@ namespace Dynamo.Nodes
         private INode nestedBegins(Stack<Tuple<int, NodeModel>> inputs, Dictionary<NodeModel, Dictionary<int, INode>> preBuilt)
         {
             var popped = inputs.Pop();
-            var firstVal = popped.Item2.Build(preBuilt, popped.Item1);
+            INode firstVal = popped == null ? new BeginNode() : popped.Item2.Build(preBuilt, popped.Item1);
 
             if (inputs.Any())
             {
-                var newBegin = new BeginNode(new List<string>() { "expr1", "expr2" });
+                var newBegin = new BeginNode(new List<string> { "expr1", "expr2" });
                 newBegin.ConnectInput("expr1", nestedBegins(inputs, preBuilt));
                 newBegin.ConnectInput("expr2", firstVal);
                 return newBegin;
             }
-            else
-                return firstVal;
+            
+            return firstVal;
         }
 
         protected internal override INode Build(Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
-            if (!Enumerable.Range(0, InPortData.Count).All(HasInput))
-            {
-                Error("All inputs must be connected.");
-                throw new Exception("Begin Node requires all inputs to be connected.");
-            }
-            
             Dictionary<int, INode> result;
             if (!preBuilt.TryGetValue(this, out result))
             {
@@ -3228,7 +3264,8 @@ namespace Dynamo.Nodes
                 result[outPort] = 
                     nestedBegins(
                         new Stack<Tuple<int, NodeModel>>(
-                            Enumerable.Range(0, InPortData.Count).Select(x => Inputs[x])),
+                            Enumerable.Range(0, InPortData.Count).Select(
+                                x => HasInput(x) ? Inputs[x] : null)),
                     preBuilt);
                 preBuilt[this] = result;
             }
@@ -4902,7 +4939,7 @@ namespace Dynamo.Nodes
     /// </summary>
     public abstract partial class DropDrownBase : NodeWithOneOutput
     {
-        private ObservableCollection<DynamoDropDownItem> items = new ObservableCollection<DynamoDropDownItem>();
+        protected ObservableCollection<DynamoDropDownItem> items = new ObservableCollection<DynamoDropDownItem>();
         public ObservableCollection<DynamoDropDownItem> Items
         {
             get { return items; }
@@ -4936,17 +4973,6 @@ namespace Dynamo.Nodes
             Items.CollectionChanged += Items_CollectionChanged;
         }
 
-        void Items_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            //sort the collection when changed
-            //rehook the collection changed event
-            var sortedItems = from item in Items
-                              orderby item.Name
-                              select item;
-            Items = sortedItems.ToObservableCollection();
-            Items.CollectionChanged += Items_CollectionChanged;
-        }
-
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
             nodeElement.SetAttribute("index", SelectedIndex.ToString());
@@ -4971,6 +4997,16 @@ namespace Dynamo.Nodes
         void combo_DropDownOpened(object sender, EventArgs e)
         {
             PopulateItems();
+        }
+
+        /// <summary>
+        /// Executed when the items collection has changed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void Items_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            //SortItems();
         }
 
         /// <summary>
