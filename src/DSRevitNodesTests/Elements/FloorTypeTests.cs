@@ -19,7 +19,7 @@ namespace DSRevitNodesTests.Elements
         public void ByName_ValidArgs()
         {
             var floorTypeName = "Generic - 12\"";
-            var floorType = DSFloorType.ByName(floorTypeName);
+            var floorType = DSElementType.ByName(floorTypeName);
             Assert.NotNull(floorType);
             Assert.AreEqual(floorTypeName, floorType.Name);
         }
@@ -27,7 +27,7 @@ namespace DSRevitNodesTests.Elements
         [Test]
         public void ByName_NullArgument()
         {
-            Assert.Throws(typeof(ArgumentNullException), () => DSFloorType.ByName(null));
+            Assert.Throws(typeof(ArgumentNullException), () => DSElementType.ByName(null));
         }
 
     }

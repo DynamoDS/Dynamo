@@ -1,20 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Autodesk.DesignScript.Geometry;
-using DSRevitNodes;
 using DSRevitNodes.Elements;
-using DSRevitNodes.GeometryObjects;
 using NUnit.Framework;
 
 namespace DSRevitNodesTests.Elements
 {
-
     [TestFixture]
     public class FloorTests
     {
-
         [Test]
         public void ByOutlineTypeAndLevel_ValidArgs()
         {
@@ -55,8 +48,6 @@ namespace DSRevitNodesTests.Elements
             Assert.Throws(typeof(ArgumentNullException), () => DSFloor.ByOutlineTypeAndLevel(outline, null, level));
             Assert.Throws(typeof(ArgumentNullException), () => DSFloor.ByOutlineTypeAndLevel(outline, floorType, null));
         }
-
     }
-
 }
 
