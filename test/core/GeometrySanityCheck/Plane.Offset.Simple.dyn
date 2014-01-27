@@ -1,0 +1,16 @@
+<Workspace Version="0.6.3.39524" X="1074.85533635519" Y="-357.561992976556" zoom="1.51343839997526" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="0df4edb0-3cb8-4220-951f-42abbd658454" nickname="Plane.ByOriginNormal" x="-237.698991868" y="457.219159034258" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="ProtoGeometry.dll" function="Plane.ByOriginNormal@Point,Vector" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="0a5c5384-5f2f-43fd-8179-d530f02d8b89" nickname="Code Block" x="-681.17144410447" y="439.987207740298" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="direction = Vector.ByCoordinates(0,0,1);&#xA;offset= 10;&#xA;Point.ByCoordinates(0,0,0);" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="3ebe142d-ca26-4968-84d3-e7b2bba544c9" nickname="Plane.Offset" x="-83.1235565793202" y="587.925534635653" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="ProtoGeometry.dll" function="Plane.Offset@double" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="079d020a-dfb1-41d1-8bba-04cf88f5b0fe" nickname="Geometry.Visible" x="105.587927232383" y="536.340397463352" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="ProtoGeometry.dll" function="Geometry.Visible" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="0df4edb0-3cb8-4220-951f-42abbd658454" start_index="0" end="3ebe142d-ca26-4968-84d3-e7b2bba544c9" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0a5c5384-5f2f-43fd-8179-d530f02d8b89" start_index="0" end="0df4edb0-3cb8-4220-951f-42abbd658454" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0a5c5384-5f2f-43fd-8179-d530f02d8b89" start_index="1" end="3ebe142d-ca26-4968-84d3-e7b2bba544c9" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0a5c5384-5f2f-43fd-8179-d530f02d8b89" start_index="2" end="0df4edb0-3cb8-4220-951f-42abbd658454" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3ebe142d-ca26-4968-84d3-e7b2bba544c9" start_index="0" end="079d020a-dfb1-41d1-8bba-04cf88f5b0fe" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
