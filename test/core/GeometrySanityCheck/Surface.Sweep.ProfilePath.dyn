@@ -1,0 +1,19 @@
+<Workspace Version="0.6.3.27769" X="-242.568867260193" Y="8.56183491680838" zoom="1.00600419002725" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="8daffe4a-d308-4078-9113-d72b2e82623b" nickname="Code Block" x="310.086393088553" y="203.88120950324" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="profile = Circle.ByCenterPointRadius(Point.ByCartesianCoordinates&#xA;                                    (WCS, 0, 0, 0), 2, WCS.ZAxis);&#xA;arrayOfPoints =&#xA;{&#xA;        profile.CenterPoint,&#xA;        profile.CenterPoint.Translate(12, 14, 30),&#xA;        profile.CenterPoint.Translate(24, 26, 10),&#xA;        profile.CenterPoint.Translate(34, 36, 40)&#xA;};&#xA;path = NurbsCurve.ByPoints(arrayOfPoints);" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="9e788a18-826e-467f-a1d7-25a079f16b4f" nickname="CoordinateSystem.WCS" x="76.1144708423326" y="257.749460043197" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="ProtoGeometry.dll" function="CoordinateSystem.WCS" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="c4b2e7d0-dde0-46f3-b1c4-94b62551238f" nickname="Surface.Sweep" x="1050.79951369357" y="381.921978707729" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="ProtoGeometry.dll" function="Surface.Sweep@Curve,Curve" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="8230f31e-2fbc-44f2-822f-1ed079275e93" nickname="SweptSurface.ByProfilePath" x="1006.16757767991" y="116.186340032221" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="ProtoGeometry.dll" function="SweptSurface.ByProfilePath@Curve,Curve" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="e551ab44-763e-464e-8f8e-1f3f9828b15e" nickname="Curve.SweepAsSurface" x="1049.92742947787" y="710.493832788145" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="ProtoGeometry.dll" function="Curve.SweepAsSurface@Curve" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="8daffe4a-d308-4078-9113-d72b2e82623b" start_index="0" end="8230f31e-2fbc-44f2-822f-1ed079275e93" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8daffe4a-d308-4078-9113-d72b2e82623b" start_index="0" end="c4b2e7d0-dde0-46f3-b1c4-94b62551238f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8daffe4a-d308-4078-9113-d72b2e82623b" start_index="0" end="e551ab44-763e-464e-8f8e-1f3f9828b15e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8daffe4a-d308-4078-9113-d72b2e82623b" start_index="2" end="8230f31e-2fbc-44f2-822f-1ed079275e93" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8daffe4a-d308-4078-9113-d72b2e82623b" start_index="2" end="c4b2e7d0-dde0-46f3-b1c4-94b62551238f" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8daffe4a-d308-4078-9113-d72b2e82623b" start_index="2" end="e551ab44-763e-464e-8f8e-1f3f9828b15e" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9e788a18-826e-467f-a1d7-25a079f16b4f" start_index="0" end="8daffe4a-d308-4078-9113-d72b2e82623b" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
