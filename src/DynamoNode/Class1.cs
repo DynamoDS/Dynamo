@@ -35,7 +35,7 @@ namespace Dynamo.Nodes
         /// of additional UI elements (buttons, sliders, etc.) on the node. 
         /// </summary>
         /// <param name="nodeUI">The node ui view into which your custom elements will be added.</param>
-        public override void SetupCustomUIElements(object nodeUI)
+        public void SetupCustomUIElements(object nodeUI)
         {
             //If you have custom UI elements which you want to
             //add to the node, set them up here.
@@ -84,7 +84,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        public override void SetupCustomUIElements(object nodeUI)
+        public void SetupCustomUIElements(object nodeUI)
         {
             //If you have custom UI elements which you want to
             //add to the node, set them up here.
