@@ -12,6 +12,9 @@ namespace DSCoreNodes
     {
         private System.Drawing.Color color = System.Drawing.Color.FromArgb(255, 0, 0, 0);
 
+        // Exposed only for unit test purposes.
+        internal System.Drawing.Color InternalColor { get { return this.color; } }
+
         private DSColor(int a, int r, int g, int b)
         {
             this.color = System.Drawing.Color.FromArgb(a, r, g, b);
@@ -42,7 +45,7 @@ namespace DSCoreNodes
             return c.color.GetHue();
         }
 
-        public byte[] Components(DSColor c)
+        public static byte[] Components(DSColor c)
         {
             return new byte[] { c.color.A, c.color.R, c.color.G, c.color.B };
         }
