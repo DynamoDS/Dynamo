@@ -415,10 +415,22 @@ namespace Dynamo.DSEngine
 
         public static LibraryServices GetInstance()
         {
-            return _libraryServices;
+            lock (singletonMutex)
+            {
+                if (_libraryServices == null)
+                    _libraryServices = new LibraryServices();
+
+                return _libraryServices;
+            }
         }
 
-        private static LibraryServices _libraryServices = new LibraryServices();
+        /// <summary>
+        /// lock object to prevent races on establishing the singleton
+        /// </summary>
+        private static Object singletonMutex = new object();
+
+
+        private static LibraryServices _libraryServices = null; // new LibraryServices();
         private LibraryServices()
         {
             GraphUtilities.PreloadAssembly(_libraries);
