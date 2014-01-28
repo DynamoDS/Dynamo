@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DSCoreNodes
+namespace DSCore
 {
     /// <summary>
     /// Methods for performing Mathematical operations.

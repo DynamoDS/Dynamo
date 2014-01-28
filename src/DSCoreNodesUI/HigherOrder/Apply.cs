@@ -8,11 +8,16 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace DSCoreNodesUI.HigherOrder
 {
+    [NodeName("Apply Function")]
+    [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
+    [NodeDescription("Applies a function to arguments.")]
+    [IsDesignScriptCompatible]
     public class ApplyFunction : VariableInputNode
     {
         public ApplyFunction()
         {
             InPortData.Add(new PortData("func", "Function to apply."));
+            OutPortData.Add(new PortData("func(args)", "Result of application."));
             RegisterAllPorts();
         }
 

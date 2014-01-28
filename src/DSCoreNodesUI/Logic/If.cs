@@ -3,10 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Dynamo.Models;
+using Dynamo.Nodes;
 using ProtoCore.AST.AssociativeAST;
 
 namespace DSCoreNodesUI.Logic
 {
+    [NodeName("If")]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_CONDITIONAL)]
+    [NodeDescription("Conditional statement")]
+    [IsDesignScriptCompatible]
     public class If : NodeModel
     {
         public If()

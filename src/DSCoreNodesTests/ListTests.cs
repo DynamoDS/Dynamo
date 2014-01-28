@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
-using DSCoreNodes;
-using List = DSCoreNodes.List;
+using DSCore;
+using List = DSCore.List;
 
 namespace DSCoreNodesTests
 {
@@ -21,25 +21,25 @@ namespace DSCoreNodesTests
         [Test]
         public static void ListMinimumValue()
         {
-            Assert.AreEqual(0, List.MinimumValue(new List<int> { 8, 4, 0, 66, 10 }));
+            Assert.AreEqual(0, List.MinimumItem(new List<int> { 8, 4, 0, 66, 10 }));
         }
 
         [Test]
         public static void ListMinimumByKey()
         {
-            Assert.AreEqual(10, List.MinimumValueByKey(new List<int> { 8, 10, 5, 7, 1, 2 }, i => 10 - i));
+            Assert.AreEqual(10, List.MinimumItemByKey(new List<int> { 8, 10, 5, 7, 1, 2 }, i => 10 - i));
         }
 
         [Test]
         public static void ListMaximumValue()
         {
-            Assert.AreEqual(66, List.MaximumValue(new List<int> { 8, 4, 0, 66, 10 }));
+            Assert.AreEqual(66, List.MaximumItem(new List<int> { 8, 4, 0, 66, 10 }));
         }
 
         [Test]
         public static void ListMaximumByKey()
         {
-            Assert.AreEqual(1, List.MaximumValueByKey(new List<int> { 8, 10, 5, 7, 1, 2 }, i => 10 - i));
+            Assert.AreEqual(1, List.MaximumItemByKey(new List<int> { 8, 10, 5, 7, 1, 2 }, i => 10 - i));
         }
 
         [Test]
@@ -57,11 +57,11 @@ namespace DSCoreNodesTests
         [Test]
         public static void TrueForAllInList()
         {
-            Assert.IsTrue(List.TrueForAll(x => x < 10, new List<int> { 0, 1, 2, 3, 4, 5 }));
+            Assert.IsTrue(List.TrueForAllItems(x => x < 10, new List<int> { 0, 1, 2, 3, 4, 5 }));
 
             //Test short circuit
             Assert.IsFalse(
-                List.TrueForAll(
+                List.TrueForAllItems(
                     x => x < 10,
                     new List<int> { 10, 0 }.Select(
                         delegate(int x, int i)
@@ -76,11 +76,11 @@ namespace DSCoreNodesTests
         [Test]
         public static void TrueForAnyInList()
         {
-            Assert.IsFalse(List.TrueForAny(x => x >= 10, new List<int> { 0, 1, 2, 3, 4, 5 }));
+            Assert.IsFalse(List.TrueForAnyItems(x => x >= 10, new List<int> { 0, 1, 2, 3, 4, 5 }));
 
             //Test short circuit
             Assert.IsTrue(
-                List.TrueForAny(
+                List.TrueForAnyItems(
                     x => x >= 10,
                     new List<int> { 10, 0 }.Select(
                         delegate(int x, int i)
@@ -97,38 +97,38 @@ namespace DSCoreNodesTests
         {
             Assert.AreEqual(
                 new object[] { 0, new List<int> { 1, 2, 3, 4, 5 } },
-                List.SplitList(new List<int> { 0, 1, 2, 3, 4, 5 }));
+                List.Deconstruct(new List<int> { 0, 1, 2, 3, 4, 5 }));
         }
 
         [Test]
         public static void AddToList()
         {
-            Assert.AreEqual(new ArrayList { 0, 1, 2 }, List.AddToList(0, new ArrayList { 1, 2 }));
+            Assert.AreEqual(new ArrayList { 0, 1, 2 }, List.AddItemToFront(0, new ArrayList { 1, 2 }));
         }
 
         [Test]
         public static void TakeValuesFromList()
         {
-            Assert.AreEqual(new List<int> { 0, 1 }, List.TakeFromList(new List<int> { 0, 1, 2 }, 2));
+            Assert.AreEqual(new List<int> { 0, 1 }, List.TakeItems(new List<int> { 0, 1, 2 }, 2));
         }
 
         [Test]
         public static void DropValuesFromList()
         {
-            Assert.AreEqual(new List<int> { 2 }, List.DropFromList(new List<int> { 0, 1, 2 }, 2));
+            Assert.AreEqual(new List<int> { 2 }, List.DropItems(new List<int> { 0, 1, 2 }, 2));
         }
 
         [Test]
         public static void ShiftListIndices()
         {
-            Assert.AreEqual(new List<int> { 2, 0, 1 }, List.ShiftListIndices(new List<int> { 0, 1, 2 }, 1));
-            Assert.AreEqual(new List<int> { 1, 2, 0 }, List.ShiftListIndices(new List<int> { 0, 1, 2 }, -1));
+            Assert.AreEqual(new List<int> { 2, 0, 1 }, List.ShiftIndices(new List<int> { 0, 1, 2 }, 1));
+            Assert.AreEqual(new List<int> { 1, 2, 0 }, List.ShiftIndices(new List<int> { 0, 1, 2 }, -1));
         }
 
         [Test]
         public static void GetFromList()
         {
-            Assert.AreEqual(2, List.GetFromList(new List<int> { 0, 1, 2, 3 }, 2));
+            Assert.AreEqual(2, List.GetItemAtIndex(new List<int> { 0, 1, 2, 3 }, 2));
         }
 
         [Test]
@@ -136,16 +136,16 @@ namespace DSCoreNodesTests
         {
             var list = new ArrayList(Enumerable.Range(0, 10).ToList());
 
-            Assert.AreEqual(list, List.SliceList(list));
-            Assert.AreEqual(new ArrayList { 0, 1, 2, 3, 4 }, List.SliceList(list, count: 5));
-            Assert.AreEqual(new ArrayList { 1, 2, 3, 4, 5 }, List.SliceList(list, 1, 5));
-            Assert.AreEqual(new ArrayList { 0, 2, 4, 6, 8 }, List.SliceList(list, step: 2));
+            Assert.AreEqual(list, List.Slice(list));
+            Assert.AreEqual(new ArrayList { 0, 1, 2, 3, 4 }, List.Slice(list, count: 5));
+            Assert.AreEqual(new ArrayList { 1, 2, 3, 4, 5 }, List.Slice(list, 1, 5));
+            Assert.AreEqual(new ArrayList { 0, 2, 4, 6, 8 }, List.Slice(list, step: 2));
         }
 
         [Test]
         public static void RemoveValueFromList()
         {
-            Assert.AreEqual(new List<int> { 0, 1, 3, 4 }, List.RemoveFromList(new List<int> { 0, 1, 2, 3, 4 }, 2));
+            Assert.AreEqual(new List<int> { 0, 1, 3, 4 }, List.RemoveItemAtIndex(new List<int> { 0, 1, 2, 3, 4 }, 2));
         }
 
         [Test]
@@ -153,7 +153,7 @@ namespace DSCoreNodesTests
         {
             Assert.AreEqual(
                 new List<int> { 0, 4 },
-                List.RemoveFromList(new List<int> { 0, 1, 2, 3, 4 }, new List<int> { 1, 2, 3 }));
+                List.RemoveItemsAtIndices(new List<int> { 0, 1, 2, 3, 4 }, new List<int> { 1, 2, 3 }));
         }
 
         [Test]
@@ -161,7 +161,7 @@ namespace DSCoreNodesTests
         {
             Assert.AreEqual(
                 new List<int> { 1, 2, 4, 5, 7 },
-                List.DropEveryNth(new List<int> { 0, 1, 2, 3, 4, 5, 6, 7 }, 3, 1));
+                List.DropEveryNthItem(new List<int> { 0, 1, 2, 3, 4, 5, 6, 7 }, 3, 1));
         }
 
         [Test]
@@ -169,7 +169,7 @@ namespace DSCoreNodesTests
         {
             Assert.AreEqual(
                 new List<int> { 3, 6 },
-                List.TakeEveryNth(new List<int> { 0, 1, 2, 3, 4, 5, 6, 7}, 3, 1));
+                List.TakeEveryNthItem(new List<int> { 0, 1, 2, 3, 4, 5, 6, 7}, 3, 1));
         }
 
         [Test]
@@ -203,13 +203,13 @@ namespace DSCoreNodesTests
         [Test]
         public static void FirstInList()
         {
-            Assert.AreEqual(0, List.First(new ArrayList { 0, 1, 2, 3 }));
+            Assert.AreEqual(0, List.FirstItem(new ArrayList { 0, 1, 2, 3 }));
         }
 
         [Test]
         public static void RestOfList()
         {
-            Assert.AreEqual(new List<int> { 1 }, List.Rest(new List<int> { 0, 1 }));
+            Assert.AreEqual(new List<int> { 1 }, List.RestOfItems(new List<int> { 0, 1 }));
         }
 
         [Test]
@@ -254,7 +254,7 @@ namespace DSCoreNodesTests
         [Test]
         public static void RepeatObject()
         {
-            Assert.AreEqual(new List<object> { 1, 1, 1, 1 }, List.Repeat(1, 4));
+            Assert.AreEqual(new List<object> { 1, 1, 1, 1 }, List.OfRepeatedItem(1, 4));
         }
 
         [Test]
