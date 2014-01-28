@@ -1,7 +1,7 @@
 ﻿using Autodesk.DesignScript.Interfaces;
 using Autodesk.Revit.DB;
 using Revit.GeometryConversion;
-using Revit.GeometryIntersection;
+using Revit.GeometryObjects;
 using Revit.Graphics;
 
 namespace Revit.GeometryObjects
