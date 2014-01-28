@@ -17,6 +17,7 @@ namespace DSCoreNodesUI.HigherOrder
         public ApplyFunction()
         {
             InPortData.Add(new PortData("func", "Function to apply."));
+            OutPortData.Add(new PortData("func(args)", "Result of application."));
             RegisterAllPorts();
         }
 
