@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Autodesk.DesignScript.Geometry;
 using NUnit.Framework;
-using List = DSCoreNodes.List;
+using List = DSCore.List;
 
 namespace DSCoreNodesTests
 {

@@ -5,13 +5,14 @@ using System.Windows.Data;
 using System.Windows.Forms;
 using System.Windows.Media;
 using Dynamo.Controls;
+using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Binding = System.Windows.Data.Binding;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using TextBox = System.Windows.Controls.TextBox;
 
-namespace DSCoreNodes.File
+namespace DSCore.File
 {
     [Browsable(false)]
     public abstract class FileSystemBrowser : DSCoreNodesUI.String
@@ -68,6 +69,12 @@ namespace DSCoreNodes.File
         protected abstract void readFileButton_Click(object sender, RoutedEventArgs e);
     }
 
+
+    [NodeName("File Path")]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeDescription("Allows you to select a file on the system to get its filename.")]
+    [Browsable(false)]
+    [IsDesignScriptCompatible]
     public class Filename : FileSystemBrowser
     {
         public Filename() : base("Filename") { }
@@ -86,6 +93,12 @@ namespace DSCoreNodes.File
         }
     }
 
+
+    [NodeName("Directory Path")]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeDescription("Allows you to select a directory on the system to get its path.")]
+    [Browsable(false)]
+    [IsDesignScriptCompatible]
     public class Directory : FileSystemBrowser
     {
         public Directory() : base("Directory") { }
