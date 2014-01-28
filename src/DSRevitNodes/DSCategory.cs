@@ -3,7 +3,7 @@ using RevitServices.Persistence;
 
 namespace DSRevitNodes
 {
-    class DSCategory
+    public class DSCategory
     {
         #region private members
 
