@@ -8,6 +8,10 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace DSCoreNodesUI.HigherOrder
 {
+    [NodeName("Apply Function")]
+    [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
+    [NodeDescription("Applies a function to arguments.")]
+    [IsDesignScriptCompatible]
     public class ApplyFunction : VariableInputNode
     {
         public ApplyFunction()

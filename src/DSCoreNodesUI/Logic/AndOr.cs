@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using DSCoreNodesUI;
 using Dynamo.Models;
+using Dynamo.Nodes;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 
@@ -10,6 +12,7 @@ namespace DSCore.Logic
     /// <summary>
     /// Abstract base class for short-circuiting binary logic operators.
     /// </summary>
+    [Browsable(false)]
     public abstract class BinaryLogic : VariableInputNode
     {
         private readonly Operator _op;
@@ -59,6 +62,10 @@ namespace DSCore.Logic
     /// <summary>
     /// Short-circuiting Logical AND
     /// </summary>
+    [NodeName("And")]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_CONDITIONAL)]
+    [NodeDescription("Boolean AND: Returns true only if both of the inputs are true. If either is false, returns false.")]
+    [IsDesignScriptCompatible]
     public class And : BinaryLogic
     {
         public And() : base("∧", Operator.and) { }
@@ -67,6 +74,10 @@ namespace DSCore.Logic
     /// <summary>
     /// Short-circuiting Logical OR
     /// </summary>
+    [NodeName("And")]
+    [NodeCategory(BuiltinNodeCategories.LOGIC_CONDITIONAL)]
+    [NodeDescription("Boolean AND: Returns true only if both of the inputs are true. If either is false, returns false.")]
+    [IsDesignScriptCompatible]
     public class Or : BinaryLogic
     {
         public Or() : base("∨", Operator.or) { }
