@@ -72,7 +72,6 @@ namespace DSCoreNodesUI
     }
     */
 
-    [IsInteractive(true)]
     public abstract class EnumAsInt : EnumBase
     {
         protected EnumAsInt(Type t):base(t){}
@@ -87,7 +86,6 @@ namespace DSCoreNodesUI
 
     }
 
-    [IsInteractive(true)]
     public abstract class EnumAsString : EnumBase
     {
         protected EnumAsString(Type t):base(t){}
@@ -101,22 +99,21 @@ namespace DSCoreNodesUI
         }
     }
 
-    [IsInteractive(true)]
     public abstract class EnumBase : DSDropDownBase
     {
         protected Type enum_internal;
 
-        protected EnumBase(Type t)
-            : base(t.ToString())
+        protected EnumBase(Type t): base(t.ToString())
         {
             enum_internal = t;
-            OutPortData.Add(new PortData("", "The members of the enumeration.", typeof(object)));
-            RegisterAllPorts();
             PopulateItems();
         }
 
         protected override void PopulateItems()
         {
+            if (enum_internal == null)
+                return;
+
             Items.Clear();
             foreach (var constant in System.Enum.GetValues(enum_internal))
             {
@@ -131,7 +128,6 @@ namespace DSCoreNodesUI
     /// The drop down node base class which lists all loaded types which are children
     /// of the provided type.
     /// </summary>
-    [IsInteractive(true)]
     public abstract class AllChildrenOfType : DSDropDownBase
     {
         private Type internal_type;
@@ -159,20 +155,5 @@ namespace DSCoreNodesUI
 
             Items = Items.OrderBy(x => x.Name).ToObservableCollection<DynamoDropDownItem>();
         }
-    }
-
-    public enum TomDickHarry
-    {
-        Tom,
-        Dick,
-        Harry
-    };
-
-    [NodeName("Tom Dick and Harry")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
-    [NodeDescription("Every tom dick and harry.")]
-    public class TomDickHarryList : EnumBase
-    {
-        public TomDickHarryList():base(typeof(TomDickHarry)){}
     }
 }
