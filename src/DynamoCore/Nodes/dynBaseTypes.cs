@@ -748,7 +748,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        private static IComparable ToComparable(Value value)
+        internal static IComparable ToComparable(Value value)
         {
             if (value.IsNumber)
                 return (value as Value.Number).Item;
@@ -818,10 +818,9 @@ namespace Dynamo.Nodes
     [NodeName("List Minimum")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_QUERY)]
     [NodeDescription("Returns the minimum value of a list, using the given key mapper. For all elements in the list, the key mapper must return either all numbers or all strings.")]
-    public class ListMin : BuiltinFunction
+    public class ListMin : NodeWithOneOutput
     {
-        public ListMin() 
-            : base(FScheme.Min)
+        public ListMin()
         {
             InPortData.Add(new PortData("f(x)", "Key Mapper", typeof(Value.Function), Value.NewFunction(Utils.ConvertToFSchemeFunc(FScheme.Identity))));
             InPortData.Add(new PortData("list", "List to get the minimum value of.", typeof(Value.List)));
@@ -834,15 +833,47 @@ namespace Dynamo.Nodes
         {
             return builder.Build(this, inputs);
         }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var keyMapper = ((Value.Function) args[0]).Item;
+            var list = ((Value.List) args[1]).Item;
+
+            Value min = null;
+            IComparable minMapped = null;
+
+            foreach (var item in list)
+            {
+                var mapped = SortBy.ToComparable(keyMapper.Invoke(Utils.MakeFSharpList(item)));
+                if (min == null)
+                {
+                    min = item;
+                    minMapped = mapped;
+                }
+                else
+                {
+                    var comparison = minMapped.CompareTo(mapped);
+                    if (comparison > 0)
+                    {
+                        min = item;
+                        minMapped = mapped;
+                    }
+                }
+            }
+
+            if (min == null)
+                throw new Exception("Cannot take minimum value of an empty list.");
+
+            return min;
+        }
     }
 
     [NodeName("List Maximum")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_QUERY)]
     [NodeDescription("Returns the maximum value of a list, using the given key mapper. For all elements in the list, the key mapper must return either all numbers or all strings.")]
-    public class ListMax : BuiltinFunction
+    public class ListMax : NodeWithOneOutput
     {
         public ListMax()
-            : base(FScheme.Max)
         {
             InPortData.Add(new PortData("f(x)", "Key Mapper", typeof(Value.Function), Value.NewFunction(Utils.ConvertToFSchemeFunc(FScheme.Identity))));
             InPortData.Add(new PortData("list", "List to get the maximum value of.", typeof(Value.List)));
@@ -854,6 +885,39 @@ namespace Dynamo.Nodes
         protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
         {
             return builder.Build(this, inputs);
+        }
+
+        public override Value Evaluate(FSharpList<Value> args)
+        {
+            var keyMapper = ((Value.Function)args[0]).Item;
+            var list = ((Value.List)args[1]).Item;
+
+            Value max = null;
+            IComparable maxMapped = null;
+
+            foreach (var item in list)
+            {
+                var mapped = SortBy.ToComparable(keyMapper.Invoke(Utils.MakeFSharpList(item)));
+                if (max == null)
+                {
+                    max = item;
+                    maxMapped = mapped;
+                }
+                else
+                {
+                    var comparison = maxMapped.CompareTo(mapped);
+                    if (comparison < 0)
+                    {
+                        max = item;
+                        maxMapped = mapped;
+                    }
+                }
+            }
+
+            if (max == null)
+                throw new Exception("Cannot take maximum value of an empty list.");
+
+            return max;
         }
     }
 
