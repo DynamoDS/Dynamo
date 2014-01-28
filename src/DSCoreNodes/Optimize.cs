@@ -2,7 +2,7 @@
 
 //TODO: Documentation and tests
 
-namespace DSCoreNodes
+namespace DSCore
 {
     /// <summary>
     /// 

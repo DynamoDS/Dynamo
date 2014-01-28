@@ -5,7 +5,7 @@ using Dynamo.Models;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 
-namespace DSCoreNodes.Logic
+namespace DSCore.Logic
 {
     /// <summary>
     /// Abstract base class for short-circuiting binary logic operators.

@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Linq;
 
-namespace DSCoreNodes
+namespace DSCore
 {
     /// <summary>
     /// Methods for handling higher-order functions.
     /// </summary>
     public class Function
     {
+        private Function()
+        {
+        }
+
         /// <summary>
         /// Type of all functions that are used for Mapping operations.
         /// </summary>
