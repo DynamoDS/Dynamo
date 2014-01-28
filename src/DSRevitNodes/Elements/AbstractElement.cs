@@ -2,11 +2,11 @@
 using System.ComponentModel;
 using System.Linq;
 using Autodesk.Revit.DB;
-using DSRevitNodes.GeometryObjects;
+using Revit.GeometryObjects;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 
-namespace DSRevitNodes.Elements
+namespace Revit.Elements
 {
     /// <summary>
     /// Superclass of all Revit element wrappers
@@ -31,12 +31,12 @@ namespace DSRevitNodes.Elements
         /// <summary>
         /// Obtain all of the Parameters from an Element
         /// </summary>
-        public DSParameter[] Parameters
+        public Parameter[] Parameters
         {
             get
             {
                 var parms = this.InternalElement.Parameters;
-                return parms.Cast<Autodesk.Revit.DB.Parameter>().Select(x => new DSParameter(x)).ToArray();
+                return parms.Cast<Autodesk.Revit.DB.Parameter>().Select(x => new Parameter(x)).ToArray();
             }
         }
 
@@ -54,11 +54,11 @@ namespace DSRevitNodes.Elements
         /// <summary>
         /// Get an Axis-aligned BoundingBox of the Element
         /// </summary>
-        public DSBoundingBox BoundingBox
+        public BoundingBox BoundingBox
         {
             get
             {
-                return new DSBoundingBox(this.InternalElement.get_BoundingBox(null));
+                return new BoundingBox(this.InternalElement.get_BoundingBox(null));
             }
         }
 
@@ -66,7 +66,7 @@ namespace DSRevitNodes.Elements
         /// A reference to the element
         /// </summary>
         [Browsable(false)]
-        public abstract Element InternalElement
+        public abstract Autodesk.Revit.DB.Element InternalElement
         {
             get;
         }

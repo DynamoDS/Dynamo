@@ -5,14 +5,14 @@ using System.Linq;
 using System.Text;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Analysis;
-using DSRevitNodes.Elements;
-using DSRevitNodes.GeometryConversion;
+using Revit.Elements;
+using Revit.GeometryConversion;
 using MathNet.Numerics.NumberTheory;
 using RevitServices.Elements;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 
-namespace DSRevitNodes.AnalysisDisplay
+namespace Revit.AnalysisDisplay
 {
     /// <summary>
     /// Superclass for all Revit Analysis Display types

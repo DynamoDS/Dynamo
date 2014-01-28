@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Autodesk.DesignScript.Geometry;
-using DSRevitNodes;
-using DSRevitNodes.Elements;
-using DSRevitNodes.GeometryObjects;
+using Revit;
+using Revit.Elements;
+using Revit.GeometryObjects;
 using NUnit.Framework;
 
 namespace DSRevitNodesTests.Elements
@@ -17,11 +17,11 @@ namespace DSRevitNodesTests.Elements
         public void ByCurveAndHeight_ValidArgs()
         {
             var elevation = 0;
-            var level = DSLevel.ByElevation(elevation);
+            var level = Level.ByElevation(elevation);
             var line = Line.ByStartPointEndPoint(Point.ByCoordinates(0, 0, 0), Point.ByCoordinates(10, 10, 0));
-            var wallType = DSWallType.ByName( "Curtain Wall 1" );
+            var wallType = WallType.ByName( "Curtain Wall 1" );
 
-            var wall = DSWall.ByCurveAndHeight(line, 10, level, wallType);
+            var wall = Wall.ByCurveAndHeight(line, 10, level, wallType);
 
             Assert.NotNull(wall);
         }
@@ -30,13 +30,13 @@ namespace DSRevitNodesTests.Elements
         public void ByCurveAndHeight_NullArgs()
         {
             var elevation = 0;
-            var level = DSLevel.ByElevation(elevation);
+            var level = Level.ByElevation(elevation);
             var line = Line.ByStartPointEndPoint(Point.ByCoordinates(0, 0, 0), Point.ByCoordinates(10, 10, 0));
-            var wallType = DSWallType.ByName("Curtain Wall 1");
+            var wallType = WallType.ByName("Curtain Wall 1");
 
-            Assert.Throws(typeof(ArgumentNullException), () => DSWall.ByCurveAndHeight(null, 10, level, wallType));
-            Assert.Throws(typeof(ArgumentNullException), () => DSWall.ByCurveAndHeight(line, 10, null, wallType));
-            Assert.Throws(typeof(ArgumentNullException), () => DSWall.ByCurveAndHeight(line, 10, level, null));        
+            Assert.Throws(typeof(ArgumentNullException), () => Wall.ByCurveAndHeight(null, 10, level, wallType));
+            Assert.Throws(typeof(ArgumentNullException), () => Wall.ByCurveAndHeight(line, 10, null, wallType));
+            Assert.Throws(typeof(ArgumentNullException), () => Wall.ByCurveAndHeight(line, 10, level, null));        
         }
 
         [Test]
@@ -44,11 +44,11 @@ namespace DSRevitNodesTests.Elements
         {
             var elevation = 100;
             var line = Line.ByStartPointEndPoint(Point.ByCoordinates(0, 0, 0), Point.ByCoordinates(10, 10, 0));
-            var level0 = DSLevel.ByElevation(elevation);
-            var level1 = DSLevel.ByElevation(elevation + 100);
-            var wallType = DSWallType.ByName("Curtain Wall 1");
+            var level0 = Level.ByElevation(elevation);
+            var level1 = Level.ByElevation(elevation + 100);
+            var wallType = WallType.ByName("Curtain Wall 1");
 
-            var wall = DSWall.ByCurveAndLevels(line, level0, level1, wallType);
+            var wall = Wall.ByCurveAndLevels(line, level0, level1, wallType);
 
             Assert.NotNull(wall);
         }
@@ -58,14 +58,14 @@ namespace DSRevitNodesTests.Elements
         {
             var elevation = 100;
             var line = Line.ByStartPointEndPoint(Point.ByCoordinates(0, 0, 0), Point.ByCoordinates(10, 10, 0));
-            var level0 = DSLevel.ByElevation(elevation);
-            var level1 = DSLevel.ByElevation(elevation + 100);
-            var wallType = DSWallType.ByName("Curtain Wall 1");
+            var level0 = Level.ByElevation(elevation);
+            var level1 = Level.ByElevation(elevation + 100);
+            var wallType = WallType.ByName("Curtain Wall 1");
 
-            Assert.Throws(typeof(ArgumentNullException), () => DSWall.ByCurveAndLevels(null, level0, level1, wallType));
-            Assert.Throws(typeof(ArgumentNullException), () => DSWall.ByCurveAndLevels(line, null, level1, wallType));
-            Assert.Throws(typeof(ArgumentNullException), () => DSWall.ByCurveAndLevels(line, level0, null, wallType));
-            Assert.Throws(typeof(ArgumentNullException), () => DSWall.ByCurveAndLevels(line, level0, level1, null));
+            Assert.Throws(typeof(ArgumentNullException), () => Wall.ByCurveAndLevels(null, level0, level1, wallType));
+            Assert.Throws(typeof(ArgumentNullException), () => Wall.ByCurveAndLevels(line, null, level1, wallType));
+            Assert.Throws(typeof(ArgumentNullException), () => Wall.ByCurveAndLevels(line, level0, null, wallType));
+            Assert.Throws(typeof(ArgumentNullException), () => Wall.ByCurveAndLevels(line, level0, level1, null));
         }
     }
 }

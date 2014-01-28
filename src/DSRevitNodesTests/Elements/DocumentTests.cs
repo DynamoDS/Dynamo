@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using DSRevitNodes.Application;
-using DSRevitNodes.Elements;
+using Revit.Application;
+using Revit.Elements;
 using NUnit.Framework;
 
 namespace DSRevitNodesTests.Elements
@@ -15,7 +15,7 @@ namespace DSRevitNodesTests.Elements
         [Test]
         public void Current()
         {
-            var doc = DSDocument.Current;
+            var doc = Document.Current;
             Assert.NotNull(doc);
             Assert.NotNull(doc.ActiveView);
             Assert.IsTrue(doc.IsFamilyDocument);

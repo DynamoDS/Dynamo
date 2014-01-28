@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Autodesk.DesignScript.Geometry;
-using DSRevitNodes.AnalysisDisplay;
-using DSRevitNodes.Application;
-using DSRevitNodes.Elements;
+using Revit.AnalysisDisplay;
+using Revit.Application;
+using Revit.Elements;
 using NUnit.Framework;
 
 namespace DSRevitNodesTests.AnalysisDisplay
@@ -30,8 +30,8 @@ namespace DSRevitNodesTests.AnalysisDisplay
                 -1
             };
 
-            var doc = DSDocument.Current;
-            var grid = DSPointAnalysisDisplay.ByViewPointsAndValues(doc.ActiveView, samplePoints, sampleValues);
+            var doc = Document.Current;
+            var grid = PointAnalysisDisplay.ByViewPointsAndValues(doc.ActiveView, samplePoints, sampleValues);
 
             Assert.NotNull(grid);
         }
@@ -53,10 +53,10 @@ namespace DSRevitNodesTests.AnalysisDisplay
                 -1
             };
 
-            var doc = DSDocument.Current;
-            Assert.Throws(typeof(System.ArgumentNullException), () => DSPointAnalysisDisplay.ByViewPointsAndValues(null, samplePoints, sampleValues));
-            Assert.Throws(typeof(System.ArgumentNullException), () => DSPointAnalysisDisplay.ByViewPointsAndValues(doc.ActiveView, null, sampleValues));
-            Assert.Throws(typeof(System.ArgumentNullException), () => DSPointAnalysisDisplay.ByViewPointsAndValues(doc.ActiveView, samplePoints, null));
+            var doc = Document.Current;
+            Assert.Throws(typeof(System.ArgumentNullException), () => PointAnalysisDisplay.ByViewPointsAndValues(null, samplePoints, sampleValues));
+            Assert.Throws(typeof(System.ArgumentNullException), () => PointAnalysisDisplay.ByViewPointsAndValues(doc.ActiveView, null, sampleValues));
+            Assert.Throws(typeof(System.ArgumentNullException), () => PointAnalysisDisplay.ByViewPointsAndValues(doc.ActiveView, samplePoints, null));
         }
     }
 }

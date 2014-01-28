@@ -5,7 +5,7 @@ using System.Security.AccessControl;
 using System.Text;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
-using DSRevitNodes.GeometryConversion;
+using Revit.GeometryConversion;
 using NUnit.Framework;
 
 namespace DSRevitNodesTests.GeometryConversion
