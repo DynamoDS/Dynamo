@@ -160,6 +160,7 @@ namespace Dynamo.Nodes
     [NodeName("Element Type")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("All element types available in the document.")]
+    [IsDesignScriptCompatible]
     public class ElementTypes : DSCoreNodesUI.AllChildrenOfType
     {
         public ElementTypes() : base(typeof(Element)) { }
@@ -173,6 +174,7 @@ namespace Dynamo.Nodes
     [NodeName("Family Type")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("All family types available in the document.")]
+    [IsDesignScriptCompatible]
     public class FamilyTypes : DSDropDownBase
     {
         public FamilyTypes():base("Family Types"){ }
@@ -209,6 +211,7 @@ namespace Dynamo.Nodes
     [NodeName("Floor Type")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("All floor types available in the document.")]
+    [IsDesignScriptCompatible]
     public class FloorType : DSDropDownBase
     {
         public FloorType() : base("Floor Types") { }
@@ -252,6 +255,7 @@ namespace Dynamo.Nodes
     [NodeName("Wall Type")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("All floor types available in the document.")]
+    [IsDesignScriptCompatible]
     public class WallType : DSDropDownBase
     {
         public WallType() : base("Wall Types") { }
@@ -295,6 +299,7 @@ namespace Dynamo.Nodes
     [NodeName("Category")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("All built-in categories.")]
+    [IsDesignScriptCompatible]
     public class Categories : EnumBase
     {
         public Categories():base(typeof(BuiltInCategory)){}
