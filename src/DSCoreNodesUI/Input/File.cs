@@ -11,7 +11,7 @@ using Binding = System.Windows.Data.Binding;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using TextBox = System.Windows.Controls.TextBox;
 
-namespace DSCoreNodes.File
+namespace DSCore.File
 {
     [Browsable(false)]
     public abstract class FileSystemBrowser : DSCoreNodesUI.String
