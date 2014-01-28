@@ -490,7 +490,10 @@ namespace Dynamo.Controls
                 return;
             }
 
-            dynSettings.Controller.ShutDown(false);
+            if (!dynSettings.Controller.Testing)
+            {
+                dynSettings.Controller.ShutDown(false);
+            }
         }
 
         private void WindowClosed(object sender, EventArgs e)

@@ -44,6 +44,7 @@ namespace Dynamo.Tests.UI
         [TearDown]
         public void Exit()
         {
+            this.controller.ShutDown(false);
             this.controller = null;
         }
 
@@ -1620,7 +1621,33 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(40, cbn.OutPorts[1].MarginThickness.Top);
 
         }
+        [Test]
+        public void DS_FunctionRedef01()
+        {
+            // Details are available in defect 
+            RunCommandsFromFile("Function_redef01.xml");
 
+            Assert.AreEqual(3, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Connectors.Count);
+
+            //Check the CBN for input and output ports count
+            var cbn = GetNode("babc4816-96e6-495c-8489-7a650d1bfb25") as CodeBlockNodeModel;
+            Assert.AreNotEqual(ElementState.Error, cbn.State);
+            
+            AssertValue("e", 1); // Run playback is recorded in command file
+            cbn = GetNode("d4d53e20-1514-4349-83e1-7cb5c533a3e0") as CodeBlockNodeModel;
+            AssertValue("p", 1); // Run playback is recorded in command file
+
+           /* Exit();
+            Start();
+
+            RunCommandsFromFile("Function_redef01.xml");
+            cbn = GetNode("0643ed2b-90d0-4e79-a59f-76f2efe32ef7") as CodeBlockNodeModel;
+            AssertValue("d", 3);
+            cbn = GetNode("a555f132-a359-4f75-a2e7-faf76f7cfa08") as CodeBlockNodeModel;
+            AssertValue("p", 2);*/
+
+        }
 
         #endregion
 
