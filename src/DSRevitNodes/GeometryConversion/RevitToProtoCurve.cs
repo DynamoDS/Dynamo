@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using Autodesk.DesignScript.Geometry;
 
-namespace DSRevitNodes.GeometryConversion
+namespace Revit.GeometryConversion
 {
     [Browsable(false)]
     public static class RevitToProtoCurve

@@ -5,13 +5,12 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using Autodesk.Revit.DB;
-using DSRevitNodes.Elements;
-using DSRevitNodes.Elements;
-using DSRevitNodes.GeometryConversion;
+using Revit.Elements;
+using Revit.GeometryConversion;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
 
-namespace DSRevitNodes.Elements
+namespace Revit.Elements
 {
     [Browsable(false)]
     public abstract class AbstractView3D : AbstractView
@@ -60,7 +59,7 @@ namespace DSRevitNodes.Elements
         /// </summary>
         /// <param name="e"></param>
         /// <param name="pts"></param>
-        protected static void GetPointCloud(Element e, List<XYZ> pts)
+        protected static void GetPointCloud(Autodesk.Revit.DB.Element e, List<XYZ> pts)
         {
             var options = new Options()
             {
@@ -71,9 +70,9 @@ namespace DSRevitNodes.Elements
 
             foreach (var gObj in e.get_Geometry(options))
             {
-                if (gObj is Solid)
+                if (gObj is Autodesk.Revit.DB.Solid)
                 {
-                    GetPointCloud(gObj as Solid, pts);
+                    GetPointCloud(gObj as Autodesk.Revit.DB.Solid, pts);
                 }
                 else if (gObj is GeometryInstance)
                 {
@@ -91,9 +90,9 @@ namespace DSRevitNodes.Elements
         {
             foreach (var gObj in geomInst.GetInstanceGeometry())
             {
-                if (gObj is Solid)
+                if (gObj is Autodesk.Revit.DB.Solid)
                 {
-                    GetPointCloud(gObj as Solid, pts);
+                    GetPointCloud(gObj as Autodesk.Revit.DB.Solid, pts);
                 }
                 else if (gObj is GeometryInstance)
                 {
@@ -107,7 +106,7 @@ namespace DSRevitNodes.Elements
         /// </summary>
         /// <param name="solid"></param>
         /// <param name="pts"></param>
-        protected static void GetPointCloud(Solid solid, List<XYZ> pts)
+        protected static void GetPointCloud(Autodesk.Revit.DB.Solid solid, List<XYZ> pts)
         {
             foreach (Edge gEdge in solid.Edges)
             {
@@ -131,7 +130,7 @@ namespace DSRevitNodes.Elements
         /// </summary>
         /// <param name="view"></param>
         /// <param name="element"></param>
-        protected static void IsolateInView(View3D view, Element element)
+        protected static void IsolateInView(View3D view, Autodesk.Revit.DB.Element element)
         {
             var fec = GetVisibleElementFilter();
 
@@ -479,7 +478,7 @@ namespace DSRevitNodes.Elements
         /// Isolate the element in the current view by creating a mininum size crop box around it
         /// </summary>
         /// <param name="element"></param>
-        protected void InternalIsolateInView(Element element)
+        protected void InternalIsolateInView(Autodesk.Revit.DB.Element element)
         {
             IsolateInView(this.InternalView3D, element);
         }

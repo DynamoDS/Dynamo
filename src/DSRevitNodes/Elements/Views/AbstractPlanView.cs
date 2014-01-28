@@ -5,7 +5,7 @@ using System.Text;
 using Autodesk.Revit.DB;
 using RevitServices.Persistence;
 
-namespace DSRevitNodes.Elements
+namespace Revit.Elements
 {
     /// <summary>
     /// Base class for Revit Plan views

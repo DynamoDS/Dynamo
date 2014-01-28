@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Autodesk.DesignScript.Geometry;
-using DSRevitNodes;
-using DSRevitNodes.Elements;
-using DSRevitNodes.GeometryObjects;
+using Revit;
+using Revit.Elements;
+using Revit.GeometryObjects;
 using NUnit.Framework;
 
 namespace DSRevitNodesTests.GeometryObjects
@@ -16,9 +16,9 @@ namespace DSRevitNodesTests.GeometryObjects
         [Test]
         public void BoundingBoxPropertyOnAbstractElement()
         {
-            var famSym = DSFamilySymbol.ByName("Box");
+            var famSym = FamilySymbol.ByName("Box");
             var pt = Point.ByCoordinates(0, 1, 2);
-            var famInst = DSFamilyInstance.ByPoint(famSym, pt);
+            var famInst = FamilyInstance.ByPoint(famSym, pt);
 
             var bbox = famInst.BoundingBox;
             Assert.NotNull(bbox);

@@ -4,16 +4,17 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Autodesk.Revit.DB;
-using DSRevitNodes.GeometryConversion;
-using DSRevitNodes.GeometryObjects;
+using Revit.GeometryConversion;
+using Revit.GeometryObjects;
 using RevitServices.Persistence;
 using Curve = Autodesk.DesignScript.Geometry.Curve;
+using Edge = Revit.GeometryObjects.Edge;
 using Face = Autodesk.DesignScript.Geometry.Face;
 using Line = Autodesk.DesignScript.Geometry.Line;
 using Point = Autodesk.DesignScript.Geometry.Point;
 using Solid = Autodesk.DesignScript.Geometry.Solid;
 
-namespace DSRevitNodes.GeometryIntersection
+namespace Revit.GeometryIntersection
 {
     public struct DSCurveFaceIntersectionResult
     {
@@ -35,7 +36,7 @@ namespace DSRevitNodes.GeometryIntersection
             internal set;
         }
 
-        public DSEdge Edge
+        public Edge Edge
         {
             get;
             internal set;
@@ -69,7 +70,7 @@ namespace DSRevitNodes.GeometryIntersection
         /// <param name="curve"></param>
         /// <param name="face"></param>
         /// <returns>A list of DSCurveFaceIntersectionResult</returns>
-        public static List<DSCurveFaceIntersectionResult> CurveFace(Autodesk.DesignScript.Geometry.Curve curve, DSFace face)
+        public static List<DSCurveFaceIntersectionResult> CurveFace(Autodesk.DesignScript.Geometry.Curve curve, GeometryObjects.Face face)
         {
             if (curve == null)
             {
@@ -104,7 +105,7 @@ namespace DSRevitNodes.GeometryIntersection
 
                     if (ir.EdgeObject != null)
                     {
-                        intersection.Edge = DSEdge.FromExisting(ir.EdgeObject);
+                        intersection.Edge = Edge.FromExisting(ir.EdgeObject);
                     }
                     
                     intersection.CurveParameter = ir.Parameter;
@@ -125,7 +126,7 @@ namespace DSRevitNodes.GeometryIntersection
         /// <param name="face1"></param>
         /// <param name="face2"></param>
         /// <returns>A list of curves or an empty list if there is no intersection</returns>
-        public static List<Autodesk.DesignScript.Geometry.Curve> FaceFace( DSFace face1, DSFace face2 )
+        public static List<Autodesk.DesignScript.Geometry.Curve> FaceFace( GeometryObjects.Face face1, GeometryObjects.Face face2 )
         {
             if (face1 == null)
             {

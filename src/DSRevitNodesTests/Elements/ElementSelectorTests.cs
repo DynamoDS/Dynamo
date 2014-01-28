@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Autodesk.Revit.Creation;
-using DSRevitNodes;
-using DSRevitNodes.Elements;
+using Revit;
+using Revit.Elements;
 using NUnit.Framework;
 using RevitServices.Persistence;
 using RevitServices.Transactions;
@@ -26,10 +26,10 @@ namespace DSRevitNodesTests.Elements
 
             // use the element factory to do the same
             var famId = family.Id;
-            var famFromFact = DSRevitNodes.Elements.ElementSelector.ByElementId(famId.IntegerValue, true);
+            var famFromFact = Revit.Elements.ElementSelector.ByElementId(famId.IntegerValue, true);
 
             Assert.NotNull(famFromFact);
-            Assert.IsAssignableFrom(typeof(DSFamily), famFromFact);
+            Assert.IsAssignableFrom(typeof(Family), famFromFact);
         }
 
         [Test]
@@ -45,11 +45,11 @@ namespace DSRevitNodesTests.Elements
 
             // use the element factory to do the same by unique id
             var famUniqueId = family.UniqueId;
-            var famFromFact = DSRevitNodes.Elements.ElementSelector.ByUniqueId(famUniqueId, true);
+            var famFromFact = Revit.Elements.ElementSelector.ByUniqueId(famUniqueId, true);
 
             Assert.NotNull(famFromFact);
-            Assert.IsAssignableFrom(typeof(DSFamily), famFromFact);
-            Assert.AreEqual(name, (famFromFact as DSFamily).Name);
+            Assert.IsAssignableFrom(typeof(Family), famFromFact);
+            Assert.AreEqual(name, (famFromFact as Family).Name);
         }
 
         [Test]
@@ -68,11 +68,11 @@ namespace DSRevitNodesTests.Elements
 
             // use the element factory to do the same
             var famSymEleId = symbol.Id;
-            var famSymFromFact = DSRevitNodes.Elements.ElementSelector.ByElementId(famSymEleId.IntegerValue, true);
+            var famSymFromFact = Revit.Elements.ElementSelector.ByElementId(famSymEleId.IntegerValue, true);
 
             Assert.NotNull(famSymFromFact);
-            Assert.IsAssignableFrom(typeof(DSFamilySymbol), famSymFromFact);
-            Assert.AreEqual(name, (famSymFromFact as DSFamilySymbol).Name);
+            Assert.IsAssignableFrom(typeof(FamilySymbol), famSymFromFact);
+            Assert.AreEqual(name, (famSymFromFact as FamilySymbol).Name);
         }
 
         [Test]
@@ -91,11 +91,11 @@ namespace DSRevitNodesTests.Elements
 
             // use the element factory to do the same
             var famSymUniqueId = symbol.UniqueId;
-            var famSymFromFact = DSRevitNodes.Elements.ElementSelector.ByUniqueId(famSymUniqueId, true);
+            var famSymFromFact = Revit.Elements.ElementSelector.ByUniqueId(famSymUniqueId, true);
 
             Assert.NotNull(famSymFromFact);
-            Assert.IsAssignableFrom(typeof(DSFamilySymbol), famSymFromFact);
-            Assert.AreEqual(name, (famSymFromFact as DSFamilySymbol).Name);
+            Assert.IsAssignableFrom(typeof(FamilySymbol), famSymFromFact);
+            Assert.AreEqual(name, (famSymFromFact as FamilySymbol).Name);
         }
 
         [Test]

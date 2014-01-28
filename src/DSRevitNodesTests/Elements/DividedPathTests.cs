@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Autodesk.DesignScript.Geometry;
-using DSRevitNodes;
-using DSRevitNodes.Elements;
-using DSRevitNodes.GeometryObjects;
-using DSRevitNodes.References;
+using Revit;
+using Revit.Elements;
+using Revit.GeometryObjects;
+using Revit.References;
 using NUnit.Framework;
 using ArgumentNullException = Autodesk.Revit.Exceptions.ArgumentNullException;
 
@@ -31,11 +31,11 @@ namespace DSRevitNodesTests
             Assert.NotNull(spline);
 
             // build model curve from spline
-            var modCurve = DSModelCurve.ByPlanarCurve(spline);
+            var modCurve = ModelCurve.ByPlanarCurve(spline);
             Assert.NotNull(modCurve);
 
             // build dividedPath
-            var divPath = DSDividedPath.ByCurveAndDivisions(modCurve.CurveReference, 5);
+            var divPath = DividedPath.ByCurveAndDivisions(modCurve.CurveReference, 5);
             Assert.NotNull(divPath);
 
         }
@@ -44,7 +44,7 @@ namespace DSRevitNodesTests
         public void ByCurveAndEqualDivisions_NullArgument()
         {
             // build dividedPath
-            Assert.Throws(typeof (ArgumentNullException), () => DSDividedPath.ByCurveAndDivisions(null, 5));
+            Assert.Throws(typeof (ArgumentNullException), () => DividedPath.ByCurveAndDivisions(null, 5));
         }
 
         [Test]
@@ -63,11 +63,11 @@ namespace DSRevitNodesTests
             Assert.NotNull(spline);
 
             // build model curve from spline
-            var modCurve = DSModelCurve.ByPlanarCurve(spline);
+            var modCurve = ModelCurve.ByPlanarCurve(spline);
             Assert.NotNull(modCurve);
 
             // build dividedPath
-            Assert.Throws(typeof(Exception), () => DSDividedPath.ByCurveAndDivisions(modCurve.CurveReference, 0));
+            Assert.Throws(typeof(Exception), () => DividedPath.ByCurveAndDivisions(modCurve.CurveReference, 0));
 
         }
     }
