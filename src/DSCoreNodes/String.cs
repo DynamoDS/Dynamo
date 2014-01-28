@@ -3,7 +3,7 @@ using System.Collections;
 using System.Globalization;
 using System.Windows.Markup;
 
-namespace DSCoreNodes
+namespace DSCore
 {
     /// <summary>
     /// Methods for managing strings.

@@ -1,7 +1,7 @@
 ﻿using Autodesk.Revit.DB;
 using RevitServices.Persistence;
 
-namespace DSRevitNodes
+namespace Revit
 {
     public class DSCategory
     {

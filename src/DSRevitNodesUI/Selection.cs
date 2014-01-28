@@ -8,7 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using Autodesk.Revit.DB;
-using DSRevitNodes.Interactivity;
+using Revit.Interactivity;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.UI;

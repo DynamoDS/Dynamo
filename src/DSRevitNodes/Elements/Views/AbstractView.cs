@@ -7,7 +7,7 @@ using System.Net.Mime;
 using System.Text;
 using Autodesk.Revit.DB;
 
-namespace DSRevitNodes.Elements
+namespace Revit.Elements
 {
     /// <summary>
     /// An abstract Revit View - All view types inherit from this type

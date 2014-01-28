@@ -5,11 +5,13 @@ using System.Linq;
 using System.Reflection;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
-using DSRevitNodes.Elements;
-using DSRevitNodes.GeometryConversion;
-using DSRevitNodes.GeometryObjects;
+using Revit.Elements;
+using Revit.GeometryConversion;
+using Revit.GeometryObjects;
 using NUnit.Framework;
+using Curve = Autodesk.DesignScript.Geometry.Curve;
 using FreeFormElement = Autodesk.Revit.DB.FreeFormElement;
+using Solid = Revit.Elements.Solid;
 
 namespace DSRevitNodesTests.GeometryObjects
 {
@@ -51,7 +53,7 @@ namespace DSRevitNodesTests.GeometryObjects
 
             var dir = Vector.ByCoordinates(0, 0, 1);
             var dist = 5;
-            var extrusion = DSSolid.ByExtrusion(crvs.ToArray(), dir, dist);
+            var extrusion = Solid.ByExtrusion(crvs.ToArray(), dir, dist);
 
             Assert.NotNull(extrusion);
             Assert.AreEqual(2.5, extrusion.Volume, 0.01);
@@ -74,7 +76,7 @@ namespace DSRevitNodesTests.GeometryObjects
             var planeCs = CoordinateSystem.ByOriginVectors(origin, x, z, y);
             var transCrvs = crvs.Select(crv => crv.Transform(CoordinateSystem.WCS, planeCs)).Cast<Curve>().ToList();
 
-            var revolve = DSSolid.ByRevolve(transCrvs, cs, 0, 3.14);
+            var revolve = Solid.ByRevolve(transCrvs, cs, 0, 3.14);
             Assert.NotNull(revolve);
 
             var package = new RenderPackage(); 
@@ -104,7 +106,7 @@ namespace DSRevitNodesTests.GeometryObjects
             var planeCs = CoordinateSystem.ByOriginVectors(origin, x, z, y);
             var transCrvs = crvs.Select(crv => crv.Transform(CoordinateSystem.WCS, planeCs)).Cast<Curve>().ToList();
 
-            var revolve = DSSolid.ByRevolve(transCrvs, cs, 0, 3.14);
+            var revolve = Solid.ByRevolve(transCrvs, cs, 0, 3.14);
             Assert.NotNull(revolve);
 
             var package = new RenderPackage();
@@ -137,7 +139,7 @@ namespace DSRevitNodesTests.GeometryObjects
             var bottCurves = rect1.Select(crv => crv.Transform(CoordinateSystem.WCS, csBottom)).Cast<Curve>().ToList();
             var topCurves = rect2.Select(crv => crv.Transform(CoordinateSystem.WCS, csTop)).Cast<Curve>().ToList();
 
-            var blend = DSSolid.ByBlend(new List<List<Curve>>{bottCurves,topCurves});
+            var blend = Solid.ByBlend(new List<List<Curve>>{bottCurves,topCurves});
             Assert.NotNull(blend);
 
             var package = new RenderPackage();
@@ -195,7 +197,7 @@ namespace DSRevitNodesTests.GeometryObjects
                 File.Delete(modelPath);
             WriteToOBJ(modelPath, new List<RenderPackage>() { package });
 
-            var blend = DSSolid.BySweptBlend(new List<List<Curve>> { cs1,cs2,cs3,cs4}, spine, new List<double>{0,.25,.75,1});
+            var blend = Solid.BySweptBlend(new List<List<Curve>> { cs1,cs2,cs3,cs4}, spine, new List<double>{0,.25,.75,1});
             Assert.NotNull(blend);
 
             blend.Tessellate(package);
@@ -209,7 +211,7 @@ namespace DSRevitNodesTests.GeometryObjects
         [Test]
         public void Cylinder_ValidArgs()
         {
-            var cylinder = DSSolid.Cylinder(Point.ByCoordinates(0, 0, 0), 5, Vector.ByCoordinates(0,0,1), 10);
+            var cylinder = Solid.Cylinder(Point.ByCoordinates(0, 0, 0), 5, Vector.ByCoordinates(0,0,1), 10);
             Assert.IsNotNull(cylinder);
 
             var package = new RenderPackage();
@@ -225,7 +227,7 @@ namespace DSRevitNodesTests.GeometryObjects
         [Test]
         public void Sphere_ValidArgs()
         {
-            var sphere = DSSolid.Sphere(Point.ByCoordinates(0, 5, 3), 10);
+            var sphere = Solid.Sphere(Point.ByCoordinates(0, 5, 3), 10);
             Assert.IsNotNull(sphere);
 
             var package = new RenderPackage();
@@ -243,7 +245,7 @@ namespace DSRevitNodesTests.GeometryObjects
             var axis = Vector.ByCoordinates(.5, .5, .5);
             var center = Point.ByCoordinates(2, 3, 5);
 
-            var torus = DSSolid.Torus(axis, center, 3, 1);
+            var torus = Solid.Torus(axis, center, 3, 1);
             Assert.IsNotNull(torus);
 
             var package = new RenderPackage();
@@ -261,7 +263,7 @@ namespace DSRevitNodesTests.GeometryObjects
             var min = Point.ByCoordinates(-2, -1, 5);
             var max = Point.ByCoordinates(3, 5, 10);
 
-            var box = DSSolid.BoxByTwoCorners(min, max);
+            var box = Solid.BoxByTwoCorners(min, max);
             Assert.IsNotNull(box);
 
             var package = new RenderPackage();
@@ -278,7 +280,7 @@ namespace DSRevitNodesTests.GeometryObjects
         {
             var center = Point.ByCoordinates(-2, -1, 5);
 
-            var box = DSSolid.BoxByCenterAndDimensions(center, 2, 5, 10);
+            var box = Solid.BoxByCenterAndDimensions(center, 2, 5, 10);
             Assert.IsNotNull(box);
 
             var package = new RenderPackage();
@@ -293,9 +295,9 @@ namespace DSRevitNodesTests.GeometryObjects
         [Test]
         public void ByBooleanUnion_ValidArgs()
         {
-            var solidA = DSSolid.BoxByCenterAndDimensions(Point.ByCoordinates(0, 0, 0), 1, 1, 1);
-            var solidB = DSSolid.Sphere(Point.ByCoordinates(1, 1, 0), 1);
-            var union = DSSolid.ByBooleanUnion(solidA, solidB);
+            var solidA = Solid.BoxByCenterAndDimensions(Point.ByCoordinates(0, 0, 0), 1, 1, 1);
+            var solidB = Solid.Sphere(Point.ByCoordinates(1, 1, 0), 1);
+            var union = Solid.ByBooleanUnion(solidA, solidB);
             Assert.IsNotNull(union);
 
             var package = new RenderPackage();
@@ -310,9 +312,9 @@ namespace DSRevitNodesTests.GeometryObjects
         [Test]
         public void ByBooleanIntersect_ValidArgs()
         {
-            var solidA = DSSolid.BoxByCenterAndDimensions(Point.ByCoordinates(0, 0, 0), 1, 1, 1);
-            var solidB = DSSolid.Sphere(Point.ByCoordinates(1, 1, 0), 1);
-            var xSect = DSSolid.ByBooleanIntersection(solidA, solidB);
+            var solidA = Solid.BoxByCenterAndDimensions(Point.ByCoordinates(0, 0, 0), 1, 1, 1);
+            var solidB = Solid.Sphere(Point.ByCoordinates(1, 1, 0), 1);
+            var xSect = Solid.ByBooleanIntersection(solidA, solidB);
             Assert.IsNotNull(xSect);
 
             var package = new RenderPackage();
@@ -327,9 +329,9 @@ namespace DSRevitNodesTests.GeometryObjects
         [Test]
         public void ByBooleanDifference_ValidArgs()
         {
-            var solidA = DSSolid.BoxByCenterAndDimensions(Point.ByCoordinates(0, 0, 0), 1, 1, 1);
-            var solidB = DSSolid.Sphere(Point.ByCoordinates(1, 1, 0), 1);
-            var difference = DSSolid.ByBooleanDifference(solidA, solidB);
+            var solidA = Solid.BoxByCenterAndDimensions(Point.ByCoordinates(0, 0, 0), 1, 1, 1);
+            var solidB = Solid.Sphere(Point.ByCoordinates(1, 1, 0), 1);
+            var difference = Solid.ByBooleanDifference(solidA, solidB);
             Assert.IsNotNull(difference);
 
             var package = new RenderPackage();
@@ -344,13 +346,13 @@ namespace DSRevitNodesTests.GeometryObjects
         [Test]
         public void FromElement_ValidArgs()
         {
-            var solidA = DSSolid.BoxByCenterAndDimensions(Point.ByCoordinates(0, 0, 0), 1, 1, 1);
-            var solidB = DSSolid.Sphere(Point.ByCoordinates(1, 1, 0), 1);
-            var difference = DSSolid.ByBooleanDifference(solidA, solidB);
+            var solidA = Solid.BoxByCenterAndDimensions(Point.ByCoordinates(0, 0, 0), 1, 1, 1);
+            var solidB = Solid.Sphere(Point.ByCoordinates(1, 1, 0), 1);
+            var difference = Solid.ByBooleanDifference(solidA, solidB);
 
-            var ff = DSFreeForm.BySolid(difference);
+            var ff = FreeForm.BySolid(difference);
 
-            var extract = DSSolid.FromElement(ff);
+            var extract = Solid.FromElement(ff);
             Assert.IsNotNull(extract);
 
             var package = new RenderPackage();

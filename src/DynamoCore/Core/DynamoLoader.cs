@@ -131,7 +131,7 @@ namespace Dynamo.Utilities
         /// <returns>True if the type is node.</returns>
         public static bool IsNodeSubType(Type t)
         {
-            return t.Namespace == "Dynamo.Nodes" &&
+            return //t.Namespace == "Dynamo.Nodes" &&
                    !t.IsAbstract &&
                    t.IsSubclassOf(typeof(NodeModel));
         }

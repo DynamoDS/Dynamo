@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
-namespace DSRevitNodes.Graphics
+namespace Revit.Graphics
 {
     [Browsable(false)]
     public static class GraphicsManager
