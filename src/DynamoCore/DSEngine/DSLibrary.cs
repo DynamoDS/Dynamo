@@ -344,7 +344,7 @@ namespace Dynamo.DSEngine
             if (_functions.Count == 0)
                 return null;
 
-            var func = _functions.FirstOrDefault(f => f.MangledName.Equals(managledName));
+            var func = _functions.FirstOrDefault(f => f.MangledName.EndsWith(managledName));
             return null == func ? _functions.First() : func;
         }
 
@@ -538,7 +538,8 @@ namespace Dynamo.DSEngine
             {
                 FunctionGroup functionGroup;
                 string qualifiedName = mangledName.Split(new char[] { '@' })[0];
-                if (groups.TryGetValue(qualifiedName, out functionGroup))
+
+                if (TryGetFunctionGroup(groups, qualifiedName, out functionGroup))
                 {
                     return functionGroup.GetFunctionDescriptor(mangledName);
                 }
@@ -569,14 +570,54 @@ namespace Dynamo.DSEngine
             {
                 foreach (var groupMap in _importedFunctionGroups.Values)
                 {
-                   if (groupMap.TryGetValue(qualifiedName, out functionGroup))
-                   {
-                       return functionGroup.GetFunctionDescriptor(managledName);
-                   }
+                    if (TryGetFunctionGroup(groupMap, qualifiedName, out functionGroup))
+                    {
+                        return functionGroup.GetFunctionDescriptor(managledName);
+                    }
                 }
             }
 
             return null;
+        }
+
+        private bool CanbeResolvedTo(string[] partialName, string[] fullName)
+        {
+            if (null == partialName || 
+                null == fullName || 
+                partialName.Length > fullName.Length)
+            {
+                return false;
+            }
+
+            return fullName.Reverse()
+                           .Take(partialName.Length)
+                           .SequenceEqual(partialName.Reverse());
+        }
+
+        private bool TryGetFunctionGroup(Dictionary<string, FunctionGroup> funcGroupMap,
+                                         string qualifiedName,
+                                         out FunctionGroup funcGroup)
+        {
+            if (funcGroupMap.TryGetValue(qualifiedName, out funcGroup))
+            {
+                return true;
+            }
+            else
+            {
+                string[] partialName = qualifiedName.Split('.');
+                string key = funcGroupMap.Keys.FirstOrDefault(k =>
+                                CanbeResolvedTo(partialName, k.Split('.')));
+
+                if (key != null)
+                {
+                    funcGroup = funcGroupMap[key];
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
         }
 
         /// <summary>
