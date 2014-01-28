@@ -21,9 +21,9 @@ namespace DSCore.Logic
         {
             _op = op;
 
-            InPortData.Add(new PortData("a", "operand"));
-            InPortData.Add(new PortData("b", "operand"));
-            OutPortData.Add(new PortData("a" + symbol + "b", "result"));
+            InPortData.Add(new PortData("bool0", "operand"));
+            InPortData.Add(new PortData("bool1", "operand"));
+            OutPortData.Add(new PortData("", "result"));
             RegisterAllPorts();
         }
 
@@ -74,9 +74,9 @@ namespace DSCore.Logic
     /// <summary>
     /// Short-circuiting Logical OR
     /// </summary>
-    [NodeName("And")]
+    [NodeName("Or")]
     [NodeCategory(BuiltinNodeCategories.LOGIC_CONDITIONAL)]
-    [NodeDescription("Boolean AND: Returns true only if both of the inputs are true. If either is false, returns false.")]
+    [NodeDescription("Boolean OR: Returns true if either of the inputs are true. If neither are true, returns false.")]
     [IsDesignScriptCompatible]
     public class Or : BinaryLogic
     {
