@@ -1,6 +1,6 @@
 ﻿using System;
 using Autodesk.DesignScript.Geometry;
-using DSRevitNodes.Elements;
+using Revit.Elements;
 using NUnit.Framework;
 
 namespace DSRevitNodesTests.Elements
@@ -12,7 +12,7 @@ namespace DSRevitNodesTests.Elements
         public void ByOutlineTypeAndLevel_ValidArgs()
         {
             var elevation = 100;
-            var level = DSLevel.ByElevation(elevation);
+            var level = Level.ByElevation(elevation);
 
             var outline = new[]
             {
@@ -22,9 +22,9 @@ namespace DSRevitNodesTests.Elements
                 Line.ByStartPointEndPoint(Point.ByCoordinates(0, 100, 0), Point.ByCoordinates(0, 0, 0))
             };
 
-            var floorType = DSFloorType.ByName("Generic - 12\"");
+            var floorType = FloorType.ByName("Generic - 12\"");
 
-            var floor = DSFloor.ByOutlineTypeAndLevel(outline, floorType, level);
+            var floor = Floor.ByOutlineTypeAndLevel(outline, floorType, level);
             Assert.NotNull(floor);
         }
 
@@ -32,7 +32,7 @@ namespace DSRevitNodesTests.Elements
         public void ByOutlineTypeAndLevel_NullArgument()
         {
             var elevation = 100;
-            var level = DSLevel.ByElevation(elevation);
+            var level = Level.ByElevation(elevation);
 
             var outline = new[]
             {
@@ -42,11 +42,11 @@ namespace DSRevitNodesTests.Elements
                 Line.ByStartPointEndPoint(Point.ByCoordinates(0, 100, 0), Point.ByCoordinates(0, 0, 0))
             };
 
-            var floorType = DSFloorType.ByName("Generic - 12\"");
+            var floorType = FloorType.ByName("Generic - 12\"");
 
-            Assert.Throws(typeof(ArgumentNullException), () => DSFloor.ByOutlineTypeAndLevel(null, floorType, level));
-            Assert.Throws(typeof(ArgumentNullException), () => DSFloor.ByOutlineTypeAndLevel(outline, null, level));
-            Assert.Throws(typeof(ArgumentNullException), () => DSFloor.ByOutlineTypeAndLevel(outline, floorType, null));
+            Assert.Throws(typeof(ArgumentNullException), () => Floor.ByOutlineTypeAndLevel(null, floorType, level));
+            Assert.Throws(typeof(ArgumentNullException), () => Floor.ByOutlineTypeAndLevel(outline, null, level));
+            Assert.Throws(typeof(ArgumentNullException), () => Floor.ByOutlineTypeAndLevel(outline, floorType, null));
         }
     }
 }

@@ -5,11 +5,12 @@ using System.Security.AccessControl;
 using System.Text;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
-using DSRevitNodes.Elements;
-using DSRevitNodes.GeometryConversion;
-using DSRevitNodes.GeometryIntersection;
+using Revit.Elements;
+using Revit.GeometryConversion;
+using Revit.GeometryObjects;
 using NUnit.Framework;
 using Point = Autodesk.DesignScript.Geometry.Point;
+using Solid = Revit.Elements.Solid;
 
 namespace DSRevitNodesTests.GeometryIntersection
 {
@@ -32,7 +33,7 @@ namespace DSRevitNodesTests.GeometryIntersection
         public void IntersectingCurveFace_ValidArgs()
         {
 
-            var cube1 = DSSolid.BoxByCenterAndDimensions(Point.ByCoordinates(0, 0, 0), 20, 20, 20);
+            var cube1 = Solid.BoxByCenterAndDimensions(Point.ByCoordinates(0, 0, 0), 20, 20, 20);
             var faces = cube1.Faces;
 
             // get face with normal in positive y direction
@@ -44,7 +45,7 @@ namespace DSRevitNodesTests.GeometryIntersection
                     Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, -50, 0),
                     Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 50, 0));
 
-            var results = DSFaceIntersect.CurveFace(line, faceFirst);
+            var results = Intersect.CurveFace(line, faceFirst);
 
             Assert.AreEqual(1, results.Count);
 
@@ -61,7 +62,7 @@ namespace DSRevitNodesTests.GeometryIntersection
         public void IntersectingCurveFace_BadArgs()
         {
 
-            var cube1 = DSSolid.BoxByCenterAndDimensions(Point.ByCoordinates(0, 0, 0), 20, 20, 20);
+            var cube1 = Solid.BoxByCenterAndDimensions(Point.ByCoordinates(0, 0, 0), 20, 20, 20);
             var faces = cube1.Faces;
 
             // get face with normal in positive y direction
@@ -73,8 +74,8 @@ namespace DSRevitNodesTests.GeometryIntersection
                     Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, -50, 0),
                     Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 50, 0));
 
-            Assert.Throws(typeof(System.ArgumentNullException), () => DSFaceIntersect.CurveFace(null, faceFirst));
-            Assert.Throws(typeof(System.ArgumentNullException), () => DSFaceIntersect.CurveFace(line, null));
+            Assert.Throws(typeof(System.ArgumentNullException), () => Intersect.CurveFace(null, faceFirst));
+            Assert.Throws(typeof(System.ArgumentNullException), () => Intersect.CurveFace(line, null));
 
         }
 
@@ -82,7 +83,7 @@ namespace DSRevitNodesTests.GeometryIntersection
         public void NonIntersectingCurveFace_ValidArgs()
         {
 
-            var cube1 = DSSolid.BoxByCenterAndDimensions(Point.ByCoordinates(0, 0, 0), 20, 20, 20);
+            var cube1 = Solid.BoxByCenterAndDimensions(Point.ByCoordinates(0, 0, 0), 20, 20, 20);
             var faces = cube1.Faces;
 
             // get face with normal in positive y direction
@@ -94,7 +95,7 @@ namespace DSRevitNodesTests.GeometryIntersection
                     Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, -50, 100),
                     Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 50, 100));
 
-            var rez = DSFaceIntersect.CurveFace(line, faceFirst);
+            var rez = Intersect.CurveFace(line, faceFirst);
 
             Assert.AreEqual(0,rez.Count);
 
@@ -105,8 +106,8 @@ namespace DSRevitNodesTests.GeometryIntersection
         {
 
             // build cubes
-            var cube1 = DSSolid.BoxByCenterAndDimensions(Point.ByCoordinates(0, 0, 0), 10, 10, 10);
-            var cube2 = DSSolid.BoxByCenterAndDimensions(Point.ByCoordinates(5, 5, 5), 10, 10, 10);
+            var cube1 = Solid.BoxByCenterAndDimensions(Point.ByCoordinates(0, 0, 0), 10, 10, 10);
+            var cube2 = Solid.BoxByCenterAndDimensions(Point.ByCoordinates(5, 5, 5), 10, 10, 10);
 
             // get face on cube 1 facing in + x direction
             var face1 = cube1.Faces.First(x => Math.Abs(x.NormalAtParameter(0.5, 0.5).Dot(Vector.ByCoordinates(1, 0, 0)) - 1) < 1e-6);
@@ -115,7 +116,7 @@ namespace DSRevitNodesTests.GeometryIntersection
             var face2 = cube2.Faces.First(x => Math.Abs(x.NormalAtParameter(0.5, 0.5).Dot(Vector.ByCoordinates(0, -1, 0)) - 1) < 1e-6);
 
             // intersect the faces
-            var result = DSFaceIntersect.FaceFace(face1, face2);
+            var result = Intersect.FaceFace(face1, face2);
 
             Assert.AreEqual(1, result.Count);
             var intersectionCurve = result.First();
@@ -135,8 +136,8 @@ namespace DSRevitNodesTests.GeometryIntersection
         {
 
             // build cubes
-            var cube1 = DSSolid.BoxByCenterAndDimensions(Point.ByCoordinates(0, 0, 0), 10, 10, 10);
-            var cube2 = DSSolid.BoxByCenterAndDimensions(Point.ByCoordinates(5, 5, 5), 10, 10, 10);
+            var cube1 = Solid.BoxByCenterAndDimensions(Point.ByCoordinates(0, 0, 0), 10, 10, 10);
+            var cube2 = Solid.BoxByCenterAndDimensions(Point.ByCoordinates(5, 5, 5), 10, 10, 10);
 
             // get face on cube 1 facing in + x direction
             var face1 = cube1.Faces.First(x => Math.Abs(x.NormalAtParameter(0.5, 0.5).Dot(Vector.ByCoordinates(1, 0, 0)) - 1) < 1e-6);
@@ -144,8 +145,8 @@ namespace DSRevitNodesTests.GeometryIntersection
             // get face on cube 2 facing in - y direction
             var face2 = cube2.Faces.First(x => Math.Abs(x.NormalAtParameter(0.5, 0.5).Dot(Vector.ByCoordinates(0, -1, 0)) - 1) < 1e-6);
 
-            Assert.Throws(typeof(System.ArgumentNullException), () => DSFaceIntersect.FaceFace(null, face2));
-            Assert.Throws(typeof(System.ArgumentNullException), () => DSFaceIntersect.FaceFace(face1, null));
+            Assert.Throws(typeof(System.ArgumentNullException), () => Intersect.FaceFace(null, face2));
+            Assert.Throws(typeof(System.ArgumentNullException), () => Intersect.FaceFace(face1, null));
 
         }
 
@@ -154,8 +155,8 @@ namespace DSRevitNodesTests.GeometryIntersection
         {
 
             // build cubes
-            var cube1 = DSSolid.BoxByCenterAndDimensions(Point.ByCoordinates(0, 0, 0), 10, 10, 10);
-            var cube2 = DSSolid.BoxByCenterAndDimensions(Point.ByCoordinates(100,100,100), 10, 10, 10);
+            var cube1 = Solid.BoxByCenterAndDimensions(Point.ByCoordinates(0, 0, 0), 10, 10, 10);
+            var cube2 = Solid.BoxByCenterAndDimensions(Point.ByCoordinates(100,100,100), 10, 10, 10);
 
             // get face on cube 1 facing in + x direction
             var face1 = cube1.Faces.First(x => Math.Abs(x.NormalAtParameter(0.5, 0.5).Dot(Vector.ByCoordinates(1, 0, 0)) - 1) < 1e-6);
@@ -164,7 +165,7 @@ namespace DSRevitNodesTests.GeometryIntersection
             var face2 = cube2.Faces.First(x => Math.Abs(x.NormalAtParameter(0.5, 0.5).Dot(Vector.ByCoordinates(0, -1, 0)) - 1) < 1e-6);
 
             // intersect the faces
-            var result = DSFaceIntersect.FaceFace(face1, face2);
+            var result = Intersect.FaceFace(face1, face2);
 
             Assert.AreEqual(0, result.Count);
 

@@ -4,7 +4,7 @@ using DSNodeServices;
 using RevitServices.Transactions;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
-namespace DSRevitNodes.Elements
+namespace Revit.Elements
 {
     /// <summary>
     /// An abstract Revit FamilyInstance - implementors include FamilyInstance, AdaptiveComponent, StructuralFraming
@@ -57,11 +57,11 @@ namespace DSRevitNodes.Elements
 
         #region Public properties
 
-        public DSFamilySymbol Symbol
+        public FamilySymbol Symbol
         {
             get
             {
-                return DSFamilySymbol.FromExisting(this.InternalFamilyInstance.Symbol, true);
+                return FamilySymbol.FromExisting(this.InternalFamilyInstance.Symbol, true);
             }
         }
 

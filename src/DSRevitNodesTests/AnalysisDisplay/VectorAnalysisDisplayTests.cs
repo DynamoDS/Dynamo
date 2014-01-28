@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Autodesk.DesignScript.Geometry;
-using DSRevitNodes.AnalysisDisplay;
-using DSRevitNodes.Application;
-using DSRevitNodes.Elements;
+using Revit.AnalysisDisplay;
+using Revit.Application;
+using Revit.Elements;
 using NUnit.Framework;
 
 namespace DSRevitNodesTests.AnalysisDisplay
@@ -30,8 +30,8 @@ namespace DSRevitNodesTests.AnalysisDisplay
                 Vector.ByCoordinates(0, 19, 4)
             };
 
-            var doc = DSDocument.Current;
-            var grid = DSVectorAnalysisDisplay.ByViewPointsAndVectorValues(doc.ActiveView, samplePoints, sampleValues);
+            var doc = Document.Current;
+            var grid = VectorAnalysisDisplay.ByViewPointsAndVectorValues(doc.ActiveView, samplePoints, sampleValues);
 
             Assert.NotNull(grid);
         }
@@ -53,11 +53,11 @@ namespace DSRevitNodesTests.AnalysisDisplay
                 Vector.ByCoordinates(0, 19, 4)
             };
 
-            var doc = DSDocument.Current;
+            var doc = Document.Current;
 
-            Assert.Throws(typeof(System.ArgumentNullException), () => DSVectorAnalysisDisplay.ByViewPointsAndVectorValues(null, samplePoints, sampleValues));
-            Assert.Throws(typeof(System.ArgumentNullException), () => DSVectorAnalysisDisplay.ByViewPointsAndVectorValues(doc.ActiveView, null, sampleValues));
-            Assert.Throws(typeof(System.ArgumentNullException), () => DSVectorAnalysisDisplay.ByViewPointsAndVectorValues(doc.ActiveView, samplePoints, null));
+            Assert.Throws(typeof(System.ArgumentNullException), () => VectorAnalysisDisplay.ByViewPointsAndVectorValues(null, samplePoints, sampleValues));
+            Assert.Throws(typeof(System.ArgumentNullException), () => VectorAnalysisDisplay.ByViewPointsAndVectorValues(doc.ActiveView, null, sampleValues));
+            Assert.Throws(typeof(System.ArgumentNullException), () => VectorAnalysisDisplay.ByViewPointsAndVectorValues(doc.ActiveView, samplePoints, null));
         }
 
     }

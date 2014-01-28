@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Autodesk.DesignScript.Geometry;
-using DSRevitNodes.AnalysisDisplay;
-using DSRevitNodes.Application;
-using DSRevitNodes.Elements;
+using Revit.AnalysisDisplay;
+using Revit.Application;
+using Revit.Elements;
 using NUnit.Framework;
 
 namespace DSRevitNodesTests.AnalysisDisplay
@@ -18,7 +18,7 @@ namespace DSRevitNodesTests.AnalysisDisplay
         {
             // get the face from the document
             var ele = ElementSelector.ByType<Autodesk.Revit.DB.Form>(true).FirstOrDefault();
-            var form = ele as DSForm;
+            var form = ele as Form;
             var faceRef = form.FaceReferences.First();
 
             var samplePoints = new[]
@@ -35,8 +35,8 @@ namespace DSRevitNodesTests.AnalysisDisplay
                 -1
             };
 
-            var doc = DSDocument.Current;
-            var grid = DSFaceAnalysisDisplay.ByViewFacePointsAndValues(doc.ActiveView, faceRef, samplePoints,
+            var doc = Document.Current;
+            var grid = FaceAnalysisDisplay.ByViewFacePointsAndValues(doc.ActiveView, faceRef, samplePoints,
                 sampleValues);
 
             Assert.NotNull(grid);
@@ -47,7 +47,7 @@ namespace DSRevitNodesTests.AnalysisDisplay
         {
             // get the face from the document
             var ele = ElementSelector.ByType<Autodesk.Revit.DB.Form>(true).FirstOrDefault();
-            var form = ele as DSForm;
+            var form = ele as Form;
             var faceRef = form.FaceReferences.First();
 
             var samplePoints = new[]
@@ -64,12 +64,12 @@ namespace DSRevitNodesTests.AnalysisDisplay
                 -1
             };
 
-            var doc = DSDocument.Current;
+            var doc = Document.Current;
 
-            Assert.Throws(typeof(System.ArgumentNullException), () => DSFaceAnalysisDisplay.ByViewFacePointsAndValues(null, faceRef, samplePoints, sampleValues));
-            Assert.Throws(typeof(System.ArgumentNullException), () => DSFaceAnalysisDisplay.ByViewFacePointsAndValues(doc.ActiveView, null, samplePoints, sampleValues));
-            Assert.Throws(typeof(System.ArgumentNullException), () => DSFaceAnalysisDisplay.ByViewFacePointsAndValues(doc.ActiveView, faceRef, null, sampleValues));
-            Assert.Throws(typeof(System.ArgumentNullException), () => DSFaceAnalysisDisplay.ByViewFacePointsAndValues(doc.ActiveView, faceRef, samplePoints, null));
+            Assert.Throws(typeof(System.ArgumentNullException), () => FaceAnalysisDisplay.ByViewFacePointsAndValues(null, faceRef, samplePoints, sampleValues));
+            Assert.Throws(typeof(System.ArgumentNullException), () => FaceAnalysisDisplay.ByViewFacePointsAndValues(doc.ActiveView, null, samplePoints, sampleValues));
+            Assert.Throws(typeof(System.ArgumentNullException), () => FaceAnalysisDisplay.ByViewFacePointsAndValues(doc.ActiveView, faceRef, null, sampleValues));
+            Assert.Throws(typeof(System.ArgumentNullException), () => FaceAnalysisDisplay.ByViewFacePointsAndValues(doc.ActiveView, faceRef, samplePoints, null));
         }
 
     }
