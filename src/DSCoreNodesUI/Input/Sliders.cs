@@ -13,7 +13,11 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Nodes
 {
+    [NodeName("Double")]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeDescription("A slider that produces double values.")]
     [Browsable(false)]
+    [IsDesignScriptCompatible]
     public class DoubleSlider : DSCoreNodesUI.Double
     {
         public DoubleSlider()
@@ -154,7 +158,12 @@ namespace Dynamo.Nodes
         #endregion
     }
 
+
+    [NodeName("Integer")]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeDescription("A slider that produces integer values.")]
     [Browsable(false)]
+    [IsDesignScriptCompatible]
     public class IntegerSlider : DSCoreNodesUI.Integer
     {
         public IntegerSlider()
