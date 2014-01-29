@@ -69,6 +69,12 @@ namespace RevitServices.Persistence
             return fec.OfClass(typeof(T)).Cast<T>();
         }
 
+        public IEnumerable<Element> ElementsOfCategory(BuiltInCategory category) 
+        {
+            var fec = new FilteredElementCollector(CurrentDBDocument);
+            return fec.OfCategory(category);
+        }
+
         /// <summary>
         /// Provide source of the currently active document
         /// Dynamo is reponsible for updating this before use

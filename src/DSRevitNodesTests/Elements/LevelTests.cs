@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Autodesk.DesignScript.Geometry;
-using DSRevitNodes;
-using DSRevitNodes.Elements;
-using DSRevitNodes.GeometryObjects;
+using Revit;
+using Revit.Elements;
+using Revit.GeometryObjects;
 using NUnit.Framework;
 
 namespace DSRevitNodesTests.Elements
@@ -21,7 +21,7 @@ namespace DSRevitNodesTests.Elements
             // construct the extrusion
             var elevation = 100;
             var name = "Ham";
-            var level = DSLevel.ByElevationAndName(elevation, name);
+            var level = Level.ByElevationAndName(elevation, name);
             Assert.NotNull(level);
 
             Assert.AreEqual(elevation, level.Elevation);
@@ -34,14 +34,14 @@ namespace DSRevitNodesTests.Elements
         {
             var elevation = 100;
 
-            Assert.Throws(typeof(ArgumentNullException), () => DSLevel.ByElevationAndName(elevation, null));
+            Assert.Throws(typeof(ArgumentNullException), () => Level.ByElevationAndName(elevation, null));
         }
 
         [Test]
         public void ByElevation_ValidArgs()
         {
             var elevation = 100;
-            var level = DSLevel.ByElevation(elevation);
+            var level = Level.ByElevation(elevation);
             Assert.NotNull(level);
 
             Assert.AreEqual(elevation, level.Elevation);
@@ -53,9 +53,9 @@ namespace DSRevitNodesTests.Elements
         {
             var elevation = 100;
             var offset = 100;
-            var level = DSLevel.ByElevation(elevation);
+            var level = Level.ByElevation(elevation);
 
-            var level2 = DSLevel.ByLevelAndOffset(level, offset);
+            var level2 = Level.ByLevelAndOffset(level, offset);
             Assert.NotNull(level2);
 
             Assert.AreEqual(elevation + offset, level2.Elevation);
@@ -66,7 +66,7 @@ namespace DSRevitNodesTests.Elements
         public void ByLevelAndOffset_NullArgument()
         {
             var offset = 100;
-            Assert.Throws(typeof(ArgumentNullException), () => DSLevel.ByLevelAndOffset(null, offset));
+            Assert.Throws(typeof(ArgumentNullException), () => Level.ByLevelAndOffset(null, offset));
         }
 
         [Test]
@@ -75,9 +75,9 @@ namespace DSRevitNodesTests.Elements
             var elevation = 100;
             var offset = 100;
             var name = "Ham";
-            var level = DSLevel.ByElevation(elevation);
+            var level = Level.ByElevation(elevation);
 
-            var level2 = DSLevel.ByLevelOffsetAndName(level, offset, name);
+            var level2 = Level.ByLevelOffsetAndName(level, offset, name);
             Assert.NotNull(level2);
 
             Assert.AreEqual(elevation + offset, level2.Elevation);
@@ -90,10 +90,10 @@ namespace DSRevitNodesTests.Elements
             var elevation = 100;
             var offset = 100;
             var name = "Ham";
-            var level = DSLevel.ByElevation(elevation);
+            var level = Level.ByElevation(elevation);
 
-            Assert.Throws(typeof(ArgumentNullException), () => DSLevel.ByLevelOffsetAndName(null, offset, name));
-            Assert.Throws(typeof(ArgumentNullException), () => DSLevel.ByLevelOffsetAndName(level, offset, null));
+            Assert.Throws(typeof(ArgumentNullException), () => Level.ByLevelOffsetAndName(null, offset, name));
+            Assert.Throws(typeof(ArgumentNullException), () => Level.ByLevelOffsetAndName(level, offset, null));
         }
     }
 

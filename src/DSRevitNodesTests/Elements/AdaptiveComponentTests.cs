@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using DSRevitNodes;
-using DSRevitNodes.Elements;
-using DSRevitNodes.GeometryObjects;
+using Revit;
+using Revit.Elements;
+using Revit.GeometryObjects;
 using NUnit.Framework;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
@@ -22,8 +22,8 @@ namespace DSRevitNodesTests
                 Point.ByCoordinates(10, 0, 10),
                 Point.ByCoordinates(20, 0, 0)
             };
-            var fs = DSFamilySymbol.ByName("3PointAC");
-            var ac = DSAdaptiveComponent.ByPoints(pts, fs);
+            var fs = FamilySymbol.ByName("3PointAC");
+            var ac = AdaptiveComponent.ByPoints(pts, fs);
 
             Assert.NotNull(ac);
         }
@@ -36,9 +36,9 @@ namespace DSRevitNodesTests
                 Point.ByCoordinates(0, 0, 0),
                 Point.ByCoordinates(10, 0, 10)
             };
-            var fs = DSFamilySymbol.ByName("3PointAC");
+            var fs = FamilySymbol.ByName("3PointAC");
 
-            Assert.Throws(typeof (Exception), () => DSAdaptiveComponent.ByPoints(pts, fs));
+            Assert.Throws(typeof (Exception), () => AdaptiveComponent.ByPoints(pts, fs));
         }
 
         [Test]
@@ -51,15 +51,15 @@ namespace DSRevitNodesTests
                 Point.ByCoordinates(20, 0, 0)
             };
 
-            Assert.Throws(typeof(ArgumentNullException), () => DSAdaptiveComponent.ByPoints(pts, null));
+            Assert.Throws(typeof(ArgumentNullException), () => AdaptiveComponent.ByPoints(pts, null));
         }
 
         [Test]
         public void ByPoints_NullPts()
         {
-            var fs = DSFamilySymbol.ByName("3PointAC");
+            var fs = FamilySymbol.ByName("3PointAC");
 
-            Assert.Throws(typeof(ArgumentNullException), () => DSAdaptiveComponent.ByPoints(null, fs));
+            Assert.Throws(typeof(ArgumentNullException), () => AdaptiveComponent.ByPoints(null, fs));
         }
 
         [Test]
@@ -80,10 +80,10 @@ namespace DSRevitNodesTests
                 1,1,1,1
             };
 
-            var crv = DSNurbSpline.ByControlPointsAndWeights(pts, wts);
+            var crv = NurbSpline.ByControlPointsAndWeights(pts, wts);
 
             // obtain the family from the document
-            var fs = DSFamilySymbol.ByName("3PointAC");
+            var fs = FamilySymbol.ByName("3PointAC");
 
             // build the AC
             var parms = new double[]
@@ -91,7 +91,7 @@ namespace DSRevitNodesTests
                 0, 0.5, 1
             };
 
-            var ac = DSAdaptiveComponent.ByPointsOnCurve(parms, crv, fs);
+            var ac = AdaptiveComponent.ByPointsOnCurve(parms, crv, fs);
             Assert.NotNull(ac);
 
         }

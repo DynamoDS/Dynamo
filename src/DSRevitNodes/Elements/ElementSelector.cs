@@ -9,7 +9,7 @@ using Autodesk.Revit.DB.Structure;
 using RevitServices.Elements;
 using RevitServices.Persistence;
 
-namespace DSRevitNodes.Elements
+namespace Revit.Elements
 {
     [Browsable(false)]
     public static class ElementSelector
@@ -70,7 +70,7 @@ namespace DSRevitNodes.Elements
         /// <returns></returns>
         private static Autodesk.Revit.DB.Element InternalGetElementById(int id)
         {
-            Element ele;
+            Autodesk.Revit.DB.Element ele;
             var eleId = new ElementId(id);
 
             if (!AbstractElement.Document.TryGetElement(eleId, out ele))
@@ -88,7 +88,7 @@ namespace DSRevitNodes.Elements
         /// <returns></returns>
         private static Autodesk.Revit.DB.Element InternalGetElementByUniqueId(string uniqueId)
         {
-            Element ele;
+            Autodesk.Revit.DB.Element ele;
 
             if (!AbstractElement.Document.TryGetElement(uniqueId, out ele))
             {

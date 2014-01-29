@@ -4,10 +4,17 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using Dynamo.Controls;
+using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.Utilities;
 
 namespace DSCoreNodesUI
 {
+    [NodeName("Boolean")]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeDescription("Selection between a true and false.")]
+    [NodeSearchTags("true", "truth", "false")]
+    [IsDesignScriptCompatible]
     public class BoolSelector : Bool
     {
         public BoolSelector()

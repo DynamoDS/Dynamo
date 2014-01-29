@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Autodesk.DesignScript.Geometry;
-using DSRevitNodes;
-using DSRevitNodes.Elements;
-using DSRevitNodes.GeometryObjects;
+using Revit;
+using Revit.Elements;
+using Revit.GeometryObjects;
 using NUnit.Framework;
+using Solid = Revit.Elements.Solid;
 
 namespace DSRevitNodesTests.Elements
 {
@@ -53,11 +54,11 @@ namespace DSRevitNodesTests.Elements
             var dist = 5;
 
             // construct the extrusion
-            var extrusion = DSSolid.ByExtrusion(crvs, dir, dist);
+            var extrusion = Solid.ByExtrusion(crvs, dir, dist);
             Assert.NotNull(extrusion);
 
             // construct the freeform element
-            var freeForm = DSFreeForm.BySolid(extrusion);
+            var freeForm = FreeForm.BySolid(extrusion);
             Assert.NotNull(freeForm);
 
         }
@@ -65,7 +66,7 @@ namespace DSRevitNodesTests.Elements
         [Test]
         public void BySolid_NullArgument()
         {
-            Assert.Throws(typeof(ArgumentNullException), () => DSFreeForm.BySolid(null));
+            Assert.Throws(typeof(ArgumentNullException), () => FreeForm.BySolid(null));
         }
 
     }
