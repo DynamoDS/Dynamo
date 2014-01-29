@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Autodesk.Revit.DB;
 using DSCoreNodesUI;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
 using RevitServices.Persistence;
 
@@ -237,11 +239,14 @@ namespace DSRevitNodesUI
             {
                 Items.Add(new DynamoDropDownItem(ft.Name, ft));
             }
+
+            Items = Items.OrderBy(x => x.Name).ToObservableCollection<DynamoDropDownItem>();
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            if (Items[0].Name == noFloorTypes)
+            if (Items.Count == 0 || 
+                Items[0].Name == noFloorTypes)
             {
                 return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()) };
             }
@@ -250,7 +255,7 @@ namespace DSRevitNodesUI
             {
                 AstFactory.BuildStringNode(((Autodesk.Revit.DB.FloorType) Items[SelectedIndex].Item).Name)
             };
-            var functionCall = AstFactory.BuildFunctionCall("FloorType",
+            var functionCall = AstFactory.BuildFunctionCall("Revit.Elements.FloorType",
                                                             "ByName",
                                                             args);
 
@@ -286,11 +291,14 @@ namespace DSRevitNodesUI
             {
                 Items.Add(new DynamoDropDownItem(wt.Name, wt));
             }
+
+            Items = Items.OrderBy(x => x.Name).ToObservableCollection();
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            if (Items[0].Name == noWallTypes)
+            if (Items.Count == 0 || 
+                Items[0].Name == noWallTypes)
             {
                 return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()) };
             }
@@ -299,7 +307,7 @@ namespace DSRevitNodesUI
             {
                 AstFactory.BuildStringNode(((Autodesk.Revit.DB.WallType) Items[SelectedIndex].Item).Name)
             };
-            var functionCall = AstFactory.BuildFunctionCall("WallType",
+            var functionCall = AstFactory.BuildFunctionCall("Revit.Elements.WallType",
                                                             "ByName",
                                                             args);
 
