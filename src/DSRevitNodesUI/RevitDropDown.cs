@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using Autodesk.Revit.DB;
 using DSCoreNodesUI;
 using Dynamo.Models;
+using Dynamo.Nodes;
 using ProtoCore.AST.AssociativeAST;
 using RevitServices.Persistence;
 
-namespace Dynamo.Nodes
+namespace DSRevitNodesUI
 {
     /*
     public abstract class DSElementDropDown : DSDropDownBase
@@ -214,6 +215,8 @@ namespace Dynamo.Nodes
     [IsDesignScriptCompatible]
     public class FloorType : DSDropDownBase
     {
+        private const string noFloorTypes = "No floor types available.";
+
         public FloorType() : base("Floor Types") { }
 
         protected override void PopulateItems()
@@ -221,11 +224,11 @@ namespace Dynamo.Nodes
             Items.Clear();
 
             var fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentDBDocument);
-            fec.OfClass(typeof(FloorType));
+            fec.OfClass(typeof(Autodesk.Revit.DB.FloorType));
 
             if (fec.ToElements().Count == 0)
             {
-                Items.Add(new DynamoDropDownItem("No floor types available.", null));
+                Items.Add(new DynamoDropDownItem(noFloorTypes, null));
                 SelectedIndex = 0;
                 return;
             }
@@ -238,17 +241,20 @@ namespace Dynamo.Nodes
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            AssociativeNode node = null;
-            node = new FunctionCallNode
+            if (Items[0].Name == noFloorTypes)
             {
-                Function = new IdentifierNode("DSRevitNodes.Elements.DSElementType.ByName"),
-                FormalArguments = new List<AssociativeNode>
-                {
-                    AstFactory.BuildStringNode(((Autodesk.Revit.DB.FloorType)Items[SelectedIndex].Item).Name)
-                }
-            };
+                return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()) };
+            }
 
-            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
+            var args = new List<AssociativeNode>
+            {
+                AstFactory.BuildStringNode(((Autodesk.Revit.DB.FloorType) Items[SelectedIndex].Item).Name)
+            };
+            var functionCall = AstFactory.BuildFunctionCall("FloorType",
+                                                            "ByName",
+                                                            args);
+
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
         }
     }
 
@@ -258,6 +264,8 @@ namespace Dynamo.Nodes
     [IsDesignScriptCompatible]
     public class WallType : DSDropDownBase
     {
+        private const string noWallTypes = "No wall types available.";
+
         public WallType() : base("Wall Types") { }
 
         protected override void PopulateItems()
@@ -266,10 +274,10 @@ namespace Dynamo.Nodes
 
             var fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentDBDocument);
 
-            fec.OfClass(typeof(WallType));
+            fec.OfClass(typeof(Autodesk.Revit.DB.WallType));
             if (fec.ToElements().Count == 0)
             {
-                Items.Add(new DynamoDropDownItem("No wall types available.", null));
+                Items.Add(new DynamoDropDownItem(noWallTypes, null));
                 SelectedIndex = 0;
                 return;
             }
@@ -282,17 +290,20 @@ namespace Dynamo.Nodes
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            AssociativeNode node = null;
-            node = new FunctionCallNode
+            if (Items[0].Name == noWallTypes)
             {
-                Function = new IdentifierNode("DSRevitNodes.Elements.DSElementType.ByName"),
-                FormalArguments = new List<AssociativeNode>
-                {
-                    AstFactory.BuildStringNode(((Autodesk.Revit.DB.WallType)Items[SelectedIndex].Item).Name)
-                }
-            };
+                return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()) };
+            }
 
-            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
+            var args = new List<AssociativeNode>
+            {
+                AstFactory.BuildStringNode(((Autodesk.Revit.DB.WallType) Items[SelectedIndex].Item).Name)
+            };
+            var functionCall = AstFactory.BuildFunctionCall("WallType",
+                                                            "ByName",
+                                                            args);
+
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
         }
     }
 
@@ -306,17 +317,16 @@ namespace Dynamo.Nodes
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            AssociativeNode node = null;
-            node = new FunctionCallNode
+            var args = new List<AssociativeNode>
             {
-                Function = new IdentifierNode("DSRevitNodes.DSCategory.ByName"),
-                FormalArguments = new List<AssociativeNode>
-                {
-                    AstFactory.BuildStringNode(((BuiltInCategory)Items[SelectedIndex].Item).ToString())
-                }
+                AstFactory.BuildStringNode(((BuiltInCategory) Items[SelectedIndex].Item).ToString())
             };
 
-            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
+            var functionCall = AstFactory.BuildFunctionCall("DSCategory",
+                                                            "ByName",
+                                                            args);
+
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
         }
     }
 }
