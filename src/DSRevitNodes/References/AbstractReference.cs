@@ -6,7 +6,7 @@ using System.Text;
 using Autodesk.Revit.DB;
 using RevitServices.Persistence;
 
-namespace DSRevitNodes.References
+namespace Revit.References
 {
     /// <summary>
     /// A base class for revit Reference objects

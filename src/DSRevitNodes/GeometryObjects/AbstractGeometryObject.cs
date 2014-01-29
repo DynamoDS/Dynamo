@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using Autodesk.DesignScript.Interfaces;
 
-namespace DSRevitNodes.GeometryObjects
+namespace Revit.GeometryObjects
 {
     [Browsable(false)]
     public abstract class AbstractGeometryObject : IGraphicItem

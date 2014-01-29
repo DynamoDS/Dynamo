@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Autodesk.DesignScript.Geometry;
-using DSRevitNodes.Elements;
+using Revit.Elements;
 using NUnit.Framework;
 
 namespace DSRevitNodesTests.Elements
@@ -18,7 +18,7 @@ namespace DSRevitNodesTests.Elements
             var normal = Vector.ByCoordinates(0, 0, 1);
             var plane = Plane.ByOriginNormal(origin, normal);
 
-            var sketchPlane = DSSketchPlane.ByPlane(plane);
+            var sketchPlane = SketchPlane.ByPlane(plane);
 
             Assert.NotNull(sketchPlane);
             Assert.NotNull(sketchPlane.Plane);
@@ -30,7 +30,7 @@ namespace DSRevitNodesTests.Elements
         [Test]
         public void ByPlane_NullInput()
         {
-            Assert.Throws(typeof(System.ArgumentNullException), () => DSSketchPlane.ByPlane(null));
+            Assert.Throws(typeof(System.ArgumentNullException), () => SketchPlane.ByPlane(null));
         }
 
     }

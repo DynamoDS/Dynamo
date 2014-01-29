@@ -6,7 +6,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace DSCoreNodes
+namespace DSCore
 {
     public class DSColor // TODO(Ben): Rename after namespace support is done :)
     {

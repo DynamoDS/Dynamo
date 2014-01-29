@@ -1,8 +1,9 @@
 ﻿using System;
 using System.IO;
 using Autodesk.Revit.DB;
-using DSRevitNodes.GeometryObjects;
+using Revit.GeometryObjects;
 using NUnit.Framework;
+using NurbSpline = Revit.GeometryObjects.NurbSpline;
 using Point = Autodesk.DesignScript.Geometry.Point;
 
 namespace DSRevitNodesTests.GeometryObjects
@@ -27,7 +28,7 @@ namespace DSRevitNodesTests.GeometryObjects
                 1,1,1,1
             };
 
-            var spline = DSNurbSpline.ByControlPointsAndWeights(pts, wts);
+            var spline = NurbSpline.ByControlPointsAndWeights(pts, wts);
             Assert.NotNull(spline);
 
         }
@@ -55,7 +56,7 @@ namespace DSRevitNodesTests.GeometryObjects
 
             try
             {
-                var spline = DSNurbSpline.ByControlPointsWeightsKnotsDegreeClosedAndRationality(pts, wts, knots, 3,
+                var spline = NurbSpline.ByControlPointsWeightsKnotsDegreeClosedAndRationality(pts, wts, knots, 3,
                     false,
                     false);
                 Assert.NotNull(spline);

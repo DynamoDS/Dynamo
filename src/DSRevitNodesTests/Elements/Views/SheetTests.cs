@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using DSRevitNodes;
-using DSRevitNodes.Elements;
-using DSRevitNodes.GeometryObjects;
+using Revit;
+using Revit.Elements;
+using Revit.Elements.Views;
+using Revit.GeometryObjects;
 using NUnit.Framework;
 using RevitServices.Persistence;
 using Point = Autodesk.DesignScript.Geometry.Point;
@@ -17,20 +18,20 @@ namespace DSRevitNodesTests
         [Test]
         public void ByNameNumberAndViews_ValidArgs()
         {
-            var famSym = DSFamilySymbol.ByName("Kousa Dogwood - 10'");
+            var famSym = FamilySymbol.ByName("Kousa Dogwood - 10'");
             var pt = Point.ByCoordinates(0, 1, 2);
-            var famInst = DSFamilyInstance.ByPoint(famSym, pt);
+            var famInst = FamilyInstance.ByPoint(famSym, pt);
 
             var pt2 = Point.ByCoordinates(100, 100, 0);
-            var famInst2 = DSFamilyInstance.ByPoint(famSym, pt2);
+            var famInst2 = FamilyInstance.ByPoint(famSym, pt2);
 
-            var view = DSSectionView.ByBoundingBox(famInst.BoundingBox);
-            var view2 = DSSectionView.ByBoundingBox(famInst2.BoundingBox);
+            var view = SectionView.ByBoundingBox(famInst.BoundingBox);
+            var view2 = SectionView.ByBoundingBox(famInst2.BoundingBox);
 
             var sheetName = "Poodle";
             var sheetNumber = "A1";
 
-            var ele = DSSheet.ByNameNumberAndViews( sheetName, sheetNumber, new[] {view, view2});
+            var ele = Sheet.ByNameNumberAndViews( sheetName, sheetNumber, new[] {view, view2});
 
             Assert.NotNull(ele);
             Assert.IsTrue(DocumentManager.GetInstance().ElementExistsInDocument(ele.InternalElement.Id));
@@ -39,37 +40,37 @@ namespace DSRevitNodesTests
         [Test]
         public void ByNameNumberAndViews_BadArgs()
         {
-            var famSym = DSFamilySymbol.ByName("Kousa Dogwood - 10'");
+            var famSym = FamilySymbol.ByName("Kousa Dogwood - 10'");
             var pt = Point.ByCoordinates(0, 1, 2);
-            var famInst = DSFamilyInstance.ByPoint(famSym, pt);
+            var famInst = FamilyInstance.ByPoint(famSym, pt);
 
             var pt2 = Point.ByCoordinates(100, 100, 0);
-            var famInst2 = DSFamilyInstance.ByPoint(famSym, pt2);
+            var famInst2 = FamilyInstance.ByPoint(famSym, pt2);
 
-            var view = DSSectionView.ByBoundingBox(famInst.BoundingBox);
-            var view2 = DSSectionView.ByBoundingBox(famInst2.BoundingBox);
+            var view = SectionView.ByBoundingBox(famInst.BoundingBox);
+            var view2 = SectionView.ByBoundingBox(famInst2.BoundingBox);
 
             var sheetName = "Poodle";
             var sheetNumber = "A1";
 
-            Assert.Throws(typeof(ArgumentNullException), () => DSSheet.ByNameNumberAndViews(null, sheetNumber, new[] { view, view2 }));
-            Assert.Throws(typeof(ArgumentNullException), () => DSSheet.ByNameNumberAndViews(sheetName, null, new[] { view, view2 }));
-            Assert.Throws(typeof(ArgumentNullException), () => DSSheet.ByNameNumberAndViews(sheetName, sheetNumber, null));
+            Assert.Throws(typeof(ArgumentNullException), () => Sheet.ByNameNumberAndViews(null, sheetNumber, new[] { view, view2 }));
+            Assert.Throws(typeof(ArgumentNullException), () => Sheet.ByNameNumberAndViews(sheetName, null, new[] { view, view2 }));
+            Assert.Throws(typeof(ArgumentNullException), () => Sheet.ByNameNumberAndViews(sheetName, sheetNumber, null));
         }
         
         [Test]
         public void ByNameNumberAndView_ValidArgs()
         {
-            var famSym = DSFamilySymbol.ByName("Kousa Dogwood - 10'");
+            var famSym = FamilySymbol.ByName("Kousa Dogwood - 10'");
             var pt = Point.ByCoordinates(0, 1, 2);
-            var famInst = DSFamilyInstance.ByPoint(famSym, pt);
+            var famInst = FamilyInstance.ByPoint(famSym, pt);
 
-            var view = DSSectionView.ByBoundingBox(famInst.BoundingBox);
+            var view = SectionView.ByBoundingBox(famInst.BoundingBox);
 
             var sheetName = "Poodle";
             var sheetNumber = "A1";
 
-            var ele = DSSheet.ByNameNumberAndView(sheetName, sheetNumber, view);
+            var ele = Sheet.ByNameNumberAndView(sheetName, sheetNumber, view);
 
             Assert.NotNull(ele);
             Assert.IsTrue(DocumentManager.GetInstance().ElementExistsInDocument(ele.InternalElement.Id));
@@ -78,18 +79,18 @@ namespace DSRevitNodesTests
         [Test]
         public void ByNameNumberAndView_BadArgs()
         {
-            var famSym = DSFamilySymbol.ByName("Kousa Dogwood - 10'");
+            var famSym = FamilySymbol.ByName("Kousa Dogwood - 10'");
             var pt = Point.ByCoordinates(0, 1, 2);
-            var famInst = DSFamilyInstance.ByPoint(famSym, pt);
+            var famInst = FamilyInstance.ByPoint(famSym, pt);
 
-            var view = DSSectionView.ByBoundingBox(famInst.BoundingBox);
+            var view = SectionView.ByBoundingBox(famInst.BoundingBox);
 
             var sheetName = "Poodle";
             var sheetNumber = "A1";
 
-            Assert.Throws(typeof(ArgumentNullException), () => DSSheet.ByNameNumberAndView(null, sheetNumber, view));
-            Assert.Throws(typeof(ArgumentNullException), () => DSSheet.ByNameNumberAndView(sheetName, null, view));
-            Assert.Throws(typeof(ArgumentNullException), () => DSSheet.ByNameNumberAndView(sheetName, sheetNumber, null));
+            Assert.Throws(typeof(ArgumentNullException), () => Sheet.ByNameNumberAndView(null, sheetNumber, view));
+            Assert.Throws(typeof(ArgumentNullException), () => Sheet.ByNameNumberAndView(sheetName, null, view));
+            Assert.Throws(typeof(ArgumentNullException), () => Sheet.ByNameNumberAndView(sheetName, sheetNumber, null));
         }
 
     }

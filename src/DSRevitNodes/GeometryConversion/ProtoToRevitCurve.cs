@@ -7,7 +7,7 @@ using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Structure;
 
-namespace DSRevitNodes.GeometryConversion
+namespace Revit.GeometryConversion
 {
     [Browsable(false)]
     public static class ProtoToRevitCurve

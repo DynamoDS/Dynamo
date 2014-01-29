@@ -13,7 +13,11 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Nodes
 {
+    [NodeName("Double Slider")]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeDescription("A slider that produces double values.")]
     [Browsable(false)]
+    [IsDesignScriptCompatible]
     public class DoubleSlider : DSCoreNodesUI.Double
     {
         public DoubleSlider()
@@ -56,33 +60,112 @@ namespace Dynamo.Nodes
         public override void SetupCustomUIElements(dynNodeView nodeUI)
         {
             //add a slider control to the input grid of the control
-            var slider = new DynamoSlider(this)
+            var tbSlider = new DynamoSlider(this)
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Center,
                 MinWidth = 150,
-                TickPlacement = TickPlacement.None,
-                Minimum = -100,
-                Maximum = 100
+                TickPlacement = TickPlacement.None
+            };
+
+            tbSlider.PreviewMouseUp += delegate
+            {
+                dynSettings.ReturnFocusToSearch();
+            };
+
+            var mintb = new DynamoTextBox
+            {
+                Width = double.NaN,
+                Background =
+                    new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
+            };
+
+            // input value textbox
+            var valtb = new DynamoTextBox
+            {
+                Width = double.NaN,
+                Margin = new Thickness(0, 0, 10, 0)
+            };
+
+            var maxtb = new DynamoTextBox
+            {
+                Width = double.NaN,
+                Background =
+                    new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
             };
 
             var sliderGrid = new Grid();
-            sliderGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+            sliderGrid.ColumnDefinitions.Add(
+                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+            sliderGrid.ColumnDefinitions.Add(
+                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+            sliderGrid.ColumnDefinitions.Add(
+                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            sliderGrid.ColumnDefinitions.Add(
+                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
 
-            sliderGrid.Children.Add(slider);
+            sliderGrid.Children.Add(valtb);
+            sliderGrid.Children.Add(mintb);
+            sliderGrid.Children.Add(tbSlider);
+            sliderGrid.Children.Add(maxtb);
 
-            Grid.SetColumn(slider, 0);
+            Grid.SetColumn(valtb, 0);
+            Grid.SetColumn(mintb, 1);
+            Grid.SetColumn(tbSlider, 2);
+            Grid.SetColumn(maxtb, 3);
             nodeUI.inputGrid.Children.Add(sliderGrid);
 
-            slider.DataContext = this;
-            
+            maxtb.DataContext = this;
+            tbSlider.DataContext = this;
+            mintb.DataContext = this;
+            valtb.DataContext = this;
+
+            // value input
+            valtb.BindToProperty(
+                new Binding("Value") { Mode = BindingMode.TwoWay, Converter = new DoubleDisplay() });
+
             // slider value 
-            var sliderBinding = new Binding("Value")
+            var sliderBinding = new Binding("Value") { Mode = BindingMode.TwoWay, Source = this, };
+            tbSlider.SetBinding(RangeBase.ValueProperty, sliderBinding);
+
+            // max value
+            maxtb.BindToProperty(
+                new Binding("Max")
+                {
+                    Mode = BindingMode.TwoWay,
+                    Converter = new DoubleDisplay(),
+                    Source = this,
+                    UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+                });
+
+            // max slider value
+            var bindingMaxSlider = new Binding("Max")
             {
-                Mode = BindingMode.TwoWay,
+                Mode = BindingMode.OneWay,
                 Source = this,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             };
-            slider.SetBinding(RangeBase.ValueProperty, sliderBinding);
+            tbSlider.SetBinding(RangeBase.MaximumProperty, bindingMaxSlider);
+
+
+            // min value
+            mintb.BindToProperty(
+                new Binding("Min")
+                {
+                    Mode = BindingMode.TwoWay,
+                    Converter = new DoubleDisplay(),
+                    Source = this,
+                    UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+                });
+
+            // min slider value
+            var bindingMinSlider = new Binding("Min")
+            {
+                Mode = BindingMode.OneWay,
+                Source = this,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+            };
+            tbSlider.SetBinding(RangeBase.MinimumProperty, bindingMinSlider);
         }
 
         #region Load/Save
@@ -154,7 +237,12 @@ namespace Dynamo.Nodes
         #endregion
     }
 
+
+    [NodeName("Integer Slider")]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeDescription("A slider that produces integer values.")]
     [Browsable(false)]
+    [IsDesignScriptCompatible]
     public class IntegerSlider : DSCoreNodesUI.Integer
     {
         public IntegerSlider()

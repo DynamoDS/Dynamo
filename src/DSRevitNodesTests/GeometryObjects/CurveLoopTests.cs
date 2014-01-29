@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Autodesk.DesignScript.Geometry;
-using DSRevitNodes.GeometryObjects;
+using Revit.GeometryObjects;
 using NUnit.Framework;
 
 namespace DSRevitNodesTests.GeometryObjects
@@ -56,7 +56,7 @@ namespace DSRevitNodesTests.GeometryObjects
             };
 
             // construct the curveloop
-            var curveloop = DSCurveLoop.ByCurves(crvs);
+            var curveloop = CurveLoop.ByCurves(crvs);
             Assert.NotNull(curveloop);
             Assert.IsTrue(curveloop.IsPlanar);
             Assert.IsTrue(curveloop.IsClosed);
@@ -98,7 +98,7 @@ namespace DSRevitNodesTests.GeometryObjects
             };
 
             // construct the curveloop
-            var curveloop = DSCurveLoop.ByCurves(crvs);
+            var curveloop = CurveLoop.ByCurves(crvs);
             Assert.NotNull(curveloop);
             Assert.IsTrue(curveloop.IsPlanar);
             Assert.IsTrue(curveloop.IsClosed);
@@ -131,7 +131,7 @@ namespace DSRevitNodesTests.GeometryObjects
             };
 
             // construct the curveloop
-            var curveloop = DSCurveLoop.ByCurves(crvs);
+            var curveloop = CurveLoop.ByCurves(crvs);
             Assert.NotNull(curveloop);
             Assert.IsTrue(curveloop.IsPlanar);
             Assert.IsFalse(curveloop.IsClosed);
@@ -164,7 +164,7 @@ namespace DSRevitNodesTests.GeometryObjects
             };
 
             // construct the curveloop
-            var curveloop = DSCurveLoop.ByCurves(crvs);
+            var curveloop = CurveLoop.ByCurves(crvs);
             Assert.NotNull(curveloop);
             Assert.IsFalse(curveloop.IsPlanar);
             Assert.IsFalse(curveloop.IsClosed);

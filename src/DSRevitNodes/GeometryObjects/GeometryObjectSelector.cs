@@ -1,9 +1,9 @@
 ﻿using System;
 using Autodesk.Revit.DB;
-using DSRevitNodes.GeometryConversion;
+using Revit.GeometryConversion;
 using RevitServices.Persistence;
 
-namespace DSRevitNodes.GeometryObjects
+namespace Revit.GeometryObjects
 {
     public class GeometryObjectSelector
     {
@@ -32,7 +32,7 @@ namespace DSRevitNodes.GeometryObjects
         public static Autodesk.DesignScript.Geometry.Curve ByCurve(string referenceString)
         {
             var geob = InternalGetGeometryByStableRepresentation(referenceString);
-            var curve = geob as Curve;
+            var curve = geob as Autodesk.Revit.DB.Curve;
 
             if (curve != null)
             {
@@ -67,9 +67,9 @@ namespace DSRevitNodes.GeometryObjects
         {
             AbstractGeometryObject result = null;
 
-            if (geom is Face)
+            if (geom is Autodesk.Revit.DB.Face)
             {
-                result = DSFace.FromExisting(geom as Face);
+                result = Face.FromExisting(geom as Autodesk.Revit.DB.Face);
             }
 
             return result;
