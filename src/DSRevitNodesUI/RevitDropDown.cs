@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Autodesk.Revit.DB;
 using DSCoreNodesUI;
@@ -160,27 +159,15 @@ namespace DSRevitNodesUI
         }
     }*/
 
-    [NodeName("Element Type")]
-    [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
-    [NodeDescription("All element types available in the document.")]
-    [IsDesignScriptCompatible]
-    public class ElementTypes : DSCoreNodesUI.AllChildrenOfType
-    {
-        public ElementTypes() : base(typeof(Element)) { }
-
-        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
-        {
-            return base.BuildOutputAst(inputAstNodes);
-        }
-    }
-
     [NodeName("Family Type")]
     [NodeCategory(BuiltinNodeCategories.REVIT_SELECTION)]
     [NodeDescription("All family types available in the document.")]
     [IsDesignScriptCompatible]
     public class FamilyTypes : DSDropDownBase
     {
-        public FamilyTypes():base("Family Types"){ }
+        private const string noFamilyTypes = "No family types available.";
+
+        public FamilyTypes():base("Family Type"){ }
         
         protected override void PopulateItems()
         {
@@ -191,7 +178,7 @@ namespace DSRevitNodesUI
             fec.OfClass(typeof(Family));
             if (fec.ToElements().Count == 0)
             {
-                Items.Add(new DynamoDropDownItem("No family types available.", null));
+                Items.Add(new DynamoDropDownItem(noFamilyTypes, null));
                 SelectedIndex = 0;
                 return;
             }
@@ -203,12 +190,30 @@ namespace DSRevitNodesUI
                     Items.Add(new DynamoDropDownItem(string.Format("{0}:{1}", family.Name, fs.Name), fs));
                 }
             }
+
+            Items = Items.OrderBy(x => x.Name).ToObservableCollection();
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            throw new NotImplementedException();
+            if (Items.Count == 0 ||
+                Items[0].Name == noFamilyTypes)
+            {
+                return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()) };
+            }
+
+            var args = new List<AssociativeNode>
+            {
+                AstFactory.BuildStringNode(((FamilySymbol) Items[SelectedIndex].Item).Family.Name),
+                AstFactory.BuildStringNode(((FamilySymbol) Items[SelectedIndex].Item).Name)
+            };
+            var functionCall = AstFactory.BuildFunctionCall("Revit.Elements.FamilySymbol",
+                                                            "ByFamilyNameAndTypeName",
+                                                            args);
+
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
         }
+
     }
 
     [NodeName("Floor Type")]
@@ -219,7 +224,7 @@ namespace DSRevitNodesUI
     {
         private const string noFloorTypes = "No floor types available.";
 
-        public FloorType() : base("Floor Types") { }
+        public FloorType() : base("Floor Type") { }
 
         protected override void PopulateItems()
         {
@@ -240,7 +245,7 @@ namespace DSRevitNodesUI
                 Items.Add(new DynamoDropDownItem(ft.Name, ft));
             }
 
-            Items = Items.OrderBy(x => x.Name).ToObservableCollection<DynamoDropDownItem>();
+            Items = Items.OrderBy(x => x.Name).ToObservableCollection();
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -271,7 +276,7 @@ namespace DSRevitNodesUI
     {
         private const string noWallTypes = "No wall types available.";
 
-        public WallType() : base("Wall Types") { }
+        public WallType() : base("Wall Type") { }
 
         protected override void PopulateItems()
         {
