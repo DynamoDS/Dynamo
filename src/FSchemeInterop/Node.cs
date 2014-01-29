@@ -42,10 +42,10 @@ namespace Dynamo.FSchemeInterop.Node
             List<INode> bindings)
         {
             return Expression.NewLet(
-                Utils.SequenceToFSharpList(
+                Utils.ToFSharpList(
                     bindings.Select(x => symbols[x])
                             .Concat(bindings.Select(x => symbols[x]+"-init"))),
-                Utils.SequenceToFSharpList(
+                Utils.ToFSharpList(
                     Enumerable.Repeat(
                         Expression.NewBegin(FSharpList<Expression>.Empty), 
                         bindings.Count)
@@ -320,7 +320,7 @@ namespace Dynamo.FSchemeInterop.Node
             HashSet<string> conditionalIds)
         {
             return Expression.NewBegin(
-                Utils.SequenceToFSharpList(
+                Utils.ToFSharpList(
                     Inputs.Select(
                         x => arguments[x].compile(symbols, letEntries, initializedIds, conditionalIds))));
         }
@@ -468,7 +468,7 @@ namespace Dynamo.FSchemeInterop.Node
                       FSharpList<Expression>.Cons(
                     //...and calls this function...
                          function,
-                         Utils.SequenceToFSharpList(
+                         Utils.ToFSharpList(
                     //...with the arguments which were supplied.
                              parameters.Select(
                                 input =>
@@ -484,7 +484,7 @@ namespace Dynamo.FSchemeInterop.Node
                 return Expression.NewList_E(
                    FSharpList<Expression>.Cons(
                       function,
-                      Utils.SequenceToFSharpList(
+                      Utils.ToFSharpList(
                          parameters.Select(
                             input => arguments[input].compile(
                                 symbols, letEntries, initializedIds, conditionalIds))
@@ -630,7 +630,7 @@ namespace Dynamo.FSchemeInterop.Node
                 Inputs, 
                 EntryPoint.compile(symbols, letEntries, initializedIds, conditionalIds)));
 
-            return Expression.NewBegin(Utils.SequenceToFSharpList(initialized));
+            return Expression.NewBegin(Utils.ToFSharpList(initialized));
         }
 
         protected override Expression compileBody(
@@ -667,7 +667,7 @@ namespace Dynamo.FSchemeInterop.Node
             HashSet<string> conditionalIds)
         {
             return Expression.NewFunction_E(
-                Utils.ConvertToFSchemeFunc(EntryPoint));
+                Utils.ConvertToFSharpFunc(EntryPoint));
         }
 
         public ExternalFunctionNode(Converter<FSharpList<Value>, Value> f, IEnumerable<string> inputList)
