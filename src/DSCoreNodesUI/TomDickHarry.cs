@@ -23,7 +23,8 @@ namespace Dynamo.Nodes
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            var functionCall = AstFactory.BuildFunctionCall("SanityCheck",
+
+            var functionCall = AstFactory.BuildFunctionCall("insanity.SanityCheck",
                                                             "ANumber",
                                                             new List<AssociativeNode>());
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
