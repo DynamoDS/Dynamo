@@ -53,7 +53,7 @@ namespace DynamoPython
             {
                 return
                     FScheme.Value.NewFunction(
-                        Utils.ConvertToFSchemeFunc(
+                        Utils.ConvertToFSharpFunc(
                             args =>
                                 convertToValue(
                                     invoker.Invoke(
@@ -67,7 +67,7 @@ namespace DynamoPython
                 var func = data as PyWrapper;
                 return
                     FScheme.Value.NewFunction(
-                        Utils.ConvertToFSchemeFunc(
+                        Utils.ConvertToFSharpFunc(
                             args =>
                                 convertToValue(
                                     func(args.Select(a => convertFromValue(a, invoker)).ToArray()),
@@ -96,7 +96,7 @@ namespace DynamoPython
                 PyWrapper wrapped =
                     args =>
                         convertFromValue(
-                            func.Invoke(args.Select(a => convertToValue(a, invoker) as FScheme.Value).SequenceToFSharpList()), invoker);
+                            func.Invoke(args.Select(a => convertToValue(a, invoker) as FScheme.Value).ToFSharpList()), invoker);
 
                 return wrapped;
             }

@@ -53,7 +53,7 @@ namespace Dynamo.DSEngine
             // Let's assume that this list only contains numbers for testing.
             // And assume that returns a double value. 
             List<FScheme.Value> args = objs.Select(obj => FScheme.Value.NewNumber(Convert.ToDouble(obj))).ToList();
-            FSharpList<FScheme.Value> fargs = Utils.SequenceToFSharpList<FScheme.Value>(args);
+            FSharpList<FScheme.Value> fargs = Utils.ToFSharpList<FScheme.Value>(args);
             FScheme.Value result = node.Evaluate(fargs);
 
             if (result.IsNumber)
