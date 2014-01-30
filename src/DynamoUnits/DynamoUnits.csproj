@@ -55,17 +55,12 @@
           <SpecificVersion>False</SpecificVersion>
           <HintPath>..\..\bin\AnyCPU\Debug\FScheme.dll</HintPath>
         </Reference>
-        <Reference Include="FSchemeInterop, Version=0.5.3.24285, Culture=neutral, processorArchitecture=MSIL">
-          <SpecificVersion>False</SpecificVersion>
-          <HintPath>..\..\bin\AnyCPU\Debug\FSchemeInterop.dll</HintPath>
-        </Reference>
-	  <ItemGroup>
         <ProjectReference Include="..\FSchemeInterop\FSchemeInterop.csproj">
           <Project>{F25808D6-DF62-4732-9453-D4978079864C}</Project>
           <Name>FSchemeInterop</Name>
         </ProjectReference>
       </ItemGroup>
-	</When>
+    </When>
     <!-- Visual Studio 2012: Select FSchemeInterop2012.csproj -->
     <When Condition=" '$(VisualStudioVersion)'=='11.0' ">
       <ItemGroup>
