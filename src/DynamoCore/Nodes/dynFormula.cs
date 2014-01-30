@@ -223,7 +223,7 @@ namespace Dynamo.Nodes
                 {
                     var func = ((Value.Function)functionLookup[name]).Item;
                     fArgs.Result = ((Value.Number)func.Invoke(
-                        Utils.SequenceToFSharpList(
+                        Utils.ToFSharpList(
                             fArgs.Parameters.Select(
                                 p => Value.NewNumber(Convert.ToDouble(p.Evaluate())))))).Item;
                 }
