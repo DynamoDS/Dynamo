@@ -78,7 +78,6 @@
     <Compile Include="Elements\AbstractElement.cs" />
     <Compile Include="Elements\AbstractFamilyInstance.cs" />
     <Compile Include="Elements\Element.cs" />
-    <Compile Include="Elements\ElementType.cs" />
     <Compile Include="Elements\FloorType.cs" />
     <Compile Include="Elements\ModelText.cs" />
     <Compile Include="Elements\ModelTextType.cs" />

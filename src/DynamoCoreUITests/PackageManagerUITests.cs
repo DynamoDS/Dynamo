@@ -107,7 +107,7 @@ namespace Dynamo.Tests.UI
             AssertWindowOwnedByDynamoView<PackageManagerPublishView>();
         }
 
-        [Test]
+        [Test,Ignore]
         public void CannotCreateDuplicatePackagePublishDialogs()
         {
             var l = new PublishPackageViewModel(dynSettings.PackageManagerClient);
