@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Autodesk.Revit.DB;
-using DSNodeServices;
 using RevitServices.Persistence;
 
 namespace Revit.Elements
@@ -126,5 +122,9 @@ namespace Revit.Elements
 
         #endregion
 
+        public override string ToString()
+        {
+            return InternalFloorType.ToString();
+        }
     }
 }
