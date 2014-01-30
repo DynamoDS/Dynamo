@@ -44,6 +44,7 @@ namespace Dynamo.Tests.UI
         [TearDown]
         public void Exit()
         {
+            this.controller.ShutDown(false);
             this.controller = null;
         }
 
@@ -1620,8 +1621,111 @@ namespace Dynamo.Tests.UI
             Assert.AreEqual(40, cbn.OutPorts[1].MarginThickness.Top);
 
         }
+        [Test]
+        public void DS_FunctionRedef01()
+        {
+            // test for function redefinition - evalaute function
+            RunCommandsFromFile("Function_redef01.xml");
+
+            Assert.AreEqual(3, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Connectors.Count);
+
+            
+            var cbn = GetNode("babc4816-96e6-495c-8489-7a650d1bfb25") as CodeBlockNodeModel;
+            Assert.AreNotEqual(ElementState.Error, cbn.State);
+            
+            AssertValue("e", 1); 
+            cbn = GetNode("d4d53e20-1514-4349-83e1-7cb5c533a3e0") as CodeBlockNodeModel;
+            AssertValue("p", 1); 
+            Exit();
+            Start();
+            // redefine function - test if the CBN reexecuted
+            RunCommandsFromFile("Function_redef01a.xml");
+            cbn = GetNode("babc4816-96e6-495c-8489-7a650d1bfb25") as CodeBlockNodeModel;
+            AssertValue("e", 3);
+            cbn = GetNode("d4d53e20-1514-4349-83e1-7cb5c533a3e0") as CodeBlockNodeModel;
+            AssertValue("p", 2);
+
+        }
+        [Test]
+        public void DS_FunctionRedef02()
+        {
+            // test for function redefinition - evalaute function
+            RunCommandsFromFile("Function_redef02.xml");
+
+            Assert.AreEqual(3, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Connectors.Count);
 
 
+            var cbn = GetNode("0ce2353c-e5d6-445f-83b7-2db7e3861ce0") as CodeBlockNodeModel;
+            Assert.AreNotEqual(ElementState.Error, cbn.State);
+
+            AssertValue("d", 1);
+            cbn = GetNode("c9827e41-8556-47f6-8e9d-6c600a2e45ee") as CodeBlockNodeModel;
+            AssertValue("p", 1);
+            Exit();
+            Start();
+            // redefine function call - CBN with function definition is not expected to be executed
+            RunCommandsFromFile("Function_redef02a.xml");
+            cbn = GetNode("c553dcff-09fa-4ff9-b1fb-04c95f1ce2d8") as CodeBlockNodeModel;
+            AssertValue("d", 3);
+            cbn = GetNode("ed9c9950-a1dc-4487-b126-9a07d999d8a8") as CodeBlockNodeModel;
+            AssertValue("p", 1);
+
+        }
+        [Test]
+        public void DS_FunctionRedef03()
+        {
+            // test for function redefinition - evalaute function
+            RunCommandsFromFile("Function_redef03.xml");
+
+            Assert.AreEqual(3, workspace.Nodes.Count);
+            Assert.AreEqual(1, workspace.Connectors.Count);
+
+
+            var cbn = GetNode("37808b88-7b29-49d4-a715-41800b4989ad") as CodeBlockNodeModel;
+            Assert.AreNotEqual(ElementState.Error, cbn.State);
+
+            AssertValue("c", 2);
+            cbn = GetNode("1947988c-fd52-4584-8ebb-b79580dc5f12") as CodeBlockNodeModel;
+            AssertValue("b", 1);
+            Exit();
+            Start();
+            // redefine function call - CBN with function definition is not expected to be executed
+            RunCommandsFromFile("Function_redef03a.xml");
+            cbn = GetNode("37808b88-7b29-49d4-a715-41800b4989ad") as CodeBlockNodeModel;
+            AssertValue("c", 1);
+            cbn = GetNode("1947988c-fd52-4584-8ebb-b79580dc5f12") as CodeBlockNodeModel;
+            AssertValue("b", 2);
+
+        }
+        [Test]
+        public void DS_FunctionRedef04()
+        {
+            // test for function redefinition - evalaute function
+            RunCommandsFromFile("Function_redef04.xml");
+
+            Assert.AreEqual(4, workspace.Nodes.Count);
+
+
+
+            var cbn = GetNode("275d7a3d-2b98-4f0e-808d-2aba03c6ff4f") as CodeBlockNodeModel;
+            Assert.AreNotEqual(ElementState.Error, cbn.State);
+
+            AssertValue("c", 1);
+            cbn = GetNode("9b638b99-d631-4583-8b82-662a60cdf6bc") as CodeBlockNodeModel;
+            AssertValue("b", 1);
+            Exit();
+            Start();
+            // redefine function call - change type of argument
+            RunCommandsFromFile("Function_redef04a.xml");
+            cbn = GetNode("275d7a3d-2b98-4f0e-808d-2aba03c6ff4f") as CodeBlockNodeModel;
+            AssertValue("c", 1);
+            cbn = GetNode("9b638b99-d631-4583-8b82-662a60cdf6bc") as CodeBlockNodeModel;
+            AssertValue("b", 2);
+
+        }
+       
         #endregion
 
         #region Private Helper Methods

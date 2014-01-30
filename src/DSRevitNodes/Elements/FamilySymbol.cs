@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using Autodesk.DesignScript.Geometry;
 using Autodesk.Revit.DB;
 using DSNodeServices;
-using Revit.Elements;
 using RevitServices.Persistence;
-using RevitServices.Transactions;
 
 namespace Revit.Elements
 {
@@ -130,6 +124,49 @@ namespace Revit.Elements
         }
 
         /// <summary>
+        /// Select a FamilySymbol give it's family name and type name.
+        /// </summary>
+        /// <param name="familyName">The FamilySymbol's parent Family name.</param>
+        /// <param name="typeName">The name of the FamilySymbol.</param>
+        /// <returns></returns>
+        public static FamilySymbol ByFamilyNameAndTypeName(string familyName, string typeName)
+        {
+            if (familyName == null)
+            {
+                throw new ArgumentNullException("familyName");
+            }
+
+            if (typeName == null)
+            {
+                throw new ArgumentNullException("typeName");
+            }
+
+            //find the family
+            var collector = new FilteredElementCollector(DocumentManager.GetInstance().CurrentDBDocument);
+            collector.OfClass(typeof (Autodesk.Revit.DB.Family));
+            var family = (Autodesk.Revit.DB.Family)collector.ToElements().FirstOrDefault(x => x.Name == familyName);
+
+            if (family == null)
+            {
+                throw new Exception(string.Format("A family with the specified name, {0}, could not be found in the document.", familyName));
+            }
+
+            // obtain the family symbol with the provided name
+            var symbol =
+                family.Symbols.Cast<Autodesk.Revit.DB.FamilySymbol>().FirstOrDefault(x => x.Name == typeName);
+
+            if (symbol == null)
+            {
+                throw new Exception(String.Format("A FamilySymbol with the specified name, {0}, does not exist in the Family", typeName));
+            }
+
+            return new FamilySymbol(symbol)
+            {
+                IsRevitOwned = true
+            };
+        }
+
+        /// <summary>
         /// Select a FamilySymbol given it's name.  This method will return the first FamilySymbol it finds if there are
         /// two or more FamilySymbol's with the same name.
         /// </summary>
@@ -187,8 +224,6 @@ namespace Revit.Elements
         }
 
         #endregion
-
-
 
     }
 }
