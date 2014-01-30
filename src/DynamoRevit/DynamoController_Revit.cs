@@ -29,6 +29,7 @@ using CurveLoop = Autodesk.Revit.DB.CurveLoop;
 using Transaction = Dynamo.Nodes.Transaction;
 using Value = Dynamo.FScheme.Value;
 using RevThread = RevitServices.Threading;
+using Dynamo.DSEngine;
 
 namespace Dynamo
 {
@@ -104,6 +105,8 @@ namespace Dynamo
             UnitsManager.Instance.HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareFoot;
             UnitsManager.Instance.HostApplicationInternalLengthUnit = DynamoLengthUnit.DecimalFoot;
             UnitsManager.Instance.HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicFoot;
+
+            EngineController.ImportLibrary("DSRevitNodes.dll");
         }
 
         private void CleanupVisualizations(object sender, EventArgs e)

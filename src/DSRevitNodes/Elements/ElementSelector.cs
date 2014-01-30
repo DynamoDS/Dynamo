@@ -12,7 +12,7 @@ using RevitServices.Persistence;
 namespace Revit.Elements
 {
     [Browsable(false)]
-    public static class ElementSelector
+    public class ElementSelector
     {
         /// <summary>
         /// Get a collection of wrapped elements from the current document by type
@@ -41,6 +41,18 @@ namespace Revit.Elements
                 return ele.ToDSType(isRevitOwned);
             }
             
+            throw new Exception("Could not get the element from the document.");
+        }
+
+        public static AbstractElement ByElementId(int elementId)
+        {
+            var ele = InternalGetElementById(elementId);
+
+            if (ele != null)
+            {
+                return ele.ToDSType(true);
+            }
+
             throw new Exception("Could not get the element from the document.");
         }
 
