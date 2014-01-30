@@ -466,7 +466,7 @@ namespace Dynamo.Tests
             //Create a List
             //For a list of 0..20, this will have 21 elements
             //Slicing by 5 should return 6 lists, the last containing one element
-            var list = Utils.SequenceToFSharpList(Enumerable.Range(0, 21).Select(x => FScheme.Value.NewNumber(x)));
+            var list = Utils.ToFSharpList(Enumerable.Range(0, 21).Select(x => FScheme.Value.NewNumber(x)));
 
             var sliceNode = (Slice)dynSettings.Controller.DynamoModel.Nodes.First(x => x is Slice);
             var args = FSharpList<FScheme.Value>.Empty;
@@ -490,7 +490,7 @@ namespace Dynamo.Tests
 
             //test if you pass in a list wwith less elements than the
             //slice, you should just get back the same list
-            list = Utils.SequenceToFSharpList(Enumerable.Range(0, 1).Select(x => FScheme.Value.NewNumber(x)));
+            list = Utils.ToFSharpList(Enumerable.Range(0, 1).Select(x => FScheme.Value.NewNumber(x)));
             args = FSharpList<FScheme.Value>.Empty;
             args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewNumber(5), args);
             args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewList(list), args);
@@ -519,7 +519,7 @@ namespace Dynamo.Tests
             //14,18
             //19
 
-            var list = Utils.SequenceToFSharpList(Enumerable.Range(0, 20).Select(x => FScheme.Value.NewNumber(x)));
+            var list = Utils.ToFSharpList(Enumerable.Range(0, 20).Select(x => FScheme.Value.NewNumber(x)));
 
             model.CreateNode(0, 0, "Diagonal Left List");
 

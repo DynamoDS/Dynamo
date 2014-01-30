@@ -12,4 +12,17 @@ namespace DSCoreNodes
             return 42.0;
         }
     }
+
+    namespace insanity
+    {
+        public class SanityCheck
+    {
+        public static double ANumber()
+        {
+            return -999;
+        }
+    }
+
+
+    }
 }

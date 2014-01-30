@@ -65,7 +65,7 @@ namespace Dynamo.Tests
         public void BuildValueStringIsCorrectForListOfDoubles()
         {
             var list = new List<double>() {1, 2, 3, 4};
-            var val = FScheme.Value.NewList(Utils.SequenceToFSharpList(list.Select(FScheme.Value.NewNumber)));
+            var val = FScheme.Value.NewList(Utils.ToFSharpList(list.Select(FScheme.Value.NewNumber)));
             var res = NodeModel.PrintValue(val, 0, 2, 0, 2);
             Assert.AreEqual("List\n  1\n  2\n  ...", res);
         }
@@ -74,7 +74,7 @@ namespace Dynamo.Tests
         public void BuildValueStringIsCorrectForListOfStrings()
         {
             var list = new List<string>() { "This", "is a", "list", "of strings" };
-            var val = FScheme.Value.NewList(Utils.SequenceToFSharpList(list.Select(FScheme.Value.NewString)));
+            var val = FScheme.Value.NewList(Utils.ToFSharpList(list.Select(FScheme.Value.NewString)));
             var res = NodeModel.PrintValue(val, 0, 2, 0, 2);
             Assert.AreEqual("List\n  \"This\"\n  \"is a\"\n  ...", res);
         }
@@ -85,20 +85,20 @@ namespace Dynamo.Tests
 
             var nestedList1 =
                 FScheme.Value.NewList(
-                    Utils.SequenceToFSharpList(
+                    Utils.ToFSharpList(
                         (new List<string>() {"This", "is a", "list", "of strings"}).Select(FScheme.Value.NewString)));
             var nestedList2 =
                 FScheme.Value.NewList(
-                    Utils.SequenceToFSharpList(
+                    Utils.ToFSharpList(
                         (new List<string>() {"Another", "list", "of strings"}).Select(FScheme.Value.NewString)));
             var nestedList3 =
                 FScheme.Value.NewList(
-                    Utils.SequenceToFSharpList(
+                    Utils.ToFSharpList(
                         (new List<string>() {"This", "is a", "list", "of strings"}).Select(FScheme.Value.NewString)));
 
             var list = new List<FScheme.Value>() { nestedList1, nestedList2, nestedList3 };
 
-            var val = FScheme.Value.NewList(Utils.SequenceToFSharpList(list));
+            var val = FScheme.Value.NewList(Utils.ToFSharpList(list));
             var res = NodeModel.PrintValue(val, 0, 1, 0, 3);
             Assert.AreEqual("List\n" +
                             "  List\n"+
@@ -115,20 +115,20 @@ namespace Dynamo.Tests
 
             var nestedList1 =
                 FScheme.Value.NewList(
-                    Utils.SequenceToFSharpList(
+                    Utils.ToFSharpList(
                         (new List<string>() { "This", "is a", "list", "of strings" }).Select(FScheme.Value.NewString)));
             var nestedList2 =
                 FScheme.Value.NewList(
-                    Utils.SequenceToFSharpList(
+                    Utils.ToFSharpList(
                         (new List<string>() { "Another", "list", "of strings" }).Select(FScheme.Value.NewString)));
             var nestedList3 =
                 FScheme.Value.NewList(
-                    Utils.SequenceToFSharpList(
+                    Utils.ToFSharpList(
                         (new List<string>() { "This", "is a", "list", "of strings" }).Select(FScheme.Value.NewString)));
 
             var list = new List<FScheme.Value>() { nestedList1, nestedList2, nestedList3 };
 
-            var val = FScheme.Value.NewList(Utils.SequenceToFSharpList(list));
+            var val = FScheme.Value.NewList(Utils.ToFSharpList(list));
             var res = NodeModel.PrintValue(val, 0, 2, 0, 3);
             Assert.AreEqual("List\n" +
                             "  List\n" +
@@ -149,20 +149,20 @@ namespace Dynamo.Tests
         {
             var nestedList1 =
                 FScheme.Value.NewList(
-                    Utils.SequenceToFSharpList(
+                    Utils.ToFSharpList(
                         (new List<string>() { "This", "is a", "list", "of strings" }).Select(FScheme.Value.NewString)));
             var nestedList2 =
                 FScheme.Value.NewList(
-                    Utils.SequenceToFSharpList(
+                    Utils.ToFSharpList(
                         (new List<string>() { "Another", "list", "of strings" }).Select(FScheme.Value.NewString)));
             var nestedList3 =
                 FScheme.Value.NewList(
-                    Utils.SequenceToFSharpList(
+                    Utils.ToFSharpList(
                         (new List<string>() { "Finally", "a", "list", "of strings" }).Select(FScheme.Value.NewString)));
 
             var list = new List<FScheme.Value>() { nestedList1, nestedList2, nestedList3 };
 
-            var val = FScheme.Value.NewList(Utils.SequenceToFSharpList(list));
+            var val = FScheme.Value.NewList(Utils.ToFSharpList(list));
             var res = NodeModel.PrintValue(val, 0, 3, 0, 3);
             Assert.AreEqual("List\n" +
                             "  List\n" +
@@ -187,20 +187,20 @@ namespace Dynamo.Tests
         {
             var nestedList1 =
                 FScheme.Value.NewList(
-                    Utils.SequenceToFSharpList(
+                    Utils.ToFSharpList(
                         (new List<string>() { "This", "is a", "list", "of strings" }).Select(FScheme.Value.NewString)));
             var nestedList2 =
                 FScheme.Value.NewList(
-                    Utils.SequenceToFSharpList(
+                    Utils.ToFSharpList(
                         (new List<string>() { "Another", "list", "of strings" }).Select(FScheme.Value.NewString)));
             var nestedList3 =
                 FScheme.Value.NewList(
-                    Utils.SequenceToFSharpList(
+                    Utils.ToFSharpList(
                         (new List<string>() { "Finally", "a", "list", "of strings" }).Select(FScheme.Value.NewString)));
 
             var list = new List<FScheme.Value>() { nestedList1, nestedList2, nestedList3 };
 
-            var val = FScheme.Value.NewList(Utils.SequenceToFSharpList(list));
+            var val = FScheme.Value.NewList(Utils.ToFSharpList(list));
             var res = NodeModel.PrintValue(val, 0, 3, 0, 2);
             Assert.AreEqual("List\n" +
                             "  List\n" +
@@ -217,20 +217,20 @@ namespace Dynamo.Tests
         {
             var nestedList1 =
                 FScheme.Value.NewList(
-                    Utils.SequenceToFSharpList(
+                    Utils.ToFSharpList(
                         (new List<string>() { "This", "is a", "list", "of strings" }).Select(FScheme.Value.NewString)));
             var nestedList2 =
                 FScheme.Value.NewList(
-                    Utils.SequenceToFSharpList(
+                    Utils.ToFSharpList(
                         (new List<string>() { "Another", "list", "of strings" }).Select(FScheme.Value.NewString)));
             var nestedList3 =
                 FScheme.Value.NewList(
-                    Utils.SequenceToFSharpList(
+                    Utils.ToFSharpList(
                         (new List<string>() { "Finally", "a", "list", "of strings" }).Select(FScheme.Value.NewString)));
 
             var list = new List<FScheme.Value>() { nestedList1, nestedList2, nestedList3 };
 
-            var val = FScheme.Value.NewList(Utils.SequenceToFSharpList(list));
+            var val = FScheme.Value.NewList(Utils.ToFSharpList(list));
             var res = NodeModel.PrintValue(val, 0, 2, 0, 2);
             Assert.AreEqual("List\n" +
                             "  List\n" +
@@ -246,13 +246,13 @@ namespace Dynamo.Tests
         {
             var nestedList1 =
                 FScheme.Value.NewList(
-                    Utils.SequenceToFSharpList(
+                    Utils.ToFSharpList(
                         (new List<string>() { "This", "is a", "list", "of strings" }).Select(FScheme.Value.NewString)));
 
             var list = new List<FScheme.Value>() { nestedList1 };
-            var innerFList = FScheme.Value.NewList(Utils.SequenceToFSharpList(list));
+            var innerFList = FScheme.Value.NewList(Utils.ToFSharpList(list));
             var innerList = new List<FScheme.Value>() { innerFList };
-            var val = FScheme.Value.NewList(Utils.SequenceToFSharpList(innerList));
+            var val = FScheme.Value.NewList(Utils.ToFSharpList(innerList));
 
             var res = NodeModel.PrintValue(val, 0, 3, 0, 4);
             Assert.AreEqual("List\n" +
@@ -270,22 +270,22 @@ namespace Dynamo.Tests
         {
             var nestedList1 =
                 FScheme.Value.NewList(
-                    Utils.SequenceToFSharpList(
+                    Utils.ToFSharpList(
                         (new List<string>() { "This", "is a", "list", "of strings" }).Select(FScheme.Value.NewString)));
             var nestedList2 =
                 FScheme.Value.NewList(
-                    Utils.SequenceToFSharpList(
+                    Utils.ToFSharpList(
                         (new List<string>() { "Another", "list", "of strings" }).Select(FScheme.Value.NewString)));
             var nestedList3 =
                 FScheme.Value.NewList(
-                    Utils.SequenceToFSharpList(
+                    Utils.ToFSharpList(
                         (new List<string>() { "Finally", "a", "list", "of strings" }).Select(FScheme.Value.NewString)));
 
 
             var list = new List<FScheme.Value>() { nestedList1, nestedList2, nestedList3 };
-            var innerFList = FScheme.Value.NewList(Utils.SequenceToFSharpList(list));
+            var innerFList = FScheme.Value.NewList(Utils.ToFSharpList(list));
             var innerList = new List<FScheme.Value>() { innerFList };
-            var val = FScheme.Value.NewList(Utils.SequenceToFSharpList(innerList));
+            var val = FScheme.Value.NewList(Utils.ToFSharpList(innerList));
 
             var res = NodeModel.PrintValue(val, 0, 3, 0, 4);
             Assert.AreEqual("List\n" +
@@ -312,22 +312,22 @@ namespace Dynamo.Tests
         {
             var nestedList1 =
                 FScheme.Value.NewList(
-                    Utils.SequenceToFSharpList(
+                    Utils.ToFSharpList(
                         (new List<double>() { 1, 5.2, 2, 3910 }).Select(FScheme.Value.NewNumber)));
             var nestedList2 =
                 FScheme.Value.NewList(
-                    Utils.SequenceToFSharpList(
+                    Utils.ToFSharpList(
                         (new List<double>() { 1, -3e5, 2, -5, 1 }).Select(FScheme.Value.NewNumber)));
             var nestedList3 =
                 FScheme.Value.NewList(
-                    Utils.SequenceToFSharpList(
+                    Utils.ToFSharpList(
                         (new List<double>() { 1, 2 }).Select(FScheme.Value.NewNumber)));
 
 
             var list = new List<FScheme.Value>() { nestedList1, nestedList2, nestedList3 };
-            var innerFList = FScheme.Value.NewList(Utils.SequenceToFSharpList(list));
+            var innerFList = FScheme.Value.NewList(Utils.ToFSharpList(list));
             var innerList = new List<FScheme.Value>() { innerFList };
-            var val = FScheme.Value.NewList(Utils.SequenceToFSharpList(innerList));
+            var val = FScheme.Value.NewList(Utils.ToFSharpList(innerList));
 
             var res = NodeModel.PrintValue(val, 0, 3, 0, 4);
             Assert.AreEqual("List\n" +

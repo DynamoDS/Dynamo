@@ -175,6 +175,13 @@ namespace Dynamo.Utilities
             }
             return tsl;
         }
-        
+
+        public static string GetFullName(this Delegate del)
+        {
+            if (del.Method.DeclaringType == null)
+                throw new ArgumentException("Delegate has no declaring type.", @"del");
+
+            return String.Format("{0}.{1}", del.Method.DeclaringType.FullName, del.Method.Name);
+        }
     }
 }

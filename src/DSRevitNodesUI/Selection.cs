@@ -135,9 +135,9 @@ namespace Dynamo.Nodes
         {
             get
             {
-                return _selectionText = SelectedElement == null
-                                            ? "Nothing Selected"
-                                            : SelectedElement.Name;
+                return _selected == null
+                                       ? "Nothing Selected"
+                                       : string.Format("Element Id:{0}",_selected.Id);
             }
             set
             {
@@ -245,16 +245,13 @@ namespace Dynamo.Nodes
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            AssociativeNode node = null;
-
-            node = new FunctionCallNode
-            {
-                Function = new IdentifierNode("DSRevitNodes.Elements.ElementSelector.ByElementId"),
-                FormalArguments = new List<AssociativeNode>
+            var node = AstFactory.BuildFunctionCall(
+                "Revit.Elements.ElementSelector",
+                "ByElementId",
+                new List<AssociativeNode>
                 {
-                    new IntNode((SelectedElement as Element).Id.IntegerValue.ToString(CultureInfo.InvariantCulture))
-                }
-            };
+                    AstFactory.BuildIntNode(SelectedElement.Id.IntegerValue),
+                });
 
             return new[] {AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node)};
         }
@@ -304,7 +301,9 @@ namespace Dynamo.Nodes
         {
             get
             {
-                return "Reference ID: " + (SelectedElement as Reference).ElementId;
+                return _selected == null
+                                        ? "Nothing Selected"
+                                        : string.Format("Reference Id: {0}", _selected.ElementId);
             }
             set
             {
@@ -419,34 +418,25 @@ namespace Dynamo.Nodes
                     DocumentManager.GetInstance()
                         .CurrentDBDocument.GetElement(geomRef)
                         .GetGeometryObjectFromReference(geomRef);
-            var stringNode = new StringNode
-            {
-                value = SelectedElement.ConvertToStableRepresentation(
-                    DocumentManager.GetInstance().CurrentDBDocument)
-            };
+
+            var stringNode = AstFactory.BuildStringNode(SelectedElement.ConvertToStableRepresentation(
+                DocumentManager.GetInstance().CurrentDBDocument));
+
+            var args = new List<AssociativeNode> {stringNode};
 
             if (geob is Curve)
             {
-                node = new FunctionCallNode
-                {
-                    Function = new IdentifierNode("DSRevitNodes.GeometryObjects.GeometryObjectSelector.ByCurve"),
-                    FormalArguments = new List<AssociativeNode>
-                    { 
-                        stringNode
-                    }
-                };
+                node = AstFactory.BuildFunctionCall(
+                    "Revit.GeometryObjects.GeometryObjectSelector",
+                    "ByCurve", 
+                    args);
             }
             else
             {
-                    
-                node = new FunctionCallNode
-                {
-                    Function = new IdentifierNode("DSRevitNodes.GeometryObjects.GeometryObjectSelector.ByReferenceId"),
-                    FormalArguments = new List<AssociativeNode>
-                    { 
-                        stringNode
-                    }
-                };
+                node = AstFactory.BuildFunctionCall(
+                    "Revit.GeometryObjects.GeometryObjectSelector",
+                    "ByReferenceId", 
+                    args);
             }
 
             return new[] {AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node)};
@@ -488,9 +478,8 @@ namespace Dynamo.Nodes
         {
             get
             {
-                var elements = SelectedElement as List<Element>;
                 var sb = new StringBuilder();
-                elements.ForEach(x => sb.Append(x.Id.IntegerValue + ","));
+                _selected.ForEach(x => sb.Append(x.Id.IntegerValue + ","));
 
                 return "Elements:" + sb.ToString();
             }
@@ -601,20 +590,19 @@ namespace Dynamo.Nodes
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            AssociativeNode node = null;
+            var els = SelectedElement;
 
-            var els = SelectedElement as List<Element>;
-
-            var newInputs = els.Select(el => new FunctionCallNode
-            {
-                Function = new IdentifierNode("DSRevitNodes.Elements.ElementSelector.ByElementId"),
-                FormalArguments = new List<AssociativeNode>
+            var newInputs = els.Select(el => 
+                AstFactory.BuildFunctionCall(
+                "Revit.Elements.ElementSelector",
+                "ByElementId",
+                new List<AssociativeNode>
                 {
-                    new IntNode(el.Id.IntegerValue.ToString(CultureInfo.InvariantCulture))
+                    AstFactory.BuildIntNode(el.Id.IntegerValue),
                 }
-            }).Cast<AssociativeNode>().ToList();
+                )).ToList();
 
-            node = AstFactory.BuildExprList(newInputs);
+            var node = AstFactory.BuildExprList(newInputs);
 
             return new[] {AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node)};
         }
@@ -778,7 +766,6 @@ namespace Dynamo.Nodes
 
     [NodeName("Select Point on Face")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-
     [NodeDescription("Select a point on a face.")]
     [IsDesignScriptCompatible]
     public class DSPointOnElementSelection : DSReferenceSelection
