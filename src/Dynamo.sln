@@ -70,6 +70,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSRevitNodesUI", "DSRevitNo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoUnits", "DynamoUnits\DynamoUnits.csproj", "{6E0A079E-85F1-45A1-AD5B-9855E4344809}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSIronPythonUI", "DSIronPythonNode\DSIronPythonUI.csproj", "{01DE9B06-0BCB-4D8A-862E-E8170F5D6B4F}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Dynamo.vsmdi
@@ -379,6 +381,16 @@ Global
 		{6E0A079E-85F1-45A1-AD5B-9855E4344809}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{6E0A079E-85F1-45A1-AD5B-9855E4344809}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{6E0A079E-85F1-45A1-AD5B-9855E4344809}.Release|x86.ActiveCfg = Release|Any CPU
+		{01DE9B06-0BCB-4D8A-862E-E8170F5D6B4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01DE9B06-0BCB-4D8A-862E-E8170F5D6B4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01DE9B06-0BCB-4D8A-862E-E8170F5D6B4F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{01DE9B06-0BCB-4D8A-862E-E8170F5D6B4F}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{01DE9B06-0BCB-4D8A-862E-E8170F5D6B4F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{01DE9B06-0BCB-4D8A-862E-E8170F5D6B4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01DE9B06-0BCB-4D8A-862E-E8170F5D6B4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01DE9B06-0BCB-4D8A-862E-E8170F5D6B4F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{01DE9B06-0BCB-4D8A-862E-E8170F5D6B4F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{01DE9B06-0BCB-4D8A-862E-E8170F5D6B4F}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
