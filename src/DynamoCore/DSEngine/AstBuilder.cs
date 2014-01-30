@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Dynamo.Models;
@@ -418,65 +419,6 @@ namespace Dynamo.DSEngine
             };
 
             OnAstNodeBuilt(functionGuid, new[] { functionDef });
-        }
-
-        /// <summary>
-        /// Create a function defintion for a partially applied function call. 
-        /// E.g.
-        /// 
-        ///     foo(?, x, y, ?, z);
-        ///     
-        ///  ->
-        ///
-        ///     def foo_guid(p_1, p_2) = foo(p_1, x, y, p_2, z);
-        ///     
-        /// </summary>
-        /// <param name="func"></param>
-        /// <returns></returns>
-        private FunctionDefinitionNode BuildPartialFunction(FunctionCallNode func)
-        {
-            var partialArgs = new List<VarDeclNode>();
-            int paramPostfix = 0;
-
-            for (int i = 0; i < func.FormalArguments.Count; ++i)
-            {
-                if (func.FormalArguments[i] == null)
-                {
-                    VarDeclNode param = AstFactory.BuildParamNode(StringConstants.ParamPrefix + paramPostfix);
-                    partialArgs.Add(param);
-
-                    func.FormalArguments[i] = param.NameNode;
-                    paramPostfix++;
-                }
-            }
-
-            // It is not a partial function call. 
-            if (paramPostfix == 0)
-            {
-                return null;
-            }
-
-            var funcBody = new CodeBlockNode();
-            {
-                var lhs = AstFactory.BuildIdentifier(Keyword.Return);
-                var rhs = AstFactory.BuildFunctionCall(func.Function.Name, func.FormalArguments);
-                var returnStmt = AstFactory.BuildAssignment(lhs, rhs);
-                funcBody.Body.Add(returnStmt);
-            }
-
-            var partialFunc = new FunctionDefinitionNode
-            {
-                IsExternLib = false,
-                IsDNI = false,
-                ExternLibName = null,
-                Name =
-                    StringConstants.FunctionPrefix
-                    + Guid.NewGuid().ToString().Replace("-", string.Empty),
-                Signature = new ArgumentSignatureNode { Arguments = partialArgs },
-                FunctionBody = funcBody
-            };
-
-            return partialFunc;
         }
 
         /// <summary>

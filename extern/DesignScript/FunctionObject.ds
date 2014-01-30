@@ -1,0 +1,128 @@
+class _FunctionObject
+{
+    def DoEvaluate(v:var[]..[])
+    {
+        return = null;
+    }
+}
+
+class _SingleFunctionObject extends _FunctionObject
+{
+    __functionPointers : function;
+    __argumtNumber : int;
+    __params : var[]..[];
+    __hasParamAt : bool[];
+    
+    constructor _SingleFunctionObject(fptr : function, 
+                                      argNumber: int, 
+                                      paramPositions : int[], 
+                                      params : var[]..[])
+    {
+        __functionPointers = fptr;
+        __argumtNumber = argNumber;
+        
+        __hasParamAt[0..__argumtNumber - 1] = false;
+        __hasParamAt[paramPositions] = true;
+        
+        __params = params;
+    }
+    
+    private def GetNextEmptyParamPos(hasParamAt : bool[])
+    {
+        return = [Imperative]
+        {
+            for(_i in 0..Count(hasParamAt) - 1)
+            {
+                if (!hasParamAt[_i])
+                    return = _i;
+            }
+            return = -1;
+        }
+    }
+    
+    private def DoEvaluateImp(fptr : function, 
+                              params : var[]..[])
+    {
+        return = Evaluate(fptr, params);
+    }
+    
+    def DoEvaluate(param: var[]..[])
+    {      
+        return = [Imperative]
+        {           
+            _nextParamPosition = GetNextEmptyParamPos(__hasParamAt);
+            
+            if (_nextParamPosition < 0)
+            {
+                return = null;
+            }
+            else
+            {
+                _params = __params;
+                _hasParamAt = __hasParamAt;
+                
+                _params[_nextParamPosition] = param;
+                _hasParamAt[_nextParamPosition] = true;
+                
+                _nextParamPosition = GetNextEmptyParamPos(_hasParamAt);
+                if (_nextParamPosition < 0)
+                {
+                    return = DoEvaluateImp(__functionPointers, _params);
+                }
+                else
+                {
+                    _paramPositions = { };
+                    for (_i in 0..__argumtNumber - 1)
+                    {
+                        if (_hasParamAt[_i])
+                        {
+                            _paramPositions = Concat(_paramPositions, { _i });
+                        }
+                    }
+                
+                    return = _SingleFunctionObject._SingleFunctionObject(
+                                                __functionPointers,
+                                                __argumtNumber,
+                                                _paramPositions,
+                                                _params);
+                }
+            }
+        }  
+    }
+}
+
+class _ComposedFunctionObject extends _FunctionObject
+{
+    __funcs : _FunctionObject[];
+    
+    constructor _ComposedFunctionObject(funcs : _FunctionObject[])
+    {
+        __funcs = funcs;
+    }
+    
+    def DoEvaluate(param:var[]..[])
+    {
+        return = [Imperative]
+        {
+            _count = Count(__funcs);
+            _v = param;
+            
+            for(_i in _count - 1.. 0)
+            {
+                _f = __funcs[_i];
+                _v = _f.DoEvaluate(_v);
+            }
+            return = _v;
+        }
+    }
+}
+
+def Apply(functionObject: _FunctionObject, param: var[]..[])
+{
+    return = functionObject.DoEvaluate(param);
+}
+
+def Compose(funcs : _FunctionObject[])
+{
+    return = _ComposedFunctionObject(funcs);
+}

@@ -4,6 +4,7 @@ using Autodesk.Revit.DB;
 using Dynamo.Models;
 using Dynamo.Revit;
 using Dynamo.Utilities;
+using RevitServices.Persistence;
 
 namespace Dynamo.Nodes
 {
@@ -27,7 +28,7 @@ namespace Dynamo.Nodes
         public override FScheme.Value Evaluate(Microsoft.FSharp.Collections.FSharpList<FScheme.Value> args)
         {
             //if we're in a family document, don't even try to add a floor
-            if (dynRevitSettings.Doc.Document.IsFamilyDocument)
+            if (DocumentManager.GetInstance().CurrentDBDocument.IsFamilyDocument)
             {
                 throw new Exception("Walls can not be created in family documents.");
             }
@@ -45,16 +46,16 @@ namespace Dynamo.Nodes
                 if (dynUtils.TryGetElement(this.Elements[0], out wall))
                 {
                     //Delete the existing floor. Revit API does not allow update of floor sketch.
-                    dynRevitSettings.Doc.Document.Delete(wall.Id);
+                    DocumentManager.GetInstance().CurrentDBDocument.Delete(wall.Id);
                 }
 
-                wall = Wall.Create(dynRevitSettings.Doc.Document, curve, wallType.Id, level.Id, height, 0.0, false, false);
+                wall = Wall.Create(DocumentManager.GetInstance().CurrentDBDocument, curve, wallType.Id, level.Id, height, 0.0, false, false);
                 this.Elements[0] = wall.Id;
 
             }
             else
             {
-                wall = Wall.Create(dynRevitSettings.Doc.Document,curve, wallType.Id, level.Id, height, 0.0, false, false);
+                wall = Wall.Create(DocumentManager.GetInstance().CurrentDBDocument, curve, wallType.Id, level.Id, height, 0.0, false, false);
                 Elements.Add(wall.Id);
             }
 
@@ -78,7 +79,7 @@ namespace Dynamo.Nodes
 
         public override void PopulateItems()
         {
-            var wallTypesColl = new FilteredElementCollector(dynRevitSettings.Doc.Document);
+            var wallTypesColl = new FilteredElementCollector(DocumentManager.GetInstance().CurrentDBDocument);
             wallTypesColl.OfClass(typeof(WallType));
 
             Items.Clear();
