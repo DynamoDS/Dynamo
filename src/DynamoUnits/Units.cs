@@ -390,7 +390,7 @@ namespace Dynamo.Units
         public static FScheme.Value ConvertListToHostUnits(FScheme.Value.List value)
         {
             var list = value.Item;
-            return FScheme.Value.NewList(FSchemeInterop.Utils.SequenceToFSharpList(list.Select(UnwrapToDoubleWithHostUnitConversion)));
+            return FScheme.Value.NewList(FSchemeInterop.Utils.ToFSharpList(list.Select(UnwrapToDoubleWithHostUnitConversion)));
         }
 
         public static SIUnit UnwrapToSIUnit(FScheme.Value value)
