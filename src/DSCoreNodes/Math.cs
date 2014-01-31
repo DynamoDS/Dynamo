@@ -50,9 +50,9 @@ namespace DSCore
         /// Averages a list of numbers.
         /// </summary>
         /// <param name="numbers">List of numbers to be averaged.</param>
-        public static double Average(IEnumerable<double> numbers)
+        public static double Average(IList numbers)
         {
-            return numbers.Average();
+            return numbers.Cast<double>().Average();
         }
     }
 }

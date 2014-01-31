@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Windows.Forms.Layout;
+using System.Windows.Input;
 
 namespace DSCore
 {
@@ -19,16 +21,16 @@ namespace DSCore
         ///     Creates a new list containing the elements of the given list but in reverse order.
         /// </summary>
         /// <param name="list">List to be reversed.</param>
-        public static IList<T> Reverse<T>(IEnumerable<T> list)
+        public static IList Reverse(IList list)
         {
-            return list.Reverse().ToList();
+            return list.Cast<object>().Reverse().ToList();
         }
 
         /// <summary>
         ///     Creates a new list containing the given elements.
         /// </summary>
         /// <param name="elements">Elements to be stored in the new list.</param>
-        public static IList<T> Create<T>(params T[] elements)
+        public static IList Create(params object[] elements)
         {
             return elements.ToList();
         }
@@ -37,11 +39,9 @@ namespace DSCore
         ///     Sorts a list using the built-in natural ordering.
         /// </summary>
         /// <param name="list">List to be sorted.</param>
-        public static IList<T> Sort<T>(IEnumerable<T> list)
+        public static IList Sort(IList list)
         {
-            List<T> lst = list.ToList();
-            lst.Sort();
-            return lst;
+            return list.Cast<object>().OrderBy(x => x).ToList();
         }
 
         /// <summary>
@@ -49,18 +49,13 @@ namespace DSCore
         ///     and that value is used to order the original elements.
         /// </summary>
         /// <param name="list">List to be sorted.</param>
-        /// <param name="keyProjection">
+        /// <param name="keyProjector">
         ///     Function that consumes an element from the list and produces an orderable value.
         /// </param>
         /// <returns></returns>
-        public static IList<T> SortByKey<T, TKey>(IEnumerable<T> list, Converter<T, TKey> keyProjection)
+        public static IList SortByKey(IList list, Delegate keyProjector)
         {
-            var sortedList = new SortedList<TKey, T>();
-
-            foreach (T item in list)
-                sortedList.Add(keyProjection(item), item);
-
-            return sortedList.Select(x => x.Value).ToList();
+            return list.Cast<object>().OrderBy(x => keyProjector.DynamicInvoke(x)).ToList();
         }
 
         /// <summary>
@@ -74,10 +69,10 @@ namespace DSCore
         ///     before the second, zero if the values are considered the same, and a value greater than
         ///     zero if the second element should appear before the first.
         /// </param>
-        public static IList<T> SortByComparison<T>(IEnumerable<T> list, Comparison<T> comparison)
+        public static IList SortByComparison(IList list, Delegate comparison)
         {
-            List<T> rtn = list.ToList();
-            rtn.Sort(comparison);
+            var rtn = list.Cast<object>().ToList();
+            rtn.Sort((x, y) => (int)comparison.DynamicInvoke(x, y));
             return rtn;
         }
 
@@ -86,9 +81,9 @@ namespace DSCore
         /// </summary>
         /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <param name="list">List to take the minimum value from.</param>
-        public static T MinimumItem<T>(IEnumerable<T> list)
+        public static object MinimumItem(IEnumerable list)
         {
-            return list.Min();
+            return list.Cast<object>().Min();
         }
 
         /// <summary>
@@ -99,17 +94,28 @@ namespace DSCore
         /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <typeparam name="TKey">Type that the Key Projection produces.</typeparam>
         /// <param name="list">List to take the minimum value from.</param>
-        /// <param name="keyProjection">
+        /// <param name="keyProjector">
         ///     Function that consumes an element from the list and produces an orderable value.
         /// </param>
-        public static T MinimumItemByKey<T, TKey>(IEnumerable<T> list, Func<T, TKey> keyProjection)
+        public static object MinimumItemByKey(IList list, Delegate keyProjector)
         {
-            var sortedList = new SortedList<TKey, T>();
+            if (list.Count == 0)
+                throw new ArgumentException("Cannot take the minimum value of an empty list.", "list");
 
-            foreach (T item in list)
-                sortedList.Add(keyProjection(item), item);
+            object min = list[0];
+            var minProjection = (IComparable)keyProjector.DynamicInvoke(min);
 
-            return sortedList.First().Value;
+            foreach (var item in list.Cast<object>().Skip(1))
+            {
+                var projection = (IComparable)keyProjector.DynamicInvoke(item);
+                if (projection.CompareTo(minProjection) < 0)
+                {
+                    min = item;
+                    minProjection = projection;
+                }
+            }
+
+            return min;
         }
 
         /// <summary>
@@ -117,9 +123,9 @@ namespace DSCore
         /// </summary>
         /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <param name="list">List to take the maximum value from.</param>
-        public static T MaximumItem<T>(IEnumerable<T> list)
+        public static object MaximumItem(IList list)
         {
-            return list.Max();
+            return list.Cast<object>().Max();
         }
 
         /// <summary>
@@ -130,17 +136,28 @@ namespace DSCore
         /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <typeparam name="TKey">Type that the Key Projection produces.</typeparam>
         /// <param name="list">List to take the maximum value from.</param>
-        /// <param name="keyProjection">
+        /// <param name="keyProjector">
         ///     Function that consumes an element from the list and produces an orderable value.
         /// </param>
-        public static T MaximumItemByKey<T, TKey>(IEnumerable<T> list, Converter<T, TKey> keyProjection)
+        public static object MaximumItemByKey(IList list, Delegate keyProjector)
         {
-            var sortedList = new SortedList<TKey, T>();
+            if (list.Count == 0)
+                throw new ArgumentException("Cannot take the maximum value of an empty list.", "list");
 
-            foreach (T item in list)
-                sortedList.Add(keyProjection(item), item);
+            object max = list[0];
+            var maxProjection = (IComparable)keyProjector.DynamicInvoke(max);
 
-            return sortedList.Last().Value;
+            foreach (var item in list.Cast<object>().Skip(1))
+            {
+                var projection = (IComparable)keyProjector.DynamicInvoke(item);
+                if (projection.CompareTo(maxProjection) > 0)
+                {
+                    max = item;
+                    maxProjection = projection;
+                }
+            }
+
+            return max;
         }
 
         /// <summary>
@@ -153,11 +170,12 @@ namespace DSCore
         ///     Function to be applied to all elements in the list. All elements that make the
         ///     predicate produce True will be stored in the output list.
         /// </param>
-        public static IList<T> Filter<T>(IEnumerable<T> list, Func<T, bool> predicate)
+        public static IList Filter(IList list, Delegate predicate)
         {
-            return list.Where(predicate).ToList();
+            return list.Cast<object>().Where(x => (bool)predicate.DynamicInvoke(x)).ToList();
         }
 
+        //TODO: This could be combined with Filter into a multi-output node
         /// <summary>
         ///     Creates a new list containing all the elements of an old list for which
         ///     the given predicate function returns False.
@@ -168,10 +186,9 @@ namespace DSCore
         ///     Function to be applied to all elements in the list. All elements that make the
         ///     predicate produce False will be stored in the output list.
         /// </param>
-        public static IList<T> FilterOut<T>(IEnumerable<T> list, Func<T, bool> predicate)
+        public static IList FilterOut(IList list, Delegate predicate)
         {
-            //TODO: This could be combined with Filter into a multi-output node
-            return list.Where(x => !predicate(x)).ToList();
+            return list.Cast<object>().Where(x => !(bool)predicate.DynamicInvoke(x)).ToList();
         }
 
         /*
@@ -270,9 +287,9 @@ namespace DSCore
         ///     Function to be applied to all elements in the list, returns a boolean value.
         /// </param>
         /// <param name="list">List to be tested.</param>
-        public static bool TrueForAllItems<T>(Func<T, bool> predicate, IEnumerable<T> list)
+        public static bool TrueForAllItems(IList list, Delegate predicate)
         {
-            return list.All(predicate);
+            return list.Cast<object>().All(x => (bool)predicate.DynamicInvoke(x));
         }
 
         /// <summary>
@@ -284,9 +301,9 @@ namespace DSCore
         ///     Function to be applied to all elements in the list, returns a boolean value.
         /// </param>
         /// <param name="list">List to be tested.</param>
-        public static bool TrueForAnyItems<T>(Func<T, bool> predicate, IEnumerable<T> list)
+        public static bool TrueForAnyItems(IList list, Delegate predicate)
         {
-            return list.Any(predicate);
+            return list.Cast<object>().Any(x => (bool)predicate.DynamicInvoke(x));
         }
 
         /// <summary>
@@ -295,9 +312,9 @@ namespace DSCore
         /// </summary>
         /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <param name="list">List to be split.</param>
-        public static object[] Deconstruct<T>(IList<T> list)
+        public static object[] Deconstruct(IList list)
         {
-            return new object[] { list[0], list.Skip(1).ToList() };
+            return new[] { list[0], list.Cast<object>().Skip(1).ToList() };
         }
 
         /// <summary>
@@ -320,9 +337,10 @@ namespace DSCore
         /// <param name="amount">
         ///     Amount of elements to take. If negative, elements are taken from the end of the list.
         /// </param>
-        public static IList<T> TakeItems<T>(IList<T> list, int amount)
+        public static IList TakeItems(IList list, int amount)
         {
-            return (amount < 0 ? list.Skip(list.Count + amount) : list.Take(amount)).ToList();
+            var genList = list.Cast<object>();
+            return (amount < 0 ? genList.Skip(list.Count + amount) : genList.Take(amount)).ToList();
         }
 
         /// <summary>
@@ -333,9 +351,10 @@ namespace DSCore
         /// <param name="amount">
         ///     Amount of elements to remove. If negative, elements are removed from the end of the list.
         /// </param>
-        public static IList<T> DropItems<T>(IList<T> list, int amount)
+        public static IList DropItems(IList list, int amount)
         {
-            return (amount < 0 ? list.Take(list.Count + amount) : list.Skip(amount)).ToList();
+            var genList = list.Cast<object>();
+            return (amount < 0 ? genList.Take(list.Count + amount) : genList.Skip(amount)).ToList();
         }
 
         /// <summary>
@@ -346,15 +365,16 @@ namespace DSCore
         /// <param name="amount">
         ///     Amount to shift indices by. If negative, indices will be shifted to the left.
         /// </param>
-        public static IList<T> ShiftIndices<T>(IList<T> list, int amount)
+        public static IList ShiftIndices(IList list, int amount)
         {
             if (amount == 0)
                 return list;
 
+            var genList = list.Cast<object>();
             return
                 (amount < 0
-                    ? list.Skip(-amount).Concat(list.Take(-amount))
-                    : list.Skip(list.Count - amount).Concat(list.Take(list.Count - amount))).ToList();
+                    ? genList.Skip(-amount).Concat(genList.Take(-amount))
+                    : genList.Skip(list.Count - amount).Concat(genList.Take(list.Count - amount))).ToList();
         }
 
         /// <summary>
@@ -439,9 +459,9 @@ namespace DSCore
         /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <param name="list">List to remove an element from.</param>
         /// <param name="index">Index of the element to be removed.</param>
-        public static IList<T> RemoveItemAtIndex<T>(IList<T> list, int index)
+        public static IList RemoveItemAtIndex(IList list, int index)
         {
-            return list.Where((_, i) => i != index).ToList();
+            return list.Cast<object>().Where((_, i) => i != index).ToList();
         }
 
         /// <summary>
@@ -450,10 +470,10 @@ namespace DSCore
         /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <param name="list">List to remove elements from.</param>
         /// <param name="indices">Indices of the elements to be removed.</param>
-        public static IList<T> RemoveItemsAtIndices<T>(IList<T> list, IEnumerable<int> indices)
+        public static IList RemoveItemsAtIndices(IList list, IList indices)
         {
-            var idxs = new HashSet<int>(indices);
-            return list.Where((_, i) => !idxs.Contains(i)).ToList();
+            var idxs = new HashSet<int>(indices.Cast<int>());
+            return list.Cast<object>().Where((_, i) => !idxs.Contains(i)).ToList();
         }
 
         /// <summary>
@@ -466,9 +486,9 @@ namespace DSCore
         /// <param name="offset">
         ///     Amount of elements to be ignored from the start of the list.
         /// </param>
-        public static IList<T> DropEveryNthItem<T>(IList<T> list, int n, int offset = 0)
+        public static IList DropEveryNthItem(IList list, int n, int offset = 0)
         {
-            return list.Skip(offset).Where((_, i) => (i + 1)%n != 0).ToList();
+            return list.Cast<object>().Skip(offset).Where((_, i) => (i + 1)%n != 0).ToList();
         }
 
         /// <summary>
@@ -484,17 +504,17 @@ namespace DSCore
         /// <param name="offset">
         ///     Amount of elements to be ignored from the start of the list.
         /// </param>
-        public static IList<T> TakeEveryNthItem<T>(IList<T> list, int n, int offset = 0)
+        public static IList TakeEveryNthItem(IList list, int n, int offset = 0)
         {
-            return list.Skip(offset).Where((_, i) => (i + 1)%n == 0).ToList();
+            return list.Cast<object>().Skip(offset).Where((_, i) => (i + 1)%n == 0).ToList();
         }
 
         /// <summary>
         ///     An Empty List.
         /// </summary>
-        public static IList Empty()
+        public static IList Empty
         {
-            return new ArrayList();
+            get { return new ArrayList(); }
         }
 
         /// <summary>
@@ -541,9 +561,9 @@ namespace DSCore
         /// </summary>
         /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <param name="list">List to get the rest of.</param>
-        public static IList<T> RestOfItems<T>(IList<T> list)
+        public static IList RestOfItems(IList list)
         {
-            return list.Skip(1).ToList();
+            return list.Cast<object>().Skip(1).ToList();
         }
 
         /// <summary>
@@ -678,14 +698,22 @@ namespace DSCore
         ///     Swaps rows and columns in a list of lists.
         /// </summary>
         /// <param name="lists">A list of lists to be transposed.</param>
-        public static IList<IList> Transpose(IList<IList<object>> lists)
+        public static IList Transpose(IList lists)
         {
-            if (!lists.Any())
-                return new List<IList>();
+            if (lists.Count == 0)
+                return lists;
 
-            var argList = lists[0].Select(x => new ArrayList { x } as IList).ToList();
+            var genList = lists.Cast<IList>();
 
-            foreach (var pair in lists.Skip(1).SelectMany(list => list.Zip(argList, (o, objs) => new { o, objs })))
+            var argList =
+                genList.First().Cast<object>().Select(x => new ArrayList { x } as IList).ToList();
+
+            var query =
+                genList.Skip(1)
+                       .SelectMany(
+                           list => list.Cast<object>().Zip(argList, (o, objs) => new { o, objs }));
+
+            foreach (var pair in query)
                 pair.objs.Add(pair.o);
 
             return argList;
@@ -696,7 +724,7 @@ namespace DSCore
         /// </summary>
         /// <param name="thing">The thing to repeat.</param>
         /// <param name="amount">The number of times to repeat.</param>
-        public static IList<object> OfRepeatedItem(object thing, int amount)
+        public static IList OfRepeatedItem(object thing, int amount)
         {
             return Enumerable.Repeat(thing, amount).ToList();
         }
@@ -706,7 +734,7 @@ namespace DSCore
         ///     sub-lists.
         /// </summary>
         /// <param name="list">List to flatten.</param>
-        public static IList FlattenCompletely(IList<object> list)
+        public static IList FlattenCompletely(IList list)
         {
             throw new NotImplementedException();
         }
@@ -717,7 +745,7 @@ namespace DSCore
         /// <param name="list">List to flatten.</param>
         /// <param name="amt">Layers of nesting to remove.</param>
         /// s
-        public static IList Flatten(IList<object> list, int amt)
+        public static IList Flatten(IList list, int amt)
         {
             throw new NotImplementedException();
         }
@@ -738,10 +766,10 @@ namespace DSCore
         ///     Shuffles a list, randomizing the order of its elements.
         /// </summary>
         /// <param name="list">List to shuffle.</param>
-        public static IList<T> Shuffle<T>(IList<T> list)
+        public static IList Shuffle(IList list)
         {
             var rng = new Random();
-            return list.OrderBy(_ => rng.Next()).ToList();
+            return list.Cast<object>().OrderBy(_ => rng.Next()).ToList();
         }
 
         /// <summary>
@@ -750,10 +778,14 @@ namespace DSCore
         ///     mapping function produced the same result.
         /// </summary>
         /// <param name="list">List to group into sublists.</param>
-        /// <param name="keyProjection">Function that produces grouping values.</param>
-        public static IList<IList<T>> GroupByKey<T>(IList<T> list, Func<T, object> keyProjection)
+        /// <param name="keyProjector">Function that produces grouping values.</param>
+        public static IList GroupByKey(IList list, Delegate keyProjector)
         {
-            return list.GroupBy(keyProjection).Select(x => x.ToList() as IList<T>).ToList();
+            return
+                list.Cast<object>()
+                    .GroupBy(x => keyProjector.DynamicInvoke(x))
+                    .Select(x => x.ToList() as IList)
+                    .ToList();
         }
     }
 
