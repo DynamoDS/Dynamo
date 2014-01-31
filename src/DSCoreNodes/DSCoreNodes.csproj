@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Color.cs" />
+    <Compile Include="Logic.cs" />
     <Compile Include="Optimize.cs" />
     <Compile Include="Function.cs" />
     <Compile Include="List.cs" />
