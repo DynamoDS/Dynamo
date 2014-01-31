@@ -534,7 +534,7 @@ namespace Dynamo.Nodes
                 if (null != geomInst)
                 {
                     GeometryElement transformedGeomElem // curves transformed into project coords
-                        = geomInst.GetInstanceGeometry(geomInst.Transform.Inverse);
+                        = geomInst.GetInstanceGeometry();
                     AddCurves(fi, transformedGeomElem, count, ref curves);
                 }
             }

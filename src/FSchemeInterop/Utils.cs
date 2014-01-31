@@ -19,7 +19,7 @@ namespace Dynamo.FSchemeInterop
         public static Expression MakeAnon(IEnumerable<string> inputSyms, Expression body)
         {
             return Expression.NewFun(
-                SequenceToFSharpList(inputSyms.Select(FScheme.Parameter.NewNormal)),
+                ToFSharpList(inputSyms.Select(FScheme.Parameter.NewNormal)),
                 body);
         }
 
@@ -35,7 +35,7 @@ namespace Dynamo.FSchemeInterop
             var cnt = inputSyms.Count();
 
             return Expression.NewFun(
-                SequenceToFSharpList(inputSyms.Select(
+                ToFSharpList(inputSyms.Select(
                     (x, i) => 
                         i == cnt 
                         ? FScheme.Parameter.NewTail(x) 
@@ -116,9 +116,20 @@ namespace Dynamo.FSchemeInterop
         /// </summary>
         /// <param name="f"></param>
         /// <returns></returns>
+        public static FSharpFunc<T, U> ConvertToFSharpFunc<T, U>(Converter<T, U> f)
+        {
+            return FSharpFunc<T, U>.FromConverter(f);
+        }
+
+        /// <summary>
+        /// Converts a function that accepts a FSharpList of Values and returns a Value
+        /// into a FScheme compatible version.
+        /// </summary>
+        /// <param name="f"></param>
+        /// <returns></returns>
         public static FSharpFunc<FSharpList<Value>, Value> ConvertToFSchemeFunc(Converter<FSharpList<Value>, Value> f)
         {
-            return FSharpFunc<FSharpList<Value>, Value>.FromConverter(f);
+            return ConvertToFSharpFunc(f);
         }
 
         /// <summary>
@@ -126,7 +137,7 @@ namespace Dynamo.FSchemeInterop
         /// </summary>
         public static FSharpList<T> MakeFSharpList<T>(params T[] ar)
         {
-            return SequenceToFSharpList(ar);
+            return ToFSharpList(ar);
         }
 
         /// <summary>
@@ -135,9 +146,14 @@ namespace Dynamo.FSchemeInterop
         /// <typeparam name="T"></typeparam>
         /// <param name="seq"></param>
         /// <returns></returns>
-        public static FSharpList<T> SequenceToFSharpList<T>(this IEnumerable<T> seq)
+        public static FSharpList<T> ToFSharpList<T>(this IEnumerable<T> seq)
         {
             return ListModule.OfSeq(seq);
+        }
+
+        public static FSharpList<T> SequenceToFSharpList<T>(this IEnumerable<T> seq)
+        {
+            return seq.ToFSharpList();
         }
 
         /// <summary>

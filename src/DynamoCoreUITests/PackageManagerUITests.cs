@@ -107,7 +107,7 @@ namespace Dynamo.Tests.UI
             AssertWindowOwnedByDynamoView<PackageManagerPublishView>();
         }
 
-        [Test]
+        [Test,Ignore]
         public void CannotCreateDuplicatePackagePublishDialogs()
         {
             var l = new PublishPackageViewModel(dynSettings.PackageManagerClient);
@@ -142,16 +142,16 @@ namespace Dynamo.Tests.UI
             AssertWindowOwnedByDynamoView<InstalledPackagesView>();
         }
 
-        [Test, Ignore]
-        public void CannotCreateDuplicateManagePackagesDialogs()
-        {
-            for (var i = 0; i < 10; i++)
-            {
-                Vm.OnRequestManagePackagesDialog(null, null);
-            }
+        //[Test, Ignore]
+        //public void CannotCreateDuplicateManagePackagesDialogs()
+        //{
+        //    for (var i = 0; i < 10; i++)
+        //    {
+        //        Vm.OnRequestManagePackagesDialog(null, null);
+        //    }
 
-            AssertWindowOwnedByDynamoView<InstalledPackagesView>();
-        }
+        //    AssertWindowOwnedByDynamoView<InstalledPackagesView>();
+        //}
 
         [Test]
         public void ManagePackagesDialogClosesWithDynamo()
