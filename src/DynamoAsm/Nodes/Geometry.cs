@@ -1102,7 +1102,7 @@ namespace Dynamo.Nodes
                     return_values.Add(Value.NewContainer(g));
                 }
 
-                return Value.NewList(Utils.SequenceToFSharpList(return_values));
+                return Value.NewList(Utils.ToFSharpList(return_values));
             }
         }
     }
@@ -1200,7 +1200,7 @@ namespace Dynamo.Nodes
                 return_values.Add(Value.NewContainer(obj));
             }
 
-            return Value.NewList(Utils.SequenceToFSharpList(return_values));
+            return Value.NewList(Utils.ToFSharpList(return_values));
         }
     }
 

@@ -49,9 +49,9 @@ namespace Dynamo.FSchemeInterop
         {
             var removedindices = new HashSet<int>();
 
-            this.CompilationEnvironment.Value = Utils.SequenceToFSharpList(
+            this.CompilationEnvironment.Value = Utils.ToFSharpList(
                 this.CompilationEnvironment.Value.Select(
-                    x => Utils.SequenceToFSharpList(
+                    x => Utils.ToFSharpList(
                         x.Where((y, i) => 
                             {
                                 var remove = !symbol.Equals(y);
@@ -110,7 +110,7 @@ namespace Dynamo.FSchemeInterop
         {
             DefineExternal(
                 name,
-                Utils.ConvertToFSchemeFunc(func));
+                Utils.ConvertToFSharpFunc(func));
         }
 
         //Binds symbols of the given string to the given External Function.

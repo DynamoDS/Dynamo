@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Windows.Markup;
 using RevitServices.Persistence;
 
 namespace Revit.Elements
@@ -119,5 +118,9 @@ namespace Revit.Elements
 
         #endregion
 
+        public override string ToString()
+        {
+            return InternalWallType.Name;
+        }
     }
 }

@@ -7,7 +7,16 @@ namespace Revit
     {
         #region private members
 
-        private Autodesk.Revit.DB.Category internal_category;
+        private Category internal_category;
+
+        #endregion
+
+        #region public properties
+
+        public string Name
+        {
+            get { return internal_category.Name; }
+        }
 
         #endregion
 
@@ -17,8 +26,9 @@ namespace Revit
         {
             Settings documentSettings = DocumentManager.GetInstance().CurrentDBDocument.Settings;
             var groups = documentSettings.Categories;
-            var category = (BuiltInCategory)System.Enum.Parse(typeof(BuiltInCategory), name);
-            return new DSCategory(groups.get_Item(category));
+            var builtInCat = (BuiltInCategory)System.Enum.Parse(typeof(BuiltInCategory), name);
+            var category = groups.get_Item(builtInCat);
+            return new DSCategory(category);
         }
 
         #endregion
