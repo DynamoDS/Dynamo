@@ -84,6 +84,10 @@
       <Hintpath>$(NunitPath)</Hintpath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="ProtoInterface, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms" />
@@ -194,10 +198,6 @@
     <ProjectReference Include="..\..\..\src\Engine\GraphToDSCompiler\GraphToDSCompiler.csproj">
       <Project>{593BE9FC-7482-4CD6-9F87-77E7AC5CDFF2}</Project>
       <Name>GraphToDSCompiler</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\ProtoInterface\ProtoInterface.csproj">
-      <Project>{9EC0521F-84DA-4196-B0BC-34E4049E50BD}</Project>
-      <Name>ProtoInterface</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\src\Engine\ProtoAssociative\ProtoAssociative.csproj">
       <Project>{7318D5E5-9D15-4ABE-8A51-92F58D4F0B85}</Project>
