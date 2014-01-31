@@ -9,8 +9,8 @@
     <ProjectGuid>{01DE9B06-0BCB-4D8A-862E-E8170F5D6B4F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DSIronPythonNode</RootNamespace>
-    <AssemblyName>DSIronPythonNode</AssemblyName>
+    <RootNamespace>DSIronPythonUI</RootNamespace>
+    <AssemblyName>DSIronPythonUI</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
