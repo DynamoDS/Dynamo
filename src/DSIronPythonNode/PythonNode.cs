@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml;
 using DSCoreNodesUI;
+using DSIronPython;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -44,13 +45,13 @@ namespace DSIronPythonNode
             var vals = additionalBindings.Select(x => x.Item2).ToList();
             vals.Add(AstFactory.BuildExprList(inputAstNodes));
 
-            var backendMethod =
-                new Func<string, IList, IList, object>(DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript);
+            Func<string, IList, IList, object> backendMethod =
+                IronPythonEvaluator.EvaluateIronPythonScript;
 
             return AstFactory.BuildAssignment(
                 GetAstIdentifierForOutputIndex(0),
                 AstFactory.BuildFunctionCall(
-                    backendMethod.GetFullName(),
+                    "DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript",//backendMethod.GetFullName(),
                     new List<AssociativeNode>
                     {
                         codeInputNode,
@@ -96,6 +97,8 @@ namespace DSIronPythonNode
 
         public override void SetupCustomUIElements(dynNodeView view)
         {
+            base.SetupCustomUIElements(view);
+
             var editWindowItem = new MenuItem { Header = "Edit...", IsCheckable = false };
             view.MainContextMenu.Items.Add(editWindowItem);
             editWindowItem.Click += delegate { EditScriptContent(); };
