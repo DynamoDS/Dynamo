@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,10 @@ namespace DSIronPython
     /// </summary>
     public class IronPythonEvaluator
     {
+        private IronPythonEvaluator() { }
+
+        public static string TestCode { get { return "OUT = 0"; } }
+
         /// <summary>
         /// 
         /// </summary>
