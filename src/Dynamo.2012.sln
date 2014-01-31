@@ -75,12 +75,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoUnits", "DynamoUnits\
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSIronPythonUI", "DSIronPythonNode\DSIronPythonUI.csproj", "{01DE9B06-0BCB-4D8A-862E-E8170F5D6B4F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9EEF4F42-6B3B-4358-9A8A-C2701539A822} = {9EEF4F42-6B3B-4358-9A8A-C2701539A822}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSRevitNodesUI", "DSRevitNodesUI\DSRevitNodesUI.csproj", "{75940ACC-3708-4526-8D91-7E3365BAF682}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSCoreNodesUI", "DSCoreNodesUI\DSCoreNodesUI.csproj", "{D8262D40-4880-41E4-91E4-AF8F480C8637}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSIronPython", "DSIronPython\DSIronPython.csproj", "{9EEF4F42-6B3B-4358-9A8A-C2701539A822}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSIronPythonTests", "DSIronPythonTests\DSIronPythonTests.csproj", "{BAFE1A51-1A85-4196-AE85-67788B9BAD52}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
@@ -409,6 +414,16 @@ Global
 		{9EEF4F42-6B3B-4358-9A8A-C2701539A822}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{9EEF4F42-6B3B-4358-9A8A-C2701539A822}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{9EEF4F42-6B3B-4358-9A8A-C2701539A822}.Release|x86.ActiveCfg = Release|Any CPU
+		{BAFE1A51-1A85-4196-AE85-67788B9BAD52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAFE1A51-1A85-4196-AE85-67788B9BAD52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAFE1A51-1A85-4196-AE85-67788B9BAD52}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{BAFE1A51-1A85-4196-AE85-67788B9BAD52}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{BAFE1A51-1A85-4196-AE85-67788B9BAD52}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BAFE1A51-1A85-4196-AE85-67788B9BAD52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAFE1A51-1A85-4196-AE85-67788B9BAD52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BAFE1A51-1A85-4196-AE85-67788B9BAD52}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{BAFE1A51-1A85-4196-AE85-67788B9BAD52}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{BAFE1A51-1A85-4196-AE85-67788B9BAD52}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
