@@ -10,7 +10,7 @@ namespace DSCore
     public class Optimize
     {
         public static double NewtonRootFind1DNoDeriv(
-            Func<double, double> objFunc, double start, int maxIters)
+            Delegate objFunc, double start, int maxIters)
         {
             double count = 0;
             double change = 1e10;
@@ -20,8 +20,8 @@ namespace DSCore
             // use newton's method 
             while (count < maxIters && change > maxChange)
             {
-                var fx = objFunc(start);
-                var fxh = objFunc(start + h);
+                var fx = (double)objFunc.DynamicInvoke(start);
+                var fxh = (double)objFunc.DynamicInvoke(start + h);
                 var dfx = (fxh - fx)/h;
 
                 var x1 = start - fx/dfx;
@@ -35,7 +35,7 @@ namespace DSCore
         }
 
         public static double NewtonRootFind1DWithDeriv(
-            Func<double, double> objFunc, Func<double, double> derivFunc, double start, int maxIters)
+            Delegate objFunc, Delegate derivFunc, double start, int maxIters)
         {
             double count = 0;
             double change = 1e10;
@@ -44,8 +44,8 @@ namespace DSCore
             // use newton's method 
             while (count < maxIters && change > maxChange)
             {
-                var fx = objFunc(start);
-                var dfx = derivFunc(start);
+                var fx = (double)objFunc.DynamicInvoke(start);
+                var dfx = (double)derivFunc.DynamicInvoke(start);
 
                 var x1 = start - fx / dfx;
                 change = start - x1;

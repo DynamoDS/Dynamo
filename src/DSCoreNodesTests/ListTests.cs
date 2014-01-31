@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using NUnit.Framework;
 using DSCore;
@@ -15,19 +16,53 @@ namespace DSCoreNodesTests
         [Test]
         public static void ReverseList()
         {
-            Assert.AreEqual(new List<int> { 5, 4, 3, 2, 1 }, List.Reverse(new List<int> { 1, 2, 3, 4, 5 }).ToList());
+            Assert.AreEqual(new ArrayList { 5, 4, 3, 2, 1 }, List.Reverse(new List<int> { 1, 2, 3, 4, 5 }));
+        }
+
+        [Test]
+        public static void CreateList()
+        {
+            Assert.AreEqual(new ArrayList { 1, 2, 3, 4, 5 }, List.Create(1, 2, 3, 4, 5));
+        }
+
+        [Test]
+        public static void SortList()
+        {
+            Assert.AreEqual(
+                new ArrayList { 1, 2, 3, 4, 5 },
+                List.Sort(new ArrayList { 2, 3, 5, 4, 1 }));
+        }
+
+        [Test]
+        public static void SortListByKey()
+        {
+            Assert.AreEqual(
+                new ArrayList { "", " ", "  ", "   " },
+                List.SortByKey(
+                    new ArrayList { "  ", " ", "   ", "" },
+                    new Func<string, int>(s => s.Length)));
+        }
+
+        [Test]
+        public static void SortListByComparison()
+        {
+            Assert.AreEqual(
+                new ArrayList { 5, 4, 3, 2, 1 },
+                List.SortByComparison(
+                    new ArrayList { 3, 1, 2, 5, 4},
+                    new Func<int, int, int>((i, i1) => i1 - i)));
         }
 
         [Test]
         public static void ListMinimumValue()
         {
-            Assert.AreEqual(0, List.MinimumItem(new List<int> { 8, 4, 0, 66, 10 }));
+            Assert.AreEqual(0, List.MinimumItem(new ArrayList { 8, 4, 0, 66, 10 }));
         }
 
         [Test]
         public static void ListMinimumByKey()
         {
-            Assert.AreEqual(10, List.MinimumItemByKey(new List<int> { 8, 10, 5, 7, 1, 2 }, i => 10 - i));
+            Assert.AreEqual(10, List.MinimumItemByKey(new ArrayList { 8, 10, 5, 7, 1, 2 }, new Func<int, int>(i => 10 - i)));
         }
 
         [Test]
@@ -39,57 +74,37 @@ namespace DSCoreNodesTests
         [Test]
         public static void ListMaximumByKey()
         {
-            Assert.AreEqual(1, List.MaximumItemByKey(new List<int> { 8, 10, 5, 7, 1, 2 }, i => 10 - i));
+            Assert.AreEqual(1, List.MaximumItemByKey(new List<int> { 8, 10, 5, 7, 1, 2 }, new Func<int, int>(i => 10 - i)));
         }
 
         [Test]
         public static void FilterList()
         {
-            Assert.AreEqual(new List<int> { 0, 1, 2, 3 }, List.Filter(Enumerable.Range(0, 10), i => i < 4));
+            Assert.AreEqual(new List<int> { 0, 1, 2, 3 }, List.Filter(Enumerable.Range(0, 10).ToList(), new Func<int, bool>(i => i < 4)));
         }
 
         [Test]
         public static void FilterOutList()
         {
-            Assert.AreEqual(new List<int> { 0, 1, 2, 3 }, List.FilterOut(Enumerable.Range(0, 10), i => i > 3));
+            Assert.AreEqual(new List<int> { 0, 1, 2, 3 }, List.FilterOut(Enumerable.Range(0, 10).ToList(), new Func<int, bool>(i => i > 3)));
         }
 
         [Test]
         public static void TrueForAllInList()
         {
-            Assert.IsTrue(List.TrueForAllItems(x => x < 10, new List<int> { 0, 1, 2, 3, 4, 5 }));
+            Assert.IsTrue(List.TrueForAllItems(new List<int> { 0, 1, 2, 3, 4, 5 }, new Func<int, bool>(x => x < 10)));
 
             //Test short circuit
-            Assert.IsFalse(
-                List.TrueForAllItems(
-                    x => x < 10,
-                    new List<int> { 10, 0 }.Select(
-                        delegate(int x, int i)
-                        {
-                            if (i == 1)
-                                Assert.Fail();
-
-                            return x;
-                        })));
+            Assert.IsFalse(List.TrueForAllItems(new List<int> { 10, 0 }, new Func<int, bool>(x => 10/x != 1)));
         }
 
         [Test]
         public static void TrueForAnyInList()
         {
-            Assert.IsFalse(List.TrueForAnyItems(x => x >= 10, new List<int> { 0, 1, 2, 3, 4, 5 }));
+            Assert.IsFalse(List.TrueForAnyItems(new List<int> { 0, 1, 2, 3, 4, 5 }, new Func<int, bool>(x => x >= 10)));
 
             //Test short circuit
-            Assert.IsTrue(
-                List.TrueForAnyItems(
-                    x => x >= 10,
-                    new List<int> { 10, 0 }.Select(
-                        delegate(int x, int i)
-                        {
-                            if (i == 1)
-                                Assert.Fail();
-
-                            return x;
-                        })));
+            Assert.IsTrue(List.TrueForAnyItems(new List<int> { 10, 0 }, new Func<int, bool>(x => 10/x == 1)));
         }
 
         [Test]
@@ -175,20 +190,20 @@ namespace DSCoreNodesTests
         [Test]
         public static void EmptyList()
         {
-            Assert.AreEqual(0, List.Empty().Count);
+            Assert.AreEqual(0, List.Empty.Count);
         }
 
         [Test]
         public static void IsEmptyList()
         {
-            Assert.IsTrue(List.IsEmpty(List.Empty()));
+            Assert.IsTrue(List.IsEmpty(List.Empty));
             Assert.IsFalse(List.IsEmpty(new ArrayList { 1 }));
         }
 
         [Test]
         public static void ListCount()
         {
-            Assert.AreEqual(0, List.Count(List.Empty()));
+            Assert.AreEqual(0, List.Count(List.Empty));
             Assert.AreEqual(3, List.Count(new ArrayList { 0, 1, 2 }));
         }
 
@@ -284,6 +299,35 @@ namespace DSCoreNodesTests
                         new List<object> { 6, 7, 8 }
                     },
                     1));
+        }
+
+        [Test]
+        public static void LastInList()
+        {
+            Assert.AreEqual(4, List.LastItem(Enumerable.Range(0, 5).ToList()));
+        }
+
+        [Test]
+        public static void ShuffleList()
+        {
+            var numbers = Enumerable.Range(0, 100).ToList();
+            var numberSet = new HashSet<int>(numbers);
+            Assert.True(List.Shuffle(numbers).Cast<int>().All(numberSet.Contains));
+        }
+
+        [Test]
+        public static void GroupListByKey()
+        {
+            Assert.AreEqual(
+                new ArrayList
+                {
+                    new ArrayList { "a", "b", "c" },
+                    new ArrayList { "aa", "bb", "cc" },
+                    new ArrayList { "aaa", "bbb", "ccc" }
+                },
+                List.GroupByKey(
+                    new ArrayList { "a", "aa", "aaa", "b", "bb", "bbb", "c", "cc", "ccc" },
+                    new Func<string, int>(s => s.Length)));
         }
     }
 }
