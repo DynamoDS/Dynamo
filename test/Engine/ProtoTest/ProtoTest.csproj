@@ -15,7 +15,7 @@
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <ImportGroup Label="PropertySheets">
-    <Import Project="$(SolutionDir)Config\DesignScript.CS.props" />
+    <Import Project="$(SolutionDir)Config\CS.props" />
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -191,7 +191,7 @@
     <Compile Include="UtilsTests\TextFxTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\GraphToDSCompiler\GraphToDSCompiler.csproj">
+    <ProjectReference Include="..\..\..\src\Engine\GraphToDSCompiler\GraphToDSCompiler.csproj">
       <Project>{593BE9FC-7482-4CD6-9F87-77E7AC5CDFF2}</Project>
       <Name>GraphToDSCompiler</Name>
     </ProjectReference>
@@ -199,19 +199,19 @@
       <Project>{9EC0521F-84DA-4196-B0BC-34E4049E50BD}</Project>
       <Name>ProtoInterface</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Core\ProtoAssociative\ProtoAssociative.csproj">
+    <ProjectReference Include="..\..\..\src\Engine\ProtoAssociative\ProtoAssociative.csproj">
       <Project>{7318D5E5-9D15-4ABE-8A51-92F58D4F0B85}</Project>
       <Name>ProtoAssociative</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Core\ProtoCore\ProtoCore.csproj">
+    <ProjectReference Include="..\..\..\src\Engine\ProtoCore\ProtoCore.csproj">
       <Project>{7A9E0314-966F-4584-BAA3-7339CBB849D1}</Project>
       <Name>ProtoCore</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Core\ProtoImperative\ProtoImperative.csproj">
+    <ProjectReference Include="..\..\..\src\Engine\ProtoImperative\ProtoImperative.csproj">
       <Project>{0D3D43DC-BD7E-46F0-93F7-1C6A6CC79948}</Project>
       <Name>ProtoImperative</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Core\ProtoScript\ProtoScript.csproj">
+    <ProjectReference Include="..\..\..\src\Engine\ProtoScript\ProtoScript.csproj">
       <Project>{A4794476-7D0E-41C0-AD83-4AB929C0A46C}</Project>
       <Name>ProtoScript</Name>
     </ProjectReference>
