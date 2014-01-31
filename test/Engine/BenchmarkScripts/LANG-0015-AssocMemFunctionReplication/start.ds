@@ -1,0 +1,13 @@
+class Test
+{
+    def foo(x:int, y:int, z:int)
+    {
+        return = null;
+    }
+}
+
+xs = 1..100;
+ys = 1..100;
+zs = 1..200;
+t = Test();
+t.foo(xs<1>, ys<2>, zs<3>);

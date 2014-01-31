@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets">
-    <Import Project="$(SolutionDir)Dynamo.CS.props" />
+    <Import Project="$(SolutionDir)Config/CS.props" />
   </ImportGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -117,7 +117,7 @@
     </Reference>
     <Reference Include="ProtoGeometry, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\DesignScript\ProtoGeometry.dll</HintPath>
+      <HintPath>..\..\extern\ProtoGeometry\ProtoGeometry.dll</HintPath>
     </Reference>
     <Reference Include="ProtoImperative, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
@@ -125,7 +125,7 @@
     </Reference>
     <Reference Include="ProtoInterface, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\DesignScript\ProtoInterface.dll</HintPath>
+      <HintPath>..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
     </Reference>
     <Reference Include="ProtoScript, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
@@ -241,11 +241,11 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DSCoreNodes\DSCoreNodes.csproj">
+    <ProjectReference Include="..\Libraries\CoreNodes\DSCoreNodes.csproj">
       <Project>{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}</Project>
       <Name>DSCoreNodes</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DSRevitNodes\DSRevitNodes.csproj">
+    <ProjectReference Include="..\Libraries\Revit\RevitNodes\DSRevitNodes.csproj">
       <Project>{0BC2A611-BD0E-4FCC-A1DE-81F14ED369B2}</Project>
       <Name>DSRevitNodes</Name>
     </ProjectReference>
@@ -254,7 +254,7 @@
       <Name>DynamoCore</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\DynamoUnits\DynamoUnits.csproj">
+    <ProjectReference Include="..\Libraries\DynamoUnits\DynamoUnits.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>DynamoUnits</Name>
     </ProjectReference>
@@ -262,7 +262,7 @@
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
       <Name>DynamoUtilities</Name>
     </ProjectReference>
-    <ProjectReference Include="..\RevitServices\RevitServices.csproj">
+    <ProjectReference Include="..\Libraries\Revit\RevitServices\RevitServices.csproj">
       <Project>{E4701F9E-41AB-4044-8166-85D924FEB632}</Project>
       <Name>RevitServices</Name>
     </ProjectReference>

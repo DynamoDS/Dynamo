@@ -1,0 +1,61 @@
+import ("ProtoGeometry.dll");
+import("Math.dll");
+
+neglect=GeometrySettings.PointVisibility(false);
+
+WCS = CoordinateSystem.Identity();
+def Hide(geom : Geometry)
+{
+    return = geom.SetVisibility(false);
+}
+x=0..150..1;
+y=0..40..1; 
+
+radtodeg=57.2957795;
+pi=3.14159265;
+
+def pifunc: double (i: int, j: int)
+{
+	temp1=(j*pi/80); temp1a=Math.Sqrt(temp1)*radtodeg;
+	temp2=(i*pi/50)*radtodeg; 
+	temp3=(j*pi/40)*radtodeg;
+	return=(0.8-0.6*Math.Sin(temp1a))*Math.Cos(temp2)+0.08*Math.Sin(temp3);
+}
+
+def thetafunc: double (i:int, j: int)
+{
+	temp1=(j*pi/80);
+	temp2=(i*pi/50)*radtodeg; temp1a=Math.Sqrt(temp1)*radtodeg;
+	temp3=(j*pi/40)*radtodeg;
+	return=(0.8-0.6*Math.Sin(temp1a))*Math.Sin(temp2)+0.08*Math.Sin(temp3);
+}
+
+def kfunc: double (i:int, j: int)
+{
+	temp1=((150-i)*pi/300)*radtodeg;
+
+	return = -1*(1.1 * j / 40 + 0.7 * (1-Math.Sin(temp1)));
+}
+
+pastapoints={};
+verPoint1={};verPoint2={};
+horPoint1={};horPoint2={};
+[Imperative]
+{
+	for(i in x)
+		for(j in y)
+		{   
+			ptx=pifunc(i,j);	pty=thetafunc(i,j);	ptz=kfunc(i,j);
+			pastapoints[i][j]=Point.ByCoordinates(ptx*100, pty*100, ptz*100);
+
+		}
+}
+
+sur=BSplineSurface.ByPoints(pastapoints,3,3);
+
+solidPasta=sur.Thicken(6, false);
+
+z=pastapoints[150][40].Z;
+centerBasePoint=Point.ByCoordinates(0,0,z);
+
+

@@ -1,0 +1,202 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{6E1177DB-5E4F-4E2E-82E7-902437E56AED}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ProtoTest</RootNamespace>
+    <AssemblyName>ProtoTest</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\VS2010\Team Tools\Static Analysis Tools\\Rule Sets;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\VS2010\Team Tools\Static Analysis Tools\FxCop\\Rules;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <OutputPath Condition=" '$(OutputPath)' == '' ">..\..\bin\$(Platform)\$(Configuration)</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\VS2010\Team Tools\Static Analysis Tools\\Rule Sets;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\VS2010\Team Tools\Static Analysis Tools\FxCop\\Rules;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <OutputPath Condition=" '$(OutputPath)' == '' ">..\..\bin\$(Platform)\$(Configuration)</OutputPath>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>ProtoTest.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="nunit.framework">
+      <NunitPath Condition=" '$(NunitPath)' == '' ">C:\Program Files (x86)\NUnit 2.6.2\bin\Debug\framework\nunit.framework.dll</NunitPath>
+      <Hintpath>$(NunitPath)</Hintpath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Assembler\MicroFeatureTests.cs" />
+    <Compile Include="Associative\BuiltinMethodsTest.cs" />
+    <Compile Include="Associative\Inheritance.cs" />
+    <Compile Include="Associative\MethodResolution.cs" />
+    <Compile Include="Associative\MethodsFocusTeam.cs" />
+    <Compile Include="Associative\MicroFeatureTests.cs" />
+    <Compile Include="Associative\RedefinitionExpression.cs" />
+    <Compile Include="Associative\ReferenceCount.cs" />
+    <Compile Include="Associative\ReplicatorTest.cs" />
+    <Compile Include="Associative\SSATransformTest.cs" />
+    <Compile Include="Associative\TypeSystemTests.cs" />
+    <Compile Include="CallsiteExecutionState\BasicCallsiteStateTest.cs" />
+    <Compile Include="DebugTests\RunEqualityTests.cs" />
+    <Compile Include="DebugTests\RunWatchTestsIncluded.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DebugTests\SetValueTests.cs" />
+    <Compile Include="DSASM\ExecutionMirrorTests.cs" />
+    <Compile Include="DSASM\StackOverflowTests.cs" />
+    <Compile Include="EventTests\EventTest.cs" />
+    <Compile Include="FFITests.cs" />
+    <Compile Include="FFITests\ContextInjectionTests.cs" />
+    <Compile Include="FFITests\CSFFIDataMarshalingTest.cs" />
+    <Compile Include="FFITests\CSFFIDispose.cs" />
+    <Compile Include="FFITests\CSFFITest.cs" />
+    <Compile Include="FFITests\Dummy.cs" />
+    <Compile Include="FuzzTests.cs" />
+    <Compile Include="Geometry\GeometryTest.cs" />
+    <Compile Include="GraphCompiler\MicroFeatureTests.cs" />
+    <Compile Include="Imperative\FromOldTestSuite.cs" />
+    <Compile Include="Imperative\MicroFeatureTests.cs" />
+    <Compile Include="MinimalClassTests.cs" />
+    <Compile Include="ModifierStack.cs" />
+    <Compile Include="MultiLangTests\AssociativeToImperative.cs" />
+    <Compile Include="MultiLangTests\FunctionPointerTest.cs" />
+    <Compile Include="MultiLangTests\GCTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TD\Associative\ReplicationGuide.cs" />
+    <Compile Include="TD\DocTests\UserManualTests.cs" />
+    <Compile Include="TD\Imperative\Imperative.cs" />
+    <Compile Include="TD\MultiLangTests\BuiltinFunction_FromOldLang.cs" />
+    <Compile Include="TD\MultiLangTests\Old_Language_Manual_Examples.cs" />
+    <Compile Include="TD\MultiLangTests\Old_Language_test_Cases.cs" />
+    <Compile Include="TD\MultiLangTests\RecursionTest.cs" />
+    <Compile Include="TD\MultiLangTests\StringTest.cs" />
+    <Compile Include="TD\MultiLangTests\TypeSystemTests.cs" />
+    <Compile Include="MultiLanugageBasic.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProtoScriptTest.cs" />
+    <Compile Include="RegressionTests\ProtoCoreLexerTests.cs" />
+    <Compile Include="TD\Associative\Class.cs" />
+    <Compile Include="TD\Associative\AssocAssignment.cs" />
+    <Compile Include="TD\Associative\Function.cs" />
+    <Compile Include="TD\Associative\InlineCondition.cs" />
+    <Compile Include="TD\Associative\Replication.cs" />
+    <Compile Include="TD\Associative\Update.cs" />
+    <Compile Include="TD\Debugger.cs" />
+    <Compile Include="TD\DefectRegress.cs" />
+    <Compile Include="TD\FFI\FFITest.cs" />
+    <Compile Include="TD\Imperative\Assignment.cs" />
+    <Compile Include="TD\Imperative\BlockSyntax.cs" />
+    <Compile Include="TD\Imperative\BreakContinue.cs" />
+    <Compile Include="TD\Imperative\InlineCondition.cs" />
+    <Compile Include="TD\MultiLangTests\AssignmentSlicing.cs" />
+    <Compile Include="TD\MultiLangTests\Builtin_Functions.cs" />
+    <Compile Include="TD\MultiLangTests\CollectionAssgnmt.cs" />
+    <Compile Include="TD\Imperative\ForLoop.cs" />
+    <Compile Include="TD\Imperative\IfElseTest.cs" />
+    <Compile Include="TD\Imperative\TypedAssignment.cs" />
+    <Compile Include="TD\Imperative\WhileTest.cs" />
+    <Compile Include="TD\MultiLangTests\CollectionAssignment.cs" />
+    <Compile Include="TD\MultiLangTests\RangeExpressions.cs" />
+    <Compile Include="TD\MultiLangTests\TestClass.cs" />
+    <Compile Include="TD\MultiLangTests\TestFunction.cs" />
+    <Compile Include="TD\MultiLangTests\TestImport.cs" />
+    <Compile Include="TD\MultiLangTests\TestScope.cs" />
+    <Compile Include="TD\MultiLangTests\TestUpdate.cs" />
+    <Compile Include="TD\MultiLangTests\Tutorial.cs" />
+    <Compile Include="TD\MultiLangTests\TypeSystemTests_Imperative.cs" />
+    <Compile Include="TD\MultiLangTests\UseCaseTesting.cs" />
+    <Compile Include="TD\OtherMiscTests\MiscTest.cs" />
+    <Compile Include="TD\ArrayUtilsTest.cs" />
+    <Compile Include="UtilsTests\ClassUtilsTest.cs" />
+    <Compile Include="UtilsTests\CoreDump.cs" />
+    <Compile Include="UtilsTests\TextFxTests.cs" />
+    <Compile Include="DebugTests\BasicTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\GraphToDSCompiler\GraphToDSCompilerMono.csproj">
+      <Project>{593BE9FC-7482-4CD6-9F87-77E7AC5CDFF2}</Project>
+      <Name>GraphToDSCompilerMono</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ProtoInterface\ProtoInterfaceMono.csproj">
+      <Project>{9EC0521F-84DA-4196-B0BC-34E4049E50BD}</Project>
+      <Name>ProtoInterfaceMono</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\ProtoAssociative\ProtoAssociativeMono.csproj">
+      <Project>{7318D5E5-9D15-4ABE-8A51-92F58D4F0B85}</Project>
+      <Name>ProtoAssociativeMono</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\ProtoCore\ProtoCoreMono.csproj">
+      <Project>{7A9E0314-966F-4584-BAA3-7339CBB849D1}</Project>
+      <Name>ProtoCoreMono</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\ProtoImperative\ProtoImperativeMono.csproj">
+      <Project>{0D3D43DC-BD7E-46F0-93F7-1C6A6CC79948}</Project>
+      <Name>ProtoImperativeMono</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\ProtoScript\ProtoScriptMono.csproj">
+      <Project>{A4794476-7D0E-41C0-AD83-4AB929C0A46C}</Project>
+      <Name>ProtoScriptMono</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ProtoTestFx\ProtoTestFxMono.csproj">
+      <Project>{2235F7CA-AB25-4177-92BC-4B574D2D5DF6}</Project>
+      <Name>ProtoTestFxMono</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!--
+  <PropertyGroup>
+    <PreBuildEvent>C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe ..\..\..\tools\factorial\factorial.sln /property:Configuration=$(Configuration);Platform=$(Platform) /t:rebuild</PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)' == 'x86'">
+    <PreBuildEvent>C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe ..\..\..\tools\factorial\factorial.sln /property:Configuration=$(Configuration);Platform=Win32 /t:rebuild</PreBuildEvent>
+  </PropertyGroup>
+  -->
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

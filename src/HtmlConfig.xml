@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<AnalyseParams>
-	<Executable><!-- Required.   -->C:\Program Files (x86)\NUnit 2.6.2\bin\nunit-console.exe</Executable>
-	<Arguments>DynamoCoreUITests.dll DynamoPythonTests.dll DynamoMSOfficeTests.dll DynamoCoreTests.dll DSRevitNodesTests.dll DSCoreNodesTests.dll /noshadow /xml=nunit-result.xml</Arguments>
-	<WorkingDir>..\bin\AnyCPU\Debug\</WorkingDir>
-	<Output>Coverage.html</Output> <!-- Change the value to html-->
-	<ReportType>html</ReportType><!-- Change the value to html -->
-</AnalyseParams>

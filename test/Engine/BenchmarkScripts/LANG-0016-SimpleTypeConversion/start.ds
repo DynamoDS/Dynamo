@@ -1,0 +1,25 @@
+// Simply pass parameter and return value from function.
+// In both cases type conversion happens. 
+
+class A
+{
+}
+
+class B extends A
+{
+    constructor B(i)
+    {
+    }
+}
+
+bs = B(0..10);
+
+[Imperative]
+{
+    i = 0; 
+    while (i < 1000000)
+    {
+        as:A[] = bs;
+        i = i + 1;
+    }
+}

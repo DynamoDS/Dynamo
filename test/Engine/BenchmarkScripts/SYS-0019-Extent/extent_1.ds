@@ -1,0 +1,6 @@
+import("ProtoGeometry.dll");
+xCoords = { - 10, 30, 30, -10, -10 };
+yCoords = { - 10, -10, 50, 50, -10 };
+
+extentControlVetices = Point.ByCoordinates(xCoords, yCoords, 0.0);
+extentCurve = BSplineCurve.ByControlVertices(extentControlVetices, 1);

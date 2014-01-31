@@ -1,0 +1,194 @@
+def count (array : var[])
+{
+    c1 = [Imperative]
+    {
+        c = 0;
+	for ( i in array )
+	{
+		c = c + 1;
+	}
+	return  = c;	
+    }
+    return = c1;
+}
+
+class Vector
+{
+    X : double;
+    Y : double;
+    Z : double;
+    
+    constructor ByCoordinates( x : double, y : double, z : double )
+    {
+        X = x;
+	Y = y;
+	Z = z;
+    }    
+}
+
+class Point
+{
+    X : double;
+    Y : double;
+    Z : double;
+    
+    constructor ByCartesianCoordinates( x : double, y : double, z : double )
+    {
+        X = x;
+	Y = y;
+	Z = z;
+    }   
+    
+    def DistanceTo( p2:Point )
+    {
+        start_x = X - p2.X;
+	return = start_x;
+    }
+    
+    def DirectionTo( p2:Point )
+    {
+        start_x = X - p2.X;
+	start_y = Y - p2.Y;
+	start_z = Z - p2.Z;
+	return = Vector.ByCoordinates( start_x, start_y, start_z );
+    }
+    
+    def Project( v1:Vector, distance : double )
+    {
+        start_x = X - v1.X + distance;
+	start_y = Y - v1.Y + distance;
+	start_z = Z - v1.Z + distance;
+	return = Point.ByCartesianCoordinates( start_x, start_y, start_z );
+    }
+    
+    def Translate( x1 : double, y1 : double, z1 : double )
+    {
+    	return = Point.ByCartesianCoordinates( X + x1, Y + y1, Z + z1 );
+    }
+}
+
+class Line extends BSplineCurve
+{
+    StartPoint : Point;
+    EndPoint : Point;
+    Color : double; 
+    Length : double;
+    
+    constructor ByStartPointEndPoint( p1 : Point, p2 :Point )
+    {
+        StartPoint = p1;
+	EndPoint = p2;
+	Length  = p2.X - p1.X;
+    }
+    
+    def PointAtParameter(  v : double )
+    {
+        start_x = StartPoint.X * v;
+	start_y = StartPoint.Y * v;
+	start_z = StartPoint.Z * v;
+
+	p1_temp = Point.ByCartesianCoordinates( start_x, start_y, start_z );
+	
+	return = p1_temp;
+    }
+    
+    def Trim ( params : double[], retain : bool )
+    {
+        start_x = StartPoint.X * params[0];
+	start_y = StartPoint.Y * params[0];
+	start_z = StartPoint.Z * params[0];
+	
+	end_x = EndPoint.X * params[1];
+	end_y = EndPoint.Y * params[1];
+	end_z = EndPoint.Z * params[1];
+	
+	p1_temp = Point.ByCartesianCoordinates( start_x, start_y, start_z );
+	p2_temp = Point.ByCartesianCoordinates( end_x, end_y, end_z );
+	
+	new_trimmed_line = Line.ByStartPointEndPoint( p1_temp, p2_temp );
+	return = new_trimmed_line;
+    }
+    
+    def Trim ( v : double )
+    {
+        x_temp = EndPoint.X * v;
+	p2_temp = Point.ByCartesianCoordinates( x_temp, EndPoint.Y, EndPoint.Z );
+	new_trimmed_line = Line.ByStartPointEndPoint(StartPoint, p2_temp );
+	return = new_trimmed_line;
+    }
+    
+    def ExtrudeAsSurface( l1 : double, v1: Vector)
+    {
+        return = BSplineSurface.ByPoints( { { StartPoint, Point.ByCartesianCoordinates(l1,l1,l1)}, {EndPoint, Point.ByCartesianCoordinates(v1.X,v1.Y,v1.Z) } } );
+    }
+    
+    
+}
+
+class Solid
+{
+    StartPoint : Point;
+    EndPoint : Point;       
+    R1 : double;
+    R2 : double;
+    
+    constructor Cone( p1 : Point, p2 :Point , r1 : double, r2 : double)
+    {
+        StartPoint = p1;
+	EndPoint = p2;
+	R1 = r1;
+	R2 = r2;
+    }   
+}
+
+class Tube
+{
+    StartPoint : Point;
+    EndPoint : Point;        
+    R1 : double;
+    R2 : double;
+    
+    constructor ByStartPointEndPointRadius( p1 : Point, p2 :Point , r1 : double, r2 : double)
+    {
+        StartPoint = p1;
+	EndPoint = p2;
+	R1 = r1;
+	R2 = r2;
+    }   
+}
+
+class BSplineSurface
+{
+    P1 : Point[]..[];
+    
+    constructor ByPoints( p1 : Point[]..[] )
+    {
+        P1 = p1;
+    }
+}
+
+class BSplineCurve
+{
+    P1 : Point[];
+    
+    constructor ByPoints( p1 : Point[] )
+    {
+        P1 = p1;
+    }   
+    def Project(s1: BSplineSurface , v1 : Vector)
+    {
+        return = BSplineCurve.ByPoints( { s1.P1[0][0], s1.P1[1][1], Point.ByCartesianCoordinates ( v1.X, v1.Y, v1.Z ) } );
+    }
+}
+
+class Circle extends BSplineCurve
+{
+    P : Point[];
+    
+    constructor ByPointsOnCurve( p1 : Point[] )
+    {
+        P = p1;
+    }    
+}
+
+

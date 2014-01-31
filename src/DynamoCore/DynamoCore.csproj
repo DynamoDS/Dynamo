@@ -16,7 +16,7 @@ limitations under the License.
 -->
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets">
-    <Import Project="$(SolutionDir)Dynamo.CS.props" />
+    <Import Project="$(SolutionDir)/Config/CS.props" />
   </ImportGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -413,7 +413,7 @@ limitations under the License.
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DynamoUnits\DynamoUnits.csproj">
+    <ProjectReference Include="..\Libraries\DynamoUnits\DynamoUnits.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>DynamoUnits</Name>
     </ProjectReference>

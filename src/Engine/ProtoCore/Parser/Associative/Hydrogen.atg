@@ -1,0 +1,1223 @@
+COMPILER HydrogenParser
+
+	public override ProtoCore.NodeBase codeblock { get; set; }
+	
+	private bool IsFunctionCall()
+	{
+		Token pt = la;
+		if( _ident == pt.kind ) 
+		{
+			pt = scanner.Peek();
+			scanner.ResetPeek();
+			if( _openparen == pt.kind ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private bool IsArrayAccess()
+	{
+		Token pt = la;
+		if( _ident == pt.kind ) 
+		{
+			pt = scanner.Peek();
+            scanner.ResetPeek();
+			if( _openbracket == pt.kind ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private bool IsReplicationGuideIdent()
+	{
+		Token pt = la;
+		if( _ident == pt.kind ) 
+		{
+			pt = scanner.Peek();
+			if( _lessthan == pt.kind ) 
+			{
+				pt = scanner.Peek();
+				if( _number == pt.kind ) 
+				{
+					pt = scanner.Peek();					
+					if( _greaterthan == pt.kind ) 
+					{
+						scanner.ResetPeek();
+						return true;
+					}
+				}
+			}
+		}
+		scanner.ResetPeek();
+		return false;
+	}
+
+    
+	private string GetArithmeticFunction(Operator op)
+	{
+	    return "";
+	}
+
+    private void ParseLanguageBlockNode(LanguageBlockNode langblock)
+    {     
+        if (!core.langverify.Verify(langblock.codeblock))
+        {
+            return;
+        }
+
+        ProtoCore.ParserBase parser = null;
+        System.IO.MemoryStream memstream = new System.IO.MemoryStream(System.Text.Encoding.UTF8.GetBytes(langblock.codeblock.body));
+
+        if (langblock.codeblock.language ==  ProtoCore.Language.kImperative) 
+            parser = new Imperative.Parser(new Imperative.Scanner(memstream), core);
+        else if (langblock.codeblock.language == ProtoCore.Language.kAssociative) 
+            parser = new Associative.Parser(new Associative.Scanner(memstream), core);
+        else
+            return;
+
+        try
+        {
+            parser.errorStream = new System.IO.StringWriter();
+            parser.Parse();
+
+            if (parser.errorStream.ToString() != String.Empty)
+                core.BuildStatus.LogSyntaxError(parser.errorStream.ToString());
+            core.BuildStatus.errorCount += parser.errorCount;  
+
+            langblock.codeBlockNode = parser.codeblock;
+        }
+        catch (ProtoCore.BuildHaltException e)
+        {
+            System.Console.WriteLine(e.errorMsg);
+        }  
+    }
+
+/*--------------------------------------------------------------------------*/
+CHARACTERS
+	uppercaseletter = 'A' .. 'Z'.
+	lowercaseletter = 'a' .. 'z'.
+	letter = uppercaseletter + lowercaseletter. /*upper and lowercase letters*/
+	opchar = '|' + '+' + '-' + '*' + '/' + '=' + '&' + '>' + '<' + '~'.
+	digit = "0123456789".
+	cr  = '\r'. /* end of line character - carrage return */
+	lf  = '\n'.
+	tab = '\t'.
+	anyExcludingQuote = ANY - '"'.
+	anychar = ANY.
+
+TOKENS
+  
+	/* basic tokens */
+	ident = (letter | '_'){letter | digit | '_' | '@'}.
+	number = digit {digit} .
+	float = digit {digit} '.' digit {digit} [('E' | 'e') ['+'|'-'] digit {digit}].
+	textstring = '"' {anyExcludingQuote} '"'.
+	period = '.'.
+	pipeop = '|' {opchar}.
+	hatop = '^' {opchar}.
+	ampop = '&' {opchar}.	
+	addop = ('+' | '-')  {opchar}.
+	mulop = ('*' | '/' | '%') {opchar}.
+
+	openbracket = '['.
+	closebracket = ']'.
+	not = '!'.
+	neg = '-'.
+	pipe = '|'.
+	lessthan = '<'.
+	greaterthan = '>'.
+	openparen = '('.
+	closeparen = ')'.
+	endline = ';'.
+	rangeop = "..".
+
+    kw_native = "native".
+    kw_class = "class".
+    kw_constructor = "constructor".
+	kw_def = "def".
+    kw_external = "external".
+	kw_extend = "extends".
+
+    // TODO (Jun/Ayush): link the followign literal token with the definitions in DSasmdefs
+    literal_true = "true".
+    literal_false = "false".
+    literal_null = "null".
+    
+    
+	langblocktrail = "<#" {anychar} "#>".
+
+COMMENTS FROM "/*" TO "*/" NESTED
+COMMENTS FROM "//" TO cr
+
+IGNORE cr + lf + tab
+
+
+
+PRODUCTIONS
+//------------------------------------------------------------------------
+HydrogenParser
+=                           (. codeblock = new CodeBlockNode(); .)
+							(. Node node = null; .)
+  {
+	(                         
+		(                            
+			Statement<out node>
+		)
+		|
+		(                    
+			functiondecl<out node>
+		)
+		|
+		(
+			classdecl<out node>
+		)
+		|	
+		(                    
+			LanguageBlock<out node>		
+		)
+	)	
+							(.	if (null != node)
+									(codeblock as CodeBlockNode).Body.Add(node); 
+							.)                        
+  }									
+.
+
+//------------------------------------------------------------------------
+Statement<out Node node>      
+=  SYNC                     (. node = null; .)
+(
+		FunctionalStatement<out node>
+	|
+		ForLoop<out node>
+	|
+		endline			
+)
+.
+
+StatementList<out NodeList nodelist> 
+=
+					(. nodelist = new NodeList(); .)
+{ 
+					(. Node node = null; .)
+	Statement<out node>	(. nodelist.Add(node); .)
+}
+.
+
+classdecl<out Node node>
+=
+												(. ClassDeclNode classnode = new ClassDeclNode(); .)
+	kw_class		
+	ident										(. classnode.name = t.val; .)		
+	[
+		kw_extend
+		ident									(.
+                                                    classnode.superClass = new List<string>();
+                                                    classnode.superClass.Add(t.val); 
+                                                .)
+        {
+            ident                               (. classnode.superClass.Add(t.val); .)	
+        }
+	]
+	'{'
+		{										(. ProtoCore.DSASM.AccessSpecifier access = ProtoCore.DSASM.AccessSpecifier.kPublic; .)
+			[
+				AccessSpecifier<out access>
+			]
+			(			
+				(									
+													(. Node constr = null; .)	
+					constructordecl<out constr, access>		(. classnode.funclist.Add(constr); .)
+				)
+				|
+				(
+													(. Node funcnode; .)
+					functiondecl<out funcnode, access>		(. classnode.funclist.Add(funcnode); .)
+				)
+				|
+				(	
+													(. Node varnode = null; .)	
+					vardecl<out varnode, access>	(. classnode.varlist.Add(varnode); .)
+					endline
+				)
+			)
+			
+		}
+	'}'	
+												(. node = classnode; .)
+.
+
+
+
+LanguageBlock<out Node node>			
+=										
+										(. 
+											node = null; 
+											LanguageBlockNode langblock = new LanguageBlockNode(); 
+										.)	
+	openbracket
+	ident
+										(.
+											if( 0 == t.val.CompareTo("Imperative")) {
+												langblock.codeblock.language = ProtoCore.Language.kImperative;
+											}
+											else if( 0 == t.val.CompareTo("Associative")) {
+												langblock.codeblock.language = ProtoCore.Language.kAssociative; 
+											}
+										.)
+	{
+		','									(. string key; .)
+		ident								(. key = t.val; .)
+		'='			
+		textstring							(.	
+												if ("fingerprint" == key)
+												{
+													langblock.codeblock.fingerprint = t.val; 
+													langblock.codeblock.fingerprint = langblock.codeblock.fingerprint.Remove(0,1); 
+													langblock.codeblock.fingerprint = langblock.codeblock.fingerprint.Remove(langblock.codeblock.fingerprint.Length-1,1); 
+												}
+												else if ("version" == key)
+												{
+													langblock.codeblock.version = t.val; 
+													langblock.codeblock.version = langblock.codeblock.version.Remove(0,1); 
+													langblock.codeblock.version = langblock.codeblock.version.Remove(langblock.codeblock.version.Length-1,1);
+												}
+											 .)
+			
+			
+	}	
+	
+	closebracket	
+	langblocktrail						(. 
+											langblock.codeblock.body = t.val.Substring(2,t.val.Length-4);									
+											node = langblock;
+                                            ParseLanguageBlockNode(langblock);
+										.)		
+.    	
+
+constructordecl<out Node constrNode, ProtoCore.DSASM.AccessSpecifier access>
+=                           (.
+								ConstructorDefinitionNode constr = null;									
+								string methodName;  
+								Node argumentSignature; 
+								ProtoCore.Type returnType;  
+								Node pattern;								
+							.)	
+	kw_constructor
+	MethodSignature<out methodName, out argumentSignature, out pattern, out returnType>
+
+                            (.
+								constr = new ConstructorDefinitionNode(); 
+								constr.Name = methodName; 
+								constr.Pattern = pattern; 
+								constr.ReturnType = returnType;
+								constr.Signature = argumentSignature as ArgumentSignatureNode;
+								constr.access = access; 
+								Node functionBody = null; 
+							.)
+	[
+		':'								(. Node bnode; .)
+		BaseConstructorCall<out bnode>	(. constr.baseConstr = bnode as FunctionCallNode; .)
+	]
+(
+    FunctionalMethodBodyMultiLine<out functionBody>	
+)
+                            (. constr.FunctionBody = functionBody as CodeBlockNode; .)
+							(. constrNode = constr; .)
+.
+
+BaseConstructorCall<out Node bnode>
+=									(. FunctionCallNode f = new FunctionCallNode(); .)
+									(. NodeList args = null; .)
+	"base"
+	[ 
+		Ident<out bnode>			(. f.Function = bnode; .)
+	]
+	Arguments<out args>				(. f.FormalArguments = args; .)	
+									(. bnode = f; .)
+.
+
+
+//------------------------------------------------------------------------
+ExternalLibraryReference<out string libname>
+=
+  '('
+    textstring   (. libname = t.val; .)
+                 (. libname = libname.Remove(0, 1); .)
+                 (. libname = libname.Remove(libname.Length-1, 1); .)
+  ')'
+.
+
+//------------------------------------------------------------------------
+AccessSpecifier<out ProtoCore.DSASM.AccessSpecifier access>
+=					(. access = ProtoCore.DSASM.AccessSpecifier.kPublic; .)
+	(
+		"public"		
+		|
+		"private"		(. access = ProtoCore.DSASM.AccessSpecifier.kPrivate; .)
+		|
+		"protected"		(. access = ProtoCore.DSASM.AccessSpecifier.kProtected; .)
+	)
+.
+
+functiondecl<out Node node, ProtoCore.DSASM.AccessSpecifier access = ProtoCore.DSASM.AccessSpecifier.kPublic>
+=                           
+                            (. 
+                                FunctionDefinitionNode f = new FunctionDefinitionNode(); 
+                                string methodName;  
+                                Node argumentSignature; 
+                                ProtoCore.Type returnType;  
+                                Node pattern; 
+                                string externLibName = ""; 
+                                bool isExternLib = false; 
+                                bool isDNI = false; 								
+                            .)	
+    [ 
+        kw_external         (. isExternLib = true; .) //TODO do we want to add libtype? e.g. dll/py etc?
+        [ 
+            kw_native       (. isDNI = true; .)
+        ]
+        ExternalLibraryReference<out externLibName>
+    ]
+
+	kw_def
+	MethodSignature<out methodName, out argumentSignature, out pattern, out returnType> 
+                            (. 
+                                f = new FunctionDefinitionNode(); 
+                                f.IsExternLib = isExternLib; 
+                                f.IsDNI = isDNI; 
+                                f.ExternLibName = externLibName; 
+                                f.Name = methodName; 
+                                f.Name = methodName; 
+                                f.Pattern = pattern; 
+                                f.ReturnType = returnType; 
+								f.access = access;
+                                f.Singnature = argumentSignature as ArgumentSignatureNode; 
+                                Node functionBody = null; 
+                            .) 
+    (
+        endline        
+        |
+        FunctionalMethodBodyMultiLine<out functionBody>
+    )
+                            (. f.FunctionBody = functionBody as CodeBlockNode; 
+								node = f;	
+							.)
+               
+.
+
+//------------------------------------------------------------------------
+MethodSignature<out string methodName, out Node argumentSign, out Node pattern, out ProtoCore.Type returnType>
+=
+ident							(. methodName = t.val; .)
+                                (. 
+									Node argumentSignature = null;
+                                    returnType = new ProtoCore.Type(); 
+                                    returnType.Name = "var";
+                                    returnType.UID = 0;
+
+                                    // TODO Jun: Luke made changes to array representation, handle this
+                                    //returnType.IsArray = false;
+                                .)
+[
+    TypeRestriction<out returnType>
+]
+
+ArgumentSignatureDefinition<out argumentSignature>
+                                            (. pattern = null; .)
+[ 
+    PatternExpression<out pattern>
+]
+		
+								(. argumentSign = argumentSignature; .)
+.
+
+
+//------------------------------------------------------------------------
+ArgumentSignatureDefinition<out Node argumentSign>
+												(. ArgumentSignatureNode argumentSignature = new ArgumentSignatureNode(); .)
+= 
+'('                         
+    [											(. Node arg;.)
+        ArgDecl<out arg>						(. argumentSignature.AddArgument(arg as VarDeclNode); .)
+        {
+            ','
+           ArgDecl<out arg>						(. argumentSignature.AddArgument(arg as VarDeclNode); .)
+        }
+    ]
+')'
+												(. argumentSign = argumentSignature; .)
+.
+
+vardecl<out Node node, ProtoCore.DSASM.AccessSpecifier access = ProtoCore.DSASM.AccessSpecifier.kPublic>	
+= 
+							        (.
+                                        IdentifierNode tNode = null; 
+                                        VarDeclNode varDeclNode = new VarDeclNode(); 
+                                        varDeclNode.memregion = ProtoCore.DSASM.MemoryRegion.kMemStack;
+										varDeclNode.access = access;
+                                    .)
+
+//    [
+//        kw_heap_alloc               (. varDeclNode.memregion = ProtoCore.DSASM.MemoryRegion.kMemHeap; .)
+//    ]
+
+	( IF( IsArrayAccess())	                                        
+		arrayIdent<out node>	    (. 
+                                        tNode = node as IdentifierNode; 
+                                        varDeclNode.NameNode = tNode;
+                                    .)	
+		|
+		ident					    (. 
+                                        tNode = new IdentifierNode() 
+                                        { 
+                                            Value = t.val, 
+                                            Name = t.val, 
+                                            type = (int)ProtoCore.PrimitiveType.kTypeVar, 
+                                            datatype = ProtoCore.PrimitiveType.kTypeVar 
+                                        }; 
+                                        varDeclNode.NameNode = tNode;
+                                    .)	
+	)
+	':'
+	ident					        (. ProtoCore.Type argtype = new ProtoCore.Type(); argtype.Name = t.val; argtype.rank = 0; .)
+	[								(. argtype.IsIndexable = true; .)
+		openbracket closebracket	(. argtype.rank = 1; .)
+		[
+			( ".." openbracket closebracket )	(. argtype.rank = ProtoCore.DSASM.Constants.nDimensionArrayRank; .)
+			|
+			( 
+				{
+					openbracket closebracket	(. argtype.rank++; .)
+				} 
+			)
+		]
+	]
+                                    (.  varDeclNode.ArgumentType = argtype; .)			
+
+        [
+        '=' 
+						            (. Node rhsNode; .)		
+        Expression<out rhsNode> 		
+						            (.
+							            BinaryExpressionNode bNode = new BinaryExpressionNode();
+							            bNode.LeftNode = tNode;
+							            bNode.RightNode = rhsNode;
+							            bNode.Optr = Operator.assign;
+							            varDeclNode.NameNode = bNode;		
+						            .)	
+    ]
+
+								    (. 
+								        node = varDeclNode; 
+								        //if(!isGlobalScope) {
+								        //    localVarCount++;
+								        //}
+								    .)
+
+.
+
+ArgDecl<out Node node, ProtoCore.DSASM.AccessSpecifier access = ProtoCore.DSASM.AccessSpecifier.kPublic>	
+= 
+							        (.
+                                        IdentifierNode tNode = null; 
+                                        VarDeclNode varDeclNode = new VarDeclNode(); 
+                                        varDeclNode.memregion = ProtoCore.DSASM.MemoryRegion.kMemStack;
+										varDeclNode.access = access;
+                                    .)
+
+	( IF( IsArrayAccess())	                                        
+		arrayIdent<out node>	    (. 
+                                        tNode = node as IdentifierNode; 
+                                        varDeclNode.NameNode = tNode;
+                                    .)	
+		|
+		ident					    (. 
+                                        tNode = new IdentifierNode() 
+                                        { 
+                                            Value = t.val, 
+                                            Name = t.val, 
+                                            type = (int)ProtoCore.PrimitiveType.kTypeVar, 
+                                            datatype = ProtoCore.PrimitiveType.kTypeVar 
+                                        }; 
+                                        varDeclNode.NameNode = tNode;
+                                    .)	
+	)
+										(. ProtoCore.Type argtype = new ProtoCore.Type(); argtype.Name = "var"; argtype.rank = 0; argtype.UID = 0; .)
+	[									
+		':'
+		ident					        (. argtype.Name = t.val; .)
+		[								(. argtype.IsIndexable = true; .)
+			openbracket closebracket	(. argtype.rank = 1; .)
+			[
+				( ".." openbracket closebracket )	(. argtype.rank = ProtoCore.DSASM.Constants.nDimensionArrayRank; .)
+				|
+				( 
+					{
+						openbracket closebracket	(. argtype.rank++; .)
+					} 
+				)
+			]
+		]
+	]
+                                    (.  varDeclNode.ArgumentType = argtype; .)			
+
+    [
+		'=' 
+									(. Node rhsNode; .)		
+		Expression<out rhsNode> 		
+									(.
+										BinaryExpressionNode bNode = new BinaryExpressionNode();
+										bNode.LeftNode = tNode;
+										bNode.RightNode = rhsNode;
+										bNode.Optr = Operator.assign;
+										varDeclNode.NameNode = bNode;		
+										.)	
+    ]
+
+								    (. node = varDeclNode; .)
+.
+
+
+//------------------------------------------------------------------------
+PatternExpression<out Node pattern>
+=                       (. Node p = null; .)
+'|'
+Expression<out p>    (. pattern = p; .)
+.
+
+
+//------------------------------------------------------------------------
+BinaryOps<out Operator op>  (. op = Operator.none; .)
+= AddOp<out op>
+| MulOp<out op>
+| ComparisonOp< out op>
+| LogicalOp< out op>
+.
+
+//------------------------------------------------------------------------
+TypeRestriction<out ProtoCore.Type type>
+=
+  ':'  ClassReference<out type>	(. type.rank = 0; .)
+  [								(. type.IsIndexable = true; .)
+		openbracket closebracket	(. type.rank = 1; .)
+		[
+			( ".." openbracket closebracket )	(. type.rank = ProtoCore.DSASM.Constants.nDimensionArrayRank; .)
+			|
+			( 
+				{
+					openbracket closebracket	(. type.rank++; .)
+				} 
+			)
+		]
+	]
+.
+
+//------------------------------------------------------------------------
+ClassReference<out ProtoCore.Type type>
+=
+                                 (. type = new ProtoCore.Type(); .)  
+                                 (. string name; .)  
+ ident							 (. name = t.val; .)
+                                 (. type.Name = name; .)
+                                 (. type.UID = 0; .)
+                                 
+                                 // TODO Jun: Luke made changes to array representation, handle this
+                                 //(. type.IsArray = false; .)
+.
+
+
+
+//------------------------------------------------------------------------
+FunctionalMethodBodyMultiLine<out Node funcBody>
+=										(.
+											CodeBlockNode functionBody = new CodeBlockNode(); 
+											NodeList body = new NodeList(); 
+										.)           
+    '{'        
+                                         
+            StatementList<out body>                                        
+        
+                                        (. functionBody = new CodeBlockNode(); .)
+                                        (. functionBody.Body =body;  .)
+    '}'
+										(. funcBody = functionBody; .)
+.
+
+
+//------------------------------------------------------------------------
+FunctionalStatement<out Node node> 
+=
+ SYNC                       (. node = null; .)
+                            (. Node leftNode; .)
+ IdentifierList<out leftNode>
+ '='                        (. Node rightNode = null; .)
+ (
+ 
+	 (
+	    LanguageBlock<out rightNode> 
+                            (. BinaryExpressionNode expressionNode = new BinaryExpressionNode(); .)
+                            (. expressionNode.LeftNode = leftNode; .)
+                            (. expressionNode.RightNode = rightNode; .)
+                            (. expressionNode.Optr = Operator.assign; .)
+                            (. node = expressionNode; .)	
+     )
+     |
+     (
+        Expression<out rightNode> 
+                            (. BinaryExpressionNode expressionNode = new BinaryExpressionNode(); .)
+                            (. expressionNode.LeftNode = leftNode; .)
+                            (. expressionNode.RightNode = rightNode; .)
+                            (. expressionNode.Optr = Operator.assign; .)
+                            (. node = expressionNode; .)			
+        SYNC
+        endline
+     )
+     |
+     (
+        "#{"
+                            (. ModifierStackNode mstack = new ModifierStackNode(); .)
+                            (. string name = ""; .)
+            Expression<out rightNode> 
+            [
+                "=>" ident  (. name = t.val; .)
+            ]
+                            (. 
+                                BinaryExpressionNode expressionNode = new BinaryExpressionNode();
+                                expressionNode.RightNode = rightNode;
+                                expressionNode.LeftNode = leftNode; 
+                                expressionNode.Optr = Operator.assign;
+                                mstack.AddElementNode(expressionNode, name); 
+                            .)
+
+            SYNC endline
+            {
+                            (. name = ""; .)
+                            (. bool bHasOperator = false; .)
+                            (. Operator op = Operator.add;  .)
+                [
+                            (. bHasOperator = true; .)
+                   (
+                        BinaryOps<out op>
+                   )
+                ]
+                Expression<out rightNode>
+                [
+                    "=>" ident   (. name = t.val; .)
+                ]
+                        (. 
+                            if(!bHasOperator)
+                            {
+                               expressionNode = new BinaryExpressionNode();
+                               expressionNode.RightNode = rightNode;
+                               expressionNode.LeftNode = leftNode; 
+                               expressionNode.Optr = Operator.assign;
+                               mstack.AddElementNode(expressionNode, name);
+                            }
+                            else
+                            { 
+                               BinaryExpressionNode expressionNode2 = new BinaryExpressionNode(); 
+                               expressionNode2.LeftNode = leftNode;
+                               expressionNode2.RightNode = rightNode;
+                               expressionNode2.Optr = op;
+                               expressionNode = new BinaryExpressionNode();
+                               expressionNode.RightNode = expressionNode2;
+                               expressionNode.LeftNode = leftNode; 
+                               expressionNode.Optr = Operator.assign;
+                               mstack.AddElementNode(expressionNode, name);
+                            }
+                        .)
+                SYNC endline
+            }
+                        (. node = mstack; .)
+        "}"
+     )
+ )
+.
+
+//------------------------------------------------------------------------
+Expression<out Node node>
+=				(. node = null; .)
+	(
+		UnaryExpression<out node>
+		|
+		LogicalExpression<out node>
+	)
+	{
+		TernaryOp<ref node>
+	}
+.
+
+TernaryOp<ref Node node>
+=
+											(. InlineConditionalNode inlineConNode = new InlineConditionalNode(); .)
+		"?"									(. inlineConNode.ConditionExpression = node; node = null; .)
+		Expression<out node>				(. inlineConNode.TrueExpression = node; .)
+		":"									(. node = null; .)
+		Expression<out node>			    (. inlineConNode.FalseExpression = node; .)
+											(. node = inlineConNode; .)
+.
+
+UnaryExpression<out Node node>
+=						(. node = null; .)
+						(. UnaryOperator op; .)
+						(. Node exprNode; .)
+	unaryop<out op>		
+	Expression<out exprNode>	
+						(. 
+							UnaryExpressionNode unary = new UnaryExpressionNode(); 
+							unary.Operator = op;
+							unary.Expression = exprNode;
+							node = unary;
+						.)
+.
+
+LogicalExpression<out Node node>
+=
+  ComparisonExpression<out node>
+  { 
+                                    (.Operator op;.)
+
+    LogicalOp<out op> 
+                                    (. Node expr2; .)
+    Expression<out expr2>
+                                    (. 
+                                        BinaryExpressionNode binaryNode = new BinaryExpressionNode();
+                                        binaryNode.LeftNode = node;
+                                        binaryNode.RightNode = expr2;
+                                        binaryNode.Optr = op;
+                                        node = binaryNode;
+                                    .)
+  }
+.
+
+//------------------------------------------------------------------------
+ComparisonOp<out Operator op>
+							(. op = Operator.none; .)
+= ">"						(. op = Operator.gt; .)
+| ">="						(. op = Operator.ge; .)
+| "<"						(. op = Operator.lt; .)
+| "<="						(. op = Operator.le; .)
+| "=="						(. op = Operator.eq; .)
+| "!="						(. op = Operator.nq; .)
+.
+
+//------------------------------------------------------------------------
+ComparisonExpression<out Node node>
+=
+RangeExpr<out node>
+{ 
+                                (. Operator op; .)
+    ComparisonOp<out op>
+                                (. Node expr2; .)
+    RangeExpr<out expr2>
+                                (. 
+                                    BinaryExpressionNode binaryNode = new BinaryExpressionNode();
+                                    binaryNode.LeftNode = node;
+                                    binaryNode.RightNode = expr2;
+                                    binaryNode.Optr = op;
+                                    node = binaryNode;
+                                .)
+}
+.
+
+//------------------------------------------------------------------------
+RangeExpr<out Node node>
+=
+    ArithmeticExpression<out node>
+    [
+									    (.	RangeExprNode rnode = new RangeExprNode(); 
+										    rnode.FromNode = node;
+									    .)
+	    rangeop
+	    ArithmeticExpression<out node>	(. rnode.ToNode = node; .)
+	    [								(. RangeStepOperator op; .)
+		    rangeop
+			rangeStepOperator<out op>	(. rnode.stepoperator = op; .)
+		    ArithmeticExpression<out node> (. rnode.StepNode = node; .)
+	    ]
+
+									    (. node = rnode; .)
+    ]
+.
+//------------------------------------------------------------------------
+ForLoop<out Node forLoop>
+=									(. 
+										Node node;
+										ForLoopNode loop = new ForLoopNode(); 
+										NodeList forBody = null; 
+									.)
+	"for"
+	'('
+		IdentifierList<out node>		(. loop.id = node; .)
+	"in"
+		Expression<out node>			(. loop.expression = node; .)
+	')'
+	'{'
+		StatementList<out forBody>	(. loop.body = forBody; .)
+	'}'					
+									(.forLoop = loop; .)
+.
+
+//------------------------------------------------------------------------
+AddOp<out Operator op>
+=					(. op = Operator.add; .)
+  ( "+"
+  | "-"				(. op = Operator.sub; .)
+  ).
+
+
+//------------------------------------------------------------------------
+MulOp<out Operator op>
+=					(. op = Operator.mul; .)
+  ( "*"
+  | "/"				(. op = Operator.div; .)
+  ).
+
+BitOp<out Operator op>
+=					(. op = Operator.bitwiseand; .)
+  ( '&'
+  | '^'				(. op = Operator.bitwisexor; .)
+  | '|'				(. op = Operator.bitwiseor; .)
+  ).
+
+/*------------------------------------------------------------------------*/
+LogicalOp<out Operator op>
+=                   (. op = Operator.and; .)
+( "&&"
+| "||"				(. op = Operator.or; .)
+)
+.
+
+unaryop<out UnaryOperator op>					
+=			(. op = UnaryOperator.None; .)	
+( '!'		(. op = UnaryOperator.Not; .)
+| '~'		(. op = UnaryOperator.Negate; .)
+)
+.
+
+rangeStepOperator<out RangeStepOperator op>
+=				(. op = RangeStepOperator.stepsize; .)
+[ '#'			(. op = RangeStepOperator.num; .)
+| '~'			(. op = RangeStepOperator.approxsize; .)
+]
+.
+
+//------------------------------------------------------------------------
+// TODO Jun: Refactor arithmetic ops into function calls
+
+//ArithmeticExpression<out Node node>
+//=  
+                                //(. NodeList arglist = new List<Node>(); .)
+    //Term<out node>              (. arglist.Add(node); .)
+    //{                           
+                                //(. Operator op; .)
+        //AddOp<out op>           
+                                //
+        //Term<out node>          (. arglist.Add(node); .)
+                                //(.
+				                    //IdentifierNode var = new IdentifierNode() 
+				                    //{
+					                    //Value       = opKwData.opStringTable[op], 
+					                    //Name        = opKwData.opStringTable[op], 
+					                    //type        = (int)ProtoCore.PrimitiveType.kTypeVar,
+					                    //datatype    = ProtoCore.PrimitiveType.kTypeVar
+				                    //}; 
+                                    	//
+								    //FunctionCallNode fcall = new FunctionCallNode(); 
+								    //fcall.FormalArguments = arglist;
+								    //fcall.Function = node;
+								    //node = fcall; 
+								//.)
+    //}
+//.
+
+
+ArithmeticExpression<out Node node>
+=
+    Term<out node>
+    {
+                                (. Operator op; .)
+        AddOp<out op>
+                                (. Node expr2; .)
+        Term<out expr2>
+
+                                (. 
+                                    BinaryExpressionNode binaryNode = new BinaryExpressionNode();
+                                    binaryNode.LeftNode = node;
+                                    binaryNode.RightNode = expr2;
+                                    binaryNode.Optr = op;
+                                    node = binaryNode;
+                                .)
+    }
+.
+
+
+//------------------------------------------------------------------------
+//TODO Jun: Refactor arithmetic ops into function calls
+
+//Term<out Node node>
+//= 
+                                //(. NodeList arglist = new List<Node>(); .)
+    //Factor<out node>		    (. arglist.Add(node); .)
+    //{                         
+                                //(. Operator op; .)  
+        //MulOp<out op>          
+                                //
+        //Factor<out node>        (. arglist.Add(node); .)
+	                            //(.
+				                    //IdentifierNode var = new IdentifierNode() 
+				                    //{
+					                    //Value       = opKwData.opStringTable[op], 
+					                    //Name        = opKwData.opStringTable[op], 
+					                    //type        = (int)ProtoCore.PrimitiveType.kTypeVar,
+					                    //datatype    = ProtoCore.PrimitiveType.kTypeVar
+				                    //}; 
+                                    	//
+								    //FunctionCallNode fcall = new FunctionCallNode(); 
+								    //fcall.FormalArguments = arglist;
+								    //fcall.Function = node;
+								    //node = fcall; 
+								//.)
+    //}
+//.
+//
+                               
+Term<out Node node>
+= 
+    interimfactor<out node>		
+    {
+                                (. Operator op; .)
+        MulOp<out op> 
+                                (. Node expr2; .)	
+        interimfactor<out expr2>
+	                            (. 
+                                    BinaryExpressionNode binaryNode = new BinaryExpressionNode();
+                                    binaryNode.LeftNode = node;
+                                    binaryNode.RightNode = expr2;
+                                    binaryNode.Optr = op;
+                                    node = binaryNode;
+                                .)
+    }
+.
+
+interimfactor<out Node node>
+= 
+    Factor<out node>		
+    {
+                                (. Operator op; .)
+        BitOp<out op> 
+                                (. Node expr2; .)	
+        Factor<out expr2>
+	                            (. 
+                                    BinaryExpressionNode binaryNode = new BinaryExpressionNode();
+                                    binaryNode.LeftNode = node;
+                                    binaryNode.RightNode = expr2;
+                                    binaryNode.Optr = op;
+                                    node = binaryNode;
+                                .)
+    }
+.
+
+
+Number<out Node node>				
+			(. node = null; String localvalue = String.Empty; .)
+= 
+	[
+		'-'	(. localvalue = "-"; .)
+	]
+	(
+		number	(. node = new IntNode() { value = localvalue + t.val }; .)
+		| 
+		float	(. node = new DoubleNode() { value = localvalue + t.val }; .)
+	)
+.
+
+Factor<out Node node>			
+									(.node = null; .)
+=
+	(
+		(
+			(IF(IsReplicationGuideIdent())
+				ReplicationGuideIdent<out node>
+			)
+		)
+		|
+		Number<out node>
+		|		
+		(
+			literal_true					(. node = new BooleanNode() { value = ProtoCore.DSASM.Literal.True }; .)		
+		)
+		|
+		(
+			literal_false					(. node = new BooleanNode() { value = ProtoCore.DSASM.Literal.False }; .)	
+		)	
+        |
+        (
+            literal_null	                (. node = new NullNode(); .)
+        )
+		| 
+		(
+			ArrayExprList<out node>
+		)
+		|
+		(
+			'(' 
+				Expression<out node> 
+			')' 
+		)		
+		|
+		(                	                 
+			IdentifierList<out node>			
+		)
+	 )
+ .
+
+
+Ident<out Node node> 
+=
+	ident	(. 
+				int ltype = (0 == String.Compare(t.val, "return")) ? (int)ProtoCore.PrimitiveType.kTypeReturn : (int)ProtoCore.PrimitiveType.kTypeVar;
+				IdentifierNode var = new IdentifierNode() 
+				{
+					// TODO Jun: Move the primitive types into a class table 
+					Value = t.val, 
+					Name = t.val, 
+					type = ltype,
+					datatype = (ProtoCore.PrimitiveType)ltype 
+				}; 
+				node = var;
+			.)
+.
+
+ArrayExprList<out Node node>
+=
+'{'										(. ExprListNode exprlist = new ExprListNode(); .)
+	[
+										
+		Expression<out node>			(. exprlist.list.Add(node); .)
+		{
+			','
+			Expression<out node>		(. exprlist.list.Add(node); .)
+		}
+										
+	]
+'}'										(. node = exprlist; .)
+.
+
+arrayIndices<out ArrayNode array>
+=
+openbracket             (. Node exp = null; .)
+[
+    Expression<out exp>
+]
+            	        (. 
+                            array = new ArrayNode();
+                            array.Expr = exp; 
+                            array.Type = null;
+                        .)
+closebracket 
+{ 
+    openbracket
+                            (. exp = null; .)
+    [
+	    Expression<out exp>  
+    ]
+                            (.
+                                ArrayNode array2 = new ArrayNode();
+                                array2.Expr = exp; 
+                                array2.Type = null;
+                                array.Type = array2;
+                                array = array2;
+                            .)
+    closebracket
+}
+.
+
+arrayIdent<out Node node> 
+= 
+Ident<out node>             (. IdentifierNode var = node as IdentifierNode; .)
+[                           (. ArrayNode array = null; .)
+    arrayIndices<out array> (. var.ArrayDimensions = array; .)
+]
+.
+
+NameReference<out Node node>
+=                          (. node = null; .)
+
+( IF(IsFunctionCall())
+    FunctionCall<out node>
+    |
+    arrayIdent<out node>
+)
+.
+
+IdentifierList<out Node node>
+=									(. node = null; .)                                    
+	NameReference<out node>		
+	{
+		'.'
+									(. Node rnode = null; .)
+		NameReference<out rnode>
+									(.
+										IdentifierListNode bnode = new IdentifierListNode(); 
+										bnode.LeftNode = node; 
+										bnode.Optr = Operator.dot; 
+										bnode.RightNode = rnode; 
+										node = bnode; 
+									.)
+	}
+.
+
+
+FunctionCall<out Node node>
+=
+	Ident<out node>
+								    (. NodeList args = null; .)
+	Arguments<out args>			    (.	
+								    	FunctionCallNode f = new FunctionCallNode(); 
+								    	f.FormalArguments = args;
+								    	f.Function = node;
+								    	node = f; 
+								    .)
+.
+
+
+Arguments<out NodeList nodes>
+=											
+	'('	
+											(. nodes = new List<Node>(); .)
+		[
+											(. Node t; .)
+			Expression<out t>				(. nodes.Add(t); .)
+			{
+				WEAK ','							
+				Expression<out t>			(. nodes.Add(t); .)							
+			}
+		]
+						
+	')'
+.  
+
+ReplicationGuideIdent<out Node node>
+=
+									
+	Ident<out node>					
+									(. IdentifierNode identNode = node as IdentifierNode; .)
+									(. NodeList guides = new NodeList();.)
+	lessthan
+		number						(. Node numNode = new IdentifierNode() { Value = t.val }; .)
+	greaterthan
+									(. guides.Add(numNode); .)
+									
+	{					
+		lessthan
+			number					(. numNode = new IdentifierNode() { Value = t.val }; .)
+		greaterthan					
+									(. guides.Add(numNode); .)
+	}
+									(. identNode.ReplicationGuides = guides; .)
+									(. node = identNode; .)
+.
+END HydrogenParser.
