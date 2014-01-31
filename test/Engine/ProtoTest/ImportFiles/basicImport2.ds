@@ -1,0 +1,57 @@
+
+external ("libmath") def dc_sin : double (val : double);
+def Sin : double (val : double)
+{
+    return = dc_sin(val);
+}
+
+
+class Point
+{
+	X : var;
+	Y : var;
+	Z : var;
+	
+    constructor ByCoordinates(x : double, y : double, z : double)
+    {
+	
+		X = x;
+		Y = y;
+		Z = z;
+    }
+	
+	def MidValue : double[]()
+	{
+		return = {X/2, Y/2, Z/2};
+	}
+}
+
+class Line
+{
+	StartPoint: Point;
+	EndPoint: Point;
+
+	constructor ByStartPointEndPoint (startPoint : Point, endPoint : Point)
+	
+	{
+		StartPoint = startPoint;
+		EndPoint = endPoint;
+	}
+}
+
+def Count(inputArray : double[])
+{
+	numberOfItemsInArray = [Imperative]
+	{
+		index = 0;
+		for (item in inputArray)
+		{
+			index = index + 1;
+		}
+		
+		return = index;
+	}
+	
+	return = numberOfItemsInArray;
+}
+

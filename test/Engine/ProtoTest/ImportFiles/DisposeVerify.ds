@@ -1,0 +1,19 @@
+// GC TEST CASE
+class DisposeVerify
+{
+	public static x : int;
+}
+
+class A
+{
+    public x : int;
+    constructor A()
+    {
+        this.x = 10;
+    }
+	public def _Dispose : int()
+    {
+        DisposeVerify.x = DisposeVerify.x + 1;
+		return = 10;
+    }
+}

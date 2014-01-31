@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{6999C23A-606C-409D-9BF4-A413569C7FC3}") = "ExperimentalMesh", "ExperimentalMesh.csproj", "{4D6D6507-24B4-4B7C-9FAB-1558AC31BF83}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4D6D6507-24B4-4B7C-9FAB-1558AC31BF83}.Debug|x64.ActiveCfg = Debug|x64
+		{4D6D6507-24B4-4B7C-9FAB-1558AC31BF83}.Debug|x64.Build.0 = Debug|x64
+		{4D6D6507-24B4-4B7C-9FAB-1558AC31BF83}.Release|x64.ActiveCfg = Release|x64
+		{4D6D6507-24B4-4B7C-9FAB-1558AC31BF83}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

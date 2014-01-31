@@ -1,0 +1,4 @@
+import ("../basicImport.ds");
+a = {1.1,2.2};
+b = 2;
+c = Scale(a,b);
