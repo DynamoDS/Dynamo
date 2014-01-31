@@ -69,6 +69,10 @@
       <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
       <Name>DSCoreNodesUI</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DSIronPython\DSIronPython.csproj">
+      <Project>{9eef4f42-6b3b-4358-9a8a-c2701539a822}</Project>
+      <Name>DSIronPython</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoCore</Name>

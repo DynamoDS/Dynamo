@@ -9,32 +9,14 @@ using System.Xml;
 using DSCoreNodesUI;
 using Dynamo.Controls;
 using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.Utilities;
+using DynamoUtilities;
 using IronPython.Hosting;
 using ProtoCore.AST.AssociativeAST;
 
 namespace DSIronPythonNode
 {
-    public class IronPythonEvaluator
-    {
-        public static object EvaluateIronPythonScript(string code, IList names, IList values)
-        {
-            var engine = Python.CreateEngine();
-            var scope = engine.CreateScope();
-
-            var amt = Math.Min(names.Count, values.Count);
-
-            for (int i = 0; i < amt; i++)
-            {
-                scope.SetVariable((string)names[i], values[i]);
-            }
-
-            engine.CreateScriptSourceFromString(code).Execute(scope);
-
-            return scope.ContainsVariable("OUT") ? scope.GetVariable("OUT") : null;
-        }
-    }
-
     public abstract class PythonNodeBase : VariableInputNode
     {
         protected PythonNodeBase()
@@ -62,22 +44,29 @@ namespace DSIronPythonNode
             var vals = additionalBindings.Select(x => x.Item2).ToList();
             vals.Add(AstFactory.BuildExprList(inputAstNodes));
 
+            var backendMethod =
+                new Func<string, IList, IList, object>(DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript);
+
             return AstFactory.BuildAssignment(
                 GetAstIdentifierForOutputIndex(0),
                 AstFactory.BuildFunctionCall(
-                    "DSIronPythonNode.IronPythonEvaluator.EvaluateIronPythonScript",
+                    backendMethod.GetFullName(),
                     new List<AssociativeNode>
                     {
                         codeInputNode,
                         AstFactory.BuildExprList(
                             names.Select(x => AstFactory.BuildStringNode(x) as AssociativeNode)
-                                 .ToList()),
+                                .ToList()),
                         AstFactory.BuildExprList(vals)
                     }));
         }
     }
 
+    [NodeName("Python Script")]
+    [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
+    [NodeDescription("Runs an embedded IronPython script")]
     [Browsable(false)]
+    [IsDesignScriptCompatible]
     public class PythonNode : PythonNodeBase
     {
         public PythonNode()
@@ -202,7 +191,11 @@ namespace DSIronPythonNode
         #endregion
     }
 
+    [NodeName("Python Script From String")]
+    [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
+    [NodeDescription("Runs a IronPython script from a string")]
     [Browsable(false)]
+    [IsDesignScriptCompatible]
     public class PythonStringNode : PythonNodeBase
     {
         public PythonStringNode()
