@@ -26,7 +26,7 @@ namespace Dynamo.DSEngine
 
         public RenderPackage(bool selected)
         {
-            nativeRenderPackage = DesignScriptStudio.Renderer.RenderPackageUtils.CreateNativeRenderPackage(this);
+//            nativeRenderPackage = DesignScriptStudio.Renderer.RenderPackageUtils.CreateNativeRenderPackage(this);
             this.selected = selected;
         }
 
@@ -149,7 +149,7 @@ namespace Dynamo.DSEngine
 
         public void Dispose()
         {
-            DesignScriptStudio.Renderer.RenderPackageUtils.DestroyNativeRenderPackage(nativeRenderPackage);
+//            DesignScriptStudio.Renderer.RenderPackageUtils.DestroyNativeRenderPackage(nativeRenderPackage);
         }
     }
 }
