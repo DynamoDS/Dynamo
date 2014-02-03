@@ -66,6 +66,9 @@ limitations under the License.
     <DefineConstants>$(DefineConstants);USE_DSENGINE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DesignScriptStudio.Renderer">
+      <HintPath>..\..\extern\DSSRenderer\DesignScriptStudio.Renderer.dll</HintPath>
+    </Reference>
     <Reference Include="FScheme, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\bin\AnyCPU\Debug\FScheme.dll</HintPath>
@@ -119,10 +122,6 @@ limitations under the License.
     <Reference Include="GraphToDSCompiler">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\DesignScript\GraphToDSCompiler.dll</HintPath>
-    </Reference>
-    <Reference Include="DesignScriptStudio.Renderer">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\DesignScript\DesignScriptStudio.Renderer.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -413,10 +412,6 @@ limitations under the License.
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Libraries\DynamoUnits\DynamoUnits.csproj">
-      <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
-      <Name>DynamoUnits</Name>
-    </ProjectReference>
     <ProjectReference Include="..\DynamoUnits\DynamoUnits.csproj">
       <Project>{6E0A079E-85F1-45A1-AD5B-9855E4344809}</Project>
       <Name>DynamoUnits</Name>
@@ -425,6 +420,10 @@ limitations under the License.
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
       <Name>DynamoUtilities</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\DynamoUnits\DynamoUnits.csproj">
+      <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
+      <Name>DynamoUnits</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
