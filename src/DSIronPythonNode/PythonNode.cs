@@ -39,8 +39,10 @@ namespace DSIronPythonNode
             AssociativeNode codeInputNode, List<AssociativeNode> inputAstNodes,
             List<Tuple<string, AssociativeNode>> additionalBindings)
         {
-            var names = additionalBindings.Select(x => x.Item1).ToList();
-            names.Add("IN");
+            var names =
+                additionalBindings.Select(
+                    x => AstFactory.BuildStringNode(x.Item1) as AssociativeNode).ToList();
+            names.Add(AstFactory.BuildStringNode("IN"));
 
             var vals = additionalBindings.Select(x => x.Item2).ToList();
             vals.Add(AstFactory.BuildExprList(inputAstNodes));
@@ -55,9 +57,7 @@ namespace DSIronPythonNode
                     new List<AssociativeNode>
                     {
                         codeInputNode,
-                        AstFactory.BuildExprList(
-                            names.Select(x => AstFactory.BuildStringNode(x) as AssociativeNode)
-                                .ToList()),
+                        AstFactory.BuildExprList(names),
                         AstFactory.BuildExprList(vals)
                     }));
         }
