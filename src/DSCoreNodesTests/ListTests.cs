@@ -14,6 +14,22 @@ namespace DSCoreNodesTests
     internal static class ListTests
     {
         [Test]
+        public static void UniqueInList()
+        {
+            Assert.AreEqual(
+                new ArrayList { 1, 2, 3, 4, 5 },
+                List.UniqueItems(new ArrayList { 1, 1, 2, 3, 4, 4, 5, 4, 2, 1, 3 }));
+        }
+
+        [Test]
+        public static void ListContains()
+        {
+            Assert.IsTrue(List.ContainsItem(new ArrayList { 1, 2, 3, 4, 5 }, 4));
+            Assert.IsFalse(List.ContainsItem(new ArrayList { 1, 2 }, 3));
+            Assert.IsFalse(List.ContainsItem(new ArrayList(), 0));
+        }
+
+        [Test]
         public static void ReverseList()
         {
             Assert.AreEqual(new ArrayList { 5, 4, 3, 2, 1 }, List.Reverse(new List<int> { 1, 2, 3, 4, 5 }));
@@ -328,6 +344,42 @@ namespace DSCoreNodesTests
                 List.GroupByKey(
                     new ArrayList { "a", "aa", "aaa", "b", "bb", "bbb", "c", "cc", "ccc" },
                     new Func<string, int>(s => s.Length)));
+        }
+
+        [Test]
+        public static void MapList()
+        {
+            Assert.AreEqual(
+                new ArrayList { 1, 2, 3 },
+                List.Map(new ArrayList { 0, 1, 2 }, new Func<int, int>(i => i + 1)));
+        }
+
+        [Test]
+        public static void CombineLists()
+        {
+            var aList = new ArrayList { 1, 2, 3 };
+            Assert.AreEqual(
+                new ArrayList { 2, 4, 6 },
+                List.Combine(new Func<int, int, int>((i, j) => i + j), aList, aList));
+        }
+
+        [Test]
+        public static void ReduceList()
+        {
+            Assert.AreEqual(
+                10,
+                List.Reduce(
+                    new Func<int, int, int>((i, j) => i + j),
+                    0,
+                    Enumerable.Range(0, 5).ToList()));
+
+            Assert.AreEqual(
+                20,
+                List.Reduce(
+                    new Func<int, int, int, int>((i, j, k) => i + j + k),
+                    0,
+                    Enumerable.Range(0, 5).ToList(),
+                    Enumerable.Range(0, 5).ToList()));
         }
     }
 }
