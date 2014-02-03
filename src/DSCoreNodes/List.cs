@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms.Layout;
 using System.Windows.Input;
+using System.Xml.XPath;
 
 namespace DSCore
 {
@@ -13,8 +14,25 @@ namespace DSCore
     /// </summary>
     public class List
     {
-        private List()
+        private List() { }
+
+        /// <summary>
+        ///     Creates a new list containing all unique items in the given list.
+        /// </summary>
+        /// <param name="list">List to filter duplicates out of.</param>
+        public static IList UniqueItems(IList list)
         {
+            return list.Cast<object>().Distinct().ToList();
+        }
+
+        /// <summary>
+        ///     Determines if the given list contains the given item.
+        /// </summary>
+        /// <param name="list">List to search in.</param>
+        /// <param name="thing">Item to look for.</param>
+        public static bool ContainsItem(IList list, object thing)
+        {
+            return list.Contains(thing);
         }
 
         /// <summary>
@@ -79,7 +97,6 @@ namespace DSCore
         /// <summary>
         ///     Returns the minimum value from a list.
         /// </summary>
-        /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <param name="list">List to take the minimum value from.</param>
         public static object MinimumItem(IEnumerable list)
         {
@@ -91,8 +108,6 @@ namespace DSCore
         ///     value is the element in the list that the key projection produces the smallest
         ///     value for.
         /// </summary>
-        /// <typeparam name="T">Type of the contents of the list.</typeparam>
-        /// <typeparam name="TKey">Type that the Key Projection produces.</typeparam>
         /// <param name="list">List to take the minimum value from.</param>
         /// <param name="keyProjector">
         ///     Function that consumes an element from the list and produces an orderable value.
@@ -121,7 +136,6 @@ namespace DSCore
         /// <summary>
         ///     Returns the maximum value from a list.
         /// </summary>
-        /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <param name="list">List to take the maximum value from.</param>
         public static object MaximumItem(IList list)
         {
@@ -133,8 +147,6 @@ namespace DSCore
         ///     value is the element in the list that the key projection produces the largest
         ///     value for.
         /// </summary>
-        /// <typeparam name="T">Type of the contents of the list.</typeparam>
-        /// <typeparam name="TKey">Type that the Key Projection produces.</typeparam>
         /// <param name="list">List to take the maximum value from.</param>
         /// <param name="keyProjector">
         ///     Function that consumes an element from the list and produces an orderable value.
@@ -164,7 +176,6 @@ namespace DSCore
         ///     Creates a new list containing all the elements of an old list for which
         ///     the given predicate function returns True.
         /// </summary>
-        /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <param name="list">List to be filtered.</param>
         /// <param name="predicate">
         ///     Function to be applied to all elements in the list. All elements that make the
@@ -180,7 +191,6 @@ namespace DSCore
         ///     Creates a new list containing all the elements of an old list for which
         ///     the given predicate function returns False.
         /// </summary>
-        /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <param name="list">List to be filtered.</param>
         /// <param name="predicate">
         ///     Function to be applied to all elements in the list. All elements that make the
@@ -196,8 +206,6 @@ namespace DSCore
         /// <summary>
         ///     Reduces a list of values into a new value using a reduction function.
         /// </summary>
-        /// <typeparam name="T">Type of the contents of the list.</typeparam>
-        /// <typeparam name="TState">Type of the reduced output.</typeparam>
         /// <param name="list">List to be reduced.</param>
         /// <param name="seed">
         ///     Starting value for the reduction. If the list being reduced is
@@ -282,7 +290,6 @@ namespace DSCore
         ///     Determines if the given predicate function returns True when applied to all of the
         ///     elements in the given list.
         /// </summary>
-        /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <param name="predicate">
         ///     Function to be applied to all elements in the list, returns a boolean value.
         /// </param>
@@ -296,7 +303,6 @@ namespace DSCore
         ///     Determines if the given predicate function returns True when applied to any of the
         ///     elements in the given list.
         /// </summary>
-        /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <param name="predicate">
         ///     Function to be applied to all elements in the list, returns a boolean value.
         /// </param>
@@ -310,7 +316,6 @@ namespace DSCore
         ///     Given a list, produces the first item in the list, and a new list containing all items
         ///     except the first.
         /// </summary>
-        /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <param name="list">List to be split.</param>
         public static object[] Deconstruct(IList list)
         {
@@ -320,11 +325,11 @@ namespace DSCore
         /// <summary>
         ///     Produces a new list by adding an item to the beginning of a given list.
         /// </summary>
-        /// <param name="o">Item to be added.</param>
+        /// <param name="thing">Item to be added.</param>
         /// <param name="list">List to add on to.</param>
-        public static IList AddItemToFront(object o, IList list)
+        public static IList AddItemToFront(object thing, IList list)
         {
-            var newList = new ArrayList { o };
+            var newList = new ArrayList { thing };
             newList.AddRange(list);
             return newList;
         }
@@ -332,7 +337,6 @@ namespace DSCore
         /// <summary>
         ///     Fetches the given amount of elements from the start of the given list.
         /// </summary>
-        /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <param name="list">List to take from.</param>
         /// <param name="amount">
         ///     Amount of elements to take. If negative, elements are taken from the end of the list.
@@ -346,7 +350,6 @@ namespace DSCore
         /// <summary>
         ///     Removes the given amount of elements from the start of the given list.
         /// </summary>
-        /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <param name="list">List to remove elements from.</param>
         /// <param name="amount">
         ///     Amount of elements to remove. If negative, elements are removed from the end of the list.
@@ -360,7 +363,6 @@ namespace DSCore
         /// <summary>
         ///     Shifts indices in the given list to the right by the given amount.
         /// </summary>
-        /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <param name="list">List to be shifted.</param>
         /// <param name="amount">
         ///     Amount to shift indices by. If negative, indices will be shifted to the left.
@@ -456,7 +458,6 @@ namespace DSCore
         /// <summary>
         ///     Removes an element from the given list at the specified index.
         /// </summary>
-        /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <param name="list">List to remove an element from.</param>
         /// <param name="index">Index of the element to be removed.</param>
         public static IList RemoveItemAtIndex(IList list, int index)
@@ -467,7 +468,6 @@ namespace DSCore
         /// <summary>
         ///     Removes elements from the given list at the specified indices.
         /// </summary>
-        /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <param name="list">List to remove elements from.</param>
         /// <param name="indices">Indices of the elements to be removed.</param>
         public static IList RemoveItemsAtIndices(IList list, IList indices)
@@ -480,7 +480,6 @@ namespace DSCore
         ///     Removes elements from the given list at indices that are multiples
         ///     of the given value, after the given offset.
         /// </summary>
-        /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <param name="list">List to remove elements from/</param>
         /// <param name="n">Indices that are multiples of this argument will be removed.</param>
         /// <param name="offset">
@@ -495,7 +494,6 @@ namespace DSCore
         ///     Fetches elements from the given list at indices that are multiples
         ///     of the given value, after the given offset.
         /// </summary>
-        /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <param name="list">List to take elements from.</param>
         /// <param name="n">
         ///     Indices that are multiples of this number (after the offset)
@@ -559,7 +557,6 @@ namespace DSCore
         /// <summary>
         ///     Removes the first item from the given list.
         /// </summary>
-        /// <typeparam name="T">Type of the contents of the list.</typeparam>
         /// <param name="list">List to get the rest of.</param>
         public static IList RestOfItems(IList list)
         {
@@ -730,6 +727,22 @@ namespace DSCore
         }
 
         /// <summary>
+        ///     Creates a new list by concatenining copies of a given list.
+        /// </summary>
+        /// <param name="list">List to repeat.</param>
+        /// <param name="amount">Number of times to repeat.</param>
+        public static IList Repeat(IList list, int amount)
+        {
+            var result = new ArrayList();
+            while (amount > 0)
+            {
+                result.AddRange(list);
+                amount--;
+            }
+            return result;
+        }
+
+        /// <summary>
         ///     Flattens a nested list of lists into a single list containing no
         ///     sub-lists.
         /// </summary>
@@ -786,6 +799,50 @@ namespace DSCore
                     .GroupBy(x => keyProjector.DynamicInvoke(x))
                     .Select(x => x.ToList() as IList)
                     .ToList();
+        }
+
+        public static IList Map(IList list, Delegate mapFunc)
+        {
+            return list.Cast<object>().Select(x => mapFunc.DynamicInvoke(x)).ToList();
+        }
+
+        private static IEnumerable<object> GetArgs(IEnumerable<IList> lists, int index)
+        {
+            return lists.Where(argList => index < argList.Count).Select(x => x[index]);
+        }
+
+        public static IList Combine(Delegate combinator, params IList[] lists)
+        {
+            var result = new ArrayList();
+
+            int i = 0;
+            while (true)
+            {
+                var args = GetArgs(lists, i).ToArray();
+
+                if (!args.Any()) break;
+
+                result.Add(combinator.DynamicInvoke(args));
+                i++;
+            }
+
+            return result;
+        }
+
+        public static object Reduce(Delegate reductor, object initial, params IList[] lists)
+        {
+            int i = 0;
+            while (true)
+            {
+                var args = GetArgs(lists, i);
+
+                if (!args.Any()) break;
+
+                initial = reductor.DynamicInvoke(args.Concat(new[] { initial }).ToArray());
+                i++;
+            }
+
+            return initial;
         }
     }
 
