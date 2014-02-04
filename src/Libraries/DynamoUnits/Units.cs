@@ -296,12 +296,15 @@ namespace Dynamo.Units
         public abstract void SetValueFromString(string value);
 
         public abstract SIUnit Add(SIUnit x);
+        public abstract SIUnit Add(double x);
         public abstract SIUnit Subtract(SIUnit x);
+        public abstract SIUnit Subtract(double x);
         public abstract SIUnit Multiply(SIUnit x);
         public abstract SIUnit Multiply(double x);
         public abstract dynamic Divide(SIUnit x);
         public abstract SIUnit Divide(double x);
         public abstract SIUnit Modulo(SIUnit x);
+        public abstract SIUnit Modulo(double x);
         public abstract SIUnit Round();
         public abstract SIUnit Ceiling();
         public abstract SIUnit Floor();
@@ -313,9 +316,29 @@ namespace Dynamo.Units
             return x.Add(y);
         }
 
+        public static SIUnit operator +(SIUnit x, double y)
+        {
+             return x.Add(y);
+        }
+ 
+        public static double operator +(double x, SIUnit y)
+        {
+            return x + y.Value;
+        }
+
         public static SIUnit operator -(SIUnit x, SIUnit y)
         {
             return x.Subtract(y);
+        }
+
+        public static SIUnit operator -(SIUnit x, double y)
+        {
+            return x.Subtract(y);
+        }
+
+        public static double operator -(double x, SIUnit y)
+        {
+            return x - y.Value;
         }
 
         public static SIUnit operator *(SIUnit x, SIUnit y)
@@ -328,9 +351,9 @@ namespace Dynamo.Units
             return x.Multiply(y);
         }
 
-        public static SIUnit operator *(double x, SIUnit y)
+        public static double operator *(double x, SIUnit y)
         {
-            return y.Multiply(x);
+            return x * y.Value;
         }
 
         public static dynamic operator /(SIUnit x, SIUnit y)
@@ -351,9 +374,24 @@ namespace Dynamo.Units
             return x.Divide(y);
         }
 
+        public static double operator /(double x, SIUnit y)
+        {
+            return x/y.Value;
+        }
+
         public static SIUnit operator %(SIUnit x, SIUnit y)
         {
             return x.Modulo(y);
+        }
+
+        public static SIUnit operator %(SIUnit x, double y)
+        {
+            return x.Modulo(y);
+        }
+ 
+        public static double operator %(double x, SIUnit y)
+        {
+            return x % y.Value;
         }
 
         #endregion
@@ -432,12 +470,22 @@ namespace Dynamo.Units
             throw new UnitsException(GetType(), x.GetType());
         }
 
+        public override SIUnit Add(double x)
+        {
+            return new Length(_value + x);
+        }
+
         public override SIUnit Subtract(SIUnit x)
         {
             if(x is Length)
                 return new Length(_value - x.Value);
 
             throw new UnitsException(GetType(), x.GetType());
+        }
+
+        public override SIUnit Subtract(double x)
+        {
+            return new Length(_value - x);
         }
 
         public override SIUnit Multiply(SIUnit x)
@@ -476,6 +524,11 @@ namespace Dynamo.Units
                 return new Length(_value % x.Value);
 
             throw new UnitsException(GetType(), x.GetType());
+        }
+
+        public override SIUnit Modulo(double x)
+        {
+            return new Length(_value % x);
         }
 
         public override SIUnit Round()
@@ -629,12 +682,22 @@ namespace Dynamo.Units
             throw new UnitsException(GetType(), x.GetType());
         }
 
+        public override SIUnit Add(double x)
+        {
+            return new Area(_value + x);
+        }
+
         public override SIUnit Subtract(SIUnit x)
         {
             if(x is Area)
                 return new Area(_value - x.Value);
 
             throw new UnitsException(GetType(), x.GetType());
+        }
+
+        public override SIUnit Subtract(double x)
+        {
+            return new Area(_value - x);
         }
 
         public override SIUnit Multiply(SIUnit x)
@@ -683,6 +746,11 @@ namespace Dynamo.Units
             }
             
             throw new UnitsException(GetType(), x.GetType());
+        }
+
+        public override SIUnit Modulo(double x)
+        {
+            return new Area(_value % x);
         }
 
         public override SIUnit Round()
@@ -824,12 +892,22 @@ namespace Dynamo.Units
             throw new UnitsException(GetType(), x.GetType());
         }
 
+        public override SIUnit Add(double x)
+        {
+            return new Volume(_value + x);
+        }
+
         public override SIUnit Subtract(SIUnit x)
         {
             if(x is Volume)
                 return new Volume(_value - x.Value);
 
             throw new UnitsException(GetType(), x.GetType());
+        }
+
+        public override SIUnit Subtract(double x)
+        {
+            return new Volume(_value - x);
         }
 
         public override SIUnit Multiply(SIUnit x)
@@ -869,6 +947,11 @@ namespace Dynamo.Units
             }
             
             throw new UnitsException(GetType(), x.GetType());
+        }
+
+        public override SIUnit Modulo(double x)
+        {
+            return new Volume(_value % x);
         }
 
         public override SIUnit Round()
@@ -1000,7 +1083,17 @@ namespace Dynamo.Units
             throw new NotImplementedException();
         }
 
+        public override SIUnit Add(double x)
+        {
+            throw new NotImplementedException();
+        }
+
         public override SIUnit Subtract(SIUnit x)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SIUnit Subtract(double x)
         {
             throw new NotImplementedException();
         }
@@ -1026,6 +1119,11 @@ namespace Dynamo.Units
         }
 
         public override SIUnit Modulo(SIUnit x)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SIUnit Modulo(double x)
         {
             throw new NotImplementedException();
         }
@@ -1070,7 +1168,17 @@ namespace Dynamo.Units
             throw new NotImplementedException();
         }
 
+        public override SIUnit Add(double x)
+        {
+            throw new NotImplementedException();
+        }
+
         public override SIUnit Subtract(SIUnit x)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SIUnit Subtract(double x)
         {
             throw new NotImplementedException();
         }
@@ -1096,6 +1204,11 @@ namespace Dynamo.Units
         }
 
         public override SIUnit Modulo(SIUnit x)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SIUnit Modulo(double x)
         {
             throw new NotImplementedException();
         }
