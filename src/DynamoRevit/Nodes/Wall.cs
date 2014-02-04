@@ -67,7 +67,7 @@ namespace Dynamo.Nodes
                             bSuccess = true;
                         }
                     }
-                    else
+                    if (!bSuccess)
                     {
                         dynRevitSettings.Doc.Document.Delete(wall.Id);
                     }

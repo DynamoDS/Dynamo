@@ -1834,7 +1834,7 @@ namespace Dynamo.Nodes
             : base(FScheme.Last)
         {
             InPortData.Add(new PortData("list", "A list", typeof(Value.List)));
-            OutPortData.Add(new PortData("first", "First element in the list", typeof(object)));
+            OutPortData.Add(new PortData("Last", "Last element in the list", typeof(object)));
 
             RegisterAllPorts();
         }

@@ -49,6 +49,7 @@
 				<test name="GetSurfaceDomain" runDynamo="True" modelPath=".\Face\GetSurfaceDomain.rvt"/>
 			</testFixture>
 			<testFixture name="FamilyTests">
+				<test name="GetCurvesFromFamilyInstance" runDynamo="True" modelPath=".\Family\GetCurvesFromFamilyInstance.rfa"/>
 				<test name="GetFamilyInstancesByType" runDynamo="True" modelPath=".\Family\GetFamilyInstancesByType.rvt"/>
 				<test name="GetFamilyInstanceLocation" runDynamo="True" modelPath=".\Family\GetFamilyInstanceLocation.rvt"/>
 				<test name="CanLocateAdaptiveComponent" runDynamo="True" modelPath=".\Family\AC_locationStandAlone.rfa"/>
