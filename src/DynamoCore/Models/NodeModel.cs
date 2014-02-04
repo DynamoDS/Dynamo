@@ -1449,7 +1449,8 @@ namespace Dynamo.Models
                 return result[outPort];
 
             //Fetch the names of input ports.
-            List<string> portNames = InPortData.Select((x, i) => x.NickName + i).ToList();
+            List<string> portNames =
+                InPortData.Zip(Enumerable.Range(0, InPortData.Count), (x, i) => x.NickName + i).ToList();
 
             //Is this a partial application?
             bool partial = false;
@@ -1460,7 +1461,8 @@ namespace Dynamo.Models
             //For each index in InPortData
             foreach (
                 var data in
-                    portNames.Select((name, data) => new { Index = data, Name = name }))
+                    Enumerable.Range(0, InPortData.Count)
+                              .Zip(portNames, (data, name) => new { Index = data, Name = name }))
             {
                 Tuple<int, NodeModel> input;
 
@@ -1476,7 +1478,7 @@ namespace Dynamo.Models
                     connections.Add(
                         Tuple.Create(
                             data.Name,
-                            new ValueNode((FScheme.Value)(object)InPortData[data.Index].DefaultValue) as
+                            new ValueNode(InPortData[data.Index].DefaultValue as FScheme.Value) as
                                 INode));
                 }
                 else //othwise, remember that this is a partial application
