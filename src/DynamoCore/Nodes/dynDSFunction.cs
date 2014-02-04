@@ -239,7 +239,7 @@ namespace Dynamo.Nodes
             }
 
             RegisterAllPorts();
-            NickName = Definition.QualifiedName;
+            NickName = Definition.ShortQualifiedName;
         }
 
         /// <summary>

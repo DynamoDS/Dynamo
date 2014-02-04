@@ -172,6 +172,23 @@ namespace Dynamo.DSEngine
         }
 
         /// <summary>
+        /// Qualified name that doesn't contain namespace.
+        /// </summary>
+        public string ShortQualifiedName
+        {
+            get
+            {
+                if (FunctionType.GenericFunction == Type)
+                {
+                    return UserFriendlyName;
+                }
+                else
+                {
+                    return ClassName.Split('.').Last() + "." + Name;
+                }
+            }
+        }
+        /// <summary>
         /// A unique name to identify a function. It is necessary when a 
         /// function is overloaded.
         /// </summary>
