@@ -69,7 +69,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCoreTests", "..\test\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCoreUITests", "..\test\DynamoCoreUITests\DynamoCoreUITests.csproj", "{7DD8077A-201E-4C56-96C5-3C901A51BDF3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoPythonTests", "..\test\Libraries\DynamoPythonTests\DynamoPythonTests.csproj", "{773988FE-EDF6-45CB-A63F-482955EB3553}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronPythonTests", "..\test\Libraries\DynamoPythonTests\IronPythonTests.csproj", "{773988FE-EDF6-45CB-A63F-482955EB3553}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NodeServicesTest", "..\test\Libraries\NodeServicesTest\NodeServicesTest.csproj", "{1B8062D6-941C-4FF5-96FF-F1D6E0D92588}"
 EndProject
@@ -82,8 +82,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RevitServicesTests", "..\test\Libraries\Revit\RevitServicesTests\RevitServicesTests.csproj", "{AD0499ED-50D3-46F4-9FC9-3F71D88C4870}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronPythonEval", "Libraries\DSIronPython\IronPythonEval.csproj", "{9EEF4F42-6B3B-4358-9A8A-C2701539A822}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSIronPythonTests", "..\test\Libraries\DSIronPythonTests\DSIronPythonTests.csproj", "{BAFE1A51-1A85-4196-AE85-67788B9BAD52}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -609,20 +607,6 @@ Global
 		{9EEF4F42-6B3B-4358-9A8A-C2701539A822}.Release|Win32.ActiveCfg = Release|Any CPU
 		{9EEF4F42-6B3B-4358-9A8A-C2701539A822}.Release|x64.ActiveCfg = Release|Any CPU
 		{9EEF4F42-6B3B-4358-9A8A-C2701539A822}.Release|x86.ActiveCfg = Release|Any CPU
-		{BAFE1A51-1A85-4196-AE85-67788B9BAD52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BAFE1A51-1A85-4196-AE85-67788B9BAD52}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BAFE1A51-1A85-4196-AE85-67788B9BAD52}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{BAFE1A51-1A85-4196-AE85-67788B9BAD52}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{BAFE1A51-1A85-4196-AE85-67788B9BAD52}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{BAFE1A51-1A85-4196-AE85-67788B9BAD52}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{BAFE1A51-1A85-4196-AE85-67788B9BAD52}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{BAFE1A51-1A85-4196-AE85-67788B9BAD52}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BAFE1A51-1A85-4196-AE85-67788B9BAD52}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BAFE1A51-1A85-4196-AE85-67788B9BAD52}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{BAFE1A51-1A85-4196-AE85-67788B9BAD52}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{BAFE1A51-1A85-4196-AE85-67788B9BAD52}.Release|Win32.ActiveCfg = Release|Any CPU
-		{BAFE1A51-1A85-4196-AE85-67788B9BAD52}.Release|x64.ActiveCfg = Release|Any CPU
-		{BAFE1A51-1A85-4196-AE85-67788B9BAD52}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -656,7 +640,6 @@ Global
 		{773988FE-EDF6-45CB-A63F-482955EB3553} = {0E492D35-2310-4849-9694-A2A53C09F21B}
 		{1B8062D6-941C-4FF5-96FF-F1D6E0D92588} = {0E492D35-2310-4849-9694-A2A53C09F21B}
 		{E045D832-01AB-4761-A934-A597F0E8363F} = {0E492D35-2310-4849-9694-A2A53C09F21B}
-		{BAFE1A51-1A85-4196-AE85-67788B9BAD52} = {0E492D35-2310-4849-9694-A2A53C09F21B}
 		{9ADADC68-36A3-4A21-9B54-298154A88720} = {E045D832-01AB-4761-A934-A597F0E8363F}
 		{9E79DC8D-25B1-491F-B094-EA39DE1BBC66} = {E045D832-01AB-4761-A934-A597F0E8363F}
 		{AD0499ED-50D3-46F4-9FC9-3F71D88C4870} = {E045D832-01AB-4761-A934-A597F0E8363F}
