@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Web.UI;
 using Dynamo.Models;
 using GraphToDSCompiler;
 using ProtoCore;
@@ -301,21 +302,36 @@ namespace Dynamo.DSEngine
         private void _CompileToAstNodes(NodeModel node, List<AssociativeNode> resultList, bool isDeltaExecution)
         {
             var inputAstNodes = new List<AssociativeNode>();
-            foreach (var index in Enumerable.Range(0, node.InPortData.Count))
+
+            //Is this a partial application?
+            bool partial = false;
+
+            var partialSymList = new List<string>();
+
+            var portNamesAndIndices = node.InPortData.Select((x, i) => new { Name = x.NickName + i, Index = i }).ToList();
+            
+            foreach (var data in portNamesAndIndices)
             {
-                Tuple<int, NodeModel> inputTuple;
+                var index = data.Index;
 
                 AssociativeNode inputNode;
-                if (!node.TryGetInput(index, out inputTuple))
-                {
-                    inputNode = new NullNode(); 
-                    //TODO: partial functions
-                }
-                else
+
+                Tuple<int, NodeModel> inputTuple;
+                if (node.TryGetInput(index, out inputTuple))
                 {
                     int outputIndexOfInput = inputTuple.Item1;
                     NodeModel inputModel = inputTuple.Item2;
                     inputNode = inputModel.GetAstIdentifierForOutputIndex(outputIndexOfInput);
+                }
+                else if (node.InPorts[index].UsingDefaultValue)
+                {
+                    inputNode = node.InPortData[index].DefaultValue;
+                }
+                else
+                {
+                    partial = true;
+                    partialSymList.Add(data.Name);
+                    inputNode = AstFactory.BuildIdentifier(data.Name);
                 }
 
                 inputAstNodes.Add(inputNode);
@@ -333,12 +349,22 @@ namespace Dynamo.DSEngine
             }
 
             var astNodes = node.BuildAst(inputAstNodes);
-            if (astNodes != null && isDeltaExecution)
+            if (astNodes == null) return;
+
+            var resultAst = astNodes.ToList();
+
+            if (partial)
+            {
+                var funcBody = new CodeBlockNode();
+                funcBody.Body.AddRange(resultAst);
+            }
+
+            if (isDeltaExecution)
             {
                 OnAstNodeBuilt(node.GUID, astNodes);
             }
 
-            resultList.AddRange(astNodes ?? new AssociativeNode[0]);
+            resultList.AddRange(astNodes);
         }
 
         /// <summary>
@@ -410,7 +436,7 @@ namespace Dynamo.DSEngine
 
                 Signature = new ArgumentSignatureNode 
                 { 
-                    Arguments = parameters.Select(p => AstFactory.BuildParamNode(p)).ToList()
+                    Arguments = parameters.Select(AstFactory.BuildParamNode).ToList()
                 },
 
                 FunctionBody = functionBody,
