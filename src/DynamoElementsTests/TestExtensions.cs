@@ -21,8 +21,7 @@ namespace Dynamo.Tests
             return ws.Nodes.FirstOrDefault(node => node.GUID == guid);
         }
 
-        public static T NodeFromWorkspace<T>(this WorkspaceModel ws, Guid guid) 
-            where T : NodeModel
+        public static T NodeFromWorkspace<T>(this WorkspaceModel ws, Guid guid) where T : NodeModel
         {
             var nodeToT = NodeFromWorkspace(ws, guid);
             Assert.NotNull(nodeToT);
@@ -38,8 +37,7 @@ namespace Dynamo.Tests
             return ws.NodeFromWorkspace<T>(guid);
         }
 
-        public static T FirstNodeFromWorkspace<T>(this WorkspaceModel model)
-            where T : NodeModel
+        public static T FirstNodeFromWorkspace<T>(this WorkspaceModel model) where T : NodeModel
         {
             return model.Nodes.OfType<T>().FirstOrDefault();
         }
@@ -71,6 +69,13 @@ namespace Dynamo.Tests
             var o = (value as FScheme.Value.Container).Item;
             Assert.IsInstanceOf<T>(o);
             return (T)o;
+        }
+
+        public static dynamic UnwrapFSchemeValue(this FScheme.Value value)
+        {
+            return value.IsList
+                ? (value as FScheme.Value.List).Item.Select(UnwrapFSchemeValue).ToFSharpList()
+                : (value as dynamic).Item;
         }
     }
 }
