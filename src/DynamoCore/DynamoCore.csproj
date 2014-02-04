@@ -412,9 +412,9 @@ limitations under the License.
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DynamoUnits\DynamoUnits.csproj">
+    <ProjectReference Include="..\Libraries\DynamoUnits\Units.csproj">
       <Project>{6E0A079E-85F1-45A1-AD5B-9855E4344809}</Project>
-      <Name>DynamoUnits</Name>
+      <Name>Units</Name>
     </ProjectReference>
     <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
