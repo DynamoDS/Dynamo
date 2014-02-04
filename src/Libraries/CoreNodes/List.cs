@@ -29,14 +29,14 @@ namespace DSCore
         ///     Determines if the given list contains the given item.
         /// </summary>
         /// <param name="list">List to search in.</param>
-        /// <param name="thing">Item to look for.</param>
-        public static bool ContainsItem(IList list, object thing)
+        /// <param name="item">Item to look for.</param>
+        public static bool ContainsItem(IList list, object item)
         {
-            return list.Contains(thing);
+            return list.Contains(item);
         }
 
         /// <summary>
-        ///     Creates a new list containing the elements of the given list but in reverse order.
+        ///     Creates a new list containing the items of the given list but in reverse order.
         /// </summary>
         /// <param name="list">List to be reversed.</param>
         public static IList Reverse(IList list)
@@ -45,12 +45,12 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Creates a new list containing the given elements.
+        ///     Creates a new list containing the given items.
         /// </summary>
-        /// <param name="elements">Elements to be stored in the new list.</param>
-        public static IList Create(params object[] elements)
+        /// <param name="items">Items to be stored in the new list.</param>
+        public static IList Create(params object[] items)
         {
-            return elements.ToList();
+            return items.ToList();
         }
 
         /// <summary>
@@ -63,12 +63,12 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Sorts a list using a key projection. A projection is created for each element,
-        ///     and that value is used to order the original elements.
+        ///     Sorts a list using a key projection. A projection is created for each item,
+        ///     and that value is used to order the original items.
         /// </summary>
         /// <param name="list">List to be sorted.</param>
         /// <param name="keyProjector">
-        ///     Function that consumes an element from the list and produces an orderable value.
+        ///     Function that consumes an item from the list and produces an orderable value.
         /// </param>
         /// <returns></returns>
         public static IList SortByKey(IList list, Delegate keyProjector)
@@ -77,15 +77,15 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Sorts a list using a comparison function. Given two elements from the list, the comparison
-        ///     function determines which element should appear first in the sorted list.
+        ///     Sorts a list using a comparison function. Given two items from the list, the comparison
+        ///     function determines which item should appear first in the sorted list.
         /// </summary>
         /// <param name="list">List to be sorted.</param>
         /// <param name="comparison">
-        ///     Function that consumes two elements from the list and produces a value determining the order
-        ///     of the two elements as follows: a value less than zero if the first element should appear
+        ///     Function that consumes two items from the list and produces a value determining the order
+        ///     of the two items as follows: a value less than zero if the first item should appear
         ///     before the second, zero if the values are considered the same, and a value greater than
-        ///     zero if the second element should appear before the first.
+        ///     zero if the second item should appear before the first.
         /// </param>
         public static IList SortByComparison(IList list, Delegate comparison)
         {
@@ -105,12 +105,12 @@ namespace DSCore
 
         /// <summary>
         ///     Returns the minimum value from a list using a key projection. The minimum
-        ///     value is the element in the list that the key projection produces the smallest
+        ///     value is the item in the list that the key projection produces the smallest
         ///     value for.
         /// </summary>
         /// <param name="list">List to take the minimum value from.</param>
         /// <param name="keyProjector">
-        ///     Function that consumes an element from the list and produces an orderable value.
+        ///     Function that consumes an item from the list and produces an orderable value.
         /// </param>
         public static object MinimumItemByKey(IList list, Delegate keyProjector)
         {
@@ -144,12 +144,12 @@ namespace DSCore
 
         /// <summary>
         ///     Returns the maximum value from a list using a key projection. The maximum
-        ///     value is the element in the list that the key projection produces the largest
+        ///     value is the item in the list that the key projection produces the largest
         ///     value for.
         /// </summary>
         /// <param name="list">List to take the maximum value from.</param>
         /// <param name="keyProjector">
-        ///     Function that consumes an element from the list and produces an orderable value.
+        ///     Function that consumes an item from the list and produces an orderable value.
         /// </param>
         public static object MaximumItemByKey(IList list, Delegate keyProjector)
         {
@@ -173,12 +173,12 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Creates a new list containing all the elements of an old list for which
+        ///     Creates a new list containing all the items of an old list for which
         ///     the given predicate function returns True.
         /// </summary>
         /// <param name="list">List to be filtered.</param>
         /// <param name="predicate">
-        ///     Function to be applied to all elements in the list. All elements that make the
+        ///     Function to be applied to all items in the list. All items that make the
         ///     predicate produce True will be stored in the output list.
         /// </param>
         public static IList Filter(IList list, Delegate predicate)
@@ -188,12 +188,12 @@ namespace DSCore
 
         //TODO: This could be combined with Filter into a multi-output node
         /// <summary>
-        ///     Creates a new list containing all the elements of an old list for which
+        ///     Creates a new list containing all the items of an old list for which
         ///     the given predicate function returns False.
         /// </summary>
         /// <param name="list">List to be filtered.</param>
         /// <param name="predicate">
-        ///     Function to be applied to all elements in the list. All elements that make the
+        ///     Function to be applied to all items in the list. All items that make the
         ///     predicate produce False will be stored in the output list.
         /// </param>
         public static IList FilterOut(IList list, Delegate predicate)
@@ -212,8 +212,8 @@ namespace DSCore
         ///     empty, this will immediately be returned.
         /// </param>
         /// <param name="reducer">
-        ///     A function that consumes an element in the list and a reduction state. It must produce
-        ///     a new reduction state by combining the element with the current reduction state.
+        ///     A function that consumes an item in the list and a reduction state. It must produce
+        ///     a new reduction state by combining the item with the current reduction state.
         /// </param>
         public static TState Reduce<T, TState>(IEnumerable<T> list, TState seed, Func<T, TState, TState> reducer)
         {
@@ -221,11 +221,11 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Produces a new list by applying a projection function to each element of the input list(s) and
+        ///     Produces a new list by applying a projection function to each item of the input list(s) and
         ///     storing the result.
         /// </summary>
         /// <param name="projection">
-        ///     Function that consumes an element from each input list and produces a value that is stored
+        ///     Function that consumes an item from each input list and produces a value that is stored
         ///     in the output list.
         /// </param>
         /// <param name="lists">Lists to be combined/mapped into a new list.</param>
@@ -244,11 +244,11 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Produces a new list by applying a projection function to all combinations of elements from the
+        ///     Produces a new list by applying a projection function to all combinations of items from the
         ///     input lists and storing the result.
         /// </summary>
         /// <param name="projection">
-        ///     Function that consumes an element from each input list and produces a value that is stored
+        ///     Function that consumes an item from each input list and produces a value that is stored
         ///     in the output list.
         /// </param>
         /// <param name="lists">Lists to take the cartesion product of.</param>
@@ -263,10 +263,10 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Applies a function to each element of the input list(s). Does not accumulate results.
+        ///     Applies a function to each item of the input list(s). Does not accumulate results.
         /// </summary>
         /// <param name="action">
-        ///     Function that consumed an element from each input list. Return value is ignored.
+        ///     Function that consumed an item from each input list. Return value is ignored.
         /// </param>
         /// <param name="lists">Lists to be iterated over.</param>
         public static void ForEach(Function.MapDelegate action, params IEnumerable<object>[] lists)
@@ -288,10 +288,10 @@ namespace DSCore
 
         /// <summary>
         ///     Determines if the given predicate function returns True when applied to all of the
-        ///     elements in the given list.
+        ///     items in the given list.
         /// </summary>
         /// <param name="predicate">
-        ///     Function to be applied to all elements in the list, returns a boolean value.
+        ///     Function to be applied to all items in the list, returns a boolean value.
         /// </param>
         /// <param name="list">List to be tested.</param>
         public static bool TrueForAllItems(IList list, Delegate predicate)
@@ -301,10 +301,10 @@ namespace DSCore
 
         /// <summary>
         ///     Determines if the given predicate function returns True when applied to any of the
-        ///     elements in the given list.
+        ///     items in the given list.
         /// </summary>
         /// <param name="predicate">
-        ///     Function to be applied to all elements in the list, returns a boolean value.
+        ///     Function to be applied to all items in the list, returns a boolean value.
         /// </param>
         /// <param name="list">List to be tested.</param>
         public static bool TrueForAnyItems(IList list, Delegate predicate)
@@ -325,21 +325,21 @@ namespace DSCore
         /// <summary>
         ///     Produces a new list by adding an item to the beginning of a given list.
         /// </summary>
-        /// <param name="thing">Item to be added.</param>
+        /// <param name="item">Item to be added.</param>
         /// <param name="list">List to add on to.</param>
-        public static IList AddItemToFront(object thing, IList list)
+        public static IList AddItemToFront(object item, IList list)
         {
-            var newList = new ArrayList { thing };
+            var newList = new ArrayList { item };
             newList.AddRange(list);
             return newList;
         }
 
         /// <summary>
-        ///     Fetches the given amount of elements from the start of the given list.
+        ///     Fetches the given amount of items from the start of the given list.
         /// </summary>
         /// <param name="list">List to take from.</param>
         /// <param name="amount">
-        ///     Amount of elements to take. If negative, elements are taken from the end of the list.
+        ///     Amount of items to take. If negative, items are taken from the end of the list.
         /// </param>
         public static IList TakeItems(IList list, int amount)
         {
@@ -348,11 +348,11 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Removes the given amount of elements from the start of the given list.
+        ///     Removes the given amount of items from the start of the given list.
         /// </summary>
-        /// <param name="list">List to remove elements from.</param>
+        /// <param name="list">List to remove items from.</param>
         /// <param name="amount">
-        ///     Amount of elements to remove. If negative, elements are removed from the end of the list.
+        ///     Amount of items to remove. If negative, items are removed from the end of the list.
         /// </param>
         public static IList DropItems(IList list, int amount)
         {
@@ -380,24 +380,24 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Gets an element from the given list that's located at the specified index.
+        ///     Gets an item from the given list that's located at the specified index.
         /// </summary>
-        /// <param name="list">List to fetch an element from.</param>
-        /// <param name="index">Index of the element to be fetched.</param>
+        /// <param name="list">List to fetch an item from.</param>
+        /// <param name="index">Index of the item to be fetched.</param>
         public static object GetItemAtIndex(IList list, int index)
         {
             return list[index];
         }
 
         /// <summary>
-        ///     Gets a single sub-list from the given list, based on starting index, amount of elements
+        ///     Gets a single sub-list from the given list, based on starting index, amount of items
         ///     to take, and a step amount.
         /// </summary>
         /// <param name="list">List to take a slice of.</param>
         /// <param name="start">Index to start the slice from.</param>
-        /// <param name="count">Number of elements to take in the slice.</param>
+        /// <param name="count">Number of items to take in the slice.</param>
         /// <param name="step">
-        ///     Amount the indices of the elements are separate by in the original list.
+        ///     Amount the indices of the items are separate by in the original list.
         /// </param>
         public static IList Slice(IList list, int? start = null, int? count = null, int step = 1)
         {
@@ -456,20 +456,20 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Removes an element from the given list at the specified index.
+        ///     Removes an item from the given list at the specified index.
         /// </summary>
-        /// <param name="list">List to remove an element from.</param>
-        /// <param name="index">Index of the element to be removed.</param>
+        /// <param name="list">List to remove an item from.</param>
+        /// <param name="index">Index of the item to be removed.</param>
         public static IList RemoveItemAtIndex(IList list, int index)
         {
             return list.Cast<object>().Where((_, i) => i != index).ToList();
         }
 
         /// <summary>
-        ///     Removes elements from the given list at the specified indices.
+        ///     Removes items from the given list at the specified indices.
         /// </summary>
-        /// <param name="list">List to remove elements from.</param>
-        /// <param name="indices">Indices of the elements to be removed.</param>
+        /// <param name="list">List to remove items from.</param>
+        /// <param name="indices">Indices of the items to be removed.</param>
         public static IList RemoveItemsAtIndices(IList list, IList indices)
         {
             var idxs = new HashSet<int>(indices.Cast<int>());
@@ -477,13 +477,13 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Removes elements from the given list at indices that are multiples
+        ///     Removes items from the given list at indices that are multiples
         ///     of the given value, after the given offset.
         /// </summary>
-        /// <param name="list">List to remove elements from/</param>
+        /// <param name="list">List to remove items from/</param>
         /// <param name="n">Indices that are multiples of this argument will be removed.</param>
         /// <param name="offset">
-        ///     Amount of elements to be ignored from the start of the list.
+        ///     Amount of items to be ignored from the start of the list.
         /// </param>
         public static IList DropEveryNthItem(IList list, int n, int offset = 0)
         {
@@ -491,16 +491,16 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Fetches elements from the given list at indices that are multiples
+        ///     Fetches items from the given list at indices that are multiples
         ///     of the given value, after the given offset.
         /// </summary>
-        /// <param name="list">List to take elements from.</param>
+        /// <param name="list">List to take items from.</param>
         /// <param name="n">
         ///     Indices that are multiples of this number (after the offset)
         ///     will be fetched.
         /// </param>
         /// <param name="offset">
-        ///     Amount of elements to be ignored from the start of the list.
+        ///     Amount of items to be ignored from the start of the list.
         /// </param>
         public static IList TakeEveryNthItem(IList list, int n, int offset = 0)
         {
@@ -518,16 +518,16 @@ namespace DSCore
         /// <summary>
         ///     Determines if the given list is empty.
         /// </summary>
-        /// <param name="list">List to check for elements.</param>
+        /// <param name="list">List to check for items.</param>
         public static bool IsEmpty(IList list)
         {
             return list.Count == 0;
         }
 
         /// <summary>
-        ///     Gets the number of elements stored in the given list.
+        ///     Gets the number of items stored in the given list.
         /// </summary>
-        /// <param name="list">List to get the element count of.</param>
+        /// <param name="list">List to get the item count of.</param>
         public static int Count(IList list)
         {
             return list.Count;
@@ -565,7 +565,7 @@ namespace DSCore
 
         /// <summary>
         ///     Creates a list of lists out of an existing list with each sub-list containing
-        ///     the given amount of elements.
+        ///     the given amount of items.
         /// </summary>
         /// <param name="list">List to chop up.</param>
         /// <param name="subLength">Length of each new sub-list.</param>
@@ -719,11 +719,11 @@ namespace DSCore
         /// <summary>
         ///     Creates a list containing the given item the given number of times.
         /// </summary>
-        /// <param name="thing">The thing to repeat.</param>
+        /// <param name="item">The item to repeat.</param>
         /// <param name="amount">The number of times to repeat.</param>
-        public static IList OfRepeatedItem(object thing, int amount)
+        public static IList OfRepeatedItem(object item, int amount)
         {
-            return Enumerable.Repeat(thing, amount).ToList();
+            return Enumerable.Repeat(item, amount).ToList();
         }
 
         /// <summary>
@@ -776,7 +776,7 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Shuffles a list, randomizing the order of its elements.
+        ///     Shuffles a list, randomizing the order of its items.
         /// </summary>
         /// <param name="list">List to shuffle.</param>
         public static IList Shuffle(IList list)
@@ -787,7 +787,7 @@ namespace DSCore
 
         /// <summary>
         ///     Applies a key mapping function to each item in the given list, and produces
-        ///     a new list of lists where each sublist contains elements for which the key
+        ///     a new list of lists where each sublist contains items for which the key
         ///     mapping function produced the same result.
         /// </summary>
         /// <param name="list">List to group into sublists.</param>
