@@ -8,50 +8,44 @@ namespace DSCore
     /// </summary>
     public class Function
     {
-        private Function()
-        {
-        }
+        private Function() { }
 
         /// <summary>
-        /// Type of all functions that are used for Mapping operations.
-        /// </summary>
-        /// <param name="args">Variable number of arguments to be mapped/combined.</param>
-        /// <returns>Combined result of the input arguments.</returns>
-        public delegate object MapDelegate(params object[] args);
-
-        /// <summary>
-        /// Composes multiple single parameter functions into a one single parameter function.
+        ///     Composes multiple single parameter functions into a one single parameter function.
         /// </summary>
         /// <param name="funcs">Functions to be composed.</param>
-        public static Func<object, object> Compose(params Func<object, object>[] funcs)
+        public static Delegate Compose(params Delegate[] funcs)
         {
             if (!funcs.Any())
             {
                 throw new ArgumentException("Need at least one function to perform composition.");
             }
 
-            return funcs.Skip(1).Aggregate(funcs[0], (func, a) => x => func(a(x)));
+            return funcs.Skip(1)
+                        .Aggregate(
+                            funcs[0],
+                            (func, a) =>
+                                new Func<object, object>(
+                                    x => func.DynamicInvoke(a.DynamicInvoke(x))));
         }
 
         /// <summary>
-        /// Returns whatever is passed in.
+        ///     Returns whatever is passed in.
         /// </summary>
         /// <param name="x">Anything.</param>
-        /// <returns>The input.</returns>
         public static object Identity(object x)
         {
             return x;
         }
 
         /// <summary>
-        /// 
+        ///     Applies a function to arguments.
         /// </summary>
-        /// <param name="func"></param>
-        /// <param name="args"></param>
-        /// <returns></returns>
-        public static object Apply(MapDelegate func, params object[] args)
+        /// <param name="func">Function to apply.</param>
+        /// <param name="args">Arguments to be passed to function.</param>
+        public static object Apply(Delegate func, params object[] args)
         {
-            return func(args);
+            return func.DynamicInvoke(args);
         }
     }
 }

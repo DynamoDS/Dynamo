@@ -7,34 +7,17 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml;
 using DSCoreNodesUI;
+using DSIronPython;
 using Dynamo.Controls;
 using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.Utilities;
+using DynamoUtilities;
 using IronPython.Hosting;
 using ProtoCore.AST.AssociativeAST;
 
 namespace DSIronPythonNode
 {
-    public class IronPythonEvaluator
-    {
-        public static object EvaluateIronPythonScript(string code, IList names, IList values)
-        {
-            var engine = Python.CreateEngine();
-            var scope = engine.CreateScope();
-
-            var amt = Math.Min(names.Count, values.Count);
-
-            for (int i = 0; i < amt; i++)
-            {
-                scope.SetVariable((string)names[i], values[i]);
-            }
-
-            engine.CreateScriptSourceFromString(code).Execute(scope);
-
-            return scope.ContainsVariable("OUT") ? scope.GetVariable("OUT") : null;
-        }
-    }
-
     public abstract class PythonNodeBase : VariableInputNode
     {
         protected PythonNodeBase()
@@ -56,28 +39,35 @@ namespace DSIronPythonNode
             AssociativeNode codeInputNode, List<AssociativeNode> inputAstNodes,
             List<Tuple<string, AssociativeNode>> additionalBindings)
         {
-            var names = additionalBindings.Select(x => x.Item1).ToList();
-            names.Add("IN");
+            var names =
+                additionalBindings.Select(
+                    x => AstFactory.BuildStringNode(x.Item1) as AssociativeNode).ToList();
+            names.Add(AstFactory.BuildStringNode("IN"));
 
             var vals = additionalBindings.Select(x => x.Item2).ToList();
             vals.Add(AstFactory.BuildExprList(inputAstNodes));
 
+            Func<string, IList, IList, object> backendMethod =
+                IronPythonEvaluator.EvaluateIronPythonScript;
+
             return AstFactory.BuildAssignment(
                 GetAstIdentifierForOutputIndex(0),
                 AstFactory.BuildFunctionCall(
-                    "DSIronPythonNode.IronPythonEvaluator.EvaluateIronPythonScript",
+                    "DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript",//backendMethod.GetFullName(),
                     new List<AssociativeNode>
                     {
                         codeInputNode,
-                        AstFactory.BuildExprList(
-                            names.Select(x => AstFactory.BuildStringNode(x) as AssociativeNode)
-                                 .ToList()),
+                        AstFactory.BuildExprList(names),
                         AstFactory.BuildExprList(vals)
                     }));
         }
     }
 
+    [NodeName("Python Script")]
+    [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
+    [NodeDescription("Runs an embedded IronPython script")]
     [Browsable(false)]
+    [IsDesignScriptCompatible]
     public class PythonNode : PythonNodeBase
     {
         public PythonNode()
@@ -107,6 +97,8 @@ namespace DSIronPythonNode
 
         public override void SetupCustomUIElements(dynNodeView view)
         {
+            base.SetupCustomUIElements(view);
+
             var editWindowItem = new MenuItem { Header = "Edit...", IsCheckable = false };
             view.MainContextMenu.Items.Add(editWindowItem);
             editWindowItem.Click += delegate { EditScriptContent(); };
@@ -202,7 +194,11 @@ namespace DSIronPythonNode
         #endregion
     }
 
+    [NodeName("Python Script From String")]
+    [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
+    [NodeDescription("Runs a IronPython script from a string")]
     [Browsable(false)]
+    [IsDesignScriptCompatible]
     public class PythonStringNode : PythonNodeBase
     {
         public PythonStringNode()
