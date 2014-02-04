@@ -50,16 +50,6 @@
     <Reference Include="DynamoRaaS">
       <HintPath>..\..\extern\DynamoRaaS\DynamoRaaS.dll</HintPath>
     </Reference>
-    <Reference Include="FScheme, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\AnyCPU\Debug\FScheme.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="FSchemeInterop, Version=0.5.3.42660, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\AnyCPU\Debug\FSchemeInterop.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="FSharp.Core" />
     <Reference Include="GraphToDSCompiler, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
@@ -241,6 +231,14 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Legacy\FSchemeInterop\FSchemeInterop2012.csproj">
+      <Project>{126c6420-c7a2-43b0-8b08-206c6c4c1348}</Project>
+      <Name>FSchemeInterop2012</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Legacy\FScheme\FScheme.2012.fsproj">
+      <Project>{f0e5a3e5-bdd0-41ae-848e-ded9efc5fa7f}</Project>
+      <Name>FScheme.2012</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Libraries\CoreNodes\CoreNodes.csproj">
       <Project>{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}</Project>
       <Name>CoreNodes</Name>

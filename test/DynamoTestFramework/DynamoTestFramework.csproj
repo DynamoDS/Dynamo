@@ -39,11 +39,6 @@
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FSchemeInterop, Version=0.5.3.42660, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\AnyCPU\Debug\FSchemeInterop.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Microsoft.Practices.Prism, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
@@ -97,6 +92,10 @@
     <ProjectReference Include="..\..\src\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
       <Name>DynamoUtilities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Legacy\FSchemeInterop\FSchemeInterop2012.csproj">
+      <Project>{126c6420-c7a2-43b0-8b08-206c6c4c1348}</Project>
+      <Name>FSchemeInterop2012</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\Revit\RevitServices\RevitServices.csproj">
       <Project>{E4701F9E-41AB-4044-8166-85D924FEB632}</Project>

@@ -38,16 +38,6 @@
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FScheme, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\AnyCPU\Debug\FScheme.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="FSchemeInterop, Version=0.5.3.42660, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\AnyCPU\Debug\FSchemeInterop.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="FSharp.Core" />
     <Reference Include="GraphToDSCompiler, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
@@ -123,6 +113,14 @@
     <ProjectReference Include="..\..\src\DynamoCore\DynamoCore.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Legacy\FSchemeInterop\FSchemeInterop2012.csproj">
+      <Project>{126c6420-c7a2-43b0-8b08-206c6c4c1348}</Project>
+      <Name>FSchemeInterop2012</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Legacy\FScheme\FScheme.2012.fsproj">
+      <Project>{f0e5a3e5-bdd0-41ae-848e-ded9efc5fa7f}</Project>
+      <Name>FScheme.2012</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\DynamoUnits\Units.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
