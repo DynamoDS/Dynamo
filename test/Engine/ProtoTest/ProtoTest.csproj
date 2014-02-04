@@ -79,10 +79,9 @@
     <AssemblyOriginatorKeyFile>ProtoTest.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework">
+    <Reference Include="nunit.framework, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <Hintpath>$(NunitPath)</Hintpath>
-      <Private>True</Private>
+      <HintPath>..\..\..\extern\NUnit\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="ProtoInterface, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
