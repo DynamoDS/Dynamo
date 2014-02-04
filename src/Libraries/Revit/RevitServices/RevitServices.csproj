@@ -76,9 +76,9 @@ limitations under the License.
     <Compile Include="Transactions\TransactionManager.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\NodeServices\DSNodeServices.csproj">
+    <ProjectReference Include="..\..\..\NodeServices\NodeServices.csproj">
       <Project>{EF879A10-041D-4C68-83E7-3192685F1BAE}</Project>
-      <Name>DSNodeServices</Name>
+      <Name>NodeServices</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

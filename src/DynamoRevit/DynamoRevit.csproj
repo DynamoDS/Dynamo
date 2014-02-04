@@ -241,22 +241,22 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Libraries\CoreNodes\DSCoreNodes.csproj">
+    <ProjectReference Include="..\Libraries\CoreNodes\CoreNodes.csproj">
       <Project>{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}</Project>
-      <Name>DSCoreNodes</Name>
+      <Name>CoreNodes</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Libraries\Revit\RevitNodes\DSRevitNodes.csproj">
+    <ProjectReference Include="..\Libraries\Revit\RevitNodes\RevitNodes.csproj">
       <Project>{0BC2A611-BD0E-4FCC-A1DE-81F14ED369B2}</Project>
-      <Name>DSRevitNodes</Name>
+      <Name>RevitNodes</Name>
     </ProjectReference>
     <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoCore</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Libraries\DynamoUnits\DynamoUnits.csproj">
+    <ProjectReference Include="..\Libraries\DynamoUnits\Units.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
-      <Name>DynamoUnits</Name>
+      <Name>Units</Name>
     </ProjectReference>
     <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>

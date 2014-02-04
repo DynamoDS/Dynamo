@@ -140,9 +140,9 @@
     <Compile Include="References\PlaneReference.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\NodeServices\DSNodeServices.csproj">
+    <ProjectReference Include="..\..\..\NodeServices\NodeServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
-      <Name>DSNodeServices</Name>
+      <Name>NodeServices</Name>
     </ProjectReference>
     <ProjectReference Include="..\RevitServices\RevitServices.csproj">
       <Project>{E4701F9E-41AB-4044-8166-85D924FEB632}</Project>
