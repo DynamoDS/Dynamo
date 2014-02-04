@@ -49,9 +49,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Libraries\DSIronPython\IronPython.csproj">
+    <ProjectReference Include="..\..\..\src\Libraries\DSIronPython\IronPythonEval.csproj">
       <Project>{9eef4f42-6b3b-4358-9a8a-c2701539a822}</Project>
-      <Name>DSIronPython</Name>
+      <Name>IronPythonEval</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

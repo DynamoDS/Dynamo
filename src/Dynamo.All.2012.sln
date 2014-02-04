@@ -81,7 +81,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RevitNodesTests", "..\test\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RevitServicesTests", "..\test\Libraries\Revit\RevitServicesTests\RevitServicesTests.csproj", "{AD0499ED-50D3-46F4-9FC9-3F71D88C4870}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronPython", "Libraries\DSIronPython\IronPython.csproj", "{9EEF4F42-6B3B-4358-9A8A-C2701539A822}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronPythonEval", "Libraries\DSIronPython\IronPythonEval.csproj", "{9EEF4F42-6B3B-4358-9A8A-C2701539A822}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSIronPythonTests", "..\test\Libraries\DSIronPythonTests\DSIronPythonTests.csproj", "{BAFE1A51-1A85-4196-AE85-67788B9BAD52}"
 EndProject

@@ -79,6 +79,10 @@
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
       <Name>DynamoUtilities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DSIronPython\IronPythonEval.csproj">
+      <Project>{9eef4f42-6b3b-4358-9a8a-c2701539a822}</Project>
+      <Name>IronPythonEval</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\class.png" />

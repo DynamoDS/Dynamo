@@ -7,7 +7,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml;
 using DSCoreNodesUI;
-using DSIronPython;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -48,7 +47,7 @@ namespace DSIronPythonNode
             vals.Add(AstFactory.BuildExprList(inputAstNodes));
 
             Func<string, IList, IList, object> backendMethod =
-                IronPythonEvaluator.EvaluateIronPythonScript;
+                DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript;
 
             return AstFactory.BuildAssignment(
                 GetAstIdentifierForOutputIndex(0),
