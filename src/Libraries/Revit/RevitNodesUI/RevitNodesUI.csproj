@@ -63,9 +63,9 @@
     <Compile Include="SelectionHelper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\CoreNodesUI\DSCoreNodesUI.csproj">
+    <ProjectReference Include="..\..\CoreNodesUI\CoreNodesUI.csproj">
       <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
-      <Name>DSCoreNodesUI</Name>
+      <Name>CoreNodesUI</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>

@@ -23,29 +23,29 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtoScript", "Engine\Proto
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{FA7BE306-A3B0-45FA-9D87-0C69E6932C13}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSCoreNodes", "Libraries\CoreNodes\DSCoreNodes.csproj", "{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreNodes", "Libraries\CoreNodes\CoreNodes.csproj", "{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSCoreNodesUI", "Libraries\CoreNodesUI\DSCoreNodesUI.csproj", "{D8262D40-4880-41E4-91E4-AF8F480C8637}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreNodesUI", "Libraries\CoreNodesUI\CoreNodesUI.csproj", "{D8262D40-4880-41E4-91E4-AF8F480C8637}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoArduino", "Libraries\DynamoArduino\DynamoArduino.csproj", "{9589D7A5-12BE-446B-BBFF-B8C4951EDB13}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arduino", "Libraries\DynamoArduino\Arduino.csproj", "{9589D7A5-12BE-446B-BBFF-B8C4951EDB13}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoPython", "Libraries\DynamoPython\DynamoPython.csproj", "{2B0F2800-6F62-4869-9074-088C5F6DCCA2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Python", "Libraries\DynamoPython\Python.csproj", "{2B0F2800-6F62-4869-9074-088C5F6DCCA2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoUnits", "Libraries\DynamoUnits\DynamoUnits.csproj", "{6E0A079E-85F1-45A1-AD5B-9855E4344809}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Units", "Libraries\DynamoUnits\Units.csproj", "{6E0A079E-85F1-45A1-AD5B-9855E4344809}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoWatch3D", "Libraries\DynamoWatch3D\DynamoWatch3D.csproj", "{B9E338CA-6677-4772-B01D-1FCEABCDAAAB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Watch3D", "Libraries\DynamoWatch3D\Watch3D.csproj", "{B9E338CA-6677-4772-B01D-1FCEABCDAAAB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSIronPythonUI", "Libraries\IronPython\DSIronPythonUI.csproj", "{01DE9B06-0BCB-4D8A-862E-E8170F5D6B4F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronPythonUI", "Libraries\IronPython\IronPythonUI.csproj", "{01DE9B06-0BCB-4D8A-862E-E8170F5D6B4F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Revit", "Revit", "{96E47237-FF0E-4724-B2BA-62E5E57E2D32}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSRevitNodes", "Libraries\Revit\RevitNodes\DSRevitNodes.csproj", "{0BC2A611-BD0E-4FCC-A1DE-81F14ED369B2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RevitNodes", "Libraries\Revit\RevitNodes\RevitNodes.csproj", "{0BC2A611-BD0E-4FCC-A1DE-81F14ED369B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSRevitNodesUI", "Libraries\Revit\RevitNodesUI\DSRevitNodesUI.csproj", "{75940ACC-3708-4526-8D91-7E3365BAF682}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RevitNodesUI", "Libraries\Revit\RevitNodesUI\RevitNodesUI.csproj", "{75940ACC-3708-4526-8D91-7E3365BAF682}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RevitServices", "Libraries\Revit\RevitServices\RevitServices.csproj", "{E4701F9E-41AB-4044-8166-85D924FEB632}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSNodeServices", "NodeServices\DSNodeServices.csproj", "{EF879A10-041D-4C68-83E7-3192685F1BAE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NodeServices", "NodeServices\NodeServices.csproj", "{EF879A10-041D-4C68-83E7-3192685F1BAE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoUtilities", "DynamoUtilities\DynamoUtilities.csproj", "{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}"
 EndProject
