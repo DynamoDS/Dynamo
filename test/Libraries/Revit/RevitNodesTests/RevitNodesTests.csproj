@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets">
-    <Import Project="$(SolutionDir)Dynamo.CS.props" />
+    <Import Project="$(SolutionDir)Config/CS.props" />
   </ImportGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -37,10 +37,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DSCoreNodes, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\AnyCPU\Debug\DSCoreNodes.dll</HintPath>
-    </Reference>
     <Reference Include="DynamoCore, Version=0.6.3.28673, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\bin\AnyCPU\Debug\DynamoCore.dll</HintPath>
@@ -119,23 +115,27 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DSCoreNodesUI\DSCoreNodesUI.csproj">
+    <ProjectReference Include="..\..\..\..\src\Libraries\CoreNodesUI\CoreNodesUI.csproj">
       <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
-      <Name>DSCoreNodesUI</Name>
+      <Name>CoreNodesUI</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DSRevitNodesUI\DSRevitNodesUI.csproj">
+    <ProjectReference Include="..\..\..\..\src\Libraries\CoreNodes\CoreNodes.csproj">
+      <Project>{87550b2b-6cb8-461e-8965-dfafe3aafb5c}</Project>
+      <Name>CoreNodes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\src\Libraries\Revit\RevitNodesUI\RevitNodesUI.csproj">
       <Project>{75940acc-3708-4526-8d91-7e3365baf682}</Project>
-      <Name>DSRevitNodesUI</Name>
+      <Name>RevitNodesUI</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DSRevitNodes\DSRevitNodes.csproj">
+    <ProjectReference Include="..\..\..\..\src\Libraries\Revit\RevitNodes\RevitNodes.csproj">
       <Project>{0bc2a611-bd0e-4fcc-a1de-81f14ed369b2}</Project>
-      <Name>DSRevitNodes</Name>
+      <Name>RevitNodes</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DynamoTestFramework\DynamoTestFramework.csproj">
+    <ProjectReference Include="..\..\..\DynamoTestFramework\DynamoTestFramework.csproj">
       <Project>{745cca0f-549e-4756-a31e-41bf7f905b8a}</Project>
       <Name>DynamoTestFramework</Name>
     </ProjectReference>
-    <ProjectReference Include="..\RevitServices\RevitServices.csproj">
+    <ProjectReference Include="..\..\..\..\src\Libraries\Revit\RevitServices\RevitServices.csproj">
       <Project>{e4701f9e-41ab-4044-8166-85d924feb632}</Project>
       <Name>RevitServices</Name>
     </ProjectReference>
