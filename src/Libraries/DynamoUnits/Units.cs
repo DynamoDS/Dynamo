@@ -203,6 +203,8 @@ namespace Dynamo.Units
         private static double cubic_meters_to_cubic_inches = 61023.744095;
         private static double cubic_meters_to_cubic_feet = 35.3147;
 
+        private static double epsilon = 1e-6;
+
         internal double _value;
 
         public static double ToMillimeter
@@ -268,6 +270,11 @@ namespace Dynamo.Units
         public static double ToCubicFoot
         {
             get { return cubic_meters_to_cubic_feet; }
+        }
+
+        public static double Epsilon
+        {
+            get { return epsilon; }
         }
 
         /// <summary>
@@ -451,7 +458,7 @@ namespace Dynamo.Units
     /// <summary>
     /// A length stored as meters.
     /// </summary>
-    public class Length : SIUnit, IComparable
+    public class Length : SIUnit, IComparable, IEquatable<Length>
     {
         public Length(double value):base(value){}
 
@@ -598,6 +605,14 @@ namespace Dynamo.Units
             _value = total;
         }
 
+        public bool Equals(Length other)
+        {
+            if (Math.Abs(other.Value - _value) < SIUnit.Epsilon)
+                return true;
+ 
+            return false;
+        }
+
         public override string ToString()
         {
             return BuildString(UnitsManager.Instance.LengthUnit);
@@ -655,7 +670,7 @@ namespace Dynamo.Units
     /// <summary>
     /// An area stored as square meters.
     /// </summary>
-    public class Area : SIUnit, IComparable
+    public class Area : SIUnit, IComparable, IEquatable<Area>
     {
         public Area():base(0.0){}
 
@@ -813,6 +828,14 @@ namespace Dynamo.Units
             _value = total;
         }
 
+        public bool Equals(Area other)
+        {
+            if (Math.Abs(other.Value - _value) < SIUnit.Epsilon)
+                return true;
+ 
+            return false;
+        }
+
         public override string ToString()
         {
             return BuildString(UnitsManager.Instance.AreaUnit);
@@ -865,7 +888,7 @@ namespace Dynamo.Units
     /// <summary>
     /// A volume stored as cubic meters.
     /// </summary>
-    public class Volume : SIUnit, IComparable
+    public class Volume : SIUnit, IComparable, IEquatable<Volume>
     {
         public Volume():base(0.0){}
 
@@ -1012,6 +1035,14 @@ namespace Dynamo.Units
             total += cu_ft / ToCubicFoot;
 
             _value = total;
+        }
+
+        public bool Equals(Volume other)
+        {
+            if (Math.Abs(other.Value - _value) < SIUnit.Epsilon)
+                return true;
+ 
+            return false;
         }
 
         public override string ToString()

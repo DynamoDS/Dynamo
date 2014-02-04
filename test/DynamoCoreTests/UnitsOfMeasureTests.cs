@@ -461,6 +461,18 @@ namespace Dynamo.Tests
             Assert.Throws<UnitsException>(() => { var test = area % length; });
             Assert.Throws<UnitsException>(() => { var test = volume % area; });
             Assert.Throws<UnitsException>(() => { var test = volume % length; });
+
+            //ensure that when a formula is unit + double it returns a unit
+            //and when it is double + unit, it returns a double
+            
+            Assert.AreEqual(new Length(length.Value + 2.0), length + 2.0);
+            Assert.AreEqual(4.0, 2.0 + length);
+            
+            Assert.AreEqual(new Area(area.Value + 2.0), area + 2.0);
+            Assert.AreEqual(4.0, 2.0 + area);
+            
+            Assert.AreEqual(new Volume(volume.Value + 2.0), volume + 2.0);
+            Assert.AreEqual(4.0, 2.0 + volume);
         }
 
         [Test]
