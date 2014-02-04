@@ -7,6 +7,7 @@ using Dynamo.FSchemeInterop;
 using System.Windows.Media;
 using System.Xml;
 using Dynamo.Utilities;
+using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Models
 {
@@ -299,14 +300,14 @@ namespace Dynamo.Models
         public string NickName { get; set; }
         public string ToolTipString { get; set; }
         public Type PortType { get; set; }
-        public object DefaultValue { get; set; }
+        public AssociativeNode DefaultValue { get; set; }
         public double VerticalMargin { get; set; }
 
         public PortData(string nickName, string tip)
             : this(nickName, tip, typeof(FScheme.Value.Container), null)
         { }
 
-        public PortData(string nickName, string tip, Type portType, object defaultValue=null)
+        public PortData(string nickName, string tip, Type portType, AssociativeNode defaultValue=null)
         {
             NickName = nickName;
             ToolTipString = tip;
