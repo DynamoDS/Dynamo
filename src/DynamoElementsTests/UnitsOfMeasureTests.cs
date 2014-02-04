@@ -243,10 +243,16 @@ namespace Dynamo.Tests
             Assert.AreEqual("1/8\"", length.ToString(DynamoLengthUnit.FractionalFoot));
 
             length.Value = 0.301752; //.99ft
-            Assert.AreEqual("11 57/64\"", length.ToString(DynamoLengthUnit.FractionalFoot));
+            Assert.AreEqual("11 29/32\"", length.ToString(DynamoLengthUnit.FractionalFoot));
 
             length.Value = 0.3044952; //.999ft
             Assert.AreEqual("1'", length.ToString(DynamoLengthUnit.FractionalFoot));
+
+            length.Value = 0.35560000000142239; //1'2"
+            Assert.AreEqual("1' 2\"", length.ToString(DynamoLengthUnit.FractionalFoot));
+
+            length.Value = -0.35560000000142239; //-1'2"
+            Assert.AreEqual("-1' 2\"", length.ToString(DynamoLengthUnit.FractionalFoot));
         }
 
         [Test]

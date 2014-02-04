@@ -1295,7 +1295,7 @@ namespace Dynamo.Units
 
         public static string ToFractionalInches(double decimalInches)
         {
-            decimalInches = RoundToSignificantDigits(decimalInches, 5);
+            decimalInches = RoundToSignificantDigits(decimalInches, 3);
 
             string inches = Utils.ParseWholeInchesToString(decimalInches);
             string fraction = Utils.ParsePartialInchesToString(decimalInches, 0.015625);
