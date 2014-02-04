@@ -86,20 +86,20 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
+    <ProjectReference Include="..\..\src\DynamoCore\DynamoCore.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoCore</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DynamoRevit\DynamoRevit.csproj">
+    <ProjectReference Include="..\..\src\DynamoRevit\DynamoRevit.csproj">
       <Project>{FD56AE51-739E-4893-8DE4-925D60C7097C}</Project>
       <Name>DynamoRevit</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
+    <ProjectReference Include="..\..\src\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
       <Name>DynamoUtilities</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Libraries\Revit\RevitServices\RevitServices.csproj">
+    <ProjectReference Include="..\..\src\Libraries\Revit\RevitServices\RevitServices.csproj">
       <Project>{E4701F9E-41AB-4044-8166-85D924FEB632}</Project>
       <Name>RevitServices</Name>
     </ProjectReference>

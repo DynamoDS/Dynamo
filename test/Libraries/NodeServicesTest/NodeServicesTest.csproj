@@ -48,9 +48,9 @@
     <Compile Include="TraceUtilsTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DSNodeServices\DSNodeServices.csproj">
-      <Project>{EF879A10-041D-4C68-83E7-3192685F1BAE}</Project>
-      <Name>DSNodeServices</Name>
+    <ProjectReference Include="..\..\..\src\NodeServices\NodeServices.csproj">
+      <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
+      <Name>NodeServices</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
