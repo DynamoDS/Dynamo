@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using DSIronPythonNode;
 using Dynamo;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -24,7 +25,7 @@ namespace Dynamo.Tests
             model.Open(examplePath);
 
             // get the python node
-            var pynode = model.CurrentWorkspace.Nodes.OfType<Python>().First();
+            var pynode = model.CurrentWorkspace.Nodes.OfType<PythonNode>().First();
             Assert.NotNull(pynode);
 
             // make changes to python script
@@ -43,7 +44,7 @@ namespace Dynamo.Tests
             model.Open(examplePath);
 
             // get the python node
-            var pynode = model.CurrentWorkspace.Nodes.OfType<Python>().First();
+            var pynode = model.CurrentWorkspace.Nodes.OfType<PythonNode>().First();
             Assert.NotNull(pynode);
 
             // save original script
@@ -78,7 +79,7 @@ namespace Dynamo.Tests
             model.Open(examplePath);
 
             // get the python node
-            var pynode = model.CurrentWorkspace.Nodes.OfType<PythonVarIn>().First();
+            var pynode = model.CurrentWorkspace.Nodes.OfType<PythonNode>().First();
             Assert.NotNull(pynode);
 
             // make changes to python script
@@ -97,7 +98,7 @@ namespace Dynamo.Tests
             model.Open(examplePath);
 
             // get the python node
-            var pynode = model.CurrentWorkspace.Nodes.OfType<PythonVarIn>().First();
+            var pynode = model.CurrentWorkspace.Nodes.OfType<PythonNode>().First();
             Assert.NotNull(pynode);
 
             // save original script
