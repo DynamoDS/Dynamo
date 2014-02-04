@@ -242,6 +242,23 @@ namespace Dynamo.DSEngine
             }
         }
 
+        /// <summary>
+        /// QualifiedName with leading namespaces removed.
+        /// </summary>
+        public string DisplayName
+        {
+            get
+            {
+                if (FunctionType.GenericFunction == Type)
+                    return UserFriendlyName;
+
+                var idx = ClassName.LastIndexOf('.');
+                return idx < 0
+                    ? QualifiedName
+                    : string.Format("{0}.{1}", ClassName.Substring(idx + 1), Name);
+            }
+        }
+
         public override bool Equals(object obj)
         {
             if (null == obj || GetType() != obj.GetType())
