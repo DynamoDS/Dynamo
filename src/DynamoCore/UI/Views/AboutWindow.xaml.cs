@@ -36,7 +36,7 @@ namespace Dynamo.UI.Views
 
             string executingAssemblyPathName = System.Reflection.Assembly.GetExecutingAssembly().Location;
             string rootModuleDirectory = System.IO.Path.GetDirectoryName(executingAssemblyPathName);
-            eulaFilePath = System.IO.Path.Combine(rootModuleDirectory, "DesignScriptLauncher.exe");
+            eulaFilePath = System.IO.Path.Combine(rootModuleDirectory, "License.txt");
             if (!File.Exists(eulaFilePath))
                 ViewLicenseTextBlock.Visibility = System.Windows.Visibility.Collapsed;
         }
