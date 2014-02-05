@@ -207,6 +207,20 @@ namespace Dynamo.Nodes
             helper.SetAttribute("name", Definition.MangledName);
         }
 
+        private bool HasUnconnectedInput()
+        {
+            return !Enumerable.Range(0, InPortData.Count)
+                              .All(x => this.HasConnectedInput(x));
+        }
+
+        private List<AssociativeNode> GetConnectedInputs()
+        {
+            return Enumerable.Range(0, InPortData.Count)
+                             .Where(x => this.HasConnectedInput(x))
+                             .Select(x => new IntNode(x.ToString()) as AssociativeNode)
+                             .ToList();
+        }
+
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
             string function = Definition.Name;
@@ -277,7 +291,28 @@ namespace Dynamo.Nodes
                     break;
 
                 default:
-                    rhs = AstFactory.BuildFunctionCall(function, inputAstNodes);
+                    if (HasUnconnectedInput())
+                    {
+                        // _SingleFunctionObject(foo, 3, {0, 2}, {x, null, y}); 
+                        var functionNode = new IdentifierNode(function);
+                        var paramNumNode = new IntNode(Definition.Parameters.Count().ToString());
+                        var positionNode = AstFactory.BuildExprList(GetConnectedInputs());
+                        var arguments = AstFactory.BuildExprList(inputAstNodes);
+
+                        var inputNodes = new List<AssociativeNode>()
+                         {
+                             functionNode,
+                             paramNumNode,
+                             positionNode,
+                             arguments
+                         };
+
+                        rhs = AstFactory.BuildFunctionCall("_SingleFunctionObject", inputNodes);
+                    }
+                    else
+                    {
+                        rhs = AstFactory.BuildFunctionCall(function, inputAstNodes);
+                    }
                     break;
             }
 
