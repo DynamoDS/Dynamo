@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
@@ -194,6 +195,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand SetAreaUnitCommand { get; set; }
         public DelegateCommand SetVolumeUnitCommand { get; set; }
         public DelegateCommand ShowAboutWindowCommand { get; set; }
+        public DelegateCommand CheckForUpdateCommand { get; set; }
 
         /// <summary>
         /// An observable collection of workspace view models which tracks the model
@@ -569,6 +571,7 @@ namespace Dynamo.ViewModels
             SetAreaUnitCommand = new DelegateCommand(SetAreaUnit, CanSetAreaUnit);
             SetVolumeUnitCommand = new DelegateCommand(SetVolumeUnit, CanSetVolumeUnit);
             ShowAboutWindowCommand = new DelegateCommand(ShowAboutWindow, CanShowAboutWindow);
+            CheckForUpdateCommand = new DelegateCommand(CheckForUpdate, CanCheckForUpdate);
 
             DynamoLogger.Instance.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Instance_PropertyChanged);
 
@@ -1547,6 +1550,30 @@ namespace Dynamo.ViewModels
         {
             OnRequestAboutWindow(_aboutWindowViewModel);
         }
+
+        private bool CanCheckForUpdate(object obj)
+        {
+            //check internet connectivity
+            //http://stackoverflow.com/questions/2031824/what-is-the-best-way-to-check-for-internet-connectivity-using-net
+            try
+            {
+                using (var client = new WebClient())
+                using (var stream = client.OpenRead("http://www.google.com"))
+                {
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private void CheckForUpdate(object obj)
+        {
+            UpdateManager.UpdateManager.Instance.CheckForProductUpdate();
+        }
+
 
         #region IWatchViewModel interface
 
