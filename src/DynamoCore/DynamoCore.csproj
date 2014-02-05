@@ -201,7 +201,6 @@ limitations under the License.
     <Compile Include="UpdateManager\UpdateManager.cs" />
     <Compile Include="Utilities\CursorLibrary.cs" />
     <Compile Include="Utilities\XmlHelper.cs" />
-    <Compile Include="ViewModels\AboutWindowViewModel.cs" />
     <Compile Include="ViewModels\EndlessGridViewModel.cs" />
     <Compile Include="ViewModels\InfoBubbleViewModel.cs" />
     <Compile Include="ViewModels\Watch3DFullscreenViewModel.cs" />
