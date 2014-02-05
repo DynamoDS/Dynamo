@@ -576,5 +576,12 @@ namespace Dynamo.Tests
             AssertPreviewValue("aa78716b-f3f6-4676-bb72-2cb1c34181f8", 3);
             AssertValue("a", new int[] { 3, 2, 3 });
         }
+
+        [Test]
+        public void UsingFunctionObject01()
+        {
+            RunModel(@"core\dsevaluation\FunctionObject.dyn");
+            AssertValue("r", 45);
+        }
     }
 }
