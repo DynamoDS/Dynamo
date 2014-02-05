@@ -870,25 +870,6 @@ namespace DSCore
             return initial;
         }
 
-        private static IEnumerable<IEnumerable<T>> GetPermutations<T>(
-            IEnumerable<T> items, int count)
-        {
-            int i = 0;
-            foreach (var item in items)
-            {
-                if (count == 1)
-                    yield return Singleton(item);
-                else
-                {
-                    var perms = GetPermutations(items.Take(i).Concat(items.Skip(i + 1)), count - 1);
-                    foreach (var result in perms)
-                        yield return Singleton(item).Concat(result);
-                }
-
-                ++i;
-            }
-        }
-
         /// <summary>
         ///     Produces all permutations of the given length of a given list.
         /// </summary>
@@ -900,6 +881,30 @@ namespace DSCore
                 GetPermutations(list.Cast<object>(), length ?? list.Count)
                     .Select(x => x.ToList())
                     .ToList();
+        }
+
+        /// <summary>
+        ///     Produces all combination of the given length of a given list.
+        /// </summary>
+        /// <param name="list">List to generate combinations of.</param>
+        /// <param name="length">Length of each combination.</param>
+        /// <param name="replace">
+        ///     Whether or not items are removed once selected for combination, defaults
+        ///     to false.
+        /// </param>
+        public static IList Combinations(IList list, int length, bool replace = false)
+        {
+            return
+                GetCombinations(list.Cast<object>(), length, replace)
+                    .Select(x => x.ToList())
+                    .ToList();
+        }
+
+        #region Combinatorics Helpers
+
+        private static IEnumerable<T> Singleton<T>(T t)
+        {
+            yield return t;
         }
 
         private static IEnumerable<IEnumerable<T>> GetCombinations<T>(
@@ -920,27 +925,26 @@ namespace DSCore
             }
         }
 
-        /// <summary>
-        ///     Produces all combination of the given length of a given list.
-        /// </summary>
-        /// <param name="list">List to generate combinations of.</param>
-        /// <param name="length">Length of each combination.</param>
-        /// <param name="replace">
-        ///     Whether or not items are removed once selected for combination, defaults
-        ///     to false.
-        /// </param>
-        public static IList Combinations(IList list, int length, bool replace = false)
+        private static IEnumerable<IEnumerable<T>> GetPermutations<T>(
+            IEnumerable<T> items, int count)
         {
-            return
-                GetCombinations(list.Cast<object>(), length, replace)
-                    .Select(x => x.ToList())
-                    .ToList();
+            int i = 0;
+            foreach (var item in items)
+            {
+                if (count == 1)
+                    yield return Singleton(item);
+                else
+                {
+                    var perms = GetPermutations(items.Take(i).Concat(items.Skip(i + 1)), count - 1);
+                    foreach (var result in perms)
+                        yield return Singleton(item).Concat(result);
+                }
+
+                ++i;
+            }
         }
 
-        private static IEnumerable<T> Singleton<T>(T t)
-        {
-            yield return t;
-        } 
+        #endregion
     }
 
 
