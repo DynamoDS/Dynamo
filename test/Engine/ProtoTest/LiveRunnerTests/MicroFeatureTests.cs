@@ -2693,5 +2693,27 @@ z=Point.ByCoordinates(y,a,a);
                 AssertValue("y", 6);
             }
         }
+
+        [Test]
+        public void TestFunctionObjectInApply()
+        {
+            GraphToDSCompiler.GraphUtilities.Reset();
+            GraphToDSCompiler.GraphUtilities.PreloadAssembly(new List<string> { "FunctionObject.ds" });
+            astLiveRunner = new ProtoScript.Runners.LiveRunner();
+            astLiveRunner.ResetVMAndResyncGraph(new List<string> { "FunctionObject.ds" });
+            string code = @"
+ def foo(x,y ) { return = x + y; }
+ f = _SingleFunctionObject(foo, 2, {1}, {null, 42}); r = Apply(f, 3);
+ ";
+
+            Guid guid = System.Guid.NewGuid();
+            List<Subtree> added = new List<Subtree>();
+            {
+                added.Add(CreateSubTreeFromCode(guid, code));
+                var syncData = new GraphSyncData(null, added, null);
+                astLiveRunner.UpdateGraph(syncData);
+                AssertValue("r", 45);
+            }
+        }
     }
 }
