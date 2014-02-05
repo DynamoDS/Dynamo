@@ -1,15 +1,14 @@
 ﻿<Window
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     x:Class="Dynamo.UI.Views.AboutWindow"
     xmlns:local="clr-namespace:Dynamo.UI.Views"
     xmlns:ui="clr-namespace:Dynamo.UI"
     SizeToContent="WidthAndHeight"
     x:Name="Dynamo" Title="About Dynamo"
     WindowStartupLocation="CenterOwner"
-    WindowStyle="SingleBorderWindow" Background="#444444" TextBlock.Foreground="#e6e6e6"
+    WindowStyle="SingleBorderWindow" Background="#F0F0F0" TextBlock.Foreground="Black"
     ResizeMode="NoResize">
 
     <Window.Resources>
@@ -43,12 +42,12 @@
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Vertical">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock HorizontalAlignment="Left" Margin="0,0,0,1"><Hyperlink Click="OnClickLink" Foreground="#e6e6e6">Visit Dynamo website</Hyperlink></TextBlock>
+                    <TextBlock HorizontalAlignment="Left" Margin="0,0,0,1"><Hyperlink Click="OnClickLink" Foreground="Black">Visit Dynamo website</Hyperlink></TextBlock>
                     <TextBlock Margin="5,0">|</TextBlock>
-                    <TextBlock x:Name="ViewLicenseTextBlock" HorizontalAlignment="Left" Margin="0,0,0,1"><Hyperlink Click="OnViewLicense" Foreground="#e6e6e6">View license agreement</Hyperlink></TextBlock>
+                    <TextBlock x:Name="ViewLicenseTextBlock" HorizontalAlignment="Left" Margin="0,0,0,1"><Hyperlink Click="OnViewLicense" Foreground="Black">View license agreement</Hyperlink></TextBlock>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="0,8,0,8">
-                    <TextBox Name ="VersionNumber" Background="Transparent" Foreground="#e6e6e6" BorderThickness="0" 
+                    <TextBox Name ="VersionNumber" Background="Transparent" Foreground="Black" BorderThickness="0" 
                              FontSize="13.333" FontWeight="Bold" Margin="0,0,8,0" Text="{Binding Version, Mode=OneWay}" 
                              PreviewMouseDown="OnPreviewMouseDown"
                              IsReadOnly="True" IsReadOnlyCaretVisible="False"></TextBox>
