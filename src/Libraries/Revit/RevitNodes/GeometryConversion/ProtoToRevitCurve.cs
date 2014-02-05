@@ -41,9 +41,9 @@ namespace Revit.GeometryConversion
             }
 
             // presumably checking if the curve is circular is quite expensive, we don't do it
-            return Autodesk.Revit.DB.NurbSpline.Create(crv.ControlVertices.ToXyzs(),
-                Enumerable.Repeat( 1.0, crv.ControlVertices.Count() ).ToList(),
-                crv.Knots.ToList(),
+            return Autodesk.Revit.DB.NurbSpline.Create(crv.GetControlVertices().ToXyzs(),
+               Enumerable.Repeat(1.0, crv.GetControlVertices().Count()).ToList(),
+                crv.GetKnots(),
                 crv.Degree,
                 crv.IsClosed,
                 false);
@@ -84,8 +84,8 @@ namespace Revit.GeometryConversion
             var p025 = circ.PointAtParameter(0.25);
             var p05 = circ.PointAtParameter(0.5);
 
-            var xaxis = p0.DirectionTo(p05).Normalize();
-            var yaxis = p025.DirectionTo(p075).Normalize();
+            var xaxis = Vector.ByTwoPoints(p0, p05).Normalized();
+            var yaxis = Vector.ByTwoPoints(p025, p075).Normalized();
 
             return Autodesk.Revit.DB.Arc.Create(circ.CenterPoint.ToXyz(), circ.Radius, 0, 2*Math.PI, xaxis.ToXyz(),
                 yaxis.ToXyz());
@@ -94,8 +94,9 @@ namespace Revit.GeometryConversion
             //var xaxis = circ.ContextCoordinateSystem.XAxis;
             //var yaxis = circ.ContextCoordinateSystem.YAxis;
             //var plane = new Autodesk.Revit.DB.Plane(xaxis.ToXyz(), yaxis.ToXyz(), center.ToXyz());
-
-            return Autodesk.Revit.DB.Arc.Create(circ.FirstPoint.ToXyz(), circ.SecondPoint.ToXyz(), circ.ThirdPoint.ToXyz());
+            return Autodesk.Revit.DB.Arc.Create(circ.PointAtParameter(0.0).ToXyz(),
+                circ.PointAtParameter(0.5).ToXyz(), circ.PointAtParameter(1.0).ToXyz());
+            
             //return Autodesk.Revit.DB.Arc.Create(plane, circ.Radius, 0, 2*System.Math.PI);
         }
 
