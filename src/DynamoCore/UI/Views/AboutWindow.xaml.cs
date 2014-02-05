@@ -15,7 +15,7 @@ namespace Dynamo.UI.Views
         bool ignoreClose = false;
         DynamoLogger logger = null;
 
-        public AboutWindow(DynamoLogger logger, AboutWindowViewModel model)
+        public AboutWindow(DynamoLogger logger, DynamoViewModel model)
         {
             InitializeComponent();
             this.logger = logger;
