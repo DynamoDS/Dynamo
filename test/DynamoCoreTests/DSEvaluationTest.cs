@@ -583,5 +583,12 @@ namespace Dynamo.Tests
             RunModel(@"core\dsevaluation\FunctionObject.dyn");
             AssertValue("r", 45);
         }
+
+        [Test]
+        public void UsingFunctionObject02()
+        {
+            RunModel(@"core\dsevaluation\Apply.dyn");
+            AssertPreviewValue("11b2c7b2-2854-4e46-a8fa-4d1d52ebf4b7", 20);
+        }
     }
 }
