@@ -15,8 +15,12 @@ using Value = Dynamo.FScheme.Value;
 
 namespace Dynamo.Nodes
 {
+    /// <summary>
+    /// Creates a Revit topography instance from a list of points
+    /// </summary>
+    /// <search>topography,topo,points,pts</search>
     [NodeName("Topography From Points")]
-    [NodeSearchTags("topography","topo","points")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_DOCUMENT)]
     class TopographyFromPoints:RevitTransactionNodeWithOneOutput
     {
         public TopographyFromPoints()
@@ -128,8 +132,12 @@ namespace Dynamo.Nodes
         }
     }
 
+    /// <summary>
+    /// Extracts a list of points from a Revit topography instance.
+    /// </summary>
+    /// <search>topography,topo,points,pts</search>
     [NodeName("Points from Topography")]
-    [NodeSearchTags("topography", "points")]
+    [NodeCategory(BuiltinNodeCategories.REVIT_DOCUMENT)]
     class PointsFromTopography : NodeWithOneOutput
     {
         public PointsFromTopography()
