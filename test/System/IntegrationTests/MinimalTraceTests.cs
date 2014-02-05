@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using DSNodeTarget;
+using FFITarget;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
 using ProtoTestFx.TD;
@@ -70,7 +70,7 @@ namespace IntegrationTests
         public void ExecTraceVMClassVerifyCleanThread()
         {
             var mirror = thisTest.RunScriptSource(
-@"import(""DSNodeTarget.dll"");
+@"import(""FFITarget.dll"");
 a = MinimalTracedClass.MinimalTracedClass();
 b = a.WasCreatedWithTrace();
 "
@@ -83,7 +83,7 @@ b = a.WasCreatedWithTrace();
         public void ExecTraceVMClassVerifyTLSCleared()
         {
             var mirror = thisTest.RunScriptSource(
-@"import(""DSNodeTarget.dll"");
+@"import(""FFITarget.dll"");
 mtcA = MinimalTracedClass.MinimalTracedClass();
 cleanA = mtcA.WasCreatedWithTrace();
 
