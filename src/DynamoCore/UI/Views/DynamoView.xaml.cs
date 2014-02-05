@@ -17,6 +17,7 @@ using Dynamo.PackageManager.UI;
 using Dynamo.Search;
 using Dynamo.Selection;
 using Dynamo.UI;
+using Dynamo.UI.Views;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using String = System.String;
@@ -142,6 +143,14 @@ namespace Dynamo.Controls
             redoButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/redo_disabled.png";
             redoButton.ImgHoverSource = "/DynamoCore;component/UI/Images/redo_hover.png";
 
+            ShortcutBarItem updateButton = new ShortcutBarItem();
+            //redoButton.ShortcutToolTip = "Update [Ctrl + ]";
+            updateButton.ShortcutCommand = viewModel.CheckForUpdateCommand;
+            updateButton.ShortcutCommandParameter = null;
+            updateButton.ImgNormalSource = "/DynamoCore;component/UI/Images/Update/update_static.png";
+            updateButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/Update/update_static.png";
+            updateButton.ImgHoverSource = "/DynamoCore;component/UI/Images/Update/update.png";
+
             // PLACEHOLDER FOR FUTURE SHORTCUTS
             //ShortcutBarItem runButton = new ShortcutBarItem();
             //runButton.ShortcutToolTip = "Run [Ctrl + R]";
@@ -158,6 +167,7 @@ namespace Dynamo.Controls
             shortcutBar.ShortcutBarItems.Add(redoButton);
             //shortcutBar.ShortcutBarItems.Add(runButton);            
 
+            shortcutBar.ShortcutBarRightSideItems.Add(updateButton);
             shortcutBar.ShortcutBarRightSideItems.Add(screenShotButton);
 
             shortcutBarGrid.Children.Add(shortcutBar);
@@ -211,8 +221,26 @@ namespace Dynamo.Controls
 
             dynSettings.Controller.ClipBoard.CollectionChanged += ClipBoard_CollectionChanged;
 
+            //ABOUT WINDOW
+            _vm.RequestAboutWindow += _vm_RequestAboutWindow;
+
             // Kick start the automation run, if possible.
             _vm.BeginCommandPlayback(this);
+        }
+
+        private UI.Views.AboutWindow _aboutWindow;
+        void _vm_RequestAboutWindow(AboutWindowViewModel model)
+        {
+            if (_aboutWindow == null)
+            {
+                _aboutWindow = new AboutWindow(DynamoLogger.Instance, model);
+                _aboutWindow.Closed += (sender, args) => _aboutWindow = null;
+                _aboutWindow.Show();
+
+                if (_aboutWindow.IsLoaded && this.IsLoaded) _aboutWindow.Owner = this;
+            }
+
+            _aboutWindow.Focus();
         }
 
         private PackageManagerPublishView _pubPkgView;
