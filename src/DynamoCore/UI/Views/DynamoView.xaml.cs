@@ -138,13 +138,15 @@ namespace Dynamo.Controls
             redoButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/redo_disabled.png";
             redoButton.ImgHoverSource = "/DynamoCore;component/UI/Images/redo_hover.png";
 
+            /*
             ShortcutBarItem updateButton = new ShortcutBarItem();
             //redoButton.ShortcutToolTip = "Update [Ctrl + ]";
             updateButton.ShortcutCommand = _vm.CheckForUpdateCommand;
             updateButton.ShortcutCommandParameter = null;
             updateButton.ImgNormalSource = "/DynamoCore;component/UI/Images/Update/update_static.png";
             updateButton.ImgDisabledSource = "/DynamoCore;component/UI/Images/Update/update_static.png";
-            updateButton.ImgHoverSource = "/DynamoCore;component/UI/Images/Update/update.png";
+            updateButton.ImgHoverSource = "/DynamoCore;component/UI/Images/Update/update_static.png";
+            */
 
             // PLACEHOLDER FOR FUTURE SHORTCUTS
             //ShortcutBarItem runButton = new ShortcutBarItem();
@@ -162,7 +164,7 @@ namespace Dynamo.Controls
             shortcutBar.ShortcutBarItems.Add(redoButton);
             //shortcutBar.ShortcutBarItems.Add(runButton);            
 
-            shortcutBar.ShortcutBarRightSideItems.Add(updateButton);
+            //shortcutBar.ShortcutBarRightSideItems.Add(updateButton);
             shortcutBar.ShortcutBarRightSideItems.Add(screenShotButton);
 
             shortcutBarGrid.Children.Add(shortcutBar);
@@ -225,7 +227,7 @@ namespace Dynamo.Controls
         }
 
         private UI.Views.AboutWindow _aboutWindow;
-        void _vm_RequestAboutWindow(AboutWindowViewModel model)
+        void _vm_RequestAboutWindow(DynamoViewModel model)
         {
             if (_aboutWindow == null)
             {

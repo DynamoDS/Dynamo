@@ -2,7 +2,9 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:DynamoCore.UI.Controls"
+             xmlns:ui="clr-namespace:Dynamo.UI"
              mc:Ignorable="d"
              Height="Auto"
              Width="Auto"
@@ -13,14 +15,19 @@
             BorderThickness="0,0,0,1">
 
         <Border.Resources>
-            <ResourceDictionary Source="/DynamoCore;component/UI/Themes/ToolbarStyleDictionary.xaml" />
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <ResourceDictionary Source="/DynamoCore;component/UI/Themes/ToolbarStyleDictionary.xaml" />
+                    <ui:SharedResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoConverters.xaml"/>
+                </ResourceDictionary.MergedDictionaries>
+            </ResourceDictionary>
         </Border.Resources>
 
         <Border Margin="11 0 0 0"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Center">
             <Grid>
-            <ItemsControl x:Name="ShortcutItemsControl"
+                <ItemsControl x:Name="ShortcutItemsControl"
                               ItemsSource="{Binding ElementName='MenuUserControl', Path=ShortcutBarItems}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -65,7 +72,7 @@
                 </ItemsControl.ItemTemplate>
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <StackPanel x:Name="ShortcutBar" Orientation="Horizontal" />
+                        <StackPanel x:Name="ShortcutBarLeft" Orientation="Horizontal" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
             </ItemsControl>
@@ -115,10 +122,14 @@
                     </ItemsControl.ItemTemplate>
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <StackPanel x:Name="ShortcutBar" Orientation="Horizontal" HorizontalAlignment="Right"/>
+                            <StackPanel x:Name="ShortcutBarRight" Orientation="Horizontal" HorizontalAlignment="Right"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                 </ItemsControl>
+                
+                <controls:GraphUpdateNotificationControl HorizontalAlignment="Right" 
+                                                         Margin="0,0,50,0" 
+                                                         Visibility="{Binding Path=DataContext.UpToDate, RelativeSource={RelativeSource AncestorType={x:Type Window}}, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"/>
             </Grid>
         </Border>
     </Border>
