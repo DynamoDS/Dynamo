@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace DSNodeTarget
+namespace FFITarget
 {
     public class MinimalTracedClass
     {
