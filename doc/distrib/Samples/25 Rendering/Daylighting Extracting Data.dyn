@@ -1,4 +1,4 @@
-<Workspace Version="0.6.3.5248" X="-1116.93936114657" Y="-1525.96799657458" zoom="1.20930851743544" Description="" Category="" Name="Home">
+<Workspace Version="0.6.3.30451" X="241.714967038339" Y="21.265853405833" zoom="0.411967636620457" Description="" Category="" Name="Home">
   <Elements>
     <Dynamo.Nodes.CloudDaylightingJob type="Dynamo.Nodes.CloudDaylightingJob" guid="ba2a8d00-8782-4e59-bb68-791312445255" nickname="Cloud Daylighting Job" x="589.789054966447" y="266.345207636633" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
     <Dynamo.Nodes.CloudRender type="Dynamo.Nodes.CloudRender" guid="d0174e82-9635-4f35-920a-3abbb3f2aeb3" nickname="Cloud Render" x="797.526619675957" y="267.80989001778" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
@@ -27,7 +27,7 @@
       <System.Double value="40" />
     </Dynamo.Nodes.DoubleInput>
     <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="f4694565-2de4-4097-baa5-7e1c1228d0e6" nickname="Number" x="554.022791138979" y="1270.3573278135" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.Double value="40" />
+      <System.Double value="-71" />
     </Dynamo.Nodes.DoubleInput>
     <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="f41155c8-8a4e-4964-973f-fad3623b2d44" nickname="String" x="179.860669143498" y="115.937665300108" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.String value="{3D}" />
@@ -158,6 +158,12 @@ OUT = index</Script>
     <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="7fe17ff7-3766-43f3-9995-bfab0bd0d305" nickname="First of List" x="1856.50005448911" y="708.480995216015" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="cb9ae65a-d32b-4f77-a5ff-c38f58e2ffa8" nickname="Get from List" x="2049.8074324967" y="1105.74079035863" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="0e561c3e-a059-4486-adda-831a6038087e" nickname="Get from List" x="1879.2088679092" y="1617.05579254437" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="0198cbed-7e69-4292-bf1d-b7ffafbb0717" nickname="Number" x="208.965435605795" y="1258.6502676598" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="-5" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="6d086b5f-1b94-4fff-8724-1014deb28538" nickname="Number" x="193.403010058863" y="1179.84186483693" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="12" />
+    </Dynamo.Nodes.DoubleInput>
   </Elements>
   <Connectors>
     <Dynamo.Models.ConnectorModel start="ba2a8d00-8782-4e59-bb68-791312445255" start_index="0" end="d0174e82-9635-4f35-920a-3abbb3f2aeb3" end_index="1" portType="0" />
@@ -217,6 +223,8 @@ OUT = index</Script>
     <Dynamo.Models.ConnectorModel start="c4e1cc78-d600-4f6f-9c59-eb21288b3104" start_index="0" end="68c48c15-aee8-4235-8d26-1a2d6f61834f" end_index="1" portType="0" />
     <Dynamo.Models.ConnectorModel start="7fe17ff7-3766-43f3-9995-bfab0bd0d305" start_index="0" end="cb9ae65a-d32b-4f77-a5ff-c38f58e2ffa8" end_index="1" portType="0" />
     <Dynamo.Models.ConnectorModel start="7fe17ff7-3766-43f3-9995-bfab0bd0d305" start_index="0" end="0e561c3e-a059-4486-adda-831a6038087e" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0198cbed-7e69-4292-bf1d-b7ffafbb0717" start_index="0" end="c959d59c-8ee7-48bf-aac1-bbdca7fbe38d" end_index="6" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6d086b5f-1b94-4fff-8724-1014deb28538" start_index="0" end="c959d59c-8ee7-48bf-aac1-bbdca7fbe38d" end_index="3" portType="0" />
   </Connectors>
   <Notes>
     <Dynamo.Models.NoteModel text="Number Of Columns" x="1874.54458768206" y="875.78020848321" />
@@ -228,5 +236,6 @@ OUT = index</Script>
     <Dynamo.Models.NoteModel text="use the exact position of an xyz in world coordinates to find an illumiance value by using the index of the XYZ in a list of sampling positons" x="1445.70345193117" y="1541.95755541562" />
     <Dynamo.Models.NoteModel text="use that index on the list of illuminance values" x="1827.06698629768" y="1573.53441921684" />
     <Dynamo.Models.NoteModel text="again we need to extract the first list of xyz positons because the render returns a list of grids ( if we had supplied multiple render jobs)" x="1354.22335590308" y="1394.24697806734" />
+    <Dynamo.Models.NoteModel text="when hitting run render will upload and take a few minutes to return - run button will grey out - check the console for progress" x="-327.481381321897" y="172.434377406125" />
   </Notes>
 </Workspace>
