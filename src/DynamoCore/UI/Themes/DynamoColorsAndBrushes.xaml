@@ -69,4 +69,8 @@
         </LinearGradientBrush.GradientStops>
     </LinearGradientBrush>
     
+    <!--Update Manager-->
+    <SolidColorBrush x:Key="UpdateManagerUpdateAvailableBrush" Color="OrangeRed"/>
+    <SolidColorBrush x:Key="UpdateManagerUpToDateBrush" Color="Green"/>
+    
 </ResourceDictionary>
