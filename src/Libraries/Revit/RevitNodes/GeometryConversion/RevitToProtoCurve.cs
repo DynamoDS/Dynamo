@@ -47,7 +47,7 @@ namespace Revit.GeometryConversion
         /// <returns></returns>
         private static Autodesk.DesignScript.Geometry.NurbsCurve Convert(Autodesk.Revit.DB.HermiteSpline crv)
         {
-            return NurbsCurve.ByPoints(crv.ControlPoints.Select(x => x.ToPoint()).ToArray(),
+            return NurbsCurve.ByPointsTangents(crv.ControlPoints.Select(x => x.ToPoint()).ToArray(),
                 crv.Tangents.First().ToVector(), crv.Tangents.Last().ToVector());
         }
 
@@ -69,7 +69,7 @@ namespace Revit.GeometryConversion
         /// <returns></returns>
         private static Autodesk.DesignScript.Geometry.Arc Convert(Autodesk.Revit.DB.Arc crv)
         {
-            return Arc.ByPointsOnCurve(crv.get_EndPoint(0).ToPoint(), crv.get_EndPoint(1).ToPoint(), crv.Evaluate(0.5, true).ToPoint());
+            return Arc.ByThreePoints(crv.get_EndPoint(0).ToPoint(), crv.get_EndPoint(1).ToPoint(), crv.Evaluate(0.5, true).ToPoint());
         }
 
         /// <summary>

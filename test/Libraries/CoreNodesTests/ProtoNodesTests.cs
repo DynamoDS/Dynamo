@@ -33,7 +33,7 @@ namespace DSCoreNodesTests
             var crv0 = NurbsCurve.ByControlVertices(points0);
             var crv1 = NurbsCurve.ByControlVertices(points1);
 
-            var srf = Surface.LoftFromCrossSections(new[] { crv0, crv1 });
+            var srf = Surface.ByLoft(new[] { crv0, crv1 });
             Assert.NotNull(srf);
 
             Console.WriteLine(srf.PointAtParameter(0.5,0.5));
