@@ -1,0 +1,7 @@
+<Workspace Version="0.6.3.18640" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="5dad688a-e6f3-4153-b87e-d1713b645de9" nickname="Code Block" x="50" y="259" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="def add(x,y) { return = x + y;}&#xA;fo = _SingleFunctionObject(add, 2, {1}, {null, 42});&#xA;r = Apply(fo, 3);" ShouldFocus="false" />
+  </Elements>
+  <Connectors />
+  <Notes />
+</Workspace>

@@ -309,7 +309,6 @@ namespace Dynamo.DSEngine
                 if (!node.TryGetInput(index, out inputTuple))
                 {
                     inputNode = new NullNode(); 
-                    //TODO: partial functions
                 }
                 else
                 {

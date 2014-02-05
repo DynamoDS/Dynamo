@@ -44,7 +44,6 @@ namespace Dynamo.Tests.UI
         [TearDown]
         public void Exit()
         {
-            this.controller.ShutDown(false);
             this.controller = null;
         }
 
