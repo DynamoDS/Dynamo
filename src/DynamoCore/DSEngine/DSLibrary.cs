@@ -450,7 +450,7 @@ namespace Dynamo.DSEngine
         private static LibraryServices _libraryServices = null; // new LibraryServices();
         private LibraryServices()
         {
-            GraphUtilities.PreloadAssembly(_libraries);
+            PreloadLibraries();
 
             PopulateBuiltIns();
             PopulateOperators();
@@ -465,10 +465,9 @@ namespace Dynamo.DSEngine
         {
             _importedFunctionGroups.Clear();
             _builtinFunctionGroups.Clear();
-            _libraries = new List<string> { "Math.dll", "ProtoGeometry.dll", "DSCoreNodes.dll" };
 
-            GraphUtilities.Reset();
-            GraphUtilities.PreloadAssembly(_libraries);
+            PreloadLibraries();
+
             PopulateBuiltIns();
             PopulateOperators();
             PopulatePreloadLibraries();
@@ -485,7 +484,22 @@ namespace Dynamo.DSEngine
             }
         }
 
-        private List<string> _libraries = new List<string> { "Math.dll", "ProtoGeometry.dll", "DSCoreNodes.dll" } ;
+        private void PreloadLibraries()
+        {
+            GraphUtilities.Reset();
+
+            _libraries = new List<string>
+            {
+                "Math.dll",
+                "ProtoGeometry.dll",
+                "DSCoreNodes.dll",
+                "FunctionObject.ds"
+            };
+
+            GraphUtilities.PreloadAssembly(_libraries);
+        }
+
+        private List<string> _libraries;
         private readonly Dictionary<string, Dictionary<string, FunctionGroup>> _importedFunctionGroups = new Dictionary<string, Dictionary<string, FunctionGroup>>(new LibraryPathComparer());
         private Dictionary<string, FunctionGroup> _builtinFunctionGroups = new Dictionary<string, FunctionGroup>();
 
