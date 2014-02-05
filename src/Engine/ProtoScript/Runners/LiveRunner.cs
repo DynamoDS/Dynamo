@@ -157,6 +157,8 @@ namespace ProtoScript.Runners
         private Options executionOptions = null;
         private bool syncCoreConfigurations = false;
         private int deltaSymbols = 0;
+        private bool isPreloadingLibraries = false;
+        private int codeBlockCount = 0;
         private ProtoCore.CompileTime.Context staticContext = null;
 
         private Dictionary<System.Guid, Subtree> currentSubTreeList = null;
@@ -744,7 +746,29 @@ namespace ProtoScript.Runners
         /// </summary>
         private void RetainVMStatesForDeltaExecution()
         {
-            runnerCore.CompleteCodeBlockList.Clear();
+            var cblist = runnerCore.CompleteCodeBlockList;
+
+            if (isPreloadingLibraries)
+            {
+                codeBlockCount = cblist.Count;
+            }
+            else
+            {
+                // In normal delta execution. Need to remove extra code blocks
+                // that added in this execution.
+                if (codeBlockCount > 0)
+                {
+                    int count = cblist.Count - codeBlockCount;
+                    if (count > 0)
+                    {
+                        cblist.RemoveRange(codeBlockCount, count);
+                    }
+                }
+                else
+                {
+                    cblist.Clear();
+                }
+            }
         }
 
         /// <summary>
@@ -932,7 +956,9 @@ namespace ProtoScript.Runners
             ProtoCore.CodeGenDS codeGen = new ProtoCore.CodeGenDS(importNodes);
             string code = codeGen.GenerateCode();
 
+            isPreloadingLibraries = true;
             UpdateCmdLineInterpreter(code);
+            isPreloadingLibraries = false;
         }
 
         /// <summary>
