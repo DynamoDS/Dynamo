@@ -16,6 +16,7 @@ using Dynamo.ViewModels;
 using Dynamo.PackageManager;
 using System.Windows.Controls;
 using Dynamo.Core;
+using ProtoCore.AST.ImperativeAST;
 
 namespace Dynamo.Controls
 {
@@ -1166,6 +1167,7 @@ namespace Dynamo.Controls
             throw new NotImplementedException();
         }
     }
+
     public sealed class WarningLevelToColorConverter:IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -1310,6 +1312,44 @@ namespace Dynamo.Controls
             }
             measure.SetValueFromString(value.ToString());
             return measure.Value;
+        }
+    }
+
+    public class IsUpToDateToTextConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if ((bool) value == false)
+            {
+                var latest = UpdateManager.UpdateManager.Instance.AvailableVersion;
+                return string.Format("[Latest vesion: {0}]", latest);
+            }
+
+            return "[Up-to-date]";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class IsUpToDateBrushConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            SolidColorBrush brush;
+
+            brush = (bool) value ? 
+                (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["UpdateManagerUpToDateBrush"] : 
+                (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["UpdateManagerUpdateAvailableBrush"];
+            
+            return brush;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
         }
     }
 }

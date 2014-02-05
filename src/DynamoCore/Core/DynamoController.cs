@@ -277,8 +277,8 @@ namespace Dynamo
 
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrations));
 
-            var updateManager = UpdateManager.UpdateManager.CreateInstance(DynamoLogger.Instance);
-            //updateManager.CheckForProductUpdate();
+            var updateManager = UpdateManager.UpdateManager.Instance;
+            updateManager.CheckForProductUpdate();
             updateManager.UpdateDownloaded += updateManager_UpdateDownloaded;
             updateManager.ShutdownRequested += updateManager_ShutdownRequested;
         }
