@@ -69,16 +69,6 @@ limitations under the License.
     <Reference Include="DesignScriptStudio.Renderer">
       <HintPath>..\..\extern\DSSRenderer\DesignScriptStudio.Renderer.dll</HintPath>
     </Reference>
-    <Reference Include="FScheme, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\AnyCPU\Debug\FScheme.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="FSchemeInterop, Version=0.5.3.42660, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\AnyCPU\Debug\FSchemeInterop.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="FSharp.Core" />
     <Reference Include="Greg, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -417,6 +407,14 @@ limitations under the License.
       <Project>{a4794476-7d0e-41c0-ad83-4ab929c0a46c}</Project>
       <Name>ProtoScript</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Legacy\FSchemeInterop\FSchemeInterop2012.csproj">
+      <Project>{126c6420-c7a2-43b0-8b08-206c6c4c1348}</Project>
+      <Name>FSchemeInterop2012</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Legacy\FScheme\FScheme.2012.fsproj">
+      <Project>{f0e5a3e5-bdd0-41ae-848e-ded9efc5fa7f}</Project>
+      <Name>FScheme.2012</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Libraries\DynamoUnits\Units.csproj">
       <Project>{6E0A079E-85F1-45A1-AD5B-9855E4344809}</Project>
       <Name>Units</Name>
@@ -685,8 +683,7 @@ limitations under the License.
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y "$(SolutionDir)..\extern\DesignScript\*" "$(OutputPath)"
-mkdir "$(OutputPath)\dll"
+    <PostBuildEvent>mkdir "$(OutputPath)\dll"
 copy /Y "$(SolutionDir)..\extern\LibG\x64\Release\*" "$(OutputPath)\dll"
 </PostBuildEvent>
   </PropertyGroup>

@@ -39,9 +39,6 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="ProtoCore">
-      <HintPath>..\..\..\..\bin\AnyCPU\Debug\int\Debug\ProtoCore.dll</HintPath>
-    </Reference>
     <Reference Include="RevitAPI">
       <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit Architecture 2014\Program\RevitAPI.dll</HintPath>
     </Reference>
@@ -61,6 +58,10 @@
     <Compile Include="SelectionHelper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Engine\ProtoCore\ProtoCore.csproj">
+      <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
+      <Name>ProtoCore</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\CoreNodesUI\CoreNodesUI.csproj">
       <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
       <Name>CoreNodesUI</Name>
