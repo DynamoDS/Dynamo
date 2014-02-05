@@ -683,8 +683,7 @@ limitations under the License.
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y "$(SolutionDir)..\extern\DesignScript\*" "$(OutputPath)"
-mkdir "$(OutputPath)\dll"
+    <PostBuildEvent>mkdir "$(OutputPath)\dll"
 copy /Y "$(SolutionDir)..\extern\LibG\x64\Release\*" "$(OutputPath)\dll"
 </PostBuildEvent>
   </PropertyGroup>
