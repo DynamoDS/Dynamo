@@ -333,6 +333,7 @@
                         <MenuItem Header="_Report A Bug" Command="{Binding ReportABugCommand}"  Name="bugCommand" Focusable="False"/>
                         <MenuItem Header="_Go To Project Website" Command="{Binding GoToSourceCodeCommand}"  Name="sourceCode" Focusable="False"/>
                         <MenuItem Header="_Go To Project Wiki" Command="{Binding GoToWikiCommand}"  Name="wiki" Focusable="False"/>
+                        <MenuItem Header="_About..." Command="{Binding ShowAboutWindowCommand}" Focusable="False" />
                     </MenuItem>
                     
                 </Menu>

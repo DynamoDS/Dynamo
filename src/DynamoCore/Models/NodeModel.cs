@@ -953,7 +953,7 @@ namespace Dynamo.Models
 
             InnerEvaluationDelegate evaluation = delegate
             {
-                FScheme.Value expr = null;
+                Value expr = Value.NewContainer(null);
 
                 try
                 {

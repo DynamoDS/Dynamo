@@ -17,6 +17,7 @@ using Dynamo.PackageManager.UI;
 using Dynamo.Search;
 using Dynamo.Selection;
 using Dynamo.UI;
+using Dynamo.UI.Views;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using String = System.String;
@@ -204,8 +205,26 @@ namespace Dynamo.Controls
 
             dynSettings.Controller.ClipBoard.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(ClipBoard_CollectionChanged);
 
+            //ABOUT WINDOW
+            _vm.RequestAboutWindow += _vm_RequestAboutWindow;
+
             // Kick start the automation run, if possible.
             _vm.BeginCommandPlayback(this);
+        }
+
+        private UI.Views.AboutWindow _aboutWindow;
+        void _vm_RequestAboutWindow(AboutWindowViewModel model)
+        {
+            if (_aboutWindow == null)
+            {
+                _aboutWindow = new AboutWindow(DynamoLogger.Instance, model);
+                _aboutWindow.Closed += (sender, args) => _aboutWindow = null;
+                _aboutWindow.Show();
+
+                if (_aboutWindow.IsLoaded && this.IsLoaded) _aboutWindow.Owner = this;
+            }
+
+            _aboutWindow.Focus();
         }
 
         private PackageManagerPublishView _pubPkgView;
