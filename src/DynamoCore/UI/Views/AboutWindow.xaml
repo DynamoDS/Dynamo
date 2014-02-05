@@ -28,9 +28,7 @@
             <RowDefinition Height="63*"></RowDefinition>
             <RowDefinition Height="142*"/>
         </Grid.RowDefinitions>
-        <!--<Image Grid.Row="0" Source="/DynamoCore;component/UI/Images/AboutWindow/aboutback.png" Width="600" Height="250" ></Image>-->
         <Image Grid.Row="0" Source="/DynamoCore;component/UI/Images/AboutWindow/dynamo_logo_dark.png" Width="600" Height="250" ></Image>
-        <!--<Image Grid.Row="0" Source="/DynamoCore;component/UI/Images/AboutWindow/autodeskLogo.png" Width="91" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,8,0"></Image>-->
         <Grid Grid.Row="1" x:Name="ContentGrid" Margin="8" Grid.RowSpan="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
@@ -55,16 +53,6 @@
                         PreviewMouseDown="OnPreviewMouseDown"><Run Foreground="{Binding UpToDate, Converter={StaticResource IsUpToDateBrushConverter}}" Text="{Binding UpToDate, Converter={StaticResource IsUpToDateToTextConverter}, Mode=OneWay}"/></TextBlock>
                 </StackPanel>
             </StackPanel>
-            <!--<StackPanel Grid.Row="0" Grid.Column="1" Orientation="Vertical">
-                <Image Source="/DynamoCore;component/UI/Images/AboutWindow/DesignScriptLogo.png" Width="122"></Image>
-            </StackPanel>-->
-            <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Margin="0,8,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="10.667" FontWeight="Bold">
-                    <Run FontSize="10.667" FontWeight="Bold">© 2012 Autodesk, Inc. All rights reserved.</Run><LineBreak /><LineBreak />
-                    <Run FontFamily="Verdana" Language="en-us" Text="All use of this Software is subject to the terms and conditions of the Autodesk End User License Agreement accepted upon installation of this Software and/or packaged with the Software. "/>
-                    <LineBreak/><LineBreak/>
-                    <Run Text="Trademarks"/><LineBreak/>
-                    <Run FontWeight="Normal" Text="Autodesk is a registered trademark or trademark of Autodesk, Inc., and/or its subsidiaries and/or affiliates. All other brand names, product names or trademarks belong to their respective holders."/>
-            </TextBlock>
         </Grid>
     </Grid>
 </Window>
