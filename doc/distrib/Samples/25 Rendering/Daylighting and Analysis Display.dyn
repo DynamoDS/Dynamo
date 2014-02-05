@@ -1,4 +1,4 @@
-<Workspace Version="0.6.3.5248" X="-1144.09013858683" Y="-732.323762914319" zoom="1.08177491292543" Description="" Category="" Name="Home">
+<Workspace Version="0.6.3.30451" X="595.607536798234" Y="-304.313220333027" zoom="0.991786818003472" Description="" Category="" Name="Home">
   <Elements>
     <Dynamo.Nodes.CloudDaylightingJob type="Dynamo.Nodes.CloudDaylightingJob" guid="ba2a8d00-8782-4e59-bb68-791312445255" nickname="Cloud Daylighting Job" x="589.789054966447" y="266.345207636633" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
     <Dynamo.Nodes.CloudRender type="Dynamo.Nodes.CloudRender" guid="d0174e82-9635-4f35-920a-3abbb3f2aeb3" nickname="Cloud Render" x="797.526619675957" y="267.80989001778" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
@@ -23,11 +23,11 @@
       <PortInfo index="2" default="True" />
       <PortInfo index="3" default="True" />
     </Dynamo.Nodes.MakeDaylightingSkyModel>
-    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="10c76c05-1835-40c1-9692-5d8f85a7bb5f" nickname="Number" x="18.0600223494212" y="1073.57750728293" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.Double value="72" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="10c76c05-1835-40c1-9692-5d8f85a7bb5f" nickname="Number" x="22.5756088713982" y="1067.55672525363" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="40" />
     </Dynamo.Nodes.DoubleInput>
     <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="f4694565-2de4-4097-baa5-7e1c1228d0e6" nickname="Number" x="20.1362028819912" y="1153.24672135713" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.Double value="40" />
+      <System.Double value="-71" />
     </Dynamo.Nodes.DoubleInput>
     <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="f41155c8-8a4e-4964-973f-fad3623b2d44" nickname="String" x="179.860669143498" y="115.937665300108" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.String value="{3D}" />
@@ -101,7 +101,7 @@
     <Dynamo.Nodes.FunctionWithRevit type="Dynamo.Nodes.FunctionWithRevit" guid="27035edb-78e4-421b-9547-c0e806d22f5b" nickname="Display Lighting Data On Surface" x="1585.40806394113" y="858.317876932764" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <ID value="a9117d89-81ab-44d2-891d-f8e8e11e2b7d" />
       <Name value="Display Lighting Data On Surface" />
-      <Description value="" />
+      <Description value="projects xyz positions to face and draws sample data there - requires setting up an analysis display style in revit proejct and using a transaction after this node." />
       <Inputs>
         <Input value="face" />
         <Input value="xyz sample points" />
@@ -123,11 +123,17 @@
     <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="7554e8e1-ca09-41b1-ab6a-667f069bcc63" nickname="First of List" x="1468.3253999359" y="732.301157334242" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.FormElementBySelection type="Dynamo.Nodes.FormElementBySelection" guid="c600543b-5918-42b1-95d9-bd3aeaf951d5" nickname="Select Face" x="1191.65468781059" y="819.895959748172" isVisible="true" isUpstreamVisible="true" lacing="Disabled" faceRef="f15a6d1b-7a26-4d34-99c2-7bb21568145a-0002e02a:1:SURFACE" />
     <Dynamo.Nodes.Watch3D type="Dynamo.Nodes.Watch3D" guid="2aff968b-c344-456c-82e5-fd4499988dfa" nickname="Watch 3D" x="1317.44212601356" y="1019.00961301031" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <view width="230" height="371">
+      <view width="240" height="428">
         <camera pos_x="20.6975697527233" pos_y="20.6975697527233" pos_z="20.6965697527233" look_x="-20.6975697527233" look_y="-20.6975697527233" look_z="-20.6975697527233" />
       </view>
     </Dynamo.Nodes.Watch3D>
     <Dynamo.Nodes.Transaction type="Dynamo.Nodes.Transaction" guid="491d98b5-f460-49fc-81c6-aa930b38c8ad" nickname="Transaction" x="1820.58545433046" y="833.205307649655" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="64d041bc-7195-453a-b49a-80f7365f522b" nickname="Number" x="-326.994122812196" y="1131.9874251715" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="-5" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="b2bd7a1c-cd4d-4376-b02b-2dc3bf556353" nickname="Number" x="-332.166805850681" y="1062.74843183452" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="12" />
+    </Dynamo.Nodes.DoubleInput>
   </Elements>
   <Connectors>
     <Dynamo.Models.ConnectorModel start="ba2a8d00-8782-4e59-bb68-791312445255" start_index="0" end="d0174e82-9635-4f35-920a-3abbb3f2aeb3" end_index="1" portType="0" />
@@ -174,6 +180,15 @@
     <Dynamo.Models.ConnectorModel start="7554e8e1-ca09-41b1-ab6a-667f069bcc63" start_index="0" end="27035edb-78e4-421b-9547-c0e806d22f5b" end_index="1" portType="0" />
     <Dynamo.Models.ConnectorModel start="c600543b-5918-42b1-95d9-bd3aeaf951d5" start_index="0" end="27035edb-78e4-421b-9547-c0e806d22f5b" end_index="0" portType="0" />
     <Dynamo.Models.ConnectorModel start="c600543b-5918-42b1-95d9-bd3aeaf951d5" start_index="0" end="2aff968b-c344-456c-82e5-fd4499988dfa" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="64d041bc-7195-453a-b49a-80f7365f522b" start_index="0" end="c959d59c-8ee7-48bf-aac1-bbdca7fbe38d" end_index="6" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b2bd7a1c-cd4d-4376-b02b-2dc3bf556353" start_index="0" end="c959d59c-8ee7-48bf-aac1-bbdca7fbe38d" end_index="3" portType="0" />
   </Connectors>
-  <Notes />
+  <Notes>
+    <Dynamo.Models.NoteModel text="There is an associated .rvt file in the rendering samples folder where this graph was located that is needed to run correctly." x="-478.134229477385" y="412.832504432103" />
+    <Dynamo.Models.NoteModel text="When you hit run there will be a delay as the rendering completes, watch the console for updates - run button will grey out for a few minutes." x="-456.971407640659" y="686.327664838382" />
+    <Dynamo.Models.NoteModel text="Generate xyz corners for plane to sample" x="-145.482015470893" y="115.757745643719" />
+    <Dynamo.Models.NoteModel text="Setup our render and push it to Autodesk 360 service" x="701.666556254478" y="26.51170786867" />
+    <Dynamo.Models.NoteModel text="Parse various data from the returned rendering file" x="1377.14278290477" y="105.816699803697" />
+    <Dynamo.Models.NoteModel text="using the floor of the revit model, and our (xyz points, illuminance data) plot the data onto the floor.  This will show in the revit model." x="1684.3037964849" y="762.565034263982" />
+  </Notes>
 </Workspace>
