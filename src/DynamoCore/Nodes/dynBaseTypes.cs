@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml;
 using Dynamo.FSchemeInterop;
@@ -943,7 +944,90 @@ namespace Dynamo.Nodes
         }
     }
 
+    [NodeName("Filter by Boolean Mask")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
+    [NodeDescription("Filters a sequence by lookng up corresponding indices in a separate list of booleans.")]
+    public class FilterMask : NodeModel
+    {
+        public FilterMask()
+        {
+            InPortData.Add(new PortData("seq", "Sequence to filter.", typeof(Value.List)));
+            InPortData.Add(new PortData("mask", "List of booleans to mask with.", typeof(Value.List)));
+            OutPortData.Add(new PortData("in", "Elements whose mask index was true.", typeof(Value.List)));
+            OutPortData.Add(new PortData("out", "Elements whose mask index was false.", typeof(Value.List)));
+
+            RegisterAllPorts();
+        }
+
+        public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
+        {
+            var list = ((Value.List) args[0]).Item;
+            var mask = ((Value.List) args[1]).Item;
+
+            var zipped = list.Zip(mask, (i, m) => new {Item = i, Mask = FScheme.ValueToBool(m)});
+
+            var inList = FSharpList<Value>.Empty;
+            var outList = FSharpList<Value>.Empty;
+
+            foreach (var p in zipped)
+            {
+                if (p.Mask)
+                {
+                    inList = FSharpList<Value>.Cons(p.Item, inList);
+                }
+                else
+                {
+                    outList = FSharpList<Value>.Cons(p.Item, outList);
+                }
+            }
+
+            outPuts[OutPortData[0]] = Value.NewList(inList);
+            outPuts[OutPortData[1]] = Value.NewList(outList);
+        }
+    }
+
     [NodeName("Filter")]
+    [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
+    [NodeDescription("Filters a sequence by a given predicate \"p\" such that for an arbitrary element \"x\" p(x) = True or False.")]
+    public class FilterInAndOut : NodeModel
+    {
+        public FilterInAndOut()
+        {
+            InPortData.Add(new PortData("p(x)", "Predicate", typeof(object)));
+            InPortData.Add(new PortData("seq", "Sequence to filter", typeof(Value.List)));
+            OutPortData.Add(new PortData("in", "Sequence containing all elements \"x\" where p(x) = True", typeof(Value.List)));
+            OutPortData.Add(new PortData("out", "Sequence containing all elements \"x\" where p(x) = False", typeof(Value.List)));
+
+            RegisterAllPorts();
+        }
+
+        public override void Evaluate(FSharpList<Value> args, Dictionary<PortData, Value> outPuts)
+        {
+            var pred = ((Value.Function) args[0]).Item;
+            var list = ((Value.List) args[1]).Item;
+
+            var inList = FSharpList<Value>.Empty;
+            var outList = FSharpList<Value>.Empty;
+
+            foreach (var item in list)
+            {
+                if (FScheme.ValueToBool(pred.Invoke(Utils.MakeFSharpList(item))))
+                {
+                    inList = FSharpList<Value>.Cons(item, inList);
+                }
+                else
+                {
+                    outList = FSharpList<Value>.Cons(item, outList);
+                }
+            }
+
+            outPuts[OutPortData[0]] = Value.NewList(inList);
+            outPuts[OutPortData[1]] = Value.NewList(outList);
+        }
+    }
+
+
+    [NodeName("Filter In")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_EVALUATE)]
     [NodeDescription("Filters a sequence by a given predicate \"p\" such that for an arbitrary element \"x\" p(x) = True.")]
     public class Filter : BuiltinFunction
