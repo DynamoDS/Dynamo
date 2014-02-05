@@ -20,6 +20,7 @@ namespace Dynamo.Nodes
     /// </summary>
     /// <search>topography,topo,points,pts</search>
     [NodeName("Topography From Points")]
+    [NodeDescription("Creates a Revit topography surface from a list of points")]
     [NodeCategory(BuiltinNodeCategories.REVIT_DOCUMENT)]
     class TopographyFromPoints:RevitTransactionNodeWithOneOutput
     {
@@ -137,6 +138,7 @@ namespace Dynamo.Nodes
     /// </summary>
     /// <search>topography,topo,points,pts</search>
     [NodeName("Points from Topography")]
+    [NodeDescription("Extracts a list of points from a Revit topograhy surface")]
     [NodeCategory(BuiltinNodeCategories.REVIT_DOCUMENT)]
     class PointsFromTopography : NodeWithOneOutput
     {
