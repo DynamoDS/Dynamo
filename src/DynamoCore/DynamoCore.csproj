@@ -680,11 +680,11 @@ limitations under the License.
     <Resource Include="UI\Images\AboutWindow\close_inactive.png" />
     <Resource Include="UI\Images\AboutWindow\collectinfo_titlebar.png" />
     <Resource Include="UI\Images\AboutWindow\DesignScriptLogo.png" />
-    <Resource Include="UI\Images\AboutWindow\DownloadAnimation.png" />
-    <Resource Include="UI\Images\AboutWindow\DownloadIcon.png" />
-    <Resource Include="UI\Images\AboutWindow\download_ani.png" />
-    <Resource Include="UI\Images\AboutWindow\update.png" />
-    <Resource Include="UI\Images\AboutWindow\update_static.png" />
+    <Resource Include="UI\Images\Update\DownloadAnimation.png" />
+    <Resource Include="UI\Images\Update\DownloadIcon.png" />
+    <Resource Include="UI\Images\Update\download_ani.png" />
+    <Resource Include="UI\Images\Update\update.png" />
+    <Resource Include="UI\Images\Update\update_static.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
