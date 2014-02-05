@@ -151,6 +151,9 @@ limitations under the License.
     <Compile Include="Core\UndoRedoRecorder.cs" />
     <Compile Include="Nodes\CustomNodeInstance.cs" />
     <Compile Include="Nodes\dynEnum.cs" />
+    <Compile Include="UI\Views\AboutWindow.xaml.cs">
+      <DependentUpon>AboutWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Configurations.cs" />
     <Compile Include="DSEngine\AstBuilder.cs" />
     <Compile Include="DSEngine\DSLibrary.cs" />
@@ -213,6 +216,7 @@ limitations under the License.
     <Compile Include="UpdateManager\UpdateManager.cs" />
     <Compile Include="Utilities\CursorLibrary.cs" />
     <Compile Include="Utilities\XmlHelper.cs" />
+    <Compile Include="ViewModels\AboutWindowViewModel.cs" />
     <Compile Include="ViewModels\EndlessGridViewModel.cs" />
     <Compile Include="ViewModels\InfoBubbleViewModel.cs" />
     <Compile Include="ViewModels\Watch3DFullscreenViewModel.cs" />
@@ -456,6 +460,10 @@ limitations under the License.
     <Resource Include="UI\Images\search_24.png" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="UI\Views\AboutWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="UI\Controls\ShortcutToolbar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -678,6 +686,24 @@ limitations under the License.
   <ItemGroup />
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\AboutWindow\dynamo_logo_dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\AboutWindow\aboutback.png" />
+    <Resource Include="UI\Images\AboutWindow\autodeskLogo.png" />
+    <Resource Include="UI\Images\AboutWindow\background_texture.png" />
+    <Resource Include="UI\Images\AboutWindow\clickbox.png" />
+    <Resource Include="UI\Images\AboutWindow\close_hover.png" />
+    <Resource Include="UI\Images\AboutWindow\close_inactive.png" />
+    <Resource Include="UI\Images\AboutWindow\collectinfo_titlebar.png" />
+    <Resource Include="UI\Images\AboutWindow\DesignScriptLogo.png" />
+    <Resource Include="UI\Images\AboutWindow\DownloadAnimation.png" />
+    <Resource Include="UI\Images\AboutWindow\DownloadIcon.png" />
+    <Resource Include="UI\Images\AboutWindow\download_ani.png" />
+    <Resource Include="UI\Images\AboutWindow\update.png" />
+    <Resource Include="UI\Images\AboutWindow\update_static.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
