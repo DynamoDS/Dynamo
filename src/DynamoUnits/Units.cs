@@ -198,6 +198,8 @@ namespace Dynamo.Units
         private static double cubic_meters_to_cubic_inches = 61023.744095;
         private static double cubic_meters_to_cubic_feet = 35.3147;
 
+        private static double epsilon = 1e-6;
+
         internal double _value;
 
         public static double ToMillimeter
@@ -265,6 +267,11 @@ namespace Dynamo.Units
             get { return cubic_meters_to_cubic_feet; }
         }
 
+        public static double Epsilon
+        {
+            get { return epsilon; }
+        }
+
         /// <summary>
         /// The internal value of the unit.
         /// </summary>
@@ -291,12 +298,15 @@ namespace Dynamo.Units
         public abstract void SetValueFromString(string value);
 
         public abstract SIUnit Add(SIUnit x);
+        public abstract SIUnit Add(double x);
         public abstract SIUnit Subtract(SIUnit x);
+        public abstract SIUnit Subtract(double x);
         public abstract SIUnit Multiply(SIUnit x);
         public abstract SIUnit Multiply(double x);
         public abstract dynamic Divide(SIUnit x);
         public abstract SIUnit Divide(double x);
         public abstract SIUnit Modulo(SIUnit x);
+        public abstract SIUnit Modulo(double x);
         public abstract SIUnit Round();
         public abstract SIUnit Ceiling();
         public abstract SIUnit Floor();
@@ -308,9 +318,29 @@ namespace Dynamo.Units
             return x.Add(y);
         }
 
+        public static SIUnit operator +(SIUnit x, double y)
+        {
+            return x.Add(y);
+        }
+
+        public static double operator +(double x, SIUnit y)
+        {
+            return x + y.Value;
+        }
+
         public static SIUnit operator -(SIUnit x, SIUnit y)
         {
             return x.Subtract(y);
+        }
+
+        public static SIUnit operator -(SIUnit x, double y)
+        {
+            return x.Subtract(y);
+        }
+
+        public static double operator -(double x, SIUnit y)
+        {
+            return x - y.Value;
         }
 
         public static SIUnit operator *(SIUnit x, SIUnit y)
@@ -323,9 +353,9 @@ namespace Dynamo.Units
             return x.Multiply(y);
         }
 
-        public static SIUnit operator *(double x, SIUnit y)
+        public static double operator *(double x, SIUnit y)
         {
-            return y.Multiply(x);
+            return x*y.Value;
         }
 
         public static dynamic operator /(SIUnit x, SIUnit y)
@@ -346,9 +376,24 @@ namespace Dynamo.Units
             return x.Divide(y);
         }
 
+        public static double operator /(double x, SIUnit y)
+        {
+            return x/y.Value;
+        }
+
         public static SIUnit operator %(SIUnit x, SIUnit y)
         {
             return x.Modulo(y);
+        }
+
+        public static SIUnit operator %(SIUnit x, double y)
+        {
+            return x.Modulo(y);
+        }
+
+        public static double operator %(double x, SIUnit y)
+        {
+            return x % y.Value;
         }
 
         #endregion
@@ -408,7 +453,7 @@ namespace Dynamo.Units
     /// <summary>
     /// A length stored as meters.
     /// </summary>
-    public class Length : SIUnit, IComparable
+    public class Length : SIUnit, IComparable, IEquatable<Length>
     {
         public Length(double value):base(value){}
 
@@ -427,12 +472,22 @@ namespace Dynamo.Units
             throw new UnitsException(GetType(), x.GetType());
         }
 
+        public override SIUnit Add(double x)
+        {
+            return new Length(_value + x);
+        }
+
         public override SIUnit Subtract(SIUnit x)
         {
             if(x is Length)
                 return new Length(_value - x.Value);
 
             throw new UnitsException(GetType(), x.GetType());
+        }
+
+        public override SIUnit Subtract(double x)
+        {
+            return new Length(_value - x);
         }
 
         public override SIUnit Multiply(SIUnit x)
@@ -471,6 +526,11 @@ namespace Dynamo.Units
                 return new Length(_value % x.Value);
 
             throw new UnitsException(GetType(), x.GetType());
+        }
+
+        public override SIUnit Modulo(double x)
+        {
+            return new Length(_value % x);
         }
 
         public override SIUnit Round()
@@ -540,6 +600,14 @@ namespace Dynamo.Units
             _value = total;
         }
 
+        public bool Equals(Length other)
+        {
+            if (Math.Abs(other.Value - _value) < SIUnit.Epsilon)
+                return true;
+
+            return false;
+        }
+
         public override string ToString()
         {
             return BuildString(UnitsManager.Instance.LengthUnit);
@@ -597,7 +665,7 @@ namespace Dynamo.Units
     /// <summary>
     /// An area stored as square meters.
     /// </summary>
-    public class Area : SIUnit, IComparable
+    public class Area : SIUnit, IComparable, IEquatable<Area>
     {
         public Area():base(0.0){}
 
@@ -624,12 +692,22 @@ namespace Dynamo.Units
             throw new UnitsException(GetType(), x.GetType());
         }
 
+        public override SIUnit Add(double x)
+        {
+            return new Area(_value + x);
+        }
+
         public override SIUnit Subtract(SIUnit x)
         {
             if(x is Area)
                 return new Area(_value - x.Value);
 
             throw new UnitsException(GetType(), x.GetType());
+        }
+
+        public override SIUnit Subtract(double x)
+        {
+            return new Area(_value - x);
         }
 
         public override SIUnit Multiply(SIUnit x)
@@ -678,6 +756,11 @@ namespace Dynamo.Units
             }
             
             throw new UnitsException(GetType(), x.GetType());
+        }
+
+        public override SIUnit Modulo(double x)
+        {
+            return new Area(_value % x);
         }
 
         public override SIUnit Round()
@@ -740,6 +823,14 @@ namespace Dynamo.Units
             _value = total;
         }
 
+        public bool Equals(Area other)
+        {
+            if (Math.Abs(other.Value - _value) < SIUnit.Epsilon)
+                return true;
+
+            return false;
+        }
+
         public override string ToString()
         {
             return BuildString(UnitsManager.Instance.AreaUnit);
@@ -792,7 +883,7 @@ namespace Dynamo.Units
     /// <summary>
     /// A volume stored as cubic meters.
     /// </summary>
-    public class Volume : SIUnit, IComparable
+    public class Volume : SIUnit, IComparable, IEquatable<Volume>
     {
         public Volume():base(0.0){}
 
@@ -819,12 +910,22 @@ namespace Dynamo.Units
             throw new UnitsException(GetType(), x.GetType());
         }
 
+        public override SIUnit Add(double x)
+        {
+            return new Volume(_value + x);
+        }
+
         public override SIUnit Subtract(SIUnit x)
         {
             if(x is Volume)
                 return new Volume(_value - x.Value);
 
             throw new UnitsException(GetType(), x.GetType());
+        }
+
+        public override SIUnit Subtract(double x)
+        {
+            return new Volume(_value - x);
         }
 
         public override SIUnit Multiply(SIUnit x)
@@ -864,6 +965,11 @@ namespace Dynamo.Units
             }
             
             throw new UnitsException(GetType(), x.GetType());
+        }
+
+        public override SIUnit Modulo(double x)
+        {
+            return new Volume(_value % x);
         }
 
         public override SIUnit Round()
@@ -924,6 +1030,14 @@ namespace Dynamo.Units
             total += cu_ft / ToCubicFoot;
 
             _value = total;
+        }
+
+        public bool Equals(Volume other)
+        {
+            if (Math.Abs(other.Value - _value) < SIUnit.Epsilon)
+                return true;
+
+            return false;
         }
 
         public override string ToString()
@@ -995,7 +1109,17 @@ namespace Dynamo.Units
             throw new NotImplementedException();
         }
 
+        public override SIUnit Add(double x)
+        {
+            throw new NotImplementedException();
+        }
+
         public override SIUnit Subtract(SIUnit x)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SIUnit Subtract(double x)
         {
             throw new NotImplementedException();
         }
@@ -1021,6 +1145,11 @@ namespace Dynamo.Units
         }
 
         public override SIUnit Modulo(SIUnit x)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SIUnit Modulo(double x)
         {
             throw new NotImplementedException();
         }
@@ -1065,7 +1194,17 @@ namespace Dynamo.Units
             throw new NotImplementedException();
         }
 
+        public override SIUnit Add(double x)
+        {
+            throw new NotImplementedException();
+        }
+
         public override SIUnit Subtract(SIUnit x)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SIUnit Subtract(double x)
         {
             throw new NotImplementedException();
         }
@@ -1091,6 +1230,11 @@ namespace Dynamo.Units
         }
 
         public override SIUnit Modulo(SIUnit x)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SIUnit Modulo(double x)
         {
             throw new NotImplementedException();
         }
@@ -1295,7 +1439,7 @@ namespace Dynamo.Units
 
         public static string ToFractionalInches(double decimalInches)
         {
-            decimalInches = RoundToSignificantDigits(decimalInches, 5);
+            decimalInches = RoundToSignificantDigits(decimalInches, 3);
 
             string inches = Utils.ParseWholeInchesToString(decimalInches);
             string fraction = Utils.ParsePartialInchesToString(decimalInches, 0.015625);
