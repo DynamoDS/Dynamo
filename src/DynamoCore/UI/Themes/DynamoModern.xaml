@@ -687,18 +687,8 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Thumb}">
                     <Grid x:Name="Grid">
-                        <Rectangle HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Stretch"
-                                    Width="Auto"
-                                    Height="Auto"
-                                    Fill="Transparent" />
-                        <Border x:Name="Rectangle1"
-                                CornerRadius="5"
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Stretch"
-                                Width="Auto"
-                                Height="Auto"
-                                Background="{TemplateBinding Background}" />
+                        <Rectangle HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="Auto" Height="Auto" Fill="Transparent" />
+                        <Border x:Name="Rectangle1" CornerRadius="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="Auto" Height="Auto"  Background="{TemplateBinding Background}" />
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="Tag"
@@ -719,13 +709,13 @@
     <!--ScrollBars-->
     <Style x:Key="{x:Type ScrollBar}" TargetType="{x:Type ScrollBar}">
         <Setter Property="Stylus.IsFlicksEnabled" Value="false" />
-        <Setter Property="Foreground" Value="#878787" />
+        <Setter Property="Foreground" Value="#888" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Width" Value="8" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ScrollBar}">
-                    <Grid x:Name="GridRoot" Width="8" Background="{TemplateBinding Background}">
+                    <Grid x:Name="GridRoot" Width="6" Background="{TemplateBinding Background}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="0.00001*" />
                         </Grid.RowDefinitions>

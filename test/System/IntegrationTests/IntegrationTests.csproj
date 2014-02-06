@@ -1,5 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(SolutionDir)Config\CS.props" />
+  </ImportGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -90,12 +93,9 @@
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DSNodeTarget">
-      <HintPath>..\..\Dynamo\bin\AnyCPU\Debug\DSNodeTarget.dll</HintPath>
-    </Reference>
     <Reference Include="nunit.framework, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\bin\x64\Debug\nunit.framework.dll</HintPath>
+      <HintPath>$(NunitPath)\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -106,16 +106,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IncrementingTraceTests.cs" />
     <Compile Include="MinimalTraceTests.cs" />
     <Compile Include="NamespaceConflictTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Core\ProtoCore\ProtoCore.csproj">
+    <ProjectReference Include="..\..\..\src\Engine\ProtoCore\ProtoCore.csproj">
       <Project>{7A9E0314-966F-4584-BAA3-7339CBB849D1}</Project>
       <Name>ProtoCore</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Tests\ProtoTestFx\ProtoTestFx.csproj">
+    <ProjectReference Include="..\..\Engine\FFITarget\FFITarget.csproj">
+      <Project>{c70fe632-5500-4c57-b3d6-9b5574137551}</Project>
+      <Name>FFITarget</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Engine\ProtoTestFx\ProtoTestFx.csproj">
       <Project>{2235F7CA-AB25-4177-92BC-4B574D2D5DF6}</Project>
       <Name>ProtoTestFx</Name>
     </ProjectReference>

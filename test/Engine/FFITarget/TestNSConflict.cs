@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace DSNodeTarget
+namespace FFITarget
 {
     namespace A
     {

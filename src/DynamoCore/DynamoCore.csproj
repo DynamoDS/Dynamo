@@ -133,6 +133,12 @@ limitations under the License.
     <Compile Include="Core\UndoRedoRecorder.cs" />
     <Compile Include="Nodes\CustomNodeInstance.cs" />
     <Compile Include="Nodes\dynEnum.cs" />
+    <Compile Include="UI\Controls\GraphUpdateNotificationControl.xaml.cs">
+      <DependentUpon>GraphUpdateNotificationControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Views\AboutWindow.xaml.cs">
+      <DependentUpon>AboutWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Configurations.cs" />
     <Compile Include="DSEngine\AstBuilder.cs" />
     <Compile Include="DSEngine\DSLibrary.cs" />
@@ -458,6 +464,14 @@ limitations under the License.
     <Resource Include="UI\Images\search_24.png" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="UI\Controls\GraphUpdateNotificationControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Views\AboutWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="UI\Controls\ShortcutToolbar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -681,11 +695,34 @@ limitations under the License.
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\AboutWindow\dynamo_logo_dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\AboutWindow\aboutback.png" />
+    <Resource Include="UI\Images\AboutWindow\autodeskLogo.png" />
+    <Resource Include="UI\Images\AboutWindow\background_texture.png" />
+    <Resource Include="UI\Images\Update\clickbox.png" />
+    <Resource Include="UI\Images\AboutWindow\close_hover.png" />
+    <Resource Include="UI\Images\AboutWindow\close_inactive.png" />
+    <Resource Include="UI\Images\AboutWindow\collectinfo_titlebar.png" />
+    <Resource Include="UI\Images\AboutWindow\DesignScriptLogo.png" />
+    <Resource Include="UI\Images\Update\DownloadAnimation.png" />
+    <Resource Include="UI\Images\Update\DownloadIcon.png" />
+    <Resource Include="UI\Images\Update\download_ani.png" />
+    <Resource Include="UI\Images\Update\update.png" />
+    <Resource Include="UI\Images\Update\update_static.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\AboutWindow\logo_about.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "$(OutputPath)\dll"
 copy /Y "$(SolutionDir)..\extern\LibG\x64\Release\*" "$(OutputPath)\dll"
 </PostBuildEvent>
+    <PostBuildEvent>copy /Y "$(SolutionDir)..\extern\DesignScript\*" "$(OutputPath)"
+copy "$(SolutionDir)..\doc\distrib\License.rtf" "$(OutputPath).\License.rtf"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
