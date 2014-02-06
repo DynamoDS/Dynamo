@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Web.UI;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml;
@@ -4019,14 +4020,47 @@ namespace Dynamo.Nodes
             if (!HasInput(0))
             {
                 Error("Test input must be connected.");
-                throw new Exception("If Node requires test input to be connected.");
+                return new ObjectNode(null);
             }
             return base.Build(preBuilt, outPort);
         }
 
         protected override InputNode Compile(IEnumerable<string> portNames)
         {
-            return new ConditionalNode(portNames);
+            return new ConditionalNodeWithPreview(this, portNames);
+        }
+
+        private class ConditionalNodeWithPreview : ConditionalNode
+        {
+            private readonly Conditional _node;
+
+            public ConditionalNodeWithPreview(Conditional node, IEnumerable<string> portNames)
+                : base(portNames)
+            {
+                _node = node;
+            }
+
+            protected override FScheme.Expression compileBody(
+                Dictionary<INode, string> symbols, Dictionary<INode, List<INode>> letEntries, HashSet<string> initializedIds, HashSet<string> conditionalIds)
+            {
+                /* (let ((__result (if <test> <true> <false>)))
+                 *    (updateIfNode __result)
+                 *    __result)
+                 */
+                return FScheme.Expression.NewLet(
+                    new[] { "__result" }.ToFSharpList(),
+                    new[] { base.compileBody(symbols, letEntries, initializedIds, conditionalIds) }
+                        .ToFSharpList(),
+                    FScheme.Expression.NewBegin(new[]
+                    {
+                        FScheme.Expression.NewList_E(new[] 
+                        {
+                            FScheme.Expression.NewFunction_E(Utils.ConvertToFSchemeFunc(args => _node.OldValue = args[0])),
+                            FScheme.Expression.NewId("__result")
+                        }.ToFSharpList()),
+                        FScheme.Expression.NewId("__result")
+                    }.ToFSharpList()));
+            }
         }
 
         protected override AssociativeNode BuildAstNode(IAstBuilder builder, List<AssociativeNode> inputs)
