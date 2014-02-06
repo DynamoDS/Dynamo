@@ -1322,10 +1322,10 @@ namespace Dynamo.Controls
             if ((bool) value == false)
             {
                 var latest = UpdateManager.UpdateManager.Instance.AvailableVersion;
-                return string.Format("[Latest vesion: {0}]", latest);
+                return latest;
             }
 
-            return "[Up-to-date]";
+            return "(Up-to-date)";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

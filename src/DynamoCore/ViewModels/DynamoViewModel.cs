@@ -489,7 +489,7 @@ namespace Dynamo.ViewModels
 
         public string Version
         {
-            get { return string.Format("Version: {0}", UpdateManager.UpdateManager.Instance.ProductVersion); }
+            get { return UpdateManager.UpdateManager.Instance.ProductVersion.ToString(); }
         }
 
         public bool UpToDate
@@ -500,6 +500,16 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public string LicenseFile
+        {
+            get
+            {
+                string executingAssemblyPathName = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                string rootModuleDirectory = System.IO.Path.GetDirectoryName(executingAssemblyPathName);
+                var licensePath = System.IO.Path.Combine(rootModuleDirectory, "License.rtf");
+                return licensePath;
+            }
+        }
         #endregion
 
         public DynamoViewModel(DynamoController controller, string commandFilePath)

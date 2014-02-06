@@ -1,15 +1,14 @@
 ﻿<Window
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     x:Class="Dynamo.UI.Views.AboutWindow"
-    xmlns:local="clr-namespace:Dynamo.UI.Views"
     xmlns:ui="clr-namespace:Dynamo.UI"
-    SizeToContent="WidthAndHeight"
+    xmlns:views="clr-namespace:Dynamo.UI.Views"
     x:Name="Dynamo" Title="About Dynamo"
     WindowStartupLocation="CenterOwner"
-    WindowStyle="SingleBorderWindow" Background="#F0F0F0" TextBlock.Foreground="Black"
-    ResizeMode="NoResize">
+    WindowStyle="SingleBorderWindow"
+    ResizeMode="NoResize"
+    Height="350" Width="500" Style="{DynamicResource DynamoWindowStyle}">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -22,37 +21,55 @@
         </ResourceDictionary>
     </Window.Resources>
     
-    <Grid x:Name="LayoutRoot" Loaded="OnLoaded" Width="600">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="250"></RowDefinition>
-            <RowDefinition Height="63*"></RowDefinition>
-            <RowDefinition Height="142*"/>
-        </Grid.RowDefinitions>
-        <Image Grid.Row="0" Source="/DynamoCore;component/UI/Images/AboutWindow/dynamo_logo_dark.png" Width="600" Height="250" ></Image>
-        <Grid Grid.Row="1" x:Name="ContentGrid" Margin="8" Grid.RowSpan="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="122"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
+    <Grid x:Name="LayoutRoot" Loaded="OnLoaded">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="160"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        
+        <Grid Grid.Column="0" x:Name="ContentGrid" Margin="8">
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto"></RowDefinition>
-                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="160"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
             </Grid.RowDefinitions>
-            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Vertical">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock HorizontalAlignment="Left" Margin="0,0,0,1"><Hyperlink Click="OnClickLink" Foreground="Black">Visit Dynamo website</Hyperlink></TextBlock>
-                    <TextBlock Margin="5,0">|</TextBlock>
-                    <TextBlock x:Name="ViewLicenseTextBlock" HorizontalAlignment="Left" Margin="0,0,0,1"><Hyperlink Click="OnViewLicense" Foreground="Black">View license agreement</Hyperlink></TextBlock>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="0,8,0,8">
-                    <TextBox Name ="VersionNumber" Background="Transparent" Foreground="Black" BorderThickness="0" 
-                             FontSize="13.333" FontWeight="Bold" Margin="0,0,8,0" Text="{Binding Version, Mode=OneWay}" 
+            <Grid Grid.Row="1">
+                <StackPanel VerticalAlignment="Stretch">
+                    <TextBox Name ="VersionNumber" 
+                             Background="Transparent" 
+                             Foreground="#888888" 
+                             BorderThickness="0" 
+                             FontSize="14" 
+                             FontFamily="{StaticResource OpenSansRegular}" 
+                             Margin="0,0,8,0" 
+                             Text="{Binding Version, Mode=OneWay}" 
                              PreviewMouseDown="OnPreviewMouseDown"
-                             IsReadOnly="True" IsReadOnlyCaretVisible="False"></TextBox>
-                    <TextBlock x:Name ="UpdateInfo" FontSize="13.333" Foreground="#00bb00"
-                        PreviewMouseDown="OnPreviewMouseDown"><Run Foreground="{Binding UpToDate, Converter={StaticResource IsUpToDateBrushConverter}}" Text="{Binding UpToDate, Converter={StaticResource IsUpToDateToTextConverter}, Mode=OneWay}"/></TextBlock>
+                             IsReadOnly="True" 
+                             IsReadOnlyCaretVisible="False"
+                             HorizontalAlignment="Center"/>
+                    <TextBlock x:Name ="UpdateInfo" 
+                               FontSize="12" 
+                               FontFamily="{StaticResource OpenSansRegular}" 
+                               Foreground="#00bb00"
+                               PreviewMouseDown="OnPreviewMouseDown"
+                               HorizontalAlignment="Center">
+                        <Run Foreground="{Binding UpToDate, Converter={StaticResource IsUpToDateBrushConverter}}" Text="{Binding UpToDate, Converter={StaticResource IsUpToDateToTextConverter}, Mode=OneWay}"/>
+                    </TextBlock>
                 </StackPanel>
-            </StackPanel>
+            </Grid>
+            <Button Grid.Row="2" Content="Dynamo Website" Click="OnClickLink" Style="{StaticResource STextButton}"/>
+            <Image Grid.Column="0" Grid.Row="0" Source="/DynamoCore;component/UI/Images/AboutWindow/logo_about.png" Height="128" Width="128"/>
         </Grid>
+        <ScrollViewer Grid.Column="1" Background="#363636" Padding="25">
+            <views:RichTextFile File="{Binding LicenseFile}" 
+                                IsReadOnly="True" 
+                                IsEnabled="True"
+                                IsDocumentEnabled="True" 
+                                FontSize="10" 
+                                Foreground="#888888" 
+                                Background="Transparent" 
+                                OpenLinksInBrowser="True" 
+                                BorderThickness="0"/>
+        </ScrollViewer>
     </Grid>
 </Window>
