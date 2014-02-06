@@ -1,5 +1,9 @@
-﻿using System.IO;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
 using Dynamo.UpdateManager;
 using Dynamo.ViewModels;
@@ -11,7 +15,6 @@ namespace Dynamo.UI.Views
     /// </summary>
     public partial class AboutWindow : Window
     {
-        string eulaFilePath = string.Empty;
         bool ignoreClose = false;
         DynamoLogger logger = null;
 
@@ -33,12 +36,6 @@ namespace Dynamo.UI.Views
             UpdateManager.UpdateManager.Instance.UpdateDownloaded += new UpdateDownloadedEventHandler(OnUpdatePackageDownloaded);
             
             UpdateManager.UpdateManager.Instance.CheckForProductUpdate();
-
-            string executingAssemblyPathName = System.Reflection.Assembly.GetExecutingAssembly().Location;
-            string rootModuleDirectory = System.IO.Path.GetDirectoryName(executingAssemblyPathName);
-            eulaFilePath = System.IO.Path.Combine(rootModuleDirectory, "License.txt");
-            if (!File.Exists(eulaFilePath))
-                ViewLicenseTextBlock.Visibility = System.Windows.Visibility.Collapsed;
         }
 
         private void HandleEsc(object sender, KeyEventArgs e)
@@ -63,12 +60,6 @@ namespace Dynamo.UI.Views
         private void OnClickLink(object sender, RoutedEventArgs e)
         {
             System.Diagnostics.Process.Start("https://github.com/DynamoDS/Dynamo");
-        }
-
-        private void OnViewLicense(object sender, RoutedEventArgs e)
-        {
-            if (File.Exists(eulaFilePath))
-                System.Diagnostics.Process.Start(eulaFilePath, "EULA");
         }
 
         private void OnUpdatePackageDownloaded(object sender, UpdateDownloadedEventArgs e)
@@ -96,5 +87,64 @@ namespace Dynamo.UI.Views
                 this.UpdateInfo.MouseUp -= new MouseButtonEventHandler(OnUpdateInfoMouseUp);
             }
         }
+    }
+
+    //http://www.rhyous.com/2011/08/01/loading-a-richtextbox-from-an-rtf-file-using-binding-or-a-richtextfile-control/
+    internal class RichTextFile : RichTextBox
+    {
+        public RichTextFile()
+        {
+            AddHandler(Hyperlink.RequestNavigateEvent, new RoutedEventHandler(HandleHyperlinkClick));
+        }
+
+        private void HandleHyperlinkClick(object inSender, RoutedEventArgs inArgs)
+        {
+            if (OpenLinksInBrowser)
+            {
+                Hyperlink link = inArgs.Source as Hyperlink;
+                if (link != null)
+                {
+                    Process.Start(link.NavigateUri.ToString());
+                    inArgs.Handled = true;
+                }
+            }
+        }
+
+        #region Properties
+        public bool OpenLinksInBrowser { get; set; }
+
+        public String File
+        {
+            get { return (String)GetValue(FileProperty); }
+            set { SetValue(FileProperty, value); }
+        }
+
+        public static DependencyProperty FileProperty =
+            DependencyProperty.Register("File", typeof(String), typeof(RichTextFile),
+            new PropertyMetadata(OnFileChanged));
+
+        private static void OnFileChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            RichTextFile rtf = d as RichTextFile;
+            if (rtf == null)
+                return;
+
+            ReadFile(rtf.File, rtf.Document);
+        }
+        #endregion
+
+        #region Functions
+        private static void ReadFile(string inFilename, FlowDocument inFlowDocument)
+        {
+            if (System.IO.File.Exists(inFilename))
+            {
+                TextRange range = new TextRange(inFlowDocument.ContentStart, inFlowDocument.ContentEnd);
+                FileStream fStream = new FileStream(inFilename, FileMode.Open, FileAccess.Read, FileShare.Read);
+
+                range.Load(fStream, DataFormats.Rtf);
+                fStream.Close();
+            }
+        }
+        #endregion
     }
 }
