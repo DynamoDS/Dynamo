@@ -26,7 +26,7 @@ namespace Dynamo.ViewModels
 
     public delegate void RequestPackagePublishDialogHandler(PublishPackageViewModel publishViewModel);
 
-    public delegate void RequestAboutWindowHandler(AboutWindowViewModel aboutViewModel);
+    public delegate void RequestAboutWindowHandler(DynamoViewModel aboutViewModel);
 
     public partial class DynamoViewModel : ViewModelBase, IWatchViewModel
     {
@@ -110,7 +110,7 @@ namespace Dynamo.ViewModels
         }
 
         public event RequestAboutWindowHandler RequestAboutWindow;
-        public virtual void OnRequestAboutWindow(AboutWindowViewModel vm)
+        public virtual void OnRequestAboutWindow(DynamoViewModel vm)
         {
             if (RequestAboutWindow != null)
             {
@@ -131,7 +131,6 @@ namespace Dynamo.ViewModels
         protected bool dynamicRun = false;
         private bool canNavigateBackground = false;
         private bool _watchEscapeIsDown = false;
-        private AboutWindowViewModel _aboutWindowViewModel = null;
 
         public DelegateCommand OpenCommand { get; set; }
         public DelegateCommand ShowOpenDialogAndOpenResultCommand { get; set; }
@@ -488,6 +487,29 @@ namespace Dynamo.ViewModels
 
         public bool WatchIsResizable { get; set; }
 
+        public string Version
+        {
+            get { return UpdateManager.UpdateManager.Instance.ProductVersion.ToString(); }
+        }
+
+        public bool UpToDate
+        {
+            get
+            {
+                return UpdateManager.UpdateManager.Instance.ProductVersion >= UpdateManager.UpdateManager.Instance.AvailableVersion; ;
+            }
+        }
+
+        public string LicenseFile
+        {
+            get
+            {
+                string executingAssemblyPathName = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                string rootModuleDirectory = System.IO.Path.GetDirectoryName(executingAssemblyPathName);
+                var licensePath = System.IO.Path.Combine(rootModuleDirectory, "License.rtf");
+                return licensePath;
+            }
+        }
         #endregion
 
         public DynamoViewModel(DynamoController controller, string commandFilePath)
@@ -507,7 +529,8 @@ namespace Dynamo.ViewModels
 
             Controller = controller;
 
-            _aboutWindowViewModel = new AboutWindowViewModel();
+            //Register for a notification when the update manager downloads an update
+            UpdateManager.UpdateManager.Instance.UpdateDownloaded += Instance_UpdateDownloaded;
 
             // Instantiate an AutomationSettings to handle record/playback.
             automationSettings = new AutomationSettings(this, commandFilePath);
@@ -598,6 +621,12 @@ namespace Dynamo.ViewModels
             UsageReportingManager.Instance.PropertyChanged += CollectInfoManager_PropertyChanged;
 
             WatchIsResizable = false;
+        }
+
+        void Instance_UpdateDownloaded(object sender, UpdateManager.UpdateDownloadedEventArgs e)
+        {
+            RaisePropertyChanged("Version");
+            RaisePropertyChanged("UpToDate");
         }
 
         void VisualizationManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -1548,7 +1577,7 @@ namespace Dynamo.ViewModels
 
         private void ShowAboutWindow(object obj)
         {
-            OnRequestAboutWindow(_aboutWindowViewModel);
+            OnRequestAboutWindow(this);
         }
 
         private bool CanCheckForUpdate(object obj)
