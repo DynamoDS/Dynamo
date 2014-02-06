@@ -18,7 +18,7 @@ namespace IntegrationTests
         public void DupImportTest()
         {
             var mirror = thisTest.RunScriptSource(
-@"import(""DSNodeTarget.dll"");
+@"import(""FFITarget.dll"");
 a = A.DupTargetTest.DupTargetTest(); 
 aO = a.Foo();
 
@@ -36,7 +36,7 @@ bO = b.Foo();
         public void DupImportTestNeg()
         {
             var mirror = thisTest.RunScriptSource(
-@"import(""DSNodeTarget.dll"");
+@"import(""FFITarget.dll"");
 a = DupTargetTest.DupTargetTest(); 
 aO = a.Foo();
 "

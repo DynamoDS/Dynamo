@@ -69,4 +69,6 @@
     <controls:WarningLevelToColorConverter x:Key="WarningLevelToColorConverter"/>
     <controls:BoolToShowAllPreviewNameConverter x:Key="BoolToShowAllPreviewNameConverter" />
     <controls:BoolToScrollBarVisibilityConverter x:Key="BoolToScrollBarVisibilityConverter" />
+    <controls:IsUpToDateToTextConverter x:Key="IsUpToDateToTextConverter"/>
+    <controls:IsUpToDateBrushConverter x:Key="IsUpToDateBrushConverter"/>
 </ResourceDictionary>

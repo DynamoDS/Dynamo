@@ -41,12 +41,11 @@ namespace Dynamo.UpdateManager
             public string InstallerURL;
         }
 
-        private UpdateManager(DynamoLogger logger)
+        private UpdateManager()
         {
-            this.logger = logger;
         }
 
-        private static UpdateManager self = null;
+        private static UpdateManager instance = null;
         private bool versionCheckInProgress = false;
         private BinaryVersion productVersion = null;
         private AppVersionInfo? updateInfo;
@@ -66,24 +65,18 @@ namespace Dynamo.UpdateManager
 
         #region Public Class Properties
 
-        public static UpdateManager CreateInstance(DynamoLogger logger)
-        {
-            if (self != null) return self;
-
-            if (null == logger)
-                throw new ArgumentNullException("logger", "Unspecified logger (61578808A807)");
-
-            self = new UpdateManager(logger);
-
-            return self;
-        }
-
         /// <summary>
         /// Obtains singleton object instance of UpdateManager class
         /// </summary>
         public static UpdateManager Instance
         {
-            get { return UpdateManager.self; }
+            get
+            {
+                if (instance != null) return instance;
+                instance = new UpdateManager {logger = DynamoLogger.Instance};
+
+                return instance;
+            }
         }
 
         /// <summary>

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace DSNodeTarget
+namespace FFITarget
 {
     public class MinimalTracedClass
     {
@@ -39,8 +39,7 @@ namespace DSNodeTarget
         private bool wasTraced = false;
 
         public int ID { get; set; }
-        
-        public IncrementerTracedClass()
+        public IncrementerTracedClass(int x)
         {
             var retVal = DSNodeServices.TraceUtils.GetTraceData(__TEMP_REVIT_TRACE_ID);
 
@@ -54,18 +53,18 @@ namespace DSNodeTarget
             }
             else
             {
-                DSNodeServices.TraceUtils.SetTraceData(__TEMP_REVIT_TRACE_ID, new IDHolder() { ID = nextID++ });
+                nextID++;
+                ID = nextID;
+                DSNodeServices.TraceUtils.SetTraceData(__TEMP_REVIT_TRACE_ID, new IDHolder() { ID = nextID });
             }
 
 
             
         }
-
         public bool WasCreatedWithTrace()
         {
             return wasTraced;
         }
-
 
     }
 
