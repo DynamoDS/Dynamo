@@ -106,6 +106,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CallsiteRegen.cs" />
     <Compile Include="IncrementingTraceTests.cs" />
     <Compile Include="MinimalTraceTests.cs" />
     <Compile Include="NamespaceConflictTest.cs" />

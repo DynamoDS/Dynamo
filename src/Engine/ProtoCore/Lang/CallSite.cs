@@ -27,10 +27,14 @@ namespace ProtoCore
         private List<Object> traceData = new List<object>();
         private int invokeCount = 0; //Number of times the callsite has been executed within this run
 
+        private Guid callsiteID = Guid.Empty;
 
 
         public CallSite(int classScope, string methodName, FunctionTable globalFunctionTable, ExecutionMode execMode)
         {
+            //Set the ID of internal test
+            callsiteID = Guid.NewGuid();
+
             Validity.Assert(methodName != null);
             Validity.Assert(globalFunctionTable != null);
 
