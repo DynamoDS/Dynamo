@@ -79,5 +79,53 @@ cleanB = mtcB.WasCreatedWithTrace();
         }
 
 
+        [Test]
+        [Category("Trace")]
+        public void IncrementerIDTest()
+        {
+            //Verify that multiple calls to the same FEP from different callsites
+            //do not over-increment
+
+            var mirror = thisTest.RunScriptSource(
+@"import(""FFITarget.dll"");
+mtcA = IncrementerTracedClass.IncrementerTracedClass(0);
+mtcAID = mtcA.ID;
+mtcAWasTraced = mtcA.WasCreatedWithTrace();
+
+mtcB = IncrementerTracedClass.IncrementerTracedClass(0);
+mtcBID = mtcB.ID;
+mtcBWasTraced = mtcB.WasCreatedWithTrace();
+"
+);
+            Assert.IsTrue((Int64)mirror.GetFirstValue("mtcAID").Payload == 0);
+            Assert.IsTrue((Boolean)mirror.GetFirstValue("mtcAWasTraced").Payload == false);
+
+            Assert.IsTrue((Int64)mirror.GetFirstValue("mtcBID").Payload == 1);
+            Assert.IsTrue((Boolean)mirror.GetFirstValue("mtcBWasTraced").Payload == false);
+        }
+
+
+        [Test]
+        [Category("Trace")]
+        public void IncrementerIDTestUpdate()
+        {
+            //Verify that multiple calls to the same FEP from different callsites
+            //do not over-increment
+
+            var mirror = thisTest.RunScriptSource(
+@"import(""FFITarget.dll"");
+x = 0;
+mtcA = IncrementerTracedClass.IncrementerTracedClass(x);
+mtcAID = mtcA.ID;
+mtcAWasTraced = mtcA.WasCreatedWithTrace();
+
+x = 1;
+"
+);
+            Assert.IsTrue((Int64)mirror.GetFirstValue("mtcAID").Payload == 0);
+            Assert.IsTrue((Boolean)mirror.GetFirstValue("mtcAWasTraced").Payload == true);
+        }
+
+
     }
 }
