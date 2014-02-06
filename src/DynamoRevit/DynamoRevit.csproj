@@ -106,10 +106,12 @@
       <HintPath>..\..\extern\greg\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="RevitAPI">
-      <HintPath>..\..\..\..\Program Files\Autodesk\Revit Architecture 2014\Program\RevitAPI.dll</HintPath>
+      <HintPath>$(REVITAPI)\RevitAPI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPIUI">
-      <HintPath>..\..\..\..\Program Files\Autodesk\Revit Architecture 2014\Program\RevitAPIUI.dll</HintPath>
+      <HintPath>$(REVITAPI)\RevitAPIUI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="RevitRaaS">
       <HintPath>..\..\extern\DynamoRaaS\RevitRaaS.dll</HintPath>
