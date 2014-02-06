@@ -692,10 +692,13 @@ limitations under the License.
     <Resource Include="UI\Images\Update\update.png" />
     <Resource Include="UI\Images\Update\update_static.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\AboutWindow\logo_about.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y "$(SolutionDir)..\extern\DesignScript\*" "$(OutputPath)"
-copy "$(SolutionDir)..\doc\distrib\License.txt" "$(OutputPath).\License.txt"</PostBuildEvent>
+copy "$(SolutionDir)..\doc\distrib\License.rtf" "$(OutputPath).\License.rtf"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
