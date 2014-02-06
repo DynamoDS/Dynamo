@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace DSCore
 {
@@ -53,6 +54,23 @@ namespace DSCore
         public static double Average(IEnumerable<double> numbers)
         {
             return numbers.Average();
+        }
+
+        /// <summary>
+        ///     Adjusts the range of a list of numbers while preserving the
+        ///     distribution ratio.
+        /// </summary>
+        /// <param name="numbers"></param>
+        /// <param name="newMin"></param>
+        /// <param name="newMax"></param>
+        public static IList RemapRange(IList numbers, double newMin = 0, double newMax = 1)
+        {
+            var nums = numbers.Cast<double>().ToList();
+            var oldMax = nums.Max();
+            var oldMin = nums.Min();
+            var oldRange = oldMax - oldMin;
+            var newRange = newMax - newMin;
+            return nums.Select(oldValue => ((oldValue - oldMin)*newRange)/oldRange + newMin).ToList();
         }
     }
 }
