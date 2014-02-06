@@ -966,23 +966,23 @@ namespace Dynamo.Nodes
 
             var zipped = list.Zip(mask, (i, m) => new {Item = i, Mask = FScheme.ValueToBool(m)});
 
-            var inList = FSharpList<Value>.Empty;
-            var outList = FSharpList<Value>.Empty;
+            var inList = new List<Value>();
+            var outList = new List<Value>();
 
             foreach (var p in zipped)
             {
                 if (p.Mask)
                 {
-                    inList = FSharpList<Value>.Cons(p.Item, inList);
+                    inList.Add(p.Item);
                 }
                 else
                 {
-                    outList = FSharpList<Value>.Cons(p.Item, outList);
+                    outList.Add(p.Item);
                 }
             }
 
-            outPuts[OutPortData[0]] = Value.NewList(inList);
-            outPuts[OutPortData[1]] = Value.NewList(outList);
+            outPuts[OutPortData[0]] = Value.NewList(inList.ToFSharpList());
+            outPuts[OutPortData[1]] = Value.NewList(outList.ToFSharpList());
         }
     }
 
@@ -1006,23 +1006,23 @@ namespace Dynamo.Nodes
             var pred = ((Value.Function) args[0]).Item;
             var list = ((Value.List) args[1]).Item;
 
-            var inList = FSharpList<Value>.Empty;
-            var outList = FSharpList<Value>.Empty;
+            var inList = new List<Value>();
+            var outList = new List<Value>();
 
             foreach (var item in list)
             {
                 if (FScheme.ValueToBool(pred.Invoke(Utils.MakeFSharpList(item))))
                 {
-                    inList = FSharpList<Value>.Cons(item, inList);
+                    inList.Add(item);
                 }
                 else
                 {
-                    outList = FSharpList<Value>.Cons(item, outList);
+                    outList.Add(item);
                 }
             }
 
-            outPuts[OutPortData[0]] = Value.NewList(inList);
-            outPuts[OutPortData[1]] = Value.NewList(outList);
+            outPuts[OutPortData[0]] = Value.NewList(inList.ToFSharpList());
+            outPuts[OutPortData[1]] = Value.NewList(outList.ToFSharpList());
         }
     }
 
