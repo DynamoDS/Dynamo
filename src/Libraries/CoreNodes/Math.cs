@@ -54,5 +54,22 @@ namespace DSCore
         {
             return numbers.Cast<double>().Average();
         }
+
+        /// <summary>
+        ///     Adjusts the range of a list of numbers while preserving the
+        ///     distribution ratio.
+        /// </summary>
+        /// <param name="numbers">List of numbers to adjust range of.</param>
+        /// <param name="newMin">New minimum of the range.</param>
+        /// <param name="newMax">New maximum of the range</param>
+        public static IList RemapRange(IList numbers, double newMin = 0, double newMax = 1)
+        {
+            var nums = numbers.Cast<double>().ToList();
+            var oldMax = nums.Max();
+            var oldMin = nums.Min();
+            var oldRange = oldMax - oldMin;
+            var newRange = newMax - newMin;
+            return nums.Select(oldValue => ((oldValue - oldMin) * newRange) / oldRange + newMin).ToList();
+        }
     }
 }
