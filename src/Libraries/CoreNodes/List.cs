@@ -801,6 +801,12 @@ namespace DSCore
                     .ToList();
         }
 
+        /// <summary>
+        ///     Applies a function to each item in the given list, and constructs a new
+        ///     list containing the results of each function application.
+        /// </summary>
+        /// <param name="list">List to map.</param>
+        /// <param name="mapFunc">Function to apply to each element.</param>
         public static IList Map(IList list, Delegate mapFunc)
         {
             return list.Cast<object>().Select(x => mapFunc.DynamicInvoke(x)).ToList();
@@ -811,6 +817,13 @@ namespace DSCore
             return lists.Where(argList => index < argList.Count).Select(x => x[index]);
         }
 
+        /// <summary>
+        ///     Combines multiple lists into a single list by taking items at corresponding
+        ///     indices and applying a function to them, and using the results to construct
+        ///     a new list.
+        /// </summary>
+        /// <param name="combinator">Function to apply to an element from each list.</param>
+        /// <param name="lists">Lists to combine.</param>
         public static IList Combine(Delegate combinator, params IList[] lists)
         {
             var result = new ArrayList();
@@ -829,6 +842,18 @@ namespace DSCore
             return result;
         }
 
+        /// <summary>
+        ///     Reduces multiple lists into a single value by taking items at corresponding
+        ///     indices and applying a function to them and a "reduced value". The result
+        ///     is then used as a new reduced value for the next application. When all lists
+        ///     are empty, the final reduced value is returned.
+        /// </summary>
+        /// <param name="reductor">
+        ///     Reductor function: consumes an item from each list and a reduced value, and
+        ///     produces a new reduced value.
+        /// </param>
+        /// <param name="initial">The initial reduced value.</param>
+        /// <param name="lists">Lists to reduce.</param>
         public static object Reduce(Delegate reductor, object initial, params IList[] lists)
         {
             int i = 0;
@@ -844,6 +869,78 @@ namespace DSCore
 
             return initial;
         }
+
+        private static IEnumerable<IEnumerable<T>> GetPermutations<T>(
+            IEnumerable<T> items, int count)
+        {
+            int i = 0;
+            foreach (var item in items)
+            {
+                if (count == 1)
+                    yield return Singleton(item);
+                else
+                {
+                    var perms = GetPermutations(items.Take(i).Concat(items.Skip(i + 1)), count - 1);
+                    foreach (var result in perms)
+                        yield return Singleton(item).Concat(result);
+                }
+
+                ++i;
+            }
+        }
+
+        /// <summary>
+        ///     Produces all permutations of the given length of a given list.
+        /// </summary>
+        /// <param name="list">List to permute.</param>
+        /// <param name="length">Length of each permutation.</param>
+        public static IList Permutations(IList list, int? length = null)
+        {
+            return
+                GetPermutations(list.Cast<object>(), length ?? list.Count)
+                    .Select(x => x.ToList())
+                    .ToList();
+        }
+
+        private static IEnumerable<IEnumerable<T>> GetCombinations<T>(
+            IEnumerable<T> items, int count, bool replace)
+        {
+            int i = 0;
+            foreach (var item in items)
+            {
+                if (count == 1)
+                    yield return Singleton(item);
+                else
+                {
+                    foreach (var result in GetCombinations(items.Skip(replace ? i : i + 1), count - 1, replace))
+                        yield return Singleton(item).Concat(result);
+                }
+
+                ++i;
+            }
+        }
+
+        /// <summary>
+        ///     Produces all combination of the given length of a given list.
+        /// </summary>
+        /// <param name="list">List to generate combinations of.</param>
+        /// <param name="length">Length of each combination.</param>
+        /// <param name="replace">
+        ///     Whether or not items are removed once selected for combination, defaults
+        ///     to false.
+        /// </param>
+        public static IList Combinations(IList list, int length, bool replace = false)
+        {
+            return
+                GetCombinations(list.Cast<object>(), length, replace)
+                    .Select(x => x.ToList())
+                    .ToList();
+        }
+
+        private static IEnumerable<T> Singleton<T>(T t)
+        {
+            yield return t;
+        } 
     }
 
 
