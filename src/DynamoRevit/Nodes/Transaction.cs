@@ -40,7 +40,7 @@ namespace Dynamo.Nodes
                 Error("Input must be connected.");
                 throw new Exception("Transaction Node requires all inputs to be connected.");
             }
-            return base.Build(preBuilt, outPort);
+            return new PreviewUpdate(this) { WrappedNode = base.Build(preBuilt, outPort) };
         }
 
         protected override InputNode Compile(IEnumerable<string> portNames)

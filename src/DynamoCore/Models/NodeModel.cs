@@ -294,7 +294,7 @@ namespace Dynamo.Models
         public virtual FScheme.Value OldValue
         {
             get { return _oldValue; }
-            protected set
+            protected internal set
             {
                 _oldValue = value;
                 RaisePropertyChanged("OldValue");
