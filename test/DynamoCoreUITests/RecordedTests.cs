@@ -50,6 +50,7 @@ namespace Dynamo.Tests.UI
         private string GetVarName(string guid)
         {
             var model = controller.DynamoModel;
+
             var node = model.CurrentWorkspace.NodeFromWorkspace(guid);
             Assert.IsNotNull(node);
             return node.VariableToPreview;
@@ -329,6 +330,7 @@ namespace Dynamo.Tests.UI
             // Create the controller to run alongside the view.
             controller = DynamoController.MakeSandbox(commandFilePath);
             controller.DynamoViewModel.DynamicRunEnabled = autoRun;
+            controller.Testing = true;
 
             // Create the view.
             var dynamoView = new DynamoView();
