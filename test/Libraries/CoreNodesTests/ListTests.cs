@@ -381,5 +381,73 @@ namespace DSCoreNodesTests
                     Enumerable.Range(0, 5).ToList(),
                     Enumerable.Range(0, 5).ToList()));
         }
+
+        [Test]
+        public static void ListPermutations()
+        {
+            var check = List.Permutations(new ArrayList { "A", "B", "C", "D" }, 2);
+
+            Console.WriteLine(string.Join("\n", check.Cast<IList>().Select(
+                lst => string.Join("", lst.Cast<string>()))));
+
+            Assert.AreEqual(
+                new ArrayList
+                {
+                    new ArrayList { "A", "B" },
+                    new ArrayList { "A", "C" },
+                    new ArrayList { "A", "D" },
+                    new ArrayList { "B", "A" },
+                    new ArrayList { "B", "C" },
+                    new ArrayList { "B", "D" },
+                    new ArrayList { "C", "A" },
+                    new ArrayList { "C", "B" },
+                    new ArrayList { "C", "D" },
+                    new ArrayList { "D", "A" },
+                    new ArrayList { "D", "B" },
+                    new ArrayList { "D", "C" }
+                },
+                check);
+        }
+
+        [Test]
+        public static void ListCombinations()
+        {
+            var input = new ArrayList { "A", "B", "C", "D" };
+
+            var check = List.Combinations(input, 2);
+
+            Console.WriteLine(string.Join("\n", check.Cast<IList>().Select(
+                lst => string.Join("", lst.Cast<string>()))));
+
+            Assert.AreEqual(
+                new ArrayList
+                {
+                    new ArrayList { "A", "B" },
+                    new ArrayList { "A", "C" },
+                    new ArrayList { "A", "D" },
+                    new ArrayList { "B", "C" },
+                    new ArrayList { "B", "D" },
+                    new ArrayList { "C", "D" }
+                },
+                check);
+
+            check = List.Combinations(input, 2, true);
+
+            Assert.AreEqual(
+                new ArrayList
+                {
+                    new ArrayList { "A", "A" },
+                    new ArrayList { "A", "B" },
+                    new ArrayList { "A", "C" },
+                    new ArrayList { "A", "D" },
+                    new ArrayList { "B", "B" },
+                    new ArrayList { "B", "C" },
+                    new ArrayList { "B", "D" },
+                    new ArrayList { "C", "C" },
+                    new ArrayList { "C", "D" },
+                    new ArrayList { "D", "D" }
+                },
+                check);
+        }
     }
 }
