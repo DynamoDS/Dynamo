@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Minimal.cs" />
     <Compile Include="MinimalTraceTargets.cs" />
     <Compile Include="TestNSConflict.cs" />
   </ItemGroup>
