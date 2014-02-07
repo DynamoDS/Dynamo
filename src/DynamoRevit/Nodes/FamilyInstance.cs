@@ -615,14 +615,14 @@ namespace Dynamo.Nodes
     {
         public FamilyInstanceParameterSetter()
         {
-            InPortData.Add(new PortData("fi", "Family instance.", typeof (Value.Container)));
+            InPortData.Add(new PortData("element", "An Element.", typeof (Value.Container)));
             InPortData.Add(new PortData("param", "Parameter to modify (string).", typeof (Value.String)));
             InPortData.Add(new PortData("value", "Value to set the parameter to.", typeof (object)));
-            OutPortData.Add(new PortData("fi", "Modified family instance.", typeof (Value.Container)));
+            OutPortData.Add(new PortData("element", "Modified Element.", typeof (Value.Container)));
 
             RegisterAllPorts();
 
-            ArgumentLacing = LacingStrategy.Shortest;
+            ArgumentLacing = LacingStrategy.Longest;
         }
 
         private static Value setParam(Element fi, string paramName, Value valueExpr)
@@ -697,14 +697,14 @@ namespace Dynamo.Nodes
     {
         public FamilyInstanceParameterGetter()
         {
-            InPortData.Add(new PortData("fi", "Family instance.", typeof (Value.Container)));
+            InPortData.Add(new PortData("element", "An Element.", typeof (Value.Container)));
             InPortData.Add(new PortData("param", "Parameter to fetch (string).", typeof (Value.String)));
 
             OutPortData.Add(new PortData("val", "Parameter value.", typeof (object)));
 
             RegisterAllPorts();
 
-            ArgumentLacing = LacingStrategy.Shortest;
+            ArgumentLacing = LacingStrategy.Longest;
         }
 
         private static Value getParam(Element fi, string paramName)
