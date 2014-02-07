@@ -591,5 +591,74 @@ a.x = foo2; //b = 5.0";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r", 12);
         }
+
+        [Test]
+        public void T32_UseStaticMemberFunction()
+        {
+            string code = @"class Foo{    static def foo(x:int, y:int)    {        return = x + y;    }}f = Foo.foo;r = f(3, 4);";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r", 7);
+        }
+
+        [Test]
+        public void T33_UseStaticMemberFunction()
+        {
+            string code = @"class Foo{    static def foo(x:int, y:int)    {        return = x + y;    }}f = Foo.foo;r = f({3, 5}, {7, 9});";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r", new object[] {10, 14});
+        }
+
+        [Test]
+        public void T34_UseStaticMemberFunction()
+        {
+            string code = @"class Foo 
+{ 
+    static def foo(x : int, y : int) 
+    {
+        return = x + y; 
+    } 
+} 
+f = Foo.foo;
+a = { 3, 5 };
+b = { 7, 9 };
+r = f(a<1>, b<2>);";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r", new object[] { new object[] {10, 12}, new object[] {12, 14} });
+        }
+
+        [Test]
+        public void T35_UseConstructor()
+        {
+            string code = @"class Foo 
+{ 
+    i;
+    constructor Foo(x, y)
+    {
+        i = x + y;
+    } 
+} 
+c = Foo.Foo;
+f = c(2, 3);r = f.i;";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r", 5);
+        }
+
+
+        [Test]
+        public void T36_UseConstructor()
+        {
+            string code = @"class Foo 
+{ 
+    i;
+    constructor Foo(x, y)
+    {
+        i = x + y;
+    } 
+} 
+c = Foo.Foo;
+f = c({3,5}, {7, 9});r = f.i;";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r", new object[] {10, 14});
+        }
     }
 }
