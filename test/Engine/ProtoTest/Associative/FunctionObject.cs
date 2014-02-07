@@ -236,5 +236,49 @@ r5 = Apply(comp3, 9);
             thisTest.Verify("r4", 50);
             thisTest.Verify("r5", 243);
         }
+
+        [Test]
+        public void TestApplyOnStaticFunction()
+        {
+            string code =
+    @"
+import (""FunctionObject.ds"");
+class Foo
+{
+    static def foo(x, y)
+    {
+        return = x + y;
+    }
+}
+
+fo = _SingleFunctionObject(Foo.foo, 2, { 1 }, { null, 100 });
+r = Apply(fo, 3);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r", 103);
+        }
+
+        [Test]
+        public void TestApplyOnConstructor()
+        {
+            string code =
+    @"
+import (""FunctionObject.ds"");
+class Foo
+{
+    i;
+    constructor Foo(x, y)
+    {
+        i = x + y;
+    }
+}
+
+c = _SingleFunctionObject(Foo.Foo, 2, { 1 }, { null, 100 });
+f = Apply(c, 3);
+r = f.i;
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r", 103);
+        }
     }
 }

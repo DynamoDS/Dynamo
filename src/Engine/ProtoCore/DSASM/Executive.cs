@@ -4755,7 +4755,7 @@ namespace ProtoCore.DSASM
             return null;
         }
 
-        private ProcedureNode GetProcedureNode(int blockId, int classIndex, int functionIndex)
+        public ProcedureNode GetProcedureNode(int blockId, int classIndex, int functionIndex)
         {
             if (ProtoCore.DSASM.Constants.kGlobalScope != classIndex)
             {
