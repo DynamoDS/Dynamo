@@ -721,7 +721,9 @@ limitations under the License.
     <PostBuildEvent>mkdir "$(OutputPath)\dll"
 copy /Y "$(SolutionDir)..\extern\LibG\x64\Release\*" "$(OutputPath)\dll"
 </PostBuildEvent>
-    <PostBuildEvent>copy /Y "$(SolutionDir)..\extern\DesignScript\*" "$(OutputPath)"
+    <PostBuildEvent>mkdir "$(OutputPath)\dll"
+copy /Y "$(SolutionDir)..\extern\LibG\x64\Release\*" "$(OutputPath)\dll"
+copy /Y "$(SolutionDir)..\extern\ProtoGeometry\*" "$(OutputPath)"
 copy "$(SolutionDir)..\doc\distrib\License.rtf" "$(OutputPath).\License.rtf"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
