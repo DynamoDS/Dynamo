@@ -1141,7 +1141,7 @@ namespace ProtoImperative
                         inferedType.UID = (int)PrimitiveType.kTypeFunctionPointer;
 
                         int fptr = core.FunctionPointerTable.functionPointerDictionary.Count;
-                        ProtoCore.DSASM.FunctionPointerNode fptrNode = new ProtoCore.DSASM.FunctionPointerNode(procNode.procId, procNode.runtimeIndex);
+                        var fptrNode = new ProtoCore.DSASM.FunctionPointerNode(procNode);
                         core.FunctionPointerTable.functionPointerDictionary.TryAdd(fptr, fptrNode);
                         core.FunctionPointerTable.functionPointerDictionary.TryGetBySecond(fptrNode, out fptr);
 
