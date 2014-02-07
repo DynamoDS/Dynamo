@@ -1,4 +1,6 @@
-﻿using System;
+﻿
+
+using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -825,6 +827,15 @@ namespace ProtoCore.DSASM
             framePointer = rmem.FramePointer;
 
             ProtoCore.CallSite callsite = new ProtoCore.CallSite(classIndex, fNode.name, core.FunctionTable, core.Options.ExecutionMode);
+
+            // If the callsite exists, use the cached instance
+            ProtoCore.CallSite existingCallsite = callsite.GetCachedInstance(core);
+            if (null != existingCallsite)
+            {
+                callsite = existingCallsite;
+            }
+            Validity.Assert(null != callsite);
+
 
 
             StackFrameType type = StackFrameType.kTypeFunction;
