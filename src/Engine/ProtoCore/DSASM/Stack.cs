@@ -267,6 +267,22 @@ namespace ProtoCore.DSASM
             return value;
         }
 
+        public static StackValue BuildClassIndex(int classIndex)
+        {
+            StackValue value = new StackValue();
+            value.optype = AddressType.ClassIndex;
+            value.opdata = classIndex;
+            return value;
+        }
+
+        public static StackValue BuildFunctionPointer(int fptr)
+        {
+            StackValue value = new StackValue();
+            value.optype = AddressType.FunctionPointer;
+            value.opdata = fptr;
+            return value;
+        }
+
         public static StackValue BuildString(Int64 data)
         {
             StackValue value = new StackValue();

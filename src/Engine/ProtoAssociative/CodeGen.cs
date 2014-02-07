@@ -1001,6 +1001,8 @@ namespace ProtoAssociative
                     }
                 }
 
+                var classes = core.ClassTable.ClassNodes;
+
                 if (ci != ProtoCore.DSASM.Constants.kInvalidIndex)
                 {
                     // It is a class name
@@ -1022,7 +1024,7 @@ namespace ProtoAssociative
                         // Look further
                         if (isStaticCall && !procCallNode.isStatic)
                         {
-                            ProtoCore.DSASM.ProcedureNode staticProcCallNode = core.ClassTable.ClassNodes[ci].GetFirstStaticMemberFunction(procName);
+                            ProcedureNode staticProcCallNode = classes[ci].GetFirstStaticMemberFunction(procName);
                             if (null != staticProcCallNode)
                             {
                                 procCallNode = staticProcCallNode;
@@ -1033,24 +1035,43 @@ namespace ProtoAssociative
                     }
                     else
                     {
-                        ProtoCore.DSASM.ProcedureNode staticProcCallNode = core.ClassTable.ClassNodes[ci].GetFirstStaticMemberFunction(procName);
+                        var procNode = classes[ci].GetFirstStaticMemberFunction(procName);
                         string functionName = dotCall.FunctionCall.Function.Name;
                         string property;
 
-                        if (null != staticProcCallNode)
+                        if (null != procNode)
                         {
                             string message = String.Format(ProtoCore.BuildData.WarningMessage.kMethodHasInvalidArguments, functionName);
                             buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, dotCall.line, dotCall.col);
                         }
                         else if (CoreUtils.TryGetPropertyName(functionName, out property))
                         {
-                            string message = String.Format(ProtoCore.BuildData.WarningMessage.kCallingNonStaticProperty, lhsName, property);
-                            buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, dotCall.line, dotCall.col);
+                            procNode = classes[ci].GetFirstMemberFunction(property);
+
+                            if (procNode != null)
+                            {
+                                if (subPass == AssociativeSubCompilePass.kNone)
+                                {
+                                    EmitFunctionPointer(procNode);
+                                    return null;
+                                }
+                            }
+                            else
+                            {
+                                string message = String.Format(WarningMessage.kCallingNonStaticProperty, 
+                                                               lhsName, property);
+
+                                buildStatus.LogWarning(WarningID.kCallingNonStaticMethodOnClass, 
+                                                       message, 
+                                                       core.CurrentDSFileName, 
+                                                       dotCall.line, 
+                                                       dotCall.col);
+                            }
                         }
                         else
                         {
-                            string message = String.Format(ProtoCore.BuildData.WarningMessage.kCallingNonStaticMethod, lhsName, functionName);
-                            buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, dotCall.line, dotCall.col);
+                            string message = String.Format(WarningMessage.kCallingNonStaticMethod, lhsName, functionName);
+                            buildStatus.LogWarning(WarningID.kCallingNonStaticMethodOnClass, message, core.CurrentDSFileName, dotCall.line, dotCall.col);
                         }
                     }
                 }
@@ -4263,7 +4284,7 @@ namespace ProtoAssociative
                         if (ProtoCore.DSASM.AssociativeSubCompilePass.kUnboundIdentifier != subPass)
                         {
                             int fptr = core.FunctionPointerTable.functionPointerDictionary.Count;
-                            ProtoCore.DSASM.FunctionPointerNode fptrNode = new ProtoCore.DSASM.FunctionPointerNode(procNode.procId, procNode.runtimeIndex);
+                            var fptrNode = new FunctionPointerNode(procNode);
                             core.FunctionPointerTable.functionPointerDictionary.TryAdd(fptr, fptrNode);
                             core.FunctionPointerTable.functionPointerDictionary.TryGetBySecond(fptrNode, out fptr);
 
