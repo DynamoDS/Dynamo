@@ -1321,7 +1321,7 @@ namespace Dynamo.Controls
         {
             if ((bool) value == false)
             {
-                var latest = UpdateManager.UpdateManager.Instance.AvailableVersion;
+                var latest = dynSettings.Controller.UpdateManager.AvailableVersion;
                 return latest;
             }
 

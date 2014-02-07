@@ -11,6 +11,7 @@ using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
 using Dynamo.Models;
 using Dynamo.PackageManager;
+using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 
@@ -72,6 +73,7 @@ namespace Dynamo
         public InfoBubbleViewModel InfoBubbleViewModel { get; internal set; }
         public DynamoModel DynamoModel { get; set; }
         public Dispatcher UIDispatcher { get; set; }
+        public IUpdateManager UpdateManager { get; set; }
 
         public virtual VisualizationManager VisualizationManager
         {
@@ -235,6 +237,11 @@ namespace Dynamo
             //Start heartbeat reporting
             Services.InstrumentationLogger.Start();
 
+            UpdateManager = new UpdateManager.UpdateManager();
+            UpdateManager.UpdateDownloaded += updateManager_UpdateDownloaded;
+            UpdateManager.ShutdownRequested += updateManager_ShutdownRequested;
+            UpdateManager.CheckForProductUpdate();
+
             //create the view model to which the main window will bind
             //the DynamoModel is created therein
             this.DynamoViewModel = (DynamoViewModel)Activator.CreateInstance(
@@ -276,16 +283,11 @@ namespace Dynamo
             AddPythonBindings();
 
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrations));
-
-            var updateManager = UpdateManager.UpdateManager.Instance;
-            updateManager.UpdateDownloaded += updateManager_UpdateDownloaded;
-            updateManager.ShutdownRequested += updateManager_ShutdownRequested;
-            updateManager.CheckForProductUpdate();
         }
 
         void updateManager_UpdateDownloaded(object sender, UpdateManager.UpdateDownloadedEventArgs e)
         {
-            UpdateManager.UpdateManager.Instance.QuitAndInstallUpdate();
+            UpdateManager.QuitAndInstallUpdate();
         }
 
         void updateManager_ShutdownRequested(object sender, EventArgs e)
@@ -293,7 +295,7 @@ namespace Dynamo
             UIDispatcher.Invoke((Action) delegate
             {
                 ShutDown(true);
-                UpdateManager.UpdateManager.Instance.HostApplicationBeginQuit(this, e);
+                UpdateManager.HostApplicationBeginQuit(this, e);
             });
         }
 
