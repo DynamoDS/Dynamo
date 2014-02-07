@@ -221,6 +221,20 @@ namespace Dynamo.Nodes
                              .ToList();
         }
 
+        private AssociativeNode CreateFunctionObject(AssociativeNode functionNode, 
+                                                     List<AssociativeNode> inputs)
+        {
+            var paramNumNode = new IntNode(Definition.Parameters.Count().ToString());
+            var positionNode = AstFactory.BuildExprList(GetConnectedInputs());
+            var arguments = AstFactory.BuildExprList(inputs);
+            var inputParams = new List<AssociativeNode>() { functionNode, 
+                                                            paramNumNode, 
+                                                            positionNode,
+                                                            arguments };
+
+            return AstFactory.BuildFunctionCall("_SingleFunctionObject", inputParams);
+        }
+
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
             string function = Definition.Name;
@@ -230,13 +244,21 @@ namespace Dynamo.Nodes
             {
                 case FunctionType.Constructor:
                 case FunctionType.StaticMethod:
-
-                    var staticCall = new IdentifierListNode
+                    if (HasUnconnectedInput())
                     {
-                        LeftNode = new IdentifierNode(Definition.ClassName),
-                        RightNode = AstFactory.BuildFunctionCall(function, inputAstNodes)
-                    };
-                    rhs = staticCall;
+                        var functionNode = new IdentifierListNode
+                        {
+                            LeftNode = new IdentifierNode(Definition.ClassName),
+                            RightNode = new IdentifierNode(Definition.Name)
+                        };
+                        rhs = CreateFunctionObject(functionNode, inputAstNodes);
+                    }
+                    else
+                    {
+                        rhs = AstFactory.BuildFunctionCall(Definition.ClassName,
+                                                           Definition.Name,
+                                                           inputAstNodes);
+                    }
                     break;
 
                 case FunctionType.StaticProperty:
@@ -293,21 +315,8 @@ namespace Dynamo.Nodes
                 default:
                     if (HasUnconnectedInput())
                     {
-                        // _SingleFunctionObject(foo, 3, {0, 2}, {x, null, y}); 
                         var functionNode = new IdentifierNode(function);
-                        var paramNumNode = new IntNode(Definition.Parameters.Count().ToString());
-                        var positionNode = AstFactory.BuildExprList(GetConnectedInputs());
-                        var arguments = AstFactory.BuildExprList(inputAstNodes);
-
-                        var inputNodes = new List<AssociativeNode>()
-                         {
-                             functionNode,
-                             paramNumNode,
-                             positionNode,
-                             arguments
-                         };
-
-                        rhs = AstFactory.BuildFunctionCall("_SingleFunctionObject", inputNodes);
+                        rhs = CreateFunctionObject(functionNode, inputAstNodes);
                     }
                     else
                     {

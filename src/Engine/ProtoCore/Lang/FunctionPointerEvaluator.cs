@@ -22,15 +22,18 @@ namespace ProtoCore.Lang
             Core core = dsi.runtime.Core;
 
             int fptr = (int)pointer.opdata;
-            ProtoCore.DSASM.FunctionPointerNode fptrNode;
+            FunctionPointerNode fptrNode;
+            int classScope = Constants.kGlobalScope;
+
             if (core.FunctionPointerTable.functionPointerDictionary.TryGetByFirst(fptr, out fptrNode))
             {
                 int blockId = fptrNode.blockId;
                 int procId = fptrNode.procId;
-                mProcNode = dsi.runtime.exe.procedureTable[blockId].procList[procId];
+                classScope = fptrNode.classScope;
+                mProcNode = dsi.runtime.GetProcedureNode(blockId, classScope, procId);
             }
 
-            mCallSite = new ProtoCore.CallSite(ProtoCore.DSASM.Constants.kGlobalScope, Name, core.FunctionTable, core.Options.ExecutionMode);
+            mCallSite = new ProtoCore.CallSite(classScope, Name, core.FunctionTable, core.Options.ExecutionMode);
 
             // If the callsite exists, use the cached instance
             ProtoCore.CallSite existingCallsite = mCallSite.GetCachedInstance(core);
