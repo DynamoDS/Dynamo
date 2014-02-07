@@ -16,10 +16,13 @@ namespace ProtoCore.DSASM
     {
         public int procId;
         public int blockId;
-        public FunctionPointerNode(int procId, int blockId)
+        public int classScope;
+
+        public FunctionPointerNode(ProcedureNode procNode)
         {
-            this.procId = procId;
-            this.blockId = blockId;
+            this.procId = procNode.procId;
+            this.classScope = procNode.classScope;
+            this.blockId = procNode.runtimeIndex;
         }
     }
 
