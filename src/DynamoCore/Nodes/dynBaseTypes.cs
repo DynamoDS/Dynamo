@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Web.UI;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml;
@@ -249,6 +250,57 @@ namespace Dynamo.Nodes
     }
 
     #region FScheme Builtin Interop
+
+    public class PreviewUpdate : InputNode
+    {
+        private readonly NodeModel _node;
+
+        public PreviewUpdate(NodeModel node)
+            : base(new[] { " __wrapped " })
+        {
+            _node = node;
+        }
+
+        public INode WrappedNode
+        {
+            set
+            {
+                ConnectInput("__wrapped", value);
+            }
+        }
+
+        protected override FScheme.Expression compileBody(
+            Dictionary<INode, string> symbols, Dictionary<INode, List<INode>> letEntries,
+            HashSet<string> initializedIds, HashSet<string> conditionalIds)
+        {
+            /* (let ((__result <__wrapped>))
+             *    (updateNodeOldValue __result)
+             *    __result)
+             */
+            return FScheme.Expression.NewLet(
+                new[] { "__result" }.ToFSharpList(),
+                new[]
+                {
+                    arguments["__wrapped"].compile(
+                        symbols,
+                        letEntries,
+                        initializedIds,
+                        conditionalIds)
+                }.ToFSharpList(),
+                FScheme.Expression.NewBegin(
+                    new[]
+                    {
+                        FScheme.Expression.NewList_E(
+                            new[]
+                            {
+                                FScheme.Expression.NewFunction_E(
+                                    Utils.ConvertToFSchemeFunc(args => _node.OldValue = args[0])),
+                                FScheme.Expression.NewId("__result")
+                            }.ToFSharpList()),
+                        FScheme.Expression.NewId("__result")
+                    }.ToFSharpList()));
+        }
+    }
 
     public abstract class BuiltinFunction : NodeWithOneOutput
     {
@@ -966,23 +1018,23 @@ namespace Dynamo.Nodes
 
             var zipped = list.Zip(mask, (i, m) => new {Item = i, Mask = FScheme.ValueToBool(m)});
 
-            var inList = FSharpList<Value>.Empty;
-            var outList = FSharpList<Value>.Empty;
+            var inList = new List<Value>();
+            var outList = new List<Value>();
 
             foreach (var p in zipped)
             {
                 if (p.Mask)
                 {
-                    inList = FSharpList<Value>.Cons(p.Item, inList);
+                    inList.Add(p.Item);
                 }
                 else
                 {
-                    outList = FSharpList<Value>.Cons(p.Item, outList);
+                    outList.Add(p.Item);
                 }
             }
 
-            outPuts[OutPortData[0]] = Value.NewList(inList);
-            outPuts[OutPortData[1]] = Value.NewList(outList);
+            outPuts[OutPortData[0]] = Value.NewList(inList.ToFSharpList());
+            outPuts[OutPortData[1]] = Value.NewList(outList.ToFSharpList());
         }
     }
 
@@ -1006,23 +1058,23 @@ namespace Dynamo.Nodes
             var pred = ((Value.Function) args[0]).Item;
             var list = ((Value.List) args[1]).Item;
 
-            var inList = FSharpList<Value>.Empty;
-            var outList = FSharpList<Value>.Empty;
+            var inList = new List<Value>();
+            var outList = new List<Value>();
 
             foreach (var item in list)
             {
                 if (FScheme.ValueToBool(pred.Invoke(Utils.MakeFSharpList(item))))
                 {
-                    inList = FSharpList<Value>.Cons(item, inList);
+                    inList.Add(item);
                 }
                 else
                 {
-                    outList = FSharpList<Value>.Cons(item, outList);
+                    outList.Add(item);
                 }
             }
 
-            outPuts[OutPortData[0]] = Value.NewList(inList);
-            outPuts[OutPortData[1]] = Value.NewList(outList);
+            outPuts[OutPortData[0]] = Value.NewList(inList.ToFSharpList());
+            outPuts[OutPortData[1]] = Value.NewList(outList.ToFSharpList());
         }
     }
 
@@ -1812,7 +1864,7 @@ namespace Dynamo.Nodes
             if (!preBuilt.TryGetValue(this, out result))
             {
                 result = new Dictionary<int, INode>();
-                result[outPort] = new SymbolNode("empty");
+                result[outPort] = new PreviewUpdate(this) { WrappedNode = new SymbolNode("empty") };
                 preBuilt[this] = result;
             }
             return result[outPort];
@@ -2661,6 +2713,8 @@ namespace Dynamo.Nodes
             if (preBuilt.TryGetValue(this, out result)) 
                 return result[outPort];
 
+            INode resultNode;
+
             if (Enumerable.Range(0, InPortData.Count).All(HasInput))
             {
                 var ifNode = new ConditionalNode();
@@ -2668,7 +2722,7 @@ namespace Dynamo.Nodes
                 ifNode.ConnectInput("true", Inputs[1].Item2.Build(preBuilt, Inputs[1].Item1));
                 ifNode.ConnectInput("false", new NumberNode(0));
                 result = new Dictionary<int, INode>();
-                result[outPort] = ifNode;
+                resultNode = ifNode;
             }
             else
             {
@@ -2695,8 +2749,9 @@ namespace Dynamo.Nodes
                 OnEvaluate(); //TODO: insert call into actual ast using a begin
 
                 result = new Dictionary<int, INode>();
-                result[outPort] = node;
+                resultNode = node;
             }
+            result[outPort] = new PreviewUpdate(this) { WrappedNode = resultNode };
             preBuilt[this] = result;
             return result[outPort];
         }
@@ -2726,6 +2781,8 @@ namespace Dynamo.Nodes
             if (preBuilt.TryGetValue(this, out result)) 
                 return result[outPort];
 
+            INode resultNode;
+
             if (Enumerable.Range(0, InPortData.Count).All(HasInput))
             {
                 var ifNode = new ConditionalNode();
@@ -2734,7 +2791,7 @@ namespace Dynamo.Nodes
                 ifNode.ConnectInput("false", Inputs[1].Item2.Build(preBuilt, Inputs[1].Item1));
 
                 result = new Dictionary<int, INode>();
-                result[outPort] = ifNode;
+                resultNode = ifNode;
             }
             else
             {
@@ -2761,8 +2818,9 @@ namespace Dynamo.Nodes
                 OnEvaluate(); //TODO: insert call into actual ast using a begin
 
                 result = new Dictionary<int, INode>();
-                result[outPort] = node;
+                resultNode = node;
             }
+            result[outPort] = new PreviewUpdate(this) { WrappedNode = resultNode };
             preBuilt[this] = result;
             return result[outPort];
         }
@@ -3425,7 +3483,7 @@ namespace Dynamo.Nodes
             if (!preBuilt.TryGetValue(this, out result))
             {
                 result = new Dictionary<int, INode>();
-                result[outPort] = new NumberNode(Math.E);
+                result[outPort] = new PreviewUpdate(this) { WrappedNode = new NumberNode(Math.E) };
                 preBuilt[this] = result;
             }
             return result[outPort];
@@ -3475,7 +3533,7 @@ namespace Dynamo.Nodes
             if (!preBuilt.TryGetValue(this, out result))
             {
                 result = new Dictionary<int, INode>();
-                result[outPort] = new NumberNode(3.14159265358979);
+                result[outPort] = new PreviewUpdate(this) { WrappedNode = new NumberNode(3.14159265358979) };
                 preBuilt[this] = result;
             }
             return result[outPort];
@@ -3526,7 +3584,7 @@ namespace Dynamo.Nodes
             if (!preBuilt.TryGetValue(this, out result))
             {
                 result = new Dictionary<int, INode>();
-                result[outPort] = new NumberNode(3.14159265358979 * 2);
+                result[outPort] = new PreviewUpdate(this) { WrappedNode = new NumberNode(3.14159265358979 * 2) };
                 preBuilt[this] = result;
             }
             return result[outPort];
@@ -3874,13 +3932,18 @@ namespace Dynamo.Nodes
             Dictionary<int, INode> result;
             if (!preBuilt.TryGetValue(this, out result))
             {
-                result = new Dictionary<int, INode>(); 
-                result[outPort] = 
+                result = new Dictionary<int, INode>();
+
+                var begins =
                     nestedBegins(
                         new Stack<Tuple<int, NodeModel>>(
-                            Enumerable.Range(0, InPortData.Count).Select(
-                                x => HasInput(x) ? Inputs[x] : null)),
-                    preBuilt);
+                            Enumerable.Range(0, InPortData.Count)
+                                      .Select(x => HasInput(x) ? Inputs[x] : null)),
+                        preBuilt);
+
+                var previewUpdate = new PreviewUpdate(this) { WrappedNode = begins };
+
+                result[outPort] = previewUpdate;
                 preBuilt[this] = result;
             }
             return result[outPort];
@@ -4019,9 +4082,9 @@ namespace Dynamo.Nodes
             if (!HasInput(0))
             {
                 Error("Test input must be connected.");
-                throw new Exception("If Node requires test input to be connected.");
+                return new ObjectNode(null);
             }
-            return base.Build(preBuilt, outPort);
+            return new PreviewUpdate(this) { WrappedNode = base.Build(preBuilt, outPort) };
         }
 
         protected override InputNode Compile(IEnumerable<string> portNames)

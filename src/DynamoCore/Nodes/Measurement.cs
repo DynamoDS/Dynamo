@@ -135,7 +135,7 @@ namespace Dynamo.Nodes
             OutPortData.Add(new PortData("unit", "The unit. Stored internally as SI units.", typeof(FScheme.Value.Container)));
             RegisterAllPorts();
 
-            ArgumentLacing = LacingStrategy.Shortest;
+            ArgumentLacing = LacingStrategy.Longest;
         }
 
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
