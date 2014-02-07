@@ -27,10 +27,22 @@ namespace Dynamo.UpdateManager
         public Exception Error { get; private set; }
     }
 
+    public interface IUpdateManager
+    {
+        BinaryVersion ProductVersion { get; }
+        BinaryVersion AvailableVersion { get; }
+        bool IsUpToDate { get; }
+        event UpdateDownloadedEventHandler UpdateDownloaded;
+        event ShutdownRequestedEventHandler ShutdownRequested;
+        void CheckForProductUpdate();
+        void QuitAndInstallUpdate();
+        void HostApplicationBeginQuit(object sender, EventArgs e);
+    }
+
     /// <summary>
     /// This class provides services for product update management.
     /// </summary>
-    public class UpdateManager
+    public class UpdateManager:IUpdateManager
     {
         #region Private Class Data Members
 
@@ -39,10 +51,6 @@ namespace Dynamo.UpdateManager
             public BinaryVersion Version;
             public string VersionInfoURL;
             public string InstallerURL;
-        }
-
-        private UpdateManager()
-        {
         }
 
         private static UpdateManager instance = null;
@@ -68,15 +76,20 @@ namespace Dynamo.UpdateManager
         /// <summary>
         /// Obtains singleton object instance of UpdateManager class
         /// </summary>
-        public static UpdateManager Instance
-        {
-            get
-            {
-                if (instance != null) return instance;
-                instance = new UpdateManager {logger = DynamoLogger.Instance};
+        //public static UpdateManager Instance
+        //{
+        //    get
+        //    {
+        //        if (instance != null) return instance;
+        //        instance = new UpdateManager {logger = DynamoLogger.Instance};
 
-                return instance;
-            }
+        //        return instance;
+        //    }
+        //}
+
+        public UpdateManager()
+        {
+            logger = DynamoLogger.Instance;
         }
 
         /// <summary>
@@ -112,6 +125,11 @@ namespace Dynamo.UpdateManager
 
                 return updateInfo.Value.Version;
             }
+        }
+
+        public bool IsUpToDate
+        {
+            get { return ProductVersion >= AvailableVersion; }
         }
 
         /// <summary>
