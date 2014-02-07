@@ -3280,7 +3280,7 @@ namespace ProtoCore.DSASM
 
         protected SymbolNode GetSymbolNode(int blockId, int classIndex, int symbolIndex)
         {
-            if (DSASM.Constants.kInvalidIndex == classIndex)
+            if (DSASM.Constants.kGlobalScope == classIndex)
             {
                 return exe.runtimeSymbols[blockId].symbolList[symbolIndex];
             }
@@ -4417,10 +4417,19 @@ namespace ProtoCore.DSASM
                 {
                     int blockId = fptrNode.blockId;
                     int procId = fptrNode.procId;
-                    procName = exe.procedureTable[blockId].procList[procId].name;
-                    CodeBlock codeblock = core.GetCodeBlock(core.CodeBlockList, blockId);
-                    procNode = core.GetFirstVisibleProcedure(procName, arglist, codeblock);
-                    type = ProtoCore.DSASM.Constants.kGlobalScope; //function class scope must be kGlobalScope
+                    int classId = fptrNode.classScope;
+
+                    if (Constants.kGlobalScope == classId)
+                    {
+                        procName = exe.procedureTable[blockId].procList[procId].name;
+                        CodeBlock codeblock = core.GetCodeBlock(core.CodeBlockList, blockId);
+                        procNode = core.GetFirstVisibleProcedure(procName, arglist, codeblock);
+                    }
+                    else
+                    {
+                        procNode = exe.classTable.ClassNodes[classId].vtable.procList[procId];
+                    }
+                    type = classId;
                 }
                 else
                 {
@@ -4746,7 +4755,7 @@ namespace ProtoCore.DSASM
             return null;
         }
 
-        private ProcedureNode GetProcedureNode(int blockId, int classIndex, int functionIndex)
+        public ProcedureNode GetProcedureNode(int blockId, int classIndex, int functionIndex)
         {
             if (ProtoCore.DSASM.Constants.kGlobalScope != classIndex)
             {

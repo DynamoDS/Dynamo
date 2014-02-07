@@ -3112,6 +3112,29 @@ namespace ProtoCore
             EmitPush(op);
         }
 
+        protected void EmitFunctionPointer(ProcedureNode procNode)
+        {
+            var fptrDict = core.FunctionPointerTable.functionPointerDictionary;
+            int fptr = fptrDict.Count;
+
+            var fptrNode = new FunctionPointerNode(procNode);
+            fptrDict.TryAdd(fptr, fptrNode);
+            fptrDict.TryGetBySecond(fptrNode, out fptr);
+            EmitPushVarData(fptrNode.blockId, 0);
+
+            string name = procNode.name;
+            if (Constants.kGlobalScope != procNode.classScope)
+            {
+                int classIndex = procNode.classScope;
+                string className = core.ClassTable.ClassNodes[classIndex].name;
+                name = String.Format(@"{0}.{1}", className, name);
+            }
+
+            EmitInstrConsole(kw.push, name);
+            var op = StackUtils.BuildFunctionPointer(fptr);
+            EmitPush(op);
+        }
+
         protected List<ProtoCore.DSASM.AttributeEntry> PopulateAttributes(dynamic attributenodes)
         {
             List<ProtoCore.DSASM.AttributeEntry> attributes = new List<DSASM.AttributeEntry>();
