@@ -73,20 +73,6 @@ namespace Dynamo.UpdateManager
 
         #region Public Class Properties
 
-        /// <summary>
-        /// Obtains singleton object instance of UpdateManager class
-        /// </summary>
-        //public static UpdateManager Instance
-        //{
-        //    get
-        //    {
-        //        if (instance != null) return instance;
-        //        instance = new UpdateManager {logger = DynamoLogger.Instance};
-
-        //        return instance;
-        //    }
-        //}
-
         public UpdateManager()
         {
             logger = DynamoLogger.Instance;
