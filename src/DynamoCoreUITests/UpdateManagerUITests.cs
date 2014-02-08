@@ -69,8 +69,7 @@ namespace DynamoCoreUITests
             var stb = (ShortcutToolbar)Ui.shortcutBarGrid.Children[0];
             var sbgrid = (Grid)stb.FindName("ShortcutToolbarGrid");
             var updateControl = (GraphUpdateNotificationControl)sbgrid.FindName("UpdateControl");
-            var installButton = (Button)updateControl.FindName("InstallButton");
-            Assert.AreEqual(Visibility.Visible, installButton.Visibility);
+            Assert.AreEqual(Visibility.Visible, updateControl.Visibility);
         }
     }
 
@@ -125,8 +124,7 @@ namespace DynamoCoreUITests
             var stb = (ShortcutToolbar)Ui.shortcutBarGrid.Children[0];
             var sbgrid = (Grid)stb.FindName("ShortcutToolbarGrid");
             var updateControl = (GraphUpdateNotificationControl)sbgrid.FindName("UpdateControl");
-            var installButton = (Button)updateControl.FindName("InstallButton");
-            Assert.AreEqual(Visibility.Collapsed, installButton.Visibility);
+            Assert.AreEqual(Visibility.Collapsed, updateControl.Visibility);
         }
     }
 
