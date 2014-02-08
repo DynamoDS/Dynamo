@@ -713,7 +713,7 @@ namespace Dynamo.Nodes
 
             RegisterAllPorts();
 
-            ArgumentLacing = LacingStrategy.Shortest;
+            ArgumentLacing = LacingStrategy.Longest;
         }
 
         public override Value Evaluate(FSharpList<Value> args)
@@ -802,7 +802,7 @@ namespace Dynamo.Nodes
                 }
                 else
                 {
-                    throw new Exception("View could not be packed on sheet.");
+                    throw new Exception("View(s) do not fit on sheet.");
                 }
             }
 

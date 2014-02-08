@@ -27,10 +27,22 @@ namespace Dynamo.UpdateManager
         public Exception Error { get; private set; }
     }
 
+    public interface IUpdateManager
+    {
+        BinaryVersion ProductVersion { get; }
+        BinaryVersion AvailableVersion { get; }
+        bool IsUpToDate { get; }
+        event UpdateDownloadedEventHandler UpdateDownloaded;
+        event ShutdownRequestedEventHandler ShutdownRequested;
+        void CheckForProductUpdate();
+        void QuitAndInstallUpdate();
+        void HostApplicationBeginQuit(object sender, EventArgs e);
+    }
+
     /// <summary>
     /// This class provides services for product update management.
     /// </summary>
-    public class UpdateManager
+    public class UpdateManager:IUpdateManager
     {
         #region Private Class Data Members
 
@@ -41,12 +53,7 @@ namespace Dynamo.UpdateManager
             public string InstallerURL;
         }
 
-        private UpdateManager(DynamoLogger logger)
-        {
-            this.logger = logger;
-        }
-
-        private static UpdateManager self = null;
+        private static UpdateManager instance = null;
         private bool versionCheckInProgress = false;
         private BinaryVersion productVersion = null;
         private AppVersionInfo? updateInfo;
@@ -66,24 +73,9 @@ namespace Dynamo.UpdateManager
 
         #region Public Class Properties
 
-        public static UpdateManager CreateInstance(DynamoLogger logger)
+        public UpdateManager()
         {
-            if (self != null) return self;
-
-            if (null == logger)
-                throw new ArgumentNullException("logger", "Unspecified logger (61578808A807)");
-
-            self = new UpdateManager(logger);
-
-            return self;
-        }
-
-        /// <summary>
-        /// Obtains singleton object instance of UpdateManager class
-        /// </summary>
-        public static UpdateManager Instance
-        {
-            get { return UpdateManager.self; }
+            logger = DynamoLogger.Instance;
         }
 
         /// <summary>
@@ -119,6 +111,11 @@ namespace Dynamo.UpdateManager
 
                 return updateInfo.Value.Version;
             }
+        }
+
+        public bool IsUpToDate
+        {
+            get { return ProductVersion >= AvailableVersion; }
         }
 
         /// <summary>

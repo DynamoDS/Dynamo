@@ -80,7 +80,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        [NodeMigrationAttribute(from:"0.6.2")]
+        [NodeMigration(from:"0.6.2")]
         public void MigrateLengthFromFeetToMeters(XmlNode node)
         {
             //length values were previously stored as decimal feet
@@ -107,7 +107,7 @@ namespace Dynamo.Nodes
     {
         public AreaInput()
         {
-            _measure = new Units.Area(0.0);
+            _measure = new Area(0.0);
             OutPortData.Add(new PortData("area", "The area. Stored internally as decimal meters squared.", typeof(FScheme.Value.Container)));
             RegisterAllPorts();
         }
@@ -121,7 +121,7 @@ namespace Dynamo.Nodes
     {
         public VolumeInput()
         {
-            _measure = new Units.Volume(0.0);
+            _measure = new Volume(0.0);
             OutPortData.Add(new PortData("volume", "The volume. Stored internally as decimal meters cubed.", typeof(FScheme.Value.Container)));
             RegisterAllPorts();
         }
@@ -129,22 +129,23 @@ namespace Dynamo.Nodes
 
     public abstract class UnitFromNumberBase : NodeWithOneOutput
     {
-        protected SIUnit _measure;
-
         protected UnitFromNumberBase()
         {
-            _measure = new Units.Length(0.0);
             InPortData.Add(new PortData("value", "A number to be converted to a unit.", typeof(FScheme.Value.Number)));
             OutPortData.Add(new PortData("unit", "The unit. Stored internally as SI units.", typeof(FScheme.Value.Container)));
             RegisterAllPorts();
+
+            ArgumentLacing = LacingStrategy.Longest;
         }
 
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
-            var val = ((FScheme.Value.Number)args[0]).Item;
-            _measure.Value = val;
-            return FScheme.Value.NewContainer(_measure);
+            return
+                FScheme.Value.NewContainer(
+                    ConvertToMeasurement(((FScheme.Value.Number)args[0]).Item));
         }
+
+        protected abstract SIUnit ConvertToMeasurement(double value);
     }
 
     [NodeName("Length from Number")]
@@ -153,9 +154,9 @@ namespace Dynamo.Nodes
     [NodeSearchTags("Imperial", "Metric", "Length", "Project", "units")]
     public class LengthFromNumber : UnitFromNumberBase
     {
-        public LengthFromNumber()
+        protected override SIUnit ConvertToMeasurement(double value)
         {
-            _measure = new Units.Length(0.0);
+            return new Units.Length(value);
         }
     }
 
@@ -165,9 +166,9 @@ namespace Dynamo.Nodes
     [NodeSearchTags("Imperial", "Metric", "Area", "Project", "units")]
     public class AreaFromNumber : UnitFromNumberBase
     {
-        public AreaFromNumber()
+        protected override SIUnit ConvertToMeasurement(double value)
         {
-            _measure = new Units.Area(0.0);
+            return new Area(value);
         }
     }
 
@@ -177,9 +178,9 @@ namespace Dynamo.Nodes
     [NodeSearchTags("Imperial", "Metric", "Volume", "Project", "units")]
     public class VolumeFromNumber : UnitFromNumberBase
     {
-        public VolumeFromNumber()
+        protected override SIUnit ConvertToMeasurement(double value)
         {
-            _measure = new Units.Volume(0.0);
+            return new Volume(value);
         }
     }
 }

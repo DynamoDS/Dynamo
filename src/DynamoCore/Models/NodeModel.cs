@@ -294,7 +294,7 @@ namespace Dynamo.Models
         public virtual FScheme.Value OldValue
         {
             get { return _oldValue; }
-            protected set
+            protected internal set
             {
                 _oldValue = value;
                 RaisePropertyChanged("OldValue");
@@ -953,7 +953,7 @@ namespace Dynamo.Models
 
             InnerEvaluationDelegate evaluation = delegate
             {
-                FScheme.Value expr = null;
+                Value expr = Value.NewContainer(null);
 
                 try
                 {

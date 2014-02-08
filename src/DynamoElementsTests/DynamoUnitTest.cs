@@ -51,10 +51,36 @@ namespace Dynamo.Tests
         private void StartDynamo()
         {
             //create a new instance of the ViewModel
-            Controller = new DynamoController(new ExecutionEnvironment(), typeof (DynamoViewModel), Context.NONE)
+            Controller = new DynamoController(new ExecutionEnvironment(), typeof (DynamoViewModel), Context.NONE, new UpdateManager.UpdateManager())
             {
                 Testing = true
             };
+        }
+
+        /// <summary>
+        ///     Runs a basic unit tests that loads a file, runs it, and confirms that
+        ///     nodes corresponding to given guids have OldValues that match the given
+        ///     expected values.
+        /// </summary>
+        /// <param name="exampleFilePath">Path to DYN to run.</param>
+        /// <param name="tests">
+        ///     Key/Value pairs where the Key is a node Guid and the Value is the
+        ///     expected OldValue for the node.
+        /// </param>
+        protected void RunExampleTest(
+            string exampleFilePath, IEnumerable<KeyValuePair<Guid, object>> tests)
+        {
+            var model = dynSettings.Controller.DynamoModel;
+            model.Open(exampleFilePath);
+
+            dynSettings.Controller.RunExpression(null);
+
+            foreach (var test in tests)
+            {
+                Assert.AreEqual(
+                    test.Value,
+                    model.CurrentWorkspace.NodeFromWorkspace(test.Key).OldValue.UnwrapFSchemeValue());
+            }
         }
     }
 }
