@@ -16,6 +16,7 @@ using Dynamo.PackageManager;
 using Dynamo.Revit;
 using Dynamo.Selection;
 using Dynamo.Units;
+using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Greg;
@@ -56,7 +57,7 @@ namespace Dynamo
         }
 
         public DynamoController_Revit(FSchemeInterop.ExecutionEnvironment env, DynamoUpdater updater, Type viewModelType, string context)
-            : base(env, viewModelType, context)
+            : base(env, viewModelType, context, new UpdateManager.UpdateManager())
         {
             Updater = updater;
             
