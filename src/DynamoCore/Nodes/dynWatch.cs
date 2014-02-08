@@ -154,13 +154,14 @@ namespace Dynamo.Nodes
 
             if (eIn.IsContainer)
             {
-                if ((eIn as Value.Container).Item != null)
+                var value = (eIn as Value.Container).Item;
+                if (value != null)
                 {
                     //content += (eIn as Value.Container).Item.ToString();
 
-                    node = new WatchNode((eIn as Value.Container).Item.ToString(), isListMember, count);
+                    node = new WatchNode(value.ToString(), isListMember, count);
 
-                    handlerManager.ProcessNode((eIn as Value.Container).Item, node);
+                    handlerManager.ProcessNode(value, node);
                     
                     //node.Link = id;
                 }
@@ -193,12 +194,12 @@ namespace Dynamo.Nodes
             else if (eIn.IsString)
             {
                 //content += (eIn as Value.String).Item.ToString() + "\n";
-                node = new WatchNode((eIn as Value.String).Item.ToString(), isListMember, count);
+                node = new WatchNode((eIn as Value.String).Item, isListMember, count);
             }
             else if (eIn.IsSymbol)
             {
                 //content += (eIn as Value.Symbol).Item.ToString() + "\n";
-                node = new WatchNode((eIn as Value.Symbol).Item.ToString(), isListMember, count);
+                node = new WatchNode((eIn as Value.Symbol).Item, isListMember, count);
             }
 
             // This is a fix for the following defect. "VirtualizingStackPanel" 
@@ -206,10 +207,7 @@ namespace Dynamo.Nodes
             // 
             //      https://github.com/ikeough/Dynamo/issues/832
             // 
-            if (null == node)
-                node = new WatchNode("null");
-
-            return node;
+            return node ?? (new WatchNode("null"));
         }
     }
 
