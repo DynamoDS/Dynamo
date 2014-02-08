@@ -214,13 +214,13 @@ namespace Dynamo
 
             // If a command file path is not specified or if it is invalid, then fallback.
             if (string.IsNullOrEmpty(commandFilePath) || (File.Exists(commandFilePath) == false))
-                return new DynamoController(env, typeof(DynamoViewModel), "None");
+                return new DynamoController(env, typeof(DynamoViewModel), "None", new UpdateManager.UpdateManager());
 
-            return new DynamoController(env, typeof(DynamoViewModel), "None", commandFilePath);
+            return new DynamoController(env, typeof(DynamoViewModel), "None", commandFilePath, new UpdateManager.UpdateManager());
         }
 
-        public DynamoController(ExecutionEnvironment env, Type viewModelType, string context) : 
-            this(env, viewModelType, context, null)
+        public DynamoController(ExecutionEnvironment env, Type viewModelType, string context, IUpdateManager updateManager) : 
+            this(env, viewModelType, context, null, updateManager)
         {
         }
 
@@ -228,7 +228,7 @@ namespace Dynamo
         ///     Class constructor
         /// </summary>
         public DynamoController(ExecutionEnvironment env,
-            Type viewModelType, string context, string commandFilePath)
+            Type viewModelType, string context, string commandFilePath, IUpdateManager updateManager)
         {
             DynamoLogger.Instance.StartLogging();
 
@@ -239,7 +239,7 @@ namespace Dynamo
             //Start heartbeat reporting
             InstrumentationLogger.Start();
 
-            UpdateManager = new UpdateManager.UpdateManager();
+            UpdateManager = updateManager;
             UpdateManager.UpdateDownloaded += updateManager_UpdateDownloaded;
             UpdateManager.ShutdownRequested += updateManager_ShutdownRequested;
             UpdateManager.CheckForProductUpdate();
