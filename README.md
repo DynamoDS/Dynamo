@@ -542,11 +542,11 @@ Dynamo For Vasari Beta 2 WIP: Integrating Dynamo into Project Vasari and extendi
 
 Those portions created by Ian are provided with the following copyright:
 
-Copyright 2013 Ian Keough
+Copyright 2014 Ian Keough
 
 Those portions created by Autodesk employees are provided with the following copyright:
 
-Copyright 2013 Autodesk
+Copyright 2014 Autodesk
 
 
 Licensed under the Apache License, Version 2.0 (the "License");
