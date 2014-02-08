@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
@@ -23,6 +24,8 @@ namespace Dynamo.ViewModels
     public delegate void WorkspaceSaveEventHandler(object sender, WorkspaceSaveEventArgs e);
 
     public delegate void RequestPackagePublishDialogHandler(PublishPackageViewModel publishViewModel);
+
+    public delegate void RequestAboutWindowHandler(DynamoViewModel aboutViewModel);
 
     public partial class DynamoViewModel : ViewModelBase, IWatchViewModel
     {
@@ -105,6 +108,15 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public event RequestAboutWindowHandler RequestAboutWindow;
+        public virtual void OnRequestAboutWindow(DynamoViewModel vm)
+        {
+            if (RequestAboutWindow != null)
+            {
+                RequestAboutWindow(vm);
+            }
+        }
+
         #endregion
 
         #region properties
@@ -116,7 +128,6 @@ namespace Dynamo.ViewModels
         protected bool canRunDynamically = true;
         protected bool debug = false;
         protected bool dynamicRun = false;
-
         private bool canNavigateBackground = false;
         private bool _watchEscapeIsDown = false;
 
@@ -167,23 +178,21 @@ namespace Dynamo.ViewModels
         public DelegateCommand SubmitCommand { get; set; }
         public DelegateCommand PublishCurrentWorkspaceCommand { get; set; }
         public DelegateCommand PublishSelectedNodesCommand { get; set; }
-
         public DelegateCommand PanCommand { get; set; }
         public DelegateCommand ZoomInCommand { get; set; }
         public DelegateCommand ZoomOutCommand { get; set; }
         public DelegateCommand FitViewCommand { get; set; }
         public DelegateCommand TogglePanCommand { get; set; }
         public DelegateCommand EscapeCommand { get; set; }
-
         public DelegateCommand SelectVisualizationInViewCommand { get; set; }
         public DelegateCommand GetBranchVisualizationCommand { get; set; }
         public DelegateCommand TogglePreviewBubbleVisibilityCommand { get; set; }
-
         public DelegateCommand ExportToSTLCommand { get; set; }
-
         public DelegateCommand SetLengthUnitCommand { get; set; }
         public DelegateCommand SetAreaUnitCommand { get; set; }
         public DelegateCommand SetVolumeUnitCommand { get; set; }
+        public DelegateCommand ShowAboutWindowCommand { get; set; }
+        public DelegateCommand CheckForUpdateCommand { get; set; }
 
         /// <summary>
         /// An observable collection of workspace view models which tracks the model
@@ -276,7 +285,9 @@ namespace Dynamo.ViewModels
         }
 
         public double WorkspaceActualHeight { get; set; }
+
         public double WorkspaceActualWidth { get; set; }
+
         public void WorkspaceActualSize(double width, double height)
         {
             WorkspaceActualWidth = width;
@@ -466,6 +477,29 @@ namespace Dynamo.ViewModels
 
         public bool WatchIsResizable { get; set; }
 
+        public string Version
+        {
+            get { return dynSettings.Controller.UpdateManager.ProductVersion.ToString(); }
+        }
+
+        public bool UpToDate
+        {
+            get
+            {
+                return dynSettings.Controller.UpdateManager.ProductVersion >= dynSettings.Controller.UpdateManager.AvailableVersion; ;
+            }
+        }
+
+        public string LicenseFile
+        {
+            get
+            {
+                string executingAssemblyPathName = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                string rootModuleDirectory = System.IO.Path.GetDirectoryName(executingAssemblyPathName);
+                var licensePath = System.IO.Path.Combine(rootModuleDirectory, "License.rtf");
+                return licensePath;
+            }
+        }
         #endregion
 
         public DynamoViewModel(DynamoController controller, string commandFilePath)
@@ -484,6 +518,9 @@ namespace Dynamo.ViewModels
             _model.CurrentWorkspace = _model.HomeSpace;
 
             Controller = controller;
+
+            //Register for a notification when the update manager downloads an update
+            dynSettings.Controller.UpdateManager.UpdateDownloaded += Instance_UpdateDownloaded;
 
             // Instantiate an AutomationSettings to handle record/playback.
             automationSettings = new AutomationSettings(this, commandFilePath);
@@ -525,12 +562,10 @@ namespace Dynamo.ViewModels
             ReportABugCommand = new DelegateCommand(Controller.ReportABug, Controller.CanReportABug);
             GoToWikiCommand = new DelegateCommand(GoToWiki, CanGoToWiki);
             GoToSourceCodeCommand = new DelegateCommand(GoToSourceCode, CanGoToSourceCode);
-
             ShowPackageManagerSearchCommand = new DelegateCommand(ShowPackageManagerSearch, CanShowPackageManagerSearch);
             ShowInstalledPackagesCommand = new DelegateCommand(ShowInstalledPackages, CanShowInstalledPackages);
             PublishCurrentWorkspaceCommand = new DelegateCommand(PublishCurrentWorkspace, CanPublishCurrentWorkspace);
             PublishSelectedNodesCommand = new DelegateCommand(PublishSelectedNodes, CanPublishSelectedNodes);
-
             ShowHideConnectorsCommand = new DelegateCommand(ShowConnectors, CanShowConnectors);
             SelectNeighborsCommand = new DelegateCommand(SelectNeighbors, CanSelectNeighbors);
             ClearLogCommand = new DelegateCommand(dynSettings.Controller.ClearLog, dynSettings.Controller.CanClearLog);
@@ -540,16 +575,15 @@ namespace Dynamo.ViewModels
             FitViewCommand = new DelegateCommand(FitView, CanFitView);
             TogglePanCommand = new DelegateCommand(TogglePan, CanTogglePan);
             EscapeCommand = new DelegateCommand(Escape, CanEscape);
-
             SelectVisualizationInViewCommand = new DelegateCommand(SelectVisualizationInView, CanSelectVisualizationInView);
             GetBranchVisualizationCommand = new DelegateCommand(GetBranchVisualization, CanGetBranchVisualization);
             TogglePreviewBubbleVisibilityCommand = new DelegateCommand(TogglePreviewBubbleVisibility, CanTogglePreviewBubbleVisibility);
-
             ExportToSTLCommand = new DelegateCommand(ExportToSTL, CanExportToSTL);
-
             SetLengthUnitCommand = new DelegateCommand(SetLengthUnit, CanSetLengthUnit);
             SetAreaUnitCommand = new DelegateCommand(SetAreaUnit, CanSetAreaUnit);
             SetVolumeUnitCommand = new DelegateCommand(SetVolumeUnit, CanSetVolumeUnit);
+            ShowAboutWindowCommand = new DelegateCommand(ShowAboutWindow, CanShowAboutWindow);
+            CheckForUpdateCommand = new DelegateCommand(CheckForUpdate, CanCheckForUpdate);
 
             DynamoLogger.Instance.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Instance_PropertyChanged);
 
@@ -574,6 +608,12 @@ namespace Dynamo.ViewModels
             };
 
             WatchIsResizable = false;
+        }
+
+        void Instance_UpdateDownloaded(object sender, UpdateManager.UpdateDownloadedEventArgs e)
+        {
+            RaisePropertyChanged("Version");
+            RaisePropertyChanged("UpToDate");
         }
 
         void VisualizationManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -1477,6 +1517,40 @@ namespace Dynamo.ViewModels
         {
             return true;
         }
+
+        private bool CanShowAboutWindow(object obj)
+        {
+            return true;
+        }
+
+        private void ShowAboutWindow(object obj)
+        {
+            OnRequestAboutWindow(this);
+        }
+
+        private bool CanCheckForUpdate(object obj)
+        {
+            //check internet connectivity
+            //http://stackoverflow.com/questions/2031824/what-is-the-best-way-to-check-for-internet-connectivity-using-net
+            try
+            {
+                using (var client = new WebClient())
+                using (var stream = client.OpenRead("http://www.google.com"))
+                {
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private void CheckForUpdate(object obj)
+        {
+            dynSettings.Controller.UpdateManager.CheckForProductUpdate();
+        }
+
 
         #region IWatchViewModel interface
 
