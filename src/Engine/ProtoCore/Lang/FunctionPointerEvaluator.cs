@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,6 +34,16 @@ namespace ProtoCore.Lang
             }
 
             mCallSite = new ProtoCore.CallSite(classScope, Name, core.FunctionTable, core.Options.ExecutionMode);
+
+            // If the callsite exists, use the cached instance
+            ProtoCore.CallSite existingCallsite = mCallSite.GetCachedInstance(core);
+            if (null != existingCallsite)
+            {
+                mCallSite = existingCallsite;
+            }
+            Validity.Assert(null != mCallSite);
+            
+                        // Build a context object in JILDispatch and call the Dispatch
         }
 
         public StackValue Evaluate(List<StackValue> args, StackFrame stackFrame)
