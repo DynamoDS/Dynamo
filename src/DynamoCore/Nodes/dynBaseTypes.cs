@@ -2108,15 +2108,19 @@ namespace Dynamo.Nodes
         }
     }
 
-    [NodeName("Build Sublists")]
+    /// <summary>
+    /// Description:
+    /// Builds sublists from a list. Inputs are a list and an offset to indicate the number of items to skip before
+    /// the start of each subsequent sublist. Enter a range of values using series syntax to indicate the first sublist.
+    /// </summary>    [NodeName("Build Sublists")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
-    [NodeDescription("Build sublists from a list using a list-building syntax.")]
+    [NodeDescription("Build sublists from a list using DesignScript range syntax.")]
     public partial class Sublists : BasicInteractive<string>
     {
         public Sublists()
         {
             InPortData.Add(new PortData("list", "The list from which to create sublists.", typeof(Value.List)));
-            InPortData.Add(new PortData("offset", "The offset to apply to the sub-list. Ex. \"0..3\" with an offset of 1 will yield {0,1,2,3}{1,2,3,4}{2,3,4,5}...", typeof(Value.List)));
+            InPortData.Add(new PortData("offset", "The offset to apply to the sub-list. Ex. The range \"0..2\" with an offset of 1 will yield sublists {0,1,2}{1,2,3}{2,3,4}...", typeof(Value.List)));
 
             OutPortData.RemoveAt(0); //remove the existing blank output
             OutPortData.Add(new PortData("list", "The sublists.", typeof(Value.List)));
@@ -2732,12 +2736,28 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            //number + number
+            //double + double
             if (args[0].IsNumber && args[1].IsNumber)
             {
                 var x = ((Value.Number)args[0]).Item;
                 var y = ((Value.Number)args[1]).Item;
                 return Value.NewNumber(x + y);
+            }
+
+           //double + unit
+            if (args[0].IsNumber && args[1].IsContainer)
+            {
+                var x = ((Value.Number)args[0]).Item;
+                var y = SIUnit.UnwrapToSIUnit(args[1]);
+                return Value.NewNumber(x + y);
+            }
+
+            //unit + double
+            if (args[0].IsContainer && args[1].IsNumber)
+            {
+                var x = SIUnit.UnwrapToSIUnit(args[0]);
+                var y = ((Value.Number)args[1]).Item;
+                return Value.NewContainer(x + y);
             }
 
             //unit + unit
@@ -2774,12 +2794,28 @@ namespace Dynamo.Nodes
 
         public override Value Evaluate(FSharpList<Value> args)
         {
-            //number - number
+            //double - double
             if (args[0].IsNumber && args[1].IsNumber)
             {
                 var x = ((Value.Number)args[0]).Item;
                 var y = ((Value.Number)args[1]).Item;
                 return Value.NewNumber(x - y);
+            }
+
+            //double - unit
+            if (args[0].IsNumber && args[1].IsContainer)
+            {
+                var x = ((Value.Number)args[0]).Item;
+                var y = SIUnit.UnwrapToSIUnit(args[1]);
+                return Value.NewNumber(x - y);
+            }
+
+            //unit - double
+            if (args[0].IsContainer && args[1].IsNumber)
+            {
+                var x = SIUnit.UnwrapToSIUnit(args[0]);
+                var y = ((Value.Number)args[1]).Item;
+                return Value.NewContainer(x - y);
             }
 
             //unit - unit
@@ -2837,7 +2873,6 @@ namespace Dynamo.Nodes
             {
                 var x = SIUnit.UnwrapToSIUnit(args[0]);
                 var y = ((Value.Number)args[1]).Item;
-                
                 return Value.NewContainer(x * y);
             }
 
@@ -2881,6 +2916,15 @@ namespace Dynamo.Nodes
             {
                 var x = ((Value.Number)args[0]).Item;
                 var y = ((Value.Number)args[1]).Item;
+                return Value.NewNumber(x / y);
+            }
+
+            //double / unit
+            if (args[0].IsNumber && args[1].IsContainer)
+            {
+                var x = ((Value.Number)args[0]).Item;
+                var y = SIUnit.UnwrapToSIUnit(args[1]);
+
                 return Value.NewNumber(x / y);
             }
 
@@ -2941,6 +2985,22 @@ namespace Dynamo.Nodes
                 var x = ((Value.Number)args[0]).Item;
                 var y = ((Value.Number)args[1]).Item;
                 return Value.NewNumber(x % y);
+            }
+
+            //number % unit
+            if (args[0].IsNumber && args[1].IsContainer)
+            {
+                var x = ((Value.Number)args[0]).Item;
+                var y = SIUnit.UnwrapToSIUnit(args[1]);
+                return Value.NewNumber(x % y);
+            }
+
+            //unit % number
+            if (args[0].IsContainer && args[1].IsNumber)
+            {
+                var x = SIUnit.UnwrapToSIUnit(args[0]);
+                var y = ((Value.Number)args[1]).Item;
+                return Value.NewContainer(x % y);
             }
 
             //unit % unit

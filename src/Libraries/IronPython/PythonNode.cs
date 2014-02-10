@@ -37,25 +37,25 @@ namespace DSIronPythonNode
             AssociativeNode codeInputNode, List<AssociativeNode> inputAstNodes,
             List<Tuple<string, AssociativeNode>> additionalBindings)
         {
-            var names = additionalBindings.Select(x => x.Item1).ToList();
-            names.Add("IN");
+            var names =
+                additionalBindings.Select(
+                    x => AstFactory.BuildStringNode(x.Item1) as AssociativeNode).ToList();
+            names.Add(AstFactory.BuildStringNode("IN"));
 
             var vals = additionalBindings.Select(x => x.Item2).ToList();
             vals.Add(AstFactory.BuildExprList(inputAstNodes));
 
-            var backendMethod =
-                new Func<string, IList, IList, object>(DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript);
+            Func<string, IList, IList, object> backendMethod =
+                DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript;
 
             return AstFactory.BuildAssignment(
                 GetAstIdentifierForOutputIndex(0),
                 AstFactory.BuildFunctionCall(
-                    backendMethod.GetFullName(),
+                    "DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript",//backendMethod.GetFullName(),
                     new List<AssociativeNode>
                     {
                         codeInputNode,
-                        AstFactory.BuildExprList(
-                            names.Select(x => AstFactory.BuildStringNode(x) as AssociativeNode)
-                                .ToList()),
+                        AstFactory.BuildExprList(names),
                         AstFactory.BuildExprList(vals)
                     }));
         }
@@ -95,6 +95,8 @@ namespace DSIronPythonNode
 
         public override void SetupCustomUIElements(dynNodeView view)
         {
+            base.SetupCustomUIElements(view);
+
             var editWindowItem = new MenuItem { Header = "Edit...", IsCheckable = false };
             view.MainContextMenu.Items.Add(editWindowItem);
             editWindowItem.Click += delegate { EditScriptContent(); };
