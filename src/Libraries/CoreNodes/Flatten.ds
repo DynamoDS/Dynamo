@@ -1,52 +1,33 @@
-def Flatten(list : var, amt : int)
+def __flatten(list : var[], amt : int, acc : var[])
 {
-	def flatten(list : var[], amt : int, acc : var[])
+	[Imperative]
 	{
 		if (amt == 0)
 		{
-			acc.AddRange(list);
+			for (item in list)
+			{
+				acc.Append(item);
+			}
 		}
 		else
 		{
 			for (item in list)
 			{
-				flatten(item, amt-1, acc);
+				__flatten(item, amt-1, acc);
 			}
 		}
-		return = acc;
 	}
+}
 
-	def flatten(item : var, amt : int, acc : var[])
-	{
-		acc.Add(item);
-		return = acc;
-	}
+def __flatten(item : var, amt : int, acc : var[])
+{
+	acc.Append(item);
+}
 
+def FlattenByAmount(list : var[], amt : int)
+{
 	acc = {};
-	flatten(list, amt, acc);
+	__flatten(list, amt, acc);
 	
 	return = acc;
-};
-
-def FlattenCompletely(list : var)
-{
-	def flatten(list : var[], acc : var[])
-	{
-		for (item in list)
-		{
-			flatten(item, acc);
-		}
-		return = acc;
-	};
-
-	def flatten(item : var, acc : var[])
-	{
-		acc.Add(item);
-		return = acc;
-	};
-
-	acc = {};
-	flatten(list, acc);
-
-	return = acc;
-};
+}

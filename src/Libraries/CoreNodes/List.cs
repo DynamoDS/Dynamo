@@ -548,27 +548,6 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Flattens a nested list of lists into a single list containing no
-        ///     sub-lists.
-        /// </summary>
-        /// <param name="list">List to flatten.</param>
-        public static IList FlattenCompletely(IList list)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        ///     Flattens a nested list of lists by a certain amount.
-        /// </summary>
-        /// <param name="list">List to flatten.</param>
-        /// <param name="amt">Layers of nesting to remove.</param>
-        /// s
-        public static IList Flatten(IList list, int amt)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
         ///     Retrieves the last item in a list.
         /// </summary>
         /// <param name="list">List to get the last item of.</param>
@@ -667,6 +646,28 @@ namespace DSCore
         #endregion
 
         /* Disabled Higher-order functions
+         
+        /// <summary>
+        ///     Flattens a nested list of lists into a single list containing no
+        ///     sub-lists.
+        /// </summary>
+        /// <param name="list">List to flatten.</param>
+        public static IList FlattenCompletely(IList list)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        ///     Flattens a nested list of lists by a certain amount.
+        /// </summary>
+        /// <param name="list">List to flatten.</param>
+        /// <param name="amt">Layers of nesting to remove.</param>
+        /// s
+        public static IList Flatten(IList list, int amt)
+        {
+            throw new NotImplementedException();
+        }
+        
         
         /// <summary>
         ///     Returns the minimum value from a list using a key projection. The minimum
