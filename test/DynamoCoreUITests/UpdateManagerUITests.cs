@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Windows;
@@ -7,6 +6,7 @@ using System.Windows.Controls;
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.FSchemeInterop;
+using Dynamo.Tests;
 using Dynamo.Tests.UI;
 using Dynamo.UI.Controls;
 using Dynamo.UpdateManager;
@@ -29,11 +29,11 @@ namespace DynamoCoreUITests
             var um_mock = new Mock<IUpdateManager>();
             um_mock.Setup(um => um.AvailableVersion).Returns(BinaryVersion.FromString("9.9.9.9"));
             um_mock.Setup(um => um.ProductVersion).Returns(BinaryVersion.FromString("1.1.1.1"));
-            um_mock.Setup(um => um.CheckForProductUpdate()).Callback(UpdateManagerTestHelpers.DoNothing);
+            um_mock.Setup(um => um.CheckForProductUpdate()).Callback(Dynamo.Tests.UpdateManagerTestHelpers.DoNothing);
 
             var env = new ExecutionEnvironment();
             Controller = new DynamoController(env, typeof(DynamoViewModel), "None", null, um_mock.Object);
-            Controller.Testing = true;
+
             //create the view
             Ui = new DynamoView();
             Ui.DataContext = Controller.DynamoViewModel;
@@ -95,7 +95,7 @@ namespace DynamoCoreUITests
             Vm = Controller.DynamoViewModel;
             Controller.UIDispatcher = Ui.Dispatcher;
             Ui.Show();
-            Controller.Testing = true;
+
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
 
             string tempPath = Path.GetTempPath();
@@ -127,13 +127,4 @@ namespace DynamoCoreUITests
             Assert.AreEqual(Visibility.Collapsed, updateControl.Visibility);
         }
     }
-
-    internal class UpdateManagerTestHelpers
-    {
-        public static void DoNothing()
-        {
-            Debug.WriteLine("Doing nothing.");
-        }
-    }
-
 }
