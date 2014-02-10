@@ -31,12 +31,32 @@ namespace Dynamo.UpdateManager
     {
         BinaryVersion ProductVersion { get; }
         BinaryVersion AvailableVersion { get; }
-        bool IsUpToDate { get; }
         event UpdateDownloadedEventHandler UpdateDownloaded;
         event ShutdownRequestedEventHandler ShutdownRequested;
         void CheckForProductUpdate();
         void QuitAndInstallUpdate();
         void HostApplicationBeginQuit(object sender, EventArgs e);
+        bool IsUpdateAvailable(IUpdateRequest request);
+    }
+
+    public interface IUpdateRequest
+    {
+        string UpdateRequestData { get; set; }
+    }
+
+    public class UpdateRequest : IUpdateRequest
+    {
+        public string UpdateRequestData { get; set; }
+
+        public UpdateRequest()
+        {
+            var client = new WebClient();
+            var data = client.OpenRead(new Uri(Configurations.UpdateDownloadLocation));
+            using (var streamReader = new StreamReader(data))
+            {
+                UpdateRequestData = streamReader.ReadToEnd();
+            }
+        }
     }
 
     /// <summary>
@@ -89,7 +109,7 @@ namespace Dynamo.UpdateManager
                 {
                     string executingAssemblyPathName = System.Reflection.Assembly.GetExecutingAssembly().Location;
                     FileVersionInfo myFileVersionInfo = FileVersionInfo.GetVersionInfo(executingAssemblyPathName);
-                    productVersion = BinaryVersion.FromString(myFileVersionInfo.FileVersion.ToString());
+                    productVersion = BinaryVersion.FromString(myFileVersionInfo.FileVersion);
                 }
 
                 return productVersion;
@@ -105,17 +125,12 @@ namespace Dynamo.UpdateManager
             {
                 if (!updateInfo.HasValue)
                 {
-                    CheckForProductUpdate();
+                    IsUpdateAvailable(new UpdateRequest());
                     return ProductVersion;
                 }
 
                 return updateInfo.Value.Version;
             }
-        }
-
-        public bool IsUpToDate
-        {
-            get { return ProductVersion >= AvailableVersion; }
         }
 
         /// <summary>
@@ -134,15 +149,12 @@ namespace Dynamo.UpdateManager
         /// </summary>
         public void CheckForProductUpdate()
         {
-            if (versionCheckInProgress != false)
-                return;
-
             logger.Log("RequestUpdateVersionInfo", "RequestUpdateVersionInfo");
 
-            versionCheckInProgress = true;
-            var client = new WebClient();
-            client.OpenReadCompleted += OnUpdateVersionRequested;
-            client.OpenReadAsync(new Uri(Configurations.UpdateDownloadLocation));
+            if (IsUpdateAvailable(new UpdateRequest()))
+            {
+                DownloadUpdatePackageAsynchronously(updateInfo.Value.InstallerURL, updateInfo.Value.Version);
+            }
         }
 
         public void QuitAndInstallUpdate()
@@ -191,20 +203,39 @@ namespace Dynamo.UpdateManager
                 return;
             }
 
-            //element in the response from s3 will be of the form:
-            /*
-            <Contents>
-                <Key>DynamoDailyInstall20130622T1917.exe</Key>
-                <LastModified>2013-06-22T23:17:54.000Z</LastModified>
-                <ETag>"f143035f2ef294f928a1e9a197d2d5af"</ETag>
-                <Size>32389918</Size>
-                <StorageClass>STANDARD</StorageClass>
-            </Contents>
-             */
+            
+
+            logger.LogInfo("UpdateManager-OnUpdateVersionRequested",
+                string.Format("Product Version: {0} Available Version : {1}",
+                ProductVersion.ToString(), updateInfo.Value.Version));
+
+            if (updateInfo.Value.Version <= this.ProductVersion)
+            {
+                versionCheckInProgress = false;
+                return; // Up-to-date, no download required.
+            }
+
+            DownloadUpdatePackageAsynchronously(updateInfo.Value.InstallerURL, updateInfo.Value.Version);
+        }
+
+        /// <summary>
+        /// Is a Dynamo update available.
+        /// </summary>
+        /// <returns>True if a newer version is available, and sets the update info. 
+        /// Returns false if no newer update is available, or nothing is returned from the request.</returns>
+        public bool IsUpdateAvailable(IUpdateRequest request)
+        {
+            if (string.IsNullOrEmpty(request.UpdateRequestData))
+                return false;
 
             XNamespace ns = "http://s3.amazonaws.com/doc/2006-03-01/";
-            var doc = XDocument.Load(e.Result);
 
+            XDocument doc = null;
+            using (TextReader td = new StringReader(request.UpdateRequestData))
+            {
+                doc = XDocument.Load(td);
+            }
+            
             var bucketresult = doc.Element(ns + "ListBucketResult");
             var builds = bucketresult.Descendants(ns + "LastModified").
                 OrderByDescending(x => DateTime.Parse(x.Value)).
@@ -214,33 +245,29 @@ namespace Dynamo.UpdateManager
             var xElements = builds as XElement[] ?? builds.ToArray();
             if (!xElements.Any())
             {
-                versionCheckInProgress = false;
-                return;
+                return false;
             }
 
             var latestBuild = xElements.First();
             var latestBuildFileName = latestBuild.Element(ns + "Key").Value;
+
             var latestBuildDownloadUrl = Path.Combine(Configurations.UpdateDownloadLocation, latestBuildFileName);
             var latestBuildVersion = BinaryVersion.FromString(Path.GetFileNameWithoutExtension(latestBuildFileName).Remove(0, 13));
 
-            updateInfo = new AppVersionInfo()
+            if (latestBuildVersion > ProductVersion)
             {
-                Version = latestBuildVersion,
-                VersionInfoURL = Configurations.UpdateDownloadLocation,
-                InstallerURL = latestBuildDownloadUrl
-            };
-
-            logger.LogInfo("UpdateManager-OnUpdateVersionRequested",
-                string.Format("Product Version: {0} Available Version : {1}",
-                ProductVersion.ToString(), latestBuildVersion.ToString()));
-
-            if (updateInfo.Value.Version <= this.ProductVersion)
-            {
-                versionCheckInProgress = false;
-                return; // Up-to-date, no download required.
+                updateInfo = new AppVersionInfo()
+                {
+                    Version = latestBuildVersion,
+                    VersionInfoURL = Configurations.UpdateDownloadLocation,
+                    InstallerURL = latestBuildDownloadUrl
+                };
+                return true;
             }
 
-            DownloadUpdatePackage(updateInfo.Value.InstallerURL, updateInfo.Value.Version);
+            updateInfo = null;
+
+            return false;
         }
 
         private void OnDownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
@@ -272,7 +299,7 @@ namespace Dynamo.UpdateManager
         /// <param name="url">Web URL for file to download.</param>
         /// <param name="version">The version of package that is to be downloaded.</param>
         /// <returns>Request status, it may return false if invalid URL was passed.</returns>
-        private bool DownloadUpdatePackage(string url, BinaryVersion version)
+        private bool DownloadUpdatePackageAsynchronously(string url, BinaryVersion version)
         {
             if (string.IsNullOrEmpty(url) || (null == version))
             {
@@ -286,8 +313,6 @@ namespace Dynamo.UpdateManager
 
             try
             {
-                //downloadedFileName = Path.GetFileNameWithoutExtension(url);
-                //downloadedFileName += "." + version.ToString() + Path.GetExtension(url);
                 downloadedFileName = Path.GetFileName(url);
                 downloadedFilePath = Path.Combine(Path.GetTempPath(), downloadedFileName);
 
@@ -300,7 +325,7 @@ namespace Dynamo.UpdateManager
                 return false;
             }
 
-            WebClient client = new WebClient();
+            var client = new WebClient();
             client.DownloadFileCompleted += new AsyncCompletedEventHandler(OnDownloadFileCompleted);
             client.DownloadFileAsync(new Uri(url), downloadedFilePath, downloadedFilePath);
             return true;
