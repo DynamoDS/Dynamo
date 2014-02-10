@@ -115,21 +115,10 @@ namespace Dynamo.Nodes
 
             // Update connectors
             PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
-            PortId oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
-            PortId oldInPort2 = new PortId(newNodeId, 2, PortType.INPUT);
-
-            PortId newInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
-            PortId newInPort2 = new PortId(newNodeId, 2, PortType.INPUT);
             PortId newInPort3 = new PortId(newNodeId, 3, PortType.INPUT);
-
             XmlElement connector0 = data.FindFirstConnector(oldInPort0);
-            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
-            XmlElement connector2 = data.FindFirstConnector(oldInPort2);
 
-            data.ReconnectToPort(connector0, newInPort1);
-            data.ReconnectToPort(connector1, newInPort2);
-            data.ReconnectToPort(connector2, newInPort3);
-
+            data.ReconnectToPort(connector0, newInPort3);
             data.CreateConnector(identityCoordinateSystem, 0, newNode, 0);
 
             return migrationData;
@@ -268,9 +257,9 @@ namespace Dynamo.Nodes
             XmlElement connector1 = data.FindFirstConnector(oldInPort1);
             XmlElement connector2 = data.FindFirstConnector(oldInPort2);
 
-            data.ReconnectToPort(connector2, newInPort3);
+            data.ReconnectToPort(connector0, newInPort3);
             data.ReconnectToPort(connector1, newInPort2);
-            data.ReconnectToPort(connector0, newInPort1);
+            data.ReconnectToPort(connector2, newInPort1);
             
             data.CreateConnector(identityCoordinateSystem, 0, newNode, 0);
 
@@ -576,7 +565,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Point.DistanceTo", "Point.DistanceTo@Point");
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Geometry.DistanceTo", "Geometry.DistanceTo@Geometry");
         }
     }
 
@@ -603,7 +592,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Vector.GetLength", "Vector.GetLength");
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Vector.Length", "Vector.Length");
         }
     }
 
@@ -629,7 +618,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Point.Direction", "Point.Direction");
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Vector.Normalized", "Vector.Normalized");
         }
     }
 

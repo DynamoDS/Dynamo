@@ -328,11 +328,6 @@ namespace Dynamo.Nodes
             migrationData.AppendNode(nodeV);
             string nodeVId = MigrationManager.GetGuidFromXmlElement(nodeV);
 
-            XmlElement pointAtParameter = MigrationManager.CreateFunctionNode(
-                data.Document, "ProtoGeometry.dll", "Surface.PointAtParameter", "Surface.PointAtParameter@double,double");
-            migrationData.AppendNode(pointAtParameter);
-            string pointAtParameterId = MigrationManager.GetGuidFromXmlElement(pointAtParameter);
-
             // Update connectors
             PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
             PortId oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
@@ -342,19 +337,12 @@ namespace Dynamo.Nodes
 
             XmlElement connector0 = data.FindFirstConnector(oldInPort0);
             XmlElement connector1 = data.FindFirstConnector(oldInPort1);
-            
+
+            string nodeUVId = connector0.GetAttribute("start").ToString();
             data.ReconnectToPort(connector0, newInPortNodeU);
             data.ReconnectToPort(connector1, newInPort0);
-            
-            string nodeUVId = connector0.GetAttribute("start").ToString();
-            string nodeSurfaceId = connector1.GetAttribute("start").ToString();
-
             data.CreateConnectorFromId(nodeUVId, 0, nodeVId, 0);
-            data.CreateConnectorFromId(nodeSurfaceId, 0, pointAtParameterId, 0);
-            data.CreateConnectorFromId(nodeUId, 0, pointAtParameterId, 1);
-            data.CreateConnectorFromId(nodeVId, 0, pointAtParameterId, 2);
-            data.CreateConnectorFromId(pointAtParameterId, 0, newNodeId, 1);
-
+            
             return migrationData;
         }
     }
@@ -398,7 +386,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Surface.Area", "Surface.Area");
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Revit.GeometryObjects.Face.SurfaceArea", "Surface.Area");
         }
     }
 
