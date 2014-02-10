@@ -629,6 +629,16 @@ namespace Dynamo.Utilities
                     }
                 }
 
+                Version fileVersion = MigrationManager.VersionFromString(version);
+
+                var dynamoModel = dynSettings.Controller.DynamoModel;
+                Version currentVersion = dynamoModel.HomeSpace.WorkspaceVersion;
+                if (fileVersion < currentVersion) // Opening an older file, migrate workspace.
+                {
+                    MigrationManager.Instance.ProcessWorkspaceMigrations(xmlDoc, fileVersion);
+                    MigrationManager.Instance.ProcessNodesInWorkspace(xmlDoc, fileVersion);
+                }
+
                 // we have a dyf and it lacks an ID field, we need to assign it
                 // a deterministic guid based on its name.  By doing it deterministically,
                 // files remain compatible
@@ -752,11 +762,7 @@ namespace Dynamo.Utilities
 
                     el.DisableReporting();
 
-                    el.Load(
-                        elNode,
-                        string.IsNullOrEmpty(version)
-                            ? new Version(0, 0, 0, 0) 
-                            : new Version(version));
+                    el.Load(elNode);
                 }
 
                 #endregion

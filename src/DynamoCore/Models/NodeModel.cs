@@ -586,33 +586,8 @@ namespace Dynamo.Models
         /// <param name="nodeElement">The XmlNode representing this Element.</param>
         protected virtual void LoadNode(XmlNode nodeElement) { }
 
-        public void Load(XmlNode elNode, Version workspaceVersion)
+        public void Load(XmlNode elNode)
         {
-            #region Process Migrations
-
-            var migrations = (from method in GetType().GetMethods()
-                              let attribute =
-                                  method.GetCustomAttributes(false).OfType<NodeMigrationAttribute>().FirstOrDefault()
-                              where attribute != null
-                              let result = new { method, attribute.From, attribute.To }
-                              orderby result.From
-                              select result).ToList();
-
-            Version currentVersion = dynSettings.Controller.DynamoModel.HomeSpace.WorkspaceVersion;
-
-            while (workspaceVersion != null && workspaceVersion < currentVersion)
-            {
-                var nextMigration = migrations.FirstOrDefault(x => x.From >= workspaceVersion);
-
-                if (nextMigration == null)
-                    break;
-
-                nextMigration.method.Invoke(this, new object[] { elNode });
-                workspaceVersion = nextMigration.To;
-            }
-
-            #endregion
-
             LoadNode(elNode);
 
             var portInfoProcessed = new HashSet<int>();
@@ -2018,6 +1993,30 @@ namespace Dynamo.Models
                         return !_previousOutputPortMappings.TryGetValue(output, out oldOutputs)
                                || !TryGetOutput(output, out newOutputs) || oldOutputs.SetEquals(newOutputs);
                     });
+        }
+
+        #endregion
+
+        #region Node Migration Helper Methods
+
+        protected static NodeMigrationData MigrateToDsFunction(
+            NodeMigrationData data, string nickname, string funcName)
+        {
+            return MigrateToDsFunction(data, "", nickname, funcName);
+        }
+
+        protected static NodeMigrationData MigrateToDsFunction(
+            NodeMigrationData data, string assembly, string nickname, string funcName)
+        {
+            XmlElement xmlNode = data.MigratedNodes.ElementAt(0);
+            var element = MigrationManager.CreateFunctionNodeFrom(xmlNode);
+            element.SetAttribute("assembly", assembly);
+            element.SetAttribute("nickname", nickname);
+            element.SetAttribute("function", funcName);
+
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+            migrationData.AppendNode(element);
+            return migrationData;
         }
 
         #endregion

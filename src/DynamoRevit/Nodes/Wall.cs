@@ -5,6 +5,7 @@ using Dynamo.Models;
 using Dynamo.Revit;
 using Dynamo.Utilities;
 using RevitServices.Persistence;
+using System.Xml;
 
 namespace Dynamo.Nodes
 {
@@ -28,7 +29,7 @@ namespace Dynamo.Nodes
         public override FScheme.Value Evaluate(Microsoft.FSharp.Collections.FSharpList<FScheme.Value> args)
         {
             //if we're in a family document, don't even try to add a floor
-            if (DocumentManager.GetInstance().CurrentDBDocument.IsFamilyDocument)
+            if (DocumentManager.GetInstance().CurrentUIDocument.Document.IsFamilyDocument)
             {
                 throw new Exception("Walls can not be created in family documents.");
             }
@@ -39,27 +40,69 @@ namespace Dynamo.Nodes
             var height = ((FScheme.Value.Number)args[3]).Item;
 
             Wall wall = null;
-
+            var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
             if (this.Elements.Any())
             {
 
                 if (dynUtils.TryGetElement(this.Elements[0], out wall))
                 {
                     //Delete the existing floor. Revit API does not allow update of floor sketch.
-                    DocumentManager.GetInstance().CurrentDBDocument.Delete(wall.Id);
+                    DocumentManager.GetInstance().CurrentUIDocument.Document.Delete(wall.Id);
                 }
 
-                wall = Wall.Create(DocumentManager.GetInstance().CurrentDBDocument, curve, wallType.Id, level.Id, height, 0.0, false, false);
+                wall = Wall.Create(document, curve, wallType.Id, level.Id, height, 0.0, false, false);
                 this.Elements[0] = wall.Id;
 
             }
             else
             {
-                wall = Wall.Create(DocumentManager.GetInstance().CurrentDBDocument, curve, wallType.Id, level.Id, height, 0.0, false, false);
+                wall = Wall.Create(document, curve, wallType.Id, level.Id, height, 0.0, false, false);
                 Elements.Add(wall.Id);
             }
 
             return FScheme.Value.NewContainer(wall);
+        }
+
+        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migratedData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
+
+            //create the node itself
+            XmlElement dsRevitNode = MigrationManager.CreateFunctionNode(
+                data.Document, "DSRevitNodes.dll",
+                "Wall.ByCurveAndHeight", 
+                "Wall.ByCurveAndHeight@Curve,double,Level,WallType");
+
+            migratedData.AppendNode(dsRevitNode);
+            string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
+
+            //create and reconnect the connecters
+            PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+
+            PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
+            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
+
+            PortId oldInPort2 = new PortId(oldNodeId, 2, PortType.INPUT);
+            XmlElement connector2 = data.FindFirstConnector(oldInPort2);
+
+            PortId oldInPort3 = new PortId(oldNodeId, 3, PortType.INPUT);
+            XmlElement connector3 = data.FindFirstConnector(oldInPort3);
+
+            PortId newInPort0 = new PortId(dsRevitNodeId, 0, PortType.INPUT);
+            PortId newInPort1 = new PortId(dsRevitNodeId, 1, PortType.INPUT);
+            PortId newInPort2 = new PortId(dsRevitNodeId, 2, PortType.INPUT);
+            PortId newInPort3 = new PortId(dsRevitNodeId, 3, PortType.INPUT);
+
+            data.ReconnectToPort(connector0, newInPort0);
+            data.ReconnectToPort(connector1, newInPort2);
+            data.ReconnectToPort(connector2, newInPort3);
+            data.ReconnectToPort(connector3, newInPort1);
+
+            return migratedData;
         }
     }
 
@@ -79,7 +122,8 @@ namespace Dynamo.Nodes
 
         public override void PopulateItems()
         {
-            var wallTypesColl = new FilteredElementCollector(DocumentManager.GetInstance().CurrentDBDocument);
+            var document = DocumentManager.GetInstance().CurrentUIDocument.Document;
+            var wallTypesColl = new FilteredElementCollector(document);
             wallTypesColl.OfClass(typeof(WallType));
 
             Items.Clear();
