@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Xml;
 using Autodesk.Revit.DB;
 using Dynamo.Models;
 using Dynamo.Revit;
@@ -162,6 +163,42 @@ namespace Dynamo.Nodes
             sunRPArray.Append(originRP);
             Autodesk.Revit.DB.CurveByPoints sunPath = doc.FamilyCreate.NewCurveByPoints(sunRPArray);
             return sunPath;
+        }
+
+        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            // Create DSFunction node
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            newNode.SetAttribute("assembly", "ProtoGeometry.dll");
+            newNode.SetAttribute("nickname", "Line.ByStartPointEndPoint");
+            newNode.SetAttribute("function", "Line.ByStartPointEndPoint@Point,Point");
+            migrationData.AppendNode(newNode);
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
+
+            // Create new node
+            XmlElement translateNode = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll", "Geometry.Translate", "Geometry.Translate@Vector");
+            migrationData.AppendNode(translateNode);
+            string translateNodeId = MigrationManager.GetGuidFromXmlElement(translateNode);
+
+            // Update connectors
+            PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            PortId oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
+            PortId newInPortTranslate0 = new PortId(translateNodeId, 0, PortType.INPUT);
+            PortId newInPortTranslate1 = new PortId(translateNodeId, 1, PortType.INPUT);
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
+
+            string nodeOriginId = connector0.GetAttribute("start").ToString();
+            data.ReconnectToPort(connector1, newInPortTranslate1);
+            data.CreateConnector(translateNode, 0, newNode, 0);
+            data.CreateConnectorFromId(nodeOriginId, 0, translateNodeId, 0);
+            
+            return migrationData;
         }
     }
 
