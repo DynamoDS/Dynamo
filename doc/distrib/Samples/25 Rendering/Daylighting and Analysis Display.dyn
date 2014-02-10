@@ -1,4 +1,4 @@
-<Workspace Version="0.6.3.30451" X="592.319012850811" Y="-804.48945638751" zoom="0.974562639680813" Description="" Category="" Name="Home">
+<Workspace Version="0.6.3.19213" X="-786.5933498254" Y="-285.200180706184" zoom="0.698287705391794" Description="" Category="" Name="Home">
   <Elements>
     <Dynamo.Nodes.CloudDaylightingJob type="Dynamo.Nodes.CloudDaylightingJob" guid="ba2a8d00-8782-4e59-bb68-791312445255" nickname="Cloud Daylighting Job" x="589.789054966447" y="266.345207636633" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
     <Dynamo.Nodes.CloudRender type="Dynamo.Nodes.CloudRender" guid="d0174e82-9635-4f35-920a-3abbb3f2aeb3" nickname="Cloud Render" x="797.526619675957" y="267.80989001778" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
@@ -98,32 +98,13 @@
       <PortInfo index="0" default="True" />
     </Dynamo.Nodes.IlluminanceToSRGB>
     <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="cfec3260-9d31-4a14-9175-6e34ec2584ef" nickname="First of List" x="1436.65845170745" y="545.041497631553" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.FunctionWithRevit type="Dynamo.Nodes.FunctionWithRevit" guid="27035edb-78e4-421b-9547-c0e806d22f5b" nickname="Display Lighting Data On Surface" x="1585.40806394113" y="858.317876932764" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <ID value="a9117d89-81ab-44d2-891d-f8e8e11e2b7d" />
-      <Name value="Display Lighting Data On Surface" />
-      <Description value="projects xyz positions to face and draws sample data there - requires setting up an analysis display style in revit proejct and using a transaction after this node." />
-      <Inputs>
-        <Input value="face" />
-        <Input value="xyz sample points" />
-        <Input value="data" />
-      </Inputs>
-      <Outputs>
-        <Output value="idx" />
-      </Outputs>
-      <InnerNode id="bfe8fa5d-e1de-4199-9db0-05d52bc856a1">
-        <Run />
-      </InnerNode>
-      <InnerNode id="375b1d90-fe17-4513-8334-3ff3f3413c3e">
-        <Run />
-      </InnerNode>
-    </Dynamo.Nodes.FunctionWithRevit>
     <Dynamo.Nodes.GetDaylightingPositions type="Dynamo.Nodes.GetDaylightingPositions" guid="25e7df29-4eeb-4271-b7aa-f20ab8840f71" nickname="Get Daylighting Grid Positions" x="1467.6604145948" y="634.010310893005" isVisible="true" isUpstreamVisible="true" lacing="Longest">
       <PortInfo index="1" default="True" />
     </Dynamo.Nodes.GetDaylightingPositions>
     <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="7554e8e1-ca09-41b1-ab6a-667f069bcc63" nickname="First of List" x="1468.3253999359" y="732.301157334242" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.FormElementBySelection type="Dynamo.Nodes.FormElementBySelection" guid="c600543b-5918-42b1-95d9-bd3aeaf951d5" nickname="Select Face" x="1191.65468781059" y="819.895959748172" isVisible="true" isUpstreamVisible="true" lacing="Disabled" faceRef="f15a6d1b-7a26-4d34-99c2-7bb21568145a-0002e02a:1:SURFACE" />
     <Dynamo.Nodes.Watch3D type="Dynamo.Nodes.Watch3D" guid="2aff968b-c344-456c-82e5-fd4499988dfa" nickname="Watch 3D" x="1317.44212601356" y="1019.00961301031" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <view width="250" height="485">
+      <view width="260" height="542">
         <camera pos_x="20.6975697527233" pos_y="20.6975697527233" pos_z="20.6965697527233" look_x="-20.6975697527233" look_y="-20.6975697527233" look_z="-20.6975697527233" />
       </view>
     </Dynamo.Nodes.Watch3D>
@@ -134,6 +115,19 @@
     <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="b2bd7a1c-cd4d-4376-b02b-2dc3bf556353" nickname="Number" x="-332.166805850681" y="1062.74843183452" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="12" />
     </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.FunctionWithRevit type="Dynamo.Nodes.FunctionWithRevit" guid="967c8639-9054-4529-893e-cdd66226d269" nickname="Display Daylighting Data On Surface" x="1557.83343633396" y="853.102671276739" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="6ae8b9a9-99e9-4e45-90f4-783a5d9f131c" />
+      <Name value="Display Daylighting Data On Surface" />
+      <Description value="Displays daylighting data on a surface, requires manually setting up surface analysis display style through revit.  Also requires wrapping with a transaction node." />
+      <Inputs>
+        <Input value="face" />
+        <Input value="xyz sample points" />
+        <Input value="data" />
+      </Inputs>
+      <Outputs>
+        <Output value="idx" />
+      </Outputs>
+    </Dynamo.Nodes.FunctionWithRevit>
   </Elements>
   <Connectors>
     <Dynamo.Models.ConnectorModel start="ba2a8d00-8782-4e59-bb68-791312445255" start_index="0" end="d0174e82-9635-4f35-920a-3abbb3f2aeb3" end_index="1" portType="0" />
@@ -173,15 +167,15 @@
     <Dynamo.Models.ConnectorModel start="4e67434e-1838-46fb-9d43-5d09a1dc3409" start_index="0" end="b830481d-bb4d-4f29-9ef2-2831d4bf6372" end_index="0" portType="0" />
     <Dynamo.Models.ConnectorModel start="049c5865-6a0b-4c10-847a-9ab55b6e2c64" start_index="0" end="82ce0ba7-f1f1-4546-ba1f-158b34fdbbbd" end_index="0" portType="0" />
     <Dynamo.Models.ConnectorModel start="a0d334e4-b236-4ba4-9f8e-602e3b968052" start_index="0" end="cfec3260-9d31-4a14-9175-6e34ec2584ef" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="029ac8c0-28fb-4d6c-8f44-babb7bdb8d20" start_index="0" end="27035edb-78e4-421b-9547-c0e806d22f5b" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="029ac8c0-28fb-4d6c-8f44-babb7bdb8d20" start_index="0" end="967c8639-9054-4529-893e-cdd66226d269" end_index="2" portType="0" />
     <Dynamo.Models.ConnectorModel start="cfec3260-9d31-4a14-9175-6e34ec2584ef" start_index="0" end="029ac8c0-28fb-4d6c-8f44-babb7bdb8d20" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="27035edb-78e4-421b-9547-c0e806d22f5b" start_index="0" end="491d98b5-f460-49fc-81c6-aa930b38c8ad" end_index="0" portType="0" />
     <Dynamo.Models.ConnectorModel start="25e7df29-4eeb-4271-b7aa-f20ab8840f71" start_index="0" end="7554e8e1-ca09-41b1-ab6a-667f069bcc63" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="7554e8e1-ca09-41b1-ab6a-667f069bcc63" start_index="0" end="27035edb-78e4-421b-9547-c0e806d22f5b" end_index="1" portType="0" />
-    <Dynamo.Models.ConnectorModel start="c600543b-5918-42b1-95d9-bd3aeaf951d5" start_index="0" end="27035edb-78e4-421b-9547-c0e806d22f5b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7554e8e1-ca09-41b1-ab6a-667f069bcc63" start_index="0" end="967c8639-9054-4529-893e-cdd66226d269" end_index="1" portType="0" />
     <Dynamo.Models.ConnectorModel start="c600543b-5918-42b1-95d9-bd3aeaf951d5" start_index="0" end="2aff968b-c344-456c-82e5-fd4499988dfa" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c600543b-5918-42b1-95d9-bd3aeaf951d5" start_index="0" end="967c8639-9054-4529-893e-cdd66226d269" end_index="0" portType="0" />
     <Dynamo.Models.ConnectorModel start="64d041bc-7195-453a-b49a-80f7365f522b" start_index="0" end="c959d59c-8ee7-48bf-aac1-bbdca7fbe38d" end_index="6" portType="0" />
     <Dynamo.Models.ConnectorModel start="b2bd7a1c-cd4d-4376-b02b-2dc3bf556353" start_index="0" end="c959d59c-8ee7-48bf-aac1-bbdca7fbe38d" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="967c8639-9054-4529-893e-cdd66226d269" start_index="0" end="491d98b5-f460-49fc-81c6-aa930b38c8ad" end_index="0" portType="0" />
   </Connectors>
   <Notes>
     <Dynamo.Models.NoteModel text="There is an associated .rvt file in the rendering samples folder where this graph was located that is needed to run correctly." x="-478.134229477385" y="412.832504432103" />
