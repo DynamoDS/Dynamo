@@ -55,6 +55,13 @@ namespace Dynamo.Nodes
 
             return FScheme.Value.NewContainer(line);
         }
+
+        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Line.ByStartPointEndPoint",
+                "Line.ByStartPointEndPoint@Point,Point");
+        }
     }
 
     [NodeName("Line By Start Point Direction Length")]
@@ -96,6 +103,13 @@ namespace Dynamo.Nodes
             var line = DocumentManager.GetInstance().CurrentUIDocument.Application.Application.Create.NewLineBound(ptA, ptB);
 
             return FScheme.Value.NewContainer(line);
+        }
+
+        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Line.ByStartPointDirectionLength",
+                "Line.ByStartPointDirectionLength@Point,Vector,double");
         }
     }
 

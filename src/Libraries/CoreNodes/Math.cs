@@ -8,7 +8,7 @@ namespace DSCore
     /// <summary>
     /// Methods for performing Mathematical operations.
     /// </summary>
-    public class Math
+    class Math
     {
         /// <summary>
         /// Generates a random double in the range of [0, 1).

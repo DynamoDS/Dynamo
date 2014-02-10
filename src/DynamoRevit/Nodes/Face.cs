@@ -10,6 +10,7 @@ using Microsoft.FSharp.Collections;
 using RevitServices.Persistence;
 using Line = Autodesk.Revit.DB.Line;
 using Solid = Autodesk.Revit.DB.Solid;
+using System.Xml;
 
 namespace Dynamo.Nodes
 {
@@ -222,6 +223,51 @@ namespace Dynamo.Nodes
 
             return FScheme.Value.NewContainer(face_point);
         }
+
+        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            // Create DSFunction node
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            newNode.SetAttribute("assembly", "ProtoGeometry.dll");
+            newNode.SetAttribute("nickname", "Surface.PointAtParameter");
+            newNode.SetAttribute("function", "Surface.PointAtParameter@double,double");
+            migrationData.AppendNode(newNode);
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
+
+            // Create new nodes
+            XmlElement nodeU = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll", "UV.U", "UV.U");
+            migrationData.AppendNode(nodeU);
+            string nodeUId = MigrationManager.GetGuidFromXmlElement(nodeU);
+            
+            XmlElement nodeV = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll", "UV.V", "UV.V");
+            migrationData.AppendNode(nodeV);
+            string nodeVId = MigrationManager.GetGuidFromXmlElement(nodeV);
+
+            // Update connectors
+            PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            PortId oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
+            
+            PortId newInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            PortId newInPortNodeU = new PortId(nodeUId, 0, PortType.INPUT);
+            
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
+
+            string nodeUVId = connector0.GetAttribute("start").ToString();
+            data.ReconnectToPort(connector0, newInPortNodeU);
+            data.ReconnectToPort(connector1, newInPort0);
+            data.CreateConnectorFromId(nodeUVId, 0, nodeVId, 0);
+            data.CreateConnector(nodeU, 0, newNode, 1);
+            data.CreateConnector(nodeV, 0, newNode, 2);
+
+            return migrationData;
+        }
     }
 
     [NodeName("Surface Normal")]
@@ -255,6 +301,61 @@ namespace Dynamo.Nodes
             }
 
             return FScheme.Value.NewContainer(norm);
+        }
+
+        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            NodeMigrationData migrationData = new NodeMigrationData(data.Document);
+
+            // Create DSFunction node
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            newNode.SetAttribute("assembly", "ProtoGeometry.dll");
+            newNode.SetAttribute("nickname", "Surface.NormalAtPoint");
+            newNode.SetAttribute("function", "Surface.NormalAtPoint@Point");
+            migrationData.AppendNode(newNode);
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
+
+            // Create new nodes
+            XmlElement nodeU = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll", "UV.U", "UV.U");
+            migrationData.AppendNode(nodeU);
+            string nodeUId = MigrationManager.GetGuidFromXmlElement(nodeU);
+
+            XmlElement nodeV = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll", "UV.V", "UV.V");
+            migrationData.AppendNode(nodeV);
+            string nodeVId = MigrationManager.GetGuidFromXmlElement(nodeV);
+
+            XmlElement pointAtParameter = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll", "Surface.PointAtParameter", "Surface.PointAtParameter@double,double");
+            migrationData.AppendNode(pointAtParameter);
+            string pointAtParameterId = MigrationManager.GetGuidFromXmlElement(pointAtParameter);
+
+            // Update connectors
+            PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            PortId oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
+
+            PortId newInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
+            PortId newInPortNodeU = new PortId(nodeUId, 0, PortType.INPUT);
+
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
+            
+            data.ReconnectToPort(connector0, newInPortNodeU);
+            data.ReconnectToPort(connector1, newInPort0);
+            
+            string nodeUVId = connector0.GetAttribute("start").ToString();
+            string nodeSurfaceId = connector1.GetAttribute("start").ToString();
+
+            data.CreateConnectorFromId(nodeUVId, 0, nodeVId, 0);
+            data.CreateConnectorFromId(nodeSurfaceId, 0, pointAtParameterId, 0);
+            data.CreateConnectorFromId(nodeUId, 0, pointAtParameterId, 1);
+            data.CreateConnectorFromId(nodeVId, 0, pointAtParameterId, 2);
+            data.CreateConnectorFromId(pointAtParameterId, 0, newNodeId, 1);
+
+            return migrationData;
         }
     }
 
@@ -292,6 +393,12 @@ namespace Dynamo.Nodes
 
             //Fin
             return FScheme.Value.NewContainer(Units.Area.FromSquareFeet(area));
+        }
+
+        [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
+        public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
+        {
+            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Surface.Area", "Surface.Area");
         }
     }
 

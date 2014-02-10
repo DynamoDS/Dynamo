@@ -74,6 +74,7 @@
     <Compile Include="DSFunctionNodeTest.cs" />
     <Compile Include="DSLibraryTest.cs" />
     <Compile Include="DynamoDefects.cs" />
+    <Compile Include="MigrationManagerTests.cs" />
     <Compile Include="SearchSideEffects.cs" />
     <Compile Include="UnitTestBase.cs" />
     <Compile Include="WatchNodeTests.cs" />
