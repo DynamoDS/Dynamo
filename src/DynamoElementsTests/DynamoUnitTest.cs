@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using Dynamo.FSchemeInterop;
+using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using NUnit.Framework;
@@ -48,10 +47,23 @@ namespace Dynamo.Tests
             }
         }
 
-        private void StartDynamo()
+        protected void StartDynamo()
         {
             //create a new instance of the ViewModel
             Controller = new DynamoController(new ExecutionEnvironment(), typeof (DynamoViewModel), Context.NONE, new UpdateManager.UpdateManager())
+            {
+                Testing = true
+            };
+        }
+
+        /// <summary>
+        /// Enables starting Dynamo with a mock IUpdateManager
+        /// </summary>
+        /// <param name="updateManager"></param>
+        protected void StartDynamo(IUpdateManager updateManager)
+        {
+            //create a new instance of the ViewModel
+            Controller = new DynamoController(new ExecutionEnvironment(), typeof(DynamoViewModel), Context.NONE, updateManager)
             {
                 Testing = true
             };
