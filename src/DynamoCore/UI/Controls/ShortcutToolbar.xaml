@@ -26,7 +26,7 @@
         <Border Margin="11 0 0 0"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Center">
-            <Grid>
+            <Grid Name="ShortcutToolbarGrid">
                 <ItemsControl x:Name="ShortcutItemsControl"
                               ItemsSource="{Binding ElementName='MenuUserControl', Path=ShortcutBarItems}">
                 <ItemsControl.ItemTemplate>
@@ -127,7 +127,7 @@
                     </ItemsControl.ItemsPanel>
                 </ItemsControl>
                 
-                <controls:GraphUpdateNotificationControl HorizontalAlignment="Right" 
+                <controls:GraphUpdateNotificationControl x:Name="UpdateControl" HorizontalAlignment="Right" 
                                                          Margin="0,0,50,0" 
                                                          Visibility="{Binding Path=DataContext.UpToDate, RelativeSource={RelativeSource AncestorType={x:Type Window}}, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"/>
             </Grid>
