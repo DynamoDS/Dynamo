@@ -272,7 +272,7 @@ namespace DSCore
             if (padChar.Length != 1)
                 throw new ArgumentException("padChar string must contain a single character.", "padChar");
 
-            var padHalf = (newWidth - str.Length) / 2 + str.Length;
+            var padHalf = (newWidth - str.Length)/ 2 + str.Length;
 
             return str.PadLeft(padHalf, padChar[0]).PadRight(newWidth - padHalf, padChar[0]);
         }

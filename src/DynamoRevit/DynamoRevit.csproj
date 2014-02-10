@@ -255,7 +255,8 @@
     <ProjectReference Include="..\Legacy\FScheme\FScheme.2012.fsproj">
       <Project>{f0e5a3e5-bdd0-41ae-848e-ded9efc5fa7f}</Project>
       <Name>FScheme.2012</Name>
-    </ProjectReference>    <ProjectReference Include="..\Libraries\CoreNodes\CoreNodes.csproj">
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\CoreNodes\CoreNodes.csproj">
       <Project>{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}</Project>
       <Name>CoreNodes</Name>
     </ProjectReference>
