@@ -27,6 +27,50 @@ The current version will run on top of Revit 2013, Revit 2014, and Project Vasar
 
 ## Releases ##
 
+###0.6.3###
+
+February 2014
+
+New
+
+- Dynamo Sandbox:   Explore Dynamo without Revit or Vasari installed
+- Application level settings for Imperial and Metric Units
+- Add name to reference plane node.
+- Convert to Unitzed measures (Length, Area, Volume)
+- Area Node
+- Volume Measure node
+- Length from Curve Node
+- Topography from Points, Points from Topography Nodes
+- Last of List Node
+- Group by Key Node
+- Is Null node (for filtering out null values) 
+- Explode Node (replaces Explode Solid)
+- Python nodes now can take node inputs as functions
+- Shuffle List Node
+- Select All Elements of Category Nodes
+- Divided Path Node updates
+- XYZs from Divided path
+- Treat curves and edges the same for intersection operations
+- Preserve Wall Elements on change
+- Improvments to node Help descriptions
+- Toolbar shortcuts
+- Improvements to Preview bubble display (fades, compact error messages, etc)
+
+Fixes
+
+- More robust handling of null values
+- Better handling of educational licenses for Daylighting
+- Fix for V subdivision in Divided Surface node 
+- Fixed bad equals comparison
+- Fix for jumpy zoom controls
+- Increased zoom limits
+- Many fixes for Preview bubble alignments and appearance
+- Many Fixes for Excel interoperability
+- Allow unpluggeed ports on Perform All
+- Sphere cannot be made anywhere but 0,0,0
+- Crash when making revolved geometry
+
+
 ###0.6.2###
 
 November 2013
@@ -491,11 +535,11 @@ Dynamo For Vasari Beta 2 WIP: Integrating Dynamo into Project Vasari and extendi
 
 Those portions created by Ian are provided with the following copyright:
 
-Copyright 2013 Ian Keough
+Copyright 2014 Ian Keough
 
 Those portions created by Autodesk employees are provided with the following copyright:
 
-Copyright 2013 Autodesk
+Copyright 2014 Autodesk
 
 
 Licensed under the Apache License, Version 2.0 (the "License");

@@ -57,10 +57,6 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="ProtoCore, Version=0.1.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\DesignScript\ProtoCore.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xaml" />
@@ -88,6 +84,10 @@
     <ProjectReference Include="..\..\src\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
       <Name>DynamoUtilities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Engine\ProtoCore\ProtoCore.csproj">
+      <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
+      <Name>ProtoCore</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Legacy\FSchemeInterop\FSchemeInterop2012.csproj">
       <Project>{126c6420-c7a2-43b0-8b08-206c6c4c1348}</Project>

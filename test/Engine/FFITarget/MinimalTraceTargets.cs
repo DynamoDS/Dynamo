@@ -39,8 +39,7 @@ namespace FFITarget
         private bool wasTraced = false;
 
         public int ID { get; set; }
-        
-        public IncrementerTracedClass()
+        public IncrementerTracedClass(int x)
         {
             var retVal = DSNodeServices.TraceUtils.GetTraceData(__TEMP_REVIT_TRACE_ID);
 
@@ -54,18 +53,18 @@ namespace FFITarget
             }
             else
             {
-                DSNodeServices.TraceUtils.SetTraceData(__TEMP_REVIT_TRACE_ID, new IDHolder() { ID = nextID++ });
+                nextID++;
+                ID = nextID;
+                DSNodeServices.TraceUtils.SetTraceData(__TEMP_REVIT_TRACE_ID, new IDHolder() { ID = nextID });
             }
 
 
             
         }
-
         public bool WasCreatedWithTrace()
         {
             return wasTraced;
         }
-
 
     }
 

@@ -95,7 +95,7 @@
   <ItemGroup>
     <Reference Include="nunit.framework, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\bin\x64\Debug\nunit.framework.dll</HintPath>
+      <HintPath>$(NunitPath)\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -106,6 +106,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CallsiteRegen.cs" />
+    <Compile Include="IncrementingTraceTests.cs" />
     <Compile Include="MinimalTraceTests.cs" />
     <Compile Include="NamespaceConflictTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

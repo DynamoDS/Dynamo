@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using ProtoCore.Utils;
 
@@ -441,7 +442,7 @@ namespace ProtoCore.DSASM
     public class ClassTable
     {
         // Don't directly modify class table list.
-        public IList<ClassNode> ClassNodes 
+        public ReadOnlyCollection<ClassNode> ClassNodes 
         {
             get
             {
