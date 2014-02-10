@@ -49,7 +49,7 @@ namespace DSRevitNodesTests.GeometryConversion
             var revitSpline = (Autodesk.Revit.DB.NurbSpline) revitCurve;
 
             Assert.AreEqual( bspline.Degree, revitSpline.Degree );
-            Assert.AreEqual( bspline.ControlVertices.Count(), revitSpline.CtrlPoints.Count );
+            Assert.AreEqual( bspline.GetControlVertices().Count(), revitSpline.CtrlPoints.Count );
 
             // ClosestPointTo fails in ProtoGeometry
 
@@ -69,7 +69,8 @@ namespace DSRevitNodesTests.GeometryConversion
         public void Circle_Basic()
         {
             var radius = 4;
-            var circ = Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius(Point.ByCoordinates(1, 2, 3), radius,
+            var circ = Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadiusNormal(
+                Point.ByCoordinates(1, 2, 3), radius,
                 Vector.ByCoordinates(0,0,1));
 
             var revitCurve = circ.ToRevitType();

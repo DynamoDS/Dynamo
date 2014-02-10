@@ -1,3 +1,4 @@
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -27,10 +28,14 @@ namespace ProtoCore
         private List<Object> traceData = new List<object>();
         private int invokeCount = 0; //Number of times the callsite has been executed within this run
 
+        private Guid callsiteID = Guid.Empty;
 
 
         public CallSite(int classScope, string methodName, FunctionTable globalFunctionTable, ExecutionMode execMode)
         {
+            //Set the ID of internal test
+            callsiteID = Guid.NewGuid();
+
             Validity.Assert(methodName != null);
             Validity.Assert(globalFunctionTable != null);
 
@@ -372,7 +377,7 @@ namespace ProtoCore
                 {
                     bool hasFEP = funcGroup.FunctionEndPoints.Count > 0;
                     FunctionGroup visibleFuncGroup = new FunctionGroup();
-                    visibleFuncGroup.CopyPublic(funcGroup.FunctionEndPoints);
+                    visibleFuncGroup.CopyPublic(funcGroup.FunctionEndPoints, funcGroup.CallsiteInstance);
                     funcGroup = visibleFuncGroup;
 
                     if (hasFEP && funcGroup.FunctionEndPoints.Count == 0)
@@ -458,6 +463,21 @@ namespace ProtoCore
                 }
             }
             return funcGroup;
+        }
+
+        /// <summary>
+        /// This is a callsite utility to determine if a callsite already exists 
+        /// </summary>
+        /// <returns></returns>
+        public CallSite GetCachedInstance(Core core)
+        {
+            CallSite csInstance = null;
+            FunctionGroup funcGroup = GetFuncGroup(core);
+            if (null != funcGroup)
+            {
+                csInstance = funcGroup.CallsiteInstance;
+            }
+            return csInstance;
         }
 
 
@@ -814,6 +834,18 @@ namespace ProtoCore
                 return ReportMethodNotFound(core, arguments);
             }
 
+
+            // Now that a function group is resolved, the callsite guid can be cached
+            if (null != funcGroup.CallsiteInstance)
+            {
+                // Sanity check, if the callsite exists, then it mean the guid is identical to the cached guid
+                Validity.Assert(funcGroup.CallsiteInstance.callsiteID == this.callsiteID);
+            }
+            else
+            {
+                funcGroup.CallsiteInstance = this;
+            }
+
             //check accesibility of function group
             bool methodAccessible = IsFunctionGroupAccessible(core, ref funcGroup);
             if (!methodAccessible)
@@ -821,6 +853,7 @@ namespace ProtoCore
 
             //If we got here then the function group got resolved
             log.AppendLine("Function group resolved: " + funcGroup);
+
             #endregion
 
             //Replication Control is an ordered list of the elements that we have to replicate over

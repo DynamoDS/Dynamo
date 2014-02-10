@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Text;
 using System.IO;
 using System.Collections.Generic;
@@ -378,11 +379,16 @@ namespace ProtoCore.Lang
 
                         string mangledName = ProtoCore.Utils.CoreUtils.GetMangledFunctionName(className, functionName);
 
-
                         // Build a context object in JILDispatch and call the Dispatch
                         ProtoCore.CallSite callsite = new ProtoCore.CallSite(ProtoCore.DSASM.Constants.kGlobalScope, mangledName, core.FunctionTable, core.Options.ExecutionMode);
 
-
+                        // If the callsite exists, use the cached instance
+                        ProtoCore.CallSite existingCallsite = callsite.GetCachedInstance(core);
+                        if (null != existingCallsite)
+                        {
+                            callsite = existingCallsite;
+                        }
+                        Validity.Assert(null != callsite);
 
                         //
                         // Build the stackframe
@@ -582,8 +588,17 @@ namespace ProtoCore.Lang
                             }
                         }
 
+
                         // Build a context object in JILDispatch and call the Dispatch
                         ProtoCore.CallSite callsite = new ProtoCore.CallSite(thisPtrType, functionName, core.FunctionTable, core.Options.ExecutionMode);
+
+                        // If the callsite exists, use the cached instance
+                        ProtoCore.CallSite existingCallsite = callsite.GetCachedInstance(core);
+                        if (null != existingCallsite)
+                        {
+                            callsite = existingCallsite;
+                        }
+                        Validity.Assert(null != callsite);
 
                         ProtoCore.DSASM.Executive exec = core.CurrentExecutive.CurrentDSASMExec;
                         // TODO: Disabling support for stepping into replicated function calls temporarily - pratapa

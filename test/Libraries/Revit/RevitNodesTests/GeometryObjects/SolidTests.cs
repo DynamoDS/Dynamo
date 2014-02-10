@@ -74,7 +74,7 @@ namespace DSRevitNodesTests.GeometryObjects
             var cs = CoordinateSystem.ByOriginVectors(origin, x, y, z);
 
             var planeCs = CoordinateSystem.ByOriginVectors(origin, x, z, y);
-            var transCrvs = crvs.Select(crv => crv.Transform(CoordinateSystem.WCS, planeCs)).Cast<Curve>().ToList();
+            var transCrvs = crvs.Select(crv => crv.Transform(CoordinateSystem.Identity(), planeCs)).Cast<Curve>().ToList();
 
             var revolve = Solid.ByRevolve(transCrvs, cs, 0, 3.14);
             Assert.NotNull(revolve);
@@ -96,15 +96,15 @@ namespace DSRevitNodesTests.GeometryObjects
 
             var origin = Point.ByCoordinates(0, 0, 0);
 
-            var z = Vector.ByCoordinates(.5, .5, .5).Normalize();
+            var z = Vector.ByCoordinates(.5, .5, .5).Normalized();
             var zTmp = Vector.ByCoordinates(0, 0, 1);
-            var x = z.Cross(zTmp).Normalize();
-            var y = z.Cross(x).Normalize();
+            var x = z.Cross(zTmp).Normalized();
+            var y = z.Cross(x).Normalized();
 
             var cs = CoordinateSystem.ByOriginVectors(origin, x, y, z);
 
             var planeCs = CoordinateSystem.ByOriginVectors(origin, x, z, y);
-            var transCrvs = crvs.Select(crv => crv.Transform(CoordinateSystem.WCS, planeCs)).Cast<Curve>().ToList();
+            var transCrvs = crvs.Select(crv => crv.Transform(CoordinateSystem.Identity(), planeCs)).Cast<Curve>().ToList();
 
             var revolve = Solid.ByRevolve(transCrvs, cs, 0, 3.14);
             Assert.NotNull(revolve);
@@ -130,14 +130,14 @@ namespace DSRevitNodesTests.GeometryObjects
             var z = Vector.ByCoordinates(0, 0, 1);
 
             var originTop = Point.ByCoordinates(0, 0, 10);
-            var x1 = Vector.ByCoordinates(.5, .5, 0).Normalize();
+            var x1 = Vector.ByCoordinates(.5, .5, 0).Normalized();
             var y1 = x1.Cross(z); 
 
             var csBottom = CoordinateSystem.ByOriginVectors(originBottom, x, y, z);
             var csTop = CoordinateSystem.ByOriginVectors(originTop, x1, y1, z);
 
-            var bottCurves = rect1.Select(crv => crv.Transform(CoordinateSystem.WCS, csBottom)).Cast<Curve>().ToList();
-            var topCurves = rect2.Select(crv => crv.Transform(CoordinateSystem.WCS, csTop)).Cast<Curve>().ToList();
+            var bottCurves = rect1.Select(crv => crv.Transform(CoordinateSystem.Identity(), csBottom)).Cast<Curve>().ToList();
+            var topCurves = rect2.Select(crv => crv.Transform(CoordinateSystem.Identity(), csTop)).Cast<Curve>().ToList();
 
             var blend = Solid.ByBlend(new List<List<Curve>>{bottCurves,topCurves});
             Assert.NotNull(blend);
@@ -182,10 +182,10 @@ namespace DSRevitNodesTests.GeometryObjects
             var profCSC = CoordinateSystem.ByOriginVectors(spine.PointAtParameter(.75), csC.YAxis, csC.ZAxis);
             var profCSD = CoordinateSystem.ByOriginVectors(spine.PointAtParameter(1), csD.YAxis, csD.ZAxis);
 
-            var cs1 = rect1.Select(crv => crv.Transform(CoordinateSystem.WCS, profCSA)).Cast<Curve>().ToList();
-            var cs2 = rect1.Select(crv => crv.Transform(CoordinateSystem.WCS, profCSB)).Cast<Curve>().ToList();
-            var cs3 = rect1.Select(crv => crv.Transform(CoordinateSystem.WCS, profCSC)).Cast<Curve>().ToList();
-            var cs4 = rect1.Select(crv => crv.Transform(CoordinateSystem.WCS, profCSD)).Cast<Curve>().ToList();
+            var cs1 = rect1.Select(crv => crv.Transform(CoordinateSystem.Identity(), profCSA)).Cast<Curve>().ToList();
+            var cs2 = rect1.Select(crv => crv.Transform(CoordinateSystem.Identity(), profCSB)).Cast<Curve>().ToList();
+            var cs3 = rect1.Select(crv => crv.Transform(CoordinateSystem.Identity(), profCSC)).Cast<Curve>().ToList();
+            var cs4 = rect1.Select(crv => crv.Transform(CoordinateSystem.Identity(), profCSD)).Cast<Curve>().ToList();
 
             cs1.ForEach(x => DrawCurve(x.ToRevitType(), package));
             cs2.ForEach(x => DrawCurve(x.ToRevitType(), package));
@@ -462,16 +462,17 @@ namespace DSRevitNodesTests.GeometryObjects
             var planes = new List<Plane>() {cs.XYPlane, cs.YZPlane, cs.ZXPlane};
             foreach (var p in planes)
             {
-                var z = p.Normal.Normalize();
-                var y = z.IsParallel(Vector.ByCoordinates(0,0,1))? Vector.ByCoordinates(0,1,0) : z.Cross(Vector.ByCoordinates(0, 0, 1)).Normalize();
-                var x = z.Cross(y).Normalize();
+                var z = p.Normal.Normalized();
+                var y = z.IsParallel(Vector.ByCoordinates(0,0,1)) ? Vector.ByCoordinates(0,1,0) : 
+                    z.Cross(Vector.ByCoordinates(0, 0, 1)).Normalized();
+                var x = z.Cross(y).Normalized();
 
                 var newCS = CoordinateSystem.ByOriginVectors(cs.Origin, x,y,z);
 
-                var pA = (Point)a.Transform(CoordinateSystem.WCS, newCS);
-                var pB = (Point)b.Transform(CoordinateSystem.WCS, newCS);
-                var pC = (Point)c.Transform(CoordinateSystem.WCS, newCS);
-                var pD = (Point)d.Transform(CoordinateSystem.WCS, newCS);
+                var pA = (Point)a.Transform(CoordinateSystem.Identity(), newCS);
+                var pB = (Point)b.Transform(CoordinateSystem.Identity(), newCS);
+                var pC = (Point)c.Transform(CoordinateSystem.Identity(), newCS);
+                var pD = (Point)d.Transform(CoordinateSystem.Identity(), newCS);
 
                 package.PushTriangleVertex(pA.X, pA.Y, pA.Z);
                 package.PushTriangleVertex(pB.X, pB.Y, pB.Z);

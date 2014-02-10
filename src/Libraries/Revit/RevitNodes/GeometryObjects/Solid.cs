@@ -460,8 +460,8 @@ namespace Revit.Elements
             var xaxis = yaxis.CrossProduct(zaxis);
 
             // create circle (this is ridiculous, but curve loop doesn't work with a circle - you need two arcs)
-            var arc1 = Ellipse.Create(origin.ToXyz(), radius, radius, xaxis, yaxis, 0, RevitPI);
-            var arc2 = Ellipse.Create(origin.ToXyz(), radius, radius, xaxis, yaxis, RevitPI, 2 * RevitPI);
+            var arc1 = Autodesk.Revit.DB.Ellipse.Create(origin.ToXyz(), radius, radius, xaxis, yaxis, 0, RevitPI);
+            var arc2 = Autodesk.Revit.DB.Ellipse.Create(origin.ToXyz(), radius, radius, xaxis, yaxis, RevitPI, 2 * RevitPI);
 
             // create curve loop from cirle
             var circleLoop = Autodesk.Revit.DB.CurveLoop.Create(new List<Curve>() { arc1, arc2 });
@@ -552,8 +552,8 @@ namespace Revit.Elements
             var origin = center.ToXyz() + xaxis * radius;
 
             // create circle (this is ridiculous but curve loop doesn't work with a circle
-            var arc1 = Ellipse.Create(origin, sectionRadius, sectionRadius, xaxis, zaxis, 0, RevitPI);
-            var arc2 = Ellipse.Create(origin, sectionRadius, sectionRadius, xaxis, zaxis, RevitPI, 2 * RevitPI);
+            var arc1 = Autodesk.Revit.DB.Ellipse.Create(origin, sectionRadius, sectionRadius, xaxis, zaxis, 0, RevitPI);
+            var arc2 = Autodesk.Revit.DB.Ellipse.Create(origin, sectionRadius, sectionRadius, xaxis, zaxis, RevitPI, 2 * RevitPI);
 
             // create curve loop from cirle
             var circleLoop = CurveLoop.Create(new List<Curve>() { arc1, arc2 });

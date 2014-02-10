@@ -53,7 +53,7 @@ namespace DSRevitNodesTests.GeometryConversion
             Assert.AreEqual(revitSpline.Degree, protoSpline.Degree);
            
             Assert.IsTrue(protoSpline.IsRational);
-            Assert.AreEqual(revitSpline.CtrlPoints.Count, protoSpline.ControlVertices.Count());
+            Assert.AreEqual(revitSpline.CtrlPoints.Count, protoSpline.GetControlVertices().Count());
 
             // need more tests here for rational curves
             // Assert.AreEqual(revitSpline.Weights.Cast<double>().Count(), protoSpline.Weights.Count);
@@ -97,8 +97,8 @@ namespace DSRevitNodesTests.GeometryConversion
             Assert.AreEqual( 2, protoSpline.Degree );
             var start = protoSpline.StartPoint;
             var end = protoSpline.EndPoint;
-            var startT = protoSpline.StartTangent;
-            var endT = protoSpline.EndTangent;
+            var startT = protoSpline.TangentAtParameter(0.0);
+            var endT = protoSpline.TangentAtParameter(1.0);
 
             Assert.AreEqual(pts[0].X, start.X, 1e-6);
             Assert.AreEqual(pts[0].Y, start.Y, 1e-6);
@@ -169,7 +169,7 @@ namespace DSRevitNodesTests.GeometryConversion
             var pa = (Autodesk.DesignScript.Geometry.Arc)pc;
 
             Assert.AreEqual(sp, pa.StartAngle * 180 / Math.PI);
-            Assert.AreEqual(ep, pa.EndAngle * 180 / Math.PI);
+            Assert.AreEqual(ep, pa.SweepAngle * 180 / Math.PI);
 
             Assert.AreEqual(x.ToVector(), pa.ContextCoordinateSystem.XAxis);
             Assert.AreEqual(y.ToVector(), pa.ContextCoordinateSystem.YAxis);
@@ -203,7 +203,7 @@ namespace DSRevitNodesTests.GeometryConversion
             var pa = (Autodesk.DesignScript.Geometry.Arc) pc;
 
             Assert.AreEqual(sp, pa.StartAngle);
-            Assert.AreEqual(ep, pa.EndAngle);
+            Assert.AreEqual(ep, pa.SweepAngle);
             Assert.AreEqual(rx, pa.ContextCoordinateSystem.XAxis.Length);
             Assert.AreEqual(ry, pa.ContextCoordinateSystem.YAxis.Length);
 
