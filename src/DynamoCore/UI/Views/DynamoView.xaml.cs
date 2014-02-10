@@ -78,7 +78,7 @@ namespace Dynamo.Controls
 
             InitializeComponent();
 
-            LibraryManagerMenu.Visibility = System.Windows.Visibility.Collapsed;
+            //LibraryManagerMenu.Visibility = System.Windows.Visibility.Collapsed;
             this.Loaded += dynBench_Activated;
 
             //setup InfoBubble for library items tooltip
