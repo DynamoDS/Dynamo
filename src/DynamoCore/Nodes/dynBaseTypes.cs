@@ -2112,7 +2112,8 @@ namespace Dynamo.Nodes
     /// Description:
     /// Builds sublists from a list. Inputs are a list and an offset to indicate the number of items to skip before
     /// the start of each subsequent sublist. Enter a range of values using series syntax to indicate the first sublist.
-    /// </summary>    [NodeName("Build Sublists")]
+    /// </summary>
+    [NodeName("Build Sublists")]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
     [NodeDescription("Build sublists from a list using DesignScript range syntax.")]
     public partial class Sublists : BasicInteractive<string>
@@ -2744,7 +2745,7 @@ namespace Dynamo.Nodes
                 return Value.NewNumber(x + y);
             }
 
-           //double + unit
+            //double + unit
             if (args[0].IsNumber && args[1].IsContainer)
             {
                 var x = ((Value.Number)args[0]).Item;
@@ -2865,7 +2866,7 @@ namespace Dynamo.Nodes
             {
                 var x = ((Value.Number)args[0]).Item;
                 var y = SIUnit.UnwrapToSIUnit(args[1]);
-                return Value.NewContainer(x * y);
+                return Value.NewNumber(x * y);
             }
 
             //unit * double
@@ -2873,6 +2874,7 @@ namespace Dynamo.Nodes
             {
                 var x = SIUnit.UnwrapToSIUnit(args[0]);
                 var y = ((Value.Number)args[1]).Item;
+
                 return Value.NewContainer(x * y);
             }
 
