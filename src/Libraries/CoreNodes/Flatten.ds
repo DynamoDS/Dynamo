@@ -1,0 +1,52 @@
+def Flatten(list : var, amt : int)
+{
+	def flatten(list : var[], amt : int, acc : var[])
+	{
+		if (amt == 0)
+		{
+			acc.AddRange(list);
+		}
+		else
+		{
+			for (item in list)
+			{
+				flatten(item, amt-1, acc);
+			}
+		}
+		return = acc;
+	}
+
+	def flatten(item : var, amt : int, acc : var[])
+	{
+		acc.Add(item);
+		return = acc;
+	}
+
+	acc = {};
+	flatten(list, amt, acc);
+	
+	return = acc;
+};
+
+def FlattenCompletely(list : var)
+{
+	def flatten(list : var[], acc : var[])
+	{
+		for (item in list)
+		{
+			flatten(item, acc);
+		}
+		return = acc;
+	};
+
+	def flatten(item : var, acc : var[])
+	{
+		acc.Add(item);
+		return = acc;
+	};
+
+	acc = {};
+	flatten(list, acc);
+
+	return = acc;
+};
