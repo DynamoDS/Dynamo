@@ -1,0 +1,27 @@
+def Combine(func, lists : var[]..[])
+{
+    argList = Transpose(lists);
+    return = [Imperative]
+    {
+        result = { };
+        for(args in argList)
+        {
+            result[Count(result)] = Evaluate(func, args);
+        }
+        return = result;
+    };
+}
+
+def Reduce(func, acc, lists : var[]..[])
+{
+    argList = Transpose(lists);
+    return = [Imperative]
+    {
+        for(args in argList)
+        {
+            args[Count(args)] = acc;
+            acc = Evaluate(func, args);
+        }
+        return = acc;
+    };
+}
