@@ -675,13 +675,7 @@ namespace Dynamo.Units
     {
         public Area():base(0.0){}
 
-        public Area(double value) : base(value)
-        {
-            if (value < 0)
-            {
-                value = 0.0;
-            }
-        }
+        public Area(double value):base(value<0?0.0:value){}
 
         public static Area FromSquareFeet(double value)
         {
@@ -894,13 +888,7 @@ namespace Dynamo.Units
     {
         public Volume():base(0.0){}
 
-        public Volume(double value) : base(value)
-        {
-            if (value < 0)
-            {
-                value = 0.0;
-            }
-        }
+        public Volume(double value) : base(value<0.0?0.0:value){}
 
         public static Volume FromCubicFeet(double value)
         {

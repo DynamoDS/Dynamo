@@ -484,17 +484,21 @@ namespace Dynamo.Tests
         [Test]
         public void UnitsNegatives()
         {
-            //construction
-            Assert.DoesNotThrow(() => { var test = new Units.Length(-2.0); });
-            Assert.Throws<MathematicalArgumentException>(() => { var test = new Area(-2.0); });
-            Assert.Throws<MathematicalArgumentException>(() => { var test = new Volume(-2.0); });
+            var length = new Length(-2.0);
+            var area = new Area(-2.0);
+            var volume = new Volume(-2.0);
 
-            var length = new Units.Length(2.0);
-            var area = new Area(2.0);
-            var volume = new Volume(2.0);
+            //Units constructed with negative values should be set to 0.0.
+            Assert.AreEqual(0, area.Value);
+            Assert.AreEqual(0, volume.Value);
 
-            Assert.Throws<MathematicalArgumentException>(() => { var test = new Area(10.0) - new Area(12.0); });
-            Assert.Throws<MathematicalArgumentException>(() => { var test = new Volume(10.0) - new Volume(12.0); });
+            length = new Units.Length(2.0);
+            area = new Area(2.0);
+            volume = new Volume(2.0);
+
+            //ensure that subtractions resulting in negative values return 0.0;
+            Assert.AreEqual(new Area(0.0), new Area(10.0) - new Area(12.0));
+            Assert.AreEqual(new Volume(0.0), new Volume(10.0) - new Volume(12.0));
         }
 
         [Test]
