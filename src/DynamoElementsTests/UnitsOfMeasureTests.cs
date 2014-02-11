@@ -488,17 +488,13 @@ namespace Dynamo.Tests
             var area = new Area(-2.0);
             var volume = new Volume(-2.0);
 
-            //Units constructed with negative values should be set to 0.0.
-            Assert.AreEqual(0, area.Value);
-            Assert.AreEqual(0, volume.Value);
+            Assert.AreEqual(-2.0, length.Value);
+            Assert.AreEqual(-2.0, area.Value);
+            Assert.AreEqual(-2.0, volume.Value);
 
-            length = new Units.Length(2.0);
-            area = new Area(2.0);
-            volume = new Volume(2.0);
-
-            //ensure that subtractions resulting in negative values return 0.0;
-            Assert.AreEqual(new Area(0.0), new Area(10.0) - new Area(12.0));
-            Assert.AreEqual(new Volume(0.0), new Volume(10.0) - new Volume(12.0));
+            Assert.AreEqual(new Length(-2.0), new Length(10.0) - new Length(12.0));
+            Assert.AreEqual(new Area(-2.0), new Area(10.0) - new Area(12.0));
+            Assert.AreEqual(new Volume(-2.0), new Volume(10.0) - new Volume(12.0));
         }
 
         [Test]
