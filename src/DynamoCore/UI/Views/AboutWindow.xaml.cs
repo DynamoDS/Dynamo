@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using Dynamo.UpdateManager;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 
 namespace Dynamo.UI.Views
@@ -33,9 +34,8 @@ namespace Dynamo.UI.Views
         {
             //Request a check for update version info
             DisplayVersionInformation(null);
-            UpdateManager.UpdateManager.Instance.UpdateDownloaded += new UpdateDownloadedEventHandler(OnUpdatePackageDownloaded);
-            
-            UpdateManager.UpdateManager.Instance.CheckForProductUpdate();
+            dynSettings.Controller.UpdateManager.UpdateDownloaded += new UpdateDownloadedEventHandler(OnUpdatePackageDownloaded);
+            dynSettings.Controller.UpdateManager.CheckForProductUpdate();
         }
 
         private void HandleEsc(object sender, KeyEventArgs e)
