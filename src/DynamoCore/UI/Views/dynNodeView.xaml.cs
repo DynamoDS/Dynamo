@@ -1,21 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using Dynamo.Core;
 using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.Prompts;
 using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using System.Windows.Media;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Windows.Threading;
+using Dynamo.Core;
 
 namespace Dynamo.Controls
 {
@@ -48,19 +49,19 @@ namespace Dynamo.Controls
 
         public dynNodeView()
         {
-            Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoModernDictionary);
-            Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoColorsAndBrushesDictionary);
-            Resources.MergedDictionaries.Add(SharedDictionaryManager.DataTemplatesDictionary);
-            Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoConvertersDictionary);
-            Resources.MergedDictionaries.Add(SharedDictionaryManager.PortsDictionary);
+            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoModernDictionary);
+            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoColorsAndBrushesDictionary);
+            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DataTemplatesDictionary);
+            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoConvertersDictionary);
+            this.Resources.MergedDictionaries.Add(SharedDictionaryManager.PortsDictionary);
 
             InitializeComponent();
 
-            Loaded += new RoutedEventHandler(OnNodeViewLoaded);
+            this.Loaded += new RoutedEventHandler(OnNodeViewLoaded);
             inputGrid.Loaded += new RoutedEventHandler(inputGrid_Loaded);
 
-            SizeChanged += OnSizeChanged;
-            DataContextChanged += OnDataContextChanged;
+            this.SizeChanged += OnSizeChanged;
+            this.DataContextChanged += OnDataContextChanged;
 
             Canvas.SetZIndex(this, 1);
         }
@@ -104,8 +105,8 @@ namespace Dynamo.Controls
             // can be sent as a result of DataContext becoming DisconnectedItem too,
             // but ViewModel should not be updated in that case (hence the null-check).
             // 
-            if (null == ViewModel)
-                ViewModel = e.NewValue as NodeViewModel;
+            if (null == this.ViewModel)
+                this.ViewModel = e.NewValue as NodeViewModel;
         }
 
         private void OnNodeViewLoaded(object sender, RoutedEventArgs e)
@@ -123,7 +124,7 @@ namespace Dynamo.Controls
             ViewModel.NodeLogic.PropertyChanged += NodeLogic_PropertyChanged;
         }
 
-        void NodeLogic_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        void NodeLogic_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -259,16 +260,16 @@ namespace Dynamo.Controls
 
             var view = WPF.FindUpVisualTree<DynamoView>(this);
 
-            DynamoSettings.ReturnFocusToSearch();
+            dynSettings.ReturnFocusToSearch();
 
             view.mainGrid.Focus();
 
-            var node = ViewModel.NodeModel;
+            var node = this.ViewModel.NodeModel;
             if (node.WorkSpace.Nodes.Contains(node))
             {
-                Guid nodeGuid = ViewModel.NodeModel.GUID;
-                DynamoSettings.Controller.DynamoViewModel.ExecuteCommand(
-                    new DynamoViewModel.SelectModelCommand(nodeGuid, Keyboard.Modifiers));
+                Guid nodeGuid = this.ViewModel.NodeModel.GUID;
+                dynSettings.Controller.DynamoViewModel.ExecuteCommand(
+                    new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers));
             }
             if (e.ClickCount == 2)
             {
@@ -291,15 +292,15 @@ namespace Dynamo.Controls
             if (toolTipDelayTimer != null && toolTipDelayTimer.IsEnabled)
                 toolTipDelayTimer.Stop();
 
-            DynamoSettings.Controller.InfoBubbleViewModel.OnRequestAction(
+            dynSettings.Controller.InfoBubbleViewModel.OnRequestAction(
                 new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Hide));
 
             if (e.ClickCount == 2)
             {
                 Debug.WriteLine("Nickname double clicked!");
-                if (ViewModel != null && ViewModel.RenameCommand.CanExecute(null))
+                if (this.ViewModel != null && this.ViewModel.RenameCommand.CanExecute(null))
                 {
-                    ViewModel.RenameCommand.Execute(null);
+                    this.ViewModel.RenameCommand.Execute(null);
                 }
                 e.Handled = true;
             }
@@ -325,8 +326,8 @@ namespace Dynamo.Controls
 
             if (ViewModel != null)
                 ViewModel.FadeOutTooltipCommand.Execute(null);
-            else if (DynamoSettings.Controller != null)
-                DynamoSettings.Controller.DynamoViewModel.FadeOutInfoBubble(null);
+            else if (dynSettings.Controller != null)
+                dynSettings.Controller.DynamoViewModel.FadeOutInfoBubble(null);
         }
 
         private void InputPort_OnMouseEnter(object sender, MouseEventArgs e)
@@ -341,8 +342,8 @@ namespace Dynamo.Controls
 
             if (ViewModel != null)
                 ViewModel.FadeOutTooltipCommand.Execute(null);
-            else if (DynamoSettings.Controller != null)
-                DynamoSettings.Controller.DynamoViewModel.FadeOutInfoBubble(null);
+            else if (dynSettings.Controller != null)
+                dynSettings.Controller.DynamoViewModel.FadeOutInfoBubble(null);
         }
 
         private void InputPort_OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -350,7 +351,7 @@ namespace Dynamo.Controls
             if (toolTipDelayTimer != null && toolTipDelayTimer.IsEnabled)
                 toolTipDelayTimer.Stop();
 
-            DynamoSettings.Controller.InfoBubbleViewModel.OnRequestAction(
+            dynSettings.Controller.InfoBubbleViewModel.OnRequestAction(
                 new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Hide));
         }
 
@@ -366,8 +367,8 @@ namespace Dynamo.Controls
 
             if (ViewModel != null)
                 ViewModel.FadeOutTooltipCommand.Execute(null);
-            else if (DynamoSettings.Controller != null)
-                DynamoSettings.Controller.DynamoViewModel.FadeOutInfoBubble(null);
+            else if (dynSettings.Controller != null)
+                dynSettings.Controller.DynamoViewModel.FadeOutInfoBubble(null);
         }
 
         private void OutputPort_OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -375,14 +376,14 @@ namespace Dynamo.Controls
             if (toolTipDelayTimer != null && toolTipDelayTimer.IsEnabled)
                 toolTipDelayTimer.Stop();
 
-            DynamoSettings.Controller.InfoBubbleViewModel.OnRequestAction(
+            dynSettings.Controller.InfoBubbleViewModel.OnRequestAction(
                 new InfoBubbleEventArgs(InfoBubbleEventArgs.Request.Hide));
         }
 
         private void PreviewArrow_MouseEnter(object sender, MouseEventArgs e)
         {
             UIElement uiElement = sender as UIElement;
-            if (uiElement.Visibility == Visibility.Visible)
+            if (uiElement.Visibility == System.Windows.Visibility.Visible)
                 ViewModel.ShowPreviewCommand.Execute(null);
         }
 
@@ -400,8 +401,8 @@ namespace Dynamo.Controls
                     if (string.IsNullOrWhiteSpace(content))
                         return;
 
-                    actualWidth = tb.ActualWidth * DynamoSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
-                    actualHeight = tb.ActualHeight * DynamoSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
+                    actualWidth = tb.ActualWidth * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
+                    actualHeight = tb.ActualHeight * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
                     break;
 
                 case InfoBubbleViewModel.Direction.Left:
@@ -411,8 +412,8 @@ namespace Dynamo.Controls
                     if (string.IsNullOrWhiteSpace(content))
                         return;
 
-                    actualWidth = nodePort.ActualWidth * DynamoSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
-                    actualHeight = nodePort.ActualHeight * DynamoSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
+                    actualWidth = nodePort.ActualWidth * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
+                    actualHeight = nodePort.ActualHeight * dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.Zoom;
                     break;
             }
 
@@ -446,12 +447,12 @@ namespace Dynamo.Controls
             // Collapse any existing bubble before starting fade in
             if (ViewModel != null)
                 ViewModel.HideTooltipCommand.Execute(null);
-            else if (DynamoSettings.Controller != null)
-                DynamoSettings.Controller.DynamoViewModel.HideInfoBubble(null);
+            else if (dynSettings.Controller != null)
+                dynSettings.Controller.DynamoViewModel.HideInfoBubble(null);
 
             toolTipDelayTimer.Stop();
             toolTipDelayTimer.Tag = data;
-            DynamoSettings.Controller.InfoBubbleViewModel.UpdateContentCommand.Execute(data);
+            dynSettings.Controller.InfoBubbleViewModel.UpdateContentCommand.Execute(data);
             toolTipDelayTimer.Start();
         }
     }

@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Autodesk.Revit.DB;
-using Dynamo.Core;
 using Dynamo.Utilities;
 using NUnit.Framework;
 using RevitServices.Persistence;
@@ -41,13 +40,13 @@ namespace Dynamo.Tests
         [Test]
         public void ReferencePoint()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string testPath = Path.Combine(_testPath, @".\ReferencePoint\ReferencePoint.dyn");
             model.Open(testPath);
-            Assert.AreEqual(3, DynamoSettings.Controller.DynamoModel.Nodes.Count);
+            Assert.AreEqual(3, dynSettings.Controller.DynamoModel.Nodes.Count);
 
-            DynamoSettings.Controller.RunExpression(true);
+            dynSettings.Controller.RunExpression(true);
         }
     }
 }

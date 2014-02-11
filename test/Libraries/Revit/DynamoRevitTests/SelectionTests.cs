@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
 using Autodesk.Revit.DB;
-using Dynamo.Core;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using NUnit.Framework;
@@ -15,7 +14,7 @@ namespace Dynamo.Tests
         [Test]
         public void FamilyTypeSelectorNode()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\Selection\SelectFamily.dyn");
             string testPath = Path.GetFullPath(samplePath);
@@ -24,7 +23,7 @@ namespace Dynamo.Tests
             model.Open(testPath);
 
             //first assert that we have only one node
-            var nodeCount = DynamoSettings.Controller.DynamoModel.Nodes.Count;
+            var nodeCount = dynSettings.Controller.DynamoModel.Nodes.Count;
             Assert.AreEqual(1, nodeCount);
 
             //assert that we have the right number of family symbols
@@ -40,7 +39,7 @@ namespace Dynamo.Tests
                 }
             }
 
-            FamilyTypeSelector typeSelNode = (FamilyTypeSelector)DynamoSettings.Controller.DynamoModel.Nodes.First();
+            FamilyTypeSelector typeSelNode = (FamilyTypeSelector)dynSettings.Controller.DynamoModel.Nodes.First();
             Assert.AreEqual(typeSelNode.Items.Count, count);
 
             //assert that the selected index is correct
@@ -55,7 +54,7 @@ namespace Dynamo.Tests
         [Test]
         public void AllSelectionNodes()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\Selection\Selection.dyn");
             string testPath = Path.GetFullPath(samplePath);
@@ -63,7 +62,7 @@ namespace Dynamo.Tests
             //open the test file
             model.Open(testPath);
 
-            Assert.DoesNotThrow(()=>DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(()=>dynSettings.Controller.RunExpression(true));
 
             var selNodes = model.AllNodes.Where(x => x is SelectionBase || x is MultipleElementSelectionBase);
             Assert.IsFalse(selNodes.Any(x=>x.OldValue == null));

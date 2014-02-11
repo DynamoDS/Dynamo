@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Xml;
 using Dynamo.Models;
 
@@ -132,7 +135,7 @@ namespace Dynamo.Core
         {
             EnsureValidRecorderStates();
 
-            if (CanUndo == false)
+            if (this.CanUndo == false)
                 return; // Nothing to be undone.
 
             // Before undo operation, ensure the top-most item on the undo
@@ -147,7 +150,7 @@ namespace Dynamo.Core
         {
             EnsureValidRecorderStates();
 
-            if (CanRedo == false)
+            if (this.CanRedo == false)
                 return; // Nothing to be redone.
 
             // Top-most group gets moved from redo stack to undo stack.
@@ -164,8 +167,8 @@ namespace Dynamo.Core
         public void Clear()
         {
             EnsureValidRecorderStates();
-            undoStack.Clear();
-            redoStack.Clear();
+            this.undoStack.Clear();
+            this.redoStack.Clear();
         }
 
         #endregion
@@ -180,10 +183,10 @@ namespace Dynamo.Core
         /// <param name="model">The model to be recorded.</param>
         public void RecordCreationForUndo(ModelBase model)
         {
-            RecordActionInternal(currentActionGroup,
+            RecordActionInternal(this.currentActionGroup,
                 model, UserAction.Creation);
 
-            redoStack.Clear(); // Wipe out the redo-stack.
+            this.redoStack.Clear(); // Wipe out the redo-stack.
         }
 
         /// <summary>
@@ -195,10 +198,10 @@ namespace Dynamo.Core
         /// <param name="model">The model to be recorded.</param>
         public void RecordDeletionForUndo(ModelBase model)
         {
-            RecordActionInternal(currentActionGroup,
+            RecordActionInternal(this.currentActionGroup,
                 model, UserAction.Deletion);
 
-            redoStack.Clear(); // Wipe out the redo-stack.
+            this.redoStack.Clear(); // Wipe out the redo-stack.
         }
 
         /// <summary>
@@ -210,10 +213,10 @@ namespace Dynamo.Core
         /// <param name="model">The model to be recorded.</param>
         public void RecordModificationForUndo(ModelBase model)
         {
-            RecordActionInternal(currentActionGroup,
+            RecordActionInternal(this.currentActionGroup,
                 model, UserAction.Modification);
 
-            redoStack.Clear(); // Wipe out the redo-stack.
+            this.redoStack.Clear(); // Wipe out the redo-stack.
         }
 
         /// <summary>
@@ -227,7 +230,7 @@ namespace Dynamo.Core
         /// </summary>
         public void PopFromUndoGroup()
         {
-            if (redoStack.Count > 0)
+            if (this.redoStack.Count > 0)
             {
                 throw new InvalidOperationException(
                     "UndoStack cannot be popped with non-empty RedoStack");
@@ -255,7 +258,7 @@ namespace Dynamo.Core
         /// </summary>
         private void EnsureValidRecorderStates()
         {
-            if (null != currentActionGroup)
+            if (null != this.currentActionGroup)
             {
                 string message = "An existing open undo group detected";
                 throw new InvalidOperationException(message);
@@ -281,7 +284,7 @@ namespace Dynamo.Core
             if (null == model)
                 throw new ArgumentNullException("model");
 
-            Guid guid = model.GUID;
+            System.Guid guid = model.GUID;
             foreach (XmlNode childNode in group.ChildNodes)
             {
                 // See if the model supports Guid identification, in unit test cases 
@@ -305,7 +308,7 @@ namespace Dynamo.Core
 
         private XmlElement PopActionGroupFromUndoStack()
         {
-            if (CanUndo == false)
+            if (this.CanUndo == false)
             {
                 throw new InvalidOperationException("Invalid call to " +
                     "'PopActionGroupFromUndoStack' when the undo stack is empty");
@@ -316,7 +319,7 @@ namespace Dynamo.Core
 
         private XmlElement PopActionGroupFromRedoStack()
         {
-            if (CanRedo == false)
+            if (this.CanRedo == false)
             {
                 throw new InvalidOperationException("Invalid call to " +
                     "'PopActionGroupFromRedoStack' when the undo stack is empty");
@@ -332,7 +335,7 @@ namespace Dynamo.Core
 
             // Serialize the affected model into xml representation
             // and store it under the current action group.
-            XmlNode childNode = model.Serialize(document, SaveContext.Undo);
+            XmlNode childNode = model.Serialize(this.document, SaveContext.Undo);
             SetNodeAction(childNode, action.ToString());
             group.AppendChild(childNode);
         }
@@ -387,7 +390,7 @@ namespace Dynamo.Core
                 }
             }
 
-            redoStack.Push(newGroup); // Place the states on the redo-stack.
+            this.redoStack.Push(newGroup); // Place the states on the redo-stack.
         }
 
         private void RedoActionGroup(XmlElement actionGroup)
@@ -428,7 +431,7 @@ namespace Dynamo.Core
                 }
             }
 
-            undoStack.Push(newGroup);
+            this.undoStack.Push(newGroup);
         }
 
         #endregion

@@ -4,26 +4,53 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
+using System.Diagnostics;
 using System.Collections.ObjectModel;
-using Dynamo.Core;
+using Dynamo.Units;
 using Dynamo.Nodes;
 using System.Xml;
 using Dynamo.DSEngine;
+using Dynamo.FSchemeInterop.Node;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Microsoft.FSharp.Collections;
+using Microsoft.FSharp.Core;
 using ProtoCore.AST.AssociativeAST;
+using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
+using Utils = Dynamo.FSchemeInterop.Utils;
 
 namespace Dynamo.Models
 {
     public abstract class NodeModel : ModelBase
     {
+        #region abstract members
+
+        /// <summary>
+        ///     The dynElement's Evaluation Logic.
+        /// </summary>
+        /// <param name="args">
+        ///     Parameters to the node. You are guaranteed to have as many arguments as you have InPorts at the time
+        ///     it is run.
+        /// </param>
+        /// <param name="outPuts"></param>
+        /// <returns>
+        ///     An expression that is the result of the Node's evaluation. It will be passed along to whatever the OutPort is
+        ///     connected to.
+        /// </returns>
+        public virtual void Evaluate(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
         #region private members
 
         /// <summary>
         ///     Get the last computed value from the node.
         /// </summary>
-        private object _oldValue;
+        private FScheme.Value _oldValue;
 
         /// <summary>
         ///     Should changes be reported to the containing workspace?
@@ -45,6 +72,7 @@ namespace Dynamo.Models
         private bool _saveResult;
         private bool _isUpdated;
         private string _description;
+        private Dictionary<PortData, FScheme.Value> _evaluationDict;
         private bool _isDirty = true;
         private const string FailureString = "Node evaluation failed";
         private readonly Dictionary<PortModel, PortData> _portDataDict = new Dictionary<PortModel, PortData>();
@@ -94,7 +122,7 @@ namespace Dynamo.Models
         /// </summary>
         public bool IsCustomFunction
         {
-            get { return this is CustomNodeInstance; }
+            get { return this is Function; }
         }
 
         /// <summary>
@@ -265,7 +293,7 @@ namespace Dynamo.Models
             }
         }
 
-        public virtual object OldValue
+        public virtual FScheme.Value OldValue
         {
             get { return _oldValue; }
             protected set
@@ -306,7 +334,7 @@ namespace Dynamo.Models
 
         protected DynamoController Controller
         {
-            get { return DynamoSettings.Controller; }
+            get { return dynSettings.Controller; }
         }
 
         private int _errorCount;
@@ -570,7 +598,7 @@ namespace Dynamo.Models
                               orderby result.From
                               select result).ToList();
 
-            Version currentVersion = DynamoSettings.Controller.DynamoModel.HomeSpace.WorkspaceVersion;
+            Version currentVersion = dynSettings.Controller.DynamoModel.HomeSpace.WorkspaceVersion;
 
             while (workspaceVersion != null && workspaceVersion < currentVersion)
             {
@@ -853,9 +881,9 @@ namespace Dynamo.Models
                                 : ElementState.Active;
                 });
 
-            if (DynamoSettings.Controller != null &&
-                DynamoSettings.Controller.UIDispatcher != null &&
-                DynamoSettings.Controller.UIDispatcher.CheckAccess() == false)
+            if (dynSettings.Controller != null &&
+                dynSettings.Controller.UIDispatcher != null &&
+                dynSettings.Controller.UIDispatcher.CheckAccess() == false)
             {
                 // This is put in place to solve the crashing issue outlined in 
                 // the following defect. ValidateConnections can be called from 
@@ -870,7 +898,7 @@ namespace Dynamo.Models
                 // 
                 //      http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-847
                 // 
-                DynamoSettings.Controller.UIDispatcher.BeginInvoke(setState);
+                dynSettings.Controller.UIDispatcher.BeginInvoke(setState);
             }
             else
                 setState();
@@ -1142,7 +1170,7 @@ namespace Dynamo.Models
             {
                 try
                 {
-                    previewValue = DynamoSettings.Controller.EngineController.GetStringValue(variableName);
+                    previewValue = dynSettings.Controller.EngineController.GetStringValue(variableName);
                 }
                 catch (Exception ex)
                 {
@@ -1150,6 +1178,78 @@ namespace Dynamo.Models
                 }
             }
             return previewValue;
+        }
+
+        public static string PrintValue(
+            FScheme.Value eIn,
+            int currentListIndex,
+            int maxListIndex,
+            int currentDepth,
+            int maxDepth,
+            int maxStringLength = 20)
+        {
+            if (eIn == null)
+                return "<null>";
+
+            string accString = String.Concat(Enumerable.Repeat("  ", currentDepth));
+
+            if (maxDepth == currentDepth || currentListIndex == maxListIndex)
+            {
+                accString += "...";
+                return accString;
+            }
+
+            if (eIn.IsContainer)
+            {
+                string str = (eIn as FScheme.Value.Container).Item != null
+                                 ? (eIn as FScheme.Value.Container).Item.ToString()
+                                 : "<empty>";
+
+                accString += str;
+            }
+            else if (eIn.IsFunction)
+                accString += "<function>";
+            else if (eIn.IsList)
+            {
+                accString += "List";
+
+                FSharpList<FScheme.Value> list = (eIn as FScheme.Value.List).Item;
+
+                if (!list.Any())
+                    accString += " (empty)";
+
+                // when children will be at maxDepth, just do 1
+                if (currentDepth + 1 == maxDepth)
+                    maxListIndex = 0;
+
+                // build all elements of sub list
+                accString =
+                    list.Select((x, i) => new { Element = x, Index = i })
+                        .TakeWhile(e => e.Index <= maxListIndex)
+                        .Aggregate(
+                            accString,
+                            (current, e) =>
+                            current + "\n"
+                            + PrintValue(e.Element, e.Index, maxListIndex, currentDepth + 1, maxDepth, maxStringLength));
+            }
+            else if (eIn.IsNumber)
+            {
+                double num = (eIn as FScheme.Value.Number).Item;
+                var numFloat = (float)num;
+                accString += numFloat.ToString();
+            }
+            else if (eIn.IsString)
+            {
+                string str = (eIn as FScheme.Value.String).Item;
+                if (str.Length > maxStringLength)
+                    str = str.Substring(0, maxStringLength) + "...";
+
+                accString += "\"" + str + "\"";
+            }
+            else if (eIn.IsSymbol)
+                accString += "<" + (eIn as FScheme.Value.Symbol).Item + ">";
+
+            return accString;
         }
 
         /// <summary>
@@ -1297,174 +1397,6 @@ namespace Dynamo.Models
 
         #endregion
 
-        #region Dirty Management
-
-        /// <summary>
-        ///     Does this Element need to be regenerated? Setting this to true will trigger a modification event
-        ///     for the dynWorkspace containing it. If Automatic Running is enabled, setting this to true will
-        ///     trigger an evaluation.
-        /// </summary>
-        public virtual bool RequiresRecalc
-        {
-            get
-            {
-                //TODO: When marked as clean, remember so we don't have to re-traverse
-                if (_isDirty)
-                    return true;
-
-                bool dirty = Inputs.Values.Where(x => x != null).Any(x => x.Item2.RequiresRecalc);
-                _isDirty = dirty;
-
-                return dirty;
-            }
-            set
-            {
-                _isDirty = value;
-                if (value)
-                    ReportModification();
-            }
-        }
-
-        /// <summary>
-        ///     Forces the node to refresh it's dirty state by checking all inputs.
-        /// </summary>
-        public void MarkDirty()
-        {
-            bool dirty = false;
-            foreach (var input in Inputs.Values.Where(x => x != null))
-            {
-                input.Item2.MarkDirty();
-                if (input.Item2.RequiresRecalc)
-                    dirty = true;
-            }
-            if (!_isDirty)
-                _isDirty = dirty;
-        }
-
-        private void savePortMappings()
-        {
-            //Save all of the connection states, so we can check if this is dirty
-            foreach (int data in Enumerable.Range(0, InPortData.Count))
-            {
-                Tuple<int, NodeModel> input;
-
-                _previousInputPortMappings[data] = TryGetInput(data, out input) ? input : null;
-            }
-
-            foreach (int data in Enumerable.Range(0, OutPortData.Count))
-            {
-                HashSet<Tuple<int, NodeModel>> outputs;
-
-                _previousOutputPortMappings[data] = TryGetOutput(data, out outputs)
-                                                       ? outputs
-                                                       : new HashSet<Tuple<int, NodeModel>>();
-            }
-        }
-
-        /// <summary>
-        ///     Check current ports against ports used for previous mappings.
-        /// </summary>
-        private void CheckPortsForRecalc()
-        {
-            RequiresRecalc = Enumerable.Range(0, InPortData.Count).Any(
-                delegate(int input)
-                {
-                    Tuple<int, NodeModel> oldInput;
-                    Tuple<int, NodeModel> currentInput;
-
-                    //this is dirty if there wasn't anything set last time (implying it was never run)...
-                    return !_previousInputPortMappings.TryGetValue(input, out oldInput) || oldInput == null
-                           || !TryGetInput(input, out currentInput) //or If what's set doesn't match
-                           || (oldInput.Item2 != currentInput.Item2 && oldInput.Item1 != currentInput.Item1);
-                }) || Enumerable.Range(0, OutPortData.Count).Any(
-                    delegate(int output)
-                    {
-                        HashSet<Tuple<int, NodeModel>> oldOutputs;
-                        HashSet<Tuple<int, NodeModel>> newOutputs;
-
-                        return !_previousOutputPortMappings.TryGetValue(output, out oldOutputs)
-                               || !TryGetOutput(output, out newOutputs) || oldOutputs.SetEquals(newOutputs);
-                    });
-        }
-
-        #endregion
-
-        #region Legacy FScheme
-
-#if !USE_DSENGINE
-
-        public static string PrintValue(
-            FScheme.Value eIn,
-            int currentListIndex,
-            int maxListIndex,
-            int currentDepth,
-            int maxDepth,
-            int maxStringLength = 20)
-        {
-            if (eIn == null)
-                return "<null>";
-
-            string accString = String.Concat(Enumerable.Repeat("  ", currentDepth));
-
-            if (maxDepth == currentDepth || currentListIndex == maxListIndex)
-            {
-                accString += "...";
-                return accString;
-            }
-
-            if (eIn.IsContainer)
-            {
-                string str = (eIn as FScheme.Value.Container).Item != null
-                                 ? (eIn as FScheme.Value.Container).Item.ToString()
-                                 : "<empty>";
-
-                accString += str;
-            }
-            else if (eIn.IsFunction)
-                accString += "<function>";
-            else if (eIn.IsList)
-            {
-                accString += "List";
-
-                FSharpList<FScheme.Value> list = (eIn as FScheme.Value.List).Item;
-
-                if (!list.Any())
-                    accString += " (empty)";
-
-                // when children will be at maxDepth, just do 1
-                if (currentDepth + 1 == maxDepth)
-                    maxListIndex = 0;
-
-                // build all elements of sub list
-                accString =
-                    list.Select((x, i) => new { Element = x, Index = i })
-                        .TakeWhile(e => e.Index <= maxListIndex)
-                        .Aggregate(
-                            accString,
-                            (current, e) =>
-                            current + "\n"
-                            + PrintValue(e.Element, e.Index, maxListIndex, currentDepth + 1, maxDepth, maxStringLength));
-            }
-            else if (eIn.IsNumber)
-            {
-                double num = (eIn as FScheme.Value.Number).Item;
-                var numFloat = (float)num;
-                accString += numFloat.ToString();
-            }
-            else if (eIn.IsString)
-            {
-                string str = (eIn as FScheme.Value.String).Item;
-                if (str.Length > maxStringLength)
-                    str = str.Substring(0, maxStringLength) + "...";
-
-                accString += "\"" + str + "\"";
-            }
-            else if (eIn.IsSymbol)
-                accString += "<" + (eIn as FScheme.Value.Symbol).Item + ">";
-
-            return accString;
-        }
-
         #region FScheme Compilation
 
         /// <summary>
@@ -1508,7 +1440,7 @@ namespace Dynamo.Models
         ///     execution.
         /// </summary>
         /// <returns>The INode representation of this Element.</returns>
-        protected virtual INode Build(Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
+        protected internal virtual INode Build(Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
             //Debug.WriteLine("Building node...");
 
@@ -1678,27 +1610,6 @@ namespace Dynamo.Models
 
         #region FScheme Evaluation
 
-        #region abstract members
-
-        /// <summary>
-        ///     The dynElement's Evaluation Logic.
-        /// </summary>
-        /// <param name="args">
-        ///     Parameters to the node. You are guaranteed to have as many arguments as you have InPorts at the time
-        ///     it is run.
-        /// </param>
-        /// <param name="outPuts"></param>
-        /// <returns>
-        ///     An expression that is the result of the Node's evaluation. It will be passed along to whatever the OutPort is
-        ///     connected to.
-        /// </returns>
-        public virtual void Evaluate(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
         /// <summary>
         ///     Wraps node evaluation logic so that it can be called in different threads.
         /// </summary>
@@ -1774,17 +1685,17 @@ namespace Dynamo.Models
                     Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
                     DynamoLogger.Instance.Log(ex);
 
-                    if (DynamoSettings.Controller.DynamoModel.CanWriteToLog(null))
+                    if (dynSettings.Controller.DynamoModel.CanWriteToLog(null))
                     {
-                        DynamoSettings.Controller.DynamoModel.WriteToLog(ex.Message);
-                        DynamoSettings.Controller.DynamoModel.WriteToLog(ex.StackTrace);
+                        dynSettings.Controller.DynamoModel.WriteToLog(ex.Message);
+                        dynSettings.Controller.DynamoModel.WriteToLog(ex.StackTrace);
                     }
 
                     //Controller.DynamoViewModel.ShowElement(this); // not good if multiple nodes are in error state
 
                     Error(ex.Message);
 
-                    if (DynamoSettings.Controller.Testing)
+                    if (dynSettings.Controller.Testing)
                         throw new Exception(ex.Message);
 
                     _errorCount++;
@@ -1797,9 +1708,9 @@ namespace Dynamo.Models
             };
 
             //C# doesn't have a Option type, so we'll just borrow F#'s instead.
-            FSharpOption<FScheme.Value> result = isInteractive && DynamoSettings.Controller.UIDispatcher != null
+            FSharpOption<FScheme.Value> result = isInteractive && dynSettings.Controller.UIDispatcher != null
                                                      ? (FSharpOption<FScheme.Value>)
-                                                       DynamoSettings.Controller.UIDispatcher.Invoke(evaluation)
+                                                       dynSettings.Controller.UIDispatcher.Invoke(evaluation)
                                                      : evaluation();
 
             if (result == FSharpOption<FScheme.Value>.None)
@@ -2019,9 +1930,95 @@ namespace Dynamo.Models
 
         #endregion
 
-        private Dictionary<PortData, FScheme.Value> _evaluationDict;
+        #region Dirty Management
 
-#endif
+        /// <summary>
+        ///     Does this Element need to be regenerated? Setting this to true will trigger a modification event
+        ///     for the dynWorkspace containing it. If Automatic Running is enabled, setting this to true will
+        ///     trigger an evaluation.
+        /// </summary>
+        public virtual bool RequiresRecalc
+        {
+            get
+            {
+                //TODO: When marked as clean, remember so we don't have to re-traverse
+                if (_isDirty)
+                    return true;
+
+                bool dirty = Inputs.Values.Where(x => x != null).Any(x => x.Item2.RequiresRecalc);
+                _isDirty = dirty;
+
+                return dirty;
+            }
+            set
+            {
+                _isDirty = value;
+                if (value)
+                    ReportModification();
+            }
+        }
+
+        /// <summary>
+        ///     Forces the node to refresh it's dirty state by checking all inputs.
+        /// </summary>
+        public void MarkDirty()
+        {
+            bool dirty = false;
+            foreach (var input in Inputs.Values.Where(x => x != null))
+            {
+                input.Item2.MarkDirty();
+                if (input.Item2.RequiresRecalc)
+                    dirty = true;
+            }
+            if (!_isDirty)
+                _isDirty = dirty;
+        }
+
+        private void savePortMappings()
+        {
+            //Save all of the connection states, so we can check if this is dirty
+            foreach (int data in Enumerable.Range(0, InPortData.Count))
+            {
+                Tuple<int, NodeModel> input;
+
+                _previousInputPortMappings[data] = TryGetInput(data, out input) ? input : null;
+            }
+
+            foreach (int data in Enumerable.Range(0, OutPortData.Count))
+            {
+                HashSet<Tuple<int, NodeModel>> outputs;
+
+                _previousOutputPortMappings[data] = TryGetOutput(data, out outputs)
+                                                       ? outputs
+                                                       : new HashSet<Tuple<int, NodeModel>>();
+            }
+        }
+
+        /// <summary>
+        ///     Check current ports against ports used for previous mappings.
+        /// </summary>
+        private void CheckPortsForRecalc()
+        {
+            RequiresRecalc = Enumerable.Range(0, InPortData.Count).Any(
+                delegate(int input)
+                {
+                    Tuple<int, NodeModel> oldInput;
+                    Tuple<int, NodeModel> currentInput;
+
+                    //this is dirty if there wasn't anything set last time (implying it was never run)...
+                    return !_previousInputPortMappings.TryGetValue(input, out oldInput) || oldInput == null
+                           || !TryGetInput(input, out currentInput) //or If what's set doesn't match
+                           || (oldInput.Item2 != currentInput.Item2 && oldInput.Item1 != currentInput.Item1);
+                }) || Enumerable.Range(0, OutPortData.Count).Any(
+                    delegate(int output)
+                    {
+                        HashSet<Tuple<int, NodeModel>> oldOutputs;
+                        HashSet<Tuple<int, NodeModel>> newOutputs;
+
+                        return !_previousOutputPortMappings.TryGetValue(output, out oldOutputs)
+                               || !TryGetOutput(output, out newOutputs) || oldOutputs.SetEquals(newOutputs);
+                    });
+        }
 
         #endregion
     }
@@ -2049,6 +2046,18 @@ namespace Dynamo.Models
 
 
     public delegate void DispatchedToUIThreadHandler(object sender, UIDispatcherEventArgs e);
+
+
+    public abstract class NodeWithOneOutput : NodeModel
+    {
+        public override void Evaluate(FSharpList<FScheme.Value> args, Dictionary<PortData, FScheme.Value> outPuts)
+        {
+            outPuts[OutPortData[0]] = Evaluate(args);
+        }
+
+        public abstract FScheme.Value Evaluate(FSharpList<FScheme.Value> args);
+    }
+
 
     #region class attributes
 
@@ -2195,6 +2204,68 @@ namespace Dynamo.Models
     public class IsDesignScriptCompatibleAttribute : Attribute { }
 
     #endregion
+
+
+    public class PredicateTraverser
+    {
+        private readonly Predicate<NodeModel> _predicate;
+
+        private readonly Dictionary<NodeModel, bool> _resultDict = new Dictionary<NodeModel, bool>();
+
+        private bool _inProgress;
+
+        public PredicateTraverser(Predicate<NodeModel> p)
+        {
+            _predicate = p;
+        }
+
+        public bool TraverseUntilAny(NodeModel entry)
+        {
+            _inProgress = true;
+            bool result = TraverseAny(entry);
+            _resultDict.Clear();
+            _inProgress = false;
+            return result;
+        }
+
+        public bool ContinueTraversalUntilAny(NodeModel entry)
+        {
+            if (_inProgress)
+                return TraverseAny(entry);
+            throw new Exception("ContinueTraversalUntilAny cannot be used except in a traversal predicate.");
+        }
+
+        private bool TraverseAny(NodeModel entry)
+        {
+            bool result;
+            if (_resultDict.TryGetValue(entry, out result))
+                return result;
+
+            result = _predicate(entry);
+            _resultDict[entry] = result;
+            if (result)
+                return true;
+
+            if (entry is Function)
+            {
+                Guid symbol = Guid.Parse((entry as Function).Symbol);
+                if (!dynSettings.Controller.CustomNodeManager.Contains(symbol))
+                {
+                    DynamoLogger.Instance.Log("WARNING -- No implementation found for node: " + symbol);
+                    entry.Error("Could not find .dyf definition file for this node.");
+                    return false;
+                }
+
+                result =
+                    dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(symbol)
+                               .WorkspaceModel.GetTopMostNodes()
+                               .Any(ContinueTraversalUntilAny);
+            }
+            _resultDict[entry] = result;
+            return result || entry.Inputs.Values.Any(x => x != null && TraverseAny(x.Item2));
+        }
+    }
+
 
     public class UIDispatcherEventArgs : EventArgs
     {

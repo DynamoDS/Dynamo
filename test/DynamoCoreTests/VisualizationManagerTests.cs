@@ -17,8 +17,8 @@ namespace Dynamo.Tests
         [Test]
         public void CanVisualizeASMPoints()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
-            var viz = DynamoSettings.Controller.VisualizationManager;
+            var model = dynSettings.Controller.DynamoModel;
+            var viz = dynSettings.Controller.VisualizationManager;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points.dyn");
             model.Open(openPath);
@@ -28,7 +28,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
 
             // run the expression
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
 
             //ensure that the number of visualizations matches the 
             //number of pieces of geometry in the collection
@@ -39,7 +39,7 @@ namespace Dynamo.Tests
             //adjust the number node's value - currently set to 0..5 (6 elements)
             var numNode = (DoubleInput)model.Nodes.First(x => x is DoubleInput);
             numNode.Value = "0..10";
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
 
             drawables = VisualizationManager.GetAllDrawablesInModel();
             renderables = viz.Visualizations.SelectMany(x => x.Value.Points);
@@ -52,8 +52,8 @@ namespace Dynamo.Tests
             Assert.Inconclusive("Can not test post-failure visualization state as we need to " +
                                 "throwing testing exception which avoid OnEvaluationComplete being called.");
 
-            //var model = DynamoSettings.Controller.DynamoModel;
-            //var viz = DynamoSettings.Controller.VisualizationManager;
+            //var model = dynSettings.Controller.DynamoModel;
+            //var viz = dynSettings.Controller.VisualizationManager;
 
             //string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points.dyn");
             //model.Open(openPath);
@@ -63,7 +63,7 @@ namespace Dynamo.Tests
             //Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
 
             //// run the expression
-            //DynamoSettings.Controller.RunExpression(null);
+            //dynSettings.Controller.RunExpression(null);
 
             ////adjust the number node's value - currently set to 0..5 to something that makes the XYZ error
             //var numNode = (DoubleInput)model.Nodes.First(x => x is DoubleInput);
@@ -71,7 +71,7 @@ namespace Dynamo.Tests
 
             //// run the expression
             //// it will fail
-            //Assert.Throws(typeof(NUnit.Framework.AssertionException), () => DynamoSettings.Controller.RunExpression(null));
+            //Assert.Throws(typeof(NUnit.Framework.AssertionException), () => dynSettings.Controller.RunExpression(null));
             //var renderables = viz.Visualizations.SelectMany(x => x.Value.Points);
             //Assert.AreEqual(0, renderables.Count());
         }
@@ -81,14 +81,14 @@ namespace Dynamo.Tests
         {
             //test to ensure that when nodes are disconnected 
             //their associated geometry is removed
-            var model = DynamoSettings.Controller.DynamoModel;
-            var viz = DynamoSettings.Controller.VisualizationManager;
+            var model = dynSettings.Controller.DynamoModel;
+            var viz = dynSettings.Controller.VisualizationManager;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points_line.dyn");
             model.Open(openPath);
 
             // run the expression
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
 
             //ensure the correct representations
 
@@ -117,10 +117,10 @@ namespace Dynamo.Tests
         [Test]
         public void NothingIsVisualizedWhenThereIsNothingToVisualize()
         {
-            var viz = DynamoSettings.Controller.VisualizationManager;
+            var viz = dynSettings.Controller.VisualizationManager;
 
             // run the expression
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
 
             int pointCount, lineCount, meshCount, xCount, yCount, zCount;
             viz.GetRenderableCounts(
@@ -137,14 +137,14 @@ namespace Dynamo.Tests
         [Test]
         public void BackgroundPreviewDrawsOnOpen()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
-            var viz = DynamoSettings.Controller.VisualizationManager;
+            var model = dynSettings.Controller.DynamoModel;
+            var viz = dynSettings.Controller.VisualizationManager;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points.dyn");
             model.Open(openPath);
 
             // run the expression
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
 
             //graphics will have been updated at this point
             //enabled the background preview and ensure that it 
@@ -153,14 +153,14 @@ namespace Dynamo.Tests
         [Test]
         public void VisualizationInSyncWithPreview()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
-            var viz = DynamoSettings.Controller.VisualizationManager;
+            var model = dynSettings.Controller.DynamoModel;
+            var viz = dynSettings.Controller.VisualizationManager;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points_line.dyn");
             model.Open(openPath);
 
             // run the expression
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
 
             //we start with all previews disabled
             //the graph is two points feeding into a line
@@ -214,14 +214,14 @@ namespace Dynamo.Tests
         {
             //test to ensure that when nodes are disconnected 
             //their associated geometry is removed
-            var model = DynamoSettings.Controller.DynamoModel;
-            var viz = DynamoSettings.Controller.VisualizationManager;
+            var model = dynSettings.Controller.DynamoModel;
+            var viz = dynSettings.Controller.VisualizationManager;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_thicken.dyn");
             model.Open(openPath);
 
             // run the expression
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
 
             var meshes = viz.Visualizations.SelectMany(x => x.Value.Meshes);
             Assert.AreEqual(1, meshes.Count());
@@ -232,14 +232,14 @@ namespace Dynamo.Tests
         {
             //test to ensure that when nodes are disconnected 
             //their associated geometry is removed
-            var model = DynamoSettings.Controller.DynamoModel;
-            var viz = DynamoSettings.Controller.VisualizationManager;
+            var model = dynSettings.Controller.DynamoModel;
+            var viz = dynSettings.Controller.VisualizationManager;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_cuboid.dyn");
             model.Open(openPath);
 
             // run the expression
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
 
             var meshes = viz.Visualizations.SelectMany(x => x.Value.Meshes);
             Assert.AreEqual(1, meshes.Count());
@@ -250,14 +250,14 @@ namespace Dynamo.Tests
         {
             //test to ensure that when nodes are disconnected 
             //their associated geometry is removed
-            var model = DynamoSettings.Controller.DynamoModel;
-            var viz = DynamoSettings.Controller.VisualizationManager;
+            var model = dynSettings.Controller.DynamoModel;
+            var viz = dynSettings.Controller.VisualizationManager;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_coordinateSystem.dyn");
             model.Open(openPath);
 
             // run the expression
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
 
             var xs = viz.Visualizations.SelectMany(x => x.Value.XAxisPoints);
             var ys = viz.Visualizations.SelectMany(x => x.Value.YAxisPoints);
@@ -273,14 +273,14 @@ namespace Dynamo.Tests
         {
             //test to ensure that when nodes are disconnected 
             //their associated geometry is removed
-            var model = DynamoSettings.Controller.DynamoModel;
-            var viz = DynamoSettings.Controller.VisualizationManager;
+            var model = dynSettings.Controller.DynamoModel;
+            var viz = dynSettings.Controller.VisualizationManager;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_python.dyn");
             model.Open(openPath);
 
             // run the expression
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
 
             //var drawables = VisualizationManager.GetDrawableNodesInModel();
             //Assert.AreEqual(drawables.Count(), viz.Visualizations.Count);
@@ -299,8 +299,8 @@ namespace Dynamo.Tests
         [Test]
         public void VisualizationIsDeletedWhenNodeIsRemoved()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
-            var viz = DynamoSettings.Controller.VisualizationManager;
+            var model = dynSettings.Controller.DynamoModel;
+            var viz = dynSettings.Controller.VisualizationManager;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points.dyn");
             model.Open(openPath);
@@ -310,7 +310,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
 
             // run the expression
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
 
             int pointCount, lineCount, meshCount, xCount, yCount, zCount;
             viz.GetRenderableCounts(
@@ -333,14 +333,14 @@ namespace Dynamo.Tests
         [Test]
         public void VisualizationsAreClearedWhenWorkspaceIsCleared()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
-            var viz = DynamoSettings.Controller.VisualizationManager;
+            var model = dynSettings.Controller.DynamoModel;
+            var viz = dynSettings.Controller.VisualizationManager;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points.dyn");
             model.Open(openPath);
 
             // run the expression
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
 
             //ensure that we have some visualizations
             Assert.Greater(viz.Visualizations.Count, 0);
@@ -355,8 +355,8 @@ namespace Dynamo.Tests
         [Test]
         public void VisualizationsAreCreatedForCustomNodes()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
-            var viz = DynamoSettings.Controller.VisualizationManager;
+            var model = dynSettings.Controller.DynamoModel;
+            var viz = dynSettings.Controller.VisualizationManager;
 
             Assert.IsTrue(
                 Controller.CustomNodeManager.AddFileToPath(Path.Combine(GetTestDirectory(), @"core\visualization\Points.dyf"))
@@ -365,7 +365,7 @@ namespace Dynamo.Tests
             model.Open(openPath);
 
             // run the expression
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
 
             //ensure that we have some visualizations
             Assert.Greater(viz.Visualizations.Count, 0);
@@ -374,14 +374,14 @@ namespace Dynamo.Tests
         [Test]
         public void HonorsPreviewSaveState()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
-            var viz = DynamoSettings.Controller.VisualizationManager;
+            var model = dynSettings.Controller.DynamoModel;
+            var viz = dynSettings.Controller.VisualizationManager;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points_line_noPreview.dyn");
             model.Open(openPath);
 
             // run the expression
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
 
             //all nodes are set to not preview in the file
             //ensure that we have no visualizations
@@ -395,8 +395,8 @@ namespace Dynamo.Tests
         [Test]
         public void CanDrawNodeLabels()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
-            var viz = DynamoSettings.Controller.VisualizationManager;
+            var model = dynSettings.Controller.DynamoModel;
+            var viz = dynSettings.Controller.VisualizationManager;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\Labels.dyn");
             model.Open(openPath);
@@ -409,7 +409,7 @@ namespace Dynamo.Tests
             Assert.IsTrue(model.AllNodes.All(x => x.DisplayLabels != true));
 
             // run the expression
-            Assert.DoesNotThrow(()=>DynamoSettings.Controller.RunExpression(null));
+            Assert.DoesNotThrow(()=>dynSettings.Controller.RunExpression(null));
 
             Assert.AreEqual(4, viz.Visualizations.SelectMany(x=>x.Value.Points).Count());
 
@@ -424,7 +424,7 @@ namespace Dynamo.Tests
             //change the lacing to cross product 
             //ensure that the labels update to match
             ptNode.ArgumentLacing = LacingStrategy.CrossProduct;
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(null));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(null));
             Assert.AreEqual(64, viz.Visualizations.SelectMany(x => x.Value.Points).Count());
             Assert.AreEqual(64, viz.Visualizations.SelectMany(x => x.Value.Text).Count());
 
@@ -435,8 +435,8 @@ namespace Dynamo.Tests
         [Test]
         public void CanDrawNodeLabelsOnCurves()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
-            var viz = DynamoSettings.Controller.VisualizationManager;
+            var model = dynSettings.Controller.DynamoModel;
+            var viz = dynSettings.Controller.VisualizationManager;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\GeometryTestFiles\BSplineCurveTest.dyn");
             model.Open(openPath);
@@ -449,7 +449,7 @@ namespace Dynamo.Tests
             Assert.IsTrue(model.AllNodes.All(x => x.DisplayLabels != true));
 
             // run the expression
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(null));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(null));
 
             //10 lines segments in this file
             Assert.AreEqual(20, viz.Visualizations.SelectMany(x => x.Value.Lines).Count());

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Dynamo.Core;
 using NUnit.Framework;
 using Dynamo.ViewModels;
 using System.IO;
@@ -28,7 +27,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestConcatString_normal.dyn");
 
             model.Open(testFilePath);
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("8c7c1a80-021b-4064-b9d1-873a0538bb0b");
 
             String actual = string.Empty;
@@ -44,7 +43,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestConcatString_emptyString.dyn");
 
             model.Open(testFilePath);
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("cc16be22-af85-4626-b759-4a82e10bf1b0");
 
             String actual = string.Empty;
@@ -60,7 +59,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestConcatString_fromFile.dyn");
 
             model.Open(testFilePath);
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("8c7c1a80-021b-4064-b9d1-873a0538bb0b");
 
             String actual = string.Empty;
@@ -76,7 +75,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestConcatString_fromFunction.dyn");
 
             model.Open(testFilePath);
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("8c7c1a80-021b-4064-b9d1-873a0538bb0b");
 
             String actual = string.Empty;
@@ -95,7 +94,7 @@ namespace Dynamo.Tests
 
             Assert.Throws<AssertionException>(() =>
             {
-                DynamoSettings.Controller.RunExpression(null);
+                dynSettings.Controller.RunExpression(null);
             });
         }
 
@@ -110,7 +109,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestSubstring_emptyString.dyn");
 
             model.Open(testFilePath);
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("f72f6210-b32f-4dc4-9b2a-61f0144a0109");
 
             String actual = string.Empty;
@@ -126,7 +125,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestSubstring_fromFile.dyn");
 
             model.Open(testFilePath);
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("f72f6210-b32f-4dc4-9b2a-61f0144a0109");
 
             String actual = string.Empty;
@@ -142,7 +141,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestSubstring_fromFunction.dyn");
 
             model.Open(testFilePath);
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("f72f6210-b32f-4dc4-9b2a-61f0144a0109");
 
             String actual = string.Empty;
@@ -160,7 +159,7 @@ namespace Dynamo.Tests
             model.Open(testFilePath);
             Assert.Throws<AssertionException>(() =>
             {
-                DynamoSettings.Controller.RunExpression(null);
+                dynSettings.Controller.RunExpression(null);
             });
         }
 
@@ -171,7 +170,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestSubstring_normal.dyn");
 
             model.Open(testFilePath);
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("f72f6210-b32f-4dc4-9b2a-61f0144a0109");
 
             String actual = string.Empty;
@@ -191,7 +190,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestJoinString_emptyString.dyn");
 
             model.Open(testFilePath);
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("f72f6210-b32f-4dc4-9b2a-61f0144a0109");
 
             String actual = string.Empty;
@@ -207,7 +206,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestJoinString_fromFile.dyn");
 
             model.Open(testFilePath);
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("f72f6210-b32f-4dc4-9b2a-61f0144a0109");
 
             String actual = string.Empty;
@@ -225,7 +224,7 @@ namespace Dynamo.Tests
             model.Open(testFilePath);
             Assert.Throws<AssertionException>(() =>
             {
-                DynamoSettings.Controller.RunExpression(null);
+                dynSettings.Controller.RunExpression(null);
             });
         }
 
@@ -236,7 +235,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestJoinString_normal.dyn");
 
             model.Open(testFilePath);
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("f72f6210-b32f-4dc4-9b2a-61f0144a0109");
 
             String actual = string.Empty;
@@ -256,7 +255,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestNumberToString_fromFunction.dyn");
 
             model.Open(testFilePath);
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("f8767579-f7c1-475f-980e-7cd6a42684c8");
 
             String actual = string.Empty;
@@ -274,7 +273,7 @@ namespace Dynamo.Tests
             model.Open(testFilePath);
             Assert.Throws<AssertionException>(() =>
             {
-                DynamoSettings.Controller.RunExpression(null);
+                dynSettings.Controller.RunExpression(null);
             });
         }
 
@@ -285,7 +284,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestNumberToString_normal.dyn");
 
             model.Open(testFilePath);
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
 
             var watch1 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("f8767579-f7c1-475f-980e-7cd6a42684c8");
             var watch2 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("5a974eeb-6bca-4029-9948-c6af1c9fe913");
@@ -324,7 +323,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestSplitString_emptyString.dyn");
 
             model.Open(testFilePath);
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("f72f6210-b32f-4dc4-9b2a-61f0144a0109");
 
             String actual = string.Empty;
@@ -340,7 +339,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestSplitString_fromFile.dyn");
 
             model.Open(testFilePath);
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("f72f6210-b32f-4dc4-9b2a-61f0144a0109");
 
             String expected1 = "today";
@@ -360,7 +359,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestSplitString_fromFunction.dyn");
 
             model.Open(testFilePath);
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("f72f6210-b32f-4dc4-9b2a-61f0144a0109");
 
             String expected1 = "1";
@@ -380,7 +379,7 @@ namespace Dynamo.Tests
             model.Open(testFilePath);
             Assert.Throws<AssertionException>(() =>
             {
-                DynamoSettings.Controller.RunExpression(null);
+                dynSettings.Controller.RunExpression(null);
             });
         }
 
@@ -391,7 +390,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestSplitString_normal.dyn");
 
             model.Open(testFilePath);
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("f72f6210-b32f-4dc4-9b2a-61f0144a0109");
 
             String expected1 = "today";
@@ -413,7 +412,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringLength_emptyString.dyn");
 
             model.Open(testFilePath);
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("f72f6210-b32f-4dc4-9b2a-61f0144a0109");
 
             double actual = watch.GetValue(0).GetDoubleFromFSchemeValue();
@@ -428,7 +427,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringLength_fromFile.dyn");
 
             model.Open(testFilePath);
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("f72f6210-b32f-4dc4-9b2a-61f0144a0109");
 
             double actual = watch.GetValue(0).GetDoubleFromFSchemeValue();
@@ -444,7 +443,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringLength_fromFunction.dyn");
 
             model.Open(testFilePath);
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("f72f6210-b32f-4dc4-9b2a-61f0144a0109");
 
             double actual = watch.GetValue(0).GetDoubleFromFSchemeValue();
@@ -462,7 +461,7 @@ namespace Dynamo.Tests
             model.Open(testFilePath);
             Assert.Throws<AssertionException>(() =>
             {
-                DynamoSettings.Controller.RunExpression(null);
+                dynSettings.Controller.RunExpression(null);
             });
         }
 
@@ -473,7 +472,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringLength_normal.dyn");
 
             model.Open(testFilePath);
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("f72f6210-b32f-4dc4-9b2a-61f0144a0109");
 
             double actual = watch.GetValue(0).GetDoubleFromFSchemeValue();
@@ -495,7 +494,7 @@ namespace Dynamo.Tests
             model.Open(testFilePath);
             Assert.Throws<AssertionException>(() =>
             {
-                DynamoSettings.Controller.RunExpression(null);
+                dynSettings.Controller.RunExpression(null);
             });
         }
 
@@ -506,7 +505,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringToNumber_fromFile.dyn");
 
             model.Open(testFilePath);
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("f8767579-f7c1-475f-980e-7cd6a42684c8");
 
             double actual = watch.GetValue(0).GetDoubleFromFSchemeValue();
@@ -521,7 +520,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringToNumber_fromFunction.dyn");
 
             model.Open(testFilePath);
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("f8767579-f7c1-475f-980e-7cd6a42684c8");
 
             double actual = watch.GetValue(0).GetDoubleFromFSchemeValue();
@@ -538,7 +537,7 @@ namespace Dynamo.Tests
             model.Open(testFilePath);
             Assert.Throws<AssertionException>(() =>
             {
-                DynamoSettings.Controller.RunExpression(null);
+                dynSettings.Controller.RunExpression(null);
             });
         }
 
@@ -549,7 +548,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringToNumber_normal.dyn");
 
             model.Open(testFilePath);
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
             var watch1 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("ca09bc3a-35c3-488f-a013-c05a5b7733c5");
             var watch2 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("251210e5-2e04-4e81-b11d-39a8aff10887");
             var watch3 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("898ee89d-a934-4b43-a051-da3459be329a");
@@ -582,7 +581,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringCase_emptyString.dyn");
 
             model.Open(testFilePath);
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("f72f6210-b32f-4dc4-9b2a-61f0144a0109");
 
             String actual = string.Empty;
@@ -598,7 +597,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringCase_fromFile.dyn");
 
             model.Open(testFilePath);
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("f72f6210-b32f-4dc4-9b2a-61f0144a0109");
 
             String actual = string.Empty;
@@ -614,7 +613,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringCase_fromFunction.dyn");
 
             model.Open(testFilePath);
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("f72f6210-b32f-4dc4-9b2a-61f0144a0109");
 
             String actual = string.Empty;
@@ -632,7 +631,7 @@ namespace Dynamo.Tests
             model.Open(testFilePath);
             Assert.Throws<AssertionException>(() =>
             {
-                DynamoSettings.Controller.RunExpression(null);
+                dynSettings.Controller.RunExpression(null);
             });
         }
 
@@ -643,7 +642,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestStringCase_normal.dyn");
 
             model.Open(testFilePath);
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
             var watch1 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("f72f6210-b32f-4dc4-9b2a-61f0144a0109");
             var watch2 = model.CurrentWorkspace.NodeFromWorkspace<Watch>("77a8c84b-b5bb-46f1-a550-7b3d5441c0a1");
 
@@ -668,7 +667,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestToString_emptyString.dyn");
 
             model.Open(testFilePath);
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("f72f6210-b32f-4dc4-9b2a-61f0144a0109");
 
             String actual = string.Empty;
@@ -684,7 +683,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestToString_fromFile.dyn");
 
             model.Open(testFilePath);
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("f72f6210-b32f-4dc4-9b2a-61f0144a0109");
 
             String actual = string.Empty;
@@ -700,7 +699,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestToString_fromFunction.dyn");
 
             model.Open(testFilePath);
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("f72f6210-b32f-4dc4-9b2a-61f0144a0109");
 
             FSharpList<FScheme.Value> resultList = watch.GetValue(0).GetListFromFSchemeValue();
@@ -721,7 +720,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "TestToString_normal.dyn");
 
             model.Open(testFilePath);
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("f72f6210-b32f-4dc4-9b2a-61f0144a0109");
 
             String actual = string.Empty;

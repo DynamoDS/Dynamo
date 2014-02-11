@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using Dynamo.Core;
+using System.Text;
+using Dynamo.Nodes;
 using Dynamo.Utilities;
+using Greg.Requests;
+using RestSharp;
 
 
 namespace Dynamo.PackageManager
@@ -21,10 +24,10 @@ namespace Dynamo.PackageManager
 
         public PackageLoader(string overridePackageDirectory)
         {
-            RootPackagesDirectory = overridePackageDirectory;
-            if (!Directory.Exists(RootPackagesDirectory))
+            this.RootPackagesDirectory = overridePackageDirectory;
+            if (!Directory.Exists(this.RootPackagesDirectory))
             {
-                Directory.CreateDirectory(RootPackagesDirectory);
+                Directory.CreateDirectory(this.RootPackagesDirectory);
             }
         }
 
@@ -36,7 +39,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         public void LoadPackages()
         {
-            ScanAllPackageDirectories();
+            this.ScanAllPackageDirectories();
             LocalPackages.ToList().ForEach( (pkg) => pkg.Load() );
         }
 
@@ -82,7 +85,7 @@ namespace Dynamo.PackageManager
             }
             catch (Exception e)
             {
-                DynamoLogger.Instance.Log("Exception encountered scanning the package directory at " + RootPackagesDirectory );
+                DynamoLogger.Instance.Log("Exception encountered scanning the package directory at " + this.RootPackagesDirectory );
                 DynamoLogger.Instance.Log(e.GetType() + ": " + e.Message);
             }
 
@@ -127,7 +130,7 @@ namespace Dynamo.PackageManager
 
         internal void DoCachedPackageUninstalls()
         {
-            // scan DynamoSettings for cached packages to unload
+            // scan dynSettings for cached packages to unload
             // unload them
             // throw new NotImplementedException();
         }

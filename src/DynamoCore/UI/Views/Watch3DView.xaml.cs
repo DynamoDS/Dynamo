@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Text;
@@ -10,7 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Linq;
 using System.Windows.Threading;
-using Dynamo.Core;
+using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using HelixToolkit.Wpf;
@@ -198,10 +199,10 @@ namespace Dynamo.Controls
             MainContextMenu.Items.Add(mi);
 
             //check this for null so the designer can load the preview
-            if (DynamoSettings.Controller != null)
+            if (dynSettings.Controller != null)
             {
-                DynamoSettings.Controller.VisualizationManager.VisualizationUpdateComplete += VisualizationManager_VisualizationUpdateComplete;
-                DynamoSettings.Controller.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
+                dynSettings.Controller.VisualizationManager.VisualizationUpdateComplete += VisualizationManager_VisualizationUpdateComplete;
+                dynSettings.Controller.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
             }
 
             DrawGrid();
@@ -227,7 +228,7 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         void VisualizationManager_VisualizationUpdateComplete(object sender, EventArgs e)
         {
-            if (DynamoSettings.Controller == null)
+            if (dynSettings.Controller == null)
                 return;
 
             Dispatcher.Invoke(new Action(delegate

@@ -7,7 +7,6 @@ using System.Windows.Media.Media3D;
 using System.Windows.Shapes;
 using System.Xml;
 using Dynamo.Controls;
-using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
@@ -208,7 +207,7 @@ namespace Dynamo.Nodes
 
         public void GetBranchVisualization(object parameters)
         {
-            DynamoSettings.Controller.VisualizationManager.RenderUpstream(this);
+            dynSettings.Controller.VisualizationManager.RenderUpstream(this);
         }
 
         public bool CanGetBranchVisualization(object parameter)
@@ -224,7 +223,7 @@ namespace Dynamo.Nodes
             double y = arr[1];
             double z = arr[2];
 
-            DynamoSettings.Controller.VisualizationManager.LookupSelectedElement(x, y, z);
+            dynSettings.Controller.VisualizationManager.LookupSelectedElement(x, y, z);
         }
 
         internal bool CanSelectVisualizationInView(object parameters)

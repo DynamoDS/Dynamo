@@ -1,6 +1,10 @@
-﻿using Dynamo.UI;
+﻿using Dynamo.Core;
+using Dynamo.UI;
+using Dynamo.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Resources;
@@ -34,7 +38,7 @@ namespace Dynamo.Utilities
             if (cursorInstance == null)
                 cursorInstance = LoadCursors();
 
-            return cursorInstance[(int)cursorSet];
+            return CursorLibrary.cursorInstance[(int)cursorSet];
         }
 
         private static List<Cursor> LoadCursors()

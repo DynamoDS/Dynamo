@@ -5,7 +5,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media.Media3D;
 using Autodesk.Revit.DB;
-using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
@@ -22,7 +21,7 @@ namespace Dynamo
     {
         public VisualizationManagerRevit()
         {
-            if (DynamoSettings.Controller.Context == Context.VASARI_2014)
+            if (dynSettings.Controller.Context == Context.VASARI_2014)
             {
                 AlternateDrawingContextAvailable = true;
                 DrawToAlternateContext = false;

@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using GraphToDSCompiler;
 using ProtoCore.DSASM;
-using ProtoCore.DSDefinitions;
 using ProtoCore.Utils;
 using ProtoFFI;
 using Constants = ProtoCore.DSASM.Constants;
@@ -850,7 +848,7 @@ namespace Dynamo.DSEngine
 
             // Give add-in folder a higher priority and look alongside "DynamoCore.dll".
             string assemblyName = Path.GetFileName(library); // Strip out possible directory.
-            string currAsmLocation = Assembly.GetCallingAssembly().Location;
+            string currAsmLocation = System.Reflection.Assembly.GetCallingAssembly().Location;
             library = Path.Combine(Path.GetDirectoryName(currAsmLocation), assemblyName);
 
             if (File.Exists(library)) // Found under add-in folder...
@@ -869,7 +867,7 @@ namespace Dynamo.DSEngine
 
             string procName = proc.name;
             if (CoreUtils.IsSetter(procName) || 
-                procName.Equals(Keyword.Dispose))
+                procName.Equals(ProtoCore.DSDefinitions.Keyword.Dispose))
             {
                 return;
             }

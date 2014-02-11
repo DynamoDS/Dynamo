@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Linq;
-using Dynamo.Core;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
@@ -15,30 +14,30 @@ namespace Dynamo.Tests
         [Test]
         public void CreatePointSequenceSample()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_samplesPath, @".\01 Create Point\create point_sequence.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            DynamoSettings.Controller.RunExpression(true);
+            dynSettings.Controller.RunExpression(true);
         }
 
         [Test]
         public void CreatePointEndSample()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_samplesPath, @".\01 Create Point\create point - end.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             //test running the expression
             model.Open(testPath);
-            DynamoSettings.Controller.RunExpression(true);
+            dynSettings.Controller.RunExpression(true);
 
             //test copying and pasting the workflow
             DynamoSelection.Instance.ClearSelection();
-            DynamoSelection.Instance.Selection.AddRange(DynamoSettings.Controller.DynamoModel.Nodes);
+            DynamoSelection.Instance.Selection.AddRange(dynSettings.Controller.DynamoModel.Nodes);
             model.Copy(null);
             model.Paste(null);
         }
@@ -46,43 +45,43 @@ namespace Dynamo.Tests
         [Test]
         public void CreatePointSample()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_samplesPath, @".\01 Create Point\create point.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
 
         [Test]
         public void RefGridSlidersSample()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_samplesPath, @".\02 Ref Grid Sliders\ref grid sliders.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
 
         [Test]
         public void RefGridSlidersEndSample()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_samplesPath, @".\02 Ref Grid Sliders\ref grid sliders - end.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
 
         [Test]
         public void DivideSelectedCurveEndSample()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             ModelCurve mc1;
             CreateOneModelCurve(out mc1);
@@ -91,18 +90,18 @@ namespace Dynamo.Tests
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            var selectionNodes = DynamoSettings.Controller.DynamoModel.Nodes.Where(x => x is CurvesBySelection);
+            var selectionNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is CurvesBySelection);
             Assert.AreEqual(1, selectionNodes.Count());
 
             ((CurvesBySelection)selectionNodes.ElementAt(0)).SelectedElement = mc1;
 
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
 
         [Test]
         public void DivideSelectedCurveSample()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             ModelCurve mc1;
             CreateOneModelCurve(out mc1);
@@ -111,18 +110,18 @@ namespace Dynamo.Tests
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            var selectionNodes = DynamoSettings.Controller.DynamoModel.Nodes.Where(x => x is CurvesBySelection);
+            var selectionNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is CurvesBySelection);
             Assert.AreEqual(1, selectionNodes.Count());
 
             ((CurvesBySelection)selectionNodes.ElementAt(0)).SelectedElement = mc1;
 
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
 
         [Test]
         public void FormFromCurveSelectionListSample()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             ModelCurve mc1;
             ModelCurve mc2;
@@ -134,19 +133,19 @@ namespace Dynamo.Tests
             model.Open(testPath);
 
             //get the two selection nodes in the sample
-            var selectionNodes = DynamoSettings.Controller.DynamoModel.Nodes.Where(x => x is CurvesBySelection);
+            var selectionNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is CurvesBySelection);
             Assert.AreEqual(2, selectionNodes.Count());
 
             ((CurvesBySelection)selectionNodes.ElementAt(0)).SelectedElement = mc1;
             ((CurvesBySelection)selectionNodes.ElementAt(1)).SelectedElement = mc2;
 
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
 
         [Test]
         public void FormFromCurveSelectionSample()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             ModelCurve mc1;
             ModelCurve mc2;
@@ -158,17 +157,17 @@ namespace Dynamo.Tests
             model.Open(testPath);
 
             //populate the selection nodes in the sample
-            var selectionNodes = DynamoSettings.Controller.DynamoModel.Nodes.Where(x => x is CurvesBySelection);
+            var selectionNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is CurvesBySelection);
             ((CurvesBySelection)selectionNodes.ElementAt(0)).SelectedElement = mc1;
             ((CurvesBySelection)selectionNodes.ElementAt(1)).SelectedElement = mc2;
 
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
 
         [Test]
         public void GraphFunctionAndConnectPointsSample()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_samplesPath, @".\05 Graph Function\graph function and connect points.dyn");
             string testPath = Path.GetFullPath(samplePath);
@@ -178,76 +177,76 @@ namespace Dynamo.Tests
             Assert.IsTrue(File.Exists(customDefPath1), "Cannot find specified custom definition to load for testing.");
             Assert.IsTrue(File.Exists(customDefPath2), "Cannot find specified custom definition to load for testing.");
 
-            Assert.IsTrue(DynamoSettings.Controller.CustomNodeManager.AddFileToPath(customDefPath1) != null);
-            Assert.IsTrue(DynamoSettings.Controller.CustomNodeManager.AddFileToPath(customDefPath2) != null);
+            Assert.IsTrue(dynSettings.Controller.CustomNodeManager.AddFileToPath(customDefPath1) != null);
+            Assert.IsTrue(dynSettings.Controller.CustomNodeManager.AddFileToPath(customDefPath2) != null);
 
             model.Open(testPath);
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
 
         [Test]
         public void ScalableGraphFunctionSample()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_samplesPath, @".\05 Graph Function\scalable graph function.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
         }
 
         [Test]
         public void GraphFunctionSample()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_samplesPath, @".\05 Graph Function\graph function.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             string customDefPath = Path.Combine(_defsPath, "GraphFunction.dyf");
             Assert.IsTrue(File.Exists(customDefPath), "Cannot find specified custom definition to load for testing.");
-            Assert.IsTrue(DynamoSettings.Controller.CustomNodeManager.AddFileToPath(customDefPath) != null);
+            Assert.IsTrue(dynSettings.Controller.CustomNodeManager.AddFileToPath(customDefPath) != null);
 
             model.Open(testPath);
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
 
         [Test]
         public void InstParamSample()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_samplesPath, @".\08 Get Set Family Params\inst param.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
 
         [Test]
         public void InstParam2MassesSample()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_samplesPath, @".\08 Get Set Family Params\inst param 2 masses.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
 
         [Test]
         public void InstParam2MassesDrivingEachOtherSample()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_samplesPath, @".\08 Get Set Family Params\inst param 2 masses.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
 
         [Test]
@@ -259,7 +258,7 @@ namespace Dynamo.Tests
         [Test]
         public void Attractor_1()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_samplesPath, @".\10 Attractor\Attractor Logic_End.dyn");
             string testPath = Path.GetFullPath(samplePath);
@@ -270,13 +269,13 @@ namespace Dynamo.Tests
             Assert.AreEqual(15, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(20, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
 
         [Test]
         public void Attractor_2()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_samplesPath, @".\10 Attractor\Attractor Logic_Start.dyn");
             string testPath = Path.GetFullPath(samplePath);
@@ -287,13 +286,13 @@ namespace Dynamo.Tests
             Assert.AreEqual(17, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(17, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
 
         [Test]
         public void IndexedFamilyInstances()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_samplesPath, @".\11 Indexed Family Instances\Indexed Family Instances.dyn");
             string testPath = Path.GetFullPath(samplePath);
@@ -304,13 +303,13 @@ namespace Dynamo.Tests
             Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(13, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
 
         [Ignore]
         public void AdaptiveComponentPlacement()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_samplesPath, @".\18 Adaptive Components\Adaptive Component Placement.dyn");
             string testPath = Path.GetFullPath(samplePath);
@@ -321,13 +320,13 @@ namespace Dynamo.Tests
             Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
 
         [Test]
         public void Tesselation_1()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_samplesPath, @".\16 Tesselation\2dDomain.dyn");
             string testPath = Path.GetFullPath(samplePath);
@@ -338,7 +337,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(17, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(23, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
             //var watch = model.CurrentWorkspace.NodeFromWorkspace<NewList>("789c1592-b64c-4a97-8f1a-8cef3d0cc2d0");
             //FSharpList<FScheme.Value> actual = watch.GetValue(0).GetListFromFSchemeValue();
@@ -349,7 +348,7 @@ namespace Dynamo.Tests
         [Test]
         public void Tesselation_2()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_samplesPath, @".\16 Tesselation\tesselation with coincident grids.dyn");
             string testPath = Path.GetFullPath(samplePath);
@@ -360,14 +359,14 @@ namespace Dynamo.Tests
             Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(16, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
         }
 
         [Test]
         public void Tesselation_3()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_samplesPath, @".\16 Tesselation\tesselation.dyn");
             string testPath = Path.GetFullPath(samplePath);
@@ -378,14 +377,14 @@ namespace Dynamo.Tests
             Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
         }
 
         [Ignore]
         public void Tesselation_4()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_samplesPath, @".\16 Tesselation\tesselation_types.dyn");
             string testPath = Path.GetFullPath(samplePath);
@@ -396,14 +395,14 @@ namespace Dynamo.Tests
             Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
         }
 
         [Test]
         public void Transforms_TranslateAndRotatesequence()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_samplesPath, @".\17 Transforms\Translate and Rotate sequence.dyn");
             string testPath = Path.GetFullPath(samplePath);
@@ -414,14 +413,14 @@ namespace Dynamo.Tests
             Assert.AreEqual(13, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(14, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
         }
 
         [Test]
         public void Transforms_TranslateAndRotate()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_samplesPath, @".\17 Transforms\Translate and Rotate.dyn");
             string testPath = Path.GetFullPath(samplePath);
@@ -432,14 +431,14 @@ namespace Dynamo.Tests
             Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
         }
 
         [Test]
         public void Formulas_FormulaCurve()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_samplesPath, @".\19 Formulas\FormulaCurve.dyn");
             string testPath = Path.GetFullPath(samplePath);
@@ -450,14 +449,14 @@ namespace Dynamo.Tests
             Assert.AreEqual(15, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(17, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
         }
 
         [Ignore]
         public void Formulas_ScalableCircle()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_samplesPath, @".\19 Formulas\Scalable Circle.dyn");
             string testPath = Path.GetFullPath(samplePath);
@@ -468,14 +467,14 @@ namespace Dynamo.Tests
             Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
         }
 
         [Ignore]
         public void Spreadsheets_ExcelToStuff()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_samplesPath, @".\15 Spreadsheets\Excel to Stuff.dyn");
             string testPath = Path.GetFullPath(samplePath);
@@ -497,13 +496,13 @@ namespace Dynamo.Tests
             Assert.IsFalse(string.IsNullOrEmpty(excelFilePath));
             Assert.IsTrue(File.Exists(excelFilePath));
 
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
 
         [Test]
         public void Spreadsheets_CSVToStuff()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_samplesPath, @".\15 Spreadsheets\CSV to Stuff.dyn");
             string testPath = Path.GetFullPath(samplePath);
@@ -525,7 +524,7 @@ namespace Dynamo.Tests
             Assert.IsFalse(string.IsNullOrEmpty(excelFilePath));
             Assert.IsTrue(File.Exists(excelFilePath));
 
-            //DynamoSettings.Controller.RunExpression(true);
+            //dynSettings.Controller.RunExpression(true);
         }
 
         #region 14 Curves
@@ -533,7 +532,7 @@ namespace Dynamo.Tests
         [Test]
         public void AllCurveTestModelCurve()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\\Samples\all curve test model curve.dyn");
             string testPath = Path.GetFullPath(samplePath);
@@ -544,14 +543,14 @@ namespace Dynamo.Tests
             Assert.AreEqual(47, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(61, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
         }
 
         [Test]
         public void AllCurveTest()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\\Samples\all curve test.dyn");
             string testPath = Path.GetFullPath(samplePath);
@@ -562,14 +561,14 @@ namespace Dynamo.Tests
             Assert.AreEqual(33, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(33, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
         }
 
         [Test]
         public void ArcAndLineFromRefPoints()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\\Samples\Arc and Line from Ref Points.dyn");
             string testPath = Path.GetFullPath(samplePath);
@@ -580,14 +579,14 @@ namespace Dynamo.Tests
             Assert.AreEqual(15, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(15, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
         }
 
         [Test]
         public void ArcAndLine()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\\Samples\Arc and Line.dyn");
             string testPath = Path.GetFullPath(samplePath);
@@ -598,14 +597,14 @@ namespace Dynamo.Tests
             Assert.AreEqual(17, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(16, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
         }
 
         [Test]
         public void ArcFromRefPoints()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\\Samples\Arc from Ref Points.dyn");
             string testPath = Path.GetFullPath(samplePath);
@@ -616,14 +615,14 @@ namespace Dynamo.Tests
             Assert.AreEqual(13, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
         }
 
         [Test]
         public void Arc()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\\Samples\Arc.dyn");
             string testPath = Path.GetFullPath(samplePath);
@@ -634,14 +633,14 @@ namespace Dynamo.Tests
             Assert.AreEqual(15, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(13, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
         }
 
         [Test]
         public void Circle()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\\Samples\circle.dyn");
             string testPath = Path.GetFullPath(samplePath);
@@ -652,14 +651,14 @@ namespace Dynamo.Tests
             Assert.AreEqual(13, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(13, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
         }
 
         [Test]
         public void Ellipse()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\\Samples\ellipse.dyn");
             string testPath = Path.GetFullPath(samplePath);
@@ -670,7 +669,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(14, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(14, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
         }
 
@@ -681,7 +680,7 @@ namespace Dynamo.Tests
         [Test]
         public void ConnectTwoPointArraysWithoutPython()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\\Samples\connect two point arrays without python.dyn");
             string testPath = Path.GetFullPath(samplePath);
@@ -692,14 +691,14 @@ namespace Dynamo.Tests
             Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
         }
 
         [Ignore]
         public void ConnectTwoPointArrays()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\\Samples\connect two point arrays.dyn");
             string testPath = Path.GetFullPath(samplePath);
@@ -710,14 +709,14 @@ namespace Dynamo.Tests
             Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
         }
 
         [Ignore]
         public void CreateSineWaveFromSelectedCurve()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\\Samples\create sine wave from selected curve.dyn");
             string testPath = Path.GetFullPath(samplePath);
@@ -728,14 +727,14 @@ namespace Dynamo.Tests
             Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(2, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
         }
 
         [Test]
         public void CreateSineWaveFromSelectedPoints()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\\Samples\create sine wave from selected points.dyn");
             string testPath = Path.GetFullPath(samplePath);
@@ -746,7 +745,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
             Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
 
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
         }
 

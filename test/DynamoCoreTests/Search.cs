@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Threading;
-using Dynamo.Core;
 using Dynamo.Nodes.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;

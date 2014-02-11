@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
 using Autodesk.Revit.DB;
-using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
@@ -18,7 +17,7 @@ namespace Dynamo.Tests
         [Test]
         public void XYZFromReferencePoint()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\XYZ\XYZFromReferencePoint.dyn");
             string testPath = Path.GetFullPath(samplePath);
@@ -38,7 +37,7 @@ namespace Dynamo.Tests
             args = FSharpList<FScheme.Value>.Cons(FScheme.Value.NewContainer(rp), args);
 
             //find the XYZFromReferencePoint node
-            var node = DynamoSettings.Controller.DynamoModel.Nodes.Where(x => x is XyzFromReferencePoint).First();
+            var node = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is XyzFromReferencePoint).First();
 
             FScheme.Value v = ((NodeWithOneOutput)node).Evaluate(args);
             Assert.IsInstanceOf(typeof(XYZ), ((FScheme.Value.Container)v).Item);
@@ -47,49 +46,49 @@ namespace Dynamo.Tests
         [Test]
         public void XYZByPolar()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\XYZ\XYZByPolar.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
 
         [Test]
         public void XYZBySphericalCoordinates()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\XYZ\XYZBySphericalCoordinates.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
 
         [Test]
         public void XYZToPolarCoordinates()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\XYZ\XYZToPolarCoordinates.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
 
         [Test]
         public void XYZToSphericalCoordinates()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\XYZ\XYZToSphericalCoordinates.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
     }
 }

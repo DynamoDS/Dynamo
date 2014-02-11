@@ -21,7 +21,7 @@ namespace Dynamo.Models
         {
             get { return X + Width / 2; }
             set { 
-                X = value - Width/2;
+                this.X = value - this.Width/2;
             }
         }
 
@@ -30,7 +30,7 @@ namespace Dynamo.Models
             get { return Y + Height / 2; }
             set
             {
-                Y = value - Height / 2;
+                this.Y = value - this.Height / 2;
             }
         }
 
@@ -173,7 +173,7 @@ namespace Dynamo.Models
 
         public bool UpdateValue(string name, string value)
         {
-            return UpdateValueCore(name, value);
+            return this.UpdateValueCore(name, value);
         }
 
         /// <summary>
@@ -187,7 +187,7 @@ namespace Dynamo.Models
         /// 
         public bool HandleModelEvent(string eventName)
         {
-            return HandleModelEventCore(eventName);
+            return this.HandleModelEventCore(eventName);
         }
 
         /// <summary>
@@ -223,15 +223,15 @@ namespace Dynamo.Models
 
         public XmlElement Serialize(XmlDocument xmlDocument, SaveContext context)
         {
-            string typeName = GetType().ToString();
+            string typeName = this.GetType().ToString();
             XmlElement element = xmlDocument.CreateElement(typeName);
-            SerializeCore(element, context);
+            this.SerializeCore(element, context);
             return element;
         }
 
         public void Deserialize(XmlElement element, SaveContext context)
         {
-            DeserializeCore(element, context);
+            this.DeserializeCore(element, context);
         }
 
         protected abstract void SerializeCore(XmlElement element, SaveContext context);

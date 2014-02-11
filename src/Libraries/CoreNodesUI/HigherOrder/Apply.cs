@@ -31,7 +31,7 @@ namespace DSCoreNodesUI.HigherOrder
             get { return "Argument #"; }
         }
 
-        public override void RemoveInput()
+        protected override void RemoveInput()
         {
             if (InPortData.Count > 1)
                 base.RemoveInput();

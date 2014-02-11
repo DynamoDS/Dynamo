@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Dynamo.DSEngine;
+using Dynamo.FSchemeInterop;
+using Dynamo.FSchemeInterop.Node;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
 
-namespace Dynamo.Core
+namespace Dynamo
 {
     public class CustomNodeDefinition
     {
@@ -72,15 +75,13 @@ namespace Dynamo.Core
         private IEnumerable<CustomNodeDefinition> FindDirectDependencies()
         {
             return WorkspaceModel.Nodes
-                            .OfType<CustomNodeInstance>()
+                            .OfType<Function>()
                             .Select(node => node.Definition)
                             .Where(def => def != this)
                             .Distinct();
         }
 
         #endregion
-
-#if !USE_DSENGINE
 
         #region FScheme Compilation
         
@@ -167,7 +168,7 @@ namespace Dynamo.Core
             inputNames = variables.Select(x => x.InputSymbol);
 
             //Update existing function nodes which point to this function to match its changes
-            DynamoSettings.Controller.DynamoModel.AllNodes
+            dynSettings.Controller.DynamoModel.AllNodes
                 .OfType<Function>()
                 .Where(el => el.Definition != null && el.Definition.FunctionId == FunctionId)
                 .ToList()
@@ -251,8 +252,6 @@ namespace Dynamo.Core
 
         #endregion
 
-#endif
-
         #region DS Compilation
 
         /// <summary>
@@ -288,7 +287,7 @@ namespace Dynamo.Core
 
                 foreach (NodeModel topNode in topMostNodes)
                 {
-                    if (topNode is CustomNodeInstance && (topNode as CustomNodeInstance).Definition == this)
+                    if (topNode is Function && (topNode as Function).Definition == this)
                     {
                         topMost.Add(Tuple.Create(0, topNode));
                         outNames.Add("∞");
@@ -323,7 +322,7 @@ namespace Dynamo.Core
 
             //Update existing function nodes which point to this function to match its changes
             var instances =
-                DynamoSettings.Controller.DynamoModel.AllNodes.OfType<CustomNodeInstance>()
+                dynSettings.Controller.DynamoModel.AllNodes.OfType<CustomNodeInstance>()
                            .Where(el => el.Definition != null && el.Definition == this);
 
             foreach (var node in instances)
@@ -352,7 +351,7 @@ namespace Dynamo.Core
         public bool AddToSearch()
         {
             return
-                DynamoSettings.Controller.SearchViewModel.Add(new CustomNodeInfo(  FunctionId, 
+                dynSettings.Controller.SearchViewModel.Add(new CustomNodeInfo(  FunctionId, 
                                                                                 WorkspaceModel.Name,
                                                                                 WorkspaceModel.Category,
                                                                                 WorkspaceModel.Description,
@@ -361,7 +360,7 @@ namespace Dynamo.Core
 
         public void UpdateCustomNodeManager()
         {
-            DynamoSettings.CustomNodeManager.SetNodeInfo(new CustomNodeInfo(   FunctionId,
+            dynSettings.CustomNodeManager.SetNodeInfo(new CustomNodeInfo(   FunctionId,
                                                                             WorkspaceModel.Name,
                                                                             WorkspaceModel.Category,
                                                                             WorkspaceModel.Description,
@@ -377,7 +376,7 @@ namespace Dynamo.Core
             try
             {
                 // Add function defininition
-                DynamoSettings.Controller.CustomNodeManager.AddFunctionDefinition(FunctionId, this);
+                dynSettings.Controller.CustomNodeManager.AddFunctionDefinition(FunctionId, this);
 
                 // search
                 if (addToSearch)
@@ -388,12 +387,12 @@ namespace Dynamo.Core
                 var info = new CustomNodeInfo(FunctionId, functionWorkspace.Name, functionWorkspace.Category,
                                               functionWorkspace.Description, WorkspaceModel.FileName);
 
-                DynamoSettings.Controller.CustomNodeManager.SetNodeInfo(info);
+                dynSettings.Controller.CustomNodeManager.SetNodeInfo(info);
 
 #if USE_DSENGINE
-                Compile(DynamoSettings.Controller.EngineController);
+                Compile(dynSettings.Controller.EngineController);
 #else
-                CompileAndAddToEnvironment(DynamoSettings.Controller.FSchemeEnvironment);
+                CompileAndAddToEnvironment(dynSettings.Controller.FSchemeEnvironment);
 #endif
             }
             catch (Exception e)

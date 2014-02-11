@@ -2,17 +2,19 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Xml;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Utilities;
+using System.IO;
+using Dynamo.FSchemeInterop.Node;
+using Dynamo.FSchemeInterop;
 using Dynamo.ViewModels;
 using NUnit.Framework;
 using Enum = System.Enum;
+using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
-namespace Dynamo.Core
+namespace Dynamo.Utilities
 {
     /// <summary>
     /// A simple class to keep track of custom nodes.
@@ -185,13 +187,11 @@ namespace Dynamo.Core
             var nodeInfo = Remove(guid);
 
             // remove from search
-            DynamoSettings.Controller.SearchViewModel.RemoveNodeAndEmptyParentCategory(nodeInfo.Guid);
-            DynamoSettings.Controller.SearchViewModel.SearchAndUpdateResults();
+            dynSettings.Controller.SearchViewModel.RemoveNodeAndEmptyParentCategory(nodeInfo.Guid);
+            dynSettings.Controller.SearchViewModel.SearchAndUpdateResults();
 
             // remove from fscheme environment
-#if !USE_DSENGINE
-            DynamoSettings.Controller.FSchemeEnvironment.RemoveSymbol(guid.ToString());
-#endif
+            dynSettings.Controller.FSchemeEnvironment.RemoveSymbol(guid.ToString());
         }
 
         /// <summary>
@@ -384,7 +384,7 @@ namespace Dynamo.Core
         ///     Get a guid from the name of a node.  If it doesn't exist, returns Guid.Empty.
         /// </summary>
         /// <param name="guid">Open a definition from a path, without instantiating the nodes or dependents</param>
-        public bool GetNodeInstance(DynamoController controller, string name, out CustomNodeInstance result)
+        public bool GetNodeInstance(DynamoController controller, string name, out Function result)
         {
             if (!Contains(name))
             {
@@ -401,10 +401,11 @@ namespace Dynamo.Core
         ///     And add the compiled node to the enviro
         ///     As a side effect, any of its dependent nodes are also initialized.
         /// </summary>
+        /// <param name="environment">The environment from which to get the </param>
         /// <param name="guid">Open a definition from a path, without instantiating the nodes or dependents</param>
-        public bool GetNodeInstance(Guid guid, out CustomNodeInstance result)
+        public bool GetNodeInstance(Guid guid, out Function result)
         {
-            var controller = DynamoSettings.Controller;
+            var controller = dynSettings.Controller;
 
             if (!Contains(guid))
             {
@@ -426,9 +427,30 @@ namespace Dynamo.Core
                 def = LoadedCustomNodes[guid];
             }
 
-            def.Compile(DynamoSettings.Controller.EngineController);
+            WorkspaceModel ws = def.WorkspaceModel;
 
-            result = new CustomNodeInstance(def);
+            IEnumerable<string> inputs =
+                ws.Nodes.Where(e => e is Symbol)
+                    .Select(s => (s as Symbol).InputSymbol);
+
+            IEnumerable<string> outputs =
+                ws.Nodes.Where(e => e is Output)
+                    .Select(o => (o as Output).Symbol);
+
+            if (!outputs.Any())
+            {
+                IEnumerable<NodeModel> topMostNodes = ws.GetTopMostNodes();
+
+                var topMost = (from topNode in topMostNodes
+                               from output in Enumerable.Range(0, topNode.OutPortData.Count)
+                               where !topNode.HasOutput(output)
+                               select Tuple.Create(output, topNode)).ToList();
+
+                outputs = topMost.Select(x => x.Item2.OutPortData[x.Item1].NickName);
+            }
+
+            result = controller.DynamoViewModel.CreateFunction(inputs, outputs, def);
+            result.NickName = ws.Name;
 
             return true;
         }
@@ -555,7 +577,7 @@ namespace Dynamo.Core
         /// <returns></returns>
         private bool GetDefinitionFromPath(Guid funcDefGuid, out CustomNodeDefinition def)
         {
-            var controller = DynamoSettings.Controller;
+            var controller = dynSettings.Controller;
 
             try
             {
@@ -618,7 +640,7 @@ namespace Dynamo.Core
                 #endregion
 
                 //DynamoCommands.WriteToLogCmd.Execute("Loading node definition for \"" + funName + "\" from: " + xmlPath);
-                DynamoSettings.Controller.DynamoModel.WriteToLog("Loading node definition for \"" + funName + "\" from: " + xmlPath);
+                dynSettings.Controller.DynamoModel.WriteToLog("Loading node definition for \"" + funName + "\" from: " + xmlPath);
 
                 var ws = new CustomNodeWorkspaceModel(
                     funName, category.Length > 0
@@ -635,12 +657,10 @@ namespace Dynamo.Core
                     WorkspaceModel = ws
                 };
 
-#if !USE_DSENGINE
                 // load a dummy version, so any nodes depending on this node
                 // will find an (empty) identifier on compilation
                 FScheme.Expression dummyExpression = FScheme.Expression.NewNumber_E(0);
                 controller.FSchemeEnvironment.DefineSymbol(def.FunctionId.ToString(), dummyExpression);
-#endif
 
                 // set the node as loaded
                 LoadedCustomNodes.Add(def.FunctionId, def);
@@ -708,7 +728,7 @@ namespace Dynamo.Core
                         continue;
                     }
 
-                    NodeModel el = DynamoSettings.Controller.DynamoModel.CreateNodeInstance(type, nickname, guid);
+                    NodeModel el = dynSettings.Controller.DynamoModel.CreateNodeInstance(type, nickname, guid);
 
                     if (lacingAttrib != null)
                     {
@@ -792,7 +812,7 @@ namespace Dynamo.Core
                     catch
                     {
                         //DynamoCommands.WriteToLogCmd.Execute(string.Format("ERROR : Could not create connector between {0} and {1}.", start.NickName, end.NickName));
-                        DynamoSettings.Controller.DynamoModel.WriteToLog(string.Format("ERROR : Could not create connector between {0} and {1}.", start.NickName, end.NickName));
+                        dynSettings.Controller.DynamoModel.WriteToLog(string.Format("ERROR : Could not create connector between {0} and {1}.", start.NickName, end.NickName));
                     }
                 }
 
@@ -814,7 +834,7 @@ namespace Dynamo.Core
 
                         Guid guid = Guid.NewGuid();
                         var command = new DynamoViewModel.CreateNoteCommand(guid, text, x, y, false);
-                        DynamoSettings.Controller.DynamoModel.AddNoteInternal(command, ws);
+                        dynSettings.Controller.DynamoModel.AddNoteInternal(command, ws);
                     }
                 }
 
@@ -835,8 +855,8 @@ namespace Dynamo.Core
             }
             catch (Exception ex)
             {
-                DynamoSettings.Controller.DynamoModel.WriteToLog("There was an error opening the workbench.");
-                DynamoSettings.Controller.DynamoModel.WriteToLog(ex);
+                dynSettings.Controller.DynamoModel.WriteToLog("There was an error opening the workbench.");
+                dynSettings.Controller.DynamoModel.WriteToLog(ex);
 
                 if (controller.Testing)
                     Assert.Fail(ex.Message);
@@ -906,16 +926,18 @@ namespace Dynamo.Core
             if (nodeInfo == null) return false;
 
             // rename the existing nodes - should be replaced with a proper binding
-            DynamoSettings.Controller.DynamoModel.AllNodes
-                       .OfType<CustomNodeInstance>()
+            dynSettings.Controller.DynamoModel.AllNodes
+                       .Where(x => x is Function)
+                       .Cast<Function>()
                        .Where(x => x.Definition.FunctionId == guid)
                        .ToList()
                        .ForEach(x =>
                            {
+                               x.Name = newName;
                                x.NickName = newName;
                            });
 
-            DynamoSettings.Controller.SearchViewModel.RemoveNodeAndEmptyParentCategory(nodeInfo.Guid);
+            dynSettings.Controller.SearchViewModel.RemoveNodeAndEmptyParentCategory(nodeInfo.Guid);
 
             nodeInfo.Name = newName;
             nodeInfo.Category = newCategory;
@@ -923,8 +945,8 @@ namespace Dynamo.Core
 
             SetNodeInfo(nodeInfo);
 
-            DynamoSettings.Controller.SearchViewModel.Add(nodeInfo);
-            DynamoSettings.Controller.SearchViewModel.SearchAndUpdateResults();
+            dynSettings.Controller.SearchViewModel.Add(nodeInfo);
+            dynSettings.Controller.SearchViewModel.SearchAndUpdateResults();
 
             return true;
         }

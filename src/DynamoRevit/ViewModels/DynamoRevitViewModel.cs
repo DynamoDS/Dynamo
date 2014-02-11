@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Dynamo.Core;
 using Dynamo.Nodes;
 using Dynamo.Revit;
 using Dynamo.ViewModels;

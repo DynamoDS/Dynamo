@@ -1,9 +1,13 @@
 ﻿using Dynamo.Core;
+using Dynamo.Services;
 using Dynamo.UI.Commands;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Microsoft.Practices.Prism.ViewModel;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Windows;
 using Dynamo.UI;
 
@@ -36,22 +40,22 @@ namespace Dynamo.Services
         {
             get
             {
-                return DynamoSettings.Controller.PreferenceSettings.IsUsageReportingApproved;
+                return dynSettings.Controller.PreferenceSettings.IsUsageReportingApproved;
             }
             private set
             {
-                DynamoSettings.Controller.PreferenceSettings.IsUsageReportingApproved = value;
+                dynSettings.Controller.PreferenceSettings.IsUsageReportingApproved = value;
                 RaisePropertyChanged("IsUsageReportingApproved");
 
                 // Call PreferenceSettings to save
                 try
                 {
-                    DynamoSettings.Controller.PreferenceSettings.Save();
+                    dynSettings.Controller.PreferenceSettings.Save();
                 }
                 catch (Exception args)
                 {
                     string filePath = PreferenceSettings.GetSettingsFilePath();
-                    DynamoSettings.Controller.OnRequestsCrashPrompt(this, new CrashPromptArgs(args.Message, Configurations.UsageReportingErrorMessage, filePath));
+                    dynSettings.Controller.OnRequestsCrashPrompt(this, new CrashPromptArgs(args.Message, Configurations.UsageReportingErrorMessage, filePath));
                 }
             }
         }
@@ -60,11 +64,11 @@ namespace Dynamo.Services
         {
             get
             {
-                return DynamoSettings.Controller.PreferenceSettings.IsFirstRun;
+                return dynSettings.Controller.PreferenceSettings.IsFirstRun;
             }
             private set
             {
-                DynamoSettings.Controller.PreferenceSettings.IsFirstRun = value;
+                dynSettings.Controller.PreferenceSettings.IsFirstRun = value;
                 RaisePropertyChanged("FirstRun");
             }
         }
@@ -78,11 +82,11 @@ namespace Dynamo.Services
         public void CheckIsFirstRun()
         {
             // First run of Dynamo
-            if (DynamoSettings.Controller.PreferenceSettings.IsFirstRun)
+            if (dynSettings.Controller.PreferenceSettings.IsFirstRun)
             {
-                FirstRun = false;
+                this.FirstRun = false;
 
-                if (!DynamoSettings.Controller.Testing)
+                if (!dynSettings.Controller.Testing)
                     ShowUsageReportingPrompt();
             }
         }

@@ -1,6 +1,12 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reflection;
-using Dynamo.Core;
+using System.Text;
+using System.Windows;
+using Dynamo.Nodes;
+using Dynamo.Nodes.Search;
 
 namespace Dynamo.PackageManager.UI
 {
@@ -16,16 +22,16 @@ namespace Dynamo.PackageManager.UI
 
         public PackageItemInternalViewModel(Assembly assembly, PackageItemViewModel parent)
         {
-            DependencyType = DependencyType.Assembly;
-            Assembly = assembly;
-            Parent = parent;
+            this.DependencyType = DependencyType.Assembly;
+            this.Assembly = assembly;
+            this.Parent = parent;
         }
 
         public PackageItemInternalViewModel(CustomNodeDefinition def, PackageItemViewModel parent)
         {
-            DependencyType = DependencyType.CustomNode;
-            Definition = def;
-            Parent = parent;
+            this.DependencyType = DependencyType.CustomNode;
+            this.Definition = def;
+            this.Parent = parent;
         }
 
     }

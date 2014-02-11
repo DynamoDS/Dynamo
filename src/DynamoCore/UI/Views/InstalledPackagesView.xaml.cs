@@ -1,6 +1,17 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Windows;
 using System.Windows.Controls;
-using Dynamo.Core;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+using Dynamo.Controls;
 using Dynamo.Utilities;
 
 namespace Dynamo.PackageManager.UI
@@ -12,13 +23,13 @@ namespace Dynamo.PackageManager.UI
     {
         public InstalledPackagesView()
         {
-            DataContext = DynamoSettings.PackageLoader;
+            this.DataContext = dynSettings.PackageLoader;
             InitializeComponent();
         }
 
         private void BrowseOnline_OnClick(object sender, RoutedEventArgs e)
         {
-            DynamoSettings.PackageManagerClient.GoToWebsite();
+            dynSettings.PackageManagerClient.GoToWebsite();
         }
 
         private void MoreButton_OnClick(object sender, RoutedEventArgs e)

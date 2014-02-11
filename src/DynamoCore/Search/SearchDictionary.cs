@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Dynamo.Search.SearchElements;
 
 namespace Dynamo.Search
@@ -184,7 +185,7 @@ namespace Dynamo.Search
 
         public bool Contains(V a)
         {
-            return _symbolDictionary.Keys.Any(x => x.Equals(a));
+            return this._symbolDictionary.Keys.Any(x => x.Equals(a));
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -6,7 +7,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Dynamo.Controls;
-using Dynamo.Core;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.Utilities;
@@ -27,14 +27,14 @@ namespace Dynamo.Search
         public SearchView()
         {
             InitializeComponent();
-            Loaded += SearchView_Loaded;
+            this.Loaded += SearchView_Loaded;
 
             SearchTextBox.IsVisibleChanged += delegate
             {
                 if (SearchTextBox.IsVisible)
                 {
                     DynamoCommands.SearchCommand.Execute(null);
-                    Keyboard.Focus(SearchTextBox);
+                    Keyboard.Focus(this.SearchTextBox);
                     var view = WPF.FindUpVisualTree<DynamoView>(this);
                     SearchTextBox.InputBindings.AddRange(view.InputBindings);
                 }
@@ -43,17 +43,17 @@ namespace Dynamo.Search
 
         void SearchView_Loaded(object sender, RoutedEventArgs e)
         {
-            DataContext = _viewModel = DynamoSettings.Controller.SearchViewModel;
+            DataContext = _viewModel = dynSettings.Controller.SearchViewModel;
 
-            MouseEnter += SearchView_MouseEnter;
-            MouseLeave += SearchView_MouseLeave;
+            this.MouseEnter += SearchView_MouseEnter;
+            this.MouseLeave += SearchView_MouseLeave;
 
             PreviewKeyDown += KeyHandler;
-            SearchTextBox.PreviewKeyDown += new KeyEventHandler(OnSearchBoxPreviewKeyDown);
-            SearchTextBox.KeyDown += new KeyEventHandler(OnSearchBoxKeyDown);
+            this.SearchTextBox.PreviewKeyDown += new KeyEventHandler(OnSearchBoxPreviewKeyDown);
+            this.SearchTextBox.KeyDown += new KeyEventHandler(OnSearchBoxKeyDown);
 
-            DynamoSettings.Controller.SearchViewModel.RequestFocusSearch += SearchViewModel_RequestFocusSearch;
-            DynamoSettings.Controller.SearchViewModel.RequestReturnFocusToSearch += SearchViewModel_RequestReturnFocusToSearch;
+            dynSettings.Controller.SearchViewModel.RequestFocusSearch += SearchViewModel_RequestFocusSearch;
+            dynSettings.Controller.SearchViewModel.RequestReturnFocusToSearch += SearchViewModel_RequestReturnFocusToSearch;
 
         }
 
@@ -122,7 +122,7 @@ namespace Dynamo.Search
                     if (DynamoSelection.Instance.Selection.Count > 0)
                     {
                         e.Handled = true;
-                        DynamoSettings.Controller.DynamoViewModel.DeleteCommand.Execute(null);
+                        dynSettings.Controller.DynamoViewModel.DeleteCommand.Execute(null);
                     }
                     break;
 
@@ -142,7 +142,7 @@ namespace Dynamo.Search
 
         void SearchViewModel_RequestReturnFocusToSearch(object sender, EventArgs e)
         {
-            if (Visibility != Visibility.Collapsed)
+            if (this.Visibility != Visibility.Collapsed)
                 Keyboard.Focus(SearchTextBox);
             else
                 MoveFocusToNextUIElement();
@@ -178,13 +178,13 @@ namespace Dynamo.Search
         public void ListBoxItem_Click(object sender, RoutedEventArgs e)
         {
             ((ListBoxItem) sender).IsSelected = true;
-            Keyboard.Focus(SearchTextBox);
+            Keyboard.Focus(this.SearchTextBox);
         }
 
         private void Back_Click(object sender, RoutedEventArgs e)
         {
             ((SearchViewModel) DataContext).RemoveLastPartOfSearchText();
-            Keyboard.Focus(SearchTextBox);
+            Keyboard.Focus(this.SearchTextBox);
         }
 
         public void ibtnServiceController_MouseLeftButtonUp(object sender, RoutedEventArgs e)
@@ -193,7 +193,7 @@ namespace Dynamo.Search
             //RegionMenu.IsOpen = true;
         }
 
-        private void TreeViewScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        private void TreeViewScrollViewer_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
         {
             ScrollViewer scv = (ScrollViewer)sender;
             scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
@@ -207,10 +207,10 @@ namespace Dynamo.Search
             //    this.Visibility = Visibility.Visible;
             //else
             //{
-            //    DynamoSettings.Controller.DynamoViewModel.OnSidebarClosed(this, EventArgs.Empty);
+            //    dynSettings.Controller.DynamoViewModel.OnSidebarClosed(this, EventArgs.Empty);
             //   this.Visibility = Visibility.Collapsed;
             //}
-            DynamoSettings.Controller.DynamoViewModel.OnSidebarClosed(this, EventArgs.Empty);
+            dynSettings.Controller.DynamoViewModel.OnSidebarClosed(this, EventArgs.Empty);
         }
 
         private void Button_MouseEnter(object sender, MouseEventArgs e)
@@ -226,7 +226,7 @@ namespace Dynamo.Search
             RotateTransform rotateTransform = new RotateTransform(-90, 16, 16);
             collapsestate.Source = new BitmapImage(collapsestateSource);
             
-            Cursor = CursorLibrary.GetCursor(CursorSet.LinkSelect);
+            this.Cursor = CursorLibrary.GetCursor(CursorSet.LinkSelect);
         }
 
         private void buttonGrid_MouseLeave(object sender, MouseEventArgs e)
@@ -240,7 +240,7 @@ namespace Dynamo.Search
             var collapsestateSource = new Uri(@"pack://application:,,,/DynamoCore;component/UI/Images/expand_normal.png");
             collapsestate.Source = new BitmapImage(collapsestateSource);
             
-            Cursor = null;
+            this.Cursor = null;
         }
 
         private void LibraryItem_OnMouseEnter(object sender, MouseEventArgs e)
@@ -251,9 +251,9 @@ namespace Dynamo.Search
                 return;
 
             Point pointToScreen_TopLeft = treeViewItem.PointToScreen(new Point(0, 0));
-            Point topLeft = PointFromScreen(pointToScreen_TopLeft);
+            Point topLeft = this.PointFromScreen(pointToScreen_TopLeft);
             Point pointToScreen_BotRight = new Point(pointToScreen_TopLeft.X + treeViewItem.ActualWidth, pointToScreen_TopLeft.Y + treeViewItem.ActualHeight);
-            Point botRight = PointFromScreen(pointToScreen_BotRight);
+            Point botRight = this.PointFromScreen(pointToScreen_BotRight);
             string infoBubbleContent = nodeSearchElement.Description;
             InfoBubbleDataPacket data = new InfoBubbleDataPacket(InfoBubbleViewModel.Style.LibraryItemPreview, topLeft,
                 botRight, infoBubbleContent, InfoBubbleViewModel.Direction.Left);

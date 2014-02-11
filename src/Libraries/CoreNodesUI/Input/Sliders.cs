@@ -8,7 +8,6 @@ using System.Windows.Data;
 using System.Windows.Media;
 using System.Xml;
 using Dynamo.Controls;
-using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Utilities;
 
@@ -71,7 +70,7 @@ namespace Dynamo.Nodes
 
             tbSlider.PreviewMouseUp += delegate
             {
-                DynamoSettings.ReturnFocusToSearch();
+                dynSettings.ReturnFocusToSearch();
             };
 
             var mintb = new DynamoTextBox
@@ -302,7 +301,7 @@ namespace Dynamo.Nodes
 
             tbSlider.PreviewMouseUp += delegate
             {
-                DynamoSettings.ReturnFocusToSearch();
+                dynSettings.ReturnFocusToSearch();
             };
 
             var mintb = new DynamoTextBox

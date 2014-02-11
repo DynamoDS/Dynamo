@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
 using Autodesk.Revit.DB;
-using Dynamo.Core;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
@@ -15,16 +14,16 @@ namespace Dynamo.Tests
         [Test]
         public void GetFamilyInstancesByType()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\Family\GetFamilyInstancesByType.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
             var node =
-                (GetFamilyInstancesByType)DynamoSettings.Controller.DynamoModel.Nodes.First(x => x is GetFamilyInstancesByType);
+                (GetFamilyInstancesByType)dynSettings.Controller.DynamoModel.Nodes.First(x => x is GetFamilyInstancesByType);
             Assert.IsTrue(node.OldValue.IsList);
 
             var list = ((FScheme.Value.List)node.OldValue).Item;
@@ -34,25 +33,25 @@ namespace Dynamo.Tests
         [Test]
         public void GetFamilyInstanceLocation()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\Family\GetFamilyInstanceLocation.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
 
         [Test]
         public void CanLocateAdaptiveComponent()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\Family\AC_locationStandAlone.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
             //ensure that the collection of points
             //returned has the 4 corner points
@@ -68,13 +67,13 @@ namespace Dynamo.Tests
         [Test]
         public void CanLocateAdaptiveComponentInDividedSurface()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\Family\AC_locationInDividedSurface.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
             //ensure that you get a list of lists
             //with 5 lists each with 5 lists of 4 points

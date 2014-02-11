@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Text;
 using System.Xml;
 
 namespace Dynamo.Utilities
@@ -10,7 +13,7 @@ namespace Dynamo.Utilities
 
         public XmlElementHelper(XmlElement xmlElement)
         {
-            internalElement = xmlElement;
+            this.internalElement = xmlElement;
         }
 
         #region Attributes - Write Methods
@@ -38,12 +41,12 @@ namespace Dynamo.Utilities
             internalElement.SetAttribute(name, value);
         }
 
-        public void SetAttribute(string name, Type value)
+        public void SetAttribute(string name, System.Type value)
         {
             internalElement.SetAttribute(name, value.ToString());
         }
 
-        public void SetAttribute(string name, Guid value)
+        public void SetAttribute(string name, System.Guid value)
         {
             internalElement.SetAttribute(name, value.ToString());
         }
@@ -112,15 +115,15 @@ namespace Dynamo.Utilities
             return ((null == attrib) ? defaultValue : attrib.Value);
         }
 
-        public Guid ReadGuid(string attribName)
+        public System.Guid ReadGuid(string attribName)
         {
             XmlAttribute attrib = GetGuaranteedAttribute(attribName);
             return Guid.Parse(attrib.Value);
         }
 
-        public Guid ReadGuid(string attribName, Guid defaultValue)
+        public System.Guid ReadGuid(string attribName, System.Guid defaultValue)
         {
-            Guid result = defaultValue;
+            System.Guid result = defaultValue;
             XmlAttribute attrib = internalElement.Attributes[attribName];
             if (null == attrib || (!Guid.TryParse(attrib.Value, out result)))
                 return defaultValue;
@@ -132,7 +135,7 @@ namespace Dynamo.Utilities
         {
             TEnum result = defaultValue;
             XmlAttribute attrib = internalElement.Attributes[attribName];
-            if (null == attrib || (!Enum.TryParse(attrib.Value, out result)))
+            if (null == attrib || (!System.Enum.TryParse(attrib.Value, out result)))
                 return defaultValue;
 
             return result;

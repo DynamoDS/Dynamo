@@ -6,7 +6,6 @@ using System.Reflection;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Dynamo;
-using Dynamo.Core;
 using Dynamo.FSchemeInterop;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -151,7 +150,7 @@ namespace Dynamo.Tests
 
         protected void OpenAndRun(string subPath)
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, subPath);
             string testPath = Path.GetFullPath(samplePath);
@@ -160,7 +159,7 @@ namespace Dynamo.Tests
 
             model.Open(testPath);
 
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
     }
 }

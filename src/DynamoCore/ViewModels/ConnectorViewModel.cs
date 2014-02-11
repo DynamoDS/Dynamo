@@ -1,6 +1,5 @@
 ﻿using System;
-using System.ComponentModel;
-using Dynamo.Core;
+using System.Diagnostics;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Point = System.Windows.Point;
@@ -171,8 +170,8 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (DynamoSettings.Controller.ConnectorType == ConnectorType.BEZIER &&
-                    DynamoSettings.Controller.IsShowingConnectors)
+                if (dynSettings.Controller.ConnectorType == ConnectorType.BEZIER &&
+                    dynSettings.Controller.IsShowingConnectors)
                     return true;
                 return false;
             }
@@ -190,8 +189,8 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (DynamoSettings.Controller.ConnectorType == ConnectorType.POLYLINE && 
-                    DynamoSettings.Controller.IsShowingConnectors)
+                if (dynSettings.Controller.ConnectorType == ConnectorType.POLYLINE && 
+                    dynSettings.Controller.IsShowingConnectors)
                     return true;
                 return false;
             }
@@ -227,7 +226,7 @@ namespace Dynamo.ViewModels
             _model.Start.Owner.PropertyChanged += StartOwner_PropertyChanged;
             _model.End.Owner.PropertyChanged += EndOwner_PropertyChanged;
 
-            DynamoSettings.Controller.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
+            dynSettings.Controller.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
 
             Redraw();
         }
@@ -237,7 +236,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void StartOwner_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        void StartOwner_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -260,7 +259,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void EndOwner_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        void EndOwner_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -278,12 +277,12 @@ namespace Dynamo.ViewModels
             }
         }
 
-        void DynamoViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        void DynamoViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
                 case "ConnectorType":
-                    if (DynamoSettings.Controller.ConnectorType == ConnectorType.BEZIER)
+                    if (dynSettings.Controller.ConnectorType == ConnectorType.BEZIER)
                     {
                         BezVisibility = true;
                         PlineVisibility = false;
@@ -302,7 +301,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        void Model_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        void Model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -319,8 +318,8 @@ namespace Dynamo.ViewModels
         public void Redraw()
         {
             //Debug.WriteLine("Redrawing...");
-            if (ConnectorModel.End != null)
-                Redraw(ConnectorModel.End.Center);
+            if (this.ConnectorModel.End != null)
+                this.Redraw(this.ConnectorModel.End.Center);
         }
 
         /// <summary>
@@ -335,7 +334,7 @@ namespace Dynamo.ViewModels
 
             var offset = 0.0;
             double distance = 0;
-            if ( BezVisibility == true)
+            if ( this.BezVisibility == true)
             {
                 distance = Math.Sqrt(Math.Pow(CurvePoint3.X - CurvePoint0.X, 2) + Math.Pow(CurvePoint3.Y - CurvePoint0.Y, 2));
                 offset = .45 * distance;

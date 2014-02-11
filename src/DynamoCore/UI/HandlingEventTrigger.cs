@@ -1,12 +1,11 @@
-﻿using System;
-using System.Windows;
-using EventTrigger = System.Windows.Interactivity.EventTrigger;
+﻿using System.Windows;
+using System.Windows.Interactivity;
 
 namespace Dynamo.UI.Views
 {
-    public class HandlingEventTrigger : EventTrigger
+    public class HandlingEventTrigger : System.Windows.Interactivity.EventTrigger
     {
-        protected override void OnEvent(EventArgs eventArgs)
+        protected override void OnEvent(System.EventArgs eventArgs)
         {
             var routedEventArgs = eventArgs as RoutedEventArgs;
             if (routedEventArgs != null)

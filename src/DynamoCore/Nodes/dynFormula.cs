@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
-using Dynamo.Legacy;
 using Dynamo.Units;
 using Dynamo.Models;
 using Microsoft.FSharp.Collections;

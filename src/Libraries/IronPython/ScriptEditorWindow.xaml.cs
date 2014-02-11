@@ -14,7 +14,6 @@ using System.Windows.Shapes;
 using System.Xml;
 using Dynamo;
 using Dynamo.Controls;
-using Dynamo.Core;
 using Dynamo.Python;
 using Dynamo.Utilities;
 using ICSharpCode.AvalonEdit.CodeCompletion;
@@ -136,7 +135,7 @@ namespace DSIronPythonNode
                 var command = new DynCmd.UpdateModelValueCommand(
                     this.boundNodeId, this.propertyName, this.editText.Text);
 
-                DynamoSettings.Controller.DynamoViewModel.ExecuteCommand(command);
+                dynSettings.Controller.DynamoViewModel.ExecuteCommand(command);
             }
         }
 

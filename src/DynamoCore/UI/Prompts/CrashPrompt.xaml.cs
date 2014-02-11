@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using Dynamo.Core;
 using Dynamo.Utilities;
 using System.Windows.Controls;
 using System.IO;
@@ -21,13 +20,13 @@ namespace Dynamo.Nodes.Prompts
         public CrashPrompt(string details)
         {
             InitializeComponent();
-            CrashDetailsContent.Text = details;
+            this.CrashDetailsContent.Text = details;
         }
         
         public CrashPrompt()
         {
             InitializeComponent();
-            CrashDetailsContent.Text = "Unknown error";
+            this.CrashDetailsContent.Text = "Unknown error";
         }
 
         public CrashPrompt(CrashPromptArgs args)
@@ -36,9 +35,9 @@ namespace Dynamo.Nodes.Prompts
 
             if (args.HasDetails())
             {
-                details = args.Details;
-                CrashDetailsContent.Text = args.Details;
-                btnDetails.Visibility = Visibility.Visible;
+                this.details = args.Details;
+                this.CrashDetailsContent.Text = args.Details;
+                this.btnDetails.Visibility = Visibility.Visible;
             }
 
             if (args.IsFilePath())
@@ -54,7 +53,7 @@ namespace Dynamo.Nodes.Prompts
                 if (args.IsFilePath())
                     overridingText = overridingText.Replace("[FILEPATH]", args.FilePath);
 
-                ConvertFormattedTextIntoTextblock(txtOverridingText, overridingText);
+                ConvertFormattedTextIntoTextblock(this.txtOverridingText, overridingText);
             }
         }
 
@@ -75,24 +74,24 @@ namespace Dynamo.Nodes.Prompts
 
         private void Continue_Click(object sender, RoutedEventArgs e)
         {
-            Close();
+            this.Close();
         }
 
         private void PostOnGithub_Click(object sender, RoutedEventArgs e)
         {
-            DynamoSettings.Controller.ReportABug(null);
+            dynSettings.Controller.ReportABug(null);
         }
 
         private void Details_Click(object sender, RoutedEventArgs e)
         {
-            btnDetails.Visibility = Visibility.Collapsed;
-            CrashDetailsContent.Visibility = Visibility.Visible;
-            btnCopy.Visibility = Visibility.Visible;
+            this.btnDetails.Visibility = Visibility.Collapsed;
+            this.CrashDetailsContent.Visibility = Visibility.Visible;
+            this.btnCopy.Visibility = Visibility.Visible;
         }
 
         private void Copy_Click(object sender, RoutedEventArgs e)
         {
-            CrashDetailsContent.Visibility = Visibility.Visible;
+            this.CrashDetailsContent.Visibility = Visibility.Visible;
             Clipboard.SetData(DataFormats.Text, details);
         }
 

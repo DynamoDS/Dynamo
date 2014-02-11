@@ -16,7 +16,6 @@ using Autodesk.Revit.UI;
 
 using Dynamo.Applications.Properties;
 using Dynamo.Controls;
-using Dynamo.Core;
 using Dynamo.Utilities;
 using RevitServices.Elements;
 using RevitServices.Transactions;
@@ -226,19 +225,19 @@ namespace Dynamo.Applications
 
             if (view != null 
                 && view.IsPerspective
-                && DynamoSettings.Controller.Context != Context.VASARI_2013
-                && DynamoSettings.Controller.Context != Context.VASARI_2014)
+                && dynSettings.Controller.Context != Context.VASARI_2013
+                && dynSettings.Controller.Context != Context.VASARI_2014)
             {
                 DynamoLogger.Instance.LogWarning(
                     "Dynamo is not available in a perspective view. Please switch to another view to Run.",
                     WarningLevel.Moderate);
-                DynamoSettings.Controller.DynamoViewModel.RunEnabled = false;
+                dynSettings.Controller.DynamoViewModel.RunEnabled = false;
             }
             else
             {
                 //alert the user of the new active view and enable the run button
                 DynamoLogger.Instance.LogWarning(string.Format("Active view is now {0}", e.NewActiveView.Name), WarningLevel.Mild);
-                DynamoSettings.Controller.DynamoViewModel.RunEnabled = true;
+                dynSettings.Controller.DynamoViewModel.RunEnabled = true;
             }
         }
 
@@ -275,8 +274,8 @@ namespace Dynamo.Applications
 
             try
             {
-                DynamoSettings.Controller.OnRequestsCrashPrompt(this, new CrashPromptArgs(args.Exception.Message + "\n\n" + args.Exception.StackTrace));
-                DynamoSettings.Controller.DynamoViewModel.Exit(false); // don't allow cancellation
+                dynSettings.Controller.OnRequestsCrashPrompt(this, new CrashPromptArgs(args.Exception.Message + "\n\n" + args.Exception.StackTrace));
+                dynSettings.Controller.DynamoViewModel.Exit(false); // don't allow cancellation
             }
             catch
             {
