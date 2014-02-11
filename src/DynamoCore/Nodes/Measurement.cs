@@ -156,7 +156,8 @@ namespace Dynamo.Nodes
     {
         protected override SIUnit ConvertToMeasurement(double value)
         {
-            return new Units.Length(value);
+            //convert the number to a value by converting from UI settings.
+            return new Units.Length(value / UnitsManager.Instance.UiLengthConversion);
         }
     }
 
