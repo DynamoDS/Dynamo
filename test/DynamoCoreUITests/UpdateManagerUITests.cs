@@ -95,7 +95,7 @@ namespace DynamoCoreUITests
             Vm = Controller.DynamoViewModel;
             Controller.UIDispatcher = Ui.Dispatcher;
             Ui.Show();
-
+            Controller.Testing = true;
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
 
             string tempPath = Path.GetTempPath();
