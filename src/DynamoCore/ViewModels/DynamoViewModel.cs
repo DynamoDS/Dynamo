@@ -16,6 +16,7 @@ using Dynamo.PackageManager;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.UI.Commands;
+using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 
 namespace Dynamo.ViewModels
@@ -482,11 +483,12 @@ namespace Dynamo.ViewModels
             get { return dynSettings.Controller.UpdateManager.ProductVersion.ToString(); }
         }
 
-        public bool UpToDate
+        public bool IsUpdateAvailable
         {
             get
             {
-                return dynSettings.Controller.UpdateManager.ProductVersion >= dynSettings.Controller.UpdateManager.AvailableVersion; ;
+                return dynSettings.Controller.UpdateManager.AvailableVersion >
+                       dynSettings.Controller.UpdateManager.ProductVersion;
             }
         }
 
