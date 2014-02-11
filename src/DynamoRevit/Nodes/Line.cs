@@ -189,15 +189,20 @@ namespace Dynamo.Nodes
             // Update connectors
             PortId oldInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
             PortId oldInPort1 = new PortId(newNodeId, 1, PortType.INPUT);
-            PortId newInPortTranslate0 = new PortId(translateNodeId, 0, PortType.INPUT);
+            PortId newInPort0 = new PortId(newNodeId, 0, PortType.INPUT);
             PortId newInPortTranslate1 = new PortId(translateNodeId, 1, PortType.INPUT);
             XmlElement connector0 = data.FindFirstConnector(oldInPort0);
             XmlElement connector1 = data.FindFirstConnector(oldInPort1);
 
-            string nodeOriginId = connector0.GetAttribute("start").ToString();
-            data.ReconnectToPort(connector1, newInPortTranslate1);
+            data.ReconnectToPort(connector1, newInPort0);
+            data.ReconnectToPort(connector0, newInPortTranslate1);
             data.CreateConnector(translateNode, 0, newNode, 1);
-            data.CreateConnectorFromId(nodeOriginId, 0, translateNodeId, 0);
+
+            if (connector1 != null)
+            {
+                string nodeOriginId = connector1.GetAttribute("start").ToString();
+                data.CreateConnectorFromId(nodeOriginId, 0, translateNodeId, 0);
+            }
             
             return migrationData;
         }
