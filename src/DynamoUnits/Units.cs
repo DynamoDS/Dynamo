@@ -176,6 +176,10 @@ namespace Dynamo.Units
             LengthUnit = DynamoLengthUnit.Meter;
             AreaUnit = DynamoAreaUnit.SquareMeter;
             VolumeUnit = DynamoVolumeUnit.CubicMeter;
+
+            HostApplicationInternalAreaUnit = DynamoAreaUnit.SquareMeter;
+            HostApplicationInternalLengthUnit = DynamoLengthUnit.Meter;
+            HostApplicationInternalVolumeUnit = DynamoVolumeUnit.CubicMeter;
         }
     }
 
