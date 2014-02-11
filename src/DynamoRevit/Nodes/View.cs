@@ -875,7 +875,7 @@ namespace Dynamo.Nodes
                 }
                 else
                 {
-                    throw new Exception("View could not be packed on sheet.");
+                    throw new Exception("View(s) do not fit on sheet.");
                 }
             }
 

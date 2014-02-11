@@ -59,6 +59,8 @@ namespace Dynamo.Nodes
         /// </summary>
         public void ResyncWithDefinition()
         {
+            DisableReporting();
+
             if (Definition.Parameters != null)
             {
                 foreach (var arg in Definition.Parameters)
@@ -82,6 +84,8 @@ namespace Dynamo.Nodes
 
             RegisterAllPorts();
             NickName = Definition.DisplayName;
+
+            EnableReporting();
         }
 
         protected override void SaveNode(
