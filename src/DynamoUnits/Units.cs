@@ -773,21 +773,21 @@ namespace Dynamo.Units
         {
             var val = _value * UnitsManager.Instance.UiAreaConversion;
             double round = Math.Round(val);
-            return new Length(round / UnitsManager.Instance.UiAreaConversion);
+            return new Area(round / UnitsManager.Instance.UiAreaConversion);
         }
 
         public override SIUnit Ceiling()
         {
             var val = _value * UnitsManager.Instance.UiAreaConversion;
             double round = Math.Ceiling(val);
-            return new Length(round / UnitsManager.Instance.UiAreaConversion);
+            return new Area(round / UnitsManager.Instance.UiAreaConversion);
         }
 
         public override SIUnit Floor()
         {
             var val = _value * UnitsManager.Instance.UiAreaConversion;
             double round = Math.Floor(val);
-            return new Length(round / UnitsManager.Instance.UiAreaConversion);
+            return new Area(round / UnitsManager.Instance.UiAreaConversion);
         }
 
         public override double ConvertToHostUnits()
@@ -983,21 +983,21 @@ namespace Dynamo.Units
         {
             var val = _value * UnitsManager.Instance.UiVolumeConversion;
             double round = Math.Round(val);
-            return new Length(round / UnitsManager.Instance.UiVolumeConversion);
+            return new Volume(round / UnitsManager.Instance.UiVolumeConversion);
         }
 
         public override SIUnit Ceiling()
         {
             var val = _value * UnitsManager.Instance.UiVolumeConversion;
             double round = Math.Ceiling(val);
-            return new Length(round / UnitsManager.Instance.UiVolumeConversion);
+            return new Volume(round / UnitsManager.Instance.UiVolumeConversion);
         }
 
         public override SIUnit Floor()
         {
             var val = _value * UnitsManager.Instance.UiVolumeConversion;
             double round = Math.Floor(val);
-            return new Length(round / UnitsManager.Instance.UiVolumeConversion);
+            return new Volume(round / UnitsManager.Instance.UiVolumeConversion);
         }
 
         public override double ConvertToHostUnits()
