@@ -71,10 +71,10 @@ namespace Dynamo.Nodes
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
             //create the node itself
-            XmlElement dsRevitNode = MigrationManager.CreateFunctionNode(
-                data.Document, "DSRevitNodes.dll",
-                "Wall.ByCurveAndHeight", 
-                "Wall.ByCurveAndHeight@Curve,double,Level,WallType");
+            XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            dsRevitNode.SetAttribute("assembly", "DSRevitNodes.dll");
+            dsRevitNode.SetAttribute("nickname", "Wall.ByCurveAndHeight");
+            dsRevitNode.SetAttribute("function", "Wall.ByCurveAndHeight@Curve,double,Level,WallType");
 
             migratedData.AppendNode(dsRevitNode);
             string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);

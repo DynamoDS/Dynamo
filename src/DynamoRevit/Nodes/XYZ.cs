@@ -944,8 +944,41 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "ProtoGeometry.dll", "Point.DirectionTo@Point",
-                "Point.DirectionTo@Point");
+            NodeMigrationData migratedData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
+
+            //create the node itself
+            XmlElement newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            newNode.SetAttribute("assembly", "ProtoGeometry.dll");
+            newNode.SetAttribute("nickname", "Vector.Normalized");
+            newNode.SetAttribute("function", "Vector.Normalized");
+
+            migratedData.AppendNode(newNode);
+            string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
+
+            XmlElement vectorNode = MigrationManager.CreateFunctionNode(
+                data.Document, "ProtoGeometry.dll", 
+                "Vector.ByTwoPoints", "Vector.ByTwoPoints@Point,Point");
+            migratedData.AppendNode(vectorNode);
+            string vectorNodeId = MigrationManager.GetGuidFromXmlElement(vectorNode);
+
+            //create and reconnect the connecters
+            PortId oldInPort0 = new PortId(oldNodeId, 0, PortType.INPUT);
+            XmlElement connector0 = data.FindFirstConnector(oldInPort0);
+
+            PortId oldInPort1 = new PortId(oldNodeId, 1, PortType.INPUT);
+            XmlElement connector1 = data.FindFirstConnector(oldInPort1);
+
+            PortId newInPort0 = new PortId(vectorNodeId, 0, PortType.INPUT);
+            PortId newInPort1 = new PortId(vectorNodeId, 1, PortType.INPUT);
+            PortId newInPort2 = new PortId(newNodeId, 0, PortType.INPUT);
+
+            data.ReconnectToPort(connector0, newInPort0);
+            data.ReconnectToPort(connector1, newInPort1);
+            data.CreateConnector(vectorNode, 0, newNode,0);
+
+            return migratedData;
         }
     }
 
