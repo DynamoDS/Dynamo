@@ -12,6 +12,18 @@ def Combine(func, lists : var[]..[])
     };
 }
 
+def ForEach(func, lists : var[]..[])
+{
+    argList = Transpose(lists);
+    [Imperative]
+    {
+        for(args in argList)
+        {
+            Evaluate(func, args);
+        }
+    };
+}
+
 def Reduce(func, acc, lists : var[]..[])
 {
     argList = Transpose(lists);
@@ -35,7 +47,7 @@ def Filter(predicate, list : var[]..[])
 
 		for(item in list)
 		{
-			if (Evaluate(pred, item))
+			if (Evaluate(predicate, item))
 			{
 				resultIn[Count(resultIn)] = item;
 			}
@@ -47,3 +59,171 @@ def Filter(predicate, list : var[]..[])
 		return = { resultIn, resultOut };
 	};
 }
+
+def LaceShortest(func, lists : var[]..[])
+{
+    return = [Imperative]
+    {
+        shortestLen = -1;
+        for(item in lists)
+        {
+            count = Count(item);
+            if (shortestLen < 0 || count < shortestLen)
+            {
+                shortestLen = count;
+            }
+        }
+        Print(shortestLen);
+        shortenedLists = { };
+        for(item in lists)
+        {
+            if (shortestLen == 1)
+            {
+                shortenedLists[Count(shortenedLists)] = { item[0] };
+            }
+            else
+            {
+                shortenedLists[Count(shortenedLists)] = item[0..shortestLen - 1];
+            }
+        }
+        return = Combine(func, shortenedLists);
+    };
+}
+
+def LaceLongest(func, lists : var[]..[])
+{
+    return = [Imperative]
+    {
+        longestLen = 0;
+        for(item in lists)
+        {
+            count = Count(item);
+            if (count > longestLen)
+            {
+                longestLen = count;
+            }
+        }
+        stretchedLists = { };
+        for(item in lists)
+        {
+            count = Count(item);
+            last = item[count-1];
+            amtToAdd = longestLen - count;
+            if (amtToAdd == 0)
+            {
+                stretchedLists[Count(stretchedLists)] = item[0..count - 1];
+            }
+            else
+            {
+                repeated = { };
+                repeated[0..amtToAdd-1] = last;
+                stretchedLists[Count(stretchedLists)] = Concat(item, repeated);
+            }
+        }
+        return = Combine(func, stretchedLists);
+    };
+}
+
+def CartesianProduct(func, lists : var[]..[])
+{
+    return = [Imperative]
+    {
+        count = Count(lists);
+        if (count == 0)
+        {
+            return = lists;
+        }
+        
+        argLists = { };
+        for(item in lists[0])
+        {
+            argLists[Count(argLists)] = { item };
+        }
+
+        if (count > 1)
+        {
+            nextLists = { };
+            
+            if (count == 2)
+            {
+                nextLists = { lists[1] };
+            }
+            else
+            {
+                nextLists = lists[1..count - 1];
+            }
+            
+            for(list in nextLists)
+            {
+                newArgs = { };
+                for(item in list)
+                {
+                    for(argList in argLists)
+                    {
+                        newArgs[Count(newArgs)] = Concat(argList, { item });
+                    }
+                }
+                Print(newArgs);
+                argLists = newArgs;
+            }
+        }
+        
+        results = { };
+        for(args in argLists)
+        {
+            results[Count(results)] = Evaluate(func, args);
+        }
+        return = results;
+    };
+}
+
+def TrueForAny(predicate, list : var[]..[])
+{
+    return = [Imperative]
+    {
+        for(item in list)
+        {
+            if (Evaluate(predicate, { item }))
+            {
+                return = true;
+            }
+        }
+        return = false;
+    };
+}
+
+def TrueForAll(predicate, list : var[]..[])
+{
+    return = [Imperative]
+    {
+        for(item in list)
+        {
+            if (!Evaluate(predicate, { item }))
+            {
+                return = false;
+            }
+        }
+        return = true;
+    };
+}
+
+def MinByKey(func, list : var[]..[])
+{
+    return = [Imperative]
+    {
+        
+    };
+}
+
+def MaxByKey(func, list : var[]..[])
+{
+}
+
+def SortByKey(func, list : var[]..[])
+{
+}
+
+def SortByComparator(func, list : var[]..[])
+{
+}
+
