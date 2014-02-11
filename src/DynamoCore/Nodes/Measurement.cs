@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Xml;
 using Dynamo.Units;
 using Dynamo.Models;
+using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 
 namespace Dynamo.Nodes
@@ -136,6 +137,13 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
 
             ArgumentLacing = LacingStrategy.Longest;
+
+            dynSettings.Controller.PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
+        }
+
+        public virtual void PreferenceSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
@@ -156,8 +164,15 @@ namespace Dynamo.Nodes
     {
         protected override SIUnit ConvertToMeasurement(double value)
         {
-            //convert the number to a value by converting from UI settings.
             return new Units.Length(value / UnitsManager.Instance.UiLengthConversion);
+        }
+
+        public override void PreferenceSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "LengthUnit")
+            {
+                RequiresRecalc = true;
+            }
         }
     }
 
@@ -169,7 +184,15 @@ namespace Dynamo.Nodes
     {
         protected override SIUnit ConvertToMeasurement(double value)
         {
-            return new Area(value);
+            return new Area(value / UnitsManager.Instance.UiAreaConversion);
+        }
+
+        public override void PreferenceSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "AreaUnit")
+            {
+                RequiresRecalc = true;
+            }
         }
     }
 
@@ -181,7 +204,15 @@ namespace Dynamo.Nodes
     {
         protected override SIUnit ConvertToMeasurement(double value)
         {
-            return new Volume(value);
+            return new Volume(value / UnitsManager.Instance.UiVolumeConversion);
+        }
+
+        public override void PreferenceSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "VolumeUnit")
+            {
+                RequiresRecalc = true;
+            }
         }
     }
 }
