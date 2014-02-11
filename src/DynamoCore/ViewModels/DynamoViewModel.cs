@@ -489,14 +489,14 @@ namespace Dynamo.ViewModels
 
         public string Version
         {
-            get { return UpdateManager.UpdateManager.Instance.ProductVersion.ToString(); }
+            get { return dynSettings.Controller.UpdateManager.ProductVersion.ToString(); }
         }
 
         public bool UpToDate
         {
             get
             {
-                return UpdateManager.UpdateManager.Instance.ProductVersion >= UpdateManager.UpdateManager.Instance.AvailableVersion; ;
+                return dynSettings.Controller.UpdateManager.ProductVersion >= dynSettings.Controller.UpdateManager.AvailableVersion; ;
             }
         }
 
@@ -530,7 +530,7 @@ namespace Dynamo.ViewModels
             Controller = controller;
 
             //Register for a notification when the update manager downloads an update
-            UpdateManager.UpdateManager.Instance.UpdateDownloaded += Instance_UpdateDownloaded;
+            dynSettings.Controller.UpdateManager.UpdateDownloaded += Instance_UpdateDownloaded;
 
             // Instantiate an AutomationSettings to handle record/playback.
             automationSettings = new AutomationSettings(this, commandFilePath);
@@ -1600,7 +1600,7 @@ namespace Dynamo.ViewModels
 
         private void CheckForUpdate(object obj)
         {
-            UpdateManager.UpdateManager.Instance.CheckForProductUpdate();
+            dynSettings.Controller.UpdateManager.CheckForProductUpdate();
         }
 
 
