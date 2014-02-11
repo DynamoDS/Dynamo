@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Threading;
-using Dynamo.Core;
 using Dynamo.Models;
+using Dynamo.Properties;
 using Dynamo.Utilities;
 
 namespace Dynamo.Services
@@ -25,7 +26,7 @@ namespace Dynamo.Services
         private Heartbeat()
         {
             startTime = DateTime.Now;
-            heartbeatThread = new Thread(ExecThread);
+            heartbeatThread = new Thread(this.ExecThread);
             heartbeatThread.IsBackground = true;
             heartbeatThread.Start();
         }
@@ -101,11 +102,11 @@ namespace Dynamo.Services
 
             Dictionary<String, int> ret = new Dictionary<string, int>();
 
-            if (DynamoSettings.Controller == null || DynamoSettings.Controller.DynamoModel == null ||
-                DynamoSettings.Controller.DynamoModel.AllNodes == null)
+            if (dynSettings.Controller == null || dynSettings.Controller.DynamoModel == null ||
+                dynSettings.Controller.DynamoModel.AllNodes == null)
                 return ret;
 
-            foreach (var node in DynamoSettings.Controller.DynamoModel.AllNodes)
+            foreach (var node in dynSettings.Controller.DynamoModel.AllNodes)
             {
                 string fullName = node.GetType().FullName;
                 if (!ret.ContainsKey(fullName))
@@ -122,11 +123,11 @@ namespace Dynamo.Services
         {
             Dictionary<String, int> ret = new Dictionary<string, int>();
 
-            if (DynamoSettings.Controller == null || DynamoSettings.Controller.DynamoModel == null ||
-                DynamoSettings.Controller.DynamoModel.AllNodes == null)
+            if (dynSettings.Controller == null || dynSettings.Controller.DynamoModel == null ||
+                dynSettings.Controller.DynamoModel.AllNodes == null)
                 return ret;
 
-            foreach (var node in DynamoSettings.Controller.DynamoModel.AllNodes)
+            foreach (var node in dynSettings.Controller.DynamoModel.AllNodes)
             {
                 if (node.State != ElementState.Error)
                     continue;

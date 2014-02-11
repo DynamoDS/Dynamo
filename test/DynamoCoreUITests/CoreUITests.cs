@@ -143,11 +143,11 @@ namespace Dynamo.Tests.UI
         //        {
         //            try
         //            {
-        //                DynamoSettings.Bench.Dispatcher.Invoke(new Action(delegate
+        //                dynSettings.Bench.Dispatcher.Invoke(new Action(delegate
         //                {
-        //                    DynamoSettings.Controller.CommandQueue.Enqueue(
+        //                    dynSettings.Controller.CommandQueue.Enqueue(
         //                        Tuple.Create<object, object>(_vm.OpenCommand, fi.FullName));
-        //                    DynamoSettings.Controller.ProcessCommandQueue();
+        //                    dynSettings.Controller.ProcessCommandQueue();
         //                }));
         //            }
         //            catch(Exception e)

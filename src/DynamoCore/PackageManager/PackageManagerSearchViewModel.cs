@@ -5,7 +5,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Dynamo.Core;
+using Dynamo.Nodes.Search;
 using Dynamo.Search;
 using Dynamo.Utilities;
 using Microsoft.Practices.Prism.Commands;
@@ -133,12 +133,12 @@ namespace Dynamo.PackageManager
 
         public bool HasDownloads
         {
-            get { return DynamoSettings.PackageManagerClient.Downloads.Count > 0; }
+            get { return dynSettings.PackageManagerClient.Downloads.Count > 0; }
         }
 
         public bool HasNoResults
         {
-            get { return SearchResults.Count == 0; }
+            get { return this.SearchResults.Count == 0; }
         }
 
         /// <summary>
@@ -221,9 +221,9 @@ namespace Dynamo.PackageManager
         /// </summary>
         public void Sort()
         {
-            var list = SearchResults.AsEnumerable().ToList();
-            Sort(list, SortingKey);
-            SearchResults.Clear();
+            var list = this.SearchResults.AsEnumerable().ToList();
+            Sort(list, this.SortingKey);
+            this.SearchResults.Clear();
 
             if (SortingDirection == PackageSortingDirection.DESCENDING)
             {
@@ -232,7 +232,7 @@ namespace Dynamo.PackageManager
 
             foreach (var ele in list)
             {
-                SearchResults.Add(ele);
+                this.SearchResults.Add(ele);
             }
         }
 
@@ -257,20 +257,20 @@ namespace Dynamo.PackageManager
 
                 if (key == "ASCENDING")
                 {
-                    SortingDirection = PackageSortingDirection.ASCENDING;
+                    this.SortingDirection = PackageSortingDirection.ASCENDING;
                 }
                 else if (key == "DESCENDING")
                 {
-                    SortingDirection = PackageSortingDirection.DESCENDING;
+                    this.SortingDirection = PackageSortingDirection.DESCENDING;
                 }
 
             }
             else if (sortingDir is PackageSortingDirection)
             {
-                SortingDirection = (PackageSortingDirection)sortingDir;
+                this.SortingDirection = (PackageSortingDirection)sortingDir;
             }
 
-            Sort();
+            this.Sort();
         }
 
         /// <summary>
@@ -295,32 +295,32 @@ namespace Dynamo.PackageManager
 
                 if (key == "NAME")
                 {
-                    SortingKey = PackageSortingKey.NAME;
+                    this.SortingKey = PackageSortingKey.NAME;
                 } 
                 else if (key == "DOWNLOADS")
                 {
-                    SortingKey = PackageSortingKey.DOWNLOADS;
+                    this.SortingKey = PackageSortingKey.DOWNLOADS;
                 } 
                 else if (key == "MAINTAINERS")
                 {
-                    SortingKey = PackageSortingKey.MAINTAINERS;
+                    this.SortingKey = PackageSortingKey.MAINTAINERS;
                 }
                 else if (key == "LAST_UPDATE")
                 {
-                    SortingKey = PackageSortingKey.LAST_UPDATE;
+                    this.SortingKey = PackageSortingKey.LAST_UPDATE;
                 } 
                 else if (key == "VOTES")
                 {
-                    SortingKey = PackageSortingKey.VOTES;
+                    this.SortingKey = PackageSortingKey.VOTES;
                 }
 
             } 
             else if (sortingKey is PackageSortingKey)
             {
-                SortingKey = (PackageSortingKey) sortingKey;
+                this.SortingKey = (PackageSortingKey) sortingKey;
             }
 
-            Sort();
+            this.Sort();
         }
 
         /// <summary>
@@ -368,7 +368,7 @@ namespace Dynamo.PackageManager
         public void RefreshAndSearchAsync()
         {
             SearchResults.Clear();
-            SearchState = PackageSearchState.SYNCING;
+            this.SearchState = PackageSearchState.SYNCING;
 
             Task<List<PackageManagerSearchElement>>.Factory.StartNew(RefreshAndSearch).ContinueWith((t) =>
             {
@@ -379,7 +379,7 @@ namespace Dynamo.PackageManager
                     {
                         SearchResults.Add(result);
                     }
-                    SearchState = HasNoResults ? PackageSearchState.NORESULTS : PackageSearchState.RESULTS;
+                    this.SearchState = HasNoResults ? PackageSearchState.NORESULTS : PackageSearchState.RESULTS;
                 }
             }
             , TaskScheduler.FromCurrentSynchronizationContext()); // run continuation in ui thread
@@ -393,22 +393,22 @@ namespace Dynamo.PackageManager
                 foreach (var item in args.NewItems)
                 {
                     var handle = (PackageDownloadHandle) item;
-                    handle.PropertyChanged += (o, eventArgs) => ClearCompletedCommand.RaiseCanExecuteChanged();
+                    handle.PropertyChanged += (o, eventArgs) => this.ClearCompletedCommand.RaiseCanExecuteChanged();
                 }
             }
 
             if (PackageManagerClient.Downloads.Count == 0)
             {
-                ClearCompletedCommand.RaiseCanExecuteChanged();
+                this.ClearCompletedCommand.RaiseCanExecuteChanged();
             }
 
-            RaisePropertyChanged("HasDownloads");
+            this.RaisePropertyChanged("HasDownloads");
 
         }
 
         private void SearchResultsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
         {
-            RaisePropertyChanged("HasNoResults");
+            this.RaisePropertyChanged("HasNoResults");
         } 
 
         public void ClearCompleted()
@@ -429,7 +429,7 @@ namespace Dynamo.PackageManager
         /// <param name="query"> The search query </param>
         internal void SearchAndUpdateResults(string query)
         {
-            SearchText = query;
+            this.SearchText = query;
 
             Task<List<PackageManagerSearchElement>>.Factory.StartNew(() => Search(query)
 
@@ -443,7 +443,7 @@ namespace Dynamo.PackageManager
                     {
                         SearchResults.Add(result);
                     }
-                    SearchState = HasNoResults ? PackageSearchState.NORESULTS : PackageSearchState.RESULTS;
+                    this.SearchState = HasNoResults ? PackageSearchState.NORESULTS : PackageSearchState.RESULTS;
                 }
             }
             , TaskScheduler.FromCurrentSynchronizationContext()); // run continuation in ui thread
@@ -497,7 +497,7 @@ namespace Dynamo.PackageManager
             {
                 // with null query, don't show deprecated packages
                 List<PackageManagerSearchElement> list = LastSync.Where(x => !x.IsDeprecated).ToList();
-                Sort(list, SortingKey);
+                Sort(list, this.SortingKey);
                 return list;
             }
         }
@@ -525,7 +525,7 @@ namespace Dynamo.PackageManager
 
             if (emptySearch)
             {
-                Sort(results, SortingKey);
+                Sort(results, this.SortingKey);
             }
 
             return results;

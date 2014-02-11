@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Linq;
-using Dynamo.Core;
 using Dynamo.Utilities;
 
 namespace Dynamo
@@ -9,7 +8,7 @@ namespace Dynamo
     {
         public static void ExportToSTL(string path, string modelName)
         {
-            var vis = DynamoSettings.Controller.VisualizationManager;
+            var vis = dynSettings.Controller.VisualizationManager;
 
             //get all the meshes
             var meshes =

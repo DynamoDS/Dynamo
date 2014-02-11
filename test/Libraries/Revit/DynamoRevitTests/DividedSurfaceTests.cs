@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
 using Autodesk.Revit.DB;
-using Dynamo.Core;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using NUnit.Framework;
@@ -16,7 +15,7 @@ namespace Dynamo.Tests
         [Test]
         public void DividedSurface()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\DividedSurface\DividedSurface.dyn");
             string testPath = Path.GetFullPath(samplePath);
@@ -25,7 +24,7 @@ namespace Dynamo.Tests
             //SwapCurrentModel(shellPath);
 
             model.Open(testPath);
-            DynamoSettings.Controller.RunExpression(true);
+            dynSettings.Controller.RunExpression(true);
 
             FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
             fec.OfClass(typeof(DividedSurface));
@@ -38,9 +37,9 @@ namespace Dynamo.Tests
             Assert.AreEqual(5, ds.VSpacingRule.Number);
 
             //can we change the number of divisions
-            var numNode = DynamoSettings.Controller.DynamoModel.Nodes.OfType<DoubleInput>().First();
+            var numNode = dynSettings.Controller.DynamoModel.Nodes.OfType<DoubleInput>().First();
             numNode.Value = "10";
-            DynamoSettings.Controller.RunExpression(true);
+            dynSettings.Controller.RunExpression(true);
 
             //did it create a divided surface?
             Assert.AreEqual(10, ds.USpacingRule.Number);
@@ -49,7 +48,7 @@ namespace Dynamo.Tests
             //does it throw an error when we try to set a negative number of divisions
             numNode.Value = "-5";
             Assert.Throws(typeof(AssertionException),
-                          () => DynamoSettings.Controller.RunExpression(true));
+                          () => dynSettings.Controller.RunExpression(true));
         }
     }
 }

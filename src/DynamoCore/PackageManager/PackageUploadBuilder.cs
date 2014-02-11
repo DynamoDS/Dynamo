@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Dynamo.Core;
+using System.Text;
 using Dynamo.Utilities;
 using Greg.Requests;
-using Greg.Utility;
 using RestSharp.Serializers;
 
 namespace Dynamo.PackageManager
@@ -42,7 +42,7 @@ namespace Dynamo.PackageManager
             uploadHandle.UploadState = PackageUploadHandle.State.Copying;
 
             DirectoryInfo rootDir, dyfDir, binDir, extraDir;
-            FormPackageDirectory(DynamoSettings.PackageLoader.RootPackagesDirectory, pkg.Name, out rootDir, out  dyfDir, out binDir, out extraDir); // shouldn't do anything for pkg versions
+            FormPackageDirectory(dynSettings.PackageLoader.RootPackagesDirectory, pkg.Name, out rootDir, out  dyfDir, out binDir, out extraDir); // shouldn't do anything for pkg versions
             pkg.RootDirectory = rootDir.FullName;
             WritePackageHeader(pkg.Header, rootDir);
             CopyFilesIntoPackageDirectory(files, dyfDir, binDir, extraDir);
@@ -51,7 +51,7 @@ namespace Dynamo.PackageManager
 
             uploadHandle.UploadState = PackageUploadHandle.State.Compressing;
 
-            var zipPath = FileUtilities.Zip(rootDir.FullName);
+            var zipPath = Greg.Utility.FileUtilities.Zip(rootDir.FullName);
 
             return zipPath;
         }
@@ -93,15 +93,15 @@ namespace Dynamo.PackageManager
 
             var defList= filePaths
                 .Where(x => x.EndsWith(".dyf"))
-                .Select( path => DynamoSettings.CustomNodeManager.GuidFromPath(path))
-                .Select( guid => DynamoSettings.CustomNodeManager.GetFunctionDefinition(guid) )
+                .Select( path => dynSettings.CustomNodeManager.GuidFromPath(path))
+                .Select( guid => dynSettings.CustomNodeManager.GetFunctionDefinition(guid) )
                 .ToList();
                 
             defList.ForEach( func =>
                     {
                         var newPath = Path.Combine(dyfRoot, Path.GetFileName(func.WorkspaceModel.FileName));
                         func.WorkspaceModel.FileName = newPath;
-                        DynamoSettings.CustomNodeManager.SetNodePath(func.FunctionId, newPath);
+                        dynSettings.CustomNodeManager.SetNodePath(func.FunctionId, newPath);
                     });
         }
 

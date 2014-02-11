@@ -1,8 +1,10 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Diagnostics;
 using System.Windows;
-using Dynamo.Core;
+using System.Linq;
 using Dynamo.Models;
 using Dynamo.Utilities;
+using System.Collections.Generic;
 
 namespace Dynamo.ViewModels
 {
@@ -89,7 +91,7 @@ namespace Dynamo.ViewModels
             _node.PropertyChanged += _node_PropertyChanged;
         }
 
-        void _node_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        void _node_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -105,7 +107,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        void _port_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        void _port_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -139,7 +141,7 @@ namespace Dynamo.ViewModels
 
         private void Connect(object parameter)
         {
-            DynamoViewModel dynamoViewModel = DynamoSettings.Controller.DynamoViewModel;
+            DynamoViewModel dynamoViewModel = dynSettings.Controller.DynamoViewModel;
             WorkspaceViewModel workspaceViewModel = dynamoViewModel.CurrentSpaceViewModel;
             workspaceViewModel.HandlePortClicked(this);
         }

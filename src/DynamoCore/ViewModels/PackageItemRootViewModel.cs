@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reflection;
-using Dynamo.Core;
+using System.Text;
+using Dynamo.Nodes;
 
 namespace Dynamo.PackageManager.UI
 {
@@ -21,18 +24,18 @@ namespace Dynamo.PackageManager.UI
 
         public PackageItemRootViewModel(CustomNodeDefinition def)
         {
-            Height = 32;
-            DependencyType = DependencyType.CustomNode;
-            Definition = def;
-            BuildDependencies(new HashSet<object>());
+            this.Height = 32;
+            this.DependencyType = DependencyType.CustomNode;
+            this.Definition = def;
+            this.BuildDependencies(new HashSet<object>());
         }
 
         public PackageItemRootViewModel(Assembly assembly)
         {
-            Height = 32;
-            DependencyType = DependencyType.Assembly;
-            Assembly = assembly;
-            BuildDependencies(new HashSet<object>());
+            this.Height = 32;
+            this.DependencyType = DependencyType.Assembly;
+            this.Assembly = assembly;
+            this.BuildDependencies(new HashSet<object>());
         }
 
     }

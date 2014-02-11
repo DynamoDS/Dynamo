@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Dynamo.Core;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
@@ -71,7 +70,7 @@ namespace Dynamo.Tests
 
             foreach (var nodeInfo in pkg.LoadedCustomNodes)
             {
-                var funcDef = DynamoSettings.CustomNodeManager.GetFunctionDefinition(nodeInfo.Guid);
+                var funcDef = dynSettings.CustomNodeManager.GetFunctionDefinition(nodeInfo.Guid);
                 Assert.IsNotNull(funcDef);
 
                 var foundPkg = loader.GetOwnerPackage(funcDef);
@@ -87,9 +86,9 @@ namespace Dynamo.Tests
         public void GetOwnerPackageReturnsNullForInvalidFunction()
         {
             var loader = new PackageLoader(PackagesDirectory);
-            var info = DynamoSettings.CustomNodeManager.AddFileToPath(
+            var info = dynSettings.CustomNodeManager.AddFileToPath(
                 Path.Combine(new string[] {GetTestDirectory(), "core", "combine", "combine2.dyf"}));
-            var funcDef = DynamoSettings.CustomNodeManager.GetFunctionDefinition(info.Guid);
+            var funcDef = dynSettings.CustomNodeManager.GetFunctionDefinition(info.Guid);
             Assert.IsNotNull(funcDef);
             var foundPkg = loader.GetOwnerPackage(funcDef);
             Assert.IsNull(foundPkg);
@@ -159,7 +158,7 @@ namespace Dynamo.Tests
         [Test]
         public void ListAllReturnsAllPackages()
         {
-            var elements = DynamoSettings.PackageManagerClient.ListAll();
+            var elements = dynSettings.PackageManagerClient.ListAll();
             Assert.AreNotEqual(0, elements.Count);
             Console.WriteLine(elements.Count);
         }

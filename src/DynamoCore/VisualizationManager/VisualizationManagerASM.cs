@@ -1,4 +1,11 @@
-﻿namespace Dynamo
+﻿using System.Collections.Generic;
+using System.Windows.Media;
+using System.Windows.Media.Media3D;
+using Dynamo.Models;
+using Dynamo.Selection;
+using HelixToolkit.Wpf;
+
+namespace Dynamo
 {
     public class VisualizationManagerASM : VisualizationManager
     {

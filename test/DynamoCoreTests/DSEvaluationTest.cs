@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Dynamo.Core;
 using Dynamo.DSEngine;
 using Dynamo.Utilities;
 using NUnit.Framework;
@@ -500,7 +499,7 @@ namespace Dynamo.Tests
         public void Defect_MAGN_829_1()
         {
             // CBN ==> 1=a;
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             RunModel(@"core\dsevaluation\Defect_MAGN_829_1.dyn");
 
@@ -515,7 +514,7 @@ namespace Dynamo.Tests
         public void Defect_MAGN_829_2()
         {
             // CBN ==> 1=1=a;
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             RunModel(@"core\dsevaluation\Defect_MAGN_829_2.dyn");
 
@@ -529,7 +528,7 @@ namespace Dynamo.Tests
         public void Defect_MAGN_829_3()
         {
             // CBN ==> a=1=2=3;
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             RunModel(@"core\dsevaluation\Defect_MAGN_829_3.dyn");
 
@@ -543,7 +542,7 @@ namespace Dynamo.Tests
         public void Defect_MAGN_829_4()
         {
             // CBN ==> a*a=1;;
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             RunModel(@"core\dsevaluation\Defect_MAGN_829_4.dyn");
 
@@ -558,7 +557,7 @@ namespace Dynamo.Tests
         {
             // Multiline CBN ==> a=1;
             //               ==> 1 = a;
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             RunModel(@"core\dsevaluation\Defect_MAGN_829_5.dyn");
 

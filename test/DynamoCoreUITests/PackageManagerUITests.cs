@@ -6,7 +6,6 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 using Dynamo.Controls;
-using Dynamo.Core;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
 using Dynamo.Utilities;
@@ -103,7 +102,7 @@ namespace Dynamo.Tests.UI
         [Test]
         public void CanOpenPackagePublishDialogAndWindowIsOwned()
         {
-            var l = new PublishPackageViewModel(DynamoSettings.PackageManagerClient);
+            var l = new PublishPackageViewModel(dynSettings.PackageManagerClient);
             Vm.OnRequestPackagePublishDialog(l);
 
             AssertWindowOwnedByDynamoView<PackageManagerPublishView>();
@@ -112,7 +111,7 @@ namespace Dynamo.Tests.UI
         [Test,Ignore]
         public void CannotCreateDuplicatePackagePublishDialogs()
         {
-            var l = new PublishPackageViewModel(DynamoSettings.PackageManagerClient);
+            var l = new PublishPackageViewModel(dynSettings.PackageManagerClient);
             for (var i = 0; i < 10; i++)
             {
                 Vm.OnRequestPackagePublishDialog(l);
@@ -124,7 +123,7 @@ namespace Dynamo.Tests.UI
         [Test]
         public void PackagePublishWindowClosesWithDynamo()
         {
-            var l = new PublishPackageViewModel(DynamoSettings.PackageManagerClient);
+            var l = new PublishPackageViewModel(dynSettings.PackageManagerClient);
             Vm.OnRequestPackagePublishDialog(l);
 
             AssertWindowOwnedByDynamoView<PackageManagerPublishView>();

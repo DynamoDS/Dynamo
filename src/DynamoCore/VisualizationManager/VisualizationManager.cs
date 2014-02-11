@@ -6,8 +6,6 @@ using System.Diagnostics;
 using System.Text;
 using System.Windows.Media.Media3D;
 using System.Linq;
-using Autodesk.DesignScript.Interfaces;
-using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Services;
@@ -175,18 +173,18 @@ namespace Dynamo
 
         protected VisualizationManager()
         {
-            DynamoSettings.Controller.DynamoModel.ConnectorDeleted += DynamoModel_ConnectorDeleted;
-            DynamoSettings.Controller.EvaluationCompleted += Controller_EvaluationCompleted;
-            DynamoSettings.Controller.RequestsRedraw += Controller_RequestsRedraw;
+            dynSettings.Controller.DynamoModel.ConnectorDeleted += DynamoModel_ConnectorDeleted;
+            dynSettings.Controller.EvaluationCompleted += Controller_EvaluationCompleted;
+            dynSettings.Controller.RequestsRedraw += Controller_RequestsRedraw;
             DynamoSelection.Instance.Selection.CollectionChanged += Selection_CollectionChanged;
-            DynamoSettings.Controller.DynamoModel.ModelCleared += DynamoModel_ModelCleared;
-            DynamoSettings.Controller.DynamoModel.CleaningUp += DynamoModel_CleaningUp;
+            dynSettings.Controller.DynamoModel.ModelCleared += DynamoModel_ModelCleared;
+            dynSettings.Controller.DynamoModel.CleaningUp += DynamoModel_CleaningUp;
             
-            DynamoSettings.Controller.DynamoModel.NodeDeleted += DynamoModel_NodeDeleted;
+            dynSettings.Controller.DynamoModel.NodeDeleted += DynamoModel_NodeDeleted;
 
             //Visualizers.Add(typeof(GraphicItem), VisualizationManagerASM.DrawLibGGraphicItem);
 #if USE_DSENGINE
-            Visualizers.Add(typeof(IGraphicItem), VisualizationManagerDSGeometry.DrawDesignScriptGraphicItem);
+            Visualizers.Add(typeof(Autodesk.DesignScript.Interfaces.IGraphicItem), VisualizationManagerDSGeometry.DrawDesignScriptGraphicItem);
 #endif
             octree = new Octree.OctreeSearch.Octree(10000,-10000,10000,-10000,10000,-10000,10000000);
         }
@@ -366,7 +364,7 @@ namespace Dynamo
         /// </summary>
         public virtual void UpdateVisualizations()
         {
-            if (DynamoSettings.Controller == null)
+            if (dynSettings.Controller == null)
                 return;
 
             if (isUpdating)
@@ -376,7 +374,7 @@ namespace Dynamo
             var worker = new BackgroundWorker();
             worker.DoWork += VisualizationUpdateThread;
 
-            if(DynamoSettings.Controller.Testing)
+            if(dynSettings.Controller.Testing)
                 VisualizationUpdateThread(null,null);
             else
                 worker.RunWorkerAsync();
@@ -410,7 +408,7 @@ namespace Dynamo
                 //send back renderables for the branch
                 var drawables = GetUpstreamDrawableIds(node.Inputs);
 
-                var ids = from viz in DynamoSettings.Controller.VisualizationManager.Visualizations
+                var ids = from viz in dynSettings.Controller.VisualizationManager.Visualizations
                           where drawables.Contains(viz.Key)
                           select viz;
 
@@ -633,7 +631,7 @@ namespace Dynamo
                                             ? rd.Meshes.Select(x => x.TriangleIndices.Count / 3).Aggregate((a, b) => a + b)
                                             : 0;
             renderDict["time"] = ellapsedTime;
-            renderDict["manager_type"] = GetType().ToString();
+            renderDict["manager_type"] = this.GetType().ToString();
 
             var renderData = JsonConvert.SerializeObject(renderDict);
 
@@ -730,7 +728,7 @@ namespace Dynamo
             if (id == null)
                 return;
 
-            var node = DynamoSettings.Controller.DynamoModel.Nodes.FirstOrDefault(n => n.GUID.ToString() == id.ToString());
+            var node = dynSettings.Controller.DynamoModel.Nodes.FirstOrDefault(n => n.GUID.ToString() == id.ToString());
             if (node != null && !DynamoSelection.Instance.Selection.Contains(node))
             {
                 DynamoSelection.Instance.ClearSelection();
@@ -755,7 +753,7 @@ namespace Dynamo
         {
 #if USE_DSENGINE
             var drawables = new Dictionary<NodeModel, Dictionary<string, object>>();
-            foreach (var node in DynamoSettings.Controller.DynamoModel.Nodes)
+            foreach (var node in dynSettings.Controller.DynamoModel.Nodes)
             {
                 var drawableItems = GetDrawablesFromNode(node);
                 drawables.Add(node, drawableItems);
@@ -763,7 +761,7 @@ namespace Dynamo
             return drawables;
 #else
             //get a list of tuples node,drawables
-            var nodeTuples = DynamoSettings.Controller.DynamoModel.Nodes
+            var nodeTuples = dynSettings.Controller.DynamoModel.Nodes
                                         .Where(x => x.OldValue != null)
                                         .Where(
                                             x =>
@@ -792,7 +790,7 @@ namespace Dynamo
             List<string> drawableIds = GetDrawableIds(node);
             foreach (var varName in drawableIds)
             {
-                var graphItems = DynamoSettings.Controller.EngineController.GetGraphicItems(varName);
+                var graphItems = dynSettings.Controller.EngineController.GetGraphicItems(varName);
                 if (graphItems != null)
                 {
                     for (int i = 0; i < graphItems.Count(); ++i)
@@ -813,7 +811,7 @@ namespace Dynamo
         /// <returns></returns>
         public static List<NodeModel> GetDrawableNodesInModel()
         {
-            var nodes = DynamoSettings.Controller.DynamoModel.Nodes
+            var nodes = dynSettings.Controller.DynamoModel.Nodes
                                    .Where(x => x.OldValue != null);
 
             return nodes.Where(x => GetDrawablesFromNode(x).Count > 0).ToList();
@@ -829,7 +827,6 @@ namespace Dynamo
             return GetDrawablesFromNode(node).Count > 0;
         }
 
-#if !USE_DSENGINE
         /// <summary>
         /// Returns the objects from a Value type which have associated visualizers 
         /// along with a string tag representing the array index of the value, i.e. [0][5][3]
@@ -846,7 +843,7 @@ namespace Dynamo
                 return drawables;
             }
 
-            var viz = DynamoSettings.Controller.VisualizationManager;
+            var viz = dynSettings.Controller.VisualizationManager;
 
             if (value.IsList)
             {
@@ -882,7 +879,6 @@ namespace Dynamo
 
             return drawables;
         }
-#endif
 
         /// <summary>
         /// Build a string tag from a list of ints. i.e "1,2,3,4"
@@ -897,12 +893,12 @@ namespace Dynamo
                 sb.Remove(sb.Length - 1, 1);    //remove the last ,
             return sb.ToString();
         }
-#if !USE_DSENGINE
+        
         public static NodeModel FindNodeWithDrawable(object drawable)
         {
             return GetDrawableNodesInModel().FirstOrDefault(x => GetDrawableFromValue(new List<int>(), x.OldValue).ContainsValue(drawable));
         }
-#endif
+
         #endregion
     }
 

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Threading;
 using System.Xml;
@@ -42,11 +42,11 @@ namespace Dynamo.ViewModels
         /// </summary>
         private const string IntervalAttribName = "CommandIntervalInMs";
 
-        private Window mainWindow = null;
+        private System.Windows.Window mainWindow = null;
         private DynamoViewModel owningViewModel = null;
         private DispatcherTimer playbackTimer = null;
-        private List<DynamoViewModel.RecordableCommand> loadedCommands = null;
-        private List<DynamoViewModel.RecordableCommand> recordedCommands = null;
+        private List<DynCmd.RecordableCommand> loadedCommands = null;
+        private List<DynCmd.RecordableCommand> recordedCommands = null;
 
         #endregion
 
@@ -74,30 +74,30 @@ namespace Dynamo.ViewModels
 
         internal AutomationSettings(DynamoViewModel vm, string commandFilePath)
         {
-            CommandInterval = 20; // 20ms between two consecutive commands.
-            PauseAfterPlayback = 10; // 10ms after playback is done.
-            ExitAfterPlayback = true; // Exit Dynamo after playback.
+            this.CommandInterval = 20; // 20ms between two consecutive commands.
+            this.PauseAfterPlayback = 10; // 10ms after playback is done.
+            this.ExitAfterPlayback = true; // Exit Dynamo after playback.
 
-            CurrentMode = Mode.None;
+            this.CurrentMode = Mode.None;
             if (LoadCommandFromFile(commandFilePath))
-                CurrentMode = Mode.Playback;
+                this.CurrentMode = Mode.Playback;
             else
             {
-                CurrentMode = Mode.Recording;
-                recordedCommands = new List<DynamoViewModel.RecordableCommand>();
+                this.CurrentMode = Mode.Recording;
+                recordedCommands = new List<DynCmd.RecordableCommand>();
             }
 
-            owningViewModel = vm;
-            if (null == owningViewModel)
+            this.owningViewModel = vm;
+            if (null == this.owningViewModel)
                 throw new ArgumentNullException("vm");
         }
 
-        internal void BeginCommandPlayback(Window mainWindow)
+        internal void BeginCommandPlayback(System.Windows.Window mainWindow)
         {
-            if (CurrentMode != Mode.Playback)
+            if (this.CurrentMode != Mode.Playback)
                 return; // Not currently in playback mode.
 
-            if (null != playbackTimer)
+            if (null != this.playbackTimer)
             {
                 // Ensure that this method is not called more than once.
                 throw new InvalidOperationException(
@@ -105,7 +105,7 @@ namespace Dynamo.ViewModels
             }
 
             this.mainWindow = mainWindow;
-            Debug.Assert(null == playbackTimer);
+            System.Diagnostics.Debug.Assert(null == playbackTimer);
             playbackTimer = new DispatcherTimer();
 
             // Serialized commands for playback.
@@ -114,7 +114,7 @@ namespace Dynamo.ViewModels
             playbackTimer.Start();
         }
 
-        internal void RecordCommand(DynamoViewModel.RecordableCommand command)
+        internal void RecordCommand(DynCmd.RecordableCommand command)
         {
             // In the playback mode 'this.recordedCommands' will be 
             // 'null' so that the incoming command will not be recorded.
@@ -154,7 +154,7 @@ namespace Dynamo.ViewModels
             helper.SetAttribute(PauseAttribName, PauseAfterPlayback);
             helper.SetAttribute(IntervalAttribName, CommandInterval);
 
-            foreach (DynamoViewModel.RecordableCommand command in recordedCommands)
+            foreach (DynCmd.RecordableCommand command in recordedCommands)
                 commandRoot.AppendChild(command.Serialize(document));
 
             string format = "Commands-{0:yyyyMMdd-hhmmss}.xml";
@@ -196,15 +196,15 @@ namespace Dynamo.ViewModels
 
                 // Read in optional attributes from the command root element.
                 XmlElementHelper helper = new XmlElementHelper(commandRoot);
-                ExitAfterPlayback = helper.ReadBoolean(ExitAttribName, true);
-                PauseAfterPlayback = helper.ReadInteger(PauseAttribName, 10);
-                CommandInterval = helper.ReadInteger(IntervalAttribName, 20);
+                this.ExitAfterPlayback = helper.ReadBoolean(ExitAttribName, true);
+                this.PauseAfterPlayback = helper.ReadInteger(PauseAttribName, 10);
+                this.CommandInterval = helper.ReadInteger(IntervalAttribName, 20);
 
-                loadedCommands = new List<DynamoViewModel.RecordableCommand>();
+                loadedCommands = new List<DynCmd.RecordableCommand>();
                 foreach (XmlNode node in commandRoot.ChildNodes)
                 {
-                    DynamoViewModel.RecordableCommand command = null;
-                    command = DynamoViewModel.RecordableCommand.Deserialize(node as XmlElement);
+                    DynCmd.RecordableCommand command = null;
+                    command = DynCmd.RecordableCommand.Deserialize(node as XmlElement);
                     if (null != command)
                         loadedCommands.Add(command);
                 }
@@ -230,13 +230,13 @@ namespace Dynamo.ViewModels
 
             if (loadedCommands.Count <= 0) // There's nothing else for playback.
             {
-                if (ExitAfterPlayback == false)
+                if (this.ExitAfterPlayback == false)
                 {
                     // The playback is done, but the command file indicates that
                     // Dynamo should not be shutdown after the playback, so here
                     // we simply invalidate the timer.
                     // 
-                    playbackTimer = null;
+                    this.playbackTimer = null;
                 }
                 else
                 {
@@ -245,19 +245,19 @@ namespace Dynamo.ViewModels
                     // reconfigure the callback to a shutdown timer, and then 
                     // change its interval to the duration specified earlier.
                     // 
-                    playbackTimer.Tick -= OnPlaybackTimerTick;
-                    playbackTimer.Tick += OnShutdownTimerTick;
+                    this.playbackTimer.Tick -= OnPlaybackTimerTick;
+                    this.playbackTimer.Tick += OnShutdownTimerTick;
 
                     var interval = TimeSpan.FromMilliseconds(PauseAfterPlayback);
-                    playbackTimer.Interval = interval;
-                    playbackTimer.Start(); // Start shutdown timer.
+                    this.playbackTimer.Interval = interval;
+                    this.playbackTimer.Start(); // Start shutdown timer.
                 }
 
                 return;
             }
 
             // Remove the first command from the loaded commands.
-            DynamoViewModel.RecordableCommand nextCommand = loadedCommands[0];
+            DynCmd.RecordableCommand nextCommand = loadedCommands[0];
             loadedCommands.RemoveAt(0);
 
             // Execute the command, this may take a while longer than the timer
@@ -265,14 +265,14 @@ namespace Dynamo.ViewModels
             // before the command execution starts. After the command is done,
             // the timer is then resumed for the next command in queue.
             // 
-            nextCommand.Execute(owningViewModel);
+            nextCommand.Execute(this.owningViewModel);
             timer.Start();
         }
 
         private void OnShutdownTimerTick(object sender, EventArgs e)
         {
-            playbackTimer.Stop();
-            playbackTimer = null;
+            this.playbackTimer.Stop();
+            this.playbackTimer = null;
 
             // This causes the main window to close (and exit application).
             mainWindow.Close();

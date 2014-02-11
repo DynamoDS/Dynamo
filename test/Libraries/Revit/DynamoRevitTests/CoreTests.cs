@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
@@ -22,31 +21,31 @@ namespace Dynamo.Tests
         [Test]
         public void SanityCheck()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\Core\SanityCheck.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            Assert.Throws(typeof(AssertionException), () => DynamoSettings.Controller.RunExpression(true));
+            Assert.Throws(typeof(AssertionException), () => dynSettings.Controller.RunExpression(true));
         }
 
         [Test]
         public void CanChangeLacingAndHaveElementsUpdate()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\Core\LacingTest.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
 
-            var xyzNode = DynamoSettings.Controller.DynamoModel.Nodes.First(x => x is Xyz);
+            var xyzNode = dynSettings.Controller.DynamoModel.Nodes.First(x => x is Xyz);
             Assert.IsNotNull(xyzNode);
 
             //test the first lacing
             xyzNode.ArgumentLacing = LacingStrategy.First;
-            DynamoSettings.Controller.RunExpression(true);
+            dynSettings.Controller.RunExpression(true);
 
             FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
             fec.OfClass(typeof(ReferencePoint));
@@ -54,7 +53,7 @@ namespace Dynamo.Tests
 
             //test the shortest lacing
             xyzNode.ArgumentLacing = LacingStrategy.First;
-            DynamoSettings.Controller.RunExpression(true);
+            dynSettings.Controller.RunExpression(true);
             fec = null;
             fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
             fec.OfClass(typeof(ReferencePoint));
@@ -62,7 +61,7 @@ namespace Dynamo.Tests
 
             //test the longest lacing
             xyzNode.ArgumentLacing = LacingStrategy.Longest;
-            DynamoSettings.Controller.RunExpression(true);
+            dynSettings.Controller.RunExpression(true);
             fec = null;
             fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
             fec.OfClass(typeof(ReferencePoint));
@@ -70,7 +69,7 @@ namespace Dynamo.Tests
 
             //test the cross product lacing
             xyzNode.ArgumentLacing = LacingStrategy.CrossProduct;
-            DynamoSettings.Controller.RunExpression(true);
+            dynSettings.Controller.RunExpression(true);
             fec = null;
             fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
             fec.OfClass(typeof(ReferencePoint));
@@ -82,16 +81,16 @@ namespace Dynamo.Tests
         [Test]
         public void ElementNodeReassociation()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string testPath = Path.Combine(_testPath, @".\ReferencePoint\ReferencePoint.dyn");
             model.Open(testPath);
-            Assert.AreEqual(3, DynamoSettings.Controller.DynamoModel.Nodes.Count);
+            Assert.AreEqual(3, dynSettings.Controller.DynamoModel.Nodes.Count);
 
             var refPtNode = model.CurrentWorkspace.FirstNodeFromWorkspace<ReferencePointByXyz>();
             refPtNode.ArgumentLacing = LacingStrategy.Longest;
 
-            DynamoSettings.Controller.RunExpression();
+            dynSettings.Controller.RunExpression();
 
             var oldVal = (ReferencePoint)((FScheme.Value.Container)refPtNode.OldValue).Item;
             refPtNode.ResetOldValue();
@@ -101,7 +100,7 @@ namespace Dynamo.Tests
 
             model.CurrentWorkspace.FirstNodeFromWorkspace<DoubleInput>().Value = "1";
 
-            DynamoSettings.Controller.RunExpression();
+            dynSettings.Controller.RunExpression();
 
             var newVal = (ReferencePoint)((FScheme.Value.Container)refPtNode.OldValue).Item;
 
@@ -113,7 +112,7 @@ namespace Dynamo.Tests
             var numberNode = model.CurrentWorkspace.FirstNodeFromWorkspace<DoubleInput>();
             numberNode.Value = "0..10";
 
-            DynamoSettings.Controller.RunExpression();
+            dynSettings.Controller.RunExpression();
 
             var multipleValues = ((FScheme.Value.List)refPtNode.OldValue).Item;
             Assert.AreEqual(11, multipleValues.Length);
@@ -123,7 +122,7 @@ namespace Dynamo.Tests
 
             numberNode.Value = "0";
 
-            DynamoSettings.Controller.RunExpression();
+            dynSettings.Controller.RunExpression();
 
             var finalVal = (ReferencePoint)((FScheme.Value.Container)refPtNode.OldValue).Item;
             Assert.AreEqual(oldId, finalVal.Id);
@@ -132,13 +131,13 @@ namespace Dynamo.Tests
         [Test]
         public void SwitchDocuments()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             //open the workflow and run the expression
             string testPath = Path.Combine(_testPath, @".\ReferencePoint\ReferencePoint.dyn");
             model.Open(testPath);
-            Assert.AreEqual(3, DynamoSettings.Controller.DynamoModel.Nodes.Count());
-            Assert.DoesNotThrow(()=>DynamoSettings.Controller.RunExpression(true));
+            Assert.AreEqual(3, dynSettings.Controller.DynamoModel.Nodes.Count());
+            Assert.DoesNotThrow(()=>dynSettings.Controller.RunExpression(true));
 
             //verify we have a reference point
             FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
@@ -155,12 +154,12 @@ namespace Dynamo.Tests
             Assert.IsNotNull(DocumentManager.GetInstance().CurrentUIDocument.Document);
 
             ////update the double node so the graph reevaluates
-            var doubleNodes = DynamoSettings.Controller.DynamoModel.Nodes.Where(x => x is BasicInteractive<double>);
+            var doubleNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is BasicInteractive<double>);
             BasicInteractive<double> node = doubleNodes.First() as BasicInteractive<double>;
             node.Value = node.Value + .1;
 
             ////run the expression again
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
             //fec = new FilteredElementCollector(dynRevitSettings.Doc.Document);
             //fec.OfClass(typeof(ReferencePoint));
             //Assert.AreEqual(1, fec.ToElements().Count());
@@ -176,7 +175,7 @@ namespace Dynamo.Tests
         [Test, TestCaseSource("SetupCopyPastes")]
         public void CanCopyAndPasteAllNodesOnRevit(string typeName)
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             Assert.DoesNotThrow(() => model.CreateNode(0, 0, typeName), string.Format("Could not create node : {0}", typeName));
 
@@ -201,7 +200,7 @@ namespace Dynamo.Tests
             excludes.Add("Dynamo.Nodes.Function");
             excludes.Add("Dynamo.Nodes.LacerBase");
             excludes.Add("Dynamo.Nodes.FunctionWithRevit");
-            return DynamoSettings.Controller.BuiltInTypesByName.Where(x => !excludes.Contains(x.Key)).Select(kvp => kvp.Key).ToList();
+            return dynSettings.Controller.BuiltInTypesByName.Where(x => !excludes.Contains(x.Key)).Select(kvp => kvp.Key).ToList();
         }
     }
 }

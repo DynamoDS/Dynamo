@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -10,7 +9,6 @@ using System.Net;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
-using Dynamo.Core;
 using Dynamo.Units;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -18,7 +16,6 @@ using Dynamo.PackageManager;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.UI.Commands;
-using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.Services;
 
@@ -64,7 +61,7 @@ namespace Dynamo.ViewModels
         public void OnRequestAuthentication()
         {
             if (RequestAuthentication != null)
-                RequestAuthentication(DynamoSettings.PackageManagerClient);
+                RequestAuthentication(dynSettings.PackageManagerClient);
         }
 
         public event ImageSaveEventHandler RequestSaveImage;
@@ -340,7 +337,7 @@ namespace Dynamo.ViewModels
 
         public bool IsUILocked
         {
-            get { return DynamoSettings.Controller.IsUILocked; }
+            get { return dynSettings.Controller.IsUILocked; }
         }
 
         public bool WatchEscapeIsDown
@@ -362,7 +359,7 @@ namespace Dynamo.ViewModels
 
         public bool IsHomeSpace
         {
-            get { return DynamoSettings.Controller.DynamoModel.CurrentWorkspace == DynamoSettings.Controller.DynamoModel.HomeSpace; }
+            get { return dynSettings.Controller.DynamoModel.CurrentWorkspace == dynSettings.Controller.DynamoModel.HomeSpace; }
         }
 
         public bool ShouldBeHitTestVisible
@@ -375,17 +372,17 @@ namespace Dynamo.ViewModels
 
         public bool FullscreenWatchShowing
         {
-            get { return controller.PreferenceSettings.FullscreenWatchShowing; }
+            get { return this.controller.PreferenceSettings.FullscreenWatchShowing; }
             set
             {
-                controller.PreferenceSettings.FullscreenWatchShowing = value;
+                this.controller.PreferenceSettings.FullscreenWatchShowing = value;
                 RaisePropertyChanged("FullscreenWatchShowing");
 
                 if (!FullscreenWatchShowing && canNavigateBackground)
                     CanNavigateBackground = false;
 
                 if(value)
-                    DynamoSettings.Controller.OnRequestsRedraw(this, EventArgs.Empty);
+                    dynSettings.Controller.OnRequestsRedraw(this, EventArgs.Empty);
             }
         }
 
@@ -415,11 +412,11 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return controller.PreferenceSettings.ShowConsole;
+                return this.controller.PreferenceSettings.ShowConsole;
             }
             set
             {
-                controller.PreferenceSettings.ShowConsole = value;
+                this.controller.PreferenceSettings.ShowConsole = value;
 
                 RaisePropertyChanged("ConsoleShowing");
             }
@@ -429,11 +426,11 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return controller.PreferenceSettings.ShowConnector;
+                return this.controller.PreferenceSettings.ShowConnector;
             }
             set
             {
-                controller.PreferenceSettings.ShowConnector = value;
+                this.controller.PreferenceSettings.ShowConnector = value;
 
                 RaisePropertyChanged("IsShowingConnectors");
             }
@@ -450,11 +447,11 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return controller.ConnectorType;
+                return this.controller.ConnectorType;
             }
             set
             {
-                controller.ConnectorType = value;
+                this.controller.ConnectorType = value;
 
                 RaisePropertyChanged("ConnectorType");
             }
@@ -470,13 +467,13 @@ namespace Dynamo.ViewModels
 
         public bool AlternateDrawingContextAvailable
         {
-            get { return DynamoSettings.Controller.VisualizationManager.AlternateDrawingContextAvailable; }
+            get { return dynSettings.Controller.VisualizationManager.AlternateDrawingContextAvailable; }
         }
 
         public bool ShowGeometryInAlternateContext
         {
-            get { return DynamoSettings.Controller.VisualizationManager.DrawToAlternateContext; }
-            set { DynamoSettings.Controller.VisualizationManager.DrawToAlternateContext = value; }
+            get { return dynSettings.Controller.VisualizationManager.DrawToAlternateContext; }
+            set { dynSettings.Controller.VisualizationManager.DrawToAlternateContext = value; }
         }
 
         public string AlternateContextGeometryDisplayText
@@ -484,7 +481,7 @@ namespace Dynamo.ViewModels
             get
             {
                 return string.Format("Show Geometry in {0}",
-                                     DynamoSettings.Controller.VisualizationManager.AlternateContextName);
+                                     dynSettings.Controller.VisualizationManager.AlternateContextName);
             }
         }
 
@@ -492,14 +489,14 @@ namespace Dynamo.ViewModels
 
         public string Version
         {
-            get { return DynamoSettings.Controller.UpdateManager.ProductVersion.ToString(); }
+            get { return dynSettings.Controller.UpdateManager.ProductVersion.ToString(); }
         }
 
         public bool UpToDate
         {
             get
             {
-                return DynamoSettings.Controller.UpdateManager.ProductVersion >= DynamoSettings.Controller.UpdateManager.AvailableVersion; ;
+                return dynSettings.Controller.UpdateManager.ProductVersion >= dynSettings.Controller.UpdateManager.AvailableVersion; ;
             }
         }
 
@@ -507,9 +504,9 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                string executingAssemblyPathName = Assembly.GetExecutingAssembly().Location;
-                string rootModuleDirectory = Path.GetDirectoryName(executingAssemblyPathName);
-                var licensePath = Path.Combine(rootModuleDirectory, "License.rtf");
+                string executingAssemblyPathName = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                string rootModuleDirectory = System.IO.Path.GetDirectoryName(executingAssemblyPathName);
+                var licensePath = System.IO.Path.Combine(rootModuleDirectory, "License.rtf");
                 return licensePath;
             }
         }
@@ -519,12 +516,12 @@ namespace Dynamo.ViewModels
         {
             //create the model
             _model = new DynamoModel();
-            DynamoSettings.Controller.DynamoModel = _model;
+            dynSettings.Controller.DynamoModel = _model;
 
             //register for property change notifications 
             //on the model and the controller
             _model.PropertyChanged += _model_PropertyChanged;
-            DynamoSettings.Controller.PropertyChanged += Controller_PropertyChanged;
+            dynSettings.Controller.PropertyChanged += Controller_PropertyChanged;
             _model.Workspaces.CollectionChanged += Workspaces_CollectionChanged;
 
             _model.AddHomeWorkspace();
@@ -533,7 +530,7 @@ namespace Dynamo.ViewModels
             Controller = controller;
 
             //Register for a notification when the update manager downloads an update
-            DynamoSettings.Controller.UpdateManager.UpdateDownloaded += Instance_UpdateDownloaded;
+            dynSettings.Controller.UpdateManager.UpdateDownloaded += Instance_UpdateDownloaded;
 
             // Instantiate an AutomationSettings to handle record/playback.
             automationSettings = new AutomationSettings(this, commandFilePath);
@@ -581,7 +578,7 @@ namespace Dynamo.ViewModels
             PublishSelectedNodesCommand = new DelegateCommand(PublishSelectedNodes, CanPublishSelectedNodes);
             ShowHideConnectorsCommand = new DelegateCommand(ShowConnectors, CanShowConnectors);
             SelectNeighborsCommand = new DelegateCommand(SelectNeighbors, CanSelectNeighbors);
-            ClearLogCommand = new DelegateCommand(DynamoSettings.Controller.ClearLog, DynamoSettings.Controller.CanClearLog);
+            ClearLogCommand = new DelegateCommand(dynSettings.Controller.ClearLog, dynSettings.Controller.CanClearLog);
             PanCommand = new DelegateCommand(Pan, CanPan);
             ZoomInCommand = new DelegateCommand(ZoomIn, CanZoomIn);
             ZoomOutCommand = new DelegateCommand(ZoomOut, CanZoomOut);
@@ -599,25 +596,25 @@ namespace Dynamo.ViewModels
             ShowAboutWindowCommand = new DelegateCommand(ShowAboutWindow, CanShowAboutWindow);
             CheckForUpdateCommand = new DelegateCommand(CheckForUpdate, CanCheckForUpdate);
 
-            DynamoLogger.Instance.PropertyChanged += new PropertyChangedEventHandler(Instance_PropertyChanged);
+            DynamoLogger.Instance.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Instance_PropertyChanged);
 
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
-            DynamoSettings.Controller.VisualizationManager.PropertyChanged += VisualizationManager_PropertyChanged;
+            dynSettings.Controller.VisualizationManager.PropertyChanged += VisualizationManager_PropertyChanged;
 
-            Model.PropertyChanged += (e, args) =>
+            this.Model.PropertyChanged += (e, args) =>
             {
-                if (args.PropertyName == "CurrentWorkspace" && DynamoSettings.Controller.DynamoModel.CurrentWorkspace != null)
+                if (args.PropertyName == "CurrentWorkspace" && dynSettings.Controller.DynamoModel.CurrentWorkspace != null)
                 {
                     var visibleWorkspace =
-                        (DynamoSettings.Controller.DynamoModel.CurrentWorkspace is CustomNodeWorkspaceModel);
+                        (dynSettings.Controller.DynamoModel.CurrentWorkspace is CustomNodeWorkspaceModel);
 
-                    DynamoSettings.Controller.SearchViewModel.SearchElements
+                    dynSettings.Controller.SearchViewModel.SearchElements
                         .Where(x => x.Name == "Input" || x.Name == "Output")
                         .OfType<NodeSearchElement>()
                         .ToList()
                         .ForEach(x => x.SetSearchable(visibleWorkspace));
 
-                    DynamoSettings.Controller.SearchViewModel.SearchAndUpdateResultsSync();
+                    dynSettings.Controller.SearchViewModel.SearchAndUpdateResultsSync();
                 }
             };
 
@@ -626,13 +623,13 @@ namespace Dynamo.ViewModels
             WatchIsResizable = false;
         }
 
-        void Instance_UpdateDownloaded(object sender, UpdateDownloadedEventArgs e)
+        void Instance_UpdateDownloaded(object sender, UpdateManager.UpdateDownloadedEventArgs e)
         {
             RaisePropertyChanged("Version");
             RaisePropertyChanged("UpToDate");
         }
 
-        void VisualizationManager_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        void VisualizationManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -645,7 +642,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        void CollectInfoManager_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        void CollectInfoManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -662,7 +659,7 @@ namespace Dynamo.ViewModels
             DeleteCommand.RaiseCanExecuteChanged();
         }
 
-        void Controller_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        void Controller_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -675,7 +672,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        void Instance_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        void Instance_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
 
             switch (e.PropertyName)
@@ -688,7 +685,7 @@ namespace Dynamo.ViewModels
 
         }
 
-        void _model_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        void _model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "CurrentWorkspace")
             {
@@ -698,8 +695,8 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("BackgroundColor");
                 RaisePropertyChanged("CurrentWorkspaceIndex");
                 RaisePropertyChanged("ViewingHomespace");
-                if (PublishCurrentWorkspaceCommand != null)
-                    PublishCurrentWorkspaceCommand.RaiseCanExecuteChanged();
+                if (this.PublishCurrentWorkspaceCommand != null)
+                    this.PublishCurrentWorkspaceCommand.RaiseCanExecuteChanged();
                 RaisePropertyChanged("IsHomeSpace");
             }
         }
@@ -786,7 +783,7 @@ namespace Dynamo.ViewModels
             }
             else
             {
-                var fd = GetSaveDialog(workspace);
+                var fd = this.GetSaveDialog(workspace);
                 if (fd.ShowDialog() == DialogResult.OK)
                 {
                     workspace.SaveAs(fd.FileName);
@@ -808,22 +805,22 @@ namespace Dynamo.ViewModels
 
         private void PublishCurrentWorkspace(object parameters)
         {
-            DynamoSettings.PackageManagerClient.PublishCurrentWorkspace();
+            dynSettings.PackageManagerClient.PublishCurrentWorkspace();
         }
 
         private bool CanPublishCurrentWorkspace(object parameters)
         {
-            return DynamoSettings.PackageManagerClient.CanPublishCurrentWorkspace();
+            return dynSettings.PackageManagerClient.CanPublishCurrentWorkspace();
         }
 
         private void PublishSelectedNodes(object parameters)
         {
-            DynamoSettings.PackageManagerClient.PublishSelectedNode();
+            dynSettings.PackageManagerClient.PublishSelectedNode();
         }
 
         private bool CanPublishSelectedNodes(object parameters)
         {
-            return DynamoSettings.PackageManagerClient.CanPublishSelectedNode(parameters);
+            return dynSettings.PackageManagerClient.CanPublishSelectedNode(parameters);
         }
 
         private void ShowPackageManagerSearch(object parameters)
@@ -869,8 +866,8 @@ namespace Dynamo.ViewModels
 
             var newWs = symbol.WorkspaceModel;
 
-            if (!_model.Workspaces.Contains(newWs))
-                _model.Workspaces.Add(newWs);
+            if (!this._model.Workspaces.Contains(newWs))
+                this._model.Workspaces.Add(newWs);
 
             CurrentSpaceViewModel.CancelActiveState();
 
@@ -878,9 +875,15 @@ namespace Dynamo.ViewModels
             _model.CurrentWorkspace.OnDisplayed();
 
             //set the zoom and offsets events
-            var vm = DynamoSettings.Controller.DynamoViewModel.Workspaces.First(x => x.Model == newWs);
+            var vm = dynSettings.Controller.DynamoViewModel.Workspaces.First(x => x.Model == newWs);
             vm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(newWs.X, newWs.Y)));
             vm.OnZoomChanged(this, new ZoomEventArgs(newWs.Zoom));
+        }
+
+        public virtual Function CreateFunction(IEnumerable<string> inputs, IEnumerable<string> outputs,
+                                                     CustomNodeDefinition customNodeDefinition)
+        {
+            return new Function(inputs, outputs, customNodeDefinition);
         }
 
         /// <summary>
@@ -916,13 +919,13 @@ namespace Dynamo.ViewModels
                 }
             }
 
-            var dvm = DynamoSettings.Controller.DynamoViewModel;
+            var dvm = dynSettings.Controller.DynamoViewModel;
             dvm.CurrentSpaceViewModel.OnRequestCenterViewOnElement(this, new ModelEventArgs(e));
         }
 
         public void ShowSaveDialogIfNeededAndSaveResult(object parameter)
         {
-            var vm = DynamoSettings.Controller.DynamoViewModel;
+            var vm = dynSettings.Controller.DynamoViewModel;
 
             if (vm.Model.CurrentWorkspace.FileName != null)
             {
@@ -943,7 +946,7 @@ namespace Dynamo.ViewModels
 
         public void ShowSaveDialogAndSaveResult(object parameter)
         {
-            var vm = DynamoSettings.Controller.DynamoViewModel;
+            var vm = dynSettings.Controller.DynamoViewModel;
 
             FileDialog _fileDialog = vm.GetSaveDialog(vm.Model.CurrentWorkspace);
 
@@ -954,9 +957,9 @@ namespace Dynamo.ViewModels
                 _fileDialog.InitialDirectory = fi.DirectoryName;
                 _fileDialog.FileName = fi.Name;
             }
-            else if (vm.Model.CurrentWorkspace is CustomNodeWorkspaceModel && DynamoSettings.Controller.CustomNodeManager.SearchPath.Any())
+            else if (vm.Model.CurrentWorkspace is CustomNodeWorkspaceModel && dynSettings.Controller.CustomNodeManager.SearchPath.Any())
             {
-                _fileDialog.InitialDirectory = DynamoSettings.Controller.CustomNodeManager.SearchPath[0];
+                _fileDialog.InitialDirectory = dynSettings.Controller.CustomNodeManager.SearchPath[0];
             }
 
             if (_fileDialog.ShowDialog() == DialogResult.OK)
@@ -980,7 +983,7 @@ namespace Dynamo.ViewModels
             if (!CanNavigateBackground)
             {
                 // Return focus back to Search View (Search Field)
-                DynamoSettings.Controller.SearchViewModel.OnRequestReturnFocusToSearch(this, new EventArgs());
+                dynSettings.Controller.SearchViewModel.OnRequestReturnFocusToSearch(this, new EventArgs());
             }
         }
 
@@ -1001,9 +1004,9 @@ namespace Dynamo.ViewModels
 
         public void GoToWorkspace(object parameter)
         {
-            if (parameter is Guid && DynamoSettings.Controller.CustomNodeManager.Contains((Guid)parameter))
+            if (parameter is Guid && dynSettings.Controller.CustomNodeManager.Contains((Guid)parameter))
             {
-                FocusCustomNodeWorkspace(DynamoSettings.Controller.CustomNodeManager.GetFunctionDefinition((Guid)parameter));
+                FocusCustomNodeWorkspace(dynSettings.Controller.CustomNodeManager.GetFunctionDefinition((Guid)parameter));
             }
         }
 
@@ -1015,12 +1018,12 @@ namespace Dynamo.ViewModels
         public void AlignSelected(object param)
         {
             //this.CurrentSpaceViewModel.AlignSelectedCommand.Execute(param);
-            CurrentSpaceViewModel.AlignSelectedCommand.Execute(param.ToString());
+            this.CurrentSpaceViewModel.AlignSelectedCommand.Execute(param.ToString());
         }
 
         internal bool CanAlignSelected(object param)
         {
-            return CurrentSpaceViewModel.AlignSelectedCommand.CanExecute(param);
+            return this.CurrentSpaceViewModel.AlignSelectedCommand.CanExecute(param);
         }
 
         /// <summary>
@@ -1029,7 +1032,7 @@ namespace Dynamo.ViewModels
         public void GoHomeView(object parameter)
         {
             _model.CurrentWorkspace.Zoom = 1.0;
-            var wsvm = DynamoSettings.Controller.DynamoViewModel.Workspaces.First(x => x.Model == _model.CurrentWorkspace);
+            var wsvm = dynSettings.Controller.DynamoViewModel.Workspaces.First(x => x.Model == _model.CurrentWorkspace);
             wsvm.OnCurrentOffsetChanged(this, new PointEventArgs(new Point(0, 0)));
         }
 
@@ -1040,21 +1043,21 @@ namespace Dynamo.ViewModels
 
         public void SelectAll(object parameter)
         {
-            CurrentSpaceViewModel.SelectAll(null);
+            this.CurrentSpaceViewModel.SelectAll(null);
         }
 
         internal bool CanSelectAll(object parameter)
         {
-            return CurrentSpaceViewModel.CanSelectAll(null);
+            return this.CurrentSpaceViewModel.CanSelectAll(null);
         }
 
         public void MakeNewHomeWorkspace(object parameter)
         {
             // if the workspace is unsaved, prompt to save
             // otherwise overwrite the home workspace with new workspace
-            if (!Model.HomeSpace.HasUnsavedChanges || AskUserToSaveWorkspaceOrCancel(Model.HomeSpace))
+            if (!Model.HomeSpace.HasUnsavedChanges || AskUserToSaveWorkspaceOrCancel(this.Model.HomeSpace))
             {
-                Model.CurrentWorkspace = Model.HomeSpace;
+                Model.CurrentWorkspace = this.Model.HomeSpace;
 
                 _model.Clear(null);
             }
@@ -1080,7 +1083,7 @@ namespace Dynamo.ViewModels
             //request the UI to close its window
             OnRequestClose(this, EventArgs.Empty);
 
-            DynamoSettings.Controller.ShutDown(false);
+            dynSettings.Controller.ShutDown(false);
         }
 
         internal bool CanExit(object allowCancel)
@@ -1182,7 +1185,7 @@ namespace Dynamo.ViewModels
         private void Undo(object parameter)
         {
             var command = new UndoRedoCommand(UndoRedoCommand.Operation.Undo);
-            ExecuteCommand(command);
+            this.ExecuteCommand(command);
         }
 
         private bool CanUndo(object parameter)
@@ -1194,7 +1197,7 @@ namespace Dynamo.ViewModels
         private void Redo(object parameter)
         {
             var command = new UndoRedoCommand(UndoRedoCommand.Operation.Redo);
-            ExecuteCommand(command);
+            this.ExecuteCommand(command);
         }
 
         private bool CanRedo(object parameter)
@@ -1372,7 +1375,7 @@ namespace Dynamo.ViewModels
             {
                 foreach (var file in openFileDialog.FileNames)
                 {
-                    DynamoSettings.Controller.EngineController.ImportLibrary(file);
+                    dynSettings.Controller.EngineController.ImportLibrary(file);
                 }
             }
         }
@@ -1429,7 +1432,7 @@ namespace Dynamo.ViewModels
 
         public void TogglePreviewBubbleVisibility(object parameter)
         {
-            Controller.IsShowPreviewByDefault = !Controller.IsShowPreviewByDefault;
+            this.Controller.IsShowPreviewByDefault = !this.Controller.IsShowPreviewByDefault;
         }
 
         internal bool CanTogglePreviewBubbleVisibility(object parameter)
@@ -1462,7 +1465,7 @@ namespace Dynamo.ViewModels
 
             if (_fileDialog.ShowDialog() == DialogResult.OK)
             {
-                STLExport.ExportToSTL(_fileDialog.FileName, DynamoSettings.Controller.DynamoModel.HomeSpace.Name);
+                STLExport.ExportToSTL(_fileDialog.FileName, dynSettings.Controller.DynamoModel.HomeSpace.Name);
             }
         }
 
@@ -1597,7 +1600,7 @@ namespace Dynamo.ViewModels
 
         private void CheckForUpdate(object obj)
         {
-            DynamoSettings.Controller.UpdateManager.CheckForProductUpdate();
+            dynSettings.Controller.UpdateManager.CheckForProductUpdate();
         }
 
 
@@ -1612,7 +1615,7 @@ namespace Dynamo.ViewModels
             double y = arr[1];
             double z = arr[2];
 
-            DynamoSettings.Controller.VisualizationManager.LookupSelectedElement(x, y, z);
+            dynSettings.Controller.VisualizationManager.LookupSelectedElement(x, y, z);
         }
 
         internal bool CanSelectVisualizationInView(object parameters)
@@ -1627,7 +1630,7 @@ namespace Dynamo.ViewModels
 
         public void GetBranchVisualization(object parameters)
         {
-            DynamoSettings.Controller.VisualizationManager.RenderUpstream(null);
+            dynSettings.Controller.VisualizationManager.RenderUpstream(null);
         }
 
         public bool CanGetBranchVisualization(object parameter)
@@ -1662,47 +1665,47 @@ namespace Dynamo.ViewModels
         internal ZoomEventArgs(double zoom)
         {
             Zoom = zoom;
-            Modes = ZoomModes.ByFactor;
+            this.Modes = ZoomModes.ByFactor;
         }
 
         internal ZoomEventArgs(Point point)
         {
-            Point = point;
-            Modes = ZoomModes.ByPoint;
+            this.Point = point;
+            this.Modes = ZoomModes.ByPoint;
         }
 
         internal ZoomEventArgs(double zoom, Point point)
         {
-            Point = point;
-            Zoom = zoom;
-            Modes = ZoomModes.ByPoint | ZoomModes.ByFactor;
+            this.Point = point;
+            this.Zoom = zoom;
+            this.Modes = ZoomModes.ByPoint | ZoomModes.ByFactor;
         }
 
         internal ZoomEventArgs(Point offset, double focusWidth, double focusHeight)
         {
-            Offset = offset;
-            FocusWidth = focusWidth;
-            FocusHeight = focusHeight;
-            Modes = ZoomModes.ByFitView;
+            this.Offset = offset;
+            this.FocusWidth = focusWidth;
+            this.FocusHeight = focusHeight;
+            this.Modes = ZoomModes.ByFitView;
         }
 
         internal ZoomEventArgs(Point offset, double focusWidth, double focusHeight, double zoom)
         {
-            Offset = offset;
-            FocusWidth = focusWidth;
-            FocusHeight = focusHeight;
-            Zoom = zoom;
-            Modes = ZoomModes.ByFitView | ZoomModes.ByFactor;
+            this.Offset = offset;
+            this.FocusWidth = focusWidth;
+            this.FocusHeight = focusHeight;
+            this.Zoom = zoom;
+            this.Modes = ZoomModes.ByFitView | ZoomModes.ByFactor;
         }
 
         internal bool hasPoint()
         {
-            return Modes.HasFlag(ZoomModes.ByPoint);
+            return this.Modes.HasFlag(ZoomModes.ByPoint);
         }
 
         internal bool hasZoom()
         {
-            return Modes.HasFlag(ZoomModes.ByFactor);
+            return this.Modes.HasFlag(ZoomModes.ByFactor);
         }
     }
 
@@ -1739,36 +1742,36 @@ namespace Dynamo.ViewModels
 
         public SelectionBoxUpdateArgs(Visibility visibility)
         {
-            Visibility = visibility;
-            UpdatedProps = UpdateFlags.Visibility;
+            this.Visibility = visibility;
+            this.UpdatedProps = UpdateFlags.Visibility;
         }
 
         public SelectionBoxUpdateArgs(double x, double y)
         {
-            X = x;
-            Y = y;
-            UpdatedProps = UpdateFlags.Position;
+            this.X = x;
+            this.Y = y;
+            this.UpdatedProps = UpdateFlags.Position;
         }
 
         public SelectionBoxUpdateArgs(double x, double y, double width, double height)
         {
-            X = x;
-            Y = y;
-            Width = width;
-            Height = height;
-            UpdatedProps = UpdateFlags.Position | UpdateFlags.Dimension;
+            this.X = x;
+            this.Y = y;
+            this.Width = width;
+            this.Height = height;
+            this.UpdatedProps = UpdateFlags.Position | UpdateFlags.Dimension;
         }
 
         public void SetSelectionMode(bool isCrossSelection)
         {
-            IsCrossSelection = isCrossSelection;
-            UpdatedProps |= UpdateFlags.Mode;
+            this.IsCrossSelection = isCrossSelection;
+            this.UpdatedProps |= UpdateFlags.Mode;
         }
 
         public void SetVisibility(Visibility visibility)
         {
-            Visibility = visibility;
-            UpdatedProps |= UpdateFlags.Visibility;
+            this.Visibility = visibility;
+            this.UpdatedProps |= UpdateFlags.Visibility;
         }
 
         public double X { get; private set; }

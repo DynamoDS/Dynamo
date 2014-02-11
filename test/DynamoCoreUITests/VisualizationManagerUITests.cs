@@ -52,16 +52,16 @@ namespace Dynamo.Tests.UI
         [Test]
         public void VisualizationInSyncWithPreviewUpstream()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
-            var viz = DynamoSettings.Controller.VisualizationManager;
+            var model = dynSettings.Controller.DynamoModel;
+            var viz = dynSettings.Controller.VisualizationManager;
             
             string openPath = Path.Combine(GetTestDirectory(), @"core\visualization\ASM_points_line.dyn");
             model.Open(openPath);
 
-            DynamoSettings.Controller.DynamoModel.OnRequestLayoutUpdate(this, EventArgs.Empty);
+            dynSettings.Controller.DynamoModel.OnRequestLayoutUpdate(this, EventArgs.Empty);
 
             // run the expression
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
             Thread.Sleep(1000);
 
             //we start with all previews disabled

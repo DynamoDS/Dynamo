@@ -1,11 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using System.Collections.ObjectModel;
+using System.Windows.Threading;
 using Dynamo.Models;
-using Dynamo.Views;
+using Dynamo.Selection;
+using MouseEventArgs = System.Windows.Input.MouseEventArgs;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
@@ -19,7 +27,7 @@ namespace Dynamo.Controls
         #region Data
 
         // The owning workspace for this DragCanvas
-        public dynWorkspaceView owningWorkspace = null;
+        public Dynamo.Views.dynWorkspaceView owningWorkspace = null;
 
         #endregion // Data
 
@@ -123,7 +131,7 @@ namespace Dynamo.Controls
         /// </param>
         public void BringToFront(UIElement element)
         {
-            UpdateZOrder(element, true);
+            this.UpdateZOrder(element, true);
         }
 
         /// <summary>
@@ -138,7 +146,7 @@ namespace Dynamo.Controls
         /// </param>
         public void SendToBack(UIElement element)
         {
-            UpdateZOrder(element, false);
+            this.UpdateZOrder(element, false);
         }
 
         #endregion // BringToFront / SendToBack
@@ -198,7 +206,7 @@ namespace Dynamo.Controls
                 return;
             }
 
-            object dataContext = owningWorkspace.DataContext;
+            object dataContext = this.owningWorkspace.DataContext;
             WorkspaceViewModel wvm = dataContext as WorkspaceViewModel;
 
             if (wvm.HandleLeftButtonDown(this, e))
@@ -252,12 +260,12 @@ namespace Dynamo.Controls
             if (modLeftOffset)
                 x = newHorizOffset;
             else
-                x = ActualWidth - newHorizOffset - elemSize.Width;
+                x = this.ActualWidth - newHorizOffset - elemSize.Width;
 
             if (modTopOffset)
                 y = newVertOffset;
             else
-                y = ActualHeight - newVertOffset - elemSize.Height;
+                y = this.ActualHeight - newVertOffset - elemSize.Height;
 
             Point elemLoc = new Point(x, y);
 
@@ -360,7 +368,7 @@ namespace Dynamo.Controls
             // should be raised or lowered by one. 
             int offset = (elementNewZIndex == 0) ? +1 : -1;
 
-            int elementCurrentZIndex = GetZIndex(element);
+            int elementCurrentZIndex = Canvas.GetZIndex(element);
 
             #endregion // Calculate Z-Indici And Offset
 
@@ -370,17 +378,17 @@ namespace Dynamo.Controls
             foreach (UIElement childElement in base.Children)
             {
                 if (childElement == element)
-                    SetZIndex(element, elementNewZIndex);
+                    Canvas.SetZIndex(element, elementNewZIndex);
                 else
                 {
-                    int zIndex = GetZIndex(childElement);
+                    int zIndex = Canvas.GetZIndex(childElement);
 
                     // Only modify the z-index of an element if it is  
                     // in between the target element's old and new z-index.
                     if (bringToFront && elementCurrentZIndex < zIndex ||
                        !bringToFront && zIndex < elementCurrentZIndex)
                     {
-                        SetZIndex(childElement, zIndex + offset);
+                        Canvas.SetZIndex(childElement, zIndex + offset);
                     }
                 }
             }

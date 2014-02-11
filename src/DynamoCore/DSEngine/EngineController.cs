@@ -2,16 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 using Autodesk.DesignScript.Interfaces;
-using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Utilities;
-using GraphToDSCompiler;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
 using ProtoScript.Runners;
 using Dynamo.Nodes;
-using Constants = ProtoCore.DSASM.Constants;
 
 namespace Dynamo.DSEngine
 {
@@ -32,15 +30,15 @@ namespace Dynamo.DSEngine
         internal EngineController(DynamoController controller, bool isReset)
         {
             libraryServices = LibraryServices.GetInstance();
-            libraryServices.LibraryLoading += LibraryLoading;
-            libraryServices.LibraryLoadFailed += LibraryLoadFailed;
-            libraryServices.LibraryLoaded += LibraryLoaded;
+            libraryServices.LibraryLoading += this.LibraryLoading;
+            libraryServices.LibraryLoadFailed += this.LibraryLoadFailed;
+            libraryServices.LibraryLoaded += this.LibraryLoaded;
 
             liveRunnerServices = new LiveRunnerServices(this);
             liveRunnerServices.ReloadAllLibraries(libraryServices.Libraries.ToList());
 
-            GraphUtilities.Reset();
-            GraphUtilities.PreloadAssembly(libraryServices.Libraries.ToList());
+            GraphToDSCompiler.GraphUtilities.Reset();
+            GraphToDSCompiler.GraphUtilities.PreloadAssembly(libraryServices.Libraries.ToList());
 
             astBuilder = new AstBuilder(this);
             syncDataManager = new SyncDataManager();
@@ -51,12 +49,12 @@ namespace Dynamo.DSEngine
 
         public void Dispose()
         {
-            controller.DynamoModel.NodeDeleted -= NodeDeleted;
+            this.controller.DynamoModel.NodeDeleted -= NodeDeleted;
             liveRunnerServices.Dispose();
 
-            libraryServices.LibraryLoading -= LibraryLoading;
-            libraryServices.LibraryLoadFailed -= LibraryLoadFailed;
-            libraryServices.LibraryLoaded -= LibraryLoaded;
+            libraryServices.LibraryLoading -= this.LibraryLoading;
+            libraryServices.LibraryLoadFailed -= this.LibraryLoadFailed;
+            libraryServices.LibraryLoaded -= this.LibraryLoaded;
         }
 
         /// <summary>
@@ -114,7 +112,7 @@ namespace Dynamo.DSEngine
             if (!nodes.Any())
                 return string.Empty;
 
-            string code = NodeToCodeUtils.ConvertNodesToCode(nodes);
+            string code = Dynamo.DSEngine.NodeToCodeUtils.ConvertNodesToCode(nodes);
             if (string.IsNullOrEmpty(code))
                 return code;
 
@@ -314,15 +312,15 @@ namespace Dynamo.DSEngine
 
         private bool HasVariableDefined(string var)
         {
-            ProtoCore.Core core = GraphUtilities.GetCore();
+            ProtoCore.Core core = GraphToDSCompiler.GraphUtilities.GetCore();
             var cbs = core.CodeBlockList;
             if (cbs == null || cbs.Count > 0)
             {
                 return false;
             }
 
-            var idx = cbs[0].symbolTable.IndexOf(var, Constants.kGlobalScope, Constants.kGlobalScope);
-            return idx == Constants.kInvalidIndex;
+            var idx = cbs[0].symbolTable.IndexOf(var, ProtoCore.DSASM.Constants.kGlobalScope, ProtoCore.DSASM.Constants.kGlobalScope);
+            return idx == ProtoCore.DSASM.Constants.kInvalidIndex;
         }
 
         /// <summary>
@@ -353,14 +351,14 @@ namespace Dynamo.DSEngine
             string newLibrary = e.LibraryPath;
 
             // Load all functions defined in that library.
-            DynamoSettings.Controller.SearchViewModel.Add(libraryServices.GetFunctionGroups(newLibrary));
+            dynSettings.Controller.SearchViewModel.Add(libraryServices.GetFunctionGroups(newLibrary));
 
             // Reset the VM
             liveRunnerServices.ReloadAllLibraries(libraryServices.Libraries.ToList());
 
             // Mark all nodes as dirty so that AST for the whole graph will be
             // regenerated.
-            foreach (var node in DynamoSettings.Controller.DynamoViewModel.Model.HomeSpace.Nodes)
+            foreach (var node in dynSettings.Controller.DynamoViewModel.Model.HomeSpace.Nodes)
             {
                 node.RequiresRecalc = true;
             }

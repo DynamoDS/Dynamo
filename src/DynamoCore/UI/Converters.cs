@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Windows;
 using System.Windows.Data;
-using System.Windows.Input;
 using System.Windows.Media;
-using Dynamo.Core;
 using Dynamo.UI;
 using Dynamo.Units;
 using Dynamo.Models;
@@ -16,6 +15,8 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.PackageManager;
 using System.Windows.Controls;
+using Dynamo.Core;
+using ProtoCore.AST.ImperativeAST;
 
 namespace Dynamo.Controls
 {
@@ -210,7 +211,7 @@ namespace Dynamo.Controls
 
     public class SearchResultsToVisibilityConverter : IMultiValueConverter
     {
-        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (values[0] is int && (int)values[0] == 0 && !string.IsNullOrEmpty(values[1] as string))
             {
@@ -220,7 +221,7 @@ namespace Dynamo.Controls
             return Visibility.Collapsed;
         }
 
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotSupportedException();
         }
@@ -248,13 +249,13 @@ namespace Dynamo.Controls
 
     public class MarginConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             double height = (double)value;
             return new Thickness(0, -1 * height - 3, 0, 0);
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             return null;
         }
@@ -262,7 +263,7 @@ namespace Dynamo.Controls
 
     public class PathToFileNameConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (value is string && !string.IsNullOrEmpty(value as string) )
             {
@@ -273,7 +274,7 @@ namespace Dynamo.Controls
             return "Unsaved";
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             return null;
         }
@@ -281,12 +282,12 @@ namespace Dynamo.Controls
 
     public class PathToSaveStateConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             return (value is string && !string.IsNullOrEmpty(value as string)) ? "Saved" : "Unsaved";
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             return null;
         }
@@ -369,7 +370,7 @@ namespace Dynamo.Controls
         public SolidColorBrush TrueBrush{get;set;}
         public SolidColorBrush FalseBrush{get;set;}
 
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             bool condition = (bool)value;
             if (condition)
@@ -384,7 +385,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             return null;
         }
@@ -395,7 +396,7 @@ namespace Dynamo.Controls
         public Color True { get; set; }
         public Color False { get; set; }
 
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             bool condition = (bool)value;
             if (condition)
@@ -410,7 +411,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             return null;
         }
@@ -424,7 +425,7 @@ namespace Dynamo.Controls
         public LinearGradientBrush ActiveBrush { get; set; }
         public LinearGradientBrush ErrorBrush { get; set; }
 
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             ElementState state = (ElementState)value;
             switch (state)
@@ -440,7 +441,7 @@ namespace Dynamo.Controls
             return DeadBrush;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             return null;
         }
@@ -448,13 +449,13 @@ namespace Dynamo.Controls
 
     public class PortCountToHeightConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             ObservableCollection<PortViewModel> ports = (ObservableCollection<PortViewModel>)value;
             return Math.Max(30, ports.Count * 20 + 10); //spacing for inputs + title space + bottom space
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             return null;
         }
@@ -462,13 +463,13 @@ namespace Dynamo.Controls
 
     public class ListHasItemsToBoolConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             List<object> list = (List<object>)value;
             return list.Count > 0; //spacing for inputs + title space + bottom space
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             return null;
         }
@@ -480,7 +481,7 @@ namespace Dynamo.Controls
         #region IValueConverter Members
 
         public object Convert(object value, Type targetType, object parameter,
-            CultureInfo culture)
+            System.Globalization.CultureInfo culture)
         {
             if (targetType != typeof(bool))
                 throw new InvalidOperationException("The target must be a boolean");
@@ -489,7 +490,7 @@ namespace Dynamo.Controls
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,
-            CultureInfo culture)
+            System.Globalization.CultureInfo culture)
         {
             throw new NotSupportedException();
         }
@@ -500,18 +501,18 @@ namespace Dynamo.Controls
     public class BoolToCanvasCursorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,
-            CultureInfo culture)
+            System.Globalization.CultureInfo culture)
         {
             if ((bool)value == true)
             {
-                return Cursors.AppStarting;
+                return System.Windows.Input.Cursors.AppStarting;
             }
 
             return null;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,
-            CultureInfo culture)
+            System.Globalization.CultureInfo culture)
         {
             throw new NotSupportedException();
         }
@@ -522,7 +523,7 @@ namespace Dynamo.Controls
         #region IValueConverter Members
 
         public object Convert(object value, Type targetType, object parameter,
-            CultureInfo culture)
+            System.Globalization.CultureInfo culture)
         {
             if ((bool)value == true)
             {
@@ -535,7 +536,7 @@ namespace Dynamo.Controls
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,
-            CultureInfo culture)
+            System.Globalization.CultureInfo culture)
         {
             throw new NotSupportedException();
         }
@@ -548,7 +549,7 @@ namespace Dynamo.Controls
         #region IValueConverter Members
 
         public object Convert(object value, Type targetType, object parameter,
-            CultureInfo culture)
+            System.Globalization.CultureInfo culture)
         {
             string menuValue = "Showing Background 3D Preview";
             if ((bool)value == true)
@@ -558,7 +559,7 @@ namespace Dynamo.Controls
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,
-            CultureInfo culture)
+            System.Globalization.CultureInfo culture)
         {
             throw new NotSupportedException();
         }
@@ -571,7 +572,7 @@ namespace Dynamo.Controls
         #region IValueConverter Members
 
         public object Convert(object value, Type targetType, object parameter,
-            CultureInfo culture)
+            System.Globalization.CultureInfo culture)
         {
             if ((bool)value == true)
             {
@@ -584,7 +585,7 @@ namespace Dynamo.Controls
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,
-            CultureInfo culture)
+            System.Globalization.CultureInfo culture)
         {
             throw new NotSupportedException();
         }
@@ -597,13 +598,13 @@ namespace Dynamo.Controls
         #region IValueConverter Members
 
         public object Convert(object value, Type targetType, object parameter,
-            CultureInfo culture)
+            System.Globalization.CultureInfo culture)
         {
             return string.Format("Zoom : {0}", value.ToString());
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,
-            CultureInfo culture)
+            System.Globalization.CultureInfo culture)
         {
             throw new NotSupportedException();
         }
@@ -616,14 +617,14 @@ namespace Dynamo.Controls
         #region IValueConverter Members
 
         public object Convert(object value, Type targetType, object parameter,
-            CultureInfo culture)
+            System.Globalization.CultureInfo culture)
         {
             Point p = (Point)value;
             return string.Format("Transform origin X: {0}, Y: {1}", p.X, p.Y);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,
-            CultureInfo culture)
+            System.Globalization.CultureInfo culture)
         {
             throw new NotSupportedException();
         }
@@ -636,14 +637,14 @@ namespace Dynamo.Controls
         #region IValueConverter Members
 
         public object Convert(object value, Type targetType, object parameter,
-            CultureInfo culture)
+            System.Globalization.CultureInfo culture)
         {
             Point p = (Point)value;
             return string.Format("Current offset X: {0}, Y: {1}", p.X, p.Y);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,
-            CultureInfo culture)
+            System.Globalization.CultureInfo culture)
         {
             throw new NotSupportedException();
         }
@@ -653,7 +654,7 @@ namespace Dynamo.Controls
 
     public class EnumToBooleanConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             // You could also directly pass an enum value using {x:Static},
             // then there is no need to parse
@@ -669,7 +670,7 @@ namespace Dynamo.Controls
             return parameterValue.Equals(value);
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             string parameterString = parameter as string;
             if (parameterString == null)
@@ -681,7 +682,7 @@ namespace Dynamo.Controls
 
     public class PortTypeToMarginConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             //PortType p = (PortType)value;
             //if (p == PortType.INPUT)
@@ -696,7 +697,7 @@ namespace Dynamo.Controls
             return new Thickness(0, 0, 0, 0);
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotSupportedException();
         }
@@ -704,7 +705,7 @@ namespace Dynamo.Controls
 
     public class PortTypeToTextAlignmentConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             PortType p = (PortType)value;
             if (p == PortType.INPUT)
@@ -717,7 +718,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotSupportedException();
         }
@@ -725,7 +726,7 @@ namespace Dynamo.Controls
 
     public class PortTypeToGridColumnConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             PortType p = (PortType)value;
             if (p == PortType.INPUT)
@@ -738,7 +739,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotSupportedException();
         }
@@ -746,7 +747,7 @@ namespace Dynamo.Controls
 
     public class PortTypeToClipConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             PortType p = (PortType)value;
             if (p == PortType.INPUT)
@@ -759,7 +760,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotSupportedException();
         }
@@ -767,7 +768,7 @@ namespace Dynamo.Controls
 
     public class BoolToConsoleHeightConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             bool consoleShowing = (bool) value;
             if (consoleShowing)
@@ -775,7 +776,7 @@ namespace Dynamo.Controls
             return 0;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotSupportedException();
         }
@@ -783,7 +784,7 @@ namespace Dynamo.Controls
 
     public class BoolToFullscreenWatchVisibilityConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             bool fullscreenWatchShowing = (bool)value;
             if (fullscreenWatchShowing)
@@ -791,7 +792,7 @@ namespace Dynamo.Controls
             return Visibility.Hidden;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotSupportedException();
         }
@@ -799,7 +800,7 @@ namespace Dynamo.Controls
 
     public class BoolToVisibilityConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if ((bool)value)
             {
@@ -811,7 +812,7 @@ namespace Dynamo.Controls
             return Visibility.Hidden;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotSupportedException();
         }
@@ -819,14 +820,14 @@ namespace Dynamo.Controls
 
     public class BoolToVisibilityCollapsedConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if ((bool)value)
                 return Visibility.Visible;
             return Visibility.Collapsed;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotSupportedException();
         }
@@ -834,14 +835,14 @@ namespace Dynamo.Controls
 
     public class InverseBoolToVisibilityConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if ((bool)value)
                 return Visibility.Hidden;
             return Visibility.Visible;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotSupportedException();
         }
@@ -849,14 +850,14 @@ namespace Dynamo.Controls
 
     public class InverseBooleanToVisibilityCollapsedConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if ((bool)value)
                 return Visibility.Collapsed;
             return Visibility.Visible;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotSupportedException();
         }
@@ -865,7 +866,7 @@ namespace Dynamo.Controls
 
     public class LacingToVisibilityConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             LacingStrategy strategy = (LacingStrategy)value;
             if (strategy == LacingStrategy.Disabled)
@@ -874,7 +875,7 @@ namespace Dynamo.Controls
             return Visibility.Visible;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotSupportedException();
         }
@@ -882,7 +883,7 @@ namespace Dynamo.Controls
 
     public class LacingToAbbreviationConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             LacingStrategy strategy = (LacingStrategy)value;
 
@@ -903,7 +904,7 @@ namespace Dynamo.Controls
             return "?";
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotSupportedException();
         }
@@ -911,7 +912,7 @@ namespace Dynamo.Controls
 
     public class LacingToTooltipConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             LacingStrategy strategy = (LacingStrategy)value;
 
@@ -932,7 +933,7 @@ namespace Dynamo.Controls
             return "?";
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotSupportedException();
         }
@@ -940,7 +941,7 @@ namespace Dynamo.Controls
 
     public class ZoomToVisibilityConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             double zoom = System.Convert.ToDouble(value);
 
@@ -950,7 +951,7 @@ namespace Dynamo.Controls
             return Visibility.Visible;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotSupportedException();
         }
@@ -958,7 +959,7 @@ namespace Dynamo.Controls
 
     public class ZoomToBooleanConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             double number = (double)System.Convert.ChangeType(value, typeof(double));
 
@@ -968,7 +969,7 @@ namespace Dynamo.Controls
             return true;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotSupportedException();
         }
@@ -976,7 +977,7 @@ namespace Dynamo.Controls
 
     public class PortNameToWidthConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             //if the port name is null or empty
             if (string.IsNullOrEmpty(value.ToString()))
@@ -985,7 +986,7 @@ namespace Dynamo.Controls
             return double.NaN;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotSupportedException();
         }
@@ -1135,7 +1136,7 @@ namespace Dynamo.Controls
 
     public class InverseBoolDisplay : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (value is bool)
             {
@@ -1144,7 +1145,7 @@ namespace Dynamo.Controls
             return value;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (value is bool)
             {
@@ -1158,7 +1159,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value == null ? Visibility.Hidden : Visibility.Visible;
+            return value == null ? System.Windows.Visibility.Hidden : System.Windows.Visibility.Visible;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -1177,11 +1178,11 @@ namespace Dynamo.Controls
                 switch (level)
                 {
                     case WarningLevel.Mild:
-                        return new SolidColorBrush(Colors.Gray);
+                        return new System.Windows.Media.SolidColorBrush(Colors.Gray);
                     case WarningLevel.Moderate:
-                        return new SolidColorBrush(Colors.Gold);
+                        return new System.Windows.Media.SolidColorBrush(Colors.Gold);
                     case WarningLevel.Error:
-                        return new SolidColorBrush(Colors.Tomato);
+                        return new System.Windows.Media.SolidColorBrush(Colors.Tomato);
                 }
             }
 
@@ -1196,7 +1197,7 @@ namespace Dynamo.Controls
 
     public class TabSizeConverter : IMultiValueConverter
     {
-        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {           
             TabControl tabControl = values[0] as TabControl;
             
@@ -1216,7 +1217,7 @@ namespace Dynamo.Controls
             return (width <= Configurations.TabControlMenuWidth) ? Configurations.TabControlMenuWidth : (width - 1);
         }
 
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotSupportedException();
         }
@@ -1320,7 +1321,7 @@ namespace Dynamo.Controls
         {
             if ((bool) value == false)
             {
-                var latest = DynamoSettings.Controller.UpdateManager.AvailableVersion;
+                var latest = dynSettings.Controller.UpdateManager.AvailableVersion;
                 return latest;
             }
 

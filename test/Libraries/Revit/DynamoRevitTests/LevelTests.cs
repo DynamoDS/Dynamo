@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
 using Autodesk.Revit.DB;
-using Dynamo.Core;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using NUnit.Framework;
@@ -15,13 +14,13 @@ namespace Dynamo.Tests
         [Test]
         public void Level()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\Level\Level.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
             //ensure that the level count is the same
             var levelColl = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
@@ -31,7 +30,7 @@ namespace Dynamo.Tests
             //change the number and run again
             var numNode = (DoubleInput)dynRevitSettings.Controller.DynamoModel.Nodes.First(x => x is DoubleInput);
             numNode.Value = "0..20..2";
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
 
             //ensure that the level count is the same
             levelColl = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);

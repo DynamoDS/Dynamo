@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using Dynamo.Models;
 using Dynamo.Services;
 using Microsoft.Practices.Prism.ViewModel;
 
@@ -214,8 +215,8 @@ namespace Dynamo
         {
             //create log files in a directory 
             //with the executing assembly
-            string log_dir = Environment.GetFolderPath(
-                    Environment.SpecialFolder.ApplicationData);
+            string log_dir = System.Environment.GetFolderPath(
+                    System.Environment.SpecialFolder.ApplicationData);
 
             log_dir = Path.Combine(log_dir, DYNAMO_LOG_DIRECTORY);
 

@@ -1,3 +1,4 @@
+using System;
 namespace CPTC.Octree
 {
     public class OctreeDistance

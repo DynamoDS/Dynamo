@@ -5,7 +5,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
-using Dynamo.Core;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -24,9 +23,9 @@ namespace Dynamo.UI.Views
         {
             InitializeComponent();
             this.logger = logger;
-            InstallNewUpdate = false;
-            PreviewKeyDown += new KeyEventHandler(HandleEsc);
-            DataContext = model;
+            this.InstallNewUpdate = false;
+            this.PreviewKeyDown += new KeyEventHandler(HandleEsc);
+            this.DataContext = model;
         }
 
         public bool InstallNewUpdate { get; private set; }
@@ -35,8 +34,8 @@ namespace Dynamo.UI.Views
         {
             //Request a check for update version info
             DisplayVersionInformation(null);
-            DynamoSettings.Controller.UpdateManager.UpdateDownloaded += new UpdateDownloadedEventHandler(OnUpdatePackageDownloaded);
-            DynamoSettings.Controller.UpdateManager.CheckForProductUpdate();
+            dynSettings.Controller.UpdateManager.UpdateDownloaded += new UpdateDownloadedEventHandler(OnUpdatePackageDownloaded);
+            dynSettings.Controller.UpdateManager.CheckForProductUpdate();
         }
 
         private void HandleEsc(object sender, KeyEventArgs e)
@@ -55,12 +54,12 @@ namespace Dynamo.UI.Views
 
         private void OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            ignoreClose = true;
+            this.ignoreClose = true;
         }
 
         private void OnClickLink(object sender, RoutedEventArgs e)
         {
-            Process.Start("https://github.com/DynamoDS/Dynamo");
+            System.Diagnostics.Process.Start("https://github.com/DynamoDS/Dynamo");
         }
 
         private void OnUpdatePackageDownloaded(object sender, UpdateDownloadedEventArgs e)
@@ -71,21 +70,21 @@ namespace Dynamo.UI.Views
         private void OnUpdateInfoMouseUp(object sender, MouseButtonEventArgs e)
         {
             logger.LogInfo("AboutWindow-OnUpdateInfoMouseUp", "AboutWindow-OnUpdateInfoMouseUp");
-            InstallNewUpdate = true;
-            Close();
+            this.InstallNewUpdate = true;
+            this.Close();
         }
 
         private void DisplayVersionInformation(UpdateDownloadedEventArgs e)
         {
             if ((null != e) && e.UpdateAvailable)
             {
-                UpdateInfo.Cursor = Cursors.Hand;
-                UpdateInfo.MouseUp += new MouseButtonEventHandler(OnUpdateInfoMouseUp);
+                this.UpdateInfo.Cursor = Cursors.Hand;
+                this.UpdateInfo.MouseUp += new MouseButtonEventHandler(OnUpdateInfoMouseUp);
             }
             else
             {
-                UpdateInfo.Cursor = Cursors.Arrow;
-                UpdateInfo.MouseUp -= new MouseButtonEventHandler(OnUpdateInfoMouseUp);
+                this.UpdateInfo.Cursor = Cursors.Arrow;
+                this.UpdateInfo.MouseUp -= new MouseButtonEventHandler(OnUpdateInfoMouseUp);
             }
         }
     }

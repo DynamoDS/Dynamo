@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using Dynamo.Core;
 using Dynamo.FSchemeInterop;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -339,7 +338,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
 
             // run the expression
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
 
             // wait for the expression to complete
             while (Controller.Running)
@@ -394,7 +393,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(11, model.CurrentWorkspace.Nodes.Count);
 
             // run the expression
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
 
             // wait for the expression to complete
             Thread.Sleep(500);
@@ -438,7 +437,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(6, model.CurrentWorkspace.Nodes.Count);
 
             // run the expression
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
 
             // wait for the expression to complete
             Thread.Sleep(500);
@@ -511,7 +510,7 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(examplePath, "multi-custom.dyn");
             model.Open(openPath);
 
-            DynamoSettings.Controller.RunExpression();
+            dynSettings.Controller.RunExpression();
 
             var splitListVal = model.CurrentWorkspace.FirstNodeFromWorkspace<Function>().OldValue;
 
@@ -539,7 +538,7 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(examplePath, "partial-multi-custom.dyn");
             model.Open(openPath);
 
-            DynamoSettings.Controller.RunExpression();
+            dynSettings.Controller.RunExpression();
 
             var firstWatch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("d824e8dd-1009-449f-b5d6-1cd83bd180d6");
 

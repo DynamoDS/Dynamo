@@ -1,15 +1,23 @@
 ﻿using System;
-using System.ComponentModel;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Controls.Primitives;
 using System.Windows.Media.Animation;
-using Dynamo.Core;
 using InfoBubbleViewModel = Dynamo.ViewModels.InfoBubbleViewModel;
 using Dynamo.ViewModels;
 using Dynamo.Utilities;
+using System.Diagnostics;
+using Dynamo.Core;
 using Dynamo.UI;
 
 namespace Dynamo.Controls
@@ -91,7 +99,7 @@ namespace Dynamo.Controls
         // eventually removing the view. This is the result of the host canvas being 
         // virtualized. This property is used by InfoBubbleView to determine if it should 
         // still continue to access the InfoBubbleViewModel that it is bound to.
-        private bool IsDisconnected { get { return (ViewModel == null); } }    
+        private bool IsDisconnected { get { return (this.ViewModel == null); } }    
 
         #endregion
 
@@ -127,7 +135,7 @@ namespace Dynamo.Controls
             preview_LastMaxWidth = double.MaxValue;
             preview_LastMaxHeight = double.MaxValue;
 
-            DataContextChanged += InfoBubbleView_DataContextChanged;
+            this.DataContextChanged += InfoBubbleView_DataContextChanged;
         }
 
         private void InfoBubbleWindowUserControl_Loaded(object sender, RoutedEventArgs e)
@@ -178,7 +186,7 @@ namespace Dynamo.Controls
             UpdateContent();
         }
 
-        private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             // The fix for the following issue was previously performed in 
             // NodeModel. This is shifted over to infobubble to centralize 
@@ -228,13 +236,13 @@ namespace Dynamo.Controls
                 }
             });
 
-            if (DynamoSettings.Controller != null &&
-                DynamoSettings.Controller.UIDispatcher != null)
+            if (dynSettings.Controller != null &&
+                dynSettings.Controller.UIDispatcher != null)
             {
-                if (DynamoSettings.Controller.UIDispatcher.CheckAccess())
+                if (dynSettings.Controller.UIDispatcher.CheckAccess())
                     propertyChanged();
                 else
-                    DynamoSettings.Controller.UIDispatcher.BeginInvoke(propertyChanged);
+                    dynSettings.Controller.UIDispatcher.BeginInvoke(propertyChanged);
             }
         }
 
@@ -244,12 +252,12 @@ namespace Dynamo.Controls
             {
                 case InfoBubbleViewModel.State.Minimized:
                     // Changing to Minimized
-                    HideInfoBubble();
+                    this.HideInfoBubble();
                     break;
 
                 case InfoBubbleViewModel.State.Pinned:
                     // Changing to Pinned
-                    ShowInfoBubble();
+                    this.ShowInfoBubble();
                     break;
             }
         }
@@ -384,26 +392,26 @@ namespace Dynamo.Controls
 
             ContentMargin = Configurations.PreviewContentMargin;
 
-            if (preview_LastMaxHeight == double.MaxValue)
+            if (this.preview_LastMaxHeight == double.MaxValue)
             {
                 ContentContainer.MaxHeight = Configurations.PreviewDefaultMaxHeight;
                 ContentMaxHeight = Configurations.PreviewDefaultMaxHeight - 17;
             }
             else
             {
-                ContentContainer.MaxHeight = preview_LastMaxHeight;
-                ContentMaxHeight = preview_LastMaxHeight - 17;
+                ContentContainer.MaxHeight = this.preview_LastMaxHeight;
+                ContentMaxHeight = this.preview_LastMaxHeight - 17;
             }
 
-            if (preview_LastMaxWidth == double.MaxValue)
+            if (this.preview_LastMaxWidth == double.MaxValue)
             {
                 ContentContainer.MaxWidth = Configurations.PreviewDefaultMaxWidth;
                 ContentMaxWidth = Configurations.PreviewDefaultMaxWidth - 10;
             }
             else
             {
-                ContentContainer.MaxWidth = preview_LastMaxWidth;
-                ContentMaxWidth = preview_LastMaxWidth - 10;
+                ContentContainer.MaxWidth = this.preview_LastMaxWidth;
+                ContentMaxWidth = this.preview_LastMaxWidth - 10;
             }
 
             ContentContainer.MinHeight = Configurations.PreviewMinHeight;
@@ -619,7 +627,7 @@ namespace Dynamo.Controls
                 pointCollection.Add(new Point((estimatedWidth / 2) + (arrowWidth / 2), estimatedHeight - arrowHeight));
                 pointCollection.Add(new Point(estimatedWidth, estimatedHeight - arrowHeight));
             }
-            else if (ViewModel.TargetBotRight.X + estimatedWidth <= DynamoSettings.Controller.DynamoViewModel.WorkspaceActualWidth)
+            else if (ViewModel.TargetBotRight.X + estimatedWidth <= dynSettings.Controller.DynamoViewModel.WorkspaceActualWidth)
             {
                 ViewModel.LimitedDirection = InfoBubbleViewModel.Direction.Top;
                 contentMargin = Configurations.NodeTooltipContentMarginLeft;
@@ -649,7 +657,7 @@ namespace Dynamo.Controls
 
         private PointCollection GetFramePoints_NodeTooltipConnectLeft(double estimatedHeight, double estimatedWidth)
         {
-            if (ViewModel.TargetBotRight.X + estimatedWidth > DynamoSettings.Controller.DynamoViewModel.WorkspaceActualWidth)
+            if (ViewModel.TargetBotRight.X + estimatedWidth > dynSettings.Controller.DynamoViewModel.WorkspaceActualWidth)
             {
                 ViewModel.LimitedDirection = InfoBubbleViewModel.Direction.Right;
                 contentMargin = Configurations.NodeTooltipContentMarginRight;
@@ -867,17 +875,17 @@ namespace Dynamo.Controls
                 mainGrid.Margin = newMargin;
             }
             //botton
-            if (mainGrid.Margin.Top + estimatedHeight >= DynamoSettings.Controller.DynamoViewModel.WorkspaceActualHeight)
+            if (mainGrid.Margin.Top + estimatedHeight >= dynSettings.Controller.DynamoViewModel.WorkspaceActualHeight)
             {
                 Thickness newMargin = mainGrid.Margin;
-                newMargin.Top = DynamoSettings.Controller.DynamoViewModel.WorkspaceActualHeight - estimatedHeight - 1;
+                newMargin.Top = dynSettings.Controller.DynamoViewModel.WorkspaceActualHeight - estimatedHeight - 1;
                 mainGrid.Margin = newMargin;
             }
             //right
-            if (mainGrid.Margin.Left + estimatedWidth >= DynamoSettings.Controller.DynamoViewModel.WorkspaceActualWidth)
+            if (mainGrid.Margin.Left + estimatedWidth >= dynSettings.Controller.DynamoViewModel.WorkspaceActualWidth)
             {
                 Thickness newMargin = mainGrid.Margin;
-                newMargin.Left = DynamoSettings.Controller.DynamoViewModel.WorkspaceActualWidth - estimatedWidth - 1;
+                newMargin.Left = dynSettings.Controller.DynamoViewModel.WorkspaceActualWidth - estimatedWidth - 1;
                 mainGrid.Margin = newMargin;
             }
 
@@ -909,58 +917,58 @@ namespace Dynamo.Controls
             UpdateShape();
             UpdatePosition();
 
-            preview_LastMaxWidth = ContentContainer.MaxWidth;
-            preview_LastMaxHeight = ContentContainer.MaxHeight;
+            this.preview_LastMaxWidth = ContentContainer.MaxWidth;
+            this.preview_LastMaxHeight = ContentContainer.MaxHeight;
         }
 
         #endregion
 
         private void ShowPreviewBubbleFullContent()
         {
-            if (IsDisconnected)
+            if (this.IsDisconnected)
                 return;
             
             InfoBubbleDataPacket data = new InfoBubbleDataPacket();
             data.Style = InfoBubbleViewModel.Style.Preview;
             data.ConnectingDirection = InfoBubbleViewModel.Direction.Top;
 
-            ViewModel.ShowFullContentCommand.Execute(data);
+            this.ViewModel.ShowFullContentCommand.Execute(data);
         }
 
         private void ShowPreviewBubbleCondensedContent()
         {
-            if (IsDisconnected)
+            if (this.IsDisconnected)
                 return;
 
             InfoBubbleDataPacket data = new InfoBubbleDataPacket();
             data.Style = InfoBubbleViewModel.Style.PreviewCondensed;
             data.ConnectingDirection = InfoBubbleViewModel.Direction.Top;
 
-            ViewModel.ShowCondensedContentCommand.Execute(data);
+            this.ViewModel.ShowCondensedContentCommand.Execute(data);
         }
 
         private void ShowErrorBubbleFullContent()
         {
-            if (IsDisconnected)
+            if (this.IsDisconnected)
                 return;
 
             InfoBubbleDataPacket data = new InfoBubbleDataPacket();
             data.Style = InfoBubbleViewModel.Style.Error;
             data.ConnectingDirection = InfoBubbleViewModel.Direction.Bottom;
 
-            ViewModel.ShowFullContentCommand.Execute(data);
+            this.ViewModel.ShowFullContentCommand.Execute(data);
         }
 
         private void ShowErrorBubbleCondensedContent()
         {
-            if (IsDisconnected)
+            if (this.IsDisconnected)
                 return;
 
             InfoBubbleDataPacket data = new InfoBubbleDataPacket();
             data.Style = InfoBubbleViewModel.Style.ErrorCondensed;
             data.ConnectingDirection = InfoBubbleViewModel.Direction.Bottom;
 
-            ViewModel.ShowCondensedContentCommand.Execute(data);
+            this.ViewModel.ShowCondensedContentCommand.Execute(data);
         }
 
         private void InfoBubbleRequestAction(object sender, InfoBubbleEventArgs e)
@@ -984,7 +992,7 @@ namespace Dynamo.Controls
 
         private void ShowInfoBubble()
         {
-            if (mainGrid.Visibility == Visibility.Collapsed)
+            if (mainGrid.Visibility == System.Windows.Visibility.Collapsed)
             {
                 mainGrid.Visibility = Visibility.Visible;
                 // Run animation and skip it to end state i.e. MaxOpacity
@@ -996,7 +1004,7 @@ namespace Dynamo.Controls
         // Hide bubble instantly
         private void HideInfoBubble()
         {
-            if (mainGrid.Visibility == Visibility.Visible)
+            if (mainGrid.Visibility == System.Windows.Visibility.Visible)
             {
                 mainGrid.Visibility = Visibility.Collapsed;
                 fadeOutStoryBoard.Begin(this);
@@ -1006,11 +1014,11 @@ namespace Dynamo.Controls
 
         private void FadeInInfoBubble()
         {
-            if (IsDisconnected)
+            if (this.IsDisconnected)
                 return;
 
-            if (DynamoSettings.Controller.DynamoViewModel.IsMouseDown ||
-                !DynamoSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.CanShowInfoBubble)
+            if (dynSettings.Controller.DynamoViewModel.IsMouseDown ||
+                !dynSettings.Controller.DynamoViewModel.CurrentSpaceViewModel.CanShowInfoBubble)
                 return;
 
             fadeOutStoryBoard.Stop(this);
@@ -1020,10 +1028,10 @@ namespace Dynamo.Controls
 
         private void FadeOutInfoBubble()
         {
-            if (IsDisconnected)
+            if (this.IsDisconnected)
                 return;
 
-            if (ViewModel.InfoBubbleState == InfoBubbleViewModel.State.Pinned)
+            if (this.ViewModel.InfoBubbleState == InfoBubbleViewModel.State.Pinned)
                 return;
 
             fadeInStoryBoard.Stop(this);
@@ -1034,7 +1042,7 @@ namespace Dynamo.Controls
 
         private void ContentContainer_MouseEnter(object sender, MouseEventArgs e)
         {
-            if (IsDisconnected)
+            if (this.IsDisconnected)
                 return;
                 
             if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.PreviewCondensed)
@@ -1045,7 +1053,7 @@ namespace Dynamo.Controls
             //FadeInInfoBubble();
             ShowInfoBubble();
 
-            Cursor = CursorLibrary.GetCursor(CursorSet.Pointer);
+            this.Cursor = CursorLibrary.GetCursor(CursorSet.Pointer);
         }
 
         private void InfoBubble_MouseLeave(object sender, MouseEventArgs e)
@@ -1054,7 +1062,7 @@ namespace Dynamo.Controls
             // InfoBubbleView when it becomes disconnected from InfoBubbleViewModel (i.e. 
             // when the NodeModel it belongs is deleted by user). In this case, InfoBubbleView
             // should simply ignore the message, since the node is no longer valid.
-            if (IsDisconnected)
+            if (this.IsDisconnected)
                 return;
 
             switch (ViewModel.InfoBubbleStyle)
@@ -1077,18 +1085,18 @@ namespace Dynamo.Controls
                     break;
             }
 
-            Cursor = CursorLibrary.GetCursor(CursorSet.Pointer);
+            this.Cursor = CursorLibrary.GetCursor(CursorSet.Pointer);
         }
 
         private void InfoBubble_MouseEnter(object sender, MouseEventArgs e)
         {
-            Cursor = CursorLibrary.GetCursor(CursorSet.Condense);
+            this.Cursor = CursorLibrary.GetCursor(CursorSet.Condense);
         }
 
         private void InfoBubble_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             e.Handled = true;
-            if (IsDisconnected)
+            if (this.IsDisconnected)
                 return;
 
             if (ViewModel.InfoBubbleStyle != InfoBubbleViewModel.Style.Preview && ViewModel.InfoBubbleStyle != InfoBubbleViewModel.Style.PreviewCondensed)
@@ -1109,7 +1117,7 @@ namespace Dynamo.Controls
 
         private void ResizeObject_MouseLeave(object sender, MouseEventArgs e)
         {
-            Cursor = null;
+            this.Cursor = null;
         }
 
         private void ResizeObject_MouseUp(object sender, MouseButtonEventArgs e)
@@ -1122,7 +1130,7 @@ namespace Dynamo.Controls
 
         private void MainGrid_MouseMove(object sender, MouseEventArgs e)
         {
-            if (IsDisconnected)
+            if (this.IsDisconnected)
                 return;
 
             if (!isResizing)
@@ -1140,7 +1148,7 @@ namespace Dynamo.Controls
 
         private void HorizontalResizeBar_MouseEnter(object sender, MouseEventArgs e)
         {
-            Cursor = CursorLibrary.GetCursor(CursorSet.ResizeVertical);
+            this.Cursor = CursorLibrary.GetCursor(CursorSet.ResizeVertical);
         }
 
         private void HorizontalResizeBar_MouseDown(object sender, MouseButtonEventArgs e)
@@ -1154,7 +1162,7 @@ namespace Dynamo.Controls
 
         private void ConnerResizePoint_MouseEnter(object sender, MouseEventArgs e)
         {
-            Cursor = CursorLibrary.GetCursor(CursorSet.ResizeDiagonal);
+            this.Cursor = CursorLibrary.GetCursor(CursorSet.ResizeDiagonal);
         }
 
         private void ConnerResizePoint_MouseDown(object sender, MouseButtonEventArgs e)
@@ -1178,7 +1186,7 @@ namespace Dynamo.Controls
 
         private void VerticalResizeBar_MouseEnter(object sender, MouseEventArgs e)
         {
-            Cursor = CursorLibrary.GetCursor(CursorSet.ResizeHorizontal);
+            this.Cursor = CursorLibrary.GetCursor(CursorSet.ResizeHorizontal);
         }
 
         private void InfoBubble_MouseWheel(object sender, MouseWheelEventArgs e)
@@ -1188,23 +1196,23 @@ namespace Dynamo.Controls
 
         private void InfoBubble_MouseMove(object sender, MouseEventArgs e)
         {
-            if (IsDisconnected)
+            if (this.IsDisconnected)
                 return;
 
             Point mousePosition = e.GetPosition(this);
 
-            double offsetX = ActualWidth - ContentContainer.ActualWidth;
-            double offsetY = ActualHeight - ContentContainer.ActualHeight;
+            double offsetX = this.ActualWidth - ContentContainer.ActualWidth;
+            double offsetY = this.ActualHeight - ContentContainer.ActualHeight;
             if (Math.Abs(mousePosition.X - offsetX - ContentContainer.ActualWidth / 2) < 25
                 && (mousePosition.Y - offsetY < 20)
                 && (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.Preview))
             {
-                Cursor = CursorLibrary.GetCursor(CursorSet.Expand);
+                this.Cursor = CursorLibrary.GetCursor(CursorSet.Expand);
             }
             else if (ViewModel.InfoBubbleStyle == InfoBubbleViewModel.Style.PreviewCondensed)
-                Cursor = CursorLibrary.GetCursor(CursorSet.Condense);
+                this.Cursor = CursorLibrary.GetCursor(CursorSet.Condense);
             else
-                Cursor = null;
+                this.Cursor = null;
         }
 
         #endregion

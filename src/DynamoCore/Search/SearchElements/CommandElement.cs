@@ -63,12 +63,12 @@ namespace Dynamo.Search.SearchElements
         /// <param name="command">The command to be execute in the Execute() method - with no parameters</param>
         public CommandElement(string name, string description, IEnumerable<string> tags, ICommand command)
         {
-            Command = command;
-            _name = name;
-            Weight = 1.2;
-            Keywords = String.Join(" ", tags);
-            _type = "Command";
-            _description = description;
+            this.Command = command;
+            this._name = name;
+            this.Weight = 1.2;
+            this.Keywords = String.Join(" ", tags);
+            this._type = "Command";
+            this._description = description;
         }
 
         /// <summary>
@@ -76,10 +76,10 @@ namespace Dynamo.Search.SearchElements
         /// hits enter in the SearchView.</summary>
         public override void Execute()
         {
-            //DynamoSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(this.Command, null));
-            //DynamoSettings.Controller.ProcessCommandQueue();
+            //dynSettings.Controller.CommandQueue.Enqueue(Tuple.Create<object, object>(this.Command, null));
+            //dynSettings.Controller.ProcessCommandQueue();
 
-            Command.Execute(null);
+            this.Command.Execute(null);
         }
 
     }

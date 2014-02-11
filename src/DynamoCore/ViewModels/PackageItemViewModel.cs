@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
-using Dynamo.Core;
+using Dynamo.Nodes;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.PackageManager.UI
@@ -37,7 +37,7 @@ namespace Dynamo.PackageManager.UI
                 elem.Parent.Items.Remove(elem);
 
             elem.Parent = this;
-            Items.Add(elem);
+            this.Items.Add(elem);
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace Dynamo.PackageManager.UI
 
             public ToggleIsExpandedCommand(PackageItemViewModel i)
             {
-                _viewModel = i;
+                this._viewModel = i;
             }
 
             public void Execute(object parameters)
@@ -144,7 +144,7 @@ namespace Dynamo.PackageManager.UI
         /// </summary>
         public void BuildDependencies( HashSet<object> discoveredDeps )
         {
-            Items.Clear();
+            this.Items.Clear();
 
             if (DependencyType == DependencyType.CustomNode)
             {
@@ -160,7 +160,7 @@ namespace Dynamo.PackageManager.UI
                         discoveredDeps.Add(this);
                         packDep.BuildDependencies(discoveredDeps);
                     }
-                    Items.Add(packDep);
+                    this.Items.Add(packDep);
                 }
             }
             else if (DependencyType == DependencyType.Assembly)
@@ -178,7 +178,7 @@ namespace Dynamo.PackageManager.UI
                         discoveredDeps.Add(this);
                         packDep.BuildDependencies(discoveredDeps);
                     }
-                    Items.Add(packDep);
+                    this.Items.Add(packDep);
                 }
             }
         }

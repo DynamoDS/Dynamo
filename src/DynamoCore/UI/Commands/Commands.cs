@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using System.Windows.Input;
-using Dynamo.Core;
 using Newtonsoft.Json;
 using Dynamo.Utilities;
 
@@ -142,10 +141,10 @@ namespace Dynamo.UI.Commands
             }
             commandQueue.Clear();
 
-            if (DynamoSettings.Controller.UIDispatcher != null)
+            if (dynSettings.Controller.UIDispatcher != null)
             {
-                DynamoLogger.Instance.Log(string.Format("DynamoSettings.Bench Thread : {0}",
-                                                       DynamoSettings.Controller.UIDispatcher.Thread.ManagedThreadId.ToString(CultureInfo.InvariantCulture)));
+                DynamoLogger.Instance.Log(string.Format("dynSettings.Bench Thread : {0}",
+                                                       dynSettings.Controller.UIDispatcher.Thread.ManagedThreadId.ToString(CultureInfo.InvariantCulture)));
             }
         }
 

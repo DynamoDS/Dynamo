@@ -64,16 +64,16 @@ namespace Dynamo
         public PreferenceSettings()
         {
             // Default Settings
-            IsFirstRun = true;
-            IsUsageReportingApproved = false;
+            this.IsFirstRun = true;
+            this.IsUsageReportingApproved = false;
 
-            ShowConsole = false;
-            ShowConnector = true;
-            ConnectorType = ConnectorType.BEZIER;
-            FullscreenWatchShowing = true;
-            LengthUnit = DynamoLengthUnit.Meter;
-            AreaUnit = DynamoAreaUnit.SquareMeter;
-            VolumeUnit = DynamoVolumeUnit.CubicMeter;
+            this.ShowConsole = false;
+            this.ShowConnector = true;
+            this.ConnectorType = ConnectorType.BEZIER;
+            this.FullscreenWatchShowing = true;
+            this.LengthUnit = DynamoLengthUnit.Meter;
+            this.AreaUnit = DynamoAreaUnit.SquareMeter;
+            this.VolumeUnit = DynamoVolumeUnit.CubicMeter;
         }
 
         /// <summary>
@@ -163,8 +163,8 @@ namespace Dynamo
         {
             try
             {
-                string appDataFolder = Environment.GetFolderPath(
-                    Environment.SpecialFolder.ApplicationData);
+                string appDataFolder = System.Environment.GetFolderPath(
+                    System.Environment.SpecialFolder.ApplicationData);
 
                 appDataFolder = Path.Combine(appDataFolder, DYNAMO_SETTINGS_DIRECTORY);
                 

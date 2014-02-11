@@ -69,6 +69,7 @@ limitations under the License.
     <Reference Include="DesignScriptStudio.Renderer">
       <HintPath>..\..\extern\DSSRenderer\DesignScriptStudio.Renderer.dll</HintPath>
     </Reference>
+    <Reference Include="FSharp.Core" />
     <Reference Include="Greg, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\greg\Greg.dll</HintPath>
@@ -129,17 +130,9 @@ limitations under the License.
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Nodes\Apply.cs" />
-    <Compile Include="Nodes\Output.cs" />
-    <Compile Include="Nodes\Symbol.cs" />
-    <Compile Include="Nodes\VariableInputNode.cs" />
-    <Compile Include="UI\Controls\DynamoNodeButton.cs" />
-    <Compile Include="UI\UIPartials.cs" />
-    <Compile Include="Utilities\PredicateTraverser.cs" />
-    <Compile Include="Nodes\BuiltinNodeCategories.cs" />
     <Compile Include="Core\UndoRedoRecorder.cs" />
     <Compile Include="Nodes\CustomNodeInstance.cs" />
-    <Compile Include="Nodes\Utilities.cs" />
+    <Compile Include="Nodes\dynEnum.cs" />
     <Compile Include="UI\Controls\GraphUpdateNotificationControl.xaml.cs">
       <DependentUpon>GraphUpdateNotificationControl.xaml</DependentUpon>
     </Compile>
@@ -157,10 +150,12 @@ limitations under the License.
     <Compile Include="Models\HomeWorkspaceModel.cs" />
     <Compile Include="Nodes\CodeBlockNode.cs" />
     <Compile Include="Models\WorkspaceMigrations.cs" />
-    <Compile Include="Nodes\DSFunction.cs" />
+    <Compile Include="Nodes\dynDSFunction.cs" />
     <Compile Include="Models\Migration.cs" />
     <Compile Include="Core\CustomNodeDefinition.cs" />
     <Compile Include="Core\PreferenceSettings.cs" />
+    <Compile Include="Nodes\Geometry.cs" />
+    <Compile Include="Nodes\Measurement.cs" />
     <Compile Include="PackageManager\PackageManagerClient.cs" />
     <Compile Include="Search\SearchElements\CustomNodeSearchElement.cs" />
     <Compile Include="Search\SearchElements\DSFunctionNodeSearchElement.cs" />
@@ -170,6 +165,8 @@ limitations under the License.
     <Compile Include="UI\Commands\Commands.cs" />
     <Compile Include="Core\DynamoLogger.cs" />
     <Compile Include="Core\DynamoSelection.cs" />
+    <Compile Include="Nodes\dynMultithreading.cs" />
+    <Compile Include="Nodes\dynOptimize.cs" />
     <Compile Include="Services\Heartbeat.cs" />
     <Compile Include="Services\Log.cs" />
     <Compile Include="Services\Logger.cs" />
@@ -254,6 +251,9 @@ limitations under the License.
       <DependentUpon>NodeHelpPrompt.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="UI\UIPartials.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="UI\Views\DynamoView.xaml.cs">
       <DependentUpon>DynamoView.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -289,6 +289,7 @@ limitations under the License.
     <Compile Include="UI\ZoomBorder.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Nodes\dynFormula.cs" />
     <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\ObservableDictionary.cs" />
     <Compile Include="Utilities\TrulyObservableCollection.cs" />
@@ -312,10 +313,17 @@ limitations under the License.
     <Compile Include="Search\SearchElements\SearchElementBase.cs" />
     <Compile Include="Search\SearchElements\WorkspaceSearchElement.cs" />
     <Compile Include="ViewModels\SearchViewModel.cs" />
+    <Compile Include="Nodes\dynColors.cs" />
+    <Compile Include="Nodes\dynTimer.cs" />
+    <Compile Include="Nodes\dynBaseTypes.cs" />
+    <Compile Include="Nodes\dynCommunication.cs" />
     <Compile Include="Models\ConnectorModel.cs" />
+    <Compile Include="Nodes\dynFiles.cs" />
+    <Compile Include="Nodes\dynFunction.cs" />
     <Compile Include="Models\NodeModel.cs" />
-    <Compile Include="Core\DynamoSettings.cs" />
+    <Compile Include="Core\dynSettings.cs" />
     <Compile Include="Models\WorkspaceModel.cs" />
+    <Compile Include="Nodes\dynWatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -404,6 +412,14 @@ limitations under the License.
     <ProjectReference Include="..\Engine\ProtoScript\ProtoScript.csproj">
       <Project>{a4794476-7d0e-41c0-ad83-4ab929c0a46c}</Project>
       <Name>ProtoScript</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Legacy\FSchemeInterop\FSchemeInterop2012.csproj">
+      <Project>{126c6420-c7a2-43b0-8b08-206c6c4c1348}</Project>
+      <Name>FSchemeInterop2012</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Legacy\FScheme\FScheme.2012.fsproj">
+      <Project>{f0e5a3e5-bdd0-41ae-848e-ded9efc5fa7f}</Project>
+      <Name>FScheme.2012</Name>
     </ProjectReference>
     <ProjectReference Include="..\Libraries\DynamoUnits\Units.csproj">
       <Project>{6E0A079E-85F1-45A1-AD5B-9855E4344809}</Project>

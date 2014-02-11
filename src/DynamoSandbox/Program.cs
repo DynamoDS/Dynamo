@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using Dynamo;
 using Dynamo.Controls;
-using Dynamo.Core;
 using Dynamo.Utilities;
 
 namespace DynamoSandbox
@@ -40,7 +39,7 @@ namespace DynamoSandbox
                 #if DEBUG
 
                 // Display the recorded command XML when the crash happens, so that it maybe saved and re-run later
-                DynamoSettings.Controller.DynamoViewModel.SaveRecordedCommand.Execute(null);
+                dynSettings.Controller.DynamoViewModel.SaveRecordedCommand.Execute(null);
 
                 #endif
 
@@ -48,12 +47,12 @@ namespace DynamoSandbox
                 {
                     // Show the unhandled exception dialog so user can copy the 
                     // crash details and report the crash if she chooses to.
-                    DynamoSettings.Controller.OnRequestsCrashPrompt(null,
+                    dynSettings.Controller.OnRequestsCrashPrompt(null,
                         new CrashPromptArgs(e.Message + "\n\n" + e.StackTrace));
 
                     // Give user a chance to save (but does not allow cancellation)
                     bool allowCancellation = false;
-                    DynamoSettings.Controller.DynamoViewModel.Exit(allowCancellation);
+                    dynSettings.Controller.DynamoViewModel.Exit(allowCancellation);
                 }
                 catch
                 {

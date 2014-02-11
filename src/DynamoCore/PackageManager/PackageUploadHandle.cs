@@ -1,4 +1,11 @@
-﻿using Greg.Requests;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using Dynamo.Utilities;
+using Greg.Requests;
 using Greg.Responses;
 using Microsoft.Practices.Prism.ViewModel;
 
@@ -35,24 +42,24 @@ namespace Dynamo.PackageManager
 
         public PackageUploadHandle(PackageUploadRequestBody header)
         {
-            Header = header;
+            this.Header = header;
         }
 
         public PackageUploadHandle(PackageVersionUploadRequestBody header)
         {
-            VersionHeader = header;
+            this.VersionHeader = header;
         }
 
         public void Error(string errorString)
         {
-            ErrorString = errorString;
-            UploadState = State.Error;
+            this.ErrorString = errorString;
+            this.UploadState = State.Error;
         }
 
         public void Done(PackageHeader ph)
         {
-            CompletedHeader = ph;
-            UploadState = State.Uploaded;
+            this.CompletedHeader = ph;
+            this.UploadState = State.Uploaded;
         }
 
     }

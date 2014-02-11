@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Linq;
-using Dynamo.Core;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using NUnit.Framework;
@@ -13,31 +12,31 @@ namespace Dynamo.Tests
         [Test]
         public void AdaptiveComponentByFace()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\AdaptiveComponent\AdaptiveComponentByFace.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
 
         [Test]
         public void AdaptiveComponentByCurve()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\AdaptiveComponent\AdaptiveComponentByCurve.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
         }
 
         [Test]
         public void AdaptiveComponent()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             //string path = Path.Combine(_testPath, @".\AdaptiveComponent.rfa");
             //string modelPath = Path.GetFullPath(path);
@@ -50,10 +49,10 @@ namespace Dynamo.Tests
 
             //the .dyn has the slider set at 5. let's make sure that
             //if you set the slider to something else before running, that it get the correct number
-            var slider = DynamoSettings.Controller.DynamoModel.Nodes.First(x => x is DoubleSliderInput);
+            var slider = dynSettings.Controller.DynamoModel.Nodes.First(x => x is DoubleSliderInput);
             ((BasicInteractive<double>)slider).Value = 1;
 
-            DynamoSettings.Controller.RunExpression(true);
+            dynSettings.Controller.RunExpression(true);
 
             //get all the family instances in the document
             var acs = TestUtils.GetAllFamilyInstancesWithTypeName("3PointAC_wireTruss");
@@ -62,7 +61,7 @@ namespace Dynamo.Tests
             //change the number slider
             ((BasicInteractive<double>)slider).Value = 3;
 
-            DynamoSettings.Controller.RunExpression(true);
+            dynSettings.Controller.RunExpression(true);
             acs = TestUtils.GetAllFamilyInstancesWithTypeName("3PointAC_wireTruss");
             Assert.AreEqual(3, acs.Count());
 

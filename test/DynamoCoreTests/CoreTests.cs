@@ -7,7 +7,6 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using Dynamo.Controls;
-using Dynamo.Core;
 using Dynamo.FSchemeInterop;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -56,7 +55,7 @@ namespace Dynamo.Tests
         [Test]
         public void CanOpenGoodFile()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\multiplicationAndAdd\multiplicationAndAdd.dyn");
             model.Open(openPath);
@@ -67,7 +66,7 @@ namespace Dynamo.Tests
         [Test]
         public void CanAddANodeByName()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
             model.CreateNode(400.0, 100.0, "Add");
             Assert.AreEqual(Controller.DynamoViewModel.CurrentSpace.Nodes.Count, 1);
         }
@@ -81,14 +80,14 @@ namespace Dynamo.Tests
                 id, "This is a test note.", 200.0, 200.0, false);
 
             var ws = Controller.DynamoViewModel.CurrentSpace;
-            DynamoSettings.Controller.DynamoModel.AddNoteInternal(command, ws);
+            dynSettings.Controller.DynamoModel.AddNoteInternal(command, ws);
             Assert.AreEqual(Controller.DynamoViewModel.CurrentSpace.Notes.Count, 1);
         }
 
         [Test]
         public void CanAddToSelectionAndNotThrowExceptionWhenPassedIncorrectType()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
             
             int numNodes = 100;
 
@@ -108,7 +107,7 @@ namespace Dynamo.Tests
         [Test]
         public void CanAddToSelectionCommand()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             int numNodes = 100;
 
@@ -129,10 +128,10 @@ namespace Dynamo.Tests
         [Test]
         public void CanClearLog()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             Assert.AreNotEqual(0, Controller.DynamoViewModel.LogText.Length);
-            DynamoSettings.Controller.ClearLog(null);
+            dynSettings.Controller.ClearLog(null);
 
             Assert.AreEqual(0, Controller.DynamoViewModel.LogText.Length);
         }
@@ -142,14 +141,14 @@ namespace Dynamo.Tests
         [Test]
         public void CanClearWorkspaceWithEmptyWorkspace()
         {
-            DynamoSettings.Controller.DynamoModel.Clear(null);
+            dynSettings.Controller.DynamoModel.Clear(null);
             Assert.AreEqual(0, Controller.DynamoViewModel.Model.Nodes.Count());
         }
 
         [Test]
         public void CanClearWorkspaceWithNodes()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             Assert.AreEqual(0, Controller.DynamoViewModel.Model.Nodes.Count());
 
@@ -167,7 +166,7 @@ namespace Dynamo.Tests
         [Test]
         public void CanAdd100NodesToClipboard()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             int numNodes = 100;
 
@@ -191,7 +190,7 @@ namespace Dynamo.Tests
         [Test]
         public void ValidateConnectionsDoesNotClearError()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
             model.CreateNode(100.0, 300.0, "Number");
             Assert.AreEqual(1, model.Nodes.Count());
 
@@ -229,7 +228,7 @@ namespace Dynamo.Tests
         [Test]
         public void CanAdd1NodeToClipboardAndPaste()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             int numNodes = 1;
 
@@ -256,7 +255,7 @@ namespace Dynamo.Tests
         [Test]
         public void CanAdd100NodesToClipboardAndPaste()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             int numNodes = 100;
 
@@ -283,7 +282,7 @@ namespace Dynamo.Tests
         [Test]
         public void CanAdd100NodesToClipboardAndPaste3Times()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             int numNodes = 100;
 
@@ -315,7 +314,7 @@ namespace Dynamo.Tests
         [Test]
         public void CanAddOneNodeToClipboard()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             int numNodes = 1;
 
@@ -350,7 +349,7 @@ namespace Dynamo.Tests
         [Test]
         public void CanSaveAsEmptyFile()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string fn = "ruthlessTurtles.dyn";
             string path = Path.Combine(TempFolder, fn);
@@ -364,7 +363,7 @@ namespace Dynamo.Tests
         [Test]
         public void CanSaveAsFileWithNodesInIt()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             int numNodes = 100;
 
@@ -388,7 +387,7 @@ namespace Dynamo.Tests
         [Test]
         public void CannotSaveEmptyWorkspaceIfSaveIsCalledWithoutSettingPath()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             model.SaveAs(null);
 
@@ -398,7 +397,7 @@ namespace Dynamo.Tests
         [Test]
         public void CannotSavePopulatedWorkspaceIfSaveIsCalledWithoutSettingPath()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             int numNodes = 100;
 
@@ -423,7 +422,7 @@ namespace Dynamo.Tests
             // select all of them one by one
             for (int i = 0; i < numNodes; i++)
             {
-                DynamoSettings.Controller.OnRequestSelect(this, new ModelEventArgs(null));
+                dynSettings.Controller.OnRequestSelect(this, new ModelEventArgs(null));
             }
         }
 
@@ -432,7 +431,7 @@ namespace Dynamo.Tests
         {
             Assert.Inconclusive("Test not valid after move of selection handling logic to view.");
 
-            //var model = DynamoSettings.Controller.DynamoModel;
+            //var model = dynSettings.Controller.DynamoModel;
 
             //int numNodes = 100;
 
@@ -456,7 +455,7 @@ namespace Dynamo.Tests
         [Test]
         public void CanStayHomeWhenInHomeWorkspace()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             for (int i = 0; i < 20; i++)
             {
@@ -534,7 +533,7 @@ namespace Dynamo.Tests
         [Test]
         public void CanSumTwoNumbers()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             model.CreateNode(400.0, 100.0, "Dynamo.Nodes.Addition");
             model.CreateNode(100.0, 100.0, "Number");
@@ -572,7 +571,7 @@ namespace Dynamo.Tests
 
             //controller.DynamoViewModel.LogText = "";
 
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
 
             Thread.Sleep(250);
 
@@ -588,7 +587,7 @@ namespace Dynamo.Tests
         [Test]
         public void SelectionDoesNotChangeWhenAddingAlreadySelectedNode()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             int numNodes = 100;
 
@@ -615,7 +614,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestDraggedNode()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
             model.CreateNode(16, 32, "Add");
             NodeModel locatable = Controller.DynamoViewModel.Model.Nodes[0];
 
@@ -635,31 +634,31 @@ namespace Dynamo.Tests
         [Test]
         public void NodesHaveCorrectLocationsIndpendentOfCulture()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\nodeLocationTest.dyn");
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("es-AR");
             model.Open(openPath);
 
-            Assert.AreEqual(1, DynamoSettings.Controller.DynamoModel.Nodes.Count);
-            var node = DynamoSettings.Controller.DynamoModel.Nodes.First();
+            Assert.AreEqual(1, dynSettings.Controller.DynamoModel.Nodes.Count);
+            var node = dynSettings.Controller.DynamoModel.Nodes.First();
             Assert.AreEqual(217.952067513811, node.X);
             Assert.AreEqual(177.041832898393, node.Y);
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("zu-ZA");
             model.Open(openPath);
 
-            Assert.AreEqual(1, DynamoSettings.Controller.DynamoModel.Nodes.Count);
-            node = DynamoSettings.Controller.DynamoModel.Nodes.First();
+            Assert.AreEqual(1, dynSettings.Controller.DynamoModel.Nodes.Count);
+            node = dynSettings.Controller.DynamoModel.Nodes.First();
             Assert.AreEqual(217.952067513811, node.X);
             Assert.AreEqual(177.041832898393, node.Y);
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("ja-JP");
             model.Open(openPath);
 
-            Assert.AreEqual(1, DynamoSettings.Controller.DynamoModel.Nodes.Count);
-            node = DynamoSettings.Controller.DynamoModel.Nodes.First();
+            Assert.AreEqual(1, dynSettings.Controller.DynamoModel.Nodes.Count);
+            node = dynSettings.Controller.DynamoModel.Nodes.First();
             Assert.AreEqual(217.952067513811, node.X);
             Assert.AreEqual(177.041832898393, node.Y);
 

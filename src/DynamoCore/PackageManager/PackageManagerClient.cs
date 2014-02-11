@@ -6,7 +6,6 @@ using System.Linq;
 using System.Security.Authentication;
 using System.Threading.Tasks;
 using System.Windows;
-using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
@@ -57,7 +56,7 @@ namespace Dynamo.PackageManager
         public bool LoggedIn {
             get
             {
-                DynamoSettings.Controller.DynamoViewModel.OnRequestAuthentication(); 
+                dynSettings.Controller.DynamoViewModel.OnRequestAuthentication(); 
 
                 try
                 {
@@ -77,7 +76,7 @@ namespace Dynamo.PackageManager
         {
             get
             {
-                DynamoSettings.Controller.DynamoViewModel.OnRequestAuthentication();
+                dynSettings.Controller.DynamoViewModel.OnRequestAuthentication();
 
                 try
                 {
@@ -95,7 +94,7 @@ namespace Dynamo.PackageManager
         public PackageManagerClient()
         {
             Client = new Client(null, "http://54.225.121.251"); 
-            CachedPackageList = new List<PackageManagerSearchElement>();
+            this.CachedPackageList = new List<PackageManagerSearchElement>();
         }
 
         #region Under construction
@@ -126,7 +125,7 @@ namespace Dynamo.PackageManager
         public bool IsUserPackageOwner(string packageId)
         {
             if (!LoggedIn) return false;
-            var un = Username;
+            var un = this.Username;
 
             if (un == null) return false;
 
@@ -144,11 +143,11 @@ namespace Dynamo.PackageManager
 
         public bool Upvote(string packageId)
         {
-            DynamoSettings.Controller.DynamoViewModel.OnRequestAuthentication();
+            dynSettings.Controller.DynamoViewModel.OnRequestAuthentication();
 
             try
             {
-                var nv = new Upvote(packageId);
+                var nv = new Greg.Requests.Upvote(packageId);
                 var pkgResponse = Client.ExecuteAndDeserialize(nv);
                 return pkgResponse.success;
             }
@@ -160,11 +159,11 @@ namespace Dynamo.PackageManager
 
         public bool Downvote(string packageId)
         {
-            DynamoSettings.Controller.DynamoViewModel.OnRequestAuthentication();
+            dynSettings.Controller.DynamoViewModel.OnRequestAuthentication();
 
             try
             {
-                var nv = new Downvote(packageId);
+                var nv = new Greg.Requests.Downvote(packageId);
                 var pkgResponse = Client.ExecuteAndDeserialize(nv);
                 return pkgResponse.success;
             }
@@ -178,9 +177,9 @@ namespace Dynamo.PackageManager
         {
             try
             {
-                var nv = HeaderCollectionDownload.ByEngine("dynamo");
+                var nv = Greg.Requests.HeaderCollectionDownload.ByEngine("dynamo");
                 var pkgResponse = Client.ExecuteAndDeserializeWithContent<List<PackageHeader>>(nv);
-                CachedPackageList = 
+                this.CachedPackageList = 
                     pkgResponse.content
                                .Select((header) => new PackageManagerSearchElement(header))
                                .ToList();
@@ -214,7 +213,7 @@ namespace Dynamo.PackageManager
         public void PublishCurrentWorkspace()
         {
             var currentFunDef =
-                DynamoSettings.Controller.CustomNodeManager.GetDefinitionFromWorkspace(DynamoSettings.Controller.DynamoViewModel.CurrentSpace);
+                dynSettings.Controller.CustomNodeManager.GetDefinitionFromWorkspace(dynSettings.Controller.DynamoViewModel.CurrentSpace);
 
             if (currentFunDef != null)
             {
@@ -229,13 +228,14 @@ namespace Dynamo.PackageManager
 
         public bool CanPublishCurrentWorkspace()
         {
-            return DynamoSettings.Controller.DynamoViewModel.CurrentSpace is CustomNodeWorkspaceModel;
+            return dynSettings.Controller.DynamoViewModel.CurrentSpace is CustomNodeWorkspaceModel;
         }
 
         public void PublishSelectedNode()
         {
             var nodeList = DynamoSelection.Instance.Selection
-                                .OfType<CustomNodeInstance>()
+                                .Where(x => x is Function)
+                                .Cast<Function>()
                                 .Select(x => x.Definition.FunctionId)
                                 .ToList();
 
@@ -245,7 +245,7 @@ namespace Dynamo.PackageManager
                 return;
             }
 
-            var defs = nodeList.Select(DynamoSettings.CustomNodeManager.GetFunctionDefinition).ToList();
+            var defs = nodeList.Select(dynSettings.CustomNodeManager.GetFunctionDefinition).ToList();
 
             if (defs.Any(x => x == null))
                 MessageBox.Show("There was a problem getting the node from the workspace.", "Selection Error", MessageBoxButton.OK, MessageBoxImage.Question);
@@ -256,7 +256,7 @@ namespace Dynamo.PackageManager
         public bool CanPublishSelectedNode(object m)
         {
             return DynamoSelection.Instance.Selection.Count > 0 &&
-                   DynamoSelection.Instance.Selection.All(x => x is CustomNodeInstance);
+                   DynamoSelection.Instance.Selection.All(x => x is Function);
         }
 
         private void ShowNodePublishInfo(object funcDef)
@@ -267,9 +267,9 @@ namespace Dynamo.PackageManager
 
                 foreach (var f in fs)
                 {
-                    var pkg = DynamoSettings.PackageLoader.GetOwnerPackage(f);
+                    var pkg = dynSettings.PackageLoader.GetOwnerPackage(f);
 
-                    if (DynamoSettings.PackageLoader.GetOwnerPackage(f) != null)
+                    if (dynSettings.PackageLoader.GetOwnerPackage(f) != null)
                     {
                         var m = MessageBox.Show("The node is part of the dynamo package called \"" + pkg.Name +
                             "\" - do you want to submit a new version of this package?  \n\nIf not, this node will be moved to the new package you are creating.",
@@ -282,11 +282,9 @@ namespace Dynamo.PackageManager
                     }
                 }
 
-                var newPkgVm = new PublishPackageViewModel(DynamoSettings.PackageManagerClient)
-                {
-                    FunctionDefinitions = fs
-                };
-                DynamoSettings.Controller.DynamoViewModel.OnRequestPackagePublishDialog(newPkgVm);
+                var newPkgVm = new PublishPackageViewModel(dynSettings.PackageManagerClient);
+                newPkgVm.FunctionDefinitions = fs;
+                dynSettings.Controller.DynamoViewModel.OnRequestPackagePublishDialog(newPkgVm);
             }
             else
             {
@@ -297,7 +295,7 @@ namespace Dynamo.PackageManager
 
         public PackageUploadHandle Publish( Package l, List<string> files, bool isNewVersion )
         {
-            DynamoSettings.Controller.DynamoViewModel.OnRequestAuthentication();
+            dynSettings.Controller.DynamoViewModel.OnRequestAuthentication();
 
             var nv = new ValidateAuth();
             var pkgResponse = Client.ExecuteAndDeserialize(nv);
@@ -392,7 +390,7 @@ namespace Dynamo.PackageManager
                     var response = Client.Execute(pkgDownload);
                     var pathDl = PackageDownload.GetFileFromResponse(response);
 
-                    DynamoSettings.Controller.UIDispatcher.BeginInvoke((Action) (() =>
+                    dynSettings.Controller.UIDispatcher.BeginInvoke((Action) (() =>
                         {
                             try
                             {
@@ -400,7 +398,7 @@ namespace Dynamo.PackageManager
 
                                 Package dynPkg;
 
-                                var firstOrDefault = DynamoSettings.PackageLoader.LocalPackages.FirstOrDefault(pkg => pkg.Name == packageDownloadHandle.Name);
+                                var firstOrDefault = dynSettings.PackageLoader.LocalPackages.FirstOrDefault(pkg => pkg.Name == packageDownloadHandle.Name);
                                 if (firstOrDefault != null)
                                     firstOrDefault.UninstallCommand.Execute();
 
@@ -409,7 +407,7 @@ namespace Dynamo.PackageManager
 
                                     var downloadPkg = Package.FromDirectory(dynPkg.RootDirectory);
                                     downloadPkg.Load();
-                                    DynamoSettings.PackageLoader.LocalPackages.Add(downloadPkg);
+                                    dynSettings.PackageLoader.LocalPackages.Add(downloadPkg);
                                     packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
 
                                 }
@@ -484,11 +482,11 @@ namespace Dynamo.PackageManager
 
         internal PackageManagerResult Deprecate(string name)
         {
-            DynamoSettings.Controller.DynamoViewModel.OnRequestAuthentication();
+            dynSettings.Controller.DynamoViewModel.OnRequestAuthentication();
 
             try
             {
-                var nv = new Deprecate(name, "dynamo");
+                var nv = new Greg.Requests.Deprecate(name, "dynamo");
                 var pkgResponse = Client.ExecuteAndDeserialize(nv);
                 return new PackageManagerResult(pkgResponse.message, pkgResponse.success);
             }
@@ -500,11 +498,11 @@ namespace Dynamo.PackageManager
 
         internal PackageManagerResult Undeprecate(string name)
         {
-            DynamoSettings.Controller.DynamoViewModel.OnRequestAuthentication();
+            dynSettings.Controller.DynamoViewModel.OnRequestAuthentication();
 
             try
             {
-                var nv = new Undeprecate(name, "dynamo");
+                var nv = new Greg.Requests.Undeprecate(name, "dynamo");
                 var pkgResponse = Client.ExecuteAndDeserialize(nv);
                 return new PackageManagerResult(pkgResponse.message, pkgResponse.success);
             }

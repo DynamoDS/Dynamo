@@ -1,5 +1,8 @@
 ﻿using System.Windows;
+using Dynamo.Controls;
 using Dynamo.Models;
+using Dynamo.Nodes;
+using Dynamo.Utilities;
 
 namespace Dynamo.Prompts
 {
@@ -10,8 +13,8 @@ namespace Dynamo.Prompts
     {
         public NodeHelpPrompt(NodeModel node)
         {
-            DataContext = node;
-            WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            this.DataContext = node;
+            this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             InitializeComponent();
         }
     }

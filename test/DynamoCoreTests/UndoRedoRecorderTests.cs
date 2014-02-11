@@ -595,7 +595,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestBasicAttributes()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
             model.CreateNode(400, 100, "Dynamo.Nodes.Addition");
             var sumNode = Controller.DynamoViewModel.Model.Nodes[0] as Addition;
 
@@ -648,7 +648,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestDoubleInput()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
             model.CreateNode(400, 0, "Number");
 
             var numNode = Controller.DynamoViewModel.Model.Nodes[0] as DoubleInput;
@@ -678,7 +678,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestDoubleSliderInput()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
             model.CreateNode(400, 0, "Number Slider");
 
             var numNode = Controller.DynamoViewModel.Model.Nodes[0] as DoubleSliderInput;
@@ -718,7 +718,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestBool()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
             model.CreateNode(0, 0, "Boolean");
 
             var boolNode = Controller.DynamoViewModel.Model.Nodes[0] as BoolSelector;
@@ -748,7 +748,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestStringInput()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
             model.CreateNode(0, 0, "String");
 
             var strNode = Controller.DynamoViewModel.Model.Nodes[0] as StringInput;
@@ -778,7 +778,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestStringFileName()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
             model.CreateNode(0, 0, "Directory");
 
             var strNode = Controller.DynamoViewModel.Model.Nodes[0] as StringDirectory;
@@ -808,7 +808,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestVariableInput()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
             model.CreateNode(0, 0, "List");
 
             var listNode = Controller.DynamoViewModel.Model.Nodes[0] as NewList;
@@ -840,7 +840,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestSublists()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
             model.CreateNode(0, 0, "Build Sublists");
 
             var strNode = Controller.DynamoViewModel.Model.Nodes[0] as Sublists;
@@ -870,7 +870,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestFormula()
         {
-            var model = DynamoSettings.Controller.DynamoModel;
+            var model = dynSettings.Controller.DynamoModel;
             model.CreateNode(0, 0, "Formula");
 
             var formulaNode = Controller.DynamoViewModel.Model.Nodes[0] as Formula;
@@ -911,7 +911,7 @@ namespace Dynamo.Tests
                 Controller.CustomNodeManager.AddFileToPath(openPath2)!= null);
             model.Open(openPath);
 
-            DynamoSettings.Controller.RunExpression(null);
+            dynSettings.Controller.RunExpression(null);
             System.Threading.Thread.Sleep(500);
 
             // check if the node is loaded

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using Dynamo.Core;
 using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.UI.Prompts;
@@ -24,7 +24,7 @@ namespace Dynamo.Nodes
             InitializeComponent();
 
             // for debugging purposes
-            DataContextChanged += OnDataContextChanged;
+            this.DataContextChanged += OnDataContextChanged;
 
             // update the size of the element when the text changes
             noteText.SizeChanged += (sender, args) =>
@@ -34,12 +34,12 @@ namespace Dynamo.Nodes
                 };
             noteText.PreviewMouseDown += noteText_PreviewMouseDown;
 
-            Loaded += dynNoteView_Loaded;
+            this.Loaded += dynNoteView_Loaded;
         }
 
         void dynNoteView_Loaded(object sender, RoutedEventArgs e)
         {
-            ViewModel = DataContext as NoteViewModel;
+            ViewModel = this.DataContext as NoteViewModel;
             ViewModel.RequestsSelection += ViewModel_RequestsSelection;
 
             // NoteModel has default dimension of 100x100 which will not be ideal in 
@@ -82,9 +82,9 @@ namespace Dynamo.Nodes
 
         void noteText_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            Guid noteGuid = ViewModel.Model.GUID;
-            DynamoSettings.Controller.DynamoViewModel.ExecuteCommand(
-                new DynamoViewModel.SelectModelCommand(noteGuid, Keyboard.Modifiers));
+            System.Guid noteGuid = this.ViewModel.Model.GUID;
+            dynSettings.Controller.DynamoViewModel.ExecuteCommand(
+                new DynCmd.SelectModelCommand(noteGuid, Keyboard.Modifiers));
         }
 
         private void editItem_Click(object sender, RoutedEventArgs e)
@@ -104,7 +104,7 @@ namespace Dynamo.Nodes
         private void deleteItem_Click(object sender, RoutedEventArgs e)
         {
             if (ViewModel != null)
-                DynamoSettings.Controller.DynamoViewModel.DeleteCommand.Execute(null);
+                dynSettings.Controller.DynamoViewModel.DeleteCommand.Execute(null);
         }
 
         private void Note_MouseDown(object sender, MouseButtonEventArgs e)

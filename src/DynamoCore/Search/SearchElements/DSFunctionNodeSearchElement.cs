@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using Dynamo.Core;
+using System.Windows.Input;
+using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using String = System.String;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using Dynamo.DSEngine;
 
@@ -33,11 +36,11 @@ namespace Dynamo.Search.SearchElements
         {
             // create node
             var guid = Guid.NewGuid();
-            DynamoSettings.Controller.DynamoViewModel.ExecuteCommand(
-                new DynamoViewModel.CreateNodeCommand(guid, _functionItem.MangledName, 0, 0, true, true));
+            dynSettings.Controller.DynamoViewModel.ExecuteCommand(
+                new DynCmd.CreateNodeCommand(guid, this._functionItem.MangledName, 0, 0, true, true));
 
             // select node
-            var placedNode = DynamoSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
+            var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
             if (placedNode != null)
             {
                 DynamoSelection.Instance.ClearSelection();
@@ -52,7 +55,7 @@ namespace Dynamo.Search.SearchElements
                 return false;
             }
 
-            return Equals(obj as DSFunctionNodeSearchElement);
+            return this.Equals(obj as DSFunctionNodeSearchElement);
         }
 
         /// <summary>
@@ -60,12 +63,12 @@ namespace Dynamo.Search.SearchElements
         /// <returns> A unique hashcode for the object </returns>
         public override int GetHashCode()
         {
-            return Type.GetHashCode() + Name.GetHashCode() + Description.GetHashCode();
+            return this.Type.GetHashCode() + this.Name.GetHashCode() + this.Description.GetHashCode();
         }
 
         public bool Equals(DSFunctionNodeSearchElement other)
         {
-            return _functionItem == other._functionItem;
+            return this._functionItem == other._functionItem;
         }
     }
 }

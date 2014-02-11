@@ -1,6 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Timers;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
 using Dynamo.UI;
+using Dynamo.Utilities;
+using System.Windows.Threading;
+using Dynamo.Controls;
+using System.Collections.ObjectModel;
+using Dynamo.Core;
 
 namespace Dynamo.ViewModels
 {
@@ -15,7 +27,7 @@ namespace Dynamo.ViewModels
 
         public InfoBubbleEventArgs(Request request)
         {
-            RequestType = request;
+            this.RequestType = request;
         }
     }
 
@@ -190,9 +202,9 @@ namespace Dynamo.ViewModels
 
         private void ChangeInfoBubbleState(object parameter)
         {
-            if (parameter is State)
+            if (parameter is InfoBubbleViewModel.State)
             {
-                State newState = (State)parameter;
+                InfoBubbleViewModel.State newState = (InfoBubbleViewModel.State)parameter;
 
                 InfoBubbleState = newState;
             }

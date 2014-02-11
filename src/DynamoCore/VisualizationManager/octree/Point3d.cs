@@ -1,5 +1,12 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
+using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+
 using Octree.Tools.Vector;
 
 namespace Octree.Tools.Point
@@ -165,7 +172,7 @@ namespace Octree.Tools.Point
         /// <returns></returns>
         public string WriteCoordinate(byte index)
         {
-            return nxyz[index].ToString();
+            return this.nxyz[index].ToString();
         }
         /// <summary>
         /// Write one coordinate
@@ -187,13 +194,13 @@ namespace Octree.Tools.Point
         }
         public bool AlmostEquals(Point3d p2, double Error)
         {
-            return Math.Abs(x - p2.x) <= Error &&
-                   Math.Abs(y - p2.y) <= Error &&
-                   Math.Abs(z - p2.z) <= Error;
+            return Math.Abs(this.x - p2.x) <= Error &&
+                   Math.Abs(this.y - p2.y) <= Error &&
+                   Math.Abs(this.z - p2.z) <= Error;
         }
         public bool Equals(Point3d p2)
         {
-            return x == p2.x && y == p2.y && z == p2.z;
+            return this.x == p2.x && this.y == p2.y && this.z == p2.z;
         }
         #endregion
 
@@ -234,7 +241,7 @@ namespace Octree.Tools.Point
         /// <returns></returns>
         public override string ToString()
         {
-            return x + " " + y + " " + z;
+            return this.x + " " + this.y + " " + this.z;
         }
         #endregion
 
