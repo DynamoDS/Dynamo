@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using NUnit.Framework;
 using Dynamo.Units;
 
@@ -250,7 +252,7 @@ namespace Dynamo.Tests
 
             length.Value = 0.35560000000142239; //1'2"
             Assert.AreEqual("1' 2\"", length.ToString(DynamoLengthUnit.FractionalFoot));
-            
+
             length.Value = -0.35560000000142239; //-1'2"
             Assert.AreEqual("-1' 2\"", length.ToString(DynamoLengthUnit.FractionalFoot));
         }
@@ -436,9 +438,13 @@ namespace Dynamo.Tests
 
             //multiplication
             Assert.AreEqual(4, (length * length).Value);
+            Assert.IsInstanceOf<Area>(length * length);
+            Assert.AreEqual(4, (length * area).Value);
+            Assert.IsInstanceOf<Volume>(length * area);
             Assert.Throws<UnitsException>(() => { var test = area * area; });
             Assert.Throws<UnitsException>(() => { var test = volume * area; });
             Assert.Throws<UnitsException>(() => { var test = length * volume; });
+            Assert.Throws<UnitsException>(() => { var test = volume * volume; });
 
             //division
             Assert.AreEqual(1, length / length);
@@ -464,13 +470,13 @@ namespace Dynamo.Tests
 
             //ensure that when a formula is unit + double it returns a unit
             //and when it is double + unit, it returns a double
-            
+
             Assert.AreEqual(new Length(length.Value + 2.0), length + 2.0);
             Assert.AreEqual(4.0, 2.0 + length);
-            
+
             Assert.AreEqual(new Area(area.Value + 2.0), area + 2.0);
             Assert.AreEqual(4.0, 2.0 + area);
-            
+
             Assert.AreEqual(new Volume(volume.Value + 2.0), volume + 2.0);
             Assert.AreEqual(4.0, 2.0 + volume);
         }
@@ -582,6 +588,29 @@ namespace Dynamo.Tests
             var mixedList = new List<SIUnit> {l2, a4, v4};
             Assert.Throws<InvalidOperationException>(mixedList.Sort);
 
+        }
+    }
+
+    internal class UnitsOfMeasureDynTests : DynamoUnitTest
+    {
+        [Test]
+        public void CanMapOverUnits()
+        {
+            var length = FSchemeInterop.Utils.ToFSharpList(Enumerable.Range(1, 5).Select(x => new Length(x)));
+            var area = FSchemeInterop.Utils.ToFSharpList(Enumerable.Range(1, 5).Select(x => new Area(x)));
+            var volume = FSchemeInterop.Utils.ToFSharpList(Enumerable.Range(1, 5).Select(x => new Volume(x)));
+
+            RunExampleTest(
+                Path.Combine(GetTestDirectory(), @"core\units\map-numbers-to-units.dyn"),
+                new[]
+                {
+                    new KeyValuePair<Guid, object>(Guid.Parse("8d46007e-e6d3-4848-8213-7c2ac3c5624d"), length),
+                    new KeyValuePair<Guid, object>(Guid.Parse("b22c8a19-04dc-473e-a3b8-d0071175ce53"), area), 
+                    new KeyValuePair<Guid, object>(Guid.Parse("92accc0a-4380-4c60-92e7-7f735cecbb6b"), volume),
+                    new KeyValuePair<Guid, object>(Guid.Parse("97fdd4df-e9dd-4f7f-9494-b2adabfdbdeb"), length), 
+                    new KeyValuePair<Guid, object>(Guid.Parse("4e830faa-d358-4086-ba4c-9b7e70f96681"), area), 
+                    new KeyValuePair<Guid, object>(Guid.Parse("e6ae471f-9cd8-4cbb-bb83-ecdf1785c35f"), volume)
+                });
         }
     }
 }
