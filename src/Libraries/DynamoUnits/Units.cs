@@ -679,7 +679,7 @@ namespace Dynamo.Units
         {
             if (value < 0)
             {
-                throw new MathematicalArgumentException("You can not create a negative area.");
+                value = 0.0;
             }
         }
 
@@ -813,7 +813,8 @@ namespace Dynamo.Units
             double total = 0.0;
             if (Double.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out total))
             {
-                _value = total/UnitsManager.Instance.UiAreaConversion;
+                var v = total/UnitsManager.Instance.UiAreaConversion;
+                _value = v < 0.0 ? 0.0 : v;
                 return;
             }
 
@@ -826,7 +827,7 @@ namespace Dynamo.Units
             total += sq_in / SIUnit.ToSquareInch;
             total += sq_ft / SIUnit.ToSquareFoot;
 
-            _value = total;
+            _value = total < 0 ? 0.0 : total;
         }
 
         public bool Equals(Area other)
@@ -897,7 +898,7 @@ namespace Dynamo.Units
         {
             if (value < 0)
             {
-                throw new MathematicalArgumentException("You can not create a negative volume.");
+                value = 0.0;
             }
         }
 
@@ -1022,7 +1023,8 @@ namespace Dynamo.Units
             double total = 0.0;
             if (Double.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out total))
             {
-                _value = total/UnitsManager.Instance.UiVolumeConversion;
+                var v = total/UnitsManager.Instance.UiVolumeConversion;
+                _value =  v < 0.0 ? 0.0 : v;
                 return;
             }
 
@@ -1035,7 +1037,7 @@ namespace Dynamo.Units
             total += cu_in / ToCubicInch;
             total += cu_ft / ToCubicFoot;
 
-            _value = total;
+            _value = total < 0 ? 0.0 : total;
         }
 
         public bool Equals(Volume other)
