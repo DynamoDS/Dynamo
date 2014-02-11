@@ -2,10 +2,8 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
-using System.Windows.Forms.VisualStyles;
-using Dynamo.FSchemeInterop;
-using System.Windows.Media;
 using System.Xml;
+using Dynamo.Core;
 using Dynamo.Utilities;
 
 namespace Dynamo.Models
@@ -125,7 +123,13 @@ namespace Dynamo.Models
                 {
                     var port = Owner.InPortData[Index];
                     if (port.HasDefaultValue)
+                    {
+#if USE_DSENGINE
+                        return port.DefaultValue.ToString();
+#else
                         return FScheme.print(port.DefaultValue as FScheme.Value);
+#endif
+                    }
                 }
                 return "";
             }
@@ -243,7 +247,7 @@ namespace Dynamo.Models
             OnPortDisconnected(EventArgs.Empty);
 
             //also trigger the model's connector deletion
-            dynSettings.Controller.DynamoModel.OnConnectorDeleted(connector);
+            DynamoSettings.Controller.DynamoModel.OnConnectorDeleted(connector);
 
             connectors.Remove(connector);
             
@@ -303,7 +307,7 @@ namespace Dynamo.Models
         public double VerticalMargin { get; set; }
 
         public PortData(string nickName, string tip)
-            : this(nickName, tip, typeof(FScheme.Value.Container), null)
+            : this(nickName, tip, typeof(object), null)
         { }
 
         public PortData(string nickName, string tip, Type portType, object defaultValue=null)

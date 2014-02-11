@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using Dynamo;
-using Dynamo.UpdateManager;
+using Dynamo.Core;
 using Dynamo.Utilities;
 
 namespace DynamoCore.UI.Controls
@@ -14,7 +14,7 @@ namespace DynamoCore.UI.Controls
        public GraphUpdateNotificationControl()
         {
             InitializeComponent();
-            this.InstallButton.Click += new RoutedEventHandler(OnInstallButtonClicked);
+            InstallButton.Click += new RoutedEventHandler(OnInstallButtonClicked);
         }
 
         private void OnInstallButtonClicked(object sender, RoutedEventArgs e)
@@ -22,7 +22,7 @@ namespace DynamoCore.UI.Controls
             DynamoLogger.Instance.LogInfo("UpdateNotificationControl-OnInstallButtonClicked",
                 "UpdateNotificationControl-OnInstallButtonClicked");
 
-            dynSettings.Controller.UpdateManager.QuitAndInstallUpdate(); // Quit application
+            DynamoSettings.Controller.UpdateManager.QuitAndInstallUpdate(); // Quit application
         }
     }
 }

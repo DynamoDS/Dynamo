@@ -6,14 +6,11 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using System.Windows;
 using System.Windows.Forms;
-using System.Windows.Input;
-using Dynamo.Nodes;
+using Dynamo.Core;
 using Dynamo.PackageManager.UI;
 using Dynamo.Utilities;
 using Greg.Requests;
-using Greg.Responses;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 using Double = System.Double;
@@ -44,12 +41,12 @@ namespace Dynamo.PackageManager
             get { return _uploading; }
             set
             {
-                if (this._uploading != value)
+                if (_uploading != value)
                 {
-                    this._uploading = value;
-                    this.RaisePropertyChanged("Uploading");
-                    dynSettings.Controller.UIDispatcher.BeginInvoke(
-                        (Action) (() => (this.SubmitCommand).RaiseCanExecuteChanged()));
+                    _uploading = value;
+                    RaisePropertyChanged("Uploading");
+                    DynamoSettings.Controller.UIDispatcher.BeginInvoke(
+                        (Action) (() => (SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
 
@@ -64,11 +61,11 @@ namespace Dynamo.PackageManager
             get { return _uploadHandle; }
             set
             {
-                if (this._uploadHandle != value)
+                if (_uploadHandle != value)
                 {
-                    this._uploadHandle = value;
-                    this._uploadHandle.PropertyChanged += UploadHandleOnPropertyChanged;
-                    this.RaisePropertyChanged("UploadHandle");
+                    _uploadHandle = value;
+                    _uploadHandle.PropertyChanged += UploadHandleOnPropertyChanged;
+                    RaisePropertyChanged("UploadHandle");
                 }
             }
         }
@@ -90,10 +87,10 @@ namespace Dynamo.PackageManager
             get { return _isNewVersion; }
             set
             {
-                if (this._isNewVersion != value)
+                if (_isNewVersion != value)
                 {
-                    this._isNewVersion = value;
-                    this.RaisePropertyChanged("IsNewVersion");
+                    _isNewVersion = value;
+                    RaisePropertyChanged("IsNewVersion");
                 }
             }
         }
@@ -123,10 +120,10 @@ namespace Dynamo.PackageManager
             get { return _additionalFiles; }
             set
             {
-                if (this._additionalFiles != value)
+                if (_additionalFiles != value)
                 {
-                    this._additionalFiles = value;
-                    this.RaisePropertyChanged("AdditionalFiles");
+                    _additionalFiles = value;
+                    RaisePropertyChanged("AdditionalFiles");
                 }
             }
         }
@@ -141,12 +138,12 @@ namespace Dynamo.PackageManager
             get { return _name; }
             set
             {
-                if (this._name != value)
+                if (_name != value)
                 {
-                    this._name = value;
-                    this.RaisePropertyChanged("Name");
-                    dynSettings.Controller.UIDispatcher.BeginInvoke(
-                        (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
+                    _name = value;
+                    RaisePropertyChanged("Name");
+                    DynamoSettings.Controller.UIDispatcher.BeginInvoke(
+                        (Action)(() => (SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
         }
@@ -171,10 +168,10 @@ namespace Dynamo.PackageManager
             get { return _uploadState; }
             set
             {
-                if (this._uploadState != value)
+                if (_uploadState != value)
                 {
-                    this._uploadState = value;
-                    this.RaisePropertyChanged("UploadState");
+                    _uploadState = value;
+                    RaisePropertyChanged("UploadState");
                 }
             }
         }
@@ -189,10 +186,10 @@ namespace Dynamo.PackageManager
             get { return _group; }
             set
             {
-                if (this._group != value)
+                if (_group != value)
                 {
-                    this._group = value;
-                    this.RaisePropertyChanged("Group");
+                    _group = value;
+                    RaisePropertyChanged("Group");
                 }
             }
         }
@@ -207,12 +204,12 @@ namespace Dynamo.PackageManager
             get { return _Description; }
             set
             {
-                if (this._Description != value)
+                if (_Description != value)
                 {
-                    this._Description = value;
-                    this.RaisePropertyChanged("Description");
-                    dynSettings.Controller.UIDispatcher.BeginInvoke(
-                        (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
+                    _Description = value;
+                    RaisePropertyChanged("Description");
+                    DynamoSettings.Controller.UIDispatcher.BeginInvoke(
+                        (Action)(() => (SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
         }
@@ -227,15 +224,15 @@ namespace Dynamo.PackageManager
             get { return _Keywords; }
             set
             {
-                if (this._Keywords != value)
+                if (_Keywords != value)
                 {
                     value = value.Replace(',', ' ').ToLower().Trim();
                     var options = RegexOptions.None;
                     var regex = new Regex(@"[ ]{2,}", options);
                     value = regex.Replace(value, @" ");
 
-                    this._Keywords = value;
-                    this.RaisePropertyChanged("Keywords");
+                    _Keywords = value;
+                    RaisePropertyChanged("Keywords");
                     KeywordList = value.Split(' ').Where(x => x.Length > 0).ToList();
                 }
             }
@@ -253,7 +250,7 @@ namespace Dynamo.PackageManager
         /// The major, minor, and build version joined into one string</value>
         public string FullVersion
         {
-            get { return this.MajorVersion + "." + this.MinorVersion + "." + this.BuildVersion; }
+            get { return MajorVersion + "." + MinorVersion + "." + BuildVersion; }
         }
 
         /// <summary>
@@ -266,15 +263,15 @@ namespace Dynamo.PackageManager
             get { return _MinorVersion; }
             set
             {
-                if (this._MinorVersion != value)
+                if (_MinorVersion != value)
                 {
                     int val;
                     if (!Int32.TryParse(value, out val) || value == "") return;
                     if (value.Length != 1) value = value.TrimStart(new char[] {'0'});
-                    this._MinorVersion = value;
-                    this.RaisePropertyChanged("MinorVersion");
-                    dynSettings.Controller.UIDispatcher.BeginInvoke(
-                        (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
+                    _MinorVersion = value;
+                    RaisePropertyChanged("MinorVersion");
+                    DynamoSettings.Controller.UIDispatcher.BeginInvoke(
+                        (Action)(() => (SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
         }
@@ -289,15 +286,15 @@ namespace Dynamo.PackageManager
             get { return _BuildVersion; }
             set
             {
-                if (this._BuildVersion != value)
+                if (_BuildVersion != value)
                 {
                     int val;
                     if (!Int32.TryParse(value, out val) || value == "") return;
                     if (value.Length != 1) value = value.TrimStart(new char[] {'0'});
-                    this._BuildVersion = value;
-                    this.RaisePropertyChanged("BuildVersion");
-                    dynSettings.Controller.UIDispatcher.BeginInvoke(
-                        (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
+                    _BuildVersion = value;
+                    RaisePropertyChanged("BuildVersion");
+                    DynamoSettings.Controller.UIDispatcher.BeginInvoke(
+                        (Action)(() => (SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
         }
@@ -312,22 +309,22 @@ namespace Dynamo.PackageManager
             get { return _MajorVersion; }
             set
             {
-                if (this._MajorVersion != value)
+                if (_MajorVersion != value)
                 {
                     int val;
                     if (!Int32.TryParse(value, out val) || value == "") return;
                     if (value.Length != 1) value = value.TrimStart(new char[] {'0'});
-                    this._MajorVersion = value;
-                    this.RaisePropertyChanged("MajorVersion");
-                    dynSettings.Controller.UIDispatcher.BeginInvoke(
-                        (Action)(() => (this.SubmitCommand).RaiseCanExecuteChanged()));
+                    _MajorVersion = value;
+                    RaisePropertyChanged("MajorVersion");
+                    DynamoSettings.Controller.UIDispatcher.BeginInvoke(
+                        (Action)(() => (SubmitCommand).RaiseCanExecuteChanged()));
                 }
             }
         }
 
         public bool HasDependencies
         {
-            get { return this.Dependencies.Count > 0; }
+            get { return Dependencies.Count > 0; }
         }
 
         public bool HasNoDependencies
@@ -363,8 +360,8 @@ namespace Dynamo.PackageManager
             set
             {
                 _FunctionDefinitions = value;
-                this.Name = FunctionDefinitions[0].WorkspaceModel.Name;
-                this.UpdateDependencies();
+                Name = FunctionDefinitions[0].WorkspaceModel.Name;
+                UpdateDependencies();
             }
         }
 
@@ -386,15 +383,15 @@ namespace Dynamo.PackageManager
             get { return _dynamoBaseHeader; }
             set
             {
-                this.IsNewVersion = true;
-                this.Description = value.description;
+                IsNewVersion = true;
+                Description = value.description;
                 string[] versionSplit = value.version.Split('.');
-                this.MajorVersion = versionSplit[0];
-                this.MinorVersion = versionSplit[1];
-                this.BuildVersion = versionSplit[2];
-                this.Name = value.name;
-                this.Keywords = String.Join(" ", value.keywords);
-                this._dynamoBaseHeader = value;
+                MajorVersion = versionSplit[0];
+                MinorVersion = versionSplit[1];
+                BuildVersion = versionSplit[2];
+                Name = value.name;
+                Keywords = String.Join(" ", value.keywords);
+                _dynamoBaseHeader = value;
             }
         }
 
@@ -406,15 +403,15 @@ namespace Dynamo.PackageManager
         public PublishPackageViewModel(PackageManagerClient client)
         {
             Client = client;
-            this.SubmitCommand = new DelegateCommand(this.Submit, this.CanSubmit);
-            this.ShowAddFileDialogAndAddCommand = new DelegateCommand(this.ShowAddFileDialogAndAdd, this.CanShowAddFileDialogAndAdd);
-            this.Dependencies = new ObservableCollection<PackageDependency>();
+            SubmitCommand = new DelegateCommand(Submit, CanSubmit);
+            ShowAddFileDialogAndAddCommand = new DelegateCommand(ShowAddFileDialogAndAdd, CanShowAddFileDialogAndAdd);
+            Dependencies = new ObservableCollection<PackageDependency>();
         }
 
         public static PublishPackageViewModel FromLocalPackage(Package l)
         {
 
-            var vm = new PublishPackageViewModel(dynSettings.PackageManagerClient)
+            var vm = new PublishPackageViewModel(DynamoSettings.PackageManagerClient)
                 {
                     Group = l.Group,
                     Description = l.Description,
@@ -422,7 +419,7 @@ namespace Dynamo.PackageManager
                 };
 
             vm.FunctionDefinitions =
-                l.LoadedCustomNodes.Select(x => dynSettings.CustomNodeManager.GetFunctionDefinition(x.Guid)).ToList();
+                l.LoadedCustomNodes.Select(x => DynamoSettings.CustomNodeManager.GetFunctionDefinition(x.Guid)).ToList();
 
             if (l.VersionName != null)
             {
@@ -444,27 +441,27 @@ namespace Dynamo.PackageManager
 
         public void OnPublishSuccess()
         {
-            if (this.PublishSuccess != null)
-                this.PublishSuccess(this);
+            if (PublishSuccess != null)
+                PublishSuccess(this);
         }
         
         private void UploadHandleOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
             if (propertyChangedEventArgs.PropertyName == "UploadState")
             {
-                this.UploadState = ((PackageUploadHandle)sender).UploadState;
+                UploadState = ((PackageUploadHandle)sender).UploadState;
 
                 if (((PackageUploadHandle)sender).UploadState == PackageUploadHandle.State.Uploaded)
                 {
-                   this.OnPublishSuccess();
+                   OnPublishSuccess();
                 }
                 
             }
             else if (propertyChangedEventArgs.PropertyName == "ErrorString")
             {
-                this.UploadState = PackageUploadHandle.State.Error;
-                this.ErrorString = ((PackageUploadHandle) sender).ErrorString;
-                this.Uploading = false;
+                UploadState = PackageUploadHandle.State.Error;
+                ErrorString = ((PackageUploadHandle) sender).ErrorString;
+                Uploading = false;
             } 
         }
 
@@ -504,18 +501,18 @@ namespace Dynamo.PackageManager
             var files =
                 allFuncs.Select(f => f.WorkspaceModel.FileName)
                         .Where(p =>
-                                (dynSettings.PackageLoader.IsUnderPackageControl(p) &&
-                                dynSettings.PackageLoader.GetOwnerPackage(p).Name == this.Name) || !dynSettings.PackageLoader.IsUnderPackageControl(p));
+                                (DynamoSettings.PackageLoader.IsUnderPackageControl(p) &&
+                                DynamoSettings.PackageLoader.GetOwnerPackage(p).Name == Name) || !DynamoSettings.PackageLoader.IsUnderPackageControl(p));
 
             // union with additional files
-            files = files.Union(this.AdditionalFiles);
+            files = files.Union(AdditionalFiles);
 
             return files;
         }
 
         private void UpdateDependencies(){
-            this.Dependencies.Clear();
-            this.GetAllDependencies().ToList().ForEach(this.Dependencies.Add);
+            Dependencies.Clear();
+            GetAllDependencies().ToList().ForEach(Dependencies.Add);
         }
 
         private IEnumerable<PackageDependency> GetAllDependencies()
@@ -525,10 +522,10 @@ namespace Dynamo.PackageManager
                 AllDependentFuncDefs()
                     .Select(x => x.WorkspaceModel.FileName)
                     .Union( AdditionalFiles )
-                    .Where(dynSettings.PackageLoader.IsUnderPackageControl)
-                    .Select(dynSettings.PackageLoader.GetOwnerPackage)
+                    .Where(DynamoSettings.PackageLoader.IsUnderPackageControl)
+                    .Select(DynamoSettings.PackageLoader.GetOwnerPackage)
                     .Where(x => x != null)
-                    .Where(x => (x.Name != this.Name))
+                    .Where(x => (x.Name != Name))
                     .Distinct()
                     .Select(x => new PackageDependency(x.Name, x.VersionName));
 
@@ -537,10 +534,10 @@ namespace Dynamo.PackageManager
                 .Select(x => x.WorkspaceModel.Nodes)
                 .SelectMany(x => x)
                 .Select(x => x.GetType())
-                .Where(dynSettings.PackageLoader.IsUnderPackageControl)
-                .Select(dynSettings.PackageLoader.GetOwnerPackage)
+                .Where(DynamoSettings.PackageLoader.IsUnderPackageControl)
+                .Select(DynamoSettings.PackageLoader.GetOwnerPackage)
                 .Where(x => x != null)
-                .Where(x => (x.Name != this.Name) )
+                .Where(x => (x.Name != Name) )
                 .Distinct()
                 .Select(x => new PackageDependency(x.Name, x.VersionName));
 
@@ -556,8 +553,8 @@ namespace Dynamo.PackageManager
             return
                 AllFuncDefs()
                     .Where(p =>
-                                (dynSettings.PackageLoader.IsUnderPackageControl(p) &&
-                                dynSettings.PackageLoader.GetOwnerPackage(p).Name == this.Name) || !dynSettings.PackageLoader.IsUnderPackageControl(p))
+                                (DynamoSettings.PackageLoader.IsUnderPackageControl(p) &&
+                                DynamoSettings.PackageLoader.GetOwnerPackage(p).Name == Name) || !DynamoSettings.PackageLoader.IsUnderPackageControl(p))
                         .Select(x => new Tuple<string, string>(x.WorkspaceModel.Name, !String.IsNullOrEmpty(x.WorkspaceModel.Description) ? x.WorkspaceModel.Description : "No description provided" ));
         }
 
@@ -567,8 +564,8 @@ namespace Dynamo.PackageManager
             get { return _errorString; }
             set
             {
-                this._errorString = value;
-                this.RaisePropertyChanged("ErrorString");
+                _errorString = value;
+                RaisePropertyChanged("ErrorString");
             }
         }
 
@@ -587,9 +584,9 @@ namespace Dynamo.PackageManager
             }
 
             // if you've got the current space path, use it as the inital dir
-            if (!string.IsNullOrEmpty(dynSettings.Controller.DynamoViewModel.Model.CurrentWorkspace.FileName))
+            if (!string.IsNullOrEmpty(DynamoSettings.Controller.DynamoViewModel.Model.CurrentWorkspace.FileName))
             {
-                var fi = new FileInfo(dynSettings.Controller.DynamoViewModel.Model.CurrentWorkspace.FileName);
+                var fi = new FileInfo(DynamoSettings.Controller.DynamoViewModel.Model.CurrentWorkspace.FileName);
                 fDialog.InitialDirectory = fi.DirectoryName;
             }
             else // use the samples directory, if it exists
@@ -607,20 +604,20 @@ namespace Dynamo.PackageManager
             if (fDialog.ShowDialog() == DialogResult.OK)
             {
                 
-                var nodeInfo = dynSettings.Controller.CustomNodeManager.AddFileToPath(fDialog.FileName);
+                var nodeInfo = DynamoSettings.Controller.CustomNodeManager.AddFileToPath(fDialog.FileName);
                 if (nodeInfo != null)
                 {
                     // add the new packages folder to path
-                    dynSettings.Controller.CustomNodeManager.AddDirectoryToSearchPath(Path.GetDirectoryName(fDialog.FileName));
-                    dynSettings.Controller.CustomNodeManager.UpdateSearchPath();
+                    DynamoSettings.Controller.CustomNodeManager.AddDirectoryToSearchPath(Path.GetDirectoryName(fDialog.FileName));
+                    DynamoSettings.Controller.CustomNodeManager.UpdateSearchPath();
                     
-                    var funcDef = dynSettings.Controller.CustomNodeManager.GetFunctionDefinition(nodeInfo.Guid);
+                    var funcDef = DynamoSettings.Controller.CustomNodeManager.GetFunctionDefinition(nodeInfo.Guid);
 
-                    if (funcDef != null && this.FunctionDefinitions.All(x => x.FunctionId != funcDef.FunctionId))
+                    if (funcDef != null && FunctionDefinitions.All(x => x.FunctionId != funcDef.FunctionId))
                     {
-                        this.FunctionDefinitions.Add(funcDef);
-                        this.GetAllDependencies();
-                        this.RaisePropertyChanged("PackageContents");
+                        FunctionDefinitions.Add(funcDef);
+                        GetAllDependencies();
+                        RaisePropertyChanged("PackageContents");
                     }
                 }
             }
@@ -640,7 +637,7 @@ namespace Dynamo.PackageManager
             {
                 var newpkg = Package == null;
 
-                Package = Package ?? new Package("", this.Name, this.FullVersion);
+                Package = Package ?? new Package("", Name, FullVersion);
 
                 Package.VersionName = FullVersion;
                 Package.Description = Description;
@@ -654,21 +651,21 @@ namespace Dynamo.PackageManager
                 Package.Dependencies.Clear();
                 GetAllDependencies().ToList().ForEach(Package.Dependencies.Add);
 
-                if (newpkg) dynSettings.PackageLoader.LocalPackages.Add(Package);
+                if (newpkg) DynamoSettings.PackageLoader.LocalPackages.Add(Package);
 
                 var handle = Client.Publish(Package, files, IsNewVersion);
 
                 if (handle == null)
                     throw new Exception("Failed to authenticate.  Are you logged in?");
 
-                this.Uploading = true;
-                this.UploadHandle = handle;
+                Uploading = true;
+                UploadHandle = handle;
 
             }
             catch (Exception e)
             {
                 ErrorString = e.Message;
-                Dynamo.DynamoLogger.Instance.Log(e);
+                DynamoLogger.Instance.Log(e);
             }
 
         }
@@ -680,49 +677,49 @@ namespace Dynamo.PackageManager
 
             if (Description.Length <= 10)
             {
-                this.ErrorString = "Description must be longer than 10 characters.";
+                ErrorString = "Description must be longer than 10 characters.";
                 return false;
             }
 
-            if (this.Name.Contains(@"\") || this.Name.Contains(@"/") || this.Name.Contains(@"*"))
+            if (Name.Contains(@"\") || Name.Contains(@"/") || Name.Contains(@"*"))
             {
-                this.ErrorString = @"The name of the package cannot contain /,\, or *.";
+                ErrorString = @"The name of the package cannot contain /,\, or *.";
                 return false;
             }
 
-            if (this.Name.Length < 3)
+            if (Name.Length < 3)
             {
-                this.ErrorString = "Name must be at least 3 characters.";
+                ErrorString = "Name must be at least 3 characters.";
                 return false;
             }
 
-            if (this.MajorVersion.Length <= 0)
+            if (MajorVersion.Length <= 0)
             {
-                this.ErrorString = "You must provide a Major version as a non-negative integer.";
+                ErrorString = "You must provide a Major version as a non-negative integer.";
                 return false;
             }
 
-            if (this.MinorVersion.Length <= 0)
+            if (MinorVersion.Length <= 0)
             {
-                this.ErrorString = "You must provide a Minor version as a non-negative integer.";
+                ErrorString = "You must provide a Minor version as a non-negative integer.";
                 return false;
             }
 
-            if (this.BuildVersion.Length <= 0)
+            if (BuildVersion.Length <= 0)
             {
-                this.ErrorString = "You must provide a Build version as a non-negative integer.";
+                ErrorString = "You must provide a Build version as a non-negative integer.";
                 return false;
             }
 
-            if ( Double.Parse( this.BuildVersion) + Double.Parse( this.MinorVersion) + Double.Parse( this.MajorVersion ) <= 0 )
+            if ( Double.Parse( BuildVersion) + Double.Parse( MinorVersion) + Double.Parse( MajorVersion ) <= 0 )
             {
-                this.ErrorString = "At least one of your version values must be greater than 0.";
+                ErrorString = "At least one of your version values must be greater than 0.";
                 return false;
             }
 
-            if ( this.UploadState != PackageUploadHandle.State.Error ) this.ErrorString = "";
+            if ( UploadState != PackageUploadHandle.State.Error ) ErrorString = "";
 
-            if (this.Uploading) return false;
+            if (Uploading) return false;
 
             return true;
         }

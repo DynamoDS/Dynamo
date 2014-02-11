@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Controls;
 using Dynamo.Controls;
 using Dynamo.Utilities;
 
@@ -14,19 +13,19 @@ namespace Dynamo.PackageManager
         public PackageManagerPublishView(PublishPackageViewModel packageViewModel)
         {
 
-            this.DataContext = packageViewModel;
+            DataContext = packageViewModel;
             packageViewModel.PublishSuccess += PackageViewModelOnPublishSuccess;
 
-            //this.Owner = dynSettings.Bench;
-            this.Owner = WPF.FindUpVisualTree<DynamoView>(this);
-            this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            //this.Owner = DynamoSettings.Bench;
+            Owner = WPF.FindUpVisualTree<DynamoView>(this);
+            WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
             InitializeComponent();
         }
 
         private void PackageViewModelOnPublishSuccess(PublishPackageViewModel sender)
         {
-            this.Dispatcher.BeginInvoke((Action) (Close));
+            Dispatcher.BeginInvoke((Action) (Close));
         }
     }
 

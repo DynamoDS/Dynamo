@@ -5,16 +5,16 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using Dynamo.Selection;
 using GraphToDSCompiler;
 using ProtoCore.AST.AssociativeAST;
-using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using ProtoCore.BuildData;
+using ProtoCore.Utils;
 using ArrayNode = ProtoCore.AST.AssociativeAST.ArrayNode;
 using Node = ProtoCore.AST.Node;
 using Operator = ProtoCore.DSASM.Operator;
-using NUnit.Framework;
 using System.Windows.Media;
 using System.Windows;
 using Dynamo.UI;
@@ -45,12 +45,12 @@ namespace Dynamo.Nodes
         public CodeBlockNodeModel(string userCode, Guid guid, WorkspaceModel workSpace, double XPos, double YPos)
         {
             ArgumentLacing = LacingStrategy.Disabled;
-            this.X = XPos;
-            this.Y = YPos;
-            this.code = userCode;
-            this.GUID = guid;
-            this.WorkSpace = workSpace;
-            this.shouldFocus = false;
+            X = XPos;
+            Y = YPos;
+            code = userCode;
+            GUID = guid;
+            WorkSpace = workSpace;
+            shouldFocus = false;
             ProcessCodeDirect();
         }
 
@@ -231,7 +231,7 @@ namespace Dynamo.Nodes
             if (name == "Code")
             {
                 //Remove the UpdateValue's recording
-                this.WorkSpace.UndoRecorder.PopFromUndoGroup();
+                WorkSpace.UndoRecorder.PopFromUndoGroup();
 
                 //Since an empty Code Block Node should not exist, this checks for such instances.
                 // If an empty Code Block Node is found, it is deleted. Since the creation and deletion of 
@@ -240,20 +240,20 @@ namespace Dynamo.Nodes
                 value = FormatUserText(value);
                 if (value == "")
                 {
-                    if (this.Code == "")
+                    if (Code == "")
                     {
-                        this.WorkSpace.UndoRecorder.PopFromUndoGroup();
-                        Dynamo.Selection.DynamoSelection.Instance.Selection.Remove(this);
-                        this.WorkSpace.Nodes.Remove(this);
+                        WorkSpace.UndoRecorder.PopFromUndoGroup();
+                        DynamoSelection.Instance.Selection.Remove(this);
+                        WorkSpace.Nodes.Remove(this);
                     }
                     else
                     {
-                        this.WorkSpace.RecordAndDeleteModels(new System.Collections.Generic.List<ModelBase>() { this });
+                        WorkSpace.RecordAndDeleteModels(new List<ModelBase>() { this });
                     }
                 }
                 else
                 {
-                    if (!value.Equals(this.Code))
+                    if (!value.Equals(Code))
                         Code = value;
                 }
                 return true;
@@ -285,7 +285,7 @@ namespace Dynamo.Nodes
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
         {
             //Do not build if the node is in error.
-            if (this.State == ElementState.Error)
+            if (State == ElementState.Error)
             {
                 return null;
             }
@@ -341,8 +341,8 @@ namespace Dynamo.Nodes
 
             foreach (var stmnt in codeStatements)
             {
-                var astNode = ProtoCore.Utils.NodeUtils.Clone(stmnt.AstNode);
-                resultNodes.Add(astNode as ProtoCore.AST.AssociativeAST.AssociativeNode);
+                var astNode = NodeUtils.Clone(stmnt.AstNode);
+                resultNodes.Add(astNode as AssociativeNode);
             }
 
             return resultNodes;
@@ -382,7 +382,7 @@ namespace Dynamo.Nodes
 
         private void ProcessCode(ref string errorMessage)
         {
-            Style windowStyle = Dynamo.UI.SharedDictionaryManager.DynamoModernDictionary["DynamoWindowStyle"] as Style;
+            Style windowStyle = SharedDictionaryManager.DynamoModernDictionary["DynamoWindowStyle"] as Style;
             var textFontFamily = windowStyle.Setters;
             //Format user test
             code = FormatUserText(code);
@@ -398,13 +398,13 @@ namespace Dynamo.Nodes
             //Parse the text and assign each AST node to a statement instance
             codeToParse = code;
             List<string> unboundIdentifiers = new List<string>();
-            List<ProtoCore.AST.Node> parsedNodes;
-            List<ProtoCore.BuildData.ErrorEntry> errors;
-            List<ProtoCore.BuildData.WarningEntry> warnings;
+            List<Node> parsedNodes;
+            List<ErrorEntry> errors;
+            List<WarningEntry> warnings;
 
             try
             {
-                if (GraphToDSCompiler.GraphUtilities.Parse(ref codeToParse, out parsedNodes, out errors,
+                if (GraphUtilities.Parse(ref codeToParse, out parsedNodes, out errors,
                     out  warnings, unboundIdentifiers, out tempVariables) && parsedNodes != null)
                 {
                     //Create an instance of statement for each code statement written by the user
@@ -453,7 +453,7 @@ namespace Dynamo.Nodes
             }
 
             //Make sure variables have not been declared in other Code block nodes.
-            string redefinedVariable = this.WorkSpace.GetFirstRedefinedVariable(this);
+            string redefinedVariable = WorkSpace.GetFirstRedefinedVariable(this);
             if (redefinedVariable != null)
             {
                 ProcessError();
@@ -712,8 +712,8 @@ namespace Dynamo.Nodes
                             NodeModel startNode = startPortModel.Owner;
                             ConnectorModel connector = ConnectorModel.Make(startNode, this,
                                 startNode.GetPortIndexAndType(startPortModel, out p), i, PortType.INPUT);
-                            this.WorkSpace.Connectors.Add(connector);
-                            this.WorkSpace.UndoRecorder.RecordCreationForUndo(connector);
+                            WorkSpace.Connectors.Add(connector);
+                            WorkSpace.UndoRecorder.RecordCreationForUndo(connector);
                         }
                         outportConnections[varName] = null;
                     }
@@ -743,8 +743,8 @@ namespace Dynamo.Nodes
                             NodeModel endNode = endPortModel.Owner;
                             ConnectorModel connector = ConnectorModel.Make(this, endNode, i,
                                 endNode.GetPortIndexAndType(endPortModel, out p), PortType.INPUT);
-                            this.WorkSpace.Connectors.Add(connector);
-                            this.WorkSpace.UndoRecorder.RecordCreationForUndo(connector);
+                            WorkSpace.Connectors.Add(connector);
+                            WorkSpace.UndoRecorder.RecordCreationForUndo(connector);
                         }
                         outportConnections[varName] = null;
                     }
@@ -828,7 +828,7 @@ namespace Dynamo.Nodes
         /// <returns> Returns the extra number of lines caused by text wrapping. For example, the above statement would return 1 </returns>
         private int GetExtraLinesDueToTextWrapping(string statement)
         {
-            double portHeight = (double)Dynamo.UI.SharedDictionaryManager.DynamoModernDictionary["port_height"] - 0.1;
+            double portHeight = (double)SharedDictionaryManager.DynamoModernDictionary["port_height"] - 0.1;
             int numberOfLines = 0;
             string[] lines = statement.Split('\n');
             foreach (string line in lines)
@@ -852,9 +852,9 @@ namespace Dynamo.Nodes
             double textFontSize = -1.0;
             try
             {
-                Style windowStyle = Dynamo.UI.SharedDictionaryManager.DynamoModernDictionary["DynamoWindowStyle"] as Style;
+                Style windowStyle = SharedDictionaryManager.DynamoModernDictionary["DynamoWindowStyle"] as Style;
                 var styleSetters = windowStyle.Setters;
-                foreach (System.Windows.Setter setter in styleSetters)
+                foreach (Setter setter in styleSetters)
                 {
                     if (setter.Property.Name == "FontFamily")
                     {
@@ -863,9 +863,9 @@ namespace Dynamo.Nodes
                     }
                 }
 
-                Style codeBlockNodeStyle = Dynamo.UI.SharedDictionaryManager.DynamoModernDictionary["CodeBlockNodeTextBox"] as Style;
+                Style codeBlockNodeStyle = SharedDictionaryManager.DynamoModernDictionary["CodeBlockNodeTextBox"] as Style;
                 styleSetters = codeBlockNodeStyle.Setters;
-                foreach (System.Windows.Setter setter in styleSetters)
+                foreach (Setter setter in styleSetters)
                 {
                     if (setter.Property.Name == "FontSize")
                     {
@@ -884,7 +884,7 @@ namespace Dynamo.Nodes
 
             FormattedText newText = new FormattedText(str,
                     CultureInfo.CurrentCulture,
-                    System.Windows.FlowDirection.LeftToRight,
+                    FlowDirection.LeftToRight,
                     new Typeface(textFontFamily, FontStyles.Normal, FontWeights.Normal, FontStretches.Normal, new FontFamily("Arial")),
                     textFontSize,
                     new SolidColorBrush());
@@ -1095,7 +1095,7 @@ namespace Dynamo.Nodes
             StartLine = parsedNode.line;
             EndLine = parsedNode.endLine;
             CurrentType = GetStatementType(parsedNode);
-            this.AstNode = parsedNode;
+            AstNode = parsedNode;
 
             if (parsedNode is BinaryExpressionNode)
             {

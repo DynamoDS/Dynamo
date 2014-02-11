@@ -1,12 +1,13 @@
 ﻿using System;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Shapes;
+using Dynamo.Core;
 using Dynamo.Models;
-using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -62,8 +63,8 @@ namespace Dynamo.Nodes
     {
         public event Action OnChangeCommitted;
 
-        private static Brush clear = new SolidColorBrush(System.Windows.Media.Color.FromArgb(100, 255, 255, 255));
-        private static Brush highlighted = new SolidColorBrush(System.Windows.Media.Color.FromArgb(200, 255, 255, 255));
+        private static Brush clear = new SolidColorBrush(Color.FromArgb(100, 255, 255, 255));
+        private static Brush highlighted = new SolidColorBrush(Color.FromArgb(200, 255, 255, 255));
 
         #region Class Operational Methods
 
@@ -82,14 +83,14 @@ namespace Dynamo.Nodes
             LostKeyboardFocus += OnLostFocus;
             Padding = new Thickness(3);
             base.Text = initialText;
-            this.Pending = false;
+            Pending = false;
             Style = (Style)SharedDictionaryManager.DynamoModernDictionary["SZoomFadeTextBox"];
             MinHeight = 20;
         }
 
-        public void BindToProperty(System.Windows.Data.Binding binding)
+        public void BindToProperty(Binding binding)
         {
-            this.SetBinding(TextBox.TextProperty, binding);
+            SetBinding(TextProperty, binding);
             UpdateDataSource(false);
         }
 
@@ -139,11 +140,11 @@ namespace Dynamo.Nodes
             Pending = true;
         }
 
-        protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
+        protected override void OnPreviewKeyDown(KeyEventArgs e)
         {
             if (e.Key == Key.Return || e.Key == Key.Enter)
             {
-                dynSettings.ReturnFocusToSearch();
+                DynamoSettings.ReturnFocusToSearch();
             }
         }
 
@@ -158,7 +159,7 @@ namespace Dynamo.Nodes
 
         private void UpdateDataSource(bool recordForUndo)
         {
-            if (this.Pending)
+            if (Pending)
             {
                 var expr = GetBindingExpression(TextProperty);
                 if (expr != null)
@@ -180,9 +181,9 @@ namespace Dynamo.Nodes
                     else
                     {
                         string propName = expr.ParentBinding.Path.Path;
-                        dynSettings.Controller.DynamoViewModel.ExecuteCommand(
-                            new DynCmd.UpdateModelValueCommand(
-                                nodeModel.GUID, propName, this.Text));
+                        DynamoSettings.Controller.DynamoViewModel.ExecuteCommand(
+                            new DynamoViewModel.UpdateModelValueCommand(
+                                nodeModel.GUID, propName, Text));
                     }
                 }
 
@@ -214,7 +215,7 @@ namespace Dynamo.Nodes
     {
         #region Class Event Handlers
 
-        protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
+        protected override void OnPreviewKeyDown(KeyEventArgs e)
         {
             // This method is overridden so that the base implementation will 
             // not be called (the base class commits changes once <Enter> key
@@ -232,7 +233,7 @@ namespace Dynamo.Nodes
             nodeModel = model;
         }
         #region Event Handlers
-        protected override void OnThumbDragStarted(System.Windows.Controls.Primitives.DragStartedEventArgs e)
+        protected override void OnThumbDragStarted(DragStartedEventArgs e)
         {
             base.OnThumbDragStarted(e);
             nodeModel.WorkSpace.RecordModelForModification(nodeModel);
@@ -240,7 +241,7 @@ namespace Dynamo.Nodes
         protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnPreviewMouseLeftButtonDown(e);
-            if (e.OriginalSource is System.Windows.Shapes.Rectangle)
+            if (e.OriginalSource is Rectangle)
                 nodeModel.WorkSpace.RecordModelForModification(nodeModel);
         }
         #endregion
@@ -262,8 +263,8 @@ namespace Dynamo.Nodes
             selectAllWhenFocused = false;
 
             //Set style for Watermark
-            this.SetResourceReference(TextBox.StyleProperty, "CodeBlockNodeTextBox");
-            this.Tag = "Your code goes here";
+            SetResourceReference(StyleProperty, "CodeBlockNodeTextBox");
+            Tag = "Your code goes here";
         }
 
         /// <summary>
@@ -271,7 +272,7 @@ namespace Dynamo.Nodes
         /// and sets them when pressed/released
         /// </summary>
         #region Key Press Event Handlers
-        protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
+        protected override void OnPreviewKeyDown(KeyEventArgs e)
         {
             if (e.Key == Key.LeftShift || e.Key == Key.RightShift)
             {
@@ -287,7 +288,7 @@ namespace Dynamo.Nodes
             }
             if (shift == true && enter == true)
             {
-                dynSettings.ReturnFocusToSearch();
+                DynamoSettings.ReturnFocusToSearch();
                 shift = enter = false;
             }
         }
@@ -320,8 +321,8 @@ namespace Dynamo.Nodes
 
         private void HandleEscape()
         {
-            if (this.Text.Equals((DataContext as CodeBlockNodeModel).Code))
-                dynSettings.ReturnFocusToSearch();
+            if (Text.Equals((DataContext as CodeBlockNodeModel).Code))
+                DynamoSettings.ReturnFocusToSearch();
             else
                 (this as TextBox).Text = (DataContext as CodeBlockNodeModel).Code;
         }

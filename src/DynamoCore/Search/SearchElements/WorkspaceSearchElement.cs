@@ -1,4 +1,5 @@
 ﻿using System;
+using Dynamo.Core;
 using Dynamo.Utilities;
 
 namespace Dynamo.Search.SearchElements
@@ -13,10 +14,10 @@ namespace Dynamo.Search.SearchElements
         /// <param name="description">A description of the workspace</param>
         public WorkspaceSearchElement(string symbol, string description)
         {
-            this._name = symbol;
-            this._description = description;
-            this.Weight = 0.8;
-            this.Keywords = "";
+            _name = symbol;
+            _description = description;
+            Weight = 0.8;
+            Keywords = "";
         }
 
         /// <summary>
@@ -24,17 +25,17 @@ namespace Dynamo.Search.SearchElements
         /// hits enter in the SearchView.  Navigates to the selected workspace </summary>
         public override void Execute()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
-            var name = this.Name;
+            var name = Name;
             if (name == "Home")
             {
                 model.Home(null);
             }
             else
             {
-                var guid = this.Guid;
-                dynSettings.Controller.DynamoViewModel.GoToWorkspace(guid);
+                var guid = Guid;
+                DynamoSettings.Controller.DynamoViewModel.GoToWorkspace(guid);
             }
         }
 

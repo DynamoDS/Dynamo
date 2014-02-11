@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.UI.WebControls;
 using System.Xml;
+using Dynamo.Core;
 using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Utilities;
-using GraphToDSCompiler;
 using ProtoCore.AST.AssociativeAST;
-using ProtoCore.Utils;
 using ArrayNode = ProtoCore.AST.AssociativeAST.ArrayNode;
 
 namespace Dynamo.Nodes
@@ -177,14 +175,14 @@ namespace Dynamo.Nodes
 
             if (!string.IsNullOrEmpty(assembly))
             {
-                dynSettings.Controller.EngineController.ImportLibrary(assembly);
-                Definition = dynSettings.Controller.EngineController.GetFunctionDescriptor(
+                DynamoSettings.Controller.EngineController.ImportLibrary(assembly);
+                Definition = DynamoSettings.Controller.EngineController.GetFunctionDescriptor(
                     assembly,
                     function);
             }
             else
             {
-                Definition = dynSettings.Controller.EngineController.GetFunctionDescriptor(function);
+                Definition = DynamoSettings.Controller.EngineController.GetFunctionDescriptor(function);
             }
 
             if (null == Definition)
@@ -210,13 +208,13 @@ namespace Dynamo.Nodes
         private bool HasUnconnectedInput()
         {
             return !Enumerable.Range(0, InPortData.Count)
-                              .All(x => this.HasConnectedInput(x));
+                              .All(x => HasConnectedInput(x));
         }
 
         private List<AssociativeNode> GetConnectedInputs()
         {
             return Enumerable.Range(0, InPortData.Count)
-                             .Where(x => this.HasConnectedInput(x))
+                             .Where(x => HasConnectedInput(x))
                              .Select(x => new IntNode(x.ToString()) as AssociativeNode)
                              .ToList();
         }

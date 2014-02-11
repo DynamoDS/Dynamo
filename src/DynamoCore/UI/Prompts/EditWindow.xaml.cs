@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using Dynamo.Controls;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -18,16 +19,16 @@ namespace Dynamo.UI.Prompts
         {
             InitializeComponent();
 
-            this.Owner = WPF.FindUpVisualTree<DynamoView>(this);
-            this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            this.editText.Focus();
+            Owner = WPF.FindUpVisualTree<DynamoView>(this);
+            WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            editText.Focus();
 
             // do not accept value if user closes 
-            this.Closing += (sender, args) => this.DialogResult = false;
+            Closing += (sender, args) => DialogResult = false;
 
             if (false != updateSourceOnTextChange)
             {
-                this.editText.TextChanged += delegate
+                editText.TextChanged += delegate
                 {
                     var expr = editText.GetBindingExpression(TextBox.TextProperty);
                     if (expr != null)
@@ -36,7 +37,7 @@ namespace Dynamo.UI.Prompts
             }
         }
 
-        public void BindToProperty(object dataContext, System.Windows.Data.Binding binding)
+        public void BindToProperty(object dataContext, Binding binding)
         {
             if (null != dataContext)
                 editText.DataContext = dataContext;
@@ -52,12 +53,12 @@ namespace Dynamo.UI.Prompts
                 ModelBase model = GetBoundModel(expr.DataItem);
 
                 string propName = expr.ParentBinding.Path.Path;
-                dynSettings.Controller.DynamoViewModel.ExecuteCommand(
-                    new DynCmd.UpdateModelValueCommand(
+                DynamoSettings.Controller.DynamoViewModel.ExecuteCommand(
+                    new DynamoViewModel.UpdateModelValueCommand(
                         model.GUID, propName, editText.Text));
             }
 
-            this.DialogResult = true;
+            DialogResult = true;
         }
 
         private ModelBase GetBoundModel(object dataItem)

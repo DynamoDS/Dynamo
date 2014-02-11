@@ -28,7 +28,7 @@ namespace Dynamo.Models
         {
             if (name == "Text")
             {
-                this.Text = value;
+                Text = value;
                 return true;
             }
 
@@ -42,19 +42,19 @@ namespace Dynamo.Models
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
             XmlElementHelper helper = new XmlElementHelper(element);
-            helper.SetAttribute("guid", this.GUID);
-            helper.SetAttribute("text", this.Text);
-            helper.SetAttribute("x", this.X);
-            helper.SetAttribute("y", this.Y);
+            helper.SetAttribute("guid", GUID);
+            helper.SetAttribute("text", Text);
+            helper.SetAttribute("x", X);
+            helper.SetAttribute("y", Y);
         }
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
             XmlElementHelper helper = new XmlElementHelper(element);
-            this.GUID = helper.ReadGuid("guid", this.GUID);
-            this.Text = helper.ReadString("text", "New Note");
-            this.X = helper.ReadDouble("x", 0.0);
-            this.Y = helper.ReadDouble("y", 0.0);
+            GUID = helper.ReadGuid("guid", GUID);
+            Text = helper.ReadString("text", "New Note");
+            X = helper.ReadDouble("x", 0.0);
+            Y = helper.ReadDouble("y", 0.0);
         }
 
         #endregion

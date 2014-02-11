@@ -14,7 +14,6 @@ using Dynamo.Utilities;
 using Microsoft.Practices.Prism.ViewModel;
 using String = System.String;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
-using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Models
 {
@@ -853,7 +852,7 @@ namespace Dynamo.Models
 
         internal void SendModelEvent(Guid modelGuid, string eventName)
         {
-            ModelBase model = this.GetModelInternal(modelGuid);
+            ModelBase model = GetModelInternal(modelGuid);
             if (null != model)
             {
                 RecordModelForModification(model);
@@ -873,7 +872,7 @@ namespace Dynamo.Models
                     throw new InvalidOperationException(message);
                 }
 
-                this.HasUnsavedChanges = true;
+                HasUnsavedChanges = true;
             }
         }
 
@@ -900,7 +899,7 @@ namespace Dynamo.Models
                     throw new InvalidOperationException(message);
                 }
 
-                this.HasUnsavedChanges = true;
+                HasUnsavedChanges = true;
             }
         }
 
@@ -924,7 +923,7 @@ namespace Dynamo.Models
 
             Guid nodeID = Guid.NewGuid();
             var command = new DynCmd.ConvertNodesToCodeCommand(nodeID);
-            dynSettings.Controller.DynamoViewModel.ExecuteCommand(command);
+            DynamoSettings.Controller.DynamoViewModel.ExecuteCommand(command);
         }
 
         internal bool CanNodeToCode(object parameters)
@@ -939,7 +938,7 @@ namespace Dynamo.Models
                 return;
 
             Dictionary<string, string> variableNameMap;
-            string code = dynSettings.Controller.EngineController.ConvertNodesToCode(nodes, out variableNameMap);
+            string code = DynamoSettings.Controller.EngineController.ConvertNodesToCode(nodes, out variableNameMap);
 
             //UndoRedo Action Group----------------------------------------------
             UndoRecorder.BeginActionGroup();
@@ -1019,7 +1018,7 @@ namespace Dynamo.Models
             //End UndoRedo Action Group------------------------------------------
 
             // select node
-            var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == nodeId);
+            var placedNode = DynamoSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == nodeId);
             if (placedNode != null)
             {
                 DynamoSelection.Instance.ClearSelection();
@@ -1070,7 +1069,7 @@ namespace Dynamo.Models
                 var newConnector = ConnectorModel.Make(codeBlockNode, connector.End.Owner,
                     startIndex, endIndex, PortType.INPUT);
 
-                this.Connectors.Add(newConnector);
+                Connectors.Add(newConnector);
                 UndoRecorder.RecordCreationForUndo(newConnector);
             }
         }
@@ -1104,7 +1103,7 @@ namespace Dynamo.Models
                     var newConnector = ConnectorModel.Make(connector.Start.Owner, codeBlockNode,
                         startIndex, endIndex, PortType.INPUT);
 
-                    this.Connectors.Add(newConnector);
+                    Connectors.Add(newConnector);
                     UndoRecorder.RecordCreationForUndo(newConnector);
                 }
             }

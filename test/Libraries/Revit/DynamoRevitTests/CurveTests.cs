@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
 using Autodesk.Revit.DB;
+using Dynamo.Core;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using NUnit.Framework;
@@ -17,7 +18,7 @@ namespace Dynamo.Tests
         [Test]
         public void CurveByPoints()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\Curve\CurveByPoints.dyn");
             string testPath = Path.GetFullPath(samplePath);
@@ -40,7 +41,7 @@ namespace Dynamo.Tests
                 _trans.Commit();
             }
 
-            var ptSelectNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is PointBySelection);
+            var ptSelectNodes = DynamoSettings.Controller.DynamoModel.Nodes.Where(x => x is PointBySelection);
             if (!ptSelectNodes.Any())
                 Assert.Fail("Could not find point selection nodes in dynamo graph.");
 
@@ -49,7 +50,7 @@ namespace Dynamo.Tests
             ((PointBySelection)ptSelectNodes.ElementAt(2)).SelectedElement = p3;
             ((PointBySelection)ptSelectNodes.ElementAt(3)).SelectedElement = p4;
 
-            dynSettings.Controller.RunExpression(true);
+            DynamoSettings.Controller.RunExpression(true);
 
             FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
             fec.OfClass(typeof(CurveElement));
@@ -60,11 +61,11 @@ namespace Dynamo.Tests
             Assert.IsTrue(mc.IsReferenceLine);
 
             //now flip the switch for creating a reference curve
-            var boolNode = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is BoolSelector).First();
+            var boolNode = DynamoSettings.Controller.DynamoModel.Nodes.Where(x => x is BoolSelector).First();
 
             ((BasicInteractive<bool>)boolNode).Value = false;
 
-            dynSettings.Controller.RunExpression(true);
+            DynamoSettings.Controller.RunExpression(true);
             Assert.AreEqual(fec.ToElements().Count(), 1);
 
             mc = (CurveByPoints)fec.ToElements().ElementAt(0);
@@ -74,25 +75,25 @@ namespace Dynamo.Tests
         [Test]
         public void CurveLoop()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\Curve\CurveLoop.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
         }
 
         [Test]
         public void CurvebyPointsArc()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\Curve\CurvebyPointsArc.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
 
             FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
             fec.OfClass(typeof(CurveElement));
@@ -105,25 +106,25 @@ namespace Dynamo.Tests
         [Test]
         public void OffsetCurve()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\Curve\OffsetCurve.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
         }
 
         [Test]
         public void ThickenCurve()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\Curve\ThickenCurve.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
         }
 
         [Test]
@@ -132,13 +133,13 @@ namespace Dynamo.Tests
             //this sample creates a geometric line
             //then creates a curve by points from that line
 
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\Curve\CurveByPointsByLine.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            dynSettings.Controller.RunExpression(true);
+            DynamoSettings.Controller.RunExpression(true);
 
             FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
             fec.OfClass(typeof(ReferencePoint));
@@ -148,10 +149,10 @@ namespace Dynamo.Tests
             //now change one of the number inputs and rerun
             //verify that there are still only two reference points in
             //the model
-            var node = dynSettings.Controller.DynamoModel.Nodes.OfType<DoubleInput>().First();
+            var node = DynamoSettings.Controller.DynamoModel.Nodes.OfType<DoubleInput>().First();
             node.Value = "12.0";
 
-            dynSettings.Controller.RunExpression(true);
+            DynamoSettings.Controller.RunExpression(true);
 
             fec = null;
             fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
@@ -163,15 +164,15 @@ namespace Dynamo.Tests
         [Test]
         public void ClosedCurve()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\Curve\ClosedCurve.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            dynSettings.Controller.RunExpression(true);
+            DynamoSettings.Controller.RunExpression(true);
 
-            var extrudeNode = dynSettings.Controller.DynamoModel.Nodes.First(x => x is CreateExtrusionGeometry);
+            var extrudeNode = DynamoSettings.Controller.DynamoModel.Nodes.First(x => x is CreateExtrusionGeometry);
 
             var result = (Solid)VisualizationManager.GetDrawablesFromNode(extrudeNode).Values.First();
             double volumeMin = 3850;
@@ -186,13 +187,13 @@ namespace Dynamo.Tests
         [Test]
         public void CurvebyPointsEllipse()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\Curve\CurvebyPointsEllipse.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
 
 
             FilteredElementCollector fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
@@ -206,13 +207,13 @@ namespace Dynamo.Tests
         [Test]
         public void GetCurveDomain()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\Curve\GetCurveDomain.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(true));
+            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(true));
         }
     }
 }

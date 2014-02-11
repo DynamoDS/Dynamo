@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Nodes.Search;
@@ -14,6 +15,7 @@ using Dynamo.Utilities;
 using Greg.Responses;
 using Microsoft.Practices.Prism.ViewModel;
 using Dynamo.DSEngine;
+using String = System.String;
 
 namespace Dynamo.ViewModels
 {
@@ -240,13 +242,13 @@ namespace Dynamo.ViewModels
             _SearchText = "";
             IncludeRevitAPIElements = true; // revit api
 
-            _topResult = this.AddRootCategory("Top Result");
-            this.AddRootCategory(BuiltinNodeCategories.CORE);
-            this.AddRootCategory(BuiltinNodeCategories.LOGIC);
-            this.AddRootCategory(BuiltinNodeCategories.GEOMETRY);
-            this.AddRootCategory(BuiltinNodeCategories.REVIT);
-            this.AddRootCategory(BuiltinNodeCategories.ANALYZE);
-            this.AddRootCategory(BuiltinNodeCategories.IO);
+            _topResult = AddRootCategory("Top Result");
+            AddRootCategory(BuiltinNodeCategories.CORE);
+            AddRootCategory(BuiltinNodeCategories.LOGIC);
+            AddRootCategory(BuiltinNodeCategories.GEOMETRY);
+            AddRootCategory(BuiltinNodeCategories.REVIT);
+            AddRootCategory(BuiltinNodeCategories.ANALYZE);
+            AddRootCategory(BuiltinNodeCategories.IO);
             
         }
 
@@ -254,12 +256,12 @@ namespace Dynamo.ViewModels
 
         public void RemoveEmptyCategories()
         {
-            this.BrowserRootCategories = new ObservableCollection<BrowserRootElement>(BrowserRootCategories.Where(x => x.Items.Any() || x.Name == "Top Result"));
+            BrowserRootCategories = new ObservableCollection<BrowserRootElement>(BrowserRootCategories.Where(x => x.Items.Any() || x.Name == "Top Result"));
         }
 
         public void SortCategoryChildren()
         {
-            dynSettings.Controller.SearchViewModel.BrowserRootCategories.ToList().ForEach(x => x.RecursivelySort());
+            DynamoSettings.Controller.SearchViewModel.BrowserRootCategories.ToList().ForEach(x => x.RecursivelySort());
         }
 
         public void RemoveEmptyRootCategory(string categoryName)
@@ -372,7 +374,7 @@ namespace Dynamo.ViewModels
         /// <returns>A list of output</returns>
         public static List<string> SplitCategoryName(string categoryName)
         {
-            if (System.String.IsNullOrEmpty(categoryName))
+            if (String.IsNullOrEmpty(categoryName))
                 return new List<string>();
 
             var splitCat = new List<string>();
@@ -380,7 +382,7 @@ namespace Dynamo.ViewModels
             {
                 splitCat =
                     categoryName.Split(CATEGORY_DELIMITER)
-                                .Where(x => x != CATEGORY_DELIMITER.ToString() && !System.String.IsNullOrEmpty(x))
+                                .Where(x => x != CATEGORY_DELIMITER.ToString() && !String.IsNullOrEmpty(x))
                                 .ToList();
             }
             else
@@ -400,7 +402,7 @@ namespace Dynamo.ViewModels
         {
             if (string.IsNullOrEmpty(categoryName))
             {
-                return this.TryAddRootCategory("Uncategorized");
+                return TryAddRootCategory("Uncategorized");
             }
 
             if ( ContainsCategory(categoryName) )
@@ -419,7 +421,7 @@ namespace Dynamo.ViewModels
             // attempt to add root element
             if (splitCat.Count == 1)
             {
-                return this.TryAddRootCategory(categoryName);
+                return TryAddRootCategory(categoryName);
             }
 
             if (splitCat.Count == 0)
@@ -612,7 +614,7 @@ namespace Dynamo.ViewModels
 
                             if (_visibleSearchResults.Any())
                             {
-                                this.SelectedIndex = 0;
+                                SelectedIndex = 0;
                                 _visibleSearchResults[0].IsSelected = true;
                             }
 
@@ -798,7 +800,7 @@ namespace Dynamo.ViewModels
         public void TryAddCategoryAndItem( string category, BrowserInternalElement item )
         {
 
-            var cat = this.AddCategory(category);
+            var cat = AddCategory(category);
             cat.AddChild(item);
 
             item.FullCategoryName = category;
@@ -910,7 +912,7 @@ namespace Dynamo.ViewModels
             // if it's a revit search element, keep track of it
             if ( cat.Equals(BuiltinNodeCategories.REVIT_API) )
             {
-                this.RevitApiSearchElements.Add(searchEle);
+                RevitApiSearchElements.Add(searchEle);
                 if (!IncludeRevitAPIElements)
                 {
                     return;
@@ -1004,7 +1006,7 @@ namespace Dynamo.ViewModels
 
             if (SearchDictionary.Contains(nodeEle))
             {
-                return this.Refactor(nodeInfo);
+                return Refactor(nodeInfo);
             }
 
             SearchDictionary.Add(nodeEle, nodeEle.Name);
@@ -1017,15 +1019,15 @@ namespace Dynamo.ViewModels
 
         public bool Refactor(CustomNodeInfo nodeInfo)
         {
-            this.RemoveNodeAndEmptyParentCategory(nodeInfo.Guid);
-            return this.Add(nodeInfo);
+            RemoveNodeAndEmptyParentCategory(nodeInfo.Guid);
+            return Add(nodeInfo);
         }
 
         public void Search(object parameter)
         {
-            if (dynSettings.Controller != null)
+            if (DynamoSettings.Controller != null)
             {
-                dynSettings.Controller.SearchViewModel.SearchAndUpdateResults();
+                DynamoSettings.Controller.SearchViewModel.SearchAndUpdateResults();
             }
         }
 
@@ -1036,31 +1038,31 @@ namespace Dynamo.ViewModels
 
         internal void HideSearch(object parameter)
         {
-            dynSettings.Controller.SearchViewModel.Visible = false;
+            DynamoSettings.Controller.SearchViewModel.Visible = false;
         }
 
         internal bool CanHideSearch(object parameter)
         {
-            if (dynSettings.Controller.SearchViewModel.Visible == true)
+            if (DynamoSettings.Controller.SearchViewModel.Visible == true)
                 return true;
             return false;
         }
 
         public void ShowSearch(object parameter)
         {
-            dynSettings.Controller.SearchViewModel.Visible = true;
+            DynamoSettings.Controller.SearchViewModel.Visible = true;
         }
 
         internal bool CanShowSearch(object parameter)
         {
-            if (dynSettings.Controller.SearchViewModel.Visible == false)
+            if (DynamoSettings.Controller.SearchViewModel.Visible == false)
                 return true;
             return false;
         }
 
         public void FocusSearch(object parameter)
         {
-            dynSettings.Controller.SearchViewModel.OnRequestFocusSearch(dynSettings.Controller.DynamoViewModel, EventArgs.Empty);
+            DynamoSettings.Controller.SearchViewModel.OnRequestFocusSearch(DynamoSettings.Controller.DynamoViewModel, EventArgs.Empty);
         }
 
         internal bool CanFocusSearch(object parameter)
@@ -1070,7 +1072,7 @@ namespace Dynamo.ViewModels
 
         public void ShowLibItemInfoBubble(object parameter)
         {
-            dynSettings.Controller.DynamoViewModel.ShowInfoBubble(parameter);
+            DynamoSettings.Controller.DynamoViewModel.ShowInfoBubble(parameter);
         }
 
         internal bool CanShowLibItemInfoBubble(object parameter)
@@ -1080,7 +1082,7 @@ namespace Dynamo.ViewModels
 
         public void HideLibItemInfoBubble(object parameter)
         {
-            dynSettings.Controller.DynamoViewModel.HideInfoBubble(parameter);
+            DynamoSettings.Controller.DynamoViewModel.HideInfoBubble(parameter);
         }
 
         internal bool CanHideLibItemInfoBubble(object parameter)

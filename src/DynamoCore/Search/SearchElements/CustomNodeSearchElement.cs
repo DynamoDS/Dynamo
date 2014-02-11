@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Dynamo.Core;
 using Dynamo.Selection;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
@@ -29,36 +28,36 @@ namespace Dynamo.Search.SearchElements
 
         public CustomNodeSearchElement(CustomNodeInfo info) : base(info.Name, info.Description, new List<string>())
         {
-            this.Node = null;
-            this.FullCategoryName = info.Category;
-            this.Guid = info.Guid;
-            this._path = info.Path;
-            this.EditCommand = new DelegateCommand(Edit);
+            Node = null;
+            FullCategoryName = info.Category;
+            Guid = info.Guid;
+            _path = info.Path;
+            EditCommand = new DelegateCommand(Edit);
         }
 
         public override NodeSearchElement Copy()
         {
             return
-                new CustomNodeSearchElement(new CustomNodeInfo(this.Guid, this.Name, this.FullCategoryName,
-                                                               this.Description, this.Path));
+                new CustomNodeSearchElement(new CustomNodeInfo(Guid, Name, FullCategoryName,
+                                                               Description, Path));
         }
 
         public void Edit(object _)
         {
-            dynSettings.Controller.DynamoViewModel.GoToWorkspaceCommand.Execute(this.Guid);
+            DynamoSettings.Controller.DynamoViewModel.GoToWorkspaceCommand.Execute(Guid);
         }
 
         public override void Execute()
         {
-            string name = this.Guid.ToString();
+            string name = Guid.ToString();
 
             // create node
             var guid = Guid.NewGuid();
-            dynSettings.Controller.DynamoViewModel.ExecuteCommand(
+            DynamoSettings.Controller.DynamoViewModel.ExecuteCommand(
                 new DynCmd.CreateNodeCommand(guid, name, 0, 0, true, true));
 
             // select node
-            var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
+            var placedNode = DynamoSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
             if (placedNode != null)
             {
                 DynamoSelection.Instance.ClearSelection();
@@ -73,22 +72,22 @@ namespace Dynamo.Search.SearchElements
                 return false;
             }
 
-            return this.Equals(obj as NodeSearchElement);
+            return Equals(obj as NodeSearchElement);
         }
 
         public override int GetHashCode()
         {
-            return this.Guid.GetHashCode() + this.Type.GetHashCode() + this.Name.GetHashCode() + this.Description.GetHashCode();
+            return Guid.GetHashCode() + Type.GetHashCode() + Name.GetHashCode() + Description.GetHashCode();
         }
 
         public bool Equals(CustomNodeSearchElement other)
         {
-            return other.Guid == this.Guid;
+            return other.Guid == Guid;
         }
 
         public new bool Equals(NodeSearchElement other)
         {
-            return other is CustomNodeSearchElement && this.Equals(other as CustomNodeSearchElement);
+            return other is CustomNodeSearchElement && Equals(other as CustomNodeSearchElement);
         }
     }
 }

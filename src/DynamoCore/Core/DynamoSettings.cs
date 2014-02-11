@@ -1,23 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using Dynamo.Nodes;
+using System.Linq;
 using Dynamo.PackageManager;
+using Dynamo.Utilities;
 
-namespace Dynamo.Utilities
+namespace Dynamo.Core
 {
-    public static class dynSettings
+    public static class DynamoSettings
     {
         public static HashSet<CustomNodeDefinition> FunctionWasEvaluated =
             new HashSet<CustomNodeDefinition>();
 
-        static dynSettings()
+        static DynamoSettings()
         {
         }
 
         public static ObservableDictionary<string, Guid> CustomNodes {
             get
             {
-                return dynSettings.Controller.CustomNodeManager.GetAllNodeNames();
+                return Controller.CustomNodeManager.GetAllNodeNames();
             }
         }
 
@@ -28,12 +29,10 @@ namespace Dynamo.Utilities
         public static DynamoController Controller { get; internal set; }
 
         private static PackageManagerClient _packageManagerClient;
-        public static PackageManagerClient PackageManagerClient { 
-                get
-                {
-                    if (_packageManagerClient == null) _packageManagerClient = new PackageManagerClient();
-                    return _packageManagerClient;
-                }
+
+        public static PackageManagerClient PackageManagerClient
+        {
+            get { return _packageManagerClient ?? (_packageManagerClient = new PackageManagerClient()); }
         }
 
         public static string FormatFileName(string filename)
@@ -46,15 +45,13 @@ namespace Dynamo.Utilities
 
         public static void ReturnFocusToSearch() {
 
-            dynSettings.Controller.SearchViewModel.OnRequestReturnFocusToSearch(null, EventArgs.Empty);
+            Controller.SearchViewModel.OnRequestReturnFocusToSearch(null, EventArgs.Empty);
 
         }
 
         public static string RemoveChars(string s, IEnumerable<string> chars)
         {
-            foreach (string c in chars)
-                s = s.Replace(c, "");
-            return s;
+            return chars.Aggregate(s, (current, c) => current.Replace(c, ""));
         }
     }
  

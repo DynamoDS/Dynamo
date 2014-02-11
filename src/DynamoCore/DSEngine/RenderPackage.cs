@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using Autodesk.DesignScript.Interfaces;
+using DesignScriptStudio.Renderer;
 using Dynamo.Models;
 using HelixToolkit.Wpf;
 
@@ -26,7 +27,7 @@ namespace Dynamo.DSEngine
 
         public RenderPackage(bool selected)
         {
-            nativeRenderPackage = DesignScriptStudio.Renderer.RenderPackageUtils.CreateNativeRenderPackage(this);
+            nativeRenderPackage = RenderPackageUtils.CreateNativeRenderPackage(this);
             this.selected = selected;
         }
 
@@ -134,7 +135,7 @@ namespace Dynamo.DSEngine
                 tris.Add((i + 1) / 3);
                 triangles.Add(point);
                 norms.Add(normal);
-                tex.Add(new System.Windows.Point(0, 0));
+                tex.Add(new Point(0, 0));
 
                 octree.AddNode(point.X, point.Y, point.Z, node.GUID.ToString());
             }
@@ -149,7 +150,7 @@ namespace Dynamo.DSEngine
 
         public void Dispose()
         {
-            DesignScriptStudio.Renderer.RenderPackageUtils.DestroyNativeRenderPackage(nativeRenderPackage);
+            RenderPackageUtils.DestroyNativeRenderPackage(nativeRenderPackage);
         }
     }
 }

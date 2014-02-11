@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Tests;
 using Dynamo.Utilities;
@@ -18,7 +19,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "fileTests_pre6_0.dyn");
 
             model.Open(testFilePath);
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(null)); 
+            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(null)); 
         }
 
         [Test]
@@ -28,7 +29,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "fileTests_post6_0.dyn");
 
             model.Open(testFilePath);
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(null));
+            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(null));
         }
 
         [Test]
@@ -40,7 +41,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(localDynamoStringTestFloder, "Defect_MAGN_781.dyf");
 
             model.Open(testFilePath);
-            Assert.DoesNotThrow(() => dynSettings.Controller.RunExpression(null));
+            Assert.DoesNotThrow(() => DynamoSettings.Controller.RunExpression(null));
         }
     }
 }

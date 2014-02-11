@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Diagnostics;
+using System.IO;
+using System.Windows;
 using System.Windows.Input;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Utilities;
@@ -20,7 +22,7 @@ namespace Dynamo.ViewModels
         /// DynamoController calls this method at the end of its initialization
         /// sequence so that loaded commands, if any, begin to playback.
         /// </summary>
-        internal void BeginCommandPlayback(System.Windows.Window mainWindow)
+        internal void BeginCommandPlayback(Window mainWindow)
         {
             if (null != automationSettings)
                 automationSettings.BeginCommandPlayback(mainWindow);
@@ -33,8 +35,8 @@ namespace Dynamo.ViewModels
                 string xmlFilePath = automationSettings.SaveRecordedCommands();
                 if (string.IsNullOrEmpty(xmlFilePath) == false)
                 {
-                    if (System.IO.File.Exists(xmlFilePath))
-                        System.Diagnostics.Process.Start(xmlFilePath);
+                    if (File.Exists(xmlFilePath))
+                        Process.Start(xmlFilePath);
                 }
             }
         }
@@ -53,8 +55,8 @@ namespace Dynamo.ViewModels
 
         public void ExecuteCommand(RecordableCommand command)
         {
-            if (null != this.automationSettings)
-                this.automationSettings.RecordCommand(command);
+            if (null != automationSettings)
+                automationSettings.RecordCommand(command);
 
             command.Execute(this);
         }
@@ -66,12 +68,12 @@ namespace Dynamo.ViewModels
         private void OpenFileImpl(OpenFileCommand command)
         {
             string xmlFilePath = command.XmlFilePath;
-            dynSettings.Controller.DynamoModel.OpenInternal(xmlFilePath);
+            DynamoSettings.Controller.DynamoModel.OpenInternal(xmlFilePath);
         }
 
         private void RunCancelImpl(RunCancelCommand command)
         {
-            dynSettings.Controller.RunCancelInternal(
+            DynamoSettings.Controller.RunCancelInternal(
                 command.ShowErrors, command.CancelRun);
         }
 
@@ -141,7 +143,7 @@ namespace Dynamo.ViewModels
 
         private void MakeConnectionImpl(MakeConnectionCommand command)
         {
-            System.Guid nodeId = command.NodeId;
+            Guid nodeId = command.NodeId;
 
             switch (command.ConnectionMode)
             {

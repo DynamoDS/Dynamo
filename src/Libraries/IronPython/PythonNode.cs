@@ -206,7 +206,7 @@ namespace DSIronPythonNode
             RegisterAllPorts();
         }
 
-        protected override void RemoveInput()
+        public override void RemoveInput()
         {
             if (InPortData.Count > 1)
                 base.RemoveInput();

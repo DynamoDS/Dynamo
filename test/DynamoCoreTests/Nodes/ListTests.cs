@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Dynamo.Core;
 using NUnit.Framework;
 using Dynamo.Utilities;
 using Dynamo.Nodes;
@@ -20,7 +21,7 @@ namespace Dynamo.Tests
             string testFilePath = Path.Combine(listTestFolder, "testBuildSubLists_emptyInput.dyn");
             model.Open(testFilePath);
 
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Sublists>("9375d612-cccb-4ba2-96e1-4d1497c6234b");
             FSharpList<FScheme.Value> actual = watch.GetValue(0).GetListFromFSchemeValue();
             Assert.AreEqual(0, actual.Length);
@@ -35,7 +36,7 @@ namespace Dynamo.Tests
 
             Assert.Throws<AssertionException>(() =>
             {
-                dynSettings.Controller.RunExpression(null);
+                DynamoSettings.Controller.RunExpression(null);
             });
         }
 
@@ -45,7 +46,7 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testBuildSubLists_numberInput.dyn");
             model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Sublists>("9240cdc9-5bbf-4579-930c-ef742a91d798");
 
             FSharpList<FScheme.Value> actual = watch.GetValue(0).GetListFromFSchemeValue();
@@ -65,7 +66,7 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testBuildSubLists_stringInput.dyn");
             model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Sublists>("9240cdc9-5bbf-4579-930c-ef742a91d798");
 
             FSharpList<FScheme.Value> actual = watch.GetValue(0).GetListFromFSchemeValue();
@@ -89,7 +90,7 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testConcatenateLists_emptyInput.dyn");
             model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Append>("760c9f00-e12c-4db9-bbdf-a19562efdd09");
 
             FSharpList<FScheme.Value> actual = watch.GetValue(0).GetListFromFSchemeValue();
@@ -105,7 +106,7 @@ namespace Dynamo.Tests
             model.Open(testFilePath);
             Assert.Throws<AssertionException>(() =>
             {
-                dynSettings.Controller.RunExpression(null);
+                DynamoSettings.Controller.RunExpression(null);
             });
         }
 
@@ -115,7 +116,7 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testConcatenateLists_normalInput.dyn");
             model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Append>("364b303f-8f0b-4964-b333-e937299c8352");
 
             FSharpList<FScheme.Value> actual = watch.GetValue(0).GetListFromFSchemeValue();
@@ -142,7 +143,7 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testDiagonaLeftList_emptyInput.dyn");
             model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<DiagonalLeftList>("a54ad1f8-9b02-4ebf-9d4e-a53608906145");
 
             FSharpList<FScheme.Value> actual = watch.GetValue(0).GetListFromFSchemeValue();
@@ -158,7 +159,7 @@ namespace Dynamo.Tests
             model.Open(testFilePath);
             Assert.Throws<AssertionException>(() =>
             {
-                dynSettings.Controller.RunExpression(null);
+                DynamoSettings.Controller.RunExpression(null);
             });
         }
 
@@ -168,7 +169,7 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testDiagonaLeftList_numberInput.dyn");
             model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<DiagonalLeftList>("87345663-8421-46f0-acd2-051e4ec5ff88");
 
             FSharpList<FScheme.Value> actual = watch.GetValue(0).GetListFromFSchemeValue();
@@ -196,7 +197,7 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testDiagonaLeftList_stringInput.dyn");
             model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<DiagonalLeftList>("87345663-8421-46f0-acd2-051e4ec5ff88");
 
             FSharpList<FScheme.Value> actual = watch.GetValue(0).GetListFromFSchemeValue();
@@ -226,7 +227,7 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testDiagonaRightList_emptyInput.dyn");
             model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<DiagonalRightList>("49f4ebe5-fd49-462b-9896-fe1244f66486");
 
             FSharpList<FScheme.Value> actual = watch.GetValue(0).GetListFromFSchemeValue();
@@ -242,7 +243,7 @@ namespace Dynamo.Tests
 
             Assert.Throws<AssertionException>(() =>
             {
-                dynSettings.Controller.RunExpression(null);
+                DynamoSettings.Controller.RunExpression(null);
             });
         }
 
@@ -252,7 +253,7 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testDiagonaRightList_numberInput.dyn");
             model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<DiagonalRightList>("e84bf89e-e7a0-427c-adae-adcd61646e4e");
 
             FSharpList<FScheme.Value> actual = watch.GetValue(0).GetListFromFSchemeValue();
@@ -288,7 +289,7 @@ namespace Dynamo.Tests
             model.Open(testFilePath);
             Assert.Throws<AssertionException>(() =>
             {
-                dynSettings.Controller.RunExpression(null);
+                DynamoSettings.Controller.RunExpression(null);
             });
         }
 
@@ -300,7 +301,7 @@ namespace Dynamo.Tests
             model.Open(testFilePath);
             Assert.Throws<AssertionException>(() =>
             {
-                dynSettings.Controller.RunExpression(null);
+                DynamoSettings.Controller.RunExpression(null);
             });
         }
 
@@ -310,7 +311,7 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testFirstOfList_numberInput.dyn");
             model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<First>("879fda8f-b9f4-453b-bf4d-faeb76ce5ffc");
 
             double actual = watch.GetValue(0).GetDoubleFromFSchemeValue();
@@ -324,7 +325,7 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testFirstOfList_stringInput.dyn");
             model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<First>("879fda8f-b9f4-453b-bf4d-faeb76ce5ffc");
 
             string actual = watch.GetValue(0).GetStringFromFSchemeValue();
@@ -342,7 +343,7 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testIsEmptyList_emptyInput.dyn");
             model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<IsEmpty>("d98b4671-fa55-4303-a9a2-e1b383d737da");
 
             double actual = watch.GetValue(0).GetDoubleFromFSchemeValue();
@@ -358,7 +359,7 @@ namespace Dynamo.Tests
             model.Open(testFilePath);
             Assert.Throws<AssertionException>(() =>
             {
-                dynSettings.Controller.RunExpression(null);
+                DynamoSettings.Controller.RunExpression(null);
             });
         }
 
@@ -368,7 +369,7 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testIsEmptyList_numberInput.dyn");
             model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<IsEmpty>("d98b4671-fa55-4303-a9a2-e1b383d737da");
 
             double actual = watch.GetValue(0).GetDoubleFromFSchemeValue();
@@ -382,7 +383,7 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testIsEmptyList_stringInput.dyn");
             model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<IsEmpty>("d98b4671-fa55-4303-a9a2-e1b383d737da");
 
             double actual = watch.GetValue(0).GetDoubleFromFSchemeValue();
@@ -400,7 +401,7 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testListLength_emptyInput.dyn");
             model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Length>("8ab87f7a-2577-46b9-bee6-512b1678b028");
 
             double actual = watch.GetValue(0).GetDoubleFromFSchemeValue();
@@ -416,7 +417,7 @@ namespace Dynamo.Tests
             model.Open(testFilePath);
             Assert.Throws<AssertionException>(() =>
             {
-                dynSettings.Controller.RunExpression(null);
+                DynamoSettings.Controller.RunExpression(null);
             });
         }
 
@@ -426,7 +427,7 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testListLength_numberInput.dyn");
             model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Length>("18473048-4a5f-4b23-8578-d9b8c0f32c0f");
 
             double actual = watch.GetValue(0).GetDoubleFromFSchemeValue();
@@ -440,7 +441,7 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testListLength_stringInput.dyn");
             model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Length>("18473048-4a5f-4b23-8578-d9b8c0f32c0f");
 
             double actual = watch.GetValue(0).GetDoubleFromFSchemeValue();
@@ -458,7 +459,7 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testPartitionList_emptyInput.dyn");
             model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Slice>("6cad28c0-605a-4b58-84a2-87939f81f61e");
 
             FSharpList<FScheme.Value> actual = watch.GetValue(0).GetListFromFSchemeValue();
@@ -474,7 +475,7 @@ namespace Dynamo.Tests
             model.Open(testFilePath);
             Assert.Throws<AssertionException>(() =>
             {
-                dynSettings.Controller.RunExpression(null);
+                DynamoSettings.Controller.RunExpression(null);
             });
         }
 
@@ -484,7 +485,7 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testPartitionList_numberInput.dyn");
             model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Slice>("a3cdc54a-5965-47ea-b294-f893b1b64ae2");
 
             FSharpList<FScheme.Value> actual = watch.GetValue(0).GetListFromFSchemeValue();
@@ -508,7 +509,7 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testPartitionList_stringInput.dyn");
             model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Slice>("a3cdc54a-5965-47ea-b294-f893b1b64ae2");
 
             FSharpList<FScheme.Value> actual = watch.GetValue(0).GetListFromFSchemeValue();
@@ -535,7 +536,7 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testPlatten_emptyInput.dyn");
             model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<FlattenListAmt>("4cc4e5f0-4338-43bb-911e-d7c10ea2b53c");
 
             FSharpList<FScheme.Value> actual = watch.GetValue(0).GetListFromFSchemeValue();
@@ -551,7 +552,7 @@ namespace Dynamo.Tests
             model.Open(testFilePath);
             Assert.Throws<AssertionException>(() =>
             {
-                dynSettings.Controller.RunExpression(null);
+                DynamoSettings.Controller.RunExpression(null);
             });
         }
 
@@ -561,7 +562,7 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testPlatten_normalInput.dyn");
             model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<FlattenListAmt>("6e46f30d-2214-4ff7-a666-0516d2af7c64");
 
             FSharpList<FScheme.Value> actual = watch.GetValue(0).GetListFromFSchemeValue();
@@ -598,7 +599,7 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testPlattenCompletely_emptyInput.dyn");
             model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<FlattenList>("641db696-5626-4af0-b07e-6335c6dc4bc9");
 
             FSharpList<FScheme.Value> actual = watch.GetValue(0).GetListFromFSchemeValue();
@@ -614,7 +615,7 @@ namespace Dynamo.Tests
             model.Open(testFilePath);
             Assert.Throws<AssertionException>(() =>
             {
-                dynSettings.Controller.RunExpression(null);
+                DynamoSettings.Controller.RunExpression(null);
             });
         }
 
@@ -624,7 +625,7 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testPlattenCompletely_normalInput.dyn");
             model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<FlattenList>("76609452-9c1d-4d71-9223-bb13c323f3a6");
 
             FSharpList<FScheme.Value> actual = watch.GetValue(0).GetListFromFSchemeValue();
@@ -657,7 +658,7 @@ namespace Dynamo.Tests
             model.Open(testFilePath);
             Assert.Throws<AssertionException>(() =>
             {
-                dynSettings.Controller.RunExpression(null);
+                DynamoSettings.Controller.RunExpression(null);
             });
         }
 
@@ -667,7 +668,7 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testRepeat_numberInput.dyn");
             model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Repeat>("72dddbc8-0a6b-431d-a185-8ec62a8b79dd");
 
             FSharpList<FScheme.Value> actual = watch.GetValue(0).GetListFromFSchemeValue();
@@ -705,7 +706,7 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testRepeat_stringInput.dyn");
             model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Repeat>("72dddbc8-0a6b-431d-a185-8ec62a8b79dd");
 
             FSharpList<FScheme.Value> actual = watch.GetValue(0).GetListFromFSchemeValue();
@@ -744,7 +745,7 @@ namespace Dynamo.Tests
             model.Open(testFilePath);
             Assert.Throws<AssertionException>(() =>
             {
-                dynSettings.Controller.RunExpression(null);
+                DynamoSettings.Controller.RunExpression(null);
             });
         }
 
@@ -756,7 +757,7 @@ namespace Dynamo.Tests
             model.Open(testFilePath);
             Assert.Throws<AssertionException>(() =>
             {
-                dynSettings.Controller.RunExpression(null);
+                DynamoSettings.Controller.RunExpression(null);
             });
         }
 
@@ -766,7 +767,7 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testRestOfList_numberInput.dyn");
             model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Rest>("3d3e481b-16ef-4837-b94e-7922f9e42029");
 
             FSharpList<FScheme.Value> actual = watch.GetValue(0).GetListFromFSchemeValue();
@@ -783,7 +784,7 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testRestOfList_stringInput.dyn");
             model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Rest>("3d3e481b-16ef-4837-b94e-7922f9e42029");
 
             FSharpList<FScheme.Value> actual = watch.GetValue(0).GetListFromFSchemeValue();
@@ -802,7 +803,7 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testTransposeList_emptyInput.dyn");
             model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Transpose>("df181bd7-3f1f-4195-93af-c0b846f6c8ce");
 
             FSharpList<FScheme.Value> actual = watch.GetValue(0).GetListFromFSchemeValue();
@@ -817,7 +818,7 @@ namespace Dynamo.Tests
             model.Open(testFilePath);
             Assert.Throws<AssertionException>(() =>
             {
-                dynSettings.Controller.RunExpression(null);
+                DynamoSettings.Controller.RunExpression(null);
             });
         }
 
@@ -827,7 +828,7 @@ namespace Dynamo.Tests
             DynamoModel model = Controller.DynamoModel;
             string testFilePath = Path.Combine(listTestFolder, "testTransposeList_normalInput.dyn");
             model.Open(testFilePath);
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Transpose>("e639bc66-6dec-4a0a-bae2-9bac7dab59dc");
 
             FSharpList<FScheme.Value> actual = watch.GetValue(0).GetListFromFSchemeValue();
@@ -864,7 +865,7 @@ namespace Dynamo.Tests
         [Test]
         public void Sort_NumbersfFromDiffInput()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\Sort_NumbersfFromDiffInput.dyn");
             model.Open(openPath);
@@ -874,7 +875,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(15, model.CurrentWorkspace.Nodes.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             // fourth and last element in the list before sorting
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("de6bd134-55d1-4fb8-a605-1c486b5acb5f");
@@ -895,7 +896,7 @@ namespace Dynamo.Tests
         [Test]
         public void Sort_SimpleNumbers()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\Sort_SimpleNumbers.dyn");
             model.Open(openPath);
@@ -905,7 +906,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(12, model.CurrentWorkspace.Nodes.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             // First and last element in the list before sorting
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("de6bd134-55d1-4fb8-a605-1c486b5acb5f");
@@ -926,7 +927,7 @@ namespace Dynamo.Tests
         [Test]
         public void Sort_StringsAndNumbers_NegativeTest()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\Sort_Strings&Numbers.dyn");
             model.Open(openPath);
@@ -938,14 +939,14 @@ namespace Dynamo.Tests
             // run the expression
             Assert.Throws<AssertionException>(() =>
             {
-                dynSettings.Controller.RunExpression(null);
+                DynamoSettings.Controller.RunExpression(null);
             });
         }
 
         [Test]
         public void Sort_Strings()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\Sort_Strings.dyn");
             model.Open(openPath);
@@ -955,7 +956,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(9, model.CurrentWorkspace.Nodes.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             // First and last element in the list before sorting
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("aa64651f-29cb-4008-b199-ec2f4ab3a1f7");
@@ -977,7 +978,7 @@ namespace Dynamo.Tests
         [Test]
         public void SortBy_SimpleTest()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\SortBy_SimpleTest.dyn");
             model.Open(openPath);
@@ -987,7 +988,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             // First and last element in the list before sorting
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("3cf42e26-c178-4cc4-81a5-38b1c7867f5e");
@@ -1010,7 +1011,7 @@ namespace Dynamo.Tests
         [Test]
         public void Reverse_ListWithOneNumber()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\Reverse_ListWithOneNumber.dyn");
             model.Open(openPath);
@@ -1020,7 +1021,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             // First element in the list before Reversing
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Reverse>("cd36fac7-d9eb-47ea-a73d-ad1bb4bbe54a");
@@ -1033,7 +1034,7 @@ namespace Dynamo.Tests
         [Test]
         public void Reverse_MixedList()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\Reverse_MixedList.dyn");
             model.Open(openPath);
@@ -1043,7 +1044,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             // First element in the list before Reversing
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("6dc62b9d-6045-4b68-a34c-2d5da999958b");
@@ -1062,7 +1063,7 @@ namespace Dynamo.Tests
         [Test]
         public void Reverse_NumberRange()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\Reverse_NumberRange.dyn");
             model.Open(openPath);
@@ -1072,7 +1073,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(7, model.CurrentWorkspace.Nodes.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             // First and last element in the list before Reversing
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("6dc62b9d-6045-4b68-a34c-2d5da999958b");
@@ -1093,7 +1094,7 @@ namespace Dynamo.Tests
         [Test]
         public void Reverse_UsingStringList()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\Reverse_UsingStringList.dyn");
             model.Open(openPath);
@@ -1103,7 +1104,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(8, model.CurrentWorkspace.Nodes.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             // First and last element in the list before Reversing
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("6dc62b9d-6045-4b68-a34c-2d5da999958b");
@@ -1124,7 +1125,7 @@ namespace Dynamo.Tests
         [Test]
         public void Reverse_WithArrayInput()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\Reverse_WithArrayInput.dyn");
             model.Open(openPath);
@@ -1134,7 +1135,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(16, model.CurrentWorkspace.Nodes.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             // First and last element in the list before Reversing
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("1c9d53b6-b5e0-4282-9768-a6c53115aba4");
@@ -1155,7 +1156,7 @@ namespace Dynamo.Tests
         [Test]
         public void Reverse_WithSingletonInput()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\Reverse_WithSingletonInput.dyn");
             model.Open(openPath);
@@ -1165,7 +1166,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(6, model.CurrentWorkspace.Connectors.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             // First and last element in the list before Reversing
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("1c9d53b6-b5e0-4282-9768-a6c53115aba4");
@@ -1192,7 +1193,7 @@ namespace Dynamo.Tests
         [Test]
         public void Filter_SimpleTest()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\Filter_SimpleTest.dyn");
             model.Open(openPath);
@@ -1202,7 +1203,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             // First, Second and last element in the list before Filter
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("a54127b5-decb-4750-aaf3-1b895be73984");
@@ -1225,7 +1226,7 @@ namespace Dynamo.Tests
         [Test]
         public void Filter_NegativeTest()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\Filter_NegativeTest.dyn");
             model.Open(openPath);
@@ -1235,7 +1236,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             // First, second and last element in the list before Filter
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("1327061f-b25d-4e91-9df7-a79850cb59e0");
@@ -1255,7 +1256,7 @@ namespace Dynamo.Tests
         [Test]
         public void Filter_Complex()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\Filter_Complex.dyn");
             model.Open(openPath);
@@ -1265,7 +1266,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             // First, second and last element in the first list after Filter
             var filter = model.CurrentWorkspace.NodeFromWorkspace<Filter>("d957655d-57d0-4445-a5a8-c730a3cb8d28");
@@ -1301,7 +1302,7 @@ namespace Dynamo.Tests
         [Test]
         public void LaceShortest_Simple()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\LaceShortest_Simple.dyn");
             model.Open(openPath);
@@ -1311,7 +1312,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             // Element from the Reverse list
             var reverse = model.CurrentWorkspace.NodeFromWorkspace<Reverse>("c3d629f7-76a0-40bc-bf39-da45d8b8ea7a");
@@ -1346,7 +1347,7 @@ namespace Dynamo.Tests
         [Test]
         public void LaceShortest_NegativeInput()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\LaceShortest_NegativeInput.dyn");
             model.Open(openPath);
@@ -1357,7 +1358,7 @@ namespace Dynamo.Tests
 
             Assert.Throws<AssertionException>(() =>
             {
-                dynSettings.Controller.RunExpression(null);
+                DynamoSettings.Controller.RunExpression(null);
             });
 
         }
@@ -1365,7 +1366,7 @@ namespace Dynamo.Tests
         [Test]
         public void LaceShortest_StringInput()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\LaceShortest_StringInput.dyn");
             model.Open(openPath);
@@ -1375,7 +1376,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(15, model.CurrentWorkspace.Connectors.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             // Element from the Reverse list
             var reverse = model.CurrentWorkspace.NodeFromWorkspace<ConcatStrings>("1c4c75ff-735d-4431-9df3-2b187c469b3a");
@@ -1408,7 +1409,7 @@ namespace Dynamo.Tests
         [Test]
         public void LaceLongest_Simple()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\LaceLongest_Simple.dyn");
             model.Open(openPath);
@@ -1418,7 +1419,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(7, model.CurrentWorkspace.Connectors.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var watch = model.CurrentWorkspace.NodeFromWorkspace<Watch>("5da40769-ffc8-408b-94bb-8c5dff31132e");
 
@@ -1447,7 +1448,7 @@ namespace Dynamo.Tests
         [Test]
         public void LaceLongest_Negative()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\LaceLongest_Negative.dyn");
             model.Open(openPath);
@@ -1458,7 +1459,7 @@ namespace Dynamo.Tests
 
             Assert.Throws<AssertionException>(() =>
             {
-                dynSettings.Controller.RunExpression(null);
+                DynamoSettings.Controller.RunExpression(null);
             });
 
         }
@@ -1466,7 +1467,7 @@ namespace Dynamo.Tests
         [Test]
         public void LaceLongest_ListWith10000Element()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\LaceLongest_ListWith10000Element.dyn");
             model.Open(openPath);
@@ -1476,7 +1477,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var watch = model.CurrentWorkspace.NodeFromWorkspace<LaceLongest>("25daa241-d8a4-4e74-aec1-6068358babf7");
             FSharpList<FScheme.Value> listWatchValue = watch.GetValue(0).GetListFromFSchemeValue();
@@ -1492,7 +1493,7 @@ namespace Dynamo.Tests
         [Test]
         public void FilterOut_SimpleTest()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\FilterOut_SimpleTest.dyn");
             model.Open(openPath);
@@ -1502,7 +1503,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             // Element from the Number node
             var numberRange = model.CurrentWorkspace.NodeFromWorkspace<DoubleInput>("b6571eb6-b1c2-4874-8749-b783176dc039");
@@ -1533,7 +1534,7 @@ namespace Dynamo.Tests
         [Test]
         public void FilterOut_Complex()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\FilterOut_Complex.dyn");
             model.Open(openPath);
@@ -1543,7 +1544,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(14, model.CurrentWorkspace.Connectors.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             // Element from the Number node
             var numberRange = model.CurrentWorkspace.NodeFromWorkspace<DoubleInput>("b6571eb6-b1c2-4874-8749-b783176dc039");
@@ -1579,7 +1580,7 @@ namespace Dynamo.Tests
         [Test]
         public void FilterOut_NegativeTest()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\FilterOut_NegativeTest.dyn");
             model.Open(openPath);
@@ -1590,7 +1591,7 @@ namespace Dynamo.Tests
 
             Assert.Throws<AssertionException>(() =>
             {
-                dynSettings.Controller.RunExpression(null);
+                DynamoSettings.Controller.RunExpression(null);
             });
 
         }
@@ -1603,7 +1604,7 @@ namespace Dynamo.Tests
         [Test]
         public void NumberRange_SimpleTest()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\NumberRange_SimpleTest.dyn");
             model.Open(openPath);
@@ -1613,7 +1614,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var watch = model.CurrentWorkspace.NodeFromWorkspace<NumberRange>("4e781f03-5b48-4d58-a511-8c732665e961");
 
@@ -1628,7 +1629,7 @@ namespace Dynamo.Tests
         [Test]
         public void NumberRange_LargeNumber()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\NumberRange_LargeNumber.dyn");
             model.Open(openPath);
@@ -1638,7 +1639,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var watch = model.CurrentWorkspace.NodeFromWorkspace<NumberRange>("4e781f03-5b48-4d58-a511-8c732665e961");
 
@@ -1654,7 +1655,7 @@ namespace Dynamo.Tests
         [Test]
         public void NumberRange_LacingShortest()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\NumberRange_LacingShortest.dyn");
             model.Open(openPath);
@@ -1664,7 +1665,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var numberRange = model.CurrentWorkspace.NodeFromWorkspace<NumberRange>("4e781f03-5b48-4d58-a511-8c732665e961");
 
@@ -1682,7 +1683,7 @@ namespace Dynamo.Tests
         [Test]
         public void NumberRange_LacingLongest()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\NumberRange_LacingLongest.dyn");
             model.Open(openPath);
@@ -1692,7 +1693,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var numberRange = model.CurrentWorkspace.NodeFromWorkspace<NumberRange>("4e781f03-5b48-4d58-a511-8c732665e961");
 
@@ -1713,7 +1714,7 @@ namespace Dynamo.Tests
         [Test]
         public void NumberRange_LacingCrossProduct()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\NumberRange_LacingCrossProduct.dyn");
             model.Open(openPath);
@@ -1723,7 +1724,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var numberRange = model.CurrentWorkspace.NodeFromWorkspace<NumberRange>("4e781f03-5b48-4d58-a511-8c732665e961");
 
@@ -1758,7 +1759,7 @@ namespace Dynamo.Tests
         [Test]
         public void ListMinimum_NumberRange()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\ListMinimum_NumberRange.dyn");
             model.Open(openPath);
@@ -1768,7 +1769,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(7, model.CurrentWorkspace.Connectors.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var listMin = model.CurrentWorkspace.NodeFromWorkspace<ListMin>("aa8b8f1e-e8c4-4ced-bbb2-8ee43d7bb4f6");
 
@@ -1779,7 +1780,7 @@ namespace Dynamo.Tests
         [Test]
         public void ListMinimum_Complex()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\ListMinimum_Complex.dyn");
             model.Open(openPath);
@@ -1789,7 +1790,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var listMin = model.CurrentWorkspace.NodeFromWorkspace<ListMin>("aa8b8f1e-e8c4-4ced-bbb2-8ee43d7bb4f6");
 
@@ -1804,7 +1805,7 @@ namespace Dynamo.Tests
         [Test]
         public void AddToList_SimpleTest()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\AddToList_SimpleTest.dyn");
             model.Open(openPath);
@@ -1814,7 +1815,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var addToList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.List>("31d0eb4e-8657-4eb1-a852-5e9b766eddd7");
 
@@ -1832,7 +1833,7 @@ namespace Dynamo.Tests
         [Test]
         public void AddToList_EmptyList()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\AddToList_EmptyList.dyn");
             model.Open(openPath);
@@ -1842,7 +1843,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var addToList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.List>("1976caa7-d45e-4a44-9faf-345d98337bbb");
 
@@ -1859,7 +1860,7 @@ namespace Dynamo.Tests
         [Test]
         public void AddToList_Complex()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\AddToList_Complex.dyn");
             model.Open(openPath);
@@ -1869,7 +1870,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var addToList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.List>("cfdfc020-05d0-4442-96df-8d97aad9c38c");
 
@@ -1894,7 +1895,7 @@ namespace Dynamo.Tests
         [Test]
         public void AddToList_GeometryToList()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\AddToList_GeometryToList.dyn");
             model.Open(openPath);
@@ -1904,7 +1905,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(11, model.CurrentWorkspace.Connectors.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var addToList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.List>("31d0eb4e-8657-4eb1-a852-5e9b766eddd7");
 
@@ -1921,7 +1922,7 @@ namespace Dynamo.Tests
         [Test]
         public void AddToList_Negative()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\AddToList_Negative.dyn");
             model.Open(openPath);
@@ -1932,7 +1933,7 @@ namespace Dynamo.Tests
 
             Assert.Throws<AssertionException>(() =>
             {
-                dynSettings.Controller.RunExpression(null);
+                DynamoSettings.Controller.RunExpression(null);
             });
 
         }
@@ -1944,7 +1945,7 @@ namespace Dynamo.Tests
         [Test]
         public void SplitList_SimpleTest()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\SplitList_SimpleTest.dyn");
             model.Open(openPath);
@@ -1954,7 +1955,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var splitList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DeCons>("8226a43b-fd5e-45f6-a5f7-32815c12084a");
 
@@ -1972,7 +1973,7 @@ namespace Dynamo.Tests
         [Test]
         public void SplitList_FirstElementAsList()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\SplitList_FirstElementAsList.dyn");
             model.Open(openPath);
@@ -1982,7 +1983,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var splitList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DeCons>("8226a43b-fd5e-45f6-a5f7-32815c12084a");
 
@@ -2000,7 +2001,7 @@ namespace Dynamo.Tests
         [Test]
         public void SplitList_Complex()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\SplitList_Complex.dyn");
             model.Open(openPath);
@@ -2010,7 +2011,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var splitList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DeCons>("8226a43b-fd5e-45f6-a5f7-32815c12084a");
 
@@ -2031,7 +2032,7 @@ namespace Dynamo.Tests
         [Test]
         public void SplitList_ComplexAnotherExample()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\SplitList_ComplexAnotherExample.dyn");
             model.Open(openPath);
@@ -2041,7 +2042,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(18, model.CurrentWorkspace.Connectors.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var splitList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DeCons>("66e94123-deaf-4bc8-8c5f-b3bc0996a57e");
 
@@ -2070,7 +2071,7 @@ namespace Dynamo.Tests
         [Test]
         public void TakeFromList_SimpleTest()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\TakeFromList_SimpleTest.dyn");
             model.Open(openPath);
@@ -2080,7 +2081,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var takeFromList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.TakeList>("14cb6593-24d8-4ffc-8ee5-9f4247449fc2");
 
@@ -2101,7 +2102,7 @@ namespace Dynamo.Tests
         [Test]
         public void TakeFromList_WithStringList()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\TakeFromList_WithStringList.dyn");
             model.Open(openPath);
@@ -2111,7 +2112,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(7, model.CurrentWorkspace.Connectors.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var takeFromList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.TakeList>("14cb6593-24d8-4ffc-8ee5-9f4247449fc2");
 
@@ -2129,7 +2130,7 @@ namespace Dynamo.Tests
         [Test]
         public void TakeFromList_NegativeIntValue()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\TakeFromList_NegativeIntValue.dyn");
             model.Open(openPath);
@@ -2139,7 +2140,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(7, model.CurrentWorkspace.Connectors.Count);
 
             // run the expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var takeFromList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.TakeList>("14cb6593-24d8-4ffc-8ee5-9f4247449fc2");
 
@@ -2154,7 +2155,7 @@ namespace Dynamo.Tests
         [Test]
         public void TakeFromList_InputEmptyList()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\TakeFromList_InputEmptyList.dyn");
             model.Open(openPath);
@@ -2166,7 +2167,7 @@ namespace Dynamo.Tests
             // run the expression
             Assert.Throws<AssertionException>(() =>
             {
-                dynSettings.Controller.RunExpression(null);
+                DynamoSettings.Controller.RunExpression(null);
             });
 
         }
@@ -2174,7 +2175,7 @@ namespace Dynamo.Tests
         [Test]
         public void TakeFromList_AmtAsRangeExpn()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\TakeFromList_AmtAsRangeExpn.dyn");
             model.Open(openPath);
@@ -2186,7 +2187,7 @@ namespace Dynamo.Tests
             // run the expression
             Assert.Throws<AssertionException>(() =>
             {
-                dynSettings.Controller.RunExpression(null);
+                DynamoSettings.Controller.RunExpression(null);
             });
         }
 
@@ -2196,7 +2197,7 @@ namespace Dynamo.Tests
         [Test]
         public void DropFromList_SimpleTest()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\DropFromList_SimpleTest.dyn");
             model.Open(openPath);
@@ -2206,7 +2207,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(6, model.CurrentWorkspace.Connectors.Count);
 
             // run expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var dropFromList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.DropList>("e2d27010-b8fc-4eb8-8703-63bab5ce6e85");
             FSharpList<FScheme.Value> output = dropFromList.GetValue(0).GetListFromFSchemeValue();
@@ -2225,7 +2226,7 @@ namespace Dynamo.Tests
         public void DropFromList_InputEmptyList()
         {
 
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\DropFromList_InputEmptyList.dyn");
             model.Open(openPath);
@@ -2237,7 +2238,7 @@ namespace Dynamo.Tests
             // run expression
             Assert.Throws<AssertionException>(() =>
             {
-                dynSettings.Controller.RunExpression(null);
+                DynamoSettings.Controller.RunExpression(null);
             });
         }
 
@@ -2248,7 +2249,7 @@ namespace Dynamo.Tests
         [Test]
         public void ShiftListIndices_SimpleTest()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\ShiftListIndeces_SimpleTest.dyn");
             model.Open(openPath);
@@ -2258,7 +2259,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
 
             // run expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var shiftListIndices = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.ShiftList>("7f6cbd60-b9fb-4b16-81d3-4fab26790446");
             FSharpList<FScheme.Value> output = shiftListIndices.GetValue(0).GetListFromFSchemeValue();
@@ -2271,7 +2272,7 @@ namespace Dynamo.Tests
         [Test]
         public void ShiftListIndices_Complex()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\ShiftListIndeces_Complex.dyn");
             model.Open(openPath);
@@ -2281,7 +2282,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(21, model.CurrentWorkspace.Connectors.Count);
 
             // run expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var shiftListIndeces = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.ShiftList>("492db019-4807-4810-8919-10b94e8ca083");
             FSharpList<FScheme.Value> output = shiftListIndeces.GetValue(0).GetListFromFSchemeValue();
@@ -2302,7 +2303,7 @@ namespace Dynamo.Tests
         [Test]
         public void ShiftListIndices_InputEmptyList()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\ShiftListIndeces_InputEmptyList.dyn");
             model.Open(openPath);
@@ -2312,7 +2313,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
 
             // run expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var shiftListIndeces = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.ShiftList>("7f6cbd60-b9fb-4b16-81d3-4fab26790446");
             FSharpList<FScheme.Value> output = shiftListIndeces.GetValue(0).GetListFromFSchemeValue();
@@ -2324,7 +2325,7 @@ namespace Dynamo.Tests
         [Test]
         public void ShiftListIndices_InputStringAsAmt()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\ShiftListIndeces_InputStringAsAmt.dyn");
             model.Open(openPath);
@@ -2336,14 +2337,14 @@ namespace Dynamo.Tests
             // run expression
             Assert.Throws<AssertionException>(() =>
             {
-                dynSettings.Controller.RunExpression(null);
+                DynamoSettings.Controller.RunExpression(null);
             });
         }
 
         [Test]
         public void ShiftListIndices_NegativeTest()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\ShiftListIndeces_NegativeTest.dyn");
             model.Open(openPath);
@@ -2355,7 +2356,7 @@ namespace Dynamo.Tests
             // run expression
             Assert.Throws<AssertionException>(() =>
             {
-                dynSettings.Controller.RunExpression(null);
+                DynamoSettings.Controller.RunExpression(null);
             });
         }
         #endregion
@@ -2365,7 +2366,7 @@ namespace Dynamo.Tests
         [Test]
         public void GetFromList_SimpleTest()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\GetFromList_SimpleTest.dyn");
             model.Open(openPath);
@@ -2375,7 +2376,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
 
             // run expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var getFromList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.GetFromList>("332093dc-4551-4c82-9f6b-061c7945211b");
             FSharpList<FScheme.Value> output = getFromList.GetValue(0).GetListFromFSchemeValue();
@@ -2387,7 +2388,7 @@ namespace Dynamo.Tests
         [Test]
         public void GetFromList_WithStringList()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\GetFromList_WithStringList.dyn");
             model.Open(openPath);
@@ -2397,7 +2398,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(7, model.CurrentWorkspace.Connectors.Count);
 
             // run expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var getFromList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.GetFromList>("58d35bfa-4435-44f0-a322-c6f7350f0220");
             FSharpList<FScheme.Value> output = getFromList.GetValue(0).GetListFromFSchemeValue();
@@ -2410,7 +2411,7 @@ namespace Dynamo.Tests
         [Test]
         public void GetFromList_AmtAsRangeExpn()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\GetFromList_AmtAsRangeExpn.dyn");
             model.Open(openPath);
@@ -2420,7 +2421,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count);
 
             // run expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var getFromList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.GetFromList>("d2f1c900-99ce-40a5-ae4d-bbac1fe96cfd");
             FSharpList<FScheme.Value> output = getFromList.GetValue(0).GetListFromFSchemeValue();
@@ -2439,7 +2440,7 @@ namespace Dynamo.Tests
         [Test]
         public void GetFromList_InputEmptyList()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\GetFromList_InputEmptyList.dyn");
             model.Open(openPath);
@@ -2451,14 +2452,14 @@ namespace Dynamo.Tests
             // run expression
             Assert.Throws<AssertionException>(() =>
             {
-                dynSettings.Controller.RunExpression(null);
+                DynamoSettings.Controller.RunExpression(null);
             });
         }
 
         [Test]
         public void GetFromList_Negative()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\GetFromList_Negative.dyn");
             model.Open(openPath);
@@ -2470,13 +2471,13 @@ namespace Dynamo.Tests
             // run expression
             Assert.Throws<AssertionException>(() =>
             {
-                dynSettings.Controller.RunExpression(null);
+                DynamoSettings.Controller.RunExpression(null);
             });
         }
         [Test]
         public void GetFromList_NegativeIntValue()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\GetFromList_NegativeIntValue.dyn");
             model.Open(openPath);
@@ -2488,7 +2489,7 @@ namespace Dynamo.Tests
             // run expression
             Assert.Throws<AssertionException>(() =>
             {
-                dynSettings.Controller.RunExpression(null);
+                DynamoSettings.Controller.RunExpression(null);
             });
 
             // This test case need to change because -ve index is valid in DesignScript context.
@@ -2501,7 +2502,7 @@ namespace Dynamo.Tests
         [Test]
         public void TakeEveryNth_SimpleTest()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\TakeEveryNth_SimpleTest.dyn");
             model.Open(openPath);
@@ -2511,7 +2512,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
 
             // run expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var takeEveryNth = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.TakeEveryNth>("b18e5ac3-5732-4c78-9a3b-56b375c9beee");
             FSharpList<FScheme.Value> output = takeEveryNth.GetValue(0).GetListFromFSchemeValue();
@@ -2525,7 +2526,7 @@ namespace Dynamo.Tests
         [Test]
         public void TakeEveryNth_Complex()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\TakeEveryNth_Complex.dyn");
             model.Open(openPath);
@@ -2535,7 +2536,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(17, model.CurrentWorkspace.Connectors.Count);
 
             // run expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var takeEveryNth = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.TakeEveryNth>("b18e5ac3-5732-4c78-9a3b-56b375c9beee");
             FSharpList<FScheme.Value> output = takeEveryNth.GetValue(0).GetListFromFSchemeValue();
@@ -2548,7 +2549,7 @@ namespace Dynamo.Tests
         [Test]
         public void TakeEveryNth_InputEmptyList()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\TakeEveryNth_InputEmptyList.dyn");
             model.Open(openPath);
@@ -2558,7 +2559,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
 
             // run expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var takeEveryNth = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.TakeEveryNth>("b18e5ac3-5732-4c78-9a3b-56b375c9beee");
             FSharpList<FScheme.Value> output = takeEveryNth.GetValue(0).GetListFromFSchemeValue();
@@ -2570,7 +2571,7 @@ namespace Dynamo.Tests
         [Test]
         public void TakeEveryNth_NegativeTest()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\TakeEveryNth_NegativeTest.dyn");
             model.Open(openPath);
@@ -2582,7 +2583,7 @@ namespace Dynamo.Tests
             // run expression
             Assert.Throws<AssertionException>(() =>
             {
-                dynSettings.Controller.RunExpression(null);
+                DynamoSettings.Controller.RunExpression(null);
             });
         }
         #endregion
@@ -2592,7 +2593,7 @@ namespace Dynamo.Tests
         [Test]
         public void DropEveryNth_SimpleTest()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\DropEveryNth_SimpleTest.dyn");
             model.Open(openPath);
@@ -2602,7 +2603,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
 
             // run expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var takeEveryNth = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.RemoveEveryNth>("96a1ca07-83eb-4459-981e-7daed6d1d4b3");
             FSharpList<FScheme.Value> output = takeEveryNth.GetValue(0).GetListFromFSchemeValue();
@@ -2618,7 +2619,7 @@ namespace Dynamo.Tests
         [Test]
         public void DropEveryNth_ComplexTest()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\DropEveryNth_ComplexTest.dyn");
             model.Open(openPath);
@@ -2628,7 +2629,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(19, model.CurrentWorkspace.Connectors.Count);
 
             // run expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var takeEveryNth = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.RemoveEveryNth>("4bd0ced4-29ee-4f4e-95af-d0573e04731a");
             FSharpList<FScheme.Value> output = takeEveryNth.GetValue(0).GetListFromFSchemeValue();
@@ -2647,7 +2648,7 @@ namespace Dynamo.Tests
         [Test]
         public void DropEveryNth_InputEmptyList()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\DropEveryNth_InputEmptyList.dyn");
             model.Open(openPath);
@@ -2657,7 +2658,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
 
             // run expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var takeEveryNth = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.RemoveEveryNth>("a0304232-ad3a-4518-92ff-4b8893297ce4");
             FSharpList<FScheme.Value> output = takeEveryNth.GetValue(0).GetListFromFSchemeValue();
@@ -2669,7 +2670,7 @@ namespace Dynamo.Tests
         [Test]
         public void DropEveryNth_InputStringForNth()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\DropEveryNth_InputStringForNth.dyn");
             model.Open(openPath);
@@ -2681,7 +2682,7 @@ namespace Dynamo.Tests
             // run expression
             Assert.Throws<AssertionException>(() =>
             {
-                dynSettings.Controller.RunExpression(null);
+                DynamoSettings.Controller.RunExpression(null);
             });
         }
         #endregion
@@ -2691,7 +2692,7 @@ namespace Dynamo.Tests
         [Test]
         public void RemoveFromList_SimpleTest()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\RemoveFromList_SimpleTest.dyn");
             model.Open(openPath);
@@ -2701,7 +2702,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(9, model.CurrentWorkspace.Connectors.Count);
 
             // run expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var takeEveryNth = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.RemoveFromList>("396d2bbe-7b84-4a7a-a1f0-b7a438b56ca6");
             FSharpList<FScheme.Value> output = takeEveryNth.GetValue(0).GetListFromFSchemeValue();
@@ -2719,7 +2720,7 @@ namespace Dynamo.Tests
         [Test]
         public void RemoveFromList_StringAsList()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\RemoveFromList_StringAsList.dyn");
             model.Open(openPath);
@@ -2731,14 +2732,14 @@ namespace Dynamo.Tests
             // run expression
             Assert.Throws<AssertionException>(() =>
             {
-                dynSettings.Controller.RunExpression(null);
+                DynamoSettings.Controller.RunExpression(null);
             });
         }
 
         [Test]
         public void RemoveFromList_StringAsIndex()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\RemoveFromList_StringAsIndex.dyn");
             model.Open(openPath);
@@ -2750,14 +2751,14 @@ namespace Dynamo.Tests
             // run expression
             Assert.Throws<AssertionException>(() =>
             {
-                dynSettings.Controller.RunExpression(null);
+                DynamoSettings.Controller.RunExpression(null);
             });
         }
 
         [Test]
         public void RemoveFromList_Complex()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\RemoveFromList_Complex.dyn");
             model.Open(openPath);
@@ -2767,7 +2768,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
 
             // run expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var takeEveryNth = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.RemoveFromList>("396d2bbe-7b84-4a7a-a1f0-b7a438b56ca6");
             FSharpList<FScheme.Value> output = takeEveryNth.GetValue(0).GetListFromFSchemeValue();
@@ -2782,7 +2783,7 @@ namespace Dynamo.Tests
         [Test]
         public void RemoveFromList_RangeExpnAsIndex()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\RemoveFromList_RangeExpnAsIndex.dyn");
             model.Open(openPath);
@@ -2792,7 +2793,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(9, model.CurrentWorkspace.Connectors.Count);
 
             // run expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var takeEveryNth = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.RemoveFromList>("dc581841-0221-4bc3-9010-3d2f0081a169");
             FSharpList<FScheme.Value> output = takeEveryNth.GetValue(0).GetListFromFSchemeValue();
@@ -2814,7 +2815,7 @@ namespace Dynamo.Tests
         [Test]
         public void SliceList_SimpleTest()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\SliceList_SimpleTest.dyn");
             model.Open(openPath);
@@ -2824,7 +2825,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
 
             // run expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var takeEveryNth = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.SliceList>("df64e6c8-3a73-40b3-b63c-34cb5936b848");
             FSharpList<FScheme.Value> output = takeEveryNth.GetValue(0).GetListFromFSchemeValue();
@@ -2837,7 +2838,7 @@ namespace Dynamo.Tests
         [Test]
         public void SliceList_Complex()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\SliceList_Complex.dyn");
             model.Open(openPath);
@@ -2847,7 +2848,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(12, model.CurrentWorkspace.Connectors.Count);
 
             // run expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var takeEveryNth = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.SliceList>("cc3ae092-8644-4a36-ad38-12ffa15cebda");
             FSharpList<FScheme.Value> output = takeEveryNth.GetValue(0).GetListFromFSchemeValue();
@@ -2862,7 +2863,7 @@ namespace Dynamo.Tests
         [Test]
         public void SliceList_NegativeTest()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\SliceList_NegativeTest.dyn");
             model.Open(openPath);
@@ -2874,7 +2875,7 @@ namespace Dynamo.Tests
             // run expression
             Assert.Throws<AssertionException>(() =>
             {
-                dynSettings.Controller.RunExpression(null);
+                DynamoSettings.Controller.RunExpression(null);
             });
         }
         #endregion
@@ -2884,7 +2885,7 @@ namespace Dynamo.Tests
         [Test]
         public void Average_SimpleTest()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\Average_SimpleTest.dyn");
             model.Open(openPath);
@@ -2894,7 +2895,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count);
 
             // run expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var averageNumber = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.Average>("cafe8fae-55f0-4e58-977e-80edcbc90d2b");
 
@@ -2904,7 +2905,7 @@ namespace Dynamo.Tests
         [Test]
         public void Average_NegativeInputTest()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\Average_NegativeInputTest.dyn");
             model.Open(openPath);
@@ -2916,7 +2917,7 @@ namespace Dynamo.Tests
             // run expression
             Assert.Throws<AssertionException>(() =>
             {
-                dynSettings.Controller.RunExpression(null);
+                DynamoSettings.Controller.RunExpression(null);
             });
         }
 
@@ -2927,7 +2928,7 @@ namespace Dynamo.Tests
         [Test]
         public void TrueForAny_SimpleTest()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\TrueForAny_SimpleTest.dyn");
             model.Open(openPath);
@@ -2937,7 +2938,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
 
             // run expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var trueForAny = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.OrMap>("3960776a-4c6c-40d8-8b7e-dbe5db38d75b");
 
@@ -2951,7 +2952,7 @@ namespace Dynamo.Tests
         [Test]
         public void TrueForAll_SimpleTest()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\TrueForAll_SimpleTest.dyn");
             model.Open(openPath);
@@ -2961,7 +2962,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
 
             // run expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var trueForAll = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.AndMap>("6434eb4f-89d9-4b11-8b9b-79ed937e4b24");
             Assert.AreEqual(1, trueForAll.OldValue.GetDoubleFromFSchemeValue());
@@ -2974,7 +2975,7 @@ namespace Dynamo.Tests
         [Test]
         public void Smooth_SimpleTest()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\Smooth_SimpleTest.dyn");
             model.Open(openPath);
@@ -2984,7 +2985,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, model.CurrentWorkspace.Connectors.Count);
 
             // run expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var smooth = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.Smooth>("e367bd22-e0ef-402e-b6c0-3a7aaee2be63");
             FSharpList<FScheme.Value> output = smooth.GetValue(0).GetListFromFSchemeValue();
@@ -2998,7 +2999,7 @@ namespace Dynamo.Tests
         [Test]
         public void Smooth_InputListNode()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\Smooth_InputListNode.dyn");
             model.Open(openPath);
@@ -3008,7 +3009,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
 
             // run expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var smooth = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.Smooth>("ae41ff44-6f8c-4037-86ad-5ec3b22956a6");
             FSharpList<FScheme.Value> output = smooth.GetValue(0).GetListFromFSchemeValue();
@@ -3022,7 +3023,7 @@ namespace Dynamo.Tests
         [Test]
         public void Smooth_NegativeTest()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\Smooth_NegativeTest.dyn");
             model.Open(openPath);
@@ -3034,7 +3035,7 @@ namespace Dynamo.Tests
             // run expression
             Assert.Throws<AssertionException>(() =>
             {
-                dynSettings.Controller.RunExpression(null);
+                DynamoSettings.Controller.RunExpression(null);
             });
         }
         #endregion
@@ -3044,7 +3045,7 @@ namespace Dynamo.Tests
         [Test]
         public void JoinList_SimpleTest()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\JoinList_SimpleTest.dyn");
             model.Open(openPath);
@@ -3054,7 +3055,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count);
 
             // run expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var smooth = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.Append>("1304807f-6d18-4aef-b4cb-9cb8f469993e");
             FSharpList<FScheme.Value> output = smooth.GetValue(0).GetListFromFSchemeValue();
@@ -3070,7 +3071,7 @@ namespace Dynamo.Tests
         [Test]
         public void JoinList_MoreLists()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\JoinList_MoreLists.dyn");
             model.Open(openPath);
@@ -3080,7 +3081,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(10, model.CurrentWorkspace.Connectors.Count);
 
             // run expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var joinList = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.Append>("1304807f-6d18-4aef-b4cb-9cb8f469993e");
             FSharpList<FScheme.Value> actual = joinList.GetValue(0).GetListFromFSchemeValue();
@@ -3109,7 +3110,7 @@ namespace Dynamo.Tests
         [Test]
         public void Combine_SimpleTest()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\Combine_SimpleTest.dyn");
             model.Open(openPath);
@@ -3119,7 +3120,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count);
 
             // run expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var smooth = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.Combine>("e0cbb116-6c81-4e74-90c6-a5235cfb9eea");
             FSharpList<FScheme.Value> output = smooth.GetValue(0).GetListFromFSchemeValue();
@@ -3135,7 +3136,7 @@ namespace Dynamo.Tests
         [Test]
         public void Combine_ComplexTest()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\Combine_ComplexTest.dyn");
             model.Open(openPath);
@@ -3145,7 +3146,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(28, model.CurrentWorkspace.Connectors.Count);
 
             // run expression
-            dynSettings.Controller.RunExpression(null);
+            DynamoSettings.Controller.RunExpression(null);
 
             var smooth = model.CurrentWorkspace.NodeFromWorkspace<Dynamo.Nodes.Combine>("f5b7116b-e926-499d-b784-f47c55e01e34");
             FSharpList<FScheme.Value> output = smooth.GetValue(0).GetListFromFSchemeValue();
@@ -3160,7 +3161,7 @@ namespace Dynamo.Tests
         [Test]
         public void Combine_NegativeTest()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string openPath = Path.Combine(GetTestDirectory(), @"core\list\Combine_NegativeTest.dyn");
             model.Open(openPath);
@@ -3172,7 +3173,7 @@ namespace Dynamo.Tests
             // run expression
             Assert.Throws<AssertionException>(() =>
             {
-                dynSettings.Controller.RunExpression(null);
+                DynamoSettings.Controller.RunExpression(null);
             });
         }
 

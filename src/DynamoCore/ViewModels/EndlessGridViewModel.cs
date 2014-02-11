@@ -3,15 +3,11 @@ using Dynamo.Models;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using System.Windows.Media;
 using System.Windows;
-using Dynamo.UI.Commands;
 
 namespace Dynamo.ViewModels
 {
@@ -103,12 +99,12 @@ namespace Dynamo.ViewModels
 
         public double WorkspaceWidth
         {
-            get { return dynSettings.Controller.DynamoViewModel.WorkspaceActualWidth; }
+            get { return DynamoSettings.Controller.DynamoViewModel.WorkspaceActualWidth; }
         }
 
         public double WorkspaceHeight
         {
-            get { return dynSettings.Controller.DynamoViewModel.WorkspaceActualHeight; }
+            get { return DynamoSettings.Controller.DynamoViewModel.WorkspaceActualHeight; }
         }
 
         public double WorkspaceZoom
@@ -123,7 +119,7 @@ namespace Dynamo.ViewModels
 
         public bool FullscreenWatchShowing
         {
-            get { return dynSettings.Controller.DynamoViewModel.FullscreenWatchShowing; }
+            get { return DynamoSettings.Controller.DynamoViewModel.FullscreenWatchShowing; }
         }
 
 
@@ -153,8 +149,8 @@ namespace Dynamo.ViewModels
         internal void InitializeOnce()
         {
             // Subscribing to properties changes, keeping up to date
-            this.workspaceVM.Model.PropertyChanged += WorkspaceModel_PropertyChanged;
-            dynSettings.Controller.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
+            workspaceVM.Model.PropertyChanged += WorkspaceModel_PropertyChanged;
+            DynamoSettings.Controller.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
 
             // Render EndlessGrid for the first time
             RecalculateLeft();
@@ -215,8 +211,8 @@ namespace Dynamo.ViewModels
             // Calculate the required spare grid size for panning certain distance
             requiredSpareGridSize = (int)Math.Ceiling(Configurations.GridSpacing * 2 / WorkspaceModel.ZOOM_MINIMUM);
 
-            this.Width = this.WorkspaceWidth / WorkspaceModel.ZOOM_MINIMUM + requiredSpareGridSize * 2;
-            this.Height = this.WorkspaceHeight / WorkspaceModel.ZOOM_MINIMUM + requiredSpareGridSize * 2;
+            Width = WorkspaceWidth / WorkspaceModel.ZOOM_MINIMUM + requiredSpareGridSize * 2;
+            Height = WorkspaceHeight / WorkspaceModel.ZOOM_MINIMUM + requiredSpareGridSize * 2;
 
             RecreateGridLines();
         }
@@ -231,7 +227,7 @@ namespace Dynamo.ViewModels
             ObservableCollection<Line> collection = new ObservableCollection<Line>();
             
             // Draw Vertical Grid Lines
-            for (double i = 0; i < this.Width; i += Configurations.GridSpacing)
+            for (double i = 0; i < Width; i += Configurations.GridSpacing)
             {
                 var xLine = new Line();
                 xLine.Stroke = new SolidColorBrush(gridLineColor);
@@ -239,21 +235,21 @@ namespace Dynamo.ViewModels
                 xLine.X1 = i;
                 xLine.Y1 = 0;
                 xLine.X2 = i;
-                xLine.Y2 = this.Height;
+                xLine.Y2 = Height;
                 xLine.HorizontalAlignment = HorizontalAlignment.Left;
                 xLine.VerticalAlignment = VerticalAlignment.Center;
                 collection.Add(xLine);
             }
 
             // Draw Horizontal Grid Lines
-            for (double i = 0; i < this.Height; i += Configurations.GridSpacing)
+            for (double i = 0; i < Height; i += Configurations.GridSpacing)
             {
                 var yLine = new Line();
                 yLine.Stroke = new SolidColorBrush(gridLineColor);
                 yLine.StrokeThickness = Configurations.GridThickness;
                 yLine.X1 = 0;
                 yLine.Y1 = i;
-                yLine.X2 = this.Width;
+                yLine.X2 = Width;
                 yLine.Y2 = i;
                 yLine.HorizontalAlignment = HorizontalAlignment.Left;
                 yLine.VerticalAlignment = VerticalAlignment.Center;

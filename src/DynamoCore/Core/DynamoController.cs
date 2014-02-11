@@ -7,8 +7,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Threading;
+using Dynamo.Core;
 using Dynamo.DSEngine;
-using Dynamo.FSchemeInterop;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.Selection;
@@ -120,8 +120,6 @@ namespace Dynamo
             get { return builtinTypesByTypeName; }
         }
 
-        public ExecutionEnvironment FSchemeEnvironment { get; private set; }
-
         private string context;
         public string Context
         {
@@ -210,29 +208,26 @@ namespace Dynamo
 
         public static DynamoController MakeSandbox(string commandFilePath = null)
         {
-            ExecutionEnvironment env = new ExecutionEnvironment();
-
             // If a command file path is not specified or if it is invalid, then fallback.
             if (string.IsNullOrEmpty(commandFilePath) || (File.Exists(commandFilePath) == false))
-                return new DynamoController(env, typeof(DynamoViewModel), "None", new UpdateManager.UpdateManager());
+                return new DynamoController(typeof(DynamoViewModel), "None", new UpdateManager.UpdateManager());
 
-            return new DynamoController(env, typeof(DynamoViewModel), "None", commandFilePath, new UpdateManager.UpdateManager());
+            return new DynamoController(typeof(DynamoViewModel), "None", commandFilePath, new UpdateManager.UpdateManager());
         }
 
-        public DynamoController(ExecutionEnvironment env, Type viewModelType, string context, IUpdateManager updateManager) : 
-            this(env, viewModelType, context, null, updateManager)
+        public DynamoController(Type viewModelType, string context, IUpdateManager updateManager) : 
+            this(viewModelType, context, null, updateManager)
         {
         }
 
         /// <summary>
         ///     Class constructor
         /// </summary>
-        public DynamoController(ExecutionEnvironment env,
-            Type viewModelType, string context, string commandFilePath, IUpdateManager updateManager)
+        public DynamoController(Type viewModelType, string context, string commandFilePath, IUpdateManager updateManager)
         {
             DynamoLogger.Instance.StartLogging();
 
-            dynSettings.Controller = this;
+            DynamoSettings.Controller = this;
 
             Context = context;
 
@@ -265,12 +260,10 @@ namespace Dynamo
             
             SearchViewModel = new SearchViewModel();
 
-            dynSettings.PackageLoader = new PackageLoader();
+            DynamoSettings.PackageLoader = new PackageLoader();
 
-            dynSettings.PackageLoader.DoCachedPackageUninstalls();
-            dynSettings.PackageLoader.LoadPackages();
-            
-            FSchemeEnvironment = env;
+            DynamoSettings.PackageLoader.DoCachedPackageUninstalls();
+            DynamoSettings.PackageLoader.LoadPackages();
 
             DynamoViewModel.Model.CurrentWorkspace.X = 0;
             DynamoViewModel.Model.CurrentWorkspace.Y = 0;
@@ -282,12 +275,6 @@ namespace Dynamo
             DynamoLoader.ClearCachedAssemblies();
             DynamoLoader.LoadBuiltinTypes();
 
-            //run tests
-            if (FScheme.RunTests(DynamoLogger.Instance.Log))
-            {
-                DynamoLogger.Instance.Log("All Tests Passed. Core library loaded OK.");
-            }
-
             InfoBubbleViewModel = new InfoBubbleViewModel();
 
             AddPythonBindings();
@@ -295,7 +282,7 @@ namespace Dynamo
             MigrationManager.Instance.MigrationTargets.Add(typeof(WorkspaceMigrations));
         }
 
-        void updateManager_UpdateDownloaded(object sender, UpdateManager.UpdateDownloadedEventArgs e)
+        void updateManager_UpdateDownloaded(object sender, UpdateDownloadedEventArgs e)
         {
             UpdateManager.QuitAndInstallUpdate();
         }
@@ -320,8 +307,8 @@ namespace Dynamo
 
             VisualizationManager.ClearVisualizations();
 
-            dynSettings.Controller.DynamoModel.OnCleanup(null);
-            dynSettings.Controller = null;
+            DynamoSettings.Controller.DynamoModel.OnCleanup(null);
+            DynamoSettings.Controller = null;
             
             DynamoSelection.Instance.ClearSelection();
 
@@ -476,10 +463,6 @@ namespace Dynamo
 
                 //No longer running
                 Running = false;
-
-                foreach (CustomNodeDefinition def in dynSettings.FunctionWasEvaluated)
-                    def.RequiresRecalc = false;
-
                 
                 //If we should run again...
                 if (runAgain)
@@ -551,12 +534,14 @@ namespace Dynamo
             OnEvaluationCompleted(this, EventArgs.Empty);
         }
 
+#if !USE_DSENGINE
+
         protected virtual void Run(List<NodeModel> topElements, FScheme.Expression runningExpression)
         {
             //Print some stuff if we're in debug mode
             if (DynamoViewModel.RunInDebug)
             {
-                if (dynSettings.Controller.UIDispatcher != null)
+                if (DynamoSettings.Controller.UIDispatcher != null)
                 {
                     foreach (string exp in topElements.Select(node => node.PrintExpression()))
                         DynamoLogger.Instance.Log("> " + exp);
@@ -568,7 +553,7 @@ namespace Dynamo
                 //Evaluate the expression
                 FScheme.Value expr = FSchemeEnvironment.Evaluate(runningExpression);
 
-                if (dynSettings.Controller.UIDispatcher != null)
+                if (DynamoSettings.Controller.UIDispatcher != null)
                 {
                     //Print some more stuff if we're in debug mode
                     if (DynamoViewModel.RunInDebug && expr != null)
@@ -607,11 +592,13 @@ namespace Dynamo
             OnEvaluationCompleted(this, EventArgs.Empty);
         }
 
+#endif
+
         protected virtual void OnRunCancelled(bool error)
         {
             //DynamoLogger.Instance.Log("Run cancelled. Error: " + error);
             if (error)
-                dynSettings.FunctionWasEvaluated.Clear();
+                DynamoSettings.FunctionWasEvaluated.Clear();
         }
 
         /// <summary>
@@ -647,7 +634,7 @@ namespace Dynamo
 
         public void CancelRunCmd(object parameter)
         {
-            var command = new DynCmd.RunCancelCommand(false, true);
+            var command = new DynamoViewModel.RunCancelCommand(false, true);
             DynamoViewModel.ExecuteCommand(command);
         }
 
@@ -664,13 +651,13 @@ namespace Dynamo
         internal void RunExprCmd(object parameters)
         {
             bool showErrors = Convert.ToBoolean(parameters);
-            var command = new DynCmd.RunCancelCommand(showErrors, false);
+            var command = new DynamoViewModel.RunCancelCommand(showErrors, false);
             DynamoViewModel.ExecuteCommand(command);
         }
 
         internal bool CanRunExprCmd(object parameters)
         {
-            return (dynSettings.Controller != null);
+            return (DynamoSettings.Controller != null);
         }
 
         internal void RunCancelInternal(bool showErrors, bool cancelRun)
@@ -688,7 +675,7 @@ namespace Dynamo
 
         internal bool CanDisplayFunction(object parameters)
         {
-            var id = dynSettings.CustomNodes.FirstOrDefault(x => x.Value == (Guid)parameters).Value;
+            var id = DynamoSettings.CustomNodes.FirstOrDefault(x => x.Value == (Guid)parameters).Value;
 
             if (id != null)
                 return true;
@@ -761,7 +748,7 @@ namespace Dynamo
             }
         }
 
-        void DrawPython(FScheme.Value val, string id)
+        void DrawPython(dynamic val, string id)
         {
             //DrawContainers(val, id);
         }

@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
 using Autodesk.Revit.DB;
+using Dynamo.Core;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using NUnit.Framework;
@@ -15,13 +16,13 @@ namespace Dynamo.Tests
         [Test]
         public void ModelCurve()
         {
-            var model = dynSettings.Controller.DynamoModel;
+            var model = DynamoSettings.Controller.DynamoModel;
 
             string samplePath = Path.Combine(_testPath, @".\ModelCurve\ModelCurve.dyn");
             string testPath = Path.GetFullPath(samplePath);
 
             model.Open(testPath);
-            dynSettings.Controller.RunExpression(true);
+            DynamoSettings.Controller.RunExpression(true);
 
             var fec = new FilteredElementCollector(DocumentManager.GetInstance().CurrentUIDocument.Document);
             fec.OfClass(typeof(CurveElement));
@@ -35,13 +36,13 @@ namespace Dynamo.Tests
 
             //update any number node and verify 
             //that the element gets updated not recreated
-            var doubleNodes = dynSettings.Controller.DynamoModel.Nodes.Where(x => x is DoubleInput);
+            var doubleNodes = DynamoSettings.Controller.DynamoModel.Nodes.Where(x => x is DoubleInput);
             var node = doubleNodes.First() as DoubleInput;
 
             Assert.IsNotNull(node);
 
             node.Value = node.Value + .1;
-            dynSettings.Controller.RunExpression(true);
+            DynamoSettings.Controller.RunExpression(true);
             Assert.AreEqual(5, fec.ToElements().Count);
         }
     }

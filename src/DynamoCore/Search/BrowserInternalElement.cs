@@ -1,7 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows;
-using Dynamo.Search;
 
 namespace Dynamo.Nodes.Search
 {
@@ -29,21 +27,21 @@ namespace Dynamo.Nodes.Search
 
         public BrowserRootElement(string name, ObservableCollection<BrowserRootElement> siblings)
         {
-            this.Height = 32;
-            this.Siblings = siblings;
-            this._name = name;
+            Height = 32;
+            Siblings = siblings;
+            _name = name;
         }
 
         public void SortChildren()
         {
-            this.Items = new ObservableCollection<BrowserItem>(this.Items.OrderBy(x => x.Name));
+            Items = new ObservableCollection<BrowserItem>(Items.OrderBy(x => x.Name));
         }
 
         public BrowserRootElement(string name)
         {
-            this.Height = 32;
-            this.Siblings = null;
-            this._name = name;
+            Height = 32;
+            Siblings = null;
+            _name = name;
         }
 
     }
@@ -57,25 +55,25 @@ namespace Dynamo.Nodes.Search
         private ObservableCollection<BrowserItem> _items = new ObservableCollection<BrowserItem>();
         public override ObservableCollection<BrowserItem> Items { get { return _items; } set { _items = value; } }
 
-        public ObservableCollection<BrowserItem> Siblings { get { return this.Parent.Items; } }
+        public ObservableCollection<BrowserItem> Siblings { get { return Parent.Items; } }
 
         public BrowserItem Parent { get; set; }
         public BrowserItem OldParent { get; set; }
 
         public void ReturnToOldParent()
         {
-            if (this.OldParent == null) return;
+            if (OldParent == null) return;
 
-            this.OldParent.AddChild(this);
+            OldParent.AddChild(this);
         }
 
         public void ExpandToRoot()
         {
-            if (this.Parent == null)
+            if (Parent == null)
                 return;
 
-            this.Parent.IsExpanded = true;
-            this.Parent.Visibility = true;
+            Parent.IsExpanded = true;
+            Parent.Visibility = true;
 
             var parent = Parent as BrowserInternalElement;
             if (parent != null)
@@ -96,16 +94,16 @@ namespace Dynamo.Nodes.Search
 
         public BrowserInternalElement()
         {
-            this._name = "Default";
-            this.Parent = null;
-            this.OldParent = null;
+            _name = "Default";
+            Parent = null;
+            OldParent = null;
         }
 
         public BrowserInternalElement(string name, BrowserItem parent)
         {
-            this._name = name;
-            this.Parent = parent;
-            this.OldParent = null;
+            _name = name;
+            Parent = parent;
+            OldParent = null;
         }
 
 

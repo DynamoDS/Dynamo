@@ -3,248 +3,26 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Windows.Input;
 using System.Xml;
 using Dynamo.FSchemeInterop;
 using Dynamo.FSchemeInterop.Node;
-using Dynamo.Units;
 using Dynamo.Models;
+using Dynamo.Nodes;
+using Dynamo.Units;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
 using Microsoft.FSharp.Core;
-using RestSharp.Contrib;
-using Value = Dynamo.FScheme.Value;
-using System.Globalization;
 using ProtoCore.AST.AssociativeAST;
-using Dynamo.DSEngine;
 using Utils = Dynamo.FSchemeInterop.Utils;
+using Value = Dynamo.FScheme.Value;
 
-namespace Dynamo.Nodes
+namespace Dynamo.Legacy
 {
-    /// <summary>
-    /// Built-in Dynamo Categories. If you want your node to appear in one of the existing Dynamo
-    /// categories, then use these constants. This ensures that if the names of the categories
-    /// change down the road, your node will still be placed there.
-    /// </summary>
-    public static partial class BuiltinNodeCategories
-    {
-        public const string CORE = "Core";
-        public const string CORE_INPUT = "Core.Input";
-        public const string CORE_STRINGS = "Core.Strings";
-        public const string CORE_LISTS_CREATE = "Core.Lists.Create";
-        public const string CORE_LISTS_MODIFY = "Core.Lists.Modify";
-        public const string CORE_LISTS_EVALUATE = "Core.Lists.Evaluate";
-        public const string CORE_LISTS_QUERY = "Core.Lists.Query";
-        public const string CORE_VIEW = "Core.View";
-        public const string CORE_ANNOTATE = "Core.Annotate";
-        public const string CORE_EVALUATE = "Core.Evaluate";
-        public const string CORE_TIME = "Core.Time";
-        public const string CORE_SCRIPTING = "Core.Scripting";
-        public const string CORE_FUNCTIONS = "Core.Functions";
-
-        public const string LOGIC = "Logic";
-        public const string LOGIC_MATH_ARITHMETIC = "Logic.Math.Arithmetic";
-        public const string LOGIC_MATH_ROUNDING = "Logic.Math.Rounding";
-        public const string LOGIC_MATH_CONSTANTS = "Logic.Math.Constants";
-        public const string LOGIC_MATH_TRIGONOMETRY = "Logic.Math.Trigonometry";
-        public const string LOGIC_MATH_RANDOM = "Logic.Math.Random";
-        public const string LOGIC_MATH_OPTIMIZE = "Logic.Math.Optimize";
-        public const string LOGIC_EFFECT = "Logic.Effect";
-        public const string LOGIC_COMPARISON = "Logic.Comparison";
-        public const string LOGIC_CONDITIONAL = "Logic.Conditional";
-        public const string LOGIC_LOOP = "Logic.Loop";
-
-
-        public const string GEOMETRY = "Geometry";
-
-        public const string GEOMETRY_CURVE_CREATE = "Geometry.Curve.Create";
-        public const string GEOMETRY_CURVE_DIVIDE = "Geometry.Curve.Divide";
-        public const string GEOMETRY_CURVE_PRIMITIVES = "Geometry.Curve.Primitives";
-        public const string GEOMETRY_CURVE_QUERY = "Geometry.Curve.Query";
-        public const string GEOMETRY_CURVE_FIT = "Geometry.Curve.Fit";
-
-        public const string GEOMETRY_POINT_CREATE = "Geometry.Point.Create";
-        public const string GEOMETRY_POINT_MODIFY = "Geometry.Point.Modify";
-        public const string GEOMETRY_POINT_QUERY = "Geometry.Point.Query";
-        public const string GEOMETRY_POINT_GRID = "Geometry.Point.Grid";
-        public const string GEOMETRY_POINT_TESSELATE = "Geometry.Point.Tesselate";
-
-        public const string GEOMETRY_SOLID_BOOLEAN = "Geometry.Solid.Boolean";
-        public const string GEOMETRY_SOLID_CREATE = "Geometry.Solid.Create";
-        public const string GEOMETRY_SOLID_MODIFY = "Geometry.Solid.Modify";
-        public const string GEOMETRY_SOLID_PRIMITIVES = "Geometry.Solid.Primitives";
-        public const string GEOMETRY_SOLID_QUERY = "Geometry.Solid.Extract";
-        public const string GEOMETRY_SOLID_REPAIR = "Geometry.Solid.Repair";
-
-        public const string GEOMETRY_SURFACE_CREATE = "Geometry.Surface.Create";
-        public const string GEOMETRY_SURFACE_QUERY = "Geometry.Surface.Query";
-        public const string GEOMETRY_SURFACE_UV = "Geometry.Surface.UV";
-        public const string GEOMETRY_SURFACE_DIVIDE = "Geometry.Surface.Divide";
-
-        public const string GEOMETRY_TRANSFORM_APPLY = "Geometry.Transform.Apply";
-        public const string GEOMETRY_TRANSFORM_MODIFY = "Geometry.Transform.Modify";
-        public const string GEOMETRY_TRANSFORM_CREATE = "Geometry.Transform.Create";
-
-        public const string GEOMETRY_INTERSECT = "Geometry.Intersect";
-
-        public const string GEOMETRY_EXPERIMENTAL_PRIMITIVES = "Geometry.Experimental.Primitives";
-        public const string GEOMETRY_EXPERIMENTAL_SURFACE = "Geometry.Experimental.Surface";
-        public const string GEOMETRY_EXPERIMENTAL_CURVE = "Geometry.Experimental.Curve";
-        public const string GEOMETRY_EXPERIMENTAL_SOLID = "Geometry.Experimental.Solid";
-        public const string GEOMETRY_EXPERIMENTAL_MODIFY = "Geometry.Experimental.Modify";
-        public const string GEOMETRY_EXPERIMENTAL_VIEW = "Geometry.Experimental.View";
-
-        public const string REVIT = "Revit";
-        public const string REVIT_DOCUMENT = "Revit.Document";
-        public const string REVIT_DATUMS = "Revit.Datums";
-        public const string REVIT_FAMILIES = "Revit.Families";
-        public const string REVIT_SELECTION = "Revit.Selection";
-        public const string REVIT_VIEW = "Revit.View";
-        public const string REVIT_REFERENCE = "Revit.Reference";
-        public const string REVIT_PARAMETERS = "Revit.Parameters";
-        public const string REVIT_BAKE = "Revit.Bake";
-        public const string REVIT_API = "Revit.API";
-
-        public const string ANALYZE = "Analyze";
-        public const string ANALYZE_MEASURE = "Analyze.Measure";
-        public const string ANALYZE_DISPLAY = "Analyze.Display";
-        public const string ANALYZE_COLOR = "Analyze.Color";
-        public const string ANALYZE_STRUCTURE = "Analyze.Structure";
-        public const string ANALYZE_CLIMATE = "Analyze.Climate";
-        public const string ANALYZE_ACOUSTIC = "Analyze.Acoustic";
-        public const string ANALYZE_SOLAR = "Analyze.Solar";
-
-        public const string IO = "Input/Output";
-        public const string IO_FILE = "Input/Output.File";
-        public const string IO_NETWORK = "Input/Output.Network";
-        public const string IO_HARDWARE = "Input/Output.Hardware";
-    }
-
-
-    public static class Utilities
-    {
-        public static string Ellipsis(string value, int desiredLength)
-        {
-            if (desiredLength > value.Length)
-            {
-                return value;
-            }
-            else
-            {
-                return value.Remove(desiredLength - 1) + "...";
-            }
-        }
-
-        /// <summary>
-        /// <para>This method patches the fullyQualifiedName of a given type. It 
-        /// updates the given name to its newer form (i.e. "Dynamo.Nodes.Xyz")
-        /// if it matches the older form (e.g. "Dynamo.Elements.Xyz").</para>
-        /// <para>The method also attempts to update "XYZ/UV" convention to 
-        /// "Xyz/Uv" to comply with the new Dynamo naming convention.</para>
-        /// </summary>
-        /// <param name="fullyQualifiedName">A fully qualified name. An example
-        /// of this would be "Dynamo.Elements.dynNode".</param>
-        /// <returns>The processed fully qualified name. For an example, the 
-        /// name "Dynamo.Elements.UV" will be returned as "Dynamo.Nodes.Uv".
-        /// </returns>
-        public static string PreprocessTypeName(string fullyQualifiedName)
-        {
-            if (string.IsNullOrEmpty(fullyQualifiedName))
-                throw new ArgumentNullException("fullyQualifiedName");
-
-            // older files will have nodes in the Dynamo.Elements namespace
-            string oldPrefix = "Dynamo.Elements.";
-            string newPrefix = "Dynamo.Nodes.";
-            string className = string.Empty;
-
-            // Attempt to extract the class name out of the fully qualified 
-            // name, regardless of whether it is in the form of the older 
-            // "Dynamo.Elements.XxxYyy" or the newer "Dynamo.Nodes.XxxYyy".
-            // 
-            if (fullyQualifiedName.StartsWith(oldPrefix))
-                className = fullyQualifiedName.Substring(oldPrefix.Length);
-            else if (fullyQualifiedName.StartsWith(newPrefix))
-                className = fullyQualifiedName.Substring(newPrefix.Length);
-            else
-            {
-                // We are only expected to process names of our built-in types,
-                // and if we're given any of the system types, then we'll just
-                // return them as-is without any patches.
-                // 
-                return fullyQualifiedName;
-            }
-
-            // Remove prefix of 'dyn' from older files.
-            if (className.StartsWith("dyn"))
-                className = className.Remove(0, 3);
-
-            // Older files will have nodes that use "XYZ" and "UV" 
-            // instead of "Xyz" and "Uv". Update these names.
-            className = className.Replace("XYZ", "Xyz");
-            className = className.Replace("UV", "Uv");
-            return newPrefix + className; // Always new prefix from now on.
-        }
-
-        /// <summary>
-        /// <para>Resolve either a built-in type or a system type, given its fully
-        /// qualified name. This method performs the search with the following 
-        /// order:</para>
-        /// <para>1. Search among the built-in types registered with 
-        /// DynamoController.BuiltInTypesByName dictionary</para>
-        /// <para>2. Search among the available .NET runtime types</para>
-        /// <para>3. Search among built-in types, taking their "also-known-as" 
-        /// attributes into consideration when matching the type name</para>
-        /// </summary>
-        /// <param name="fullyQualifiedName"></param>
-        /// <returns></returns>
-        public static System.Type ResolveType(string fullyQualifiedName)
-        {
-            if (string.IsNullOrEmpty(fullyQualifiedName))
-                throw new ArgumentNullException("fullyQualifiedName");
-
-            TypeLoadData tData = null;
-            var builtInTypes = dynSettings.Controller.BuiltInTypesByName;
-            if (builtInTypes.TryGetValue(fullyQualifiedName, out tData))
-                return tData.Type; // Found among built-in types, return it.
-
-            //try and get a system type by this name
-            Type type = Type.GetType(fullyQualifiedName);
-            if (null != type)
-                return type;
-
-            // If we still can't find the type, try the also known as attributes.
-            foreach (var builtInType in dynSettings.Controller.BuiltInTypesByName)
-            {
-                var attribs = builtInType.Value.Type.GetCustomAttributes(
-                    typeof(AlsoKnownAsAttribute), false);
-
-                if (attribs.Count() <= 0)
-                    continue;
-
-                AlsoKnownAsAttribute akaAttrib = attribs[0] as AlsoKnownAsAttribute;
-                if (akaAttrib.Values.Contains(fullyQualifiedName))
-                {
-                    DynamoLogger.Instance.Log(string.Format(
-                        "Found matching node for {0} also known as {1}",
-                        builtInType.Key, fullyQualifiedName));
-
-                    return builtInType.Value.Type; // Found a matching type.
-                }
-            }
-
-            DynamoLogger.Instance.Log(string.Format(
-                "Could not load node of type: {0}", fullyQualifiedName));
-
-            DynamoLogger.Instance.Log("Loading will continue but nodes " +
-                "might be missing from your workflow.");
-
-            return null;
-        }
-    }
 
     #region FScheme Builtin Interop
 
@@ -596,7 +374,7 @@ namespace Dynamo.Nodes
         public override Value Evaluate(FSharpList<Value> args)
         {
             var nullity = args[0] == null || (args[0] as dynamic).Item == null;
-            return FScheme.Value.NewNumber(nullity ? 1 : 0);
+            return Value.NewNumber(nullity ? 1 : 0);
         }
     }
 
@@ -677,18 +455,9 @@ namespace Dynamo.Nodes
                 base.RemoveInput();
         }
 
-        protected override InputNode Compile(IEnumerable<string> portNames)
-        {
-            if (SaveResult)
-                return base.Compile(portNames);
-            else
-                return new FunctionNode("list", portNames);
-        }
-
         public override Value Evaluate(FSharpList<Value> args)
         {
-            return ((Value.Function)Controller.FSchemeEnvironment.LookupSymbol("list"))
-                .Item.Invoke(args);
+            return Value.NewList(args);
         }
     }
 
@@ -1568,7 +1337,7 @@ namespace Dynamo.Nodes
             set { }
         }
 
-        protected internal override INode Build(Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
+        protected override INode Build(Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
             Dictionary<int, INode> result;
             if (!preBuilt.TryGetValue(this, out result))
@@ -2320,7 +2089,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        protected internal override INode Build(Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
+        protected override INode Build(Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
             Dictionary<int, INode> result;
             if (preBuilt.TryGetValue(this, out result)) 
@@ -2380,7 +2149,7 @@ namespace Dynamo.Nodes
             RegisterAllPorts();
         }
 
-        protected internal override INode Build(Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
+        protected override INode Build(Dictionary<NodeModel, Dictionary<int, INode>> preBuilt, int outPort)
         {
             Dictionary<int, INode> result;
             if (preBuilt.TryGetValue(this, out result)) 
@@ -3887,7 +3656,7 @@ namespace Dynamo.Nodes
             if (context == SaveContext.Undo)
             {
                 XmlElementHelper helper = new XmlElementHelper(element);
-                this.Value = helper.ReadString("doubleInputValue");
+                Value = helper.ReadString("doubleInputValue");
             }
         }
 
@@ -5044,7 +4813,7 @@ namespace Dynamo.Nodes
             if (a == null)
                 return 1;
 
-            return this.Name.CompareTo(a);
+            return Name.CompareTo(a);
         }
 
     }
@@ -5119,7 +4888,7 @@ namespace Dynamo.Nodes
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void Items_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        void Items_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             //SortItems();
         }

@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows.Input;
+using Dynamo.Core;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -91,28 +90,28 @@ namespace Dynamo.Search.SearchElements
         /// <param name="tags"></param>
         public NodeSearchElement(string name, string description, IEnumerable<string> tags)
         {
-            this.Node = null;
-            this._name = name;
-            this.Weight = 1;
-            this.Keywords = String.Join(" ", tags);
-            this._type = "Node";
-            this._description = description;
+            Node = null;
+            _name = name;
+            Weight = 1;
+            Keywords = String.Join(" ", tags);
+            _type = "Node";
+            _description = description;
         }
 
         public virtual NodeSearchElement Copy()
         {
-            return new NodeSearchElement(this.Name, this.Description, new List<string>());
+            return new NodeSearchElement(Name, Description, new List<string>());
         }
 
         private void ToggleIsVisible(object parameter)
         {
-            if (this.DescriptionVisibility != true)
+            if (DescriptionVisibility != true)
             {
-                this.DescriptionVisibility = true;
+                DescriptionVisibility = true;
             }
             else
             {
-                this.DescriptionVisibility = false;
+                DescriptionVisibility = false;
             }
         }
 
@@ -123,11 +122,11 @@ namespace Dynamo.Search.SearchElements
         {
             // create node
             var guid = Guid.NewGuid();
-            dynSettings.Controller.DynamoViewModel.ExecuteCommand(
-                new DynCmd.CreateNodeCommand(guid, this.Name, 0, 0, true, true));
+            DynamoSettings.Controller.DynamoViewModel.ExecuteCommand(
+                new DynamoViewModel.CreateNodeCommand(guid, Name, 0, 0, true, true));
 
             // select node
-            var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
+            var placedNode = DynamoSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
             if (placedNode != null)
             {
                 DynamoSelection.Instance.ClearSelection();
@@ -142,7 +141,7 @@ namespace Dynamo.Search.SearchElements
                 return false;
             }
 
-            return this.Equals(obj as NodeSearchElement);
+            return Equals(obj as NodeSearchElement);
         }
 
         /// <summary>
@@ -150,12 +149,12 @@ namespace Dynamo.Search.SearchElements
         /// <returns> A unique hashcode for the object </returns>
         public override int GetHashCode()
         {
-            return this.Type.GetHashCode() + this.Name.GetHashCode() + this.Description.GetHashCode();
+            return Type.GetHashCode() + Name.GetHashCode() + Description.GetHashCode();
         }
 
         public bool Equals(NodeSearchElement other)
         {
-            return this.Name == other.Name && this.FullCategoryName == other.FullCategoryName;
+            return Name == other.Name && FullCategoryName == other.FullCategoryName;
         }
     }
 

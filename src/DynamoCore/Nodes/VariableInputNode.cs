@@ -6,11 +6,11 @@ using System.Xml;
 using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.UI;
+using Dynamo.UI.Controls;
 using Dynamo.Utilities;
 
-namespace DSCoreNodesUI
+namespace Dynamo.Nodes
 {
     public abstract class VariableInputNode : NodeModel, IWpfNode
     {
@@ -49,7 +49,7 @@ namespace DSCoreNodesUI
         /// <summary>
         /// Removes an input from this node. Called when the '-' button is clicked.
         /// </summary>
-        protected virtual void RemoveInput()
+        public virtual void RemoveInput()
         {
             var count = InPortData.Count;
             if (count > 0)
@@ -61,7 +61,7 @@ namespace DSCoreNodesUI
         /// <summary>
         /// Adds an input to this node. Called when the '+' button is clicked.
         /// </summary>
-        protected virtual void AddInput()
+        public virtual void AddInput()
         {
             var idx = GetInputIndex();
             InPortData.Add(

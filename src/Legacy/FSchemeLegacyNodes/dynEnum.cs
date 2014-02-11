@@ -5,9 +5,8 @@ using System.Xml;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Microsoft.FSharp.Collections;
-using Value = Dynamo.FScheme.Value;
 
-namespace Dynamo.Nodes
+namespace Dynamo.Legacy
 {
     [IsInteractive(true)]
     public abstract partial class Enum : NodeWithOneOutput
@@ -16,9 +15,9 @@ namespace Dynamo.Nodes
         public int SelectedIndex { get; set; }
         public Array Items { get; set; }
 
-        public Enum()
+        protected Enum()
         {
-            Items = new string[] {""};
+            Items = new[] {""};
             SelectedIndex = 0;
         }
 
@@ -29,14 +28,14 @@ namespace Dynamo.Nodes
 
         protected override void SaveNode(XmlDocument xmlDoc, XmlElement nodeElement, SaveContext context)
         {
-            nodeElement.SetAttribute("index", this.SelectedIndex.ToString());
+            nodeElement.SetAttribute("index", SelectedIndex.ToString());
         }
 
         protected override void LoadNode(XmlNode nodeElement)
         {
             try
             {
-                this.SelectedIndex = Convert.ToInt32(nodeElement.Attributes["index"].Value);
+                SelectedIndex = Convert.ToInt32(nodeElement.Attributes["index"].Value);
             }
             catch { }
         }
@@ -45,18 +44,18 @@ namespace Dynamo.Nodes
     [IsInteractive(true)]
     public abstract class EnumAsInt : Enum
     {
-        public EnumAsInt()
+        protected EnumAsInt()
         {
-            OutPortData.Add(new PortData("Int", "The index of the enum", typeof(Value.Number)));
+            OutPortData.Add(new PortData("Int", "The index of the enum", typeof(FScheme.Value.Number)));
 
             RegisterAllPorts();
         }
 
-        public override Value Evaluate(FSharpList<Value> args)
+        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
-            if (this.SelectedIndex < this.Items.Length)
+            if (SelectedIndex < Items.Length)
             {
-                var value = Value.NewNumber(this.SelectedIndex);
+                var value = FScheme.Value.NewNumber(SelectedIndex);
                 return value;
             }
             else
@@ -70,18 +69,18 @@ namespace Dynamo.Nodes
     [IsInteractive(true)]
     public abstract class EnumAsString : Enum
     {
-        public EnumAsString()
+        protected EnumAsString()
         {
-            OutPortData.Add(new PortData("String", "The enum as a string", typeof(Value.String)));
+            OutPortData.Add(new PortData("String", "The enum as a string", typeof(FScheme.Value.String)));
 
             RegisterAllPorts();
         }
 
-        public override Value Evaluate(FSharpList<Value> args)
+        public override FScheme.Value Evaluate(FSharpList<FScheme.Value> args)
         {
-            if (this.SelectedIndex < this.Items.Length)
+            if (SelectedIndex < Items.Length)
             {
-                var value = Value.NewString( Items.GetValue(this.SelectedIndex).ToString() );
+                var value = FScheme.Value.NewString( Items.GetValue(SelectedIndex).ToString() );
                 return value;
             }
             else
@@ -103,7 +102,7 @@ namespace Dynamo.Nodes
         protected EnumAsConstants(Type t)
         {
             enum_internal = t;
-            OutPortData.Add(new PortData("", "The members of the enumeration.", typeof(Value.List)));
+            OutPortData.Add(new PortData("", "The members of the enumeration.", typeof(FScheme.Value.List)));
             RegisterAllPorts();
             PopulateItems();
         }
@@ -132,7 +131,7 @@ namespace Dynamo.Nodes
         protected AllChildrenOfType(Type t)
         {
             internal_type = t;
-            OutPortData.Add(new PortData("", string.Format("All types which inherit from {0}.", t.ToString()), typeof(Value.List)));
+            OutPortData.Add(new PortData("", string.Format("All types which inherit from {0}.", t.ToString()), typeof(FScheme.Value.List)));
             RegisterAllPorts();
             PopulateItems();
         }

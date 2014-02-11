@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Windows.Input;
-using Dynamo.Nodes.Search;
-using Dynamo.Utilities;
+﻿using Dynamo.Nodes.Search;
 
 namespace Dynamo.Search.SearchElements
 {

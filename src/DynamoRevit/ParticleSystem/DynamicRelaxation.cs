@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Autodesk.Revit.DB;
 using Dynamo.Controls;
+using Dynamo.Core;
 using Dynamo.FSchemeInterop;
 using Dynamo.Models;
 using Dynamo.Utilities;
@@ -293,7 +294,7 @@ namespace Dynamo.Nodes
 
             CreateSpringsFromCurves(curves, points);
 
-            DispatchOnUIThread(dynSettings.Controller.RequestClearDrawables);
+            DispatchOnUIThread(DynamoSettings.Controller.RequestClearDrawables);
 
             _reset = false;
         }
@@ -442,7 +443,7 @@ namespace Dynamo.Nodes
             //_stepCount++;
             //if (_stepCount > 10)
             //{
-                dynSettings.Controller.OnRequestsRedraw(this, EventArgs.Empty);
+                DynamoSettings.Controller.OnRequestsRedraw(this, EventArgs.Empty);
                 //_stepCount = 0;
             //}
 

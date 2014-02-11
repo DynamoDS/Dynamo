@@ -1,8 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using Dynamo.Controls;
-using Dynamo.Utilities;
 
 namespace Dynamo.PackageManager.UI
 {
@@ -14,14 +11,14 @@ namespace Dynamo.PackageManager.UI
         public PackageManagerSearchView(PackageManagerSearchViewModel pm)
         {
 
-            this.DataContext = pm;
+            DataContext = pm;
             InitializeComponent();
 
         }
 
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            (this.DataContext as PackageManagerSearchViewModel).SearchAndUpdateResults(this.SearchTextBox.Text);
+            (DataContext as PackageManagerSearchViewModel).SearchAndUpdateResults(SearchTextBox.Text);
         }
 
         private void SortButton_OnClick(object sender, RoutedEventArgs e)

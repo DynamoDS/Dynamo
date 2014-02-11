@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.Selection
@@ -50,7 +49,7 @@ namespace Dynamo.Selection
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void selection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        void selection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             //call the select method on elements added to the collection
             if (e.NewItems != null)
@@ -118,14 +117,14 @@ namespace Dynamo.Selection
                 Items.Add(item);
             }
 
-            this.OnPropertyChanged(new PropertyChangedEventArgs("Count"));
-            this.OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
-            this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            OnPropertyChanged(new PropertyChangedEventArgs("Count"));
+            OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
         public void Reset(IEnumerable<T> range)
         {
-            this.Items.Clear();
+            Items.Clear();
 
             AddRange(range);
         }

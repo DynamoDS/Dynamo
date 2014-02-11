@@ -7,16 +7,14 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
-using Dynamo.DSEngine;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.Utilities;
-using Dynamo.Controls;
 using System.Windows.Threading;
 using System.Windows.Input;
-using Dynamo.Core;
 
 namespace Dynamo.ViewModels
 {
@@ -72,7 +70,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Convenience property
         /// </summary>
-        public DynamoViewModel DynamoViewModel { get { return dynSettings.Controller.DynamoViewModel; } }
+        public DynamoViewModel DynamoViewModel { get { return DynamoSettings.Controller.DynamoViewModel; } }
 
         /// <summary>
         /// Used during open and workspace changes to set the location of the workspace
@@ -100,7 +98,7 @@ namespace Dynamo.ViewModels
                 //Debug.WriteLine(string.Format("Setting zoom to {0}", e.Zoom));
                 ZoomChanged(this, e);
             }
-            dynSettings.Controller.DynamoViewModel.HideInfoBubble(null);
+            DynamoSettings.Controller.DynamoViewModel.HideInfoBubble(null);
         }
 
         /// <summary>
@@ -234,7 +232,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (_model == dynSettings.Controller.DynamoViewModel.Model.HomeSpace)
+                if (_model == DynamoSettings.Controller.DynamoViewModel.Model.HomeSpace)
                     return "Home";
                 return _model.Name;
             }
@@ -247,7 +245,7 @@ namespace Dynamo.ViewModels
 
         public bool CanEditName
         {
-            get { return _model != dynSettings.Controller.DynamoViewModel.Model.HomeSpace; }
+            get { return _model != DynamoSettings.Controller.DynamoViewModel.Model.HomeSpace; }
         }
 
         public bool IsCurrentSpace
@@ -257,7 +255,7 @@ namespace Dynamo.ViewModels
 
         public bool IsHomeSpace
         {
-            get { return _model == dynSettings.Controller.DynamoModel.HomeSpace; }
+            get { return _model == DynamoSettings.Controller.DynamoModel.HomeSpace; }
         }
 
         public bool HasUnsavedChanges
@@ -342,7 +340,7 @@ namespace Dynamo.ViewModels
             _model.Connectors.CollectionChanged += Connectors_CollectionChanged;
 
 
-            DynamoSelection.Instance.Selection.CollectionChanged += this.AlignSelectionCanExecuteChanged;
+            DynamoSelection.Instance.Selection.CollectionChanged += AlignSelectionCanExecuteChanged;
 
             // sync collections
             Nodes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, _model.Nodes));
@@ -692,16 +690,16 @@ namespace Dynamo.ViewModels
 
         private void Hide(object parameters)
         {
-            if (!Model.HasUnsavedChanges || dynSettings.Controller.DynamoViewModel.AskUserToSaveWorkspaceOrCancel(Model))
+            if (!Model.HasUnsavedChanges || DynamoSettings.Controller.DynamoViewModel.AskUserToSaveWorkspaceOrCancel(Model))
             {
-                dynSettings.Controller.DynamoViewModel.Model.HideWorkspace(_model);
+                DynamoSettings.Controller.DynamoViewModel.Model.HideWorkspace(_model);
             }
         }
 
         private bool CanHide(object parameters)
         {
             // can hide anything but the home workspace
-            return dynSettings.Controller.DynamoViewModel.Model.HomeSpace != _model;
+            return DynamoSettings.Controller.DynamoViewModel.Model.HomeSpace != _model;
         }
 
         private void SetCurrentOffset(object parameter)
@@ -858,7 +856,7 @@ namespace Dynamo.ViewModels
         {
             try
             {
-                var node = dynSettings.Controller.DynamoModel.Nodes.First(x => x.GUID.ToString() == id.ToString());
+                var node = DynamoSettings.Controller.DynamoModel.Nodes.First(x => x.GUID.ToString() == id.ToString());
 
                 if (node != null)
                 {
@@ -867,7 +865,7 @@ namespace Dynamo.ViewModels
                     DynamoSelection.Instance.Selection.Add(node);
 
                     //focus on the element
-                    dynSettings.Controller.DynamoViewModel.ShowElement(node);
+                    DynamoSettings.Controller.DynamoViewModel.ShowElement(node);
 
                     return;
                 }
@@ -880,7 +878,8 @@ namespace Dynamo.ViewModels
             try
             {
                 var function =
-                    (Function)dynSettings.Controller.DynamoModel.Nodes.First(x => x is Function && ((Function)x).Definition.FunctionId.ToString() == id.ToString());
+                    DynamoSettings.Controller.DynamoModel.Nodes.OfType<CustomNodeInstance>()
+                        .First(x => x.Definition.FunctionId.ToString() == id.ToString());
 
                 if (function != null)
                 {
@@ -889,7 +888,7 @@ namespace Dynamo.ViewModels
                     DynamoSelection.Instance.Selection.Add(function);
 
                     //focus on the element
-                    dynSettings.Controller.DynamoViewModel.ShowElement(function);
+                    DynamoSettings.Controller.DynamoViewModel.ShowElement(function);
                 }
             }
             catch
@@ -927,7 +926,7 @@ namespace Dynamo.ViewModels
         /// <param name="selectedNodes"> The function definition for the user-defined node </param>
         internal void CollapseNodes(IEnumerable<NodeModel> selectedNodes)
         {
-            NodeCollapser.Collapse(selectedNodes, dynSettings.Controller.DynamoViewModel.CurrentSpace);
+            NodeCollapser.Collapse(selectedNodes, DynamoSettings.Controller.DynamoViewModel.CurrentSpace);
         }
 
         internal void Loaded()
@@ -941,7 +940,7 @@ namespace Dynamo.ViewModels
 
         private void PauseVisualizationManagerUpdates(object parameter)
         {
-            dynSettings.Controller.VisualizationManager.UpdatingPaused = (bool)parameter;
+            DynamoSettings.Controller.VisualizationManager.UpdatingPaused = (bool)parameter;
         }
 
         private bool CanPauseVisualizationManagerUpdates(object parameter)
