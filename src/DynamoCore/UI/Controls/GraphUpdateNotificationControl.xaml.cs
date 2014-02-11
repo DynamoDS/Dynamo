@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using Dynamo;
 using Dynamo.UpdateManager;
+using Dynamo.Utilities;
 
 namespace DynamoCore.UI.Controls
 {
@@ -21,7 +22,7 @@ namespace DynamoCore.UI.Controls
             DynamoLogger.Instance.LogInfo("UpdateNotificationControl-OnInstallButtonClicked",
                 "UpdateNotificationControl-OnInstallButtonClicked");
 
-            UpdateManager.Instance.QuitAndInstallUpdate(); // Quit application
+            dynSettings.Controller.UpdateManager.QuitAndInstallUpdate(); // Quit application
         }
     }
 }
