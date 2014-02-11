@@ -675,7 +675,7 @@ namespace Dynamo.Units
     {
         public Area():base(0.0){}
 
-        public Area(double value):base(value<0?0.0:value){}
+        public Area(double value):base(value){}
 
         public static Area FromSquareFeet(double value)
         {
@@ -808,7 +808,7 @@ namespace Dynamo.Units
             if (Double.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out total))
             {
                 var v = total/UnitsManager.Instance.UiAreaConversion;
-                _value = v < 0.0 ? 0.0 : v;
+                _value = v;
                 return;
             }
 
@@ -821,7 +821,7 @@ namespace Dynamo.Units
             total += sq_in / SIUnit.ToSquareInch;
             total += sq_ft / SIUnit.ToSquareFoot;
 
-            _value = total < 0 ? 0.0 : total;
+            _value = total;
         }
 
         public bool Equals(Area other)
@@ -888,7 +888,7 @@ namespace Dynamo.Units
     {
         public Volume():base(0.0){}
 
-        public Volume(double value) : base(value<0.0?0.0:value){}
+        public Volume(double value) : base(value){}
 
         public static Volume FromCubicFeet(double value)
         {
@@ -1012,7 +1012,7 @@ namespace Dynamo.Units
             if (Double.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out total))
             {
                 var v = total/UnitsManager.Instance.UiVolumeConversion;
-                _value =  v < 0.0 ? 0.0 : v;
+                _value =  v;
                 return;
             }
 
@@ -1025,7 +1025,7 @@ namespace Dynamo.Units
             total += cu_in / ToCubicInch;
             total += cu_ft / ToCubicFoot;
 
-            _value = total < 0 ? 0.0 : total;
+            _value = total;
         }
 
         public bool Equals(Volume other)
