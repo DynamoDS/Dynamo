@@ -310,10 +310,10 @@ namespace Dynamo
             #endregion
 
             // color the node to define its connectivity
-            foreach (var ele in topMost)
-            {
-                ele.Item2.ValidateConnections();
-            }
+            //foreach (var ele in topMost)
+            //{
+            //    ele.Item2.ValidateConnections();
+            //}
 
             //Find function entry point, and then compile
             var inputNodes = WorkspaceModel.Nodes.OfType<Symbol>().ToList();

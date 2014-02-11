@@ -117,6 +117,28 @@ namespace DSCore
         }
 
         /// <summary>
+        ///     Counts the number of non-overlapping occurrences of a substring inside a given string.
+        /// </summary>
+        /// <param name="str">String to search in.</param>
+        /// <param name="searchFor">Substring to search for.</param>
+        /// <param name="ignoreCase">Whether or not compaison takes case into account.</param>
+        public static int CountOccurrences(string str, string searchFor, bool ignoreCase = false)
+        {
+            int count = 0, start = 0;
+            while (start >= 0)
+            {
+                start = str.IndexOf(
+                    searchFor,
+                    start,
+                    ignoreCase
+                        ? StringComparison.InvariantCultureIgnoreCase
+                        : StringComparison.InvariantCulture);
+                count++;
+            }
+            return count;
+        }
+
+        /// <summary>
         ///     Replaces all occurrances of text in a string with other text.
         /// </summary>
         /// <param name="str">String to replace substrings in.</param>
@@ -182,15 +204,11 @@ namespace DSCore
         /// </summary>
         /// <param name="str">A string to search in.</param>
         /// <param name="searchFor">Substring to search for.</param>
-        /// <param name="start">Index to start searching at.</param>
-        /// <param name="count">The number of character positions to examine.</param>
         /// <param name="ignoreCase">Whether or not comparison takes case into account.</param>
-        public static int IndexOf(string str, string searchFor, int start = 0, int? count = null, bool ignoreCase = false)
+        public static int IndexOf(string str, string searchFor, bool ignoreCase = false)
         {
             return str.IndexOf(
                 searchFor,
-                start,
-                count ?? (str.Length - start),
                 ignoreCase
                     ? StringComparison.InvariantCultureIgnoreCase
                     : StringComparison.InvariantCulture);
@@ -202,16 +220,11 @@ namespace DSCore
         /// </summary>
         /// <param name="str">A string to search in.</param>
         /// <param name="searchFor">Substring to search for.</param>
-        /// <param name="start">Index to start searching at.</param>
-        /// <param name="count">The number of character positions to examine.</param>
         /// <param name="ignoreCase">Whether or not comparison takes case into account.</param>
-        public static int LastIndexOf(
-            string str, string searchFor, int start = 0, int? count = null, bool ignoreCase = false)
+        public static int LastIndexOf(string str, string searchFor, bool ignoreCase = false)
         {
             return str.LastIndexOf(
                 searchFor,
-                start,
-                count ?? (str.Length - start),
                 ignoreCase
                     ? StringComparison.InvariantCultureIgnoreCase
                     : StringComparison.InvariantCulture);
@@ -237,14 +250,31 @@ namespace DSCore
         ///     for a specified total length.
         /// </summary>
         /// <param name="str">String to pad.</param>
-        /// <param name="totalWidth">Total length of the string after padding.</param>
+        /// <param name="newWidth">Total length of the string after padding.</param>
         /// <param name="padChar">Character to pad with, defaults to space.</param>
-        public static string PadRight(string str, int totalWidth, string padChar = " ")
+        public static string PadRight(string str, int newWidth, string padChar = " ")
         {
             if (padChar.Length != 1)
                 throw new ArgumentException("padChar string must contain a single character.", "padChar");
 
-            return str.PadRight(totalWidth, padChar[0]);
+            return str.PadRight(newWidth, padChar[0]);
+        }
+
+        /// <summary>
+        ///     Increases the width of a string by encasing the original characters with spaces on
+        ///     either side.
+        /// </summary>
+        /// <param name="str">String to center.</param>
+        /// <param name="newWidth">Total length of the string after centering.</param>
+        /// <param name="padChar">Character to center with, defaults to space.</param>
+        public static string Center(string str, int newWidth, string padChar = " ")
+        {
+            if (padChar.Length != 1)
+                throw new ArgumentException("padChar string must contain a single character.", "padChar");
+
+            var padHalf = (newWidth - str.Length)/ 2 + str.Length;
+
+            return str.PadLeft(padHalf, padChar[0]).PadRight(newWidth - padHalf, padChar[0]);
         }
 
         /// <summary>
