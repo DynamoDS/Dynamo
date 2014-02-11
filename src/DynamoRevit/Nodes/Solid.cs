@@ -1257,7 +1257,8 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll", "Solid.BoxByTwoCorners", "Solid.BoxByTwoCorners@Point,Point");
+            return MigrateToDsFunction(data, "DSRevitNodes.dll", "Solid.BoxByTwoCorners",
+                "Solid.BoxByTwoCorners@Point,Point");
         }
     }
 
@@ -1303,7 +1304,7 @@ namespace Dynamo.Nodes
         [NodeMigration(from: "0.6.3", to: "0.7.0.0")]
         public static NodeMigrationData Migrate_0630_to_0700(NodeMigrationData data)
         {
-            return MigrateToDsFunction(data, "DSRevitNodes.dll", "Solid.BoxByCenterAndDimensions@Point,double,double,double",
+            return MigrateToDsFunction(data, "DSRevitNodes.dll", "Solid.BoxByCenterAndDimensions",
                 "Solid.BoxByCenterAndDimensions@Point,double,double,double");
         }
     }
