@@ -312,8 +312,8 @@ namespace Dynamo.Nodes
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
             var newNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
             newNode.SetAttribute("assembly", "ProtoGeometry.dll");
-            newNode.SetAttribute("nickname", "Surface.NormalAtPoint");
-            newNode.SetAttribute("function", "Surface.NormalAtPoint@Point");
+            newNode.SetAttribute("nickname", "Surface.NormalAtParameter");
+            newNode.SetAttribute("function", "Surface.NormalAtParameter@double,double");
             migrationData.AppendNode(newNode);
             string newNodeId = MigrationManager.GetGuidFromXmlElement(newNode);
 
@@ -342,6 +342,8 @@ namespace Dynamo.Nodes
             data.ReconnectToPort(connector0, newInPortNodeU);
             data.ReconnectToPort(connector1, newInPort0);
             data.CreateConnectorFromId(nodeUVId, 0, nodeVId, 0);
+            data.CreateConnector(nodeU, 0, newNode, 1);
+            data.CreateConnector(nodeV, 0, newNode, 2);
             
             return migrationData;
         }

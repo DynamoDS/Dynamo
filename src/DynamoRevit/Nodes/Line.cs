@@ -181,7 +181,8 @@ namespace Dynamo.Nodes
 
             // Create new node
             XmlElement translateNode = MigrationManager.CreateFunctionNode(
-                data.Document, "ProtoGeometry.dll", "Geometry.Translate", "Geometry.Translate@Vector");
+                data.Document, "ProtoGeometry.dll", "Geometry.Translate",
+                "Geometry.Translate@Autodesk.DesignScript.Geometry.Vector");
             migrationData.AppendNode(translateNode);
             string translateNodeId = MigrationManager.GetGuidFromXmlElement(translateNode);
 
@@ -195,7 +196,7 @@ namespace Dynamo.Nodes
 
             string nodeOriginId = connector0.GetAttribute("start").ToString();
             data.ReconnectToPort(connector1, newInPortTranslate1);
-            data.CreateConnector(translateNode, 0, newNode, 0);
+            data.CreateConnector(translateNode, 0, newNode, 1);
             data.CreateConnectorFromId(nodeOriginId, 0, translateNodeId, 0);
             
             return migrationData;
