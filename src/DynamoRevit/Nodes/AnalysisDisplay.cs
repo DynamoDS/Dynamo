@@ -245,10 +245,10 @@ namespace Dynamo.Nodes
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
             //create the node itself
-            XmlElement dsRevitNode = MigrationManager.CreateFunctionNode(
-                data.Document, "DSRevitNodes.dll",
-                "FaceAnalysisDisplay.ByViewFacePointsAndValues",
-                "FaceAnalysisDisplay.ByViewFacePointsAndValues@var,FaceReference,double[][],double[]");
+            XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            dsRevitNode.SetAttribute("assembly", "DSRevitNodes.dll");
+            dsRevitNode.SetAttribute("nickname", "FaceAnalysisDisplay.ByViewFacePointsAndValues");
+            dsRevitNode.SetAttribute("function", "FaceAnalysisDisplay.ByViewFacePointsAndValues@var,FaceReference,double[][],double[]");
 
             migratedData.AppendNode(dsRevitNode);
             string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
@@ -370,10 +370,10 @@ namespace Dynamo.Nodes
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
             //create the node itself
-            XmlElement dsRevitNode = MigrationManager.CreateFunctionNode(
-                data.Document, "DSRevitNodes.dll",
-                "PointAnalysisDisplay.ByViewPointsAndValues",
-                "PointAnalysisDisplay.ByViewPointsAndValues@var,Point[],double[]");
+            XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            dsRevitNode.SetAttribute("assembly", "DSRevitNodes.dll");
+            dsRevitNode.SetAttribute("nickname", "PointAnalysisDisplay.ByViewPointsAndValues");
+            dsRevitNode.SetAttribute("function", "PointAnalysisDisplay.ByViewPointsAndValues@var,Point[],double[]");
 
             migratedData.AppendNode(dsRevitNode);
             string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
@@ -492,10 +492,10 @@ namespace Dynamo.Nodes
             string oldNodeId = MigrationManager.GetGuidFromXmlElement(oldNode);
 
             //create the node itself
-            XmlElement dsRevitNode = MigrationManager.CreateFunctionNode(
-                data.Document, "DSRevitNodes.dll",
-                "VectorAnalysisDisplay.ByViewPointsAndVectorValues",
-                "VectorAnalysisDisplay.ByViewPointsAndVectorValues@var,Point[],Vector[]");
+            XmlElement dsRevitNode = MigrationManager.CreateFunctionNodeFrom(oldNode);
+            dsRevitNode.SetAttribute("assembly", "DSRevitNodes.dll");
+            dsRevitNode.SetAttribute("nickname", "VectorAnalysisDisplay.ByViewPointsAndVectorValues");
+            dsRevitNode.SetAttribute("function", "VectorAnalysisDisplay.ByViewPointsAndVectorValues@var,Point[],Vector[]");
 
             migratedData.AppendNode(dsRevitNode);
             string dsRevitNodeId = MigrationManager.GetGuidFromXmlElement(dsRevitNode);
